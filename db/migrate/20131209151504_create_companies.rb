@@ -3,7 +3,7 @@ class CreateCompanies < ActiveRecord::Migration
     create_table :companies, id: false do |t|
       t.string :uuid, limit: 36
       t.string :logo
-      t.string :name
+      t.string :name, null: false
       t.text :description
 
       t.timestamps
