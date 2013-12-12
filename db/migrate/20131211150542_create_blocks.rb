@@ -2,7 +2,7 @@ class CreateBlocks < ActiveRecord::Migration
   def up
     create_table :blocks, id: false do |t|
       t.string :uuid, limit: 36
-      t.string :title, null: false
+      t.string :kind, null: false
       t.integer :position
       t.string :owner_id, limit: 36, null: false
       t.string :owner_type, null: false

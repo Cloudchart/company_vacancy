@@ -1,7 +1,7 @@
 <%= simple_form_for(object) do |f| %>
   <fieldset>
     <%= f.simple_fields_for(:block) do |builder| %>
-      <%= builder.input :title, collection: Block::TITLES, include_blank: false %>
+      <%= builder.input :kind, collection: Block::KINDS, include_blank: false %>
       <%= builder.input :position %>
       <%= builder.input :owner_id, as: :hidden %>
       <%= builder.input :owner_type, as: :hidden %>

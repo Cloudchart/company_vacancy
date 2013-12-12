@@ -41,6 +41,6 @@ class TextsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def text_params
-      params.require(:text).permit(:content, block_attributes: [:title, :position, :owner_id, :owner_type])
+      params.require(:text).permit(:content, block_attributes: [:kind, :position, :owner_id, :owner_type])
     end
 end

@@ -17,7 +17,7 @@ en:
         logo: 'Logo'
         name: 'Name'
         description: 'Description'
-        title: 'Title'
+        kind: 'Kind'
         submit: 'Submit'
     #   user:
     #     new:
