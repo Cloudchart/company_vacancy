@@ -20,4 +20,8 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: 'Hello, world!'
+  links:
+    add:
+      text_block: 'Add text block'
+  messages:
+    confirm: 'Are you sure?'

@@ -1,7 +1,8 @@
 Cloudchart::Application.routes.draw do
   root 'companies#index'
   resources :companies
-  resources :texts, only: [:create, :update, :destroy]
+  resources :texts, only: [:new, :create, :update, :destroy] do
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

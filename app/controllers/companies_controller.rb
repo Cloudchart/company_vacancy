@@ -1,5 +1,6 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy]
+  before_action :find_texts, only: [:edit, :update]
 
   # GET /companies
   def index
@@ -17,8 +18,6 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1/edit
   def edit
-    @text = Text.new
-    @text.build_block.owner = @company
   end
 
   # POST /companies
@@ -56,5 +55,9 @@ class CompaniesController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def company_params
       params.require(:company).permit(:logo, :name, :description)
+    end
+
+    def find_texts
+      @texts = @company.blocks.collect_blockable.select { |b| b.class == Text }
     end
 end

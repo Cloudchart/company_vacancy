@@ -5,4 +5,6 @@ class Block < ActiveRecord::Base
 
   belongs_to :owner, polymorphic: true
   belongs_to :blockable, polymorphic: true
+
+  scope :collect_blockable, -> { order(:position).includes(blockable: :block).map(&:blockable) }
 end
