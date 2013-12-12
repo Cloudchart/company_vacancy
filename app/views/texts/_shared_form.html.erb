@@ -1,0 +1,11 @@
+<%= simple_form_for(@text) do |f| %>  
+  <%= f.simple_fields_for(:block) do |builder| %>
+    <%= builder.input :title, collection: Block::TITLES, include_blank: false %>
+    <%= builder.input :position %>
+    <%= builder.input :owner_id, as: :hidden %>
+    <%= builder.input :owner_type, as: :hidden %>
+  <% end %>
+
+  <%= f.input :content %>
+  <%= f.button :submit %>
+<% end %>

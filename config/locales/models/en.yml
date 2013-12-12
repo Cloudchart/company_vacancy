@@ -1,0 +1,9 @@
+en:
+  models:
+    block:
+      titles:
+        about: About
+        product: Product
+        people: People
+        vacancies: Vacancies
+        contacts: Contacts

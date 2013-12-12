@@ -17,6 +17,8 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1/edit
   def edit
+    @text = Text.new
+    @text.build_block.owner = @company
   end
 
   # POST /companies

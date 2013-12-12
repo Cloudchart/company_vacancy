@@ -9,6 +9,7 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'jquery-rails'
 gem 'carrierwave'
 gem 'mini_magick'
+gem 'simple_form'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
