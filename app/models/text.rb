@@ -1,8 +1,6 @@
 class Text < ActiveRecord::Base
-  include Extensions::UUID
+  include Uuidable
+  include Blockable
 
-  has_one :block, as: :blockable, dependent: :destroy
-  has_one :company, through: :block, source: :owner, source_type: 'Company'
-
-  accepts_nested_attributes_for :block
+  validates :content, presence: true
 end

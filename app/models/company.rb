@@ -1,5 +1,5 @@
 class Company < ActiveRecord::Base
-  include Extensions::UUID
+  include Uuidable
 
   mount_uploader :logo, LogoUploader
 

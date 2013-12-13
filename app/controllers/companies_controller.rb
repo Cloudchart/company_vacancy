@@ -1,6 +1,6 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy]
-  before_action :find_texts, only: [:edit, :update]
+  before_action :find_blockable, only: [:edit, :update]
 
   # GET /companies
   def index
@@ -57,7 +57,7 @@ class CompaniesController < ApplicationController
       params.require(:company).permit(:logo, :name, :description)
     end
 
-    def find_texts
-      @texts = @company.blocks.collect_blockable.select { |b| b.class == Text }
+    def find_blockable
+      @blocks = @company.blocks.collect_blockable
     end
 end

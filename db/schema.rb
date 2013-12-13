@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131211150542) do
+ActiveRecord::Schema.define(version: 20131213101625) do
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
     t.string   "kind",                      null: false
@@ -35,8 +35,14 @@ ActiveRecord::Schema.define(version: 20131211150542) do
     t.datetime "updated_at"
   end
 
+  create_table "images", primary_key: "uuid", force: true do |t|
+    t.string   "image",      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "texts", primary_key: "uuid", force: true do |t|
-    t.text     "content"
+    t.text     "content",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

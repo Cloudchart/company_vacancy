@@ -1,11 +1,14 @@
 <h1>Editing company</h1>
 <%= render 'form' %>
-<h1>Creating text block</h1>
-<div class="text-blocks">
-  <%= render 'texts/shared_collection_form' %>
+
+<h1>Managing blocks</h1>
+<div class="blocks">
+  <%= render "blockable/shared_collection_form", collection: @blocks %>
 </div>
 <p>
-  <%= link_to t('links.add.text_block'), new_text_path(company_id: @company.id), remote: true %>
+  <%= link_to t("links.add.text_block"), new_text_path(company_id: @company.id), remote: true %>
+  <%= link_to t("links.add.image_block"), new_image_path(company_id: @company.id), remote: true %>
 </p>
+
 <%= link_to 'Show', @company %> |
 <%= link_to 'Back', companies_path %>

@@ -1,7 +1,8 @@
 Cloudchart::Application.routes.draw do
-  root 'companies#index'
+  root to: 'companies#index'
   resources :companies
-  resources :texts, only: [:new, :create, :update, :destroy] do
+  %i(texts images).each do |blockable|
+    resources blockable, except: [:index, :show]
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

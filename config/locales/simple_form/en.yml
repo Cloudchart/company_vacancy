@@ -19,6 +19,7 @@ en:
         description: 'Description'
         kind: 'Kind'
         submit: 'Submit'
+        image: 'Image'
     #   user:
     #     new:
     #       email: 'E-mail to sign in.'

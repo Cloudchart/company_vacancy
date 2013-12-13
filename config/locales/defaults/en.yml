@@ -23,5 +23,6 @@ en:
   links:
     add:
       text_block: 'Add text block'
+      image_block: 'Add image block'
   messages:
     confirm: 'Are you sure?'
