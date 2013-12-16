@@ -1,0 +1,21 @@
+@import 'layout/header';
+@import 'layout/footer';
+
+html {
+    height: 100%;
+}
+
+body {
+    @include display(flex);
+    @include flex-direction(column);
+    
+    min-height: 100%;
+    
+    > main {
+        @include flex(1);
+    }
+}
+
+html {
+    font-family: $base-font-family;
+}
