@@ -37,3 +37,6 @@ end
 
 # Use Bourbon
 gem 'bourbon'
+
+# Use FontAwesome
+gem 'font-awesome-rails'

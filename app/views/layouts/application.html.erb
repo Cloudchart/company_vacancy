@@ -2,12 +2,12 @@
 <html>
     <head>
       <title>Cloudchart</title>
-      <%= stylesheet_link_tag    "application", media: "all" %>
+      <%= stylesheet_link_tag "application", media: "all" %>
       <%= csrf_meta_tags %>
     </head>
     <body>
         <header>
-            header
+            <%= render "shared/header" %>
         </header>
 
         <main>
@@ -17,7 +17,7 @@
         </main>
 
         <footer>
-            footer
+            <%= render "shared/footer" %>
         </footer>
 
         <%= javascript_include_tag "application" %>

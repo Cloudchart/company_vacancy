@@ -1,0 +1,48 @@
+<div>
+    <strong>
+        &copy; CloudChart LLC., <%= Time.now.year %>
+    </strong>
+    
+    <ul class="left-links">
+        <li>
+            <%= link_to t('.about'), "" %>
+        </li>
+        <li>
+            <%= link_to t('.support'), "" %>
+        </li>
+        <li>
+            <%= link_to t('.why_cloudchart'), "" %>
+        </li>
+        <li>
+            <%= link_to t('.knowledge_base'), "" %>
+        </li>
+        <li>
+            <%= link_to t('.contact_us'), "" %>
+        </li>
+        <li>
+            <%= link_to t('.api'), "" %>
+        </li>
+    </ul>
+    
+</div>
+
+<div>
+    <strong>
+        <%= link_to t('.privacy_policy'), "" %>
+        <%= link_to t('.terms_of_use'), "" %>
+    </strong>
+
+    <ul class="right-links">
+        <li>
+            <%- [:facebook, :twitter, :linkedin, :github].each do |network| -%>
+                <%= link_to content_tag(:i, nil, class: "fa fa-#{network}-square"), "" %>
+            <%- end -%>
+        </li>
+        <li>
+            <%= link_to t('.blog'), "" %>
+        </li>
+        <li>
+            +1-800-CHART-DREAM
+        </li>
+    </ul>
+</div>

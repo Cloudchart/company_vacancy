@@ -1,6 +1,10 @@
 @import 'layout/header';
 @import 'layout/footer';
 
+* {
+    @include box-sizing(border-box);
+}
+
 html {
     height: 100%;
 }
@@ -9,13 +13,12 @@ body {
     @include display(flex);
     @include flex-direction(column);
     
+    font-family: $base-font-family;
+    font-size: $base-font-size;
     min-height: 100%;
     
     > main {
         @include flex(1);
     }
-}
-
-html {
-    font-family: $base-font-family;
+    
 }
