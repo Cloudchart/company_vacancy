@@ -10,6 +10,8 @@ gem 'jquery-rails'
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'simple_form'
+gem 'bourbon'
+gem 'font-awesome-rails'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -34,9 +36,3 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-
-# Use Bourbon
-gem 'bourbon'
-
-# Use FontAwesome
-gem 'font-awesome-rails'
