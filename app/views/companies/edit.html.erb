@@ -1,9 +1,9 @@
 <h1>Editing company</h1>
-<%= render 'form' %>
+<%= render 'companies/form' %>
 
 <h1>Managing blocks</h1>
 <div class="blocks">
-  <%= render "blockable/shared_collection_form", collection: @blocks %>
+  <%= render "blockable/shared_collection_form", collection: @blockables %>
 </div>
 <p>
   <%= link_to t("links.add.text_block"), new_text_path(company_id: @company.id), remote: true %>

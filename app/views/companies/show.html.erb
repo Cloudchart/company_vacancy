@@ -1,6 +1,8 @@
+<h1>Sidebar</h1>
+
 <p>
   <strong>Logo:</strong>
-  <%= image_tag @company.logo_url %>
+  <%= image_tag @company.logo.url %>
 </p>
 
 <p>
@@ -12,6 +14,18 @@
   <strong>Description:</strong>
   <%= @company.description %>
 </p>
+
+<h1>Page content</h1>
+
+<% Block::KINDS.each do |key, val| %>
+  <h2><%= key %></h2>
+  <% @company.blocks.ordered_by_position.where(kind: val).each do |block| %>
+    <p>
+      <strong><%= block.blockable_type %></strong>
+      <%= blockable_content(block) %>
+    </p> 
+  <% end %>
+<% end %>
 
 <%= link_to 'Edit', edit_company_path(@company) %> |
 <%= link_to 'Back', companies_path %>
