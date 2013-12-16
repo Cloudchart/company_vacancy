@@ -1,3 +1,6 @@
+<%= link_to 'Show', @company %> |
+<%= link_to 'Back', companies_path %>
+
 <h1>Editing company</h1>
 <%= render 'companies/form' %>
 
@@ -9,6 +12,3 @@
   <%= link_to t("links.add.text_block"), new_text_path(company_id: @company.id), remote: true %>
   <%= link_to t("links.add.image_block"), new_image_path(company_id: @company.id), remote: true %>
 </p>
-
-<%= link_to 'Show', @company %> |
-<%= link_to 'Back', companies_path %>

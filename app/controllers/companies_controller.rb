@@ -58,7 +58,7 @@ class CompaniesController < ApplicationController
     end
 
     def find_blockables
-      @blockables = @company.blocks.ordered_by_position.map(&:blockable)
+      @blockables = @company.blocks.map(&:blockable)
     end
 
 end

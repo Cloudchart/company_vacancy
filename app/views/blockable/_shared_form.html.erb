@@ -16,6 +16,8 @@
     <div class="form-actions">
       <%= f.button :submit %>
       <%= link_to t('destroy'), object, method: :delete, data: { confirm: t('messages.confirm') } unless object.new_record? %>
+      <%= link_to '↑', blocks_sort_path(block_id: f.object.block.id, shift: :higher ), method: :post %>
+      <%= link_to '↓', blocks_sort_path(block_id: f.object.block.id, shift: :lower ), method: :post %>
     </div>
 
   <% end %>

@@ -16,7 +16,7 @@ module BlockableController
     if blockable.save
       redirect_to edit_company_path(blockable.company), notice: "#{controller_name.singularize.camelize} block successfully created."
     else
-      redirect_to edit_company_path(params[:"#{controller_name.singularize}"][:block_attributes][:owner_id]), alert: 'Validation errors'
+      redirect_to :back, alert: 'Validation errors'
     end
   end
 
@@ -24,7 +24,7 @@ module BlockableController
     if blockable.update(send("#{controller_name.singularize}_params"))
       redirect_to edit_company_path(blockable.company), notice: "#{controller_name.singularize.camelize} block successfully created."
     else
-      redirect_to edit_company_path(blockable.company), alert: 'Validation errors'
+      redirect_to :back, alert: 'Validation errors'
     end    
   end
 

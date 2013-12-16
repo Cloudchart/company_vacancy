@@ -5,7 +5,7 @@ class Company < ActiveRecord::Base
 
   before_destroy :destroy_blocks
 
-  has_many :blocks, as: :owner
+  has_many :blocks, -> { includes(blockable: :block).order(:kind, :position) }, as: :owner
 
   validates :name, presence: true
 
@@ -15,4 +15,5 @@ class Company < ActiveRecord::Base
     def destroy_blocks
       blocks.each { |block| block.blockable.destroy }
     end
+    
 end
