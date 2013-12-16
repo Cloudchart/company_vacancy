@@ -28,6 +28,9 @@ GEM
     arel (4.0.1)
     atomic (1.1.14)
     awesome_print (1.2.0)
+    bourbon (3.1.8)
+      sass (>= 3.2.0)
+      thor
     builder (3.1.4)
     carrierwave (0.9.0)
       activemodel (>= 3.2.0)
@@ -42,6 +45,8 @@ GEM
     coffee-script-source (1.6.3)
     erubis (2.7.0)
     execjs (2.0.2)
+    font-awesome-rails (4.0.3.0)
+      railties (>= 3.2, < 5.0)
     hike (1.2.3)
     i18n (0.6.9)
     jquery-rails (3.0.4)
@@ -115,8 +120,10 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
+  bourbon
   carrierwave
   coffee-rails (~> 4.0.0)
+  font-awesome-rails
   jquery-rails
   mini_magick
   mysql2

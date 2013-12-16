@@ -1,0 +1,45 @@
+body > footer {
+    @include display(flex);
+    @include justify-content(space-between);
+    
+    background: #ccc;
+    padding: 1em 2em;
+    
+    > div {
+        width: 33%;
+        
+        &:last-child {
+            text-align: right;
+        }
+        
+        strong a:not(:first-child) {
+            margin-left: 1em;
+        }
+        
+        ul {
+            @include display(flex);
+            @include justify-content(space-between);
+
+            list-style: none;
+            margin: 1em 0 0;
+            padding: 0;
+            
+            li {
+                margin: .25em 0;
+            }
+        }
+        
+        ul.left-links {
+            @include flex-flow(row wrap);
+            
+            li {
+                width: 50%;
+            }
+        }
+        
+        ul.right-links {
+            @include flex-flow(column);
+        }
+    }
+    
+}
