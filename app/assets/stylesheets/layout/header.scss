@@ -1,3 +1,44 @@
 body > header {
+    @include display(flex);
+    @include align-items(center);
+    @include justify-content(space-between);
+    
     background: #ccc;
+    padding: $base-unit / 2;
+    
+    font-size: $header-font-size;
+    
+    .cloud-chart {
+        font-weight: 300;
+        strong {
+            font-weight: 700;
+        }
+    }
+    
+    .login-and-signup {
+        @include display(flex);
+        @include align-items(center);
+        
+        a {
+            font-size: .75em;
+            font-weight: 700;
+            
+            i.fa {
+                margin-right: .25em;
+            }
+            
+            &.button {
+                background: #eee;
+                border-radius: .25em;
+                padding: .2em .5em;
+                text-decoration: none;
+            }
+        }
+        
+        a:not(:first-child) {
+            margin-left: .75em;
+        }
+        
+    }
+    
 }

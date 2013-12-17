@@ -14,7 +14,7 @@ body {
     @include flex-direction(column);
     
     font-family: $base-font-family;
-    font-size: $base-font-size;
+    font-size: $body-font-size;
     min-height: 100%;
     
     > main {
