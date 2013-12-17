@@ -14,12 +14,12 @@ gem 'bourbon'
 gem 'font-awesome-rails'
 
 group :doc do
-  # bundle exec rake doc:rails generates the API under doc/api.
-  gem 'sdoc', require: false
+    # bundle exec rake doc:rails generates the API under doc/api.
+    gem 'sdoc', require: false
 end
 
 group :development do
-  gem 'awesome_print'
+    gem 'awesome_print'
 end
 
 # Use jbuilder for building json API

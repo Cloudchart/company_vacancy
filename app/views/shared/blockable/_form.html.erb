@@ -17,7 +17,7 @@
       <%= f.button :submit %>
 
       <% unless object.new_record? %>
-        <%= render 'shared/block_actions', object: object %>
+        <%= block_actions(object.block) %>
       <% end %>
     </div>
 
