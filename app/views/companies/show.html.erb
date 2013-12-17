@@ -27,6 +27,7 @@
       <p>
         <strong><%= block.blockable_type %></strong>
         <%= blockable_content(block) %>
+        <%= render 'shared/block_actions', object: block.blockable %>
       </p> 
     <% end %>
   <% end %>

@@ -1,0 +1,4 @@
+|
+<%= link_to t('destroy'), object, method: :delete, data: { confirm: t('confirm') } %>
+<%= link_to '| ↑ |', blocks_update_position_path(block_id: object.block.id, shift: :up ), method: :post  unless object.block.position == 0 %>
+<%= link_to '| ↓ |', blocks_update_position_path(block_id: object.block.id, shift: :down ), method: :post unless last_block?(object.block) %>

@@ -6,9 +6,9 @@
 
 <h1>Managing blocks</h1>
 <div class="blocks">
-  <%= render "blockable/shared_collection_form", collection: @blockables %>
+  <%= render 'blockable/collection', collection: @blockables %>
 </div>
 <p>
-  <%= link_to t("links.add.text_block"), new_text_path(company_id: @company.id), remote: true %>
-  <%= link_to t("links.add.image_block"), new_image_path(company_id: @company.id), remote: true %>
+  <%= link_to t('views.blockables.add_text'), new_text_path(company_id: @company.id), remote: true %>
+  <%= link_to t('views.blockables.add_image'), new_image_path(company_id: @company.id), remote: true %>
 </p>

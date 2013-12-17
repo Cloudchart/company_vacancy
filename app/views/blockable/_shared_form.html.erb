@@ -10,14 +10,15 @@
         <%= builder.input :owner_type, as: :hidden %>
       <% end %>
 
-      <%= render "#{object.class.table_name}/shared_attributes", f: f %>
+      <%= render "#{object.class.table_name}/attributes", f: f %>
     </div>
 
     <div class="form-actions">
       <%= f.button :submit %>
-      <%= link_to t('destroy'), object, method: :delete, data: { confirm: t('messages.confirm') } unless object.new_record? %>
-      <%= link_to '↑', blocks_sort_path(block_id: f.object.block.id, shift: :higher ), method: :post %>
-      <%= link_to '↓', blocks_sort_path(block_id: f.object.block.id, shift: :lower ), method: :post %>
+
+      <% unless object.new_record? %>
+        <%= render 'shared/block_actions', object: object %>
+      <% end %>
     </div>
 
   <% end %>

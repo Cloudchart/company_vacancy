@@ -1,0 +1,5 @@
+en:
+  views:
+    blockables:
+      add_text: 'Add text block'
+      add_image: 'Add image block'

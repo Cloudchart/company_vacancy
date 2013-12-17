@@ -4,7 +4,8 @@ Cloudchart::Application.routes.draw do
   %i(texts images).each do |blockable|
     resources blockable, except: [:index, :show]
   end
-  post 'blocks/sort'
+  post 'blocks/update_position'
+  post 'blocks/update_kind'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

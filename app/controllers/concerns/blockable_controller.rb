@@ -30,7 +30,7 @@ module BlockableController
 
   def destroy
     instance_variable_get("@#{controller_name.singularize}").destroy
-    redirect_to companies_url, notice: "#{controller_name.singularize.camelize} block was successfully destroyed."
+    redirect_to :back, notice: "#{controller_name.singularize.camelize} block was successfully destroyed."
   end
 
   private

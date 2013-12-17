@@ -20,9 +20,5 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  links:
-    add:
-      text_block: 'Add text block'
-      image_block: 'Add image block'
-  messages:
-    confirm: 'Are you sure?'
+  confirm: 'Are you sure?'
+  destroy: 'Destroy'

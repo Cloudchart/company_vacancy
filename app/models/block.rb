@@ -6,4 +6,6 @@ class Block < ActiveRecord::Base
   belongs_to :owner, polymorphic: true
   belongs_to :blockable, polymorphic: true
 
+  validates :position, presence: true
+
 end
