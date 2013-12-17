@@ -1,2 +1,13 @@
+$base-font-size: 24pt;
+$base-unit: $base-font-size * .75;
+
 $base-font-family: 'proxima-nova';
-$base-font-size: 10pt;
+
+// Body
+$body-font-size: 10pt;
+
+// Header
+$header-font-size: $base-font-size;
+
+// Footer
+$footer-font-size: 12pt;
