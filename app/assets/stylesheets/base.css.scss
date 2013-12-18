@@ -2,10 +2,12 @@
   border: 1px dotted gray;
 }
 
-#notice {
+.notice {
   color: green;
+  margin-bottom: 15px;
 }
 
-#alert {
-  color: red;
+.alert {
+  color: #D00;
+  margin-bottom: 15px;
 }

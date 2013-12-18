@@ -12,6 +12,8 @@ gem 'font-awesome-rails'
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'simple_form'
+gem 'warden'
+gem 'bcrypt-ruby', '~> 3.1.2'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -24,9 +26,6 @@ end
 
 # Use jbuilder for building json API
 # gem 'jbuilder', '~> 1.2'
-
-# Use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.1.2'
 
 # Use unicorn as the app server
 # gem 'unicorn'

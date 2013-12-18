@@ -1,0 +1,18 @@
+<h1><%= t('lexicon.login') %></h1>
+
+<%= form_tag sessions_path, class: 'simple_form' do %>
+  <div class="form-inputs">
+    <div class="input email">
+      <%= label_tag :email %>
+      <%= email_field_tag :email, params[:email] %>
+    </div>
+    <div class="input password">
+      <%= label_tag :password %>
+      <%= password_field_tag :password %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= submit_tag t('lexicon.login') %>
+  </div>
+<% end %>
