@@ -3,8 +3,9 @@ class CreateUsers < ActiveRecord::Migration
     create_table :users, id: false do |t|
       t.string :uuid, limit: 36
       t.string :name
-      t.string :email
-      t.string :password_digest
+      t.string :email, null: false
+      t.string :password_digest, null: false
+      t.string :avatar
       t.string :phone
 
       t.timestamps

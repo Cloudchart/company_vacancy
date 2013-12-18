@@ -49,8 +49,9 @@ ActiveRecord::Schema.define(version: 20131218112039) do
 
   create_table "users", primary_key: "uuid", force: true do |t|
     t.string   "name"
-    t.string   "email"
-    t.string   "password_digest"
+    t.string   "email",           null: false
+    t.string   "password_digest", null: false
+    t.string   "avatar"
     t.string   "phone"
     t.datetime "created_at"
     t.datetime "updated_at"
