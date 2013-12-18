@@ -6,5 +6,5 @@ Cloudchart::Application.routes.draw do
     end
     post 'blocks/update_position'
     post 'blocks/update_kind'
-    
+     
 end

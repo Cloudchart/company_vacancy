@@ -25,7 +25,7 @@ class CompaniesController < ApplicationController
         @company = Company.new(company_params)
 
         if @company.save
-            redirect_to @company, notice: 'Company was successfully created.'
+            redirect_to @company, notice: t('messages.companies.created')
         else
             render action: 'new'
         end
@@ -34,7 +34,7 @@ class CompaniesController < ApplicationController
     # PATCH/PUT /companies/1
     def update
         if @company.update(company_params)
-            redirect_to @company, notice: 'Company was successfully updated.'
+            redirect_to @company, notice: t('messages.companies.updated')
         else
             render action: 'edit'
         end
@@ -43,7 +43,7 @@ class CompaniesController < ApplicationController
     # DELETE /companies/1
     def destroy
         @company.destroy
-        redirect_to companies_url, notice: 'Company was successfully destroyed.'
+        redirect_to companies_url, notice: t('messages.companies.destroyed')
     end
 
     private
