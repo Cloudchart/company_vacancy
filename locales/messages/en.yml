@@ -1,16 +1,16 @@
 en:
-    messages:
-        are_you_sure: 'Are you sure?'
-        companies:
-            created: 'Company was successfully created.'
-            updated: 'Company was successfully updated.'
-            destroyed: 'Company was successfully destroyed.'
-        texts:
-            created: 'Text block was successfully created.'
-            updated: 'Text block was successfully updated.'
-            destroyed: 'Text block was successfully destroyed.'
-        images:
-            created: 'Image block was successfully created.'
-            updated: 'Image block was successfully updated.'
-            destroyed: 'Image block was successfully destroyed.'
-    
+  messages:
+    are_you_sure: 'Are you sure?'
+    companies:
+      created: 'Company was successfully created.'
+      updated: 'Company was successfully updated.'
+      destroyed: 'Company was successfully destroyed.'
+    texts:
+      created: 'Text block was successfully created.'
+      updated: 'Text block was successfully updated.'
+      destroyed: 'Text block was successfully destroyed.'
+    images:
+      created: 'Image block was successfully created.'
+      updated: 'Image block was successfully updated.'
+      destroyed: 'Image block was successfully destroyed.'
+  

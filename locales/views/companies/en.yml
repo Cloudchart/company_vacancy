@@ -1,5 +1,5 @@
 en:
-    companies:
-        edit:
-            add_text: 'Add text block'
-            add_image: 'Add image block'
+  companies:
+    edit:
+      add_text: 'Add text block'
+      add_image: 'Add image block'

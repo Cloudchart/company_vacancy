@@ -1,8 +1,8 @@
 en:
-    block:
-        kinds:
-            about: About
-            product: Product
-            people: People
-            vacancies: Vacancies
-            contacts: Contacts
+  block:
+    kinds:
+      about: About
+      product: Product
+      people: People
+      vacancies: Vacancies
+      contacts: Contacts
