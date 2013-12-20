@@ -11,17 +11,17 @@ Warden::Manager.serialize_from_session do |id|
   User.find(id)
 end
 
-Warden::Strategies.add(:password) do
-  def valid?
-    params['email'] && params['password']
-  end
+# Warden::Strategies.add(:password) do
+#   def valid?
+#     params['email'] && params['password']
+#   end
   
-  def authenticate!
-    user = User.find_by_email(params['email'])
-    if user && user.authenticate(params['password'])
-      success! user
-    else
-      fail I18n.t('messages.invalid_email_or_password')
-    end
-  end
-end
+#   def authenticate!
+#     user = User.find_by(email: params['email'])
+#     if user && user.authenticate(params['password'])
+#       success! user
+#     else
+#       fail I18n.t('messages.invalid_email_or_password')
+#     end
+#   end
+# end
