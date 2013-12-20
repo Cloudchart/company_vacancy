@@ -3,7 +3,7 @@ body > header {
     @include align-items(center);
     @include justify-content(space-between);
     
-    background: #ccc;
+    background: $header-background-color;
     padding: $base-unit / 2;
     
     font-size: $header-font-size;
@@ -28,9 +28,9 @@ body > header {
             }
             
             &.button {
-                background: #eee;
+                background: #fff;
                 border-radius: .25em;
-                padding: .2em .5em;
+                padding: .2em .75em;
                 text-decoration: none;
             }
         }

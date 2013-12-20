@@ -2,9 +2,13 @@ body > footer {
     @include display(flex);
     @include justify-content(space-between);
     
-    background: #ccc;
+    background: $footer-background-color;
     font-size: $footer-font-size;
     padding: $base-unit;
+    
+    a {
+        @include black-link;
+    }
     
     > div {
         width: 33%;
