@@ -12,8 +12,7 @@ module Passport::Strategies
     private
 
       def scoped
-        # TODO: get :user
-        Passport::Model.find_model(:user).klass
+        Passport::Model.find_model(scope).klass
       end
       
   end

@@ -4,38 +4,25 @@ module Passport::Models
     
     included do
       require 'passport/strategies/password'
+    end
 
-      class << self
-        def valid_for_password_authentication?(params)
-          # TODO: extract email from Passport::Model
-          # params[find_attrs.to_s] && params['password']
-          params['email'] && params['password']
-        end
+    module ClassMethods
+      def valid_for_password_authentication?(params)
+        params[Passport::Model.find_by_attr(self).to_s] && params['password']
+      end
 
-        def authenticate_by_password(params)
-          # TODO: extract email from Passport::Model
-          # resource = find_by(find_attrs => params[find_attrs.to_s])
-          resource = find_by(email: params['email'])
+      def authenticate_by_password(params)
+        find_by_attr = Passport::Model.find_by_attr(self)
+        resource = find_by(find_by_attr => params[find_by_attr.to_s])
 
-          if resource
-            resource.authenticate(params['password'])
-          else
-            false
-          end
+        if resource
+          resource.authenticate(params['password'])
+        else
+          false
         end
       end
 
     end
-
-    # private
-
-    # def passport_model
-    #   Passport::Model.find_model(self.name.underscore.to_sym)
-    # end
-
-    # def find_attrs
-    #   passport_model.strategy_options[:find_by]
-    # end
 
   end  
 end
