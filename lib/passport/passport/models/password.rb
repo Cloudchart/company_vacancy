@@ -8,12 +8,12 @@ module Passport::Models
 
     module ClassMethods
       def valid_for_password_authentication?(params)
-        params[Passport::Model.find_by_attr(self).to_s] && params['password']
+        params[Passport::Model.find_by_option(self).to_s] && params['password']
       end
 
       def authenticate_by_password(params)
-        find_by_attr = Passport::Model.find_by_attr(self)
-        resource = find_by(find_by_attr => params[find_by_attr.to_s])
+        find_by_option = Passport::Model.find_by_option(self)
+        resource = find_by(find_by_option => params[find_by_option.to_s])
 
         if resource
           resource.authenticate(params['password'])

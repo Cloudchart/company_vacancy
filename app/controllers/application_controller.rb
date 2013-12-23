@@ -5,8 +5,9 @@ class ApplicationController < ActionController::Base
 
   private
 
+    # TODO: move to passport lib
     def current_user
-      warden.user
+      warden.user(:user)
     end
     helper_method :current_user
 

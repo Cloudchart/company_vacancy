@@ -1,6 +1,7 @@
+# TODO: move to passport lib
 Rails.application.config.middleware.use Warden::Manager do |manager|
-  manager.default_strategies :password
-  manager.default_scope = :user
+  # manager.default_strategies :password
+  # manager.default_scope = :user
   manager.failure_app = lambda { |env| SessionsController.action(:new).call(env) }
 end
 

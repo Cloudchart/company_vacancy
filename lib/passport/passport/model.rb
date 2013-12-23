@@ -26,7 +26,7 @@ module Passport
         Passport.models[scope.to_sym]
       end
 
-      def find_by_attr(object)
+      def find_by_option(object)
         find_model(object.name.underscore.to_sym).strategy_options[:find_by].to_sym
       end
     
