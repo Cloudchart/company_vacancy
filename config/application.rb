@@ -22,7 +22,8 @@ module Cloudchart
     # config.i18n.default_locale = :de
     config.i18n.enforce_available_locales = true
 
-    # load custom libs
+    # load lib
     config.autoload_paths += %W(#{config.root}/lib/passport)
+    config.autoload_paths += %W(#{config.root}/lib/cloudchart)
   end
 end

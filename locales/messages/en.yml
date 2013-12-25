@@ -1,11 +1,15 @@
 en:
   messages:
-    are_you_sure: 'Are you sure?'
-    created: '%{name} was successfully created.'
-    updated: '%{name} was successfully updated.'
-    destroyed: '%{name} was successfully destroyed.'
-    invalid_email_or_password: 'Invalid email or password'
-    signed_up: 'Signed up!'
-    logged_in: 'Logged in!'
-    logged_out: 'Logged out!'
+    are_you_sure: "Are you sure?"
+    created: "%{name} was successfully created."
+    updated: "%{name} was successfully updated."
+    destroyed: "%{name} was successfully destroyed."
+    invalid_email_or_password: "Invalid email or password"
+    signed_up: "Signed up."
+    logged_in: "Logged in."
+    logged_out: "Logged out."
+    tokens:
+      created: "Token created."
+      destroyed: "Token destroyed."
+      state_match_failed: "State doesn't match current user token"
   

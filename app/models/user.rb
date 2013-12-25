@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   
   has_secure_password
 
+  has_many :tokens, as: :tokenable, dependent: :destroy
+
   mount_uploader :avatar, AvatarUploader
 
   validates :email, presence: true, uniqueness: true

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131218112039) do
+ActiveRecord::Schema.define(version: 20131225105929) do
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
     t.string   "kind",                      null: false
@@ -43,6 +43,15 @@ ActiveRecord::Schema.define(version: 20131218112039) do
 
   create_table "texts", primary_key: "uuid", force: true do |t|
     t.text     "content",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tokens", primary_key: "uuid", force: true do |t|
+    t.string   "name",                      null: false
+    t.text     "data"
+    t.string   "tokenable_id",   limit: 36
+    t.string   "tokenable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

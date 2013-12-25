@@ -14,6 +14,7 @@ gem 'mini_magick'
 gem 'simple_form'
 gem 'warden'
 gem 'bcrypt-ruby', '~> 3.1.2'
+gem 'oauth2'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -23,6 +24,10 @@ end
 group :development do
   gem 'awesome_print'
   gem 'quiet_assets'
+end
+
+group :development, :test do
+  gem 'dotenv-rails'
 end
 
 # Use jbuilder for building json API

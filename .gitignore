@@ -19,6 +19,5 @@
 *.DS_Store
 .powrc
 /public/uploads
-
 .rbenv-gemsets
 .gemfiles
