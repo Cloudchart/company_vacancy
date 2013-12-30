@@ -11,9 +11,11 @@ Cloudchart::Application.routes.draw do
   resources :users, except: [:index, :new]
   resources :sessions, only: [:new, :create, :destroy]
   resources :companies
+
   %i(texts images).each do |blockable|
     resources blockable, except: [:index, :show]
   end
+  
   post 'blocks/update_position'
   post 'blocks/update_kind'
 

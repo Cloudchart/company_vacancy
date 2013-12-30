@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    warden.authenticate!(:password, scope: :user)
+    authenticate_user!
     redirect_to root_url, notice: t('messages.logged_in')
   end
 

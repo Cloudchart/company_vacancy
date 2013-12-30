@@ -10,7 +10,7 @@ module Cloudchart
     mattr_reader :clients
     @@clients = {}
 
-    def self.config(&block)
+    def self.configure(&block)
       yield self if block_given?
     end
 
