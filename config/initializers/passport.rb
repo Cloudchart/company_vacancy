@@ -7,7 +7,9 @@ Rails.application.config.app_middleware.use Warden::Manager do |manager|
   Passport.configure_warden!
 end
 
-require 'passport/passport/strategies/password'
+Warden::Strategies.add(:password, Passport::Strategies::Password)
+
+ActiveRecord::Base.extend Passport::Helpers::Model
 
 ActiveSupport.on_load(:action_controller) do
   include Passport::Helpers::Controller

@@ -1,11 +1,11 @@
 class User < ActiveRecord::Base
   include Uuidable
   
+  acts_as_passport_model
   has_secure_password
+  mount_uploader :avatar, AvatarUploader
 
   has_many :tokens, as: :tokenable, dependent: :destroy
-
-  mount_uploader :avatar, AvatarUploader
 
   validates :email, presence: true, uniqueness: true
 

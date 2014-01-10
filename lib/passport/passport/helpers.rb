@@ -6,9 +6,7 @@ module Passport::Helpers
       helper_method :warden
     end
     
-    def self.define_helpers(model)
-      name = model.to_sym
-      
+    def self.define_helpers(name)
       class_eval <<-HELPERS
         
         def authenticate_#{name}!(options = {})
@@ -34,7 +32,19 @@ module Passport::Helpers
     
     def warden
       request.env['warden']
-    end    
+    end
     
   end
+
+  module Model
+    def acts_as_passport_model
+      include Passport::Models::Serialize
+
+      Passport::Model.find_model(self).strategies.each do |strategy|
+        include Passport::Models.const_get(strategy.to_s.titleize)
+      end
+
+    end
+  end
+
 end

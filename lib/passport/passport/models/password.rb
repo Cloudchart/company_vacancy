@@ -9,9 +9,9 @@ module Passport::Models
 
       def find_by_password(params)
         find_by(email: params['email']).try(:authenticate, params['password'])
-      end    
+      end
 
     end
 
-  end  
+  end
 end

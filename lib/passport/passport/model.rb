@@ -14,7 +14,16 @@ module Passport
 
     class << self
       def find_model(scope)
-        Passport.models[scope.to_sym]
+        scope = if scope.is_a?(Class)
+          scope.name.underscore.to_sym
+        else
+          scope.to_sym
+        end
+
+        model = Passport.models[scope]
+        raise "No model was found with the given scope: '#{scope}'." unless model
+
+        model
       end
     
     end

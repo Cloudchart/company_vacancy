@@ -1,4 +1,3 @@
-# TODO: move to passport lib
 class SessionsController < ApplicationController
   def new
     flash.now.alert = warden.message if warden.message.present?

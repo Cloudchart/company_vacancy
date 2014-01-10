@@ -1,1 +1,1 @@
-require "#{Rails.root}/lib/oauth2/oauth2"
+require 'oauth2/oauth2'
