@@ -2,9 +2,9 @@ module Passport
   mattr_reader :models
   @@models = {}
 
-  mattr_reader :controller_helpers
-  @@controller_helpers = []
-  @@controller_helpers << Passport::Helpers::Controller
+  mattr_reader :helpers
+  @@helpers = []
+  @@helpers << Passport::Helpers::Controller
 
   mattr_accessor :warden_config
   @@warden_config = nil
@@ -14,8 +14,8 @@ module Passport
   end
 
   def self.model(name, options={})
-    Passport.models[name.to_sym] = Passport::Model.new(name.to_sym, options)
-    controller_helpers.each { |h| h.define_helpers(name.to_sym) }
+    models[name.to_sym] = Passport::Model.new(name.to_sym, options)
+    helpers.each { |h| h.define_helpers(name.to_sym) }
   end
 
   def self.configure_warden!
@@ -23,7 +23,7 @@ module Passport
 
       warden_config.failure_app = lambda { |env| SessionsController.action(:new).call(env) }
       
-      Passport.models.each_value do |model|
+      models.each_value do |model|
         warden_config.scope_defaults model.name, strategies: model.strategies
         
         warden_config.serialize_into_session(model.name) do |user|
