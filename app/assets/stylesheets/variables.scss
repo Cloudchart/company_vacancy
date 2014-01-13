@@ -1,5 +1,5 @@
-$base-font-size: 24pt;
-$base-unit: $base-font-size * .75;
+$base-font-size: 22pt;
+$base-unit: $base-font-size * 3/4;
 
 $base-font-family: 'proxima-nova';
 
@@ -13,3 +13,17 @@ $header-font-size: $base-font-size;
 // Footer
 $footer-background-color: hsl(0, 0, 85.5%);
 $footer-font-size: 12pt;
+
+// Buttons
+
+$grey-button-back-color: hsl(0, 0, 87%);
+$grey-button-text-color: hsl(60, 0, 35%);
+
+$green-button-back-color: hsl(143, 100%, 26%);
+$green-button-text-color: hsl(0, 0, 100%);
+
+$button-font-size: 18pt;
+$button-font-size-small: 12pt;
+$button-font-weight: 700;
+$button-height: $base-unit * 2;
+$button-height-small: $base-unit * 1.3;
