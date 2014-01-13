@@ -3,12 +3,16 @@
 <%= form_tag sessions_path, class: 'simple_form' do %>
   <div class="form-inputs">
     <div class="input email">
-      <%= label_tag :email %>
+      <%= label_tag :email, t('.email') %>
       <%= email_field_tag :email, params[:email] %>
     </div>
     <div class="input password">
-      <%= label_tag :password %>
+      <%= label_tag :password, t('.password') %>
       <%= password_field_tag :password %>
+    </div>
+    <div class="input remember_me">
+      <%= label_tag :remember_me, t('.remember_me') %>
+      <%= check_box_tag :remember_me %>
     </div>
   </div>
 

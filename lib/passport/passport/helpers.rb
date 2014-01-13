@@ -41,7 +41,7 @@ module Passport::Helpers
       include Passport::Models::Serialize
 
       Passport::Model.find_model(self).strategies.each do |strategy|
-        include Passport::Models.const_get(strategy.to_s.titleize)
+        include Passport::Models.const_get(strategy.to_s.classify)
       end
 
     end
