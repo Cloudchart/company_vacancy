@@ -1,5 +1,5 @@
 module Passport::Strategies
-  class Password < Warden::Strategies::Base
+  class Password < Passport::Strategies::Base
     def valid?
       scoped.valid_for_password_authentication?(params)
     end
@@ -9,11 +9,5 @@ module Passport::Strategies
       resource ? success!(resource) : fail(I18n.t('messages.invalid_email_or_password'))
     end
 
-    private
-
-      def scoped
-        Passport::Model.find_model(scope).to
-      end
-      
   end
 end
