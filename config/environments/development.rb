@@ -14,7 +14,10 @@ Cloudchart::Application.configure do
   config.action_controller.perform_caching = false
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
+
+  # TODO: different host value for different development machines
+  config.action_mailer.default_url_options = { host: 'cloudchart.dev' }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

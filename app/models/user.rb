@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   include Uuidable
   
-  acts_as_passport_model
+  acts_as_passport_model(confirmable: true)
   has_secure_password
   mount_uploader :avatar, AvatarUploader
 

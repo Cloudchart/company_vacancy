@@ -7,6 +7,7 @@ Cloudchart::Application.routes.draw do
   get 'auth/:provider', to: 'social_networks#redirect_to_authirize_url', as: 'provider'
   get 'auth/:provider/callback', to: 'social_networks#create_access', as: 'provider_callback'
   get 'auth/:provider/destroy', to: 'social_networks#destroy_access', as: 'provider_destroy'
+  get 'activate/:token', to: 'users#activate', as: 'activate'
 
   resources :users, except: [:index, :new]
   resources :sessions, only: [:new, :create, :destroy]
