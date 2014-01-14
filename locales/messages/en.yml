@@ -13,7 +13,7 @@ en:
       destroyed: "Token destroyed."
       state_match_failed: "State doesn't match current user token."
       not_found: "There was a problem with your activation. Please try to sign up again or send email to our support team."
-    confirmation_email: "Confirmation instructions was successfully sent. Please check your email to verify account."
+    confirmation_email: "We've sent you an email. Please click on the provided link to confirm your account."
     activated: "Your account was successfully activated. Please login."
     unconfirmed_account: "Your account isn't activated. Please check your email for confirmation instructions."
   

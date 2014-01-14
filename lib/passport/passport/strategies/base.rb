@@ -3,8 +3,8 @@ module Passport::Strategies
     
     protected
 
-      def scoped
-        Passport::Model.find_model(scope).to
+      def model
+        Passport::Model.find_model(scope)
       end 
 
   end  

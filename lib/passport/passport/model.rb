@@ -1,23 +1,29 @@
 module Passport
   class Model
-    attr_reader :name, :class_name, :strategies
+    attr_reader :name, :class_name, :strategies, :extensions
 
     def initialize(name, options)
       @name = name.to_sym
       @class_name = @name.to_s.classify
-      @strategies = options.symbolize_keys![:strategies]
-    end
 
+      options.each do |key, value|
+        instance_variable_set("@#{key}", value)
+      end
+
+    end
+    
     def to
       ActiveSupport::Dependencies.constantize(@class_name)
     end
 
+    
     class << self
       def find_model(scope)
-        scope = if scope.is_a?(Class)
-          scope.name.underscore.to_sym
-        else
-          scope.to_sym
+        scope = case scope
+        when Symbol then scope
+        when String then scope.underscore.to_sym
+        when Class then scope.name.underscore.to_sym
+        else scope.class.name.underscore.to_sym
         end
 
         model = Passport.models[scope]

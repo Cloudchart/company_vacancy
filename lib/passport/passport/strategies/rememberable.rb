@@ -6,7 +6,7 @@ module Passport::Strategies
     end
     
     def authenticate!
-      resource = scoped.serialize_from_cookie(remember_cookie)
+      resource = model.to.serialize_from_cookie(remember_cookie)
       resource ? success!(resource) : fail
     end
 

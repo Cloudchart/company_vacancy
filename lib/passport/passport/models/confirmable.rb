@@ -10,8 +10,7 @@ module Passport::Models
 
       def create_confirmation_token_and_send_email
         token = tokens.create(name: :confirmation)
-        # TODO: add confirm@cloudchart.com to verified postmark addresses
-        # UserMailer.confirmation_instructions(self).deliver
+        UserMailer.confirmation_instructions(self).deliver
       end
 
   end

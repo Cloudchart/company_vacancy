@@ -1,8 +1,8 @@
 class UserMailer < ActionMailer::Base
-  default from: "confirm@cloudchart.com"
+  default from: ENV['DEFAULT_FROM']
 
   def confirmation_instructions(user)
-    @name = user.name
+    @user = user
     @url = activate_url(token: user.tokens.where(name: :confirmation).first.id)
     mail to: user.email
   end

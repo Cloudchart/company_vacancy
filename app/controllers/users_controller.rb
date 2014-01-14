@@ -40,7 +40,7 @@ class UsersController < ApplicationController
     redirect_to root_path, notice: t('messages.destroyed', name: 'User')
   end
 
-  # user activation
+  # GET /activate/:token
   def activate
     token = Token.find(params[:token])
 
@@ -50,7 +50,7 @@ class UsersController < ApplicationController
     else
       redirect_to root_path, alert: t('messages.tokens.not_found')
     end
-    
+
   end
 
   private

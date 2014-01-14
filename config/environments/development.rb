@@ -13,11 +13,9 @@ Cloudchart::Application.configure do
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
-  # Don't care if the mailer can't send.
+  # TODO: switch raise_delivery_errors to false after testing in dev env (maybe add https://github.com/ryanb/letter_opener)
   config.action_mailer.raise_delivery_errors = true
-
-  # TODO: different host value for different development machines
-  config.action_mailer.default_url_options = { host: 'cloudchart.dev' }
+  config.action_mailer.default_url_options = { host: ENV['ACTION_MAILER_DEFAULT_HOST'] }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

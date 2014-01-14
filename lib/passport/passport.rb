@@ -21,7 +21,8 @@ module Passport
   def self.configure_warden!
     @@warden_configured ||= begin
 
-      warden_config.failure_app = lambda { |env| SessionsController.action(:new).call(env) }
+      warden_config.failure_app = Passport::FailureApp
+      warden_config.intercept_401 = false
       
       models.each_value do |model|
         warden_config.scope_defaults model.name, strategies: model.strategies
