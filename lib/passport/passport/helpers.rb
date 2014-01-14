@@ -31,7 +31,7 @@ module Passport::Helpers
     end
     
     def warden
-      request.env['warden']
+      env['warden']
     end
     
   end
@@ -40,8 +40,16 @@ module Passport::Helpers
     def acts_as_passport_model
       include Passport::Models::Serialize
 
-      Passport::Model.find_model(self).strategies.each do |strategy|
+      model = Passport::Model.find_model(self)
+
+      model.strategies.each do |strategy|
         include Passport::Models.const_get(strategy.to_s.classify)
+      end
+
+      if model.try(:extensions)
+        model.extensions.each do |extension|
+          include Passport::Models.const_get(extension.to_s.classify)
+        end
       end
 
     end

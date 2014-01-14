@@ -19,7 +19,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      redirect_to root_url, notice: t('messages.signed_up')
+      redirect_to root_path, notice: t('messages.confirmation_email')
     else
       render 'new'
     end
@@ -37,7 +37,20 @@ class UsersController < ApplicationController
   # DELETE /users/1
   def destroy
     @user.destroy
-    redirect_to root_url, notice: t('messages.destroyed', name: 'User')
+    redirect_to root_path, notice: t('messages.destroyed', name: 'User')
+  end
+
+  # GET /activate/:token
+  def activate
+    token = Token.find(params[:token])
+
+    if token
+      redirect_to login_path, notice: t('messages.activated')
+      token.destroy
+    else
+      redirect_to root_path, alert: t('messages.tokens.not_found')
+    end
+
   end
 
   private

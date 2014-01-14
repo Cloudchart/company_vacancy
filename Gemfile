@@ -15,6 +15,7 @@ gem 'simple_form'
 gem 'warden'
 gem 'bcrypt-ruby', '~> 3.1.2'
 gem 'oauth2'
+gem 'postmark-rails', '~> 0.5.2'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
