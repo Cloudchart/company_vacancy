@@ -1,7 +1,10 @@
 <div class="cloud-chart">
-  <%= link_to :root do %>
-    Cloud<strong>Chart</strong>
-  <% end %>
+    <%= link_to :root do %>
+        <div class="logo"><i class="fa fa-star"></i></div>
+        <div class="name">
+            Cloud<strong>Chart</strong>
+        </div>
+    <% end %>
 </div>
 
 <div class="login-and-signup">
@@ -10,6 +13,6 @@
     <%= link_to t('lexicon.logout'), logout_path %>
   <% else %>
     <%= link_to t('lexicon.login'), login_path %>
-    <%= link_to content_tag(:i, nil, class: 'fa fa-pencil') + t('lexicon.sign_up'), sign_up_path, class: 'green-button' %>
+    <%= link_to content_tag(:i, nil, class: 'fa fa-pencil') + t('lexicon.sign_up'), sign_up_path, class: 'button green-button' %>
   <% end %>
 </div>

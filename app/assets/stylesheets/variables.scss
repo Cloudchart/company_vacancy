@@ -1,5 +1,5 @@
 $base-font-size: 22pt;
-$base-unit: $base-font-size * 3/4;
+$base-unit: $base-font-size * .7;
 
 $base-font-family: 'proxima-nova';
 
@@ -37,6 +37,8 @@ $green-button-text-color: $white;
 
 $button-font-size: 18pt;
 $button-font-size-small: 12pt;
+
 $button-font-weight: 700;
+
 $button-height: $base-unit * 2;
 $button-height-small: $base-unit * 1.3;
