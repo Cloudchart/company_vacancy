@@ -2,3 +2,51 @@
     color: black;
     text-decoration: none;
 }
+
+// Buttons
+
+@mixin button($back-color, $text-color) {
+    background-color: $back-color;
+    @include linear-gradient(lighten($back-color, 2%), darken($back-color, 2%));
+    border: none;
+    border-radius: .25em;
+    color: $text-color;
+    display: inline-block;
+    font-family: $base-font-family;
+    font-weight: $button-font-weight;
+    font-size: $button-font-size;
+    height: $button-height;
+    line-height: $button-height;
+    padding: 0 $base-unit / 2;
+    text-decoration: none;
+    
+    i.fa {
+        margin-right: $base-unit / 3;
+    }
+}
+
+@mixin grey-button {
+    @include button($grey-button-back-color, $grey-button-text-color);
+}
+
+
+.button,
+.grey-button {
+    @include grey-button;
+}
+
+@mixin green-button {
+    @include button($green-button-back-color, $green-button-text-color);
+}
+
+.green-button {
+    @include green-button;
+}
+
+.button.small,
+.grey-button.small,
+.green-button.small {
+    font-size: $button-font-size-small;
+    height: $button-height-small;
+    line-height: $button-height-small;
+}
