@@ -40,15 +40,15 @@ class UsersController < ApplicationController
     redirect_to root_path, notice: t('messages.destroyed', name: 'User')
   end
 
-  # GET /activate/:token
+  # GET user/1/activate
   def activate
-    token = Token.find(params[:token])
+    token = Token.find_by(uuid: params[:id])
 
     if token
       redirect_to login_path, notice: t('messages.activated')
       token.destroy
     else
-      redirect_to root_path, alert: t('messages.tokens.not_found')
+      redirect_to root_path, alert: t('messages.tokens.confirmation_not_found')
     end
 
   end

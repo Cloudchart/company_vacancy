@@ -1,4 +1,0 @@
-en:
-  user_mailer:
-    confirmation_instructions:
-      subject: "CloudChart account confirmation"

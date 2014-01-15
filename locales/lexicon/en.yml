@@ -1,7 +1,10 @@
 en:
   lexicon:
-    destroy: 'Destroy'
-    login: 'Login'
-    logout: 'Logout'
-    sign_up: 'Sign Up'
+    destroy: "Destroy"
+    login: "Login"
+    logout: "Logout"
+    sign_up: "Sign Up"
+    email: "Email"
+    password: "Password"
+    reset: "Reset"
     

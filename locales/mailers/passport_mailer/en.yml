@@ -1,0 +1,6 @@
+en:
+  passport_mailer:
+    confirmation_instructions:
+      subject: "Account confirmation"
+    password_reset_instructions:
+      subject: "Password reset"

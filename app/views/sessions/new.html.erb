@@ -3,11 +3,11 @@
 <%= form_tag sessions_path, class: 'simple_form' do %>
   <div class="form-inputs">
     <div class="input email">
-      <%= label_tag :email, t('.email') %>
+      <%= label_tag :email, t('lexicon.email') %>
       <%= email_field_tag :email, params[:email] %>
     </div>
     <div class="input password">
-      <%= label_tag :password, t('.password') %>
+      <%= label_tag :password, t('lexicon.password') %>
       <%= password_field_tag :password %>
     </div>
     <div class="input remember_me">
@@ -20,3 +20,7 @@
     <%= submit_tag t('lexicon.login'), class: :button %>
   </div>
 <% end %>
+
+<p>
+  <%= link_to t('.forgot_your_password'), new_password_reset_path %>
+</p>
