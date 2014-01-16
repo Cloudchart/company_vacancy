@@ -1,5 +1,6 @@
-PATH
-  remote: ~/code/passport
+GIT
+  remote: git@github.com:Cloudchart/passport.git
+  revision: 4955e4de52b46eb01aa83cf21564a954793fd66d
   specs:
     passport (0.0.1b)
       rails (~> 4.0.2)
