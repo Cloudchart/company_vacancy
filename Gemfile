@@ -15,7 +15,9 @@ gem 'simple_form'
 gem 'bcrypt-ruby', '~> 3.1.2'
 gem 'oauth2'
 gem 'postmark-rails', '~> 0.5.2'
-gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
+
+gem 'passport', path: '~/code/passport'
+# gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -25,6 +27,7 @@ end
 group :development do
   gem 'awesome_print'
   gem 'quiet_assets'
+  gem 'letter_opener'
 end
 
 group :development, :test do

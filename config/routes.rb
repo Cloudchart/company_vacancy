@@ -8,8 +8,9 @@ Cloudchart::Application.routes.draw do
   get 'auth/:provider/callback', to: 'social_networks#create_access', as: 'provider_callback'
   get 'auth/:provider/destroy', to: 'social_networks#destroy_access', as: 'provider_destroy'
 
-  resources :users, except: [:index, :new] do
+  resources :users, except: [:index, :new, :destroy] do
     get :activate, on: :member
+    get :reactivate, on: :member
   end
 
   resources :sessions, only: [:new, :create, :destroy]

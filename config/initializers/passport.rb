@@ -1,5 +1,4 @@
 Passport.configure do |config|
   config.model :user,
-    strategies: [:rememberable, :password],
-    extensions: [:confirmable, :recoverable]
+    strategies: [:rememberable, :password_authenticatable], extensions: [:confirmable]
 end

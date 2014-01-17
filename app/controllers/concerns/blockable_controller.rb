@@ -14,7 +14,7 @@ module BlockableController
     instance_variable_set("@#{controller_name.singularize}", controller_name.classify.constantize.new(send("#{controller_name.singularize}_params")))
 
     if blockable.save
-      redirect_to edit_company_path(blockable.company), notice: t('messages.created', name: "#{controller_name.singularize.titleize} block")
+      redirect_to edit_company_path(blockable.company), notice: t('messages.created', name: t("lexicon.#{controller_name.singularize}_block"))
     else
       redirect_to :back, alert: 'Validation errors'
     end
@@ -22,7 +22,7 @@ module BlockableController
 
   def update
     if blockable.update(send("#{controller_name.singularize}_params"))
-      redirect_to edit_company_path(blockable.company), notice: t('messages.updated', name: "#{controller_name.singularize.titleize} block")
+      redirect_to edit_company_path(blockable.company), notice: t('messages.updated', name: t("lexicon.#{controller_name.singularize}_block"))
     else
       redirect_to :back, alert: 'Validation errors'
     end    
@@ -30,7 +30,7 @@ module BlockableController
 
   def destroy
     instance_variable_get("@#{controller_name.singularize}").destroy
-    redirect_to :back, notice: t('messages.destroyed', name: "#{controller_name.singularize.titleize} block")
+    redirect_to :back, notice: t('messages.destroyed', name: t("lexicon.#{controller_name.singularize}_block"))
   end
 
   private

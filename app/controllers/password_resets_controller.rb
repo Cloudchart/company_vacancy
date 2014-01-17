@@ -6,15 +6,15 @@ class PasswordResetsController < ApplicationController
 
   def create
     user = User.find_by(email: params[:email])
-    user.send_password_reset if user
-    redirect_to root_path, notice: t('messages.reset_password_email')
+    create_recover_token_and_send_email(user) if user && user.tokens.find_by(name: :confirmation).nil?
+    redirect_to root_path, notice: t('messages.email_sent', action: t('actions.reset_password'))
   end
 
   def edit
     if @token
       @user = @token.tokenable
     else
-      redirect_to root_path, alert: t('messages.tokens.password_reset_not_found')
+      redirect_to root_path, alert: t('messages.tokens.not_found', action: t('actions.password_reset'))
     end
 
   end
@@ -22,8 +22,11 @@ class PasswordResetsController < ApplicationController
   def update
     @user = @token.tokenable
 
-    if @user.update_attributes(user_params)
-      redirect_to login_path, notice: t('messages.password_has_been_reset')
+    if @user.update(user_params)
+      redirect_to login_path, notice: t('messages.successful_action',
+        thing: t('lexicon.password').mb_chars.downcase.to_s,
+        action: t('actions.reset')
+      )
       @token.destroy
     else
       render :edit
@@ -39,6 +42,11 @@ class PasswordResetsController < ApplicationController
 
     def user_params
       params.require(:user).permit(:password, :password_confirmation)
+    end
+
+    def create_recover_token_and_send_email(user)
+      user.destroy_garbage_and_create_recover_token
+      PassportMailer.recover_instructions(user).deliver
     end
 
 end

@@ -1,0 +1,11 @@
+en:
+  actions:
+    confirm_your_account: "confirm your account"
+    activated: "activated"
+    activation: "activation"
+    change_email: "change email"
+    email_change: "email change"
+    reset_password: "reset password"
+    password_reset: "password reset"
+    reset: "reset"
+    changed: "changed"

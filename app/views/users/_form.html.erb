@@ -10,11 +10,11 @@
 
     <%= f.input :email %>
     <%= f.input :password %>
-    <%= f.input :password_confirmation, required: true %>
+    <%= f.input :password_confirmation, required: @user.new_record? ? true : false %>
   </div>
 
   <div class="form-actions">
-    <%= f.button :submit, class: :button %>
+    <%= f.button :submit, @user.new_record? ? t('lexicon.sign_up') : t('lexicon.save'), class: :button %>
   </div>
   
 <% end %>
