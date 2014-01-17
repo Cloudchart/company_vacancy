@@ -16,8 +16,8 @@ gem 'bcrypt-ruby', '~> 3.1.2'
 gem 'oauth2'
 gem 'postmark-rails', '~> 0.5.2'
 
-gem 'passport', path: '~/code/passport'
-# gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
+# gem 'passport', path: '~/code/passport'
+gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
