@@ -10,7 +10,7 @@ class CreateTokens < ActiveRecord::Migration
       t.timestamps
     end
 
-    execute "ALTER TABLE tokens ADD PRIMARY KEY (uuid);"
+    execute 'ALTER TABLE tokens ADD PRIMARY KEY (uuid);'
   end
 
   def down

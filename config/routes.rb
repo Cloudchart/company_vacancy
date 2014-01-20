@@ -14,8 +14,11 @@ Cloudchart::Application.routes.draw do
   end
 
   resources :sessions, only: [:new, :create, :destroy]
-  resources :companies
   resources :password_resets, only: [:new, :create, :edit, :update]
+
+  resources :companies, shallow: true do
+    resources :vacancies
+  end
 
   %i(texts images).each do |blockable|
     resources blockable, except: [:index, :show]
@@ -25,4 +28,3 @@ Cloudchart::Application.routes.draw do
   post 'blocks/update_kind'
 
 end
-  
