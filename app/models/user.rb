@@ -33,5 +33,4 @@ class User < ActiveRecord::Base
       self.email = email_was
     end
 
-
 end
