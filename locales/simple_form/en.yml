@@ -1,37 +1,37 @@
 en:
   simple_form:
-    "yes": 'Yes'
-    "no": 'No'
+    yes: "Yes"
+    no: "No"
     required:
-      text: 'required'
-      mark: '*'
+      text: "required"
+      mark: "*"
       # You can uncomment the line below if you need to overwrite the whole required html.
-      # When using html, text and mark won't be used.
-      # html: '<abbr title="required">*</abbr>'
+      # When using html, text and mark won"t be used.
+      # html: "<abbr title="required">*</abbr>"
     error_notification:
-      default_message: 'Please review the problems below:'
+      default_message: "Please review the problems below:"
     # Labels and hints examples
     labels:
       defaults:
-        password: 'Password'
-        logo: 'Logo'
-        name: 'Name'
-        description: 'Description'
-        kind: 'Kind'
-        submit: 'Submit'
-        image: 'Image'
+        password: "Password"
+        logo: "Logo"
+        name: "Name"
+        description: "Description"
+        section: "Section"
+        submit: "Submit"
+        image: "Image"
       vacancy:
-        name: 'Job Title'
+        name: "Job Title"
       # user:
       #   new:
-      #     email: 'E-mail to sign in.'
+      #     email: "E-mail to sign in."
       #   edit:
-      #     email: 'E-mail.'
+      #     email: "E-mail."
     # hints:
     #   defaults:
-    #     username: 'User name to sign in.'
-    #     password: 'No special characters, please.'
+    #     username: "User name to sign in."
+    #     password: "No special characters, please."
     placeholders:
       vacancy:
-        name: 'Senior Developer Engineer'
-        description: 'Entering text here, focus on, makes it wiggle uncontrollably and excitedly. Focus off, this green pasture wanders off. Makes for a brighter, richer experience with out new Cloud-on-a- Chart whirlygig.'
+        name: "Senior Developer Engineer"
+        description: "Entering text here, focus on, makes it wiggle uncontrollably and excitedly. Focus off, this green pasture wanders off. Makes for a brighter, richer experience with out new Cloud-on-a- Chart whirlygig."

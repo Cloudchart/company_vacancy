@@ -1,11 +1,13 @@
 class Company < ActiveRecord::Base
   include Uuidable
 
+  SECTIONS = %i(about product people vacancies contacts).inject({}) { |hash, val| hash.merge({ I18n.t("company.sections.#{val}") => val }) }
+
   mount_uploader :logo, LogoUploader
 
   before_destroy :destroy_blocks
 
-  has_many :blocks, -> { includes(blockable: :block).order(:kind, :position) }, as: :owner
+  has_many :blocks, -> { includes(blockable: :block).order(:section, :position) }, as: :owner
   has_many :vacancies, dependent: :destroy
 
   validates :name, presence: true

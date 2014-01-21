@@ -40,7 +40,7 @@ module BlockableController
     end
 
     def blockable_params(blockable_attributes)
-      params.require(controller_name.singularize.to_sym).permit(blockable_attributes, block_attributes: [:kind, :position, :owner_id, :owner_type])
+      params.require(controller_name.singularize.to_sym).permit(blockable_attributes, block_attributes: [:section, :position, :owner_id, :owner_type])
     end
 
     def blockable

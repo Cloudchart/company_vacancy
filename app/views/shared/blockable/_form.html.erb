@@ -4,7 +4,7 @@
 
     <div class="form-inputs">
       <%= f.simple_fields_for(:block) do |builder| %>
-        <%= builder.input :kind, collection: Block::KINDS, include_blank: false %>
+        <%= builder.input :section, collection: Company::SECTIONS, include_blank: false %>
         <%= builder.input :position %>
         <%= builder.input :owner_id, as: :hidden %>
         <%= builder.input :owner_type, as: :hidden %>

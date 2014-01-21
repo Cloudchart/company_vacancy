@@ -1,7 +1,7 @@
 class Block < ActiveRecord::Base
   include Uuidable
 
-  KINDS = %i(about product people vacancies contacts).inject({}) { |hash, val| hash.merge({ I18n.t("block.kinds.#{val}") => val }) }
+  TYPES = %i(text image chart person widget).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
   
   belongs_to :owner, polymorphic: true
   belongs_to :blockable, polymorphic: true

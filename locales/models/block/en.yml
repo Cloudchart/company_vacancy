@@ -1,8 +1,8 @@
 en:
   block:
-    kinds:
-      about: About
-      product: Product
-      people: People
-      vacancies: Vacancies
-      contacts: Contacts
+    types:
+      text: "Text"
+      image: "Image"
+      chart: "Chart"
+      person: "Person"
+      widget: "Widget"

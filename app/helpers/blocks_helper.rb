@@ -8,7 +8,7 @@ module BlocksHelper
 
     # temporary
   def last_block?(block)
-    block == Block.where(kind: block.kind).order(:position).last
+    block == Block.where(section: block.section).order(:position).last
   end
 
   def block_actions(block)

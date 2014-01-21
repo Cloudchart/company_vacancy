@@ -14,7 +14,7 @@
 ActiveRecord::Schema.define(version: 20140120130407) do
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
-    t.string   "kind",                      null: false
+    t.string   "section",                   null: false
     t.integer  "position",                  null: false
     t.string   "owner_id",       limit: 36, null: false
     t.string   "owner_type",                null: false

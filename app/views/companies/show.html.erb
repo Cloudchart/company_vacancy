@@ -22,10 +22,10 @@
 
 <h1>Page content</h1>
 
-<% Block::KINDS.each do |key, val| %>
-  <% if @company.blocks.where(kind: val).any? %>
+<% Company::SECTIONS.each do |key, val| %>
+  <% if @company.blocks.where(section: val).any? %>
     <h2><%= key %></h2>
-    <% @company.blocks.where(kind: val).each do |block| %>
+    <% @company.blocks.where(section: val).each do |block| %>
       <p>
         <strong><%= block.blockable_type %></strong>
         <%= blockable_content(block) %>
