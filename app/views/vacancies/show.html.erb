@@ -26,8 +26,10 @@
 
 <% Vacancy::SECTIONS.each do |key, value| %>
   <h2>
-    <i class="fa fa-caret-down"></i>
-    <%= link_to key, '#', class: 'anchor toggleable-link', id: value %>
+    <%= link_to '#', class: 'anchor toggleable-link', id: value do %>
+      <i class="fa fa-caret-down"></i>
+      <%= key %>
+    <% end %>
   </h2>
 
   <div class="toggleable-content">
