@@ -14,7 +14,7 @@ class CreateBlocks < ActiveRecord::Migration
 
     add_index :blocks, [:owner_id, :owner_type]
     add_index :blocks, [:blockable_id, :blockable_type]
-    execute "ALTER TABLE blocks ADD PRIMARY KEY (uuid);"
+    execute 'ALTER TABLE blocks ADD PRIMARY KEY (uuid);'
   end
 
   def down

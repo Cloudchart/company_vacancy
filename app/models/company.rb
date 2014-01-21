@@ -6,6 +6,7 @@ class Company < ActiveRecord::Base
   before_destroy :destroy_blocks
 
   has_many :blocks, -> { includes(blockable: :block).order(:kind, :position) }, as: :owner
+  has_many :vacancies, dependent: :destroy
 
   validates :name, presence: true
 

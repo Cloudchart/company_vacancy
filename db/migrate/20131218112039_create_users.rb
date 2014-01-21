@@ -11,7 +11,7 @@ class CreateUsers < ActiveRecord::Migration
       t.timestamps
     end
 
-    execute "ALTER TABLE users ADD PRIMARY KEY (uuid);"
+    execute 'ALTER TABLE users ADD PRIMARY KEY (uuid);'
   end
 
   def down

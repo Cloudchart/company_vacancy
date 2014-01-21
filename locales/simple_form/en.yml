@@ -20,13 +20,18 @@ en:
         kind: 'Kind'
         submit: 'Submit'
         image: 'Image'
-    #   user:
-    #     new:
-    #       email: 'E-mail to sign in.'
-    #     edit:
-    #       email: 'E-mail.'
+      vacancy:
+        name: 'Job Title'
+      # user:
+      #   new:
+      #     email: 'E-mail to sign in.'
+      #   edit:
+      #     email: 'E-mail.'
     # hints:
     #   defaults:
     #     username: 'User name to sign in.'
     #     password: 'No special characters, please.'
-
+    placeholders:
+      vacancy:
+        name: 'Senior Developer Engineer'
+        description: 'Entering text here, focus on, makes it wiggle uncontrollably and excitedly. Focus off, this green pasture wanders off. Makes for a brighter, richer experience with out new Cloud-on-a- Chart whirlygig.'
