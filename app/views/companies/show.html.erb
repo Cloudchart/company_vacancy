@@ -1,36 +1,71 @@
-<%= link_to 'Edit', edit_company_path(@company) %> |
-<%= link_to 'Back', companies_path %> |
-<%= link_to 'Vacancies', company_vacancies_path(@company) %> |
-<%= link_to 'Add vacancy', new_company_vacancy_path(@company) %>
+<div class="companies-wrapper">
+  <nav>
+    <p>
+      <%= image_tag @company.logo.url %>
+    </p>
+    <p>
+      <%= @company.description %>
+    </p>
+    <ul class="company-sections">
+      <% Company::SECTIONS.each do |key, value| %>
+        <li><%= link_to key, "##{value}" %></li>
+      <% end %>    
+    </ul>
+    
+  </nav>
 
-<h1>Sidebar</h1>
+  <article>
+    <% Company::SECTIONS.each do |key, val| %>
+      <h2 class="<%= 'empty' if @company.blocks.where(section: val).blank? %>" id="<%= val %>">
+        <%= key %>
+      </h2>
 
-<p>
-  <strong>Logo:</strong>
-  <%= image_tag @company.logo.url %>
-</p>
+      <section class="<%= 'empty' if @company.blocks.where(section: val).blank? %>">
+        <% if @company.blocks.where(section: val).any? %>
+          <% @company.blocks.where(section: val).each do |block| %>
+            <p>
+              <%= blockable_content(block) %>
+              <%= block_actions(block) %>
+            </p> 
+          <% end %>
 
-<p>
-  <strong>Name:</strong>
-  <%= @company.name %>
-</p>
+        <% else %>
+          <% case val %>
+          <% when :about %>
+            <p><%= t('.hints.about.text') %></p>
 
-<p>
-  <strong>Description:</strong>
-  <%= @company.description %>
-</p>
+            <table class="chart-template">
+              <tr>
+                <% 10.times do %>
+                  <th></th>
+                <% end %>
+              </tr>
+            </table>
 
-<h1>Page content</h1>
+          <% when :product %>
+            <p><%= t('.hints.product.text') %></p>
+          <% end %>
 
-<% Company::SECTIONS.each do |key, val| %>
-  <% if @company.blocks.where(section: val).any? %>
-    <h2><%= key %></h2>
-    <% @company.blocks.where(section: val).each do |block| %>
-      <p>
-        <strong><%= block.blockable_type %></strong>
-        <%= blockable_content(block) %>
-        <%= block_actions(block) %>
-      </p> 
+        <% end %>
+      </section>
     <% end %>
-  <% end %>
-<% end %>
+
+    <p>
+      <%= link_to 'Edit', edit_company_path(@company) %> |
+      <%= link_to 'Back', companies_path %> |
+      <%= link_to 'Vacancies', company_vacancies_path(@company) %> |
+      <%= link_to 'Add vacancy', new_company_vacancy_path(@company) %>
+    </p>    
+    
+  </article>
+
+  <aside class="blocks">
+    <ul class="block-types">
+      <% Block::TYPES.each do |key, val| %>
+        <li><%= key %></li>
+      <% end %>
+    </ul>
+
+  </aside>
+
+</div>

@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html>
-    <head>
-      <title>Cloudchart</title>
-      <%= stylesheet_link_tag "application", media: "all" %>
-      <%= csrf_meta_tags %>
-    </head>
-    <body>
-        <header>
-            <%= render "shared/header" %>
-        </header>
+  <head>
+    <title>Cloudchart</title>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= csrf_meta_tags %>
+  </head>
 
-        <main>
-            <%= render "shared/flash" %>
-            <%= yield %>
-        </main>
+  <body>
+    <header>
+      <%= render 'shared/header' %>
+    </header>
 
-        <footer>
-            <%= render "shared/footer" %>
-        </footer>
+    <main>
+      <%= render 'shared/flash' %>
+      <%= yield %>
+    </main>
 
-        <%= javascript_include_tag "application" %>
-    </body>
+    <footer>
+      <%= render 'shared/footer' %>
+    </footer>
+
+    <%= javascript_include_tag 'application' %>
+  </body>
+
 </html>

@@ -1,6 +1,6 @@
 class VacanciesController < ApplicationController
   before_action :set_vacancy, only: [:show, :edit, :update, :destroy]
-  before_action :set_company, only: [:new, :create]
+  before_action :set_company, only: [:index, :new, :create]
 
   # GET /vacancies
   def index

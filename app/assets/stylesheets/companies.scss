@@ -1,0 +1,68 @@
+@mixin aside {
+    position: fixed;
+    top: $base-unit * 5;
+    width: $base-unit * 13;
+}
+
+div.companies-wrapper {
+    $wrapper-padding: $base-unit * 13 + $base-unit;
+    padding-left: $wrapper-padding;
+    padding-right: $wrapper-padding;
+
+    nav {
+        @include aside;
+        padding: $base-unit;
+        background-color: $white-smoke;
+        left: $base-unit;
+        
+        p {
+            font-size: $base-font-size / 2;
+            color: $jumbo;
+        }
+
+        ul.company-sections {
+            padding: 0;
+
+            li {
+                list-style-type: none;
+                line-height: 30pt;
+
+                a {
+                    font-size: 14pt;
+                    color: $dark-grey;
+                    text-decoration: none;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    article {
+        width: 100%;
+        font-size: 16pt;
+        line-height: 21pt;
+
+        .empty {
+            color: $alto;
+        }
+
+        h2, section > p {
+            padding-left: $base-unit * 2;
+        }
+
+        section > table.chart-template {
+            height: $base-unit * 3;
+
+            th {
+                border: 1px solid $alto;
+                width: $base-unit * 3;
+            }
+        }
+    }
+
+    aside.blocks {
+        @include aside;
+        right: $base-unit;
+    }
+       
+}
