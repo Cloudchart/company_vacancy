@@ -1,71 +1,49 @@
-<div class="companies-wrapper">
-  <nav>
-    <p>
-      <%= image_tag @company.logo.url %>
-    </p>
-    <p>
-      <%= @company.description %>
-    </p>
-    <ul class="company-sections">
-      <% Company::SECTIONS.each do |key, value| %>
-        <li><%= link_to key, "##{value}" %></li>
-      <% end %>    
-    </ul>
-    
-  </nav>
+<% present @company do |company| %>
+  <div class="companies-wrapper">
+    <nav>
+      <p>
+        <%= company.logo %>
+      </p>
+      <p>
+        <%= company.description %>
+      </p>
 
-  <article>
-    <% Company::SECTIONS.each do |key, val| %>
-      <h2 class="<%= 'empty' if @company.blocks.where(section: val).blank? %>" id="<%= val %>">
-        <%= key %>
-      </h2>
+      <ul class="company-sections">
+        <% Company::SECTIONS.each do |key, value| %>
+          <li><%= link_to key, "##{value}" %></li>
+        <% end %>    
+      </ul>
+      
+    </nav>
 
-      <section class="<%= 'empty' if @company.blocks.where(section: val).blank? %>">
-        <% if @company.blocks.where(section: val).any? %>
-          <% @company.blocks.where(section: val).each do |block| %>
-            <p>
-              <%= blockable_content(block) %>
-              <%= block_actions(block) %>
-            </p> 
-          <% end %>
-
-        <% else %>
-          <% case val %>
-          <% when :about %>
-            <p><%= t('.hints.about.text') %></p>
-
-            <table class="chart-template">
-              <tr>
-                <% 10.times do %>
-                  <th></th>
-                <% end %>
-              </tr>
-            </table>
-
-          <% when :product %>
-            <p><%= t('.hints.product.text') %></p>
-          <% end %>
-
-        <% end %>
-      </section>
-    <% end %>
-
-    <p>
-      <%= link_to 'Edit', edit_company_path(@company) %> |
-      <%= link_to 'Back', companies_path %> |
-      <%= link_to 'Vacancies', company_vacancies_path(@company) %> |
-      <%= link_to 'Add vacancy', new_company_vacancy_path(@company) %>
-    </p>    
-    
-  </article>
-
-  <aside class="blocks">
-    <ul class="block-types">
-      <% Block::TYPES.each do |key, val| %>
-        <li><%= key %></li>
+    <article>
+      <% Company::SECTIONS.each do |title, section| %>
+        <h2 class="<%= company.empty_or_filled_section(section) %>" id="<%= section %>">
+          <%= title %>
+        </h2>
+        <section>
+          <%= render "companies/sections/#{section}", company: company %>
+        </section>
       <% end %>
-    </ul>
 
-  </aside>
+      <div class="temporary_nav">
+        <%= link_to 'Edit', edit_company_path(@company) %> |
+        <%= link_to 'Back', companies_path %> |
+        <%= link_to 'Vacancies', company_vacancies_path(@company) %> |
+        <%= link_to 'Add vacancy', new_company_vacancy_path(@company) %>
+      </div>
+      
+    </article>
 
-</div>
+    <aside class="blocks">
+      <ul class="block-types">
+        <% Block::TYPES.each do |key, val| %>
+          <li><%= key %></li>
+        <% end %>
+      </ul>
+
+    </aside>
+
+  </div>
+
+<% end %>

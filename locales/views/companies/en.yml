@@ -1,11 +1,5 @@
 en:
   companies:
-    show:
-      hints:
-        about:
-          text: "Tell a short story about your company — what does your company do and why it’s important. Be brief, be clear, be straightforward. At about 70 words / 500 characters we’ll curb your enthusiasm."
-        product: 
-          text: "Tell us about your product or service. If you have several, add your bestseller or the one you’re most proud of — you can add others later. About 70 words is enough."
     edit:
       add_text: "Add text block"
       add_image: "Add image block"

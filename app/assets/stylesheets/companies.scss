@@ -17,6 +17,7 @@ div.companies-wrapper {
         
         p {
             font-size: $base-font-size / 2;
+            font-style: italic;
             color: $jumbo;
         }
 
@@ -44,19 +45,23 @@ div.companies-wrapper {
 
         .empty {
             color: $alto;
+            font-style: italic;
         }
 
         h2, section > p {
-            padding-left: $base-unit * 2;
+            margin-left: $base-unit * 2;
+            margin-bottom: $base-unit * 2;
         }
 
-        section > table.chart-template {
+        section > div.chart-template {
+            border: 1px solid $alto;
             height: $base-unit * 3;
+            margin-bottom: $base-unit * 2;
+        }
 
-            th {
-                border: 1px solid $alto;
-                width: $base-unit * 3;
-            }
+        div.temporary_nav {
+            font-size: 10pt;
+            margin-top: 100px;
         }
     }
 
