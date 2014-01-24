@@ -14,20 +14,69 @@ class CompanyPresenter < BasePresenter
     first_block = company.blocks.find_by(section: section, blockable_type: 'Text', position: 0)
 
     if first_block
-      content_tag(:p, first_block.blockable.content)
+      blockable_content(first_block)
     else
       content_tag(:p, t("blocks.hints.#{section}.text"), class: 'empty')
     end
   end
 
   def chart_hint
-    content_tag(:div, nil, class: 'chart-template') do
-      content_tag(:div, t('blocks.hints.default.chart'), class: 'chart-hint')
+    content_tag(:div, class: 'chart-template') do
+      content_tag(:div, class: 'chart-hint') do
+        content_tag(:i, nil, class: 'fa fa-table bold') +
+        content_tag(:span, t('blocks.hints.default.chart'), class: 'bold')
+      end
+    end
+  end
+
+  def image_hint(section)
+    content_tag(:div, class: 'image-template') do
+      content_tag(:div, class: 'image-hint') do
+        content_tag(:h4) do
+          content_tag(:i, nil, class: 'fa fa-picture-o') +
+          t("blocks.hints.#{section}.image_title")
+        end +
+        content_tag(:p, t("blocks.hints.#{section}.image_text"))
+      end
     end
   end
 
   def shifted_blocks(section)
     company.blocks.where('section = ? and position > ?', section, 0)
   end
+
+  def blockable_content(block)
+    '<p>'.tap do |content|
+      content << content_tag(:i, nil, class: 'fa fa-bars') unless block.position == 0
+      content << block_content(block)
+      content << block_actions(block)
+      content << '</p>'
+    end.html_safe
+  end
+
+  private
+
+    def block_content(block)
+      case block.blockable_type
+      when 'Text' then block.blockable.content
+      when 'Image' then image_tag block.blockable.image.thumb.url
+      end
+    end
+
+    # temporary
+    def block_actions(block)
+      '<br>'.tap do |content|
+          content << link_to("#{t('lexicon.destroy')}", block.blockable, method: :delete, data: { confirm: t('messages.are_you_sure') })
+          content << ' '
+          content << link_to('↑', blocks_update_position_path(block_id: block.id, shift: :up ), method: :post) unless block.position == 1 || block.position == 0
+          content << ' '
+          content << link_to('↓', blocks_update_position_path(block_id: block.id, shift: :down ), method: :post) unless last_block?(block) || block.position == 0
+      end
+    end
+
+    # temporary
+    def last_block?(block)
+      block == Block.where(section: block.section).order(:position).last
+    end
 
 end

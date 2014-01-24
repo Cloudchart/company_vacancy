@@ -10,7 +10,7 @@
 
       <ul class="company-sections">
         <% Company::SECTIONS.each do |key, value| %>
-          <li><%= link_to key, "##{value}" %></li>
+          <li><%= link_to key, "##{value}", class: 'bold' %></li>
         <% end %>    
       </ul>
       
@@ -22,7 +22,12 @@
           <%= title %>
         </h2>
         <section>
-          <%= render "companies/sections/#{section}", company: company %>
+          <%= render "companies/hints/#{section}", company: company %>
+
+          <% company.shifted_blocks(section).each do |block| %>
+            <%= company.blockable_content(block) %> 
+          <% end %>
+
         </section>
       <% end %>
 

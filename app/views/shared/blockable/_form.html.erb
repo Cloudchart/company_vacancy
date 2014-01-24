@@ -15,10 +15,6 @@
 
     <div class="form-actions">
       <%= f.button :submit %>
-
-      <% unless object.new_record? %>
-        <%= block_actions(object.block) %>
-      <% end %>
     </div>
 
   <% end %>

@@ -32,7 +32,6 @@ div.companies-wrapper {
                     font-size: 14pt;
                     color: $dark-grey;
                     text-decoration: none;
-                    font-weight: bold;
                 }
             }
         }
@@ -48,15 +47,82 @@ div.companies-wrapper {
             font-style: italic;
         }
 
-        h2, section > p {
+        h2 {
             margin-left: $base-unit * 2;
-            margin-bottom: $base-unit * 2;
+            margin-bottom: $base-unit;
         }
 
-        section > div.chart-template {
-            border: 1px solid $alto;
-            height: $base-unit * 3;
-            margin-bottom: $base-unit * 2;
+        section {
+            p, div {
+                margin-bottom: $base-unit * 2;
+            }
+
+            p, div.image-template {
+                margin-left: $base-unit * 2;                
+            }
+
+            p {
+                position: relative;
+
+                i {
+                    position: absolute;
+                    left: -$base-unit * 2;
+                    cursor: -webkit-grab;
+                }
+
+                i:active {
+                    cursor: -webkit-grabbing;
+                }
+            }
+
+            div.chart-template {
+                border: 1px solid $alto;
+                border-left: none;
+                border-right: none;
+                height: $base-unit * 4;
+                background: -webkit-linear-gradient(0, transparent 97%, $alto);
+                background-size: $base-unit * 4;
+
+                div.chart-hint {
+                    width: $base-unit * 11;
+                    margin: $base-unit * 0.8 auto;
+                    text-align: center;
+                    background-color: $mystic;
+                    color: $white;
+
+                    i, span {
+                        font-size: 12pt;
+                    }
+
+                    span {
+                        margin-left: $base-unit * 0.4;
+                    }
+                }
+            }
+
+            div.image-template {
+                position: relative;
+                height: $base-unit * 22;
+                background-color: $white-smoke;
+                border: 1px solid $alto;
+                font-size: 12pt;
+                color: $alto;
+
+                div.image-hint {
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    width: 220px;
+                    height: 120px;
+                    margin: auto;
+
+                    h4, p {
+                        margin: 0;
+                    }
+                }
+            }
         }
 
         div.temporary_nav {
@@ -68,6 +134,5 @@ div.companies-wrapper {
     aside.blocks {
         @include aside;
         right: $base-unit;
-    }
-       
+    }   
 }

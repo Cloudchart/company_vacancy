@@ -1,9 +1,0 @@
-<%= company.text_hint(:about) %>
-<%= company.chart_hint %>
-
-<% company.shifted_blocks(:about).each do |block| %>
-  <p>
-    <%= blockable_content(block) %>
-    <%= block_actions(block) %>
-  </p> 
-<% end %>
