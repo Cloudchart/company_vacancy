@@ -14,12 +14,12 @@
 ActiveRecord::Schema.define(version: 20140120130407) do
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
-    t.string   "section",                   null: false
-    t.integer  "position",                  null: false
-    t.string   "owner_id",       limit: 36, null: false
-    t.string   "owner_type",                null: false
-    t.string   "blockable_id",   limit: 36, null: false
-    t.string   "blockable_type",            null: false
+    t.string   "section",                   default: "", null: false
+    t.integer  "position",                               null: false
+    t.string   "owner_id",       limit: 36,              null: false
+    t.string   "owner_type",                             null: false
+    t.string   "blockable_id",   limit: 36,              null: false
+    t.string   "blockable_type",                         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

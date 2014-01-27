@@ -1,0 +1,17 @@
+<aside class="blocks">
+    <ul class="block-types">
+        <li class="title">
+            <span>
+                <%= t '.title' %>
+            </span>
+            <i class="fa fa-arrow-left"></i>
+        </li>
+
+        <% Block::TYPES.each do |key, val| %>
+        <li>
+            <i class="fa <%= t ".#{key.downcase}" %>"></i>
+            <span><%= key %></span>
+        </li>
+        <% end %>
+    </ul>
+</aside>

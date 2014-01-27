@@ -40,14 +40,7 @@
       
     </article>
 
-    <aside class="blocks">
-      <ul class="block-types">
-        <% Block::TYPES.each do |key, val| %>
-          <li><%= key %></li>
-        <% end %>
-      </ul>
-
-    </aside>
+    <%= render partial: 'blocks' %>
 
   </div>
 

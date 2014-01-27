@@ -1,3 +1,9 @@
+$blocks-background-color: hsl(0, 0, 96%);
+$blocks-color: hsl(60, 0, 35%);
+$blocks-title-background-color: hsl(0, 0, 93%);
+$blocks-title-icon-color: hsl(0, 0, 78%);
+
+
 @mixin aside {
     position: fixed;
     top: $base-unit * 5;
@@ -134,5 +140,51 @@ div.companies-wrapper {
     aside.blocks {
         @include aside;
         right: $base-unit;
+        
+        ul, li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        ul {
+            
+            li {
+                background-color: $blocks-background-color;
+                color: $blocks-color;
+                cursor: move;
+                font-size: 14pt;
+                font-weight: 700;
+                line-height: 1em;
+                padding: $base-unit;
+                padding-right: 0;
+                
+                &:not(:last-child) {
+                    margin-bottom: 2pt;
+                }
+                
+                i {
+                    margin-right: .5em;
+                    width: 1em;
+                    text-align: center;
+                }
+                
+                &.title {
+                    
+                    background-color: $blocks-title-background-color;
+                    font-size: 12pt;
+                    font-weight: normal;
+                    
+                    i {
+                        color: $blocks-title-icon-color;
+                        font-size: .9em;
+                        text-align: right;
+                    }
+                }
+                
+            }
+            
+        }
+        
     }   
 }
