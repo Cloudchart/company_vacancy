@@ -15,8 +15,7 @@ events =
     end:    'mouseup touchend touchcancel'
 
 
-defaults = 
-    selector: '> *'
+defaults = {}
 
 
 #
@@ -24,9 +23,18 @@ defaults =
 #
 
 
-touchdrag = (container, options = {}) ->
+touchdrag = (element_or_selector, options = {}) ->
     
-    $container = $(container) ; return if $container.length == 0
+    $element    = null
+    selector    = null
+    
+    if typeof element_or_selector == 'string'
+        $element    = $document
+        selector    = element_or_selector
+    else
+        $element    = $(element_or_selector)
+    
+    return if $element.length == 0
 
     options = $.extend {}, defaults, options
     
@@ -106,10 +114,10 @@ touchdrag = (container, options = {}) ->
             $document.off   events.end,     dragend
             callbacks.dragend.fire(update(event), element)
             in_transition = false
-        
+
 
         callbacks.dragstart.fire(update(original_event), element)
-        
+
 
         $document.on    events.move,   dragmove
         $document.on    events.end,    dragend
@@ -118,15 +126,15 @@ touchdrag = (container, options = {}) ->
     # mousedown and touchstart
     #
 
-    $container.on events.start, options.selector, (event) ->
+    $element.on events.start, selector, (event) ->
         return if in_transition
         return if event.originalEvent.touches and event.originalEvent.touches.length > 1
         
         event.preventDefault()
         
         capture(event, @)
-    
-    
+
+
     # Public interface
     #
 

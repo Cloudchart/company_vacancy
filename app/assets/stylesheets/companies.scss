@@ -180,6 +180,7 @@ div.companies-wrapper {
                     text-align: center;
                 }
                 
+                &.active,
                 &:not(.title):hover {
                     background-color: $blocks-active-background-color;
                     border: 1pt solid $blocks-background-color;
@@ -202,8 +203,10 @@ div.companies-wrapper {
                 }
                 
                 &.drag {
-                    background-color: hsl(120, 50%, 50%) !important;
-                    color: hsl(0, 100%, 100%) !important;
+                    background-color: $blocks-background-color;
+                    color: hsl(120, 75%, 25%) !important;
+                    cursor: move;
+                    opacity: .75;
                 }
                 
             }
