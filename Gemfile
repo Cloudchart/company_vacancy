@@ -21,6 +21,9 @@ gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
 # gem 'presenter', path: '~/code/presenter'
 gem 'presenter', git: 'git@github.com:Cloudchart/presenter.git'
 
+# Pagescript
+gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false

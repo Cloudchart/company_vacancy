@@ -20,7 +20,7 @@ body {
     
     > main {
         @include flex(1);
-        padding: $base-unit;
+        padding: 0 $base-unit;
     }
 
     p {

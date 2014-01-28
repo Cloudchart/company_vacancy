@@ -17,6 +17,8 @@
     </nav>
 
     <article>
+        <%= render partial: 'blocks' %>
+
       <% Company::SECTIONS.each do |title, section| %>
         <h2 class="<%= company.empty_or_filled_section(section) %>" id="<%= section %>">
           <%= title %>
@@ -40,7 +42,6 @@
       
     </article>
 
-    <%= render partial: 'blocks' %>
 
   </div>
 

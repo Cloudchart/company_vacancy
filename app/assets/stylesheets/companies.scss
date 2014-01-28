@@ -1,5 +1,7 @@
 $blocks-background-color: hsl(0, 0, 96%);
+$blocks-active-background-color: hsl(0, 0, 100%);
 $blocks-color: hsl(60, 0, 35%);
+$blocks-active-color: hsl(0, 0, 85%);
 $blocks-title-background-color: hsl(0, 0, 93%);
 $blocks-title-icon-color: hsl(0, 0, 78%);
 
@@ -14,6 +16,7 @@ div.companies-wrapper {
     $wrapper-padding: $base-unit * 13 + $base-unit;
     padding-left: $wrapper-padding;
     padding-right: $wrapper-padding;
+    position: relative;
 
     nav {
         @include aside;
@@ -138,8 +141,16 @@ div.companies-wrapper {
     }
 
     aside.blocks {
-        @include aside;
-        right: $base-unit;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: $base-unit * 13;
+        
+        &.glued {
+            position: fixed;
+            right: $base-unit;
+            top: $base-unit;
+        }
         
         ul, li {
             list-style: none;
@@ -151,12 +162,12 @@ div.companies-wrapper {
             
             li {
                 background-color: $blocks-background-color;
+                border: 1px solid $blocks-background-color;
                 color: $blocks-color;
-                cursor: move;
                 font-size: 14pt;
                 font-weight: 700;
                 line-height: 1em;
-                padding: $base-unit;
+                padding: $base-unit - 1pt;
                 padding-right: 0;
                 
                 &:not(:last-child) {
@@ -169,9 +180,17 @@ div.companies-wrapper {
                     text-align: center;
                 }
                 
+                &:not(.title):hover {
+                    background-color: $blocks-active-background-color;
+                    border: 1pt solid $blocks-background-color;
+                    color: $blocks-active-color;
+                    cursor: move;
+                }
+                
                 &.title {
                     
                     background-color: $blocks-title-background-color;
+                    border-color: $blocks-title-background-color;
                     font-size: 12pt;
                     font-weight: normal;
                     

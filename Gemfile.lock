@@ -1,4 +1,11 @@
 GIT
+  remote: git@github.com:Cloudchart/pagescript.git
+  revision: a6c78b18a589dc93e7ad5857ab361ad09d57e454
+  specs:
+    pagescript (0.0.1)
+      railties (>= 3.2, < 5)
+
+GIT
   remote: git@github.com:Cloudchart/passport.git
   revision: 5eda8fd1cc14d9227a90bad6c3675f346188ec5c
   specs:
@@ -182,6 +189,7 @@ DEPENDENCIES
   mini_magick
   mysql2
   oauth2
+  pagescript!
   passport!
   postmark-rails (~> 0.5.2)
   presenter!
