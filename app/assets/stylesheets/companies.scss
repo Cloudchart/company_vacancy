@@ -201,6 +201,11 @@ div.companies-wrapper {
                     }
                 }
                 
+                &.drag {
+                    background-color: hsl(120, 50%, 50%) !important;
+                    color: hsl(0, 100%, 100%) !important;
+                }
+                
             }
             
         }
