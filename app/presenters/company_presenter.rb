@@ -1,4 +1,4 @@
-class CompanyPresenter < BasePresenter
+class CompanyPresenter < Presenter::Base
   presents :company
   delegate :description, to: :company
 

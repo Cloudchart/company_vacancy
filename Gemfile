@@ -18,6 +18,8 @@ gem 'postmark-rails', '~> 0.5.2'
 
 # gem 'passport', path: '~/code/passport'
 gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
+# gem 'presenter', path: '~/code/presenter'
+gem 'presenter', git: 'git@github.com:Cloudchart/presenter.git'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

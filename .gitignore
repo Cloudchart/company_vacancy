@@ -18,6 +18,7 @@
 .ruby-version
 *.DS_Store
 .powrc
+.powenv
 /public/uploads
 .rbenv-gemsets
 .gemfiles
