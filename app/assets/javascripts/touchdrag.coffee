@@ -4,10 +4,12 @@ $ = jQuery
 
 $document   = null
 $window     = null
+$body       = null
 
 
-in_transition = false
+in_transition   = false
 
+tolerance       = 50
 
 events =
     start:  'mousedown touchstart'
@@ -76,9 +78,8 @@ touchdrag = (element_or_selector, options = {}) ->
         
         $document.on events.move,   check_move
         $document.on events.end,    check_end
-            
     
-    
+
     #
     # Start drag
     #
@@ -87,12 +88,14 @@ touchdrag = (element_or_selector, options = {}) ->
         
         $el = $(element)
         
-        in_transition = true
+        in_transition   = true
+        animation       = false
         
         origin =
             x: original_event.originalEvent.pageX
             y: original_event.originalEvent.pageY
         
+
         update = (event) ->
             event.cc_draggable =
                 x:      event.originalEvent.pageX
@@ -104,8 +107,41 @@ touchdrag = (element_or_selector, options = {}) ->
             event
         
         
+        scroll = (event) ->
+            document_height = $document.height()
+            viewport_height = $window.height()
+            viewport_scroll = $window.scrollTop()
+            
+            y = event.originalEvent.pageY - viewport_scroll
+            
+            if y < (0 + tolerance)
+                return if animation or viewport_scroll == 0
+                $body.animate
+                    scrollTop: 0
+                ,
+                    duration: viewport_scroll / 2
+                    easing: 'linear'
+                animation = true
+            
+            else if y > (viewport_height - tolerance)
+                return if animation or viewport_scroll == document_height
+                $body.animate
+                    scrollTop: document_height
+                ,
+                    duration: document_height / 2 - viewport_scroll / 2
+                    easing: 'linear'
+                animation = true
+            
+            else
+                return unless animation
+                $body.stop()
+                animation = false
+            
+        
+        
         dragmove = (event) ->
             return if event.originalEvent.touches and event.originalEvent.touches.length > 1
+            scroll(event)
             callbacks.dragmove.fire(update(event), element)
         
 
@@ -148,6 +184,7 @@ touchdrag = (element_or_selector, options = {}) ->
 $ ->
     $window     = $(window)
     $document   = $(document)
+    $body       = $('body', $document)
 
 
 @cc.touchdrag = touchdrag

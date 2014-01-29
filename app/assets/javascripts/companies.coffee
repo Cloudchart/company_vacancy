@@ -21,22 +21,23 @@
                 draggable_block.addClass('drag')
 
                 draggable_block.css
-                    width: $el.outerWidth()
-                    height: $el.outerHeight()
-                    left:   $el.position().left
-                    top:    $el.position().top
-                    zIndex: 1000
-                
-                draggable_block.css
-                    position: 'absolute'
+                    width:      $el.outerWidth()
+                    height:     $el.outerHeight()
+                    left:       $el.position().left
+                    top:        $el.position().top
+                    position:   'absolute'
+                    zIndex:     10000
 
             
             dragmove: (e, el) ->
                 $el = $(el)
                 
+                draggable_block.offset
+                    left:   e.cc_draggable.x
+                    top:    e.cc_draggable.y
+                
                 draggable_block.css
-                    left: $el.position().left + e.cc_draggable.dx
-                    top: $el.position().top + e.cc_draggable.dy
+                    xIndex: 10000
                 
 
             dragend: (e, el) ->
