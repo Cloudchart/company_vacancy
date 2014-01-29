@@ -1,0 +1,15 @@
+<p>
+  Hello <%= @user.name.present? || @user.email %>,
+</p>
+
+<p>
+  Someone has requested a link to change your email.
+</p>
+
+<p>
+  Please reconfirm your CloudChart account. Just click the following link:
+  <%= link_to reactivate_user_url(id: @token_id), reactivate_user_url(id: @token_id) %>
+</p>
+
+<p>If you didn't request email change, please ignore this.</p>
+<p>Your CloudChart email won't change until you access the link above.</p>

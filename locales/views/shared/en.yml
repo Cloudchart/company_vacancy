@@ -1,0 +1,12 @@
+en:
+  shared:
+    footer:
+      about: 'About'
+      support: 'Support'
+      why_cloudchart: 'Why CloudChart?'
+      knowledge_base: 'Knowledge Base'
+      contact_us: 'Contact Us'
+      api: 'API'
+      privacy_policy: 'Privacy Policy'
+      terms_of_use: 'Terms of Use'
+      blog: 'Blog'

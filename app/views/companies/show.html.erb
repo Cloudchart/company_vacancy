@@ -1,34 +1,48 @@
-<%= link_to 'Edit', edit_company_path(@company) %> |
-<%= link_to 'Back', companies_path %>
-
-<h1>Sidebar</h1>
-
-<p>
-  <strong>Logo:</strong>
-  <%= image_tag @company.logo.url %>
-</p>
-
-<p>
-  <strong>Name:</strong>
-  <%= @company.name %>
-</p>
-
-<p>
-  <strong>Description:</strong>
-  <%= @company.description %>
-</p>
-
-<h1>Page content</h1>
-
-<% Block::KINDS.each do |key, val| %>
-  <% if @company.blocks.where(kind: val).any? %>
-    <h2><%= key %></h2>
-    <% @company.blocks.where(kind: val).each do |block| %>
+<% present @company do |company| %>
+  <div class="companies-wrapper">
+    <nav>
       <p>
-        <strong><%= block.blockable_type %></strong>
-        <%= blockable_content(block) %>
-        <%= render 'shared/block_actions', object: block.blockable %>
-      </p> 
-    <% end %>
-  <% end %>
+        <%= company.logo %>
+      </p>
+      <p>
+        <%= company.description %>
+      </p>
+
+      <ul class="company-sections">
+        <% Company::SECTIONS.each do |key, value| %>
+          <li><%= link_to key, "##{value}", class: 'bold' %></li>
+        <% end %>    
+      </ul>
+      
+    </nav>
+
+    <article>
+        <%= render partial: 'blocks' %>
+
+      <% Company::SECTIONS.each do |title, section| %>
+        <h2 class="<%= company.empty_or_filled_section(section) %>" id="<%= section %>">
+          <%= title %>
+        </h2>
+        <section>
+          <%= render "companies/hints/#{section}", company: company %>
+
+          <% company.shifted_blocks(section).each do |block| %>
+            <%= company.blockable_content(block) %> 
+          <% end %>
+
+        </section>
+      <% end %>
+
+      <div class="temporary_nav">
+        <%= link_to 'Edit', edit_company_path(@company) %> |
+        <%= link_to 'Back', companies_path %> |
+        <%= link_to 'Vacancies', company_vacancies_path(@company) %> |
+        <%= link_to 'Add vacancy', new_company_vacancy_path(@company) %>
+      </div>
+      
+    </article>
+
+
+  </div>
+
 <% end %>

@@ -14,11 +14,17 @@ body {
     @include flex-direction(column);
     
     font-family: $base-font-family;
-    font-size: $base-font-size;
+    font-size: $body-font-size;
     min-height: 100%;
+    // min-width: 1200px;
     
     > main {
         @include flex(1);
+        padding: 0 $base-unit;
+    }
+
+    p {
+        margin-top: 0;
     }
     
 }

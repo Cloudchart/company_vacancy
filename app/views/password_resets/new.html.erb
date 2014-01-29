@@ -1,0 +1,14 @@
+<h1><%= t('.password_reset') %></h1>
+
+<%= form_tag password_resets_path, class: 'simple_form' do %>
+  <div class="form-inputs">
+    <div class="input email">
+      <%= label_tag :email, t('lexicon.email') %>
+      <%= email_field_tag :email, params[:email] %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= submit_tag t('lexicon.reset'), class: :button %>
+  </div>
+<% end %>

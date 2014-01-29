@@ -1,3 +1,78 @@
+$logo-width: $base-unit * 3;
+$logo-height: $logo-width / 1.538474976;
+
 body > header {
-    background: #ccc;
+    @include display(flex);
+    @include align-items(center);
+    @include justify-content(space-between);
+    
+    background: $header-background-color;
+    padding: $base-unit $base-unit * 3/4;
+    
+    .cloud-chart {
+        
+        position: relative;
+        
+        a {
+            @include display(flex);
+            @include align-items(flex-end);
+            color: inherit;
+            text-decoration: none;
+        }
+        
+        a > div {
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+        }
+        
+        .logo {
+            background-image: image-url("logo.svg");
+            background-repeat: no-repeat;
+            background-position: left top;
+            background-size: 100%;
+            
+            height: $logo-height;
+            width: $logo-width;
+            text-align: center;
+            
+            i {
+                color: #fff;
+                font-size: 14pt;
+                position: relative;
+                top: $base-unit * .7;
+            }
+        }
+        
+        .name {
+            @include align-self(flex-end);
+            font-size: 24pt;
+            top: $base-unit / 3;
+            margin-left: $base-unit / 4;
+        }
+        
+        
+    }
+    
+    .login-and-signup {
+        @include display(flex);
+        @include align-items(center);
+        
+        a {
+            font-size: 22pt;
+            font-weight: 700;
+            
+            &.button {
+                font-size: 18pt;
+                font-weight: 600;
+            }
+            
+        }
+        
+        a:not(:first-child) {
+            margin-left: $base-unit * 3/4;
+        }
+        
+    }
+    
 }

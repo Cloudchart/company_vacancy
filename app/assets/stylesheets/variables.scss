@@ -1,2 +1,48 @@
+$base-font-size: 22pt;
+$base-unit: $base-font-size * .7;
+
 $base-font-family: 'proxima-nova';
-$base-font-size: 10pt;
+
+// Colors
+
+$athens-grey: hsl(0, 0, 87%);
+$dark-grey: hsl(60, 0, 35%);
+$north-texas-green: hsl(143, 100%, 26%);
+$white: hsl(0, 0, 100%);
+$white-smoke: hsl(0, 0%, 96%);
+$jumbo: hsl(0, 0%, 53%);
+$alto: hsl(0, 0%, 78%);
+$mystic: hsl(0, 0%, 85%);
+
+// Body
+$body-font-size: 10pt;
+
+// Header
+$header-background-color: hsl(0, 0, 91%);
+$header-font-size: $base-font-size;
+
+// Footer
+$footer-background-color: hsl(0, 0, 85.5%);
+$footer-font-size: 12pt;
+
+// Links
+
+a {
+    color: $north-texas-green;
+}
+
+// Buttons
+
+$grey-button-back-color: $athens-grey;
+$grey-button-text-color: $dark-grey;
+
+$green-button-back-color: $north-texas-green;
+$green-button-text-color: $white;
+
+$button-font-size: 18pt;
+$button-font-size-small: 12pt;
+
+$button-font-weight: 700;
+
+$button-height: $base-unit * 2;
+$button-height-small: $base-unit * 1.3;

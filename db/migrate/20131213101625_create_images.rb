@@ -7,7 +7,7 @@ class CreateImages < ActiveRecord::Migration
       t.timestamps
     end
 
-    execute "ALTER TABLE images ADD PRIMARY KEY (uuid);"
+    execute 'ALTER TABLE images ADD PRIMARY KEY (uuid);'
   end
 
   def down

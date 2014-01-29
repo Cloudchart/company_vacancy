@@ -9,7 +9,7 @@ class CreateCompanies < ActiveRecord::Migration
       t.timestamps
     end
     
-    execute "ALTER TABLE companies ADD PRIMARY KEY (uuid);"
+    execute 'ALTER TABLE companies ADD PRIMARY KEY (uuid);'
   end
 
   def down

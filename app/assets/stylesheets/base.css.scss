@@ -1,11 +1,22 @@
 .block {
-  border: 1px dotted gray;
+    border: 1px dotted gray;
 }
 
-#notice {
-  color: green;
+.notice {
+    color: green;
+    margin-bottom: 15px;
 }
 
-#alert {
-  color: red;
+.alert {
+    color: #D00;
+    margin-bottom: 15px;
+}
+
+.anchor {
+    text-decoration: none;
+    color: black;
+}
+
+.bold {
+    font-weight: bold;
 }

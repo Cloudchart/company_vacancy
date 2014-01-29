@@ -1,0 +1,20 @@
+<%= simple_form_for(@user) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <% unless @user.new_record? %>
+      <%= f.input :avatar %>
+      <%= f.input :name %>
+      <%= f.input :phone %>
+    <% end %>
+
+    <%= f.input :email %>
+    <%= f.input :password %>
+    <%= f.input :password_confirmation, required: @user.new_record? ? true : false %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, @user.new_record? ? t('lexicon.sign_up') : t('lexicon.save'), class: :button %>
+  </div>
+  
+<% end %>

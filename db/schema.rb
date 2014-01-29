@@ -11,10 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131213101625) do
+ActiveRecord::Schema.define(version: 20140120130407) do
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
-    t.string   "kind",                      null: false
+    t.string   "section",                   null: false
     t.integer  "position",                  null: false
     t.string   "owner_id",       limit: 36, null: false
     t.string   "owner_type",                null: false
@@ -46,5 +46,36 @@ ActiveRecord::Schema.define(version: 20131213101625) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "tokens", primary_key: "uuid", force: true do |t|
+    t.string   "name",                      null: false
+    t.text     "data"
+    t.string   "tokenable_id",   limit: 36
+    t.string   "tokenable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", primary_key: "uuid", force: true do |t|
+    t.string   "name"
+    t.string   "email",           null: false
+    t.string   "password_digest", null: false
+    t.string   "avatar"
+    t.string   "phone"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "vacancies", primary_key: "uuid", force: true do |t|
+    t.string   "name",                   null: false
+    t.text     "description"
+    t.string   "salary"
+    t.string   "location"
+    t.string   "company_id",  limit: 36, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "vacancies", ["company_id"], name: "index_vacancies_on_company_id", using: :btree
 
 end

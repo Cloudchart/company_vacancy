@@ -2,8 +2,13 @@ body > footer {
     @include display(flex);
     @include justify-content(space-between);
     
-    background: #ccc;
-    padding: 1em 2em;
+    background: $footer-background-color;
+    font-size: $footer-font-size;
+    padding: $base-unit;
+    
+    a {
+        @include black-link;
+    }
     
     > div {
         width: 33%;
@@ -21,11 +26,11 @@ body > footer {
             @include justify-content(space-between);
 
             list-style: none;
-            margin: 1em 0 0;
+            margin: 0;
             padding: 0;
             
             li {
-                margin: .25em 0;
+                margin: $base-unit / 2 0 0;
             }
         }
         

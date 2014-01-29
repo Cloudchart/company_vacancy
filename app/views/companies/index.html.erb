@@ -17,7 +17,7 @@
     <% @companies.each do |company| %>
       <tr>
         <td><%= company.uuid %></td>
-        <td><%= company.logo %></td>
+        <td><%= image_tag company.logo.url %></td>
         <td><%= company.name %></td>
         <td><%= company.description %></td>
         <td><%= link_to 'Show', company %></td>
@@ -31,3 +31,13 @@
 <br>
 
 <%= link_to 'New Company', new_company_path %>
+
+<% if current_user %>
+  <p>
+    <% if current_user.tokens.where(name: 'facebook').any? %>
+      <%= link_to 'Destroy Facebook auth', provider_destroy_path(:facebook) %>
+    <% else %>
+      <%= link_to 'Facebook auth', provider_path(:facebook) %>
+    <% end %>
+  </p>
+<% end %>

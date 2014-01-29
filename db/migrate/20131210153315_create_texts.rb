@@ -7,7 +7,7 @@ class CreateTexts < ActiveRecord::Migration
       t.timestamps
     end
 
-    execute "ALTER TABLE texts ADD PRIMARY KEY (uuid);"
+    execute 'ALTER TABLE texts ADD PRIMARY KEY (uuid);'
   end
 
   def down

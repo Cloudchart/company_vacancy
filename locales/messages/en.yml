@@ -1,0 +1,18 @@
+en:
+  messages:
+    are_you_sure: "Are you sure?"
+    created: "%{name} was successfully created."
+    updated: "%{name} was successfully updated."
+    destroyed: "%{name} was successfully destroyed."
+    signed_up: "Signed up."
+    logged_in: "Logged in."
+    logged_out: "Logged out."
+    tokens:
+      created: "Token created."
+      destroyed: "Token destroyed."
+      state_match_failed: "State doesn't match current user token."
+      not_found: "There was a problem with your %{action}. Please try again or send email to our support team."
+    email_sent: "We've sent you an email. Please click on the provided link to %{action}."    
+    successful_action: "Your %{thing} has been successfully %{action}. Please login."
+    validations:
+      invalid_format: "invalid format"

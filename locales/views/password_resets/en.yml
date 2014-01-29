@@ -1,0 +1,9 @@
+en:
+  password_resets:
+    defaults: &defaults
+      password_reset: "Password reset"
+
+    new:
+      <<: *defaults
+    edit:
+      <<: *defaults

@@ -14,7 +14,7 @@ module BlockableController
     instance_variable_set("@#{controller_name.singularize}", controller_name.classify.constantize.new(send("#{controller_name.singularize}_params")))
 
     if blockable.save
-      redirect_to edit_company_path(blockable.company), notice: "#{controller_name.singularize.camelize} block successfully created."
+      redirect_to edit_company_path(blockable.company), notice: t('messages.created', name: t("lexicon.#{controller_name.singularize}_block"))
     else
       redirect_to :back, alert: 'Validation errors'
     end
@@ -22,7 +22,7 @@ module BlockableController
 
   def update
     if blockable.update(send("#{controller_name.singularize}_params"))
-      redirect_to edit_company_path(blockable.company), notice: "#{controller_name.singularize.camelize} block successfully created."
+      redirect_to edit_company_path(blockable.company), notice: t('messages.updated', name: t("lexicon.#{controller_name.singularize}_block"))
     else
       redirect_to :back, alert: 'Validation errors'
     end    
@@ -30,7 +30,7 @@ module BlockableController
 
   def destroy
     instance_variable_get("@#{controller_name.singularize}").destroy
-    redirect_to :back, notice: "#{controller_name.singularize.camelize} block was successfully destroyed."
+    redirect_to :back, notice: t('messages.destroyed', name: t("lexicon.#{controller_name.singularize}_block"))
   end
 
   private
@@ -40,7 +40,7 @@ module BlockableController
     end
 
     def blockable_params(blockable_attributes)
-      params.require(controller_name.singularize.to_sym).permit(blockable_attributes, block_attributes: [:kind, :position, :owner_id, :owner_type])
+      params.require(controller_name.singularize.to_sym).permit(blockable_attributes, block_attributes: [:section, :position, :owner_id, :owner_type])
     end
 
     def blockable

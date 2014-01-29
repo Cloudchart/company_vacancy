@@ -1,0 +1,21 @@
+<div class="block">
+  <%= simple_form_for(object) do |f| %>
+    <%= f.error_notification %>
+
+    <div class="form-inputs">
+      <%= f.simple_fields_for(:block) do |builder| %>
+        <%= builder.input :section, collection: Company::SECTIONS, include_blank: false %>
+        <%= builder.input :position %>
+        <%= builder.input :owner_id, as: :hidden %>
+        <%= builder.input :owner_type, as: :hidden %>
+      <% end %>
+
+      <%= render "#{object.class.table_name}/attributes", f: f %>
+    </div>
+
+    <div class="form-actions">
+      <%= f.button :submit %>
+    </div>
+
+  <% end %>
+</div>

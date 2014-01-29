@@ -1,3 +1,25 @@
+GIT
+  remote: git@github.com:Cloudchart/pagescript.git
+  revision: a6c78b18a589dc93e7ad5857ab361ad09d57e454
+  specs:
+    pagescript (0.0.1)
+      railties (>= 3.2, < 5)
+
+GIT
+  remote: git@github.com:Cloudchart/passport.git
+  revision: 5eda8fd1cc14d9227a90bad6c3675f346188ec5c
+  specs:
+    passport (0.0.1b)
+      rails (~> 4.0.2)
+      warden (~> 1.2.3)
+
+GIT
+  remote: git@github.com:Cloudchart/presenter.git
+  revision: 61d8080527b1bd33975d92b1b314acf5dd6c7752
+  specs:
+    presenter (0.0.1)
+      rails (~> 4.0.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -25,13 +47,18 @@ GEM
       multi_json (~> 1.3)
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
+    addressable (2.3.5)
     arel (4.0.1)
     atomic (1.1.14)
     awesome_print (1.2.0)
+    bcrypt-ruby (3.1.2)
     bourbon (3.1.8)
       sass (>= 3.2.0)
       thor
     builder (3.1.4)
+    bullet (4.7.1)
+      activesupport
+      uniform_notifier (>= 1.4.0)
     carrierwave (0.9.0)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
@@ -43,16 +70,28 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
+    dotenv (0.9.0)
+    dotenv-rails (0.9.0)
+      dotenv (= 0.9.0)
     erubis (2.7.0)
     execjs (2.0.2)
+    faraday (0.8.8)
+      multipart-post (~> 1.2.0)
     font-awesome-rails (4.0.3.0)
       railties (>= 3.2, < 5.0)
     hike (1.2.3)
+    httpauth (0.2.0)
     i18n (0.6.9)
     jquery-rails (3.0.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.1)
+    jwt (0.1.8)
+      multi_json (>= 1.5)
+    launchy (2.4.2)
+      addressable (~> 2.3)
+    letter_opener (1.2.0)
+      launchy (~> 2.2)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -61,8 +100,23 @@ GEM
       subexec (~> 0.2.1)
     minitest (4.7.5)
     multi_json (1.8.2)
+    multipart-post (1.2.0)
     mysql2 (0.3.14)
+    oauth2 (0.8.1)
+      faraday (~> 0.8)
+      httpauth (~> 0.1)
+      jwt (~> 0.1.4)
+      multi_json (~> 1.0)
+      rack (~> 1.2)
     polyglot (0.3.3)
+    postmark (1.0.2)
+      json
+      rake
+    postmark-rails (0.5.2)
+      actionmailer (>= 3.0.0)
+      postmark (~> 1.0)
+    quiet_assets (1.0.2)
+      railties (>= 3.1, < 5.0)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -114,19 +168,32 @@ GEM
     uglifier (2.3.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    uniform_notifier (1.4.0)
+    warden (1.2.3)
+      rack (>= 1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   awesome_print
+  bcrypt-ruby (~> 3.1.2)
   bourbon
+  bullet
   carrierwave
   coffee-rails (~> 4.0.0)
+  dotenv-rails
   font-awesome-rails
   jquery-rails
+  letter_opener
   mini_magick
   mysql2
+  oauth2
+  pagescript!
+  passport!
+  postmark-rails (~> 0.5.2)
+  presenter!
+  quiet_assets
   rails (= 4.0.2)
   sass-rails (~> 4.0.0)
   sdoc
