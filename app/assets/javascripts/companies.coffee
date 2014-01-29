@@ -1,9 +1,8 @@
 @['companies#show'] = ->
     $ ->
-        sticky $('article aside.blocks'),
+        sticky $('article aside.blocks, nav'),
             offset:
                 top: $('body > header').outerHeight()
-
         
         draggable_block = null
         origin =

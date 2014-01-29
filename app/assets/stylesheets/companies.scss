@@ -5,11 +5,21 @@ $blocks-active-color: hsl(0, 0, 85%);
 $blocks-title-background-color: hsl(0, 0, 93%);
 $blocks-title-icon-color: hsl(0, 0, 78%);
 
+@mixin grey-wrapper {
+    position: relative;
+    background-color: $white-smoke;
+    border: 1px solid $alto;
+    font-size: 12pt;
+    color: $alto;
+}
 
-@mixin aside {
-    position: fixed;
-    top: $base-unit * 5;
-    width: $base-unit * 13;
+@mixin centered-frame {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 
 div.companies-wrapper {
@@ -19,10 +29,11 @@ div.companies-wrapper {
     position: relative;
 
     nav {
-        @include aside;
+        position: absolute;
+        left: 0;
+        width: $base-unit * 13;
         padding: $base-unit;
         background-color: $white-smoke;
-        left: $base-unit;
         
         p {
             font-size: $base-font-size / 2;
@@ -44,12 +55,19 @@ div.companies-wrapper {
                 }
             }
         }
+
+        &.glued {
+            position: fixed;
+            top: $base-unit;
+            left: $base-unit;
+        }
     }
 
     article {
         width: 100%;
         font-size: 16pt;
         line-height: 21pt;
+        margin-top: -$base-unit;
 
         .empty {
             color: $alto;
@@ -57,20 +75,18 @@ div.companies-wrapper {
         }
 
         h2 {
+            margin-top: $base-unit * 2;
             margin-left: $base-unit * 2;
             margin-bottom: $base-unit;
         }
 
         section {
             p, div {
-                margin-bottom: $base-unit * 2;
-            }
-
-            p, div.image-template {
-                margin-left: $base-unit * 2;                
+                margin-bottom: $base-unit;
             }
 
             p {
+                margin-left: $base-unit * 2;                
                 position: relative;
 
                 i {
@@ -85,6 +101,7 @@ div.companies-wrapper {
             }
 
             div.chart-template {
+                margin-top: $base-unit * 2;
                 border: 1px solid $alto;
                 border-left: none;
                 border-right: none;
@@ -110,25 +127,49 @@ div.companies-wrapper {
             }
 
             div.image-template {
-                position: relative;
+                @include grey-wrapper;
+                margin-left: $base-unit * 2;
                 height: $base-unit * 22;
-                background-color: $white-smoke;
-                border: 1px solid $alto;
-                font-size: 12pt;
-                color: $alto;
 
                 div.image-hint {
-                    position: absolute;
-                    top: 0;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    width: 220px;
-                    height: 120px;
-                    margin: auto;
+                    @include centered-frame;
+                    width: 250px;
+                    height: 30%;
 
                     h4, p {
-                        margin: 0;
+                        margin: 0 0 0 $base-unit * 1.3;
+                    }
+
+                    i {
+                        position: absolute;
+                        margin-top: $base-unit * 0.3;
+                    }
+                }
+            }
+
+            div.person-template {
+                @include grey-wrapper;
+                height: $base-unit * 7;
+                width: $base-unit * 10;
+                display: inline-block;
+                margin-right: $base-unit;
+
+                &:first-child {
+                    margin-left: $base-unit * 2;
+                }
+
+                &:last-child {
+                    margin-right: 0;
+                }
+
+                div.person-hint {
+                    @include centered-frame;
+                    width: $base-unit * 5;
+                    height: 20%;
+                    text-align: center;
+
+                    span {
+                        margin-left: $base-unit * 0.6;
                     }
                 }
             }

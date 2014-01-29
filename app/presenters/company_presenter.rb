@@ -16,7 +16,7 @@ class CompanyPresenter < Presenter::Base
     if first_block
       blockable_content(first_block)
     else
-      content_tag(:p, t("blocks.hints.#{section}.text"), class: 'empty')
+      content_tag(:p, t(".text"), class: 'empty')
     end
   end
 
@@ -24,19 +24,26 @@ class CompanyPresenter < Presenter::Base
     content_tag(:div, class: 'chart-template') do
       content_tag(:div, class: 'chart-hint') do
         content_tag(:i, nil, class: 'fa fa-table bold') +
-        content_tag(:span, t('blocks.hints.default.chart'), class: 'bold')
+        content_tag(:span, t('.chart'), class: 'bold')
       end
     end
   end
 
-  def image_hint(section)
+  def image_hint
     content_tag(:div, class: 'image-template') do
       content_tag(:div, class: 'image-hint') do
-        content_tag(:h4) do
-          content_tag(:i, nil, class: 'fa fa-picture-o') +
-          t("blocks.hints.#{section}.image_title")
-        end +
-        content_tag(:p, t("blocks.hints.#{section}.image_text"))
+        content_tag(:i, nil, class: 'fa fa-picture-o') +
+        content_tag(:h4, t(".image_title")) +
+        content_tag(:p, t(".image_text"))
+      end
+    end
+  end
+
+  def person_hint(person)
+    content_tag(:div, class: 'person-template') do
+      content_tag(:div, class: 'person-hint') do
+        content_tag(:i, nil, class: 'fa fa-user') +
+        content_tag(:span, t(".#{person}"), class: 'bold')        
       end
     end
   end
