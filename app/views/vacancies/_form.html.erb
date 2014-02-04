@@ -6,6 +6,16 @@
     <%= f.input :description %>
     <%= f.input :salary %>
     <%= f.input :location %>
+
+    <fieldset>
+      <%= f.simple_fields_for :settings, @vacancy.settings do |setting| %>
+        <%= setting.input :publish_on, as: :date, start_year: Date.today.year %>
+        <%= setting.input :display_link, collection: VacancySetting::DISPLAY_LINK_OPTIONS %>
+        <%= setting.input :accessible_to, collection: VacancySetting::ACCESSIBLE_TO_OPTIONS %>
+        <%= setting.input :incentive, as: :integer %>
+      <% end %>
+    </fieldset>
+
   </div>
 
   <div class="form-actions">

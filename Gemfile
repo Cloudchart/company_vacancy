@@ -20,8 +20,7 @@ gem 'postmark-rails', '~> 0.5.2'
 gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
 # gem 'presenter', path: '~/code/presenter'
 gem 'presenter', git: 'git@github.com:Cloudchart/presenter.git'
-
-# Pagescript
+# gem 'pagescript', path: '~/code/pagescript'
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 
 group :doc do

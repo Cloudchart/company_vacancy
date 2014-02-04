@@ -1,26 +1,7 @@
 <%= link_to 'Edit', edit_vacancy_path(@vacancy) %> |
 <%= link_to 'Back', company_vacancies_path(@company) %>
 
-<h1>Sidebar</h1>
-
-<p>
-  <strong>Logo:</strong>
-  <%= image_tag @company.logo.url %>
-</p>
-
-<p>
-  <strong>Company:</strong>
-  <%= @company.name %>
-</p>
-
-<p>
-  <strong>Description</strong>
-  <%= @company.description %>
-</p>
-
-<% Vacancy::SECTIONS.each do |key, value| %>
-  <h3><%= link_to key, "##{value}" %></h3>
-<% end %>
+<%= render 'shared/company_side_nav', company: @vacancy.company, source: Vacancy %>
 
 <h1>Page content</h1>
 
@@ -33,28 +14,7 @@
   </h2>
 
   <div class="toggleable-content">
-    <% case value %>
-    <% when :vacancy %>
-      <p>
-        <strong>Name:</strong>
-        <%= @vacancy.name %>
-      </p>
-
-      <p>
-        <strong>Description:</strong>
-        <%= @vacancy.description %>
-      </p>
-
-      <p>
-        <strong>Salary:</strong>
-        <%= @vacancy.salary %>
-      </p>
-
-      <p>
-        <strong>Location:</strong>
-        <%= @vacancy.location %>
-      </p>
-    <% end %>
+    <%= render "vacancies/sections/#{value}" %>
   </div>
 
 <% end %>

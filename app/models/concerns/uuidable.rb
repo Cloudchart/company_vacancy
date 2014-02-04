@@ -8,8 +8,8 @@ module Uuidable
 
   private
 
-  def generate_uuid
-    self.id = SecureRandom.uuid
-  end
+    def generate_uuid
+      self.id = SecureRandom.uuid
+    end
 
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140120130407) do
+ActiveRecord::Schema.define(version: 20140203113824) do
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
     t.string   "section",                   null: false
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 20140120130407) do
 
   create_table "tokens", primary_key: "uuid", force: true do |t|
     t.string   "name",                      null: false
-    t.text     "data"
+    t.binary   "data"
     t.string   "tokenable_id",   limit: 36
     t.string   "tokenable_type"
     t.datetime "created_at"
@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 20140120130407) do
     t.string   "company_id",  limit: 36, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "settings"
   end
 
   add_index "vacancies", ["company_id"], name: "index_vacancies_on_company_id", using: :btree
