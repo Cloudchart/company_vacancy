@@ -6,4 +6,6 @@ class VacancySetting
 
   columns :display_link, :accessible_to, publish_on: :date, incentive: :integer
 
+  validates :display_link, presence: true
+
 end
