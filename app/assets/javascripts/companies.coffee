@@ -28,3 +28,8 @@
           $(document.body).animate
             scrollTop: $anchor.offset().top
           , 250
+
+        
+        $(document).on 'submit', 'form.new_block_identity', (event) ->
+          event.preventDefault()
+          console.log $(@).serializeArray()

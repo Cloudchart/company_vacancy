@@ -7,7 +7,7 @@ class Company < ActiveRecord::Base
 
   before_destroy :destroy_blocks
 
-  has_many :blocks, -> { includes(:block_identities).order(:section, :position) }, as: :owner, dependent: :destroy
+  has_many :blocks, -> { includes(block_identities: :identity).order(:section, :position) }, as: :owner, dependent: :destroy
 
   has_many :vacancies, dependent: :destroy
 

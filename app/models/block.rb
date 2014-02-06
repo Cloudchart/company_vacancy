@@ -6,21 +6,20 @@ class Block < ActiveRecord::Base
   belongs_to :owner, polymorphic: true
 
   has_many :block_identities, -> { includes(:identity).order(:position) }, dependent: :destroy
-  
 
+  before_save :ensure_position
+  
+  
   def identities
-    block_identities.map(&:identity) || []
+    block_identities.map(&:identity)
   end
   
-
+  
   def identity
     identities.first
   end
-
-
-  before_save :ensure_position
-
-
+  
+  
   def type
     @type ||= blockable_type.to_s.downcase.to_sym
   end

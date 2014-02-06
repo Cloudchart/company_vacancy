@@ -1,11 +1,19 @@
 class BlocksController < ApplicationController
 
+  before_filter :find_company, only: [:create]
+
   def create
-    company = Company.find(params[:company_id])
-    block   = Block.new section: params[:section], blockable_type: params[:blockable_type]
-    company.blocks << block
-    redirect_to company
+    @company.blocks << Block.new(section: params[:section], blockable_type: params[:blockable_type])
+    redirect_to @company
   end
+  
+  
+  def destroy
+    block = Block.find(params[:id])
+    block.destroy
+    redirect_to block.owner
+  end
+  
 
   def update_position
     # temporary created params[:blocks]. must be passed through ajax call.
@@ -23,5 +31,13 @@ class BlocksController < ApplicationController
   def update_section
     Block.find(params[:block_id]).update_attribute(:section, params[:section])
   end
+
+
+protected  
+  
+  def find_company
+    @company = Company.find params[:company_id]
+  end
+  
 
 end
