@@ -1,0 +1,33 @@
+<nav data-behaviour="editable-article-nav">
+
+  <ul>
+    <li class="logo">
+      Logo
+
+      <%= form_tag '' do -%>
+        <%= file_field_tag :logo %>
+        <span class="button small">
+          <i class="fa fa-picture-o"></i>
+          Upload new logo
+        </span>
+      <%- end -%>
+
+    </li>
+    
+    <li class="description">
+      <textarea rows="2">Type your company description here. Be concise.</textarea>
+    </li>
+    
+    <li class="links">
+      <ul>
+        <%- Company::SECTIONS.each do |k, v| -%>
+          <li>
+            <%= link_to k, "##{v}", data: { :"scrollable-anchor" => "" } %>
+          </li>
+        <%- end -%>
+      </ul>
+    </li>
+  </ul>
+  
+
+</nav>

@@ -18,6 +18,7 @@ Cloudchart::Application.routes.draw do
 
   resources :companies, shallow: true do
     resources :vacancies
+    resources :blocks
   end
 
   %i(texts images).each do |blockable|

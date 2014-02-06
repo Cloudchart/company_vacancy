@@ -1,4 +1,12 @@
 class BlocksController < ApplicationController
+
+  def create
+    company = Company.find(params[:company_id])
+    block   = Block.new section: params[:section], blockable_type: params[:blockable_type]
+    company.blocks << block
+    redirect_to company
+  end
+
   def update_position
     # temporary created params[:blocks]. must be passed through ajax call.
     block = Block.find(params[:block_id])

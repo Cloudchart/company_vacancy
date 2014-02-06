@@ -1,48 +1,30 @@
 @['companies#show'] = ->
     $ ->
-        sticky $('article aside.blocks, nav'),
+      
+        $document = $(document)
+        $body     = $(document.body)
+      
+        sticky $('[data-behaviour~=editable-article-blocks], [data-behaviour~=editable-article-nav]'),
             offset:
                 top: $('body > header').outerHeight()
         
-        draggable_block = null
-        origin =
-            left:   0
-            top:    0
+
         
-        cc.touchdrag('article aside.blocks [data-behaviour~=draggable]', {
+        cc.touchdrag 'aside.blocks [data-behaviour~=draggable]',
+          start: ->
 
-            dragstart: (e, el) ->
-                $el = $(el)
+          stop: ->
 
-                $el.addClass('active')
+          drag: ->
+          
+        #$('aside.blocks [data-behaviour~=draggable]').draggable({ helper: 'clone' })
+        
+        
+        $(document).on 'click', 'a[href^="#"][data-scrollable-anchor]', (event) ->
+          $anchor = $($(@).attr('href')) ; return if $anchor.length == 0
 
-                draggable_block = $el.clone().appendTo($(el).parent())
-
-                draggable_block.addClass('drag')
-
-                draggable_block.css
-                    width:      $el.outerWidth()
-                    height:     $el.outerHeight()
-                    left:       $el.position().left
-                    top:        $el.position().top
-                    position:   'absolute'
-                    zIndex:     10000
-
-            
-            dragmove: (e, el) ->
-                $el = $(el)
-                
-                draggable_block.offset
-                    left:   e.cc_draggable.x
-                    top:    e.cc_draggable.y
-                
-                draggable_block.css
-                    xIndex: 10000
-                
-
-            dragend: (e, el) ->
-                $el = $(el)
-                $el.removeClass('active')
-                draggable_block.remove()
-
-        })
+          event.preventDefault()
+          
+          $(document.body).animate
+            scrollTop: $anchor.offset().top
+          , 250

@@ -1,0 +1,11 @@
+<%- text = block.blockable.present? ? block.blocable : ::Text.new ; text.block = block -%>
+
+<%= form_for text do |f| -%>
+
+  <%= f.hidden_field :block, value: block.id %>
+  <%= f.text_area :content, placeholder: t(".#{block.section}.placeholder_#{block.position}", default: t('.placeholder')) -%>
+  <br />
+  <%= link_to "Save", text, method: text.persisted? ? :put : :post %>
+
+<%- end -%>
+

@@ -9,6 +9,7 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
+    @blocks = @company.blocks
   end
 
   # GET /companies/new

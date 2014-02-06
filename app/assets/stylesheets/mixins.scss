@@ -19,6 +19,7 @@
     line-height: $button-height;
     padding: 0 $base-unit / 2;
     text-decoration: none;
+    white-space: nowrap;
     
     i.fa {
         margin-right: $base-unit / 3;
@@ -50,3 +51,5 @@
     height: $button-height-small;
     line-height: $button-height-small;
 }
+
+@import './mixins/editable-article-blocks';

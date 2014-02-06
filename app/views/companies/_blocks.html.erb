@@ -1,17 +1,17 @@
-<aside class="blocks">
-    <ul class="block-types">
-        <li class="title">
-            <span>
-                <%= t '.title' %>
-            </span>
-            <i class="fa fa-arrow-left"></i>
-        </li>
+<aside class="blocks" data-behaviour="editable-article-blocks">
+  <ul class="block-types">
+    <li class="title">
+      <span>
+        <%= t '.title' %>
+      </span>
+      <i class="fa fa-arrow-left"></i>
+    </li>
 
-        <% Block::TYPES.each do |key, val| %>
-            <li data-behaviour="draggable <%= key.downcase %>">
-                <i class="fa <%= t ".#{key.downcase}" %>"></i>
-                <span><%= key %></span>
-            </li>
-        <% end %>
-    </ul>
+    <% Block::TYPES.each do |key, val| %>
+      <li data-behaviour="draggable <%= key.downcase %>">
+        <i class="fa <%= t ".#{key.downcase}" %>"></i>
+        <span><%= key %></span>
+      </li>
+    <% end %>
+  </ul>
 </aside>

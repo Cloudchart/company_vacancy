@@ -11,6 +11,13 @@ class Company < ActiveRecord::Base
   has_many :vacancies, dependent: :destroy
 
   validates :name, presence: true
+  
+  
+  def blocks_by_section(section)
+    section = section.to_s
+    blocks.select { |b| b.section == section }
+  end
+  
 
   private
 

@@ -10,3 +10,12 @@ en:
       privacy_policy: 'Privacy Policy'
       terms_of_use: 'Terms of Use'
       blog: 'Blog'
+
+
+en:
+  shared:
+    blocks:
+      text:
+        placeholder: Default Text Placeholder
+        about:
+          placeholder_0: Specific placeholder for text block at about at position 0

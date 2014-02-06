@@ -1,47 +1,34 @@
 <% present @company do |company| %>
   <div class="companies-wrapper">
-    <nav>
-      <p>
-        <%= company.logo %>
-      </p>
-      <p>
-        <%= company.description %>
-      </p>
-
-      <ul class="company-sections">
-        <% Company::SECTIONS.each do |key, value| %>
-          <li><%= link_to key, "##{value}", class: 'bold' %></li>
-        <% end %>    
-      </ul>
-      
-    </nav>
 
     <article>
-        <%= render partial: 'blocks' %>
-
-      <% Company::SECTIONS.each do |title, section| %>
-        <h2 class="<%= company.empty_or_filled_section(section) %>" id="<%= section %>">
+      
+      <%- Company::SECTIONS.each do |title, section| -%>
+        
+        <h2>
           <%= title %>
         </h2>
+        
         <section>
-          <%= render "companies/hints/#{section}", company: company %>
-
-          <% company.shifted_blocks(section).each do |block| %>
-            <%= company.blockable_content(block) %> 
-          <% end %>
-
+          <%- @company.blocks_by_section(section).each do |block| -%>
+            <p>
+              <%= render partial: "shared/blocks/#{block.type}", locals: { block: block } %>
+            </p>
+          <%- end -%>
+          <nav>
+            <%= link_to "Add Text", company_blocks_path(@company, section: section, blockable_type: Text.to_s), data: { method: :post } %>
+            |
+            <%= link_to "Add Image", company_blocks_path(@company, section: section, blockable_type: Image.to_s), data: { method: :post } %>
+          </nav>
         </section>
-      <% end %>
-
-      <div class="temporary_nav">
-        <%= link_to 'Edit', edit_company_path(@company) %> |
-        <%= link_to 'Back', companies_path %> |
-        <%= link_to 'Vacancies', company_vacancies_path(@company) %> |
-        <%= link_to 'Add vacancy', new_company_vacancy_path(@company) %>
-      </div>
+        
+      <%- end -%>
+      
       
     </article>
 
+    <%= render partial: 'navigation', locals: { company: company } %>
+    <%= render partial: 'blocks' %>
 
   </div>
 
