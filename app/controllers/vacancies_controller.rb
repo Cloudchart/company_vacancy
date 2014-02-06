@@ -61,7 +61,7 @@ class VacanciesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def vacancy_params
-      params.require(:vacancy).permit(:name, :description, :salary, :location, settings: VacancySetting.columns.keys)
+      params.require(:vacancy).permit(:name, :description, :salary, :location, settings: VacancySetting.attributes.symbolize_keys.keys)
     end
 
 end
