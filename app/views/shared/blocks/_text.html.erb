@@ -1,16 +1,16 @@
 <%- block_identity = block.block_identities.first || block.block_identities.build -%>
 <%- identity = block_identity.identity || ActiveSupport::const_get(block.blockable_type.classify).new -%>
 
-<%= form_for block_identity, url: '/', class: 'block_identity' do |f| -%>
+<%= form_for block_identity, url: '', html: { class: 'block_identity text', id: nil } do |f| -%>
 
-  <%= f.hidden_field :block_id %>
+  <%= f.hidden_field :block_id, id: nil %>
 
   <%= f.fields_for identity do |ff| -%>
-    <%= ff.text_area :content %>
+    <%= ff.text_area :content, id: nil %>
   <%- end -%>
 
   <br />
 
-  <%= f.submit %>
+  <%= f.submit 'Save', id: nil %>
 
 <%- end -%>

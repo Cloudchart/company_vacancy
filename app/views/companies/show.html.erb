@@ -12,7 +12,7 @@
         <section>
           <%- @company.blocks_by_section(section).each do |block| -%>
             <p>
-              <%= render partial: "shared/blocks/#{block.type}", locals: { block: block } %>
+              <%= render partial: "shared/blocks/#{block.type}", locals: { block: block } -%>
             </p>
           <%- end -%>
           <nav>

@@ -30,6 +30,4 @@
           , 250
 
         
-        $(document).on 'submit', 'form.new_block_identity', (event) ->
-          event.preventDefault()
-          console.log $(@).serializeArray()
+        $(document).on 'submit', 'form.block_identity', (event) ->
