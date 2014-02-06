@@ -11,15 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140203113824) do
+ActiveRecord::Schema.define(version: 20140206121342) do
+
+  create_table "block_identities", primary_key: "uuid", force: true do |t|
+    t.string   "block_id",      limit: 36
+    t.string   "identity_id",   limit: 36
+    t.string   "identity_type"
+    t.integer  "position",                 default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "block_identities", ["block_id"], name: "index_block_identities_on_block_id", using: :btree
+  add_index "block_identities", ["identity_id", "identity_type"], name: "index_block_identities_on_identity_id_and_identity_type", using: :btree
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
-    t.string   "section",                   null: false
-    t.integer  "position",                  null: false
-    t.string   "owner_id",       limit: 36, null: false
-    t.string   "owner_type",                null: false
-    t.string   "blockable_id",   limit: 36, null: false
-    t.string   "blockable_type",            null: false
+    t.string   "section",                   default: "", null: false
+    t.integer  "position",                               null: false
+    t.string   "owner_id",       limit: 36,              null: false
+    t.string   "owner_type",                             null: false
+    t.string   "blockable_id",   limit: 36, default: ""
+    t.string   "blockable_type",            default: ""
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -49,7 +61,7 @@ ActiveRecord::Schema.define(version: 20140203113824) do
 
   create_table "tokens", primary_key: "uuid", force: true do |t|
     t.string   "name",                      null: false
-    t.binary   "data"
+    t.text     "data"
     t.string   "tokenable_id",   limit: 36
     t.string   "tokenable_type"
     t.datetime "created_at"

@@ -4,12 +4,22 @@ class Block < ActiveRecord::Base
   TYPES = %i(text image chart person widget).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
   
   belongs_to :owner, polymorphic: true
-  belongs_to :blockable, polymorphic: true
 
-  #validates :position, presence: true
+  has_many :block_identities, -> { includes(:identity).order(:position) }, dependent: :destroy
   
+
+  def identities
+    block_identities.map(&:identity) || []
+  end
+  
+
+  def identity
+    identities.first
+  end
+
+
   before_save :ensure_position
-  
+
 
   def type
     @type ||= blockable_type.to_s.downcase.to_sym
