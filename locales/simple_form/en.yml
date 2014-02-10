@@ -22,6 +22,8 @@ en:
         image: "Image"
       vacancy:
         name: "Job Title"
+      logo:
+        image: "Logo"
       # user:
       #   new:
       #     email: "E-mail to sign in."

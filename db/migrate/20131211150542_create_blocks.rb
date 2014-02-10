@@ -6,8 +6,8 @@ class CreateBlocks < ActiveRecord::Migration
       t.integer :position, null: false
       t.string :owner_id, limit: 36, null: false
       t.string :owner_type, null: false
-      t.string :blockable_id, limit: 36, null: false
-      t.string :blockable_type, null: false
+      t.string :blockable_id, limit: 36
+      t.string :blockable_type
 
       t.timestamps
     end

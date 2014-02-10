@@ -2,7 +2,11 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :logo %>
+
+    <%= f.simple_fields_for :logo do |logo| %>
+      <%= logo.input :image %>
+    <% end %>
+
     <%= f.input :name %>
     <%= f.input :description %>
   </div>

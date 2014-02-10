@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   acts_as_passport_model
   has_secure_password
   mount_uploader :avatar, AvatarUploader
-
+  
   has_many :tokens, as: :tokenable, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true, format: { with: EMAIL_REGEX, message: I18n.t('messages.validations.invalid_format') }

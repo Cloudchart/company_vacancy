@@ -1,8 +1,7 @@
-class Image < ActiveRecord::Base
+class BlockImage < ActiveRecord::Base
   include Uuidable
   include Blockable
-
-  mount_uploader :image, ImageUploader
+  include Imageable
 
   validates :image, presence: true
 

@@ -30,8 +30,8 @@ ActiveRecord::Schema.define(version: 20140206121342) do
     t.integer  "position",                  null: false
     t.string   "owner_id",       limit: 36, null: false
     t.string   "owner_type",                null: false
-    t.string   "blockable_id",   limit: 36, null: false
-    t.string   "blockable_type",            null: false
+    t.string   "blockable_id",   limit: 36
+    t.string   "blockable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -40,15 +40,16 @@ ActiveRecord::Schema.define(version: 20140206121342) do
   add_index "blocks", ["owner_id", "owner_type"], name: "index_blocks_on_owner_id_and_owner_type", using: :btree
 
   create_table "companies", primary_key: "uuid", force: true do |t|
-    t.string   "logo"
-    t.string   "name",        null: false
+    t.string   "name",                   null: false
     t.text     "description"
+    t.string   "logo_id",     limit: 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "images", primary_key: "uuid", force: true do |t|
     t.string   "image",      null: false
+    t.text     "meta"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
