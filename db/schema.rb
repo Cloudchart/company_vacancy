@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 20140206121342) do
   create_table "images", primary_key: "uuid", force: true do |t|
     t.string   "image",      null: false
     t.text     "meta"
+    t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

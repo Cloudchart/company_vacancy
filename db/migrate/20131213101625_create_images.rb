@@ -4,6 +4,7 @@ class CreateImages < ActiveRecord::Migration
       t.string :uuid, limit: 36
       t.string :image, null: false
       t.text :meta
+      t.string :type
 
       t.timestamps
     end

@@ -3,7 +3,6 @@ module Imageable
 
   included do
     extend CarrierWave::Meta::ActiveRecord
-    self.table_name = :images
     serialize :meta, OpenStruct
 
     uploader = "#{name}Uploader".constantize
