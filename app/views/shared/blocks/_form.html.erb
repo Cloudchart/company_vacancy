@@ -1,0 +1,20 @@
+<%- block.block_identities.build -%>
+
+<%- block_identity          = block.block_identities.first -%>
+<%- block_identity.identity = block.identity_class.new if block_identity.identity.nil? -%>
+
+
+<%= simple_form_for block_identity.identity do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :block_id, input_html: { value: block.id }, as: :hidden %>
+    <%= render "shared/blocks/#{block.identity_type.underscore}", f: f %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+    | <%= link_to "Delete", block, method: :delete %>
+  </div>
+
+<%- end -%>

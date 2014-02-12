@@ -1,0 +1,3 @@
+class BlockImagesController < ApplicationController
+
+end
