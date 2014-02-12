@@ -5,7 +5,7 @@ module Blockable
     has_one :block_identity, as: :identity
     has_one :block, through: :block_identity
   
-
+  
     after_destroy :destroy_identity
   
 

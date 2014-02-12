@@ -23,6 +23,8 @@ Cloudchart::Application.routes.draw do
   
   resources :block_identities
 
+  resources :paragraphs
+
   %i(texts images).each do |blockable|
     resources blockable, except: [:index, :show]
   end
