@@ -6,6 +6,8 @@ class Block < ActiveRecord::Base
   belongs_to :owner, polymorphic: true
 
   has_many :block_identities, -> { includes(:identity).order(:position) }, dependent: :destroy
+  
+  accepts_nested_attributes_for :block_identities
 
   before_save :ensure_position
   
