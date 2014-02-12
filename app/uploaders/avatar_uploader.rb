@@ -11,6 +11,7 @@ class AvatarUploader < BaseUploader
 
   # Process files as they are uploaded:
   process resize_to_fit: [100, 100]
+  process :store_meta
 
   # def scale(width, height)
   #   # do something

@@ -3,7 +3,11 @@
 
   <div class="form-inputs">
     <% unless @user.new_record? %>
-      <%= f.input :avatar %>
+
+      <%= f.fields_for :avatar, @user.build_avatar do |avatar| %>
+        <%= avatar.input :image %>
+      <% end %>
+
       <%= f.input :name %>
       <%= f.input :phone %>
     <% end %>

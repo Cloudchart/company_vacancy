@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 20140206121342) do
     t.string   "owner_id",       limit: 36, null: false
     t.string   "owner_type",                null: false
     t.string   "blockable_id",   limit: 36
-    t.string   "blockable_type"
+    t.string   "blockable_type",            null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -47,6 +47,8 @@ ActiveRecord::Schema.define(version: 20140206121342) do
     t.datetime "updated_at"
   end
 
+  add_index "companies", ["logo_id"], name: "index_companies_on_logo_id", using: :btree
+
   create_table "images", primary_key: "uuid", force: true do |t|
     t.string   "image",      null: false
     t.text     "meta"
@@ -54,7 +56,7 @@ ActiveRecord::Schema.define(version: 20140206121342) do
     t.datetime "updated_at"
   end
 
-  create_table "texts", primary_key: "uuid", force: true do |t|
+  create_table "paragraphs", primary_key: "uuid", force: true do |t|
     t.text     "content",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -71,13 +73,15 @@ ActiveRecord::Schema.define(version: 20140206121342) do
 
   create_table "users", primary_key: "uuid", force: true do |t|
     t.string   "name"
-    t.string   "email",           null: false
-    t.string   "password_digest", null: false
-    t.string   "avatar"
+    t.string   "email",                      null: false
+    t.string   "password_digest",            null: false
+    t.string   "avatar_id",       limit: 36
     t.string   "phone"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "users", ["avatar_id"], name: "index_users_on_avatar_id", using: :btree
 
   create_table "vacancies", primary_key: "uuid", force: true do |t|
     t.string   "name",                   null: false

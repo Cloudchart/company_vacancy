@@ -1,6 +1,6 @@
 <p>
   <strong>Avatar:</strong>
-  <%= image_tag @user.avatar.url %>
+  <%= image_tag @user.avatar.try(:image_url) %>
 </p>
 
 <p>
