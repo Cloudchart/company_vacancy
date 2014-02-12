@@ -1,5 +1,4 @@
 class Logo < Image
-  include Uuidable
-  include Imageable
-
+  include Imageable  
+  
 end

@@ -2,9 +2,6 @@ module Imageable
   extend ActiveSupport::Concern
 
   included do
-    extend CarrierWave::Meta::ActiveRecord
-    serialize :meta, OpenStruct
-
     uploader = "#{name}Uploader".constantize
     versions = uploader.versions.keys.inject([]) { |array, version| array << :"image_#{version}" }
 
