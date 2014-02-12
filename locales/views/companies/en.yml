@@ -7,6 +7,7 @@ en:
       title: This is the Editor. Drag to add
       text: fa-font
       image: fa-picture-o
+      vacancy: fa-money
       chart: fa-table
       person: fa-user
       widget: fa-bar-chart-o

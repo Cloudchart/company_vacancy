@@ -1,0 +1,2 @@
+module BlockIdentitiesHelper
+end

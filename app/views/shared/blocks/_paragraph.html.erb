@@ -1,0 +1,24 @@
+<%- block.block_identities.build -%>
+
+<%- block_identity          = block.block_identities.first -%>
+<%- block_identity.identity = block.identity_class.new if block_identity.identity.nil? -%>
+
+<%= form_for block_identity do |form| %>
+  
+  <%= form.hidden_field :identity_type%>
+  <%= form.hidden_field :block_id %>
+
+  <%= form.fields_for block_identity.identity do |identity_form| %>
+    
+    <p>
+      <%= identity_form.text_area :content, style: 'width: 100%', rows: 3 %>
+    </p>
+    
+  <%- end -%>
+
+  <p>
+    <%= form.submit %>
+    | <%= link_to "Delete", block, method: :delete %>
+  </p>
+
+<%- end -%>

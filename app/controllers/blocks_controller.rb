@@ -3,7 +3,7 @@ class BlocksController < ApplicationController
   before_filter :find_company, only: [:create]
 
   def create
-    @company.blocks << Block.new(section: params[:section], blockable_type: params[:blockable_type])
+    @company.blocks << Block.new({section: params[:section], identity_type: params[:identity_type]})
     redirect_to @company
   end
   

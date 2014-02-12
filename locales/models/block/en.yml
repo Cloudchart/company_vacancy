@@ -1,8 +1,9 @@
 en:
   block:
     types:
-      text: "Text"
-      image: "Image"
+      paragraph: "Text"
+      block_image: "Image"
+      vacancy: "Vacancy"
       chart: "Chart"
       person: "Person"
       widget: "Widget"

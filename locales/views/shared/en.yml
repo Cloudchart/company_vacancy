@@ -15,7 +15,7 @@ en:
 en:
   shared:
     blocks:
-      text:
+      paragraph:
         placeholder: Default Text Placeholder
         about:
           placeholder_0: Specific placeholder for text block at about at position 0
