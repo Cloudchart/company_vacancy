@@ -11,9 +11,9 @@
         
         <section>
           <%- @company.blocks_by_section(section).each do |block| -%>
-            <p>
+            <div class="<%= block.identity_type %> identity-block">
               <%= render partial: "shared/blocks/#{block.type}", locals: { block: block } -%>
-            </p>
+            </div>
           <%- end -%>
           <nav>
             <%= link_to "Add Text", company_blocks_path(@company, section: section, blockable_type: ::Text.to_s), data: { method: :post } %>

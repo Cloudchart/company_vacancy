@@ -20,6 +20,15 @@ class Block < ActiveRecord::Base
   end
   
   
+  def identity_type
+    @identity_type ||= blockable_type.underscore
+  end
+  
+  def identity_class
+    @identity_class ||= ActiveSupport.const_get(identity_type.classify)
+  end
+  
+  
   def type
     @type ||= blockable_type.to_s.downcase.to_sym
   end
