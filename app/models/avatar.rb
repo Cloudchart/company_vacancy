@@ -1,4 +1,4 @@
-class Avatar < ActiveRecord::Base
+class Avatar < Image
   include Uuidable
   include Imageable  
   

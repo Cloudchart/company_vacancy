@@ -1,4 +1,4 @@
-class Logo < ActiveRecord::Base
+class Logo < Image
   include Uuidable
   include Imageable
 

@@ -1,4 +1,4 @@
-class BlockImage < ActiveRecord::Base
+class BlockImage < Image
   include Uuidable
   include Blockable
   include Imageable
