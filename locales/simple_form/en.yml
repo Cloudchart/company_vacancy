@@ -24,6 +24,8 @@ en:
         name: "Job Title"
       logo:
         image: "Logo"
+      avatar:
+        image: "Avatar"
       # user:
       #   new:
       #     email: "E-mail to sign in."

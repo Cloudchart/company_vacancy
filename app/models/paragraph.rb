@@ -1,4 +1,4 @@
-class Text < ActiveRecord::Base
+class Paragraph < ActiveRecord::Base
   include Uuidable
   include Blockable
 

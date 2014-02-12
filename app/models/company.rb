@@ -5,18 +5,18 @@ class Company < ActiveRecord::Base
 
   before_destroy :destroy_blocks
 
-  belongs_to :logo, dependent: :destroy
   has_many :blocks, -> { includes(block_identities: :identity).order(:section, :position) }, as: :owner, dependent: :destroy
   has_many :vacancies, dependent: :destroy
+  belongs_to :logo, dependent: :destroy
 
-  accepts_nested_attributes_for :logo
+  accepts_nested_attributes_for :logo, allow_destroy: true
 
   validates :name, presence: true
   
   def blocks_by_section(section)
     section = section.to_s
     blocks.select { |b| b.section == section }
-  end  
+  end
 
   private
     # custom dependent destroy because of polymorphic association in block model

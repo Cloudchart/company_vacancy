@@ -16,9 +16,9 @@
             </p>
           <%- end -%>
           <nav>
-            <%= link_to "Add Text", company_blocks_path(@company, section: section, blockable_type: ::Text.to_s), data: { method: :post } %>
+            <%= link_to "Add Text", company_blocks_path(@company, section: section, blockable_type: Paragraph.to_s), data: { method: :post } %>
             |
-            <%= link_to "Add Image", company_blocks_path(@company, section: section, blockable_type: ::BlockImage.to_s), data: { method: :post } %>
+            <%= link_to "Add Image", company_blocks_path(@company, section: section, blockable_type: BlockImage.to_s), data: { method: :post } %>
           </nav>
         </section>
         

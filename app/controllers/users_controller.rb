@@ -93,7 +93,7 @@ class UsersController < ApplicationController
     end
 
     def user_params_on_update
-      params.require(:user).permit(:name, :email, :password, :password_confirmation, :phone, :avatar)
+      params.require(:user).permit(:name, :email, :password, :password_confirmation, :phone, avatar_attributes: :image)
     end
 
     def create_confirmation_token_and_send_email(user)
