@@ -23,13 +23,13 @@ protected
   end
   
   def destroy_identity
-    identity.destroy if Block.should_destroy_identity?(identity)
+    identity.destroy if Block.should_destroy_identity?(identity) and identity.persisted?
   end
   
   def reposition_siblings
     BlockIdentity.transaction do
       block.block_identities.each_with_index do |sibling, index|
-        sibling.update_attribute position: index
+        sibling.update_attribute :position, index
       end
     end
   end
