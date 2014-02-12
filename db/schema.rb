@@ -26,11 +26,11 @@ ActiveRecord::Schema.define(version: 20140206121342) do
   add_index "block_identities", ["identity_id", "identity_type"], name: "index_block_identities_on_identity_id_and_identity_type", using: :btree
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
-    t.string   "section",                  null: false
-    t.integer  "position",                 null: false
-    t.string   "owner_id",      limit: 36, null: false
-    t.string   "owner_type",               null: false
-    t.string   "identity_type",            null: false
+    t.string   "section",                              null: false
+    t.integer  "position",                 default: 0
+    t.string   "owner_id",      limit: 36,             null: false
+    t.string   "owner_type",                           null: false
+    t.string   "identity_type",                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
