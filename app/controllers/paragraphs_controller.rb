@@ -1,5 +1,6 @@
 class ParagraphsController < ApplicationController
   
+
   def create
     @paragraph = Paragraph.new params.require(:paragraph).permit(:content, :block_id)
     @paragraph.save!
@@ -9,6 +10,7 @@ class ParagraphsController < ApplicationController
     redirect_to @paragraph.block.owner if @paragraph.block.present?
   end
   
+
   def update
     @paragraph = Paragraph.find params[:id]
     @paragraph.update_attributes! params.require(:paragraph).permit(:content)
@@ -18,4 +20,13 @@ class ParagraphsController < ApplicationController
     redirect_to @paragraph.block.owner if @paragraph.block.present?
   end
   
+  
+  def delete
+    @paragraph = Paragraph.includes(block: :owner).find(params[:id])
+    @paragraph.destroy
+    
+    redirect_to @paragraph.block.owner if @paragraph.block.present?
+  end
+  
+
 end
