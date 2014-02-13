@@ -3,7 +3,6 @@ class Block < ActiveRecord::Base
 
   
   IdentitiesClasses           = [Paragraph, BlockImage, Vacancy]
-  DestroyableIdentityClasses  = [Paragraph, BlockImage]
 
 
   TYPES = IdentitiesClasses.map {|i| i.to_s.underscore }.inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
@@ -15,12 +14,8 @@ class Block < ActiveRecord::Base
   has_many :block_identities, -> { includes(:identity).order(:position) }, dependent: :destroy
   
 
-  before_save :ensure_position
-  
-  
-  def self.should_destroy_identity?(identity)
-    DestroyableIdentityClasses.include?(identity.class)
-  end
+  before_create :ensure_position
+  after_destroy :reposition_siblings
   
   
   def identity_class
@@ -33,6 +28,14 @@ class Block < ActiveRecord::Base
 
   def ensure_position
     self.position = owner.blocks_by_section(section).length
+  end
+  
+  def reposition_siblings
+    Block.transaction do
+      owner.blocks_by_section(section).each_with_index do |sibling, index|
+        sibling.update_attribute :position, index
+      end
+    end
   end
 
 
