@@ -5,9 +5,18 @@ module Blockable
     has_one :block_identity, as: :identity, dependent: :destroy
     has_one :block, through: :block_identity
   
+    
+    Block.class_eval <<-END
+    
+      def #{self.name.underscore}=(instance)
+        instance.block = self
+      end
+    
+    END
+  
   
     def block_id=(id)
-      block = Block.find(id)
+      block = Block.find(id) rescue nil
       self.block = block
     end
     
