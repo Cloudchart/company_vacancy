@@ -7,7 +7,6 @@ class BlockIdentity < ActiveRecord::Base
   belongs_to :identity, polymorphic: true
   
   before_create   :ensure_position
-  before_destroy  :destroy_identity
   after_destroy   :reposition_siblings  
   
   
@@ -20,10 +19,6 @@ protected
 
   def ensure_position
     self.position = block.block_identities.size
-  end
-  
-  def destroy_identity
-    identity.destroy if Block.should_destroy_identity?(identity) and identity.persisted?
   end
   
   def reposition_siblings
