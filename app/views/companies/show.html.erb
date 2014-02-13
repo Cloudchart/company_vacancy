@@ -12,7 +12,7 @@
         <section>
           <%- @company.blocks_by_section(section).each do |block| -%>
             <div class="<%= block.identity_type %> identity-block">
-              <%= render partial: "shared/blocks/form", locals: { block: block } -%>
+              <%= render "shared/blocks/#{block.identity_type.underscore}", block: block %>
             </div>
           <%- end -%>
           <nav>
