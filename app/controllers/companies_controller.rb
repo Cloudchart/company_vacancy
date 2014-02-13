@@ -51,7 +51,7 @@ class CompaniesController < ApplicationController
     
     # Use callbacks to share common setup or constraints between actions.
     def set_company
-      @company = Company.find(params[:id])
+      @company = Company.includes(blocks: :block_identities).find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.

@@ -10,6 +10,10 @@ module Blockable
       block = Block.find(id)
       self.block = block
     end
+    
+    def should_be_destroyed_with_block?
+      Block.identities_to_destroy_with_block.includes?(self.class)
+    end
 
   end
 

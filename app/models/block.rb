@@ -15,7 +15,13 @@ class Block < ActiveRecord::Base
   
 
   before_create :ensure_position
+  before_destroy :destroy_identities
   after_destroy :reposition_siblings
+  
+  
+  def self.identities_to_destroy_with_block
+    [Paragraph, BlockImage]
+  end
   
   
   def identity_class
@@ -30,6 +36,14 @@ class Block < ActiveRecord::Base
     self.position = owner.blocks_by_section(section).length
   end
   
+  
+  def destroy_identities
+    block_identities.map(&:identity).each do |identity|
+      identity.destroy if identity.should_be_destroyed_with_block?
+    end
+  end
+  
+
   def reposition_siblings
     Block.transaction do
       owner.blocks_by_section(section).each_with_index do |sibling, index|

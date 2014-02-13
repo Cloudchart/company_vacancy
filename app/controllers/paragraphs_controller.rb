@@ -27,6 +27,15 @@ class ParagraphsController < ApplicationController
     
     redirect_to @paragraph.block.owner if @paragraph.block.present?
   end
+
+private
+
+  def paragraph_params_on_create
+    params.require(:paragraph).permit(:block_id, :content)
+  end
   
+  def paragraph_params_on_update
+    params.require(:paragraph).permit(:content)
+  end
 
 end

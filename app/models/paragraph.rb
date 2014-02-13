@@ -3,5 +3,5 @@ class Paragraph < ActiveRecord::Base
   include Blockable
 
   validates :content, presence: true
-
+  
 end

@@ -9,7 +9,7 @@ class BlocksController < ApplicationController
   
   
   def destroy
-    block = Block.find(params[:id])
+    block = Block.includes(:owner, :block_identities).find(params[:id])
     block.destroy
     redirect_to block.owner
   end
