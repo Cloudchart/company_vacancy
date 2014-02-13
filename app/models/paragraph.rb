@@ -1,6 +1,6 @@
 class Paragraph < ActiveRecord::Base
   include Uuidable
-  include Blockable
+  include Blockables
 
   validates :content, presence: true
   

@@ -7,10 +7,17 @@ module Blockables
   
     Block.class_eval <<-END
     
-      def #{self.name.underscore.pluralize}=(instances)
+      def #{name.underscore.pluralize}=(instances)
         instances.each { |instance| instance.blocks << self }
       end
     
+      def #{name.underscore.pluralize}_ids=(ids)
+        #{name}.transaction do
+          instances = #{name}.find(ids) rescue []
+          instances.each { |instance| instance.blocks << self }
+        end
+      end
+
     END
   
     def block_ids=(ids)

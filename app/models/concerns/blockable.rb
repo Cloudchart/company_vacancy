@@ -8,8 +8,13 @@ module Blockable
     
     Block.class_eval <<-END
     
-      def #{self.name.underscore}=(instance)
+      def #{name.underscore}=(instance)
         instance.block = self
+      end
+    
+      def #{name.underscore}_id=(id)
+        instance = #{name}.find(id) rescue nil
+        instance.block = self if instance.present?
       end
     
     END
