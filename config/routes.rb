@@ -21,10 +21,6 @@ Cloudchart::Application.routes.draw do
     resources :blocks
   end
   
-  resources :block_identities
-  resources :paragraphs
-  resources :block_images
-
   post 'blocks/update_position'
   post 'blocks/update_section'
 

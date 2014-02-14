@@ -1,15 +1,24 @@
-<%- block.identities.build if block.identities.blank? -%>
-
-<%= simple_form_for block do |f| -%>
-  <%= f.error_notification %>
+<%= form_tag block, method: :put, class: 'simple_form' do -%>
+  <% if block.vacancies.any? %>
+    <% block.vacancies.each do |vacancy| %>
+      <p>
+        <%= vacancy.name %>
+        <%= hidden_field_tag :"block[identity_ids][]", vacancy.to_param %>
+        | <%= link_to 'Delete', block_path(id: block.id, "block[identity_ids][]" => (block.vacancies - [vacancy]).to_param), method: :put %>
+      </p>
+    <% end %>
+  <% end %>
 
   <div class="form-inputs">
-    <%= f.input :"[vacancy_ids][]", collection: @vacancies %>
+    <div class="input">
+      <%= label_tag :"block[identity_ids][]", 'Vacancy' %>
+      <%= select_tag :"block[identity_ids][]", options_from_collection_for_select(@vacancies, :id, :name) %>
+    </div>
   </div>
 
   <div class="form-actions">
-    <%= f.button :submit -%>
-    | <%= link_to "Delete", block, method: :delete %>
+    <%= submit_tag 'Add vacancy' %>
+    | <%= link_to 'Delete', block, method: :delete %>
   </div>
 
 <%- end -%>
