@@ -1,7 +1,9 @@
-<%- block.block_identities.build -%>
+<%#- block.block_identities.build -%>
 
-<%- block_identity          = block.block_identities.first -%>
-<%- block_identity.identity = block.identity_class.new if block_identity.identity.nil? -%>
+<%#- block_identity          = block.block_identities.first -%>
+<%#- block_identity.identity = block.identity_class.new if block_identity.identity.nil? -%>
+
+
 
 
 <%= simple_form_for block_identity.identity do |f| %>

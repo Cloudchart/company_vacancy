@@ -2,16 +2,29 @@ class BlockIdentity < ActiveRecord::Base
 
   include Uuidable  
   
-  belongs_to :block
+  belongs_to :block, inverse_of: :block_identities
   
   belongs_to :identity, polymorphic: true
   
+  
   before_create   :ensure_position
+  before_destroy  :destroy_identity
+  before_destroy  :reload_position
   after_destroy   :reposition_siblings  
   
   
   def self.accessible_attributes
     [:block_id, :identity_id, :identity_type]
+  end
+  
+  
+  def skip_reposition!
+    @should_skip_reposition = true
+  end
+  
+
+  def should_skip_reposition?
+    !!@should_skip_reposition
   end
   
   
@@ -21,12 +34,24 @@ protected
     self.position = block.block_identities.size
   end
   
+  
+  def destroy_identity
+    identity.destroy if Block.identities_to_destroy_with_block.include?(identity.class)
+  end
+  
+  
   def reposition_siblings
+    return if should_skip_reposition?
+
     BlockIdentity.transaction do
-      block.block_identities.each_with_index do |sibling, index|
-        sibling.update_attribute :position, index
-      end
+      BlockIdentity.where(block_id: block.to_param).where('position > ?', position).update_all('position = (position - 1)')
     end
+  end
+  
+  def reload_position
+    return if should_skip_reposition?
+
+    reload
   end
   
 end

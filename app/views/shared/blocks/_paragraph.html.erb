@@ -1,20 +1,19 @@
-<%- block.block_identities.build -%>
-
-<%- block_identity          = block.block_identities.first -%>
-<%- block_identity.identity = block.identity_class.new if block_identity.identity.nil? -%>
+<%= form_for block do |form| -%>
 
 
-<%= simple_form_for block_identity.identity do |f| %>
-  <%= f.error_notification %>
+  <%- block.identities.build  -%>
 
-  <div class="form-inputs">
-    <%= f.input :block_id, input_html: { value: block.id }, as: :hidden %>
-    <%= f.input :content %>
-  </div>
+  <p>
+    <%= form.fields_for block.plural_identity_name, block.identities, hidden_field_id: false do |identity_form| -%>
+      <%= identity_form.hidden_field :id, id: false if identity_form.object.persisted? %>
+      <%= identity_form.text_area :content, id: false %>
+    <%- end -%>
+  </p>
 
-  <div class="form-actions">
-    <%= f.button :submit %>
+  <p>
+    <%= form.submit -%>
     | <%= link_to "Delete", block, method: :delete %>
-  </div>
+  </p>
+
 
 <%- end -%>
