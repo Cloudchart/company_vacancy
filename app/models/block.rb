@@ -68,7 +68,7 @@ class Block < ActiveRecord::Base
   end
   
   def identity_ids=(*args)
-    public_send :"#{singular_identiy_name}_ids=", *args
+    public_send :"#{singular_identity_name}_ids=", *args
   end
   
   
