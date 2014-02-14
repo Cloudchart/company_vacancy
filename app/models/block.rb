@@ -45,10 +45,10 @@ class Block < ActiveRecord::Base
     @identity_class ||= ActiveSupport.const_get(identity_type.classify)
   end
   
-  def singular_identity_name
+  def identity_name
     @singular_identity_name ||= identity_class.name.underscore
   end
-  
+  alias_method :singular_identity_name, :identity_name
 
   def plural_identity_name
     @plural_identity_name ||= singular_identity_name.pluralize
@@ -58,9 +58,17 @@ class Block < ActiveRecord::Base
   def identities
     public_send :"#{plural_identity_name}"
   end
-
+  
   def identities=(*args, &block)
     public_send :"#{plural_identity_name}=", *args, &block
+  end
+  
+  def identity_ids
+    public_send :"#{singular_identity_name}_ids"
+  end
+  
+  def identity_ids=(*args)
+    public_send :"#{singular_identiy_name}_ids=", *args
   end
   
   
