@@ -10,7 +10,7 @@ class BlocksController < ApplicationController
   
   def update
     block = Block.includes(:owner).find(params[:id])
-    block.update_attributes! params.require(:block).permit(paragraphs_attributes: [:id, :content])
+    block.update_attributes! identities_params
     redirect_to block.owner
   end
   
@@ -44,6 +44,14 @@ protected
   
   def find_company
     @company = Company.find params[:company_id]
+  end
+
+  def identities_params
+    params.require(:block).permit(
+      paragraphs_attributes: [:id, :content],
+      block_images_attributes: [:id, :image],
+      :vacancy_ids
+    )
   end
   
 

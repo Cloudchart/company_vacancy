@@ -14,10 +14,10 @@ class Vacancy < ActiveRecord::Base
     settings.attributes = hash
   end
 
-  private
+private
 
-    def validity_of_settings
-      errors.add(:settings, settings.errors) unless settings.valid?
-    end
+  def validity_of_settings
+    errors.add(:settings, settings.errors) unless settings.valid?
+  end
 
 end
