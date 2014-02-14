@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140206121342) do
+ActiveRecord::Schema.define(version: 20140214150354) do
 
   create_table "block_identities", primary_key: "uuid", force: true do |t|
     t.string   "block_id",      limit: 36
@@ -24,6 +24,13 @@ ActiveRecord::Schema.define(version: 20140206121342) do
 
   add_index "block_identities", ["block_id"], name: "index_block_identities_on_block_id", using: :btree
   add_index "block_identities", ["identity_id", "identity_type"], name: "index_block_identities_on_identity_id_and_identity_type", using: :btree
+
+  create_table "block_images", primary_key: "uuid", force: true do |t|
+    t.string   "image",      null: false
+    t.text     "meta"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
     t.string   "section",                              null: false
@@ -38,22 +45,23 @@ ActiveRecord::Schema.define(version: 20140206121342) do
   add_index "blocks", ["owner_id", "owner_type"], name: "index_blocks_on_owner_id_and_owner_type", using: :btree
 
   create_table "companies", primary_key: "uuid", force: true do |t|
-    t.string   "name",                   null: false
+    t.string   "name",        null: false
     t.text     "description"
-    t.string   "logo_id",     limit: 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "companies", ["logo_id"], name: "index_companies_on_logo_id", using: :btree
-
   create_table "images", primary_key: "uuid", force: true do |t|
-    t.string   "image",      null: false
+    t.string   "image",                 null: false
+    t.string   "owner_id",   limit: 36, null: false
+    t.string   "owner_type",            null: false
     t.text     "meta"
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "images", ["owner_id", "owner_type"], name: "index_images_on_owner_id_and_owner_type", using: :btree
 
   create_table "paragraphs", primary_key: "uuid", force: true do |t|
     t.text     "content",    null: false
@@ -72,15 +80,12 @@ ActiveRecord::Schema.define(version: 20140206121342) do
 
   create_table "users", primary_key: "uuid", force: true do |t|
     t.string   "name"
-    t.string   "email",                      null: false
-    t.string   "password_digest",            null: false
-    t.string   "avatar_id",       limit: 36
+    t.string   "email",           null: false
+    t.string   "password_digest", null: false
     t.string   "phone"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "users", ["avatar_id"], name: "index_users_on_avatar_id", using: :btree
 
   create_table "vacancies", primary_key: "uuid", force: true do |t|
     t.string   "name",                   null: false
