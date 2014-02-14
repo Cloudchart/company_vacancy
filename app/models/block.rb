@@ -46,7 +46,7 @@ class Block < ActiveRecord::Base
   end
   
   def identity_name
-    @singular_identity_name ||= identity_class.name.underscore
+    @identity_name ||= identity_class.name.underscore
   end
   alias_method :singular_identity_name, :identity_name
 

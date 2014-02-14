@@ -1,3 +1,4 @@
+# TODO: destroy unused methods
 class CompanyPresenter < Presenter::Base
   presents :company
   delegate :description, to: :company

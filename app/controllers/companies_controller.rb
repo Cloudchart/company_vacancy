@@ -1,6 +1,5 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy]
-  before_action :find_blockables, only: [:edit, :update]
 
   # GET /companies
   def index
@@ -10,6 +9,7 @@ class CompaniesController < ApplicationController
   # GET /companies/1
   def show
     @blocks = @company.blocks
+    @vacancies = @company.vacancies
   end
 
   # GET /companies/new
@@ -57,10 +57,6 @@ class CompaniesController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def company_params
       params.require(:company).permit(:name, :description, logo_attributes: :image)
-    end
-
-    def find_blockables
-      @blockables = @company.blocks.map(&:blockable)
     end
 
 end

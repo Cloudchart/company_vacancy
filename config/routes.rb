@@ -21,14 +21,6 @@ Cloudchart::Application.routes.draw do
     resources :blocks
   end
   
-  resources :block_identities
-  resources :paragraphs
-  resources :block_images
-
-  %i(texts images).each do |blockable|
-    resources blockable, except: [:index, :show]
-  end
-  
   post 'blocks/update_position'
   post 'blocks/update_section'
 

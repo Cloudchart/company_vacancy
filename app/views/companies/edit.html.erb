@@ -3,12 +3,3 @@
 
 <h1>Editing company</h1>
 <%= render 'companies/form' %>
-
-<h1>Managing blocks</h1>
-<div class="blocks">
-  <%= render 'shared/blockable/collection', collection: @blockables %>
-</div>
-<p>
-  <%= link_to t('.add_text'), new_text_path(company_id: @company.id), remote: true %>
-  <%= link_to t('.add_image'), new_image_path(company_id: @company.id), remote: true %>
-</p>
