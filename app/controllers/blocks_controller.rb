@@ -1,5 +1,4 @@
 class BlocksController < ApplicationController
-
   before_filter :find_company, only: [:create]
 
   def create
@@ -7,20 +6,17 @@ class BlocksController < ApplicationController
     redirect_to @company
   end
   
-  
   def update
     block = Block.includes(:owner).find(params[:id])
     block.update_attributes! block_params
     redirect_to block.owner
   end
   
-  
   def destroy
     block = Block.includes(:owner, { block_identities: :identity }).find(params[:id])
     block.destroy
     redirect_to block.owner
   end
-  
 
   def update_position
     # temporary created params[:blocks]. must be passed through ajax call.

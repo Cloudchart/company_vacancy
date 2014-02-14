@@ -25,11 +25,6 @@ gem 'presenter', git: 'git@github.com:Cloudchart/presenter.git'
 # gem 'pagescript', path: '~/code/pagescript'
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 
-
-# jQuery UI
-gem 'jquery-ui-rails'
-
-
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
