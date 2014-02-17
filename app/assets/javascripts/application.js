@@ -13,4 +13,5 @@
 //= require jquery
 //= require jquery.ui.all
 //= require jquery_ujs
+//= require block_identities
 //= require_tree .

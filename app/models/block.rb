@@ -20,8 +20,8 @@ class Block < ActiveRecord::Base
     has_many :"#{plural_identity_name}", through: :block_identities, source: :identity, source_type: identity_class
     
     define_method :"#{plural_identity_name}_with_identities_load" do
-      public_send(:"#{plural_identity_name}_without_identities_load").tap do |reflection|
-        reflection.instance_variable_get(:"@association").target = block_identities.map(&:identity) if block_identities.loaded? unless reflection.loaded?
+      public_send(:"#{plural_identity_name}_without_identities_load").tap do |proxy|
+        proxy.instance_variable_get(:"@association").target = block_identities.map(&:identity) if block_identities.loaded? unless proxy.loaded?
       end
     end
     

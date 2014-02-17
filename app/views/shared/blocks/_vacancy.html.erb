@@ -1,26 +1,26 @@
-<%= form_tag block, method: :put, class: 'simple_form' do -%>
-  <% if block.vacancies.any? %>
-    <% block.vacancies.each do |vacancy| %>
-      <p>
-        <%= vacancy.name %>
-        <%= hidden_field_tag :"block[identity_ids][]", vacancy.to_param %>
-        | <%= link_to 'Delete', block_path(id: block.id, "block[identity_ids][]" => (block.vacancies - [vacancy]).to_param), method: :put %>
-      </p>
-    <% end %>
-  <% end %>
+<%- block.identities.build -%>
 
-  <div class="form-inputs">
-    <div class="input">
-      <%= label_tag :"block[identity_ids][]", 'Vacancy' %>
-      <%= select_tag :"block[identity_ids][]", options_from_collection_for_select(@vacancies, :id, :name) %>
+<%= form_for block do |form| -%>
+  
+  <%- block.identities.each do |identity| -%>
+    <div class="vacancy <%= identity.persisted? ? 'persisted' : 'new' %>">
+      <%- if identity.persisted? -%>
+        <%= hidden_field_tag :"block[identity_ids][]", identity.to_param %>
+        <i class="fa fa-money"></i><%= identity.name %>
+        <div class="delete" data-behaviour="delete-vacancy" data-vacancy-id="<%= identity.to_param %>"><i class="fa fa-thumbs-down"></i></div>
+      <%- else -%>
+        <%- vacancies = block.owner.vacancies - block.vacancies -%>
+
+        <%- if vacancies.empty? -%>
+          <span class="empty">
+            No more vacancies
+          </span>
+        <%- else -%>
+          <%= select_tag :"block[identity_ids][]", options_from_collection_for_select(vacancies, :to_param, :name), prompt: 'Add vacancy', class: :new, id: nil %>
+        <%- end -%>
+      <%- end -%>
     </div>
-  </div>
-
-  <div class="form-actions">
-    <%= submit_tag 'Add vacancy' %>
-    | <%= link_to 'Delete', block, method: :delete %>
-  </div>
-
+  <%- end -%>
+  
+  
 <%- end -%>
-
-<br />

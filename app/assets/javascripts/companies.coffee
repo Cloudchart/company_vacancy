@@ -31,3 +31,5 @@
 
         
         $(document).on 'submit', 'form.block_identity', (event) ->
+
+        cc.activate_block_vacancies()
