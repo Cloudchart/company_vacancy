@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   has_secure_password
   
   has_many :tokens, as: :tokenable, dependent: :destroy
-  belongs_to :avatar, dependent: :destroy
+  has_one :avatar, as: :owner, dependent: :destroy
 
   accepts_nested_attributes_for :avatar, allow_destroy: true
 

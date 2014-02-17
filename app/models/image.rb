@@ -1,5 +1,8 @@
 class Image < ActiveRecord::Base
   include Uuidable
   extend CarrierWave::Meta::ActiveRecord
-  serialize :meta, OpenStruct  
+  serialize :meta, OpenStruct
+
+  belongs_to :owner, polymorphic: true
+
 end

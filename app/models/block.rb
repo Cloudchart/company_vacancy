@@ -1,18 +1,16 @@
 class Block < ActiveRecord::Base
   include Uuidable
-
   
-  IdentitiesClasses           = [Paragraph, BlockImage, Vacancy]
-
+  IdentitiesClasses = [Paragraph, BlockImage, Vacancy]
 
   TYPES = IdentitiesClasses.map {|i| i.to_s.underscore }.inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
   
+  before_create   :ensure_position
+  before_destroy  :destroy_identities
+  after_destroy   :reposition_siblings
 
   belongs_to :owner, polymorphic: true
-
-
   has_many :block_identities, -> { order(:position) }, inverse_of: :block
-  
 
   IdentitiesClasses.each do |identity_class|
     plural_identity_name = identity_class.name.underscore.pluralize
@@ -29,17 +27,10 @@ class Block < ActiveRecord::Base
         
     accepts_nested_attributes_for :"#{identity_class.name.underscore.pluralize}"
   end
-    
-
-  before_create   :ensure_position
-  before_destroy  :destroy_identities
-  after_destroy   :reposition_siblings
-  
   
   def self.identities_to_destroy_with_block
     [Paragraph, BlockImage]
   end
-  
   
   def identity_class
     @identity_class ||= ActiveSupport.const_get(identity_type.classify)
@@ -53,7 +44,6 @@ class Block < ActiveRecord::Base
   def plural_identity_name
     @plural_identity_name ||= singular_identity_name.pluralize
   end
-  
 
   def identities
     public_send :"#{plural_identity_name}"
@@ -71,14 +61,11 @@ class Block < ActiveRecord::Base
     public_send :"#{singular_identity_name}_ids=", *args
   end
   
-  
 protected
-  
 
   def ensure_position
     self.position = owner.blocks_by_section(section).length
   end
-  
   
   def reposition_siblings
     Block.transaction do
@@ -88,10 +75,8 @@ protected
     end
   end
   
-  
   def destroy_identities
     block_identities.each(&:skip_reposition!).each(&:destroy!)
   end
-  
 
 end
