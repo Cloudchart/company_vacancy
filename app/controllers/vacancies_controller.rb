@@ -9,7 +9,6 @@ class VacanciesController < ApplicationController
 
   # GET /vacancies/1
   def show
-    @company = @vacancy.company
   end
 
   # GET /vacancies/new

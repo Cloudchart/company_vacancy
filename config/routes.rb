@@ -19,8 +19,9 @@ Cloudchart::Application.routes.draw do
   resources :companies, shallow: true do
     resources :vacancies
     resources :blocks
+    resources :people
   end
-  
+
   post 'blocks/update_position'
   post 'blocks/update_section'
 

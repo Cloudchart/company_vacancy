@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   
   has_many :tokens, as: :tokenable, dependent: :destroy
   has_one :avatar, as: :owner, dependent: :destroy
+  has_one :person, dependent: :destroy
 
   accepts_nested_attributes_for :avatar, allow_destroy: true
 
