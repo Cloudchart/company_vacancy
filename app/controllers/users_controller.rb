@@ -67,7 +67,7 @@ class UsersController < ApplicationController
     # logout, update user email and destroy all reconfirmation tokens with identical email
     if token
       warden.logout(:user)
-      token.tokenable.update_attribute(:email, token.data)
+      token.owner.update_attribute(:email, token.data)
       Token.where(name: :reconfirmation, data: token.data.to_yaml).destroy_all
 
       redirect_to login_path, notice: t('messages.successful_action',
@@ -76,6 +76,25 @@ class UsersController < ApplicationController
       )
     else
       redirect_to root_path, alert: t('messages.tokens.not_found', action: t('actions.email_change'))
+    end
+
+  end
+
+  def associate_with_person
+    token = Token.find_by(uuid: params[:id])
+
+    if token
+      user = token.owner
+      person = Person.find token.data
+
+      user.people << person
+      user.save!
+
+      Token.where(name: :company_invite, data: token.data.to_yaml).destroy_all
+
+      redirect_to company_path(person.company), notice: t('messages.invitation_completed')
+    else
+      redirect_to root_path, alert: t('messages.tokens.not_found', action: t('actions.company_invite'))
     end
 
   end

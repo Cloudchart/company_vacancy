@@ -11,6 +11,7 @@ Cloudchart::Application.routes.draw do
   resources :users, except: [:index, :new, :destroy] do
     get :activate, on: :member
     get :reactivate, on: :member
+    get :associate_with_person, on: :member
   end
 
   resources :sessions, only: [:new, :create, :destroy]
@@ -19,7 +20,9 @@ Cloudchart::Application.routes.draw do
   resources :companies, shallow: true do
     resources :vacancies
     resources :blocks
-    resources :people
+    resources :people do
+      post :send_invite_to_user, on: :member
+    end
   end
 
   post 'blocks/update_position'

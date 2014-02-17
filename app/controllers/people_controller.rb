@@ -1,5 +1,5 @@
 class PeopleController < ApplicationController
-  before_action :set_person, only: [:show, :edit, :update, :destroy]
+  before_action :set_person, only: [:show, :edit, :update, :destroy, :send_invite_to_user]
   before_action :set_company, only: [:index, :new, :create]
 
   # GET /people
@@ -46,6 +46,17 @@ class PeopleController < ApplicationController
     company = @person.company
     @person.destroy
     redirect_to company_people_url(company), notice: t('messages.destroyed', name: t('lexicon.person'))
+  end
+
+  def send_invite_to_user
+    user = User.find_by(email: params[:email])
+
+    if user && !user.people.include?(@person)
+      user.create_company_invite_token(@person.id)
+      UserMailer.send_company_invite(@person.company, user).deliver
+    end
+
+    redirect_to person_path(@person), notice: 'Invite has been sent successfully'
   end
 
   private

@@ -8,9 +8,9 @@ class User < ActiveRecord::Base
   acts_as_passport_model
   has_secure_password
   
-  has_many :tokens, as: :tokenable, dependent: :destroy
+  has_many :tokens, as: :owner, dependent: :destroy
+  has_many :people, dependent: :destroy
   has_one :avatar, as: :owner, dependent: :destroy
-  has_one :person, dependent: :destroy
 
   accepts_nested_attributes_for :avatar, allow_destroy: true
 
@@ -18,6 +18,10 @@ class User < ActiveRecord::Base
 
   def create_confirmation_token
     tokens.create(name: :confirmation)
+  end
+
+  def create_company_invite_token(person_id)
+    tokens.create(name: :company_invite, data: person_id)
   end
 
   def destroy_garbage_and_create_recover_token
@@ -30,10 +34,10 @@ class User < ActiveRecord::Base
     tokens.create(name: :reconfirmation, data: new_email)
   end
 
-  private
+private
 
-    def postpone_email
-      self.email = email_was
-    end
+  def postpone_email
+    self.email = email_was
+  end
 
 end

@@ -84,13 +84,15 @@ ActiveRecord::Schema.define(version: 20140217095543) do
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
   create_table "tokens", primary_key: "uuid", force: true do |t|
-    t.string   "name",                      null: false
+    t.string   "name",                  null: false
     t.text     "data"
-    t.string   "tokenable_id",   limit: 36
-    t.string   "tokenable_type"
+    t.string   "owner_id",   limit: 36
+    t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "tokens", ["owner_id", "owner_type"], name: "index_tokens_on_owner_id_and_owner_type", using: :btree
 
   create_table "users", primary_key: "uuid", force: true do |t|
     t.string   "name"

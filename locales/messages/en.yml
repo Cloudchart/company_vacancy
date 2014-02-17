@@ -16,3 +16,4 @@ en:
     successful_action: "Your %{thing} has been successfully %{action}. Please login."
     validations:
       invalid_format: "invalid format"
+    invitation_completed: "Invitation has been successfully completed."

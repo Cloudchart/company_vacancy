@@ -35,3 +35,10 @@
 
 <%= link_to 'Edit', edit_person_path(@person) %> |
 <%= link_to 'Back', company_people_path(@person.company) %>
+
+<p>
+  <%= form_tag send_invite_to_user_person_path(@person) do %>
+    <%= text_field_tag :email %>
+    <%= submit_tag 'Invite user' %>
+  <% end %>
+</p>
