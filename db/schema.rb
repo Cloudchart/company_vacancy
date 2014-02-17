@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 20140217095543) do
   create_table "people", primary_key: "uuid", force: true do |t|
     t.string   "name"
     t.string   "email"
+    t.string   "occupation"
     t.string   "phone"
     t.string   "user_id",    limit: 36
     t.string   "company_id", limit: 36, null: false

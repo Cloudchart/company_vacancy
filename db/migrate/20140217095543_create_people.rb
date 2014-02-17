@@ -4,6 +4,7 @@ class CreatePeople < ActiveRecord::Migration
       t.string :uuid, limit: 36
       t.string :name
       t.string :email
+      t.string :occupation
       t.string :phone
       t.string :user_id, limit: 36
       t.string :company_id, limit: 36, null: false
