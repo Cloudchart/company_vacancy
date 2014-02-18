@@ -5,7 +5,7 @@
   <%- block.identities.each do |identity| -%>
     <div class="person <%= identity.persisted? ? 'persisted' : 'new' %>">
       <%- if identity.persisted? -%>
-        <i class="fa fa-money"></i>
+        <i class="fa fa-user"></i>
         <%= select_tag :"block[identity_ids][]", options_from_collection_for_select(block.owner.people, :to_param, :name, identity.to_param), prompt: 'Delete this person', class: :edit, id: nil, data: { value: identity.to_param } %>
       <%- else -%>
         <%- people = block.owner.people - block.people -%>

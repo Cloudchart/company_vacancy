@@ -22,6 +22,12 @@
 
 
         #
+        # Identity Block - Person
+        #
+        
+        cc.activate_block_people()
+
+        #
         # Identity Block - Vacancy
         #
         

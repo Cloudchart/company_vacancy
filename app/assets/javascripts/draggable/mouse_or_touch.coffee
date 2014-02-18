@@ -73,25 +73,29 @@ plugin = (selector_or_element, options = {}) ->
     #
     
     mouse_or_touch_down = (event) ->
-        return if mouse_or_touch_captured
+      
+      return if mouse_or_touch_captured
 
-        captured_event = event
-        
-        delay_valid = !options.delay ; setTimeout(delayed_activation, options.delay) unless delay_valid
-        
-        if distance_valid(event) or delay_valid
-            drag_in_transition = true
-            callbacks['start'](captured_event)
-        
-        if ($.data(event.target, mouse_or_touch_prevent_click_event)) == true
-            $.removeData(event.target, mouse_or_touch_prevent_click_event)
-        
-        $document.on events.move, mouse_or_touch_move
-        $document.on events.up, mouse_or_touch_up
-        
-        event.preventDefault()
-        
-        mouse_or_touch_captured = true
+      # Right or middle mouse buttons click
+      return if event.button and event.button != 0 and event.button != 1
+
+      captured_event = event
+      
+      delay_valid = !options.delay ; setTimeout(delayed_activation, options.delay) unless delay_valid
+      
+      if distance_valid(event) or delay_valid
+          drag_in_transition = true
+          callbacks['start'](captured_event)
+      
+      if ($.data(event.target, mouse_or_touch_prevent_click_event)) == true
+          $.removeData(event.target, mouse_or_touch_prevent_click_event)
+      
+      $document.on events.move, mouse_or_touch_move
+      $document.on events.up, mouse_or_touch_up
+      
+      event.preventDefault()
+      
+      mouse_or_touch_captured = true
     
 
     #

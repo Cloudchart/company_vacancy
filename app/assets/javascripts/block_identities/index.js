@@ -1,1 +1,2 @@
+//= require ./people
 //= require ./vacancies
