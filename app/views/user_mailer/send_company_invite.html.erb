@@ -3,8 +3,8 @@
 </p>
 
 <p>
-  You has been invited as <%= @company.name %>'s employee at <%= link_to company_url(@company), company_url(@company) %>. You can accept invitation through the following link:
-  <%= link_to associate_with_person_user_url(id: @token_id), associate_with_person_user_url(id: @token_id) %>
+  You has been invited to join CloudChart as <%= @company.name %>'s member. Please click the following link for further steps:
+  <%= link_to company_invite_url(token_id: @token.id), company_invite_url(token_id: @token.id) %>
 </p>
 
 <p>If you don't work in <%= @company.name %>, please ignore this email.</p>

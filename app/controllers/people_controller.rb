@@ -48,29 +48,40 @@ class PeopleController < ApplicationController
     redirect_to company_people_url(company), notice: t('messages.destroyed', name: t('lexicon.person'))
   end
 
+  # POST /people/1/send_invite_to_user
   def send_invite_to_user
+    return redirect_to person_path(@person), alert: t('messages.company_invite.email_blank') if params[:email].blank?
     user = User.find_by(email: params[:email])
-
-    if user && !user.people.include?(@person)
-      user.create_company_invite_token(@person.id)
-      UserMailer.send_company_invite(@person.company, user).deliver
+ 
+    if user
+      # check if user already has person in this company
+      if user.people.map(&:company_id).include?(@person.company_id)
+        return redirect_to person_path(@person), alert: t('messages.company_invite.user_has_already_been_associated')
+      else
+        Token.find_by(data: @person.id.to_yaml).try(:destroy)
+        token = user.create_company_invite_token(@person.id)
+        UserMailer.send_company_invite(@person.company, user, token).deliver
+      end
+    else
+      # TODO: create unassociated token and send email
     end
 
-    redirect_to person_path(@person), notice: 'Invite has been sent successfully'
+    redirect_to person_path(@person), notice: t('messages.company_invite.email_sent')
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_person
-      @person = Person.find(params[:id])
-    end
+private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_person
+    @person = Person.find(params[:id])
+  end
 
-    def set_company
-      @company = Company.find(params[:company_id])
-    end
+  def set_company
+    @company = Company.find(params[:company_id])
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def person_params
-      params.require(:person).permit(:name, :email, :phone, :occupation)
-    end
+  # Only allow a trusted parameter "white list" through.
+  def person_params
+    params.require(:person).permit(:name, :email, :phone, :occupation)
+  end
+
 end

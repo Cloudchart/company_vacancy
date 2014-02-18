@@ -1,10 +1,10 @@
 class UserMailer < ActionMailer::Base
   default from: ENV['DEFAULT_FROM']
 
-  def send_company_invite(company, user)
+  def send_company_invite(company, user, token)
     @company = company
     @user = user
-    @token_id = user.tokens.find_by(name: :company_invite).id
+    @token = token
     mail to: user.email
   end
 
