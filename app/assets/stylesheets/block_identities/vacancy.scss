@@ -24,6 +24,10 @@ article section {
         position: relative;
         width: 30%;
         
+        &:nth-child(3n + 1) {
+          margin-right: 0;
+        }
+        
         > i {
           margin-right: $base-unit / 2;
         }

@@ -5,9 +5,8 @@
   <%- block.identities.each do |identity| -%>
     <div class="vacancy <%= identity.persisted? ? 'persisted' : 'new' %>">
       <%- if identity.persisted? -%>
-        <%= hidden_field_tag :"block[identity_ids][]", identity.to_param %>
-        <i class="fa fa-money"></i><%= identity.name %>
-        <div class="delete" data-behaviour="delete-vacancy" data-vacancy-id="<%= identity.to_param %>"><i class="fa fa-thumbs-down"></i></div>
+        <i class="fa fa-money"></i>
+        <%= select_tag :"block[identity_ids][]", options_from_collection_for_select(block.owner.vacancies, :to_param, :name, identity.to_param), prompt: 'Delete this vacancy', class: :edit, id: nil, data: { value: identity.to_param } %>
       <%- else -%>
         <%- vacancies = block.owner.vacancies - block.vacancies -%>
 
@@ -21,6 +20,5 @@
       <%- end -%>
     </div>
   <%- end -%>
-  
   
 <%- end -%>

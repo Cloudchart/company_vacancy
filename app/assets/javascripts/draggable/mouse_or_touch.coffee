@@ -9,6 +9,7 @@ events =
     up:     'mouseup touchend touchcancel'
     click:  'click'
 
+
 Object.keys(events).forEach (name) -> events[name] = events[name].split(' ').map((event) -> "#{event}.mouse_or_touch").join(' ')
 
 

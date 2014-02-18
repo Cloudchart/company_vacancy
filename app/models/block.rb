@@ -57,8 +57,14 @@ class Block < ActiveRecord::Base
     public_send :"#{singular_identity_name}_ids"
   end
   
-  def identity_ids=(*args)
-    public_send :"#{singular_identity_name}_ids=", *args
+  def identity_ids=(args)
+    public_send :"#{singular_identity_name}_ids=", args
+
+    ids = args.reject(&:blank?)
+
+    block_identities.each do |block_identity|
+      block_identity.update_attribute :position, ids.index(block_identity.identity_id)
+    end
   end
   
 protected

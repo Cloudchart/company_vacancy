@@ -5,7 +5,7 @@
 #
 
 
-new_vacancy_input_selector = "article section .identity-block.vacancy select.new"
+vacancy_input_selector = "article section .identity-block.vacancy select"
 delete_vacancy_input_selector = "article section .identity-block.vacancy [data-behaviour~='delete-vacancy']"
 
 
@@ -13,19 +13,24 @@ block_vacancies = ->
   
   $document = $(document)
   
-  $document.on 'change', new_vacancy_input_selector, ->
-    $(@).closest('form').submit()
-    
+  set_new_vacancy_value = ($element) ->
   
-  $document.on 'click', delete_vacancy_input_selector, ->
-    $el     = $(@)
-    uuid    = $el.data('vacancy-id')
-    $form   = $el.closest('form')
+  $document.on 'change', vacancy_input_selector, ->
+    $el = $(@)
+    
+    if $el.val()
+      $el.closest('form').find("select").not($el).each ->
+        $select = $(@)
 
-    $form.find("input[value=#{uuid}]").val(null)
-    $form.submit()
-
-
+        if $select.val() == $el.val()
+          $select.val($el.data('value'))
+          $select.data('value', $select.val())
+    
+    $el.data('value', $el.val())
+    
+    $el.closest('form').submit()
+    
+    
 #
 #
 #
