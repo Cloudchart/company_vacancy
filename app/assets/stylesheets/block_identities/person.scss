@@ -1,14 +1,14 @@
 article section {
   
-  .identity-block.vacancy {
-
+  .identity-block.person {
+    
     margin: $base-unit 0 0;
     
     > form {
       @include display(flex);
       @include flex-wrap(wrap);
-    
-      .vacancy {
+      
+      .person {
         @include display(flex);
         @include justify-content(center);
         @include align-items(center);
@@ -23,22 +23,9 @@ article section {
         padding: $base-unit;
         position: relative;
         width: 30%;
-        
+
         > i {
           margin-right: $base-unit / 2;
-        }
-        
-        .delete {
-          bottom: $base-unit / 4;
-          color: hsl(0, 75%, 50%);
-          font-size: 12pt;
-          position: absolute;
-          right: $base-unit / 4;
-          
-          &:hover {
-            color: hsl(0, 100%, 50%);
-            cursor: pointer;
-          }
         }
         
       }
@@ -46,5 +33,5 @@ article section {
     }
     
   }
-  
+
 }

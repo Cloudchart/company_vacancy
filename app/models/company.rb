@@ -3,10 +3,10 @@ class Company < ActiveRecord::Base
 
   SECTIONS = %i(about product people vacancies contacts).inject({}) { |hash, val| hash.merge({ I18n.t("company.sections.#{val}") => val }) }
 
-  has_many :blocks, -> { order(:section, :position) }, as: :owner, dependent: :destroy, inverse_of: :owner
-  has_many :vacancies, dependent: :destroy
-  has_one :logo, as: :owner, dependent: :destroy
-  has_one :person, dependent: :destroy
+  has_many  :blocks, -> { order(:section, :position) }, as: :owner, dependent: :destroy, inverse_of: :owner
+  has_many  :vacancies, dependent: :destroy
+  has_one   :logo, as: :owner, dependent: :destroy
+  has_many  :people, dependent: :destroy
 
   accepts_nested_attributes_for :logo, allow_destroy: true
 

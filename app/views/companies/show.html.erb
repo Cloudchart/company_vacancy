@@ -20,6 +20,8 @@
             |
             <%= link_to "Add Image", company_blocks_path(@company, section: section, identity_type: BlockImage.name), method: :post %>
             |
+            <%= link_to "Add Person", company_blocks_path(@company, section: section, identity_type: Person.name), method: :post %>
+            |
             <%= link_to 'Add Vacancy', company_blocks_path(@company, section: section, identity_type: Vacancy.name), method: :post %>
           </nav>
         </section>

@@ -1,7 +1,7 @@
 class Block < ActiveRecord::Base
   include Uuidable
   
-  IdentitiesClasses = [Paragraph, BlockImage, Vacancy]
+  IdentitiesClasses = [Paragraph, BlockImage, Person, Vacancy]
 
   TYPES = IdentitiesClasses.map {|i| i.to_s.underscore }.inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
   
