@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  include TokenableController
+
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /users/1
@@ -86,12 +88,7 @@ class UsersController < ApplicationController
       person = Person.find(token.data)
       user.people << person
       user.save!
-
-      # cleanup
-      if session[:company_invite].present?
-        session[:company_invite].reject! { |hash| hash[:token_id] == token.id }
-      end
-      token.destroy
+      clean_session_and_destroy_token(token)
 
       redirect_to company_path(person.company), notice: t('messages.invitation_completed')
     else
@@ -116,12 +113,13 @@ private
   end
 
   def create_confirmation_token_and_send_email(user)
-    user.create_confirmation_token
+    user.tokens.create(name: :confirmation)
     PassportMailer.confirmation_instructions(user).deliver
   end
 
   def create_reconfirmation_token_and_send_email(user)
-    user.destroy_garbage_and_create_reconfirmation_token(params[:user][:email])
+    user.tokens.where(name: :reconfirmation).destroy_all
+    user.tokens.create(name: :reconfirmation, data: params[:user][:email])
     PassportMailer.reconfirmation_instructions(user).deliver
   end
 

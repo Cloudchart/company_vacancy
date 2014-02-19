@@ -16,24 +16,6 @@ class User < ActiveRecord::Base
 
   validates :email, presence: true, uniqueness: true, format: { with: EMAIL_REGEX, message: I18n.t('messages.validations.invalid_format') }
 
-  def create_confirmation_token
-    tokens.create(name: :confirmation)
-  end
-
-  def create_company_invite_token(person_id)
-    tokens.create(name: :company_invite, data: person_id)
-  end
-
-  def destroy_garbage_and_create_recover_token
-    tokens.where(name: :recover).destroy_all
-    tokens.create(name: :recover)
-  end
-
-  def destroy_garbage_and_create_reconfirmation_token(new_email)
-    tokens.where(name: :reconfirmation).destroy_all
-    tokens.create(name: :reconfirmation, data: new_email)
-  end
-
 private
 
   def postpone_email

@@ -1,5 +1,5 @@
 <p>
-  Hello <%= @user.name.present? || @user.email %>,
+  Hello<%= @user.name.present? ? " #{@user.name}" : '' %>,
 </p>
 
 <p>

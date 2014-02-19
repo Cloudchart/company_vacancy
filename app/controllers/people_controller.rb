@@ -58,12 +58,10 @@ class PeopleController < ApplicationController
       if user.people.map(&:company_id).include?(@person.company_id)
         return redirect_to person_path(@person), alert: t('messages.company_invite.user_has_already_been_associated')
       else
-        Token.find_by(data: @person.id.to_yaml).try(:destroy)
-        token = user.create_company_invite_token(@person.id)
-        UserMailer.send_company_invite(@person.company, user, token).deliver
+        create_company_invite_token_and_send_email(@person.id, user)
       end
     else
-      # TODO: create unassociated token and send email
+      create_company_invite_token_and_send_email(@person.id)
     end
 
     redirect_to person_path(@person), notice: t('messages.company_invite.email_sent')
@@ -82,6 +80,15 @@ private
   # Only allow a trusted parameter "white list" through.
   def person_params
     params.require(:person).permit(:name, :email, :phone, :occupation)
+  end
+
+  def create_company_invite_token_and_send_email(person_id, user=nil)
+    Token.find_by(data: person_id.to_yaml).try(:destroy)
+    token = Token.new(name: :company_invite, data: person_id)
+    token.owner = user
+    token.save!
+    user = user ? user : User.new(email: params[:email])
+    UserMailer.send_company_invite(@person.company, user, token).deliver
   end
 
 end

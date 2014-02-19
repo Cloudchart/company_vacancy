@@ -9,7 +9,7 @@ class LandingsController < ApplicationController
       company_invite_session = session[:company_invite] ||= []
       company_invite_session << { token_id: token.id, company_name: Person.find(token.data).company.name }
       company_invite_session.uniq!
-      redirect_to login_path
+      redirect_to token.owner ? login_path : sign_up_path
     end
   end
 

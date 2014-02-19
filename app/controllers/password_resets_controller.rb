@@ -45,7 +45,8 @@ class PasswordResetsController < ApplicationController
     end
 
     def create_recover_token_and_send_email(user)
-      user.destroy_garbage_and_create_recover_token
+      user.tokens.where(name: :recover).destroy_all
+      user.tokens.create(name: :recover)      
       PassportMailer.recover_instructions(user).deliver
     end
 
