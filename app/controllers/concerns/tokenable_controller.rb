@@ -4,9 +4,12 @@ module TokenableController
 private
 
   def clean_session_and_destroy_token(token)
+    return unless token
+
     if session[:company_invite].present?
       session[:company_invite].reject! { |hash| hash[:token_id] == token.id }
     end
+    
     token.destroy    
   end
 

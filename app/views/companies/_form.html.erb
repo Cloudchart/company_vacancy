@@ -3,7 +3,7 @@
 
   <div class="form-inputs">
     <%= image_tag f.object.logo.image.thumb.url if f.object.logo.present? %>
-    <%= f.simple_fields_for :logo, @company.logo.present? ? @company.logo : @company.build_logo do |logo| %>
+    <%= f.simple_fields_for :logo, @company.logo.present? ? @company.logo : @company.build_logo, include_id: false do |logo| %>
       <%= logo.input :image %>
     <% end %>
 

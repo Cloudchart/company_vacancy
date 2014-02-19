@@ -1,4 +1,6 @@
 class PeopleController < ApplicationController
+  include TokenableController
+
   before_action :set_person, only: [:show, :edit, :update, :destroy, :send_invite_to_user]
   before_action :set_company, only: [:index, :new, :create]
 
@@ -83,7 +85,7 @@ private
   end
 
   def create_company_invite_token_and_send_email(person_id, user=nil)
-    Token.find_by(data: person_id.to_yaml).try(:destroy)
+    clean_session_and_destroy_token(Token.find_by(data: person_id.to_yaml))
     token = Token.new(name: :company_invite, data: person_id)
     token.owner = user
     token.save!

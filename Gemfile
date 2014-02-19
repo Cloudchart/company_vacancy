@@ -17,6 +17,7 @@ gem 'bcrypt-ruby', '~> 3.1.2'
 gem 'oauth2'
 gem 'postmark-rails', '~> 0.5.2'
 gem 'active_attr'
+gem 'cancan'
 
 # gem 'passport', path: '~/code/passport'
 gem 'passport', git: 'git@github.com:Cloudchart/passport.git'

@@ -1,5 +1,7 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy]
+  
+  authorize_resource
 
   # GET /companies
   def index
@@ -24,6 +26,8 @@ class CompaniesController < ApplicationController
   # POST /companies
   def create
     @company = Company.new(company_params)
+    person = @company.people.build(name: current_user.name, email: current_user.email, phone: current_user.phone)
+    person.user = current_user
 
     if @company.save
       redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
