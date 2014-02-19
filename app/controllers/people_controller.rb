@@ -1,5 +1,5 @@
 class PeopleController < ApplicationController
-  before_action :set_person, only: [:show, :edit, :update, :destroy]
+  before_action :set_person, only: [:show, :edit, :update, :destroy, :send_invite_to_user]
   before_action :set_company, only: [:index, :new, :create]
 
   # GET /people
@@ -48,18 +48,47 @@ class PeopleController < ApplicationController
     redirect_to company_people_url(company), notice: t('messages.destroyed', name: t('lexicon.person'))
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_person
-      @person = Person.find(params[:id])
+  # POST /people/1/send_invite_to_user
+  def send_invite_to_user
+    return redirect_to person_path(@person), alert: t('messages.company_invite.email_blank') if params[:email].blank?
+    user = User.find_by(email: params[:email])
+ 
+    if user
+      # check if user already has person in this company
+      if user.people.map(&:company_id).include?(@person.company_id)
+        return redirect_to person_path(@person), alert: t('messages.company_invite.user_has_already_been_associated')
+      else
+        create_company_invite_token_and_send_email(@person.id, user)
+      end
+    else
+      create_company_invite_token_and_send_email(@person.id)
     end
 
-    def set_company
-      @company = Company.find(params[:company_id])
-    end
+    redirect_to person_path(@person), notice: t('messages.company_invite.email_sent')
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def person_params
-      params.require(:person).permit(:name, :email, :phone, :occupation)
-    end
+private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_person
+    @person = Person.find(params[:id])
+  end
+
+  def set_company
+    @company = Company.find(params[:company_id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def person_params
+    params.require(:person).permit(:name, :email, :phone, :occupation)
+  end
+
+  def create_company_invite_token_and_send_email(person_id, user=nil)
+    Token.find_by(data: person_id.to_yaml).try(:destroy)
+    token = Token.new(name: :company_invite, data: person_id)
+    token.owner = user
+    token.save!
+    user = user ? user : User.new(email: params[:email])
+    UserMailer.send_company_invite(@person.company, user, token).deliver
+  end
+
 end

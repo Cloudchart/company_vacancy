@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  include TokenableController
+
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /users/1
@@ -57,7 +59,6 @@ class UsersController < ApplicationController
     else
       redirect_to root_path, alert: t('messages.tokens.not_found', action: t('actions.activation'))
     end
-
   end
 
   # GET user/1/reactivate
@@ -67,7 +68,7 @@ class UsersController < ApplicationController
     # logout, update user email and destroy all reconfirmation tokens with identical email
     if token
       warden.logout(:user)
-      token.tokenable.update_attribute(:email, token.data)
+      token.owner.update_attribute(:email, token.data)
       Token.where(name: :reconfirmation, data: token.data.to_yaml).destroy_all
 
       redirect_to login_path, notice: t('messages.successful_action',
@@ -77,33 +78,49 @@ class UsersController < ApplicationController
     else
       redirect_to root_path, alert: t('messages.tokens.not_found', action: t('actions.email_change'))
     end
-
   end
 
-  private
+  def associate_with_person
+    user = User.find(params[:id])
+    token = Token.find(params[:token_id]) rescue nil
 
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
-    end
+    if token
+      person = Person.find(token.data)
+      user.people << person
+      user.save!
+      clean_session_and_destroy_token(token)
 
-    # Only allow a trusted parameter "white list" through.
-    def user_params_on_create
-      params.require(:user).permit(:email, :password, :password_confirmation)
+      redirect_to company_path(person.company), notice: t('messages.invitation_completed')
+    else
+      redirect_to root_path, alert: t('messages.tokens.not_found', action: t('actions.company_invite'))
     end
+  end
 
-    def user_params_on_update
-      params.require(:user).permit(:name, :email, :password, :password_confirmation, :phone, avatar_attributes: :image)
-    end
+private
 
-    def create_confirmation_token_and_send_email(user)
-      user.create_confirmation_token
-      PassportMailer.confirmation_instructions(user).deliver
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_user
+    @user = User.find(params[:id])
+  end
 
-    def create_reconfirmation_token_and_send_email(user)
-      user.destroy_garbage_and_create_reconfirmation_token(params[:user][:email])
-      PassportMailer.reconfirmation_instructions(user).deliver
-    end
+  # Only allow a trusted parameter "white list" through.
+  def user_params_on_create
+    params.require(:user).permit(:email, :password, :password_confirmation)
+  end
+
+  def user_params_on_update
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :phone, avatar_attributes: :image)
+  end
+
+  def create_confirmation_token_and_send_email(user)
+    user.tokens.create(name: :confirmation)
+    PassportMailer.confirmation_instructions(user).deliver
+  end
+
+  def create_reconfirmation_token_and_send_email(user)
+    user.tokens.where(name: :reconfirmation).destroy_all
+    user.tokens.create(name: :reconfirmation, data: params[:user][:email])
+    PassportMailer.reconfirmation_instructions(user).deliver
+  end
 
 end

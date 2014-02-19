@@ -16,3 +16,10 @@ en:
     successful_action: "Your %{thing} has been successfully %{action}. Please login."
     validations:
       invalid_format: "invalid format"
+    invitation_completed: "Invitation has been successfully completed."
+    company_invite: 
+      token_not_found: "Sorry, we couldn't find this invitation."
+      email_sent: "Invite has been sent successfully."
+      user_has_already_been_associated: "User with this email is already associated with your company."
+      email_blank: "Invitation email can't be blank."
+      you_have_invitation: "You have <a href='%{href}'>invitation</a> from %{name}."

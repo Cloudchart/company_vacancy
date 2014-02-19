@@ -12,7 +12,7 @@ class PasswordResetsController < ApplicationController
 
   def edit
     if @token
-      @user = @token.tokenable
+      @user = @token.owner
     else
       redirect_to root_path, alert: t('messages.tokens.not_found', action: t('actions.password_reset'))
     end
@@ -20,7 +20,7 @@ class PasswordResetsController < ApplicationController
   end
 
   def update
-    @user = @token.tokenable
+    @user = @token.owner
 
     if @user.update(user_params)
       redirect_to login_path, notice: t('messages.successful_action',
@@ -45,7 +45,8 @@ class PasswordResetsController < ApplicationController
     end
 
     def create_recover_token_and_send_email(user)
-      user.destroy_garbage_and_create_recover_token
+      user.tokens.where(name: :recover).destroy_all
+      user.tokens.create(name: :recover)      
       PassportMailer.recover_instructions(user).deliver
     end
 

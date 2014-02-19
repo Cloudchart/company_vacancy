@@ -4,8 +4,8 @@
   <div class="form-inputs">
     <% unless @user.new_record? %>
 
-      <%= image_tag f.object.avatar.image.url if f.object.avatar.present? %>
-      <%= f.fields_for :avatar, @user.avatar.present? ? @user.avatar : @user.build_avatar do |avatar| %>
+      <%= image_tag f.object.try(:avatar).try(:image_url) %>
+      <%= f.simple_fields_for :avatar, @user.avatar.present? ? @user.avatar : @user.build_avatar, include_id: false do |avatar| %>
         <%= avatar.input :image %>
       <% end %>
 
