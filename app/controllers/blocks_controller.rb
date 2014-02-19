@@ -8,12 +8,14 @@ class BlocksController < ApplicationController
   
   def update
     block = Block.includes(:owner).find(params[:id])
+    authorize! :update, block
     block.update_attributes! block_params
     redirect_to block.owner
   end
   
   def destroy
     block = Block.includes(:owner, { block_identities: :identity }).find(params[:id])
+    authorize! :destroy, block
     block.destroy
     redirect_to block.owner
   end

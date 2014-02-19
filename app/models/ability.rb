@@ -28,8 +28,23 @@ class Ability
     # User specific
     can :create, Company
     can [:update, :destroy], Company do |company| 
-      user.people.select { |person| person.company_id == company.id }.any?
+      user_has_access_to_company?(user, company.id)
     end
 
+    can [:update, :destroy], Block do |block|
+      user_has_access_to_company?(user, block.owner_id)
+    end
+
+    # can [:manage], Person do |person|
+    #   user_has_access_to_company?(user, person.company_id)
+    # end
+
   end
+
+private
+
+  def user_has_access_to_company?(user, company_id)
+    user.people.select { |person| person.company_id == company_id }.any?
+  end
+
 end

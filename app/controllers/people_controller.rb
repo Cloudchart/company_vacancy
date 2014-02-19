@@ -4,6 +4,8 @@ class PeopleController < ApplicationController
   before_action :set_person, only: [:show, :edit, :update, :destroy, :send_invite_to_user]
   before_action :set_company, only: [:index, :new, :create]
 
+  # authorize_resource
+
   # GET /people
   def index
     @people = Person.all

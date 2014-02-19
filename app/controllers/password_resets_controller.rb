@@ -37,7 +37,7 @@ class PasswordResetsController < ApplicationController
   private
 
     def set_token
-      @token = Token.find_by(uuid: params[:id])
+      @token = Token.find(params[:id]) rescue nil
     end
 
     def user_params
