@@ -21,5 +21,6 @@ en:
       token_not_found: "Sorry, we couldn't find this invitation."
       email_sent: "Invite has been sent successfully."
       user_has_already_been_associated: "User with this email is already associated with your company."
+      you_are_already_associated: "You are already associated with %{name}."
       email_blank: "Invitation email can't be blank."
       you_have_invitation: "You have <a href='%{href}'>invitation</a> from %{name}."

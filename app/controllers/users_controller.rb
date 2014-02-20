@@ -1,7 +1,9 @@
 class UsersController < ApplicationController
   include TokenableController
 
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :associate_with_person]
+
+  authorize_resource
 
   # GET /users/1
   def show
@@ -47,7 +49,7 @@ class UsersController < ApplicationController
 
   # GET user/1/activate
   def activate
-    token = Token.find_by(uuid: params[:id])
+    token = Token.find(params[:id]) rescue nil
 
     if token
       token.destroy
@@ -81,13 +83,17 @@ class UsersController < ApplicationController
   end
 
   def associate_with_person
-    user = User.find(params[:id])
     token = Token.find(params[:token_id]) rescue nil
 
     if token
       person = Person.find(token.data)
-      user.people << person
-      user.save!
+
+      if @user.people.map(&:company_id).include?(person.company_id)
+        return redirect_to company_invite_path(token), alert: t('messages.company_invite.you_are_already_associated', name: person.company.name)
+      end
+
+      @user.people << person
+      @user.save!
       clean_session_and_destroy_token(token)
 
       redirect_to company_path(person.company), notice: t('messages.invitation_completed')

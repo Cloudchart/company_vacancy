@@ -1,6 +1,8 @@
 # TODO: error handling
 
 class SocialNetworksController < ApplicationController
+
+  before_filter :authorize_user
   
   def redirect_to_authirize_url
     provider = params[:provider].to_sym
@@ -28,6 +30,12 @@ class SocialNetworksController < ApplicationController
   def destroy_access
     current_user.tokens.where(name: params[:provider]).first.destroy
     redirect_to :back, notice: t('messages.tokens.destroyed')
+  end
+
+private
+
+  def authorize_user
+    authorize! :access_social_networks, User
   end
 
 end
