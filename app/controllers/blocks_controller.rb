@@ -1,9 +1,10 @@
 class BlocksController < ApplicationController
-  before_filter :find_company, only: [:create]
-
   def create
-    @company.blocks << Block.new({section: params[:section], identity_type: params[:identity_type]})
-    redirect_to @company
+    company = Company.find params[:company_id]
+    block = company.blocks.build({section: params[:section], identity_type: params[:identity_type]})
+    authorize! :create, block
+    company.blocks << block 
+    redirect_to company
   end
   
   def update
@@ -37,11 +38,7 @@ class BlocksController < ApplicationController
     Block.find(params[:block_id]).update_attribute(:section, params[:section])
   end
 
-protected  
-  
-  def find_company
-    @company = Company.find params[:company_id]
-  end
+private
 
   def block_params
     params.require(:block).permit(

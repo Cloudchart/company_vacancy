@@ -3,8 +3,11 @@ class PeopleController < ApplicationController
 
   before_action :set_person, only: [:show, :edit, :update, :destroy, :send_invite_to_user]
   before_action :set_company, only: [:index, :new, :create]
+  before_action :build_person, only: :new
+  before_action :build_person_with_params, only: :create
+  before_action :authorize_company, only: :index
 
-  # authorize_resource
+  authorize_resource
 
   # GET /people
   def index
@@ -17,7 +20,6 @@ class PeopleController < ApplicationController
 
   # GET /people/new
   def new
-    @person = Person.new
   end
 
   # GET /people/1/edit
@@ -26,9 +28,6 @@ class PeopleController < ApplicationController
 
   # POST /people
   def create
-    @person = Person.new(person_params)
-    @person.company = @company
-
     if @person.save
       redirect_to @person, notice: t('messages.created', name: t('lexicon.person'))
     else
@@ -84,6 +83,18 @@ private
   # Only allow a trusted parameter "white list" through.
   def person_params
     params.require(:person).permit(:name, :email, :phone, :occupation)
+  end
+
+  def build_person
+    @person = @company.people.build
+  end
+
+  def build_person_with_params
+    @person = @company.people.build(person_params)
+  end
+
+  def authorize_company
+    authorize! :access_people, @company
   end
 
   def create_company_invite_token_and_send_email(person_id, user=nil)

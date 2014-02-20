@@ -28,23 +28,21 @@ class Ability
     # User specific
     can :create, Company
     can [:update, :destroy], Company do |company| 
-      user_has_access_to_company?(user, company.id)
+      (company.people & user.people).any?
     end
 
-    can [:update, :destroy], Block do |block|
-      user_has_access_to_company?(user, block.owner_id)
+    can :manage, Block do |block|
+      (block.owner.try(:people) & user.people).any?
     end
 
-    # can [:manage], Person do |person|
-    #   user_has_access_to_company?(user, person.company_id)
-    # end
+    can :manage, Person do |person|
+      (person.company.people & user.people).any?
+    end
+    # custom authorization for nested people#index
+    can [:access_people], Company do |company|
+      (company.people & user.people).any?
+    end
 
-  end
-
-private
-
-  def user_has_access_to_company?(user, company_id)
-    user.people.select { |person| person.company_id == company_id }.any?
   end
 
 end
