@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :avatar, allow_destroy: true
 
   validates :email, presence: true, uniqueness: true, format: { with: EMAIL_REGEX, message: I18n.t('messages.validations.invalid_format') }
+  validates :name, presence: true
 
 private
 

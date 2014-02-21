@@ -2,7 +2,7 @@ class CreatePeople < ActiveRecord::Migration
   def up
     create_table :people, id: false do |t|
       t.string :uuid, limit: 36
-      t.string :name
+      t.string :name, null: false
       t.string :email
       t.string :occupation
       t.string :phone

@@ -5,9 +5,9 @@ class Block < ActiveRecord::Base
 
   TYPES = IdentitiesClasses.map {|i| i.to_s.underscore }.inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
   
-  before_create   :ensure_position
+  before_create   :ensure_position, unless: Proc.new { |block| block.position.present? }
   before_destroy  :destroy_identities
-  after_destroy   :reposition_siblings
+  after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
 
   belongs_to :owner, polymorphic: true
   has_many :block_identities, -> { order(:position) }, inverse_of: :block
@@ -67,7 +67,7 @@ class Block < ActiveRecord::Base
     end
   end
   
-protected
+private
 
   def ensure_position
     self.position = owner.blocks_by_section(section).length

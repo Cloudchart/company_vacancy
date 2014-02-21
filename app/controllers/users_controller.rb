@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   def show
   end
 
-  # GET /users/new
+  # get /sign-up
   def new
     @user = User.new
   end
@@ -20,7 +20,7 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    @user = User.new(user_params_on_create)
+    @user = User.new(user_params)
 
     if @user.save
       create_confirmation_token_and_send_email(@user)
@@ -32,7 +32,7 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    if @user.update(user_params_on_update)
+    if @user.update(user_params)
 
       if @user.email == params[:user][:email]
         notice = t('messages.updated', name: t('lexicon.user'))
@@ -110,11 +110,7 @@ private
   end
 
   # Only allow a trusted parameter "white list" through.
-  def user_params_on_create
-    params.require(:user).permit(:email, :password, :password_confirmation)
-  end
-
-  def user_params_on_update
+  def user_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :phone, avatar_attributes: :image)
   end
 

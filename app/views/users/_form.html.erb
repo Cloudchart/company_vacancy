@@ -9,10 +9,10 @@
         <%= avatar.input :image %>
       <% end %>
 
-      <%= f.input :name %>
       <%= f.input :phone %>
     <% end %>
 
+    <%= f.input :name %>
     <%= f.input :email %>
     <%= f.input :password %>
     <%= f.input :password_confirmation, required: @user.new_record? ? true : false %>

@@ -13,7 +13,6 @@ Cloudchart::Application.configure do
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
-  # TODO: switch raise_delivery_errors to false after testing in dev env (maybe add https://github.com/ryanb/letter_opener)
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_url_options = { host: ENV['ACTION_MAILER_DEFAULT_HOST'] }
