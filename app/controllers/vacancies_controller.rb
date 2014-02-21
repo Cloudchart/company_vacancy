@@ -1,6 +1,11 @@
 class VacanciesController < ApplicationController
   before_action :set_vacancy, only: [:show, :edit, :update, :destroy]
   before_action :set_company, only: [:index, :new, :create]
+  before_action :build_vacancy, only: :new
+  before_action :build_vacancy_with_params, only: :create
+  before_action :authorize_company, only: :index
+
+  authorize_resource  
 
   # GET /vacancies
   def index
@@ -13,7 +18,6 @@ class VacanciesController < ApplicationController
 
   # GET /vacancies/new
   def new
-    @vacancy = Vacancy.new
   end
 
   # GET /vacancies/1/edit
@@ -22,9 +26,6 @@ class VacanciesController < ApplicationController
 
   # POST /vacancies
   def create
-    @vacancy = Vacancy.new(vacancy_params)
-    @vacancy.company = @company
-
     if @vacancy.save
       redirect_to @vacancy, notice: t('messages.created', name: t('lexicon.vacancy'))
     else
@@ -48,19 +49,31 @@ class VacanciesController < ApplicationController
     redirect_to company_vacancies_url(company), notice: t('messages.destroyed', name: t('lexicon.vacancy'))
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_vacancy
-      @vacancy = Vacancy.find(params[:id])
-    end
+private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_vacancy
+    @vacancy = Vacancy.find(params[:id])
+  end
 
-    def set_company
-      @company = Company.find(params[:company_id])
-    end
+  def set_company
+    @company = Company.find(params[:company_id])
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def vacancy_params
-      params.require(:vacancy).permit(:name, :description, :salary, :location, settings: VacancySetting.attributes.symbolize_keys.keys)
-    end
+  # Only allow a trusted parameter "white list" through.
+  def vacancy_params
+    params.require(:vacancy).permit(:name, :description, :salary, :location, settings: VacancySetting.attributes.symbolize_keys.keys)
+  end
+
+  def build_vacancy
+    @vacancy = @company.vacancies.build
+  end
+
+  def build_vacancy_with_params
+    @vacancy = @company.vacancies.build(vacancy_params)
+  end
+
+  def authorize_company
+    authorize! :access_vacancies, @company
+  end 
 
 end

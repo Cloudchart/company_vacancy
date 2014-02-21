@@ -49,6 +49,14 @@ class Ability
       (company.people & user.people).any?
     end
 
+    can :manage, Vacancy do |vacancy|
+      (vacancy.company.people & user.people).any?
+    end
+    # custom authorization for nested vacancies#index
+    can [:access_vacancies], Company do |company|
+      (company.people & user.people).any?
+    end
+
     can :access_social_networks, User do |user|
       !!user
     end    
@@ -56,8 +64,6 @@ class Ability
     can :manage, Token do |token|
       !!user
     end
-
-    # TODO: Vacancies
 
   end
 
