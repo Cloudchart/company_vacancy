@@ -3,7 +3,7 @@ class Company < ActiveRecord::Base
 
   SECTIONS = %i(about product people vacancies contacts).inject({}) { |hash, val| hash.merge({ I18n.t("company.sections.#{val}") => val }) }
 
-  after_validation :create_sections_and_locked_blocks
+  after_validation :build_sections_and_locked_blocks
   before_destroy :mark_for_destruction
 
   serialize :sections, OpenStruct
@@ -24,7 +24,7 @@ class Company < ActiveRecord::Base
 
 private
 
-  def create_sections_and_locked_blocks
+  def build_sections_and_locked_blocks
     SECTIONS.values.each { |section| sections.send("#{section}=", nil) }
     blocks.build(section: :about, position: 0, identity_type: 'Paragraph', locked: true)
     blocks.build(section: :product, position: 0, identity_type: 'Paragraph', locked: true)
