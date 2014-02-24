@@ -11,7 +11,10 @@ class PeopleController < ApplicationController
 
   # GET /people
   def index
-    @people = Person.all
+    @search = @company.people.search do
+      fulltext params[:search]
+    end
+    @people = @search.results
   end
 
   # GET /people/1
