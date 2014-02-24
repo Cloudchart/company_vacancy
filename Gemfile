@@ -18,6 +18,7 @@ gem 'oauth2'
 gem 'postmark-rails', '~> 0.5.2'
 gem 'active_attr'
 gem 'cancan'
+gem 'sunspot_rails'
 
 # gem 'passport', path: '~/code/passport'
 gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
@@ -36,6 +37,7 @@ group :development do
   gem 'quiet_assets' # mutes assets pipeline log messages
   gem 'letter_opener' # preview mail in the browser instead of sending
   gem 'bullet' # helps to kill N+1 queries and unused eager loading
+  gem 'sunspot_solr' # optional pre-packaged Solr distribution for use in development
 end
 
 group :development, :test do
