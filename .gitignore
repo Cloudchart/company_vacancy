@@ -24,3 +24,5 @@
 .rbenv-gemsets
 .gemfiles
 solr/data
+solr/development
+solr/pids/development
