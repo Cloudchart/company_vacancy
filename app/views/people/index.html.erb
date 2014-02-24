@@ -1,12 +1,5 @@
 <h1>Listing people</h1>
 
-<%= form_tag company_people_path, method: :get do %>
-  <p>
-    <%= text_field_tag :search, params[:search] %>
-    <%= submit_tag t('lexicon.search'), name: nil %>
-  </p>
-<% end %>
-
 <table>
   <thead>
     <tr>
@@ -44,3 +37,15 @@
 <br>
 
 <%= link_to 'New Person', new_company_person_path %>
+
+<h1>Searching people</h1>
+
+<%= form_tag search_company_people_path, method: :get do %>
+  <p>
+    <%= text_field_tag :query, params[:query], class: 'people-search' %>
+    <%= submit_tag t('lexicon.search'), name: nil %>
+  </p>
+<% end %>
+
+<div class="ajax-loader"></div>
+<div class="search-result"></div>

@@ -2,7 +2,7 @@ class PeopleController < ApplicationController
   include TokenableController
 
   before_action :set_person, only: [:show, :edit, :update, :destroy, :send_invite_to_user]
-  before_action :set_company, only: [:index, :new, :create]
+  before_action :set_company, only: [:index, :new, :create, :search]
   before_action :build_person, only: :new
   before_action :build_person_with_params, only: :create
   before_action :authorize_company, only: :index
@@ -11,10 +11,19 @@ class PeopleController < ApplicationController
 
   # GET /people
   def index
+    @people = @company.people
+    pagescript_params company_id: @company.id
+  end
+
+  def search
     @search = @company.people.search do
-      fulltext params[:search]
+      fulltext params[:query]
     end
     @people = @search.results
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   # GET /people/1

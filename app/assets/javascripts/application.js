@@ -13,4 +13,5 @@
 //= require jquery
 //= require jquery_ujs
 //= require block_identities
+//= require bindWithDelay
 //= require_tree .

@@ -9,7 +9,7 @@ class VacanciesController < ApplicationController
 
   # GET /vacancies
   def index
-    @vacancies = Vacancy.all
+    @vacancies = @company.vacancies
   end
 
   # GET /vacancies/1
