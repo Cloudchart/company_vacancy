@@ -13,7 +13,6 @@
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
-/log/*.lck
 /tmp
 .ruby-gemset
 .ruby-version
@@ -23,6 +22,3 @@
 /public/uploads
 .rbenv-gemsets
 .gemfiles
-solr/data
-solr/development
-solr/pids/development

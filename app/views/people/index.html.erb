@@ -40,12 +40,13 @@
 
 <h1>Searching people</h1>
 
-<%= form_tag search_company_people_path, method: :get do %>
-  <p>
-    <%= text_field_tag :query, params[:query], class: 'people-search' %>
-    <%= submit_tag t('lexicon.search'), name: nil %>
-  </p>
-<% end %>
+<p>
+  <%= text_field_tag :query, nil, class: 'people-search' %>  
+</p>
+<p>
+  <%= check_box_tag :facebook %>
+  <%= label_tag :facebook %>
+</p>
 
 <div class="ajax-loader"></div>
 <div class="search-result"></div>

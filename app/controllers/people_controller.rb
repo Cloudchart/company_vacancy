@@ -16,10 +16,7 @@ class PeopleController < ApplicationController
   end
 
   def search
-    @search = @company.people.search do
-      fulltext params[:query]
-    end
-    @people = @search.results
+    @people = @company.people.search(params[:query]) if params[:query].present?
 
     respond_to do |format|
       format.js
