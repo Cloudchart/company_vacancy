@@ -12,11 +12,20 @@ class PeopleController < ApplicationController
   # GET /people
   def index
     @people = @company.people
-    pagescript_params company_id: @company.id
+    pagescript_params(
+      company_id: @company.id,
+      social_networks: current_user.tokens.map(&:name)
+    )
   end
 
   def search
-    @people = @company.people.search(params[:query]) if params[:query].present?
+    @people = case params[:social_network]
+    when 'facebook'
+      token_data = current_user.tokens.find_by(name: 'facebook').try(:data)
+      Cloudchart::OAuth::FacebookAPI.search(token_data, params[:query], 'user')[0..4]
+    else
+      @company.people.search(params[:query]) if params[:query].present?
+    end
 
     respond_to do |format|
       format.js

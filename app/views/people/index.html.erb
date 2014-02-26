@@ -40,13 +40,9 @@
 
 <h1>Searching people</h1>
 
-<p>
-  <%= text_field_tag :query, nil, class: 'people-search' %>  
-</p>
-<p>
-  <%= check_box_tag :facebook %>
-  <%= label_tag :facebook %>
+<p style="position: relative;">
+  <%= text_field_tag :query, nil, class: 'people-search', placeholder: 'Type at least 3 characters to search people', size: 50 %>  
+  <span class="ajax-loader"></span>
 </p>
 
-<div class="ajax-loader"></div>
 <div class="search-result"></div>

@@ -1,9 +1,15 @@
+require 'cloudchart/oauth/facebook_api'
+
 module Cloudchart
   module OAuth
     PROVIDERS_DEFAULTS = {
       facebook: {
         site: 'https://graph.facebook.com/oauth',
         token_url: '/oauth/access_token'
+      },
+
+      facebook_api: {
+        site: 'https://graph.facebook.com'
       }
     }
 
@@ -17,6 +23,7 @@ module Cloudchart
     def self.provider(provider, key, secret)
       provider = provider.to_sym
       @@clients[provider] = OAuth2::Client.new(key, secret, PROVIDERS_DEFAULTS[provider])
+      @@clients[:"#{provider}_api"] = OAuth2::Client.new(key, secret, PROVIDERS_DEFAULTS[:"#{provider}_api"])
     end
 
     def self.authorize_url(provider, options={})
@@ -28,7 +35,6 @@ module Cloudchart
       provider = provider.to_sym
       @@clients[provider].send("#{provider == :facebook ? 'facebook_' : ''}auth_code").get_token(code, options)
     end
-    
+
   end
-  
 end

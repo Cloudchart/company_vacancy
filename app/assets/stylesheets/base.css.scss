@@ -22,8 +22,11 @@
 }
 
 .ajax-loader {
-  background: image-url('ajax-loader.gif');
-  width: 16px;
-  height: 16px;
-  display: none;
+    background: image-url('ajax-loader.gif');
+    width: 16px;
+    height: 16px;
+    display: none;
+    position: absolute;
+    left: 325px;
+    bottom: 4px;
 }
