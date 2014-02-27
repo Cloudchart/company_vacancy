@@ -1,0 +1,32 @@
+article section {
+  
+  .identity-block.paragraph {
+    
+    form {
+      margin: 0;
+      padding: 0;
+      
+      [contenteditable] {
+        
+        font-size: 15pt;
+        line-height: 1.25em;
+        
+        > p {
+          margin: 0;
+          padding: 0;
+        }
+        
+        &:empty::before {
+          color: hsl(0, 0, 78%);
+          content: attr(data-placeholder);
+          font-style: italic;
+          font-weight: 600;
+        }
+        
+      }
+      
+    }
+    
+  }
+
+}

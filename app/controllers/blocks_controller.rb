@@ -1,22 +1,35 @@
 class BlocksController < ApplicationController
-  before_filter :find_company, only: [:create]
+
 
   def create
-    @company.blocks << Block.new({section: params[:section], identity_type: params[:identity_type]})
-    redirect_to @company
+    @company  = Company.find params[:company_id]
+    @block    = @company.blocks.create! block_params_for_create
+    @company  = Company.includes(blocks: { block_identities: :identity }).find params[:company_id]
+
+    respond_to do |format|
+      format.html { redirect_to @company }
+      format.js
+    end
   end
   
+
   def update
-    block = Block.includes(:owner).find(params[:id])
-    block.update_attributes! block_params
-    redirect_to block.owner
+    @block = Block.includes(:owner).find params[:id]
+    @block.update_attributes! block_params_for_update
+
+    respond_to do |format|
+      format.html { redirect_to @block.owner }
+      format.js
+    end
   end
   
+
   def destroy
     block = Block.includes(:owner, { block_identities: :identity }).find(params[:id])
     block.destroy
     redirect_to block.owner
   end
+
 
   def update_position
     # temporary created params[:blocks]. must be passed through ajax call.
@@ -35,13 +48,13 @@ class BlocksController < ApplicationController
     Block.find(params[:block_id]).update_attribute(:section, params[:section])
   end
 
-protected  
-  
-  def find_company
-    @company = Company.find params[:company_id]
-  end
+protected
 
-  def block_params
+  def block_params_for_create
+    params.require(:block).permit(:section, :identity_type, :position)
+  end
+  
+  def block_params_for_update
     params.require(:block).permit(
       identity_ids: [],
       paragraphs_attributes: [:id, :content],

@@ -1,6 +1,6 @@
 <%- block.identities.build -%>
 
-<%= form_for block do |form| -%>
+<%= form_for block.persisted? ? block  : [block.owner, block] do |form| -%>
   
   <%- block.identities.each do |identity| -%>
     <div class="person <%= identity.persisted? ? 'persisted' : 'new' %>">
@@ -22,7 +22,3 @@
   <%- end -%>
   
 <%- end -%>
-
-<p>
-  <%= link_to "Delete", block, method: :delete %>
-</p>

@@ -8,8 +8,8 @@
     </li>
 
     <% Block::TYPES.each do |key, val| %>
-      <li data-behaviour="draggable <%= key.downcase %>">
-        <i class="fa <%= t ".#{key.downcase}" %>"></i>
+      <li class="draggable-block" data-behaviour="draggable <%= key.underscore %>" data-type="<%= key %>">
+        <i class="fa <%= t ".#{key.underscore}" %>"></i>
         <span><%= key %></span>
       </li>
     <% end %>

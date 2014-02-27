@@ -13,4 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require block_identities
+//= require ui
+//= require plugins
 //= require_tree .

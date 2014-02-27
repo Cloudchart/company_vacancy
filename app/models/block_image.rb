@@ -1,6 +1,6 @@
 class BlockImage < ActiveRecord::Base
-  include Uuidable
   extend CarrierWave::Meta::ActiveRecord
+  include Uuidable
   include Imageable
   
   serialize :meta, OpenStruct

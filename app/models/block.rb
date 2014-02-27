@@ -70,7 +70,8 @@ class Block < ActiveRecord::Base
 protected
 
   def ensure_position
-    self.position = owner.blocks_by_section(section).length
+    self.position = owner.blocks_by_section(section).length unless self.position
+    Block.where(owner_id: owner.to_param, owner_type: owner.class, section: section).where('position >= ?', position).update_all('position = (position + 1)')
   end
   
   def reposition_siblings

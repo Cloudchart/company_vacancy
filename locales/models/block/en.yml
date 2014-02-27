@@ -1,8 +1,8 @@
 en:
   block:
     types:
-      paragraph: "Text"
-      block_image: "Image"
+      paragraph: "Paragraph"
+      block_image: "BlockImage"
       vacancy: "Vacancy"
       chart: "Chart"
       person: "Person"

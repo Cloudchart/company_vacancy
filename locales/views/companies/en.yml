@@ -5,8 +5,8 @@ en:
       add_image: "Add image block"
     blocks:
       title: This is the Editor. Drag to add
-      text: fa-font
-      image: fa-picture-o
+      paragraph: fa-font
+      block_image: fa-picture-o
       vacancy: fa-money
       chart: fa-table
       person: fa-user

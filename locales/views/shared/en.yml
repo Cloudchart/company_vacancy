@@ -18,4 +18,5 @@ en:
       paragraph:
         placeholder: Default Text Placeholder
         about:
-          placeholder_0: Specific placeholder for text block at about at position 0
+          placeholder_0: |
+            Tell a short story about your company — what does your company do and why it’s important. Be brief, be clear, be straightforward. At about 70 words / 500 characters we’ll curb your enthusiasm.

@@ -1,7 +1,8 @@
 <% present @company do |company| %>
   <div class="companies-wrapper">
 
-    <article>
+    <article data-behaviour="droppable" data-droppable-target="article">
+      <%= render partial: 'new_block_form' %>
       
       <%- Company::SECTIONS.each do |title, section| -%>
         
@@ -9,25 +10,11 @@
           <%= title %>
         </h2>
         
-        <section>
-          <%- @company.blocks_by_section(section).each do |block| -%>
-            <div class="<%= block.identity_name %> identity-block">
-              <%= render "shared/blocks/#{block.identity_type.underscore}", block: block %>
-            </div>
-          <%- end -%>
-          <nav>
-            <%= link_to "Add Text", company_blocks_path(@company, section: section, identity_type: Paragraph.name), method: :post %>
-            |
-            <%= link_to "Add Image", company_blocks_path(@company, section: section, identity_type: BlockImage.name), method: :post %>
-            |
-            <%= link_to "Add Person", company_blocks_path(@company, section: section, identity_type: Person.name), method: :post %>
-            |
-            <%= link_to 'Add Vacancy', company_blocks_path(@company, section: section, identity_type: Vacancy.name), method: :post %>
-          </nav>
+        <section data-name="<%= section %>">
+          <%= render partial: 'shared/block', collection: @company.blocks_by_section(section) -%>
         </section>
         
       <%- end -%>
-      
       
     </article>
 

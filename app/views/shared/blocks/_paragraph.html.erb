@@ -1,20 +1,10 @@
-<%- block.identities.build if block.identities.blank? -%>
+<%- block.identities.build if block.identities.empty? -%>
 
-<%= simple_form_for block do |f| -%>
-  <%= f.error_notification %>
+<%= form_for block.persisted? ? block : [block.owner, block], html: { data: { remote: true } } do |form| %>
 
-  <div class="form-inputs">
-    <%= f.simple_fields_for block.plural_identity_name, block.identities, hidden_field_id: false do |identity_form| -%>
-        <%= identity_form.input_field :id, as: :hidden, id: false if identity_form.object.persisted? %>
-        <%= identity_form.input :content %>
-    <%- end -%>
-  </div>
-
-  <div class="form-actions">
-    <%= f.button :submit -%>
-    | <%= link_to "Delete", block, method: :delete %>
-  </div>
+  <%= form.fields_for :paragraphs, block.identities do |identity_form| %>
+    <%= identity_form.hidden_field :content, id: nil, data: { source: :content } %>
+    <div contenteditable="true" data-target="[data-source=content]" data-behaviour="paragraph" data-placeholder="<%= t(".#{block.section}.placeholder_#{block.position}", default: t('.placeholder')) %>"><%= identity_form.object.content.try :html_safe %></div>
+  <%- end -%>
 
 <%- end -%>
-
-<br />
