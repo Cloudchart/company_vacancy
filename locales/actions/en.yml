@@ -9,3 +9,4 @@ en:
     password_reset: "password reset"
     reset: "reset"
     changed: "changed"
+    company_invite: "company invite"

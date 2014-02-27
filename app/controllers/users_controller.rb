@@ -1,11 +1,15 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  include TokenableController
+
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :associate_with_person]
+
+  authorize_resource
 
   # GET /users/1
   def show
   end
 
-  # GET /users/new
+  # get /sign-up
   def new
     @user = User.new
   end
@@ -16,7 +20,7 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    @user = User.new(user_params_on_create)
+    @user = User.new(user_params)
 
     if @user.save
       create_confirmation_token_and_send_email(@user)
@@ -28,7 +32,7 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    if @user.update(user_params_on_update)
+    if @user.update(user_params)
 
       if @user.email == params[:user][:email]
         notice = t('messages.updated', name: t('lexicon.user'))
@@ -45,7 +49,7 @@ class UsersController < ApplicationController
 
   # GET user/1/activate
   def activate
-    token = Token.find_by(uuid: params[:id])
+    token = Token.find(params[:id]) rescue nil
 
     if token
       token.destroy
@@ -57,7 +61,6 @@ class UsersController < ApplicationController
     else
       redirect_to root_path, alert: t('messages.tokens.not_found', action: t('actions.activation'))
     end
-
   end
 
   # GET user/1/reactivate
@@ -67,7 +70,7 @@ class UsersController < ApplicationController
     # logout, update user email and destroy all reconfirmation tokens with identical email
     if token
       warden.logout(:user)
-      token.tokenable.update_attribute(:email, token.data)
+      token.owner.update_attribute(:email, token.data)
       Token.where(name: :reconfirmation, data: token.data.to_yaml).destroy_all
 
       redirect_to login_path, notice: t('messages.successful_action',
@@ -77,33 +80,49 @@ class UsersController < ApplicationController
     else
       redirect_to root_path, alert: t('messages.tokens.not_found', action: t('actions.email_change'))
     end
-
   end
 
-  private
+  def associate_with_person
+    token = Token.find(params[:token_id]) rescue nil
 
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
-    end
+    if token
+      person = Person.find(token.data)
 
-    # Only allow a trusted parameter "white list" through.
-    def user_params_on_create
-      params.require(:user).permit(:email, :password, :password_confirmation)
-    end
+      if @user.people.map(&:company_id).include?(person.company_id)
+        return redirect_to company_invite_path(token), alert: t('messages.company_invite.you_are_already_associated', name: person.company.name)
+      end
 
-    def user_params_on_update
-      params.require(:user).permit(:name, :email, :password, :password_confirmation, :phone, avatar_attributes: :image)
-    end
+      @user.people << person
+      @user.save!
+      clean_session_and_destroy_token(token)
 
-    def create_confirmation_token_and_send_email(user)
-      user.create_confirmation_token
-      PassportMailer.confirmation_instructions(user).deliver
+      redirect_to company_path(person.company), notice: t('messages.invitation_completed')
+    else
+      redirect_to root_path, alert: t('messages.tokens.not_found', action: t('actions.company_invite'))
     end
+  end
 
-    def create_reconfirmation_token_and_send_email(user)
-      user.destroy_garbage_and_create_reconfirmation_token(params[:user][:email])
-      PassportMailer.reconfirmation_instructions(user).deliver
-    end
+private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def user_params
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :phone, avatar_attributes: :image)
+  end
+
+  def create_confirmation_token_and_send_email(user)
+    user.tokens.create(name: :confirmation)
+    PassportMailer.confirmation_instructions(user).deliver
+  end
+
+  def create_reconfirmation_token_and_send_email(user)
+    user.tokens.where(name: :reconfirmation).destroy_all
+    user.tokens.create(name: :reconfirmation, data: params[:user][:email])
+    PassportMailer.reconfirmation_instructions(user).deliver
+  end
 
 end

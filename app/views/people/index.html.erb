@@ -37,3 +37,12 @@
 <br>
 
 <%= link_to 'New Person', new_company_person_path %>
+
+<h1>Searching people</h1>
+
+<p style="position: relative;">
+  <%= text_field_tag :query, nil, class: 'people-search', placeholder: 'Type at least 3 characters to search people', size: 50 %>  
+  <span class="ajax-loader"></span>
+</p>
+
+<div class="search-result"></div>

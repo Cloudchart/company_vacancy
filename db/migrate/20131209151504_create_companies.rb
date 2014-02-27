@@ -4,6 +4,7 @@ class CreateCompanies < ActiveRecord::Migration
       t.string :uuid, limit: 36
       t.string :name, null: false
       t.text :description
+      t.text :sections
 
       t.timestamps
     end

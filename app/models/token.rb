@@ -3,6 +3,6 @@ class Token < ActiveRecord::Base
 
   serialize :data
 
-  belongs_to :tokenable, polymorphic: true
+  belongs_to :owner, polymorphic: true
   
 end

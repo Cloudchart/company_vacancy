@@ -7,6 +7,7 @@ class CreateBlocks < ActiveRecord::Migration
       t.string :owner_id, limit: 36, null: false
       t.string :owner_type, null: false
       t.string :identity_type, null: false
+      t.boolean :locked, default: false
 
       t.timestamps
     end

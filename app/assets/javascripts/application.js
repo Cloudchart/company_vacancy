@@ -15,4 +15,5 @@
 //= require block_identities
 //= require ui
 //= require plugins
+//= require bindWithDelay
 //= require_tree .

@@ -26,6 +26,7 @@ class BlocksController < ApplicationController
 
   def destroy
     block = Block.includes(:owner, { block_identities: :identity }).find(params[:id])
+    authorize! :destroy, block
     block.destroy
     redirect_to block.owner
   end
@@ -48,7 +49,7 @@ class BlocksController < ApplicationController
     Block.find(params[:block_id]).update_attribute(:section, params[:section])
   end
 
-protected
+private
 
   def block_params_for_create
     params.require(:block).permit(:section, :identity_type, :position)

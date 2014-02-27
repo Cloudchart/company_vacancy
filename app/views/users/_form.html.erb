@@ -4,15 +4,15 @@
   <div class="form-inputs">
     <% unless @user.new_record? %>
 
-      <%= image_tag f.object.avatar.image.url if f.object.avatar.present? %>
-      <%= f.fields_for :avatar, @user.avatar.present? ? @user.avatar : @user.build_avatar do |avatar| %>
+      <%= image_tag f.object.try(:avatar).try(:image_url) %>
+      <%= f.simple_fields_for :avatar, @user.avatar.present? ? @user.avatar : @user.build_avatar, include_id: false do |avatar| %>
         <%= avatar.input :image %>
       <% end %>
 
-      <%= f.input :name %>
       <%= f.input :phone %>
     <% end %>
 
+    <%= f.input :name %>
     <%= f.input :email %>
     <%= f.input :password %>
     <%= f.input :password_confirmation, required: @user.new_record? ? true : false %>

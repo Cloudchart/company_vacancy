@@ -31,7 +31,7 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.simple_fields_for block.plural_identity_name, block.identities, hidden_field_id: false do |identity_form| -%>
+    <%= f.simple_fields_for block.plural_identity_name, block.identities, include_id: false do |identity_form| -%>
         <%= identity_form.input_field :id, as: :hidden, id: false if identity_form.object.persisted? %>
 
         <%= image_tag identity_form.object.image.url if identity_form.object.image.present? %>

@@ -1,6 +1,8 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy]
 
+  authorize_resource
+
   # GET /companies
   def index
     @companies = Company.all
@@ -24,7 +26,10 @@ class CompaniesController < ApplicationController
   # POST /companies
   def create
     @company = Company.new(company_params)
+    person = @company.people.build(name: current_user.name, email: current_user.email, phone: current_user.phone)
+    person.user = current_user
 
+    Rails.logger.info("#{'*'*1000} #{@company.inspect}")
     if @company.save
       redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
     else
@@ -47,16 +52,16 @@ class CompaniesController < ApplicationController
     redirect_to companies_url, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
-  private
-    
-    # Use callbacks to share common setup or constraints between actions.
-    def set_company
-      @company = Company.includes(:logo, blocks: { block_identities: :identity }).find(params[:id])
-    end
+private
+  
+  # Use callbacks to share common setup or constraints between actions.
+  def set_company
+    @company = Company.includes(:logo, blocks: { block_identities: :identity }).find(params[:id])
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def company_params
-      params.require(:company).permit(:name, :description, logo_attributes: :image)
-    end
+  # Only allow a trusted parameter "white list" through.
+  def company_params
+    params.require(:company).permit(:name, :description, logo_attributes: :image)
+  end
 
 end

@@ -33,11 +33,12 @@ ActiveRecord::Schema.define(version: 20140217095543) do
   end
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
-    t.string   "section",                              null: false
+    t.string   "section",                                  null: false
     t.integer  "position",                 default: 0
-    t.string   "owner_id",      limit: 36,             null: false
-    t.string   "owner_type",                           null: false
-    t.string   "identity_type",                        null: false
+    t.string   "owner_id",      limit: 36,                 null: false
+    t.string   "owner_type",                               null: false
+    t.string   "identity_type",                            null: false
+    t.boolean  "locked",                   default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -47,6 +48,7 @@ ActiveRecord::Schema.define(version: 20140217095543) do
   create_table "companies", primary_key: "uuid", force: true do |t|
     t.string   "name",        null: false
     t.text     "description"
+    t.text     "sections"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -70,7 +72,7 @@ ActiveRecord::Schema.define(version: 20140217095543) do
   end
 
   create_table "people", primary_key: "uuid", force: true do |t|
-    t.string   "name"
+    t.string   "name",                  null: false
     t.string   "email"
     t.string   "occupation"
     t.string   "phone"
@@ -84,16 +86,18 @@ ActiveRecord::Schema.define(version: 20140217095543) do
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
   create_table "tokens", primary_key: "uuid", force: true do |t|
-    t.string   "name",                      null: false
+    t.string   "name",                  null: false
     t.text     "data"
-    t.string   "tokenable_id",   limit: 36
-    t.string   "tokenable_type"
+    t.string   "owner_id",   limit: 36
+    t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "tokens", ["owner_id", "owner_type"], name: "index_tokens_on_owner_id_and_owner_type", using: :btree
+
   create_table "users", primary_key: "uuid", force: true do |t|
-    t.string   "name"
+    t.string   "name",            null: false
     t.string   "email",           null: false
     t.string   "password_digest", null: false
     t.string   "phone"
@@ -107,9 +111,9 @@ ActiveRecord::Schema.define(version: 20140217095543) do
     t.string   "salary"
     t.string   "location"
     t.string   "company_id",  limit: 36, null: false
+    t.text     "settings"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "settings"
   end
 
   add_index "vacancies", ["company_id"], name: "index_vacancies_on_company_id", using: :btree

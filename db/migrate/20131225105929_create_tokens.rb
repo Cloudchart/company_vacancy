@@ -4,12 +4,13 @@ class CreateTokens < ActiveRecord::Migration
       t.string :uuid, limit: 36
       t.string :name, null: false
       t.text :data
-      t.string :tokenable_id, limit: 36
-      t.string :tokenable_type
+      t.string :owner_id, limit: 36
+      t.string :owner_type
 
       t.timestamps
     end
 
+    add_index :tokens, [:owner_id, :owner_type]
     execute 'ALTER TABLE tokens ADD PRIMARY KEY (uuid);'
   end
 
