@@ -26,12 +26,12 @@ private
 
   def build_sections_and_locked_blocks
     SECTIONS.values.each { |section| sections.send("#{section}=", nil) }
-    blocks.build(section: :about, position: 0, identity_type: 'Paragraph', locked: true)
-    blocks.build(section: :product, position: 0, identity_type: 'Paragraph', locked: true)
-    blocks.build(section: :product, position: 1, identity_type: 'BlockImage', locked: true)
-    blocks.build(section: :people, position: 0, identity_type: 'Person', locked: true)
-    blocks.build(section: :people, position: 1, identity_type: 'Paragraph', locked: true)
-    blocks.build(section: :vacancies, position: 0, identity_type: 'Vacancy', locked: true)
+    blocks.build(section: :about, position: 0, identity_type: 'Paragraph', is_locked: true)
+    blocks.build(section: :product, position: 0, identity_type: 'Paragraph', is_locked: true)
+    blocks.build(section: :product, position: 1, identity_type: 'BlockImage', is_locked: true)
+    blocks.build(section: :people, position: 0, identity_type: 'Person', is_locked: true)
+    blocks.build(section: :people, position: 1, identity_type: 'Paragraph', is_locked: true)
+    blocks.build(section: :vacancies, position: 0, identity_type: 'Vacancy', is_locked: true)
   end
 
 end

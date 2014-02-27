@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 20140217095543) do
     t.string   "owner_id",      limit: 36,                 null: false
     t.string   "owner_type",                               null: false
     t.string   "identity_type",                            null: false
-    t.boolean  "locked",                   default: false
+    t.boolean  "is_locked",                default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

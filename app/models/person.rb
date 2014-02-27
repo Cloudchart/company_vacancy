@@ -7,5 +7,17 @@ class Person < ActiveRecord::Base
   belongs_to :company
 
   validates :name, presence: true
-  
+
+  settings ElasticSearchSettingsForPerson do
+    mapping do
+      indexes :name, analyzer: 'ngram_analyzer'
+    end
+  end
+
+  def self.search(params)
+    tire.search(load: true) do
+      query { string "name:#{params[:query]}" } if params[:query].present?
+    end
+  end
+
 end

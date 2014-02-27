@@ -1,6 +1,6 @@
 @['people#index'] = (data) ->
     $ ->
-        $('.people-search').bindWithDelay 'input propertychange', ->  
+        $('main').on 'input propertychange', '.people-search', ->
             $('.search-result').html('')
             if this.value.length > 2
                 $('.ajax-loader').show()
@@ -10,4 +10,3 @@
                         $.post "/companies/#{data.company_id}/people/search", query: this.value, social_network: 'facebook'
                 ).done (a1, a2) ->
                     $('.ajax-loader').hide()
-        , 1000
