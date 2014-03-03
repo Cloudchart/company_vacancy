@@ -8,7 +8,7 @@ class Person < ActiveRecord::Base
 
   validates :name, presence: true
 
-  settings ElasticSearchSettingsForPerson do
+  settings ElasticSearchNGramSettings do
     mapping do
       indexes :name, analyzer: 'ngram_analyzer'
     end
