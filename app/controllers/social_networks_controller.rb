@@ -19,6 +19,7 @@ class SocialNetworksController < ApplicationController
 
       token = Cloudchart::OAuth.get_token(provider, params[:code], redirect_uri: provider_callback_url(provider))
       current_user.tokens.create(name: provider, data: { access_token: token.token, expires_at: token.expires_at })
+      create_friends_list(token, provider)
 
       redirect_to referer, notice: t('messages.tokens.created')
     else
@@ -35,6 +36,35 @@ private
 
   def authorize_user
     authorize! :access_social_networks, User
+  end
+
+  def create_friends_list(token, provider)
+    current_user.friends.where(provider: provider).destroy_all
+
+    case provider
+    when :facebook
+      friends = ActiveSupport::JSON.decode(token.get('/me/friends').body)['data']
+
+      friends.each do |friend|
+        current_user.friends.create(
+          provider: provider,
+          external_id: friend['id'],
+          name: friend['name']
+        )
+      end
+    when :linkedin
+      token.options[:mode] = :query
+      token.options[:param_name] = 'oauth2_access_token'
+      friends = Hash.from_xml(token.get('/v1/people/~/connections:(id,first-name,last-name)').body)
+
+      friends['connections']['person'].each do |friend|
+        current_user.friends.create(
+          provider: provider,
+          external_id: friend['id'],
+          name: [friend['first_name'], friend['last_name']].join(' ')
+        )
+      end
+    end
   end
 
 end
