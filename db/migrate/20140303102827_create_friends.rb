@@ -5,12 +5,10 @@ class CreateFriends < ActiveRecord::Migration
       t.string :provider, null: false
       t.string :external_id, null: false
       t.string :name, null: false
-      t.string :user_id, limit: 36, null: false
 
       t.timestamps
     end
 
-    add_index :friends, :user_id
     execute 'ALTER TABLE friends ADD PRIMARY KEY (uuid);'
   end
 

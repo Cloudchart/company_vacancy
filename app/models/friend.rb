@@ -3,9 +3,9 @@ class Friend < ActiveRecord::Base
   include Tire::Model::Search
   include Tire::Model::Callbacks  
 
-  belongs_to :user
+  has_and_belongs_to_many :users
 
-  scope :by_company, -> company_id { includes(user: { people: :company }).where('companies.uuid = ?', company_id).references(:companies) }
+  scope :by_company, -> company_id { includes(users: { people: :company }).where('companies.uuid = ?', company_id).references(:companies) }
 
   settings ElasticSearchNGramSettings do
     mapping do
