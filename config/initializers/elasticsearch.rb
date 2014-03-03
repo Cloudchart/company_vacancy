@@ -1,1 +1,1 @@
-ElasticSearchSettingsForPerson = YAML.load_file('config/elasticsearch/person.yml').with_indifferent_access
+ElasticSearchNGramSettings = YAML.load_file('config/elasticsearch/ngram.yml').with_indifferent_access

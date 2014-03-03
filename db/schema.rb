@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140217095543) do
+ActiveRecord::Schema.define(version: 20140303102827) do
 
   create_table "block_identities", primary_key: "uuid", force: true do |t|
     t.string   "block_id",      limit: 36
@@ -52,6 +52,17 @@ ActiveRecord::Schema.define(version: 20140217095543) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "friends", primary_key: "uuid", force: true do |t|
+    t.string   "provider",               null: false
+    t.string   "external_id",            null: false
+    t.string   "name",                   null: false
+    t.string   "user_id",     limit: 36, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "friends", ["user_id"], name: "index_friends_on_user_id", using: :btree
 
   create_table "images", primary_key: "uuid", force: true do |t|
     t.string   "image",                 null: false

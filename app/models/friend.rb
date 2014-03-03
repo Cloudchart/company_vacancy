@@ -1,12 +1,11 @@
-class Person < ActiveRecord::Base
+class Friend < ActiveRecord::Base
   include Uuidable
   include Tire::Model::Search
-  include Tire::Model::Callbacks
+  include Tire::Model::Callbacks  
 
   belongs_to :user
-  belongs_to :company
 
-  validates :name, presence: true
+  scope :by_company, -> company_id { includes(user: { people: :company }).where('companies.uuid = ?', company_id).references(:companies) }
 
   settings ElasticSearchNGramSettings do
     mapping do
