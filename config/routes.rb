@@ -1,4 +1,5 @@
 Cloudchart::Application.routes.draw do
+
   root 'companies#index'
 
   get 'sign-up', to: 'users#new', as: 'sign_up'
@@ -33,5 +34,6 @@ Cloudchart::Application.routes.draw do
   end
 
   resources :tokens, only: :destroy
+  resources :events
 
 end

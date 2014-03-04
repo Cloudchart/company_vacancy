@@ -1,0 +1,10 @@
+en:
+  blocks:
+    title: This is the Editor. Drag to add
+    paragraph: fa-font
+    block_image: fa-picture-o
+    vacancy: fa-money
+    chart: fa-table
+    person: fa-user
+    widget: fa-bar-chart-o
+    company: fa-building-o

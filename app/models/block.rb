@@ -1,9 +1,7 @@
 class Block < ActiveRecord::Base
   include Uuidable
   
-  IdentitiesClasses = [Paragraph, BlockImage, Person, Vacancy]
-
-  TYPES = IdentitiesClasses.map {|i| i.to_s.underscore }.inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
+  IdentitiesClasses = [Paragraph, BlockImage, Person, Vacancy, Company]
   
   before_create   :ensure_position, unless: Proc.new { |block| block.position.present? }
   before_destroy  :destroy_identities

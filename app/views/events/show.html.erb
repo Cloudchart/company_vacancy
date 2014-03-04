@@ -1,0 +1,23 @@
+<div class="companies-wrapper">
+
+  <article data-behaviour="droppable" data-droppable-target="article">
+    <%# render partial: 'new_block_form' %>
+    
+    <%- Event::SECTIONS.each do |title, section| -%>
+      
+      <h2>
+        <%= title %>
+      </h2>
+      
+      <section data-name="<%= section %>">
+        <%= render partial: 'shared/block', collection: @event.blocks_by_section(section) -%>
+      </section>
+      
+    <%- end -%>
+    
+  </article>
+
+  <%# render partial: 'navigation', locals: { company: company } %>
+  <%= render 'shared/blocks_editor', collection: Event::BLOCK_TYPES %>
+
+</div>

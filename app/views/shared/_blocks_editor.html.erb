@@ -2,14 +2,14 @@
   <ul class="block-types">
     <li class="title">
       <span>
-        <%= t '.title' %>
+        <%= t('blocks.title') %>
       </span>
       <i class="fa fa-arrow-left"></i>
     </li>
 
-    <% Block::TYPES.each do |key, val| %>
+    <% collection.each do |key, val| %>
       <li class="draggable-block" data-behaviour="draggable <%= key.underscore %>" data-type="<%= key %>">
-        <i class="fa <%= t ".#{key.underscore}" %>"></i>
+        <i class="fa <%= t "blocks.#{key.underscore}" %>"></i>
         <span><%= key %></span>
       </li>
     <% end %>
