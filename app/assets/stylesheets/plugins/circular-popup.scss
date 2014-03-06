@@ -1,0 +1,142 @@
+$sin00: 0.0;
+$sin30: 0.5;
+$sin45: 0.70710678118;
+$sin60: 0.86602540378;
+$sin90: 1.0;
+
+
+$popup-size:        200px;
+$radius:            70px;
+$popup-icon-margin: 5px;
+$icon-size:         30px;
+$icon-font-size:    9pt;
+
+
+$delta-size: $popup-size / 2 - $icon-size / 2;
+
+$delta-sin00: $delta-size - $radius * $sin00;
+$delta-sin30: $delta-size - $radius * $sin30;
+$delta-sin45: $delta-size - $radius * $sin45;
+$delta-sin60: $delta-size - $radius * $sin60;
+$delta-sin90: $delta-size - $radius * $sin90;
+
+ul[data-behaviour~="circular-popup"] {
+    background: hsla(0, 0, 0, .05);
+    border-radius: $popup-size / 2;
+    height: $popup-size;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: $popup-size;
+    
+    li {
+        @include display(flex);
+        @include justify-content(center);
+        @include align-items(center);
+        
+        background-color: hsla(0, 0, 50%, .75);
+        border-radius: $icon-size / 2;
+        color: hsl(0, 0, 100%);
+        cursor: pointer;
+        font-size: $icon-font-size;
+        height: $icon-size;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        width: $icon-size;
+        text-align: center;
+        
+        
+        &:hover {
+            background-color: hsla(0, 0, 75%, .75);
+        }
+        
+        &[data-position~="C"] {
+            left: $delta-sin00;
+            top: $delta-sin00;
+        }
+
+        &[data-position~="N"] {
+            left: $delta-sin00;
+            top: $delta-sin90;
+        }
+        
+        &[data-position~="NNE"] {
+            right: $delta-sin30;
+            top: $delta-sin60;
+        }
+
+        &[data-position~="NE"] {
+            right: $delta-sin45;
+            top: $delta-sin45;
+        }
+
+        &[data-position~="NEE"] {
+            right: $delta-sin60;
+            top: $delta-sin30;
+        }
+
+        &[data-position~="E"] {
+            right: $delta-sin90;
+            top: $delta-sin00;
+        }
+        
+        &[data-position~="SEE"] {
+            right: $delta-sin60;
+            bottom: $delta-sin30;
+        }
+
+        &[data-position~="SE"] {
+            right: $delta-sin45;
+            bottom: $delta-sin45;
+        }
+
+        &[data-position~="SSE"] {
+            right: $delta-sin30;
+            bottom: $delta-sin60;
+        }
+
+        &[data-position~="S"] {
+            left: $delta-sin00;
+            bottom: $delta-sin90;
+        }
+        
+        &[data-position~="SSW"] {
+            left: $delta-sin30;
+            bottom: $delta-sin60;
+        }
+
+        &[data-position~="SW"] {
+            left: $delta-sin45;
+            bottom: $delta-sin45;
+        }
+
+        &[data-position~="SWW"] {
+            left: $delta-sin60;
+            bottom: $delta-sin30;
+        }
+
+        &[data-position~="W"] {
+            left: $delta-sin90;
+            top: $delta-sin00;
+        }
+        
+        &[data-position~="NWW"] {
+            left: $delta-sin60;
+            top: $delta-sin30;
+        }
+
+        &[data-position~="NW"] {
+            left: $delta-sin45;
+            top: $delta-sin45;
+        }
+
+        &[data-position~="NNW"] {
+            left: $delta-sin30;
+            top: $delta-sin60;
+        }
+        
+    }
+    
+}

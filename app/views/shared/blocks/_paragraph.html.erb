@@ -4,7 +4,7 @@
 
   <%= form.fields_for :paragraphs, block.identities do |identity_form| %>
     <%= identity_form.hidden_field :content, id: nil, data: { source: :content } %>
-    <div contenteditable="true" data-target="[data-source=content]" data-behaviour="paragraph" data-placeholder="<%= t(".#{block.section}.placeholder_#{block.position}", default: t('.placeholder')) %>"><%= identity_form.object.content.try :html_safe %></div>
+    <div contenteditable="true" data-target="[data-source=content]" data-behaviour="paragraph" data-placeholder="<%= t(".#{block.section}.placeholder_#{block.position}", default: t('.placeholder')).html_safe %>"><%= identity_form.object.content.try :html_safe %></div>
   <%- end -%>
 
 <%- end -%>

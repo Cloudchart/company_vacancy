@@ -137,8 +137,12 @@
           $('[name="block\[position\]"]').val(index)
           
           
-          form.submit()
+          request = $.ajax
+            url:  form.attr('action')
+            type: form.attr('method')
+            data: form.serializeArray()
+            dataType: 'script'
           
-          
+
           console.log 'drop'
           

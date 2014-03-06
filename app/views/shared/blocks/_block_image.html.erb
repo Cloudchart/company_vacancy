@@ -1,50 +1,29 @@
 <%- block.identities.build if block.identities.blank? -%>
 
-<%= form_for block.persisted? ? block : [block.owner, block], multipart: true, html: { data: { remote: true } } do |form| %>
+<%= form_for block.persisted? ? block : [block.owner, block], multipart: true, data: { remote: true } do |form| %>
 
   <%= form.fields_for :block_images, block.identities do |identity_form| %>
     <%= identity_form.file_field :image %>
   <%- end -%>
 
-  <div class="placeholder">
-    <i class="fa fa-picture-o"></i>
-    <h4>
-      Product picture goes here
-    </h4>
-    <p>
-      Use professional photography or&nbsp;graphic design.
-    </p>
-    <p>
-      Use pictures at least 1500 px wide.
-    </p>
-  </div>
   
-  <%- image = block.identities.first -%>
-  <%- if image.persisted? -%>
-    <%= image_tag image.image, width: (image.image_width / 2), height: (image.image_height / 2) %>
+  <%- identity = block.identities.first -%>
+
+  <%- if identity.persisted? -%>
+    <%= image_tag identity.image, width: '100%' %>
+  <%- else -%>
+    <div class="placeholder">
+      <i class="fa fa-picture-o"></i>
+      <h4>
+        Product picture goes here
+      </h4>
+      <p>
+        Use professional photography or&nbsp;graphic design.
+      </p>
+      <p>
+        Use pictures at least 1500 px wide.
+      </p>
+    </div>
   <%- end -%>
 
 <%- end -%>
-
-<!--
-<%= simple_form_for block do |f| -%>
-  <%= f.error_notification %>
-
-  <div class="form-inputs">
-    <%= f.simple_fields_for block.plural_identity_name, block.identities, include_id: false do |identity_form| -%>
-        <%= identity_form.input_field :id, as: :hidden, id: false if identity_form.object.persisted? %>
-
-        <%= image_tag identity_form.object.image.url if identity_form.object.image.present? %>
-        <%= identity_form.input :image %>
-    <%- end -%>
-  </div>
-
-  <div class="form-actions">
-    <%= f.button :submit -%>
-    | <%= link_to "Delete", block, method: :delete %>
-  </div>
-
-<%- end -%>
-
-<br />
--->

@@ -36,7 +36,7 @@ div.companies-wrapper {
 
     > nav {
         @include glued-editable-article-block('glued', $top: $base-unit, $left: $base-unit);
-
+        
         background-color: $companies-wrapper-nav-background-color;
         left: 0;
         padding: $base-unit;
@@ -121,15 +121,15 @@ div.companies-wrapper {
           position: relative;
           
           .handle {
-            display: none;
             font-size: 15pt;
             left: 0;
+            opacity: 0;
             position: absolute;
             top: .1em;
           }
           
           &:hover .handle {
-            display: block;
+            opacity: 1;
           }
 
         }

@@ -2,12 +2,12 @@ class BlocksController < ApplicationController
 
 
   def create
-    @company  = Company.find params[:company_id]
-    @block    = @company.blocks.create! block_params_for_create
-    @company  = Company.includes(blocks: { block_identities: :identity }).find params[:company_id]
+    company  = Company.find params[:company_id]
+    @block    = company.blocks.build block_params_for_create
+    #@company  = Company.includes(blocks: { block_identities: :identity }).find params[:company_id]
 
     respond_to do |format|
-      format.html { redirect_to @company }
+      format.html { redirect_to @block.owner }
       format.js
     end
   end
