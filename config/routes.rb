@@ -34,6 +34,8 @@ Cloudchart::Application.routes.draw do
   end
 
   resources :tokens, only: :destroy
-  resources :events
+  resources :events do
+    post :verify, on: :member
+  end
 
 end

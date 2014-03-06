@@ -21,3 +21,5 @@
   <%= render 'shared/blocks_editor', collection: Event::BLOCK_TYPES %>
 
 </div>
+
+<%= link_to 'Verify event', verify_event_path(token_id: @event.token.id), method: :post if @event.token %>

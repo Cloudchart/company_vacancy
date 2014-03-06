@@ -15,7 +15,8 @@ en:
     email_sent: "We've sent you an email. Please click on the provided link to %{action}."    
     successful_action: "Your %{thing} has been successfully %{action}. Please login."
     validations:
-      invalid_format: "invalid format"
+      invalid_email: "must be a valid email"
+      invalid_url: "must be a valid URL"
     invitation_completed: "Invitation has been successfully completed."
     company_invite: 
       token_not_found: "Sorry, we couldn't find this invitation."
@@ -24,3 +25,7 @@ en:
       you_are_already_associated: "You are already associated with %{name}."
       email_blank: "Invitation email can't be blank."
       you_have_invitation: "You have <a href='%{href}'>invitation</a> from %{name}."
+    verifications:
+      event:
+        success: "Your event was successfully verified."
+        fail: "There was a problem with event verification. Please try again."

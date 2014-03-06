@@ -3,6 +3,7 @@ class CreateEvents < ActiveRecord::Migration
     create_table :events, id: false do |t|
       t.string :uuid, limit: 36
       t.string :name, null: false
+      t.string :url
       t.text :sections
       t.string :location
       t.datetime :start_at

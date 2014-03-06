@@ -6,7 +6,6 @@ class Company < ActiveRecord::Base
   BLOCK_TYPES = %i(paragraph block_image person vacancy).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
 
   before_create :build_sections_and_locked_blocks
-  before_destroy :mark_for_destruction
 
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy

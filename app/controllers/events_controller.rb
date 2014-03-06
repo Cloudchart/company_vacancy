@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: [:show, :edit, :update, :destroy]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :verify]
 
   # GET /events
   def index
@@ -45,6 +45,19 @@ class EventsController < ApplicationController
     redirect_to events_url, notice: 'Event was successfully destroyed.'
   end
 
+  def verify
+    token = @event.token
+    uri = URI.parse(@event.url)
+    uri.path = "/cloudchart_event_verification_#{token.id}.txt"
+    res = Net::HTTP.get_response(uri)
+    if res.is_a?(Net::HTTPSuccess)
+      token.destroy
+      redirect_to @event, message: t('messages.verifications.event.success')
+    else
+      redirect_to @event, alert: t('messages.verifications.event.fail')
+    end
+  end
+
 private
   # Use callbacks to share common setup or constraints between actions.
   def set_event
@@ -53,7 +66,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def event_params
-    params.require(:event).permit(:name, :location, :start_at, :end_at)
+    params.require(:event).permit(:name, :url, :location, :start_at, :end_at)
   end
 
 end

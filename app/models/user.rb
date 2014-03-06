@@ -1,7 +1,5 @@
 class User < ActiveRecord::Base
   include Uuidable
-
-  EMAIL_REGEX = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
   
   after_validation :postpone_email, if: proc { |user| user.email_changed? && user.persisted? }
 
@@ -15,7 +13,7 @@ class User < ActiveRecord::Base
 
   accepts_nested_attributes_for :avatar, allow_destroy: true
 
-  validates :email, presence: true, uniqueness: true, format: { with: EMAIL_REGEX, message: I18n.t('messages.validations.invalid_format') }
+  validates :email, presence: true, uniqueness: true, email: true
   validates :name, presence: true
 
 private

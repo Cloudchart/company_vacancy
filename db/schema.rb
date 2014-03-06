@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 20140304122402) do
 
   create_table "events", primary_key: "uuid", force: true do |t|
     t.string   "name",       null: false
+    t.string   "url"
     t.text     "sections"
     t.string   "location"
     t.datetime "start_at"
