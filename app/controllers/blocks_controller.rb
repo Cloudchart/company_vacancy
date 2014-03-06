@@ -1,5 +1,5 @@
 class BlocksController < ApplicationController
-
+  authorize_resource
 
   def create
     company  = Company.find params[:company_id]

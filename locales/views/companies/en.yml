@@ -3,14 +3,6 @@ en:
     edit:
       add_text: "Add text block"
       add_image: "Add image block"
-    blocks:
-      title: This is the Editor. Drag to add
-      paragraph: fa-font
-      block_image: fa-picture-o
-      vacancy: fa-money
-      chart: fa-table
-      person: fa-user
-      widget: fa-bar-chart-o
     hints:
       chart: &chart
         chart: "Chart goes here"

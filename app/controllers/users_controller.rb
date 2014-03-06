@@ -47,9 +47,8 @@ class UsersController < ApplicationController
     end
   end
 
-  # GET user/1/activate
   def activate
-    token = Token.find(params[:id]) rescue nil
+    token = Token.find(params[:token_id]) rescue nil
 
     if token
       token.destroy
@@ -63,9 +62,8 @@ class UsersController < ApplicationController
     end
   end
 
-  # GET user/1/reactivate
   def reactivate
-    token = Token.find_by(uuid: params[:id])
+    token = Token.find(params[:token_id]) rescue nil
 
     # logout, update user email and destroy all reconfirmation tokens with identical email
     if token

@@ -18,8 +18,8 @@
       
     </article>
 
-    <%= render partial: 'navigation', locals: { company: company } %>
-    <%= render partial: 'blocks' %>
+    <%= render 'navigation', company: company %>
+    <%= render 'shared/blocks_editor', collection: Company::BLOCK_TYPES %>
 
   </div>
 

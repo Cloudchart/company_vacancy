@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140217095543) do
+ActiveRecord::Schema.define(version: 20140304122402) do
 
   create_table "block_identities", primary_key: "uuid", force: true do |t|
     t.string   "block_id",      limit: 36
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 20140217095543) do
     t.string   "owner_id",      limit: 36,                 null: false
     t.string   "owner_type",                               null: false
     t.string   "identity_type",                            null: false
-    t.boolean  "locked",                   default: false
+    t.boolean  "is_locked",                default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -51,6 +51,29 @@ ActiveRecord::Schema.define(version: 20140217095543) do
     t.text     "sections"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "events", primary_key: "uuid", force: true do |t|
+    t.string   "name",       null: false
+    t.text     "sections"
+    t.string   "location"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "friends", primary_key: "uuid", force: true do |t|
+    t.string   "provider",    null: false
+    t.string   "external_id", null: false
+    t.string   "name",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "friends_users", id: false, force: true do |t|
+    t.string "friend_id", limit: 36
+    t.string "user_id",   limit: 36
   end
 
   create_table "images", primary_key: "uuid", force: true do |t|

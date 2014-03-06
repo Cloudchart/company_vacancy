@@ -8,7 +8,7 @@
 
 <p>
   Please reconfirm your CloudChart account. Just click the following link:
-  <%= link_to reactivate_user_url(id: @token_id), reactivate_user_url(id: @token_id) %>
+  <%= link_to reactivate_user_url(@token_id), reactivate_user_url(@token_id) %>
 </p>
 
 <p>If you didn't request email change, please ignore this.</p>

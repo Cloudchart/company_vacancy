@@ -4,12 +4,17 @@ module Cloudchart
   module OAuth
     PROVIDERS_DEFAULTS = {
       facebook: {
-        site: 'https://graph.facebook.com/oauth',
-        token_url: '/oauth/access_token'
+        site: 'https://graph.facebook.com',
+        token_url: '/oauth/access_token',
+        scope: 'user_friends'
       },
 
-      facebook_api: {
-        site: 'https://graph.facebook.com'
+      linkedin: {
+        site: 'https://api.linkedin.com',
+        authorize_url: 'https://www.linkedin.com/uas/oauth2/authorization',
+        token_url: 'https://www.linkedin.com/uas/oauth2/accessToken',
+        response_type: 'code',
+        scope: 'r_network'
       }
     }
 
@@ -23,7 +28,6 @@ module Cloudchart
     def self.provider(provider, key, secret)
       provider = provider.to_sym
       @@clients[provider] = OAuth2::Client.new(key, secret, PROVIDERS_DEFAULTS[provider])
-      @@clients[:"#{provider}_api"] = OAuth2::Client.new(key, secret, PROVIDERS_DEFAULTS[:"#{provider}_api"])
     end
 
     def self.authorize_url(provider, options={})
