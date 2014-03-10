@@ -18,6 +18,7 @@ Cloudchart::Application.routes.draw do
 
   resources :sessions, only: [:new, :create, :destroy]
   resources :password_resets, only: [:new, :create, :edit, :update]
+  resources :tokens, only: :destroy
 
   resources :companies, shallow: true do
     resources :vacancies
@@ -33,9 +34,10 @@ Cloudchart::Application.routes.draw do
     end
   end
 
-  resources :tokens, only: :destroy
   resources :events do
     post :verify, on: :member
   end
+
+  resources :features
 
 end

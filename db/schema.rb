@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140304122402) do
+ActiveRecord::Schema.define(version: 20140310133711) do
 
   create_table "block_identities", primary_key: "uuid", force: true do |t|
     t.string   "block_id",      limit: 36
@@ -60,6 +60,14 @@ ActiveRecord::Schema.define(version: 20140304122402) do
     t.string   "location"
     t.datetime "start_at"
     t.datetime "end_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "features", id: false, force: true do |t|
+    t.string   "uuid",        limit: 36
+    t.string   "name",                   null: false
+    t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
