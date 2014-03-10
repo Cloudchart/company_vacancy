@@ -5,7 +5,7 @@ class Friend < ActiveRecord::Base
 
   has_and_belongs_to_many :users
 
-  scope :by_company, -> company_id { includes(users: { people: :company }).where('companies.uuid = ?', company_id).references(:companies) }
+  scope :by_company, -> company_id { includes(users: { people: :company }).where(companies: { uuid: company_id }) }
 
   settings ElasticSearchNGramSettings do
     mapping do
