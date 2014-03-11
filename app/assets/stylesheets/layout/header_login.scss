@@ -1,0 +1,39 @@
+$header-login-input-border-radius: 5pt;
+$header-login-input-font-size: 12pt;
+$header-login-close-link-color: hsl(60, 1%, 34%);
+$header-login-close-link-font-size: 16pt;
+
+
+header form.login {
+  @include display(flex);
+  @include align-items(center);
+  
+  > *:not(:last-child) {
+    margin-right: $base-unit * .75;
+  }
+  
+  input[type="text"],
+  input[type="password"] {
+    border: none;
+    border-radius: $header-login-input-border-radius;
+    box-shadow: inset 0 1pt 2pt hsl(0, 0, 75%);
+    font-size: $header-login-input-font-size;
+    font-weight: 300;
+    height: $base-unit * 2;
+    outline: none;
+    text-align: center;
+    width: $base-unit * 12;
+  }
+  
+  input[type="submit"] {
+    @include green-button;
+    font-weight: 600;
+  }
+  
+  a {
+    color: $header-login-close-link-color;
+    font-size: $header-login-close-link-font-size;
+    margin: 0 !important;
+  }
+  
+}

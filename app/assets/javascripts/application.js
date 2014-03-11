@@ -15,4 +15,5 @@
 //= require block_identities
 //= require ui
 //= require plugins
+//= require ujs
 //= require_tree .

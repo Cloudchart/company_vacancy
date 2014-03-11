@@ -1,5 +1,10 @@
 en:
   shared:
+    header_login:
+      email_placeholder: Your name or email
+      password_placeholder: Password
+      enter: Enter
+
     footer:
       about: 'About'
       support: 'Support'
@@ -11,9 +16,6 @@ en:
       terms_of_use: 'Terms of Use'
       blog: 'Blog'
 
-
-en:
-  shared:
     blocks:
       paragraph:
         placeholder: Default Text Placeholder
