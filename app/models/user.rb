@@ -9,12 +9,17 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :friends
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :people, dependent: :destroy
+  has_many :votes, as: :source
   has_one :avatar, as: :owner, dependent: :destroy
 
   accepts_nested_attributes_for :avatar, allow_destroy: true
 
   validates :email, presence: true, uniqueness: true, email: true
   validates :name, presence: true
+
+  def has_already_voted_for?(object)
+    votes.map(&:destination_id).include?(object.id)
+  end
 
 private
 

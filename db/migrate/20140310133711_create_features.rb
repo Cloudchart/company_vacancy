@@ -4,6 +4,7 @@ class CreateFeatures < ActiveRecord::Migration
       t.string :uuid, limit: 36
       t.string :name, null: false
       t.text :description
+      t.integer :votes_total
 
       t.timestamps
     end

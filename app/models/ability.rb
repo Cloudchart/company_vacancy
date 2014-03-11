@@ -20,17 +20,21 @@ class Ability
     # See the wiki for details:
     # https://github.com/ryanb/cancan/wiki/Defining-Abilities
     
-    # Public
+    # What anyone can do
     can [:create, :activate, :reactivate], User
     can :read, Company
+    can :read, Feature
 
     return unless user
 
-    # User
+    # What user can do
+    can :associate_with_person, User
+    can :access_social_networks, User
+    # TODO: Feature admin ability
+    can [:create, :update, :destroy, :vote], Feature
+
+    # What user can do with conditions
     can [:read, :update, :destroy], User, id: user.id
-    can :associate_with_person, User do |user|
-      !!user
-    end
 
     can :create, Company
     can [:update, :destroy], Company do |company| 
@@ -56,15 +60,7 @@ class Ability
     can [:access_vacancies], Company do |company|
       (company.people & user.people).any?
     end
-
-    can :access_social_networks, User do |user|
-      !!user
-    end    
-
-    can :manage, Token do |token|
-      !!user
-    end
-
+      
   end
 
 end

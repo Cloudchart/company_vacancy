@@ -5,6 +5,8 @@
     <tr>
       <th>Name</th>
       <th>Description</th>
+      <th>Votes total</th>
+      <th></th>
       <th></th>
       <th></th>
       <th></th>
@@ -16,9 +18,11 @@
       <tr>
         <td><%= feature.name %></td>
         <td><%= feature.description %></td>
+        <td><%= feature.votes_total %></td>
         <td><%= link_to 'Show', feature %></td>
         <td><%= link_to 'Edit', edit_feature_path(feature) %></td>
         <td><%= link_to 'Destroy', feature, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Vote', vote_feature_path(feature), method: :post if can?(:vote, Feature) && !current_user.has_already_voted_for?(feature) %></td>
       </tr>
     <% end %>
   </tbody>

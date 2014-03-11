@@ -38,6 +38,8 @@ Cloudchart::Application.routes.draw do
     post :verify, on: :member
   end
 
-  resources :features
+  resources :features do
+    post :vote, on: :member
+  end
 
 end

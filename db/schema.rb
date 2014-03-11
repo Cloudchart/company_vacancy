@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140310133711) do
+ActiveRecord::Schema.define(version: 20140311101806) do
 
   create_table "block_identities", primary_key: "uuid", force: true do |t|
     t.string   "block_id",      limit: 36
@@ -149,5 +149,19 @@ ActiveRecord::Schema.define(version: 20140310133711) do
   end
 
   add_index "vacancies", ["company_id"], name: "index_vacancies_on_company_id", using: :btree
+
+  create_table "votes", primary_key: "uuid", force: true do |t|
+    t.string   "source_id",        limit: 36,             null: false
+    t.string   "source_type",                             null: false
+    t.string   "destination_id",   limit: 36,             null: false
+    t.string   "destination_type",                        null: false
+    t.integer  "value",                       default: 1, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "votes", ["destination_id", "destination_type"], name: "index_votes_on_destination_id_and_destination_type", using: :btree
+  add_index "votes", ["source_id", "destination_id"], name: "index_votes_on_source_id_and_destination_id", unique: true, using: :btree
+  add_index "votes", ["source_id", "source_type"], name: "index_votes_on_source_id_and_source_type", using: :btree
 
 end
