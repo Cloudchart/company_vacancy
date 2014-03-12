@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20140311101806) do
     t.string   "uuid",        limit: 36
     t.string   "name",                   null: false
     t.text     "description"
+    t.integer  "votes_total"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
