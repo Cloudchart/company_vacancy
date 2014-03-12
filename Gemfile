@@ -20,6 +20,8 @@ gem 'active_attr'
 gem 'cancan'
 gem 'tire'
 
+gem 'puma'
+
 # gem 'passport', path: '~/code/passport'
 gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
 # gem 'presenter', path: '~/code/presenter'

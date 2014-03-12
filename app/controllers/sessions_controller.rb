@@ -6,6 +6,7 @@ class SessionsController < ApplicationController
 
 
   def create
+    sleep 2
     respond_to do |format|
 
       format.html do

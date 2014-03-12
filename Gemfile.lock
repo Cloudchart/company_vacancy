@@ -125,6 +125,8 @@ GEM
     postmark-rails (0.5.2)
       actionmailer (>= 3.0.0)
       postmark (~> 1.0)
+    puma (2.8.1)
+      rack (>= 1.1, < 2.0)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.5.2)
@@ -216,6 +218,7 @@ DEPENDENCIES
   passport!
   postmark-rails (~> 0.5.2)
   presenter!
+  puma
   quiet_assets
   rails (= 4.0.2)
   sass-rails (~> 4.0.0)

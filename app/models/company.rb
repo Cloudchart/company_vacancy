@@ -14,7 +14,7 @@ class Company < ActiveRecord::Base
   accepts_nested_attributes_for :logo, allow_destroy: true
 
   validates :name, presence: true
-
+  
 private
 
   def build_sections_and_locked_blocks

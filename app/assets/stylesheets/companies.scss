@@ -285,16 +285,17 @@ div.companies-wrapper {
         right: 0;
         top: 0;
         width: $base-unit * 13;
+    }
+    
 
-        // NB! убрать нафиг
-  
-        > ul > li.drag {
-            background-color: $blocks-background-color;
-            color: hsl(120, 75%, 25%) !important;
-            cursor: move;
-            opacity: .75;
+    @media screen and (max-width: 1300px) {
+      aside.blocks {
+        width: $base-unit * 3;
+        li span {
+          display: none;
         }
-  
+      }
     }
 
 }
+
