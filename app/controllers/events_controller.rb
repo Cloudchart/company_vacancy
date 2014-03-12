@@ -23,7 +23,7 @@ class EventsController < ApplicationController
   def create
     @event = Event.new(event_params)
 
-    if @event.save
+    if @event.save_with_buildings
       redirect_to @event, notice: 'Event was successfully created.'
     else
       render action: 'new'
