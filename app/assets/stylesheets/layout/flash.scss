@@ -1,0 +1,24 @@
+$flash-font-size: 13pt;
+$flash-font-weight: 600;
+
+$flash-error-background-color: hsl(42, 82%, 55%);
+$flash-error-color: hsl(0, 0%, 100%);
+
+#flash {
+  background-color: #eee;
+  font-size: $flash-font-size;
+  font-weight: $flash-font-weight;
+  padding: $base-unit / 2 $base-unit;
+  text-align: right;
+  
+  i.close {
+    cursor: pointer;
+    margin-left: $base-unit;
+  }
+  
+  &.error {
+    background-color: $flash-error-background-color;
+    color: $flash-error-color;
+  }
+  
+}

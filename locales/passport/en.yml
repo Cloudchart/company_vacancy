@@ -2,3 +2,4 @@ en:
   passport:
     unconfirmed_account: "Your account isn't activated. Please check your email for confirmation instructions."
     invalid_email_or_password: "Invalid email or password."
+    user_not_found: Wrong Email and password combination.

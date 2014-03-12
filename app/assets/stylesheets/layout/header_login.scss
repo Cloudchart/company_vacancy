@@ -25,9 +25,19 @@ header form.login {
     width: $base-unit * 12;
   }
   
-  input[type="submit"] {
+  button {
     @include green-button;
     font-weight: 600;
+    
+    i {
+      display: none;
+      font-size: .75em;
+      margin-left: $base-unit / 4;
+    }
+    
+    &.active i {
+      display: inline;
+    }
   }
   
   a {
