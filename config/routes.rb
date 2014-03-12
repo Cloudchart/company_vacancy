@@ -1,6 +1,7 @@
 Cloudchart::Application.routes.draw do
-
   root 'companies#index'
+
+  mount RailsAdmin::Engine => '/admin', :as => 'rails_admin'
 
   get 'sign-up', to: 'users#new', as: 'sign_up'
   get 'login', to: 'sessions#new', as: 'login'

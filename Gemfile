@@ -19,6 +19,7 @@ gem 'postmark-rails', '~> 0.5.2'
 gem 'active_attr'
 gem 'cancan'
 gem 'tire'
+gem 'rails_admin'
 
 gem 'puma'
 
