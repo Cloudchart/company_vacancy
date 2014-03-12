@@ -5,8 +5,6 @@ class Company < ActiveRecord::Base
   SECTIONS = %i(about product people vacancies contacts).inject({}) { |hash, val| hash.merge({ I18n.t("company.sections.#{val}") => val }) }
   BLOCK_TYPES = %i(paragraph block_image person vacancy).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
 
-  before_create :build_sections_and_locked_blocks
-
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy
   has_one :logo, as: :owner, dependent: :destroy
@@ -15,16 +13,18 @@ class Company < ActiveRecord::Base
 
   validates :name, presence: true
 
-private
+  def save_with_buildings(user)
+    person = people.build(name: user.name, email: user.email, phone: user.phone)
+    person.user = user
 
-  def build_sections_and_locked_blocks
-    SECTIONS.values.each { |section| sections.send("#{section}=", nil) }
     blocks.build(section: :about, position: 0, identity_type: 'Paragraph', is_locked: true)
     blocks.build(section: :product, position: 0, identity_type: 'Paragraph', is_locked: true)
     blocks.build(section: :product, position: 1, identity_type: 'BlockImage', is_locked: true)
     blocks.build(section: :people, position: 0, identity_type: 'Person', is_locked: true)
     blocks.build(section: :people, position: 1, identity_type: 'Paragraph', is_locked: true)
     blocks.build(section: :vacancies, position: 0, identity_type: 'Vacancy', is_locked: true)
+    
+    save
   end
 
 end

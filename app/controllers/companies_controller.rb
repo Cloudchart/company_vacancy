@@ -26,11 +26,8 @@ class CompaniesController < ApplicationController
   # POST /companies
   def create
     @company = Company.new(company_params)
-    person = @company.people.build(name: current_user.name, email: current_user.email, phone: current_user.phone)
-    person.user = current_user
 
-    Rails.logger.info("#{'*'*1000} #{@company.inspect}")
-    if @company.save
+    if @company.save_with_buildings(current_user)
       redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
     else
       render action: 'new'
