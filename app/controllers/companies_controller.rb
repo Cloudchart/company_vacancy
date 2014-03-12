@@ -26,8 +26,10 @@ class CompaniesController < ApplicationController
   # POST /companies
   def create
     @company = Company.new(company_params)
+    @company.should_build_objects!
 
-    if @company.save_with_buildings(current_user)
+    if @company.save
+      @company.people << current_user.people.build(name: current_user.name, email: current_user.email, phone: current_user.phone)
       redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
     else
       render action: 'new'
