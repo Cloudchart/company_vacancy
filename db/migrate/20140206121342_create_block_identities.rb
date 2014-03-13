@@ -15,6 +15,8 @@ class CreateBlockIdentities < ActiveRecord::Migration
   end
   
   def down
+    remove_index :block_identities, :block_id
+    remove_index :block_identities, [:identity_id, :identity_type]
     drop_table :block_identities
   end
 end

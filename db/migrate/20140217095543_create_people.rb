@@ -18,6 +18,8 @@ class CreatePeople < ActiveRecord::Migration
   end
 
   def down
+    remove_index :people, :user_id
+    remove_index :people, :company_id
     drop_table :people
   end
 end

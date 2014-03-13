@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140311101806) do
+ActiveRecord::Schema.define(version: 20140313121720) do
 
   create_table "block_identities", primary_key: "uuid", force: true do |t|
     t.string   "block_id",      limit: 36
@@ -130,10 +130,11 @@ ActiveRecord::Schema.define(version: 20140311101806) do
   add_index "tokens", ["owner_id", "owner_type"], name: "index_tokens_on_owner_id_and_owner_type", using: :btree
 
   create_table "users", primary_key: "uuid", force: true do |t|
-    t.string   "name",            null: false
-    t.string   "email",           null: false
-    t.string   "password_digest", null: false
+    t.string   "name",                            null: false
+    t.string   "email",                           null: false
+    t.string   "password_digest",                 null: false
     t.string   "phone"
+    t.boolean  "is_admin",        default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -150,6 +151,18 @@ ActiveRecord::Schema.define(version: 20140311101806) do
   end
 
   add_index "vacancies", ["company_id"], name: "index_vacancies_on_company_id", using: :btree
+
+  create_table "versions", force: true do |t|
+    t.string   "item_id",        limit: 36, null: false
+    t.string   "item_type",                 null: false
+    t.string   "event",                     null: false
+    t.string   "whodunnit"
+    t.text     "object"
+    t.text     "object_changes"
+    t.datetime "created_at"
+  end
+
+  add_index "versions", ["item_id", "item_type"], name: "index_versions_on_item_id_and_item_type", using: :btree
 
   create_table "votes", primary_key: "uuid", force: true do |t|
     t.string   "source_id",        limit: 36,             null: false

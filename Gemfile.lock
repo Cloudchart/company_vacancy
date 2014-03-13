@@ -129,6 +129,9 @@ GEM
       jwt (~> 0.1.4)
       multi_json (~> 1.0)
       rack (~> 1.2)
+    paper_trail (3.0.0)
+      activerecord (>= 3.0, < 5.0)
+      activesupport (>= 3.0, < 5.0)
     polyglot (0.3.3)
     postmark (1.0.2)
       json
@@ -245,6 +248,7 @@ DEPENDENCIES
   mysql2
   oauth2
   pagescript!
+  paper_trail (~> 3.0.0)
   passport!
   postmark-rails (~> 0.5.2)
   presenter!
