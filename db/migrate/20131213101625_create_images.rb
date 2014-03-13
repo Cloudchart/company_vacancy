@@ -16,6 +16,7 @@ class CreateImages < ActiveRecord::Migration
   end
 
   def down
+    remove_index :images, [:owner_id, :owner_type]
     drop_table :images
   end
 end

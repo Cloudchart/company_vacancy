@@ -20,47 +20,53 @@ class Ability
     # See the wiki for details:
     # https://github.com/ryanb/cancan/wiki/Defining-Abilities
     
-    # What anyone can do
+    # Anyone
     can [:create, :activate, :reactivate], User
     can :read, Company
     can :read, Feature
 
     return unless user
 
-    # What user can do
-    can :associate_with_person, User
-    can :access_social_networks, User
-    # TODO: Feature admin ability
-    can [:create, :update, :destroy, :vote], Feature
+    # Admin
+    if user.is_admin?
+      # can :access, :rails_admin
+      # can :dashboard
+      can :manage, :all
+    # User
+    else
+      can :associate_with_person, User
+      can :access_social_networks, User
+      # TODO: Feature admin ability
+      can [:create, :update, :destroy, :vote], Feature
 
-    # What user can do with conditions
-    can [:read, :update, :destroy], User, id: user.id
+      # What user can do with conditions
+      can [:read, :update, :destroy], User, id: user.id
 
-    can :create, Company
-    can [:update, :destroy], Company do |company| 
-      (company.people & user.people).any?
+      can :create, Company
+      can [:update, :destroy], Company do |company| 
+        (company.people & user.people).any?
+      end
+
+      can :manage, Block do |block|
+        (block.owner.try(:people) & user.people).any?
+      end
+
+      can :manage, Person do |person|
+        (person.company.people & user.people).any?
+      end
+      # custom authorization for nested people#index
+      can [:access_people], Company do |company|
+        (company.people & user.people).any?
+      end
+
+      can :manage, Vacancy do |vacancy|
+        (vacancy.company.people & user.people).any?
+      end
+      # custom authorization for nested vacancies#index
+      can [:access_vacancies], Company do |company|
+        (company.people & user.people).any?
+      end
     end
 
-    can :manage, Block do |block|
-      (block.owner.try(:people) & user.people).any?
-    end
-
-    can :manage, Person do |person|
-      (person.company.people & user.people).any?
-    end
-    # custom authorization for nested people#index
-    can [:access_people], Company do |company|
-      (company.people & user.people).any?
-    end
-
-    can :manage, Vacancy do |vacancy|
-      (vacancy.company.people & user.people).any?
-    end
-    # custom authorization for nested vacancies#index
-    can [:access_vacancies], Company do |company|
-      (company.people & user.people).any?
-    end
-      
   end
-
 end

@@ -19,8 +19,8 @@ module Cloudchart
     # locales
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '*.{rb,yml}')] # global variables
     config.i18n.load_path += Dir[Rails.root.join('locales', '**', '*.{rb,yml}')] # translations
+    I18n.config.enforce_available_locales = true
     # config.i18n.default_locale = :de
-    config.i18n.enforce_available_locales = true
 
   end
 end

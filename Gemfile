@@ -19,8 +19,9 @@ gem 'postmark-rails', '~> 0.5.2'
 gem 'active_attr'
 gem 'cancan'
 gem 'tire'
-
 gem 'puma'
+gem 'rails_admin'
+gem 'paper_trail', '~> 3.0.0'
 
 # gem 'passport', path: '~/code/passport'
 gem 'passport', git: 'git@github.com:Cloudchart/passport.git'

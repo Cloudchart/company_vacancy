@@ -17,6 +17,7 @@ class CreateBlocks < ActiveRecord::Migration
   end
 
   def down
+    remove_index :blocks, [:owner_id, :owner_type]
     drop_table :blocks
   end
 end

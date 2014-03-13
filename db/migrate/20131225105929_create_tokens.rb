@@ -15,6 +15,7 @@ class CreateTokens < ActiveRecord::Migration
   end
 
   def down
+    remove_index :tokens, [:owner_id, :owner_type]
     drop_table :tokens
   end
 end

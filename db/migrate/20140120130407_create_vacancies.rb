@@ -17,6 +17,7 @@ class CreateVacancies < ActiveRecord::Migration
   end
 
   def down
+    remove_index :vacancies, :company_id
     drop_table :vacancies
   end
 
