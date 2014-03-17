@@ -15,13 +15,13 @@ class CreateEvents < ActiveRecord::Migration
     end
 
     add_index :events, :company_id
-    add_index :events, :user_id
+    add_index :events, :author_id
     execute 'ALTER TABLE events ADD PRIMARY KEY (uuid);'
   end
 
   def down
     remove_index :events, :company_id
-    remove_index :events, :user_id
+    remove_index :events, :author_id
     drop_table :events
   end
 end

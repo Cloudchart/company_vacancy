@@ -53,6 +53,22 @@ ActiveRecord::Schema.define(version: 20140313121720) do
     t.datetime "updated_at"
   end
 
+  create_table "events", primary_key: "uuid", force: true do |t|
+    t.string   "name",                  null: false
+    t.string   "url"
+    t.text     "sections"
+    t.string   "location"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.string   "company_id", limit: 36
+    t.string   "author_id",  limit: 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "events", ["author_id"], name: "index_events_on_author_id", using: :btree
+  add_index "events", ["company_id"], name: "index_events_on_company_id", using: :btree
+
   create_table "features", id: false, force: true do |t|
     t.string   "uuid",        limit: 36
     t.string   "name",                   null: false
