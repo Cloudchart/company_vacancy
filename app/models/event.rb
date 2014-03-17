@@ -3,13 +3,14 @@ class Event < ActiveRecord::Base
   include Sectionable
 
   SECTIONS = %i(about participants).inject({}) { |hash, val| hash.merge({ I18n.t("event.sections.#{val}") => val }) }
-  BLOCK_TYPES = %i(paragraph block_image company).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }  
+  BLOCK_TYPES = %i(paragraph block_image company).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
 
   after_validation :build_objects, if: :should_build_objects?
 
   belongs_to :company
   belongs_to :author, class_name: 'User'
   has_one :token, as: :owner, dependent: :destroy
+  has_paper_trail  
 
   validates :name, presence: true
   validates :url, url: true, allow_blank: true

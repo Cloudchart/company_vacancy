@@ -5,7 +5,7 @@ class EventsController < ApplicationController
   before_action :build_event_with_params, only: :create
   before_action :authorize_company, only: :index
 
-  authorize_resource   
+  authorize_resource except: :index
 
   # GET /events
   def index

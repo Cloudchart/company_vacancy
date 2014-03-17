@@ -7,7 +7,7 @@ class PeopleController < ApplicationController
   before_action :build_person_with_params, only: :create
   before_action :authorize_company, only: :index
 
-  authorize_resource
+  authorize_resource except: :index
 
   # GET /people
   def index

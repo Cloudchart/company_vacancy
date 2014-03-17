@@ -25,3 +25,14 @@
 <%= link_to 'Verify event', verify_event_path(token_id: @event.token.id), method: :post if @event.token %> |
 <%= link_to 'Edit event', edit_event_path(@event) %> |
 <%= link_to 'Events list', company_events_path(@event.company) %>
+
+<h1>History</h1>
+
+<ul>
+  <% @event.versions.each do |version| %>
+    <li>
+      <%= version.event %> |
+      <%= version.created_at %>
+    </li>
+  <% end %>
+</ul>
