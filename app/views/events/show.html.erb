@@ -22,4 +22,6 @@
 
 </div>
 
-<%= link_to 'Verify event', verify_event_path(token_id: @event.token.id), method: :post if @event.token %>
+<%= link_to 'Verify event', verify_event_path(token_id: @event.token.id), method: :post if @event.token %> |
+<%= link_to 'Edit event', edit_event_path(@event) %> |
+<%= link_to 'Events list', company_events_path(@event.company) %>

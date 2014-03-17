@@ -7,6 +7,8 @@ class Event < ActiveRecord::Base
 
   after_validation :build_objects, if: :should_build_objects?
 
+  belongs_to :company
+  belongs_to :author, class_name: 'User'
   has_one :token, as: :owner, dependent: :destroy
 
   validates :name, presence: true

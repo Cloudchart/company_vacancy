@@ -33,10 +33,10 @@ Cloudchart::Application.routes.draw do
       post :send_invite_to_user, on: :member
       post :search, on: :collection
     end
-  end
 
-  resources :events do
-    post :verify, on: :member
+    resources :events do
+      post :verify, on: :member
+    end
   end
 
   resources :features do

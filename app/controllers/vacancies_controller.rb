@@ -18,6 +18,7 @@ class VacanciesController < ApplicationController
 
   # GET /vacancies/new
   def new
+    # @vacancy = @company.vacancies.build
   end
 
   # GET /vacancies/1/edit

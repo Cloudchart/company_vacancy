@@ -36,8 +36,7 @@ class Ability
     else
       can :associate_with_person, User
       can :access_social_networks, User
-      # TODO: Feature admin ability
-      can [:create, :update, :destroy, :vote], Feature
+      can :vote, Feature
 
       # What user can do with conditions
       can [:read, :update, :destroy], User, id: user.id
@@ -51,22 +50,16 @@ class Ability
         (block.owner.try(:people) & user.people).any?
       end
 
-      can :manage, Person do |person|
-        (person.company.people & user.people).any?
-      end
-      # custom authorization for nested people#index
-      can [:access_people], Company do |company|
-        (company.people & user.people).any?
+      # authorization for nested company resorces
+      [Person, Vacancy, Event].each do |model|      
+        can :manage, model do |resource|
+          (resource.company.people & user.people).any?
+        end
+        can [:"access_#{model.table_name}"], Company do |company|
+          (company.people & user.people).any?
+        end
       end
 
-      can :manage, Vacancy do |vacancy|
-        (vacancy.company.people & user.people).any?
-      end
-      # custom authorization for nested vacancies#index
-      can [:access_vacancies], Company do |company|
-        (company.people & user.people).any?
-      end
     end
-
   end
 end

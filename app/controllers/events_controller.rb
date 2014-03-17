@@ -1,9 +1,15 @@
 class EventsController < ApplicationController
+  before_action :set_company, only: [:index, :new, :create]  
   before_action :set_event, only: [:show, :edit, :update, :destroy, :verify]
+  before_action :build_event, only: :new
+  before_action :build_event_with_params, only: :create
+  before_action :authorize_company, only: :index
+
+  authorize_resource   
 
   # GET /events
   def index
-    @events = Event.all
+    @events = @company.events
   end
 
   # GET /events/1
@@ -12,7 +18,6 @@ class EventsController < ApplicationController
 
   # GET /events/new
   def new
-    @event = Event.new
   end
 
   # GET /events/1/edit
@@ -21,7 +26,7 @@ class EventsController < ApplicationController
 
   # POST /events
   def create
-    @event = Event.new(event_params)
+    @event.author = current_user
     @event.should_build_objects!
 
     if @event.save
@@ -42,8 +47,9 @@ class EventsController < ApplicationController
 
   # DELETE /events/1
   def destroy
+    company = @event.company
     @event.destroy
-    redirect_to events_url, notice: 'Event was successfully destroyed.'
+    redirect_to company_events_url(company), notice: 'Event was successfully destroyed.'
   end
 
   def verify
@@ -65,9 +71,25 @@ private
     @event = Event.find(params[:id])
   end
 
+  def set_company
+    @company = Company.find(params[:company_id])
+  end  
+
   # Only allow a trusted parameter "white list" through.
   def event_params
     params.require(:event).permit(:name, :url, :location, :start_at, :end_at)
+  end
+
+  def build_event
+    @event = @company.events.build
+  end
+
+  def build_event_with_params
+    @event = @company.events.build(event_params)
+  end
+
+  def authorize_company
+    authorize! :access_events, @company
   end
 
 end

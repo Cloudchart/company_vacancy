@@ -1,6 +1,6 @@
 RailsAdmin.config do |config|
   config.main_app_name = ['CloudChart', 'Admin']
-  config.included_models = [Company, Feature, User]
+  config.included_models = ['Company', 'Feature', 'User']
 
   config.authenticate_with do
     warden.authenticate! scope: :user
@@ -14,11 +14,13 @@ RailsAdmin.config do |config|
   config.actions do
     dashboard # mandatory
     index # mandatory
-    new
+    new do
+      except ['Company']
+    end
     export
     bulk_delete
     show do
-      except [Feature]
+      except ['Feature']
     end
     edit
     delete

@@ -7,9 +7,10 @@ class Company < ActiveRecord::Base
 
   after_validation :build_objects, if: :should_build_objects?
 
+  has_one :logo, as: :owner, dependent: :destroy
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy
-  has_one :logo, as: :owner, dependent: :destroy
+  has_many :events, dependent: :destroy
 
   accepts_nested_attributes_for :logo, allow_destroy: true
 
