@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+ruby '2.0.0'
+
 gem 'rails', '4.0.2'
 gem 'mysql2'
 
@@ -43,7 +45,13 @@ group :development do
 end
 
 group :development, :test do
-  gem 'dotenv-rails'
+  gem 'dotenv-rails' # loads environment variables from .env
+  gem 'factory_girl_rails' # fixtures replacement
+  gem 'rspec-rails'
+end
+
+group :test do
+  gem 'capybara'
 end
 
 # Use jbuilder for building json API
