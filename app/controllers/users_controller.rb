@@ -7,6 +7,7 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
+    @versions = PaperTrail::Version.where(whodunnit: @user.id)
   end
 
   # get /sign-up
