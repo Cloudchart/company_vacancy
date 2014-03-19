@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-class BaseUploader < CarrierWave::Uploader::Base
+class ApplicationUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
   include CarrierWave::Meta
 

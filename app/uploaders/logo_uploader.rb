@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-class LogoUploader < BaseUploader
+class LogoUploader < ApplicationUploader
   # Process files as they are uploaded:
   process resize_to_fit: [100, 100]
   process :store_meta

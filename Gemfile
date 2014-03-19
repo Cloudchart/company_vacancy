@@ -27,8 +27,6 @@ gem 'paper_trail', '~> 3.0.1'
 
 # gem 'passport', path: '~/code/passport'
 gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
-# gem 'presenter', path: '~/code/presenter'
-gem 'presenter', git: 'git@github.com:Cloudchart/presenter.git'
 # gem 'pagescript', path: '~/code/pagescript'
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 

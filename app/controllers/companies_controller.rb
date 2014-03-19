@@ -10,8 +10,7 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
-    @blocks = @company.blocks
-    @vacancies = @company.vacancies
+    @company_decorator = CompanyDecorator.new(@company)
   end
 
   # GET /companies/new

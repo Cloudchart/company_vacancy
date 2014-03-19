@@ -1,26 +1,23 @@
-<% present @company do |company| %>
-  <div class="companies-wrapper">
+<div class="companies-wrapper">
 
-    <article data-behaviour="droppable" data-droppable-target="article">
-      <%= render partial: 'new_block_form' %>
+  <article data-behaviour="droppable" data-droppable-target="article">
+    <%= render partial: 'new_block_form' %>
+    
+    <%- Company::SECTIONS.each do |title, section| -%>
       
-      <%- Company::SECTIONS.each do |title, section| -%>
-        
-        <h2>
-          <%= title %>
-        </h2>
-        
-        <section data-name="<%= section %>">
-          <%= render partial: 'shared/block', collection: @company.blocks_by_section(section) -%>
-        </section>
-        
-      <%- end -%>
+      <h2>
+        <%= title %>
+      </h2>
       
-    </article>
+      <section data-name="<%= section %>">
+        <%= render partial: 'shared/block', collection: @company.blocks_by_section(section) -%>
+      </section>
+      
+    <%- end -%>
+    
+  </article>
 
-    <%= render 'navigation', company: company %>
-    <%= render 'shared/blocks_editor', collection: Company::BLOCK_TYPES %>
+  <%= render 'navigation' %>
+  <%= render 'shared/blocks_editor', collection: Company::BLOCK_TYPES %>
 
-  </div>
-
-<% end %>
+</div>

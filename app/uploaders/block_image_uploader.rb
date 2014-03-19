@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-class BlockImageUploader < BaseUploader
+class BlockImageUploader < ApplicationUploader
   # Process files as they are uploaded:
   # process resize_to_limit: [1500, 1500]
 

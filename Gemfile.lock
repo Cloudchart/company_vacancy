@@ -13,13 +13,6 @@ GIT
       rails (~> 4.0.2)
       warden (~> 1.2.3)
 
-GIT
-  remote: git@github.com:Cloudchart/presenter.git
-  revision: 61d8080527b1bd33975d92b1b314acf5dd6c7752
-  specs:
-    presenter (0.0.1)
-      rails (~> 4.0.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -279,7 +272,6 @@ DEPENDENCIES
   paper_trail (~> 3.0.1)
   passport!
   postmark-rails (~> 0.5.2)
-  presenter!
   puma
   quiet_assets
   rails (= 4.0.2)
