@@ -53,29 +53,31 @@ ActiveRecord::Schema.define(version: 20140313121720) do
     t.datetime "updated_at"
   end
 
+  create_table "emails", primary_key: "uuid", force: true do |t|
+    t.string   "user_id",    limit: 36
+    t.string   "address",               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "events", primary_key: "uuid", force: true do |t|
-    t.string   "name",                  null: false
+    t.string   "name",       null: false
     t.string   "url"
     t.text     "sections"
     t.string   "location"
     t.datetime "start_at"
     t.datetime "end_at"
-    t.string   "company_id", limit: 36
-    t.string   "author_id",  limit: 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "events", ["author_id"], name: "index_events_on_author_id", using: :btree
-  add_index "events", ["company_id"], name: "index_events_on_company_id", using: :btree
 
   create_table "features", id: false, force: true do |t|
     t.string   "uuid",        limit: 36
     t.string   "name",                   null: false
     t.text     "description"
-    t.integer  "votes_total"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "votes_total"
   end
 
   create_table "friends", primary_key: "uuid", force: true do |t|
@@ -135,11 +137,8 @@ ActiveRecord::Schema.define(version: 20140313121720) do
   add_index "tokens", ["owner_id", "owner_type"], name: "index_tokens_on_owner_id_and_owner_type", using: :btree
 
   create_table "users", primary_key: "uuid", force: true do |t|
-    t.string   "name",                            null: false
-    t.string   "email",                           null: false
-    t.string   "password_digest",                 null: false
-    t.string   "phone"
-    t.boolean  "is_admin",        default: false
+    t.string   "name",            default: ""
+    t.string   "password_digest",              null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
