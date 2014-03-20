@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.0.0'
 
-gem 'rails', '4.0.2'
+gem 'rails', '4.0.4'
 gem 'mysql2'
 
 gem 'sass-rails', '~> 4.0.0'
@@ -51,9 +51,6 @@ end
 group :test do
   gem 'capybara'
 end
-
-# Use jbuilder for building json API
-# gem 'jbuilder', '~> 1.2'
 
 # Use unicorn as the app server
 # gem 'unicorn'
