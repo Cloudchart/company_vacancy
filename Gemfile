@@ -30,6 +30,12 @@ gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
 # gem 'pagescript', path: '~/code/pagescript'
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 
+
+# CloudProfile Engine
+#
+gem 'cloud_profile', path: 'vendor/engines/cloud_profile'
+
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false

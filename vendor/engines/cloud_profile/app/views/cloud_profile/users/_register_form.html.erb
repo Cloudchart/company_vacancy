@@ -1,0 +1,13 @@
+<%= form_tag :register do %>
+
+  <span class="error"><%= first_error @email, :address %></span>
+  <%= text_field_tag :email, @email.address, autocomplete: :off, placeholder: t('.email_placeholder', default: 'e-mail') %>
+  
+  <span class="error"><%= first_error @user, :password %></span>
+  <%= password_field_tag :password, nil, autofocus: true, placeholder: t('.password_placeholder', default: 'password') %>
+  
+  <button>
+    <%= t '.start', default: 'Start using CloudChart' %>
+  </button>
+
+<%- end -%>

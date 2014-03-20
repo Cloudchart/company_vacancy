@@ -1,0 +1,15 @@
+<section class="email-activation">
+  
+  <h1>
+    <%= t '.activation', default: 'E-mail activation' %>
+  </h1>
+  
+  <form action="<%= email_activation_path %>" method="get">
+    <%= text_field_tag :token, params[:token], autofocus: true, autocomplete: :off, placeholder: t('.token_placeholder', default: 'Activation token') %>
+
+    <button>
+      <%= t '.activate', default: 'Activate e-mail' %>
+    </button>
+  </form>
+  
+</section>

@@ -1,0 +1,6 @@
+<form action="<%= login_path %>" class="login-or-register" method="get">
+  <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: true, placeholder: t('.email', default: 'e-mail') %>
+  <button>
+    <%= t '.go', default: 'Go' %>
+  </button>
+</form>

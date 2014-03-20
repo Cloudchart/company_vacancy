@@ -1,0 +1,90 @@
+section.login-or-register,
+section.register,
+section.login,
+section.email-activation {
+  margin: $base-unit * 2 auto;
+  width: $base-unit * 20;
+  
+  h1 {
+    margin: 0 0 $base-unit;
+    position: relative;
+    
+    a {
+      font-size: .75em;
+      left: - $base-unit * 1;
+      position: absolute;
+      top: .2em;
+    }
+  }
+  
+  form {
+    
+    input,
+    button {
+      border: 1px solid #ccc;
+      height: $base-unit * 2;
+      outline: none;
+    }
+    
+    input {
+      padding: 0 $base-unit / 4;
+    }
+    
+    button {
+      background-color: #eee;
+      padding: 0 $base-unit / 1.5;
+    }
+    
+    
+  }
+  
+}
+
+section.login-or-register {
+
+  form {
+    @include display(flex);
+    
+    input {
+      @include flex(1);
+
+      border-right: none;
+    }
+    
+  }
+  
+}
+
+
+section.register,
+section.login,
+section.email-activation {
+
+  form {
+    
+    input,
+    button {
+      width: 100%;
+    }
+    
+    input {
+      margin-bottom: $base-unit / 2;
+    }
+    
+  }
+  
+}
+
+section.login {
+  
+  form {
+    
+    p {
+      margin: 0 0 $base-unit;
+      padding: 0 $base-unit / 2;
+      text-align: right;
+    }
+
+  }
+  
+}

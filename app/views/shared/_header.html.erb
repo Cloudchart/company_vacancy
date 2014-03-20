@@ -1,5 +1,5 @@
 <div class="cloud-chart">
-  <%= link_to :root do %>
+  <%= link_to main_app.root_path do %>
     <div class="logo"><i class="fa fa-star"></i></div>
     <div class="name">
       Cloud<strong>Chart</strong>
@@ -8,13 +8,13 @@
 </div>
 
 <div class="login-and-signup">
-  <% if current_user %>
-    <%= link_to current_user.name, current_user %>
-    <%= link_to t('lexicon.logout'), logout_path %>
-  <% else %>
-    <%= link_to t('lexicon.login'), login_path, data: { behaviour: 'block-toggle', toggle: 'header .login-and-signup, header form.login' } %>
-    <%= link_to content_tag(:i, nil, class: 'fa fa-pencil') + t('lexicon.sign_up'), sign_up_path, class: 'button green-button' %>
-  <% end %>
+  <%# if current_user %>
+    <%#= link_to current_user.name, current_user %>
+    <%#= link_to t('lexicon.logout'), main_app.logout_path %>
+  <%# else %>
+    <%#= link_to t('lexicon.login'), cloud_profile.login_path, data: { behaviour: 'block-toggle', toggle: 'header .login-and-signup, header form.login' } %>
+    <%#= link_to content_tag(:i, nil, class: 'fa fa-pencil') + t('lexicon.sign_up'), main_app.sign_up_path, class: 'button green-button' %>
+  <%# end %>
 </div>
 
-<%= render 'shared/header_login' -%>
+<%#= render 'shared/header_login' -%>
