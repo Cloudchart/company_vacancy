@@ -11,23 +11,27 @@
   
   <ul>
     <%- active_emails.each do |email| %>
-      <li>
+      <li class="email">
         <%= font_awesome('check-circle') %>
-        <%= email.address %>
-        <%= link_to font_awesome('times'), email, method: :delete if active_emails.size > 1 %>
+        <span class="address">
+          <%= email.address %>
+        </span>
+        <%= link_to font_awesome('times'), email, method: :delete, class: :delete if active_emails.size > 1 %>
       </li>
     <%- end -%>
 
     <%- inactive_emails.each do |email| %>
-      <li>
+      <li class="email inactive">
         <%= font_awesome('question-circle') %>
-        <%= email.address %>
-        <%= link_to t('.resend_activation', default: 'resend activation'), [:activate, email] %>
-        <%= link_to font_awesome('times'), email, method: :delete if emails.size > 1 %>
+        <span class="address">
+          <%= email.address %>
+        </span>
+        <%= link_to font_awesome('envelope'), [:activate, email], class: :resend %>
+        <%= link_to font_awesome('times'), email, method: :delete, class: :delete if emails.size > 1 %>
       </li>
     <%- end -%>
 
-    <li>
+    <li class="add">
       <%= link_to font_awesome('plus'), :new_email %>
     </li>
   </ul>

@@ -8,26 +8,33 @@ CloudProfile::Engine.routes.draw do
 
   # Login/Logout
   #
-  get   'login', to: 'authentications#new', as: 'login'
+  get   'login', to: 'authentications#new'
   post  'login', to: 'authentications#create'
   
 
   # Registration
   #
-  get   'register', to: 'users#new', as: 'register'
+  get   'register', to: 'users#new', as: :register
   post  'register', to: 'users#create'
   
-
+  
   # Emails
   #
-  resources :emails, only: [:index, :new, :create, :destroy]
 
+  scope path: 'profile' do
+    resources :emails, only: [:index, :new, :create, :destroy] do
+      get 'activate', on: :member
+    end
 
-  # Email activation
+    match 'emails/activation(/:token)', to: 'emails#activation', as: :email_activation, via: [:get, :post]
+  end
+  
+
+  # Password
   #
-  get   'emails/activation/(:token)',   to: 'emails#activation', as: 'email_activation'
-  post  'emails/activation',            to: 'emails#activate'
-  get   'emails/:id/activate',          to: 'emails#resend_activation', as: 'activate_email'
+  scope path: 'profile' do
+    resource :password, only: [:show, :update]
+  end
   
 
 end

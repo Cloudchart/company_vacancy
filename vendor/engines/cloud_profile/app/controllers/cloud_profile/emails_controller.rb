@@ -37,12 +37,12 @@ module CloudProfile
     def activation
       token = Token.find(params[:token])
       token.destroy
-      redirect_to :profile
+      redirect_to :emails
     rescue ActiveRecord::RecordNotFound
     end
     
     
-    def resend_activation
+    def activate
       @email = Email.find(params[:id])
       unless @email.active?
         EmailMailer.activation_email(@email).deliver
