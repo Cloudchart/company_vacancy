@@ -155,8 +155,6 @@ ActiveRecord::Schema.define(version: 20140326110910) do
   add_index "tokens", ["owner_id", "owner_type"], name: "index_tokens_on_owner_id_and_owner_type", using: :btree
 
   create_table "users", primary_key: "uuid", force: true do |t|
-    t.string   "name",                            null: false
-    t.string   "email",                           null: false
     t.string   "password_digest",                 null: false
     t.string   "phone"
     t.boolean  "is_admin",        default: false
