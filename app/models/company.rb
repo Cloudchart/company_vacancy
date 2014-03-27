@@ -7,6 +7,7 @@ class Company < ActiveRecord::Base
 
   after_validation :build_objects, if: :should_build_objects?
 
+  has_and_belongs_to_many :industries
   has_one :logo, as: :owner, dependent: :destroy
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy

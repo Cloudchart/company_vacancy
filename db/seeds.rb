@@ -1,7 +1,19 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+
+# Industries
+
+Industry.delete_all
+puts '/* Seeding industries */'
+
+CSV.foreach('db/seeds/industries.csv') do |row|
+  if row[1] == 't'
+    @parent = Industry.create(name: row[0])
+    puts @parent.name
+  else
+    child = Industry.create(name: row[0], parent_uuid: @parent.id)
+    puts "- #{child.name}"
+  end
+end
+
+Industry.rebuild!
