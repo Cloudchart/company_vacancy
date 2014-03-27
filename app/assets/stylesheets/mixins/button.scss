@@ -1,0 +1,38 @@
+//
+// Cloud Button
+//
+
+@mixin cloud-button {
+
+  $cloud-button-background-color: hsl(137, 51%, 51%);
+  $cloud-button-background-color-disabled: hsl(0, 0%, 76%);
+  $cloud-button-border-color: hsl(140, 77%, 31%);
+  $cloud-button-border-color-disabled: hsl(0, 0%, 55%);
+  $cloud-button-border-radius: 5pt;
+  $cloud-button-color: hsl(0, 0%, 100%);
+  $cloud-button-color-disabled: $cloud-button-color;
+  $cloud-button-height: $base-unit * 2.65;
+  $cloud-button-font-size: 18pt;
+  $cloud-button-font-weight: 700;
+
+  background-color: $cloud-button-background-color;
+  border: 1pt solid $cloud-button-border-color;
+  border-radius: $cloud-button-border-radius;
+  
+  color: $cloud-button-color;
+  
+  cursor: pointer;
+  
+  height: $cloud-button-height;
+  
+  font-size: $cloud-button-font-size;
+  font-weight: $cloud-button-font-weight;
+  
+  &.disabled,
+  &[disabled] {
+    background-color: $cloud-button-background-color-disabled;
+    border-color: $cloud-button-border-color-disabled;
+    cursor: not-allowed;
+  }
+  
+}

@@ -1,4 +1,4 @@
-<%= form_tag :sessions, class: :login, style: 'display: none;' do -%>
+<%= form_tag main_app.sessions_path, class: :login, style: 'display: none;' do -%>
   <%= text_field_tag :email, nil, id: nil, autofocus: 'true', placeholder: t('.email_placeholder') -%>
   <%= password_field_tag :password, nil, id: nil, placeholder: t('.password_placeholder') -%>
   <button>

@@ -1,0 +1,39 @@
+<section class="emails">
+  
+  <h1>
+    <%= link_to font_awesome('chevron-left'), :profile %>
+    <%= t '.title', default: 'E-mails' %>
+  </h1>
+  
+  <%- emails          = current_user.emails.includes(:tokens) -%>
+  <%- active_emails   = emails.select(&:active?) -%>
+  <%- inactive_emails = emails.reject(&:active?) -%>
+  
+  <ul>
+    <%- active_emails.each do |email| %>
+      <li class="email">
+        <%= font_awesome('check-circle') %>
+        <span class="address">
+          <%= email.address %>
+        </span>
+        <%= link_to font_awesome('times'), email, method: :delete, class: :delete if active_emails.size > 1 %>
+      </li>
+    <%- end -%>
+
+    <%- inactive_emails.each do |email| %>
+      <li class="email inactive">
+        <%= font_awesome('question-circle') %>
+        <span class="address">
+          <%= email.address %>
+        </span>
+        <%= link_to font_awesome('envelope'), [:activate, email], class: :resend %>
+        <%= link_to font_awesome('times'), email, method: :delete, class: :delete if emails.size > 1 %>
+      </li>
+    <%- end -%>
+
+    <li class="add">
+      <%= link_to font_awesome('plus'), :new_email %>
+    </li>
+  </ul>
+  
+</section>

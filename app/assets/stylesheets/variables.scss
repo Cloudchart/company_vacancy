@@ -18,12 +18,14 @@ $mystic: hsl(0, 0%, 85%);
 $body-font-size: 10pt;
 
 // Header
-$header-background-color: hsl(0, 0, 91%);
+$header-background-color: hsl(0, 0%, 91%);
 $header-font-size: $base-font-size;
 
 // Footer
-$footer-background-color: hsl(0, 0, 85.5%);
-$footer-font-size: 12pt;
+$footer-background-color: hsl(0, 0%, 100%);
+$footer-link-color: hsl(0, 0%, 50%);
+$footer-font-size: 14pt;
+$footer-font-weight: 700;
 
 // Links
 

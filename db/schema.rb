@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140313121720) do
+ActiveRecord::Schema.define(version: 20140326110910) do
 
   create_table "block_identities", primary_key: "uuid", force: true do |t|
     t.string   "block_id",      limit: 36
@@ -44,6 +44,26 @@ ActiveRecord::Schema.define(version: 20140313121720) do
   end
 
   add_index "blocks", ["owner_id", "owner_type"], name: "index_blocks_on_owner_id_and_owner_type", using: :btree
+
+  create_table "cloud_profile_emails", primary_key: "uuid", force: true do |t|
+    t.string   "user_id",    limit: 36
+    t.string   "address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cloud_profile_emails", ["address"], name: "index_cloud_profile_emails_on_address", using: :btree
+
+  create_table "cloud_profile_social_networks", primary_key: "uuid", force: true do |t|
+    t.string   "user_id",      limit: 36
+    t.string   "name",                    null: false
+    t.string   "provider_id",             null: false
+    t.text     "access_token",            null: false
+    t.text     "data"
+    t.datetime "expires_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "companies", primary_key: "uuid", force: true do |t|
     t.string   "name",        null: false

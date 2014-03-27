@@ -17,4 +17,3 @@
 //= require plugins
 //= require ujs
 //= require_tree .
-

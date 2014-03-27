@@ -1,0 +1,21 @@
+<section class="emails">
+
+  <h1>
+    <%= link_to font_awesome('chevron-left'), :emails %>
+    <%= t '.title', default: 'Add email' %>
+  </h1>
+  
+  
+  <%= form_for @email do |form| %>
+    
+    <span class="error"><%= first_error @email, :address %></span>
+    <%= form.text_field :address, autofocus: true, autocomplete: :off, placeholder: t('.email_placeholder', default: 'e-mail') %>
+    
+    <button>
+      <%= t '.add_email', default: 'Add e-mail' %>
+    </button>
+    
+  <%- end -%>
+  
+  
+</section>

@@ -1,0 +1,22 @@
+<section class="login">
+  
+  <h1>
+    <%= link_to font_awesome('chevron-left'), :login %>
+    Login
+  </h1>
+
+  <%= form_tag :login do %>
+    <%= text_field_tag :email, params[:email], autocomplete: :off, placeholder: t('.email_placeholder', default: 'e-mail') %>
+  
+    <%= password_field_tag :password, nil, autofocus: true, placeholder: t('.password_placeholder', default: 'password') %>
+    
+    <p>
+      <%= link_to t('.forgot_password', default: 'Forgot your password?'), '' %>
+    </p>
+    
+    <button>
+      <%= t '.start', default: 'Start using CloudChart' %>
+    </button>
+  <%- end -%>
+
+</section>
