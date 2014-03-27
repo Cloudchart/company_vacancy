@@ -25,10 +25,10 @@ gem 'puma'
 gem 'rails_admin'
 gem 'paper_trail', '~> 3.0.1'
 
+# gem 'passport', path: '~/code/passport'
 gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
+# gem 'pagescript', path: '~/code/pagescript'
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
-# https://github.com/collectiveidea/awesome_nested_set/issues/239
-gem 'awesome_nested_set', git: 'git@github.com:Cloudchart/awesome_nested_set.git'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

@@ -59,7 +59,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :description, logo_attributes: :image)
+    params.require(:company).permit(:name, :description, logo_attributes: :image, industries_attributes: :name)
   end
 
 end

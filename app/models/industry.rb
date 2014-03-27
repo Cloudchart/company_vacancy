@@ -1,26 +1,26 @@
 class Industry < ActiveRecord::Base
   include Uuidable
 
-  acts_as_nested_set parent_column: :parent_uuid, primary_column: :uuid
-
+  belongs_to :parent, class_name: 'Industry', foreign_key: :parent_uuid, inverse_of: :children
   has_and_belongs_to_many :companies
+  has_many :children, -> { order(:name) }, class_name: 'Industry', foreign_key: :parent_uuid, inverse_of: :parent
 
   validates :name, presence: true
 
-  rails_admin do
+  scope :roots, -> { where(parent_uuid: nil).order(:name) }
 
+  rails_admin do
     list do
-      include_fields :name, :parent, :created_at, :updated_at
+      exclude_fields :uuid, :children
     end
 
     edit do
-      include_fields :name, :parent, :children
+      exclude_fields :uuid, :companies
     end
 
     show do
-      include_fields :name, :children
+      exclude_fields :uuid
     end
-
   end  
 
 end

@@ -15,5 +15,3 @@ CSV.foreach('db/seeds/industries.csv') do |row|
     puts "- #{child.name}"
   end
 end
-
-Industry.rebuild!

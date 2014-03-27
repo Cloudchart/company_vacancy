@@ -1,11 +1,4 @@
 GIT
-  remote: git@github.com:Cloudchart/awesome_nested_set.git
-  revision: 08d522ad02ad6c0fff922fef9e96ae7a210a1b56
-  specs:
-    awesome_nested_set (3.0.0.rc.3)
-      activerecord (>= 4.0.0, < 5)
-
-GIT
   remote: git@github.com:Cloudchart/pagescript.git
   revision: a6c78b18a589dc93e7ad5857ab361ad09d57e454
   specs:
@@ -262,7 +255,6 @@ PLATFORMS
 
 DEPENDENCIES
   active_attr
-  awesome_nested_set!
   awesome_print
   bcrypt-ruby (~> 3.1.2)
   bourbon

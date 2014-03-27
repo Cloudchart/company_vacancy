@@ -14,6 +14,7 @@ class Company < ActiveRecord::Base
   has_many :events, dependent: :destroy
 
   accepts_nested_attributes_for :logo, allow_destroy: true
+  accepts_nested_attributes_for :industries
 
   validates :name, presence: true
 
