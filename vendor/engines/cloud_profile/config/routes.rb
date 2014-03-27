@@ -8,8 +8,9 @@ CloudProfile::Engine.routes.draw do
 
   # Login/Logout
   #
-  get   'login', to: 'authentications#new'
-  post  'login', to: 'authentications#create'
+  get   'login',  to: 'authentications#new'
+  post  'login',  to: 'authentications#create'
+  get   'logout', to: 'authentications#destroy'
   
 
   # Registration
@@ -35,6 +36,14 @@ CloudProfile::Engine.routes.draw do
   scope path: 'profile' do
     resource :password, only: [:show, :update]
   end
+  
+
+  # Social Networks / OAuth2
+  #
+  
+  get 'oauth/callback',   to: 'social_networks#oauth_callback', as: 'oauth_callback'
+  get 'oauth/logout',     to: 'social_networks#oauth_logout',   as: 'oauth_logout'
+  get 'oauth/:provider',  to: 'social_networks#oauth_provider'
   
 
 end

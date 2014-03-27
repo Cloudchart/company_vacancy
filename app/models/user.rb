@@ -21,8 +21,11 @@ class User < ActiveRecord::Base
     votes.map(&:destination_id).include?(object.id)
   end
   
-  
   has_many :emails, -> { order(:address) }, class_name: CloudProfile::Email
+  
+  # Social Networks
+  #
+  has_many :social_networks, dependent: :destroy, inverse_of: :user, class_name: CloudProfile::SocialNetwork
   
 
 private

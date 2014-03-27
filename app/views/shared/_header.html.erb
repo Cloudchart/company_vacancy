@@ -1,20 +1,40 @@
-<div class="cloud-chart">
-  <%= link_to main_app.root_path do %>
-    <div class="logo"><i class="fa fa-star"></i></div>
-    <div class="name">
-      Cloud<strong>Chart</strong>
-    </div>
-  <% end %>
-</div>
+<header class="white">
 
-<div class="login-and-signup">
-  <%# if current_user %>
-    <%#= link_to current_user.name, current_user %>
-    <%#= link_to t('lexicon.logout'), main_app.logout_path %>
-  <%# else %>
-    <%#= link_to t('lexicon.login'), cloud_profile.login_path, data: { behaviour: 'block-toggle', toggle: 'header .login-and-signup, header form.login' } %>
-    <%#= link_to content_tag(:i, nil, class: 'fa fa-pencil') + t('lexicon.sign_up'), main_app.sign_up_path, class: 'button green-button' %>
-  <%# end %>
-</div>
 
-<%#= render 'shared/header_login' -%>
+  <a href="/" class="logo">Cloud<strong>Chart</strong></a>
+
+
+  <div class="search">
+    <%= font_awesome('search') %>
+    <%= text_field_tag :q, nil, placeholder: t('.search_placeholder', default: 'Find companies and people'), autocomplete: :off %>
+  </div>
+  
+
+  <div class="spacer">
+  </div>
+  
+
+  <ul class="links">
+    <li>
+      <%= link_to t('.why_charting', default: 'Why charting?'), '' %>
+    </li>
+    <li>
+      <%= link_to t('.companies', default: 'Companies'), '' %>
+    </li>
+    <li>
+      <%= link_to t('.success_stories', default: 'Success stories'), '' %>
+    </li>
+    <li>
+      <%= link_to t('.pricing', default: 'Pricing'), '' %>
+    </li>
+  </ul>
+  
+  
+  <%- if user_authenticated? -%>
+    <%= link_to font_awesome('sign-out'), cloud_profile.logout_path, class: 'sign-out' %>
+  <%- else -%>
+    <%= link_to t('.log-in', default: 'Log In'), cloud_profile.login_path, class: 'log-in' %>
+    <%= link_to font_awesome('pencil') + t('.sign-up', default: 'Sign Up'), cloud_profile.register_path, class: 'sign-up' %>
+  <%- end -%>
+  
+</header>

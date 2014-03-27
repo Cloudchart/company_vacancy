@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.0.0'
 
-gem 'rails', '4.0.2'
+gem 'rails', '~> 4.0.2'
 gem 'mysql2'
 
 gem 'sass-rails', '~> 4.0.0'
@@ -24,9 +24,11 @@ gem 'tire'
 gem 'puma'
 gem 'rails_admin'
 gem 'paper_trail', '~> 3.0.1'
+gem 'warden'
 
 # gem 'passport', path: '~/code/passport'
-gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
+#gem 'passport', git: 'git@github.com:Cloudchart/passport.git'
+
 # gem 'pagescript', path: '~/code/pagescript'
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 
@@ -34,6 +36,11 @@ gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 # CloudProfile Engine
 #
 gem 'cloud_profile', path: 'vendor/engines/cloud_profile'
+
+
+# CloudOAuth Gem
+#
+gem 'cloud_oauth', path: 'vendor/gems/cloud_oauth'
 
 
 group :doc do

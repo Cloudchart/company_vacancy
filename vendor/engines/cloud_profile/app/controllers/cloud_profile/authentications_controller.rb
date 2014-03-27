@@ -18,8 +18,15 @@ module CloudProfile
 
     def create
       email = Email.find_by(address: params[:email])
-      redirect_to_stored_path_or_root and return if email.present? && email.user.authenticate(params[:password])
-      flash.now[:error] = 'No user'
+      if email.present? && email.active? && email.user.authenticate(params[:password])
+        warden.set_user(email.user, scope: :user)
+        redirect_to_stored_path_or_root and return
+      end
+    end
+    
+    def destroy
+      warden.logout
+      redirect_to params[:return_to] || request.referer || main_app.root_path
     end
   
 
