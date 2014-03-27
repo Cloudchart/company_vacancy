@@ -5,6 +5,8 @@ module CloudProfile
     
 
     def new
+      store_return_path unless return_path_stored?
+
       @email = Email.find_or_initialize_by(address: params[:email])
       if @email.valid?
         if @email.persisted?
@@ -24,25 +26,18 @@ module CloudProfile
       end
     end
     
+
     def destroy
       warden.logout
-      redirect_to params[:return_to] || request.referer || main_app.root_path
+      redirect_to_stored_path_or_root
     end
   
 
-  private
+  protected
   
-
-    def store_return_path
-      session[:authentication_return_to] = params[:return_to] if params[:return_to]
+    def session_store_key
+      :authentication_return_to
     end
-    
-
-    def redirect_to_stored_path_or_root
-      redirect_to params[:return_to] || session[:authentication_return_to] || :profile
-      session[:authentication_return_to] = nil
-    end
-
 
   end
 end
