@@ -114,12 +114,12 @@ ActiveRecord::Schema.define(version: 20140326143513) do
 
   create_table "industries", primary_key: "uuid", force: true do |t|
     t.string   "name",                   null: false
-    t.string   "parent_uuid", limit: 36
+    t.string   "parent_id", limit: 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "industries", ["parent_uuid"], name: "index_industries_on_parent_uuid", using: :btree
+  add_index "industries", ["parent_id"], name: "index_industries_on_parent_id", using: :btree
 
   create_table "paragraphs", primary_key: "uuid", force: true do |t|
     t.text     "content",    null: false

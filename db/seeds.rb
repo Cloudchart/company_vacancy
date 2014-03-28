@@ -11,7 +11,7 @@ CSV.foreach('db/seeds/industries.csv') do |row|
     @parent = Industry.create(name: row[0])
     puts @parent.name
   else
-    child = Industry.create(name: row[0], parent_uuid: @parent.id)
+    child = Industry.create(name: row[0], parent_id: @parent.id)
     puts "- #{child.name}"
   end
 end

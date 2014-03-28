@@ -36,7 +36,9 @@ en:
     #     username: "User name to sign in."
     #     password: "No special characters, please."
     placeholders:
-      industry: "< Select industry >"
       vacancy:
         name: "Senior Developer Engineer"
         description: "Entering text here, focus on, makes it wiggle uncontrollably and excitedly. Focus off, this green pasture wanders off. Makes for a brighter, richer experience with out new Cloud-on-a- Chart whirlygig."
+    prompts:
+      industry: "< Select industry >"
+      country: "< Select country >"

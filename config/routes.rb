@@ -37,6 +37,8 @@ Cloudchart::Application.routes.draw do
     resources :events do
       post :verify, on: :member
     end
+
+    post :search, on: :collection
   end
 
   resources :features do

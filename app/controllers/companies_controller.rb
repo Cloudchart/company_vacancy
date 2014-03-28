@@ -1,11 +1,27 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy]
+  before_action :set_collection, only: [:index, :search]
 
   authorize_resource
 
   # GET /companies
   def index
-    @companies = Company.includes(:logo)
+  end
+
+  def search
+    @companies = @companies.find(Company.search(params).results.map(&:to_param))
+
+    if params[:country].present?
+      @companies = @companies.select { |company| company.country == params[:country] }
+    end
+
+    if params[:industry_id].present?
+      @companies = @companies.select do |company| 
+        company.industry.id == params[:industry_id] || company.industry.parent_id == params[:industry_id]
+      end
+    end
+
+    render :index
   end
 
   # GET /companies/1
@@ -57,9 +73,13 @@ private
     @company = Company.includes(:logo, blocks: { block_identities: :identity }).find(params[:id])
   end
 
+  def set_collection
+    @companies = Company.includes(:logo, :industries)
+  end
+
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :description, logo_attributes: :image, industries_attributes: :name)
+    params.require(:company).permit(:name, :country, :industry_ids, :description, logo_attributes: :image)
   end
 
 end
