@@ -22,7 +22,7 @@ class Ability
     
     # Anyone
     can [:create, :activate, :reactivate], User
-    can :read, Company
+    can [:read, :search], Company
     can :read, Feature
 
     return unless user

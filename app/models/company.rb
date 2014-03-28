@@ -1,12 +1,15 @@
 class Company < ActiveRecord::Base
   include Uuidable
   include Sectionable
+  include Tire::Model::Search
+  include Tire::Model::Callbacks  
 
   SECTIONS = %i(about product people vacancies contacts).inject({}) { |hash, val| hash.merge({ I18n.t("company.sections.#{val}") => val }) }
   BLOCK_TYPES = %i(paragraph block_image person vacancy).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
 
   after_validation :build_objects, if: :should_build_objects?
 
+  has_and_belongs_to_many :industries
   has_one :logo, as: :owner, dependent: :destroy
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy
@@ -14,7 +17,25 @@ class Company < ActiveRecord::Base
 
   accepts_nested_attributes_for :logo, allow_destroy: true
 
-  validates :name, presence: true
+  validates :name, :country, :industry_ids, presence: true
+
+  settings ElasticSearchNGramSettings do
+    mapping do
+      indexes :name, analyzer: 'ngram_analyzer'
+    end
+  end
+
+  class << self
+    def search(params)
+      tire.search(load: true) do
+        query { string "name:#{params[:query]}" } if params[:query].present?
+      end
+    end
+  end
+
+  def industry
+    industries.first
+  end
 
   def build_objects
     blocks.build(section: :about, position: 0, identity_type: 'Paragraph', is_locked: true)

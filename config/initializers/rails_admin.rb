@@ -1,6 +1,6 @@
 RailsAdmin.config do |config|
   config.main_app_name = ['CloudChart', 'Admin']
-  config.included_models = ['Company', 'Feature', 'User']
+  config.included_models = ['Company', 'Feature', 'User', 'Industry']
 
   config.authenticate_with do
     warden.authenticate! scope: :user
@@ -25,8 +25,12 @@ RailsAdmin.config do |config|
     edit
     delete
     show_in_app
-    history_index # auditing
-    history_show # auditing
+    history_index do
+      except ['Industry']
+    end
+    history_show do
+      except ['Industry']
+    end
   end
   
 end

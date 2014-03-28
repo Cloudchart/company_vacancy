@@ -1,12 +1,21 @@
-<h1>Listing companies</h1>
+<h1>Searching companies</h1>
+
+<%= form_tag search_companies_path do %>
+  <p>
+    <%= search_field_tag :query, params[:query] %>
+    <%= select_tag :country, country_options_for_select(params[:country], ['Russia']), prompt: t('simple_form.prompts.country') %>
+    <%= select_tag :industry_id, options_for_select(industries_collection_for_select, selected: params[:industry_id]), prompt: t('simple_form.prompts.industry') %>
+    <%= submit_tag :search %>
+  </p>
+<% end %>
 
 <table>
   <thead>
     <tr>
       <th>Logo</th>
       <th>Name</th>
-      <th>Description</th>
-      <th></th>
+      <th>Country</th>
+      <th>Industry</th>
       <th></th>
       <th></th>
     </tr>
@@ -17,7 +26,8 @@
       <tr>
         <td><%= image_tag company.logo.try(:image_url) %></td>
         <td><%= company.name %></td>
-        <td><%= company.description %></td>
+        <td><%= company.country %></td>
+        <td><%= company.industry.name %></td>
         <td><%= link_to 'Show', company %></td>
         <td><%= link_to 'Edit', edit_company_path(company) %></td>
         <td><%= link_to 'Destroy', company, method: :delete, data: { confirm: 'Are you sure?' } %></td>
