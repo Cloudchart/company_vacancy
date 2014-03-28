@@ -1,11 +1,6 @@
 CloudProfile::Engine.routes.draw do
   
 
-  # Profile landing page
-  #
-  get 'profile', to: 'welcome#index'
-
-
   # Login/Logout
   #
   get   'login',  to: 'authentications#new'
@@ -15,35 +10,37 @@ CloudProfile::Engine.routes.draw do
 
   # Registration
   #
-  get   'register', to: 'users#new', as: :register
-  post  'register', to: 'users#create'
+  get   'register(/:social_network_id)', to: 'users#new', as: :register
+  post  'register(/:social_network_id)', to: 'users#create'
   
   
-  # Emails
-  #
-
-  scope path: 'profile' do
-    resources :emails, only: [:index, :new, :create, :destroy] do
-      get 'activate', on: :member
-    end
-
-    match 'emails/activation(/:token)', to: 'emails#activation', as: :email_activation, via: [:get, :post]
-  end
-  
-
-  # Password
-  #
-  scope path: 'profile' do
-    resource :password, only: [:show, :update]
-  end
-  
-
   # Social Networks / OAuth2
   #
   
   get 'oauth/callback',   to: 'social_networks#oauth_callback', as: 'oauth_callback'
   get 'oauth/logout',     to: 'social_networks#oauth_logout',   as: 'oauth_logout'
-  get 'oauth/:provider',  to: 'social_networks#oauth_provider'
+  get 'oauth/:provider',  to: 'social_networks#oauth_provider', as: 'oauth_provider'
+  
+
+  scope :profile do
+
+    # Profile landing page
+    #
+    root to: 'welcome#index'
+    
+
+    # Emails
+    #
+    resources :emails, only: [:index, :new, :create, :destroy] do
+      match 'activation(/:token)', to: 'emails#activation', as: :activation, via: [:get, :post]
+      get   'activate', on: :member
+    end
+
+
+    # Password
+    #
+    resource :password, only: [:show, :update]
+  end
   
 
 end

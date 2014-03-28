@@ -33,7 +33,7 @@ $cloud-input-padding: 0 $base-unit * .75;
   width: $cloud-profile-section-width;
   margin: 2 * $base-unit auto;
   
-  h1 {
+  > h1 {
     @include cloud-profile-section-header;
   }
 
@@ -87,6 +87,46 @@ section.login-or-register {
     border-top-left-radius: 0;
     width: 3 * $base-unit;
   }
+  
+  h2.social-networks {
+    font-size: 12pt;
+    font-weight: 400;
+    margin: 1.25 * $base-unit 0 $base-unit;
+    text-align: center;
+  }
+  
+  ul.social-networks {
+    @include display(flex);
+    @include flex-wrap(wrap);
+    
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+    li {
+      border: 1pt solid #ccc;
+      border-radius: 5pt;
+      font-size: 16pt;
+      font-weight: 600;
+      height: $cloud-button-height;
+      line-height: $cloud-button-height;
+      margin-bottom: $base-unit;
+      margin-right: 5%;
+      padding: 0 .75 * $base-unit;
+      text-align: center;
+      width: 47.5%;
+      
+      &:nth-child(2n) {
+        margin-right: 0;
+      }
+      
+      a {
+        display: block;
+        text-decoration: none;
+      }
+    }
+  }
+  
 }
 
 
@@ -157,7 +197,7 @@ section.register {
     
     button {
       @include cloud-button;
-      margin-top: .75 * $base-unit;
+      margin-top: $base-unit;
       width: 100%;
     }
     

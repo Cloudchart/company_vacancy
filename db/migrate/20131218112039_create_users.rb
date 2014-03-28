@@ -3,6 +3,7 @@ class CreateUsers < ActiveRecord::Migration
     create_table :users, id: false do |t|
       t.string :uuid, limit: 36
       t.string :password_digest, null: false
+      t.string :name
       t.string :phone
       t.boolean :is_admin, default: false
 

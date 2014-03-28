@@ -1,36 +1,19 @@
-<%= form_tag :register do %>
+<%= form_tag register_path(social_network_id: params[:social_network_id]) do %>
 
   
-  <%- if social_network_authenticated? -%>
-  
-    <div class="social-network">
-      
-      <div class="avatar" style="background-image: url(https://graph.facebook.com/<%= current_social_network.provider_id %>/picture?type=large);">
-        <span class="fa fa-stack icon">
-          <i class="fa fa-square fa-stack-1x fa-inverse"></i>
-          <i class="fa fa-facebook-square fa-stack-1x"></i>
-        </span>
-      </div>
-      
-      <div class="name">
-        <%= current_social_network.data['first_name'] %>
-        <strong>
-          <%= current_social_network.data['last_name'] %>
-        </strong>
-        <h4>
-          <%= t '.linked_account', default: 'Linked Account' %>
-          <%= link_to font_awesome('times'), oauth_logout_path, class: 'unlink-social-network' %>
-        </h4>
-      </div>
-
-    </div>
-    
-  <%- end -%>
+  <%= render partial: 'social_network' %>
   
 
-  <%= text_field_tag :email, @email.address, autocomplete: :off, placeholder: t('.email_placeholder', default: 'E-mail') %>
+  <%- email_autofocus = @email.address.blank? || @email.invalid? -%>
+
+
+  <label>
+    <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: email_autofocus, placeholder: t('.email_placeholder', default: 'E-mail') %>
+  </label>
   
-  <%= password_field_tag :password, nil, autofocus: true, placeholder: t('.password_placeholder', default: 'Choose a password') %>
+  <label>
+    <%= password_field_tag :password, nil, autofocus: !email_autofocus, placeholder: t('.password_placeholder', default: 'Choose a password') %>
+  </label>
   
   <button>
     <%= font_awesome('magic') %>

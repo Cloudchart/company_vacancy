@@ -1,0 +1,25 @@
+<%- if @social_network.present? -%>
+
+  <div class="social-network">
+    
+    <div class="avatar" style="background-image: url(https://graph.facebook.com/<%= @social_network.provider_id %>/picture?type=large);">
+      <span class="fa fa-stack icon">
+        <i class="fa fa-square fa-stack-1x fa-inverse"></i>
+        <i class="fa fa-facebook-square fa-stack-1x"></i>
+      </span>
+    </div>
+    
+    <div class="name">
+      <%= @social_network.first_name %>
+      <strong>
+        <%= @social_network.last_name %>
+      </strong>
+      <h4>
+        <%= t '.linked_account', default: 'Linked Account' %>
+        <%= link_to font_awesome('times'), register_path, class: 'unlink-social-network' %>
+      </h4>
+    </div>
+
+  </div>
+  
+<%- end -%>

@@ -19,7 +19,7 @@ module CloudProfile
       social_network.attributes = { data: profile, access_token: oauth_token.token, expires_at: Time.at(oauth_token.expires_at) }
       social_network.save
 
-      warden.set_user(social_network, scope: :social_network)
+      session[:social_network_id] = social_network.to_param
 
       redirect_to_back_or_root
     ensure

@@ -5,3 +5,16 @@
     <%= font_awesome('magic') %>
   </button>
 </form>
+
+<h2 class="social-networks">
+  <%= t '.social_networks', default: 'Use your favourite social network' %>
+</h2>
+
+<ul class="social-networks">
+  <li>
+    <%= link_to "Facebook", oauth_provider_path(provider: :facebook) %>
+  </li>
+  <li>
+    <%= link_to "Linkedin", '' %>
+  </li>
+</ul>
