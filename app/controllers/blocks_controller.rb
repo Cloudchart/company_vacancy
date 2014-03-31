@@ -3,26 +3,23 @@ class BlocksController < ApplicationController
 
   def create
     company = Company.find(params[:company_id])
-    @block = company.blocks.build(block_params_for_create)
-    # @company  = Company.includes(blocks: { block_identities: :identity }).find(params[:company_id])
+    @block = company.blocks.create!(block_params_for_create)
 
     respond_to do |format|
       format.html { redirect_to @block.owner }
       format.js
     end
   end
-  
 
   def update
     @block = Block.includes(:owner).find(params[:id])
-    @block.update_attributes!(block_params_for_update)
+    @block.update!(block_params_for_update)
 
     respond_to do |format|
       format.html { redirect_to @block.owner }
       format.js
     end
   end
-  
 
   def destroy
     block = Block.includes(:owner, { block_identities: :identity }).find(params[:id])
@@ -30,7 +27,6 @@ class BlocksController < ApplicationController
     block.destroy
     redirect_to block.owner
   end
-
 
   def update_position
     # temporary created params[:blocks]. must be passed through ajax call.
