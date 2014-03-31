@@ -1,7 +1,7 @@
 <div class="companies-wrapper">
 
   <article data-behaviour="droppable" data-droppable-target="article">
-    <%= render partial: 'new_block_form' %>
+    <%= render 'new_block_form' %>
     
     <%- Company::SECTIONS.each do |title, section| -%>
       
@@ -17,7 +17,7 @@
     
   </article>
 
-  <%= render 'navigation' %>
+  <%= render 'shared/companies/side_nav', company: CompanyDecorator.new(@company), source: Company %>
   <%= render 'shared/blocks_editor', collection: Company::BLOCK_TYPES %>
 
 </div>
