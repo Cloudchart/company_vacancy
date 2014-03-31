@@ -41,13 +41,13 @@ class CompaniesController < ApplicationController
   # POST /companies
   def create
     @company = Company.new(company_params)
+    @company.associate_with_person(current_user)
     @company.should_build_objects!
 
     if @company.save
-      @company.people << current_user.people.build(name: current_user.name, email: current_user.email, phone: current_user.phone)
       redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
     else
-      render action: 'new'
+      render :new
     end
   end
 
@@ -56,7 +56,7 @@ class CompaniesController < ApplicationController
     if @company.update(company_params)
       redirect_to @company, notice: t('messages.updated', name: t('lexicon.company'))
     else
-      render action: 'edit'
+      render :edit
     end
   end
 

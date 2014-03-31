@@ -46,4 +46,10 @@ class Company < ActiveRecord::Base
     blocks.build(section: :vacancies, position: 0, identity_type: 'Vacancy', is_locked: true)
   end
 
+  def associate_with_person(user)
+    email = user.emails.first.address
+    name = user.try(:name) ? user.name : email.split('@')[0]
+    people << user.people.build(name: name, email: email, phone: user.phone)
+  end
+
 end

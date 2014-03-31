@@ -2,9 +2,9 @@ class BlocksController < ApplicationController
   authorize_resource
 
   def create
-    company  = Company.find params[:company_id]
-    @block    = company.blocks.build block_params_for_create
-    #@company  = Company.includes(blocks: { block_identities: :identity }).find params[:company_id]
+    company = Company.find(params[:company_id])
+    @block = company.blocks.build(block_params_for_create)
+    # @company  = Company.includes(blocks: { block_identities: :identity }).find(params[:company_id])
 
     respond_to do |format|
       format.html { redirect_to @block.owner }
@@ -14,8 +14,8 @@ class BlocksController < ApplicationController
   
 
   def update
-    @block = Block.includes(:owner).find params[:id]
-    @block.update_attributes! block_params_for_update
+    @block = Block.includes(:owner).find(params[:id])
+    @block.update_attributes!(block_params_for_update)
 
     respond_to do |format|
       format.html { redirect_to @block.owner }
