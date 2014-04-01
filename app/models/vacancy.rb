@@ -4,6 +4,7 @@ class Vacancy < ActiveRecord::Base
   serialize :settings, VacancySetting
 
   SECTIONS = %i(settings vacancy requirements benefits).inject({}) { |hash, val| hash.merge({ I18n.t("vacancy.sections.#{val}") => val }) }
+  BLOCK_TYPES = %i(paragraph block_image).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
 
   belongs_to :company
 

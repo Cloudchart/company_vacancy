@@ -1,4 +1,10 @@
-<div class="companies-wrapper">
+<%= link_to 'Verify event', verify_event_path(token_id: @event.token.id), method: :post if @event.token %> |
+<%= link_to 'Edit event', edit_event_path(@event) %> |
+<%= link_to 'Events', company_events_path(@event.company) %>
+
+<div class="droppable-article-wrapper">
+
+  <%= render 'shared/companies/side_nav', company: CompanyDecorator.new(@event.company), klass: Event %>
 
   <article data-behaviour="droppable" data-droppable-target="article">
     <%# render partial: 'new_block_form' %>
@@ -17,11 +23,6 @@
     
   </article>
 
-  <%# render partial: 'navigation', locals: { company: company } %>
   <%= render 'shared/blocks_editor', collection: Event::BLOCK_TYPES %>
 
 </div>
-
-<%= link_to 'Verify event', verify_event_path(token_id: @event.token.id), method: :post if @event.token %> |
-<%= link_to 'Edit event', edit_event_path(@event) %> |
-<%= link_to 'Events list', company_events_path(@event.company) %>
