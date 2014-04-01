@@ -3,13 +3,18 @@
     <li class="logo">
       <%= company.logo %>
 
-      <%= form_tag '' do -%>
-        <%= file_field_tag :logo %>
-        <span class="button small">
-          <i class="fa fa-picture-o"></i>
-          Upload new logo
-        </span>
-      <%- end -%>
+      <% if can?(:update, Company) %>
+        <%= form_for company.object do |f| %>
+          <span class="button small">
+            <%= f.fields_for :logo, company.logo.present? ? company.object.logo : company.object.build_logo, include_id: false do |ff| %>
+              <%= ff.file_field :image %>
+            <% end %>
+            <i class="fa fa-picture-o"></i>
+            <%= t('companies.side_nav.upload_logo') %>
+          </span>
+          <%= f.submit %>
+        <% end %>
+      <% end %>
 
     </li>
     

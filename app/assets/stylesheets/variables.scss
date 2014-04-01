@@ -13,6 +13,7 @@ $white-smoke: hsl(0, 0%, 96%);
 $jumbo: hsl(0, 0%, 53%);
 $alto: hsl(0, 0%, 78%);
 $mystic: hsl(0, 0%, 85%);
+$gray-chateau: hsl(0, 0%, 64%);
 
 // Body
 $body-font-size: 10pt;
@@ -36,6 +37,7 @@ a {
 // Buttons
 
 $grey-button-back-color: $athens-grey;
+$grey-button-back-color-transparent: hsla(0, 0, 87%, .75);
 $grey-button-text-color: $dark-grey;
 
 $green-button-back-color: $north-texas-green;
@@ -53,5 +55,3 @@ $button-height-small: $base-unit * 1.3;
 //
 // Droppable article wrapper
 //
-
-$droppable-article-wrapper-nav-background-color: $white-smoke;

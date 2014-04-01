@@ -145,4 +145,8 @@
           
 
           console.log 'drop'
+
+
+        $('.edit_company').on 'change', '#company_logo_attributes_image', (event) ->
+          $(this).closest('form').submit()
           

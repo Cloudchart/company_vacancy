@@ -1,5 +1,7 @@
 en:
   companies:
+    side_nav:
+      upload_logo: "Upload new logo"
     edit:
       add_text: "Add text block"
       add_image: "Add image block"

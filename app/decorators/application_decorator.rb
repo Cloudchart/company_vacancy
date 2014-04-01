@@ -4,6 +4,8 @@ class ApplicationDecorator
     @object = object
   end
 
+  attr_reader :object
+
 private
 
   def self.decorates(name)

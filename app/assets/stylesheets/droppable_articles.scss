@@ -36,7 +36,7 @@ div.droppable-article-wrapper {
     > nav {
         @include glued-editable-article-block('glued', $top: $base-unit, $left: $base-unit);
         
-        background-color: $droppable-article-wrapper-nav-background-color;
+        background-color: $white-smoke;
         left: 0;
         padding: $base-unit;
         position: absolute;
@@ -50,12 +50,45 @@ div.droppable-article-wrapper {
         }
         
         > ul {
-          
-          
+
+          > li.logo {
+            position: relative;
+
+            > form {
+              display: none;
+              position: absolute;
+              top: 0;
+
+              input[type="file"] {
+                position: absolute;
+                left: 0;
+                height: $button-height-small;
+                width: 100%;
+                opacity: 0;
+              }
+
+              input[type="submit"] {
+                display: none;
+              }
+
+              > .button.small {
+                border: 1px solid $gray-chateau;
+                @include linear-gradient(lighten($grey-button-back-color-transparent, 2%), darken($grey-button-back-color-transparent, 2%));
+              }
+            }
+
+            &:hover {
+              > form {
+                display: block;
+              }
+            }
+
+          }
+
           > li.description {
             
             textarea {
-              background-color: $droppable-article-wrapper-nav-background-color;
+              background-color: $white-smoke;
               border: none;
               color: hsl(0, 0, 53%);
               font-size: 12pt;

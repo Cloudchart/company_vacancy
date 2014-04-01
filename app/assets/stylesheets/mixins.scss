@@ -30,7 +30,6 @@
     @include button($grey-button-back-color, $grey-button-text-color);
 }
 
-
 .button,
 .grey-button {
     @include grey-button;
