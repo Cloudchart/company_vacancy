@@ -1,6 +1,8 @@
 class Vacancy < ActiveRecord::Base
   include Uuidable
 
+  is_impressionable counter_cache: true, unique: true
+
   serialize :settings, VacancySetting
 
   SECTIONS = %i(settings vacancy requirements benefits).inject({}) { |hash, val| hash.merge({ I18n.t("vacancy.sections.#{val}") => val }) }

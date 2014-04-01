@@ -26,6 +26,7 @@ gem 'rails_admin'
 gem 'paper_trail', '~> 3.0.1'
 gem 'warden'
 gem 'country_select'
+gem 'impressionist'
 
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 

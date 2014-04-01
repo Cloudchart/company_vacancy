@@ -5,7 +5,9 @@ class VacanciesController < ApplicationController
   before_action :build_vacancy_with_params, only: :create
   before_action :authorize_company, only: :index
 
-  authorize_resource except: :index 
+  authorize_resource except: :index
+
+  impressionist actions: [:show], unique: [:ip_address]
 
   # GET /vacancies
   def index
@@ -18,7 +20,6 @@ class VacanciesController < ApplicationController
 
   # GET /vacancies/new
   def new
-    # @vacancy = @company.vacancies.build
   end
 
   # GET /vacancies/1/edit

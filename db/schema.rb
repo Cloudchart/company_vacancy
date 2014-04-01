@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140326143513) do
+ActiveRecord::Schema.define(version: 20140401140537) do
 
   create_table "block_identities", primary_key: "uuid", force: true do |t|
     t.string   "block_id",      limit: 36
@@ -133,6 +133,31 @@ ActiveRecord::Schema.define(version: 20140326143513) do
 
   add_index "images", ["owner_id", "owner_type"], name: "index_images_on_owner_id_and_owner_type", using: :btree
 
+  create_table "impressions", force: true do |t|
+    t.string   "impressionable_type"
+    t.string   "impressionable_id",   limit: 36
+    t.integer  "user_id"
+    t.string   "controller_name"
+    t.string   "action_name"
+    t.string   "view_name"
+    t.string   "request_hash"
+    t.string   "ip_address"
+    t.string   "session_hash"
+    t.text     "message"
+    t.text     "referrer"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "impressions", ["controller_name", "action_name", "ip_address"], name: "controlleraction_ip_index", using: :btree
+  add_index "impressions", ["controller_name", "action_name", "request_hash"], name: "controlleraction_request_index", using: :btree
+  add_index "impressions", ["controller_name", "action_name", "session_hash"], name: "controlleraction_session_index", using: :btree
+  add_index "impressions", ["impressionable_type", "impressionable_id", "ip_address"], name: "poly_ip_index", using: :btree
+  add_index "impressions", ["impressionable_type", "impressionable_id", "request_hash"], name: "poly_request_index", using: :btree
+  add_index "impressions", ["impressionable_type", "impressionable_id", "session_hash"], name: "poly_session_index", using: :btree
+  add_index "impressions", ["impressionable_type", "message", "impressionable_id"], name: "impressionable_type_message_index", length: {"impressionable_type"=>nil, "message"=>255, "impressionable_id"=>nil}, using: :btree
+  add_index "impressions", ["user_id"], name: "index_impressions_on_user_id", using: :btree
+
   create_table "industries", primary_key: "uuid", force: true do |t|
     t.string   "name",                  null: false
     t.string   "parent_id",  limit: 36
@@ -183,12 +208,13 @@ ActiveRecord::Schema.define(version: 20140326143513) do
   end
 
   create_table "vacancies", primary_key: "uuid", force: true do |t|
-    t.string   "name",                   null: false
+    t.string   "name",                                     null: false
     t.text     "description"
     t.string   "salary"
     t.string   "location"
-    t.string   "company_id",  limit: 36, null: false
+    t.string   "company_id",        limit: 36,             null: false
     t.text     "settings"
+    t.integer  "impressions_count",            default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
