@@ -1,8 +1,7 @@
 <nav data-behaviour="editable-article-nav sticky">
-
   <ul>
     <li class="logo">
-      <%= @company_decorator.logo %>
+      <%= company.logo %>
 
       <%= form_tag '' do -%>
         <%= file_field_tag :logo %>
@@ -20,7 +19,7 @@
     
     <li class="links">
       <ul>
-        <%- Company::SECTIONS.each do |k, v| -%>
+        <%- klass.const_get('SECTIONS').each do |k, v| -%>
           <li>
             <%= link_to k, "##{v}", data: { :"scrollable-anchor" => "" } %>
           </li>

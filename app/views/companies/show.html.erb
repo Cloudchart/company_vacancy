@@ -1,7 +1,14 @@
-<div class="companies-wrapper">
+<%= link_to 'Edit', edit_company_path(@company) %> |
+<%= link_to 'Vacancies', company_vacancies_path(@company) if can?(:manage, Vacancy) %> |
+<%= link_to 'People', company_people_path(@company) if can?(:manage, Person) %> |
+<%= link_to 'Events', company_events_path(@company) if can?(:manage, Event) %>
+
+<div class="droppable-article-wrapper">
+
+  <%= render 'shared/companies/side_nav', company: CompanyDecorator.new(@company), klass: Company %>
 
   <article data-behaviour="droppable" data-droppable-target="article">
-    <%= render partial: 'new_block_form' %>
+    <%= render 'new_block_form' %>
     
     <%- Company::SECTIONS.each do |title, section| -%>
       
@@ -17,7 +24,6 @@
     
   </article>
 
-  <%= render 'navigation' %>
   <%= render 'shared/blocks_editor', collection: Company::BLOCK_TYPES %>
 
 </div>

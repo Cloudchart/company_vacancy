@@ -16,9 +16,9 @@ class PeopleController < ApplicationController
   end
 
   def search
-    company_people = @company.people.search(params)
-    company_people_friends = Friend.by_company(@company.id).search(params)
-    @people = company_people.to_a + company_people_friends.to_a
+    company_people = @company.people.search(params).results
+    company_people_friends = Friend.by_company(@company.id).search(params).results
+    @people = company_people + company_people_friends
 
     respond_to do |format|
       format.js

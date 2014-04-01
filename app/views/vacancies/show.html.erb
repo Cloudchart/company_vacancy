@@ -1,20 +1,28 @@
 <%= link_to 'Edit', edit_vacancy_path(@vacancy) %> |
-<%= link_to 'Back', company_vacancies_path(@vacancy.company) %>
+<%= link_to 'Vacancies', company_vacancies_path(@vacancy.company) %>
 
-<%#= render 'shared/company_side_nav', company: @vacancy.company, source: Vacancy %>
+<div class="droppable-article-wrapper">
 
-<h1>Page content</h1>
+  <%= render 'shared/companies/side_nav', company: CompanyDecorator.new(@vacancy.company), klass: Vacancy %>
 
-<% Vacancy::SECTIONS.each do |key, value| %>
-  <h2>
-    <%= link_to '#', class: 'anchor toggleable-link', id: value do %>
-      <i class="fa fa-caret-down"></i>
-      <%= key %>
+  <article data-behaviour="droppable" data-droppable-target="article">
+
+    <% Vacancy::SECTIONS.each do |title, section| %>
+      <h2>
+        <%= link_to '#', class: 'anchor toggleable-link', id: section do %>
+          <i class="fa fa-caret-down"></i>
+          <%= title %>
+        <% end %>
+      </h2>
+
+      <section class="toggleable-content">
+        <%= render "vacancies/sections/#{section}" %>
+      </section>
+
     <% end %>
-  </h2>
 
-  <div class="toggleable-content">
-    <%= render "vacancies/sections/#{value}" %>
-  </div>
+  </article>
 
-<% end %>
+  <%= render 'shared/blocks_editor', collection: Vacancy::BLOCK_TYPES %>
+
+</div>
