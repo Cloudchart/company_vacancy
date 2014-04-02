@@ -1,10 +1,5 @@
-<%- block.identities.build if block.identities.empty? -%>
-
-<%= form_for block.persisted? ? block : [block.owner, block], html: { data: { remote: true } } do |form| %>
-
-  <%= form.fields_for :paragraphs, block.identities do |identity_form| %>
-    <%= identity_form.hidden_field :content, id: nil, data: { source: :content } %>
-    <div contenteditable="true" data-target="[data-source=content]" data-behaviour="paragraph" data-placeholder="<%= t(".#{block.section}.placeholder_#{block.position}", default: t('.placeholder')).html_safe %>"><%= identity_form.object.content.try :html_safe %></div>
-  <%- end -%>
-
-<%- end -%>
+<% block.identities.each do |identity| %>
+  <div>
+    <%= raw(identity.content) %>
+  </div>
+<% end %>

@@ -1,30 +1,35 @@
 <nav data-behaviour="editable-article-nav sticky">
   <ul>
     <li class="logo">
-      <%= company.logo %>
+      <%= image_tag company.try(:logo).try(:image_url) %>
 
       <% if can?(:update, Company) %>
-        <%= form_for company.object do |f| %>
+        <%= simple_form_for company do |f| %>
           <span class="button small">
-            <%= f.fields_for :logo, company.logo.present? ? company.object.logo : company.object.build_logo, include_id: false do |ff| %>
-              <%= ff.file_field :image %>
+            <%= f.simple_fields_for :logo, company.logo.present? ? company.logo : company.build_logo, include_id: false do |ff| %>
+              <%= ff.input_field :image %>
             <% end %>
             <i class="fa fa-picture-o"></i>
             <%= t('companies.side_nav.upload_logo') %>
           </span>
-          <%= f.submit %>
         <% end %>
       <% end %>
 
     </li>
     
     <li class="description">
-      <textarea rows="2">Type your company description here. Be concise.</textarea>
+      <% if can?(:update, Company) %>
+        <%= simple_form_for company, remote: true do |f| %>
+          <%= f.input_field :description %>
+        <% end %>
+      <% else %>
+        <%= company.description %>
+      <% end %>
     </li>
     
     <li class="links">
       <ul>
-        <%- klass.const_get('SECTIONS').each do |k, v| -%>
+        <%- company.class.const_get('SECTIONS').each do |k, v| -%>
           <li>
             <%= link_to k, "##{v}", data: { :"scrollable-anchor" => "" } %>
           </li>

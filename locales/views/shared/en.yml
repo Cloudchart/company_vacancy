@@ -16,7 +16,7 @@ en:
       terms_of_use: 'Terms of Use'
       blog: 'Blog'
 
-    blocks:
+    editable_blocks:
       paragraph:
         placeholder: Default Text Placeholder
         about:

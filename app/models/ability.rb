@@ -22,8 +22,13 @@ class Ability
     
     # Anyone
     can [:create, :activate, :reactivate], User
+
     can [:read, :search], Company
-    can :read, Feature
+    [Person, Vacancy, Event].each do |model|
+      can [:read], model
+    end
+
+    can [:read], Feature
 
     return unless user
 
@@ -51,7 +56,7 @@ class Ability
       end
 
       # authorization for nested company resorces
-      [Person, Vacancy, Event].each do |model|      
+      [Person, Vacancy, Event].each do |model|
         can :manage, model do |resource|
           (resource.company.people & user.people).any?
         end

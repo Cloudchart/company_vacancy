@@ -1,29 +1,3 @@
-<%- block.identities.build if block.identities.blank? -%>
-
-<%= form_for block.persisted? ? block : [block.owner, block], multipart: true, data: { remote: true } do |form| %>
-
-  <%= form.fields_for :block_images, block.identities do |identity_form| %>
-    <%= identity_form.file_field :image %>
-  <%- end -%>
-
-  
-  <%- identity = block.identities.first -%>
-
-  <%- if identity.persisted? -%>
-    <%= image_tag identity.image, width: '100%' %>
-  <%- else -%>
-    <div class="placeholder">
-      <i class="fa fa-picture-o"></i>
-      <h4>
-        Product picture goes here
-      </h4>
-      <p>
-        Use professional photography or&nbsp;graphic design.
-      </p>
-      <p>
-        Use pictures at least 1500 px wide.
-      </p>
-    </div>
-  <%- end -%>
-
-<%- end -%>
+<% block.identities.each do |identity| %>
+  <%= image_tag identity.try(:image), width: '100%' %>
+<% end %>

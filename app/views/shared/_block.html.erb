@@ -1,8 +1,12 @@
 <div class="<%= block.identity_name %> identity-block <%= 'locked' if block.is_locked? -%>">
 
-  <div class="handle" data-behaviour="circular-popup-trigger" data-buttons="C:circle-o:close,N:arrow-up:move_up,S:arrow-down:move_down,E:times:delete">
-    <i class="fa fa-bars"></i>
-  </div>
+  <% if can?(:update, Company) %>
+    <div class="handle" data-behaviour="circular-popup-trigger" data-buttons="C:circle-o:close,N:arrow-up:move_up,S:arrow-down:move_down,E:times:delete">
+      <i class="fa fa-bars"></i>
+    </div>
+  <% end %>
 
-  <%= render "shared/blocks/#{block.identity_type.underscore}", block: block %>
+  <% blocks = can?(:update, Company) ? 'editable_blocks' : 'blocks' %>
+  <%= render "shared/#{blocks}/#{block.identity_type.underscore}", block: block %>
+  
 </div>

@@ -3,7 +3,7 @@
 
 <div class="droppable-article-wrapper">
 
-  <%= render 'shared/companies/side_nav', company: CompanyDecorator.new(@vacancy.company), klass: Vacancy %>
+  <%= render 'shared/companies/side_nav', company: @vacancy.company %>
 
   <article data-behaviour="droppable" data-droppable-target="article">
 

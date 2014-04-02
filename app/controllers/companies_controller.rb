@@ -53,7 +53,10 @@ class CompaniesController < ApplicationController
   # PATCH/PUT /companies/1
   def update
     if @company.update(company_params)
-      redirect_to @company, notice: t('messages.updated', name: t('lexicon.company'))
+      respond_to do |format|
+        format.html { redirect_to @company, notice: t('messages.updated', name: t('lexicon.company')) }
+        format.js { render nothing: true }
+      end
     else
       render :edit
     end

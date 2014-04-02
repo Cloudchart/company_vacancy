@@ -4,7 +4,7 @@
 
 <div class="droppable-article-wrapper">
 
-  <%= render 'shared/companies/side_nav', company: CompanyDecorator.new(@event.company), klass: Event %>
+  <%= render 'shared/companies/side_nav', company: @event.company %>
 
   <article data-behaviour="droppable" data-droppable-target="article">
     <%# render partial: 'new_block_form' %>
