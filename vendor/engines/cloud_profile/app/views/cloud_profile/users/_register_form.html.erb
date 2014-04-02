@@ -1,23 +1,25 @@
 <%= form_tag register_path(social_network_id: params[:social_network_id]) do %>
 
-  
-  <%= render partial: 'social_network' %>
-  
 
   <%- email_autofocus = @email.address.blank? || @email.invalid? -%>
 
 
-  <label>
-    <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: email_autofocus, placeholder: t('.email_placeholder', default: 'E-mail') %>
-  </label>
+  <%= content_tag :label, class: has_errors(@email, :address) ? :error : nil do -%>
+    <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: email_autofocus, placeholder: t('.email_placeholder', default: 'E-mail'), data: { behaviour: 'toggle-error' } %>
+    <span class="error"><i><%= first_error(@email, :address) %></i></span>
+  <%- end -%>
   
-  <label>
-    <%= password_field_tag :password, nil, autofocus: !email_autofocus, placeholder: t('.password_placeholder', default: 'Choose a password') %>
-  </label>
+
+  <%= content_tag :label, class: has_errors(@user, :password) ? :error : nil do -%>
+    <%= password_field_tag :password, nil, autofocus: !email_autofocus, placeholder: t('.password_placeholder', default: 'Choose a password'), data: { behaviour: 'toggle-error' } %>
+    <span class="error"><i><%= first_error(@user, :password) %></i></span>
+  <%- end -%>
   
+
   <button>
     <%= font_awesome('magic') %>
     <%= t '.start', default: 'Start using CloudChart' %>
   </button>
+
 
 <%- end -%>

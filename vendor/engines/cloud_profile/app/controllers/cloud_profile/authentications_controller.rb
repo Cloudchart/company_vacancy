@@ -27,10 +27,18 @@ module CloudProfile
 
     def create
       email = Email.find_by(address: params[:email])
-      if email.present? && email.active? && email.user.authenticate(params[:password])
-        warden.set_user(email.user, scope: :user)
-        redirect_to_stored_path_or_root and return
-      end
+
+      raise ActiveRecord::RecordNotFound  unless email.present? || email.user.authenticate(params[:password])
+      raise ActiveRecord::RecordInvalid   unless email.active?
+
+      warden.set_user(email.user, scope: :user)
+      redirect_to_stored_path_or_root and return
+
+    rescue ActiveRecord::RecordNotFound
+      render :new
+
+    rescue ActiveRecord::RecordInvalid
+      render :new
     end
     
 

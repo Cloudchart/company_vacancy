@@ -17,3 +17,4 @@
 //= require plugins
 //= require ujs
 //= require_tree .
+//= require cloud_profile/application

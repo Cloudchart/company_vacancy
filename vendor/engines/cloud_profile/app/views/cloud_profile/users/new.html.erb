@@ -1,10 +1,14 @@
-<section class="register">
+<div class="centering-wrapper">
+  <section class="register">
+
+    <h1>
+      <%= link_to font_awesome('angle-left'), :login %>
+      Register
+    </h1>
+
+    <%= render partial: 'social_network' %>
+
+    <%= render partial: 'register_form' %>
   
-  <h1>
-    <%= link_to font_awesome('angle-left'), :login %>
-    Register
-  </h1>
-  
-  <%= render partial: 'register_form' %>
-  
-</section>
+  </section>
+</div>

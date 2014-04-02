@@ -1,6 +1,7 @@
 module CloudProfile
   class ApplicationController < ::ApplicationController
     
+    
   protected
   
     def store_return_path

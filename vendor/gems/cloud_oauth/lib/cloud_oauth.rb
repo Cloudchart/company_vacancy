@@ -2,6 +2,7 @@ module CloudOAuth
   
   
   autoload :Facebook, 'cloud_oauth/facebook'
+  autoload :Linkedin, 'cloud_oauth/linkedin'
 
 
   @@providers = {}
