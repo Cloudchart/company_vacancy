@@ -29,6 +29,13 @@ class Block < ActiveRecord::Base
   def self.identities_to_destroy_with_block
     [Paragraph, BlockImage]
   end
+
+  def company
+    case owner_type
+    when 'Company' then owner
+    when 'Event' then owner.company
+    end
+  end
   
   def identity_class
     @identity_class ||= ActiveSupport.const_get(identity_type.classify)

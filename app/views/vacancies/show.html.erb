@@ -1,7 +1,7 @@
 <%= link_to 'Edit', edit_vacancy_path(@vacancy) %> |
 <%= link_to 'Vacancies', company_vacancies_path(@vacancy.company) %>
 
-<div class="droppable-article-wrapper">
+<div class="editable-article-wrapper">
 
   <%= render 'shared/companies/side_nav', company: @vacancy.company, klass: Vacancy %>
 

@@ -52,7 +52,7 @@ class Ability
       end
 
       can :manage, Block do |block|
-        (block.owner.try(:people) & user.people).any?
+        (block.company.try(:people) & user.people).any?
       end
 
       # authorization for nested company resorces

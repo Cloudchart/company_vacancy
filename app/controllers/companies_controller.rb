@@ -26,6 +26,7 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
+    pagescript_params(can_update_company: can?(:update, Company))
   end
 
   # GET /companies/new

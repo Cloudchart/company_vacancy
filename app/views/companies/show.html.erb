@@ -3,12 +3,12 @@
 <%= link_to 'People', company_people_path(@company) if can?(:manage, Person) %>
 <%= link_to 'Events', company_events_path(@company) if can?(:manage, Event) %>
 
-<div class="droppable-article-wrapper">
+<div class="editable-article-wrapper">
 
   <%= render 'shared/companies/side_nav', company: @company, klass: Company %>
 
-  <%= content_tag(:article, attributes_for_droppable_article) do %>
-    <%= render 'new_block_form' %>
+  <article data-behaviour="droppable" data-droppable-target="article">
+    <%= render 'shared/new_block_form', object: @company %>
     
     <%- Company::SECTIONS.each do |title, section| -%>
       
@@ -22,7 +22,7 @@
       
     <%- end -%>
     
-  <% end %>
+  </article>
 
   <%= render 'shared/blocks_editor', collection: Company::BLOCK_TYPES if can?(:update, Company) %>
 

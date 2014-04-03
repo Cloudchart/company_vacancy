@@ -18,22 +18,34 @@ cc.utils.get_style_property_name = (name) ->
   valid_prefixes  = prefixes.filter (prefix) -> typeof document_element_style[prefix + name] == 'string'
   
   valid_prefixes[0] + name if valid_prefixes.length > 0
-    
 
 #
 #
 #
 
 jQuery ->
-    # toggable section
-    $('main').on 'click', '.toggleable-link', (event) -> 
-        $i = $(this).find('i')
+  #
+  # Toggable section
+  #
+  $('main').on 'click', '.toggleable-link', (event) -> 
+    $i = $(this).find('i')
 
-        $(this).parent().next('.toggleable-content').toggle 0, ->
-            if $i.hasClass('fa-caret-down')
-                $i.removeClass().addClass('fa fa-caret-right')
-            else
-                $i.removeClass().addClass('fa fa-caret-down')
+    $(this).parent().next('.toggleable-content').toggle 0, ->
+      if $i.hasClass('fa-caret-down')
+        $i.removeClass().addClass('fa fa-caret-right')
+      else
+        $i.removeClass().addClass('fa fa-caret-down')
 
-        event.preventDefault()
+    event.preventDefault()
 
+  #
+  # Scrollable anchor
+  #
+  $(document).on 'click', 'a[href^="#"][data-scrollable-anchor]', (event) ->
+    $anchor = $($(@).attr('href')) ; return if $anchor.length == 0
+
+    event.preventDefault()
+    
+    $(document.body).animate
+      scrollTop: $anchor.offset().top
+    , 250

@@ -1,14 +1,22 @@
 Cloudchart::Application.routes.draw do
   root 'companies#index'
-
-  # RailsAdmin engine mount point
+  
+  # Engines
   #
   mount RailsAdmin::Engine, at: '/admin', as: 'rails_admin'
-
-  # CloudProfile engine mount point
-  #
   mount CloudProfile::Engine, at: '/'
 
+  # Concerns
+  #
+  concern :blockable do
+    resources :blocks do
+      post :update_position, on: :collection
+      post :update_section, on: :collection
+    end
+  end
+
+  # Custom
+  #
   # get 'sign-up', to: 'users#new', as: 'sign_up'
   # get 'login', to: 'sessions#new', as: 'login'
   # get 'logout', to: 'sessions#destroy', as: 'logout'
@@ -19,6 +27,8 @@ Cloudchart::Application.routes.draw do
   # get 'users/activation/:token_id', to: 'users#activate', as: 'activate_user'
   # get 'users/reactivation/:token_id', to: 'users#reactivate', as: 'reactivate_user'
 
+  # Resources
+  #
   resources :users, except: [:index, :new, :destroy] do
     get :associate_with_person, on: :member
   end
@@ -27,20 +37,15 @@ Cloudchart::Application.routes.draw do
   resources :password_resets, only: [:new, :create, :edit, :update]
   resources :tokens, only: :destroy
 
-  resources :companies, shallow: true do
+  resources :companies, shallow: true, concerns: [:blockable] do
     resources :vacancies
-
-    resources :blocks do
-      post :update_position, on: :collection
-      post :update_section, on: :collection
-    end
     
     resources :people do
       post :send_invite_to_user, on: :member
       post :search, on: :collection
     end
 
-    resources :events do
+    resources :events, concerns: [:blockable] do
       post :verify, on: :member
     end
 

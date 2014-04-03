@@ -15,5 +15,6 @@
 //= require block_identities
 //= require ui
 //= require plugins
+//= require shared
 //= require ujs
 //= require_tree .

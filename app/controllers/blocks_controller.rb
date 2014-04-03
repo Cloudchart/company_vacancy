@@ -2,8 +2,13 @@ class BlocksController < ApplicationController
   authorize_resource
 
   def create
-    company = Company.find(params[:company_id])
-    @block = company.blocks.create!(block_params_for_create)
+    object = if params[:company_id].present?
+      Company.find(params[:company_id])
+    elsif params[:event_id].present?
+      Event.find(params[:event_id])
+    end
+
+    @block = object.blocks.create!(block_params_for_create)
 
     respond_to do |format|
       format.html { redirect_to @block.owner }
@@ -17,7 +22,7 @@ class BlocksController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to @block.owner }
-      format.js
+      format.js { render nothing: true }
     end
   end
 
