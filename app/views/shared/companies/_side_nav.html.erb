@@ -29,7 +29,7 @@
     
     <li class="links">
       <ul>
-        <%- company.class.const_get('SECTIONS').each do |k, v| -%>
+        <%- klass.const_get('SECTIONS').each do |k, v| -%>
           <li>
             <%= link_to k, "##{v}", data: { :"scrollable-anchor" => "" } %>
           </li>

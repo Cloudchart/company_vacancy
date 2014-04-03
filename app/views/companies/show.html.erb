@@ -5,7 +5,7 @@
 
 <div class="droppable-article-wrapper">
 
-  <%= render 'shared/companies/side_nav', company: @company %>
+  <%= render 'shared/companies/side_nav', company: @company, klass: Company %>
 
   <%= content_tag(:article, attributes_for_droppable_article) do %>
     <%= render 'new_block_form' %>
