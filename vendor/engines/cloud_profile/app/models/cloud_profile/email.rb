@@ -8,14 +8,15 @@ module CloudProfile
     
     has_many :tokens, as: :owner, dependent: :destroy
 
-    validates :address, presence: true, uniqueness: true, format: /.+@.+\..+/i
+    validates_format_of     :address, with: /.+@.+\..+/i
+    validates_uniqueness_of :address
+    validates_presence_of   :address
+    
 
     #
     # Activation
     #
     
-    
-    before_create :generate_activation_token, unless: :should_skip_activation?
     
     def active?
       persisted? && !activation_token.present?
@@ -31,15 +32,7 @@ module CloudProfile
       end
     end
     
-    def skip_activation!
-      @should_skip_activation = true
-    end
-    
-    def should_skip_activation?
-      !!@should_skip_activation
-    end
-    
-    
+
     #
     # Destruction
     #

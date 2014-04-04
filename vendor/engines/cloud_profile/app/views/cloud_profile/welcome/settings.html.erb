@@ -1,0 +1,41 @@
+<%= render partial: 'shared/nav' %>
+
+<section class="profile">
+  <section class="profile-emails">
+    <h1>
+      <%= t '.emails', default: 'Emails' %>
+    </h1>
+  
+    <ul>
+      <li>
+        <%= current_user.emails.first.address %>
+      </li>
+    </ul>
+
+    <p>
+      <%= link_to t('.change_password', default: 'Change password for email login'), '' %>
+    </p>
+  </section>
+  
+  <section class="profile-social-networks">
+    <h1>
+      <%= t '.social_networks', default: 'Social Networks' %>
+    </h1>
+  
+    <ul>
+      <li>
+        <%= link_to font_awesome('facebook-square') + ' Facebook', '' %>
+      </li>
+      <li>
+        <%= link_to font_awesome('linkedin-square') + ' LinkedIn', '' %>
+      </li>
+      <li>
+        <%= link_to font_awesome('plus'), '' %>
+      </li>
+    </ul>
+  </section>
+
+</section>
+
+
+<%- class_for_main :profile -%>

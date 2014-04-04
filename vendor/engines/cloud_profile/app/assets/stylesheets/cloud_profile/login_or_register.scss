@@ -1,205 +1,31 @@
-$cloud-profile-section-width: $base-unit * 16.5;
-$cloud-profile-section-header-font-size: 31pt;
-$cloud-profile-section-header-font-weight: 800;
-
-$cloud-profile-section-header-link-font-size: 32pt;
-$cloud-profile-section-header-link-left-offset: -2.5 * $base-unit;
-$cloud-profile-section-header-link-top-offset: -1pt;
-
-$cloud-input-placeholder-color: hsl(137, 3%, 51%);
-$cloud-input-focus-background: hsl(0, 0%, 97%);
-$cloud-input-font-size: 20pt;
-$cloud-input-font-weight: 300;
-$cloud-input-padding: 0 $base-unit * .75;
-
-
-@mixin cloud-profile-section-header {
-  font-size: $cloud-profile-section-header-font-size;
-  font-weight: $cloud-profile-section-header-font-weight;
-  margin: 0;
-  position: relative;
-  
-  > a {
-    font-size: $cloud-profile-section-header-link-font-size;
-    left: $cloud-profile-section-header-link-left-offset;
-    position: absolute;
-    top: $cloud-profile-section-header-link-top-offset;
-  }
-  
-}
-
-
-@mixin cloud-profile-section {
-  width: $cloud-profile-section-width;
-  margin: 2 * $base-unit auto;
-  
-  > h1 {
-    @include cloud-profile-section-header;
-  }
-
-}
-
-
-@mixin cloud-profile-input {
-  @include placeholder {
-    color: $cloud-input-placeholder-color;
-  }
-  
-  border: none;
-  font-size: $cloud-input-font-size;
-  font-weight: $cloud-input-font-weight;
-  height: $base-unit * 2.75;
-  margin: 0;
-  outline: none;
-  padding: $cloud-input-padding;
-  width: 100%;
-  
-  &:focus {
-    background-color: $cloud-input-focus-background;
-  }
-}
-
-
-section.login-or-register,
-section.register {
-  @include cloud-profile-section;
-}
-
-
 section.login-or-register {
-
-  width: 20 * $base-unit;
-
+  @include cloud-profile-section;
+  
   form {
     @include display(flex);
-    margin-top: $base-unit;
-  }
-  
-  input {
-    @include cloud-profile-input;
-    height: $cloud-button-height;
-  }
-  
-  button {
-    @include cloud-button;
 
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
-    width: 3 * $base-unit;
-  }
-  
-  h2.social-networks {
-    font-size: 12pt;
-    font-weight: 400;
-    margin: 1.25 * $base-unit 0 $base-unit;
-    text-align: center;
-  }
-  
-  ul.social-networks {
-    @include display(flex);
-    @include flex-wrap(wrap);
-    
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    
-    li {
-      border: 1pt solid #ccc;
-      border-radius: 5pt;
-      font-size: 16pt;
-      font-weight: 600;
-      height: $cloud-button-height;
-      line-height: $cloud-button-height;
-      margin-bottom: $base-unit;
-      margin-right: 5%;
-      padding: 0 .75 * $base-unit;
-      text-align: center;
-      width: 47.5%;
-      
-      &:nth-child(2n) {
-        margin-right: 0;
-      }
-      
-      a {
-        display: block;
-        text-decoration: none;
-      }
-    }
-  }
-  
-}
+    width: $base-unit * 20;
 
-
-section.register {
-  
-  .social-network {
-    @include align-items(center);
-    @include display(flex);
-
-    //width: $base-unit * 25;
-    
-    > .avatar {
-      background-color: #eee;
-      background-position: center center;
-      background-size: cover;
-      border-radius: $base-unit * 2;
-      height: $base-unit * 4;
-      margin-right: $base-unit;
-      position: relative;
-      width: $base-unit * 4;
-      
-      .icon {
-        color: hsl(140, 77%, 31%);
-        font-size: 16pt;
-        left: -.4em;
-        position: absolute;
-        bottom: -.4em;
-      }
-      
-    }
-    
-    > .name {
+    label {
       @include flex(1);
-      
-      font-size: 20pt;
-      font-weight: 300;
-      line-height: 1em;
-      position: relative;
-      
-      strong {
-        font-weight: 600;
-      }
-      
-      h4 {
-        font-size: 14pt;
-        font-weight: 300;
-        margin: 0;
-        
-        a {
-          display: inline-block;
-          position: relative;
-          top: 1pt;
-        }
-        
-      }
-      
-      
     }
-    
-  }
-  
-  form {
     
     input {
-      @include cloud-profile-input;
-      margin-top: .75 * $base-unit;
-    }
-    
-    button {
-      @include cloud-button;
-      margin-top: $base-unit;
       width: 100%;
     }
     
+    button {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      padding: 0;
+      width: $base-unit * 3.5;
+    }
   }
 }
+
+
+
+
+
+
+

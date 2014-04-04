@@ -1,10 +1,11 @@
 module CloudProfile
   class ApplicationController < ::ApplicationController
     
+    
   protected
   
     def store_return_path
-      session[session_store_key] = params[:return_to] || request.referer
+      session[session_store_key] = params[:return_to] || request.env['HTTP_REFERER']
     end
     
     def return_path_stored?
@@ -19,7 +20,7 @@ module CloudProfile
       redirect_to session.delete(session_store_key) || path
     end
     
-    def session_store_redirect_key
+    def session_store_key
       :cloud_profile_return_to
     end
     

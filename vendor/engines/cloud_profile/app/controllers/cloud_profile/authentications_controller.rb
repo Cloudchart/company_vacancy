@@ -3,52 +3,57 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class AuthenticationsController < ApplicationController
 
-
-    before_filter :find_social_network, only: :new
+    
+    before_action :redirect_authenticated_user, except: :destroy
     
 
     def new
       store_return_path unless return_path_stored?
-      
-      if @social_network.present?
-        redirect_to register_path(social_network_id: @social_network.to_param) and return
-      end
 
       @email = Email.find_or_initialize_by(address: params[:email])
+
       if @email.valid?
         if @email.persisted?
-          render :create and return
+          render :create
         else
-          redirect_to register_path(email: @email.address) and return
+          redirect_to register_path(email: @email.address)
         end
+      else
+        render :new
       end
+
     end
     
-
+    
     def create
       email = Email.find_by(address: params[:email])
-      if email.present? && email.active? && email.user.authenticate(params[:password])
-        warden.set_user(email.user, scope: :user)
-        redirect_to_stored_path_or_root and return
-      end
+      raise ActiveRecord::RecordNotFound unless email.present? && email.user.present? && email.user.authenticate(params[:password])
+      warden.set_user(email.user, scope: :user)
+      redirect_to_stored_path_or_root
+    rescue ActiveRecord::RecordNotFound
+      @email = Email.new(address: params[:email])
     end
     
-
+    
     def destroy
-      warden.logout
+      store_return_path
+      warden.logout(:user)
       redirect_to_stored_path_or_root
     end
-  
+    
 
   protected
   
-    def find_social_network
-      @social_network = SocialNetwork.includes(:user).find(session.delete(:social_network_id)) rescue nil
+  
+    def redirect_authenticated_user
+      redirect_to_stored_path_or_root if user_authenticated?
     end
+  
   
     def session_store_key
       :authentication_return_to
     end
+  
 
   end
 end

@@ -7,20 +7,26 @@ $cloud-button-background-color-disabled: hsl(0, 0%, 76%);
 $cloud-button-border-color: hsl(140, 77%, 31%);
 $cloud-button-border-color-disabled: hsl(0, 0%, 55%);
 $cloud-button-border-radius: 5pt;
+$cloud-button-border-width: 1pt;
 $cloud-button-color: hsl(0, 0%, 100%);
 $cloud-button-color-disabled: $cloud-button-color;
 $cloud-button-height: $base-unit * 2.65;
 $cloud-button-font-size: 18pt;
 $cloud-button-font-weight: 700;
+$cloud-button-padding: 0 $base-unit * 1.25;
+$cloud-button-icon-margin: $base-unit / 4;
 
 
 @mixin cloud-button {
 
   background-color: $cloud-button-background-color;
-  border: 1pt solid $cloud-button-border-color;
+  border: $cloud-button-border-width solid $cloud-button-border-color;
   border-radius: $cloud-button-border-radius;
   
+  display: inline-block;
+  
   color: $cloud-button-color;
+  text-decoration: none;
   
   cursor: pointer;
   
@@ -30,11 +36,19 @@ $cloud-button-font-weight: 700;
   font-weight: $cloud-button-font-weight;
   line-height: $cloud-button-height;
   
+  padding: $cloud-button-padding;
+  
+  white-space: nowrap;
+  
   &.disabled,
   &[disabled] {
     background-color: $cloud-button-background-color-disabled;
     border-color: $cloud-button-border-color-disabled;
     cursor: not-allowed;
+  }
+  
+  > i {
+    line-height: inherit;
   }
   
 }

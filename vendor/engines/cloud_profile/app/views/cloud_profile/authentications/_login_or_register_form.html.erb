@@ -1,11 +1,17 @@
 <form action="<%= login_path %>" class="login-or-register" method="get">
-  <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: true, placeholder: t('.email', default: 'E-mail') %>
+
+  <%= content_tag :label, data: { behaviour: 'error-toggle' }, class: @email.invalid? && params.keys.include?('email') ? :error : nil do %>
+    <span class="error"><i>Doesn't look like an e-mail to us.</i></span>
+    <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: true, placeholder: t('.email', default: 'E-mail') %>
+  <%- end -%>
 
   <button>
     <%= font_awesome('magic') %>
   </button>
+
 </form>
 
+<!--
 <h2 class="social-networks">
   <%= t '.social_networks', default: 'Use your favourite social network' %>
 </h2>
@@ -15,6 +21,7 @@
     <%= link_to "Facebook", oauth_provider_path(provider: :facebook) %>
   </li>
   <li>
-    <%= link_to "Linkedin", '' %>
+    <%= link_to "Linkedin", oauth_provider_path(provider: :linkedin) %>
   </li>
 </ul>
+-->

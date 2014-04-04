@@ -4,30 +4,6 @@ module CloudProfile
   class EmailsController < ApplicationController
 
     
-    def index
-    end
-    
-    
-    def new
-      @email = Email.new
-    end
-    
-
-    def create
-      @email = Email.new params.require(:email).permit(:address)
-      @email.save!
-
-      current_user.emails << @email
-      
-      EmailMailer.activation_email(@email).deliver
-      
-      redirect_to :emails
-    
-    rescue ActiveRecord::RecordInvalid
-      render :new
-    end
-    
-    
     def destroy
       flash[:error] = 'Fuck off already!' unless Email.find(params[:id]).destroy
       redirect_to :emails
@@ -35,15 +11,14 @@ module CloudProfile
     
     
     def activation
-      token = Token.find(params[:token])
-      token.destroy
-      redirect_to :emails
-    rescue ActiveRecord::RecordNotFound
+      @token = Token.find(params[:token])
+      @email = Email.new(address: @token.data[:email])
+      raise ActiveRecord::RecordNotFound if @email.invalid?
     end
     
     
     def activate
-      @email = Email.find(params[:id])
+      @email = Email.find(params[:token])
       unless @email.active?
         EmailMailer.activation_email(@email).deliver
       end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140401140537) do
+ActiveRecord::Schema.define(version: 20140328112333) do
 
   create_table "block_identities", primary_key: "uuid", force: true do |t|
     t.string   "block_id",      limit: 36
@@ -45,6 +45,21 @@ ActiveRecord::Schema.define(version: 20140401140537) do
 
   add_index "blocks", ["owner_id", "owner_type"], name: "index_blocks_on_owner_id_and_owner_type", using: :btree
 
+  create_table "cloud_blueprint_charts", primary_key: "uuid", force: true do |t|
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "cloud_blueprint_nodes", primary_key: "uuid", force: true do |t|
+    t.string   "chart_id",   limit: 36, null: false
+    t.string   "title"
+    t.text     "path"
+    t.integer  "position"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "cloud_profile_emails", primary_key: "uuid", force: true do |t|
     t.string   "user_id",    limit: 36
     t.string   "address"
@@ -67,7 +82,6 @@ ActiveRecord::Schema.define(version: 20140401140537) do
 
   create_table "companies", primary_key: "uuid", force: true do |t|
     t.string   "name",        null: false
-    t.string   "country",     null: false
     t.text     "description"
     t.text     "sections"
     t.datetime "created_at"
@@ -115,11 +129,9 @@ ActiveRecord::Schema.define(version: 20140401140537) do
   end
 
   create_table "friends_users", id: false, force: true do |t|
-    t.string "friend_id", limit: 36, null: false
-    t.string "user_id",   limit: 36, null: false
+    t.string "friend_id", limit: 36
+    t.string "user_id",   limit: 36
   end
-
-  add_index "friends_users", ["friend_id", "user_id"], name: "index_friends_users_on_friend_id_and_user_id", unique: true, using: :btree
 
   create_table "images", primary_key: "uuid", force: true do |t|
     t.string   "image",                 null: false
