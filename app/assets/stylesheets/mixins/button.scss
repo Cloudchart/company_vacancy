@@ -19,14 +19,14 @@ $cloud-button-icon-margin: $base-unit / 4;
 
 @mixin cloud-button {
 
-  @include display(flex);
-  @include justify-content(center);
-
   background-color: $cloud-button-background-color;
   border: $cloud-button-border-width solid $cloud-button-border-color;
   border-radius: $cloud-button-border-radius;
   
+  display: inline-block;
+  
   color: $cloud-button-color;
+  text-decoration: none;
   
   cursor: pointer;
   
@@ -49,7 +49,6 @@ $cloud-button-icon-margin: $base-unit / 4;
   
   > i {
     line-height: inherit;
-    margin-right: $cloud-button-icon-margin;
   }
   
 }

@@ -41,21 +41,3 @@
 <p>
   <%= link_to 'New Company', new_company_path %>
 </p>
-
-<% if current_user %>
-  <p>
-    <% if current_user.tokens.where(name: 'facebook').any? %>
-      <%= link_to 'Destroy Facebook auth', provider_destroy_path(:facebook) %>
-    <% else %>
-      <%= link_to 'Facebook auth', provider_path(:facebook) %>
-    <% end %>
-  </p>
-
-  <p>
-    <% if current_user.tokens.where(name: 'linkedin').any? %>
-      <%= link_to 'Destroy Linkedin auth', provider_destroy_path(:linkedin) %>
-    <% else %>
-      <%= link_to 'Linkedin auth', provider_path(:linkedin) %>
-    <% end %>    
-  </p>
-<% end %>

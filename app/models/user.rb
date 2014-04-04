@@ -3,9 +3,22 @@ class User < ActiveRecord::Base
   
   #after_validation :postpone_email, if: proc { |user| user.email_changed? && user.persisted? }
 
-  #acts_as_passport_model
-  has_secure_password
+
+  # Secure password
+  #
+  has_secure_password validations: false
   
+  validates_presence_of     :password, if: lambda { |model| model.should_validate_password? }
+  
+  def should_validate_password!
+    @should_validate_password = true
+  end
+  
+  def should_validate_password?
+    @should_validate_password
+  end
+  
+
   has_and_belongs_to_many :friends
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :people, dependent: :destroy

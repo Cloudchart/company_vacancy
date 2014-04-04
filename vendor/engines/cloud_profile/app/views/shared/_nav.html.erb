@@ -1,0 +1,17 @@
+<nav>
+  <h2 class="email">
+    <div class="avatar">
+      <span>¯\_(シ)_/¯</span>
+    </div>
+
+    <%= current_user.emails.first.address %>
+  </h2>
+
+  <ul>
+    <%- [:newsfeed, :settings, :profiles, :companies, :vacancies, :charts].each do |link| -%>
+      <li>
+        <%= link_to t(".#{link}"), "" %>
+      </li>
+    <%- end -%>
+  </ul>
+</nav>

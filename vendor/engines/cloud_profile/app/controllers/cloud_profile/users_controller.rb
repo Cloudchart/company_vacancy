@@ -3,47 +3,58 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class UsersController < ApplicationController
 
-    before_action :find_social_network
-    
+
     # Registration form
+    #
     def new
       store_return_path if params[:return_to].present? || !return_path_stored?
-      
       @email = Email.new address: params[:email]
       @user  = User.new
-      fill_email_address_by_social_network
     end
     
+
     # Registration
+    #
     def create
       @email  = Email.new address: params[:email]
       @user   = User.new password: params[:password], password_confirmation: params[:password]
+
       @user.emails << @email
+      @user.should_validate_password!
       
-      @user.save!
+      if @user.valid?
+        token = Token.new name: 'registration', data: { email: @email.address, password_digest: @user.password_digest }
+        token.save!
+        ProfileMailer.activation_email(token).deliver
+        redirect_to :register_complete
+      else
+        render :new
+      end
+    end
+    
+
+    # Activation
+    #
+    def activation
+      @token = Token.find(params[:token])
+      @email = Email.new(address: @token.data[:email])
       
-      EmailMailer.activation_email(@email).deliver
-      
-      redirect_to_stored_path_or_root
-    
-    rescue ActiveRecord::RecordInvalid
-      fill_email_address_by_social_network
-      render :new
+      raise ActiveRecord::RecordNotFound if @email.invalid?
+
+      if request.post?
+        @user = User.new(password_digest: @token.data[:password_digest])
+        if @user.authenticate(params[:password])
+          @user.emails << @email
+          @user.save!
+          @token.destroy
+          warden.set_user(@user, scope: :user)
+          redirect_to :root
+        else
+          @password_invalid = true
+        end
+      end
     end
     
-  protected
-    
-    def find_social_network
-      @social_network = SocialNetwork.find(params[:social_network_id]) rescue nil
-    end
-    
-    def fill_email_address_by_social_network
-      @email.address = @social_network.email if @email.address.blank? && @social_network.present?
-    end
-    
-    def session_store_key
-      :user_return_to
-    end
     
   end
 end

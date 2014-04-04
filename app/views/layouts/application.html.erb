@@ -12,10 +12,10 @@
 
     <%= render 'shared/flash' %>
 
-    <main>
+    <%= content_tag :main, class: yield(:class_for_main) do -%>
       <%= render 'shared/notice' %>
       <%= yield %>
-    </main>
+    <%- end -%>
 
     <footer>
       <%= render 'shared/footer' %>

@@ -10,8 +10,9 @@ CloudProfile::Engine.routes.draw do
 
   # Registration
   #
-  get   'register(/:social_network_id)', to: 'users#new', as: :register
-  post  'register(/:social_network_id)', to: 'users#create'
+  get   'register',           to: 'users#new',              as: :register
+  post  'register',           to: 'users#create'
+  get   'register/complete',  to: 'users#create_complete',  as: :register_complete
   
   
   # Social Networks / OAuth2
@@ -24,17 +25,15 @@ CloudProfile::Engine.routes.draw do
 
   scope :profile do
 
+    # Activation
+    #
+    match 'activation(/:token)', to: 'users#activation', as: :profile_activation, via: [:get, :post]
+
+
     # Profile landing page
     #
-    root to: 'welcome#index'
-    
-
-    # Emails
-    #
-    resources :emails, only: [:index, :new, :create, :destroy] do
-      match 'activation(/:token)', to: 'emails#activation', as: :activation, via: [:get, :post]
-      get   'activate', on: :member
-    end
+    root to: 'welcome#index'   
+    get 'settings', to: 'welcome#settings', as: :settings
 
 
     # Password
