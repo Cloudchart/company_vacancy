@@ -127,19 +127,6 @@ div.editable-article-wrapper {
       
       > h2 {
         margin: 0 0 $base-unit / 2;
-
-        > a i.fa {
-          font-size: $base-font-size / 2;
-
-          &.fa-caret-down {
-            margin-right: 2pt;
-          }
-
-          &.fa-caret-right {
-            margin-right: 5pt;
-          }
-        }
-
       }
       
       > section {

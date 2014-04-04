@@ -28,3 +28,8 @@ en:
         people:
           placeholder_1: |
             Describe your team. Put forward the greatest and the brightest. Make sure they star prominently in your company chart. Up to 6 people should be enough for everyone.
+        requirements:
+          placeholder_0: Tell us about your requirements.
+        benefits:
+          placeholder_0: Tell us about your benefits.
+

@@ -1,0 +1,19 @@
+<article data-behaviour="droppable" data-droppable-target="article">
+  <%= render 'shared/new_block_form', object: object %>
+
+  <% object.class.const_get('SECTIONS').each do |title, section| %>
+    <h2 id="<%= section %>">
+      <%= title %>
+    </h2>
+
+    <section data-name="<%= section %>">
+      <% if object.class == Vacancy && section =~ /settings|vacancy/ %>
+        <%= render "vacancies/sections/#{section}" %>
+      <% else %>
+        <%= render partial: 'shared/block', collection: object.blocks_by_section(section) -%>
+      <% end %>
+    </section>
+
+  <% end %>
+
+</article>

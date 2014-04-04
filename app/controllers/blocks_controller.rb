@@ -2,13 +2,11 @@ class BlocksController < ApplicationController
   authorize_resource
 
   def create
-    object = if params[:company_id].present?
-      Company.find(params[:company_id])
-    elsif params[:event_id].present?
-      Event.find(params[:event_id])
+    %w(company event vacancy).each do |name|
+      @object = name.classify.constantize.find(params[:"#{name}_id"]) if params[:"#{name}_id"].present?
     end
 
-    @block = object.blocks.create!(block_params_for_create)
+    @block = @object.blocks.create!(block_params_for_create)
 
     respond_to do |format|
       format.html { redirect_to @block.owner }

@@ -1,28 +1,7 @@
-<%= link_to 'Edit', edit_vacancy_path(@vacancy) %> |
 <%= link_to 'Vacancies', company_vacancies_path(@vacancy.company) %>
 
 <div class="editable-article-wrapper">
-
   <%= render 'shared/companies/side_nav', company: @vacancy.company, klass: Vacancy %>
-
-  <article data-behaviour="droppable" data-droppable-target="article">
-
-    <% Vacancy::SECTIONS.each do |title, section| %>
-      <h2>
-        <%= link_to '#', class: 'anchor toggleable-link', id: section do %>
-          <i class="fa fa-caret-down"></i>
-          <%= title %>
-        <% end %>
-      </h2>
-
-      <section class="toggleable-content">
-        <%= render "vacancies/sections/#{section}" %>
-      </section>
-
-    <% end %>
-
-  </article>
-
+  <%= render 'shared/droppable_article', object: @vacancy %>
   <%= render 'shared/blocks_editor', collection: Vacancy::BLOCK_TYPES if can?(:manage, Vacancy) %>
-
 </div>

@@ -1,19 +1,15 @@
-<p>
-  <strong>Name:</strong>
-  <%= @vacancy.name %>
-</p>
+<%= simple_form_for([@company, @vacancy]) do |f| %>
+  <%= f.error_notification %>
 
-<p>
-  <strong>Description:</strong>
-  <%= @vacancy.description %>
-</p>
+  <div class="form-inputs">
+    <%= f.input :name %>
+    <%= f.input :description %>
+    <%= f.input :salary %>
+    <%= f.input :location %>
+  </div>
 
-<p>
-  <strong>Salary:</strong>
-  <%= @vacancy.salary %>
-</p>
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
 
-<p>
-  <strong>Location:</strong>
-  <%= @vacancy.location %>
-</p>
+<% end %>

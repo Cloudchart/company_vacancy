@@ -31,9 +31,10 @@ class Block < ActiveRecord::Base
   end
 
   def company
-    case owner_type
-    when 'Company' then owner
-    when 'Event' then owner.company
+    if owner_type == 'Company'
+      owner
+    elsif owner_type =~ /Event|Vacancy/
+      owner.company
     end
   end
   

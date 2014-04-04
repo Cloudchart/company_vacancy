@@ -1,6 +1,6 @@
 Cloudchart::Application.routes.draw do
   root 'companies#index'
-  
+
   # Engines
   #
   mount RailsAdmin::Engine, at: '/admin', as: 'rails_admin'
@@ -38,7 +38,7 @@ Cloudchart::Application.routes.draw do
   resources :tokens, only: :destroy
 
   resources :companies, shallow: true, concerns: [:blockable] do
-    resources :vacancies
+    resources :vacancies, except: [:edit], concerns: [:blockable]
     
     resources :people do
       post :send_invite_to_user, on: :member

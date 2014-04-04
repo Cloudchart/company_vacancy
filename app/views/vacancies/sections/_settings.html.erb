@@ -1,25 +1,17 @@
-<p>
-  <strong>Publish on:</strong>
-  <%= @vacancy.settings.publish_on %> |
-  <%= @vacancy.impressions_count %>
-  <i class="fa fa-eye"></i>
-</p>
+<%= simple_form_for([@company, @vacancy]) do |f| %>
+  <%= f.error_notification %>
 
-<p>
-  <strong>Display link:</strong>
-  <%= @vacancy.settings.display_link %>
-</p>
+  <div class="form-inputs">
+    <%= f.simple_fields_for :settings, @vacancy.settings do |setting| %>
+      <%= setting.input :publish_on, as: :date, start_year: Date.today.year %>
+      <%= setting.input :display_link, collection: VacancySetting::DISPLAY_LINK_OPTIONS %>
+      <%= setting.input :accessible_to, collection: VacancySetting::ACCESSIBLE_TO_OPTIONS %>
+      <%= setting.input :incentive, as: :integer %>
+    <% end %>
+  </div>
 
-<p>
-  <strong>Accessible to:</strong>
-  <%= @vacancy.settings.accessible_to %>
-</p>
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
 
-<p>
-  <strong>Incentive:</strong>
-  <%= @vacancy.settings.incentive %>
-</p>
-
-<p>
-  <strong>Awaiting:</strong>
-</p>
+<% end %>

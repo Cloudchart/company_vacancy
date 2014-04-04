@@ -6,9 +6,10 @@ class CreateVacancies < ActiveRecord::Migration
       t.text :description
       t.string :salary
       t.string :location
-      t.string :company_id, limit: 36, null: false
       t.text :settings
+      t.text :sections
       t.integer :impressions_count, default: 0
+      t.string :company_id, limit: 36, null: false
 
       t.timestamps
     end

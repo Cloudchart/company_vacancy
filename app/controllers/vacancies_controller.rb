@@ -1,5 +1,5 @@
 class VacanciesController < ApplicationController
-  before_action :set_vacancy, only: [:show, :edit, :update, :destroy]
+  before_action :set_vacancy, only: [:show, :update, :destroy]
   before_action :set_company, only: [:index, :new, :create]
   before_action :build_vacancy, only: :new
   before_action :build_vacancy_with_params, only: :create
@@ -16,18 +16,17 @@ class VacanciesController < ApplicationController
 
   # GET /vacancies/1
   def show
+    pagescript_params(can_update_vacancy: can?(:update, Vacancy))
   end
 
   # GET /vacancies/new
   def new
   end
 
-  # GET /vacancies/1/edit
-  def edit
-  end
-
   # POST /vacancies
   def create
+    @vacancy.should_build_objects!
+
     if @vacancy.save
       redirect_to @vacancy, notice: t('messages.created', name: t('lexicon.vacancy'))
     else
@@ -40,7 +39,7 @@ class VacanciesController < ApplicationController
     if @vacancy.update(vacancy_params)
       redirect_to @vacancy, notice: t('messages.updated', name: t('lexicon.vacancy'))
     else
-      render :edit
+      render :show
     end
   end
 
