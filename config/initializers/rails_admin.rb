@@ -3,7 +3,7 @@ RailsAdmin.config do |config|
   config.included_models = ['Company', 'Feature', 'User', 'Industry']
 
   config.authenticate_with do
-    warden.authenticate! scope: :user
+    authenticate_user
   end
   config.current_user_method(&:current_user)
 
