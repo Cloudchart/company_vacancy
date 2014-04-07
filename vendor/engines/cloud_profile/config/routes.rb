@@ -34,6 +34,11 @@ CloudProfile::Engine.routes.draw do
     #
     root to: 'welcome#index'   
     get 'settings', to: 'welcome#settings', as: :settings
+    
+    
+    # Emails
+    #
+    resources :emails
 
 
     # Password
