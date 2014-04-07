@@ -46,7 +46,7 @@
   
   
   insert_placeholders = (element) ->
-    sections = element.querySelectorAll('section')
+    sections = element.querySelectorAll('section[data-behaviour~="droppable"]')
     
     Array.prototype.forEach.call sections, (section) ->
       section.appendChild(create_placeholder())

@@ -1,5 +1,5 @@
 module ApplicationHelper
-  
+
   
   def class_for_main(content = nil)
     if content
@@ -23,6 +23,15 @@ module ApplicationHelper
 
   def first_error(model, name)
     model.errors.full_messages_for(name).first
+  end
+
+
+  def custom_section?(klass, section)
+    if klass == Vacancy && section =~ /settings|vacancy/
+      true
+    else
+      false
+    end
   end
   
 

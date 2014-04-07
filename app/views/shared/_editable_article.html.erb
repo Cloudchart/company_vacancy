@@ -6,9 +6,9 @@
       <%= title %>
     </h2>
 
-    <section data-name="<%= section %>">
-      <% if object.class == Vacancy && section =~ /settings|vacancy/ %>
-        <%= render "vacancies/sections/#{section}" %>
+    <section data-name="<%= section %>" data-behaviour="<%= 'droppable' unless custom_section?(object.class, section) %>">
+      <% if custom_section?(object.class, section) %>
+        <%= render "#{object.class.table_name}/sections/#{section}" %>
       <% else %>
         <%= render partial: 'shared/block', collection: object.blocks_by_section(section) -%>
       <% end %>
