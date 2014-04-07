@@ -3,26 +3,7 @@
 <%= link_to 'Events', company_events_path(@event.company) %>
 
 <div class="editable-article-wrapper">
-
   <%= render 'shared/companies/side_nav', company: @event.company, klass: Event %>
-
-  <article data-behaviour="droppable" data-droppable-target="article">
-    <%= render 'shared/new_block_form', object: @event %>
-    
-    <%- Event::SECTIONS.each do |title, section| -%>
-      
-      <h2 id="<%= section %>">
-        <%= title %>
-      </h2>
-      
-      <section data-name="<%= section %>">
-        <%= render partial: 'shared/block', collection: @event.blocks_by_section(section) -%>
-      </section>
-      
-    <%- end -%>
-    
-  </article>
-
+  <%= render 'shared/editable_article', object: @event %>
   <%= render 'shared/blocks_editor', collection: Event::BLOCK_TYPES if can?(:manage, Event) %>
-
 </div>

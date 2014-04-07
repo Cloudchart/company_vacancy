@@ -2,6 +2,6 @@
 
 <div class="editable-article-wrapper">
   <%= render 'shared/companies/side_nav', company: @vacancy.company, klass: Vacancy %>
-  <%= render 'shared/droppable_article', object: @vacancy %>
+  <%= render 'shared/editable_article', object: @vacancy %>
   <%= render 'shared/blocks_editor', collection: Vacancy::BLOCK_TYPES if can?(:manage, Vacancy) %>
 </div>

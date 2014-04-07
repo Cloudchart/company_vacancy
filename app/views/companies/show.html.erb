@@ -5,6 +5,6 @@
 
 <div class="editable-article-wrapper">
   <%= render 'shared/companies/side_nav', company: @company, klass: Company %>
-  <%= render 'shared/droppable_article', object: @company %>
+  <%= render 'shared/editable_article', object: @company %>
   <%= render 'shared/blocks_editor', collection: Company::BLOCK_TYPES if can?(:update, Company) %>
 </div>
