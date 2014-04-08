@@ -8,5 +8,12 @@ module CloudProfile
       mail to: token.data['email'], subject: t('.activation_email', default: 'Activation e-mail')
     end
     
+    
+    def verification_email(token)
+      @token = token
+      mail to: token.data[:address], subject: t('.verification_email', default: 'Verification e-mail')
+    end
+    
+    
   end
 end

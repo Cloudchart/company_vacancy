@@ -38,7 +38,9 @@ CloudProfile::Engine.routes.draw do
     
     # Emails
     #
-    resources :emails
+    resources :emails do
+      match 'verify', on: :member, via: [:get, :post]
+    end
 
 
     # Password

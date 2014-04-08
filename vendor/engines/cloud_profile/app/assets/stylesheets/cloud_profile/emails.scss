@@ -1,84 +1,10 @@
 section.emails {
-  
-  //background-color: #eee;
-  margin: $base-unit * 2;
-  width: $base-unit * 16;
-  
-  h1 {
-    font-size: 18pt;
-    font-weight: 600;
-    position: relative;
-    
-    a {
-      font-size: 16pt;
-      left: - $base-unit;
-      position: absolute;
-      top: 2pt;
-    }
-  }
-  
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    
-    li {
-      @include display(flex);
-      @include align-items(center);
-      
-      height: $base-unit * 2;
-      border: 1pt solid #ccc;
-      margin: $base-unit / 2 0;
-      
-      &.add {
-        @include justify-content(space-around);
-        font-size: 14pt;
-      }
-      
-      > i {
-        font-size: 12pt;
-        padding: 0 $base-unit / 2;
-      }
-      
-      span.address {
-        @include flex(1);
-        
-        font-size: 14pt;
-        overflow: hidden;
-      }
-      
-      &.inactive span.address {
-        color: #ccc;
-        font-style: italic;
-      }
-      
-      a.resend {
-        @include display(flex);
-        @include align-items(center);
-        @include justify-content(space-around);
 
-        border-left: 1pt solid #ccc;
-        height: 100%;
-        text-align: center;
-        text-decoration: none;
-        width: $base-unit * 2;
-      }
-      
-      a.delete {
-        @include display(flex);
-        @include align-items(center);
-        @include justify-content(space-around);
-
-        border-left: 1pt solid #ccc;
-        font-size: 12pt;
-        height: 100%;
-        text-align: center;
-        text-decoration: none;
-        width: $base-unit * 2;
-      }
-      
-    }
-    
+  @include cloud-profile-section;
+  
+  input,
+  button {
+    width: 100%;
   }
   
 }
