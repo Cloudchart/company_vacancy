@@ -1,16 +1,6 @@
 @cc ?= {}
 
 @cc.acts_as_editable_article = ->
-  # Company side nav remote update
-  #
-  $side_nav_remote_form = $('nav[data-behaviour~=editable-article-nav] .edit_company')
-  
-  $side_nav_remote_form.on 'change', '#company_logo_attributes_image', (event) ->
-    $(this).closest('form').submit()
-
-  $side_nav_remote_form.on 'blur', '#company_description', (event) ->
-    $(this).closest('form').submit() 
-
   # Drag and drop
   #
   cc.ui.drag_drop($(document), 'li[data-behaviour~="draggable"]', {

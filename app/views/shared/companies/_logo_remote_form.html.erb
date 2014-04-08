@@ -1,0 +1,13 @@
+<%= image_tag company.try(:logo).try(:image_url) %>
+
+<% if can?(:update, Company) %>
+  <%= simple_form_for company do |f| %>
+    <span class="button small">
+      <%= f.simple_fields_for :logo, company.logo.present? ? company.logo : company.build_logo, include_id: false do |ff| %>
+        <%= ff.input_field :image %>
+      <% end %>
+      <i class="fa fa-picture-o"></i>
+      <%= t('companies.side_nav.upload_logo') %>
+    </span>
+  <% end %>
+<% end %>
