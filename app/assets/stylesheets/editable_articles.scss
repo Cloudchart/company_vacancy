@@ -67,10 +67,6 @@ div.editable-article-wrapper {
                 opacity: 0;
               }
 
-              input[type="submit"] {
-                display: none;
-              }
-
               > .button.small {
                 border: 1px solid $gray-chateau;
                 @include linear-gradient(lighten($grey-button-back-color-transparent, 2%), darken($grey-button-back-color-transparent, 2%));

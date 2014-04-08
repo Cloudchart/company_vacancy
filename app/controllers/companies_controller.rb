@@ -56,7 +56,7 @@ class CompaniesController < ApplicationController
     if @company.update(company_params)
       respond_to do |format|
         format.html { redirect_to @company, notice: t('messages.updated', name: t('lexicon.company')) }
-        format.js { render nothing: true }
+        format.js
       end
     else
       render :edit
