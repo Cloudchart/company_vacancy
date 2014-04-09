@@ -1,6 +1,6 @@
 <%- block.identities.build if block.identities.blank? -%>
 
-<%= form_for block.persisted? ? block : [block.owner, block], multipart: true, data: { remote: true } do |form| %>
+<%= form_for block.persisted? ? block : [block.owner, block] do |form| %>
 
   <%= form.fields_for :block_images, block.identities do |identity_form| %>
     <%= identity_form.file_field :image %>
@@ -27,3 +27,5 @@
   <%- end -%>
 
 <%- end -%>
+
+<%= link_to 'Destroy', block, method: :delete, data: { confirm: 'Are you sure?' } unless block.new_record? || block.is_locked? %>

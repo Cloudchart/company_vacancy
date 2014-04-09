@@ -17,5 +17,6 @@
 //= require plugins
 //= require shared
 //= require ujs
+//= require utils
 //= require_tree .
 //= require cloud_profile/application

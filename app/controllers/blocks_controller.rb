@@ -20,7 +20,7 @@ class BlocksController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to @block.owner }
-      format.js { render nothing: true }
+      format.js
     end
   end
 

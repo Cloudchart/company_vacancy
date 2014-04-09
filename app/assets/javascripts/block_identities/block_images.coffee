@@ -1,13 +1,10 @@
 @cc ?= {}
 
-block_image_input_selector = "article section .identity-block.block_image input[type=file]"
+block_image_input_selector = ".editable-article-wrapper article section .identity-block.block_image input[type=file]"
 
 widget = ->
   
-  $document = $(document)
+  $('main').on 'change', block_image_input_selector, ->
+    cc.utils.form_data_ajax_call($(@))
   
-  $document.on 'change', block_image_input_selector, ->
-    $(@).closest('form').submit()
-  
-
 widget()
