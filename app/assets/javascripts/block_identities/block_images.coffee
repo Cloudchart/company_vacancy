@@ -5,6 +5,6 @@ block_image_input_selector = ".editable-article-wrapper article section .identit
 widget = ->
   
   $('main').on 'change', block_image_input_selector, ->
-    cc.utils.form_data_ajax_call($(@))
+    cc.utils.form_data_file_ajax_update($(@))
   
 widget()

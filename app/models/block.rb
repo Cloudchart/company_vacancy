@@ -6,6 +6,7 @@ class Block < ActiveRecord::Base
   before_create   :ensure_position, unless: Proc.new { |block| block.position.present? }
   before_destroy  :destroy_identities
   after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
+  after_update    :destroy_previous_block_images, if: Proc.new { |block| block.identity_type == 'BlockImage' && block.block_images.any? }
 
   belongs_to :owner, polymorphic: true
   has_many :block_identities, -> { order(:position) }, inverse_of: :block
@@ -90,6 +91,11 @@ private
   
   def destroy_identities
     block_identities.each(&:skip_reposition!).each(&:destroy!)
+  end
+
+  # temporary method for has_one block_image simulation
+  def destroy_previous_block_images
+    block_identities.destroy_all
   end
 
 end

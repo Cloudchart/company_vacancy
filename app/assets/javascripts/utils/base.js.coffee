@@ -14,7 +14,7 @@ cc.utils.get_style_property_name = (name) ->
   
   valid_prefixes[0] + name if valid_prefixes.length > 0
 
-cc.utils.form_data_ajax_call = ($input_selector) ->
+cc.utils.form_data_file_ajax_update = ($input_selector) ->
   $form_selector = $input_selector.closest('form')
   formData = new FormData()
   formData.append $input_selector.attr('name'), $input_selector[0].files[0]

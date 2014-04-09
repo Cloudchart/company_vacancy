@@ -1,11 +1,10 @@
 <%- block.identities.build if block.identities.blank? -%>
 
-<%= form_for block.persisted? ? block : [block.owner, block] do |form| %>
+<%= simple_form_for block.persisted? ? block : [block.owner, block] do |f| %>
 
-  <%= form.fields_for :block_images, block.identities do |identity_form| %>
-    <%= identity_form.file_field :image %>
+  <%= f.simple_fields_for :block_images, block.identities, include_id: false do |ff| %>
+    <%= ff.input_field :image %>
   <%- end -%>
-
   
   <%- identity = block.identities.first -%>
 

@@ -2,11 +2,8 @@ class BlockIdentity < ActiveRecord::Base
   include Uuidable
 
   before_create   :ensure_position
-  before_create   :ensure_position
-  before_destroy  :destroy_identity
-  before_destroy  :reload_position
+  before_destroy  :destroy_identity, :reload_position
   after_destroy   :reposition_siblings
-  after_destroy   :reposition_siblings  
   
   belongs_to :block, inverse_of: :block_identities
   belongs_to :identity, polymorphic: true  
@@ -46,5 +43,5 @@ protected
 
     reload
   end
-  
+
 end
