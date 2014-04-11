@@ -200,7 +200,8 @@ ActiveRecord::Schema.define(version: 20140401140537) do
 
   create_table "users", primary_key: "uuid", force: true do |t|
     t.string   "password_digest",                 null: false
-    t.string   "name"
+    t.string   "first_name"
+    t.string   "last_name"
     t.string   "phone"
     t.boolean  "is_admin",        default: false
     t.datetime "created_at"
