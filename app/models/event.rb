@@ -10,7 +10,7 @@ class Event < ActiveRecord::Base
   belongs_to :company
   belongs_to :author, class_name: 'User'
   has_one :token, as: :owner, dependent: :destroy
-  has_paper_trail  
+  has_paper_trail
 
   validates :name, presence: true
   validates :url, url: true, allow_blank: true

@@ -1,0 +1,18 @@
+<%- class_for_main 'cloud-profile' -%>
+
+<%- cloud_profile_nav_current_tab :newsfeed -%>
+<%= render partial: 'shared/nav' %>
+
+<ul>
+  <% @versions.each do |version| %>
+    <li>
+      <% if version.try(:item) %>
+        <%= link_to version.item_type, main_app.send("#{version.item.class.name.underscore}_path", version.item), target: '_blank' %> |
+      <% else %>
+        <%= version.item_type %> |
+      <% end %>
+      <%= version.event %> |
+      <%= version.created_at %>
+    </li>
+  <% end %>
+</ul>

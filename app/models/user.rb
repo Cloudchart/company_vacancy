@@ -35,6 +35,10 @@ class User < ActiveRecord::Base
     votes.map(&:destination_id).include?(object.id)
   end
 
+  def name
+    "#{first_name} #{last_name}"
+  end  
+
 private
 
   # def postpone_email

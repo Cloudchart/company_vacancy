@@ -12,6 +12,7 @@ class Vacancy < ActiveRecord::Base
   after_validation :build_objects, if: :should_build_objects?
 
   belongs_to :company
+  has_paper_trail
 
   validates :name, presence: true
   validate :validity_of_settings

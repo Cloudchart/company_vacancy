@@ -4,6 +4,10 @@ module CloudProfile
   class WelcomeController < ApplicationController
 
     before_action :require_authenticated_user!
+
+    def newsfeed
+      @versions = PaperTrail::Version.where(whodunnit: current_user.id)
+    end
     
   protected
   
