@@ -1,0 +1,80 @@
+// Profile: first name and last name
+//
+
+main.cloud-profile section.profile-name {
+
+  > h1 {
+    margin-bottom: 0;
+  }
+  
+  > form {
+    
+    @include display(flex);
+    
+    input {
+      @include cloud-profile-input;
+      @include flex(1);
+      margin: 0 $base-unit / -2;
+      
+      &[name="user[last_name]"] {
+        font-weight: 600;
+      }
+    }
+  } 
+  
+}
+
+
+// Profile: emails
+//
+
+main.cloud-profile section.profile-emails {
+  
+  > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+    > li {
+      @include align-items(center);
+      @include display(flex);
+      font-size: $cloud-profile-input-font-size;
+      margin-bottom: $base-unit;
+      
+      > i.fa {
+        padding-right: $base-unit / 2;
+      }
+      
+      &.email,
+      &.token {
+        
+        .address {
+          @include flex(1);
+        }
+        
+      }
+      
+      &.token .address {
+        color: #999;
+        font-style: italic;
+      }
+      
+      &.token .envelope {
+        padding: 0 $base-unit / 2;
+      }
+      
+      &.new {
+        
+        margin-top: $base-unit * 1.5;
+        
+        a {
+          @include cloud-button;
+          text-align: center;
+          width: $base-unit * 7.5;
+        }
+      }
+      
+    }
+  }
+  
+}

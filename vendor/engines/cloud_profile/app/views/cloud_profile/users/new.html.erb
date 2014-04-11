@@ -1,5 +1,7 @@
-<div class="centering-wrapper">
-  <section class="register">
+<%- class_for_main 'cloud-profile' -%>
+
+<article>
+  <section class="registration">
 
     <h1>
       <%= link_to font_awesome('angle-left'), :login %>
@@ -9,6 +11,6 @@
     <%= render partial: 'social_network' %>
 
     <%= render partial: 'register_form' %>
-  
+
   </section>
-</div>
+</article>

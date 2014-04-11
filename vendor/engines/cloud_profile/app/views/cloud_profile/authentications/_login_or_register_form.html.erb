@@ -1,9 +1,7 @@
 <form action="<%= login_path %>" class="login-or-register" method="get">
 
-  <%= content_tag :label, data: { behaviour: 'error-toggle' }, class: @email.invalid? && params.keys.include?('email') ? :error : nil do %>
-    <span class="error"><i>Doesn't look like an e-mail to us.</i></span>
-    <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: true, placeholder: t('.email', default: 'E-mail') %>
-  <%- end -%>
+  <%= content_tag(:span, content_tag(:i, t('.not_an_email', default: "Doesn't looks line an e-mail to us")), class: :error) if params.has_key?(:email) && @email.invalid? %>
+  <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: true, placeholder: t('.email', default: 'E-mail') %>
 
   <button>
     <%= font_awesome('magic') %>

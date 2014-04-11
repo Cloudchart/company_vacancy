@@ -1,0 +1,8 @@
+main.cloud-profile section.registration,
+main.cloud-profile section.profile-activation {
+  
+  form {
+    @include cloud-profile-form;
+  }
+  
+}

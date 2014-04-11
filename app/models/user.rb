@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
     @should_validate_password
   end
   
-
+  
   has_and_belongs_to_many :friends
   has_many :emails, -> { order(:address) }, class_name: CloudProfile::Email
   has_many :social_networks, dependent: :destroy, inverse_of: :user, class_name: CloudProfile::SocialNetwork

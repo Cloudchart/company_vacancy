@@ -31,6 +31,7 @@ module CloudProfile
       warden.set_user(email.user, scope: :user)
       redirect_to_stored_path_or_root
     rescue ActiveRecord::RecordNotFound
+      flash.now[:error] = 'So email. Much credentials. Very password. Wow. But no.'
       @email = Email.new(address: params[:email])
     end
     

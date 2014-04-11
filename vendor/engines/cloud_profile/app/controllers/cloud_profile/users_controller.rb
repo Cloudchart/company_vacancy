@@ -32,6 +32,12 @@ module CloudProfile
       end
     end
     
+    
+    def update
+      current_user.update! params.require(:user).permit([:first_name, :last_name])
+      render nothing: true
+    end
+    
 
     # Activation
     #

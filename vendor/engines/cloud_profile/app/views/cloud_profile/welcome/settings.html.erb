@@ -1,24 +1,53 @@
+<%- class_for_main 'cloud-profile' -%>
+
+
+<%- cloud_profile_nav_current_tab :settings -%>
 <%= render partial: 'shared/nav' %>
 
-<section class="profile">
+
+<article class="profile">
+
+  <section class="profile-name">
+    <h1>
+      <%= t '.name', default: 'Personal' %>
+    </h1>
+
+    <%= form_for current_user, html: { class: nil, id: nil } do |form| %>
+      <%= form.text_field :first_name, id: nil, size: 10, placeholder: t('.first_name_placeholder', default: 'First name') %>
+      <%= form.text_field :last_name, id: nil, size: 10, placeholder: t('.last_name_placeholder', default: 'Last name') %>
+    <%- end -%>
+
+  </section>
+  
+
   <section class="profile-emails">
     <h1>
       <%= t '.emails', default: 'Emails' %>
     </h1>
   
     <ul>
-      <li>
-        <%= current_user.emails.first.address %>
-      </li>
-      <li>
+      <%- current_user.emails.each do |email| -%>
+        <li class="email">
+          <%= font_awesome 'check-circle' %>
+          <span class="address"><%= email.address %></span>
+          <%= link_to font_awesome('times'), '' if current_user.emails.size > 1 %>
+        </li>
+      <%- end -%>
+      
+      <%- current_user.tokens.where(name: 'email-verification').each do |token| -%>
+        <li class="token">
+          <%= font_awesome 'question-circle' %>
+          <span class="address"><%= token.data[:address] %></span>
+          <%= link_to font_awesome('envelope'), '', class: 'envelope' %>
+          <%= link_to font_awesome('times-circle'), '' %>
+        </li>
+      <%- end -%>
+      
+      <li class="new">
         <%= link_to font_awesome('plus'), new_email_path %>
       </li>
     </ul>
-
-    <p>
-      <%= link_to t('.change_password', default: 'Change password for email login'), '' %>
-    </p>
-  </section>
+  </section>  
   
   <section class="profile-social-networks">
     <h1>
@@ -27,18 +56,9 @@
   
     <ul>
       <li>
-        <%= link_to font_awesome('facebook-square') + ' Facebook', '' %>
-      </li>
-      <li>
-        <%= link_to font_awesome('linkedin-square') + ' LinkedIn', '' %>
-      </li>
-      <li>
         <%= link_to font_awesome('plus'), '' %>
       </li>
     </ul>
   </section>
 
-</section>
-
-
-<%- class_for_main :profile -%>
+</article>

@@ -1,0 +1,142 @@
+$cloud-profile-input-background-color: hsl(0, 0%, 97%);
+$cloud-profile-input-font-size: 18pt;
+$cloud-profile-input-height: $cloud-button-height;
+$cloud-profile-input-placeholder-color: hsl(0, 0%, 50%);
+
+$cloud-profile-input-color-error: hsl(1, 76%, 54%);
+$cloud-profile-input-placeholder-color-error: hsl(42, 82%, 55%);
+
+$cloud-profile-input-error-background-color: hsl(1, 76%, 54%);
+$cloud-profile-input-error-color: hsl(0, 100%, 100%);
+$cloud-profile-input-error-font-size: 10pt;
+$cloud-profile-input-error-width: $base-unit * 15;
+
+
+@mixin cloud-profile-input {
+  border: none;
+  font-size: $cloud-profile-input-font-size;
+  font-weight: 300;
+  height: $cloud-profile-input-height;
+  margin: 0;
+  outline: none;
+  padding: 0 $base-unit / 2;
+  
+  &:focus {
+    background-color: $cloud-profile-input-background-color;
+  }
+  
+  @include placeholder {
+    color: $cloud-profile-input-placeholder-color;
+  }
+  
+}
+
+
+@mixin cloud-profile-input-with-error {
+  color: $cloud-profile-input-color-error;
+  
+  @include placeholder {
+    color: $cloud-profile-input-placeholder-color-error;
+  }
+}
+
+
+@mixin cloud-profile-input-error-spacer {
+  @include flex(1);
+  background-color: hsl(0, 100%, 100%);
+  content: '';
+  height: 100%;
+}
+
+
+@mixin cloud-profile-input-error-arrow {
+  border-color: hsl(0, 100%, 100%);
+  border-style: solid;
+  border-width: $cloud-profile-input-height / 2 $base-unit / 2;
+  content: '';
+}
+
+
+@mixin cloud-profile-input-error-on-left {
+  right: 100%;
+  
+  &::before {
+    @include cloud-profile-input-error-spacer;
+  }
+  
+  &::after {
+    @include cloud-profile-input-error-arrow;
+    border-left-color: $cloud-profile-input-error-background-color;
+  }
+}
+
+
+@mixin cloud-profile-input-error-on-right {
+  left: 100%;
+  
+  &::after {
+    @include cloud-profile-input-error-spacer;
+  }
+  
+  &::before {
+    @include cloud-profile-input-error-arrow;
+    border-right-color: $cloud-profile-input-error-background-color;
+  }
+}
+
+
+@mixin cloud-profile-input-error {
+  @include align-items(center);
+  @include display(flex);
+  
+  &:not(.right) {
+    @include cloud-profile-input-error-on-left;
+  }
+  
+  &.right {
+    @include cloud-profile-input-error-on-right;
+  }
+  
+  background: $cloud-profile-input-error-background-color;
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  width: $cloud-profile-input-error-width;
+  
+  > i {
+    color: $cloud-profile-input-error-color;
+    font-size: $cloud-profile-input-error-font-size;
+    font-style: normal;
+    font-weight: 300;
+    padding: 0 $base-unit / 2;
+  }
+}
+
+
+
+@mixin cloud-profile-form {
+
+  label {
+    display: block;
+    margin: 0 0 $base-unit;
+    position: relative;
+  }
+  
+  span.error {
+    @include cloud-profile-input-error;
+  }
+  
+  span.error + input {
+    @include cloud-profile-input-with-error;
+  }
+
+  input {
+    @include cloud-profile-input;
+    width: 100%;
+  }
+  
+  button {
+    @include cloud-button;
+  }
+  
+}

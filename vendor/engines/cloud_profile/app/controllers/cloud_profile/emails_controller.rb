@@ -5,7 +5,6 @@ module CloudProfile
 
     
     def index
-      @inactive_emails = current_user.tokens.where(name: 'email-verification')
     end
 
 
@@ -20,7 +19,7 @@ module CloudProfile
         ProfileMailer.verification_email(token).deliver
         redirect_to :emails
       else
-        render :new
+        render :index
       end
     end
 
@@ -38,6 +37,13 @@ module CloudProfile
           @password_invalid = true
         end
       end
+    end
+    
+    
+    def resend_verification
+      token = current_user.tokens.where(name: 'email-verification').find(params[:id])
+      ProfileMailer.verification_email(token).deliver
+      redirect_to :emails
     end
     
     

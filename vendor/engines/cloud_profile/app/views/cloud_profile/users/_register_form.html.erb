@@ -2,18 +2,20 @@
 
 
   <%- email_autofocus = @email.address.blank? || @email.invalid? -%>
-
-
-  <%= content_tag :label, class: has_errors(@email, :address) ? :error : nil do -%>
-    <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: email_autofocus, placeholder: t('.email_placeholder', default: 'E-mail'), data: { behaviour: 'toggle-error' } %>
-    <span class="error"><i><%= first_error(@email, :address) %></i></span>
-  <%- end -%>
   
 
-  <%= content_tag :label, class: has_errors(@user, :password) ? :error : nil do -%>
-    <%= password_field_tag :password, nil, autofocus: !email_autofocus, placeholder: t('.password_placeholder', default: 'Choose a password'), data: { behaviour: 'toggle-error' } %>
-    <span class="error"><i><%= first_error(@user, :password) %></i></span>
-  <%- end -%>
+  <%- error = first_error(@email, :address) -%>
+  <label>
+    <%= content_tag(:span, content_tag(:i, error), class: :error) if error.present? %>
+    <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: email_autofocus, placeholder: t('.email_placeholder', default: 'E-mail') %>
+  </label>
+  
+
+  <%- error = first_error(@user, :password) -%>
+  <label>
+    <%= content_tag(:span, content_tag(:i, error), class: :error) if error.present? %>
+    <%= password_field_tag :password, nil, autofocus: !email_autofocus, placeholder: t('.password_placeholder', default: 'Choose a password') %>
+  </label>
   
 
   <button>

@@ -1,129 +1,59 @@
 @import 'mixins';
-@import 'login_or_register';
-@import 'register';
-@import 'profile_activation';
-@import 'emails';
+@import 'authentications';
+@import 'settings';
+@import 'users';
 
-main.profile {
+//
+// Base profile layout
+//
 
-  $profile-nav-margin: $base-unit * 2;
-  $profile-nav-width: $base-unit * 11;
+main.cloud-profile {
+  @include cloud-profile-container;
   
-  $profile-nav-background-color: hsl(0, 0%, 96%);
+
+  > nav {
+    @include cloud-profile-nav;
+  }
+
   
-  $profile-nav-header-font-size: 18pt;
-  $profile-nav-header-padding: $base-unit * .9 0;
-  
-  $profile-nav-avatar-background-color: hsl(0, 0%, 75%);
-  $profile-nav-avatar-margin: 0 auto $base-unit * .75;
-  $profile-nav-avatar-size: $base-unit * 4;
-  
-  $profile-nav-link-color: hsl(0, 0%, 0%);
-  $profile-nav-link-hover-background-color: hsl(42, 82%, 55%);
-  $profile-nav-link-hover-color: hsl(0, 0%, 100%);
-  $profile-nav-link-font-size: 14pt;
-  $profile-nav-link-padding: $base-unit * .9   0;
-  
-  @include display(flex);
-  
-  nav {
-    margin-right: $profile-nav-margin;
-    text-align: center;
-    width: $profile-nav-width;
+  > article {
+    @include cloud-profile-standalone-section;
     
-
-    h2 {
-      background-color: $profile-nav-background-color;
-      font-size: $profile-nav-header-font-size;
-      font-weight: 400;
-      margin: 0;
-      overflow: hidden;
-      padding: $profile-nav-header-padding;
-      text-align: center;
-      text-overflow: ellipsis;
-
-      .avatar {
-        background-color: $profile-nav-avatar-background-color;
-        border-radius: $profile-nav-avatar-size / 2;
-        height: $profile-nav-avatar-size;
-        margin: $profile-nav-avatar-margin;
-        width: $profile-nav-avatar-size;
-
-        font-family: sans-serif;
-        font-size: $base-unit * .75;
-        font-weight: 700;
-        line-height: $profile-nav-avatar-size;
-      }
+    h1 {
+      @include cloud-profile-section-header;
     }
     
-    ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      
-      li {
-        background-color: $profile-nav-background-color;
-        margin-top: 1pt;
-        
-        a {
-          color: $profile-nav-link-color;
-          display: block;
-          font-size: $profile-nav-link-font-size;
-          padding: $profile-nav-link-padding;
-          text-decoration: none;
-          
-          &:hover {
-            background-color: $profile-nav-link-hover-background-color;
-            color: $profile-nav-link-hover-color;
-            font-weight: 700;
-          }
-        }
+    &.notice {
+      @include align-items(center);
+      @include display(flex);
+
+      > p {
+        font-size: 20pt;
+        font-weight: 300;
       }
+    
     }
     
   }
   
-  section.profile {
-    @include flex(1);
-    
-    ul {
-      display: inline-block;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      
-      li:not(:first-child) {
-        margin-top: $base-unit * 1.25;
-      }
-    }
+
+  > nav + article {
+    @include cloud-profile-navigated-section;
     
     > section {
       margin-top: $base-unit * 2;
-
-      h1 {
-        @include cloud-profile-section-header;
-        line-height: .7em;
-        margin: 0 0 $base-unit * 1.25;
-      }
-      
-      &.profile-social-networks li a {
-        @include cloud-button;
-        
-        @include display(flex);
-        @include align-items(center);
-        @include justify-content(center);
-
-        line-height: 1em;
-        width: 100%;
-        
-        i {
-          font-size: .85em;
-          line-height: 1em;
-          margin-right: $base-unit / 2;
-        }
-      }
     }
-    
   }
   
+}
+
+#flash {
+  font-size: 20pt;
+  font-weight: 300;
+  margin: 0 0 $base-unit;
+  padding: $base-unit / 2;
+  
+  &.error {
+    background-color: hsla(0, 75%, 50%, .5);
+  }
 }

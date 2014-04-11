@@ -1,0 +1,60 @@
+@mixin cloud-profile-container {
+  @include display(flex);
+}
+
+
+@mixin cloud-profile-standalone-section {
+  margin: 0 auto;
+}
+
+
+@mixin cloud-profile-navigated-section {
+  margin-left: $base-unit * 2;
+}
+
+
+@mixin cloud-profile-section-header {
+  font-size: 32pt;
+  font-weight: 800;
+  line-height: 1.25em;
+  margin: 0 0 $base-unit;
+  position: relative;
+  
+  > a {
+    margin-right: $base-unit * 2;
+    position: absolute;
+    right: 100%;
+  }
+}
+
+
+@mixin cloud-profile-nav {
+  width: $base-unit * 12;
+  
+  > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+    > li {
+      background-color: hsl(0, 0%, 96%);
+      margin-top: 1pt;
+      
+      > a {
+        color: hsl(0, 0%, 0%);
+        display: block;
+        font-size: 14pt;
+        padding: $base-unit * .8 0;
+        text-align: center;
+        text-decoration: none;
+        
+        &.current,
+        &:hover {
+          background-color: hsl(42, 82%, 55%);
+          color: hsl(0, 100%, 100%);
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}
