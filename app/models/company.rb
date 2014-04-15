@@ -7,8 +7,6 @@ class Company < ActiveRecord::Base
   SECTIONS = %i(about product people vacancies contacts).inject({}) { |hash, val| hash.merge({ I18n.t("company.sections.#{val}") => val }) }
   BLOCK_TYPES = %i(paragraph block_image person vacancy).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
 
-  after_validation :build_objects, if: :should_build_objects?
-
   has_and_belongs_to_many :industries
   has_one :logo, as: :owner, dependent: :destroy
   has_many :vacancies, dependent: :destroy

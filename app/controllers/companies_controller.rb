@@ -45,6 +45,7 @@ class CompaniesController < ApplicationController
     @company.should_build_objects!
 
     if @company.save
+      # Activity.track_activity(current_user, params[:action], @company)
       redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
     else
       render :new

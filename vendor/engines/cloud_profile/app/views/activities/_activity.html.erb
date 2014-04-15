@@ -1,0 +1,11 @@
+<section>
+  <% if current_user == activity.user %> 
+    <%= link_to 'You', root_path(current_user) %>
+  <% else %>
+    <%= activity.user.name %>
+  <% end %>
+
+  <%= activity.action.sub(/e?$/, 'ed') %>
+
+  <%= render "activities/#{activity.trackable_type.underscore}", activity: activity %>
+</section>

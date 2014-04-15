@@ -7,6 +7,7 @@ class BlocksController < ApplicationController
     end
 
     @block = @object.blocks.create!(block_params_for_create)
+    Activity.track_activity(current_user, params[:action], @block)
 
     respond_to do |format|
       format.html { redirect_to @block.owner }
@@ -17,6 +18,7 @@ class BlocksController < ApplicationController
   def update
     @block = Block.includes(:owner).find(params[:id])
     @block.update!(block_params_for_update)
+    Activity.track_activity(current_user, params[:action], @block)
 
     respond_to do |format|
       format.html { redirect_to @block.owner }

@@ -3,6 +3,7 @@ module Sectionable
 
   included do
     after_validation :set_sections
+    after_validation :build_objects, if: :should_build_objects?
     before_destroy :mark_for_destruction
     serialize :sections, OpenStruct
     has_many :blocks, -> { order(:section, :position) }, as: :owner, dependent: :destroy, inverse_of: :owner
@@ -13,12 +14,12 @@ module Sectionable
     blocks.select { |b| b.section == section }
   end
 
-  def should_build_objects?
-    !!@should_build_objects
-  end
-
   def should_build_objects!
     @should_build_objects = true
+  end
+
+  def should_build_objects?
+    !!@should_build_objects
   end
   
 private

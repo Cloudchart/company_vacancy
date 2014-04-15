@@ -6,7 +6,7 @@ module CloudProfile
     before_action :require_authenticated_user!
 
     def newsfeed
-      @versions = PaperTrail::Version.where(whodunnit: current_user.id)
+      @activities = Activity.by_user_or_companies(current_user).order(created_at: :desc)
     end
     
   protected

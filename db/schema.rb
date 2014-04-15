@@ -11,7 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140401140537) do
+ActiveRecord::Schema.define(version: 20140415105230) do
+
+  create_table "activities", primary_key: "uuid", force: true do |t|
+    t.string   "action",                                null: false
+    t.integer  "group_index",               default: 1
+    t.string   "user_id",        limit: 36,             null: false
+    t.string   "company_id",     limit: 36
+    t.string   "trackable_id",   limit: 36
+    t.string   "trackable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "activities", ["company_id"], name: "index_activities_on_company_id", using: :btree
+  add_index "activities", ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type", using: :btree
+  add_index "activities", ["user_id"], name: "index_activities_on_user_id", using: :btree
 
   create_table "block_identities", primary_key: "uuid", force: true do |t|
     t.string   "block_id",      limit: 36

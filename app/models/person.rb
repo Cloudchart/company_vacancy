@@ -5,7 +5,7 @@ class Person < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :company
-  has_paper_trail
+  # has_paper_trail
 
   validates :name, presence: true
 
