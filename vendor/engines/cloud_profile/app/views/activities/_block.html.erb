@@ -1,9 +1,13 @@
 <% if activity.group_index == 1 %>
   a
   <%= link_to activity.trackable_type, main_app.company_path(activity.trackable.owner, anchor: activity.trackable_id) %>
+  on
+  <%= activity.trackable.owner.name + "'s page" %>
 <% else %>
-  <%= activity.group_index %>
-  <%= link_to activity.trackable_type.pluralize, main_app.company_path(activity.trackable.owner) %>
+  several
+  <%= activity.trackable_type.pluralize %>
+  on
+  <%= link_to activity.trackable.owner.name + "'s page", main_app.company_path(activity.trackable.owner) %>
 <% end %>
 <%= time_ago_in_words(activity.created_at) %>
 ago
