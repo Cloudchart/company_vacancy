@@ -9,7 +9,7 @@ Cloudchart::Application.routes.draw do
   # Concerns
   #
   concern :blockable do
-    resources :blocks do
+    resources :blocks, only: [:create, :update, :destroy] do
       post :update_position, on: :collection
       post :update_section, on: :collection
     end

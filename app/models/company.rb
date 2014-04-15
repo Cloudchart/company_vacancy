@@ -14,7 +14,7 @@ class Company < ActiveRecord::Base
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy
   has_many :events, dependent: :destroy
-  has_paper_trail
+  # has_paper_trail
 
   accepts_nested_attributes_for :logo, allow_destroy: true
 
