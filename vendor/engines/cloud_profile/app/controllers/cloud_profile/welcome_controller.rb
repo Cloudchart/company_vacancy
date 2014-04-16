@@ -4,10 +4,6 @@ module CloudProfile
   class WelcomeController < ApplicationController
 
     before_action :require_authenticated_user!
-
-    def newsfeed
-      @activities = Activity.by_user_or_companies(current_user).order(created_at: :desc)
-    end
     
   protected
   

@@ -7,5 +7,8 @@
 
   <%= activity.action.sub(/e?$/, 'ed') %>
 
-  <%= render "activities/#{activity.trackable_type.underscore}", activity: activity %>
+  <%= activity_message(activity) %>
+
+  <%= time_ago_in_words(activity.updated_at) %>
+  ago
 </section>
