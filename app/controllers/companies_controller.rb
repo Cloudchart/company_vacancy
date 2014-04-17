@@ -45,7 +45,7 @@ class CompaniesController < ApplicationController
     @company.should_build_objects!
 
     if @company.save
-      # Activity.track_activity(current_user, params[:action], @company)
+      Activity.track_activity(current_user, params[:action], @company)
       redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
     else
       render :new
@@ -55,6 +55,7 @@ class CompaniesController < ApplicationController
   # PATCH/PUT /companies/1
   def update
     if @company.update(company_params)
+      Activity.track_activity(current_user, params[:action], @company)
       respond_to do |format|
         format.html { redirect_to @company, notice: t('messages.updated', name: t('lexicon.company')) }
         format.js
@@ -66,7 +67,9 @@ class CompaniesController < ApplicationController
 
   # DELETE /companies/1
   def destroy
+    company = @company
     @company.destroy
+    Activity.track_activity(current_user, params[:action], company)
     redirect_to companies_url, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 

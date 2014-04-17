@@ -7,7 +7,7 @@ class BlocksController < ApplicationController
     end
 
     @block = @object.blocks.create!(block_params_for_create)
-    Activity.track_activity(current_user, params[:action], @block)
+    Activity.track_activity(current_user, params[:action], @block, @block.owner)
 
     respond_to do |format|
       format.html { redirect_to @block.owner }
@@ -18,7 +18,7 @@ class BlocksController < ApplicationController
   def update
     @block = Block.includes(:owner).find(params[:id])
     @block.update!(block_params_for_update)
-    Activity.track_activity(current_user, params[:action], @block)
+    Activity.track_activity(current_user, params[:action], @block, @block.owner)
 
     respond_to do |format|
       format.html { redirect_to @block.owner }
@@ -30,7 +30,7 @@ class BlocksController < ApplicationController
     block = Block.includes(:owner, { block_identities: :identity }).find(params[:id])
     authorize! :destroy, block
     block.destroy
-    Activity.track_activity(current_user, params[:action], block)
+    Activity.track_activity(current_user, params[:action], block, block.owner)
     redirect_to block.owner
   end
 
