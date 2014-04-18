@@ -1,0 +1,14 @@
+<section style="font-size: 14pt;">
+  <% if current_user == activity.user %> 
+    <%= link_to 'You', root_path(current_user) %>
+  <% else %>
+    <%= activity.user.name %>
+  <% end %>
+
+  <%= activity.action.sub(/e?$/, 'ed') %>
+
+  <%= activity_message(activity) %>
+
+  <%= time_ago_in_words(activity.updated_at) %>
+  ago
+</section>

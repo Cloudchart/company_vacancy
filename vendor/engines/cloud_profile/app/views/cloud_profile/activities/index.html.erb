@@ -1,0 +1,7 @@
+<%- class_for_main 'cloud-profile' -%>
+<%- cloud_profile_nav_current_tab :newsfeed -%>
+<%= render 'shared/nav' %>
+
+<article>
+  <%= render partial: 'activity', collection: @activities %>
+</article>

@@ -2,6 +2,8 @@ module Imageable
   extend ActiveSupport::Concern
 
   included do
+    # has_paper_trail
+
     uploader = "#{name}Uploader".constantize
     versions = uploader.versions.keys.inject([]) { |array, version| array << :"image_#{version}" }
 

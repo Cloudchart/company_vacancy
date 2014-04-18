@@ -22,3 +22,5 @@
   <%- end -%>
   
 <%- end -%>
+
+<%= link_to 'Destroy', block, method: :delete, data: { confirm: 'Are you sure?' } if block.persisted? && !block.is_locked? %>

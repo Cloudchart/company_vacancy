@@ -7,6 +7,7 @@ class BlockIdentity < ActiveRecord::Base
   
   belongs_to :block, inverse_of: :block_identities
   belongs_to :identity, polymorphic: true  
+  # has_paper_trail
   
   def self.accessible_attributes
     [:block_id, :identity_id, :identity_type]

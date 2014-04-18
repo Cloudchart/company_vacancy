@@ -10,6 +10,7 @@ class Block < ActiveRecord::Base
 
   belongs_to :owner, polymorphic: true
   has_many :block_identities, -> { order(:position) }, inverse_of: :block
+  # has_paper_trail
 
   IdentitiesClasses.each do |identity_class|
     plural_identity_name = identity_class.name.underscore.pluralize

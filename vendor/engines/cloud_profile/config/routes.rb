@@ -34,6 +34,7 @@ CloudProfile::Engine.routes.draw do
     #
     root to: 'welcome#index'   
     get 'settings', to: 'welcome#settings', as: :settings
+    get 'newsfeed', to: 'activities#index', as: :newsfeed
     
     
     # Emails
