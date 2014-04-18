@@ -91,10 +91,18 @@ $cloud-profile-input-error-width: $base-unit * 15;
   
   &:not(.right) {
     @include cloud-profile-input-error-on-left;
+    
+    > i {
+      padding-right: $base-unit * .75;
+    }
   }
   
   &.right {
     @include cloud-profile-input-error-on-right;
+    
+    > i {
+      padding-left: $base-unit * .75;
+    }
   }
   
   background: $cloud-profile-input-error-background-color;
@@ -108,7 +116,7 @@ $cloud-profile-input-error-width: $base-unit * 15;
     font-size: $cloud-profile-input-error-font-size;
     font-style: normal;
     font-weight: 300;
-    padding: 0 $base-unit / 2;
+    padding: 0 $base-unit;
   }
 }
 

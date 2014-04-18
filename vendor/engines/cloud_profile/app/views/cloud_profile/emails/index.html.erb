@@ -1,45 +1,35 @@
 <%- class_for_main 'cloud-profile' -%>
 
+<%- cloud_profile_nav_current_tab :settings -%>
+
 <%= render partial: 'shared/nav' %>
 
 
-<section class="emails">
+<article class="profile-emails">
   
-  <h1>
-    <%= t '.title', default: 'E-mails' %>
-  </h1>
-  
-  
-  <ul>
-    <%- current_user.emails.each do |email| -%>
-      <li>
-        <%= font_awesome('check-circle') %>
-        <span class="address"><%= email.address %></span>
-        <%= link_to font_awesome('times'), email_path(email), method: :delete if current_user.emails.size > 1 %>
-      </li>
-    <%- end -%>
+  <section class="emails">
     
-    <%- current_user.tokens.where(name: 'email-verification').each do |email| -%>
-      <li class="inactive">
-        <%= font_awesome('question-circle') %>
-        <span class="address"><%= email.data[:address] %></span>
-        <%= link_to font_awesome('envelope'), resend_verification_email_path(email) %>
-        <%= link_to font_awesome('times'), email_path(email), method: :delete %>
-      </li>
-    <%- end -%>
+    <h1>
+      <%= link_to font_awesome('angle-left'), :settings %>
+      <%= t '.title', default: 'E-mails' %>
+    </h1>
     
-
+    <ul>
+      <%= render partial: 'email', collection: current_user.emails %>
+      <%= render partial: 'token', collection: current_user.tokens.where(name: 'email-verification') %>
+    </ul>
+    
     <%= render partial: 'new_email_form', locals: { email: @email } if @email.present? %>
-    
-    
-    <li class="new-email<%= @email.present? ? ' hidden' : nil %>">
-      <%= link_to font_awesome('plus'), new_email_path %>
-    </li>
 
-  </ul>
+    <button class="new-email">
+      <%= font_awesome 'plus' %>
+    </button>
+    
+  </section>
   
-</section>
+</article>
 
-<template id="new-email-form">
+
+<template id="new-email-form-template">
   <%= render partial: 'new_email_form', locals: { email: CloudProfile::Email.new } %>
 </template>

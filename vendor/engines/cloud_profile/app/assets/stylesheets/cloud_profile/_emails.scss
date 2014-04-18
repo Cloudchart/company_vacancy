@@ -1,0 +1,88 @@
+main.cloud-profile section.emails {
+
+
+  font-size: 20pt;
+  width: $base-unit * 20;
+
+
+  > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+    li {
+      
+      height: $cloud-profile-input-height;
+      
+      > .fa {
+        padding-right: $base-unit / 2;
+      }
+      
+      &.email,
+      &.token {
+        @include align-items(center);
+        @include display(flex);
+
+        .address {
+          @include flex(1);
+          font-weight: 300;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+      }
+      
+      &.token .address {
+        color: hsl(0, 0%, 50%);
+        font-style: italic;
+      }
+      
+        
+      a.envelope {
+        text-align: center;
+        width: $cloud-button-height;
+      }
+      
+    }
+    
+  }
+  
+  a.cancel {
+    margin-left: $base-unit;
+  }
+  
+  
+  
+  > form {
+    @include cloud-profile-form;
+    @include align-items(center);
+    @include display(flex);
+    
+    margin: $base-unit 0;
+    position: relative;
+    
+    input {
+      @include flex(1);
+    }
+    
+    button {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      padding: 0;
+      width: $cloud-button-height;
+    }
+    
+  }
+
+  > button {
+    @include cloud-button;
+    margin-top: $base-unit;
+    width: $base-unit * 7.5;
+    
+  }
+  
+  form + button {
+    display: none;
+  }
+  
+}

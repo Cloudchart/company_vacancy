@@ -4,22 +4,20 @@ module CloudProfile
   class EmailsController < ApplicationController
 
     
-    def index
-    end
-
-
-    def new
-      @email = Email.new
-    end
-    
     def create
       @email = Email.new params.require(:email).permit(:address)
       if @email.valid?
-        token = current_user.tokens.create! name: 'email-verification', data: { address: @email.address }
-        ProfileMailer.verification_email(token).deliver
-        redirect_to :emails
+        @token = current_user.tokens.create! name: 'email-verification', data: { address: @email.address }
+        ProfileMailer.verification_email(@token).deliver
+        respond_to do |format|
+          format.html { redirect_to :emails }
+          format.js
+        end
       else
-        render :index
+        respond_to do |format|
+          format.html { render :index }
+          format.js
+        end
       end
     end
 

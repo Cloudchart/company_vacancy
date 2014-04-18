@@ -1,27 +1,21 @@
-new_selector      = 'section.emails li.new-email a'
-cancel_selector   = 'section.emails li.form a.cancel'
+selector = "main.cloud-profile section.emails"
 
-
-@['cloud_profile/emails#create'] = @['cloud_profile/emails#index'] = ->
+$ ->
   
-  $ ->
-    
-    
-    $(document).on 'click', new_selector, (event) ->
-      event.preventDefault()
-      
-      $li   = $(@).closest('li')
-      
-      return if $li.prev().hasClass('form')
+  $document = $(document)
+  
+  # Cancel button click
+  #
+  $document.on 'click', "#{selector} form a.cancel", (event) ->
+    event.preventDefault()
+    $(@).closest('form').remove()
+  
+  # Escape button press
+  #
+  $document.on 'keydown', "#{selector} form input", (event) ->
+    $(@).closest('form').remove() if event.keyCode == 27
 
-      $li.before($('template#new-email-form').html())
-      $li.css('opacity', 0)
-
-
-    $(document).on 'click', cancel_selector, (event) ->
-      event.preventDefault()
-      
-      $li = $(@).closest('li')
-      
-      $li.next().css('opacity', 1)
-      $li.remove()
+  # New email button
+  #
+  $document.on 'click', "#{selector} button.new-email", (event) ->
+    $(@).before($('#new-email-form-template').html())

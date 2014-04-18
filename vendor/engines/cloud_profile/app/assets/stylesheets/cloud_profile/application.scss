@@ -2,6 +2,7 @@
 @import 'authentications';
 @import 'settings';
 @import 'users';
+@import 'emails';
 
 //
 // Base profile layout
@@ -39,6 +40,10 @@ main.cloud-profile {
 
   > nav + article {
     @include cloud-profile-navigated-section;
+    
+    h1 a {
+      margin-right: $base-unit / 2;
+    }
     
     > section {
       margin-top: $base-unit * 2;

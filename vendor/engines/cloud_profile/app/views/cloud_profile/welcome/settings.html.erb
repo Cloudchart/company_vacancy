@@ -43,6 +43,15 @@
         </li>
       <%- end -%>
       
+      <li class="form">
+        <%= form_tag '' do %>
+          <%= text_field_tag :address, '', autofocus: false, placeholder: t('.address_placeholder', default: 'Enter e-mail') %>
+          <button>
+            <%= font_awesome 'magic' %>
+          </button>
+        <%- end -%>
+      </li>
+      
       <li class="new">
         <%= link_to font_awesome('plus'), new_email_path %>
       </li>
