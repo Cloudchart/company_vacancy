@@ -5,6 +5,7 @@ set :application, 'cloudchart'
 set :repo_url, 'git@github.com:Cloudchart/company_vacancy.git'
 set :deploy_to, '~/apps/cloudchart'
 set :linked_files, %w{config/database.yml}
+set :default_env, { path: "/home/rails/.rvm/gems/ruby-2.1.1@global/bin/:/home/rails/.rvm/rubies/ruby-2.1.1/bin:$PATH" }
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
@@ -23,9 +24,6 @@ set :linked_files, %w{config/database.yml}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
-
-# Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
