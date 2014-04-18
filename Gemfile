@@ -17,11 +17,10 @@ gem 'mini_magick'
 gem 'simple_form'
 gem 'bcrypt', '~> 3.1.2'
 gem 'oauth2'
-gem 'postmark-rails', '~> 0.5.2'
 gem 'active_attr'
 gem 'cancan'
-gem 'tire'
 gem 'puma'
+gem 'tire'
 gem 'rails_admin'
 gem 'paper_trail', '~> 3.0.1'
 gem 'warden'
@@ -48,6 +47,8 @@ group :development do
   gem 'quiet_assets' # mutes assets pipeline log messages
   gem 'letter_opener' # preview mail in the browser instead of sending
   gem 'bullet' # helps to kill N+1 queries and unused eager loading
+  gem 'capistrano', '~> 3.2.0'
+  gem 'capistrano-rails', '~> 1.1'
 end
 
 group :development, :test do
@@ -60,11 +61,11 @@ group :test do
   gem 'capybara'
 end
 
-# Use unicorn as the app server
-# gem 'unicorn'
-
-# Use Capistrano for deployment
-# gem 'capistrano', group: :development
+group :production do
+  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  gem 'therubyracer', platforms: :ruby
+  gem 'postmark-rails', '~> 0.5.2'
+end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]

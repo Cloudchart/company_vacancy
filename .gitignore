@@ -22,5 +22,5 @@
 /public/uploads
 .rbenv-gemsets
 .gemfiles
-
 *.sock
+/config/database.yml

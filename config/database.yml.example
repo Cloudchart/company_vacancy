@@ -11,7 +11,7 @@
 development:
   adapter: mysql2
   encoding: utf8
-  database: cloudchart_development
+  database: cloudchart_development1
   pool: 5
   username: root
   password:
