@@ -26,6 +26,7 @@ gem 'paper_trail', '~> 3.0.1'
 gem 'warden'
 gem 'country_select'
 gem 'impressionist'
+gem 'dotenv-rails' # loads environment variables from .env
 
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 
@@ -52,7 +53,6 @@ group :development do
 end
 
 group :development, :test do
-  gem 'dotenv-rails' # loads environment variables from .env
   gem 'factory_girl_rails' # fixtures replacement
   gem 'rspec-rails'
 end
