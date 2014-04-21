@@ -61,7 +61,7 @@ group :test do
   gem 'capybara'
 end
 
-group :production do
+group :production, :staging do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :ruby
   gem 'postmark-rails', '~> 0.5.2'
