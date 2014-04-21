@@ -1,0 +1,8 @@
+en:
+  social_network:
+    facebook:
+      name: Facebook
+      icon: facebook
+    linkedin:
+      name: LinkedIn
+      icon: linkedin

@@ -42,15 +42,31 @@
   
   </section>  
   
-  <section class="profile-social-networks">
+  <section class="social-networks">
+
     <h1>
       <%= t '.social_networks', default: 'Social Networks' %>
     </h1>
   
     <ul>
-      <li>
-        <%= link_to font_awesome('plus'), '' %>
-      </li>
+      <%- CloudOAuth.providers.each do |name, provider| -%>
+        <%- social_network = @social_networks.find { |sn| sn.name == name.to_s } -%>
+        <li>
+          <%= link_to oauth_provider_path(name, return_to: attach_social_network_path), class: :plaque do -%>
+            <%= font_awesome t("#{name}.icon", scope: :social_network) + '-square' %>
+            <%= t "#{name}.name", scope: :social_network %>
+          <%- end -%>
+          <%- if social_network.present? -%>
+            <%= social_network.first_name %>
+            <strong>
+              <%= social_network.last_name %>
+            </strong>
+            
+            <%= link_to font_awesome("eye#{ social_network.is_visible? ? '' : '-slash'}"), toggle_social_network_path(social_network), class: :visibility, method: :put %>
+            <%= link_to font_awesome('times'), detach_social_network_path(social_network), class: :destroy, method: :delete %>
+          <%- end -%>
+        </li>
+      <%- end -%>
     </ul>
   </section>
 

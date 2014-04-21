@@ -5,6 +5,7 @@ module CloudOAuth
   autoload :Linkedin, 'cloud_oauth/linkedin'
 
 
+  mattr_reader :providers
   @@providers = {}
   
   

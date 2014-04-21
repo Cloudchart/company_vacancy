@@ -59,6 +59,15 @@ CloudProfile::Engine.routes.draw do
     
     get   'password/:token/reset', to: 'passwords#reset', as: 'password_reset'
     post  'password/:token/reset', to: 'passwords#reset_complete'
+    
+    
+    # Social Networks
+    #
+    
+    get     'social_networks/attach',     to: 'social_networks#attach', as: :attach_social_network
+    put     'social_networks/:id/toggle', to: 'social_networks#toggle', as: :toggle_social_network
+    delete  'social_networks/:id/detach', to: 'social_networks#detach', as: :detach_social_network
+    
   end
   
 

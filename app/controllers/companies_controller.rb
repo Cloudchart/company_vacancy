@@ -44,12 +44,11 @@ class CompaniesController < ApplicationController
     @company.associate_with_person(current_user)
     @company.should_build_objects!
 
-    if @company.save
-      Activity.track_activity(current_user, params[:action], @company)
-      redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
-    else
-      render :new
-    end
+    @company.save!
+    Activity.track_activity(current_user, params[:action], @company)
+    redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
+  rescue ActiveRecord::RecordInvalid
+    render :new
   end
 
   # PATCH/PUT /companies/1

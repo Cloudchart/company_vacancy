@@ -10,33 +10,32 @@ end
 
 
 module HelperMethods
-  
+
   def warden
     request.env['warden']
   end
-  
-  
+
+
   def current_user
     warden.user(:user)
   end
-  
+
   def user_authenticated?
     warden.authenticated?(:user)
   end
-  
-  
+
+
   def current_social_network
     warden.user(:social_network)
   end
-  
+
 
   def social_network_authenticated?
     warden.authenticated?(:social_network)
   end
-  
-  
-end
 
+
+end
 
 module Warden::Mixins::Common
   
