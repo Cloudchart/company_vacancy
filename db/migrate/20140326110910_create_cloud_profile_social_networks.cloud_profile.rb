@@ -8,6 +8,7 @@ class CreateCloudProfileSocialNetworks < ActiveRecord::Migration
       t.string    :provider_id,         null: false
       t.text      :access_token,        null: false
       t.text      :data
+      t.boolean   :is_visible, default: false
       t.datetime  :expires_at
       t.timestamps
     end
