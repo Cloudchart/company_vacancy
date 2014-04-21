@@ -24,38 +24,18 @@
     <h1>
       <%= t '.emails', default: 'Emails' %>
     </h1>
-  
-    <ul>
-      <%- current_user.emails.each do |email| -%>
-        <li class="email">
-          <%= font_awesome 'check-circle' %>
-          <span class="address"><%= email.address %></span>
-          <%= link_to font_awesome('times'), '' if current_user.emails.size > 1 %>
-        </li>
-      <%- end -%>
+    
+    <p>
+      <%- emails = current_user.emails.to_a -%>
       
-      <%- current_user.tokens.where(name: 'email-verification').each do |token| -%>
-        <li class="token">
-          <%= font_awesome 'question-circle' %>
-          <span class="address"><%= token.data[:address] %></span>
-          <%= link_to font_awesome('envelope'), '', class: 'envelope' %>
-          <%= link_to font_awesome('times-circle'), '' %>
-        </li>
-      <%- end -%>
-      
-      <li class="form">
-        <%= form_tag '' do %>
-          <%= text_field_tag :address, '', autofocus: false, placeholder: t('.address_placeholder', default: 'Enter e-mail') %>
-          <button>
-            <%= font_awesome 'magic' %>
-          </button>
+      <%= link_to :emails do %>
+        <%= emails.first.address %>
+        <%- if emails.size > 1 -%>
+          <span>+ <%= pluralize (emails.size - 1), 'other' %></span>
         <%- end -%>
-      </li>
-      
-      <li class="new">
-        <%= link_to font_awesome('plus'), new_email_path %>
-      </li>
-    </ul>
+      <%- end -%>
+    </p>
+  
   </section>  
   
   <section class="profile-social-networks">

@@ -15,7 +15,7 @@
     </h1>
     
     <ul>
-      <%= render partial: 'email', collection: current_user.emails %>
+      <%= render partial: 'email', collection: current_user.emails, locals: { emails_count: current_user.emails.size } %>
       <%= render partial: 'token', collection: current_user.tokens.where(name: 'email-verification') %>
     </ul>
     
