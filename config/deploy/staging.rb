@@ -1,5 +1,5 @@
 set :deploy_to, '~/apps/cloudchart_dev'
-set :branch, 'develop'
+set :branch, 'staging'
 
 # Simple Role Syntax
 # ==================

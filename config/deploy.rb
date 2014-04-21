@@ -4,6 +4,7 @@ lock '3.2.0'
 set :application, 'cloudchart'
 set :repo_url, 'git@github.com:Cloudchart/company_vacancy.git'
 set :linked_files, %w{config/database.yml}
+set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 set :default_env, { path: "/home/rails/.rvm/gems/ruby-2.1.1@global/bin/:/home/rails/.rvm/rubies/ruby-2.1.1/bin:$PATH" }
 
 # Default branch is :master
@@ -20,9 +21,6 @@ set :default_env, { path: "/home/rails/.rvm/gems/ruby-2.1.1@global/bin/:/home/ra
 
 # Default value for :pty is false
 # set :pty, true
-
-# Default value for linked_dirs is []
-# set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
