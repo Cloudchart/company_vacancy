@@ -1,9 +1,15 @@
-<section class="emails">
+<%- class_for_main 'cloud-profile' -%>
+
+<article class="profile-emails">
+
+  <section class="email-verification">
   
-  <h1>
-    <%= t '.title', default: 'E-mail verification' %>
-  </h1>
+    <h1>
+      <%= t '.title', default: 'E-mail verification' %>
+    </h1>
   
-  <%= render partial: 'verify_form' %>
+    <%= render partial: 'verify_form' %>
   
-</section>
+  </section>
+  
+</article>

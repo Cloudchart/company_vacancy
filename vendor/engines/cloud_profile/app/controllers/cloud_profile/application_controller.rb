@@ -1,7 +1,7 @@
 module CloudProfile
   class ApplicationController < ::ApplicationController
-    
-    
+   
+
   protected
   
     def store_return_path
@@ -22,6 +22,10 @@ module CloudProfile
     
     def session_store_key
       :cloud_profile_return_to
+    end
+    
+    def require_authenticated_user!
+      redirect_to main_app.root_path unless user_authenticated?
     end
     
   end

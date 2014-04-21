@@ -3,18 +3,11 @@ class User < ActiveRecord::Base
   
   # after_validation :postpone_email, if: proc { |user| user.email_changed? && user.persisted? }
 
-  has_secure_password validations: false
+
+  attr_reader :current_password
+  has_secure_password
   
-  validates :password, presence: true, if: proc { |user| user.should_validate_password? }
-  
-  def should_validate_password!
-    @should_validate_password = true
-  end
-  
-  def should_validate_password?
-    !!@should_validate_password
-  end
-  
+
   has_and_belongs_to_many :friends
   has_many :emails, -> { order(:address) }, class_name: CloudProfile::Email
   has_many :social_networks, dependent: :destroy, inverse_of: :user, class_name: CloudProfile::SocialNetwork

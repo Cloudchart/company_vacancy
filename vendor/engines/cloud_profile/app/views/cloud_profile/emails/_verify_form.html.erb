@@ -1,13 +1,12 @@
-<%- class_for_main :profile %>
-
 <%= form_tag verify_email_path do -%>
 
   <label>
     <%= text_field_tag :email, @email.address, disabled: true %>
   </label>
   
-  <label class="<%= @password_invalid ? 'error' : nil %>">
-    <span class="error"><i><%= t '.password_invalid', default: 'Wrong password' %></i></span>
+  <%- error = @password_invalid ? t('.password_invalid', default: 'Wrong password') : nil -%>
+  <label>
+    <%= content_tag(:span, content_tag(:i, error), class: 'error') if error.present? %>
     <%= password_field_tag :password, nil, autofocus: true, placeholder: t('.password_placeholder', default: 'Enter password') %>
   </label>
   

@@ -25,7 +25,7 @@
       <%= t '.emails', default: 'Emails' %>
     </h1>
     
-    <p>
+    <p class="emails">
       <%- emails = current_user.emails.to_a -%>
       
       <%= link_to :emails do %>
@@ -34,6 +34,10 @@
           <span>+ <%= pluralize (emails.size - 1), 'other' %></span>
         <%- end -%>
       <%- end -%>
+    </p>
+    
+    <p class="password">
+      <%= link_to t('.change_password', default: 'Change password for email login'), :password %>
     </p>
   
   </section>  

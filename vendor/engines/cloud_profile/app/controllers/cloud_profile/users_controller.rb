@@ -20,7 +20,7 @@ module CloudProfile
       @user   = User.new password: params[:password], password_confirmation: params[:password]
 
       @user.emails << @email
-      @user.should_validate_password!
+      #@user.should_validate_password!
       
       if @user.valid?
         token = Token.new name: 'registration', data: { email: @email.address, password_digest: @user.password_digest }

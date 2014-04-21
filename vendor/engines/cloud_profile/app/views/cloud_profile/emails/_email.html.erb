@@ -1,5 +1,5 @@
 <li class="email" id="<%= email.to_param %>">
   <%= font_awesome 'check-circle' %>
   <span class="address"><%= email.address %></span>
-  <%= link_to font_awesome('times-circle'), '' if emails_count > 1 %>
+  <%= link_to font_awesome('times-circle'), email_path(email), data: { method: :delete, confirm: t('.confirm', default: 'Are you sure?') } if emails_count > 1 %>
 </li>

@@ -1,5 +1,14 @@
-<section class="password">
-  
-  
-  
-</section>
+<%- class_for_main 'cloud-profile' -%>
+
+<article class="password">
+
+  <section class="password-update">
+    <h1>
+      <%= link_to font_awesome('angle-left'), :settings %>
+      <%= t '.title', default: 'Change password' %>
+    </h1>
+    
+    <%= render partial: 'update_password_form' %>
+  </section>
+
+</article>

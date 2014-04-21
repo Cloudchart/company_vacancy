@@ -86,3 +86,12 @@ main.cloud-profile section.emails {
   }
   
 }
+
+
+main.cloud-profile section.email-verification {
+
+  > form {
+    @include cloud-profile-form;
+  }
+
+}
