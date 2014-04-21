@@ -50,6 +50,7 @@ group :development do
   gem 'bullet' # helps to kill N+1 queries and unused eager loading
   gem 'capistrano', '~> 3.2.0'
   gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano3-puma'
 end
 
 group :development, :test do

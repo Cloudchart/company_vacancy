@@ -4,8 +4,8 @@ require 'capistrano/setup'
 # Includes default deployment tasks
 require 'capistrano/deploy'
 
-# Includes rails specific deployment tasks
 require 'capistrano/rails'
+require 'capistrano/puma'
 
 # Includes tasks from other gems included in your Gemfile
 #
