@@ -72,10 +72,11 @@ ActiveRecord::Schema.define(version: 20140415105230) do
 
   create_table "cloud_profile_social_networks", primary_key: "uuid", force: true do |t|
     t.string   "user_id",      limit: 36
-    t.string   "name",                    null: false
-    t.string   "provider_id",             null: false
-    t.text     "access_token",            null: false
+    t.string   "name",                                    null: false
+    t.string   "provider_id",                             null: false
+    t.text     "access_token",                            null: false
     t.text     "data"
+    t.boolean  "is_visible",              default: false
     t.datetime "expires_at"
     t.datetime "created_at"
     t.datetime "updated_at"
