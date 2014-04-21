@@ -78,14 +78,10 @@ class Warden::SessionSerializer
 end
 
 
-Rails.configuration.after_initialize do
-  
-  class ActionController::Base
-    include HelperMethods
-  end
-  
-  module ApplicationHelper
-    include HelperMethods
-  end
-  
+ActiveSupport.on_load(:action_controller) do
+  include HelperMethods
+end
+
+ActiveSupport.on_load(:action_view) do
+  include HelperMethods
 end
