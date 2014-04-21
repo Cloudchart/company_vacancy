@@ -2,12 +2,12 @@ source 'https://rubygems.org'
 
 # ruby '2.1.1'
 
-gem 'rails', '4.0.4'
+gem 'rails', '~> 4.1.0'
 gem 'mysql2'
 
-gem 'sass-rails', '~> 4.0.0'
-gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.0.0'
+gem 'sass-rails'#, '~> 4.0.0'
+gem 'uglifier'#, '>= 1.3.0'
+gem 'coffee-rails'#, '~> 4.0.0'
 gem 'jquery-rails'
 gem 'bourbon'
 gem 'font-awesome-rails'
@@ -15,14 +15,14 @@ gem 'carrierwave'
 gem 'carrierwave-meta'
 gem 'mini_magick'
 gem 'simple_form'
-gem 'bcrypt', '~> 3.1.2'
+gem 'bcrypt'#, '~> 3.1.2'
 gem 'oauth2'
 gem 'active_attr'
 gem 'cancan'
 gem 'puma'
 gem 'tire'
 gem 'rails_admin'
-gem 'paper_trail', '~> 3.0.1'
+gem 'paper_trail'#, '~> 3.0.1'
 gem 'warden'
 gem 'country_select'
 gem 'impressionist'
@@ -48,8 +48,8 @@ group :development do
   gem 'quiet_assets' # mutes assets pipeline log messages
   gem 'letter_opener' # preview mail in the browser instead of sending
   gem 'bullet' # helps to kill N+1 queries and unused eager loading
-  gem 'capistrano', '~> 3.2.0'
-  gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano'#, '~> 3.2.0'
+  gem 'capistrano-rails'#, '~> 1.1'
 end
 
 group :development, :test do
@@ -64,7 +64,7 @@ end
 group :production, :staging do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :ruby
-  gem 'postmark-rails', '~> 0.5.2'
+  gem 'postmark-rails'#, '~> 0.5.2'
 end
 
 # Use debugger

@@ -1,0 +1,15 @@
+<%- class_for_main 'cloud-profile' -%>
+
+<article class="password">
+  
+  <section class="password-forgot">
+    
+    <h1>
+      <%= link_to font_awesome('angle-left'), :settings if user_authenticated? %>
+      <%= t '.title', default: 'Change password' %>
+    </h1>
+    
+    <%= render partial: 'new_password_form' %>
+  </section>
+  
+</article>

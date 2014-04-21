@@ -52,7 +52,13 @@ CloudProfile::Engine.routes.draw do
 
     # Password
     #
-    resource :password, only: [:show, :update]
+    resource :password, only: [:show, :update] do
+      get   'forgot', to: 'passwords#new',    on: :member
+      post  'forgot', to: 'passwords#create', on: :member
+    end
+    
+    get   'password/:token/reset', to: 'passwords#reset', as: 'password_reset'
+    post  'password/:token/reset', to: 'passwords#reset_complete'
   end
   
 

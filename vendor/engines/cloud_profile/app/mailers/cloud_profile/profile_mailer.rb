@@ -15,5 +15,11 @@ module CloudProfile
     end
     
     
+    def password_reset(token)
+      @token = token
+      mail to: token.data[:address], subject: t('.password_reset', default: 'Password reset')
+    end
+    
+    
   end
 end

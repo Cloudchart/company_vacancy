@@ -4,9 +4,10 @@ class User < ActiveRecord::Base
   # after_validation :postpone_email, if: proc { |user| user.email_changed? && user.persisted? }
 
 
-  attr_reader :current_password
   has_secure_password
   
+  attr_accessor :current_password
+
 
   has_and_belongs_to_many :friends
   has_many :emails, -> { order(:address) }, class_name: CloudProfile::Email
