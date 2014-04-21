@@ -1,3 +1,6 @@
+set :deploy_to, '~/apps/cloudchart'
+set :branch, 'master'
+
 # Simple Role Syntax
 # ==================
 # Supports bulk-adding hosts to roles, the primary server in each group
