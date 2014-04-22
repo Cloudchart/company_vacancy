@@ -33,7 +33,9 @@ main > article.company > section.search {
     }
     
     .fa {
-      left: - $base-unit;
+      color: hsl(140, 77%, 31%);
+      font-size: 14pt;
+      left: - $base-unit * 1.5;
       pointer-events: none;
       position: relative;
       width: 0;
