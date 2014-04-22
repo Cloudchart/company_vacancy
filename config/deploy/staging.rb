@@ -1,5 +1,10 @@
-set :deploy_to, '~/apps/cloudchart_dev'
+set :deploy_to, '/home/rails/apps/cloudchart_dev'
 set :branch, 'develop'
+
+set :puma_conf, "#{shared_path}/config/puma.rb"
+# set :puma_bind, "unix://#{shared_path}/tmp/sockets/puma.sock"
+
+# set :rvm_ruby_version, '2.0.0-p247@mygemset'
 
 # Simple Role Syntax
 # ==================
@@ -7,10 +12,9 @@ set :branch, 'develop'
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-role :app, %w{rails@5.9.115.242}
-# role :web, %w{deploy@example.com}
-# role :db,  %w{deploy@example.com}
-
+# role :app, %w{rails@5.9.115.242}
+# role :web, %w{rails@5.9.115.242}
+# role :db,  %w{rails@5.9.115.242}
 
 # Extended Server Syntax
 # ======================
@@ -18,7 +22,7 @@ role :app, %w{rails@5.9.115.242}
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-# server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value
+server '5.9.115.242', user: 'rails', roles: %w{web app db}#, my_property: :my_value
 
 
 # Custom SSH Options

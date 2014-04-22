@@ -20,8 +20,7 @@ Cloudchart::Application.configure do
   # config.action_dispatch.rack_cache = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this).
-  # TODO: restore to false when nginx will be configured
-  config.serve_static_assets = true
+  config.serve_static_assets = false
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier
@@ -82,5 +81,6 @@ Cloudchart::Application.configure do
   # postmark
   config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = { api_key: ENV['POSTMARK_API_KEY'] }  
+  config.action_mailer.default_url_options = { host: 'dev.cloudorgchart.com' }
   
 end

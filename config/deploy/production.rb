@@ -1,4 +1,4 @@
-set :deploy_to, '~/apps/cloudchart'
+set :deploy_to, '/home/rails/apps/cloudchart'
 set :branch, 'master'
 
 # Simple Role Syntax
@@ -7,7 +7,7 @@ set :branch, 'master'
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-role :app, %w{rails@5.9.115.242}
+# role :app, %w{rails@5.9.115.242}
 # role :web, %w{deploy@example.com}
 # role :db,  %w{deploy@example.com}
 

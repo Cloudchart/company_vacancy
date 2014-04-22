@@ -4,7 +4,6 @@ require 'capistrano/setup'
 # Includes default deployment tasks
 require 'capistrano/deploy'
 
-# Includes rails specific deployment tasks
 require 'capistrano/rails'
 require 'capistrano/rbenv'
 require 'capistrano/puma'
