@@ -1,0 +1,44 @@
+main > article.company > section.search {
+    
+  margin: 0 $base-unit * 5;
+  
+  > h1 {
+    @include cloud-profile-section-header;
+  }
+  
+  > form {
+    @include align-items(center);
+    @include display(flex);
+
+    .search-form-input {
+      @include appearance(none);
+      
+      background-color: hsl(0, 0%, 96%);
+      border: 1pt solid hsl(0, 0%, 78%);
+      border-radius: 5pt;
+      font-size: 12pt;
+      height: $base-unit * 2;
+      outline: none;
+      padding: 0 $base-unit / 2;
+    }
+    
+    input,
+    select {
+      @include flex(1);
+      @extend .search-form-input;
+    }
+    
+    select {
+      margin-left: $base-unit;
+    }
+    
+    .fa {
+      left: - $base-unit;
+      pointer-events: none;
+      position: relative;
+      width: 0;
+    }
+        
+  }
+  
+}
