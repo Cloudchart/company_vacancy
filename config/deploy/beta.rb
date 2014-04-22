@@ -1,4 +1,4 @@
-set   :deploy_to,     '~/apps/cloudchart_beta'
+set   :deploy_to,     '/home/seanchas/apps/cloudchart_beta'
 set   :branch,        'develop'
 
 set   :linked_files,  fetch(:linked_files) + %w{config/environments/beta.rb}
