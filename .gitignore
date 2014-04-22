@@ -24,3 +24,5 @@
 .gemfiles
 *.sock
 /config/database.yml
+/config/secrets.yml
+.env
