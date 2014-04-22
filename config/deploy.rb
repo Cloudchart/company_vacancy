@@ -3,7 +3,7 @@ lock '3.2.0'
 
 set :application,   'cloudchart'
 set :repo_url,      'git@github.com:Cloudchart/company_vacancy.git'
-set :linked_files,  %w{config/database.yml config/secrets.yml}
+set :linked_files,  %w{config/database.yml config/secrets.yml .env}
 set :linked_dirs,   %w{log tmp/pids tmp/cache tmp/sockets public/uploads}
 
 # Default branch is :master
