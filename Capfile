@@ -6,6 +6,8 @@ require 'capistrano/deploy'
 
 # Includes rails specific deployment tasks
 require 'capistrano/rails'
+require 'capistrano/rbenv'
+require 'capistrano/puma'
 
 # Includes tasks from other gems included in your Gemfile
 #
@@ -17,6 +19,7 @@ require 'capistrano/rails'
 #   https://github.com/capistrano/bundler
 #   https://github.com/capistrano/rails
 #
+
 # require 'capistrano/rvm'
 # require 'capistrano/rbenv'
 # require 'capistrano/chruby'

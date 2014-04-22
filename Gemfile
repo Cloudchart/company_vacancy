@@ -50,6 +50,8 @@ group :development do
   gem 'bullet' # helps to kill N+1 queries and unused eager loading
   gem 'capistrano'#, '~> 3.2.0'
   gem 'capistrano-rails'#, '~> 1.1'
+  gem 'capistrano-rbenv'
+  gem 'capistrano-puma'
 end
 
 group :development, :test do
@@ -61,7 +63,7 @@ group :test do
   gem 'capybara'
 end
 
-group :production, :staging do
+group :production, :staging, :beta do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :ruby
   gem 'postmark-rails'#, '~> 0.5.2'
