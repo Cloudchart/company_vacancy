@@ -1,4 +1,4 @@
-set :deploy_to, '~/apps/cloudchart'
+set :deploy_to, '/home/rails/apps/cloudchart'
 set :branch, 'master'
 
 # Simple Role Syntax

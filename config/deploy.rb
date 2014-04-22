@@ -5,7 +5,6 @@ set :application, 'cloudchart'
 set :repo_url, 'git@github.com:Cloudchart/company_vacancy.git'
 set :linked_files, %w{config/database.yml}
 set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets}
-set :default_env, { path: "/home/rails/.rvm/gems/ruby-2.1.1@global/bin/:/home/rails/.rvm/rubies/ruby-2.1.1/bin:$PATH" }
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
@@ -25,16 +24,19 @@ set :default_env, { path: "/home/rails/.rvm/gems/ruby-2.1.1@global/bin/:/home/ra
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
+# Default value for default_env is {}
+# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+
 namespace :deploy do
 
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      # execute :touch, release_path.join('tmp/restart.txt')
-    end
-  end
+  # desc 'Restart application'
+  # task :restart do
+  #   on roles(:app), in: :sequence, wait: 5 do
+  #     # execute :touch, release_path.join('tmp/restart.txt')
+  #   end
+  # end
 
-  after :publishing, :restart
+  # after :publishing, :restart
 
   # after :restart, :clear_cache do
   #   on roles(:web), in: :groups, limit: 3, wait: 10 do
