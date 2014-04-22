@@ -28,6 +28,17 @@ class User < ActiveRecord::Base
     "#{first_name} #{last_name}"
   end  
 
+
+  def full_name
+    @full_name ||= [first_name, last_name].compact.join(' ')
+  end
+
+
+  def full_name_or_email
+    @full_name_or_email ||= full_name.blank? ? emails.first.address : full_name
+  end
+
+
 private
 
   # def postpone_email

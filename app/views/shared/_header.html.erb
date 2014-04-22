@@ -31,6 +31,7 @@
   
   
   <%- if user_authenticated? -%>
+    <%= link_to current_user.full_name_or_email, cloud_profile.settings_path, class: :profile %>
     <%= link_to font_awesome('sign-out'), cloud_profile.logout_path, class: 'sign-out' %>
   <%- else -%>
     <%= link_to t('.log-in', default: 'Log In'), cloud_profile.login_path, class: 'log-in' %>
