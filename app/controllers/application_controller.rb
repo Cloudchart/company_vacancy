@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
     warden.authenticate(options)
   end
   
+
   def authenticate_user(options = {})
     options[:scope] = :user
     authenticate(options)

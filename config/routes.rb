@@ -1,5 +1,12 @@
 Cloudchart::Application.routes.draw do
   root 'companies#index'
+  
+  
+  # Errors
+  #
+  
+  match '/404', to: 'errors#not_found', via: [:get, :post]
+  
 
   # Engines
   #

@@ -19,4 +19,5 @@
 //= require ujs
 //= require utils
 //= require_tree .
+//= require_tree ./controllers
 //= require cloud_profile/application

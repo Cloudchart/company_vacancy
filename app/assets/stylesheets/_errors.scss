@@ -1,0 +1,23 @@
+main.errors {
+  @include display(flex);
+  @include justify-content(center);
+}
+
+
+main > article.error > section {
+  
+  > h1 {
+    @include cloud-profile-section-header;
+  }
+  
+  > p {
+    font-size: 20pt;
+    font-weight: 300;
+    margin: $base-unit * 2 0;
+  }
+  
+  > button {
+    @include cloud-button;
+  }
+  
+}

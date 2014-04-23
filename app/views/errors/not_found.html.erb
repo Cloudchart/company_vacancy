@@ -1,0 +1,27 @@
+<%- class_for_main 'errors' %>
+
+<article class="error">
+  
+  <section class="404">
+    
+    <h1>
+      <%= link_to font_awesome('angle-left'), '#', data: { back: true } %>
+      <%= t '.title', default: "404 Levi's Error" %>
+    </h1>
+    
+    <p>
+      Well I'll shoot her with my railgun when she comes, <br />
+      Yes I'll shoot her with my railgun when she comes, <br />
+      Yes I'll shoot her with my railgun, <br />
+      Oh I'll shoot her with my railgun, <br />
+      Yes I'll shoot her with my railgun when she comes. <br />
+    </p>
+    
+    <button>
+      <%= font_awesome 'stethoscope' %>
+      <%= t '.button_title', default: 'Tell Us What Happened' %>
+    </button>
+    
+  </section>
+  
+</article>
