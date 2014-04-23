@@ -19,7 +19,7 @@
       <%= yield %>
     <%- end -%>
 
-    <footer>
+    <footer class="<%= yield(:class_for_footer) %>">
       <%= render 'shared/footer' %>
     </footer>
 
