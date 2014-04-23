@@ -13,7 +13,20 @@
       <%= select_tag :industry_id, options_for_select(industries_collection_for_select, selected: params[:industry_id]), prompt: t('.industry_prompt', default: 'Choose Industry') %>
       <%= font_awesome "chevron-down" %>
     <%- end -%>
-    
+
+  </section>
+
+  <section>
+    <h2>Result size</h2>
+
+    <% @companies.each do |company| %>
+      <div>
+        <%= link_to image_tag(company.logo.try(:image_url)), company %>
+        <%= link_to company.name, company %>
+        <%= company.country %>
+        <%= company.industry.name %>
+      </div>
+    <% end %>
   </section>
   
 </article>

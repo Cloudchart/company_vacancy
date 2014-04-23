@@ -13,6 +13,11 @@ class ApplicationController < ActionController::Base
     options[:scope] = :user
     authenticate(options)
   end
+
+
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to :back, alert: exception.message
+  end
   
 
 end

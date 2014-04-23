@@ -1,0 +1,8 @@
+en:
+  unauthorized:
+    default: "You are not authorized to access this page."
+    # manage:
+    #   all: "Not authorized to %{action} %{subject}."
+    #   user: "Not allowed to manage other user accounts."
+    update:
+      company: "Booya! You are not authorized to edit this company."
