@@ -17,8 +17,8 @@ class VacanciesController < ApplicationController
   # GET /vacancies/1
   def show
     pagescript_params(
-      can_update_vacancy: can?(:update, Vacancy),
-      can_update_company: can?(:update, Company)
+      can_update_vacancy: can?(:update, @vacancy),
+      can_update_company: can?(:update, @vacancy.company)
     )
   end
 

@@ -15,8 +15,8 @@ class EventsController < ApplicationController
   # GET /events/1
   def show
     pagescript_params(
-      can_update_event: can?(:update, Event),
-      can_update_company: can?(:update, Company)
+      can_update_event: can?(:update, @event),
+      can_update_company: can?(:update, @event.company)
     )
   end
 

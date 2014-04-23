@@ -5,7 +5,7 @@
     </li>
     
     <li class="description">
-      <% if can?(:update, Company) %>
+      <% if can?(:update, company) %>
         <%= simple_form_for company, remote: true do |f| %>
           <%= f.input_field :description %>
         <% end %>

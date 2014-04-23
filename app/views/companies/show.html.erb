@@ -1,10 +1,12 @@
-<%= link_to 'Edit', edit_company_path(@company) if can?(:update, Company) %>
-<%= link_to 'Vacancies', company_vacancies_path(@company) if can?(:manage, Vacancy) %>
-<%= link_to 'People', company_people_path(@company) if can?(:manage, Person) %>
-<%= link_to 'Events', company_events_path(@company) if can?(:manage, Event) %>
+<% if can?(:update, @company) %>
+  <%= link_to 'Edit', edit_company_path(@company) %>
+  <%= link_to 'Vacancies', company_vacancies_path(@company) %>
+  <%= link_to 'People', company_people_path(@company) %>
+  <%= link_to 'Events', company_events_path(@company) %>
+<% end %>
 
 <div class="editable-article-wrapper">
   <%= render 'shared/companies/side_nav', company: @company, klass: Company %>
   <%= render 'shared/editable_article', object: @company %>
-  <%= render 'shared/blocks_editor', collection: Company::BLOCK_TYPES if can?(:update, Company) %>
+  <%= render 'shared/blocks_editor', collection: Company::BLOCK_TYPES if can?(:update, @company) %>
 </div>
