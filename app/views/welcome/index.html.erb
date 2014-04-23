@@ -8,10 +8,10 @@
       See how successful startups are structured. Learn by example. Adjust your own company structure.
     </h1>
     
-    <button>
+    <%= link_to cloud_profile.login_path do -%>
       <%= font_awesome 'magic' %>
       <%= t '.button_title', default: 'Try it free' %>
-    </button>
+    <%- end -%>
     
   </section>
   

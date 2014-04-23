@@ -9,6 +9,10 @@ main > article > section {
   
   &.index {
     width: $base-unit * 30;
+    
+    > a {
+      @include cloud-button;
+    }
   }
   
   > h1 {
