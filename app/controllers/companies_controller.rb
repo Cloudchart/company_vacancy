@@ -4,6 +4,18 @@ class CompaniesController < ApplicationController
 
   authorize_resource
 
+  rescue_from CanCan::AccessDenied do |exception|
+    if request.env["HTTP_REFERER"].present?
+      redirect_to :back, alert: exception.message
+    else
+      if @company
+        redirect_to @company, alert: exception.message
+      else
+        redirect_to companies_path, alert: exception.message
+      end
+    end
+  end
+
   # GET /companies
   def index
   end
