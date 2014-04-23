@@ -1,0 +1,28 @@
+main.welcome {
+  @include align-items(center);
+  @include display(flex);
+  @include justify-content(center);
+}
+
+
+main > article > section {
+  
+  &.index {
+    width: $base-unit * 30;
+  }
+  
+  > h1 {
+    @include cloud-profile-section-header;
+  }
+  
+  > p {
+    font-size: 20pt;
+    font-weight: 300;
+    margin: $base-unit * 2 0;
+  }
+  
+  > button {
+    @include cloud-button;
+  }
+  
+}

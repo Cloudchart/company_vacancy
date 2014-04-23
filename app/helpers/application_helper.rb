@@ -10,6 +10,13 @@ module ApplicationHelper
   end
   
   
+  def class_for_root_tag(options = {})
+    options.each do |name, value|
+      @view_flow.set(:"class_for_#{name}", value.to_s)
+    end
+  end
+  
+  
   def font_awesome(class_names, content = nil)
     class_names = class_names.split(' ').map { |class_name| "fa-#{class_name}"}.join(' ')
     content_tag(:i, content, class: "fa #{class_names}")

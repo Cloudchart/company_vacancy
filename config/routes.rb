@@ -1,5 +1,8 @@
 Cloudchart::Application.routes.draw do
-  root 'companies#index'
+
+  # Root
+  #
+  root 'welcome#index'
   
   
   # Errors
