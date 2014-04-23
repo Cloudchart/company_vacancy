@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   has_many :social_networks, dependent: :destroy, inverse_of: :user, class_name: CloudProfile::SocialNetwork
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :people, dependent: :destroy
+  has_many :companies, through: :people
   has_many :votes, as: :source
   has_many :activities, dependent: :destroy
   has_one :avatar, as: :owner, dependent: :destroy
@@ -24,6 +25,7 @@ class User < ActiveRecord::Base
     votes.map(&:destination_id).include?(object.id)
   end
 
+  # TODO: use full_name instead
   def name
     "#{first_name} #{last_name}"
   end  

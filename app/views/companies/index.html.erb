@@ -18,15 +18,9 @@
 
   <section>
     <h2>Result size</h2>
-
-    <% @companies.each do |company| %>
-      <div>
-        <%= link_to image_tag(company.logo.try(:image_url)), company %>
-        <%= link_to company.name, company %>
-        <%= company.country %>
-        <%= company.industry.name %>
-      </div>
-    <% end %>
+    <ul>
+      <%= render partial: 'shared/companies/company', collection: @companies %>
+    </ul>
   </section>
   
 </article>

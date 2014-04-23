@@ -1,0 +1,13 @@
+<%- class_for_main 'cloud-profile' -%>
+<%- cloud_profile_nav_current_tab :companies -%>
+<%= render 'shared/nav' %>
+
+<article>
+  <ul>
+    <%= render partial: 'shared/companies/company', collection: @companies %>
+  </ul>
+
+  <div style="margin-top: 50px;">
+    <%= link_to 'New Company', main_app.new_company_path %>
+  </div>
+</article>
