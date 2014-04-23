@@ -48,7 +48,7 @@ class Company < ActiveRecord::Base
 
   def associate_with_person(user)
     email = user.emails.first.address
-    name = user.try(:name).present? ? user.name : email.split('@')[0]
+    name = user.try(:full_name).present? ? user.full_name : email.split('@')[0]
     people << user.people.build(name: name, email: email, phone: user.phone)
   end
 

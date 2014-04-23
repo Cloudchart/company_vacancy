@@ -2,7 +2,7 @@
   <% if current_user == activity.user %> 
     <%= link_to 'You', root_path(current_user) %>
   <% else %>
-    <%= activity.user.name %>
+    <%= activity.user.full_name %>
   <% end %>
 
   <%= activity.action.sub(/e?$/, 'ed') %>
