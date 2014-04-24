@@ -9,7 +9,7 @@
 
     <%= f.input :name %>
     <%= f.input :country, prompt: t('simple_form.prompts.country') %>
-    <%= f.input :industry_ids, collection: industries_collection_for_select, label: t('lexicon.industry'), prompt: t('simple_form.prompts.industry') %>
+    <%= f.input :industry_ids, collection: full_industries_collection, label: t('lexicon.industry'), prompt: t('simple_form.prompts.industry') %>
     <%= f.input :description %>
   </div>
 

@@ -10,7 +10,7 @@
       <%= text_field_tag :query, params[:query], placeholder: t('.query_placeholder', default: "Type at least 3 characters") %>
       <%= select_tag :country, country_options_for_select(params[:country]), prompt: t('.country_prompt', default: 'Choose Country') %>
       <%= font_awesome "chevron-down" %>
-      <%= select_tag :industry_id, options_for_select(industries_collection_for_select, selected: params[:industry_id]), prompt: t('.industry_prompt', default: 'Choose Industry') %>
+      <%= select_tag :industry_id, options_for_select(companies_industries_collection, selected: params[:industry_id]), prompt: t('.industry_prompt', default: 'Choose Industry') %>
       <%= font_awesome "chevron-down" %>
     <%- end -%>
 
