@@ -1,0 +1,5 @@
+<h2><%= t("companies.search.companies", count: collection.size) %></h2>
+
+<ul>
+  <%= render partial: 'shared/companies/company', collection: collection %>
+</ul>

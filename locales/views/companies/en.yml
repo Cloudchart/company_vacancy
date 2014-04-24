@@ -5,6 +5,11 @@ en:
     edit:
       add_text: "Add text block"
       add_image: "Add image block"
+    search:
+      companies:
+        zero: "no companies"
+        one: "1 company"
+        other: "%{count} companies"
     hints:
       chart: &chart
         chart: "Chart goes here"

@@ -33,7 +33,10 @@ class CompaniesController < ApplicationController
       end
     end
 
-    render :index
+    # render :index
+    respond_to do |format|
+      format.js
+    end
   end
 
   # GET /companies/1
@@ -92,7 +95,7 @@ private
   end
 
   def set_collection
-    @companies = Company.includes(:logo, :industries)
+    @companies = Company.includes(:logo, :industries, :people)
   end
 
   # Only allow a trusted parameter "white list" through.
