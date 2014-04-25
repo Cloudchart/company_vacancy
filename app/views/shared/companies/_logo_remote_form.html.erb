@@ -1,4 +1,4 @@
-<%= image_tag company.try(:logo).try(:image_url) %>
+<%= display_logo(company) %>
 
 <% if can?(:update, company) %>
   <%= simple_form_for company do |f| %>
