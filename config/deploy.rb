@@ -47,3 +47,20 @@ set :linked_dirs,   %w{log tmp/pids tmp/cache tmp/sockets public/uploads}
 #   end
 
 # end
+
+namespace :rails do
+  desc 'Tail rails log'
+  task :log do
+    on roles(:app) do
+      execute "tail -f #{shared_path}/log/#{fetch(:stage)}.log"
+    end
+  end
+
+  desc 'Run rails console'
+  task :console do
+    on roles(:app) do |host|
+      exec "ssh #{fetch(:user)}@#{host} -t 'cd #{release_path} && #{fetch(:rbenv_prefix)} bundle exec rails c -e #{fetch(:stage)}'"
+    end
+  end
+
+end
