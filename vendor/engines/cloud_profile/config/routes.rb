@@ -45,6 +45,11 @@ CloudProfile::Engine.routes.draw do
     # Companies
     # 
     resources :companies, only: :index
+    
+
+    # Charts
+    #
+    resources :charts, only: :index
 
     
     # Emails

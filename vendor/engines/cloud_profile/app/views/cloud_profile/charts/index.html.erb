@@ -1,0 +1,30 @@
+<%- class_for_main 'cloud-profile' -%>
+<%- cloud_profile_nav_current_tab :charts -%>
+<%= render 'shared/nav' %>
+
+<article>
+  
+  <section>
+    
+    <h1>
+      <%= t '.title', default: 'Charts' %>
+    </h1>
+    
+    <ul>
+      <%- @companies.each do |company| -%>
+        <li>
+          <h2>
+            <%= company.name %>
+          </h2>
+          <ul>
+            <li class="new">
+              <%= link_to font_awesome('plus'), '' %>
+            </li>
+          </ul>
+        </li>
+      <%- end -%>
+    </ul>
+    
+  </section>
+  
+</article>
