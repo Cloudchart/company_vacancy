@@ -24,13 +24,5 @@ module CloudProfile
       :cloud_profile_return_to
     end
     
-    def require_authenticated_user!
-      redirect_to main_app.root_path unless user_authenticated?
-    end
-    
-    def require_unauthenticated_user!
-      redirect_to main_app.root_path if user_authenticated?
-    end
-
   end
 end

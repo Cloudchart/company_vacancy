@@ -5,6 +5,7 @@ module CloudProfile
 
     
     before_action :require_authenticated_user!, only: :activation_complete
+    skip_before_action :require_properly_named_user!, only: :activation_complete
 
 
     # Registration form

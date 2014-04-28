@@ -30,6 +30,10 @@ class User < ActiveRecord::Base
   def full_name_or_email
     @full_name_or_email ||= full_name.blank? ? emails.first.address : full_name
   end
+  
+  def has_proper_name?
+    first_name.present? && last_name.present?
+  end
 
 private
 
