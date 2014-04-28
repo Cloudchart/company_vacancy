@@ -7,83 +7,62 @@ main.cloud-profile section.profile-activation {
   
 }
 
+$avatar-size: $base-unit * 4;
+
 main.cloud-profile article.user section.welcome {
+  
+  
+  > p {
+    margin: $base-unit 0;
+  }
   
   
   > form {
     
-    $avatar-size: $base-unit * 4;
-    $avatar-color: hsl(0, 0%, 67%);
+    position: relative;
+    width: $base-unit * 20;
     
-
-    .avatar-and-name {
-      @include align-items(center);
-      @include display(flex);
-      margin-bottom: $base-unit * 2;
-    }
-
     
-    label.avatar {
+    > label.avatar {
       @include align-items(center);
       @include display(flex);
       @include justify-content(center);
 
-      background: #eee;
+      background-color: #eee;
       border-radius: $avatar-size / 2;
-      color: $avatar-color;
-      font-size: 10pt;
-      font-weight: 300;
       height: $avatar-size;
-      margin-right: $base-unit;
-      overflow: hidden;
-      text-align: center;
-      text-transform: uppercase;
+      margin-right: $base-unit / 2;
+      position: absolute;
+      right: 100%;
       width: $avatar-size;
       
-      input {
-        position: absolute;
-        height: 0;
-        opacity: 0;
-        overflow: hidden;
-        width: 0;
+      .placeholder {
+        text-transform: uppercase;
+        text-align: center;
       }
-      
     }
     
-    
-    
-    span[contenteditable]:empty::before {
-      color: #ccc;
-      content: attr(data-placeholder);
+    div.name {
+      @include flex-wrap(wrap);
+      @include align-items(center);
+      @include display(flex);
+
+      label.first-name,
+      label.last-name {
+        @include flex(1);
+        
+      }
     }
     
-    span.first-name,
-    span.last-name {
-      display: inline-block;
-      font-size: 30pt;
-      font-weight: 300;
-      outline: none;
-      white-space: nowrap;
-    }
-    
-    span.last-name {
-      font-weight: 600;
-      margin-left: $base-unit / 2;
-    }
-    
-    
-    
-    span.email {
+    label.email {
       display: block;
-      font-size: 14pt;
-      font-weight: 300;
+      margin-top: $base-unit;
     }
-    
     
     button {
-      @include cloud-button;
+      margin-top: $base-unit;
     }
-        
+    
   }
   
   
