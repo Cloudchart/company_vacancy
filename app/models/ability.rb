@@ -47,7 +47,7 @@ class Ability
       can [:read, :update, :destroy], User, id: user.id
 
       can :create, Company
-      can [:update, :destroy], Company do |company| 
+      can [:update, :destroy, :upload_logo], Company do |company| 
         (company.people & user.people).any?
       end
 

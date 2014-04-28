@@ -4,7 +4,18 @@
 
 <article>
   <ul>
-    <%= render partial: 'shared/companies/company', collection: @companies.select { |company| !company.is_empty? } %>
+    <%#= render partial: 'shared/companies/company', collection: @companies.select { |company| !company.is_empty? } %>
+    <%- @companies.select { |company| !company.is_empty? }.each do |company| -%>
+      <li>
+        <%= image_tag company.logo.image.url, width: '200px' %>
+        <br />
+        <%= link_to company.name, main_app.edit_company_path(company) %>
+        <br />
+        <%= company.country %>
+        <br />
+        <%= company.industry.name %>
+      </li>
+    <%- end -%>
   </ul>
 
   <div style="margin-top: 50px;">

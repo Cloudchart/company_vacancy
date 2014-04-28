@@ -1,0 +1,5 @@
+<%- if @company.logo.present? -%>
+  <img src="<%= @company.logo.image.url %>" width="<%= @company.logo.image.width %>" />
+<%- else -%>
+  <%= t('.logo_placeholder', default: 'drag<br />logo<br />here').html_safe %>
+<%- end -%>

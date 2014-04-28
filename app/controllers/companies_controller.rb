@@ -5,6 +5,7 @@ class CompaniesController < ApplicationController
   authorize_resource
 
   rescue_from CanCan::AccessDenied do |exception|
+    logger.debug exception.message
     if request.env["HTTP_REFERER"].present?
       redirect_to :back, alert: exception.message
     else
@@ -46,6 +47,19 @@ class CompaniesController < ApplicationController
     @company = Company.find_or_create_placeholder_for(current_user)
     #redirect_to edit_company_path(@company)
   end
+  
+  
+  # POST /companies/1/logo
+  def upload_logo
+    logo = Logo.new image: params[:image]
+    @company = Company.find(params[:id])
+    @company.logo = logo
+    respond_to do |format|
+      format.js
+    end
+  end
+  
+  
 
   # GET /companies/1/edit
   def edit

@@ -1,5 +1,16 @@
-<%= link_to 'Show', @company %> |
-<%= link_to 'Back', companies_path %>
+<%- class_for_root_tag main: 'cloud-profile' -%>
 
-<h1>Editing company</h1>
-<%= render 'companies/form' %>
+<article class="company">
+  
+  <section class="new">
+    
+    <h1>
+      <%= link_to font_awesome('angle-left'), cloud_profile.companies_path %>
+      <%= t '.title', default: 'New company' %>
+    </h1>
+    
+    <%= render partial: 'form' %>
+    
+  </section>
+  
+</article>

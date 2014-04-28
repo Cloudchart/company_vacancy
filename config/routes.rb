@@ -48,6 +48,9 @@ Cloudchart::Application.routes.draw do
   resources :tokens, only: :destroy
 
   resources :companies, shallow: true, concerns: [:blockable] do
+    
+    post :logo, to: 'companies#upload_logo', on: :member
+    
     resources :vacancies, except: [:edit], concerns: [:blockable]
     
     resources :people do

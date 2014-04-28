@@ -2,12 +2,8 @@
 
 class LogoUploader < ApplicationUploader
   # Process files as they are uploaded:
-  process resize_to_fit: [100, 100]
+  process resize_to_fit: [800, 800]
   process :store_meta
-
-  # def scale(width, height)
-  #   # do something
-  # end
 
   # Create different versions of your uploaded files:
   version :thumb do

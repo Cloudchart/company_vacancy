@@ -1,21 +1,12 @@
 <%= form_for @company do |form| -%>
 
-
-  <div class="input-with-logo">
-    
-    <label class="logo image">
-      <%- form.object.build_logo unless form.object.logo.present? -%>
-      <%= form.fields_for :logo do |logo_fields| %>
-        <%= logo_fields.file_field :image %>
-      <%- end -%>
-      <%= t('.logo_placeholder', default: 'drag<br />logo<br />here').html_safe %>
-    </label>
-    
-    <div class="input">
+  <label class="logo" for="company-logo-file-upload">
+    <%= render partial: 'form_logo' %>
+  </label>
+  
+  <label>
       <%= form.text_field :name, placeholder: t('.name_placeholder', default: 'Company Name'), class: :cloud %>
-    </div>
-    
-  </div>
+  </label>
   
   <label>
     <%= form.country_select :country, nil, {}, class: :cloud %>
@@ -31,6 +22,8 @@
   </button>
 
 <%- end -%>
+
+<%= file_field_tag :image, id: 'company-logo-file-upload', data: { path: logo_company_path(@company) } %>
 
 <!--
 <%= simple_form_for @company do |f| %>
