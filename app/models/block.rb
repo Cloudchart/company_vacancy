@@ -4,9 +4,9 @@ class Block < ActiveRecord::Base
   IdentitiesClasses = [Paragraph, BlockImage, Person, Vacancy, Company]
   
   before_create   :ensure_position, unless: Proc.new { |block| block.position.present? }
+  after_update    :destroy_previous_block_images, if: :should_destroy_previous_block_images?
   before_destroy  :destroy_identities
   after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
-  after_update    :destroy_previous_block_images, if: Proc.new { |block| block.identity_type == 'BlockImage' && block.block_images.any? }
 
   belongs_to :owner, polymorphic: true
   has_many :block_identities, -> { order(:position) }, inverse_of: :block
@@ -74,6 +74,14 @@ class Block < ActiveRecord::Base
       block_identity.update_attribute :position, ids.index(block_identity.identity_id)
     end
   end
+
+  def should_destroy_previous_block_images!
+    @should_destroy_previous_block_images = true
+  end
+
+  def should_destroy_previous_block_images?
+    !!@should_destroy_previous_block_images
+  end
   
 private
 
@@ -95,6 +103,9 @@ private
   end
 
   # temporary method for has_one block_image simulation
+  # related methods:
+  # should_destroy_previous_block_images!
+  # should_destroy_previous_block_images?
   def destroy_previous_block_images
     block_identities.destroy_all
   end
