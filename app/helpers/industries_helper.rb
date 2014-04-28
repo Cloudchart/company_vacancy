@@ -1,11 +1,15 @@
 module IndustriesHelper
   
-  def industries_collection_for_select
-    Industry.roots.includes(:children).inject([]) do |memo, record|
-      memo.push [record.name, record.to_param]
-      record.children.each { |child| memo.push ['- ' + child.name, child.to_param] }
-      memo
+  def full_industries_collection
+    Industry.roots.includes(:children).inject([]) do |array, object|
+      array.push [object.name, object.id]
+      object.children.each { |child| array.push ['- ' + child.name, child.id] }
+      array
     end
+  end
+
+  def companies_industries_collection
+    Industry.joins(:companies).map { |object| [object.name, object.id ] }
   end
 
 end

@@ -3,11 +3,9 @@ class User < ActiveRecord::Base
   
   # after_validation :postpone_email, if: proc { |user| user.email_changed? && user.persisted? }
 
-
   has_secure_password
   
   attr_accessor :current_password
-
 
   has_and_belongs_to_many :friends
   has_many :emails, -> { order(:address) }, class_name: CloudProfile::Email
@@ -25,21 +23,13 @@ class User < ActiveRecord::Base
     votes.map(&:destination_id).include?(object.id)
   end
 
-  # TODO: use full_name instead
-  def name
-    "#{first_name} #{last_name}"
-  end  
-
-
   def full_name
     @full_name ||= [first_name, last_name].compact.join(' ')
   end
 
-
   def full_name_or_email
     @full_name_or_email ||= full_name.blank? ? emails.first.address : full_name
   end
-
 
 private
 

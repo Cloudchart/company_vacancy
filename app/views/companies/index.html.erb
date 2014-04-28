@@ -6,65 +6,18 @@
       <%= t '.search', default: 'Search Companies' %>
     </h1>
     
-    <%= form_tag :search_companies do -%>
-      <%= text_field_tag :query, params[:query], placeholder: t('.query_placeholder', default: "Name, s'il vous plaît") %>
-      <%= select_tag :country, country_options_for_select(params[:country]), prompt: t('.country_prompt', default: 'Choose Country') %>
+    <%= form_tag search_companies_path, remote: true do -%>
+      <%= text_field_tag :query, params[:query], placeholder: t('.query_placeholder', default: "Type at least 3 characters") %>
+      <%= select_tag :country, options_for_select(Country.all.select { |country| @companies.map(&:country).uniq.include?(country[1]) }, selected: params[:country]), prompt: t('.country_prompt', default: 'Choose Country') %>
       <%= font_awesome "chevron-down" %>
-      <%= select_tag :industry_id, options_for_select(industries_collection_for_select, selected: params[:industry_id]), prompt: t('.industry_prompt', default: 'Choose Industry') %>
+      <%= select_tag :industry_id, options_for_select(companies_industries_collection, selected: params[:industry_id]), prompt: t('.industry_prompt', default: 'Choose Industry') %>
       <%= font_awesome "chevron-down" %>
     <%- end -%>
 
   </section>
 
-  <section>
-    <h2>Result size</h2>
-    <ul>
-      <%= render partial: 'shared/companies/company', collection: @companies %>
-    </ul>
+  <section class="result">
+    <%= render 'companies', collection: @companies %>
   </section>
   
 </article>
-
-<!--h1>Searching companies</h1>
-
-<%= form_tag search_companies_path do %>
-  <p>
-    <%= search_field_tag :query, params[:query] %>
-    <%= select_tag :country, country_options_for_select(params[:country], ['Russia']), prompt: t('simple_form.prompts.country') %>
-    <%= select_tag :industry_id, options_for_select(industries_collection_for_select, selected: params[:industry_id]), prompt: t('simple_form.prompts.industry') %>
-    <%= submit_tag :search %>
-  </p>
-<% end %>
-
-<table>
-  <thead>
-    <tr>
-      <th>Logo</th>
-      <th>Name</th>
-      <th>Country</th>
-      <th>Industry</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @companies.each do |company| %>
-      <tr>
-        <td><%= image_tag company.logo.try(:image_url) %></td>
-        <td><%= company.name %></td>
-        <td><%= company.country %></td>
-        <td><%= company.industry.name %></td>
-        <td><%= link_to 'Show', company %></td>
-        <td><%= link_to 'Edit', edit_company_path(company) %></td>
-        <td><%= link_to 'Destroy', company, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<p>
-  <%= link_to 'New Company', new_company_path %>
-</p-->
