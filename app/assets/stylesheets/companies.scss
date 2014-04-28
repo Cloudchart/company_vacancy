@@ -44,3 +44,33 @@ main > article.company > section.search {
   }
   
 }
+
+
+main > article.company > section.new {
+  
+  > form {
+    
+    width: $base-unit * 18;
+    
+    > .input-with-logo {
+      @include cloud-input-with-image;
+    }
+    
+    > label {
+      display: block;
+      margin-top: $base-unit;
+      position: relative;
+    }
+    
+    select {
+      width: 100%;
+    }
+    
+    button {
+      margin-top: $base-unit;
+      width: 100%;
+    }
+    
+  }
+  
+}

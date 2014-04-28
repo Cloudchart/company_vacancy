@@ -3,6 +3,9 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class UsersController < ApplicationController
 
+    
+    before_action :require_authenticated_user!, only: :activation_complete
+
 
     # Registration form
     #
@@ -59,6 +62,17 @@ module CloudProfile
           @password_invalid = true
         end
       end
+    end
+    
+    
+    # Activation completion
+    #
+    def activation_complete
+      render and return if request.get?
+      current_user.update! params.require(:user).permit(:first_name, :last_name, avatar_attributes: [:image])
+      redirect_to :settings
+    rescue ActiveRecord::RecordInvalid
+      render
     end
     
     

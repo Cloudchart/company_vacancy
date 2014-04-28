@@ -1,0 +1,31 @@
+<%= form_for current_user, url: :profile_activation_completion do |form| -%>
+
+
+  <div class="avatar-and-name">
+    <label class="avatar">
+      <%- form.object.build_avatar -%>
+      <%= form.fields_for :avatar do |avatar_fields| %>
+        <%= avatar_fields.file_field :image %>
+      <%- end -%>
+      <%= t('.avatar_placeholder', default: 'Drag<br />face<br />here').html_safe %>
+    </label>
+
+    <div class="name">
+      <span contenteditable="true" data-input="user[first_name]" data-behaviour="input" data-placeholder="<%= t('.first_name_placeholder', default: 'Name') %>" class="first-name"><%= form.object.first_name %></span>
+      <%= form.hidden_field :first_name %>
+
+      <span contenteditable="true" data-input="user[last_name]" data-behaviour="input" data-placeholder="<%= t('.last_name_placeholder', default: 'Surname') %>" class="last-name"><%= form.object.last_name %></span>
+      <%= form.hidden_field :last_name %>
+
+      <span class="email">
+        <%= current_user.emails.first.address %>
+      </span>
+    </div>
+  </div>
+  
+  <button>
+    <%= font_awesome 'magic' %>
+    <%= t '.button_title', default: 'Start using CloudChart' %>
+  </button>
+
+<%- end -%>

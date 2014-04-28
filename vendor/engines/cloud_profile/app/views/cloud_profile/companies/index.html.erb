@@ -4,7 +4,7 @@
 
 <article>
   <ul>
-    <%= render partial: 'shared/companies/company', collection: @companies %>
+    <%= render partial: 'shared/companies/company', collection: @companies.select { |company| !company.is_empty? } %>
   </ul>
 
   <div style="margin-top: 50px;">

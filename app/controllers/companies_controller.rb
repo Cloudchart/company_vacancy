@@ -43,7 +43,8 @@ class CompaniesController < ApplicationController
 
   # GET /companies/new
   def new
-    @company = Company.new
+    @company = Company.find_or_create_placeholder_for(current_user)
+    #redirect_to edit_company_path(@company)
   end
 
   # GET /companies/1/edit
@@ -51,20 +52,21 @@ class CompaniesController < ApplicationController
   end
 
   # POST /companies
-  def create
-    @company = Company.new(company_params)
-    @company.associate_with_person(current_user)
-    @company.should_build_objects!
+  #def create
+  #  @company = Company.new(company_params)
+  #  @company.associate_with_person(current_user)
+  #  @company.should_build_objects!
 
-    @company.save!
-    Activity.track_activity(current_user, params[:action], @company)
-    redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
-  rescue ActiveRecord::RecordInvalid
-    render :new
-  end
+  #  @company.save!
+  #  Activity.track_activity(current_user, params[:action], @company)
+  #  redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
+  #rescue ActiveRecord::RecordInvalid
+  #  render :new
+  #end
 
   # PATCH/PUT /companies/1
   def update
+    @company.is_empty = false
     if @company.update(company_params)
       Activity.track_activity(current_user, params[:action], @company)
       respond_to do |format|

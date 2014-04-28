@@ -17,13 +17,25 @@ class Company < ActiveRecord::Base
 
   accepts_nested_attributes_for :logo, allow_destroy: true
 
-  validates :name, :country, :industry_ids, presence: true
-
+  validates :name, :country, :industry_ids, presence: true, on: :update
+  
+  
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :name, analyzer: 'ngram_analyzer'
     end
   end
+
+  def self.find_or_create_placeholder_for(user)
+    company = user.companies.find_by(is_empty: true) || begin
+      company = Company.new(is_empty: true)
+      company.associate_with_person(user)
+      company.should_build_objects!
+      company.save!
+      company
+    end
+  end
+
 
   class << self
     def search(params)
@@ -45,10 +57,13 @@ class Company < ActiveRecord::Base
     blocks.build(section: :people, position: 1, identity_type: 'Paragraph', is_locked: true)
     blocks.build(section: :vacancies, position: 0, identity_type: 'Vacancy', is_locked: true)
   end
+  
+  
+  
 
   def associate_with_person(user)
     email = user.emails.first.address
-    name = user.try(:name).present? ? user.name : email.split('@')[0]
+    name  = user.try(:name).present? ? user.name : email.split('@')[0]
     people << user.people.build(name: name, email: email, phone: user.phone)
   end
 

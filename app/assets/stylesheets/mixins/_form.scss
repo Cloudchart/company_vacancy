@@ -1,0 +1,83 @@
+$cloud-input-font-size: 31pt;
+
+@mixin cloud-input {
+  border: none;
+  font-size: $cloud-input-font-size;
+  font-weight: 600;
+  margin: 0;
+  outline: none;
+  padding: 0;
+}
+
+input[type="text"].cloud {
+  @include cloud-input;
+}
+
+
+$cloud-select-background-color: hsl(0, 0%, 96%);
+$cloud-select-border-color: hsl(0, 0%, 67%);
+$cloud-select-border-radius: $cloud-button-border-radius;
+$cloud-select-color: hsl(0, 0%, 67%);
+$cloud-select-font-size: $cloud-button-font-size;
+$cloud-select-font-weight: 300;
+$cloud-select-height: $cloud-button-height + 2pt;
+
+@mixin cloud-select {
+  @include appearance(none);
+  
+  background-color: $cloud-select-background-color;
+  border: 1pt solid $cloud-select-border-color;
+  border-radius: $cloud-select-border-radius;
+  color: $cloud-select-color;
+  font-size: $cloud-select-font-size;
+  font-weight: $cloud-select-font-weight;
+  height: $cloud-select-height;
+  outline: none;
+  padding: 0 $base-unit;
+}
+
+select.cloud {
+  @include cloud-select;
+}
+
+
+
+$cloud-input-with-image-background-color: hsl(0, 0%, 93%);
+$cloud-input-with-image-image-color: hsl(0, 0, 67%);
+$cloud-input-with-image-image-font-size: 10pt;
+$cloud-input-with-image-image-font-weight: 300;
+$cloud-input-with-image-image-size: $base-unit * 4;
+
+@mixin cloud-input-with-image {
+  @include align-items(center);
+  @include display(flex);
+  
+  > .image {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+    
+    background-color: $cloud-input-with-image-background-color;
+    border-radius: $cloud-input-with-image-image-size / 2;
+    color: $cloud-input-with-image-image-color;
+    font-size: $cloud-input-with-image-image-font-size;
+    font-weight: $cloud-input-with-image-image-font-weight;
+    height: $cloud-input-with-image-image-size;
+    margin-right: $base-unit * .75;
+    width: $cloud-input-with-image-image-size;
+    text-align: center;
+    text-transform: uppercase;
+    
+    > input[type="file"] {
+      height: 0;
+      overflow: hidden;
+      position: absolute;
+      width: 0;
+    }
+  }
+  
+  > .input {
+    @include flex(1);
+  }
+  
+}

@@ -53,3 +53,7 @@ $cloud-button-icon-margin: $base-unit / 4;
   }
   
 }
+
+button.cloud {
+  @include cloud-button;
+}
