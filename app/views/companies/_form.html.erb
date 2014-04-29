@@ -9,7 +9,7 @@
   </label>
   
   <label>
-    <%= form.country_select :country, nil, {}, class: :cloud %>
+    <%= form.select :country, Country.all.sort, {}, class: :cloud %>
   </label>
 
   <label>
