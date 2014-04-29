@@ -1,0 +1,54 @@
+<%- class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint -%>
+
+
+<article class="chart">
+  <aside class="person-vacancy-filter">
+    <label class="search">
+      <%= font_awesome 'search' %>
+      <%= text_field_tag :search, nil, placeholder: t('.search_placeholder', default: 'People and vacancies'), class: nil, id: nil %>
+    </label>
+    
+    <ul class="people-vacancies">
+    </ul>
+    
+    <nav class="buttons">
+      <button class="person cloud" data-behaviour="new-person">
+        <%= font_awesome 'user' %>
+      </button>
+
+      <button class="vacancy cloud" data-behaviour="new-vacancy">
+        <%= font_awesome 'briefcase' %>
+      </button>
+    </nav>
+    
+    <button class="toggle" data-toggle="fa-arrow-left|fa-arrow-right">
+      <%= font_awesome 'arrow-right' %>
+    </button>
+  </aside>
+
+  <section class="chart" id="<%= @chart.to_param %>">
+    <svg>
+    </svg>
+  </section>
+<article>
+
+<%- pagescript_params id: @chart.to_param, load_url: chart_path(@chart) -%>
+
+<template id="new-vacancy-form">
+  <%= form_for @chart.company.vacancies.build, url: chart_vacancies_path(@chart), method: :post, html: { class: 'vacancy' } do |form| -%>
+    
+    <label>
+      <%= form.text_field :name, class: :blueprint, autofocus: true, required: true, placeholder: t('.name_placeholder', default: 'Name') %>
+    </label>
+    
+    <label>
+      <%= form.text_area :description, rows: 5, class: :blueprint, placeholder: t('description_placeholder', default: 'Description') %>
+    </label>
+    
+    <button class="blueprint" disabled="disabled">
+      <%= font_awesome 'check' %>
+      <%= t '.button_title', default: 'Create' %>
+    </button>
+    
+  <%- end -%>
+</template>

@@ -15,6 +15,10 @@ class Company < ActiveRecord::Base
   has_many :activities, as: :source, dependent: :destroy
   has_many :subscriptions, as: :subscribable, dependent: :destroy
   # has_paper_trail
+  
+  # Charts
+  #
+  has_many :charts, class_name: CloudBlueprint::Chart.name, dependent: :destroy
 
   accepts_nested_attributes_for :logo, allow_destroy: true
 

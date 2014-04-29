@@ -14,7 +14,7 @@ class Vacancy < ActiveRecord::Base
   # has_paper_trail
 
   validates :name, presence: true
-  validate :validity_of_settings
+  #validate :validity_of_settings
 
   def settings=(hash)
     settings.attributes = hash

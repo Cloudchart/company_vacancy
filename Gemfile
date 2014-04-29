@@ -36,6 +36,10 @@ gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 #
 gem 'cloud_profile', path: 'vendor/engines/cloud_profile'
 
+# CloudBlueprint Engine
+#
+gem 'cloud_blueprint', path: 'vendor/engines/cloud_blueprint'
+
 # CloudOAuth Gem
 #
 gem 'cloud_oauth', path: 'vendor/gems/cloud_oauth'

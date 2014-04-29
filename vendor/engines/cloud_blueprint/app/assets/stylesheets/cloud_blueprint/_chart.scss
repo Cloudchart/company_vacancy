@@ -1,0 +1,117 @@
+$person-vacancy-filter-width: $base-unit * 15;
+$person-vacancy-filter-toggle-button-size: $base-unit * 2;
+$person-vacancy-filter-toggle-button-font-size: 14pt;
+$person-vacancy-filter-z-index: 2000;
+
+header.blueprint {
+  margin-bottom: 0;
+}
+
+footer.blueprint {
+  display: none;
+}
+
+main.blueprint article.chart {
+  
+  background-color: #eee;
+  overflow: hidden;
+  @include position(absolute, 0px 0px 0px 0px);
+  
+  
+  aside.person-vacancy-filter {
+    @include display(flex);
+    @include flex-direction(column);
+    @include position(absolute, 0px null 0px $person-vacancy-filter-width * -1 * 0);
+
+    background-color: #ccc;
+    padding: $base-unit;
+    width: $person-vacancy-filter-width;
+    z-index: $person-vacancy-filter-z-index;
+    
+    label.search {
+
+      @include display(flex);
+
+      background-color: #fff;
+      border: 1pt solid #eee;
+      border-radius: 5pt;
+      font-size: 15pt;
+      padding: $base-unit / 2;
+      
+      > * {
+        margin: auto;
+      }
+      
+      input {
+        @include flex(1);
+        border: none;
+        font-weight: 300;
+        outline: none;
+        padding-left: $base-unit / 2;
+      }
+    }
+    
+    ul.people-vacancies {
+      @include flex(1);
+      overflow: scroll;
+    }
+    
+    nav.buttons {
+      @include display(flex);
+      @include justify-content(space-between);
+      
+      button {
+        height: $base-unit * 2;
+        font-size: 15pt;
+        line-height: $base-unit * 2;
+        padding: 0;
+        width: $base-unit * 3;
+      }
+    }
+    
+    button.toggle {
+      @include position(absolute, 50% 0px 0 0);
+
+      background-color: #ccc;
+      border: none;
+      font-size: $person-vacancy-filter-toggle-button-font-size;
+      margin: $person-vacancy-filter-toggle-button-size / -2 $person-vacancy-filter-toggle-button-size * -.75 0 0;
+      border-top-right-radius: $person-vacancy-filter-toggle-button-size / 2;
+      border-bottom-right-radius: $person-vacancy-filter-toggle-button-size / 2;
+      height: $person-vacancy-filter-toggle-button-size;
+      width: $person-vacancy-filter-toggle-button-size * .75;
+      text-align: left;
+      z-index: $person-vacancy-filter-z-index - 10;
+    }
+    
+  }
+  
+  
+  section.chart {
+  }
+  
+  
+}
+
+.modal-container form.vacancy {
+  @include display(flex);
+  @include flex-direction(column);
+  
+  padding: $base-unit;
+  width: $base-unit * 30;
+  
+  input,
+  textarea {
+    width: 100%;
+  }
+  
+  textarea {
+    margin-top: $base-unit;
+  }
+  
+  button {
+    @include align-self(flex-end);
+    margin-top: $base-unit;
+    width: auto;
+  }
+}
