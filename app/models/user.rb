@@ -1,15 +1,13 @@
 class User < ActiveRecord::Base
   include Uuidable
   
-  # after_validation :postpone_email, if: proc { |user| user.email_changed? && user.persisted? }
-
   has_secure_password
   
   attr_accessor :current_password
 
   has_and_belongs_to_many :friends
-  has_many :emails, -> { order(:address) }, class_name: CloudProfile::Email
-  has_many :social_networks, dependent: :destroy, inverse_of: :user, class_name: CloudProfile::SocialNetwork
+  has_many :emails, -> { order(:address) }, class_name: CloudProfile::Email, dependent: :destroy
+  has_many :social_networks, inverse_of: :user, class_name: CloudProfile::SocialNetwork, dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :people, dependent: :destroy
   has_many :companies, through: :people
@@ -34,11 +32,5 @@ class User < ActiveRecord::Base
   def has_proper_name?
     first_name.present? && last_name.present?
   end
-
-private
-
-  # def postpone_email
-  #   self.email = email_was
-  # end
 
 end

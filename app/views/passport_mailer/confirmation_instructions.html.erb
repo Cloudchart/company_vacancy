@@ -1,8 +1,0 @@
-<p>
-  Hello<%= @user.name.present? ? " #{@user.name}" : '' %>,
-</p>
-
-<p>
-  Please confirm your CloudChart account. Just click the following link:
-  <%= link_to activate_user_url(@token_id), activate_user_url(@token_id) %>
-</p>

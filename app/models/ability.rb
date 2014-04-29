@@ -21,8 +21,6 @@ class Ability
     # https://github.com/ryanb/cancan/wiki/Defining-Abilities
     
     # Anyone
-    can [:create, :activate, :reactivate], User
-
     can [:read, :search], Company
     [Person, Vacancy, Event].each do |model|
       can [:read], model
@@ -39,13 +37,10 @@ class Ability
       can :manage, :all
     # User
     else
-      can :associate_with_person, User
-      can :access_social_networks, User
       can :vote, Feature
+      can :destroy, Token
 
       # What user can do with conditions
-      can [:read, :update, :destroy], User, id: user.id
-
       can :create, Company
       can [:update, :destroy, :upload_logo], Company do |company| 
         (company.people & user.people).any?

@@ -15,7 +15,8 @@
     <%= render 'shared/flash' %>
 
     <%= content_tag :main, class: yield(:class_for_main) do -%>
-      <%= render 'shared/notice' %>
+      <%# TODO: design for notice %>
+      <%# render 'shared/notice' %>
       <%= yield %>
     <%- end -%>
 

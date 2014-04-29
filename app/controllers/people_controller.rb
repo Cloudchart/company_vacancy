@@ -65,14 +65,14 @@ class PeopleController < ApplicationController
   # POST /people/1/send_invite_to_user
   def send_invite_to_user
     return redirect_to person_path(@person), alert: t('messages.company_invite.email_blank') if params[:email].blank?
-    user = User.find_by(email: params[:email])
+    email = CloudProfile::Email.find_by(address: params[:email])
  
-    if user
+    if email
       # check if user already has person in this company
-      if user.people.map(&:company_id).include?(@person.company_id)
+      if email.user.people.map(&:company_id).include?(@person.company_id)
         return redirect_to person_path(@person), alert: t('messages.company_invite.user_has_already_been_associated')
       else
-        create_company_invite_token_and_send_email(@person.id, user)
+        create_company_invite_token_and_send_email(@person.id, email)
       end
     else
       create_company_invite_token_and_send_email(@person.id)
@@ -108,13 +108,13 @@ private
     authorize! :access_people, @company
   end
 
-  def create_company_invite_token_and_send_email(person_id, user=nil)
+  def create_company_invite_token_and_send_email(person_id, email=nil)
     clean_session_and_destroy_token(Token.find_by(data: person_id.to_yaml))
     token = Token.new(name: :company_invite, data: person_id)
-    token.owner = user
+    token.owner = email.try(:user)
     token.save!
-    user = user ? user : User.new(email: params[:email])
-    UserMailer.send_company_invite(@person.company, user, token).deliver
+    email = params[:email] unless email
+    UserMailer.send_company_invite(@person.company, email, token).deliver
   end
 
 end

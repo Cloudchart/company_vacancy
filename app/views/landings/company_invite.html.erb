@@ -1,4 +1,4 @@
 <h2>Company invite</h2>
 
-<%= link_to 'Accept', associate_with_person_user_path(current_user, token_id: params[:token_id]), class: 'green-button' %>
+<%= link_to 'Accept', cloud_profile.associate_with_person_path(current_user, token_id: params[:token_id]), class: 'green-button' %>
 <%= link_to 'Decline', token_path(params[:token_id]), method: :delete, data: { confirm: 'Are you sure?' }, class: 'button' %>

@@ -7,6 +7,7 @@ module ActiveAttr
       end
 
       # multiparameters support
+      # https://github.com/cgriego/active_attr/issues/9
       def call_with_multiparameters(value)
         value = Date.new(value[1], value[2], value[3]) if value.is_a?(Hash)
         call_without_multiparameters(value)

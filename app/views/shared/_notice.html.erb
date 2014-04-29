@@ -1,9 +1,7 @@
-<!--
-<%# if current_user && session[:company_invite].present? && !(request.path =~ /company_invite/) %>
-  <%# session[:company_invite].each do |session| %>
+<% if current_user && session[:company_invite].present? && !(request.path =~ /company_invite/) %>
+  <% session[:company_invite].each do |session| %>
     <div style="border: 1px solid grey; width: auto; margin-bottom: 1em;">
-      <%#= t('messages.company_invite.you_have_invitation', href: company_invite_path(token_id: session[:token_id]), name: session[:company_name]).html_safe %>
+      <%= t('messages.company_invite.you_have_invitation', href: main_app.company_invite_path(token_id: session[:token_id]), name: session[:company_name]).html_safe %>
     </div>
-  <%# end %>
-<%# end %>
--->
+  <% end %>
+<% end %>

@@ -1,10 +1,10 @@
 <p>
-  Hello<%= @user.name.present? ? " #{@user.name}" : '' %>,
+  Hello<%= @user.present? ? " #{@user.full_name_or_email}" : '' %>,
 </p>
 
 <p>
-  You has been invited to join CloudChart as <%= @company.name %>'s member. Please click the following link for further steps:
+  You has been invited to join CloudChart as member of <%= @company.name %> company. Please click the following link for further steps:
   <%= link_to company_invite_url(token_id: @token.id), company_invite_url(token_id: @token.id) %>
 </p>
 
-<p>If you don't work in <%= @company.name %>, please ignore this email.</p>
+<p>If you have nothing with <%= @company.name %> please ignore this email.</p>

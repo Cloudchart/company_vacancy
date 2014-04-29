@@ -31,6 +31,11 @@ CloudProfile::Engine.routes.draw do
     match 'activation(/:token)', to: 'users#activation', as: :profile_activation, via: [:get, :post]
 
 
+    # Associate with person
+    # 
+    get 'associate_with_person/:id', to: 'users#associate_with_person', as: :associate_with_person
+
+
     # Profile landing page
     #
     root to: 'welcome#index'   

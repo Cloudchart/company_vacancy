@@ -1,9 +1,5 @@
 require 'warden'
 
-#Passport.configure do |config|
-  #config.model :user,
-  #  strategies: [:rememberable, :password_authenticatable], extensions: [:confirmable]
-#end
 
 Rails.configuration.middleware.use Warden::Manager do |manager|
 end

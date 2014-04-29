@@ -2,7 +2,7 @@ require_dependency "cloud_profile/application_controller"
 
 module CloudProfile
   class UsersController < ApplicationController
-
+    include TokenableController
     
     before_action :require_authenticated_user!, only: :activation_complete
     skip_before_action :require_properly_named_user!, only: :activation_complete
@@ -76,6 +76,28 @@ module CloudProfile
       render
     end
     
+
+    def associate_with_person
+      user = User.find(params[:id])
+      token = Token.find(params[:token_id]) rescue nil
+
+      if token
+        person = Person.find(token.data)
+
+        if user.people.map(&:company_id).include?(person.company_id)
+          return redirect_to main_app.company_invite_path(token), alert: t('messages.company_invite.you_are_already_associated', name: person.company.name)
+        end
+
+        user.people << person
+        user.save!
+        clean_session_and_destroy_token(token)
+
+        redirect_to main_app.company_path(person.company), notice: t('messages.invitation_completed')
+      else
+        redirect_to main_app.root_path, alert: t('messages.tokens.not_found', action: t('actions.company_invite'))
+      end
+    end
+
     
   end
 end
