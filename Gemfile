@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 
-#ruby '2.1.1'
+# ruby '2.1.1'
 
 gem 'rails', '~> 4.1.0'
 gem 'mysql2'
 
-gem 'sass-rails'#, '~> 4.0.0'
-gem 'uglifier'#, '>= 1.3.0'
-gem 'coffee-rails'#, '~> 4.0.0'
+gem 'sass-rails', '~> 4.0.3'
+gem 'uglifier', '~> 2.5.0'
+gem 'coffee-rails', '~> 4.0.1'
 gem 'jquery-rails'
 gem 'bourbon'
 gem 'font-awesome-rails'
@@ -15,17 +15,18 @@ gem 'carrierwave'
 gem 'carrierwave-meta'
 gem 'mini_magick'
 gem 'simple_form'
-gem 'bcrypt'#, '~> 3.1.2'
+gem 'bcrypt', '~> 3.1.7'
 gem 'oauth2'
 gem 'active_attr'
 gem 'cancan'
 gem 'puma'
 gem 'tire'
 gem 'rails_admin'
-gem 'paper_trail'#, '~> 3.0.1'
 gem 'warden'
 gem 'country_select'
-gem 'impressionist'
+gem 'kaminari'
+gem 'paper_trail' # tracks changes to models' data
+gem 'impressionist' # tracks page views
 gem 'dotenv-rails' # loads environment variables from .env
 
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
@@ -66,7 +67,7 @@ end
 group :production, :staging, :beta do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :ruby
-  gem 'postmark-rails'#, '~> 0.5.2'
+  gem 'postmark-rails'
 end
 
 # Use debugger

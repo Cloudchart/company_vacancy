@@ -2,6 +2,8 @@
 <%- cloud_profile_nav_current_tab :newsfeed -%>
 <%= render 'shared/nav' %>
 
-<article>
+<article id="activities">
   <%= render partial: 'activity', collection: @activities %>
 </article>
+
+<%= paginate @activities %>

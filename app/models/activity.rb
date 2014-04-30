@@ -1,6 +1,8 @@
 class Activity < ActiveRecord::Base
   include Uuidable
 
+  paginates_per 20
+
   belongs_to :user
   belongs_to :source, polymorphic: true
   belongs_to :trackable, polymorphic: true
