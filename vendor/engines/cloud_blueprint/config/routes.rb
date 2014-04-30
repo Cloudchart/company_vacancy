@@ -2,7 +2,7 @@ CloudBlueprint::Engine.routes.draw do
   
   resources :charts do
     
-    resources :vacancies, only: [:create]
+    resources :vacancies, only: [:index, :new, :create, :edit, :update, :destroy]
     
   end
   

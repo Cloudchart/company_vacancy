@@ -1,3 +1,5 @@
+<%- pagescript_params id: @chart.to_param, load_url: chart_path(@chart), vacancies_url: chart_vacancies_path(@chart) -%>
+
 <%- class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint -%>
 
 
@@ -32,23 +34,20 @@
   </section>
 <article>
 
-<%- pagescript_params id: @chart.to_param, load_url: chart_path(@chart) -%>
 
 <template id="new-vacancy-form">
-  <%= form_for @chart.company.vacancies.build, url: chart_vacancies_path(@chart), method: :post, html: { class: 'vacancy' } do |form| -%>
-    
-    <label>
-      <%= form.text_field :name, class: :blueprint, autofocus: true, required: true, placeholder: t('.name_placeholder', default: 'Name') %>
-    </label>
-    
-    <label>
-      <%= form.text_area :description, rows: 5, class: :blueprint, placeholder: t('description_placeholder', default: 'Description') %>
-    </label>
-    
-    <button class="blueprint" disabled="disabled">
-      <%= font_awesome 'check' %>
-      <%= t '.button_title', default: 'Create' %>
-    </button>
-    
-  <%- end -%>
+  <%= render partial: 'cloud_blueprint/vacancies/form' %>
+</template>
+
+
+<template id="filter-vacancy-template">
+  <li data-id="{{=uuid}}" class="vacancy">
+    <aside class="icon">
+      <%= font_awesome 'briefcase' %>
+    </aside>
+    <h2>{{=name}}</h2>
+    <p>
+      Vacancy
+    </p>
+  </li>
 </template>

@@ -1,0 +1,47 @@
+aside.person-vacancy-filter {
+  
+  ul.people-vacancies {
+    list-style: none;
+    margin: 0;
+    overflow: scroll;
+    padding: 0;
+  }
+  
+  li.vacancy {
+    margin: $base-unit 0;
+    min-height: $base-unit * 2;
+    padding-left: $base-unit * 2.5;
+    position: relative;
+    
+    aside {
+      @include display(flex);
+      @include position(absolute, 0px null null 0px);
+      
+      background-color: #eee;
+      border: 1pt solid #fff;
+      height: $base-unit * 2;
+      width: $base-unit * 2;
+      
+      i.fa {
+        font-size: 15pt;
+        margin: auto;
+      }
+    }
+    
+    h2 {
+      font-size: 15pt;
+      font-weight: 700;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    p {
+      font-size: 10pt;
+      font-weight: 300;
+      margin: 0;
+    }
+  }
+  
+}

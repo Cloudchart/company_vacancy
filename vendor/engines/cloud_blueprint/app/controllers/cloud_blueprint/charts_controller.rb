@@ -15,10 +15,12 @@ module CloudBlueprint
         format.html
         format.json do
           
-          @vacancies = @chart.company.vacancies
+          @vacancies  = @chart.company.vacancies
+          @people     = @chart.company.people
           
           render json: {
-            vacancies: @vacancies.as_json(only: [:uuid, :name, :description])
+            vacancies:  @vacancies.as_json(only: [:uuid, :name, :description]),
+            people:     @people.as_json(only: [:uuid, :name, :occupation])
           }
           
         end
