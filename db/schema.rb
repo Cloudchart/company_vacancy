@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140415105230) do
+ActiveRecord::Schema.define(version: 20140428164440) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -60,6 +60,13 @@ ActiveRecord::Schema.define(version: 20140415105230) do
   end
 
   add_index "blocks", ["owner_id", "owner_type"], name: "index_blocks_on_owner_id_and_owner_type", using: :btree
+
+  create_table "cloud_blueprint_charts", primary_key: "uuid", force: true do |t|
+    t.string   "company_id", limit: 36, null: false
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "cloud_profile_emails", primary_key: "uuid", force: true do |t|
     t.string   "user_id",    limit: 36
@@ -192,12 +199,13 @@ ActiveRecord::Schema.define(version: 20140415105230) do
   end
 
   create_table "people", primary_key: "uuid", force: true do |t|
-    t.string   "name",                  null: false
+    t.string   "first_name",            default: "", null: false
+    t.string   "last_name",                          null: false
     t.string   "email"
     t.string   "occupation"
     t.string   "phone"
     t.string   "user_id",    limit: 36
-    t.string   "company_id", limit: 36, null: false
+    t.string   "company_id", limit: 36,              null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
