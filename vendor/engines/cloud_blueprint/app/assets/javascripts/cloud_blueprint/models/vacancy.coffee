@@ -1,74 +1,17 @@
-@cc                   ?= {}
-@cc.blueprint         ?= {}
-@cc.blueprint.models  ?= {}
+vacancy_instances = {}
 
 #
 #
 #
 
-instances = {}
-
-#
-#
-#
-
-class Vacancy
+class Vacancy extends cc.blueprint.models.Base
   
-  @attributes: ['uuid', 'name', 'description']
+  @attr_accessor  'uuid', 'name', 'description'
 
-  @instances: instances
+  @instances:     vacancy_instances
   
-  @topic:     'cc::blueprint::models::vacancy'
+  @topic:         'cc::blueprint::models::vacancy'
   
-  @load_url:  null
-  
-  @template:  null
-  
-  
-  @load: ->
-    $.ajax
-      url:      @load_url
-      type:     'GET'
-      dataType: 'json'
-    
-    .done (records) ->
-      _.each records, (attributes) -> new Vacancy(attributes)
-      Arbiter.publish("#{Vacancy.topic}/load", instances)
-
-    .fail ->
-      # pass
-      
-
-
-  constructor: (attributes = {}) ->
-    @uuid             = attributes['uuid']
-    @name             = attributes['name']
-    @description      = attributes['description']
-    
-    instances[@uuid]  = @
-
-    Arbiter.publish("#{Vacancy.topic}/new", @)
-  
-  
-  update: (attributes = {}) ->
-    _.each @constructor.attributes, (attribute_name) =>
-      @[attribute_name] = attributes[attribute_name] if attributes[attribute_name]?
-
-    Arbiter.publish("#{Vacancy.topic}/update", @)
-  
-
-  destroy: ->
-    delete @constructor.instances[@uuid]
-
-    Arbiter.publish("#{Vacancy.topic}/destroy", @)
-
-
-  render: ->
-    @constructor.template.render
-      uuid:         @uuid
-      name:         @name
-      description:  @description
-
 
 #
 #

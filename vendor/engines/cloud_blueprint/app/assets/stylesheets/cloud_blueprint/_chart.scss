@@ -59,8 +59,6 @@ main.blueprint article.chart {
       @include display(flex);
       @include justify-content(space-between);
       
-      margin-top: $base-unit;
-      
       button {
         height: $base-unit * 2;
         font-size: 15pt;
@@ -94,11 +92,13 @@ main.blueprint article.chart {
   
 }
 
+.modal-container form.person,
 .modal-container form.vacancy {
   @include display(flex);
   @include flex-direction(column);
   
   padding: $base-unit;
+  position: relative;
   width: $base-unit * 30;
   
   input,
@@ -113,10 +113,45 @@ main.blueprint article.chart {
   nav.buttons {
     @include display(flex);
     
+    margin-top: $base-unit;
+    
     .spacer {
       @include flex(1);
     }
     
   }
 
+}
+
+.modal-container form.person {
+  
+  padding-left: $base-unit * 6;
+  
+  aside {
+    @include display(flex);
+    @include position(absolute, $base-unit null null $base-unit);
+    
+    border: 1px solid #ccc;
+    border-radius: $base-unit * 2;
+    height: $base-unit * 4;
+    width: $base-unit * 4;
+    
+    > * {
+      margin: auto;
+    }
+    
+    i.fa {
+      font-size: 20pt;
+    }
+  }
+  
+  
+  section.name {
+    @include display(flex);
+  }
+  
+  nav.buttons {
+    margin-left: - $base-unit * 5;
+  }
+  
 }

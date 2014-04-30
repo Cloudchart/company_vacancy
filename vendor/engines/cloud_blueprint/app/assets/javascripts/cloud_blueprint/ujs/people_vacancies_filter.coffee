@@ -21,6 +21,15 @@ $ ->
     _.each $button.data('toggle').split('|'), (state) -> $button_icon.toggleClass(state)
   
   
+  # Observe person clicks
+  #
+  $document.on 'click', 'aside.person-vacancy-filter li.person', (event) ->
+    $.ajax
+      url:      "#{cc.blueprint.models.Person.load_url}/#{@dataset.id}/edit"
+      type:     'GET'
+      dataType: 'script'
+
+
   # Observe vacancy clicks
   #
   $document.on 'click', 'aside.person-vacancy-filter li.vacancy', (event) ->
@@ -29,6 +38,11 @@ $ ->
       type:     'GET'
       dataType: 'script'
 
+
+  # Observe new person button click
+  #
+  $document.on 'click', 'aside.person-vacancy-filter button[data-behaviour~="new-person"]', (event) ->
+    new cc.ui.modal($('#new-person-form').html())
 
   # Observe new vacancy button click
   #

@@ -1,4 +1,8 @@
-<%- pagescript_params id: @chart.to_param, load_url: chart_path(@chart), vacancies_url: chart_vacancies_path(@chart) -%>
+<%- pagescript_params id: @chart.to_param,
+  load_url:       chart_path(@chart),
+  vacancies_url:  chart_vacancies_path(@chart),
+  people_url:     chart_people_path(@chart)
+-%>
 
 <%- class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint -%>
 
@@ -15,7 +19,7 @@
     
     <nav class="buttons">
       <button class="person cloud" data-behaviour="new-person">
-        <%= font_awesome 'user' %>
+        <%= font_awesome 'users' %>
       </button>
 
       <button class="vacancy cloud" data-behaviour="new-vacancy">
@@ -34,6 +38,28 @@
   </section>
 <article>
 
+
+<template id="filter-person-template">
+  <li data-id="{{=uuid}}" class="person">
+    <aside class="icon">
+      <%= font_awesome 'users' %>
+    </aside>
+    <h2>
+      <span class="first-name">{{=first_name}}</span>
+      <span class="last-name">{{=last_name}}</span>
+    </h2>
+    
+    <p>
+      {{=occupation}}
+    </p>
+    
+  </li>
+</template>
+
+
+<template id="new-person-form">
+  <%= render partial: 'cloud_blueprint/people/form' %>
+</template>
 
 <template id="new-vacancy-form">
   <%= render partial: 'cloud_blueprint/vacancies/form' %>
