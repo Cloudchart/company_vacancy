@@ -6,7 +6,7 @@
     <div class="person <%= identity.persisted? ? 'persisted' : 'new' %>">
       <%- if identity.persisted? -%>
         <i class="fa fa-user"></i>
-        <%= select_tag :"block[identity_ids][]", options_from_collection_for_select(block.owner.people, :to_param, :name, identity.to_param), prompt: 'Delete this person', class: :edit, id: nil, data: { value: identity.to_param } %>
+        <%= select_tag :"block[identity_ids][]", options_from_collection_for_select(block.owner.people, :to_param, :full_name, identity.to_param), prompt: 'Delete this person', class: :edit, id: nil, data: { value: identity.to_param } %>
       <%- else -%>
         <%- people = block.owner.people - block.people -%>
 
@@ -15,7 +15,7 @@
             No more people
           </span>
         <%- else -%>
-          <%= select_tag :"block[identity_ids][]", options_from_collection_for_select(people, :to_param, :name), prompt: 'Add person', class: :new, id: nil %>
+          <%= select_tag :"block[identity_ids][]", options_from_collection_for_select(people, :to_param, :full_name), prompt: 'Add person', class: :new, id: nil %>
         <%- end -%>
       <%- end -%>
     </div>

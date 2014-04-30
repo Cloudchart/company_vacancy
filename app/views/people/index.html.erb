@@ -4,7 +4,7 @@
   <thead>
     <tr>
       <th>Uuid</th>
-      <th>Name</th>
+      <th>Full Name</th>
       <th>Email</th>
       <th>Phone</th>
       <th>Occupation</th>
@@ -20,7 +20,7 @@
     <% @people.each do |person| %>
       <tr>
         <td><%= person.uuid %></td>
-        <td><%= person.name %></td>
+        <td><%= person.full_name %></td>
         <td><%= person.email %></td>
         <td><%= person.phone %></td>
         <td><%= person.occupation %></td>

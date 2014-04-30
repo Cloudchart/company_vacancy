@@ -69,7 +69,7 @@ class CompaniesController < ApplicationController
   end
 
   # POST /companies
-  #def create
+  # def create
   #  @company = Company.new(company_params)
   #  @company.associate_with_person(current_user)
   #  @company.should_build_objects!
@@ -77,9 +77,9 @@ class CompaniesController < ApplicationController
   #  @company.save!
   #  Activity.track_activity(current_user, params[:action], @company)
   #  redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
-  #rescue ActiveRecord::RecordInvalid
+  # rescue ActiveRecord::RecordInvalid
   #  render :new
-  #end
+  # end
 
   # PATCH/PUT /companies/1
   def update
@@ -111,7 +111,7 @@ private
   end
 
   def set_collection
-    @companies = Company.includes(:logo, :industries, :people)
+    @companies = Company.where(is_empty: false).includes(:logo, :industries, :people)
   end
 
   # Only allow a trusted parameter "white list" through.

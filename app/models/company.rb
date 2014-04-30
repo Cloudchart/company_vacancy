@@ -19,7 +19,6 @@ class Company < ActiveRecord::Base
 
   validates :name, :country, :industry_ids, presence: true, on: :update
   
-  
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :name, analyzer: 'ngram_analyzer'
@@ -35,7 +34,6 @@ class Company < ActiveRecord::Base
       company
     end
   end
-
 
   class << self
     def search(params)
@@ -56,15 +54,15 @@ class Company < ActiveRecord::Base
     blocks.build(section: :people, position: 0, identity_type: 'Person', is_locked: true)
     blocks.build(section: :people, position: 1, identity_type: 'Paragraph', is_locked: true)
     blocks.build(section: :vacancies, position: 0, identity_type: 'Vacancy', is_locked: true)
-  end
-  
-  
-  
+  end  
 
   def associate_with_person(user)
-    email = user.emails.first.address
-    name  = user.try(:name).present? ? user.name : email.split('@')[0]
-    people << user.people.build(name: name, email: email, phone: user.phone)
+    people << user.people.build(
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.emails.first.address,
+      phone: user.phone
+    )
   end
 
 end

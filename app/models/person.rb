@@ -7,7 +7,7 @@ class Person < ActiveRecord::Base
   belongs_to :company
   # has_paper_trail
 
-  validates :name, presence: true
+  validates :first_name, :last_name, presence: true
 
   settings ElasticSearchNGramSettings do
     mapping do
@@ -20,5 +20,9 @@ class Person < ActiveRecord::Base
       query { string "name:#{params[:query]}" } if params[:query].present?
     end
   end
+
+  def full_name
+    @full_name ||= [first_name, last_name].compact.join(' ')
+  end  
 
 end

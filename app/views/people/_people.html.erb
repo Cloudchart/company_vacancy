@@ -3,6 +3,6 @@
     <% if person.try(:provider) %>
       <i class="fa fa-<%= person.provider %>"></i>  
     <% end %>
-    <%= person.name %>
+    <%= person.full_name %>
   </p>
 <% end %>

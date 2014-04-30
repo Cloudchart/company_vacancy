@@ -93,7 +93,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def person_params
-    params.require(:person).permit(:name, :email, :phone, :occupation)
+    params.require(:person).permit(:first_name, :last_name, :email, :phone, :occupation)
   end
 
   def build_person
