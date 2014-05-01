@@ -11,6 +11,10 @@ class Person extends cc.blueprint.models.Base
   @instances:     people_instances
   
   @topic:         'cc::blueprint::models::person'
+  
+  matches: (re) ->
+    _.any ['first_name', 'last_name', 'occupation'], (attribute) => re.test(@[attribute])
+  
 
 #
 #

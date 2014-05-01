@@ -25,9 +25,13 @@
     _.chain(models.Vacancy.instances).sortBy('name').each (vacancy) ->
       $container.append(vacancy_template.render(vacancy.attributes))
 
-    _.chain(models.Person.instances).sortBy(['first_name', 'last_name']).each (person) ->
+    _.chain(models.Person.instances).sortBy(['last_name', 'first_name']).each (person) ->
       $container.append(person_template.render(person.attributes))
+    
+    Arbiter.publish('cc::blueprint::filter/render')
   
+  # Debouced people and vacancies render
+  #
   debounced_render_people_and_vacancies = _.debounce render_people_and_vacancies, 200
 
 

@@ -12,6 +12,9 @@ class Vacancy extends cc.blueprint.models.Base
   
   @topic:         'cc::blueprint::models::vacancy'
   
+  matches: (re) ->
+    _.any ['name', 'description'], (attribute) => re.test(@[attribute])
+
 
 #
 #
