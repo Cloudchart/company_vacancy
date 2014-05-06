@@ -1,8 +1,0 @@
-<li>
-  <%= link_to display_logo(company), main_app.company_path(company) if display_logo(company) %>
-  <%= link_to company.name, main_app.company_path(company) %>
-  <%= company.country %>
-  <%= company.industry.name %>
-  <%= link_to 'Edit', main_app.edit_company_path(company) if can?(:update, company) %>
-  <%= link_to 'Destroy', main_app.company_path(company), method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, company) %>
-</li>

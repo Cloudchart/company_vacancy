@@ -9,7 +9,11 @@ module CompaniesHelper
       end
       
       image_tag image
-    end    
+    end
   end
+
+  # def is_subscribed_to_company?(company)
+  #   (current_user.people & company.people).first.try(:subscribed_to_company_at).present?    
+  # end
 
 end

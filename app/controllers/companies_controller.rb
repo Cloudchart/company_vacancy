@@ -1,6 +1,7 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy]
+  before_action :set_company, only: [:show, :edit, :update, :destroy, :subscribe, :unsubscribe]
   before_action :set_collection, only: [:index, :search]
+  before_action :set_person, only: [:subscribe, :unsubscribe]
 
   authorize_resource
 
@@ -9,11 +10,7 @@ class CompaniesController < ApplicationController
     if request.env["HTTP_REFERER"].present?
       redirect_to :back, alert: exception.message
     else
-      if @company
-        redirect_to @company, alert: exception.message
-      else
-        redirect_to companies_path, alert: exception.message
-      end
+      redirect_to (@company || companies_path), alert: exception.message
     end
   end
 
@@ -48,7 +45,7 @@ class CompaniesController < ApplicationController
   # GET /companies/new
   def new
     @company = Company.find_or_create_placeholder_for(current_user)
-    #redirect_to edit_company_path(@company)
+    # redirect_to edit_company_path(@company)
   end
   
   
@@ -103,6 +100,28 @@ class CompaniesController < ApplicationController
     redirect_to companies_url, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
+  # def subscribe
+  #   if @person
+  #     result = 'success'
+  #     @person.update(subscribed_to_company_at: Time.now.utc)
+  #   else
+  #     result = 'fail'
+  #   end
+
+  #   redirect_to :back, notice: t("messages.company_subscription.subscribe.#{result}")
+  # end
+
+  # def unsubscribe
+  #   unless @person.blank? || @person.is_company_owner? 
+  #     result = 'success'
+  #     @person.update(subscribed_to_company_at: nil)
+  #   else
+  #     result = 'fail'
+  #   end
+
+  #   redirect_to :back, notice: t("messages.company_subscription.unsubscribe.#{result}")
+  # end
+
 private
   
   # Use callbacks to share common setup or constraints between actions.
@@ -112,6 +131,10 @@ private
 
   def set_collection
     @companies = Company.where(is_empty: false).includes(:logo, :industries, :people)
+  end
+
+  def set_person
+    @person = (current_user.people & @company.people).first
   end
 
   # Only allow a trusted parameter "white list" through.

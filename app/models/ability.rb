@@ -37,26 +37,26 @@ class Ability
       can :manage, :all
     # User
     else
+      can [:create, :subscribe, :unsubscribe], Company
       can :vote, Feature
       can :destroy, Token
 
-      # What user can do with conditions
-      can :create, Company
+      # User (conditional)
       can [:update, :destroy, :upload_logo], Company do |company| 
-        (company.people & user.people).any?
+        (user.people & company.people).first.try(:is_company_owner?)
       end
 
       can :manage, Block do |block|
-        (block.company.try(:people) & user.people).any?
+        (user.people & block.company.people).first.try(:is_company_owner?)
       end
 
-      # authorization for nested company resorces
+      # authorization for nested company resources
       [Person, Vacancy, Event].each do |model|
         can :manage, model do |resource|
-          (resource.company.people & user.people).any?
+          (user.people & resource.company.people).first.try(:is_company_owner?)
         end
         can [:"access_#{model.table_name}"], Company do |company|
-          (company.people & user.people).any?
+          user.companies.include?(company)
         end
       end
 

@@ -29,3 +29,10 @@ en:
       event:
         success: "Your event was successfully verified."
         fail: "There was a problem with event verification. Please try again."
+    company_subscription:
+      subscribe:
+        success: "You have subscribed to company activities"
+        fail: "We could not subscribe you to company activities"
+      unsubscribe:
+        success: "You have unsubscribed from company activities"
+        fail: "We could not unsubscribe you from company activities because you are the owner"

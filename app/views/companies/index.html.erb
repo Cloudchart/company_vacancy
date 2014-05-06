@@ -17,7 +17,11 @@
   </section>
 
   <section class="result">
-    <%= render 'companies', collection: @companies %>
+    <h2><%= t("companies.search.companies", count: @companies.size) %></h2>
+
+    <ul>
+      <%= render @companies %>
+    </ul>
   </section>
   
 </article>

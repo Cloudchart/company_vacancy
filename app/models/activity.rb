@@ -22,7 +22,7 @@ class Activity < ActiveRecord::Base
 
     def by_user_or_companies(user)
       by_user_id = arel_table[:user_id].eq(user.id) 
-      by_source_id = arel_table[:source_id].in(user.people.map(&:company_id))
+      by_source_id = arel_table[:source_id].in(user.companies.map(&:id))
       where(by_user_id.or(by_source_id))
     end
 

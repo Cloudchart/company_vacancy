@@ -192,13 +192,14 @@ ActiveRecord::Schema.define(version: 20140415105230) do
   end
 
   create_table "people", primary_key: "uuid", force: true do |t|
-    t.string   "first_name",            null: false
-    t.string   "last_name",             null: false
+    t.string   "first_name",                                  null: false
+    t.string   "last_name",                                   null: false
     t.string   "email"
     t.string   "occupation"
     t.string   "phone"
-    t.string   "user_id",    limit: 36
-    t.string   "company_id", limit: 36, null: false
+    t.string   "user_id",          limit: 36
+    t.string   "company_id",       limit: 36,                 null: false
+    t.boolean  "is_company_owner",            default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

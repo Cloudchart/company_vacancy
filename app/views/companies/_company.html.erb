@@ -1,0 +1,11 @@
+<li>
+  <%= link_to display_logo(company), company_path(company) if display_logo(company) %>
+  <%= link_to company.name, company_path(company) %>
+  <%= company.country %>
+  <%= company.industry.name %>
+  <%= link_to 'Edit', edit_company_path(company) if can?(:update, company) %>
+  <%= link_to 'Destroy', company_path(company), method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, company) %>
+
+  <%# link_to 'Subscribe', subscribe_company_path(company) unless is_subscribed_to_company?(company) || cannot?(:subscribe, company) %>
+  <%# link_to 'Unsubscribe', unsubscribe_company_path(company) if is_subscribed_to_company?(company) && can?(:unsubscribe, company) %>
+</li>

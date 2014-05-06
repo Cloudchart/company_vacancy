@@ -3,12 +3,13 @@ class CreatePeople < ActiveRecord::Migration
     create_table :people, id: false do |t|
       t.string :uuid, limit: 36
       t.string :first_name, null: false
-      t.string :last_name,  null: false
+      t.string :last_name, null: false
       t.string :email
       t.string :occupation
       t.string :phone
       t.string :user_id, limit: 36
       t.string :company_id, limit: 36, null: false
+      t.boolean :is_company_owner, default: false
 
       t.timestamps
     end

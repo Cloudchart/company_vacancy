@@ -70,4 +70,19 @@
     </ul>
   </section>
 
+  <%# temporary place for companies invites; shared/notice must be rendered in the future %>
+  <% if current_user && session[:company_invite].present? && !(request.path =~ /company_invite/) %>
+    <section class="companies-invites">
+      <h1>Companies Invites</h1>
+
+      <ul>
+        <% session[:company_invite].each do |session| %>
+          <li>
+            <%= t('messages.company_invite.you_have_invitation', href: main_app.company_invite_path(token_id: session[:token_id]), name: session[:company_name]).html_safe %>            
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
 </article>

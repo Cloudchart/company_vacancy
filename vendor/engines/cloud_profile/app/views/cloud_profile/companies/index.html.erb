@@ -4,16 +4,14 @@
 
 <article>
   <ul>
-    <%#= render partial: 'shared/companies/company', collection: @companies.select { |company| !company.is_empty? } %>
     <%- @companies.select { |company| !company.is_empty? }.each do |company| -%>
       <li>
-        <%= image_tag company.logo.image.url, width: '200px' %>
-        <br />
-        <%= link_to company.name, main_app.edit_company_path(company) %>
-        <br />
+        <%= link_to display_logo(company), main_app.company_path(company) if display_logo(company) %>
+        <%= link_to company.name, main_app.company_path(company) %>
         <%= company.country %>
-        <br />
         <%= company.industry.name %>
+        <%= link_to 'Edit', main_app.edit_company_path(company) if can?(:edit, company) %>
+        <%= link_to 'Destroy', main_app.company_path(company), method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, company) %>
       </li>
     <%- end -%>
   </ul>

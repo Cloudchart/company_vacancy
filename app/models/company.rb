@@ -61,7 +61,8 @@ class Company < ActiveRecord::Base
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.emails.first.address,
-      phone: user.phone
+      phone: user.phone,
+      is_company_owner: true
     )
   end
 
