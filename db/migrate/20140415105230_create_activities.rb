@@ -9,6 +9,7 @@ class CreateActivities < ActiveRecord::Migration
       t.string :trackable_type
       t.string :source_id, limit: 36
       t.string :source_type
+      t.string :subscriber_id, limit: 36
 
       t.timestamps
     end

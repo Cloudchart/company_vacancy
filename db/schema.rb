@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20140506153308) do
     t.string   "trackable_type"
     t.string   "source_id",      limit: 36
     t.string   "source_type"
+    t.string   "subscriber_id",  limit: 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end

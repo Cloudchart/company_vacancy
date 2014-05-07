@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   has_many :social_networks, inverse_of: :user, class_name: CloudProfile::SocialNetwork, dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :people, dependent: :destroy
-  has_many :companies, through: :people
+  has_many :companies, -> { where(is_empty: false) }, through: :people
   has_many :votes, as: :source
   has_many :activities, dependent: :destroy
   has_many :subscriptions, dependent: :delete_all

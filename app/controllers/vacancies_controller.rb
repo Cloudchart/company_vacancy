@@ -31,6 +31,7 @@ class VacanciesController < ApplicationController
     @vacancy.should_build_objects!
 
     if @vacancy.save
+      Activity.track_activity(current_user, 'open', @vacancy)
       redirect_to @vacancy, notice: t('messages.created', name: t('lexicon.vacancy'))
     else
       render :new
@@ -40,6 +41,7 @@ class VacanciesController < ApplicationController
   # PATCH/PUT /vacancies/1
   def update
     if @vacancy.update(vacancy_params)
+      Activity.track_activity(current_user, 'edit', @vacancy)
       redirect_to @vacancy, notice: t('messages.updated', name: t('lexicon.vacancy'))
     else
       render :show
