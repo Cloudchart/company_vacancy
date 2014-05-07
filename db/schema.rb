@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140415105230) do
+ActiveRecord::Schema.define(version: 20140506153308) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -206,6 +206,16 @@ ActiveRecord::Schema.define(version: 20140415105230) do
 
   add_index "people", ["company_id"], name: "index_people_on_company_id", using: :btree
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
+
+  create_table "subscriptions", id: false, force: true do |t|
+    t.string   "user_id",           limit: 36, null: false
+    t.string   "subscribable_id",   limit: 36, null: false
+    t.string   "subscribable_type",            null: false
+    t.datetime "created_at"
+  end
+
+  add_index "subscriptions", ["subscribable_id", "subscribable_type"], name: "index_subscriptions_on_subscribable_id_and_subscribable_type", using: :btree
+  add_index "subscriptions", ["user_id"], name: "index_subscriptions_on_user_id", using: :btree
 
   create_table "tokens", primary_key: "uuid", force: true do |t|
     t.string   "name",                  null: false

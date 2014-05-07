@@ -12,8 +12,12 @@ module CompaniesHelper
     end
   end
 
-  # def is_subscribed_to_company?(company)
-  #   (current_user.people & company.people).first.try(:subscribed_to_company_at).present?    
-  # end
+  def subscribed_to_company?(company)
+    current_user.subscriptions.map(&:subscribable_id).include?(company.id)
+  end
+
+  def company_owner?(company)
+    (current_user.people & company.people).first.try(:is_company_owner?)
+  end
 
 end

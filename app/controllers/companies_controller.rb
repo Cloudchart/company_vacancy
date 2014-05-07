@@ -1,7 +1,6 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy, :subscribe, :unsubscribe]
   before_action :set_collection, only: [:index, :search]
-  before_action :set_person, only: [:subscribe, :unsubscribe]
 
   authorize_resource
 
@@ -100,27 +99,17 @@ class CompaniesController < ApplicationController
     redirect_to companies_url, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
-  # def subscribe
-  #   if @person
-  #     result = 'success'
-  #     @person.update(subscribed_to_company_at: Time.now.utc)
-  #   else
-  #     result = 'fail'
-  #   end
+  def subscribe
+    unless current_user.subscriptions.map(&:subscribable_id).include?(@company.id)
+      current_user.subscriptions.create(subscribable: @company)
+    end
+    redirect_to :back, notice: t('messages.subscriptions.create')
+  end
 
-  #   redirect_to :back, notice: t("messages.company_subscription.subscribe.#{result}")
-  # end
-
-  # def unsubscribe
-  #   unless @person.blank? || @person.is_company_owner? 
-  #     result = 'success'
-  #     @person.update(subscribed_to_company_at: nil)
-  #   else
-  #     result = 'fail'
-  #   end
-
-  #   redirect_to :back, notice: t("messages.company_subscription.unsubscribe.#{result}")
-  # end
+  def unsubscribe
+    current_user.subscriptions.where(subscribable_id: @company.id).delete_all
+    redirect_to :back, notice: t('messages.subscriptions.destroy')
+  end
 
 private
   

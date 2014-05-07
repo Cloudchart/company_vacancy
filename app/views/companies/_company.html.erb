@@ -6,6 +6,8 @@
   <%= link_to 'Edit', edit_company_path(company) if can?(:update, company) %>
   <%= link_to 'Destroy', company_path(company), method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, company) %>
 
-  <%# link_to 'Subscribe', subscribe_company_path(company) unless is_subscribed_to_company?(company) || cannot?(:subscribe, company) %>
-  <%# link_to 'Unsubscribe', unsubscribe_company_path(company) if is_subscribed_to_company?(company) && can?(:unsubscribe, company) %>
+  <% if can?(:subscribe, company) && can?(:unsubscribe, company) && !company_owner?(company) %>
+    <%= link_to 'Subscribe', subscribe_company_path(company) unless subscribed_to_company?(company) %>
+    <%= link_to 'Unsubscribe', unsubscribe_company_path(company) if subscribed_to_company?(company) %>
+  <% end %>
 </li>

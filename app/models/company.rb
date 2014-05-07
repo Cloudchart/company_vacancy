@@ -13,6 +13,7 @@ class Company < ActiveRecord::Base
   has_many :people, dependent: :destroy
   has_many :events, dependent: :destroy
   has_many :activities, as: :source, dependent: :destroy
+  has_many :subscriptions, as: :subscribable, dependent: :delete_all
   # has_paper_trail
 
   accepts_nested_attributes_for :logo, allow_destroy: true
