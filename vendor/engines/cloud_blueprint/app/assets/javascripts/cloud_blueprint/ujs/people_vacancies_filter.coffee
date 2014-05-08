@@ -70,7 +70,6 @@ $ ->
     $('aside.person-vacancy-filter ul.people-vacancies > li').each ->
       $el = $(@)
       $el.toggleClass('hidden', !_.include(ids, $el.data('id')))
-    
   
 
   # Observe search field input

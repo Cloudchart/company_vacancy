@@ -1,0 +1,20 @@
+<%= form_for [@chart, @node], html: { class: 'node-form' } do |form| %>
+  
+  <section class="title">
+    <%= form.text_field :title, class: :blueprint, required: true, autofocus: true, placeholder: t('.title_placeholder', default: 'Title') %>
+  </section>
+
+  <section class="buttons">
+    
+    <%= link_to font_awesome('times') + " " + t('.delete_link_title', default: 'Delete'), "", class: 'blueprint-button alert' %>
+    
+    <div class="spacer"></div>
+    
+    <button class="blueprint">
+      <%= font_awesome 'check' %>
+      <%= t ".#{form.object.persisted? ? 'update' : 'create' }_button_title", default: form.object.persisted? ? 'Update' : 'Create' %>
+    </button>
+    
+  </section>
+
+<%- end -%>

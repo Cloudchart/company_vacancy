@@ -22,8 +22,6 @@ clone_for_drag = (element, options = {}) ->
   node.style.left     = '0px'
   node.style.top      = '0px'
 
-  node.style.background = '#aaa'
-  
   document.body.appendChild(node)
   
   node
@@ -43,6 +41,17 @@ widget = (element, selector, options = {}) ->
   #
   element_for_drag = ->
     clone_for_drag(self.target)
+  
+  
+  # Revert helper to origin
+  #
+  revert_to_origin = ->
+    $(self.element).velocity
+      left: self.initial_position.x
+      top:  self.initial_position.y
+    ,
+      duration: 200
+      complete: dispose_of_element_for_drag
   
   
   # Dispose of Element for Drag
@@ -127,7 +136,10 @@ widget = (element, selector, options = {}) ->
   #
   on_drag_end = (event) ->
     cc.ui.droppable.target = null
-    dispose_of_element_for_drag()
+    if options.revert == true
+      revert_to_origin()
+    else
+      dispose_of_element_for_drag()
     self.$target.trigger($.Event("cc::drag:end", { pageX: event.pageX, pageY: event.pageY }))
 
 

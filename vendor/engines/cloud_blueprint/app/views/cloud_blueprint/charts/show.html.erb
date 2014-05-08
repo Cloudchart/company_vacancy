@@ -1,5 +1,7 @@
 <%- pagescript_params id: @chart.to_param,
+  chart:          @chart.as_json(only: [:uuid, :title]),
   load_url:       chart_path(@chart),
+  nodes_url:      chart_nodes_path(@chart),
   vacancies_url:  chart_vacancies_path(@chart),
   people_url:     chart_people_path(@chart)
 -%>
@@ -32,27 +34,41 @@
     </button>
   </aside>
 
-  <section class="chart" id="<%= @chart.to_param %>">
+  <section class="chart" id="<%= @chart.to_param %>" data-behaviour="chart-container">
     <svg>
     </svg>
   </section>
 <article>
+  
+  
+  
+<template id="node-template">
+  <div class="node" data-id="{{=uuid}}" style="background-color: {{=color}};">
+    <h2>{{=title}}</h2>
+    <ul>
+      {{@people}}
+        <li class="person">{{=_first_name}} {{=_last_name}}</li>
+      {{/@people}}
+      {{@vacancies}}
+        <li class="vacancy">{{=_title}}</li>
+      {{/@vacancies}}
+    </ul>
+  </div>
+</template>
 
 
 <template id="filter-person-template">
-  <li data-id="{{=uuid}}" class="person">
+  <li data-id="{{=uuid}}" data-behaviour="draggable" class="person">
     <aside class="icon">
       <%= font_awesome 'users' %>
     </aside>
     <h2>
-      <span class="first-name">{{=first_name}}</span>
+      <span class="first-name light">{{=first_name}}</span>
       <span class="last-name">{{=last_name}}</span>
     </h2>
-    
     <p>
       {{=occupation}}
     </p>
-    
   </li>
 </template>
 
@@ -67,7 +83,7 @@
 
 
 <template id="filter-vacancy-template">
-  <li data-id="{{=uuid}}" class="vacancy">
+  <li data-id="{{=uuid}}" data-behaviour="draggable" class="vacancy">
     <aside class="icon">
       <%= font_awesome 'briefcase' %>
     </aside>

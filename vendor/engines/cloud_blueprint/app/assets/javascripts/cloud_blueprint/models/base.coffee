@@ -22,7 +22,7 @@ class Base
     
     .done (data) ->
       _.each data, (attributes) -> new self(attributes)
-      Arbiter.publish("#{@constructor.topic}/load", self.instances)
+      Arbiter.publish("#{self.topic}/load", self.instances)
     
     .fail ->
       # pass

@@ -1,3 +1,46 @@
+@mixin filter-identity {
+  list-style: none;
+  margin: 0;
+  min-height: $base-unit * 2;
+  padding-left: $base-unit * 2.5;
+  
+  aside {
+    @include display(flex);
+    @include position(absolute, 0px null null 0px);
+    
+    background-color: #eee;
+    border-radius: $base-unit;
+    border: 1pt solid #fff;
+    height: $base-unit * 2;
+    width: $base-unit * 2;
+    
+    i.fa {
+      font-size: 12pt;
+      margin: auto;
+    }
+  }
+  
+  h2 {
+    font-size: 15pt;
+    font-weight: 700;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    
+    span.light {
+      font-weight: 400;
+    }
+  }
+
+  p {
+    font-size: 10pt;
+    font-weight: 300;
+    margin: 0;
+  }
+
+}
+
 aside.person-vacancy-filter {
   
   ul.people-vacancies {
@@ -9,54 +52,19 @@ aside.person-vacancy-filter {
   
   li.vacancy,
   li.person {
+    @include filter-identity;
     margin: $base-unit 0;
-    min-height: $base-unit * 2;
-    padding-left: $base-unit * 2.5;
     position: relative;
     
     &.hidden {
       display: none;
     }
-    
-    aside {
-      @include display(flex);
-      @include position(absolute, 0px null null 0px);
-      
-      background-color: #eee;
-      border-radius: $base-unit;
-      border: 1pt solid #fff;
-      height: $base-unit * 2;
-      width: $base-unit * 2;
-      
-      i.fa {
-        font-size: 12pt;
-        margin: auto;
-      }
-    }
-
-    h2 {
-      font-size: 15pt;
-      font-weight: 700;
-      margin: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    p {
-      font-size: 10pt;
-      font-weight: 300;
-      margin: 0;
-    }
   }
   
-  li.person {
-    h2 {
-      span.first-name {
-        font-weight: 400;
-      }
-    }
-  }
-  
-  
+}
+
+body > li.person,
+body > li.vacancy {
+  @include filter-identity;
+  z-index: 10000;
 }

@@ -13,16 +13,28 @@ module CloudBlueprint
       @chart      = Chart.find(params[:id])
       respond_to do |format|
         format.html
+      end
+    end
+
+    
+    # Synchronize chart
+    # GET /charts/:id/synchronize
+    #
+    def synchronize
+      @chart = Chart.find(params[:id])
+      
+      last_accessed_at = Time.at(params[:last_accessed_at].to_i / 1000)
+      
+      if params[:nodes]
+        Node.synchronize(params[:nodes])
+      end
+      
+      respond_to do |format|
         format.json do
-          
-          @vacancies  = @chart.company.vacancies
-          @people     = @chart.company.people
-          
           render json: {
-            vacancies:  @vacancies.as_json(only: [:uuid, :name, :description]),
-            people:     @people.as_json(only: [:uuid, :name, :occupation])
+            nodes:              @chart.nodes.later_then(last_accessed_at).map(&:as_json_for_chart),
+            last_accessed_at:   Time.now
           }
-          
         end
       end
     end
@@ -54,6 +66,8 @@ module CloudBlueprint
       render :new
     end
     
+    
+    private
     
   end
 end

@@ -21,7 +21,7 @@ main.blueprint article.chart {
   aside.person-vacancy-filter {
     @include display(flex);
     @include flex-direction(column);
-    @include position(absolute, 0px null 0px $person-vacancy-filter-width * -1 * 0);
+    @include position(absolute, 0px null 0px $person-vacancy-filter-width * -1);
 
     background-color: #ccc;
     padding: $base-unit;
@@ -87,6 +87,30 @@ main.blueprint article.chart {
   
   
   section.chart {
+    @include position(absolute, 0px 0px 0px 0px);
+    
+    > .node {
+      @include position(absolute, 0px null null 0px);
+      background-color: #f99;
+      cursor: pointer;
+      font-size: 12pt;
+      opacity: 0;
+      padding: $base-unit / 2 $base-unit;
+      text-align: center;
+      
+      > h2 {
+        font-size: inherit;
+        margin: 0;
+      }
+      
+      > ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      
+    }
+    
   }
   
   

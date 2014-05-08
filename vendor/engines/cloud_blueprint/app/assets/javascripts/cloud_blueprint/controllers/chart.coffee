@@ -1,6 +1,51 @@
 @['cloud_blueprint/charts#show'] = (data) ->
   
-  models = cc.blueprint.models
+  
+  # Models namespace
+  #
+  models  = cc.blueprint.models
+  views   = cc.blueprint.views
+
+  models.Chart.load_url = data.load_url
+  
+  # Subscriptions
+  #
+  on_chart_synchronized = ->
+    _.invoke models.Node.instances, 'attach'
+    chart_view.render()
+  
+  Arbiter.subscribe("#{models.Chart.topic}/synchronized", on_chart_synchronized)
+  
+  # Initialize Chart model and Chart view
+  #
+
+  chart       = new models.Chart(data.chart);
+  chart_view  = new views.Chart(chart, 'section.chart')
+  
+  chart.synchronize()
+  
+  # ujs/chart
+  cc.blueprint.common.activate_chart(chart, data.nodes_url)
+
+  ###
+  # Activate modules
+  #
+  
+  
+  
+  # Drag/Drop
+  #
+  
+  # Person/Vacancy
+  cc.ui.drag_drop('aside.person-vacancy-filter ul.people-vacancies', 'li[data-behaviour~="draggable"]', {
+    revert: true
+  })
+  
+  # Node
+  cc.ui.drag_drop('section.chart', 'div.node', {
+    revert: true
+  })
+
 
 
   # Initialize Person class variables
@@ -44,13 +89,18 @@
   Arbiter.subscribe "#{models.Vacancy.topic}/*", debounced_render_people_and_vacancies
   
 
+  # Load Nodes
+  #
+  # models.Node.load()
+  
   # Load People
   #
-  models.Person.load()
+  # models.Person.load()
   
   # Load Vacancies
   #
-  models.Vacancy.load()
+  # models.Vacancy.load()
+  ###
 
 
   #
