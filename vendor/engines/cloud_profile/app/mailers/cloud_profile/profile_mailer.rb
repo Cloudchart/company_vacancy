@@ -1,6 +1,6 @@
 module CloudProfile
   class ProfileMailer < ActionMailer::Base
-    default from: ENV[:default_from]
+    default from: ENV['DEFAULT_FROM']
     
     
     def activation_email(token)
