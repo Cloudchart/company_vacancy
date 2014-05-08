@@ -27,7 +27,7 @@ set :linked_dirs,   %w{log tmp/pids tmp/cache tmp/sockets public/uploads}
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
-# namespace :deploy do
+namespace :deploy do
 
 #   desc 'Restart application'
 #   task :restart do
@@ -46,7 +46,19 @@ set :linked_dirs,   %w{log tmp/pids tmp/cache tmp/sockets public/uploads}
 #     end
 #   end
 
-# end
+  desc 'Runs rake db:seed'
+  task :seed do
+    on roles :db do
+      within release_path do
+        with rails_env: fetch(:stage) do
+          execute :rake, 'db:seed'
+        end
+      end
+    end
+  end
+
+end
+
 
 namespace :rails do
   desc 'Tail rails log'
