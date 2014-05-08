@@ -5,7 +5,7 @@ module CloudProfile
     
     def activation_email(token)
       @token = token
-      mail to: token.data['email'], subject: t('.activation_email', default: 'Activation e-mail')
+      mail to: token.data[:address], subject: t('.activation_email', default: 'Activation e-mail')
     end
     
     

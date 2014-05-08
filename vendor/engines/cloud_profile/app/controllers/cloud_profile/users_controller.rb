@@ -27,7 +27,7 @@ module CloudProfile
       #@user.should_validate_password!
       
       if @user.valid?
-        token = Token.new name: 'registration', data: { email: @email.address, password_digest: @user.password_digest }
+        token = Token.new name: 'registration', data: { address: @email.address, password_digest: @user.password_digest }
         token.save!
         ProfileMailer.activation_email(token).deliver
         redirect_to :register_complete
@@ -47,7 +47,7 @@ module CloudProfile
     #
     def activation
       @token = Token.find(params[:token])
-      @email = Email.new(address: @token.data[:email])
+      @email = Email.new(address: @token.data[:address])
       
       raise ActiveRecord::RecordNotFound if @email.invalid?
 
