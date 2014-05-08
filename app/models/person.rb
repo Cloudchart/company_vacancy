@@ -11,13 +11,14 @@ class Person < ActiveRecord::Base
 
   settings ElasticSearchNGramSettings do
     mapping do
-      indexes :name, analyzer: 'ngram_analyzer'
+      indexes :first_name, analyzer: 'ngram_analyzer'
+      indexes :last_name, analyzer: 'ngram_analyzer'
     end
   end
 
   def self.search(params)
     tire.search(load: true) do
-      query { string "name:#{params[:query]}" } if params[:query].present?
+      query { string "first_name:#{params[:query]} last_name:#{params[:query]}" } if params[:query].present?
     end
   end
 
