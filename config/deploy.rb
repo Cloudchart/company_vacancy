@@ -57,18 +57,32 @@ namespace :deploy do
     end
   end
 
+  desc 'Danger! Resets database'
+  task :reset_db do
+    on roles :db do
+      within release_path do
+        with rails_env: 'staging' do
+          execute :rake, 'db:drop'
+          execute :rake, 'db:create'
+          execute :rake, 'db:migrate'
+          execute :rake, 'db:seed'
+        end
+      end
+    end
+  end
+
 end
 
 
 namespace :rails do
-  desc 'Tail rails log'
+  desc 'Tails rails log'
   task :log do
     on roles(:app) do
       execute "tail -f #{shared_path}/log/#{fetch(:stage)}.log"
     end
   end
 
-  desc 'Run rails console'
+  desc 'Runs rails console'
   task :console do
     on roles(:app) do |host|
       exec "ssh #{fetch(:user)}@#{host} -t 'cd #{release_path} && #{fetch(:rbenv_prefix)} bundle exec rails c -e #{fetch(:stage)}'"

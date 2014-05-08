@@ -3,15 +3,20 @@
 
 # Industries
 
-Industry.delete_all
-puts '/* Seeding industries */'
+Industry.delete_all if ENV['FORCE']
 
-CSV.foreach('db/seeds/industries.csv') do |row|
-  if row[1] == 't'
-    @parent = Industry.create(name: row[0])
-    puts @parent.name
-  else
-    child = Industry.create(name: row[0], parent_id: @parent.id)
-    puts "- #{child.name}"
+if Industry.any?
+  puts '/* Industries are already seeded */'
+else
+  puts '/* Seeding industries */'
+
+  CSV.foreach('db/seeds/industries.csv') do |row|
+    if row[1] == 't'
+      @parent = Industry.create(name: row[0])
+      puts @parent.name
+    else
+      child = Industry.create(name: row[0], parent_id: @parent.id)
+      puts "- #{child.name}"
+    end
   end
 end
