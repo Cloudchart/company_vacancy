@@ -14,19 +14,20 @@
 ActiveRecord::Schema.define(version: 20140506153308) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
-    t.string   "action",                                null: false
-    t.integer  "group_type",                default: 0
-    t.string   "user_id",        limit: 36,             null: false
-    t.string   "trackable_id",   limit: 36
+    t.string   "action",                                 null: false
+    t.integer  "group_type",                 default: 0
+    t.string   "user_id",         limit: 36,             null: false
+    t.string   "trackable_id",    limit: 36
     t.string   "trackable_type"
-    t.string   "source_id",      limit: 36
+    t.string   "source_id",       limit: 36
     t.string   "source_type"
-    t.string   "subscriber_id",  limit: 36
+    t.string   "subscribable_id", limit: 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "activities", ["source_id", "source_type"], name: "index_activities_on_source_id_and_source_type", using: :btree
+  add_index "activities", ["subscribable_id"], name: "index_activities_on_subscribable_id", using: :btree
   add_index "activities", ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type", using: :btree
   add_index "activities", ["user_id"], name: "index_activities_on_user_id", using: :btree
 
