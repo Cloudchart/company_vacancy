@@ -89,6 +89,8 @@ module CloudProfile
         end
 
         user.people << person
+        # create subscription (only to vacancies so far)
+        user.subscriptions.create(subscribable: person.company)
         user.save!
         clean_session_and_destroy_token(token)
 
