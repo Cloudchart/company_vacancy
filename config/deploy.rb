@@ -90,3 +90,17 @@ namespace :rails do
   end
 
 end
+
+namespace :tire do
+  desc 'Reindex elasticsaerch'
+  task :import do
+    on roles :app do
+      within release_path do
+        with rails_env: fetch(:stage) do
+          execute :rake, 'environment tire:import:all FORCE=true'
+        end 
+      end     
+    end
+  end
+  
+end
