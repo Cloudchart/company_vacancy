@@ -9,7 +9,7 @@ class Activity < ActiveRecord::Base
 
   class << self
     def track_activity(user, action, trackable, source = nil)
-      last_activity = where(subscribable_id: nil).order(created_at: :desc).first
+      last_activity = where(subscriber_id: nil).order(created_at: :desc).first
       group_type = nil
 
       if group_activities?(user, action, trackable, source, last_activity) && last_activity.trackable_id == trackable.id
@@ -22,22 +22,18 @@ class Activity < ActiveRecord::Base
         create(user: user, action: action, trackable: trackable, source: source)
       end
 
-      # duplicate activity for subscribers
-      # only for vacancy activities so far
+      # duplicate activity for subscribers (only for vacancy activities so far)
+      # and testing sidekiq
       if trackable.class == Vacancy && trackable.company.subscriptions.any?
-        if group_type
-          where(subscribable_id: trackable.company_id).order(created_at: :desc).first.update(group_type: group_type)
-        else
-          create(user: user, action: action, trackable: trackable, source: source, subscribable_id: trackable.company_id)
-        end
+        SubscriptionsWorker.perform_async(user.id, action, trackable.id, trackable.class, source.try(:id), source.try(:class), group_type)
       end
     end
 
     def by_user_or_companies(user)
-      by_user_id = arel_table[:user_id].eq(user.id).and(arel_table[:subscribable_id].eq(nil))
+      by_user_id = arel_table[:user_id].eq(user.id).and(arel_table[:subscriber_id].eq(nil))
       by_source_id = arel_table[:source_id].in(user.companies.map(&:id))
-      by_subscribable_id = arel_table[:subscribable_id].in(user.subscriptions.map(&:subscribable_id))
-      where(by_user_id.or(by_source_id).or(by_subscribable_id))
+      by_subscriber_id = arel_table[:subscriber_id].eq(user.id)
+      where(by_user_id.or(by_source_id).or(by_subscriber_id))
     end
 
   private

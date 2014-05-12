@@ -25,9 +25,10 @@ gem 'rails_admin'
 gem 'warden'
 gem 'country_select'
 gem 'kaminari'
-gem 'paper_trail' # tracks changes to models' data
+gem 'paper_trail' # tracks changes to model's data
 gem 'impressionist' # tracks page views
 gem 'dotenv-rails' # loads environment variables from .env
+gem 'sidekiq' # background processing using redis
 
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 
@@ -53,6 +54,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-rbenv'
   gem 'capistrano3-puma'
+  gem 'capistrano-sidekiq'
 end
 
 group :development, :test do

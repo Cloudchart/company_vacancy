@@ -7,6 +7,8 @@ require 'capistrano/deploy'
 require 'capistrano/rails'
 require 'capistrano/rbenv'
 require 'capistrano/puma'
+require 'capistrano/sidekiq'
+# require 'capistrano/sidekiq/monit' # to require monit tasks
 
 # Includes tasks from other gems included in your Gemfile
 #

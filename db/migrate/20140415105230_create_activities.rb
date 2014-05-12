@@ -9,7 +9,7 @@ class CreateActivities < ActiveRecord::Migration
       t.string :trackable_type
       t.string :source_id, limit: 36
       t.string :source_type
-      t.string :subscribable_id, limit: 36
+      t.string :subscriber_id, limit: 36
 
       t.timestamps
     end
@@ -17,7 +17,7 @@ class CreateActivities < ActiveRecord::Migration
     add_index :activities, :user_id
     add_index :activities, [:source_id, :source_type]
     add_index :activities, [:trackable_id, :trackable_type]
-    add_index :activities, :subscribable_id
+    add_index :activities, :subscriber_id
     execute 'ALTER TABLE activities ADD PRIMARY KEY (uuid);'
   end
 
@@ -25,7 +25,7 @@ class CreateActivities < ActiveRecord::Migration
     remove_index :activities, :user_id
     remove_index :activities, [:source_id, :source_type]
     remove_index :activities, [:trackable_id, :trackable_type]    
-    remove_index :activities, :subscribable_id
+    remove_index :activities, :subscriber_id
     drop_table :activities
   end
 end
