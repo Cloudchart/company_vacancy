@@ -6,7 +6,7 @@
 Industry.delete_all if ENV['FORCE']
 
 if Industry.any?
-  puts '/* Industries are already seeded */'
+  puts '/* Industries are already seeded (if you want to reseed run with FORCE=true) */'
 else
   puts '/* Seeding industries */'
 
