@@ -9,13 +9,13 @@ class Friend < ActiveRecord::Base
 
   settings ElasticSearchNGramSettings do
     mapping do
-      indexes :name, analyzer: 'ngram_analyzer'
+      indexes :full_name, analyzer: 'ngram_analyzer'
     end
   end
 
   def self.search(params)
     tire.search(load: true) do
-      query { string "name:#{params[:query]}" } if params[:query].present?
+      query { string "full_name:#{params[:query]}" } if params[:query].present?
     end
   end
 

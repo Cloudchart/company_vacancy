@@ -1,7 +1,4 @@
-class SubscriptionsWorker
-  include Sidekiq::Worker
-  # https://github.com/mperham/sidekiq/blob/master/lib/sidekiq/worker.rb
-  # sidekiq_options retry: false
+class SubscriptionsWorker < ApplicationWorker
 
   def perform(user_id, action, trackable_id, trackable_type, source_id, source_type, group_type)
     user = User.find(user_id)

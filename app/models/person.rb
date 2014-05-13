@@ -18,12 +18,12 @@ class Person < ActiveRecord::Base
 
   def self.search(params)
     tire.search(load: true) do
-      query { string "first_name:#{params[:query]} last_name:#{params[:query]}" } if params[:query].present?
+      query { string "first_name:#{params[:query]} OR last_name:#{params[:query]}" } if params[:query].present?
     end
   end
 
   def full_name
     @full_name ||= [first_name, last_name].compact.join(' ')
-  end  
+  end
 
 end

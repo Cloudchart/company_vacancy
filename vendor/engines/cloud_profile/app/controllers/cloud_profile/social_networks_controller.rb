@@ -65,6 +65,8 @@ module CloudProfile
 
       session[:social_network_id] = social_network.to_param
 
+      FriendsListWorker.perform_async(current_user.id, social_network.id)
+
     ensure
       redirect_to_back_or_root
       guard_token.destroy if guard_token.present?
@@ -79,11 +81,11 @@ module CloudProfile
     end
 
 
-    private
+  private
     
     def redirect_to_back_or_root
       redirect_to session.delete(:social_network_redirect) || main_app.root_path
     end
-    
+  
   end
 end

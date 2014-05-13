@@ -25,7 +25,7 @@ module CloudOAuth
     end
     
     def friends(oauth_access_token)
-      token(oauth_access_token).get(config.api_site + "/people/~/connections").parsed
+      token(oauth_access_token).get(config.api_site + "/people/~/connections").parsed['connections']['person']
     end
     
     def get_token(code, params = {}, options = {})

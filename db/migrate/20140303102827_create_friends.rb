@@ -4,7 +4,7 @@ class CreateFriends < ActiveRecord::Migration
       t.string :uuid, limit: 36
       t.string :provider, null: false
       t.string :external_id, null: false
-      t.string :name, null: false
+      t.string :full_name, null: false
 
       t.timestamps
     end

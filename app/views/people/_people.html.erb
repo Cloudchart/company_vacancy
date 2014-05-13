@@ -1,4 +1,4 @@
-<% @people.each do |person| %>
+<% @people_with_friends.each do |person| %>
   <p>
     <% if person.try(:provider) %>
       <i class="fa fa-<%= person.provider %>"></i>  
