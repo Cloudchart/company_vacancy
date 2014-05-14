@@ -24,6 +24,7 @@ module CloudOAuth
       OpenStruct.new(data)
     end
     
+    # TODO: find out is there pagination like in facebook
     def friends(oauth_access_token)
       token(oauth_access_token).get(config.api_site + "/people/~/connections").parsed['connections']['person']
     end

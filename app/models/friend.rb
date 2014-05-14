@@ -4,8 +4,10 @@ class Friend < ActiveRecord::Base
   include Tire::Model::Callbacks  
 
   has_and_belongs_to_many :users
+  has_one :social_network, class_name: CloudProfile::SocialNetwork, primary_key: :external_id, foreign_key: :provider_id
 
-  scope :by_company, -> company_id { includes(users: { people: :company }).where(companies: { uuid: company_id }) }
+  scope :related_to_company, -> company_id { includes(users: { people: :company }).where(companies: { uuid: company_id }) }
+  scope :working_in_company, -> company_id { includes(social_network: { user: { people: :company } }).where(companies: { uuid: company_id }) }
 
   settings ElasticSearchNGramSettings do
     mapping do
