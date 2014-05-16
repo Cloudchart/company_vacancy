@@ -21,23 +21,14 @@
 
           <li>
             <strong>Realtion:</strong> <br>
-              <%# if company_owner?(company) %>
-                <!-- you are the owner -->
-              <%# elsif current_user.companies.include?(company) %>
-                <!-- you work here -->
-              <%# else %>
-                <% friends_related_to_company = Friend.related_to_company(company.id) %>
-                <% friends_working_in_company = Friend.working_in_company(company.id) %>
+            <%# calculate_social_relation_for_user(company) %>
+            <% friends_related_to_company = Friend.related_to_company(company.id) %>
+            <% friends_working_in_company = Friend.working_in_company(company.id) %>
 
-                friends working in company:
-                <%= (current_user.friends & friends_working_in_company).size %> <br>
-                friends of friends working in company:
-                <%= (current_user.friends & friends_related_to_company).size %> <br>
-                friends related to company:
-                <%= friends_related_to_company.all.size %> <br>
-                company people size:
-                <%= company.people.size %>
-              <%# end %>
+            friends working in company:
+            <%= (current_user.friends & friends_working_in_company).size %> <br>
+            friends of friends working in company:
+            <%= (current_user.friends & friends_related_to_company).size %> <br>
           </li>
         
           <li>
