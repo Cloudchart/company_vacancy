@@ -5,15 +5,39 @@
     <li>
       <%= link_to display_logo(company), company_path(company) if display_logo(company) %>
       <%= link_to company.name, company_path(company) %>
-      <%= company.country %>
-      <%= company.industry.name %>
-      <%= link_to 'Edit', edit_company_path(company) if can?(:update, company) %>
-      <%= link_to 'Destroy', company_path(company), method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, company) %>
 
-      <% if can?(:subscribe, company) && can?(:unsubscribe, company) && !company_owner?(company) %>
-        <%= link_to 'Subscribe', subscribe_company_path(company) unless subscribed_to_company?(company) %>
-        <%= link_to 'Unsubscribe', unsubscribe_company_path(company) if subscribed_to_company?(company) %>
-      <% end %>
+      <ul>
+        <li>
+          <strong>Country:</strong>
+          <%= Country.all.select { |c| c[1] == company.country }.first[0] %>
+        </li>
+
+        <li>
+          <strong>Industry:</strong>
+          <%= company.industry.name %>
+        </li>
+
+        <% if current_user %>
+
+          <li>
+            <strong>Realtion:</strong>
+            <%= calculate_social_relation_for_user(company) %>
+          </li>
+        
+          <li>
+            <strong>Actions:</strong>
+            <%= link_to 'Edit', edit_company_path(company) if can?(:update, company) %>
+            <%= link_to 'Destroy', company_path(company), method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, company) %>
+
+            <% if can?(:subscribe, company) && can?(:unsubscribe, company) && !company_owner?(company) %>
+              <%= link_to 'Subscribe', subscribe_company_path(company) unless subscribed_to_company?(company) %>
+              <%= link_to 'Unsubscribe', unsubscribe_company_path(company) if subscribed_to_company?(company) %>
+            <% end %>
+          </li>
+
+        <% end %>
+
+      </ul>
     </li>
   <% end %>  
 </ul>

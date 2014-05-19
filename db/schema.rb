@@ -84,6 +84,9 @@ ActiveRecord::Schema.define(version: 20140506153308) do
     t.datetime "updated_at"
   end
 
+  add_index "cloud_profile_social_networks", ["provider_id"], name: "index_cloud_profile_social_networks_on_provider_id", using: :btree
+  add_index "cloud_profile_social_networks", ["user_id"], name: "index_cloud_profile_social_networks_on_user_id", using: :btree
+
   create_table "companies", primary_key: "uuid", force: true do |t|
     t.string   "name"
     t.string   "country"
