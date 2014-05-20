@@ -17,7 +17,9 @@ class Friend < ActiveRecord::Base
 
   def self.search(params)
     tire.search(load: true) do
-      query { string "full_name:#{params[:query]}" } if params[:query].present?
+      if params[:query].present?
+        query { string Tokenizable.tire_person_query_string(params[:query], :full_name) }
+      end
     end
   end
 

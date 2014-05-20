@@ -18,7 +18,9 @@ class Person < ActiveRecord::Base
 
   def self.search(params)
     tire.search(load: true) do
-      query { string "first_name:#{params[:query]} OR last_name:#{params[:query]}" } if params[:query].present?
+      if params[:query].present?
+        query { string Tokenizable.tire_person_query_string(params[:query], [:first_name, :last_name]) }
+      end
     end
   end
 
