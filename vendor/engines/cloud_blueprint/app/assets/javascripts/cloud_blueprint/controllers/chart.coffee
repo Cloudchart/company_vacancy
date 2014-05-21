@@ -10,11 +10,10 @@
   
   # Subscriptions
   #
-  on_chart_synchronized = ->
-    _.invoke models.Node.instances, 'attach'
+  on_chart_sync = ->
     chart_view.render()
-  
-  Arbiter.subscribe("#{models.Chart.topic}/synchronized", on_chart_synchronized)
+
+  Arbiter.subscribe("#{models.Chart.topic}/sync", on_chart_sync)
   
   # Initialize Chart model and Chart view
   #
@@ -22,10 +21,11 @@
   chart       = new models.Chart(data.chart);
   chart_view  = new views.Chart(chart, 'section.chart')
   
-  chart.synchronize()
+  # First load
+  chart.sync()
   
   # ujs/chart
-  cc.blueprint.common.activate_chart(chart, data.nodes_url)
+  cc.blueprint.common.activate_chart(chart, chart_view, data.nodes_url)
 
   ###
   # Activate modules

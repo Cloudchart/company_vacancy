@@ -18,20 +18,17 @@ module CloudBlueprint
 
     
     # Synchronize chart
-    # GET /charts/:id/synchronize
+    # GET /charts/:id/pull
     #
-    def synchronize
+    def pull
       @chart = Chart.find(params[:id])
       
       last_accessed_at = Time.at(params[:last_accessed_at].to_i / 1000)
       
-      if params[:nodes]
-        Node.synchronize(params[:nodes])
-      end
-      
       respond_to do |format|
         format.json do
           render json: {
+            available_nodes:    @chart.nodes.select(:uuid).map(&:uuid),
             nodes:              @chart.nodes.later_then(last_accessed_at).map(&:as_json_for_chart),
             last_accessed_at:   Time.now
           }

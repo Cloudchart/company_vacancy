@@ -1,20 +1,20 @@
-<%= form_for [@chart, @node], html: { class: 'node-form' } do |form| %>
-  
+<form class="node-form" data-id="<%= @node.uuid %>">
   <section class="title">
-    <%= form.text_field :title, class: :blueprint, required: true, autofocus: true, placeholder: t('.title_placeholder', default: 'Title') %>
+    <%= text_field_tag :title, @node.title, class: :blueprint, required: true, autocomplete: :off, autofocus: @node.new_record?, placeholder: t('.title_placeholder', default: 'Title') %>
   </section>
-
+  
   <section class="buttons">
     
-    <%= link_to font_awesome('times') + " " + t('.delete_link_title', default: 'Delete'), "", class: 'blueprint-button alert' %>
+    <%- if @node.persisted? -%>
+      <%= link_to font_awesome('times') + " " + t('.delete_link_title', default: 'Delete'), "##{@node.to_param}", data: { behaviour: :delete }, class: 'blueprint-button alert' %>
+    <%- end -%>
     
     <div class="spacer"></div>
     
     <button class="blueprint">
       <%= font_awesome 'check' %>
-      <%= t ".#{form.object.persisted? ? 'update' : 'create' }_button_title", default: form.object.persisted? ? 'Update' : 'Create' %>
+      <%= t ".#{@node.persisted? ? 'update' : 'create' }_button_title", default: @node.persisted? ? 'Update' : 'Create' %>
     </button>
     
   </section>
-
-<%- end -%>
+</form>

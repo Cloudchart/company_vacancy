@@ -179,3 +179,21 @@ main.blueprint article.chart {
   }
   
 }
+
+.modal-container form.node-form {
+  
+  border: 2pt solid #ccc;
+  padding: $base-unit * 2;
+  width: $base-unit * 35;
+  
+  section.buttons {
+    @include display(flex);
+    
+    margin-top: $base-unit * 2;
+    
+    .spacer {
+      @include flex(1);
+    }
+  }
+  
+}

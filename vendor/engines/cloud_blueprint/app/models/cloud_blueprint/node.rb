@@ -3,7 +3,7 @@ module CloudBlueprint
     include Uuidable
 
 
-    scope :later_then, -> (date) { where arel_table[:updated_at].gt(date) }
+    scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
 
 
     belongs_to  :chart
@@ -11,7 +11,7 @@ module CloudBlueprint
 
 
     def as_json_for_chart
-      as_json(only: [:uuid, :chart_id, :parent_id, :title, :position])
+      as_json(only: [:uuid, :chart_id, :parent_id, :title, :position, :knots])
     end
     
 

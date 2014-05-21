@@ -2,11 +2,15 @@ CloudBlueprint::Engine.routes.draw do
   
   resources :charts do
     
-    get :synchronize, on: :member
+    get :pull, on: :member
     
     resources   :vacancies
     resources   :people
-    resources   :nodes
+    resources   :nodes do
+      
+      put '/', on: :collection, action: :update_batch
+      
+    end
     
   end
   

@@ -10,11 +10,36 @@ prepare_descriptor = (node) ->
   view = cc.blueprint.views.Node.instances[node.uuid]
   
   id:         node.uuid
+  knots:      node.knots
   parent_id:  if node instanceof cc.blueprint.models.Chart then null else node.parent_id
   width:      if view? then view.width()   else 0
   height:     if view? then view.height()  else 0
   children:   []
 
+
+append_knots = (descriptors) ->
+  _.each descriptors, (descriptor) ->
+    if descriptor.knots > 0 and descriptors[descriptor.parent_id]
+      _.each [0 ... descriptor.knots], ->
+        knot =
+          parent_id:  descriptor.parent_id
+          parent:     descriptor.parent
+          width:      0
+          height:     0
+        
+        descriptor.parent.children.splice(descriptor.parent.children.indexOf(descriptor), 1, knot)
+        knot.children     = [descriptor]
+        descriptor.parent = knot
+  
+
+remove_knots = (descriptors) ->
+  _.each descriptors, (descriptor) ->
+    if descriptor.knots > 0 and descriptors[descriptor.parent_id]
+      _.each [0 ... descriptor.knots], ->
+        knot = descriptor.parent
+        descriptor.parent = knot.parent
+        descriptor.parent.children.splice(descriptor.parent.children.indexOf(knot), 1, descriptor)
+  
 
 position_levels = (root, descriptors) ->
   start     = if root instanceof cc.blueprint.models.Chart then 1 else 0
@@ -40,7 +65,27 @@ position_levels = (root, descriptors) ->
     max_height_on_previous_level = max_height_on_level
     
     level_offset += 100
+
+
+calculate_side_indices = (root, descriptors) ->
+  children = _.pluck root.children()
+
+  if root instanceof cc.blueprint.models.Node
+    uuids               = _.pluck children, 'uuid'
+    parent_descriptor   = descriptors[root.uuid]
+    child_descriptors   = _.filter descriptors, (value, uuid) -> _.contains uuids, uuid
+    
+    left_children       = _.sortBy _.filter(child_descriptors, (descriptor) -> descriptor.x < parent_descriptor.x), 'x'
+    right_children      = _.sortBy _.filter(child_descriptors, (descriptor) -> descriptor.x > parent_descriptor.x), 'x'
+    
+    left_top  = Math.min _.map(left_children, (child) -> child.y - child.height / 2)...
+    
+    right_top = Math.min _.map(right_children, (child) -> child.y - child.height / 2)...
+
+    _.each  left_children, (descriptor, index, collection) -> descriptor.side_index = collection.length - 1 - index ; descriptor.side_children = collection.length ; descriptor.top = left_top
+    _.each  right_children, (descriptor, index, collection) -> descriptor.side_index = index ; descriptor.side_children = collection.length ; descriptor.top = right_top
   
+  _.each children, (child) -> calculate_side_indices(child, descriptors)
 
 
 prepare_tree = (root) ->
@@ -59,11 +104,19 @@ prepare_tree = (root) ->
     descriptor.parent = descriptors[descriptor.parent_id || root.uuid]
     descriptor.parent.children.push(descriptor)
   
+  # append knots
+  append_knots(descriptors)
+  
   # Calculate tree layout
   cc.blueprint.layouts.tree descriptors[root.uuid],
     h_distance: horizontal_distance
   
+  # remove knots
+  remove_knots(descriptors)
+  
   position_levels(root, descriptors)
+
+  calculate_side_indices(root, descriptors)
   
   layout =
     positions: descriptors
@@ -89,16 +142,26 @@ class Chart
     views       = cc.blueprint.views.Node.instances
     
     # Create views for created models
-    _.chain(models).select((model) -> !views[model.uuid]).each((model) -> new cc.blueprint.views.Node(model, $container))
+    _.chain(models)
+      .select(
+        (model) -> !views[model.uuid]
+      )
+      .each(
+        (model) -> new cc.blueprint.views.Node(model, $container, $('svg', $container).get(0))
+      )
 
     # Delete views for deleted models
-    views_to_delete = _.select views, (view) -> !models[view.uuid]
+    _.chain(views)
+      .reject(
+        (view) -> models[view.uuid]
+      )
+      .invoke('destroy')
 
 
   render: ->
     # Prepare node views
     @prepare_node_views()
-
+    
     # Render node views
     _.invoke cc.blueprint.views.Node.instances, 'render'
     
@@ -109,11 +172,25 @@ class Chart
     x_offset  = @$container.innerWidth() / 2
     y_offset  = 20
     
-    _.each cc.blueprint.views.Node.instances, (node) ->
-      node.position
-        x: layout.positions[node.uuid].x + x_offset
-        y: layout.positions[node.uuid].y + y_offset
-    
+    _.each cc.blueprint.views.Node.instances, (view) ->
+      view_position = layout.positions[view.uuid]
+
+      view.position
+        x: view_position.x + x_offset
+        y: view_position.y + y_offset
+      
+      if parent_position = layout.positions[view.instance.parent_id]
+        view.relation().position
+          x1: parent_position.x + x_offset
+          y1: parent_position.y + y_offset
+          x2: view_position.x + x_offset
+          y2: view_position.y + y_offset
+          side_index:     view_position.side_index
+          side_children:  view_position.side_children
+          top:            view_position.top
+      
+      
+
   
 
 #

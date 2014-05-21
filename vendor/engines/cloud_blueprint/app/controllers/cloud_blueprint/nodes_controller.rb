@@ -34,11 +34,15 @@ module CloudBlueprint
     # POST /charts/:id/nodes
     #
     def create
-      @chart = Chart.find(params[:chart_id])
-      @node  = Node.new(node_params)
+      @chart  = Chart.find(params[:chart_id])
+      @node   = Node.new(node_params)
       @chart.nodes << @node
+
       respond_to do |format|
         format.html { redirect_to @chart }
+        format.json do
+          render json: @node.as_json_for_chart
+        end 
       end
     end
     
@@ -56,11 +60,58 @@ module CloudBlueprint
     end
     
     
+    # Update node
+    # PUT /charts/:id/nodes/:id
+    #
+    def update
+      @chart  = Chart.find(params[:chart_id])
+      @node   = @chart.nodes.find(params[:id])
+      @node.update! node_params
+      
+      respond_to do |format|
+        format.json do
+          render json: @node.as_json_for_chart
+        end
+      end
+      
+    end
+    
+    
+    def update_batch
+      @chart  = Chart.find(params[:chart_id])
+      
+      Node.transaction do
+        params[:create_nodes].each do |pair|
+          node_params = ActionController::Parameters.new(pair.last)
+          node        = Node.new node_params.permit(permitted_node_params)
+          @chart.nodes << node
+        end if params[:create_nodes]
+        
+        params[:update_nodes].each do |pair|
+          node_params = ActionController::Parameters.new(pair.last)
+          node        = Node.find(node_params[:uuid])
+          node.update! node_params.permit(permitted_node_params)
+        end if params[:update_nodes]
+        
+        params[:delete_nodes].each do |uuid|
+          Node.destroy(uuid) rescue nil
+        end if params[:delete_nodes]
+      end
+    
+    ensure
+      render nothing: true
+    end
+    
+    
     private
     
     
     def node_params
-      params.require(:node).permit([:title, :parent_id, :position])
+      params.require(:node).permit(permitted_node_params)
+    end
+    
+    def permitted_node_params
+      [:title, :parent_id, :position]
     end
     
   end
