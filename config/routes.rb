@@ -45,12 +45,14 @@ Cloudchart::Application.routes.draw do
     end
 
     post :search, on: :collection
-    get :subscribe, on: :member
+    post :subscribe, on: :member
     get :unsubscribe, on: :member
   end
 
   resources :features do
     post :vote, on: :member
   end
+
+  resources :subscriptions, only: [:create, :destroy]
 
 end

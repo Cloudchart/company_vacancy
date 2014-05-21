@@ -100,9 +100,9 @@ class CompaniesController < ApplicationController
   end
 
   def subscribe
-    unless current_user.subscriptions.map(&:subscribable_id).include?(@company.id)
-      current_user.subscriptions.create(subscribable: @company)
-    end
+    # unless current_user.subscriptions.map(&:subscribable_id).include?(@company.id)
+    #   current_user.subscriptions.create(subscribable: @company)
+    # end
     redirect_to :back, notice: t('messages.subscriptions.create')
   end
 

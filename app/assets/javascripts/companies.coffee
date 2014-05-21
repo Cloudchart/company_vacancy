@@ -21,7 +21,6 @@
     $(document).ajaxStart ->
       $('.company .result').hide()
 
-
   search_timeout = null
 
   search = ($element) ->

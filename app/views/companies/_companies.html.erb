@@ -24,16 +24,48 @@
             <%= calculate_social_relation_for_user(company) %>
           </li>
         
-          <li>
-            <strong>Actions:</strong>
-            <%= link_to 'Edit', edit_company_path(company) if can?(:update, company) %>
-            <%= link_to 'Destroy', company_path(company), method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, company) %>
+          <% if can?(:update, company) && can?(:destroy, company) %>
+            <li>
+              <strong>Actions:</strong>
+              <%= link_to 'Edit', edit_company_path(company) %>
+              <%= link_to 'Destroy', company_path(company), method: :delete, data: { confirm: 'Are you sure?' } %>
+            </li>
+          <% end %>
 
-            <% if can?(:subscribe, company) && can?(:unsubscribe, company) && !company_owner?(company) %>
-              <%= link_to 'Subscribe', subscribe_company_path(company) unless subscribed_to_company?(company) %>
+          <% if can?(:subscribe, company) && can?(:unsubscribe, company) && !company_owner?(company) %>
+            <li>
+              <strong>Subscription:</strong>
+              <% unless subscribed_to_company?(company) %>
+                <%= simple_form_for company.subscriptions.build do |f| %>  
+                  <%= f.input :subscribable_id, as: :hidden, input_html: { value: company.id } %>
+                  <%= f.input :subscribable_type, as: :hidden, input_html: { value: 'Company' } %>
+
+                  <%= f.simple_fields_for :types do |types| %>
+                    <%= types.input :company_info, as: :boolean, checked_value: true, unchecked_value: false %>
+                    <%= types.input :vacancies, as: :boolean, checked_value: true, unchecked_value: false %>
+                    <%= types.input :events, as: :boolean, checked_value: true, unchecked_value: false %>
+                  <% end %>
+                  
+                  <%= f.submit %>
+                <% end %>
+<!-- 
+                <%= form_tag subscribe_company_path(company) do %>
+                  <%= check_box_tag :company_info, true, false, name: 'types[company_info]' %>
+                  <%= label_tag :company_info %>
+
+                  <%= check_box_tag :vacancies, true, false, name: 'types[vacancies]' %>
+                  <%= label_tag :vacancies %>
+
+                  <%= check_box_tag :events, true, false, name: 'types[events]' %>
+                  <%= label_tag :events %>
+
+                  <%= submit_tag 'Subscribe' %>
+                <% end %>                
+              <% end %> -->
+
               <%= link_to 'Unsubscribe', unsubscribe_company_path(company) if subscribed_to_company?(company) %>
-            <% end %>
-          </li>
+            </li>
+          <% end %>            
 
         <% end %>
 

@@ -216,6 +216,7 @@ ActiveRecord::Schema.define(version: 20140506153308) do
     t.string   "user_id",           limit: 36, null: false
     t.string   "subscribable_id",   limit: 36, null: false
     t.string   "subscribable_type",            null: false
+    t.text     "types"
     t.datetime "created_at"
   end
 
