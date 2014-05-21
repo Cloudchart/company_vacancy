@@ -57,9 +57,6 @@ GEM
       sass (~> 3.2)
       thor
     builder (3.2.2)
-    bullet (4.8.0)
-      activesupport
-      uniform_notifier (>= 1.4.0)
     cancan (1.6.10)
     capistrano (3.2.0)
       i18n
@@ -303,7 +300,6 @@ GEM
     uglifier (2.5.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    uniform_notifier (1.4.0)
     warden (1.2.3)
       rack (>= 1.0)
     xpath (2.0.0)
@@ -317,7 +313,6 @@ DEPENDENCIES
   awesome_print
   bcrypt (~> 3.1.7)
   bourbon
-  bullet
   cancan
   capistrano (~> 3.2.0)
   capistrano-rails (~> 1.1)

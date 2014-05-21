@@ -49,7 +49,6 @@ group :development do
   gem 'awesome_print' # styled print for ruby objects in rails console
   gem 'quiet_assets' # mutes assets pipeline log messages
   gem 'letter_opener' # preview mail in the browser instead of sending
-  gem 'bullet' # helps to kill N+1 queries and unused eager loading
   gem 'capistrano', '~> 3.2.0'
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-rbenv'
