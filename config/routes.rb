@@ -45,8 +45,6 @@ Cloudchart::Application.routes.draw do
     end
 
     post :search, on: :collection
-    post :subscribe, on: :member
-    get :unsubscribe, on: :member
   end
 
   resources :features do

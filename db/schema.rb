@@ -216,11 +216,12 @@ ActiveRecord::Schema.define(version: 20140506153308) do
     t.string   "user_id",           limit: 36, null: false
     t.string   "subscribable_id",   limit: 36, null: false
     t.string   "subscribable_type",            null: false
-    t.text     "types"
+    t.string   "subscription_type"
     t.datetime "created_at"
   end
 
   add_index "subscriptions", ["subscribable_id", "subscribable_type"], name: "index_subscriptions_on_subscribable_id_and_subscribable_type", using: :btree
+  add_index "subscriptions", ["subscription_type"], name: "index_subscriptions_on_subscription_type", using: :btree
   add_index "subscriptions", ["user_id"], name: "index_subscriptions_on_user_id", using: :btree
 
   create_table "tokens", primary_key: "uuid", force: true do |t|

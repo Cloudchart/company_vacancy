@@ -22,11 +22,26 @@ class Activity < ActiveRecord::Base
         create(user: user, action: action, trackable: trackable, source: source)
       end
 
-      # duplicate activity for subscribers (only for vacancy activities so far)
-      # and testing sidekiq
-      if trackable.class == Vacancy && trackable.company.subscriptions.any?
+      # duplicate activity for subscribers via sidekiq (only company subscription so far)
+      company = source && source.class == Company ? source : trackable.try(:company)
+      
+      if company && company.subscriptions.any?
         SubscriptionsWorker.perform_async(user.id, action, trackable.id, trackable.class, source.try(:id), source.try(:class), group_type)
       end
+
+
+      # duplicate activity for subscribers via sidekiq (only company subscription so far)
+      # if source && source.class == Comapny && source.subscriptions.where(subscription_type: :company_page).any?
+      #   duplicate_activity = true
+      #   subscription_type = :company_page
+      # elsif trackable.try(:company_id) && trackable.company.subscriptions.any?
+      #   duplicate_activity = true
+      #   subscription_type = 
+      # end
+
+      # if duplicate_activity
+      #   SubscriptionsWorker.perform_async(user.id, action, trackable.id, trackable.class, source.try(:id), source.try(:class), group_type)
+      # end
     end
 
     def by_user_or_companies(user)
