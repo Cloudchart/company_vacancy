@@ -94,9 +94,12 @@ main.blueprint article.chart {
       background-color: #f99;
       cursor: pointer;
       font-size: 12pt;
-      opacity: 0;
       padding: $base-unit / 2 $base-unit;
       text-align: center;
+      
+      &.locked {
+        opacity: .25;
+      }
       
       > h2 {
         font-size: inherit;

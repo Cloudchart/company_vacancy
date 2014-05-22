@@ -1,12 +1,3 @@
-@cc                    ?= {}
-@cc.blueprint          ?= {}
-@cc.blueprint.common   ?= {}
-
-#
-#
-#
-
-
 calculate_insert_position = (chart, elements, point) ->
   descriptors = _.map elements, (node) ->
     bounds = node.getBoundingClientRect()

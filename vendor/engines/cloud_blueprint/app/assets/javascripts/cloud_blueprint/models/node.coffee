@@ -174,7 +174,10 @@ class Node extends cc.blueprint.models.Base
   
   parent: ->
     cc.blueprint.models.Node.instances[@parent_id] || cc.blueprint.models.Chart.instances[@chart_id]
+  
 
+  index: ->
+    _.indexOf @parent().children(), @
   
   reposition: (deep = false) ->
     self      = @
@@ -190,6 +193,10 @@ class Node extends cc.blueprint.models.Base
     _.map @element.childNodes, (child) -> cc.blueprint.models.Node.instances[child.id]
   
   
+  descendants: ->
+    _.map @element.querySelectorAll('*'), (descendant) -> cc.blueprint.models.Node.instances[descendant.id]
+
+
   right_sibling: ->
     @constructor.instances[@element.nextSibling.id] if @element.nextSibling
   

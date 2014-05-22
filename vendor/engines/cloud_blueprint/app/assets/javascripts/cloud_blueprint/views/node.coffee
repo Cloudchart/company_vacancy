@@ -39,7 +39,7 @@ class Node
   
 
   render: ->
-    return if @$element and @instance.updated_at < @rendered_at
+    return if @$element
     @reset()
     @$element     = build(@instance, @$container, @options)
     @rendered_at  = new Date
@@ -71,7 +71,6 @@ class Node
         y: position.y - @height() / 2
       
       @$element.velocity
-        opacity:  1
         left:     [position.x, if @cached_position then @cached_position.x else position.x]
         top:      [position.y, if @cached_position then @cached_position.y else position.y]
       ,

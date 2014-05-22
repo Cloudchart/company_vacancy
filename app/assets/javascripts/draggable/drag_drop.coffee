@@ -27,6 +27,9 @@ clone_for_drag = (element, options = {}) ->
   node
 
 
+dummy_for_drag = ->
+  document.body.appendChild(document.createElement('span'))
+
 #
 #
 #
@@ -40,7 +43,10 @@ widget = (element, selector, options = {}) ->
   # Element for Drag
   #
   element_for_drag = ->
-    clone_for_drag(self.target)
+    if options.helper == false
+      dummy_for_drag()
+    else
+      clone_for_drag(self.target)
   
   
   # Revert helper to origin

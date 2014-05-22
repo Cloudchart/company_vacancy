@@ -36,6 +36,11 @@
 
   <section class="chart" id="<%= @chart.to_param %>" data-behaviour="chart-container">
     <svg>
+      <defs>
+        <marker id="insertion-circle" viewBox="0 0 10 10" refX="2.5" refY="2.5" markerWidth="10" markerHeight="10" orient="auto" stroke="transparent" fill="black">
+          <circle cx="2.5" cy="2.5" r="2.5" />
+        </marker>
+      </defs>
     </svg>
   </section>
 <article>
@@ -43,7 +48,7 @@
   
   
 <template id="node-template">
-  <div class="node" data-id="{{=uuid}}" style="background-color: {{=color}};">
+  <div class="node" data-id="{{=uuid}}" data-behaviour="droppable" data-droppable-target="node" style="background-color: {{=color}};">
     <h2>{{=title}}</h2>
     <ul>
       {{@people}}
