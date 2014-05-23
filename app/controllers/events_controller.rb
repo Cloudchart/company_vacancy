@@ -34,6 +34,7 @@ class EventsController < ApplicationController
     @event.should_build_objects!
 
     if @event.save
+      Activity.track_activity(current_user, params[:action], @event)
       redirect_to @event, notice: 'Event was successfully created.'
     else
       render action: 'new'
@@ -43,6 +44,7 @@ class EventsController < ApplicationController
   # PATCH/PUT /events/1
   def update
     if @event.update(event_params)
+      Activity.track_activity(current_user, params[:action], @event)
       redirect_to @event, notice: 'Event was successfully updated.'
     else
       render action: 'edit'

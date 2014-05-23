@@ -89,8 +89,11 @@ module CloudProfile
         end
 
         user.people << person
-        # create subscription (only to vacancies so far)
-        user.subscriptions.create(subscribable: person.company)
+        # create subscription (only to vacancies and events so far)
+        %i(vacancies events).each do |subscription_type|
+          user.subscriptions.find_or_create_by(subscribable: person.company, subscription_type: subscription_type)
+        end
+
         user.save!
         clean_session_and_destroy_token(token)
 

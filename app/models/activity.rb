@@ -29,24 +29,11 @@ class Activity < ActiveRecord::Base
         SubscriptionsWorker.perform_async(user.id, action, trackable.id, trackable.class, source.try(:id), source.try(:class), group_type)
       end
 
-
-      # duplicate activity for subscribers via sidekiq (only company subscription so far)
-      # if source && source.class == Comapny && source.subscriptions.where(subscription_type: :company_page).any?
-      #   duplicate_activity = true
-      #   subscription_type = :company_page
-      # elsif trackable.try(:company_id) && trackable.company.subscriptions.any?
-      #   duplicate_activity = true
-      #   subscription_type = 
-      # end
-
-      # if duplicate_activity
-      #   SubscriptionsWorker.perform_async(user.id, action, trackable.id, trackable.class, source.try(:id), source.try(:class), group_type)
-      # end
     end
 
     def by_user_or_companies(user)
       by_user_id = arel_table[:user_id].eq(user.id).and(arel_table[:subscriber_id].eq(nil))
-      by_source_id = arel_table[:source_id].in(user.companies.map(&:id))
+      by_source_id = arel_table[:source_id].in(user.companies.map(&:id)).and(arel_table[:subscriber_id].eq(nil))
       by_subscriber_id = arel_table[:subscriber_id].eq(user.id)
       where(by_user_id.or(by_source_id).or(by_subscriber_id))
     end

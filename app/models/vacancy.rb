@@ -1,6 +1,7 @@
 class Vacancy < ActiveRecord::Base
   include Uuidable
   include Sectionable
+  include Trackable
 
   SECTIONS = %i(settings vacancy requirements benefits).inject({}) { |hash, val| hash.merge({ I18n.t("vacancy.sections.#{val}") => val }) }
   BLOCK_TYPES = %i(paragraph block_image).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
