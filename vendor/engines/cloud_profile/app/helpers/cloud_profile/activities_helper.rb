@@ -17,14 +17,10 @@ module CloudProfile
       anchor = activity.trackable ? activity.trackable_id : nil
 
       if activity.group_type.to_s =~ /0|2/
-        if activity.action == 'destroy'
-          activity_name
-        elsif activity.trackable && activity.source
+        if activity.trackable && activity.source
           link_to activity_name, main_app.send("#{activity.source.class.name.underscore}_path", activity.source, anchor: anchor), target: '_blank'
         elsif activity.trackable
           link_to activity_name, main_app.send("#{activity.trackable_type.underscore}_path", activity.trackable), target: '_blank'
-        else
-          "#{activity_name} which doesn't exist anymore"
         end
       else
         if activity.source
@@ -36,9 +32,10 @@ module CloudProfile
     end
 
     def source_name(activity)
-      source_name = activity.source.name + "'s page"
+      source_name = activity.subscriber_id ? 'it' : activity.source.name
+      source_name += "'s page"
 
-      if activity.group_type == 1 || activity.action == 'destroy' || activity.trackable.blank?
+      if activity.group_type == 1
         link_to source_name, main_app.send("#{activity.source.class.name.underscore}_path", activity.source), target: '_blank'
       else
         source_name

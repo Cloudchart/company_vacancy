@@ -24,16 +24,38 @@
             <%= calculate_social_relation_for_user(company) %>
           </li>
         
-          <li>
-            <strong>Actions:</strong>
-            <%= link_to 'Edit', edit_company_path(company) if can?(:update, company) %>
-            <%= link_to 'Destroy', company_path(company), method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, company) %>
+          <% if can?(:update, company) && can?(:destroy, company) %>
+            <li>
+              <strong>Actions:</strong>
+              <%= link_to 'Edit', edit_company_path(company) %>
+              <%= link_to 'Destroy', company_path(company), method: :delete, data: { confirm: 'Are you sure?' } %>
+            </li>
+          <% end %>
 
-            <% if can?(:subscribe, company) && can?(:unsubscribe, company) && !company_owner?(company) %>
-              <%= link_to 'Subscribe', subscribe_company_path(company) unless subscribed_to_company?(company) %>
-              <%= link_to 'Unsubscribe', unsubscribe_company_path(company) if subscribed_to_company?(company) %>
-            <% end %>
-          </li>
+          <% if can?(:manage, Subscription) && !company_owner?(company) %>
+            <li>
+              <strong>Subscription:</strong>
+              <% unless subscribed_to_company?(company) %>
+
+                <%= simple_form_for company.subscriptions.build do |f| %>  
+                  <%= f.input :subscribable_id, as: :hidden %>
+                  <%= f.input :subscribable_type, as: :hidden %>
+
+                  <%= f.simple_fields_for :types do |type| %>
+                    <%= type.input :company_page, as: :boolean %>
+                    <%= type.input :vacancies, as: :boolean %>
+                    <%= type.input :events, as: :boolean %>
+                  <% end %>
+
+                  <%= f.submit %>
+                <% end %>
+
+              <% end %>
+
+              <%= link_to 'Unsubscribe', subscription_path(company.id), method: :delete, data: { confirm: 'Are you sure?' } if subscribed_to_company?(company) %>
+
+            </li>
+          <% end %>            
 
         <% end %>
 

@@ -1,5 +1,6 @@
 class Block < ActiveRecord::Base
   include Uuidable
+  include Trackable
   
   IdentitiesClasses = [Paragraph, BlockImage, Person, Vacancy, Company]
   

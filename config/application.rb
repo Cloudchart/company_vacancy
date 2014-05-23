@@ -20,6 +20,8 @@ module Cloudchart
     config.i18n.load_path += Dir[Rails.root.join('locales', '**', '*.{rb,yml}')] # translations
     I18n.config.enforce_available_locales = true
     # config.i18n.default_locale = :de
+
+    # config.autoload_paths += %W(#{config.root}/lib)
     
     # Handle exceptions
     #

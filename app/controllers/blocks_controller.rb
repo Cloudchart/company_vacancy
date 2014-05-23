@@ -31,7 +31,6 @@ class BlocksController < ApplicationController
     block = Block.includes(:owner, { block_identities: :identity }).find(params[:id])
     authorize! :destroy, block
     block.destroy
-    Activity.track_activity(current_user, params[:action], block, block.owner)
     redirect_to block.owner
   end
 

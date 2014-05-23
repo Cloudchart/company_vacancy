@@ -99,18 +99,6 @@ class CompaniesController < ApplicationController
     redirect_to companies_url, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
-  def subscribe
-    unless current_user.subscriptions.map(&:subscribable_id).include?(@company.id)
-      current_user.subscriptions.create(subscribable: @company)
-    end
-    redirect_to :back, notice: t('messages.subscriptions.create')
-  end
-
-  def unsubscribe
-    current_user.subscriptions.where(subscribable_id: @company.id).delete_all
-    redirect_to :back, notice: t('messages.subscriptions.destroy')
-  end
-
 private
   
   # Use callbacks to share common setup or constraints between actions.

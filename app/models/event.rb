@@ -1,6 +1,7 @@
 class Event < ActiveRecord::Base
   include Uuidable
   include Sectionable
+  include Trackable
 
   SECTIONS = %i(about participants).inject({}) { |hash, val| hash.merge({ I18n.t("event.sections.#{val}") => val }) }
   BLOCK_TYPES = %i(paragraph block_image company).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }

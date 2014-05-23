@@ -37,9 +37,10 @@ class Ability
       can :manage, :all
     # User
     else
-      can [:create, :subscribe, :unsubscribe], Company
+      can :create, Company
       can :vote, Feature
       can :destroy, Token
+      can :manage, Subscription
 
       # User (conditional)
       can [:update, :destroy, :upload_logo], Company do |company| 
