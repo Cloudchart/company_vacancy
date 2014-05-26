@@ -1,0 +1,12 @@
+<%= simple_form_for subscription do |f| %>  
+  <%= f.input :subscribable_id, as: :hidden %>
+  <%= f.input :subscribable_type, as: :hidden %>
+
+  <%= f.simple_fields_for :types do |ff| %>
+    <% Subscription::TYPES.each do |type| %>
+      <%= ff.input type, as: :boolean, checked_value: type %>
+    <% end %>
+  <% end %>
+
+  <%= f.submit %>
+<% end %>

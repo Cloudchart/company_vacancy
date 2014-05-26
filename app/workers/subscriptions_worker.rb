@@ -12,9 +12,11 @@ class SubscriptionsWorker < ApplicationWorker
     when /Vacancy|Event/ then trackable_type.underscore.pluralize.to_sym
     end
 
-    company.subscriptions.where(subscription_type: subscription_type).map(&:user_id).each do |subscriber_id|
-      if group_type
-        Activity.where(subscriber_id: subscriber_id, trackable_type: trackable_type).order(created_at: :desc).first.update(group_type: group_type)
+    company.subscriptions.with_type(subscription_type).map(&:user_id).each do |subscriber_id|
+      last_activity = Activity.where(subscriber_id: subscriber_id).order(created_at: :desc).first 
+
+      if group_type && last_activity.trackable_type == trackable_type
+        last_activity.update(group_type: group_type)
       else
         Activity.create(user: user, action: action, trackable: trackable, source: source, subscriber_id: subscriber_id)
       end

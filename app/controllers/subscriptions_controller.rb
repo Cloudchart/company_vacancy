@@ -1,13 +1,7 @@
 class SubscriptionsController < ApplicationController
 
   def create
-    subscription_params[:types].reject {|k,v| v == '0' }.each do |name, type|
-      subscription = Subscription.new(subscription_params.reject { |k,v| k == 'types' })
-      subscription.subscription_type = name
-      subscription.user = current_user
-      subscription.save!
-    end
-
+    current_user.subscriptions.create!(subscription_params)
     redirect_to :back, notice: t('messages.subscriptions.create')    
   end
 

@@ -88,12 +88,11 @@ module CloudProfile
           return redirect_to main_app.company_invite_path(token), alert: t('messages.company_invite.you_are_already_associated', name: person.company.name)
         end
 
-        user.people << person
         # create subscription (only to vacancies and events so far)
-        %i(vacancies events).each do |subscription_type|
-          user.subscriptions.find_or_create_by(subscribable: person.company, subscription_type: subscription_type)
-        end
+        user.subscriptions.where(subscribable: person.company).delete_all
+        user.subscriptions.create!(subscribable: person.company, types: [:vacancies, :events])
 
+        user.people << person
         user.save!
         clean_session_and_destroy_token(token)
 
