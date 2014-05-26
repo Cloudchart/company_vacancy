@@ -89,7 +89,7 @@ module CloudProfile
         end
 
         # create subscription (only to vacancies and events so far)
-        user.subscriptions.where(subscribable: person.company).delete_all
+        user.subscriptions.find_by(subscribable: person.company).destroy
         user.subscriptions.create!(subscribable: person.company, types: [:vacancies, :events])
 
         user.people << person

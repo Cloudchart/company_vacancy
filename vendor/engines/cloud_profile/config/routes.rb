@@ -38,14 +38,11 @@ CloudProfile::Engine.routes.draw do
 
     # Profile landing page
     #
-    root to: 'welcome#index'   
-    get 'settings', to: 'welcome#settings', as: :settings
+    root to: 'welcome#index'
 
-    
-    # Activities
-    # 
+    get 'settings', to: 'welcome#settings', as: :settings
     get 'newsfeed', to: 'activities#index', as: :newsfeed
-    
+    get 'subscriptions', to: 'subscriptions#index', as: :subscriptions
 
     # Companies
     # 

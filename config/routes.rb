@@ -51,6 +51,6 @@ Cloudchart::Application.routes.draw do
     post :vote, on: :member
   end
 
-  resources :subscriptions, only: [:create, :destroy]
+  resources :subscriptions, only: [:create, :update, :destroy]
 
 end

@@ -212,7 +212,7 @@ ActiveRecord::Schema.define(version: 20140506153308) do
   add_index "people", ["company_id"], name: "index_people_on_company_id", using: :btree
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
-  create_table "subscriptions", id: false, force: true do |t|
+  create_table "subscriptions", primary_key: "uuid", force: true do |t|
     t.string   "user_id",           limit: 36, null: false
     t.string   "subscribable_id",   limit: 36, null: false
     t.string   "subscribable_type",            null: false

@@ -38,7 +38,7 @@
               <% unless subscribed_to_company?(company) %>
                 <%= render 'subscriptions/form', subscription: company.subscriptions.build %>
               <% else %>
-                <%= link_to 'Unsubscribe', subscription_path(company.id), method: :delete, data: { confirm: 'Are you sure?' } %>
+                <%= link_to 'Unsubscribe', subscription_path(company.subscriptions.find_by(user_id: current_user.id)), method: :delete, data: { confirm: 'Are you sure?' } %>
               <% end %>
             </li>
           <% end %>            

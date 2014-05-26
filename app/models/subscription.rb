@@ -1,4 +1,6 @@
-class Subscription < ActiveRecord::Base
+class Subscription < ActiveRecord::Base  
+  include Uuidable
+  
   TYPES = %i[company_page vacancies events]
 
   belongs_to :user
@@ -7,7 +9,8 @@ class Subscription < ActiveRecord::Base
   scope :with_type, -> type { where("types_mask & #{2**TYPES.index(type)} > 0") }
 
   def types=(types)
-    types = types.is_a?(Hash) ? types.values.map(&:to_sym) : types
+    types = types.is_a?(Hash) ? types.values : types
+    types = types.map(&:to_sym)
     self.types_mask = (types & TYPES).map { |r| 2**TYPES.index(r) }.sum
   end
   

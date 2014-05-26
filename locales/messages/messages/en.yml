@@ -31,4 +31,5 @@ en:
         fail: "There was a problem with event verification. Please try again."
     subscriptions:
       create: "Your subscription has been created"
+      update: "Your subscription has been updated"
       destroy: "Your subscription has been removed"
