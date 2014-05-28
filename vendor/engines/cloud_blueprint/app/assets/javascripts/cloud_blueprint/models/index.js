@@ -3,3 +3,4 @@
 //= require ./vacancy
 //= require ./chart
 //= require ./node
+//= require ./identity

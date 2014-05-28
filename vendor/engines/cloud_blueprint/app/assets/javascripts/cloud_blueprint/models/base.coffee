@@ -29,9 +29,14 @@ class Base
   
 
   @instantiate: (attributes = {}) ->
-    instance  = @instances[attributes.uuid] || new @(attributes)
-    instance.set_attributes(attributes)
-    instance
+    self = @
+    if _.isArray(attributes)
+      _.each attributes, (instance_attributes) -> self.instantiate(instance_attributes)
+    else
+      if node = self.instances[attributes['uuid']]
+        node.set_attributes(attributes)
+      else
+        node = new self(attributes)
     
 
   constructor: (attributes = {}) ->

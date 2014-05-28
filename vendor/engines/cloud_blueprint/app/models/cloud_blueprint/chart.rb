@@ -7,6 +7,10 @@ module CloudBlueprint
     
     has_many :nodes, dependent: :destroy
     
+    has_many :identities
+    
+    has_many :people, through: :company
+    
     validates_presence_of :title
     validates_presence_of :company_id
     

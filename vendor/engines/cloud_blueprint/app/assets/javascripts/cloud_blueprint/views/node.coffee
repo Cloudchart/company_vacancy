@@ -11,12 +11,19 @@ template = null
 
 # Build node view
 #
-build = (instance, $container, options = {}) ->
+build = (instance, $container, cached_position, options = {}) ->
   template ||= new t($('#node-template').html())
   
   node = $(template.render(instance)).appendTo($container)
   
   node.css('min-width', instance.element.childNodes.length * options.min_children_links_distance)
+  
+  if cached_position
+    node.css
+      left: cached_position.x
+      top:  cached_position.y
+  
+  node
 
 
 #
@@ -39,9 +46,9 @@ class Node
   
 
   render: ->
-    return if @$element
+    #return if @$element
     @reset()
-    @$element     = build(@instance, @$container, @options)
+    @$element     = build(@instance, @$container, @position(), @options)
     @rendered_at  = new Date
     @$element
   
@@ -70,11 +77,11 @@ class Node
         x: position.x - @width() / 2
         y: position.y - @height() / 2
       
-      @$element.velocity
-        left:     [position.x, if @cached_position then @cached_position.x else position.x]
-        top:      [position.y, if @cached_position then @cached_position.y else position.y]
+      @$element.animate
+        left:     position.x
+        top:      position.y
       ,
-        duration: 100
+        duration: if @cached_position then 200 else 0
 
       @cached_position = position
       

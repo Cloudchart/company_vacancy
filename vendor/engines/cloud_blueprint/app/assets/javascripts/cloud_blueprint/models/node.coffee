@@ -40,15 +40,15 @@ class Node extends cc.blueprint.models.Base
     node
   
   
-  @instantiate: (attributes) ->
-    self = @
-    if _.isArray(attributes)
-      _.each attributes, (instance_attributes) -> self.instantiate(instance_attributes)
-    else
-      if node = self.instances[attributes['uuid']]
-        node.set_attributes(attributes)
-      else
-        node = new self(attributes)
+  #@instantiate: (attributes) ->
+  #  self = @
+  #  if _.isArray(attributes)
+  #   _.each attributes, (instance_attributes) -> self.instantiate(instance_attributes)
+  #  else
+  #    if node = self.instances[attributes['uuid']]
+  #      node.set_attributes(attributes)
+  #    else
+  #      node = new self(attributes)
   
   
   @cleanup_created_nodes: ->
@@ -150,16 +150,6 @@ class Node extends cc.blueprint.models.Base
     deferred.promise()
   
   
-  update: (attributes = {}) ->
-    deferred = new $.Deferred
-
-    @save(attributes).done (attributes) =>
-      super(attributes)
-      deferred.resolve(@)
-
-    deferred.promise()
-  
-  
   destroy: ->
     @element.parentNode.removeChild(@element) if @element.parentNode
     super()
@@ -170,6 +160,20 @@ class Node extends cc.blueprint.models.Base
 
     @element          = document.createElement('node')
     @element.id       = @uuid
+    
+    self = @
+
+    Object.defineProperty @, 'people',
+      get: -> _.invoke _.filter(self.identities(), (identity) -> identity.identity_type == 'Person'), 'identity'
+  
+  
+  identities: ->
+    self = @
+    _.filter cc.blueprint.models.Identity.instances, (identity) -> identity.node_id == self.uuid
+  
+  
+  #people: ->
+  #  _.invoke _.filter(@identities(), (identity) -> identity.identity_type == 'Person'), 'identity'
   
   
   parent: ->

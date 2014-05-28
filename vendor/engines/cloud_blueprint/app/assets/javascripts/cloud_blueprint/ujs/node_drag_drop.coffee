@@ -13,6 +13,12 @@ get_view = (uuid) ->
   cc.blueprint.views.Node.instances[uuid]
 
 
+# Get relation
+#
+get_relation = (uuid) ->
+  cc.blueprint.views.Relation.instances[uuid]
+
+
 # Create relation element
 #
 create_relation_element = (container) ->
@@ -33,12 +39,26 @@ calculate_path = (container, element, x, y) ->
   container_rect  = container.getBoundingClientRect()
   element_rect    = element.getBoundingClientRect()
   
-  x1 = element_rect.left + element_rect.width / 2 - container_rect.left
-  y1 = element_rect.top + element_rect.height / 2 - container_rect.top
-  x2 = x - container_rect.left
-  y2 = y - container_rect.top
+  x2 = element_rect.left + element_rect.width / 2 - container_rect.left
+  y2 = element_rect.top + element_rect.height / 2 - container_rect.top
+  x1 = x - container_rect.left
+  y1 = y - container_rect.top
+  
+  dx = (x2 - x1) / 2
+  dy = (y2 - y1) / 2
 
-  "M #{x1} #{y1} L #{x2} #{y2}"
+  x1:   x1
+  y1:   y1
+  x11:  x1
+  y11:  y1
+  x12:  x1 + dx
+  y12:  y1 + dy
+  x22:  x2 - dx
+  y22:  y2 - dy
+  x21:  x2
+  y21:  y2
+  x2:   x2
+  y2:   y2
 
 
 #
@@ -113,23 +133,21 @@ activate = (chart) ->
   # On node drag start
   #
   $(container_selector).on "cc::drag:start", node_selector, (event) ->
-    origin.relation_element = create_relation_element(origin.relation_container)
-    
     { available_uuids, not_available_uuids } = partition_nodes_by_availability(@dataset.id)
     
     _.each not_available_uuids, (uuid) ->
       view      = get_view(uuid)
       element   = view.$element.get(0)
-      relation  = view.relation().element
 
       element.classList.add('locked')
-      relation.setAttribute('opacity', .25)
     
     _.each available_uuids, (uuid) =>
       calculate_insert_positions(uuid, @dataset.id)
     
-    relation = get_view(@dataset.id).relation().element
-    relation.setAttribute('opacity', 0)
+    origin.relation_path = get_relation(@dataset.id).element.getAttribute('d')
+    
+    activate_drop()
+    
   
   
   # On node drag move
@@ -140,15 +158,16 @@ activate = (chart) ->
     x = if origin.droppable then 0 else event.pageX
     y = if origin.droppable then 0 else event.pageY
 
-    origin.relation_element.setAttribute 'd', calculate_path(origin.relation_container, @, x, y)
+    origin.path = calculate_path(origin.relation_container, @, x, y)
+    relation = get_relation(@dataset.id)
+    relation.position
+      path: "M #{origin.path.x1} #{origin.path.y1} L #{origin.path.x2} #{origin.path.y2}"
     
   
   
   # On node drag end
   #
   $(container_selector).on "cc::drag:end", node_selector, (event) ->
-    origin.relation_container.removeChild(origin.relation_element)
-    
     { available_uuids, not_available_uuids } = partition_nodes_by_availability(@dataset.id)
     
     _.each not_available_uuids, (uuid) ->
@@ -157,24 +176,43 @@ activate = (chart) ->
       relation  = view.relation().element
 
       element.classList.remove('locked')
-      relation.removeAttribute('opacity')
-  
-    relation = get_view(@dataset.id).relation().element
-    relation.setAttribute('opacity', 1)
-    
+      
     cleanup_insert_positions()
+    
+    unless origin.droppable
+      get_relation(@dataset.id).position
+        cached: true  
+  
+  #
+  # Drop activation/deactivation
+  #
+  
+  activate_drop = ->
+    $(container_selector).on "cc::drag:drop:enter", node_selector, on_node_drop_enter
+    $(container_selector).on "cc::drag:drop:move", node_selector, on_node_drop_move
+    $(container_selector).on "cc::drag:drop:leave", node_selector, on_node_drop_leave
+    $(container_selector).on "cc::drag:drop:drop", node_selector, on_node_drop_drop
+  
+  deactivate_drop = ->
+    $(container_selector).off "cc::drag:drop:enter", node_selector, on_node_drop_enter
+    $(container_selector).off "cc::drag:drop:move", node_selector, on_node_drop_move
+    $(container_selector).off "cc::drag:drop:leave", node_selector, on_node_drop_leave
+    $(container_selector).off "cc::drag:drop:drop", node_selector, on_node_drop_drop
   
 
   # On node drop enter
   #
-  $(container_selector).on "cc::drag:drop:enter", node_selector, (event) ->
+  
+  on_node_drop_enter = (event) ->
     return if @classList.contains('locked') or @ == event.draggableTarget
     origin.droppable = @dataset.id
+  
   
 
   # On node drop move
   #
-  $(container_selector).on "cc::drag:drop:move", node_selector, (event) ->
+  
+  on_node_drop_move = (event) ->
     return unless origin.droppable
     
     { x, index }  = calculate_insert_position(origin.droppable, event.pageX)
@@ -182,31 +220,41 @@ activate = (chart) ->
     
     origin.droppable_index = index
 
-    origin.relation_element.setAttribute 'd', calculate_path(origin.relation_container, event.draggableTarget, x, y)
+    origin.path = calculate_path(origin.relation_container, event.draggableTarget, x, y)
+
+    get_relation(event.draggableTarget.dataset.id).position
+      path: "M #{origin.path.x1} #{origin.path.y1} L #{origin.path.x2} #{origin.path.y2}" 
+
     
 
   # On node drop leave
   #
-  $(container_selector).on "cc::drag:drop:leave", node_selector, (event) ->
+  
+  on_node_drop_leave = (event) ->
     delete origin.droppable
     delete origin.droppable_index
   
   
   # On node drop drop
   #
-  $(container_selector).on "cc::drag:drop:drop", node_selector, (event) ->
+  
+  on_node_drop_drop = (event) ->
     return unless origin.droppable
     
     model = get_model(event.draggableTarget.dataset.id)
     index = model.index()
     
     if model.parent_id == @dataset.id and (index == origin.droppable_index or index == origin.droppable_index - 1)
-      console.log 'do nothing'
+      get_relation(event.draggableTarget.dataset.id).position({ cached: true })
     else
-      console.log 'reposition'
-      
+      relation = get_relation(event.draggableTarget.dataset.id)
+      relation.cached_path = origin.path
+      Arbiter.publish("node:drag:drop", { uuid: model.uuid, parent_id: origin.droppable, position: origin.droppable_index })
+    
     delete origin.droppable
     delete origin.droppable_index
+    
+    deactivate_drop()
     
 
 #

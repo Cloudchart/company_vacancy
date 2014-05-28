@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140506153308) do
+ActiveRecord::Schema.define(version: 20140526100444) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -63,11 +63,19 @@ ActiveRecord::Schema.define(version: 20140506153308) do
 
   add_index "blocks", ["owner_id", "owner_type"], name: "index_blocks_on_owner_id_and_owner_type", using: :btree
 
-<<<<<<< HEAD
-=======
   create_table "cloud_blueprint_charts", primary_key: "uuid", force: true do |t|
     t.string   "company_id", limit: 36, null: false
     t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "cloud_blueprint_identities", primary_key: "uuid", force: true do |t|
+    t.string   "chart_id",      limit: 36,                 null: false
+    t.string   "node_id",       limit: 36,                 null: false
+    t.string   "identity_id",   limit: 36,                 null: false
+    t.string   "identity_type",                            null: false
+    t.boolean  "is_primary",               default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -77,11 +85,11 @@ ActiveRecord::Schema.define(version: 20140506153308) do
     t.string   "parent_id",  limit: 36
     t.string   "title"
     t.integer  "position",              default: 0
+    t.integer  "knots",                 default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
->>>>>>> WIP
   create_table "cloud_profile_emails", primary_key: "uuid", force: true do |t|
     t.string   "user_id",    limit: 36
     t.string   "address"
@@ -216,6 +224,7 @@ ActiveRecord::Schema.define(version: 20140506153308) do
   end
 
   create_table "people", primary_key: "uuid", force: true do |t|
+<<<<<<< HEAD
     t.string   "first_name",                                  null: false
     t.string   "last_name",                                   null: false
     t.string   "email"
@@ -224,6 +233,15 @@ ActiveRecord::Schema.define(version: 20140506153308) do
     t.string   "user_id",          limit: 36
     t.string   "company_id",       limit: 36,                 null: false
     t.boolean  "is_company_owner",            default: false
+=======
+    t.string   "first_name",            default: "", null: false
+    t.string   "last_name",                          null: false
+    t.string   "email"
+    t.text     "occupation"
+    t.string   "phone"
+    t.string   "user_id",    limit: 36
+    t.string   "company_id", limit: 36,              null: false
+>>>>>>> WIP
     t.datetime "created_at"
     t.datetime "updated_at"
   end

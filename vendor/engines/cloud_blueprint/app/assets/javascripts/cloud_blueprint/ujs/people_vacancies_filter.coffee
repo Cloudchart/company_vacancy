@@ -108,3 +108,49 @@ $ ->
   #
   $document.on 'click', 'aside.person-vacancy-filter button[data-behaviour~="new-vacancy"]', (event) ->
     new cc.ui.modal($('#new-vacancy-form').html())
+
+
+container_selector      = "aside.person-vacancy-filter ul.people-vacancies"
+person_vacancy_selector = 'li[data-behaviour~="draggable"]'
+
+chart_selector          = "section.chart"
+node_selector           = "div.node"
+
+
+activate_drag_drop = ->
+  cc.ui.drag_drop(container_selector, person_vacancy_selector, {
+    revert: true
+    drop_on: 'node'
+  })
+  
+  activate_drop = ->
+    $(chart_selector).on "cc::drag:drop:enter", node_selector, on_enter
+    $(chart_selector).on "cc::drag:drop:leave", node_selector, on_leave
+    $(chart_selector).on "cc::drag:drop:drop",  node_selector, on_drop
+
+  deactivate_drop = ->
+    $(chart_selector).off "cc::drag:drop:enter", node_selector, on_enter
+    $(chart_selector).off "cc::drag:drop:leave", node_selector, on_leave
+    $(chart_selector).off "cc::drag:drop:drop",  node_selector, on_drop
+  
+  $(container_selector).on "cc::drag:start", person_vacancy_selector, (event) ->
+    activate_drop()
+  
+
+  on_enter = (event) ->
+    @classList.add('captured')
+    event.draggableTarget.setAttribute('captured', true)
+
+  on_leave = (event) ->
+    @classList.remove('captured')
+    event.draggableTarget.removeAttribute('captured')
+
+  on_drop = (event) ->
+    @classList.remove('captured')
+    event.draggableTarget.removeAttribute('captured')
+    deactivate_drop()
+  
+  
+
+_.extend cc.blueprint.common,
+  activate_person_vacancy_drag_drop: activate_drag_drop

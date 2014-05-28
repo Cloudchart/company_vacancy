@@ -52,7 +52,7 @@
     <h2>{{=title}}</h2>
     <ul>
       {{@people}}
-        <li class="person">{{=_first_name}} {{=_last_name}}</li>
+        <li class="person">{{=_val.first_name}} {{=_val.last_name}}</li>
       {{/@people}}
       {{@vacancies}}
         <li class="vacancy">{{=_title}}</li>

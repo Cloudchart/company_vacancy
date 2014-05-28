@@ -81,7 +81,7 @@ calculate_side_indices = (root, descriptors) ->
     left_top  = Math.min _.map(left_children, (child) -> child.y - child.height / 2)...
     
     right_top = Math.min _.map(right_children, (child) -> child.y - child.height / 2)...
-
+    
     _.each  left_children, (descriptor, index, collection) -> descriptor.side_index = collection.length - 1 - index ; descriptor.side_children = collection.length ; descriptor.top = left_top
     _.each  right_children, (descriptor, index, collection) -> descriptor.side_index = index ; descriptor.side_children = collection.length ; descriptor.top = right_top
   
@@ -159,6 +159,8 @@ class Chart
 
 
   render: ->
+    console.log 'render'
+    
     # Prepare node views
     @prepare_node_views()
     
@@ -187,7 +189,7 @@ class Chart
           y2: view_position.y + y_offset
           side_index:     view_position.side_index
           side_children:  view_position.side_children
-          top:            view_position.top
+          top:            view_position.top + y_offset
       
       
 

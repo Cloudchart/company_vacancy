@@ -5,6 +5,7 @@ class CreateCloudBlueprintNodes < ActiveRecord::Migration
       t.string  :chart_id,    limit: 36, null: false
       t.string  :parent_id,   limit: 36
       t.string  :title
+      t.integer :knots,       default: 0
       t.integer :position,    default: 0
       t.timestamps
     end

@@ -40,16 +40,6 @@ class Chart extends cc.blueprint.models.Base
     @__changed_sync = true if _.size(nodes_attributes) > 0
   
   
-  lock: ->
-    @__locked = true
-  
-  unlock: ->
-    @__locked = false
-  
-  locked: ->
-    !!@__locked
-    
-    
   # Push tree
   #  
   push: ->
@@ -89,6 +79,15 @@ class Chart extends cc.blueprint.models.Base
       # Process nodes
       cc.blueprint.models.Node.instantiate(data.nodes)
       cc.blueprint.models.Node.remove_deleted_nodes(self.uuid, data.available_nodes)
+      
+      # Process identities
+      #
+      cc.blueprint.models.Identity.instantiate(data.identities)
+      cc.blueprint.models.Identity.remove_deleted_identities(self.uuid, data.available_identities)
+      
+      # Process people
+      #
+      cc.blueprint.models.Person.instantiate(data.people)
       
       # Reposition chart
       self.reposition(true)

@@ -15,22 +15,43 @@ build = (container) ->
   path
 
 
-animate = (element, path, duration) ->
-  animation = document.createElementNS(svg_namespace, 'animate')
+calculate_path = (parent, child, positions, options) ->
+  dx = parent.width() / (parent.instance.children().length + 1)
 
-  animation.setAttribute('attributeType', 'XML')
-  animation.setAttribute('attributeName', 'd')
-  animation.setAttribute('from', element.getAttribute('d') || path)
-  animation.setAttribute('to', path)
-  animation.setAttribute('dur', "#{duration}ms")
-  animation.setAttribute('fill', 'freeze')
 
-  element.appendChild(animation)
+animate_path = (element, path, cached_path = {}, duration = 250) ->
   
-  _.delay ->
-    element.setAttribute('d', path)
-    element.removeChild(animation)
-  , duration
+  deltas = _.reduce path, (memo, value, name) ->
+    memo[name] = (cached_path[name] || 0) - value
+    memo
+  , {}
+  
+  start     = 0
+  
+  frame  = (timestamp) ->
+
+    start     = timestamp if start == 0
+    progress  = timestamp - start
+    delta     = if duration == 0 then 1 else progress / duration
+    delta     = 1 if delta > 1
+    
+    values    = _.reduce path, (memo, value, name) ->
+      memo[name] = value + deltas[name] * (1 - delta)
+      memo
+    , {}
+    
+    start_point = "M #{values.x1} #{values.y1}"
+    upper_line  = "L #{values.x11} #{values.y11}"
+    upper_curve = "Q #{values.x11} #{values.y12} #{values.x12} #{values.y22}"
+    middle_line = "L #{values.x22} #{values.y22}"
+    lower_curve = "Q #{values.x21} #{values.y22} #{values.x21} #{values.y21}"
+    lower_line  = "L #{values.x2} #{values.y2}"
+    
+    element.setAttribute('d', "#{start_point} #{upper_line} #{upper_curve} #{middle_line} #{lower_curve} #{lower_line}")
+
+    window.requestAnimationFrame frame if progress <= duration
+
+  window.requestAnimationFrame frame
 
 
 #
@@ -43,11 +64,15 @@ class Relation
   @instances: {}
   
   
-  constructor: (@child, @parent, @container) ->
+  constructor: (@child, @__parent, @container) ->
     @uuid                         = @child.uuid
     @constructor.instances[@uuid] = @
   
   
+  parent: ->
+    cc.blueprint.views.Node.instances[@child.instance.parent_id]
+  
+
   render: ->
     @element = build(@container) unless @element
     @
@@ -58,10 +83,10 @@ class Relation
       
       radius = 10
       
-      dx = @parent.width() / (@parent.instance.children().length + 1)
+      dx = @parent().width() / (@parent().instance.children().length + 1)
       
-      x1 = position.x1 - @parent.width() / 2 + dx * (@child.index() + 1)
-      y1 = position.y1 + @parent.height() / 2
+      x1 = position.x1 - @parent().width() / 2 + dx * (@child.index() + 1)
+      y1 = position.y1 + @parent().height() / 2
       
       x2 = position.x2
       y2 = position.y2 - @child.height() / 2
@@ -75,20 +100,54 @@ class Relation
       
       h_radius = if Math.abs(x2 - x1) > radius * 2 then radius else Math.abs(x2 - x1) / 2
       
-      nodes_top = Math.min(y2, position.top || Infinity)
+      middle = y1 + (Math.min(position.top || y2, y2) - y1) * (1 - dy)
+
+      ###
       
-      middle = y1 + (nodes_top - y1) * (1 - dy)
+        *(x1, y1)
+        |
+        *(x11, y11)
+        |
+        *---*(x12, y12)------*(x22, y22)---*
+                                           |
+                                           *(x21, y21)
+                                           |
+                                           *(x2, y2)
+
+      ###
       
-      upper_line  = "V #{if middle - radius < y1 then y1 else middle - radius}"
-      upper_curve = "Q #{x1} #{middle} #{x1 + h_radius * sign} #{middle}"
-      middle_line = "H #{x2 - h_radius * sign}"
-      lower_curve = "Q #{x2} #{middle} #{x2} #{if middle + radius > y2 then y2 else middle + radius}"
-      lower_line  = "V #{y2}"
+      x12 = x1 + h_radius * sign
+      y11 = middle - radius ; y11 = y1 if y11 < y1
+      x22 = x2 - h_radius * sign
+      y21 = middle + radius ; y21 = y2 if y21 > y2
       
-      animate(@element, "M #{x1} #{y1} #{upper_line} #{upper_curve} #{middle_line} #{lower_curve} #{lower_line}", 100)
+      path =
+        x1:   x1
+        y1:   y1
+        x11:  x1
+        y11:  y11
+        x12:  x12
+        y12:  middle
+        x22:  x22
+        y22:  middle
+        x21:  x2
+        y21:  y21
+        x2:   x2
+        y2:   y2
+
+      animate_path(@element, path, @cached_path, if @cached_path then 200 else 0)
+
+      @cached_path = path
+    
+    else if position.cached == true and @cached_path
+      animate_path(@element, @cached_path, {}, 0)
+      
+    else if position.path
+      @element.setAttribute('d', position.path)
     
   
   destroy: ->
+    console.log 'destroy relation'
     @element.parentNode.removeChild(@element) if @element and @element.parentNode
     @element = null
     delete @constructor.instances[@uuid]

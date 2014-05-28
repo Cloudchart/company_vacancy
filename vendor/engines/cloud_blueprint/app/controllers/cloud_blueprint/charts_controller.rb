@@ -28,9 +28,13 @@ module CloudBlueprint
       respond_to do |format|
         format.json do
           render json: {
-            available_nodes:    @chart.nodes.select(:uuid).map(&:uuid),
-            nodes:              @chart.nodes.later_then(last_accessed_at).map(&:as_json_for_chart),
-            last_accessed_at:   Time.now
+            available_people:       @chart.people.select(:uuid).map(&:uuid),
+            people:                 @chart.people.later_then(last_accessed_at).map(&:as_json_for_chart),
+            available_nodes:        @chart.nodes.select(:uuid).map(&:uuid),
+            nodes:                  @chart.nodes.later_then(last_accessed_at).map(&:as_json_for_chart),
+            available_identities:   @chart.identities.select(:uuid).map(&:uuid),
+            identities:             @chart.identities.later_then(last_accessed_at).map(&:as_json_for_chart),
+            last_accessed_at:       Time.now
           }
         end
       end

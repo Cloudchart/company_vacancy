@@ -142,7 +142,7 @@ widget = (element, selector, options = {}) ->
   #
   on_drag_end = (event) ->
     cc.ui.droppable.target = null
-    if options.revert == true
+    if options.revert == true and !self.$target.get(0).hasAttribute('captured')
       revert_to_origin()
     else
       dispose_of_element_for_drag()

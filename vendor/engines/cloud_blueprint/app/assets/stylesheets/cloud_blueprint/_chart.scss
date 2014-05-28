@@ -101,6 +101,10 @@ main.blueprint article.chart {
         opacity: .25;
       }
       
+      &.captured {
+        background-color: hsl(120, 75%, 75%);
+      }
+      
       > h2 {
         font-size: inherit;
         margin: 0;
