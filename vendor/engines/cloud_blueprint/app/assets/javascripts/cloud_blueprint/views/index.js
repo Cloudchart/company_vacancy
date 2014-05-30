@@ -2,7 +2,8 @@
 //= require ./chart
 //= require ./relation
 //= require ./node
-//= require ./people_vacancies_filter
+//= require ./filter
+//= require ./person_form
 
 this.cc                 || ( this.cc = {} )
 this.cc.blueprint       || ( this.cc.blueprint = {} )

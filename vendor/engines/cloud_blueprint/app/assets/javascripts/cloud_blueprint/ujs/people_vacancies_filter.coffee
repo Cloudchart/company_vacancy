@@ -1,25 +1,5 @@
+###
 $ ->
-
-  $document = $(document)
-
-  # Toggle filter visibility
-  #
-
-  $filter       = $('aside.person-vacancy-filter')
-  $button       = $('button.toggle', $filter)
-  $button_icon  = $('i.fa', $button)
-  
-  $button.on 'click', (event) ->
-    
-    position  = parseFloat($filter.css('left'))
-    width     = parseFloat($filter.css('width'))
-
-    $filter.velocity
-      left: if position < 0 then 0 else width * -1
-    , 200, 'easeOutQuad'
-    
-    _.each $button.data('toggle').split('|'), (state) -> $button_icon.toggleClass(state)
-  
 
   # Store last performed query
   #
@@ -108,7 +88,55 @@ $ ->
   #
   $document.on 'click', 'aside.person-vacancy-filter button[data-behaviour~="new-vacancy"]', (event) ->
     new cc.ui.modal($('#new-vacancy-form').html())
+###
 
+#
+# Activate person/vacancy edit
+#
+activate_edit = ->
+  
+  $aside_container = $('aside.person-vacancy-filter')
+  
+  # Observe person click
+  #
+  $aside_container.on 'click', 'li.person', (event) ->
+    cc.blueprint.views.PersonForm.open(cc.blueprint.models.Person.get(@dataset.id))
+  
+  # Observe new person button click
+  #
+  $aside_container.on 'click', 'button[data-behaviour~="new-person"]', (event) ->
+    cc.blueprint.views.PersonForm.open(new cc.blueprint.models.Person)
+  
+
+#
+# Activate filter visibility
+# Activate filter search
+#
+
+activate_filter = ->
+  activate_edit()
+  
+  # Toggle filter visibility
+  #
+
+  $filter       = $('aside.person-vacancy-filter')
+  $button       = $('button.toggle', $filter)
+  $button_icon  = $('i.fa', $button)
+  
+  $button.on 'click', (event) ->
+    position  = parseFloat($filter.css('left'))
+    width     = parseFloat($filter.css('width'))
+    
+    $filter.animate
+      left: if position < 0 then 0 else - width
+    ,
+      duration: 250
+    
+    _.each $button.data('toggle').split('|'), (state) -> $button_icon.toggleClass(state)
+  
+#
+#
+#
 
 container_selector      = "aside.person-vacancy-filter ul.people-vacancies"
 person_vacancy_selector = 'li[data-behaviour~="draggable"]'
@@ -153,4 +181,5 @@ activate_drag_drop = ->
   
 
 _.extend cc.blueprint.common,
+  activate_person_vacancy_filter: activate_filter
   activate_person_vacancy_drag_drop: activate_drag_drop

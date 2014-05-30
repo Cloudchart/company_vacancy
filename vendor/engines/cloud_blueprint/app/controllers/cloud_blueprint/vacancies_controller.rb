@@ -71,6 +71,20 @@ module CloudBlueprint
     end
     
     
+    # Push vacancies
+    # PUT /charts/:id/vacancies/push
+    #
+    def push
+      @company = Chart.includes(:company).find(params[:chart_id]).company
+
+      Vacancy.transaction do
+      end
+      
+    ensure
+      render nothing: true
+    end
+    
+    
     # Destroy vacancy
     # DELETE /charts/:id/vacancies/:id
     #

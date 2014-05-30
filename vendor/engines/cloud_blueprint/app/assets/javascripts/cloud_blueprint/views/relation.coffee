@@ -147,7 +147,6 @@ class Relation
     
   
   destroy: ->
-    console.log 'destroy relation'
     @element.parentNode.removeChild(@element) if @element and @element.parentNode
     @element = null
     delete @constructor.instances[@uuid]

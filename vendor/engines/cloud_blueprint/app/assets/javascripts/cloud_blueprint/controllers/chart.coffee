@@ -1,5 +1,49 @@
 @['cloud_blueprint/charts#show'] = (data) ->
+
+  # Namespaces
+  #
+  models  = cc.blueprint.models
+  views   = cc.blueprint.views
   
+  
+  # Chart class variables
+  #
+  
+  models.Chart.load_url = data.load_url
+  
+  
+  # Initialize chart model
+  #
+  chart = new models.Chart(data.chart)
+  
+  
+  # Subscribe on chart sync broabcast
+  #
+
+  on_sync = ->
+    filter_view.render()
+    
+  
+  Arbiter.subscribe('blueprint:dispatcher/sync', on_sync)
+
+
+  # Initial Sync
+  #
+  cc.blueprint.dispatcher.sync()
+  
+
+  # Initialize views
+  #
+
+  filter_view = new views.FilterIdentityList('aside.person-vacancy-filter ul.people-vacancies')
+  
+  
+  # Activations
+  #
+  cc.blueprint.common.activate_person_vacancy_filter()
+  
+
+  ###
   
   # Models namespace
   #
@@ -49,7 +93,7 @@
   # Person/Vacancy Drag/Drop
   #
   cc.blueprint.common.activate_person_vacancy_drag_drop()
-
+  ###
 
   ###
   
@@ -119,7 +163,7 @@
   # models.Vacancy.load()
   ###
 
-
+  ###
   #
   #
   #
@@ -143,3 +187,4 @@
     
     $button.prop('disabled', !form_valid)
     
+  ###

@@ -28,6 +28,8 @@ module CloudBlueprint
       respond_to do |format|
         format.json do
           render json: {
+            available_vacancies:    @chart.vacancies.select(:uuid).map(&:uuid),
+            vacancies:              @chart.vacancies.later_then(last_accessed_at).map(&:as_json_for_chart),
             available_people:       @chart.people.select(:uuid).map(&:uuid),
             people:                 @chart.people.later_then(last_accessed_at).map(&:as_json_for_chart),
             available_nodes:        @chart.nodes.select(:uuid).map(&:uuid),

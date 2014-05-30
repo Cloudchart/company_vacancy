@@ -71,6 +71,23 @@ module CloudBlueprint
     end
     
     
+    # Push people
+    # PUT /charts/:id/people
+    #
+    def push
+      company = Chart.includes(:company).find(params[:chart_id]).company
+
+      Person.transaction do
+        create_people(company)
+        update_people(company)
+        delete_people(company)
+      end
+
+    ensure
+      render nothing: true
+    end
+    
+    
     # Destroy person
     # DELETE /charts/:id/people/:id
     #
@@ -89,7 +106,37 @@ module CloudBlueprint
     private
     
     def person_params
-      params.require(:person).permit([:first_name, :last_name, :occupation])
+      params.require(:person).permit(permitted_person_params)
+    end
+    
+
+    def permitted_person_params
+      [:first_name, :last_name, :occupation]
+    end
+    
+
+    def create_people(company)
+      params[:create_instances].each do |pair|
+        person_params = ActionController::Parameters.new(pair.last)
+        person        = Person.new person_params.permit(permitted_person_params)
+        company.people << person
+      end if params[:create_instances]
+    end
+    
+
+    def update_people(company)
+      params[:update_instances].each do |pair|
+        person_params = ActionController::Parameters.new(pair.last)
+        person        = company.people.find(person_params[:uuid])
+        person.update! person_params.permit(permitted_person_params)
+      end if params[:update_instances]
+    end
+    
+
+    def delete_people(company)
+      params[:delete_instances].each do |uuid|
+        company.people.find(uuid).destroy rescue nil
+      end if params[:delete_instances]
     end
 
   end

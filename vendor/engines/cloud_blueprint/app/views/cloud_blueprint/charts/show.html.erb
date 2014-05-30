@@ -62,25 +62,10 @@
 </template>
 
 
-<template id="filter-person-template">
-  <li data-id="{{=uuid}}" data-behaviour="draggable" class="person">
-    <aside class="icon">
-      <%= font_awesome 'users' %>
-    </aside>
-    <h2>
-      <span class="first-name light">{{=first_name}}</span>
-      <span class="last-name">{{=last_name}}</span>
-    </h2>
-    <p>
-      {{=occupation}}
-    </p>
-  </li>
-</template>
-
-
 <template id="new-person-form">
   <%= render partial: 'cloud_blueprint/people/form' %>
 </template>
+
 
 <template id="new-vacancy-form">
   <%= render partial: 'cloud_blueprint/vacancies/form' %>

@@ -1,4 +1,5 @@
 @mixin filter-identity {
+  cursor: pointer;
   list-style: none;
   margin: 0;
   min-height: $base-unit * 2;
