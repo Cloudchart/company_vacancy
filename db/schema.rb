@@ -84,8 +84,8 @@ ActiveRecord::Schema.define(version: 20140526100444) do
     t.string   "chart_id",   limit: 36,             null: false
     t.string   "parent_id",  limit: 36
     t.string   "title"
+    t.integer  "knots",                 default: 0
     t.integer  "position",              default: 0
-    t.integer  "knots",                 default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -224,24 +224,14 @@ ActiveRecord::Schema.define(version: 20140526100444) do
   end
 
   create_table "people", primary_key: "uuid", force: true do |t|
-<<<<<<< HEAD
     t.string   "first_name",                                  null: false
     t.string   "last_name",                                   null: false
     t.string   "email"
-    t.text     "occupation"
+    t.string   "occupation"
     t.string   "phone"
     t.string   "user_id",          limit: 36
     t.string   "company_id",       limit: 36,                 null: false
     t.boolean  "is_company_owner",            default: false
-=======
-    t.string   "first_name",            default: "", null: false
-    t.string   "last_name",                          null: false
-    t.string   "email"
-    t.text     "occupation"
-    t.string   "phone"
-    t.string   "user_id",    limit: 36
-    t.string   "company_id", limit: 36,              null: false
->>>>>>> WIP
     t.datetime "created_at"
     t.datetime "updated_at"
   end

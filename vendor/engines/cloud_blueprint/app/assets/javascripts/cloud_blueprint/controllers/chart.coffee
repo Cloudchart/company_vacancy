@@ -54,11 +54,10 @@
   # Observe public events
   #
   
-  # chart drag
-  
-  
   # Observe private events
   #
+  
+  cc.blueprint.common.activate_person_vacancy_filter()
   
   # chart click
   $chart_container.on 'click', cc.blueprint.common.on_chart_click
