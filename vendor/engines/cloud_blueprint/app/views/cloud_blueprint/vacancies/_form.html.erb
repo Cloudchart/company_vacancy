@@ -1,0 +1,33 @@
+<%- vacancy ||= @vacancy || @chart.company.vacancies.build -%>
+
+<%= form_for [@chart, vacancy], remote: true, html: { class: :vacancy } do |form| %>
+
+    <label>
+      <%= form.text_field :name, class: :blueprint, autocomplete: :off, autofocus: true, required: true, placeholder: t('.name_placeholder', default: 'Name') %>
+    </label>
+    
+    <label>
+      <%= form.text_area :description, rows: 5, class: :blueprint, placeholder: t('.description_placeholder', default: 'Description') %>
+    </label>
+    
+    <nav class="buttons">
+
+      <%- unless form.object.new_record? -%>
+      
+        <%= link_to [@chart, form.object], class: 'blueprint-button alert', method: :delete, remote: true do -%>
+          <%= font_awesome 'times' %>
+          <%= t '.delete_title', default: 'Delete' %>
+        <%- end -%>
+      
+      <%- end -%>
+      
+      <div class="spacer"></div>
+      
+      <button class="blueprint">
+        <%= font_awesome 'check' %>
+        <%= t ".#{form.object.new_record? ? 'create' : 'update'}_button_title", default: form.object.new_record? ? 'Create' : 'Update' %>
+      </button>
+      
+    </nav>
+
+<%- end -%>

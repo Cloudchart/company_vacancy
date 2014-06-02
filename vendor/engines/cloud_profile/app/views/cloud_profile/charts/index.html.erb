@@ -11,18 +11,18 @@
     </h1>
     
     <ul>
-      <%- @companies.each do |company| -%>
+      <%- current_user.charts.includes(:company).each do |chart| -%>
         <li>
-          <h2>
-            <%= company.name %>
-          </h2>
-          <ul>
-            <li class="new">
-              <%= link_to font_awesome('plus'), '' %>
-            </li>
-          </ul>
+          <%= chart.title %>
+          <br />
+          <%= chart.company.name %>
+          <br />
+          <%= link_to font_awesome('flash'), cloud_blueprint.chart_path(chart) %>
         </li>
       <%- end -%>
+      <li class="new">
+        <%= link_to font_awesome('plus'), cloud_blueprint.new_chart_path %>
+      </li>
     </ul>
     
   </section>

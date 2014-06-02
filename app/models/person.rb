@@ -3,6 +3,10 @@ class Person < ActiveRecord::Base
   include Tire::Model::Search
   include Tire::Model::Callbacks
 
+
+  scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
+
+
   belongs_to :user
   belongs_to :company
   # has_paper_trail
@@ -26,6 +30,10 @@ class Person < ActiveRecord::Base
 
   def full_name
     @full_name ||= [first_name, last_name].compact.join(' ')
+  end
+
+  def as_json_for_chart
+    as_json(only: [:uuid, :first_name, :last_name, :email, :occupation])
   end
 
 end

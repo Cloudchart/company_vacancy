@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140506153308) do
+ActiveRecord::Schema.define(version: 20140526100444) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -62,6 +62,33 @@ ActiveRecord::Schema.define(version: 20140506153308) do
   end
 
   add_index "blocks", ["owner_id", "owner_type"], name: "index_blocks_on_owner_id_and_owner_type", using: :btree
+
+  create_table "cloud_blueprint_charts", primary_key: "uuid", force: true do |t|
+    t.string   "company_id", limit: 36, null: false
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "cloud_blueprint_identities", primary_key: "uuid", force: true do |t|
+    t.string   "chart_id",      limit: 36,                 null: false
+    t.string   "node_id",       limit: 36,                 null: false
+    t.string   "identity_id",   limit: 36,                 null: false
+    t.string   "identity_type",                            null: false
+    t.boolean  "is_primary",               default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "cloud_blueprint_nodes", primary_key: "uuid", force: true do |t|
+    t.string   "chart_id",   limit: 36,             null: false
+    t.string   "parent_id",  limit: 36
+    t.string   "title"
+    t.integer  "knots",                 default: 0
+    t.integer  "position",              default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "cloud_profile_emails", primary_key: "uuid", force: true do |t|
     t.string   "user_id",    limit: 36

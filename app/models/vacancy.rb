@@ -10,14 +10,20 @@ class Vacancy < ActiveRecord::Base
 
   serialize :settings, VacancySetting
 
+  scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
+
   belongs_to :company
   # has_paper_trail
 
   validates :name, presence: true
-  validate :validity_of_settings
+  #validate :validity_of_settings
 
   def settings=(hash)
     settings.attributes = hash
+  end
+
+  def as_json_for_chart
+    as_json(only: [:uuid, :name, :description])
   end
 
 private

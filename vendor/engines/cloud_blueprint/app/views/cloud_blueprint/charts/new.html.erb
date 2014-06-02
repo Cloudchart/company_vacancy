@@ -1,0 +1,13 @@
+<%- class_for_root_tag main: :blueprint -%>
+
+<article class="blueprint">
+  <section class="new">
+
+    <h1>
+      <%= t '.title', default: 'New chart' %>
+    </h1>
+    
+    <%= render partial: 'new_chart_form' %>
+    
+  </section>
+</article>

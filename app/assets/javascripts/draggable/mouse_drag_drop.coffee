@@ -14,6 +14,7 @@ default_options =
 
 widget = ($element, selector, options = {}) ->
   
+  $document = $(document)
   
   options = $.extend {}, default_options, options
   
@@ -51,8 +52,8 @@ widget = ($element, selector, options = {}) ->
     if distance_valid(event)
       on_drag_start(self.captured_event)
     
-    $element.on 'mousemove',  on_mouse_move
-    $element.on 'mouseup',    on_mouse_up
+    $document.on 'mousemove',  on_mouse_move
+    $document.on 'mouseup',    on_mouse_up
     
   
 
@@ -69,8 +70,8 @@ widget = ($element, selector, options = {}) ->
   # Mouse up
   #
   on_mouse_up = (event) ->
-    $element.off 'mousemove', on_mouse_move
-    $element.off 'mouseup',   on_mouse_up
+    $document.off 'mousemove', on_mouse_move
+    $document.off 'mouseup',   on_mouse_up
     
     if self.captured
       on_drag_end(event)

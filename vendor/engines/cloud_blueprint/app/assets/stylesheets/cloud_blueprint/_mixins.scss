@@ -1,0 +1,54 @@
+//
+// Blueprint input
+//
+
+$blueprint-input-font-size: 30pt;
+$blueprint-input-font-weight: 600;
+
+@mixin blueprint-input {
+  border: none;
+  font-size: $blueprint-input-font-size;
+  font-weight: $blueprint-input-font-weight;
+  outline: none;
+}
+
+input[type="text"].blueprint {
+  @include blueprint-input;
+}
+
+
+//
+// Blueprint textarea
+//
+
+$blueprint-textarea-font-size: 15pt;
+$blueprint-textarea-font-weight: 300;
+
+@mixin blueprint-textarea {
+  border: none;
+  font-size: $blueprint-textarea-font-size;
+  font-weight: $blueprint-textarea-font-weight;
+  outline: none;
+  resize: none;
+}
+
+textarea.blueprint {
+  @include blueprint-textarea;
+}
+
+//
+// Blueprint button
+//
+
+@mixin blueprint-button {
+  @include cloud-button;
+}
+
+a.blueprint-button,
+button.blueprint {
+  @include blueprint-button;
+  
+  font-size: 15pt;
+  height: $base-unit * 2;
+  line-height: $base-unit * 2;
+}

@@ -12,6 +12,9 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require arbiter
+//= require t
+//= require react
 //= require block_identities
 //= require ui
 //= require plugins
@@ -21,3 +24,4 @@
 //= require_tree .
 //= require_tree ./controllers
 //= require cloud_profile/application
+//= require cloud_blueprint/application

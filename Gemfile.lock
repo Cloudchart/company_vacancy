@@ -6,6 +6,12 @@ GIT
       railties (>= 3.2, < 5)
 
 PATH
+  remote: vendor/engines/cloud_blueprint
+  specs:
+    cloud_blueprint (0.0.1)
+      rails (~> 4.1.0)
+
+PATH
   remote: vendor/engines/cloud_profile
   specs:
     cloud_profile (0.0.1)
@@ -322,6 +328,7 @@ DEPENDENCIES
   capybara
   carrierwave
   carrierwave-meta
+  cloud_blueprint!
   cloud_oauth!
   cloud_profile!
   coffee-rails (~> 4.0.1)

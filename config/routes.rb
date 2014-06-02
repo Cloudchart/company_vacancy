@@ -11,6 +11,7 @@ Cloudchart::Application.routes.draw do
   #
   mount RailsAdmin::Engine, at: '/admin'
   mount CloudProfile::Engine, at: '/'
+  mount CloudBlueprint::Engine, at: '/'
 
   # Concerns
   #
