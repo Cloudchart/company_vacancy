@@ -18,6 +18,12 @@ class Element extends cc.blueprint.models.Base
     @define_properties()
   
   
+  destroy: ->
+    super()
+    @element.parentNode.removeChild(@element) if @element.parentNode
+    @
+  
+  
   define_properties: ->
     self = @
     _.each ['parent', 'children', 'descendants'], (name) -> Object.defineProperty self, name, { get: self["__#{name}"] }

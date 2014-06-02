@@ -1,3 +1,9 @@
+NodeModel = null
+
+#
+#
+#
+
 class Chart extends cc.blueprint.models.Element
   
   @attr_accessor 'uuid', 'title'
@@ -47,6 +53,10 @@ class Chart extends cc.blueprint.models.Element
     
     # Instantiate people
     cc.blueprint.models.Person.instantiate(data.people, data.available_people)
+    
+    # Instantiate nodes
+    cc.blueprint.models.Node.instantiate(data.nodes, data.available_nodes)
+    @consolidate()
   
   
   # Push
@@ -77,9 +87,39 @@ class Chart extends cc.blueprint.models.Element
     deferred.promise()
   
 
+  # Consolidate
+  #
+  consolidate: ->
+    self  = @
+
+    _.chain(NodeModel.instances)
+      # Find nodes of current chart
+      .filter((node) -> !node.is_deleted() and node.chart_id == self.uuid)
+      # Filter nodes without parent
+      .reject((node) -> NodeModel.get(node.parent_id))
+      # Sort nodes by position
+      .sortBy('position')
+      # Set node attributes
+      # Set node parent element
+      # Consolidate node children
+      .each((node, i) ->
+        node.parent_id  = null
+        node.position   = i
+        self.element.appendChild(node.element)
+        node.consolidate()
+      )
+    
+    @
+    
+    
+  
+
 #
 #
 #
 
 _.extend cc.blueprint.models,
   Chart: Chart
+
+$ ->
+  NodeModel ||= cc.blueprint.models.Node

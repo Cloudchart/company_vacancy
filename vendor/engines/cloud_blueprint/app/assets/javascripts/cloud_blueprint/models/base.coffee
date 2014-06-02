@@ -169,7 +169,7 @@ class Base
   
   
   is_deleted: ->
-    !!@constructor.deleted_instances[@uuid]
+    _.contains @constructor.deleted_instances, @uuid
   
 
   is_exist: ->
@@ -207,15 +207,12 @@ class Base
   
   
   update: (attributes = {}) ->
-    if @is_exist()
-      @set_attributes(attributes)
+    @set_attributes(attributes)
     @
   
   
   destroy: ->
-    if @is_exist()
-      delete @constructor.instances[@uuid]
-      @constructor.deleted_instances.push(@uuid)
+    @constructor.deleted_instances.push(@uuid)
     @
  
 

@@ -10,6 +10,7 @@
   #
   
   models.Chart.load_url     = data.load_url
+  models.Node.load_url      = data.nodes_url
   models.Person.load_url    = data.people_url
   models.Vacancy.load_url   = data.vacancies_url
   
@@ -23,7 +24,8 @@
   #
 
   on_sync = ->
-    filter_view.render()
+    filter_view.render() if filter_view?
+    chart_view.render() if chart_view?
     
   
   Arbiter.subscribe('blueprint:dispatcher/sync', on_sync)
@@ -37,156 +39,53 @@
   # Initialize views
   #
 
+  chart_view  = new views.Chart(chart, 'section.chart')
   filter_view = new views.FilterIdentityList('aside.person-vacancy-filter ul.people-vacancies')
   
   
-  # Activations
+  # Elements
   #
-  cc.blueprint.common.activate_person_vacancy_filter()
+  $document               = $(document)
+  $chart_container        = $('section.chart')
+  node_selector           = '[data-behaviour~="node"]'
+  node_form_selector      = ".modal-container form.node"
+  delete_button_selector  = 'a[data-behaviour~="delete"]'
   
-
-  ###
-  
-  # Models namespace
-  #
-  models  = cc.blueprint.models
-  views   = cc.blueprint.views
-
-  models.Chart.load_url = data.load_url
-  
-  # Subscriptions
-  #
-  on_chart_sync = ->
-    chart_view.render()
-    people_vacancies_filter_view.render()
-    
-  Arbiter.subscribe("#{models.Chart.topic}/sync", on_chart_sync)
-  
-  # Initialize Chart model and Chart view
-  #
-
-  chart                         = new models.Chart(data.chart);
-  chart_view                    = new views.Chart(chart, 'section.chart')
-  people_vacancies_filter_view  = new views.PeopleVacanciesFilter('aside.person-vacancy-filter ul.people-vacancies', {
-    person_template: new t($('#filter-person-template').html())
-  })
-  
-  # First load
-  chart.sync()
-  
-
-  # ujs/chart
-  cc.blueprint.common.activate_chart(chart, chart_view, data.nodes_url)
-
-
-  # Node Drag/Drop
+  # Observe public events
   #
   
-  cc.blueprint.common.activate_node_drag_drop(chart)
-  
-  # Update nodes positions after drag/drop
-  #
-  Arbiter.subscribe "node:drag:drop", (data) ->
-    chart.sync ->
-      cc.blueprint.models.Node.update(data.uuid, { parent_id: data.parent_id, position: data.position - .5 })
-      chart.reposition(true)
+  # chart drag
   
   
-  # Person/Vacancy Drag/Drop
-  #
-  cc.blueprint.common.activate_person_vacancy_drag_drop()
-  ###
-
-  ###
-  
-  # Person/Vacancy
-  cc.ui.drag_drop('aside.person-vacancy-filter ul.people-vacancies', 'li[data-behaviour~="draggable"]', {
-    revert: true
-  })
-  
-  # Node
-  cc.ui.drag_drop('section.chart', 'div.node', {
-    revert: true
-  })
-
-
-
-  # Initialize Person class variables
-  #
-  models.Person.load_url    = data.people_url
-
-  # Initialize Vacancy class variables
-  #
-  models.Vacancy.load_url   = data.vacancies_url
-
-  # Templates
-  #
-  vacancy_template          = new t($('#filter-vacancy-template').html())
-  person_template           = new t($('#filter-person-template').html())
-  
-
-  # Render people and vacancies
-  #
-  render_people_and_vacancies = ->
-    $container  = $('aside.person-vacancy-filter ul.people-vacancies') ; $container.empty()
-
-    _.chain(models.Vacancy.instances).sortBy('name').each (vacancy) ->
-      $container.append(vacancy_template.render(vacancy.attributes))
-
-    _.chain(models.Person.instances).sortBy(['last_name', 'first_name']).each (person) ->
-      $container.append(person_template.render(person.attributes))
-    
-    Arbiter.publish('cc::blueprint::filter/render')
-  
-  # Debouced people and vacancies render
-  #
-  debounced_render_people_and_vacancies = _.debounce render_people_and_vacancies, 200
-
-
-  # Subscribe on people
-  #
-  Arbiter.subscribe "#{models.Person.topic}/*", debounced_render_people_and_vacancies
-
-  # Subscribe on vacancies
-  #
-  Arbiter.subscribe "#{models.Vacancy.topic}/*", debounced_render_people_and_vacancies
-  
-
-  # Load Nodes
-  #
-  # models.Node.load()
-  
-  # Load People
-  #
-  # models.Person.load()
-  
-  # Load Vacancies
-  #
-  # models.Vacancy.load()
-  ###
-
-  ###
-  #
-  #
+  # Observe private events
   #
   
-  modal_form_selector = '.modal-overlay form.person, .modal-overlay form.vacancy'
+  # chart click
+  $chart_container.on 'click', cc.blueprint.common.on_chart_click
   
-  # Escape button
-  #
-  $(document).on 'keydown', modal_form_selector, (event) ->
-    cc.ui.modal.close() if event.keyCode == 27
+  # node click
+  $chart_container.on 'click', node_selector, cc.blueprint.common.on_node_click
   
+  # node form submit
+  $document.on 'submit', node_form_selector, cc.blueprint.common.on_node_form_submit
+  
+  # node form delete button click
+  $document.on 'click', "#{node_form_selector} #{delete_button_selector}", cc.blueprint.common.on_node_form_delete_button_click
+  
+  # node dropped
+  $chart_container.on 'node::drop', node_selector, (event, data) ->
+    model         = cc.blueprint.models.Node.get(@dataset.id)
+    parent_model  = cc.blueprint.models.Node.get(data.parent.dataset.id)
 
-  # Form validation
+    model.update
+      parent_id:  parent_model.uuid
+      position:   data.index - .5
+  
+  
+  # Node drag/drop
   #
-  $(document).on 'input', modal_form_selector, ->
-    
-    $requires = $('*:required', modal_form_selector)
-    $button   = $('button', modal_form_selector)
-
-    form_valid  = _.chain($requires).map((input) -> $(input).val()).every((value) -> value.length > 0).value()
-    
-    $button.prop('disabled', !form_valid)
-    
-  ###
+  cc.ui.droppable()
+  
+  # activate
+  
+  cc.blueprint.common.activate_node_drag_drop($chart_container, node_selector)

@@ -63,6 +63,8 @@ class Relation
 
   @instances: {}
   
+  @get: (uuid) -> @instances[uuid]
+  
   
   constructor: (@child, @__parent, @container) ->
     @uuid                         = @child.uuid
@@ -83,7 +85,7 @@ class Relation
       
       radius = 10
       
-      dx = @parent().width() / (@parent().instance.children().length + 1)
+      dx = @parent().width() / (@parent().instance.children.length + 1)
       
       x1 = position.x1 - @parent().width() / 2 + dx * (@child.index() + 1)
       y1 = position.y1 + @parent().height() / 2

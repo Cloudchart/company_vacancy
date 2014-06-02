@@ -9,7 +9,7 @@ module Uuidable
   private
 
     def generate_uuid
-      self.id = SecureRandom.uuid
+      self.id = SecureRandom.uuid unless self.id.present?
     end
 
 end

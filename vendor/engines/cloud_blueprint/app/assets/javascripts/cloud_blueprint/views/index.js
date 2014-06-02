@@ -1,9 +1,8 @@
 //= require_self
 //= require ./chart
-//= require ./relation
 //= require ./node
+//= require ./relation
 //= require ./filter
-//= require ./person_form
 
 this.cc                 || ( this.cc = {} )
 this.cc.blueprint       || ( this.cc.blueprint = {} )

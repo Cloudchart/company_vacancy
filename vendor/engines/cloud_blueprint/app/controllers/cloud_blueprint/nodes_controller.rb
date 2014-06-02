@@ -52,7 +52,7 @@ module CloudBlueprint
     #
     def edit
       @chart  = Chart.find(params[:chart_id])
-      @node   = @chart.nodes.find(params[:id])
+      @node   = @chart.nodes.includes(:children).find(params[:id])
       
       respond_to do |format|
         format.js
@@ -73,7 +73,6 @@ module CloudBlueprint
           render json: @node.as_json_for_chart
         end
       end
-      
     end
     
     
@@ -102,6 +101,20 @@ module CloudBlueprint
       render nothing: true
     end
     
+    # Destroy node
+    # DELETE /charts/:id/nodes/:id
+    #
+    def destroy
+      chart = Chart.find(params[:chart_id])
+      node  = chart.nodes.includes(:children).find(params[:id])
+      
+      node.destroy if node.children.length == 0
+      
+      respond_to do |format|
+        format.json { render json: node.as_json_for_chart }
+      end
+    end
+    
     
     private
     
@@ -111,7 +124,7 @@ module CloudBlueprint
     end
     
     def permitted_node_params
-      [:title, :parent_id, :position, :knots]
+      [:uuid, :title, :parent_id, :position, :knots]
     end
     
   end

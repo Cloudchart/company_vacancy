@@ -68,7 +68,7 @@ position_levels = (root, descriptors) ->
 
 
 calculate_side_indices = (root, descriptors) ->
-  children = _.pluck root.children()
+  children = _.pluck root.children
 
   if root instanceof cc.blueprint.models.Node
     uuids               = _.pluck children, 'uuid'
@@ -91,8 +91,8 @@ calculate_side_indices = (root, descriptors) ->
 prepare_tree = (root) ->
 
   # Get all nodes for layout calculation
-  nodes = root.descendants()
-  
+  nodes = root.descendants
+
   # Prepare node descriptors
   descriptors = _.reduce [root, nodes...], (memo, node) ->
     memo[node.uuid] = prepare_descriptor(node) ; memo
@@ -120,7 +120,6 @@ prepare_tree = (root) ->
   
   layout =
     positions: descriptors
-  
 
   layout
 
@@ -138,7 +137,7 @@ class Chart
   
   prepare_node_views: ->
     $container  = @$container
-    models      = cc.blueprint.models.Node.instances
+    models      = _.reduce cc.blueprint.models.Node.instances, ((memo, instance) -> memo[instance.uuid] = instance unless instance.is_deleted() ; memo), {}
     views       = cc.blueprint.views.Node.instances
     
     # Create views for created models
@@ -149,18 +148,16 @@ class Chart
       .each(
         (model) -> new cc.blueprint.views.Node(model, $container, $('svg', $container).get(0))
       )
-
+    
     # Delete views for deleted models
     _.chain(views)
       .reject(
         (view) -> models[view.uuid]
       )
       .invoke('destroy')
-
+    
 
   render: ->
-    console.log 'render'
-    
     # Prepare node views
     @prepare_node_views()
     
@@ -176,11 +173,12 @@ class Chart
     
     _.each cc.blueprint.views.Node.instances, (view) ->
       view_position = layout.positions[view.uuid]
-
+      
       view.position
         x: view_position.x + x_offset
         y: view_position.y + y_offset
       
+
       if parent_position = layout.positions[view.instance.parent_id]
         view.relation().position
           x1: parent_position.x + x_offset
@@ -193,7 +191,6 @@ class Chart
       
       
 
-  
 
 #
 #

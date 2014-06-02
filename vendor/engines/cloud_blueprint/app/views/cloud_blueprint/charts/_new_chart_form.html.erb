@@ -1,6 +1,4 @@
 <%= form_for @chart do |form| %>
-
-
   
   <label>
     <%= form.text_field :title, placeholder: t('.title_placeholder', default: 'Chart Title') %>
@@ -18,6 +16,5 @@
     <%= font_awesome 'flash' %>
     <%= t '.button_title', default: 'Create Chart' %>
   </button>
-
 
 <%- end -%>

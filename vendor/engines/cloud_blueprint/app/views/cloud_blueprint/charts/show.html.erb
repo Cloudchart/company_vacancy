@@ -33,7 +33,7 @@
     </button>
   </aside>
 
-  <section class="chart" id="<%= @chart.to_param %>" data-behaviour="chart-container">
+  <section class="chart" data-id="<%= @chart.to_param %>" data-behaviour="chart-container">
     <svg>
       <defs>
         <marker id="insertion-circle" viewBox="0 0 10 10" refX="2.5" refY="2.5" markerWidth="10" markerHeight="10" orient="auto" stroke="transparent" fill="black">
@@ -47,7 +47,7 @@
   
   
 <template id="node-template">
-  <div class="node" data-id="{{=uuid}}" data-behaviour="droppable" data-droppable-target="node" style="background-color: {{=color}};">
+  <div class="node" data-id="{{=uuid}}" data-class-name="Node" data-behaviour="node droppable" data-droppable-target="node" style="background-color: {{=color}};">
     <h2>{{=title}}</h2>
     <ul>
       {{@people}}
@@ -58,27 +58,4 @@
       {{/@vacancies}}
     </ul>
   </div>
-</template>
-
-
-<template id="new-person-form">
-  <%= render partial: 'cloud_blueprint/people/form' %>
-</template>
-
-
-<template id="new-vacancy-form">
-  <%= render partial: 'cloud_blueprint/vacancies/form' %>
-</template>
-
-
-<template id="filter-vacancy-template">
-  <li data-id="{{=uuid}}" data-behaviour="draggable" class="vacancy">
-    <aside class="icon">
-      <%= font_awesome 'briefcase' %>
-    </aside>
-    <h2>{{=name}}</h2>
-    <p>
-      Vacancy
-    </p>
-  </li>
 </template>

@@ -261,5 +261,5 @@ activate = (chart) ->
 #
 #
 
-_.extend cc.blueprint.common,
-  activate_node_drag_drop: activate
+##_.extend cc.blueprint.common,
+#  activate_node_drag_drop: activate

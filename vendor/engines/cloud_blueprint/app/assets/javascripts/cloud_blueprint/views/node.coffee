@@ -35,6 +35,8 @@ class Node
   
   @instances: {}
   
+  @get: (uuid) -> @instances[uuid]
+  
 
   constructor: (@instance, container, @svg_container, options = {}) ->
     @$container = $(container) ; throw 'Container for Node View not found' if @$container.length == 0

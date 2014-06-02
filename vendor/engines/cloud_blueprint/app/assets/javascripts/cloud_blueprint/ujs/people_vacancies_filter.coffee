@@ -91,6 +91,26 @@ $ ->
 ###
 
 #
+# Activate filter toggle
+#
+activate_toggle = ->
+  $filter       = $('aside.person-vacancy-filter')
+  $button       = $('button.toggle', $filter)
+  $button_icon  = $('i.fa', $button)
+  
+  $button.on 'click', (event) ->
+    position  = parseFloat($filter.css('left'))
+    width     = parseFloat($filter.css('width'))
+    
+    $filter.animate
+      left: if position < 0 then 0 else - width
+    ,
+      duration: 250
+    
+    _.each $button.data('toggle').split('|'), (state) -> $button_icon.toggleClass(state)
+
+
+#
 # Activate person/vacancy edit
 #
 activate_edit = ->
@@ -169,25 +189,9 @@ activate_edit = ->
 #
 
 activate_filter = ->
+  activate_toggle()
   activate_edit()
   
-  # Toggle filter visibility
-  #
-
-  $filter       = $('aside.person-vacancy-filter')
-  $button       = $('button.toggle', $filter)
-  $button_icon  = $('i.fa', $button)
-  
-  $button.on 'click', (event) ->
-    position  = parseFloat($filter.css('left'))
-    width     = parseFloat($filter.css('width'))
-    
-    $filter.animate
-      left: if position < 0 then 0 else - width
-    ,
-      duration: 250
-    
-    _.each $button.data('toggle').split('|'), (state) -> $button_icon.toggleClass(state)
   
 #
 #
