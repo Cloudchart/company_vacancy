@@ -8,8 +8,7 @@
 
 <%- class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint -%>
 
-
-<article class="chart">
+<article class="chart" data-uuid="<%= @chart.to_param %>">
   <aside class="person-vacancy-filter">
     <label class="search">
       <%= font_awesome 'search' %>

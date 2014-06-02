@@ -34,7 +34,11 @@ synchronize = ->
 
 dispatcher =
   
-  sync: (callback) ->
+  sync: ->
+    Arbiter.publish('blueprint:dispatcher/sync')
+  
+
+  __sync: (callback) ->
 
     if _.isFunction(callback)
       callback()

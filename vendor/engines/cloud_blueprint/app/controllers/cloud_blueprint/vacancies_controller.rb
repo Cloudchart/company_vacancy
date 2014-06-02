@@ -24,7 +24,7 @@ module CloudBlueprint
       @vacancy  = Vacancy.new
 
       respond_to do |format|
-        format.js
+        format.js { render :form }
       end
     end
     
@@ -51,7 +51,7 @@ module CloudBlueprint
       @vacancy  = Vacancy.find(params[:id])
 
       respond_to do |format|
-        format.js
+        format.js { render :form }
       end
     end
     

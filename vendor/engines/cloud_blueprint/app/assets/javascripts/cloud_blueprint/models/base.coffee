@@ -9,6 +9,37 @@ class Base
   
   # @created_instances: []
   
+
+  @new_form: ->
+    deferred = new $.Deferred
+    
+    $.ajax
+      url:      "#{@load_url}/new"
+      type:     "GET"
+      dataType: "script"
+    .done (template) ->
+      deferred.resolve(eval template)
+    .fail ->
+      deferred.reject()
+    
+    deferred.promise()
+  
+
+  @edit_form: (uuid) ->
+    deferred = new $.Deferred
+    
+    $.ajax
+      url:      "#{@load_url}/#{uuid}/edit"
+      type:     "GET"
+      dataType: "script"
+    .done (template) ->
+      deferred.resolve(eval template)
+    .fail ->
+      deferred.reject()
+    
+    deferred.promise()
+    
+  
   
   @uuid: ->
       octets      = _.map [0..32], -> Math.floor(Math.random() * 0x10)

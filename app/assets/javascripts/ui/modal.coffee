@@ -38,6 +38,7 @@ widget = (content, options = {}) ->
   
   callbacks.before_show.pop()()
 
+  $overlay.toggleClass('locked', options.locked == true)
   $container.html(content)
   $overlay.show()
 
@@ -65,7 +66,7 @@ $ ->
   $document = $(document)
   $window   = $(window)
   
-  $document.on 'click', '.modal-overlay', (event) -> widget.close()
+  $document.on 'click', '.modal-overlay:not(.locked)', (event) -> widget.close()
   $document.on 'click', '.modal-container', (event) -> event.stopPropagation()
 
 

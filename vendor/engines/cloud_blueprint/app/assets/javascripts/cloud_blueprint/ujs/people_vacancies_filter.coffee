@@ -97,15 +97,70 @@ activate_edit = ->
   
   $aside_container = $('aside.person-vacancy-filter')
   
-  # Observe person click
-  #
-  $aside_container.on 'click', 'li.person', (event) ->
-    cc.blueprint.views.PersonForm.open(cc.blueprint.models.Person.get(@dataset.id))
+  
+  spinner = '<div class="lock"><i class="fa fa-spinner fa-spin"></i></div>'
+  
+  
+  $(document).on 'submit', '.modal-container form', (event) ->
+    if @classList.contains('person')
+      attributes = $(@).serializeArray()
+  
   
   # Observe new person button click
   #
   $aside_container.on 'click', 'button[data-behaviour~="new-person"]', (event) ->
-    cc.blueprint.views.PersonForm.open(new cc.blueprint.models.Person)
+    cc.ui.modal(spinner, { locked: true })
+    form = cc.blueprint.models.Person.new_form()
+
+    form.done (template) ->
+      cc.ui.modal(template)
+    
+    form.fail ->
+      cc.ui.modal.close()
+      alert('fail')
+
+
+  # Observe person click
+  #
+  $aside_container.on 'click', 'li.person', (event) ->
+    cc.ui.modal(spinner, { locked: true })
+    form = cc.blueprint.models.Person.edit_form(@dataset.id)
+
+    form.done (template) ->
+      cc.ui.modal(template)
+    
+    form.fail ->
+      cc.ui.modal.close()
+      alert('fail')
+    
+
+  # Observe new vacancy button click
+  #
+  $aside_container.on 'click', 'button[data-behaviour~="new-vacancy"]', (event) ->
+    cc.ui.modal(spinner, { locked: true })
+    form = cc.blueprint.models.Vacancy.new_form()
+
+    form.done (template) ->
+      cc.ui.modal(template)
+    
+    form.fail ->
+      cc.ui.modal.close()
+      alert('fail')
+
+
+  # Observe vacancy click
+  #
+  $aside_container.on 'click', 'li.vacancy', (event) ->
+    cc.ui.modal(spinner, { locked: true })
+    form = cc.blueprint.models.Vacancy.edit_form(@dataset.id)
+
+    form.done (template) ->
+      cc.ui.modal(template)
+    
+    form.fail ->
+      cc.ui.modal.close()
+      alert('fail')
+  
   
 
 #

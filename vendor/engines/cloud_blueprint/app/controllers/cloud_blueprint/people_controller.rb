@@ -19,11 +19,11 @@ module CloudBlueprint
     # Get /charts/:id/people/new
     #
     def new
-      @chart    = Chart.find(params[:chart_id])
-      @person   = Person.new
+      @chart    = Chart.includes(:company).find(params[:chart_id])
+      @person   = @chart.company.people.build
 
       respond_to do |format|
-        format.js
+        format.js { render :form }
       end
     end
 
@@ -33,8 +33,10 @@ module CloudBlueprint
     #
     def create
       @chart    = Chart.includes(:company).find(params[:chart_id])
-      @person   = Person.new person_params
-      @chart.company.people << @person
+      @person   = @chart.company.people.build person_params
+
+      @person.save!
+
       respond_to do |format|
         format.html { redirect_to @chart }
         format.js
@@ -47,11 +49,11 @@ module CloudBlueprint
     # GET /charts/:id/people/:id
     #
     def edit
-      @chart    = Chart.find(params[:chart_id])
-      @person   = Person.find(params[:id])
+      @chart    = Chart.includes(:company).find(params[:chart_id])
+      @person   = @chart.company.people.find(params[:id])
 
       respond_to do |format|
-        format.js
+        format.js { render :form }
       end
     end
 
@@ -60,9 +62,10 @@ module CloudBlueprint
     # PUT /charts/:id/people/:id
     #
     def update
-      @chart    = Chart.find(params[:chart_id])
-      @person   = Person.find(params[:id])
-      @person.update person_params
+      @chart    = Chart.includes(:company).find(params[:chart_id])
+      @person   = @chart.company.people.find(params[:id])
+
+      @person.update! person_params
       
       respond_to do |format|
         format.html { redirect_to @chart }
@@ -92,8 +95,9 @@ module CloudBlueprint
     # DELETE /charts/:id/people/:id
     #
     def destroy
-      @chart    = Chart.find(params[:chart_id])
-      @person   = Person.find(params[:id])
+      @chart    = Chart.includes(:company).find(params[:chart_id])
+      @person   = @chart.company.people.find(params[:id])
+
       @person.destroy
       
       respond_to do |format|

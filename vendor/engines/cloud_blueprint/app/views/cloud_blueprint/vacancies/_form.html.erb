@@ -3,7 +3,7 @@
 <%= form_for [@chart, vacancy], remote: true, html: { class: :vacancy } do |form| %>
 
     <label>
-      <%= form.text_field :name, class: :blueprint, autofocus: true, required: true, placeholder: t('.name_placeholder', default: 'Name') %>
+      <%= form.text_field :name, class: :blueprint, autocomplete: :off, autofocus: true, required: true, placeholder: t('.name_placeholder', default: 'Name') %>
     </label>
     
     <label>

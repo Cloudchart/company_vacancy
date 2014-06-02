@@ -9,7 +9,9 @@
   # Chart class variables
   #
   
-  models.Chart.load_url = data.load_url
+  models.Chart.load_url     = data.load_url
+  models.Person.load_url    = data.people_url
+  models.Vacancy.load_url   = data.vacancies_url
   
   
   # Initialize chart model
@@ -29,7 +31,7 @@
 
   # Initial Sync
   #
-  cc.blueprint.dispatcher.sync()
+  chart.pull().done cc.blueprint.dispatcher.sync
   
 
   # Initialize views

@@ -4,7 +4,6 @@
   </section>
   
   <section class="buttons">
-    
     <%- if @node.persisted? -%>
       <%= link_to font_awesome('times') + " " + t('.delete_link_title', default: 'Delete'), "##{@node.to_param}", data: { behaviour: :delete }, class: 'blueprint-button alert' %>
     <%- end -%>
@@ -15,6 +14,5 @@
       <%= font_awesome 'check' %>
       <%= t ".#{@node.persisted? ? 'update' : 'create' }_button_title", default: @node.persisted? ? 'Update' : 'Create' %>
     </button>
-    
   </section>
 </form>
