@@ -6,13 +6,15 @@ namespace = 'http://cloudorgchart.com'
 
 class Element extends cc.blueprint.models.Base
   
+  @className: 'Element'
+  
   @element_type:  null
   @child_class:   null
   
   constructor: (attributes = {}) ->
     super(attributes)
     @element                    = document.createElementNS(namespace, @constructor.element_type)
-    @element.dataset.className  = @constructor.name
+    @element.dataset.className  = @constructor.className
     @element.id                 = @uuid
     
     @define_properties()

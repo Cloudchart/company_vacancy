@@ -4,6 +4,8 @@
 
 class Vacancy extends cc.blueprint.models.Base
   
+  @className: 'Vacancy'
+  
   @attr_accessor  'uuid', 'name', 'description'
 
   @instances:     {}

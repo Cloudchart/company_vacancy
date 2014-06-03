@@ -58,7 +58,7 @@ class FilterIdentityView
     @rendered_at    = new Date
 
     dummy           = document.createElement('div')
-    dummy.innerHTML = templates[@model.constructor.name].render(@model)
+    dummy.innerHTML = templates[@model.constructor.className].render(@model)
     @element        = dummy.firstChild
 
     @

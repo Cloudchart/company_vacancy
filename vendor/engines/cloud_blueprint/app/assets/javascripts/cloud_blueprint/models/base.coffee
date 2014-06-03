@@ -1,4 +1,6 @@
 class Base
+  
+  @className: 'Base'
 
   # Following class level attributes must be defined in each class
   #

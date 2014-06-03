@@ -20,13 +20,13 @@ IdentityView = cc.blueprint.views.FilterIdentity
 class FilterIdentityListView
   
   constructor: (container) ->
-    @$container = $(container) ; throw "Container not found for #{@constructor.name}" unless @$container.length
+    @$container = $(container) ; throw "Container not found for #{@constructor.className}" unless @$container.length
   
   
   prepare_identity_views: (name) ->
     $container = @$container
     
-    available_views         = _.filter IdentityView.instances, (view) -> view.model.constructor.name == name
+    available_views         = _.filter IdentityView.instances, (view) -> view.model.constructor.className == name
     available_views_uuids   = _.map available_views, 'uuid'
     available_models        = _.map cc.blueprint.models[name].instances
     available_models_uuids  = _.map available_models, 'uuid'

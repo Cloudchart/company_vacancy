@@ -6,6 +6,8 @@ NodeModel = null
 
 class Chart extends cc.blueprint.models.Element
   
+  @className: 'Chart'
+  
   @attr_accessor 'uuid', 'title'
   
   @element_type: 'chart'
