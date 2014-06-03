@@ -191,10 +191,20 @@ main.blueprint article.chart {
   
   border: 2pt solid transparent;
   padding: $base-unit * 2;
-  width: $base-unit * 35;
+  width: $base-unit * 40;
+  
+  section.title {
+    
+    input {
+      width: 100%;
+    }
+    
+  }
   
   div.color-indices {
     @include display(flex);
+    
+    margin-right: $base-unit / 2;
     
     label {
       @include display(flex);
