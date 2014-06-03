@@ -189,9 +189,39 @@ main.blueprint article.chart {
 
 .modal-container form.node {
   
-  border: 2pt solid #ccc;
+  border: 2pt solid transparent;
   padding: $base-unit * 2;
   width: $base-unit * 35;
+  
+  div.color-indices {
+    @include display(flex);
+    
+    label {
+      @include display(flex);
+      overflow: hidden;
+      width: $base-unit * 2;
+      
+      &:not(:first-child) {
+        margin-left: $base-unit / 4;
+      }
+      
+      input {
+        position: absolute;
+        left: - $base-unit * 2;
+      }
+      
+      i.fa {
+        color: hsl(0, 100%, 100%);
+        font-size: 15pt;
+        margin: auto;
+        margin-left: - $base-unit * 2;
+      }
+      
+      input:checked + i.fa {
+        margin-left: auto;
+      }
+    }
+  }
   
   section.buttons {
     @include display(flex);

@@ -1,6 +1,6 @@
 <%- node ||= @node || @chart.nodes.build -%>
 
-<%= form_for [@chart, node], html: { class: 'node', data: { id: node.to_param } } do |form| %>
+<%= form_for [@chart, node], html: { class: 'node', data: { id: node.to_param }, style: "border-color: #{CloudBlueprint::Node.color_indices[node.color_index]}" } do |form| %>
   <section class="title">
     <%= form.text_field :title, class: :blueprint, required: true, autocomplete: :off, autofocus: form.object.new_record?, placeholder: t('.title_placeholder', default: 'Title') %>
   </section>
@@ -14,7 +14,18 @@
     <%- end -%>
     
     <div class="spacer"></div>
+
+    <div class="color-indices">
+      <%- CloudBlueprint::Node.color_indices.each_with_index do |value, index| -%>
+        <label style="background-color: <%= value %>;">
+          <%= form.radio_button :color_index, index %>
+          <%= font_awesome 'star' %>
+        </label>
+      <%- end -%>
+    </div>
     
+    <div class="spacer"></div>
+
     <button class="blueprint">
       <%= font_awesome 'check' %>
       <%= t ".#{form.object.persisted? ? 'update' : 'create' }_button_title", default: form.object.persisted? ? 'Update' : 'Create' %>

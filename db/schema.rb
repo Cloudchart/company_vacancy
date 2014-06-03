@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140526100444) do
+ActiveRecord::Schema.define(version: 20140603103709) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -81,13 +81,14 @@ ActiveRecord::Schema.define(version: 20140526100444) do
   end
 
   create_table "cloud_blueprint_nodes", primary_key: "uuid", force: true do |t|
-    t.string   "chart_id",   limit: 36,             null: false
-    t.string   "parent_id",  limit: 36
+    t.string   "chart_id",    limit: 36,             null: false
+    t.string   "parent_id",   limit: 36
     t.string   "title"
-    t.integer  "knots",                 default: 0
-    t.integer  "position",              default: 0
+    t.integer  "knots",                  default: 0
+    t.integer  "position",               default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "color_index",            default: 0
   end
 
   create_table "cloud_profile_emails", primary_key: "uuid", force: true do |t|

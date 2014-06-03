@@ -49,6 +49,7 @@
   $chart_container        = $('section.chart')
   node_selector           = '[data-behaviour~="node"]'
   node_form_selector      = ".modal-container form.node"
+  color_index_selector    = "div.color-indices input"
   delete_button_selector  = 'a[data-behaviour~="delete"]'
   
   # Observe public events
@@ -70,6 +71,9 @@
   
   # node form delete button click
   $document.on 'click', "#{node_form_selector} #{delete_button_selector}", cc.blueprint.common.on_node_form_delete_button_click
+  
+  # node form color index change
+  $document.on 'change', "#{node_form_selector} #{color_index_selector}", cc.blueprint.common.on_node_form_color_index_change
   
   # node dropped
   $chart_container.on 'node::drop', node_selector, (event, data) ->

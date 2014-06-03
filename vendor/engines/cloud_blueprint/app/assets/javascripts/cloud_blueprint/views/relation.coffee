@@ -7,7 +7,6 @@ build = (container) ->
   path.classList.add('relation')
     
   path.setAttribute('fill', 'transparent')
-  path.setAttribute('stroke', 'black')
   path.setAttribute('stroke-width', '1.25')
   
   container.appendChild(path)
@@ -77,6 +76,7 @@ class Relation
 
   render: ->
     @element = build(@container) unless @element
+    @element.setAttribute('stroke', cc.blueprint.views.Node.color_indices[@child.instance.color_index])
     @
   
   

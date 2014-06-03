@@ -4,6 +4,19 @@ default_options =
   min_children_links_distance: 25
 
 
+# Default color indices
+#
+default_color_indices = [
+  "hsl(  0,  0%, 73%)"
+  "hsl( 41, 88%, 68%)"
+  "hsl(139, 51%, 59%)"
+  "hsl(195, 92%, 67%)"
+  "hsl( 20, 92%, 65%)"
+  "hsl(247, 41%, 76%)"
+  "hsl(347, 93%, 77%)"
+]
+
+
 # Node template
 #
 template = null
@@ -17,6 +30,9 @@ build = (instance, $container, cached_position, options = {}) ->
   node = $(template.render(instance)).appendTo($container)
   
   node.css('min-width', instance.element.childNodes.length * options.min_children_links_distance)
+  
+  node.css
+    backgroundColor: cc.blueprint.views.Node.color_indices[instance.color_index]
   
   if cached_position
     node.css
@@ -32,6 +48,9 @@ build = (instance, $container, cached_position, options = {}) ->
 
 class Node
 
+  @color_indices: default_color_indices
+
+  @className: 'Node'
   
   @instances: {}
   
@@ -53,6 +72,7 @@ class Node
     @$element     = build(@instance, @$container, @position(), @options)
     @rendered_at  = new Date
     @$element
+    @relation().render()
   
   
   reset: ->
@@ -112,6 +132,7 @@ class Node
 #
 #
 #
+
 
 _.extend cc.blueprint.views,
   Node: Node

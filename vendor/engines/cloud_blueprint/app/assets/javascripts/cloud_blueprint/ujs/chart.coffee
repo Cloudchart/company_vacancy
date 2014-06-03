@@ -177,6 +177,15 @@ on_node_click = (event) ->
   cc.blueprint.models.Node.edit_form(@dataset.id)
 
 
+# On Node form color index change
+#
+on_node_form_color_index_change = ->
+  $el   = $(@)
+  $form = $el.closest('form')
+  $form.css
+    borderColor: cc.blueprint.views.Node.color_indices[$el.val()]
+
+
 # On Node form submit
 #
 field_attribute_re  = /node\[([^\]]*)\]/
@@ -415,4 +424,5 @@ _.extend cc.blueprint.common,
   on_node_click:                      on_node_click
   on_node_form_submit:                on_node_form_submit
   on_node_form_delete_button_click:   on_node_form_delete_button_click
+  on_node_form_color_index_change:    on_node_form_color_index_change
   activate_node_drag_drop:            activate_node_drag_drop

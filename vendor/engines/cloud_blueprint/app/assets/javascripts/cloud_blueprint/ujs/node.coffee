@@ -21,6 +21,10 @@ activate_form_submit = ->
     cc.ui.modal.close()
 
 
+# Observe node form color index change
+#
+
+
 # Activate node delete link
 #
 activate_form_delete_link = ->
@@ -39,7 +43,8 @@ activate_form_delete_link = ->
 activate_click = ->
   activate_form_submit()
   activate_form_delete_link()
-
+  activate_node_form_color_index_change()
+  
   $container    = $('section.chart')
   node_selector = 'div.node'
   

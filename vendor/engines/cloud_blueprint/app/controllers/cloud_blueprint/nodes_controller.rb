@@ -124,7 +124,7 @@ module CloudBlueprint
     end
     
     def permitted_node_params
-      [:uuid, :title, :parent_id, :position, :knots]
+      [:uuid, :title, :parent_id, :position, :color_index, :knots]
     end
     
   end

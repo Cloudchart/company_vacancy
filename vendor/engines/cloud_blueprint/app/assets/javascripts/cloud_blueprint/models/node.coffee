@@ -9,7 +9,7 @@ class Node extends cc.blueprint.models.Element
   
   @className: 'Node'
 
-  @attr_accessor  'uuid', 'chart_id', 'parent_id', 'title', 'position', 'knots'
+  @attr_accessor  'uuid', 'chart_id', 'parent_id', 'title', 'position', 'color_index', 'knots'
 
   @element_type:  'chart'
   
