@@ -116,6 +116,29 @@ main.blueprint article.chart {
         padding: 0;
       }
       
+      $flag-height: 18pt;
+      $flag-width: 12pt;
+      
+      .flag {
+        background-color: hsl(0, 82%, 57%);
+        height: $flag-height - $flag-width;
+        position: absolute;
+        width: $flag-width;
+        top: -2pt;
+        right: 2pt;
+        
+        &::after {
+          border: $flag-width / 2 solid hsl(0, 82%, 57%);
+          border-bottom-color: transparent;
+          bottom: -$flag-width;
+          content: '';
+          height: $flag-width;
+          left: 0;
+          position: absolute;
+          width: $flag-width;
+        }
+      }
+      
     }
     
   }

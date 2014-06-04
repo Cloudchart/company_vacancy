@@ -48,6 +48,7 @@
   
 <template id="node-template">
   <div class="node" data-id="{{=uuid}}" data-class-name="Node" data-behaviour="node droppable" data-droppable-target="node" style="background-color: {{=color}};">
+    <div class="flag"></div>
     <h2>{{=title}}</h2>
     <ul>
       {{@people}}
