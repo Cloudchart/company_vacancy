@@ -1,5 +1,5 @@
 person_template = new t $.trim """
-  <li data-id="{{=uuid}}" class="person" data-behaviour="draggable">
+  <li data-id="{{=uuid}}" class="person" data-class-name="{{=constructor.className}}" data-behaviour="draggable">
     <aside class="icon">
       <i class="fa fa-users"></i>
     </aside>
@@ -14,7 +14,7 @@ person_template = new t $.trim """
 """
 
 vacancy_template = new t $.trim """
-  <li data-id="{{=uuid}}" class="vacancy" data-behaviour="draggable">
+  <li data-id="{{=uuid}}" class="vacancy" data-class-name="{{=constructor.className}}" data-behaviour="draggable">
     <aside class="icon">
       <i class="fa fa-briefcase"></i>
     </aside>

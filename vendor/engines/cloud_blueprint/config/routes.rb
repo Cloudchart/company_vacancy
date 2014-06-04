@@ -4,15 +4,17 @@ CloudBlueprint::Engine.routes.draw do
     
     get :pull, on: :member
     
-    resources   :vacancies do
+    resources :identities, only: [:create, :update, :destroy]
+    
+    resources :vacancies do
       put '/', on: :collection, action: :push
     end
 
-    resources   :people do
+    resources :people do
       put '/', on: :collection, action: :push
     end
 
-    resources   :nodes do
+    resources :nodes do
       put '/', on: :collection, action: :update_batch
     end
     

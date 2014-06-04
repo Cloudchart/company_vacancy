@@ -197,46 +197,56 @@ activate_filter = ->
 #
 #
 
-container_selector      = "aside.person-vacancy-filter ul.people-vacancies"
-person_vacancy_selector = 'li[data-behaviour~="draggable"]'
+identities_container_selector      = "aside.person-vacancy-filter ul.people-vacancies"
+identity_selector = 'li[data-behaviour~="draggable"]'
 
 chart_selector          = "section.chart"
 node_selector           = "div.node"
 
 
 activate_drag_drop = ->
-  cc.ui.drag_drop(container_selector, person_vacancy_selector, {
-    revert: true
-    drop_on: 'node'
+  self                  = {}
+  $identities_container = $(identities_container_selector)
+  $chart                = $(chart_selector)
+
+  cc.ui.drag_drop($identities_container, identity_selector, {
+    revert:   true
+    drop_on:  'node'
   })
   
+
   activate_drop = ->
-    $(chart_selector).on "cc::drag:drop:enter", node_selector, on_enter
-    $(chart_selector).on "cc::drag:drop:leave", node_selector, on_leave
-    $(chart_selector).on "cc::drag:drop:drop",  node_selector, on_drop
+    ["enter", "leave", "drop"].forEach (name) -> $chart.on "cc::drag:drop:#{name}", node_selector, self["on_#{name}"]
+
 
   deactivate_drop = ->
-    $(chart_selector).off "cc::drag:drop:enter", node_selector, on_enter
-    $(chart_selector).off "cc::drag:drop:leave", node_selector, on_leave
-    $(chart_selector).off "cc::drag:drop:drop",  node_selector, on_drop
-  
-  $(container_selector).on "cc::drag:start", person_vacancy_selector, (event) ->
-    activate_drop()
+    ["enter", "leave", "drop"].forEach (name) -> $chart.off "cc::drag:drop:#{name}", node_selector, self["on_#{name}"]
   
 
-  on_enter = (event) ->
+  self.on_enter = (event) ->
     @classList.add('captured')
     event.draggableTarget.setAttribute('captured', true)
 
-  on_leave = (event) ->
+
+  self.on_leave = (event) ->
     @classList.remove('captured')
     event.draggableTarget.removeAttribute('captured')
 
-  on_drop = (event) ->
+
+  self.on_drop = (event) ->
     @classList.remove('captured')
     event.draggableTarget.removeAttribute('captured')
     deactivate_drop()
+    
+    Arbiter.publish "identity:node:drop",
+      node_id:        @dataset.id
+      identity_type:  event.draggableTarget.dataset.className
+      identity_id:    event.draggableTarget.dataset.id
   
+
+  $identities_container.on "cc::drag:start", identity_selector, activate_drop
+  
+  null
   
 
 _.extend cc.blueprint.common,

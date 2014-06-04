@@ -10,33 +10,16 @@ class Identity extends cc.blueprint.models.Base
   
   @instances: {}
   
-  @topic: "cc::blueprint::models::identity"
-
-
-  # Remove identities deleted on server
+  @created_instances: []
+  @deleted_instances: []
+  
+  # Create identity
   #
-  @remove_deleted_identities: (chart_id, available_uuids) ->
-    identities_to_delete = _.chain(@instances)
-      .filter(
-        (identity) -> identity.chart_id == chart_id
-      )
-      .reject(
-        (identity) -> _.contains(available_uuids, identity.uuid)
-      )
-      .invoke('destroy')
-
-
-  chart: ->
-    cc.blueprint.models.Chart.instances[@chart_id]
-
-
-  node: ->
-    cc.blueprint.models.Node.instances[@node_id]
-  
-  
-  identity: ->
-    cc.blueprint.models[@identity_type].instances[@identity_id]
-  
+  @create: (attributes = {}) ->
+    attributes.uuid = @uuid()
+    identity = new @(attributes)
+    @created_instances.push(identity.uuid)
+    identity
 
 #
 #

@@ -92,3 +92,17 @@
   # activate
   
   cc.blueprint.common.activate_node_drag_drop($chart_container, node_selector)
+  
+
+  # Identity drag/drop
+  #
+  
+  # Activate
+  cc.blueprint.common.activate_person_vacancy_drag_drop()
+  
+  # Create identity
+  Arbiter.subscribe "identity:node:drop", (attributes) ->
+    attributes.chart_id = chart.uuid
+    cc.blueprint.models.Identity.create(attributes)
+    cc.blueprint.models.Node.get(attributes.node_id).touch()
+    cc.blueprint.dispatcher.sync()
