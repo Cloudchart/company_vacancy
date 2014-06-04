@@ -116,27 +116,28 @@ main.blueprint article.chart {
         padding: 0;
       }
       
-      $flag-height: 18pt;
-      $flag-width: 12pt;
-      
-      .flag {
-        background-color: hsl(0, 82%, 57%);
-        height: $flag-height - $flag-width;
-        position: absolute;
-        width: $flag-width;
-        top: -2pt;
-        right: 2pt;
+      @mixin node-flag($height, $width, $color) {
+        background-color: $color;
+        height: $height - $width;
+        width: $width;
         
         &::after {
-          border: $flag-width / 2 solid hsl(0, 82%, 57%);
+          border: $width / 2 solid $color;
           border-bottom-color: transparent;
-          bottom: -$flag-width;
+          bottom: - $width;
           content: '';
-          height: $flag-width;
+          height: $width;
           left: 0;
           position: absolute;
-          width: $flag-width;
+          width: $width;
         }
+      }
+      
+      &.contains-vacancies .flag {
+        @include node-flag(18pt, 12pt, hsl(0, 82%, 57%));
+        position: absolute;
+        right: 2pt;
+        top: -2pt;
       }
       
     }
