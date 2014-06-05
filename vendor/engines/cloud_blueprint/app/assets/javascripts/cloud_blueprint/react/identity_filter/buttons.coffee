@@ -37,7 +37,10 @@ Buttons = React.createClass
     
 
     onNewVacancyClick: ->
-      alert 'create vacancy'
+      @form = cc.blueprint.react.forms.Vacancy({ model: new cc.blueprint.models.Vacancy })
+      cc.ui.modal null,
+        after_show:   @renderForm
+        before_close: @hideForm
   
 
     render: ->

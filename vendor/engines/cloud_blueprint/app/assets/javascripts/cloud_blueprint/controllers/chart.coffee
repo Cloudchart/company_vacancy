@@ -1,7 +1,8 @@
 @['cloud_blueprint/charts#show'] = (data) ->
   
   
-  cc.blueprint.models.Person.url = data.people_url
+  cc.blueprint.models.Person.url  = data.people_url
+  cc.blueprint.models.Vacancy.url = data.vacancies_url
   
   
   chart_wrapper_element = document.querySelector('article.chart')
@@ -16,7 +17,11 @@
   # Identity filter
   #
   identity_filter         = cc.blueprint.react.IdentityFilter({
-    subscribe_on: 'loaded'
+    subscribe_on: [
+      'cc:blueprint:model:person/*'
+      'cc:blueprint:model:vacancy/*'
+      'cc:blueprint:init'
+    ]
   })
   
   mounted_identity_filter = React.renderComponent(identity_filter, chart_wrapper_element)
@@ -30,7 +35,7 @@
   chart = new cc.blueprint.models.Chart(data.chart)
   
   chart.pull().done ->
-    Arbiter.publish('loaded')
+    Arbiter.publish('cc:blueprint:init')
 
   ###
   # Namespaces

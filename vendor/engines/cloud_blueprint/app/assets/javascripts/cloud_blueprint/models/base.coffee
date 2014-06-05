@@ -11,6 +11,9 @@ class Base
   
   # @created_instances: []
   
+  
+  @broadcast_topic: -> "cc:blueprint:model:#{@className.toLowerCase()}"
+  
 
   @new_form: ->
     deferred = new $.Deferred
@@ -52,6 +55,7 @@ class Base
       octets      = _.map octets, (octet) -> octet.toString(16)
     
       _.map([4, 2, 2, 2, 6], (i) -> octets.splice(0, i * 2).join('')).join('-')
+
 
 
   @attr_accessor: (attributes...) ->
@@ -216,16 +220,26 @@ class Base
     return if @is_synchronizing()
     
     throw "Class variable 'url' not found for #{@constructor.className} class" unless @constructor.url
+      
+    return unless @is_new_record() or @is_deleted() or @is_changed()
     
     @__is_synchronizing = true
     
-    [ path, type ] = if @is_new_record()
-      ['', 'POST']
+    action = if @is_new_record()
+      'create'
     else if @is_deleted()
-      ['/' + @uuid, 'DELETE']
+      'delete'
     else
-      ['/' + @uuid, 'PUT']
+      'update'
     
+    [ path, type ] = switch action
+      when 'create'
+        ['', 'POST']
+      when 'update'
+        ['/' + @uuid, 'PUT']
+      when 'delete'
+        ['/' + @uuid, 'DELETE']
+        
     data = {} ; data[@constructor.className.toLowerCase()] = @attributes
     
     xhr = $.ajax
@@ -234,17 +248,24 @@ class Base
       data:   data
     
     
-    xhr.done =>
+    xhr.done (attributes) =>
+      @set_attributes(attributes)
       @synchronize()
       
-      if @is_new_record()
-        @constructor.created_instances.splice(@constructor.created_instances.indexOf(@uuid))
-
-      if @is_deleted()
-        @constructor.deleted_instances.splice(@constructor.deleted_instances.indexOf(@uuid))
-        delete @constructor.instances[@uuid]
       
       @__is_synchronizing = false
+
+      switch action
+
+        when 'create'
+          @constructor.created_instances.splice(@constructor.created_instances.indexOf(@uuid))
+
+        when 'delete'
+          @constructor.deleted_instances.splice(@constructor.deleted_instances.indexOf(@uuid))
+          delete @constructor.instances[@uuid]
+
+      Arbiter.publish("#{@constructor.broadcast_topic()}/#{action}")
+      
     
   
   update: (attributes = {}) ->

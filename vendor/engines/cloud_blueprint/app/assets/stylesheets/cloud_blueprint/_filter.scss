@@ -64,6 +64,15 @@ $identity-filter-buttons-button-width: $base-unit * 3;
     font-weight: 300;
     margin: 0;
   }
+  
+  .lock {
+    font-size: 10pt;
+    line-height: 1em;
+    margin-top: -.5em;
+    position: absolute;
+    right: 0;
+    top: 50%;
+  }
 
 }
 

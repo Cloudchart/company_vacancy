@@ -7,24 +7,11 @@ module CloudBlueprint
     # GET /charts/:id/vacancies
     #
     def index
-      @chart = Chart.includes(company: :vacancies).find(params[:chart_id])
+      @chart = Chart.includes(:vacancies).find(params[:chart_id])
       respond_to do |format|
         format.json do
-          render json: @chart.company.vacancies.as_json(only: [:uuid, :name, :description])
+          render json: @chart.vacancies.as_json_for_chart
         end
-      end
-    end
-    
-    
-    # New vacancy
-    # Get /charts/:id/vacancies/new
-    #
-    def new
-      @chart    = Chart.find(params[:chart_id])
-      @vacancy  = Vacancy.new
-
-      respond_to do |format|
-        format.js { render :form }
       end
     end
     
@@ -33,25 +20,13 @@ module CloudBlueprint
     # POST /charts/:id/vacancies
     #
     def create
-      @chart    = Chart.includes(:company).find(params[:chart_id])
-      @vacancy  = Vacancy.new vacancy_params
-      @chart.company.vacancies << @vacancy
-      respond_to do |format|
-        format.html { redirect_to @chart }
-        format.js
-      end
-    end
-    
-    
-    # Edit vacancy
-    # GET /charts/:id/vacancies/:id
-    #
-    def edit
-      @chart    = Chart.find(params[:chart_id])
-      @vacancy  = Vacancy.find(params[:id])
+      chart    = Chart.includes(:company).find(params[:chart_id])
+      vacancy  = Vacancy.new vacancy_params_for_create
+
+      chart.company.vacancies << vacancy
 
       respond_to do |format|
-        format.js { render :form }
+        format.json { render json: vacancy.as_json_for_chart }
       end
     end
     
@@ -60,28 +35,14 @@ module CloudBlueprint
     # PUT /charts/:id/vacancies/:id
     #
     def update
-      @chart    = Chart.find(params[:chart_id])
-      @vacancy  = Vacancy.find(params[:id])
-      @vacancy.update vacancy_params
+      chart    = Chart.find(params[:chart_id])
+      vacancy  = chart.vacancies.find(params[:id])
+
+      vacancy.update vacancy_params_for_update
       
       respond_to do |format|
-        format.html { redirect_to @chart }
-        format.js
+        format.json { render json: vacancy.as_json_for_chart }
       end
-    end
-    
-    
-    # Push vacancies
-    # PUT /charts/:id/vacancies/push
-    #
-    def push
-      @company = Chart.includes(:company).find(params[:chart_id]).company
-
-      Vacancy.transaction do
-      end
-      
-    ensure
-      render nothing: true
     end
     
     
@@ -89,20 +50,24 @@ module CloudBlueprint
     # DELETE /charts/:id/vacancies/:id
     #
     def destroy
-      @chart    = Chart.find(params[:chart_id])
-      @vacancy  = Vacancy.find(params[:id])
-      @vacancy.destroy
+      chart    = Chart.find(params[:chart_id])
+      vacancy  = chart.vacancies.find(params[:id])
+
+      vacancy.destroy
       
       respond_to do |format|
-        format.html { redirect_to @chart }
-        format.js
+        format.json { render json: vacancy.as_json_for_chart }
       end
     end
     
     
     private
     
-    def vacancy_params
+    def vacancy_params_for_create
+      params.require(:vacancy).permit([:uuid, :name, :description])
+    end
+    
+    def vacancy_params_for_update
       params.require(:vacancy).permit([:name, :description])
     end
     

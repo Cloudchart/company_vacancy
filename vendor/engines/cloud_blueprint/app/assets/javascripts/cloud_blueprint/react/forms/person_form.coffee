@@ -1,4 +1,5 @@
 ##= require ./buttons
+##= require ./identity_form_commons
 
 # Shortcuts
 #
@@ -63,36 +64,11 @@ OccupationField = (value, callback) ->
 
 Person = React.createClass
 
-
-  getInitialState: ->
-    @props.model.attributes
-
-  
-  onSubmit: (event) ->
-    event.preventDefault()
-    
-
-    if missing_field = _.find(@getDOMNode().querySelectorAll('[required]'), (field) -> !field.value)
-      return missing_field.focus() and false
-    
-    
-    if @props.model.is_persisted()
-      @props.model.update(@state).save()
-    else
-      @props.model.constructor.create(@state).save()
+  mixins: [
+    cc.blueprint.react.forms.IdentityFormCommons
+  ]
 
 
-    Arbiter.publish('loaded')
-    cc.ui.modal.close()
-  
-  
-  onDelete: (event) ->
-    event.preventDefault()
-    @props.model.destroy().save()
-    Arbiter.publish('loaded')
-    cc.ui.modal.close()
-  
-  
   onFirstNameChange: (event) ->
     @setState
       first_name: event.target.value

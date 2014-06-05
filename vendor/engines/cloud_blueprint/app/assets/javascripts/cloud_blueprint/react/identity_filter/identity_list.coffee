@@ -14,36 +14,18 @@ Icon = (name) ->
 
 
 #
-# Vacancy
+# Lock
 #
-Vacancy = React.createClass
+Lock = (model) ->
+  (tag.i { className: 'fa fa-lock lock' }) if model.is_synchronizing()
 
-  getInitialState: ->
-    name: 'Name'
-  
-  
-  onClick: (event) ->
-    alert 'edit vacancy'
-  
-  
-  render: ->
-    (tag.li {
-      onClick: @onClick
-    },
-      Icon('briefcase')
-      (tag.h2 {}, @state.name)
-      (tag.p {}, 'Vacancy')
-    )
 
 #
-# Person
 #
-
-Person = React.createClass
-
-  
+#
+IdentityCommons =
   getDefaultProps: ->
-    model: cc.blueprint.models.Person.get(@props.key)
+    model: cc.blueprint.models[@props.className].get(@props.key)
 
 
   getInitialState: ->
@@ -51,7 +33,7 @@ Person = React.createClass
 
 
   renderForm: (container) ->
-    React.renderComponent(cc.blueprint.react.forms.Person({ model: @props.model }), container)
+    React.renderComponent(cc.blueprint.react.forms[@props.className]({ model: @props.model }), container)
   
 
   hideForm: (container) ->
@@ -64,19 +46,51 @@ Person = React.createClass
     cc.ui.modal null,
       after_show:   @renderForm
       before_close: @hideForm
+
+
+#
+# Vacancy
+#
+Vacancy = React.createClass
+
+
+  mixins: [
+    IdentityCommons
+  ]
   
   
   render: ->
     (tag.li {
       onClick: @onClick
     },
+      (Icon('briefcase'))
+      (tag.h2 {}, @state.name)
+      (tag.p {}, 'Vacancy')
+      (Lock @props.model)
+    )
+
+#
+# Person
+#
+
+Person = React.createClass
+
+  mixins: [
+    IdentityCommons
+  ]
+
+  render: ->
+    (tag.li {
+      onClick: @onClick
+    },
       (Icon('users'))
-      (tag.h2 { key: 'name' },
+      (tag.h2 {},
         (tag.span { className: 'first-name light' }, @state.first_name)
         " "
         (tag.span { className: 'last-name'  }, @state.last_name)
       )
       (tag.p {}, @state.occupation)
+      (Lock @props.model)
     )
 
 
@@ -98,7 +112,7 @@ IdentityList = React.createClass
 
   
   componentDidMount: ->
-    Arbiter.subscribe @props.subscribe_on, @refresh
+    _.each @props.subscribe_on, (message) => Arbiter.subscribe message, @refresh
 
 
   getInitialState: ->
@@ -118,12 +132,12 @@ IdentityList = React.createClass
 
     # Gather vacancy components
     _.reduce @state.vacancies, (memo, uuid) ->
-      memo.push Vacancy({ key: uuid, ref: uuid }) ; memo
+      memo.push Vacancy({ key: uuid, ref: uuid, className: 'Vacancy' }) ; memo
     , identities
     
     # Gather person components
     _.reduce @state.people, (memo, uuid) ->
-      memo.push Person({ key: uuid, ref: uuid }) ; memo
+      memo.push Person({ key: uuid, ref: uuid, className: 'Person' }) ; memo
     , identities
 
 
