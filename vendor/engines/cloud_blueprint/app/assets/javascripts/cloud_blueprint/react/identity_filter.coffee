@@ -23,7 +23,7 @@ Toggle = React.createClass
 
 
   getInitialState: ->
-    direction_index: 0
+    direction_index: 1
   
   
   onClick: ->

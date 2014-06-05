@@ -80,7 +80,7 @@ $identity-filter-buttons-button-width: $base-unit * 3;
 aside.identity-filter {
   @include display(flex);
   @include flex-direction(column);
-  @include position(absolute, 0px null 0px $identity-filter-width * 0);
+  @include position(absolute, 0px null 0px $identity-filter-width * -1);
 
   background-color: #ccc;
   padding: $base-unit;
