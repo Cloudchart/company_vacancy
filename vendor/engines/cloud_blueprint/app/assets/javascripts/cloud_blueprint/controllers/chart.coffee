@@ -2,18 +2,13 @@
   
   cc.blueprint.react.Spinner.show()
   
-  
-  cc.blueprint.models.Person.url  = data.people_url
-  cc.blueprint.models.Vacancy.url = data.vacancies_url
+
+  cc.blueprint.models.Person.url    = data.people_url
+  cc.blueprint.models.Vacancy.url   = data.vacancies_url
+  cc.blueprint.models.Node.url      = data.nodes_url
   
   
   chart_wrapper_element = document.querySelector('article.chart')
-
-
-  # Chart template
-  #
-  el        = document.createElement('div').appendChild(document.querySelector('template#chart-template'))
-  chart_el  = el.content || _.find(el.childNodes, (node) -> node.nodeType == 1)
 
 
   # Identity filter
@@ -22,24 +17,26 @@
     subscribe_on: [
       'cc:blueprint:model:person/*'
       'cc:blueprint:model:vacancy/*'
-      'cc:blueprint:init'
     ]
   })
-  
-  mounted_identity_filter = null
-  
-
-  # Create chart html
-  #
-  chart_wrapper_element.appendChild(chart_el)
   
   cc.blueprint.models.Chart.load_url = data.load_url
   chart = new cc.blueprint.models.Chart(data.chart)
   
   chart.pull().done ->
     cc.blueprint.react.Spinner.hide()
-    Arbiter.publish('cc:blueprint:init')
-    mounted_identity_filter = React.renderComponent(identity_filter, chart_wrapper_element)
+    React.renderComponent(identity_filter, chart_wrapper_element)
+  
+  
+  # Create chart html
+  #
+  el        = document.createElement('div').appendChild(document.querySelector('template#chart-template'))
+  chart_el  = el.content || _.find(el.childNodes, (node) -> node.nodeType == 1)
+
+  chart_wrapper_element.appendChild(chart_el)
+  
+
+  
 
   ###
   # Namespaces
