@@ -1,5 +1,7 @@
 @['cloud_blueprint/charts#show'] = (data) ->
   
+  cc.blueprint.react.Spinner.show()
+  
   
   cc.blueprint.models.Person.url  = data.people_url
   cc.blueprint.models.Vacancy.url = data.vacancies_url
@@ -24,7 +26,7 @@
     ]
   })
   
-  mounted_identity_filter = React.renderComponent(identity_filter, chart_wrapper_element)
+  mounted_identity_filter = null
   
 
   # Create chart html
@@ -35,7 +37,9 @@
   chart = new cc.blueprint.models.Chart(data.chart)
   
   chart.pull().done ->
+    cc.blueprint.react.Spinner.hide()
     Arbiter.publish('cc:blueprint:init')
+    mounted_identity_filter = React.renderComponent(identity_filter, chart_wrapper_element)
 
   ###
   # Namespaces

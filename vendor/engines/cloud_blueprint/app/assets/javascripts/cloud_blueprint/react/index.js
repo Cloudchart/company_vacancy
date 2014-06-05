@@ -1,4 +1,5 @@
 //= require_self
+//= require ./spinner
 //= require ./forms
 //= require ./identity_filter
 
