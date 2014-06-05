@@ -74,7 +74,7 @@ IdentityFilter = React.createClass
 
 
   onSearchChange: (value) ->
-    console.log value
+    @refs.list.search(_.reject value.trim().replace(/\s+/, ' ').toLowerCase().split(' '), (part) -> part.length == 0)
     
 
   render: ->

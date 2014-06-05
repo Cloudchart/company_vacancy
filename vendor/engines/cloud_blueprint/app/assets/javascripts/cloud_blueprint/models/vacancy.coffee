@@ -10,8 +10,8 @@ class Vacancy extends cc.blueprint.models.Base
 
   @instances:     {}
   
-  matches: (re) ->
-    _.any ['name', 'description'], (attribute) => re.test(@[attribute])
+  matches: (letters) ->
+    _.any ['name', 'description'], (attribute) => @[attribute].toLowerCase().indexOf(letters) >= 0
 
 
 #

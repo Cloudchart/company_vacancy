@@ -10,8 +10,8 @@ class Person extends cc.blueprint.models.Base
   
   # Match for filter
   #
-  matches: (re) ->
-    _.any ['first_name', 'last_name', 'occupation'], (attribute) => re.test(@[attribute])
+  matches: (letters) ->
+    _.any ['first_name', 'last_name', 'occupation'], (attribute) => @[attribute].toLowerCase().indexOf(letters) >= 0
   
 
 #

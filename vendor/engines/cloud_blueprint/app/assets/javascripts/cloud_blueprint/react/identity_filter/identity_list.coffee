@@ -96,8 +96,14 @@ Person = React.createClass
 
 # Gather models uuids
 #
-gather_models_uuids = (className, sort_options) ->
-  _.chain(cc.blueprint.models[className].instances)
+gather_models_uuids = (className, sort_options, query) ->
+  instances = cc.blueprint.models[className].instances
+  
+  _.each query, (part) ->
+    instances = _.filter instances, (instance) -> instance.matches(part)
+    
+  
+  _.chain(instances)
     .reject((instance) -> instance.is_deleted())
     .sortBy(sort_options)
     .pluck('uuid')
@@ -116,32 +122,44 @@ IdentityList = React.createClass
 
 
   getInitialState: ->
-    vacancies:  []
-    people:     []
-
-  
-  refresh: ->
-    @setState
-      vacancies:  gather_models_uuids('Vacancy', 'name')
-      people:     gather_models_uuids('Person', ['last_name', 'first_name'])
+    query:        []
+    refreshed_at: + new Date
 
 
-  render: ->
+  gatherIdentities: ->
     identities = []
+   
     
-
     # Gather vacancy components
-    _.reduce @state.vacancies, (memo, uuid) ->
+    _.reduce gather_models_uuids('Vacancy', 'name', @state.query), (memo, uuid) ->
       memo.push Vacancy({ key: uuid, ref: uuid, className: 'Vacancy' }) ; memo
     , identities
     
     # Gather person components
-    _.reduce @state.people, (memo, uuid) ->
+    _.reduce gather_models_uuids('Person', ['last_name', 'first_name'], @state.query), (memo, uuid) ->
       memo.push Person({ key: uuid, ref: uuid, className: 'Person' }) ; memo
     , identities
+    
+    identities
+  
+  
+  search: (value) ->
+    @setState
+      query: value
+  
+  
+  refresh: ->
+    @setState
+      refreshed_at: + new Date
+  #  @setState
+  #    vacancies:  gather_models_uuids('Vacancy', 'name', @state.query)
+  #    people:     gather_models_uuids('Person', ['last_name', 'first_name'], @state.query)
 
 
-    (tag.ul { className: 'identity-list' }, identities)
+  render: ->
+
+
+    (tag.ul { className: 'identity-list' }, @gatherIdentities())
 
 
 #
