@@ -4,6 +4,7 @@
 //= require ./views
 //= require ./layouts
 //= require ./ujs
+//= require ./react
 //= require_tree ./controllers
 
 this.cc           || (this.cc = {})

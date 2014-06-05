@@ -1,9 +1,34 @@
+$identity-filter-width: $base-unit * 15;
+$identity-filter-z-index: 2000;
+
+
+// Toggle
+$identity-filter-toggle-button-size: $base-unit * 2;
+$identity-filter-toggle-button-font-size: 14pt;
+
+
+// Search
+$identity-filter-search-background-color: hsl(0, 100%, 100%);
+$identity-filter-search-border-color: hsl(0, 0%, 85%);
+$identity-filter-search-border-radius: 5pt;
+$identity-filter-search-border-width: 1pt;
+$identity-filter-search-font-size: 15pt;
+$identity-filter-search-input-font-weight: 300;
+
+
+// Buttons
+$identity-filter-buttons-button-font-size: 15pt;
+$identity-filter-buttons-button-height: $base-unit * 2;
+$identity-filter-buttons-button-width: $base-unit * 3;
+
+
 @mixin filter-identity {
   cursor: pointer;
   list-style: none;
   margin: 0;
   min-height: $base-unit * 2;
   padding-left: $base-unit * 2.5;
+  position: relative;
   
   aside {
     @include display(flex);
@@ -42,30 +67,134 @@
 
 }
 
+
+aside.identity-filter {
+  @include display(flex);
+  @include flex-direction(column);
+  @include position(absolute, 0px null 0px $identity-filter-width * 0);
+
+  background-color: #ccc;
+  padding: $base-unit;
+  width: $identity-filter-width;
+  z-index: $identity-filter-z-index;
+  
+  // Toggle
+  //
+  button.toggle {
+    @include position(absolute, 50% 0px 0 0);
+
+    background-color: #ccc;
+    border: none;
+    font-size: $identity-filter-toggle-button-font-size;
+    margin: $identity-filter-toggle-button-size / -2 $identity-filter-toggle-button-size * -.75 0 0;
+    border-top-right-radius: $identity-filter-toggle-button-size / 2;
+    border-bottom-right-radius: $identity-filter-toggle-button-size / 2;
+    height: $identity-filter-toggle-button-size;
+    outline: none;
+    width: $identity-filter-toggle-button-size * .75;
+    text-align: left;
+    z-index: $identity-filter-z-index - 10;
+  }
+  
+  // Search
+  //
+  section.search {
+    @include display(flex);
+    
+    background-color: $identity-filter-search-background-color;
+    border: $identity-filter-search-border-width solid $identity-filter-search-border-color;
+    border-radius: $identity-filter-search-border-radius;
+    font-size: $identity-filter-search-font-size;
+    padding: $base-unit / 2;
+    
+    > * {
+      margin: auto;
+    }
+    
+    input {
+      @include flex(1);
+
+      border: none;
+      font-weight: $identity-filter-search-input-font-weight;
+      margin-left: $base-unit / 2;
+      outline: none;
+    }
+  }
+  
+  // Identity list
+  //
+  .list-wrapper {
+    @include flex(1);
+
+    margin: $base-unit 0;
+    overflow: scroll;
+    
+    ul.identity-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        @include filter-identity;
+
+        margin: $base-unit 0;
+
+        &:first-child {
+          margin-top: 0;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+    }
+  }
+  
+  // Buttons
+  //
+  section.buttons {
+    @include display(flex);
+    @include justify-content(space-between);
+
+    button {
+      height: $identity-filter-buttons-button-height;
+      font-size: $identity-filter-buttons-button-font-size;
+      line-height: $identity-filter-buttons-button-height;
+      padding: 0;
+      width: $identity-filter-buttons-button-width;
+    }
+  }
+  
+
+}
+
+
 aside.person-vacancy-filter {
   
-  ul.people-vacancies {
+  div.people-vacancies ul {
     list-style: none;
     margin: 0;
-    overflow: scroll;
     padding: 0;
+    
+    li {
+      margin: $base-unit 0;
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    
   }
   
   li.vacancy,
   li.person {
     @include filter-identity;
-    margin: $base-unit 0;
     position: relative;
-    
-    &.hidden {
-      display: none;
-    }
   }
-  
-}
-
-body > li.person,
-body > li.vacancy {
-  @include filter-identity;
-  z-index: 10000;
+    
 }

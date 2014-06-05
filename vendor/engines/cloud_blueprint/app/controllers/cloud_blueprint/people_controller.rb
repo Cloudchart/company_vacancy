@@ -15,79 +15,33 @@ module CloudBlueprint
     end
     
     
-    # New person
-    # Get /charts/:id/people/new
-    #
-    def new
-      @chart    = Chart.includes(:company).find(params[:chart_id])
-      @person   = @chart.company.people.build
-
-      respond_to do |format|
-        format.js { render :form }
-      end
-    end
-
-
     # Create new person for chart
     # POST /charts/:id/people
     #
     def create
-      @chart    = Chart.includes(:company).find(params[:chart_id])
-      @person   = @chart.company.people.build person_params
+      chart    = Chart.includes(:company).find(params[:chart_id])
+      person   = Person.new person_params_for_create
 
-      @person.save!
+      chart.company.people << person
 
       respond_to do |format|
-        format.html { redirect_to @chart }
-        format.js
+        format.json { render json: person.as_json_for_chart }
       end
     end
     
-    
-
-    # Edit person
-    # GET /charts/:id/people/:id
-    #
-    def edit
-      @chart    = Chart.includes(:company).find(params[:chart_id])
-      @person   = @chart.company.people.find(params[:id])
-
-      respond_to do |format|
-        format.js { render :form }
-      end
-    end
-
 
     # Update person
     # PUT /charts/:id/people/:id
     #
     def update
-      @chart    = Chart.includes(:company).find(params[:chart_id])
-      @person   = @chart.company.people.find(params[:id])
+      chart    = Chart.find(params[:chart_id])
+      person   = chart.people.find(params[:id])
 
-      @person.update! person_params
+      person.update! person_params_for_update
       
       respond_to do |format|
-        format.html { redirect_to @chart }
-        format.js
+        format.json { render json: person.as_json_for_chart }
       end
-    end
-    
-    
-    # Push people
-    # PUT /charts/:id/people
-    #
-    def push
-      company = Chart.includes(:company).find(params[:chart_id]).company
-
-      Person.transaction do
-        create_people(company)
-        update_people(company)
-        delete_people(company)
-      end
-
-    ensure
-      render nothing: true
     end
     
     
@@ -95,53 +49,28 @@ module CloudBlueprint
     # DELETE /charts/:id/people/:id
     #
     def destroy
-      @chart    = Chart.includes(:company).find(params[:chart_id])
-      @person   = @chart.company.people.find(params[:id])
+      chart    = Chart.find(params[:chart_id])
+      person   = chart.people.find(params[:id])
 
-      @person.destroy
+      person.destroy
       
       respond_to do |format|
-        format.html { redirect_to @chart }
-        format.js
+        format.json { render json: person.as_json_for_chart }
       end
     end
 
 
     private
     
-    def person_params
-      params.require(:person).permit(permitted_person_params)
-    end
-    
 
-    def permitted_person_params
-      [:first_name, :last_name, :occupation]
+    def person_params_for_create
+      params.require(:person).permit(:uuid, :first_name, :last_name, :occupation)
     end
-    
 
-    def create_people(company)
-      params[:create_instances].each do |pair|
-        person_params = ActionController::Parameters.new(pair.last)
-        person        = Person.new person_params.permit(permitted_person_params)
-        company.people << person
-      end if params[:create_instances]
+    def person_params_for_update
+      params.require(:person).permit(:first_name, :last_name, :occupation)
     end
-    
 
-    def update_people(company)
-      params[:update_instances].each do |pair|
-        person_params = ActionController::Parameters.new(pair.last)
-        person        = company.people.find(person_params[:uuid])
-        person.update! person_params.permit(permitted_person_params)
-      end if params[:update_instances]
-    end
-    
-
-    def delete_people(company)
-      params[:delete_instances].each do |uuid|
-        company.people.find(uuid).destroy rescue nil
-      end if params[:delete_instances]
-    end
 
   end
 end

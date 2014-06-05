@@ -178,6 +178,10 @@ class Base
     !!@constructor.get(@uuid)
   
   
+  is_synchronizing: ->
+    @__is_synchronizing == true
+  
+  
   get_attribute: (name) ->
     if _.isFunction(@["get_#{name}"])
       @["get_#{name}"]()
@@ -207,6 +211,41 @@ class Base
       self.set_attribute(name, attributes[name]) if _.has(attributes, name)
     @
   
+  
+  save: ->
+    return if @is_synchronizing()
+    
+    throw "Class variable 'url' not found for #{@constructor.className} class" unless @constructor.url
+    
+    @__is_synchronizing = true
+    
+    [ path, type ] = if @is_new_record()
+      ['', 'POST']
+    else if @is_deleted()
+      ['/' + @uuid, 'DELETE']
+    else
+      ['/' + @uuid, 'PUT']
+    
+    data = {} ; data[@constructor.className.toLowerCase()] = @attributes
+    
+    xhr = $.ajax
+      url:    @constructor.url + path
+      type:   type
+      data:   data
+    
+    
+    xhr.done =>
+      @synchronize()
+      
+      if @is_new_record()
+        @constructor.created_instances.splice(@constructor.created_instances.indexOf(@uuid))
+
+      if @is_deleted()
+        @constructor.deleted_instances.splice(@constructor.deleted_instances.indexOf(@uuid))
+        delete @constructor.instances[@uuid]
+      
+      @__is_synchronizing = false
+    
   
   update: (attributes = {}) ->
     @set_attributes(attributes)

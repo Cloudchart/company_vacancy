@@ -9,30 +9,26 @@
 <%- class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint -%>
 
 <article class="chart" data-uuid="<%= @chart.to_param %>">
-  <aside class="person-vacancy-filter">
-    <label class="search">
-      <%= font_awesome 'search' %>
-      <%= text_field_tag :search, nil, placeholder: t('.search_placeholder', default: 'People and vacancies'), class: :search, id: nil %>
-    </label>
+  <!--aside class="person-vacancy-filter">
     
-    <ul class="people-vacancies">
-    </ul>
+    <div class="people-vacancies">
+    </div>
     
     <nav class="buttons">
-      <button class="person cloud" data-behaviour="new-person">
+      <button class="person cloud" data-class-name="Person">
         <%= font_awesome 'users' %>
       </button>
 
-      <button class="vacancy cloud" data-behaviour="new-vacancy">
+      <button class="vacancy cloud" data-class-name="Vacancy">
         <%= font_awesome 'briefcase' %>
       </button>
     </nav>
     
-    <button class="toggle" data-toggle="fa-arrow-left|fa-arrow-right">
-      <%= font_awesome 'arrow-right' %>
-    </button>
-  </aside>
+  </aside-->
+<article>
+  
 
+<template id="chart-template">
   <section class="chart" data-id="<%= @chart.to_param %>" data-behaviour="chart-container">
     <svg>
       <defs>
@@ -42,7 +38,7 @@
       </defs>
     </svg>
   </section>
-<article>
+</template>
   
   
   

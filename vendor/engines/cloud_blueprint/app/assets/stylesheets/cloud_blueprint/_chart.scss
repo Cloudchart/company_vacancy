@@ -51,11 +51,13 @@ main.blueprint article.chart {
       }
     }
     
-    ul.people-vacancies {
+    div.people-vacancies {
       @include flex(1);
+      margin: $base-unit 0;
+      overflow: scroll;
     }
     
-    nav.buttons {
+    section.buttons {
       @include display(flex);
       @include justify-content(space-between);
       
@@ -165,7 +167,7 @@ main.blueprint article.chart {
     margin-top: $base-unit;
   }
   
-  nav.buttons {
+  section.buttons {
     @include display(flex);
     
     margin-top: $base-unit;
@@ -205,7 +207,7 @@ main.blueprint article.chart {
     @include display(flex);
   }
   
-  nav.buttons {
+  section.buttons {
     margin-left: - $base-unit * 5;
   }
   

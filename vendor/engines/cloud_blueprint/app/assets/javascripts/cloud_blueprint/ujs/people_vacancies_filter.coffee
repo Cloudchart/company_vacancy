@@ -114,6 +114,7 @@ activate_toggle = ->
 # Activate person/vacancy edit
 #
 activate_edit = ->
+  return
   
   $aside_container = $('aside.person-vacancy-filter')
   
@@ -142,16 +143,16 @@ activate_edit = ->
 
   # Observe person click
   #
-  $aside_container.on 'click', 'li.person', (event) ->
-    cc.ui.modal(spinner, { locked: true })
-    form = cc.blueprint.models.Person.edit_form(@dataset.id)
+  #$aside_container.on 'click', 'li.person', (event) ->
+  #  cc.ui.modal(spinner, { locked: true })
+  #  form = cc.blueprint.models.Person.edit_form(@dataset.id)
 
-    form.done (template) ->
-      cc.ui.modal(template)
+  #  form.done (template) ->
+  #    cc.ui.modal(template)
     
-    form.fail ->
-      cc.ui.modal.close()
-      alert('fail')
+  #  form.fail ->
+  #    cc.ui.modal.close()
+  #    alert('fail')
     
 
   # Observe new vacancy button click
@@ -205,6 +206,8 @@ node_selector           = "div.node"
 
 
 activate_drag_drop = ->
+  return
+  
   self                  = {}
   $identities_container = $(identities_container_selector)
   $chart                = $(chart_selector)

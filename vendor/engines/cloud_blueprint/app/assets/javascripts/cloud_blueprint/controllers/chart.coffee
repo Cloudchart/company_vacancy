@@ -1,5 +1,38 @@
 @['cloud_blueprint/charts#show'] = (data) ->
+  
+  
+  cc.blueprint.models.Person.url = data.people_url
+  
+  
+  chart_wrapper_element = document.querySelector('article.chart')
 
+
+  # Chart template
+  #
+  el        = document.createElement('div').appendChild(document.querySelector('template#chart-template'))
+  chart_el  = el.content || _.find(el.childNodes, (node) -> node.nodeType == 1)
+
+
+  # Identity filter
+  #
+  identity_filter         = cc.blueprint.react.IdentityFilter({
+    subscribe_on: 'loaded'
+  })
+  
+  mounted_identity_filter = React.renderComponent(identity_filter, chart_wrapper_element)
+  
+
+  # Create chart html
+  #
+  chart_wrapper_element.appendChild(chart_el)
+  
+  cc.blueprint.models.Chart.load_url = data.load_url
+  chart = new cc.blueprint.models.Chart(data.chart)
+  
+  chart.pull().done ->
+    Arbiter.publish('loaded')
+
+  ###
   # Namespaces
   #
   models  = cc.blueprint.models
@@ -24,7 +57,7 @@
   #
 
   on_sync = ->
-    filter_view.render() if filter_view?
+    identity_list_view.refresh()
     chart_view.render() if chart_view?
     
   
@@ -40,7 +73,8 @@
   #
 
   chart_view  = new views.Chart(chart, 'section.chart')
-  filter_view = new views.FilterIdentityList('aside.person-vacancy-filter ul.people-vacancies')
+  #filter_view = new views.FilterIdentityList('aside.person-vacancy-filter ul.people-vacancies')
+  identity_list_view = React.renderComponent(cc.blueprint.react.identity_list(), document.querySelector('aside.person-vacancy-filter div.people-vacancies'))
   
   
   # Elements
@@ -93,6 +127,21 @@
   
   cc.blueprint.common.activate_node_drag_drop($chart_container, node_selector)
   
+  
+  # Filter new identity click
+  #
+  $document.on 'click', ".person-vacancy-filter nav.buttons button[data-class-name=Person]", (event) ->
+    event.preventDefault()
+    
+    model = new cc.blueprint.models[@dataset.className]
+    
+    cc.ui.modal '',
+      after_show: (container) ->
+        React.renderComponent(cc.blueprint.react.person_form({ model: model }), container)
+      
+      before_close: (container) ->
+        React.unmountComponentAtNode(container)
+  
 
   # Identity drag/drop
   #
@@ -106,3 +155,16 @@
     cc.blueprint.models.Identity.create(attributes)
     cc.blueprint.models.Node.get(attributes.node_id).touch()
     cc.blueprint.dispatcher.sync()
+
+
+  # Drag over node
+  $chart_container.on 'dragover', node_selector, (event) ->
+    node = cc.blueprint.models.Node.get(@dataset.id)
+    return unless node.title == 'Programming'
+    event.originalEvent.dataTransfer.dropEffect = 'link'
+    event.preventDefault()
+    return false
+
+  $chart_container.on 'drop', node_selector, (event) ->
+    event.stopPropagation()
+###

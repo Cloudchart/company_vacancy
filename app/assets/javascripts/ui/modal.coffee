@@ -42,14 +42,14 @@ widget = (content, options = {}) ->
   $container.html(content)
   $overlay.show()
 
-  callbacks.after_show.pop()()
+  callbacks.after_show.pop()($container.get(0))
   
   
 
 widget.close = ->
   ensure()
 
-  callbacks.before_close.pop()()
+  callbacks.before_close.pop()($container.get(0))
 
   $container.html('')
   $overlay.hide()

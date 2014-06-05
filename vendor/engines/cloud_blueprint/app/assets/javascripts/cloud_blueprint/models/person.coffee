@@ -1,10 +1,12 @@
 class Person extends cc.blueprint.models.Base
   
-  @className: 'Person'
+  @className:     'Person'
 
   @attr_accessor  'uuid', 'first_name', 'last_name', 'occupation'
 
-  @instances:     {}
+  @instances:         {}
+  @created_instances: []
+  @deleted_instances: []
   
   # Match for filter
   #
