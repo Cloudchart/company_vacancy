@@ -1,15 +1,14 @@
 <%- pagescript_params id: @chart.to_param,
-  chart:          @chart.as_json(only: [:uuid, :title]),
-  load_url:       chart_path(@chart),
-  nodes_url:      chart_nodes_path(@chart),
-  vacancies_url:  chart_vacancies_path(@chart),
-  people_url:     chart_people_path(@chart)
+  chart:  @chart.as_json(only: [:uuid, :title]),
+  url:    chart_path(@chart)
 -%>
 
 <%- class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint -%>
 
+<!--
+
 <article class="chart" data-uuid="<%= @chart.to_param %>">
-  <!--aside class="person-vacancy-filter">
+  <aside class="person-vacancy-filter">
     
     <div class="people-vacancies">
     </div>
@@ -24,18 +23,13 @@
       </button>
     </nav>
     
-  </aside-->
+  </aside>
 <article>
   
 
 <template id="chart-template">
   <section class="chart" data-id="<%= @chart.to_param %>" data-behaviour="chart-container">
     <svg>
-      <defs>
-        <marker id="insertion-circle" viewBox="0 0 10 10" refX="2.5" refY="2.5" markerWidth="10" markerHeight="10" orient="auto" stroke="transparent" fill="black">
-          <circle cx="2.5" cy="2.5" r="2.5" />
-        </marker>
-      </defs>
     </svg>
   </section>
 </template>
@@ -56,3 +50,5 @@
     </ul>
   </div>
 </template>
+
+-->

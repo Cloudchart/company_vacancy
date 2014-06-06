@@ -1,5 +1,3 @@
-NodeModel = null
-
 #
 #
 #
@@ -20,25 +18,24 @@ class Chart extends cc.blueprint.models.Element
   # Pull
   #
   pull: ->
-    self      = @
     deferred  = new $.Deferred
     
     $.ajax
-      url:        "#{@constructor.load_url}/pull"
+      url:        "#{@constructor.url}/pull"
       type:       "GET"
       dataType:   "JSON"
       data:
         last_accessed_at: + @last_accessed_at || 0
     
-    .done (data) ->
+    .done (data) =>
       # Process data
-      self.process_pull(data)
+      @process_pull(data)
       
       # Resolve deferred
       deferred.resolve()
       
       # Broadcast
-      Arbiter.publish('blueprint:chart/sync')
+      Arbiter.publish("#{@constructor.broadcast_topic()}/sync")
     
     # Return promise
     deferred.promise()
@@ -56,49 +53,21 @@ class Chart extends cc.blueprint.models.Element
     # Instantiate people
     cc.blueprint.models.Person.instantiate(data.people, data.available_people)
     
-    # Instantiate nodes
+    # Instantiate and consolidate nodes
     cc.blueprint.models.Node.instantiate(data.nodes, data.available_nodes)
     @consolidate()
   
   
-  # Push
-  #
-  push: ->
-    deferred  = new $.Deferred
-    self      = @
-    
-    people_pushed = cc.blueprint.models.Person.push("#{@constructor.load_url}/people")
-    
-    $.when(people_pushed).done ->
-      deferred.resolve()
-    
-    deferred.promise()
-  
-  
-  # Sync
-  #
-  sync: (callback) ->
-    deferred  = new $.Deferred
-    self      = @
-    
-    self.pull().done ->
-      self.push().done ->
-        self.pull().done ->
-          deferred.resolve()
-    
-    deferred.promise()
-  
-
   # Consolidate
   #
   consolidate: ->
     self  = @
 
-    _.chain(NodeModel.instances)
+    _.chain(cc.blueprint.models.Node.instances)
       # Find nodes of current chart
       .filter((node) -> !node.is_deleted() and node.chart_id == self.uuid)
       # Filter nodes without parent
-      .reject((node) -> NodeModel.get(node.parent_id))
+      .reject((node) -> cc.blueprint.models.Node.get(node.parent_id))
       # Sort nodes by position
       .sortBy('position')
       # Set node attributes
@@ -123,5 +92,3 @@ class Chart extends cc.blueprint.models.Element
 _.extend cc.blueprint.models,
   Chart: Chart
 
-$ ->
-  NodeModel ||= cc.blueprint.models.Node

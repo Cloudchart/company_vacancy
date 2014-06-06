@@ -1,39 +1,67 @@
 @['cloud_blueprint/charts#show'] = (data) ->
   
+  # Variables
+  #
+  can_edit_chart = true
+  
+  # Show spinner
+  #
   cc.blueprint.react.Spinner.show()
-  
 
-  cc.blueprint.models.Person.url    = data.people_url
-  cc.blueprint.models.Vacancy.url   = data.vacancies_url
-  cc.blueprint.models.Node.url      = data.nodes_url
+  # Set load URLs
+  #
+  
+  cc.blueprint.models.Chart.url     = data.url
+  cc.blueprint.models.Person.url    = data.url + '/people'
+  cc.blueprint.models.Vacancy.url   = data.url + '/vacancies'
+  cc.blueprint.models.Node.url      = data.url + '/nodes'
+  cc.blueprint.models.Identity.url  = data.url + '/identities'
   
   
-  chart_wrapper_element = document.querySelector('article.chart')
+  # Create chart
+  #
+  chart = new cc.blueprint.models.Chart(data.chart)
 
 
   # Identity filter
   #
-  identity_filter         = cc.blueprint.react.IdentityFilter({
+  identity_filter = cc.blueprint.react.IdentityFilter {
     subscribe_on: [
       'cc:blueprint:model:person/*'
       'cc:blueprint:model:vacancy/*'
     ]
-  })
+  }
   
-  cc.blueprint.models.Chart.load_url = data.load_url
-  chart = new cc.blueprint.models.Chart(data.chart)
+  # Blueprint
+  #
+  blueprint = cc.blueprint.react.Blueprint {},
+    if can_edit_chart
+      identity_filter
   
+
+  # Initial chart data pull
+  #
   chart.pull().done ->
+    # Mount blueprint
+    #
+    React.renderComponent(blueprint, document.querySelector('main'))
+    
+    # Hide spinner
+    #
     cc.blueprint.react.Spinner.hide()
-    React.renderComponent(identity_filter, chart_wrapper_element)
+  
+
+  #chart.pull().done ->
+  #  cc.blueprint.react.Spinner.hide()
+  #  React.renderComponent(identity_filter, chart_wrapper_element)
   
   
   # Create chart html
   #
-  el        = document.createElement('div').appendChild(document.querySelector('template#chart-template'))
-  chart_el  = el.content || _.find(el.childNodes, (node) -> node.nodeType == 1)
+  #el        = document.createElement('div').appendChild(document.querySelector('template#chart-template'))
+  #chart_el  = el.content || _.find(el.childNodes, (node) -> node.nodeType == 1)
 
-  chart_wrapper_element.appendChild(chart_el)
+  #chart_wrapper_element.appendChild(chart_el)
   
 
   

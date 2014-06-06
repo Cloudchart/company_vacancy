@@ -1,6 +1,7 @@
 //= require_self
 //= require ./spinner
 //= require ./forms
+//= require ./blueprint
 //= require ./identity_filter
 
 this.cc                   || (this.cc                 = {})
