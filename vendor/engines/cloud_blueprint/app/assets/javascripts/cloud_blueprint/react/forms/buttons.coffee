@@ -22,6 +22,8 @@ Buttons = React.createClass
           "Delete"
         )
       (tag.div { className: 'spacer' })
+      (@props.children)
+      (tag.div { className: 'spacer' })
       (tag.button { className: 'blueprint' },
         (tag.i { className: 'fa fa-check' })
         " "

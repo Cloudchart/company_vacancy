@@ -24,6 +24,7 @@ Lock = (model) ->
 #
 #
 IdentityCommons =
+
   getDefaultProps: ->
     model: cc.blueprint.models[@props.className].get(@props.key)
 
@@ -46,6 +47,11 @@ IdentityCommons =
     cc.ui.modal null,
       after_show:   @renderForm
       before_close: @hideForm
+  
+
+  onDragStart: (event) ->
+    event.dataTransfer.effectAllowed = 'link'
+    event.dataTransfer.setData('identity', JSON.stringify({ className: @props.className, uuid: @props.key }))
 
 
 #
@@ -61,7 +67,9 @@ Vacancy = React.createClass
   
   render: ->
     (tag.li {
-      onClick: @onClick
+      onClick:      @onClick
+      draggable:    true
+      onDragStart:  @onDragStart
     },
       (Icon('briefcase'))
       (tag.h2 {}, @state.name)
@@ -81,7 +89,9 @@ Person = React.createClass
 
   render: ->
     (tag.li {
-      onClick: @onClick
+      onClick:      @onClick
+      draggable:    true
+      onDragStart:  @onDragStart
     },
       (Icon('users'))
       (tag.h2 {},
@@ -129,7 +139,6 @@ IdentityList = React.createClass
   gatherIdentities: ->
     identities = []
    
-    
     # Gather vacancy components
     _.reduce gather_models_uuids('Vacancy', 'name', @state.query), (memo, uuid) ->
       memo.push Vacancy({ key: uuid, ref: uuid, className: 'Vacancy' }) ; memo
@@ -151,14 +160,9 @@ IdentityList = React.createClass
   refresh: ->
     @setState
       refreshed_at: + new Date
-  #  @setState
-  #    vacancies:  gather_models_uuids('Vacancy', 'name', @state.query)
-  #    people:     gather_models_uuids('Person', ['last_name', 'first_name'], @state.query)
 
 
   render: ->
-
-
     (tag.ul { className: 'identity-list' }, @gatherIdentities())
 
 

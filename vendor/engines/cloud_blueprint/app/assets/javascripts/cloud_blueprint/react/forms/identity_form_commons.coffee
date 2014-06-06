@@ -5,15 +5,17 @@
 IdentityFormCommons =
   getInitialState: ->
     @props.model.attributes
-
+  
+  
+  missingField: ->
+    _.find(@getDOMNode().querySelectorAll('[required]'), (field) -> !field.value)
   
   onSubmit: (event) ->
     event.preventDefault()
     
 
-    if missing_field = _.find(@getDOMNode().querySelectorAll('[required]'), (field) -> !field.value)
-      return missing_field.focus() and false
-    
+    return missing_field.focus() and false if missing_field = @missingField()
+
     
     if @props.model.is_persisted()
       @props.model.update(@state).save()

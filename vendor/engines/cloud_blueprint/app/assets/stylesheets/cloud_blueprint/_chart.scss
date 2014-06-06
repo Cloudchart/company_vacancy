@@ -135,7 +135,7 @@ main.blueprint article.chart {
         }
       }
       
-      &.contains-vacancies .flag {
+      .flag {
         @include node-flag(18pt, 12pt, hsl(0, 82%, 57%));
         position: absolute;
         right: 2pt;
@@ -253,7 +253,7 @@ main.blueprint article.chart {
         margin-left: - $base-unit * 2;
       }
       
-      input:checked + i.fa {
+      input:checked ~ i.fa {
         margin-left: auto;
       }
     }

@@ -36,11 +36,17 @@ class Element extends cc.blueprint.models.Base
     
   
   __children: ->
-    _.map @element.childNodes, (node) -> cc.blueprint.models[node.dataset.className].get(node.id)
+    _.chain(@element.childNodes)
+      .map((node) -> cc.blueprint.models[node.dataset.className].get(node.id))
+      .reject((node) -> node.is_deleted())
+      .value()
   
   
   __descendants: ->
-    _.map @element.querySelectorAll('*'), (node) -> cc.blueprint.models[node.dataset.className].get(node.id)
+    _.chain(@element.querySelectorAll('*'))
+      .map((node) -> cc.blueprint.models[node.dataset.className].get(node.id))
+      .reject((node) -> node.is_deleted())
+      .value()
 
 #
 #

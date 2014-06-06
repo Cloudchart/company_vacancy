@@ -81,9 +81,7 @@ IdentityFilter = React.createClass
     (tag.aside { className: 'identity-filter' },
       Toggle({ callback: @onToggle })
       cc.blueprint.react.IdentityFilter.Search({ ref: 'search', callback: @onSearchChange })
-      (tag.div { className: 'list-wrapper' },
-        (cc.blueprint.react.IdentityFilter.IdentityList({ ref: 'list', subscribe_on: @props.subscribe_on }))
-      )
+      cc.blueprint.react.IdentityFilter.IdentityList({ ref: 'list', subscribe_on: @props.subscribe_on })
       cc.blueprint.react.IdentityFilter.Buttons({ ref: 'buttons' })
     )
 

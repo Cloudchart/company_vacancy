@@ -132,31 +132,26 @@ aside.identity-filter {
   
   // Identity list
   //
-  .list-wrapper {
+  ul.identity-list {
     @include flex(1);
 
+    list-style: none;
     margin: $base-unit 0;
     overflow: scroll;
-    
-    ul.identity-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
+    padding: 0;
 
-      li {
-        @include filter-identity;
+    li {
+      @include filter-identity;
 
-        margin: $base-unit 0;
+      margin: $base-unit 0;
 
-        &:first-child {
-          margin-top: 0;
-        }
-
-        &:last-child {
-          margin-bottom: 0;
-        }
+      &:first-child {
+        margin-top: 0;
       }
 
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
   
