@@ -45,7 +45,7 @@ Events =
   onDragStart: (event) ->
     @__element_for_drag = element_for_drag()
 
-    event.dataTransfer.setData('node|' + @props.key, '')
+    event.dataTransfer.setData('node', @props.key)
     event.dataTransfer.setDragImage(@__element_for_drag, 5, 5)
 
     event.dataTransfer.effectAllowed = 'link'
@@ -56,12 +56,8 @@ Events =
     @__element_for_drag = null
   
   
+  
   onDragOver: (event) ->
-    
-    console.log event.dataTransfer.types
-    
-    event.preventDefault()
-    event.dataTransfer.dropEffect = 'link'
   
   
   onClick: (event) ->
