@@ -1,22 +1,15 @@
 module CloudProfile
   class Email < ActiveRecord::Base
-    
     include Uuidable
     
+    before_destroy :check_user_emails, unless: :marked_for_destruction?
 
     belongs_to :user
-    
     has_many :tokens, as: :owner, dependent: :destroy
 
     validates_format_of     :address, with: /.+@.+\..+/i
     validates_uniqueness_of :address
     validates_presence_of   :address
-    
-
-    #
-    # Activation
-    #
-    
     
     def active?
       persisted? && !activation_token.present?
@@ -32,12 +25,7 @@ module CloudProfile
       end
     end
     
-
-    #
-    # Destruction
-    #
-    
-    before_destroy :check_user_emails
+  private
     
     def check_user_emails
       emails = user.emails.includes(:tokens)

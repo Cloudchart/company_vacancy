@@ -1,10 +1,11 @@
 class User < ActiveRecord::Base
   include Uuidable
   
-  has_secure_password
-  
   attr_accessor :current_password
 
+  before_destroy :mark_emails_for_destruction
+
+  has_secure_password
   has_and_belongs_to_many :friends
   has_many :emails, -> { order(:address) }, class_name: CloudProfile::Email, dependent: :destroy
   has_many :social_networks, inverse_of: :user, class_name: CloudProfile::SocialNetwork, dependent: :destroy
@@ -33,6 +34,12 @@ class User < ActiveRecord::Base
   
   def has_proper_name?
     first_name.present? && last_name.present?
+  end
+
+private
+
+  def mark_emails_for_destruction
+    emails.each(&:mark_for_destruction)
   end
 
 end
