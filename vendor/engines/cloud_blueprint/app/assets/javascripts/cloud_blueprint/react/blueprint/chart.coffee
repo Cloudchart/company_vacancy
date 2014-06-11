@@ -55,15 +55,16 @@ Calculations =
         top:    child_layout.y + offset.y
       
       if relation = cc.blueprint.react.Blueprint.Relation.get(child.props.key)
-        parent            = @refs[relation.props.parent_key]
-        parent_layout     = layout[parent.props.key]
-        connection_index  = parent.props.model.children.indexOf(child.props.model)
+        parent          = @refs[relation.props.parent_key]
+        parent_layout   = layout[parent.props.key]
+        child_index     = parent.props.model.children.indexOf(child.props.model)
 
         relation.setPosition
-          parent_left:  parent_layout.x  + offset.x - parent.getWidth() / 2 + parent_layout.connections[connection_index]
+          parent_left:  parent_layout.x  + offset.x - parent.getWidth() / 2 + parent_layout.connections[child_index]
           parent_top:   parent_layout.y  + offset.y + parent.getHeight() / 2
           child_left:   child_layout.x   + offset.x
           child_top:    child_layout.y   + offset.y - child.getHeight() / 2
+          midpoint:     parent_layout.midpoints[child_index] + offset.y
     
 #
 #

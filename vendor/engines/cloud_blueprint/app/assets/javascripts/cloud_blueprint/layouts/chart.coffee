@@ -55,6 +55,52 @@ calculate_connections = (descriptors) ->
     descriptor.connections        = _.reduce [1 .. descriptor.children.length], ((memo, i) -> memo.push i * descriptor.connections_delta ; memo), []
 
 
+# Calculate midpoints
+#
+calculate_midpoints = (descriptors) ->
+  _.each descriptors, (descriptor) ->
+    return unless descriptor.children.length > 0 and descriptor.width
+
+    counts = _.reduce descriptor.children, (memo, child, i) ->
+      connection_point = descriptor.x - descriptor.width / 2 + descriptor.connections[i]
+      if child.x < connection_point
+        memo.lt++
+      else if child.x > connection_point
+        memo.gt++
+      else
+        memo.eq++
+      memo
+    , { lt: 0, eq: 0, gt: 0 }
+    
+    descriptor.midpoints = []
+    
+    top         = descriptor.y + descriptor.height / 2
+    bottom      = descriptor.children[0].y
+    
+    # lt
+    lt_children = descriptor.children[0 ... counts.lt]
+    max_height  = Math.max(_.pluck(lt_children, 'height')...)
+    if max_height > -Infinity
+      dh = (bottom - max_height / 2 - top) / (lt_children.length + 1)
+      _.each lt_children, (child, i) ->
+        descriptor.midpoints.push top + dh * (i + 1)
+    
+    # eq
+    eq_children = descriptor.children[counts.lt ... counts.lt + counts.eq]
+    max_height  = Math.max(_.pluck(eq_children, 'height')...)
+    if max_height > -Infinity
+      dh = (bottom - max_height / 2 - top) / (eq_children.length + 1)
+      _.each eq_children, (child, i) ->
+        descriptor.midpoints.push top + dh
+    
+    # gt
+    gt_children = descriptor.children[counts.lt + counts.eq ... counts.length]
+    max_height  = Math.max(_.pluck(gt_children, 'height')...)
+    if max_height > -Infinity
+      dh = (bottom - max_height / 2 - top) / (gt_children.length + 1)
+      _.each gt_children, (child, i) ->
+        descriptor.midpoints.push top + dh * (gt_children.length - i)
+
 
 #
 # Layout
@@ -89,6 +135,10 @@ layout = (root, views) ->
   # Calculate connections
   #
   calculate_connections(descriptors)
+  
+  # Calculate midpoints
+  #
+  calculate_midpoints(descriptors)
   
   #
   #

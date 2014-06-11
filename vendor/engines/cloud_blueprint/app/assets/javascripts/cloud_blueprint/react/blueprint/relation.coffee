@@ -41,7 +41,7 @@ Relation = React.createClass
       parent_top:   Math.floor(position.parent_top)
       child_left:   Math.round(position.child_left)
       child_top:    Math.ceil(position.child_top)
-      midpoint:     (position.parent_top + position.child_top) / 2
+      midpoint:     Math.round(position.midpoint)
 
 
   componentDidMount: ->
