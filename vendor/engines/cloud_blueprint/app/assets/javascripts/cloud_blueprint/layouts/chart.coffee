@@ -37,13 +37,13 @@ position_levels = (root, descriptors) ->
       if memo > descriptor.height then memo else descriptor.height
     , 0
     
-    level_offset += max_height_on_level / 2
+    level_offset += max_height_on_level / 2 + max_height_on_previous_level / 2
     
     _.each descriptors_on_level, (descriptor) -> descriptor.y = level_offset
     
     max_height_on_previous_level = max_height_on_level
     
-    level_offset += 100
+    level_offset += 50
 
 
 # Calculate connections

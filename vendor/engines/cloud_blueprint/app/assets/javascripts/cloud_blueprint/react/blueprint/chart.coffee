@@ -77,7 +77,8 @@ Chart = React.createClass
   ]
   
   
-  onClick: (event) -> alert(1)
+  onClick: (event) ->
+    
 
 
   getDefaultProps: ->
@@ -138,7 +139,7 @@ Chart = React.createClass
       cc.blueprint.react.Blueprint.Relation {
         key:        data.child
         parent_key: data.parent
-        colors: @props.colors
+        colors:     @props.colors
       }
     
     (tag.section {
