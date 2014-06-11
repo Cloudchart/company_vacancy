@@ -99,8 +99,9 @@ Node = React.createClass
 
   
   getDefaultProps: ->
-    model:          cc.blueprint.models.Node.get(@props.key)
-    can_be_edited:  false
+    model:            cc.blueprint.models.Node.get(@props.key)
+    children_density: 25
+    can_be_edited:    false
   
   
   onNodeDragStart: (node) ->
@@ -143,6 +144,7 @@ Node = React.createClass
       draggable:                     @props.can_be_edited
       style: 
         backgroundColor: @props.colors[@props.model.color_index]
+        minWidth:         @props.children_density * @props.model.children.length
     },
       (tag.div { className: 'flag' }) if false # should contain vacancies
       (tag.h2 {}, @props.model.title)

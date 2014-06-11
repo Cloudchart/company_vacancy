@@ -7,10 +7,45 @@ tag = React.DOM
 instances = {}
 
 
+# Draw path
+#
+draw_path = (coords) ->
+  start_point = "M #{coords.x1} #{coords.y1}"
+  upper_line  = "L #{coords.x11 || coords.x1} #{coords.y11}"
+  upper_curve = "Q #{coords.x11 || coords.x1} #{coords.y12} #{coords.x12} #{coords.y22}"
+  middle_line = "L #{coords.x22} #{coords.y22}"
+  lower_curve = "Q #{coords.x21 || coords.x2} #{coords.y22} #{coords.x21 || coords.x2} #{coords.y21}"
+  lower_line  = "L #{coords.x2} #{coords.y2}"
+  
+  "#{start_point} #{upper_line} #{upper_curve} #{middle_line} #{lower_curve} #{lower_line}"
+
+
 # Calculate path
 #
 calculatePath = (x1, y1, x2, y2, midpoint) ->
-  "M #{x1} #{y1} C #{x1} #{midpoint} #{x2} #{midpoint} #{x2} #{y2}"
+  radius    = 10
+  h_radius  = if (dx = Math.abs(x2 - x1) / 2) > radius then radius else dx
+  sign      = if x2 > x1 then 1 else if x2 < x1 then -1 else 0
+
+  x12 = x1 + h_radius * sign
+  x22 = x2 - h_radius * sign
+
+  y11 = midpoint - radius ; y11 = y1 if y11 < y1
+  y21 = midpoint + radius ; y21 = y2 if y21 > y2
+  
+  draw_path
+    x1:   x1
+    y1:   y1
+    x11:  x1
+    y11:  y11
+    x12:  x12
+    y12:  midpoint
+    x22:  x22
+    y22:  midpoint
+    x21:  x2
+    y21:  y21
+    x2:   x2
+    y2:   y2
 
 #
 #
