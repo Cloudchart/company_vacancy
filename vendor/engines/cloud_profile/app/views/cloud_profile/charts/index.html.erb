@@ -13,15 +13,14 @@
     <ul>
       <%- current_user.charts.includes(:company).each do |chart| -%>
         <li>
-          <%= chart.title %>
-          <br />
+          <%= link_to chart.title, cloud_blueprint.chart_path(chart) %>
           <%= chart.company.name %>
-          <br />
-          <%= link_to font_awesome('flash'), cloud_blueprint.chart_path(chart) %>
+          <%= link_to font_awesome('times'), "" %>
         </li>
       <%- end -%>
+
       <li class="new">
-        <%= link_to font_awesome('plus'), cloud_blueprint.new_chart_path %>
+        <%= link_to "Add a chart", cloud_blueprint.new_chart_path %>
       </li>
     </ul>
     

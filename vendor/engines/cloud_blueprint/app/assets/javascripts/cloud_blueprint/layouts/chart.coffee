@@ -46,6 +46,15 @@ position_levels = (root, descriptors) ->
     level_offset += 100
 
 
+# Calculate connections
+#
+calculate_connections = (descriptors) ->
+  _.each descriptors, (descriptor) ->
+    return unless descriptor.children.length > 0 and descriptor.width
+    descriptor.connections_delta  = descriptor.width / (descriptor.children.length + 1)
+    descriptor.connections        = _.reduce [1 .. descriptor.children.length], ((memo, i) -> memo.push i * descriptor.connections_delta ; memo), []
+
+
 
 #
 # Layout
@@ -76,6 +85,10 @@ layout = (root, views) ->
   # Position levels
   #
   position_levels(root, descriptors)
+  
+  # Calculate connections
+  #
+  calculate_connections(descriptors)
   
   #
   #

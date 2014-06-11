@@ -34,26 +34,37 @@ Calculations =
 
   getWidth: ->
     @getDimensions().width
-  
-  
-  getLayout: ->
-    layout = cc.blueprint.layouts.chart(@props.root, @refs)
+
+
+  calculateLayout: ->
+    cc.blueprint.layouts.chart(@props.root, @refs)
   
   
   reposition: ->
-    layout = @getLayout()
+    layout = @calculateLayout()
 
     offset =
       x:  @getWidth() / 2
       y:  @props.top_padding
     
-    _.each @refs, (child) ->
+
+    _.each @refs, (child) =>
+      child_layout = layout[child.props.key]
       child.setPosition
-        left:   layout[child.props.key].x + offset.x
-        top:    layout[child.props.key].y + offset.y
+        left:   child_layout.x + offset.x
+        top:    child_layout.y + offset.y
+      
+      if relation = cc.blueprint.react.Blueprint.Relation.get(child.props.key)
+        parent            = @refs[relation.props.parent_key]
+        parent_layout     = layout[parent.props.key]
+        connection_index  = parent.props.model.children.indexOf(child.props.model)
+
+        relation.setPosition
+          parent_left:  parent_layout.x  + offset.x - parent.getWidth() / 2 + parent_layout.connections[connection_index]
+          parent_top:   parent_layout.y  + offset.y + parent.getHeight() / 2
+          child_left:   child_layout.x   + offset.x
+          child_top:    child_layout.y   + offset.y - child.getHeight() / 2
     
-
-
 #
 #
 #
@@ -63,6 +74,9 @@ Chart = React.createClass
   mixins: [
     Calculations
   ]
+  
+  
+  onClick: (event) -> alert(1)
 
 
   getDefaultProps: ->
@@ -85,13 +99,24 @@ Chart = React.createClass
     @reposition()
 
 
-  gather_nodes: ->
-    _.chain(cc.blueprint.models.Node.instances)
-      .reject((instance) -> instance.is_deleted())
+  # Gather descendant nodes for root element
+  #
+  gatherNodes: ->
+    _.chain(@props.root.descendants)
+      .reject((descendant) -> descendant.is_deleted())
       .pluck('uuid')
       .value()
+  
 
-
+  # Gather relations
+  #
+  gatherRelations: ->
+    _.chain(@props.root.descendants)
+      .reject((descendant) => descendant.is_deleted() or descendant.parent == @props.root)
+      .reduce(((memo, descendant) -> memo.push({ child: descendant.uuid, parent: descendant.parent_id }) ; memo), [])
+      .value()
+  
+  
   # Refresh message
   #
   refresh: ->
@@ -100,16 +125,28 @@ Chart = React.createClass
 
 
   render: ->
-    nodes = _.map @gather_nodes(), (uuid) =>
+    nodes = _.map @gatherNodes(), (uuid) =>
       cc.blueprint.react.Blueprint.Node {
         key: uuid
         ref: uuid
         colors: @props.colors
         can_be_edited: @props.can_be_edited
       }
-
-    (tag.section { className: 'chart' },
-      (tag.svg {})
+    
+    relations = _.map @gatherRelations(), (data) =>
+      cc.blueprint.react.Blueprint.Relation {
+        key:        data.child
+        parent_key: data.parent
+        colors: @props.colors
+      }
+    
+    (tag.section {
+      className: 'chart'
+      onClick: @onClick
+    },
+      (tag.svg {},
+        relations
+      )
       (nodes)
     )
 

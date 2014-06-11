@@ -50,28 +50,37 @@ Events =
 
     event.dataTransfer.effectAllowed = 'link'
     
+    Arbiter.publish('cc:blueprint:react:node:drag:start', @)
+    
 
   onDragEnd: (event) ->
     @__element_for_drag.parentNode.removeChild(@__element_for_drag) if @__element_for_drag
     @__element_for_drag = null
+
+    Arbiter.publish('cc:blueprint:react:node:drag:end', @)
   
   
   
   onDragOver: (event) ->
+    # pass
   
   
+  # On node click
+  #
   onClick: (event) ->
+    event.stopPropagation()
     return if @props.model.is_synchronizing()
-    
-    cc.ui.modal null,
-      after_show:   @renderForm
-      before_close: @hideForm
+    cc.ui.modal null, { after_show: @renderForm, before_close: @hideForm }
   
   
+  # Render node form
+  #
   renderForm: (container) ->
     React.renderComponent(cc.blueprint.react.forms.Node({ model: @props.model, colors: @props.colors }), container)
 
 
+  # Close node form
+  #
   hideForm: (container) ->
     React.unmountComponentAtNode(container)
 
@@ -92,6 +101,21 @@ Node = React.createClass
   getDefaultProps: ->
     model:          cc.blueprint.models.Node.get(@props.key)
     can_be_edited:  false
+  
+  
+  onNodeDragStart: (node) ->
+    return if node == @
+    return if _.contains node.props.model.descendants, @props.model
+    # Calculate insertion points for node
+  
+  
+  onNodeDragEnd: (data) ->
+    # Remove insertion points for node
+  
+  
+  componentDidMount: ->
+    Arbiter.subscribe 'cc:blueprint:react:node:drag:start', @onNodeDragStart
+    Arbiter.subscribe 'cc:blueprint:react:node:drag:end',   @onNodeDragEnd
   
 
   componentDidUpdate: (prevProps, prevState) ->
