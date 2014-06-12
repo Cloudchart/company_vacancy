@@ -11,7 +11,7 @@ class VacanciesController < ApplicationController
 
   # GET /vacancies
   def index
-    @vacancies = @company.vacancies
+    @vacancies = @company.vacancies.order(:name)
   end
 
   # GET /vacancies/1

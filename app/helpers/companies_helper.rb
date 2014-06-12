@@ -16,12 +16,8 @@ module CompaniesHelper
     current_user.subscriptions.map(&:subscribable_id).include?(company.id)
   end
 
-  def company_owner?(company)
-    (current_user.people & company.people).first.try(:is_company_owner?)
-  end
-
   def calculate_social_relation_for_user(company)
-    if company_owner?(company)
+    if can?(:update, company)
       'you are the owner'
     elsif current_user.companies.include?(company)
       'you work here'

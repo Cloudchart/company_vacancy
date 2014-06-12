@@ -6,11 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :require_properly_named_user!
 
   rescue_from CanCan::AccessDenied do |exception|
-    if request.env["HTTP_REFERER"].present?
-      redirect_to :back, alert: exception.message
-    else
-      redirect_to :root, alert: exception.message
-    end
+    redirect_to :root, alert: exception.message
   end
   
   def authenticate(options = {})

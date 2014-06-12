@@ -32,7 +32,7 @@
             </li>
           <% end %>
 
-          <% if can?(:manage, Subscription) && !company_owner?(company) %>
+          <% if can?(:manage, Subscription) && cannot?(:update, company) %>
             <li>
               <strong>Subscription:</strong>
               <% unless subscribed_to_company?(company) %>

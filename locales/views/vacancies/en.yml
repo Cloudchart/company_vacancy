@@ -1,0 +1,7 @@
+en:
+  vacancies:
+    index: 
+      only_me: "Only me"
+      company: "Company"
+      company_plus_one_share: "Company + 1 share"
+      everyone: "Everyone"

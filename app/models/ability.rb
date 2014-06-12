@@ -22,11 +22,13 @@ class Ability
     
     # Anyone
     can [:read, :search], Company
-    [Person, Vacancy, Event].each do |model|
-      can [:read], model
+
+    can :read, Vacancy do |vacancy|
+      vacancy.settings.accessible_to == 'everyone'
     end
 
-    can [:read], Feature
+    can :read, Event
+    can :read, Feature
 
     return unless user
 
@@ -41,6 +43,8 @@ class Ability
       can :vote, Feature
       can :destroy, Token
       can :manage, Subscription
+      can :access_vacancies, Company
+      can :access_events, Company
 
       # User (conditional)
       can [:update, :destroy, :upload_logo], Company do |company| 
@@ -51,14 +55,20 @@ class Ability
         (user.people & block.company.people).first.try(:is_company_owner?)
       end
 
-      # authorization for nested company resources
       [Person, Vacancy, Event].each do |model|
         can :manage, model do |resource|
           (user.people & resource.company.people).first.try(:is_company_owner?)
         end
-        can [:"access_#{model.table_name}"], Company do |company|
-          user.companies.include?(company)
-        end
+      end
+
+      can [:access_people], Company do |company|
+        user.companies.include?(company)
+      end
+
+      can :read, Vacancy do |vacancy|
+        vacancy.settings.accessible_to =~ /company|company_plus_one_share/ && user.companies.include?(vacancy.company) ||
+        vacancy.settings.accessible_to == 'company_plus_one_share' && user.friends.working_in_company(vacancy.company_id).any? ||
+        vacancy.settings.accessible_to == 'everyone'        
       end
 
     end
