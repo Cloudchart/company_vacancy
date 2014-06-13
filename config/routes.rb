@@ -34,7 +34,9 @@ Cloudchart::Application.routes.draw do
     
     post :logo, to: 'companies#upload_logo', on: :member
     
-    resources :vacancies, except: [:edit], concerns: [:blockable]
+    resources :vacancies, except: [:edit], concerns: [:blockable] do
+      get :respond, on: :member
+    end
     
     resources :people do
       post :send_invite_to_user, on: :member

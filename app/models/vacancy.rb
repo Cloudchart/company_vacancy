@@ -13,6 +13,7 @@ class Vacancy < ActiveRecord::Base
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
 
   belongs_to :company
+  has_and_belongs_to_many :users
   # has_paper_trail
 
   validates :name, presence: true

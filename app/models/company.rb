@@ -30,14 +30,8 @@ class Company < ActiveRecord::Base
     end
   end
 
-  def self.find_or_create_placeholder_for(user)
-    company = user.companies.find_by(is_empty: true) || begin
-      company = Company.new(is_empty: true)
-      company.associate_with_person(user)
-      company.should_build_objects!
-      company.save!
-      company
-    end
+  def owner
+    people.find_by(is_company_owner: true).user
   end
 
   class << self
@@ -45,6 +39,16 @@ class Company < ActiveRecord::Base
       tire.search(load: true) do
         query { string "name:#{params[:query]}" } if params[:query].present?
       end
+    end
+  end
+
+  def find_or_create_placeholder_for(user)
+    company = user.companies.find_by(is_empty: true) || begin
+      company = Company.new(is_empty: true)
+      company.associate_with_person(user)
+      company.should_build_objects!
+      company.save!
+      company
     end
   end
 

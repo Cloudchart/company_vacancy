@@ -26,7 +26,15 @@ module CloudProfile
         if activity.source
           activity_name.pluralize
         else
-          link_to activity_name.pluralize, main_app.send("#{activity.trackable_type.underscore.pluralize}_path"), target: '_blank'
+          # temporary crutch for company nested resources
+          route_prefix = ''
+          route_object = nil
+          if activity.trackable_type =~ /Event|Person|Vacancy/
+            route_prefix = 'company_'
+            route_object = activity.trackable.company
+          end
+
+          link_to activity_name.pluralize, main_app.send("#{route_prefix}#{activity.trackable_type.underscore.pluralize}_path", route_object), target: '_blank'
         end
       end
     end

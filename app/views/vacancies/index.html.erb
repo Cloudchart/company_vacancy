@@ -25,8 +25,9 @@
           <td><%= vacancy.location %></td>
           <td><%= vacancy.company.name %></td>
           <td><%= t(".#{vacancy.settings.accessible_to}") %></td>
+          <td><%= link_to 'Respond', respond_vacancy_path(vacancy) unless current_user.vacancies.include?(vacancy) %></td>
           <td><%= link_to 'Show', vacancy %></td>
-          <td><%= link_to 'Destroy', vacancy, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <td><%= link_to 'Destroy', vacancy, method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, vacancy) %></td>
         </tr>
       <% end %>
 

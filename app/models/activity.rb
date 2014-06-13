@@ -26,6 +26,7 @@ class Activity < ActiveRecord::Base
       company = source && source.class == Company ? source : trackable.try(:company)
       
       if company && company.subscriptions.any?
+        Rails.logger.info("#{'*'*1000} #{}")
         SubscriptionsWorker.perform_async(user.id, action, trackable.id, trackable.class, source.try(:id), source.try(:class), group_type)
       end
 

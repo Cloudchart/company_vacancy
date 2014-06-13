@@ -1,5 +1,5 @@
 class VacanciesController < ApplicationController
-  before_action :set_vacancy, only: [:show, :update, :destroy]
+  before_action :set_vacancy, only: [:show, :update, :destroy, :respond]
   before_action :set_company, only: [:index, :new, :create]
   before_action :build_vacancy, only: :new
   before_action :build_vacancy_with_params, only: :create
@@ -8,6 +8,10 @@ class VacanciesController < ApplicationController
   authorize_resource except: :index
 
   impressionist actions: [:show], unique: [:ip_address]
+
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to (@vacancy ? company_vacancies_path(@vacancy.company) : companies_path), alert: exception.message
+  end
 
   # GET /vacancies
   def index
@@ -53,6 +57,19 @@ class VacanciesController < ApplicationController
     company = @vacancy.company
     @vacancy.destroy
     redirect_to company_vacancies_url(company), notice: t('messages.destroyed', name: t('lexicon.vacancy'))
+  end
+
+  def respond
+    if current_user
+      unless current_user.vacancies.include?(@vacancy)
+        current_user.vacancies << @vacancy
+        Activity.track_activity(current_user, 'respond', @vacancy)
+      end
+
+      redirect_to @vacancy, notice: t('messages.vacancies.respond.success')
+    else
+      redirect_to cloud_profile.login_path
+    end
   end
 
 private
