@@ -1,6 +1,6 @@
 <section style="font-size: 14pt;">
   <% if activity.subscriber_id.present? %>
-    <%= activity.trackable.company.name %>
+    <%= activity.action == 'respond' ? activity.user.full_name : activity.trackable.company.name %>
   <% elsif current_user == activity.user %> 
     <%= link_to 'You', root_path(current_user) %>
   <% else %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140613143513) do
+ActiveRecord::Schema.define(version: 20140617140748) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -272,13 +272,6 @@ ActiveRecord::Schema.define(version: 20140613143513) do
     t.datetime "updated_at"
   end
 
-  create_table "users_vacancies", id: false, force: true do |t|
-    t.string "user_id",    limit: 36, null: false
-    t.string "vacancy_id", limit: 36, null: false
-  end
-
-  add_index "users_vacancies", ["user_id", "vacancy_id"], name: "index_users_vacancies_on_user_id_and_vacancy_id", unique: true, using: :btree
-
   create_table "vacancies", primary_key: "uuid", force: true do |t|
     t.string   "name",                                     null: false
     t.text     "description"
@@ -290,9 +283,20 @@ ActiveRecord::Schema.define(version: 20140613143513) do
     t.string   "company_id",        limit: 36,             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "author_id",         limit: 36,             null: false
   end
 
   add_index "vacancies", ["company_id"], name: "index_vacancies_on_company_id", using: :btree
+
+  create_table "vacancy_responses", primary_key: "uuid", force: true do |t|
+    t.text     "content"
+    t.string   "user_id",    limit: 36, null: false
+    t.string   "vacancy_id", limit: 36, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "vacancy_responses", ["user_id", "vacancy_id"], name: "index_vacancy_responses_on_user_id_and_vacancy_id", unique: true, using: :btree
 
   create_table "versions", force: true do |t|
     t.string   "item_id",        limit: 36, null: false

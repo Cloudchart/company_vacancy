@@ -3,6 +3,7 @@ module CloudProfile
 
     def activity_message(activity)
       preposition = activity.group_type.to_s =~ /0|2/ ? 'a' : 'several'
+      preposition = "to #{preposition}" if activity.action == 'respond'
       activity_name = activity_name(activity)
       several_times = activity.group_type == 2 ? ' several times ' : ''
       source_name = activity.source ? " on #{source_name(activity)}" : ''

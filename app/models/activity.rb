@@ -25,8 +25,7 @@ class Activity < ActiveRecord::Base
       # duplicate activity for subscribers via sidekiq (only company subscription so far)
       company = source && source.class == Company ? source : trackable.try(:company)
       
-      if company && company.subscriptions.any?
-        Rails.logger.info("#{'*'*1000} #{}")
+      if company && company.subscriptions.any? || action == 'respond'
         SubscriptionsWorker.perform_async(user.id, action, trackable.id, trackable.class, source.try(:id), source.try(:class), group_type)
       end
 

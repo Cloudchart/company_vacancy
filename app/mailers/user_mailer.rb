@@ -9,4 +9,10 @@ class UserMailer < ActionMailer::Base
     mail to: email
   end
 
+  def send_vacancy_response(vacancy, email)
+    @vacancy = vacancy
+    @user = email.user
+    mail to: email.address
+  end
+
 end

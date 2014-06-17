@@ -13,7 +13,9 @@ class Vacancy < ActiveRecord::Base
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
 
   belongs_to :company
-  has_and_belongs_to_many :users
+  belongs_to :author, class_name: User
+  has_many :responses, class_name: VacancyResponse
+  has_many :responded_users, through: :vacancy_responses, class_name: User
   # has_paper_trail
 
   validates :name, presence: true

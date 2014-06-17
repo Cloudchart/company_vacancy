@@ -1,0 +1,10 @@
+<h1>Responses list for <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %></h1>
+
+<ul>
+  <% @vacancy.responses.each do |response| %>
+    <li>
+      <%= response.user.full_name %> |
+      <%= response.content %>
+    </li>
+  <% end %>  
+</ul>

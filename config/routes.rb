@@ -25,6 +25,9 @@ Cloudchart::Application.routes.draw do
   # Custom
   #
   get 'company_invite/:token_id', to: 'landings#company_invite', as: 'company_invite'
+  get 'vacancy_responses/:vacancy_id/new', to: 'vacancy_responses#new', as: 'new_vacancy_response'
+  post 'vacancy_responses/:vacancy_id', to: 'vacancy_responses#create'
+  get 'vacancy_responses/:vacancy_id', to: 'vacancy_responses#index', as: 'vacancy_responses'
 
   # Resources
   #
@@ -34,9 +37,7 @@ Cloudchart::Application.routes.draw do
     
     post :logo, to: 'companies#upload_logo', on: :member
     
-    resources :vacancies, except: [:edit], concerns: [:blockable] do
-      get :respond, on: :member
-    end
+    resources :vacancies, except: [:edit], concerns: [:blockable]
     
     resources :people do
       post :send_invite_to_user, on: :member

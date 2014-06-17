@@ -23,7 +23,7 @@ class Ability
     # Anyone
     can [:read, :search], Company
 
-    can [:read, :respond], Vacancy do |vacancy|
+    can :read, Vacancy do |vacancy|
       vacancy.settings.accessible_to == 'everyone'
     end
 
@@ -65,10 +65,18 @@ class Ability
         user.companies.include?(company)
       end
 
-      can [:read, :respond], Vacancy do |vacancy|
+      can :read, Vacancy do |vacancy|
         vacancy.settings.accessible_to =~ /company|company_plus_one_share/ && user.companies.include?(vacancy.company) ||
         vacancy.settings.accessible_to == 'company_plus_one_share' && user.friends.working_in_company(vacancy.company_id).any? ||
         vacancy.settings.accessible_to == 'everyone'        
+      end
+
+      can :create, VacancyResponse do |vacancy_response|
+        !user.vacancy_responses.map(&:vacancy_id).include?(vacancy_response.vacancy_id) && !user.companies.include?(vacancy_response.vacancy.company)
+      end
+
+      can :access_vacancy_responses, VacancyResponse do |vacancy|
+        (user.people & vacancy.company.people).first.try(:is_company_owner?)
       end
 
     end
