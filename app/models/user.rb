@@ -16,6 +16,8 @@ class User < ActiveRecord::Base
   has_many :votes, as: :source
   has_many :activities, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
+  has_many :vacancies, foreign_key: :author_id
+  has_many :vacancy_responses
   has_one :avatar, as: :owner, dependent: :destroy
 
   accepts_nested_attributes_for :avatar, allow_destroy: true

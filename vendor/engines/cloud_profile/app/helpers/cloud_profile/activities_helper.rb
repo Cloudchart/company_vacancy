@@ -3,6 +3,7 @@ module CloudProfile
 
     def activity_message(activity)
       preposition = activity.group_type.to_s =~ /0|2/ ? 'a' : 'several'
+      preposition = "to #{preposition}" if activity.action == 'respond'
       activity_name = activity_name(activity)
       several_times = activity.group_type == 2 ? ' several times ' : ''
       source_name = activity.source ? " on #{source_name(activity)}" : ''
@@ -26,7 +27,15 @@ module CloudProfile
         if activity.source
           activity_name.pluralize
         else
-          link_to activity_name.pluralize, main_app.send("#{activity.trackable_type.underscore.pluralize}_path"), target: '_blank'
+          # temporary crutch for company nested resources
+          route_prefix = ''
+          route_object = nil
+          if activity.trackable_type =~ /Event|Person|Vacancy/
+            route_prefix = 'company_'
+            route_object = activity.trackable.company
+          end
+
+          link_to activity_name.pluralize, main_app.send("#{route_prefix}#{activity.trackable_type.underscore.pluralize}_path", route_object), target: '_blank'
         end
       end
     end

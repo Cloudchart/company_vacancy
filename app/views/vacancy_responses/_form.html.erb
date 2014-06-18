@@ -1,0 +1,5 @@
+<%= simple_form_for @vacancy_response do |f| %>  
+  <%= f.input_field :vacancy_id, as: :hidden %>
+  <%= f.input :content %>
+  <%= f.submit %>
+<% end %>

@@ -1,5 +1,6 @@
 en:
   messages:
+    login_or_register: "Please login or register"
     are_you_sure: "Are you sure?"
     created: "%{name} was successfully created."
     updated: "%{name} was successfully updated."
@@ -33,3 +34,6 @@ en:
       create: "Your subscription has been created"
       update: "Your subscription has been updated"
       destroy: "Your subscription has been removed"
+    vacancies:
+      respond:
+        success: "Your response has been sent to company"

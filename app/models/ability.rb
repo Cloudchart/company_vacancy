@@ -29,6 +29,8 @@ class Ability
 
     can :read, Event
     can :read, Feature
+    can :access_vacancies, Company
+    can :access_events, Company
 
     return unless user
 
@@ -43,8 +45,6 @@ class Ability
       can :vote, Feature
       can :destroy, Token
       can :manage, Subscription
-      can :access_vacancies, Company
-      can :access_events, Company
 
       # User (conditional)
       can [:update, :destroy, :upload_logo], Company do |company| 
@@ -69,6 +69,15 @@ class Ability
         vacancy.settings.accessible_to =~ /company|company_plus_one_share/ && user.companies.include?(vacancy.company) ||
         vacancy.settings.accessible_to == 'company_plus_one_share' && user.friends.working_in_company(vacancy.company_id).any? ||
         vacancy.settings.accessible_to == 'everyone'        
+      end
+
+      can :create, VacancyResponse do |vacancy_response|
+        !user.vacancy_responses.map(&:vacancy_id).include?(vacancy_response.vacancy_id) && !user.companies.include?(vacancy_response.vacancy.company)
+      end
+
+      can :access_vacancy_responses, VacancyResponse do |vacancy|
+        (user.people & vacancy.company.people).first.try(:is_company_owner?) ||
+        user.vacancies.include?(vacancy)
       end
 
     end

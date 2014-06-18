@@ -5,12 +5,7 @@ class CompaniesController < ApplicationController
   authorize_resource
 
   rescue_from CanCan::AccessDenied do |exception|
-    logger.debug exception.message
-    if request.env["HTTP_REFERER"].present?
-      redirect_to :back, alert: exception.message
-    else
-      redirect_to (@company || companies_path), alert: exception.message
-    end
+    redirect_to (@company || companies_path), alert: exception.message
   end
 
   # GET /companies

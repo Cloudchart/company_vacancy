@@ -54,4 +54,8 @@ Cloudchart::Application.routes.draw do
 
   resources :subscriptions, only: [:create, :update, :destroy]
 
+  scope 'vacancies/:vacancy_id' do
+    resources :vacancy_responses, path: 'responses'
+  end
+
 end

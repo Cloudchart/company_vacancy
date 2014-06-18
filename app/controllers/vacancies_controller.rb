@@ -9,6 +9,10 @@ class VacanciesController < ApplicationController
 
   impressionist actions: [:show], unique: [:ip_address]
 
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to (@vacancy ? company_vacancies_path(@vacancy.company) : companies_path), alert: exception.message
+  end
+
   # GET /vacancies
   def index
     @vacancies = @company.vacancies.order(:name)
@@ -29,6 +33,7 @@ class VacanciesController < ApplicationController
   # POST /vacancies
   def create
     @vacancy.should_build_objects!
+    @vacancy.author = current_user
 
     if @vacancy.save
       Activity.track_activity(current_user, 'open', @vacancy)

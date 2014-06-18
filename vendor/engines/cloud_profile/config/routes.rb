@@ -43,6 +43,7 @@ CloudProfile::Engine.routes.draw do
     get 'settings', to: 'welcome#settings', as: :settings
     get 'newsfeed', to: 'activities#index', as: :newsfeed
     get 'subscriptions', to: 'subscriptions#index', as: :subscriptions
+    get 'vacancies', to: 'vacancies#index', as: :vacancies
 
     # Companies
     # 

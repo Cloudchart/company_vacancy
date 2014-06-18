@@ -1,0 +1,8 @@
+<p>
+  Hello<%= @user.present? ? " #{@user.full_name_or_email}" : '' %>,
+</p>
+
+<p>
+  Someone has responded to an opened vacancy – <strong><%= @vacancy.name %></strong>. Please click the following link for further steps:
+  <%= link_to vacancy_responses_url(@vacancy), vacancy_responses_url(@vacancy) %>
+</p>
