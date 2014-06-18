@@ -28,8 +28,6 @@ Cloudchart::Application.routes.draw do
 
   # Resources
   #
-  resources :tokens, only: :destroy
-
   resources :companies, shallow: true, concerns: [:blockable] do
     
     post :logo, to: 'companies#upload_logo', on: :member
@@ -52,10 +50,12 @@ Cloudchart::Application.routes.draw do
     post :vote, on: :member
   end
 
+  resources :tokens, only: :destroy
   resources :subscriptions, only: [:create, :update, :destroy]
+  resources :comments, only: [:create, :update, :destroy]
 
   scope 'vacancies/:vacancy_id' do
-    resources :vacancy_responses, path: 'responses'
+    resources :vacancy_responses, path: 'responses', except: [:edit, :update]
   end
 
 end

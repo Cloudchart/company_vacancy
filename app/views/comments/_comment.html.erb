@@ -1,0 +1,7 @@
+<li id="<%= comment.id %>">
+  <%= image_tag comment.user.try(:avatar).try(:image_url) %> |
+  <%= comment.user.full_name %> |
+  <%= time_ago_in_words(comment.updated_at) %> ago |
+  <%= comment.content %> |
+  <%= link_to 'Destroy', comment, method: :delete, data: { confirm: 'Are you sure?' }, remote: true if can?(:destroy, comment) %>
+</li>
