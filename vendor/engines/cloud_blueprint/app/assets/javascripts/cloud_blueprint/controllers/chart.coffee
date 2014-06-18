@@ -1,12 +1,25 @@
 @['cloud_blueprint/charts#show'] = (data) ->
   
+
   # Variables
   #
   can_edit_chart = true
   
+
+  # Access functions
+  #
+  get_node = (uuid) ->
+    cc.blueprint.react.Blueprint.Node.get(uuid)
+
+  get_relation = (uuid) ->
+    cc.blueprint.react.Blueprint.Relation.get(uuid)
+    
+    
+    
   # Show spinner
   #
   cc.blueprint.react.Spinner.show()
+
 
   # Set load URLs
   #
@@ -32,6 +45,7 @@
     ]
   }
   
+
   # Chart view
   #
   chart_view = cc.blueprint.react.Blueprint.Chart {
@@ -58,156 +72,61 @@
     
     # Hide spinner
     cc.blueprint.react.Spinner.hide()
-  
-
-  #chart.pull().done ->
-  #  cc.blueprint.react.Spinner.hide()
-  #  React.renderComponent(identity_filter, chart_wrapper_element)
-  
-  
-  # Create chart html
-  #
-  #el        = document.createElement('div').appendChild(document.querySelector('template#chart-template'))
-  #chart_el  = el.content || _.find(el.childNodes, (node) -> node.nodeType == 1)
-
-  #chart_wrapper_element.appendChild(chart_el)
-  
-
-  
-
-  ###
-  # Namespaces
-  #
-  models  = cc.blueprint.models
-  views   = cc.blueprint.views
-  
-  
-  # Chart class variables
-  #
-  
-  models.Chart.load_url     = data.load_url
-  models.Node.load_url      = data.nodes_url
-  models.Person.load_url    = data.people_url
-  models.Vacancy.load_url   = data.vacancies_url
-  
-  
-  # Initialize chart model
-  #
-  chart = new models.Chart(data.chart)
-  
-  
-  # Subscribe on chart sync broabcast
-  #
-
-  on_sync = ->
-    identity_list_view.refresh()
-    chart_view.render() if chart_view?
     
-  
-  Arbiter.subscribe('blueprint:dispatcher/sync', on_sync)
-
-
-  # Initial Sync
-  #
-  chart.pull().done cc.blueprint.dispatcher.sync
-  
-
-  # Initialize views
-  #
-
-  chart_view  = new views.Chart(chart, 'section.chart')
-  #filter_view = new views.FilterIdentityList('aside.person-vacancy-filter ul.people-vacancies')
-  identity_list_view = React.renderComponent(cc.blueprint.react.identity_list(), document.querySelector('aside.person-vacancy-filter div.people-vacancies'))
-  
-  
-  # Elements
-  #
-  $document               = $(document)
-  $chart_container        = $('section.chart')
-  node_selector           = '[data-behaviour~="node"]'
-  node_form_selector      = ".modal-container form.node"
-  color_index_selector    = "div.color-indices input"
-  delete_button_selector  = 'a[data-behaviour~="delete"]'
-  
-  # Observe public events
-  #
-  
-  # Observe private events
-  #
-  
-  cc.blueprint.common.activate_person_vacancy_filter()
-  
-  # chart click
-  $chart_container.on 'click', cc.blueprint.common.on_chart_click
-  
-  # node click
-  $chart_container.on 'click', node_selector, cc.blueprint.common.on_node_click
-  
-  # node form submit
-  $document.on 'submit', node_form_selector, cc.blueprint.common.on_node_form_submit
-  
-  # node form delete button click
-  $document.on 'click', "#{node_form_selector} #{delete_button_selector}", cc.blueprint.common.on_node_form_delete_button_click
-  
-  # node form color index change
-  $document.on 'change', "#{node_form_selector} #{color_index_selector}", cc.blueprint.common.on_node_form_color_index_change
-  
-  # node dropped
-  $chart_container.on 'node::drop', node_selector, (event, data) ->
-    model         = cc.blueprint.models.Node.get(@dataset.id)
-    parent_model  = cc.blueprint.models.Node.get(data.parent.dataset.id)
-
-    model.update
-      parent_id:  parent_model.uuid
-      position:   data.index - .5
+    if can_edit_chart
+      # Activate droppable widget
+      cc.ui.droppable()
+    
+      # Observe node drag/drop
+      observe_node_drag_drop()
+      
+      # Observe node droppable
+      cc.blueprint.common.node_droppable(document.querySelector('section.chart'), 'div.node')
   
   
   # Node drag/drop
   #
-  cc.ui.droppable()
-  
-  # activate
-  
-  cc.blueprint.common.activate_node_drag_drop($chart_container, node_selector)
-  
-  
-  # Filter new identity click
-  #
-  $document.on 'click', ".person-vacancy-filter nav.buttons button[data-class-name=Person]", (event) ->
-    event.preventDefault()
+  observe_node_drag_drop = ->
     
-    model = new cc.blueprint.models[@dataset.className]
+    cc.blueprint.common.node_drag_drop(document.querySelector('section.chart'), 'div.node')
     
-    cc.ui.modal '',
-      after_show: (container) ->
-        React.renderComponent(cc.blueprint.react.person_form({ model: model }), container)
+    return
+    
+    drag = {}
+    
+    cc.ui.drag_drop 'section.chart', 'div.node',
+      helper: false
+      revert: true
       
-      before_close: (container) ->
-        React.unmountComponentAtNode(container)
-  
+      on_start: (element, options = {}) ->
+        
+        drag.node           = get_node(element.dataset.id)
+        drag.relation       = get_relation(element.dataset.id)
+        drag.relation_node  = drag.relation.getDOMNode() if drag.relation
+        
+        uuids               = _.pluck drag.node.props.model.descendants, 'uuid'
+        
+        cc.ui.droppable.data  =
+          capture: (element) ->
+            uuid = element.dataset.id
+            return drag.node.key != uuid and uuids.indexOf(uuid) == -1
+        
 
-  # Identity drag/drop
-  #
-  
-  # Activate
-  cc.blueprint.common.activate_person_vacancy_drag_drop()
-  
-  # Create identity
-  Arbiter.subscribe "identity:node:drop", (attributes) ->
-    attributes.chart_id = chart.uuid
-    cc.blueprint.models.Identity.create(attributes)
-    cc.blueprint.models.Node.get(attributes.node_id).touch()
-    cc.blueprint.dispatcher.sync()
+      on_move: (element, options = {}) ->
+        return unless drag.relation_node
+        return if cc.ui.droppable.data.captured
+        
+        offset = drag.relation_node.parentNode.getBoundingClientRect()
+        
+        position =
+          x1: drag.relation.state.child_left
+          y1: drag.relation.state.child_top + drag.node.getHeight() / 2
+          x2: options.x - offset.left
+          y2: options.y - offset.top
+        
+        drag.relation_node.setAttribute('d', "M #{position.x1} #{position.y1} L #{position.x2} #{position.y2}")
+        
 
-
-  # Drag over node
-  $chart_container.on 'dragover', node_selector, (event) ->
-    node = cc.blueprint.models.Node.get(@dataset.id)
-    return unless node.title == 'Programming'
-    event.originalEvent.dataTransfer.dropEffect = 'link'
-    event.preventDefault()
-    return false
-
-  $chart_container.on 'drop', node_selector, (event) ->
-    event.stopPropagation()
-###
+      on_end: ->
+        drag.relation.refresh() if drag.relation
+        drag = {}

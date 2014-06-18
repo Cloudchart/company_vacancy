@@ -11,7 +11,7 @@ Buttons = React.createClass
 
   render: ->
     (tag.section { className: 'buttons' },
-      if @props.model.is_persisted()
+      if @props.model.can_be_deleted()
         (tag.a {
           href:       '#'
           className:  'alert blueprint-button'

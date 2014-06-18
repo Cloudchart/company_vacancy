@@ -38,6 +38,9 @@ widget = (element, selector, options = {}) ->
   
   $element = $(element) ; return if $element.length == 0
   
+  
+  _.each ['on_start', 'on_move', 'on_end'], (name) -> options[name] = $.noop unless _.isFunction(options[name])
+  
   self = {}
   
   # Element for Drag
@@ -119,6 +122,7 @@ widget = (element, selector, options = {}) ->
     
     position_at_left_top()
 
+    options.on_start(self.target, { x: event.pageX, y: event.pageY })
     self.$target.trigger($.Event("cc::drag:start", { pageX: event.pageX, pageY: event.pageY }))
   
   
@@ -135,6 +139,7 @@ widget = (element, selector, options = {}) ->
       
     position_at_left_top()
     
+    options.on_move(self.target, { x: event.pageX, y: event.pageY })
     self.$target.trigger($.Event("cc::drag:move", { pageX: event.pageX, pageY: event.pageY }))
   
   
@@ -146,6 +151,8 @@ widget = (element, selector, options = {}) ->
       revert_to_origin()
     else
       dispose_of_element_for_drag()
+
+    options.on_end(self.target, { x: event.pageX, y: event.pageY })
     self.$target.trigger($.Event("cc::drag:end", { pageX: event.pageX, pageY: event.pageY }))
 
 

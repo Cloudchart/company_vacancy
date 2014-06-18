@@ -18,6 +18,80 @@ default_colors = [
 ]
 
 
+# Calculate insertion point
+#
+calculate_parent = (refs, x, y) ->
+  bounds = _.reduce refs, (memo, node) ->
+    rect            = node.getDOMNode().getBoundingClientRect()
+    rect.uuid       = node.props.key
+    rect.parent     = node.props.model.parent_id
+    rect.midpoint   = rect.top + rect.height / 2
+    rect.dx         = Math.min(Math.abs(rect.left - x), Math.abs(rect.right - x))
+    rect.dy         = Math.abs(rect.midpoint - y)
+    memo[rect.uuid] = rect
+    memo
+  , {}
+
+  bounds_by_midpoint = _.reduce bounds, (memo, rect) ->
+    (memo[rect.midpoint] ||= []).push(rect) ; memo
+  , {}
+
+  _.each bounds_by_midpoint, (bounds, midpoint) -> bounds_by_midpoint[midpoint] = _.sortBy bounds, 'left'
+
+  # Find closest top level
+  top_level = _.reduce bounds_by_midpoint, (memo, bounds, midpoint) ->
+    if (memo == null or memo < midpoint) and midpoint < y then midpoint else memo
+  , null
+
+  # Find closets hit level
+  hit_level = _.reduce bounds_by_midpoint, (memo, bounds, midpoint) ->
+    return memo if midpoint > y
+    if bounds[0].left < x and bounds[bounds.length - 1].right > x and midpoint > memo then midpoint else memo
+  , null
+
+  closest = (rects, key = 'dx') ->
+    _.reduce rects, ((memo, rect) -> if memo[key] < rect[key] then memo else rect), rects[0] if rects
+
+  possible_closest_parent     = closest(_.chain(bounds_by_midpoint).filter((rect, midpoint) -> midpoint < y).flatten().value())
+  possible_hit_level_parent   = closest(bounds_by_midpoint[hit_level])
+  possible_top_level_parent   = closest(bounds_by_midpoint[top_level])
+
+  possible_parent             = null
+
+  if possible_closest_parent
+    if possible_hit_level_parent
+      if possible_top_level_parent.parent == possible_hit_level_parent.uuid
+        possible_parent = possible_top_level_parent
+      else
+        possible_parent = closest([possible_hit_level_parent, possible_top_level_parent])
+    else
+      possible_parent = closest([possible_closest_parent, possible_top_level_parent])
+
+  if possible_parent then possible_parent.uuid else null
+
+
+calculate_position = (refs, parent, x) ->
+  children  = _.filter(refs, (node) -> node.props.model.parent_id == parent)
+
+  bounds    = _.chain(refs)
+    .filter (node) -> node.props.model.parent_id == parent
+    .map (node) ->
+      rect      = node.getDOMNode().getBoundingClientRect()
+      rect.dx   = Math.min(Math.abs(rect.left - x), Math.abs(rect.right - x))
+      rect
+    .sortBy('left')
+    .value()
+  
+  closest_child = _.sortBy(bounds, 'dx')[0]
+  
+  if closest_child
+    _.indexOf(bounds, closest_child) + if (closest_child.left + closest_child.right) / 2 < x then .5 else -.5
+  else
+    0
+  
+  
+
+
 
 # Calculations
 #
@@ -41,7 +115,7 @@ Calculations =
   
   
   reposition: ->
-    layout = @calculateLayout()
+    @layout = @calculateLayout()
 
     offset =
       x:  @getWidth() / 2
@@ -49,16 +123,16 @@ Calculations =
     
 
     _.each @refs, (child) =>
-      child_layout = layout[child.props.key]
+      child_layout = @layout[child.props.key]
       child.setPosition
         left:   child_layout.x + offset.x
         top:    child_layout.y + offset.y
       
       if relation = cc.blueprint.react.Blueprint.Relation.get(child.props.key)
         parent          = @refs[relation.props.parent_key]
-        parent_layout   = layout[parent.props.key]
-        child_index     = parent.props.model.children.indexOf(child.props.model)
-
+        parent_layout   = @layout[parent.props.key]
+        child_index     = child.props.model.index
+        
         relation.setPosition
           parent_left:  parent_layout.x  + offset.x - parent.getWidth() / 2 + parent_layout.connections[child_index]
           parent_top:   parent_layout.y  + offset.y + parent.getHeight() / 2
@@ -78,7 +152,16 @@ Chart = React.createClass
   
   
   onClick: (event) ->
+    parent    = calculate_parent(@refs, event.pageX, event.pageY)
+    position  = calculate_position(@refs, parent, event.pageX)
+    model     = new cc.blueprint.models.Node({ chart_id: @props.root.uuid, parent_id: parent, position: position, color_index: 0 })
+    colors    = @props.colors
     
+    cc.ui.modal null, 
+      after_show: (container) ->
+        React.renderComponent(cc.blueprint.react.forms.Node({ model: model, colors: colors }), container)
+      before_close: (container) ->
+        React.unmountComponentAtNode(container)
 
 
   getDefaultProps: ->
@@ -104,6 +187,7 @@ Chart = React.createClass
   # Gather descendant nodes for root element
   #
   gatherNodes: ->
+    console.log @props.root.descendants
     _.chain(@props.root.descendants)
       .reject((descendant) -> descendant.is_deleted())
       .pluck('uuid')
@@ -122,6 +206,7 @@ Chart = React.createClass
   # Refresh message
   #
   refresh: ->
+    @props.root.consolidate()
     @setState
       refreshed_at: + new Date
 

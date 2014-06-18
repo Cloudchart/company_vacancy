@@ -174,6 +174,9 @@ class Base
     !@is_new_record()
   
   
+  can_be_deleted: ->
+    @is_persisted()
+  
   is_deleted: ->
     _.contains @constructor.deleted_instances, @uuid
   

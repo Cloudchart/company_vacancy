@@ -43,12 +43,20 @@ widget = ->
   # Enter
   #
   enter = (element, event) ->
+    if widget.data
+      widget.data.stored_cursor = element.style.cursor
+      widget.data.captured      = widget.data.capture(element) if widget.data.capture instanceof Function
+
     $(element).trigger($.Event("cc::drag:drop:enter", { pageX: event.pageX, pageY: event.pageY, draggableTarget: event.target }))
   
   
   # Leave
   #
   leave = (element, event) ->
+    if widget.data
+      element.style.cursor  = widget.data.stored_cursor
+      widget.data.captured  = false
+
     $(element).trigger($.Event("cc::drag:drop:leave", { pageX: event.pageX, pageY: event.pageY, draggableTarget: event.target }))
 
 
@@ -56,6 +64,10 @@ widget = ->
   #
   move = (event) ->
     element = cached_elements[cached_elements.length - 1]
+    
+    if element and widget.data
+      widget.data.on_move(element, {x: event.pageX, y: event.pageY}) if widget.data.on_move instanceof Function and widget.data.captured
+    
     $(element).trigger($.Event("cc::drag:drop:move", { pageX: event.pageX, pageY: event.pageY, draggableTarget: event.target })) if element
 
 
@@ -63,15 +75,17 @@ widget = ->
   #
   drop = (event) ->
     element = cached_elements[cached_elements.length - 1]
+    
+    if element and widget.data
+      widget.data.on_drop(element, {x: event.pageX, y: event.pageY }) if widget.data.on_drop instanceof Function and widget.data.captured
+    
     $(element).trigger($.Event("cc::drag:drop:drop", { pageX: event.pageX, pageY: event.pageY, draggableTarget: event.target })) if element
   
 
   # On Drag Start
   #
   on_cc_drag_start = (event) ->
-    return unless cc.ui.droppable.target
-    
-    selector          = "#{droppable_selector}[#{target_selector_attribute_name}=#{cc.ui.droppable.target}]"
+    selector          = "#{droppable_selector}"
     cached_elements   = []
 
     $document.on 'cc::drag:move', on_cc_drag_move
@@ -105,6 +119,8 @@ widget = ->
 
     $document.off 'cc::drag:move',  on_cc_drag_move
     $document.off 'cc::drag:end',   on_cc_drag_end
+
+    delete cc.ui.droppable.data
   
   
   #

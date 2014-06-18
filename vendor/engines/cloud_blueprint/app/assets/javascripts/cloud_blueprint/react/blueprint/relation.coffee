@@ -9,16 +9,6 @@ instances = {}
 
 # Draw path
 #
-draw_path = (coords) ->
-  start_point = "M #{coords.x1} #{coords.y1}"
-  upper_line  = "L #{coords.x11 || coords.x1} #{coords.y11}"
-  upper_curve = "Q #{coords.x11 || coords.x1} #{coords.y12} #{coords.x12} #{coords.y22}"
-  middle_line = "L #{coords.x22} #{coords.y22}"
-  lower_curve = "Q #{coords.x21 || coords.x2} #{coords.y22} #{coords.x21 || coords.x2} #{coords.y21}"
-  lower_line  = "L #{coords.x2} #{coords.y2}"
-  
-  "#{start_point} #{upper_line} #{upper_curve} #{middle_line} #{lower_curve} #{lower_line}"
-
 
 # Calculate path
 #
@@ -33,19 +23,67 @@ calculatePath = (x1, y1, x2, y2, midpoint) ->
   y11 = midpoint - radius ; y11 = y1 if y11 < y1
   y21 = midpoint + radius ; y21 = y2 if y21 > y2
   
-  draw_path
-    x1:   x1
-    y1:   y1
-    x11:  x1
-    y11:  y11
-    x12:  x12
-    y12:  midpoint
-    x22:  x22
-    y22:  midpoint
-    x21:  x2
-    y21:  y21
-    x2:   x2
-    y2:   y2
+  x1:   x1
+  y1:   y1
+  x11:  x1
+  y11:  y11
+  x12:  x12
+  y12:  midpoint
+  x22:  x22
+  y22:  midpoint
+  x21:  x2
+  y21:  y21
+  x2:   x2
+  y2:   y2
+
+
+# Render path
+#
+drawPath = (relation, coords) ->
+  start_point = "M #{coords.x1} #{coords.y1}"
+  upper_line  = "L #{coords.x11 || coords.x1} #{coords.y11}"
+  upper_curve = "Q #{coords.x11 || coords.x1} #{coords.y12} #{coords.x12} #{coords.y22}"
+  middle_line = "L #{coords.x22} #{coords.y22}"
+  lower_curve = "Q #{coords.x21 || coords.x2} #{coords.y22} #{coords.x21 || coords.x2} #{coords.y21}"
+  lower_line  = "L #{coords.x2} #{coords.y2}"
+  
+  relation.getDOMNode().setAttribute('d', "#{start_point} #{upper_line} #{upper_curve} #{middle_line} #{lower_curve} #{lower_line}")
+
+
+# Morph relation
+#
+morph = (relation, prevState) ->
+  path = calculatePath(relation.state.parent_left, relation.state.parent_top, relation.state.child_left, relation.state.child_top, relation.state.midpoint)
+
+  return drawPath(relation, path) unless prevState
+  
+  prevPath = calculatePath(prevState.parent_left, prevState.parent_top, prevState.child_left, prevState.child_top, prevState.midpoint)
+  
+  duration  = 200
+  start     = null
+  
+  deltas = _.reduce ['parent_left', 'parent_top', 'child_left', 'child_top', 'midpoint'], (memo, key) ->
+    memo[key] = relation.state[key] - prevState[key] ; memo
+  , {}
+  
+  tick = (timestamp) ->
+    start     = timestamp unless start
+    progress  = timestamp - start
+    delta     = progress / duration
+    delta     = 1 if delta > 1
+    
+    values = _.reduce deltas, (memo, value, key) ->
+      memo[key] = prevState[key] + deltas[key] * delta ; memo
+    , {}
+
+    drawPath(relation, calculatePath(values.parent_left, values.parent_top, values.child_left, values.child_top, values.midpoint))
+    
+    if progress <= duration then requestAnimationFrame(tick) else drawPath(relation, path)
+    
+  
+  
+  requestAnimationFrame(tick)
+
 
 #
 #
@@ -61,13 +99,7 @@ Relation = React.createClass
   
   
   componentDidUpdate: (prevProps, prevState) ->
-    @getDOMNode().setAttribute('d', calculatePath(
-      @state.parent_left,
-      @state.parent_top,
-      @state.child_left,
-      @state.child_top,
-      @state.midpoint
-    ))
+    morph @, prevState
   
   
   setPosition: (position) ->
@@ -85,6 +117,11 @@ Relation = React.createClass
 
   componentWillUnmount: ->
     delete instances[@props.key]
+  
+  
+  refresh: ->
+    @setState
+      refreshed_at: + new Date
 
 
   render: ->

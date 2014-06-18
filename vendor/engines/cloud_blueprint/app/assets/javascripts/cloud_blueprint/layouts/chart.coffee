@@ -43,7 +43,7 @@ position_levels = (root, descriptors) ->
     
     max_height_on_previous_level = max_height_on_level
     
-    level_offset += 50
+    level_offset += 75
 
 
 # Calculate connections

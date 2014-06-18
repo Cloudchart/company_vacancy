@@ -3,6 +3,45 @@
 tag = React.DOM
 
 
+# Instances pool
+#
+instances = {}
+
+
+# Position node
+#
+position = (node, left, top) ->
+  element = node.getDOMNode()
+  
+  element.style.left  = left - node.getWidth() / 2 + 'px'
+  element.style.top   = top - node.getHeight() / 2 + 'px'
+
+
+# Move node
+#
+move = (node, prevState) ->
+  unless prevState
+    position(node, node.state.left, node.state.top)
+    return
+  
+  duration  = 200
+  start     = null
+  
+  tick = (timestamp) ->
+    start     = timestamp unless start
+    progress  = timestamp - start
+    delta     = progress / duration
+    delta     = 1 if delta > 1
+    
+    position node,
+      prevState.left + (node.state.left - prevState.left) * delta,
+      prevState.top + (node.state.top - prevState.top) * delta
+    
+    if progress <= duration then requestAnimationFrame(tick) else position(node, node.state.left, node.state.top)
+  
+  requestAnimationFrame(tick)
+
+
 # Dom manipulations
 #
 DOM =
@@ -20,50 +59,9 @@ DOM =
 
 
 
-# Node drag element
-#
-element_for_drag = ->
-  element = document.createElement('div')
-  
-  element.style.backgroundColor = '#000'
-  element.style.borderRadius    = '5px'
-  element.style.height          = '10px'
-  element.style.position        = 'absolute'
-  element.style.width           = '10px'
-  
-  document.body.appendChild(element)
-
-  element
-
-
-
 # Events
 #
 Events =
-  
-  
-  onDragStart: (event) ->
-    @__element_for_drag = element_for_drag()
-
-    event.dataTransfer.setData('node', @props.key)
-    event.dataTransfer.setDragImage(@__element_for_drag, 5, 5)
-
-    event.dataTransfer.effectAllowed = 'link'
-    
-    Arbiter.publish('cc:blueprint:react:node:drag:start', @)
-    
-
-  onDragEnd: (event) ->
-    @__element_for_drag.parentNode.removeChild(@__element_for_drag) if @__element_for_drag
-    @__element_for_drag = null
-
-    Arbiter.publish('cc:blueprint:react:node:drag:end', @)
-  
-  
-  
-  onDragOver: (event) ->
-    # pass
-  
   
   # On node click
   #
@@ -104,28 +102,23 @@ Node = React.createClass
     can_be_edited:    false
   
   
-  onNodeDragStart: (node) ->
-    return if node == @
-    return if _.contains node.props.model.descendants, @props.model
-    # Calculate insertion points for node
-  
-  
-  onNodeDragEnd: (data) ->
-    # Remove insertion points for node
-  
-  
   componentDidMount: ->
-    Arbiter.subscribe 'cc:blueprint:react:node:drag:start', @onNodeDragStart
-    Arbiter.subscribe 'cc:blueprint:react:node:drag:end',   @onNodeDragEnd
+    instances[@props.key] = @
+  
+  
+  componentWillUnmount: ->
+    delete instances[@props.key]
   
 
   componentDidUpdate: (prevProps, prevState) ->
     @__dimensions = null
 
     element       = @getDOMNode()
+    
+    move(@, prevState)
 
-    element.style.left  = @state.left - @getWidth() / 2 + 'px'
-    element.style.top   = @state.top - @getHeight() / 2 + 'px'
+    #element.style.left  = @state.left - @getWidth() / 2 + 'px'
+    #element.style.top   = @state.top - @getHeight() / 2 + 'px'
 
 
   setPosition: (position) ->
@@ -136,12 +129,10 @@ Node = React.createClass
 
   render: ->
     (tag.div {
-      className:    'node'
-      onClick:      @onClick      if @props.can_be_edited
-      onDragStart:  @onDragStart  if @props.can_be_edited
-      onDragEnd:    @onDragEnd    if @props.can_be_edited
-      onDragOver:   @onDragOver   if @props.can_be_edited
-      draggable:                     @props.can_be_edited
+      className:                'node'
+      onClick:                  @onClick      if @props.can_be_edited
+      'data-id':                @props.key
+      'data-behaviour':         'droppable'   if @props.can_be_edited
       style: 
         backgroundColor: @props.colors[@props.model.color_index]
         minWidth:         @props.children_density * @props.model.children.length
@@ -149,6 +140,10 @@ Node = React.createClass
       (tag.div { className: 'flag' }) if false # should contain vacancies
       (tag.h2 {}, @props.model.title)
     )
+
+# Get instance from instance pool
+#
+Node.get = (key) -> instances[key]
 
 #
 #

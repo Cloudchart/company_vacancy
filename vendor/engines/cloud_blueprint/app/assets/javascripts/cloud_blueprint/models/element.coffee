@@ -28,12 +28,15 @@ class Element extends cc.blueprint.models.Base
   
   define_properties: ->
     self = @
-    _.each ['parent', 'children', 'descendants'], (name) -> Object.defineProperty self, name, { get: self["__#{name}"] }
+    _.each ['parent', 'children', 'descendants', 'index'], (name) -> Object.defineProperty self, name, { get: self["__#{name}"] }
 
 
   __parent: ->
     cc.blueprint.models[@element.parentNode.dataset.className].get(@element.parentNode.id) if @element.parentNode
-    
+  
+  
+  __index: ->
+    @parent.children.indexOf(@) if @parent
   
   __children: ->
     _.chain(@element.childNodes)

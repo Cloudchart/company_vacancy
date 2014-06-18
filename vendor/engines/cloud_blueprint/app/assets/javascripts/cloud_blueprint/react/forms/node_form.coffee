@@ -6,6 +6,39 @@ tag = React.DOM
 
 
 #
+# Chart Id Field
+#
+ChartIDField = (value) ->
+  (tag.input {
+    type:   'hidden'
+    name:   'chart_id'
+    value:  value
+  })
+
+
+#
+# Parent Id Field
+#
+ParentIDField = (value) ->
+  (tag.input {
+    type:   'hidden'
+    name:   'parent_id'
+    value:  value
+  })
+
+
+#
+# Position Field
+#
+PositionField = (value) ->
+  (tag.input {
+    type:   'hidden'
+    name:   'position'
+    value:  value
+  })
+
+
+#
 # Title Field
 #
 TitleField = (value, callback) ->
@@ -81,7 +114,10 @@ Node = React.createClass
       @props.model.set_attributes(@state)
       Arbiter.publish("#{@props.model.constructor.broadcast_topic()}/update")
     else
-      alert 'create'
+      @props.model.constructor.create(@state)
+      Arbiter.publish("#{@props.model.constructor.broadcast_topic()}/create")
+    
+    @props.model.constructor.sync()
     
     cc.ui.modal.close()
       
@@ -89,6 +125,11 @@ Node = React.createClass
   
   onDelete: (event) ->
     event.stopPropagation()
+    
+    @props.model.destroy()
+    @props.model.constructor.sync()
+    #Arbiter.publish("#{@props.model.constructor.broadcast_topic()}/update")
+    cc.ui.modal.close()
 
 
   render: ->
@@ -98,6 +139,9 @@ Node = React.createClass
       style:
         borderColor: @props.colors[@state.color_index]
     },
+      (ChartIDField   @state.chart_id),
+      (ParentIDField  @state.parent_id),
+      (PositionField  @state.position),
       (tag.section { className: 'title' },
         (TitleField @state.title, @onTitleChange)
       )

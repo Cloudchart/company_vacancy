@@ -67,14 +67,25 @@ widget = ($element, selector, options = {}) ->
       on_drag_move(event)
   
 
+  # On click prevented
+  #
+  on_click_prevented = (event) ->
+    event.stopImmediatePropagation()
+    $(@).off 'click', on_click_prevented
+  
+
   # Mouse up
   #
   on_mouse_up = (event) ->
     $document.off 'mousemove', on_mouse_move
     $document.off 'mouseup',   on_mouse_up
     
+    
     if self.captured
       on_drag_end(event)
+
+      if event.target == self.captured_event.currentTarget
+        $(event.target).on 'click', on_click_prevented
     
     self = {}
   
@@ -84,7 +95,7 @@ widget = ($element, selector, options = {}) ->
   on_drag_start = (event) ->
     return if self.captured
 
-    self.captured = true
+    self.captured         = true
     
     options['on_drag_start'](event)
     

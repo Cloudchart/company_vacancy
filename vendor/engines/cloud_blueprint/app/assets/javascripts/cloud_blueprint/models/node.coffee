@@ -24,6 +24,10 @@ class Node extends cc.blueprint.models.Element
     _.chain(@instances)
       .filter((instance) -> instance.is_changed() or instance.is_new_record() or instance.is_deleted())
       .invoke('save')
+  
+  
+  can_be_deleted: ->
+    super() and @children.length == 0
       
     
 
