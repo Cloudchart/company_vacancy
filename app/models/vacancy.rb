@@ -15,7 +15,7 @@ class Vacancy < ActiveRecord::Base
   belongs_to :company
   belongs_to :author, class_name: User
   has_many :responses, class_name: VacancyResponse
-  has_many :responded_users, through: :vacancy_responses, class_name: User
+  has_many :responded_users, through: :responses, source: :user
   # has_paper_trail
 
   validates :name, presence: true

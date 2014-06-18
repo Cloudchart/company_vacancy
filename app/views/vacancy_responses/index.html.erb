@@ -3,7 +3,7 @@
 <ul>
   <% @vacancy.responses.each do |response| %>
     <li>
-      <%= response.user.full_name %> |
+      <%= link_to response.user.full_name, vacancy_response_path(response.vacancy, response) %> |
       <%= response.content %>
     </li>
   <% end %>  

@@ -8,7 +8,7 @@
       <li>
         <%= link_to vacancy.company.name, main_app.company_path(vacancy.company) %> |
         <%= link_to vacancy.name, main_app.vacancy_path(vacancy) %> |
-        <%= link_to 'Responses', main_app.vacancy_responses_path(vacancy) if vacancy.users.any? %>
+        <%= link_to 'Responses', main_app.vacancy_responses_path(vacancy) if vacancy.responded_users.any? %>
       </li>
     <% end %>
   <% end %>

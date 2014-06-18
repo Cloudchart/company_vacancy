@@ -1,11 +1,14 @@
 class VacancyResponsesController < ApplicationController
-  # before_action :set_vacancy_response, only: [:show, :update, :destroy]
-  before_action :set_vacancy, only: [:index, :new]
-  before_action :authorize_index, only: :index
+  before_action :set_vacancy_response, only: [:show, :update, :destroy]
+  before_action :set_vacancy, only: [:index, :new, :show]
+  before_action :authorize_index, only: [:index, :show]
 
-  authorize_resource except: :index
+  authorize_resource except: [:index, :show]
 
   def index
+  end
+
+  def show
   end
 
   def new
@@ -29,9 +32,9 @@ class VacancyResponsesController < ApplicationController
 
 private
   # Use callbacks to share common setup or constraints between actions.
-  # def set_vacancy_response
-  #   @vacancy_response = VacancyResponse.find(params[:id])
-  # end
+  def set_vacancy_response
+    @vacancy_response = VacancyResponse.find(params[:id])
+  end
 
   def set_vacancy
     @vacancy = Vacancy.find(params[:vacancy_id])

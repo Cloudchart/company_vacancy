@@ -76,7 +76,8 @@ class Ability
       end
 
       can :access_vacancy_responses, VacancyResponse do |vacancy|
-        (user.people & vacancy.company.people).first.try(:is_company_owner?)
+        (user.people & vacancy.company.people).first.try(:is_company_owner?) ||
+        user.vacancies.include?(vacancy)
       end
 
     end

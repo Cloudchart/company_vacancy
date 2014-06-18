@@ -25,9 +25,6 @@ Cloudchart::Application.routes.draw do
   # Custom
   #
   get 'company_invite/:token_id', to: 'landings#company_invite', as: 'company_invite'
-  get 'vacancy_responses/:vacancy_id/new', to: 'vacancy_responses#new', as: 'new_vacancy_response'
-  post 'vacancy_responses/:vacancy_id', to: 'vacancy_responses#create'
-  get 'vacancy_responses/:vacancy_id', to: 'vacancy_responses#index', as: 'vacancy_responses'
 
   # Resources
   #
@@ -56,5 +53,9 @@ Cloudchart::Application.routes.draw do
   end
 
   resources :subscriptions, only: [:create, :update, :destroy]
+
+  scope 'vacancies/:vacancy_id' do
+    resources :vacancy_responses, path: 'responses'
+  end
 
 end
