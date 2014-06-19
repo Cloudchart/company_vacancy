@@ -6,6 +6,7 @@ class VacancyResponsesController < ApplicationController
   authorize_resource except: [:index, :show]
 
   def index
+    pagescript_params(company_id: @vacancy.company_id, source: :vacancy_responses)
   end
 
   def show

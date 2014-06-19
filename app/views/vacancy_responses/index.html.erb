@@ -1,5 +1,11 @@
 <h1>Responses to <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %></h1>
 
+<h2>Reviewers</h2>
+
+<%= render 'shared/people_search' %>
+
+<h2>Responded users</h2>
+
 <ul>
   <% @vacancy.responses.each do |response| %>
     <li>

@@ -17,7 +17,13 @@ class PeopleController < ApplicationController
 
   def search
     company_people = @company.people.search(params).results
-    company_people_friends = Friend.related_to_company(@company.id).search(params).results
+
+    company_people_friends = if params[:source] == 'vacancy_responses'
+      []
+    else
+      Friend.related_to_company(@company.id).search(params).results
+    end
+
     @people_with_friends = company_people + company_people_friends
 
     respond_to do |format|

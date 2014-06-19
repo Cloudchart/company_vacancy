@@ -1,8 +1,11 @@
-<% @people_with_friends.each do |person| %>
-  <p>
-    <% if person.try(:provider) %>
-      <i class="fa fa-<%= person.provider %>"></i>  
-    <% end %>
-    <%= person.full_name %>
-  </p>
-<% end %>
+<ul>
+  <% @people_with_friends.each do |person| %>
+    <li>
+      <% if person.try(:provider) %>
+        <i class="fa fa-<%= person.provider %>"></i>  
+      <% end %>
+      <%= person.full_name %>
+      <%= link_to 'Invite', '#' if params[:source] == 'vacancy_responses' %>
+    </li>
+  <% end %>
+</ul>
