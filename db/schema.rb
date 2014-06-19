@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140617140748) do
+ActiveRecord::Schema.define(version: 20140618114259) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -114,6 +114,18 @@ ActiveRecord::Schema.define(version: 20140617140748) do
 
   add_index "cloud_profile_social_networks", ["provider_id"], name: "index_cloud_profile_social_networks_on_provider_id", using: :btree
   add_index "cloud_profile_social_networks", ["user_id"], name: "index_cloud_profile_social_networks_on_user_id", using: :btree
+
+  create_table "comments", primary_key: "uuid", force: true do |t|
+    t.text     "content"
+    t.string   "user_id",          limit: 36, null: false
+    t.string   "commentable_id",   limit: 36, null: false
+    t.string   "commentable_type",            null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "companies", primary_key: "uuid", force: true do |t|
     t.string   "name"

@@ -1,7 +1,7 @@
 class VacancyResponsesController < ApplicationController
   before_action :set_vacancy_response, only: [:show, :update, :destroy]
   before_action :set_vacancy, only: [:index, :new, :show]
-  before_action :authorize_index, only: [:index, :show]
+  before_action :custom_authorize, only: [:index, :show]
 
   authorize_resource except: [:index, :show]
 
@@ -9,6 +9,8 @@ class VacancyResponsesController < ApplicationController
   end
 
   def show
+    @comments = @vacancy_response.comments.includes(:user).order(updated_at: :desc)
+    @comment = @vacancy_response.comments.build
   end
 
   def new
@@ -45,7 +47,7 @@ private
     params.require(:vacancy_response).permit(:content, :vacancy_id)
   end
 
-  def authorize_index
+  def custom_authorize
     authorize! :access_vacancy_responses, @vacancy
   end
 

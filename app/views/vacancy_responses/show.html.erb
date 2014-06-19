@@ -1,5 +1,29 @@
-<h1>Response for <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %> by <%= @vacancy_response.user.full_name %></h1>
+<h1>Response to <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %> by <%= @vacancy_response.user.full_name %></h1>
 
 <article>
   <%= @vacancy_response.content %>
 </article>
+
+<h2>Comments</h2>
+
+<%= simple_form_for @comment, remote: true do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input_field :commentable_id, as: :hidden %>
+    <%= f.input_field :commentable_type, as: :hidden %>  
+    <%= f.input :content %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
+
+<ul id="vacancy-response-comments">
+  <% @comments.each do |comment| %>
+    <%= render comment %>
+  <% end %>
+</ul>
+
+<%= link_to 'Back to list', vacancy_responses_path(@vacancy) %>
