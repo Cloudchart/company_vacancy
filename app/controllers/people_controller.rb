@@ -21,7 +21,7 @@ class PeopleController < ApplicationController
     if params[:vacancy_id]
       vacancy = Vacancy.find(params[:vacancy_id])
       vacancy_reviewers_ids = vacancy.reviewers.map(&:id)
-      company_people = company_people.select { |person| person.user_id.present? && !vacancy_reviewers_ids.include?(person.user_id) }
+      company_people = company_people.select { |person| person.user_id.present? && !vacancy_reviewers_ids.include?(person.id) }
       company_people_friends = []
     else
       company_people_friends = Friend.related_to_company(@company.id).search(params).results
