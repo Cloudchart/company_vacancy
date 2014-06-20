@@ -78,6 +78,12 @@ class Ability
 
       can :access_vacancy_responses, Vacancy do |vacancy|
         (user.people & vacancy.company.people).first.try(:is_company_owner?) ||
+        user.vacancies.include?(vacancy) ||
+        (vacancy.reviewers & user.people).any?
+      end
+
+      can :invite_and_kick_people do |vacancy|
+        (user.people & vacancy.company.people).first.try(:is_company_owner?) ||
         user.vacancies.include?(vacancy)
       end
 

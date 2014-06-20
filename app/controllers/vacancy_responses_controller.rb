@@ -2,7 +2,8 @@ class VacancyResponsesController < ApplicationController
   before_action :set_vacancy_response, only: [:show, :update, :destroy]
   before_action :set_vacancy, only: [:index, :new, :show, :invite_person, :kick_person]
   before_action :set_person, only: [:invite_person, :kick_person]
-  before_action :custom_authorize, only: [:index, :show, :invite_person, :kick_person]
+  before_action :authorize_readers, only: [:index, :show]
+  before_action :authorize_admins, only: [:invite_person, :kick_person]
 
   respond_to :html, except: [:invite_person, :kick_person]
   respond_to :js, only: [:invite_person, :kick_person]
@@ -66,7 +67,11 @@ private
     params.require(:vacancy_response).permit(:content, :vacancy_id)
   end
 
-  def custom_authorize
+  def authorize_admins
+    authorize! :invite_and_kick_people, @vacancy
+  end
+
+  def authorize_readers
     authorize! :access_vacancy_responses, @vacancy
   end
 
