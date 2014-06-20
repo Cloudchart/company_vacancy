@@ -16,7 +16,7 @@ widget = (data) ->
 
     $('.search-result').html('')
     $('.ajax-loader').show()
-    $.post("/companies/#{data.company_id}/people/search", query: value, source: data.source)
+    $.post("/companies/#{data.company_id}/people/search", query: value, vacancy_id: data.vacancy_id)
 
   perform_search = ($element) ->
     clearTimeout(search_timeout)

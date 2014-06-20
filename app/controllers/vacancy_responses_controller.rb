@@ -1,12 +1,16 @@
 class VacancyResponsesController < ApplicationController
   before_action :set_vacancy_response, only: [:show, :update, :destroy]
-  before_action :set_vacancy, only: [:index, :new, :show]
-  before_action :custom_authorize, only: [:index, :show]
+  before_action :set_vacancy, only: [:index, :new, :show, :invite_person, :kick_person]
+  before_action :set_person, only: [:invite_person, :kick_person]
+  before_action :custom_authorize, only: [:index, :show, :invite_person, :kick_person]
 
-  authorize_resource except: [:index, :show]
+  respond_to :html, except: [:invite_person, :kick_person]
+  respond_to :js, only: [:invite_person, :kick_person]
+
+  authorize_resource except: [:index, :show, :invite_person, :kick_person]
 
   def index
-    pagescript_params(company_id: @vacancy.company_id, source: :vacancy_responses)
+    pagescript_params(company_id: @vacancy.company_id, vacancy_id: @vacancy.id)
   end
 
   def show
@@ -30,7 +34,17 @@ class VacancyResponsesController < ApplicationController
     else
       render :new
     end
+  end
 
+  def invite_person
+    unless @vacancy.reviewers.include?(@person)
+      @vacancy.reviewers << @person
+      @success = true
+    end
+  end
+
+  def kick_person
+    @vacancy.reviewers.delete(@person)
   end
 
 private
@@ -41,6 +55,10 @@ private
 
   def set_vacancy
     @vacancy = Vacancy.find(params[:vacancy_id])
+  end
+
+  def set_person
+    @person = Person.find(params[:person_id])
   end
 
   # Only allow a trusted parameter "white list" through.

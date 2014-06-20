@@ -18,13 +18,16 @@ class PeopleController < ApplicationController
   def search
     company_people = @company.people.search(params).results
 
-    company_people_friends = if params[:source] == 'vacancy_responses'
-      []
+    if params[:vacancy_id]
+      vacancy = Vacancy.find(params[:vacancy_id])
+      vacancy_reviewers_ids = vacancy.reviewers.map(&:id)
+      company_people = company_people.select { |person| person.user_id.present? && !vacancy_reviewers_ids.include?(person.user_id) }
+      company_people_friends = []
     else
-      Friend.related_to_company(@company.id).search(params).results
+      company_people_friends = Friend.related_to_company(@company.id).search(params).results
     end
 
-    @people_with_friends = company_people + company_people_friends
+    @people = company_people + company_people_friends
 
     respond_to do |format|
       format.js
