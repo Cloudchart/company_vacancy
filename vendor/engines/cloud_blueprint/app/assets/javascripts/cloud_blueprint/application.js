@@ -1,10 +1,8 @@
 //= require_self
-//= require ./dispatcher
 //= require ./models
-//= require ./views
 //= require ./layouts
-//= require ./ujs
 //= require ./react
+//= require ./ujs
 //= require_tree ./controllers
 
 this.cc           || (this.cc = {})

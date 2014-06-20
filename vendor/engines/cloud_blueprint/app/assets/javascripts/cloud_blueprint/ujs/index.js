@@ -1,6 +1,4 @@
 //= require_self
-//= require ./chart
-//= require ./node
 //= require ./node_droppable
 //= require ./node_draggable
 
