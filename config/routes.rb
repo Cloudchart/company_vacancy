@@ -55,7 +55,10 @@ Cloudchart::Application.routes.draw do
   resources :comments, only: [:create, :update, :destroy]
 
   scope 'vacancies/:vacancy_id' do
-    resources :vacancy_responses, path: 'responses', except: [:edit, :update]
+    resources :vacancy_responses, path: 'responses', except: [:edit, :update] do
+      post :invite_person, on: :collection
+      delete :kick_person, on: :collection
+    end
   end
 
 end

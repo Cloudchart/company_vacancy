@@ -1,3 +1,3 @@
 @['cloud_profile/activities#index'] = (data) ->
   $ ->
-    cc.ui.scrollable_pagination()
+    cc.ujs.scrollable_pagination()

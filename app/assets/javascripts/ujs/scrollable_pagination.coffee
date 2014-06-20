@@ -1,7 +1,7 @@
-@cc      ?= {}
-@cc.ui   ?= {}
+@cc ?= {}
+@cc.ujs ?= {}
 
-$         = jQuery
+$ = jQuery
 
 #
 #
@@ -20,5 +20,5 @@ widget = ->
 #
 #
 
-$.extend @cc.ui,
+$.extend @cc.ujs,
   scrollable_pagination: widget

@@ -1,8 +1,5 @@
-<% @people_with_friends.each do |person| %>
-  <p>
-    <% if person.try(:provider) %>
-      <i class="fa fa-<%= person.provider %>"></i>  
-    <% end %>
-    <%= person.full_name %>
-  </p>
-<% end %>
+<ul>
+  <% @people.each do |person| %>
+    <%= render 'people/person', person: person, vacancy_id: params[:vacancy_id] %>
+  <% end %>
+</ul>
