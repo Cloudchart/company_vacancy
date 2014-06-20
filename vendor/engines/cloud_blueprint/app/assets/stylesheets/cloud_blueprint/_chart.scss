@@ -259,6 +259,23 @@ main.blueprint article.chart {
     }
   }
   
+  ul.identities {
+    @include clearfix;
+    
+    list-style: none;
+    margin: $base-unit 0 0;
+    max-height: $base-unit * 6;
+    padding: 0;
+    overflow: scroll;
+    
+    > li {
+      @include filter-identity;
+      float: left;
+      margin: $base-unit 0 0;
+      width: 50%;
+    }
+  }
+  
   section.buttons {
     @include display(flex);
     

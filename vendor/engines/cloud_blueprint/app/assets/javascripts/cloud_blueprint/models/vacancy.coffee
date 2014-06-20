@@ -10,9 +10,17 @@ class Vacancy extends cc.blueprint.models.Base
 
   @instances:     {}
   
+
+  # Match for filter
+  #
   matches: (letters) ->
     _.any ['name', 'description'], (attribute) => @[attribute].toLowerCase().indexOf(letters) >= 0
 
+
+  # Can be deleted
+  #
+  can_be_deleted: ->
+    super() and _.filter(cc.blueprint.models.Identity.instances, (instance) => instance.identity_id == @uuid).length == 0
 
 #
 #
