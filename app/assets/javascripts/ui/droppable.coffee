@@ -4,8 +4,7 @@
 $         = jQuery
 
 
-droppable_selector              = '[data-behaviour~=droppable]'
-target_selector_attribute_name  = 'data-droppable-target'
+droppable_selector              = '[data-behaviour~="droppable"]'
 
 
 started                         = false
@@ -43,43 +42,27 @@ widget = ->
   # Enter
   #
   enter = (element, event) ->
-    if widget.data
-      widget.data.stored_cursor = element.style.cursor
-      widget.data.captured      = widget.data.capture(element) if widget.data.capture instanceof Function
-
-    $(element).trigger($.Event("cc::drag:drop:enter", { pageX: event.pageX, pageY: event.pageY, draggableTarget: event.target }))
+    $(element).trigger($.Event("cc::drag:drop:enter", { pageX: event.pageX, pageY: event.pageY, dataTransfer: event.dataTransfer, draggableTarget: event.draggableTarget }))
   
   
   # Leave
   #
   leave = (element, event) ->
-    if widget.data
-      element.style.cursor  = widget.data.stored_cursor
-      widget.data.captured  = false
-
-    $(element).trigger($.Event("cc::drag:drop:leave", { pageX: event.pageX, pageY: event.pageY, draggableTarget: event.target }))
+    $(element).trigger($.Event("cc::drag:drop:leave", { pageX: event.pageX, pageY: event.pageY, dataTransfer: event.dataTransfer, draggableTarget: event.draggableTarget }))
 
 
   # Move
   #
   move = (event) ->
     element = cached_elements[cached_elements.length - 1]
-    
-    if element and widget.data
-      widget.data.on_move(element, {x: event.pageX, y: event.pageY}) if widget.data.on_move instanceof Function and widget.data.captured
-    
-    $(element).trigger($.Event("cc::drag:drop:move", { pageX: event.pageX, pageY: event.pageY, draggableTarget: event.target })) if element
+    $(element).trigger($.Event("cc::drag:drop:move", { pageX: event.pageX, pageY: event.pageY, dataTransfer: event.dataTransfer, draggableTarget: event.draggableTarget })) if element
 
 
   # Drop
   #
   drop = (event) ->
     element = cached_elements[cached_elements.length - 1]
-    
-    if element and widget.data
-      widget.data.on_drop(element, {x: event.pageX, y: event.pageY }) if widget.data.on_drop instanceof Function and widget.data.captured
-    
-    $(element).trigger($.Event("cc::drag:drop:drop", { pageX: event.pageX, pageY: event.pageY, draggableTarget: event.target })) if element
+    $(element).trigger($.Event("cc::drag:drop:drop", { pageX: event.pageX, pageY: event.pageY, dataTransfer: event.dataTransfer, draggableTarget: event.draggableTarget })) if element
   
 
   # On Drag Start
@@ -114,13 +97,10 @@ widget = ->
   #
   on_cc_drag_end = (event) ->
     drop(event)
-    cached_elements.forEach (element) ->
-      leave(element, event)
+    cached_elements.forEach (element) -> leave(element, event)
 
     $document.off 'cc::drag:move',  on_cc_drag_move
     $document.off 'cc::drag:end',   on_cc_drag_end
-
-    delete cc.ui.droppable.data
   
   
   #

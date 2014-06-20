@@ -53,6 +53,7 @@
     can_be_edited:  can_edit_chart
     subscribe_on: [
       'cc:blueprint:model:node/*'
+      'cc:blueprint:model:identity/*'
     ]
   }
   
@@ -74,59 +75,14 @@
     cc.blueprint.react.Spinner.hide()
     
     if can_edit_chart
+      # Activate draggable widget
+      cc.ui.draggable()
+
       # Activate droppable widget
       cc.ui.droppable()
     
-      # Observe node drag/drop
-      observe_node_drag_drop()
+      # Observe node draggable
+      cc.blueprint.common.node_draggable(document.querySelector('section.chart'), 'div.node')
       
       # Observe node droppable
       cc.blueprint.common.node_droppable(document.querySelector('section.chart'), 'div.node')
-  
-  
-  # Node drag/drop
-  #
-  observe_node_drag_drop = ->
-    
-    cc.blueprint.common.node_drag_drop(document.querySelector('section.chart'), 'div.node')
-    
-    return
-    
-    drag = {}
-    
-    cc.ui.drag_drop 'section.chart', 'div.node',
-      helper: false
-      revert: true
-      
-      on_start: (element, options = {}) ->
-        
-        drag.node           = get_node(element.dataset.id)
-        drag.relation       = get_relation(element.dataset.id)
-        drag.relation_node  = drag.relation.getDOMNode() if drag.relation
-        
-        uuids               = _.pluck drag.node.props.model.descendants, 'uuid'
-        
-        cc.ui.droppable.data  =
-          capture: (element) ->
-            uuid = element.dataset.id
-            return drag.node.key != uuid and uuids.indexOf(uuid) == -1
-        
-
-      on_move: (element, options = {}) ->
-        return unless drag.relation_node
-        return if cc.ui.droppable.data.captured
-        
-        offset = drag.relation_node.parentNode.getBoundingClientRect()
-        
-        position =
-          x1: drag.relation.state.child_left
-          y1: drag.relation.state.child_top + drag.node.getHeight() / 2
-          x2: options.x - offset.left
-          y2: options.y - offset.top
-        
-        drag.relation_node.setAttribute('d', "M #{position.x1} #{position.y1} L #{position.x2} #{position.y2}")
-        
-
-      on_end: ->
-        drag.relation.refresh() if drag.relation
-        drag = {}

@@ -2,38 +2,32 @@
 #
 #
 
-# Transfer
-#
-transfer = -> cc.ui.drag_drop.transfer
-
-
 # On enter
 #
 on_enter = (event) ->
-  return unless transfer()
-  on_node_enter(event) if uuid = transfer().node
+  return unless event.dataTransfer
+  on_node_enter(event) if event.dataTransfer.types.indexOf('node') > -1
     
 
 # On leave
 #
 on_leave = (event) ->
-  return unless transfer()
-  on_node_leave(event) if uuid = transfer().node
+  return unless event.dataTransfer
+  on_node_leave(event) if event.dataTransfer.types.indexOf('node') > -1
 
 
 # On move
 #
 on_move = (event) ->
-  return unless transfer()
-  on_node_move(event) if uuid = transfer().node
+  return unless event.dataTransfer
+  on_node_move(event) if event.dataTransfer.types.indexOf('node') > -1
 
 
 # On drop
 #
 on_drop = (event) ->
-  return unless transfer()
-  on_node_drop(event) if uuid = transfer().node
-  delete cc.ui.drag_drop.transfer
+  return unless event.dataTransfer
+  on_node_drop(event) if event.dataTransfer.types.indexOf('node') > -1
   
 
 #
@@ -45,12 +39,12 @@ insertion_points = []
 
 # Calculate insertion points
 #
-calculate_insertion_points = (element, draggable_element) ->
+calculate_insertion_points = (element, uuid) ->
   bounds            = element.getBoundingClientRect()
   children          = cc.blueprint.models.Node.get(element.dataset.id).children
   dw                = bounds.width / (children.length + 1)
   insertion_points  = _.map [0 .. children.length], (i) -> i * dw + dw / 2
-  index             = _.indexOf _.map(children, 'uuid'), draggable_element.dataset.id
+  index             = _.indexOf _.map(children, 'uuid'), uuid
   
   if index > -1
     insertion_points[index + 0]  += dw / 2
@@ -87,65 +81,60 @@ calculate_coordinates = (event, x, relation_element) ->
 # On node enter
 #
 on_node_enter = (event) ->
-  return transfer().captured = false if event.target == event.draggableTarget
-
-  descendants_uuids = _.map(cc.blueprint.models.Node.get(event.draggableTarget.dataset.id).descendants, 'uuid')
-  return transfer().captured = false if _.contains descendants_uuids, event.target.dataset.id
+  uuid          = event.dataTransfer.getData('node').props.key
+  denied_uuids  = [uuid, _.map(cc.blueprint.models.Node.get(uuid).descendants, 'uuid')...]
   
-  transfer().captured = true
-  calculate_insertion_points(event.target, event.draggableTarget)
+  event.dataTransfer.setData('captured', denied_uuids.indexOf(event.target.dataset.id) == -1)
+
+  calculate_insertion_points(event.target, uuid)
 
 
 # On node leave
 #
 on_node_leave = (event) ->
-  return unless transfer().captured
-  transfer().captured = false
+  event.dataTransfer.clearData('captured')
   insertion_points = []
 
 
 # On node move
 #
 on_node_move = (event) ->
-  return unless transfer().captured
+  return unless event.dataTransfer.getData('captured')
+
+  uuid              = event.dataTransfer.getData('node').props.key
   { x }             = find_closest_insertion_point(event.target, event.pageX)
   
-  relation_element  = cc.blueprint.react.Blueprint.Relation.get(transfer().node).getDOMNode()
+  relation_element  = cc.blueprint.react.Blueprint.Relation.get(uuid).getDOMNode()
   coordinates       = calculate_coordinates(event, x, relation_element)
   
   relation_element.setAttribute('d', "M #{coordinates.parent_left} #{coordinates.parent_top} L #{coordinates.child_left} #{coordinates.child_top}")
-  
-  
 
 
 # On node drop
 #
 on_node_drop = (event) ->
-  return unless transfer().captured
+  if event.dataTransfer.getData('captured')
   
-  { x, index } = find_closest_insertion_point(event.target, event.pageX)
+    uuid          = event.dataTransfer.getData('node').props.key
+    { x, index }  = find_closest_insertion_point(event.target, event.pageX)
   
-  relation              = cc.blueprint.react.Blueprint.Relation.get(transfer().node)
-  relation_element      = relation.getDOMNode()
-  coordinates           = calculate_coordinates(event, x, relation_element)
-  coordinates.midpoint  = (coordinates.parent_top + coordinates.child_top) / 2
+    relation              = cc.blueprint.react.Blueprint.Relation.get(uuid)
+    relation_element      = relation.getDOMNode()
+    coordinates           = calculate_coordinates(event, x, relation_element)
+    coordinates.midpoint  = (coordinates.parent_top + coordinates.child_top) / 2
 
-  relation.setPosition(coordinates)
+    relation.setPosition(coordinates)
 
+    node = cc.blueprint.models.Node.get(uuid)
 
-  node = cc.blueprint.models.Node.get(transfer().node)
-
-  node.update
-    position:   index - 0.5
-    parent_id:  event.target.dataset.id
+    node.update
+      position:   index - 0.5
+      parent_id:  event.target.dataset.id
   
-  Arbiter.publish("#{node.constructor.broadcast_topic()}/update")
+    Arbiter.publish("#{node.constructor.broadcast_topic()}/update")
   
-  _.delay ->
-    cc.blueprint.models.Node.sync()
-  , 250
+    _.delay (-> cc.blueprint.models.Node.sync()), 250
   
-  transfer().captured = false
   insertion_points = []
 
 

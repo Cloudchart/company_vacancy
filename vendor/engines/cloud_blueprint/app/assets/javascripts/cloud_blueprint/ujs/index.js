@@ -1,8 +1,8 @@
 //= require_self
 //= require ./chart
 //= require ./node
-//= require ./node_drag_drop
 //= require ./node_droppable
+//= require ./node_draggable
 
 this.cc                   || ( this.cc = {} )
 this.cc.blueprint         || ( this.cc.blueprint = {} )

@@ -187,7 +187,6 @@ Chart = React.createClass
   # Gather descendant nodes for root element
   #
   gatherNodes: ->
-    console.log @props.root.descendants
     _.chain(@props.root.descendants)
       .reject((descendant) -> descendant.is_deleted())
       .pluck('uuid')

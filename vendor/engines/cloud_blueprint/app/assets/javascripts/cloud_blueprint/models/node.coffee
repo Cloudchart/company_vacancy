@@ -28,7 +28,22 @@ class Node extends cc.blueprint.models.Element
   
   can_be_deleted: ->
     super() and @children.length == 0
-      
+  
+  
+  identities: ->
+    _.filter cc.blueprint.models.Identity.instances, (identity) => !identity.is_deleted() and @uuid == identity.node_id
+  
+  
+  people: ->
+    @identities()
+      .filter((identity) -> identity.identity_type == 'Person')
+      .map((identity) -> cc.blueprint.models.Person.get(identity.identity_id))
+  
+  
+  vacancies: ->
+    @identities()
+      .filter((identity) -> identity.identity_type == 'Vacancy')
+      .map((identity) -> cc.blueprint.models.Vacancy.get(identity.identity_id))
     
 
   consolidate: ->

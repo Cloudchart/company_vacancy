@@ -53,6 +53,9 @@ class Chart extends cc.blueprint.models.Element
     # Instantiate people
     cc.blueprint.models.Person.instantiate(data.people, data.available_people)
     
+    # Instantiate identities
+    cc.blueprint.models.Identity.instantiate(data.identities, data.available_identities)
+
     # Instantiate and consolidate nodes
     cc.blueprint.models.Node.instantiate(data.nodes, data.available_nodes)
     @consolidate()
