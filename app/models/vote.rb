@@ -1,13 +1,14 @@
 class Vote < ActiveRecord::Base
   include Uuidable
 
-  after_create :sum_votes_for_destination
+  after_save :sum_votes_for_destination
 
   belongs_to :source, polymorphic: true
   belongs_to :destination, polymorphic: true
 
   validates :value, presence: true
 
+  scope :by_source, -> source_id { where(source_id: source_id) }
   scope :by_destination, -> destination_id { where(destination_id: destination_id) }
 
 private

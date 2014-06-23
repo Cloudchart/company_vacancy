@@ -3,6 +3,6 @@
     <i class="fa fa-<%= person.provider %>"></i>  
   <% end %>
   <%= person.full_name %>
-  <%= link_to 'Invite', invite_person_vacancy_responses_path(vacancy_id: vacancy_id, person_id: person.id), remote: true, method: :post unless vacancy_id.blank? || person.vacancy_reviews.map(&:id).include?(vacancy_id) %>
-  <%= link_to 'Kick', kick_person_vacancy_responses_path(vacancy_id: vacancy_id, person_id: person.id), remote: true, method: :delete, data: { confirm: 'Are you sure?' } if vacancy_id.present? && person.vacancy_reviews.map(&:id).include?(vacancy_id) %>
+  <%= link_to 'Invite', invite_person_vacancy_responses_path(vacancy_id, person.id), remote: true, method: :post unless vacancy_id.blank? || person.vacancy_reviews.map(&:id).include?(vacancy_id) %>
+  <%= link_to 'Kick', kick_person_vacancy_responses_path(vacancy_id, person.id), remote: true, method: :delete, data: { confirm: 'Are you sure?' } if vacancy_id.present? && person.vacancy_reviews.map(&:id).include?(vacancy_id) %>
 </li>

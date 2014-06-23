@@ -1,14 +1,16 @@
 <h1>Responses to <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %></h1>
 
-<h2>Reviewers</h2>
+<% if can?(:invite_and_kick_people, @vacancy) %>
+  <h2>Reviewers</h2>
 
-<ul class="vacancy-reviewers">
-  <% @vacancy.reviewers.order(:first_name).each do |person| %>
-    <%= render 'people/person', person: person, vacancy_id: @vacancy.id %>
-  <% end %>
-</ul>
+  <ul class="vacancy-reviewers">
+    <% @vacancy.reviewers.order(:first_name).each do |person| %>
+      <%= render 'people/person', person: person, vacancy_id: @vacancy.id %>
+    <% end %>
+  </ul>
 
-<%= render 'shared/people_search' %>
+  <%= render 'shared/people_search' %>
+<% end %>
 
 <h2>Responded users</h2>
 

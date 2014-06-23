@@ -1,7 +1,16 @@
 <h1>Response to <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %> by <%= @vacancy_response.user.full_name %></h1>
 
 <article>
-  <%= @vacancy_response.content %>
+  <section>
+    <p>
+      <%= @vacancy_response.content %>
+    </p>
+  </section>
+
+  <section class="voting">
+    <%= render 'voting'  %>
+  </section>
+
 </article>
 
 <h2>Comments</h2>

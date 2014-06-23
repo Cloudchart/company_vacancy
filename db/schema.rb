@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140620102459) do
+ActiveRecord::Schema.define(version: 20140623104347) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -302,10 +302,11 @@ ActiveRecord::Schema.define(version: 20140620102459) do
 
   create_table "vacancy_responses", primary_key: "uuid", force: true do |t|
     t.text     "content"
-    t.string   "user_id",    limit: 36, null: false
-    t.string   "vacancy_id", limit: 36, null: false
+    t.string   "user_id",     limit: 36, null: false
+    t.string   "vacancy_id",  limit: 36, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "votes_total"
   end
 
   add_index "vacancy_responses", ["user_id", "vacancy_id"], name: "index_vacancy_responses_on_user_id_and_vacancy_id", unique: true, using: :btree
