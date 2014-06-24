@@ -1,5 +1,6 @@
 //= require_self
 //= require ./spinner
+//= require ./modal
 //= require ./forms
 //= require ./blueprint
 //= require ./identity_filter

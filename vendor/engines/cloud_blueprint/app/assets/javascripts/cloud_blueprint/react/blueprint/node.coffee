@@ -68,20 +68,10 @@ Events =
   onClick: (event) ->
     event.stopPropagation()
     return if @props.model.is_synchronizing()
-    cc.ui.modal null, { after_show: @renderForm, before_close: @hideForm }
-  
-  
-  # Render node form
-  #
-  renderForm: (container) ->
-    React.renderComponent(cc.blueprint.react.forms.Node({ model: @props.model, colors: @props.colors }), container)
-
-
-  # Close node form
-  #
-  hideForm: (container) ->
-    React.unmountComponentAtNode(container)
     
+    node_form = cc.blueprint.react.forms.Node({ model: @props.model, colors: @props.colors })
+    cc.blueprint.react.modal.show(node_form)
+  
   
   # On drag over
   #
@@ -93,7 +83,7 @@ Events =
   onDrop: (event) ->
     data    = JSON.parse(event.dataTransfer.getData('identity'))
     model   = cc.blueprint.models[data.className].get(data.uuid)
-
+      
     identity = cc.blueprint.models.Identity.create
       chart_id:       @props.model.chart_id
       node_id:        @props.key

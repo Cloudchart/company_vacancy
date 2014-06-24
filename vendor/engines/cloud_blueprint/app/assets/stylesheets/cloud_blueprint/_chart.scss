@@ -147,6 +147,21 @@ main.blueprint article.chart {
   }
   
   
+  > section.modal-overlay {
+    @include position(absolute, 0px 0px 0px $identity-filter-width);
+    
+    background-color: hsla(0, 100%, 100%, 1);
+    z-index: $identity-filter-z-index + 1;
+    
+    > .close {
+      @include position(absolute, $base-unit $base-unit 0 0);
+      
+      cursor: pointer;
+      font-size: $base-unit;
+    }
+  }
+  
+  
 }
 
 .modal-container form.person,
@@ -215,7 +230,7 @@ main.blueprint article.chart {
 
 .modal-container form.node {
   
-  border: 2pt solid transparent;
+  //border: 2pt solid transparent;
   padding: $base-unit * 2;
   width: $base-unit * 40;
   
@@ -235,6 +250,7 @@ main.blueprint article.chart {
     label {
       @include display(flex);
       overflow: hidden;
+      position: relative;
       width: $base-unit * 2;
       
       &:not(:first-child) {

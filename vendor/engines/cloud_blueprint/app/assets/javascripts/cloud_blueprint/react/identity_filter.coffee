@@ -16,8 +16,7 @@ Toggle = React.createClass
 
   componentWillMount: ->
     @directions = ['fa-arrow-left', 'fa-arrow-right']
-
-
+  
   componentDidUpdate: ->
     @props.callback(@state.direction_index)
 
@@ -41,9 +40,8 @@ Toggle = React.createClass
 
 # Animate element slide
 #
-slide = (element, from, till) ->
+slide = (element, from, till, duration = 100) ->
   
-  duration  = 100
   start     = null
   length    = till - from
   
@@ -67,6 +65,28 @@ slide = (element, from, till) ->
 IdentityFilter = React.createClass
 
 
+  componentDidMount: ->
+    Arbiter.subscribe 'cc:blueprint:identity-filter/show', @show
+    Arbiter.subscribe 'cc:blueprint:identity-filter/hide', @hide
+  
+
+  componentWillUnmout: ->
+    Arbiter.unsubscribe 'cc:blueprint:identity-filter/show', @show
+    Arbiter.unsubscribe 'cc:blueprint:identity-filter/hide', @hide
+  
+  
+  show: ->
+    element = @getDOMNode()
+    bounds  = element.getBoundingClientRect()
+    slide(element, bounds.left, 0, 0)
+  
+
+  hide: ->
+    element = @getDOMNode()
+    bounds  = element.getBoundingClientRect()
+    slide(element, bounds.left, bounds.width * (@refs['toggle'].state.direction_index * -1), 0)
+
+
   onToggle: (direction_index) ->
     element = @getDOMNode()
     bounds  = element.getBoundingClientRect()
@@ -79,7 +99,7 @@ IdentityFilter = React.createClass
 
   render: ->
     (tag.aside { className: 'identity-filter' },
-      Toggle({ callback: @onToggle })
+      Toggle({ ref: 'toggle', callback: @onToggle })
       cc.blueprint.react.IdentityFilter.Search({ ref: 'search', callback: @onSearchChange })
       cc.blueprint.react.IdentityFilter.IdentityList({ ref: 'list', subscribe_on: @props.subscribe_on })
       cc.blueprint.react.IdentityFilter.Buttons({ ref: 'buttons' })

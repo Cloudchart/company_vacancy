@@ -119,7 +119,7 @@ Node = React.createClass
     
     @props.model.constructor.sync()
     
-    cc.ui.modal.close()
+    Arbiter.publish('cc:blueprint:modal/hide')
       
   
   
@@ -129,7 +129,7 @@ Node = React.createClass
     @props.model.destroy()
     Arbiter.publish("#{@props.model.constructor.broadcast_topic()}/update")
     @props.model.constructor.sync()
-    cc.ui.modal.close()
+    cc.blueprint.react.modal.hide()
   
   
   

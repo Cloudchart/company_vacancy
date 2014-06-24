@@ -24,7 +24,7 @@ IdentityFormCommons =
       @props.model.constructor.create(@state).save()
       Arbiter.publish("#{@props.model.constructor.broadcast_topic()}/create")
       
-    cc.ui.modal.close()
+    cc.blueprint.react.modal.hide()
   
   
   onDelete: (event) ->
@@ -33,7 +33,7 @@ IdentityFormCommons =
     @props.model.destroy().save()
     Arbiter.publish("#{@props.model.constructor.broadcast_topic()}/delete")
 
-    cc.ui.modal.close()
+    cc.blueprint.react.modal.hide()
 
 
 #

@@ -66,8 +66,8 @@ $ ->
   $document = $(document)
   $window   = $(window)
   
-  $document.on 'click', '.modal-overlay:not(.locked)', (event) -> widget.close()
-  $document.on 'click', '.modal-container', (event) -> event.stopPropagation()
+  $document.on 'click', 'body > .modal-overlay:not(.locked)', (event) -> widget.close()
+  $document.on 'click', 'body > .modal-container', (event) -> event.stopPropagation()
 
 
 #

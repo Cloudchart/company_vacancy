@@ -155,13 +155,9 @@ Chart = React.createClass
     parent    = calculate_parent(@refs, event.pageX, event.pageY)
     position  = calculate_position(@refs, parent, event.pageX)
     model     = new cc.blueprint.models.Node({ chart_id: @props.root.uuid, parent_id: parent, position: position, color_index: 0 })
-    colors    = @props.colors
+    node_form = cc.blueprint.react.forms.Node({ model: model, colors: @props.colors })
     
-    cc.ui.modal null, 
-      after_show: (container) ->
-        React.renderComponent(cc.blueprint.react.forms.Node({ model: model, colors: colors }), container)
-      before_close: (container) ->
-        React.unmountComponentAtNode(container)
+    cc.blueprint.react.modal.show(node_form)
 
 
   getDefaultProps: ->

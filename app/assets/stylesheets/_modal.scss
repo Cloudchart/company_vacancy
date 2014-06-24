@@ -1,6 +1,6 @@
 $modal-overlay-z-index: 10000;
 
-.modal-overlay {
+> .modal-overlay {
   @include display(flex);
   @include position(absolute, 0px 0px 0px 0px);
   

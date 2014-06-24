@@ -33,21 +33,11 @@ IdentityCommons =
     @props.model.attributes
 
 
-  renderForm: (container) ->
-    React.renderComponent(cc.blueprint.react.forms[@props.className]({ model: @props.model }), container)
-  
-
-  hideForm: (container) ->
-    React.unmountComponentAtNode(container)
-
-
   onClick: (event) ->
     return if @props.model.is_synchronizing()
+    identity_form = cc.blueprint.react.forms[@props.className]({ model: @props.model })
+    cc.blueprint.react.modal.show(identity_form)
 
-    cc.ui.modal null,
-      after_show:   @renderForm
-      before_close: @hideForm
-  
 
   onDragStart: (event) ->
     event.dataTransfer.effectAllowed = 'link'

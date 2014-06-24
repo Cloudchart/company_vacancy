@@ -10,6 +10,13 @@ droppable_selector              = '[data-behaviour~="droppable"]'
 started                         = false
 
 
+unless Element.prototype.matches
+  prefixes                  = ['webkit', 'moz', 'ms', 'o']
+  name                      = 'MatchesSelector'
+  found_prefix              = prefixes.filter (prefix) -> Element.prototype[prefix + name]
+  Element.prototype.matches = Element.prototype[found_prefix + name] if found_prefix
+
+
 #
 #
 #
@@ -78,6 +85,10 @@ widget = ->
   # On Drag Move
   #
   on_cc_drag_move = (event) ->
+    
+    #element = document.elementFromPoint(event.pageX, event.pageY)
+    #element = element.parentNode while element.parentNode and !element.matches(droppable_selector)
+    
     partitioned_elements = partition_elements(event)
     
     partitioned_elements.enter.forEach (element) ->

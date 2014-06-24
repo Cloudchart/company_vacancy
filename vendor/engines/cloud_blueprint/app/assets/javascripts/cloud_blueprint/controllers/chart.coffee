@@ -52,8 +52,10 @@
     root:           chart
     can_be_edited:  can_edit_chart
     subscribe_on: [
-      'cc:blueprint:model:node/*'
+      'cc:blueprint:model:person/*'
+      'cc:blueprint:model:vacancy/*'
       'cc:blueprint:model:identity/*'
+      'cc:blueprint:model:node/*'
     ]
   }
   
