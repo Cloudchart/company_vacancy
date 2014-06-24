@@ -22,25 +22,13 @@ Buttons = React.createClass
   
 
     onNewPersonClick: ->
-      @form = cc.blueprint.react.forms.Person({ model: new cc.blueprint.models.Person })
-      cc.ui.modal null,
-        after_show:   @renderForm
-        before_close: @hideForm
+      identity_form = cc.blueprint.react.forms.Person({ model: new cc.blueprint.models.Person })
+      cc.blueprint.react.modal.show(identity_form, { key: 'identity' })
       
     
-    renderForm: (container) ->
-      React.renderComponent(@form, container)
-    
-    
-    hideForm: (container) ->
-      React.unmountComponentAtNode(container)
-    
-
     onNewVacancyClick: ->
-      @form = cc.blueprint.react.forms.Vacancy({ model: new cc.blueprint.models.Vacancy })
-      cc.ui.modal null,
-        after_show:   @renderForm
-        before_close: @hideForm
+      identity_form = cc.blueprint.react.forms.Vacancy({ model: new cc.blueprint.models.Vacancy })
+      cc.blueprint.react.modal.show(identity_form, { key: 'identity' })
   
 
     render: ->

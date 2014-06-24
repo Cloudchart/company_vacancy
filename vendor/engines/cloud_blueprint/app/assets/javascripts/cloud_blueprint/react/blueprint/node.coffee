@@ -70,7 +70,7 @@ Events =
     return if @props.model.is_synchronizing()
     
     node_form = cc.blueprint.react.forms.Node({ model: @props.model, colors: @props.colors })
-    cc.blueprint.react.modal.show(node_form)
+    cc.blueprint.react.modal.show(node_form, { key: 'node' })
   
   
   # On drag over

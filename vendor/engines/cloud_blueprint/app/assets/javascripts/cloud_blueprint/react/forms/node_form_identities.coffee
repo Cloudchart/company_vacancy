@@ -58,7 +58,7 @@ Identity = React.createClass
   onClick: (event) ->
     return if @props.model.is_synchronizing()
     identity_form = cc.blueprint.react.forms[@props.model.constructor.className]({ model: @props.model })
-    cc.blueprint.react.modal.show(identity_form, { keep_parent: true })
+    cc.blueprint.react.modal.show(identity_form, { key: 'identity' })
 
 
   render: ->

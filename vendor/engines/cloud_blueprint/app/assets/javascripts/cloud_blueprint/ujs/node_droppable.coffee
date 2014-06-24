@@ -153,19 +153,24 @@ on_identity_enter = (event) ->
   identity_data     = JSON.parse(event.dataTransfer.getData('identity'))
   people_uuids      = node.people().map((person) -> person.uuid)
   vacancies_uuids   = node.vacancies().map((vacancy) -> vacancy.uuid)
+  captured          = people_uuids.indexOf(identity_data.uuid) < 0 and vacancies_uuids.indexOf(identity_data.uuid) < 0
   
-  event.dataTransfer.setData('captured', people_uuids.indexOf(identity_data.uuid) < 0 and vacancies_uuids.indexOf(identity_data.uuid) < 0)
+  event.dataTransfer.setData('captured', captured)
+  event.target.classList.toggle('captured', captured)
   
 
 # On identity leave
 #
 on_identity_leave = (event) ->
   event.dataTransfer.clearData('captured')
+  event.target.classList.remove('captured')
 
 
 # On identity drop
 #
 on_identity_drop = (event) ->
+  event.target.classList.remove('captured')
+
   identity_data   = JSON.parse(event.dataTransfer.getData('identity'))
   identity_model  = cc.blueprint.models[identity_data.className].get(identity_data.uuid)
 

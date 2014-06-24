@@ -94,6 +94,7 @@ main.blueprint article.chart {
     > .node {
       @include position(absolute, 0px null null 0px);
       background-color: #f99;
+      
       cursor: pointer;
       font-size: 12pt;
       padding: $base-unit / 2 $base-unit;
@@ -104,7 +105,9 @@ main.blueprint article.chart {
       }
       
       &.captured {
-        background-color: hsl(120, 75%, 75%);
+        margin-top: -10pt;
+        margin-left: -10pt;
+        padding: $base-unit / 2 + 10pt $base-unit + 10pt;
       }
       
       > h2 {
