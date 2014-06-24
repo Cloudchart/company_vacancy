@@ -1,6 +1,34 @@
 <h1>Responses to <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %></h1>
 
-<% if can?(:invite_and_kick_people, @vacancy) %>
+<ul>
+  <% @vacancy.responses.each do |response| %>
+    <% if can?(:read, response) %>
+      <li id="<%= response.id %>">
+        <%= link_to response.user.full_name, vacancy_response_path(response) %> |
+        <%= response.content %> |
+        <strong><%= response.status %></strong> |
+        <%= response.votes_total %> (<%= response.votes.size %>)
+
+        <% if can?(:perform_admin_actions, @vacancy) %>
+          |
+          <% if response.status == 'pending' %>
+            <%= link_to 'Can be reviewed', change_status_vacancy_response_path(response, :in_review), method: :patch  %> |
+          <% elsif response.status == 'in_review' %>
+            <%= link_to 'Accept', change_status_vacancy_response_path(response, :accepted), method: :patch %> |
+            <%= link_to 'Decline', change_status_vacancy_response_path(response, :declined), method: :patch %> |
+          <% elsif response.status =~ /accepted|declined/ %>
+            <%= link_to 'Back to review', change_status_vacancy_response_path(response, :in_review), method: :patch %> |
+          <% end %>
+
+          <%= link_to 'Destroy', vacancy_response_path(response.vacancy, response), remote: true, method: :delete, data: { confirm: 'Are you sure?' } %> |
+          <%= link_to 'Destroy and add user to the blacklist', '#' %>
+        <% end %>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+
+<% if can?(:perform_admin_actions, @vacancy) %>
   <h2>Reviewers</h2>
 
   <ul class="vacancy-reviewers">
@@ -11,14 +39,3 @@
 
   <%= render 'shared/people_search' %>
 <% end %>
-
-<h2>Responded users</h2>
-
-<ul>
-  <% @vacancy.responses.each do |response| %>
-    <li>
-      <%= link_to response.user.full_name, vacancy_response_path(response.vacancy, response) %> |
-      <%= response.content %>
-    </li>
-  <% end %>  
-</ul>

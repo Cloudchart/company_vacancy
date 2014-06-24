@@ -1,1 +1,1 @@
-$('#<%= @destroyed_comment_id %>').remove()
+$('#<%= @comment.id %>').remove()

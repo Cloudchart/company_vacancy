@@ -7,14 +7,14 @@
 </p>
 
 <p>
-  <%= link_to 'Upvote', vote_vacancy_response_path(@vacancy, @vacancy_response, 1),
+  <%= link_to 'Upvote', vote_vacancy_response_path(@vacancy_response, 1),
     method: :post,
     remote: true,
     class: 'upvote green-button',
     style: @current_vote == 1 ? 'display: none;' : ''
   %>
 
-  <%= link_to 'Downvote', vote_vacancy_response_path(@vacancy, @vacancy_response, -1),
+  <%= link_to 'Downvote', vote_vacancy_response_path(@vacancy_response, -1),
     method: :post,
     remote: true,
     class: 'downvote button',

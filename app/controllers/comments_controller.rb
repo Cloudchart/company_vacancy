@@ -1,6 +1,5 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: [:edit, :update, :destroy]
-  respond_to :js
 
   authorize_resource
 
@@ -9,6 +8,10 @@ class CommentsController < ApplicationController
     @comment = Comment.new(comment_params)
     @comment.user = current_user
     @comment.save!
+    
+    respond_to do |format|
+      format.js
+    end
   end
 
   # PATCH/PUT /comments/1
@@ -22,8 +25,11 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1
   def destroy
-    @destroyed_comment_id = @comment.id
     @comment.destroy
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   private
