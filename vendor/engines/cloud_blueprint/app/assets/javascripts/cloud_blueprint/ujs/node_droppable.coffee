@@ -6,14 +6,16 @@
 #
 on_enter = (event) ->
   return unless event.dataTransfer
-  on_node_enter(event) if event.dataTransfer.types.indexOf('node') > -1
+  on_node_enter(event)      if event.dataTransfer.types.indexOf('node') > -1
+  on_identity_enter(event)  if event.dataTransfer.types.indexOf('identity') > -1
     
 
 # On leave
 #
 on_leave = (event) ->
   return unless event.dataTransfer
-  on_node_leave(event) if event.dataTransfer.types.indexOf('node') > -1
+  on_node_leave(event)      if event.dataTransfer.types.indexOf('node') > -1
+  on_identity_leave(event)  if event.dataTransfer.types.indexOf('identity') > -1
 
 
 # On move
@@ -27,7 +29,8 @@ on_move = (event) ->
 #
 on_drop = (event) ->
   return unless event.dataTransfer
-  on_node_drop(event) if event.dataTransfer.types.indexOf('node') > -1
+  on_node_drop(event)     if event.dataTransfer.types.indexOf('node') > -1
+  on_identity_drop(event) if event.dataTransfer.types.indexOf('identity') > -1
   
 
 #
@@ -136,6 +139,47 @@ on_node_drop = (event) ->
     _.delay (-> cc.blueprint.models.Node.sync()), 250
   
   insertion_points = []
+
+
+#
+# Identity
+#
+
+
+# On identity enter
+#
+on_identity_enter = (event) ->
+  node              = cc.blueprint.models.Node.get(event.target.dataset.id)
+  identity_data     = JSON.parse(event.dataTransfer.getData('identity'))
+  people_uuids      = node.people().map((person) -> person.uuid)
+  vacancies_uuids   = node.vacancies().map((vacancy) -> vacancy.uuid)
+  
+  event.dataTransfer.setData('captured', people_uuids.indexOf(identity_data.uuid) < 0 and vacancies_uuids.indexOf(identity_data.uuid) < 0)
+  
+
+# On identity leave
+#
+on_identity_leave = (event) ->
+  event.dataTransfer.clearData('captured')
+
+
+# On identity drop
+#
+on_identity_drop = (event) ->
+  identity_data   = JSON.parse(event.dataTransfer.getData('identity'))
+  identity_model  = cc.blueprint.models[identity_data.className].get(identity_data.uuid)
+
+  identity = cc.blueprint.models.Identity.create
+    chart_id:       identity_model.chart_id
+    node_id:        event.target.dataset.id
+    identity_id:    identity_data.uuid
+    identity_type:  identity_data.className
+  
+  identity.save()
+  
+  Arbiter.publish("#{identity.constructor.broadcast_topic()}/create")
+  
+  
 
 
 #

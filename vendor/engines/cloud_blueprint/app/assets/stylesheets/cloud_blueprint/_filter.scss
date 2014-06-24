@@ -202,3 +202,7 @@ aside.person-vacancy-filter {
   }
     
 }
+
+body .identity-draggable {
+  @include filter-identity;
+}

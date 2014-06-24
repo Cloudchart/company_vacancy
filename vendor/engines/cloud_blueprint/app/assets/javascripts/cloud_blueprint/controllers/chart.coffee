@@ -86,5 +86,8 @@
       # Observe node draggable
       cc.blueprint.common.node_draggable(document.querySelector('section.chart'), 'div.node')
       
+      # Observe identity draggable
+      cc.blueprint.common.identity_draggable(document.querySelector('article.chart aside.identity-filter'), 'li')
+      
       # Observe node droppable
       cc.blueprint.common.node_droppable(document.querySelector('section.chart'), 'div.node')

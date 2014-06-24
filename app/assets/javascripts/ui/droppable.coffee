@@ -107,7 +107,7 @@ widget = ->
   # On Drag End
   #
   on_cc_drag_end = (event) ->
-    drop(event)
+    drop(event) if event.dataTransfer.getData('captured')
     cached_elements.forEach (element) -> leave(element, event)
 
     $document.off 'cc::drag:move',  on_cc_drag_move

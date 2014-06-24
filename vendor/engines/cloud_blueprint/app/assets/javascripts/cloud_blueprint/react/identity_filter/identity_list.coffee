@@ -39,11 +39,6 @@ IdentityCommons =
     cc.blueprint.react.modal.show(identity_form)
 
 
-  onDragStart: (event) ->
-    event.dataTransfer.effectAllowed = 'link'
-    event.dataTransfer.setData('identity', JSON.stringify({ className: @props.className, uuid: @props.key }))
-
-
 #
 # Vacancy
 #
@@ -57,9 +52,10 @@ Vacancy = React.createClass
   
   render: ->
     (tag.li {
-      onClick:      @onClick
-      draggable:    true
-      onDragStart:  @onDragStart
+      onClick:            @onClick
+      'data-behaviour':   'draggable'
+      'data-id':          @props.key
+      'data-class-name':  @props.className
     },
       (Icon('briefcase'))
       (tag.h2 {}, @state.name)
@@ -79,9 +75,10 @@ Person = React.createClass
 
   render: ->
     (tag.li {
-      onClick:      @onClick
-      draggable:    true
-      onDragStart:  @onDragStart
+      onClick:            @onClick
+      'data-behaviour':   'draggable'
+      'data-id':          @props.key
+      'data-class-name':  @props.className
     },
       (Icon('users'))
       (tag.h2 {},
