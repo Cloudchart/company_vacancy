@@ -8,7 +8,6 @@ class Vote < ActiveRecord::Base
 
   validates :value, presence: true
 
-  scope :by_source, -> source_id { where(source_id: source_id) }
   scope :by_destination, -> destination_id { where(destination_id: destination_id) }
 
 private

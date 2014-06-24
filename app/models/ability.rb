@@ -72,8 +72,9 @@ class Ability
         vacancy.settings.accessible_to == 'everyone'        
       end
 
-      can :create, VacancyResponse do |vacancy_response|
-        !user.vacancy_responses.map(&:vacancy_id).include?(vacancy_response.vacancy_id) && !user.companies.include?(vacancy_response.vacancy.company)
+      can [:manage], VacancyResponse do |vacancy_response|
+        (user.people & vacancy_response.vacancy.company.people).first.try(:is_company_owner?) ||
+        user.vacancies.include?(vacancy_response.vacancy)
       end
 
       can :access_vacancy_responses, Vacancy do |vacancy|
@@ -82,9 +83,14 @@ class Ability
         (vacancy.reviewers & user.people).any?
       end
 
-      can :invite_and_kick_people do |vacancy|
-        (user.people & vacancy.company.people).first.try(:is_company_owner?) ||
-        user.vacancies.include?(vacancy)
+      can :create, VacancyResponse do |vacancy_response|
+        !user.vacancy_responses.map(&:vacancy_id).include?(vacancy_response.vacancy_id) &&
+        !user.companies.include?(vacancy_response.vacancy.company)
+      end
+
+      can [:read, :vote], VacancyResponse do |vacancy_response|
+        (vacancy_response.vacancy.reviewers & user.people).any? &&
+        vacancy_response.status == 'in_review'
       end
 
       can :manage, Comment do |comment|

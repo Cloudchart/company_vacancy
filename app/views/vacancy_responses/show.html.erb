@@ -1,4 +1,4 @@
-<h1>Response to <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %> by <%= @vacancy_response.user.full_name %></h1>
+<h1>Response to <%= @vacancy_response.vacancy.name %> vacancy at <%= @vacancy_response.vacancy.company.name %> by <%= @vacancy_response.user.full_name %></h1>
 
 <article>
   <section>
@@ -7,6 +7,7 @@
     </p>
   </section>
 
+  <h2>Voting</h2>
   <section class="voting">
     <%= render 'voting'  %>
   </section>
@@ -35,4 +36,4 @@
   <% end %>
 </ul>
 
-<%= link_to 'Back to list', vacancy_responses_path(@vacancy) %>
+<%= link_to 'Back to list', vacancy_responses_path(@vacancy_response.vacancy) %>

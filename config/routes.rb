@@ -55,11 +55,15 @@ Cloudchart::Application.routes.draw do
   resources :comments, only: [:create, :update, :destroy]
 
   scope 'vacancies/:vacancy_id' do
-    resources :vacancy_responses, path: 'responses', except: [:edit, :update] do
+    resources :vacancy_responses, path: 'responses', only: [:index, :new, :create] do
       post 'invite_person/:person_id', on: :collection, action: :invite_person, as: :invite_person
       delete 'kick_person/:person_id', on: :collection, action: :kick_person, as: :kick_person
-      post 'vote/:vote', on: :member, action: :vote, as: :vote
     end
+  end
+
+  resources :vacancy_responses, only: [:show, :destroy] do
+    post 'vote/:vote', on: :member, action: :vote, as: :vote
+    match 'change_status/:status', on: :member, action: :change_status, as: :change_status, via: [:put, :patch]
   end
 
 end
