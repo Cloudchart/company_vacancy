@@ -7,6 +7,27 @@
 tag = React.DOM
 
 
+# Modal Title Component
+#
+ModalTitleComponent = React.createClass
+
+  onClick: (event) ->
+    event.preventDefault()
+    cc.blueprint.react.modal.close()
+
+
+  render: ->
+    (tag.header {},
+      (tag.a {
+        href: '#',
+        onClick: @onClick
+      },
+        (tag.i { className: 'fa fa-angle-left' })
+      )
+      @props.title
+    )
+
+
 # Modal container
 #
 ModalComponent = React.createClass
@@ -19,55 +40,62 @@ ModalComponent = React.createClass
   componentWillUnmount: ->
     Arbiter.unsubscribe 'cc:blueprint:modal/show', @show
     Arbiter.unsubscribe 'cc:blueprint:modal/hide', @hide
+  
 
-
+  componentDidUpdate: ->
+    # Show or hide identity filter
+    Arbiter.publish "cc:blueprint:identity-filter/#{if @state.is_visible then 'show' else 'hide'}"
+    
+    # Unmount previous modal component
+    React.unmountComponentAtNode(@refs.container.getDOMNode())
+    
+    # Render current modal component if it exists
+    React.renderComponent(@state.modal_component, @refs.container.getDOMNode()) if @state.modal_component
+  
+  
   getDefaultProps: ->
+    title:  'Back'
     modals: []
-
+  
+  
   getInitialState: ->
-    content:    null
-    is_visible: false
+    is_visible:       false
+    modal_component:  null
   
   
+  toggle: ->
+    currOptions = @props.modals[@props.modals.length - 1]
+    prevOptions = @props.modals[@props.modals.length - 2]
+
+    @setState
+      title:            if prevOptions then prevOptions.title else @props.title
+      is_visible:       if currOptions then true else false
+      modal_component:  if currOptions then currOptions.content else null
+
+
   show: (options = {}) ->
-    # Show modal container
-    @getDOMNode().style.display = 'block'
-
-    Arbiter.publish 'cc:blueprint:identity-filter/show'
+    # Fetch previous options
+    prevOptions = @props.modals[@props.modals.length - 1]
     
-    # Unmount previous form
-    React.unmountComponentAtNode(@refs['modal-container'].getDOMNode())
+    # Remove previous options if its key is the same as new
+    @props.modals.pop() if prevOptions and prevOptions.key == options.key
     
-    # Get previous options
-    previous_options = @props.modals[@props.modals.length - 1]
-
-    # Remove previous options from stack if it has same key as current options
-    @props.modals.pop() if previous_options and previous_options.key == options.key
-
-    # Add current options to stack
+    # Add current options
     @props.modals.push(options)
-
-    # Mount current form
-    React.renderComponent(@props.modals[@props.modals.length - 1].content, @refs['modal-container'].getDOMNode())
+    
+    # Show or hide modal component
+    @toggle()
   
 
   hide: (options = {}) ->
-    # Hide modal container
-    @getDOMNode().style.display = 'none'
-
-    Arbiter.publish 'cc:blueprint:identity-filter/hide'
-
-    # Unmount current form
-    React.unmountComponentAtNode(@refs['modal-container'].getDOMNode())
-    
-    # Remove current options
+    # Remove last options
     @props.modals.pop()
     
-    # Cleanup options stack if forced to close
+    # Clean options stack if forced
     @props.modals = [] if options.force == true
 
-    # Show latest form if it is available
-    @show(@props.modals.pop()) if @props.modals.length > 0
+    # Show or hide modal component
+    @toggle()
   
   
   onCloseButtonClick: (event) ->
@@ -79,15 +107,10 @@ ModalComponent = React.createClass
     (tag.section {
       className: 'modal-overlay'
       style:
-        display:  'none'
+        display:  if @state.is_visible then 'block' else 'none'
     },
-      (tag.i {
-        className:  'fa fa-times close'
-        onClick:    @onCloseButtonClick
-      })
-      (tag.div { ref: 'modal-container', className: 'modal-container' },
-        null
-      )
+      (ModalTitleComponent { title: @state.title || @props.title })
+      (tag.div { ref: 'container', className: 'modal-container' })
     )
 
 

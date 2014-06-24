@@ -150,21 +150,6 @@ main.blueprint article.chart {
   }
   
   
-  > section.modal-overlay {
-    @include position(absolute, 0px 0px 0px $identity-filter-width);
-    
-    background-color: hsla(0, 100%, 100%, 1);
-    z-index: $identity-filter-z-index + 1;
-    
-    > .close {
-      @include position(absolute, $base-unit $base-unit 0 0);
-      
-      cursor: pointer;
-      font-size: $base-unit;
-    }
-  }
-  
-  
 }
 
 .modal-container form.person,

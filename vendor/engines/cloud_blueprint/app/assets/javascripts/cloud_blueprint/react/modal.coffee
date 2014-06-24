@@ -6,6 +6,10 @@ modal =
     Arbiter.publish 'cc:blueprint:modal/hide', { force: force }
 
 
+modal.open    = modal.show
+modal.close   = modal.hide
+
+
 #
 #
 #
