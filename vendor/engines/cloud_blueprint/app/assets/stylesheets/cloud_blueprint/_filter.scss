@@ -201,6 +201,12 @@ aside.person-vacancy-filter {
     @include filter-identity;
     position: relative;
   }
+  
+  li.vacancy {
+    aside {
+      
+    }
+  }
     
 }
 

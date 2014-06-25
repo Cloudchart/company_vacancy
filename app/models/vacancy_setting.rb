@@ -11,6 +11,6 @@ class VacancySetting
   attribute :accessible_to
   attribute :incentive, type: Integer
 
-  validates :display_link, presence: true
-
+  #validates :display_link, presence: true
+  
 end

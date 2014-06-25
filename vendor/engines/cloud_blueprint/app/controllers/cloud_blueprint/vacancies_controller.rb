@@ -23,6 +23,7 @@ module CloudBlueprint
       chart    = Chart.includes(:company).find(params[:chart_id])
       vacancy  = Vacancy.new vacancy_params_for_create
 
+      vacancy.author = current_user
       chart.company.vacancies << vacancy
 
       respond_to do |format|
