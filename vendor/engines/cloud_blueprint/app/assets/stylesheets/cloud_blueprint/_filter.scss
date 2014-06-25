@@ -75,6 +75,11 @@ $identity-filter-buttons-button-width: $base-unit * 3;
     top: 50%;
   }
 
+  &.vacancy aside {
+    background-color: hsl(1, 76%, 55%);
+    color: hsl(0, 100%, 100%);
+  }
+
 }
 
 
@@ -153,7 +158,9 @@ aside.identity-filter {
       &:last-child {
         margin-bottom: 0;
       }
+      
     }
+
   }
   
   // Buttons
@@ -174,41 +181,6 @@ aside.identity-filter {
 
 }
 
-
-aside.person-vacancy-filter {
-  
-  div.people-vacancies ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    
-    li {
-      margin: $base-unit 0;
-
-      &:first-child {
-        margin-top: 0;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-    
-  }
-  
-  li.vacancy,
-  li.person {
-    @include filter-identity;
-    position: relative;
-  }
-  
-  li.vacancy {
-    aside {
-      
-    }
-  }
-    
-}
 
 body .identity-draggable {
   @include filter-identity;

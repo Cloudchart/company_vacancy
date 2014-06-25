@@ -53,6 +53,7 @@ Vacancy = React.createClass
   render: ->
     (tag.li {
       onClick:            @onClick
+      className:          @props.className.toLowerCase()
       'data-behaviour':   'draggable'
       'data-id':          @props.key
       'data-class-name':  @props.className
