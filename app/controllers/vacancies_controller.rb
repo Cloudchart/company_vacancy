@@ -1,5 +1,5 @@
 class VacanciesController < ApplicationController
-  before_action :set_vacancy, only: [:show, :update, :destroy]
+  before_action :set_vacancy, only: [:show, :update, :destroy, :change_status]
   before_action :set_company, only: [:index, :new, :create]
   before_action :build_vacancy, only: :new
   before_action :build_vacancy_with_params, only: :create
@@ -58,6 +58,18 @@ class VacanciesController < ApplicationController
     company = @vacancy.company
     @vacancy.destroy
     redirect_to company_vacancies_url(company), notice: t('messages.destroyed', name: t('lexicon.vacancy'))
+  end
+
+  def change_status
+    # TODO: add status check
+    @vacancy.update(status: params[:status])
+
+    if params[:status] == 'opened'
+      @vacancy.settings.publish_on = Date.today
+      @vacancy.save
+    end
+
+    redirect_to :back, notice: 'Status has been updated'
   end
 
 private

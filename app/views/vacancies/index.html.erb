@@ -4,11 +4,12 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Description</th>
       <th>Salary</th>
-      <th>Location</th>
       <th>Company</th>
       <th>Accessible to</th>
+      <th>Display link</th>
+      <th>Publish on</th>
+      <th>Status</th>
       <th></th>
       <th></th>
       <th></th>
@@ -19,20 +20,29 @@
     <% @vacancies.each do |vacancy| %>
       <% if can?(:read, vacancy) %>
         <tr>
-          <td><%= vacancy.name %></td>
-          <td><%= vacancy.description %></td>
+          <td><%= link_to vacancy.name, vacancy %></td>
           <td><%= vacancy.salary %></td>
-          <td><%= vacancy.location %></td>
           <td><%= vacancy.company.name %></td>
-          <td><%= t(".#{vacancy.settings.accessible_to}") if vacancy.settings.accessible_to.present? %></td>
+          <td><%= t("vacancy_setting.accessible_to.#{vacancy.settings.accessible_to}") if vacancy.settings.accessible_to.present? %></td>
+          <td><%= t("vacancy_setting.display_link.#{vacancy.settings.display_link}") %></td>
+          <td><%= vacancy.settings.publish_on %></td>
+          <td><strong><%= vacancy.status %></strong></td>
           <td>
-            <% if can?(:create, vacancy.responses.build) %>
+            <% if can?(:create, vacancy.responses.build) && cannot?(:manage, vacancy.responses.build) %>
               <%= link_to 'Respond', new_vacancy_response_path(vacancy) %>
             <% elsif current_user.blank? %>
               <%= link_to 'Respond', cloud_profile.login_path %>
             <% end %>
           </td>
-          <td><%= link_to 'Show', vacancy %></td>
+          <td>
+            <% if can?(:change_status, vacancy) %>
+              <% if vacancy.status == 'draft' %>
+                <%= link_to 'Publish', change_status_vacancy_path(vacancy, :opened), method: :patch %>
+              <% elsif vacancy.status == 'opened' %>
+                <%= link_to 'Close', change_status_vacancy_path(vacancy, :closed), method: :patch %>
+              <% end %>
+            <% end %>
+          </td>
           <td><%= link_to 'Destroy', vacancy, method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, vacancy) %></td>
         </tr>
       <% end %>

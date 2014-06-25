@@ -1,10 +1,10 @@
 en:
   vacancy_setting:
-    display_link_options:
+    display_link:
       nowhere: "Nowhere"
-      company: "On a company page"
+      company_page: "On a company page"
       everywhere: "Everywhere"
-    accessible_to_options:
+    accessible_to:
       only_me: "Only me"
       company: "Company"
       company_plus_one_share: "Company + 1 share"

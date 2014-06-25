@@ -22,6 +22,10 @@ Cloudchart::Application.routes.draw do
     end
   end
 
+  concern :statusable do
+    match 'change_status/:status', on: :member, action: :change_status, as: :change_status, via: [:put, :patch]
+  end
+
   # Custom
   #
   get 'company_invite/:token_id', to: 'landings#company_invite', as: 'company_invite'
@@ -32,7 +36,7 @@ Cloudchart::Application.routes.draw do
     
     post :logo, to: 'companies#upload_logo', on: :member
     
-    resources :vacancies, except: [:edit], concerns: [:blockable]
+    resources :vacancies, except: [:edit], concerns: [:blockable, :statusable]
     
     resources :people do
       post :send_invite_to_user, on: :member
@@ -61,9 +65,8 @@ Cloudchart::Application.routes.draw do
     end
   end
 
-  resources :vacancy_responses, only: [:show, :destroy] do
+  resources :vacancy_responses, only: [:show, :destroy], concerns: [:statusable] do
     post 'vote/:vote', on: :member, action: :vote, as: :vote
-    match 'change_status/:status', on: :member, action: :change_status, as: :change_status, via: [:put, :patch]
   end
 
 end
