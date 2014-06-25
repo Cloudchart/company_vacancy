@@ -218,9 +218,7 @@ main.blueprint article.chart {
 
 .modal-container form.node {
   
-  //border: 2pt solid transparent;
-  padding: $base-unit * 2;
-  width: $base-unit * 40;
+  padding: $base-unit $base-unit * 2;
   
   section.title {
     
@@ -266,17 +264,28 @@ main.blueprint article.chart {
   ul.identities {
     @include clearfix;
     
+    border: 2pt dashed #eee;
+    
     list-style: none;
     margin: $base-unit 0 0;
-    max-height: $base-unit * 6;
-    padding: 0;
+    padding: 0 $base-unit $base-unit;
     overflow: scroll;
     
     > li {
       @include filter-identity;
       float: left;
       margin: $base-unit 0 0;
-      width: 50%;
+      width: $base-unit * 15;
+      padding-right: $base-unit;
+      
+      &.placeholder {
+        width: auto;
+        opacity: .25;
+
+        p {
+          margin: 0;
+        }
+      }
     }
   }
   

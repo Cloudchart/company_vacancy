@@ -27,56 +27,50 @@ widget = ->
   
   $document         = $(document)
   
-  cached_elements   = []
+  cached_element    = null
   selector          = null
   
   
-  # Partition elements
+  # Trigger 
   #
-  partition_elements = (event) ->
-    elements          = document.querySelectorAll(selector)
-
-    x = event.pageX - window.pageXOffset
-    y = event.pageY - window.pageYOffset
-    
-    Array.prototype.reduce.call elements, (memo, element) ->
-      bounds  = element.getBoundingClientRect()
-      key     = if bounds.left < x and bounds.right > x and bounds.top < y and bounds.bottom > y then 'enter' else 'leave'
-      memo[key].push(element) ; memo
-    , { enter: [], leave: [] }
-    
-
+  trigger = (name, event) ->
+    $(cached_element).trigger($.Event("cc::drag:drop:#{name}", {
+      pageX:            event.pageX
+      pageY:            event.pageY
+      dataTransfer:     event.dataTransfer
+      draggableTarget:  event.draggableTarget
+    })) if cached_element
+  
+  
   # Enter
   #
-  enter = (element, event) ->
-    $(element).trigger($.Event("cc::drag:drop:enter", { pageX: event.pageX, pageY: event.pageY, dataTransfer: event.dataTransfer, draggableTarget: event.draggableTarget }))
+  enter = (event) ->
+    trigger('enter', event)
   
   
   # Leave
   #
-  leave = (element, event) ->
-    $(element).trigger($.Event("cc::drag:drop:leave", { pageX: event.pageX, pageY: event.pageY, dataTransfer: event.dataTransfer, draggableTarget: event.draggableTarget }))
+  leave = (event) ->
+    trigger('leave', event)
 
 
   # Move
   #
   move = (event) ->
-    element = cached_elements[cached_elements.length - 1]
-    $(element).trigger($.Event("cc::drag:drop:move", { pageX: event.pageX, pageY: event.pageY, dataTransfer: event.dataTransfer, draggableTarget: event.draggableTarget })) if element
+    trigger('move', event)
 
 
   # Drop
   #
   drop = (event) ->
-    element = cached_elements[cached_elements.length - 1]
-    $(element).trigger($.Event("cc::drag:drop:drop", { pageX: event.pageX, pageY: event.pageY, dataTransfer: event.dataTransfer, draggableTarget: event.draggableTarget })) if element
+    trigger('drop', event)
   
 
   # On Drag Start
   #
   on_cc_drag_start = (event) ->
     selector          = "#{droppable_selector}"
-    cached_elements   = []
+    cached_element    = null
 
     $document.on 'cc::drag:move', on_cc_drag_move
     $document.on 'cc::drag:end',  on_cc_drag_end
@@ -85,30 +79,30 @@ widget = ->
   # On Drag Move
   #
   on_cc_drag_move = (event) ->
-    
-    #element = document.elementFromPoint(event.pageX, event.pageY)
-    #element = element.parentNode while element.parentNode and !element.matches(droppable_selector)
-    
-    partitioned_elements = partition_elements(event)
-    
-    partitioned_elements.enter.forEach (element) ->
-      if cached_elements.indexOf(element) < 0
-        enter(element, event)
 
-    partitioned_elements.leave.forEach (element) ->
-      if cached_elements.indexOf(element) >= 0
-        leave(element, event)
+    dragImage                     = event.dataTransfer.dragImage.element
+    dragImagePointerEventsStyle   = dragImage.style.pointerEvents if dragImage
+    dragImage.style.pointerEvents = 'none' if dragImage
     
-    cached_elements = partitioned_elements.enter
+    element   = document.elementFromPoint(event.pageX, event.pageY)
+    element   = element.parentNode while element.parentNode and !element.matches(selector)
+    element   = null unless element.parentNode
+
+    dragImage.style.pointerEvents = dragImagePointerEventsStyle if dragImage
+    
+    unless element == cached_element
+      leave(event)
+      cached_element = element
+      enter(event)
     
     move(event)
+    
 
 
   # On Drag End
   #
   on_cc_drag_end = (event) ->
-    drop(event) if event.dataTransfer.getData('captured')
-    cached_elements.forEach (element) -> leave(element, event)
+    if event.dataTransfer.getData('captured') then drop(event) else leave(event)
 
     $document.off 'cc::drag:move',  on_cc_drag_move
     $document.off 'cc::drag:end',   on_cc_drag_end

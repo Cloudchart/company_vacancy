@@ -5,6 +5,21 @@
 tag = React.DOM
 
 
+# Empty Identity Component
+#
+EmptyIdentityComponent = React.createClass
+
+  render: ->
+    (tag.li { className: 'placeholder' },
+      (tag.aside { className: 'icon' },
+        (tag.i { className: "fa fa-child" })
+      )
+      (tag.p {},
+        "Drag people and vacancies here"
+      )
+    )
+
+
 #
 # Chart Id Field
 #
@@ -161,7 +176,8 @@ Node = React.createClass
       (tag.ul { className: 'identities' },
         people
         vacancies
-      ) if people.length > 0 or vacancies.length > 0
+        (EmptyIdentityComponent {}) if people.length == 0 and vacancies.length == 0
+      )
       (cc.blueprint.react.forms.Buttons { model: @props.model, onDelete: @onDelete },
         (ColorSelector @props.colors, @state.color_index, @onColorIndexChange)
       )
