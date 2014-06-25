@@ -35,8 +35,8 @@ IdentityCommons =
 
   onClick: (event) ->
     return if @props.model.is_synchronizing()
-    identity_form = cc.blueprint.react.forms[@props.className]({ model: @props.model })
-    cc.blueprint.react.modal.show(identity_form, { key: 'identity', title: "Edit #{@props.model.constructor.className}" })
+    identity_form = cc.blueprint.react.forms.Identity({ model: @props.model })
+    cc.blueprint.react.modal.show(identity_form, { key: 'identity', title: "Edit #{@props.model.constructor.className.toLowerCase()}" })
 
 
 #

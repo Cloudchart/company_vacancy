@@ -149,12 +149,12 @@ Node = React.createClass
   
   
   gatherPeople: ->
-    _.sortBy(@props.model.people(), ['last_name', 'first_name']).map (person) ->
-      cc.blueprint.react.forms.Node.Identity { key: person.uuid, model: person }
+    _.sortBy(@props.model.people(), ['last_name', 'first_name']).map (person) =>
+      cc.blueprint.react.forms.Node.Identity { key: person.uuid, model: person, node: @props.model }
   
   gatherVacancies: ->
-    @props.model.vacancies().map (vacancy) ->
-      cc.blueprint.react.forms.Node.Identity { key: vacancy.uuid, model: vacancy }
+    @props.model.vacancies().map (vacancy) =>
+      cc.blueprint.react.forms.Node.Identity { key: vacancy.uuid, model: vacancy, node: @props.model }
 
 
   render: ->

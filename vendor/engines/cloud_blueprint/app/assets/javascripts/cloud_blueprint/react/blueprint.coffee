@@ -107,7 +107,7 @@ ModalComponent = React.createClass
     (tag.section {
       className: 'modal-overlay'
       style:
-        display:  if @state.is_visible then 'block' else 'none'
+        visibility:  if @state.is_visible then 'visible' else 'hidden'
     },
       (ModalTitleComponent { title: @state.title || @props.title })
       (tag.div { ref: 'container', className: 'modal-container' })

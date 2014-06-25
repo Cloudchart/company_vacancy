@@ -1,9 +1,11 @@
 $blueprint-modal-header-font-size: 32pt;
 
 main.blueprint article.chart > section.modal-overlay {
+  @include display(flex);
+  @include flex-direction(column);
   @include position(absolute, 0px 0px 0px $identity-filter-width);
   
-  background-color: hsla(0, 100%, 100%, 1);
+  background-color: hsl(0, 100%, 100%);
   z-index: $identity-filter-z-index + 1;
   
   > header {
@@ -11,11 +13,18 @@ main.blueprint article.chart > section.modal-overlay {
     font-weight: bold;
     padding: $base-unit $base-unit * 2 0;
     position: relative;
-    
+  
     > a {
       position: absolute;
       left: $base-unit / 4 * 3;
     }
   }
+
+  > .modal-container {
+    @include flex(1);
+
+    position: relative;
+  }
+  
   
 }

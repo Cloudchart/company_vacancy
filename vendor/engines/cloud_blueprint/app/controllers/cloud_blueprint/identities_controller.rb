@@ -28,6 +28,16 @@ module CloudBlueprint
     # Destroy identity
     #
     def destroy
+      chart     = Chart.find(params[:chart_id])
+      identity  = chart.identities.find(params[:id])
+      
+      identity.destroy()
+
+      respond_to do |format|
+        format.json do
+          render json: identity.as_json_for_chart
+        end
+      end
     end
     
     

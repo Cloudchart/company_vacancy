@@ -156,69 +156,6 @@ main.blueprint article.chart {
   
 }
 
-.modal-container form.person,
-.modal-container form.vacancy {
-  @include display(flex);
-  @include flex-direction(column);
-  
-  padding: $base-unit;
-  position: relative;
-  width: $base-unit * 30;
-  
-  input,
-  textarea {
-    width: 100%;
-  }
-  
-  textarea {
-    margin-top: $base-unit;
-  }
-  
-  section.buttons {
-    @include display(flex);
-    
-    margin-top: $base-unit;
-    
-    .spacer {
-      @include flex(1);
-    }
-    
-  }
-
-}
-
-.modal-container form.person {
-  
-  padding-left: $base-unit * 6;
-  
-  aside {
-    @include display(flex);
-    @include position(absolute, $base-unit null null $base-unit);
-    
-    border: 1px solid #ccc;
-    border-radius: $base-unit * 2;
-    height: $base-unit * 4;
-    width: $base-unit * 4;
-    
-    > * {
-      margin: auto;
-    }
-    
-    i.fa {
-      font-size: 20pt;
-    }
-  }
-  
-  
-  section.name {
-    @include display(flex);
-  }
-  
-  section.buttons {
-    margin-left: - $base-unit * 5;
-  }
-  
-}
 
 .modal-container form.node {
   
