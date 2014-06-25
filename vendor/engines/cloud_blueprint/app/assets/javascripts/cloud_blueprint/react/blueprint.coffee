@@ -68,7 +68,7 @@ ModalComponent = React.createClass
     prevOptions = @props.modals[@props.modals.length - 2]
 
     @setState
-      title:            if prevOptions then prevOptions.title else @props.title
+      title:            if currOptions then currOptions.title else @props.title
       is_visible:       if currOptions then true else false
       modal_component:  if currOptions then currOptions.content else null
 

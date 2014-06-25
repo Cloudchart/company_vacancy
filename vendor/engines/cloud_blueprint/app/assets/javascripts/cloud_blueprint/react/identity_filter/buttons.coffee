@@ -23,12 +23,12 @@ Buttons = React.createClass
 
     onNewPersonClick: ->
       identity_form = cc.blueprint.react.forms.Person({ model: new cc.blueprint.models.Person })
-      cc.blueprint.react.modal.show(identity_form, { key: 'identity' })
+      cc.blueprint.react.modal.show(identity_form, { key: 'identity', title: "New person" })
       
     
     onNewVacancyClick: ->
       identity_form = cc.blueprint.react.forms.Vacancy({ model: new cc.blueprint.models.Vacancy })
-      cc.blueprint.react.modal.show(identity_form, { key: 'identity' })
+      cc.blueprint.react.modal.show(identity_form, { key: 'identity', title: "New vacancy" })
   
 
     render: ->

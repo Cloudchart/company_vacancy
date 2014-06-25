@@ -157,7 +157,7 @@ Chart = React.createClass
     model     = new cc.blueprint.models.Node({ chart_id: @props.root.uuid, parent_id: parent, position: position, color_index: 0 })
     node_form = cc.blueprint.react.forms.Node({ model: model, colors: @props.colors })
     
-    cc.blueprint.react.modal.show(node_form)
+    cc.blueprint.react.modal.show(node_form, { key: 'node', title: 'New node' })
 
 
   getDefaultProps: ->

@@ -70,7 +70,7 @@ Events =
     return if @props.model.is_synchronizing()
     
     node_form = cc.blueprint.react.forms.Node({ model: @props.model, colors: @props.colors })
-    cc.blueprint.react.modal.show(node_form, { key: 'node' })
+    cc.blueprint.react.modal.show(node_form, { key: 'node', title: 'Edit node' })
   
   
   # On drag over
@@ -78,6 +78,7 @@ Events =
   onDragOver: (event) ->
     event.preventDefault() if event.dataTransfer.types.indexOf('identity') > -1
   
+
   # On drop
   #
   onDrop: (event) ->
@@ -141,8 +142,14 @@ Node = React.createClass
       .map (person) -> cc.blueprint.react.Blueprint.NodePerson { key: person.uuid, model: person }
 
 
+  gatherVacancies: ->
+    _.sortBy(@props.model.vacancies(), ['name'])
+      .map (vacancy) -> cc.blueprint.react.Blueprint.NodeVacancy { key: vacancy.uuid, model: vacancy }
+
+
   render: ->
-    people = @gatherPeople()
+    people    = @gatherPeople()
+    vacancies = @gatherVacancies()
     
     (tag.div {
       className:                'node'
@@ -155,9 +162,9 @@ Node = React.createClass
         backgroundColor: @props.colors[@props.model.color_index]
         minWidth:         @props.children_density * @props.model.children.length
     },
-      (tag.div { className: 'flag' }) if false # should contain vacancies
+      (tag.div { className: 'flag' }) if vacancies.length > 0
       (tag.h2 {}, @props.model.title)
-      (tag.ul {}, people)
+      (tag.ul {}, people, vacancies)
     )
 
 # Get instance from instance pool
