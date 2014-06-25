@@ -9,14 +9,14 @@ tag = React.DOM
 #
 # First name field
 #
-FirstNameField = (value, callback) ->
+FirstNameField = (value, callback, autofocus = false) ->
   (tag.label {},
     (tag.input {
       type:           'text'
       name:           'first_name'
       placeholder:    'Name'
       className:      'blueprint'
-      autoFocus:      true
+      autoFocus:      autofocus
       autoComplete:   'off'
       value:          value
       required:       true
@@ -93,7 +93,7 @@ Person = React.createClass
         (tag.i { className: 'fa fa-users' })
       )
       (tag.section { className: 'name' },
-        (FirstNameField   @state.first_name,  @onFirstNameChange)
+        (FirstNameField   @state.first_name,  @onFirstNameChange, @props.model.is_new_record())
         (LastNameField    @state.last_name,   @onLastNameChange)
       )
       (OccupationField @state.occupation, @onOccupationChange)

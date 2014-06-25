@@ -9,14 +9,14 @@ tag = React.DOM
 #
 # Name field
 #
-NameField = (value, callback) ->
+NameField = (value, callback, autofocus = false) ->
   (tag.label {},
     (tag.input {
       type:           'text'
       name:           'name'
       placeholder:    'Name'
       className:      'blueprint'
-      autoFocus:      true
+      autoFocus:      autofocus
       autoComplete:   'off'
       value:          value
       required:       true
@@ -67,7 +67,7 @@ Vacancy = React.createClass
       className:  'vacancy'
       onSubmit:   @onSubmit
     },
-      (NameField          @state.name,          @onNameChange)
+      (NameField          @state.name,          @onNameChange, @props.model.is_new_record())
       (DescriptionField   @state.description,   @onDescriptionChange)
       (cc.blueprint.react.forms.Buttons { model: @props.model, onDelete: @onDelete })
     )

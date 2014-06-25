@@ -56,13 +56,13 @@ PositionField = (value) ->
 #
 # Title Field
 #
-TitleField = (value, callback, is_required = true) ->
+TitleField = (value, callback, autofocus = false, is_required = true) ->
   (tag.input {
     type:           'text'
     name:           'title'
     placeholder:    'Title'
     className:      'blueprint'
-    autoFocus:      true
+    autoFocus:      autofocus
     autoComplete:   'off'
     value:          value
     required:       is_required
@@ -171,7 +171,7 @@ Node = React.createClass
       (ParentIDField  @state.parent_id),
       (PositionField  @state.position),
       (tag.section { className: 'title' },
-        (TitleField @state.title, @onTitleChange, @props.model.identities().length == 0)
+        (TitleField @state.title, @onTitleChange, @props.model.is_new_record(), @props.model.identities().length == 0)
       )
       (tag.ul { className: 'identities' },
         people
