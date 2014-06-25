@@ -29,10 +29,13 @@ main.blueprint .modal-container form.vacancy {
     
     > .name {
       @include display(flex);
-      @include align-items(center);
       
       margin-bottom: $base-unit;
       
+      > * {
+        margin: auto 0;
+      }
+
       aside {
         @include display(flex);
 
@@ -46,6 +49,10 @@ main.blueprint .modal-container form.vacancy {
         > * {
           margin: auto;
         }
+      }
+      
+      .spacer {
+        width: $base-unit;
       }
       
       input {

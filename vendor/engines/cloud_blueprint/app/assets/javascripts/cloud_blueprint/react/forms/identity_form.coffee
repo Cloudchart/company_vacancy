@@ -134,6 +134,7 @@ PersonForm = React.createClass
             (tag.i { className: 'fa fa-users' })
           )
           (PersonFirstName  @props, @state, @onFirstNameChange)
+          (tag.div { className: 'spacer' })
           (PersonLastName   @props, @state, @onLastNameChange)
         )
         (PersonOccupation @props, @state, @onOccupationChange)
