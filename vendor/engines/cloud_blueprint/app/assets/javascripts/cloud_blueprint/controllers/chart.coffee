@@ -91,3 +91,6 @@
       
       # Observe node droppable
       cc.blueprint.common.node_droppable(document.querySelector('section.chart'), 'div.node')
+
+      # Observe node form droppable
+      cc.blueprint.common.node_form_droppable(document.querySelector('article.chart'), 'form.node li.placeholder')

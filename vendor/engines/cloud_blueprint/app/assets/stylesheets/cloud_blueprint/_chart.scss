@@ -162,6 +162,10 @@ main.blueprint article.chart {
           font-size: 16pt;
           margin: auto;
         }
+        
+        &.captured {
+          border-color: hsl(120, 50%, 50%);
+        }
       }
     }
   }

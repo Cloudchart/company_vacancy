@@ -41,7 +41,7 @@ UnlinkButton = (props, state, onClick) ->
     onClick:    onClick
   },
     (tag.i { className: 'fa fa-times' })
-    " Unlink"
+    " Remove"
   )
 
 

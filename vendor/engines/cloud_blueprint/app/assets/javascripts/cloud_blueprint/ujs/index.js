@@ -1,5 +1,6 @@
 //= require_self
 //= require ./node_droppable
+//= require ./node_form_droppable
 //= require ./node_draggable
 //= require ./identity_draggable
 

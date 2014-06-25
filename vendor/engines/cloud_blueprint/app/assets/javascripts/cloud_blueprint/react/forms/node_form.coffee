@@ -10,7 +10,7 @@ tag = React.DOM
 EmptyIdentityComponent = React.createClass
 
   render: ->
-    (tag.li { className: 'placeholder' },
+    (tag.li { className: 'placeholder', 'data-behaviour': 'droppable', 'data-id': @props.model.uuid },
       (tag.p {},
         "Drag people and vacancies here"
       )
@@ -122,6 +122,14 @@ ColorSelector = (colors, value, callback) ->
 Node = React.createClass
 
 
+  componentDidMount: ->
+    Arbiter.subscribe "#{cc.blueprint.models.Identity.broadcast_topic()}/*", @refresh
+  
+  
+  componentWillUnmout: ->
+    Arbiter.unsubscribe "#{cc.blueprint.models.Identity.broadcast_topic()}/*", @refresh
+
+
   getInitialState: ->
     @props.model.attributes
   
@@ -177,6 +185,10 @@ Node = React.createClass
       cc.blueprint.react.forms.Node.Identity { key: vacancy.uuid, model: vacancy, node: @props.model }
 
 
+  refresh: ->
+    @setState
+      refreshed_at: + new Date
+
   render: ->
     people    = @gatherPeople()
     vacancies = @gatherVacancies()
@@ -195,7 +207,7 @@ Node = React.createClass
         (tag.ul { className: 'identities' },
           people
           vacancies
-          (EmptyIdentityComponent {})
+          (EmptyIdentityComponent @props) if @props.model.is_persisted()
         )
       )
       (tag.section { className: 'controls' },
