@@ -11,13 +11,33 @@ EmptyIdentityComponent = React.createClass
 
   render: ->
     (tag.li { className: 'placeholder' },
-      (tag.aside { className: 'icon' },
-        (tag.i { className: "fa fa-child" })
-      )
       (tag.p {},
         "Drag people and vacancies here"
       )
     )
+
+
+# Submit button
+#
+SubmitButton = (props, state) ->
+  (tag.button { className: 'blueprint' },
+    (tag.i { className: 'fa fa-check' })
+    " "
+    ["Create", "Update"][~~props.model.is_persisted()]
+  )
+
+
+# Delete button
+#
+DeleteButton = (props, state, onClick) ->
+  (tag.a {
+    href:       ''
+    className:  'blueprint-button alert'
+    onClick:    onClick
+  },
+    (tag.i { className: 'fa fa-times' })
+    " Delete"
+  )
 
 
 #
@@ -139,11 +159,11 @@ Node = React.createClass
   
   
   onDelete: (event) ->
-    event.stopPropagation()
+    event.preventDefault()
     
     @props.model.destroy()
-    Arbiter.publish("#{@props.model.constructor.broadcast_topic()}/update")
     @props.model.constructor.sync()
+
     cc.blueprint.react.modal.hide()
   
   
@@ -170,16 +190,19 @@ Node = React.createClass
       (ChartIDField   @state.chart_id),
       (ParentIDField  @state.parent_id),
       (PositionField  @state.position),
-      (tag.section { className: 'title' },
+      (tag.section { className: 'fields' },
         (TitleField @state.title, @onTitleChange, @props.model.is_new_record(), @props.model.identities().length == 0)
+        (tag.ul { className: 'identities' },
+          people
+          vacancies
+          (EmptyIdentityComponent {})
+        )
       )
-      (tag.ul { className: 'identities' },
-        people
-        vacancies
-        (EmptyIdentityComponent {}) if people.length == 0 and vacancies.length == 0
-      )
-      (cc.blueprint.react.forms.Buttons { model: @props.model, onDelete: @onDelete },
+      (tag.section { className: 'controls' },
+        (DeleteButton @props, @state, @onDelete) if @props.model.can_be_deleted()
+        (tag.div {}) unless @props.model.can_be_deleted()
         (ColorSelector @props.colors, @state.color_index, @onColorIndexChange)
+        (SubmitButton @props, @state, @onSubmit)
       )
     )
 

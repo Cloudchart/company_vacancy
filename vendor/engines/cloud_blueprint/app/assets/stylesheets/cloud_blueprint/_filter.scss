@@ -60,15 +60,10 @@ $identity-filter-buttons-button-width: $base-unit * 3;
   }
 
   p {
-    font-size: 16pt;
-    font-weight: 300;
-    line-height: $base-unit * 2;
-  }
-
-  h2 + p {
     font-size: 10pt;
     line-height: normal;
     margin: 0;
+    opacity: .5;
   }
   
   .lock {

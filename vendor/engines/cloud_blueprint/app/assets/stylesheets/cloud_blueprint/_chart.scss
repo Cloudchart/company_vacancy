@@ -135,11 +135,11 @@ main.blueprint article.chart {
   ul.identities {
     @include clearfix;
     
-    border: 2pt dashed #eee;
+    //border: 2pt dashed #eee;
     
     list-style: none;
     margin: $base-unit 0 0;
-    padding: 0 $base-unit $base-unit;
+    padding: 0;
     overflow: scroll;
     
     > li {
@@ -150,11 +150,17 @@ main.blueprint article.chart {
       padding-right: $base-unit;
       
       &.placeholder {
-        width: auto;
+        @include display(flex);
+
+        border: 2pt dashed #000;
+        margin-top: $base-unit * 2;
         opacity: .25;
+        padding: $base-unit;
+        width: 100%;
 
         p {
-          margin: 0;
+          font-size: 16pt;
+          margin: auto;
         }
       }
     }

@@ -17,6 +17,8 @@ main.blueprint .modal-container form {
   > section.controls {
     @include display(flex);
     @include justify-content(space-between);
+
+    margin-top: $base-unit;
   }
 
 }
