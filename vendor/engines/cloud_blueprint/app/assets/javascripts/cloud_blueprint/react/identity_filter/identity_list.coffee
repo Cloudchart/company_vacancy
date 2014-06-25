@@ -4,12 +4,39 @@
 tag = React.DOM
 
 
+# Default colors
+#
+default_colors = [
+  "hsl( 41, 88%, 68%)"
+  "hsl(139, 51%, 59%)"
+  "hsl(195, 92%, 67%)"
+  "hsl( 20, 92%, 65%)"
+  "hsl(247, 41%, 76%)"
+]
+
+
 #
 # Icon
 #
 Icon = (name) ->
   (tag.aside { className: 'icon' },
     (tag.i { className: "fa fa-#{name}" })
+  )
+
+#
+# Named Icon
+#
+NamedIcon = (letters) ->
+  letters     = letters.toUpperCase()
+  color_index = _.reduce letters, ((memo, letter) -> memo += letter.charCodeAt(0)), 0
+  color       = default_colors[color_index % default_colors.length]
+  
+  (tag.aside {
+    className: 'icon'
+    style:
+      backgroundColor: color
+  },
+    (tag.span {}, letters)
   )
 
 
@@ -81,7 +108,7 @@ Person = React.createClass
       'data-id':          @props.key
       'data-class-name':  @props.className
     },
-      (Icon('users'))
+      (NamedIcon(@state.first_name[0] + '' + @state.last_name[0]))
       (tag.h2 {},
         (tag.span { className: 'first-name light' }, @state.first_name)
         " "

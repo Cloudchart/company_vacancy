@@ -40,10 +40,17 @@ $identity-filter-buttons-button-width: $base-unit * 3;
     height: $base-unit * 2;
     width: $base-unit * 2;
     
-    i.fa {
+    > * {
       font-size: 12pt;
       margin: auto;
     }
+    
+    > span {
+      color: hsl(0, 100%, 100%);
+      font-size: 15pt;
+      font-weight: 300;
+    }
+    
   }
   
   h2 {

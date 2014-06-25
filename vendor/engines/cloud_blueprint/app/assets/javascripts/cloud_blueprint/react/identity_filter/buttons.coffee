@@ -33,7 +33,7 @@ Buttons = React.createClass
 
     render: ->
       (tag.section { className: 'buttons' },
-        Button('users',     @onNewPersonClick)
+        Button('male',     @onNewPersonClick)
         Button('briefcase', @onNewVacancyClick)
       )
 
