@@ -16,11 +16,27 @@ $blueprint-identity-info-color: hsl(0, 0%, 50%);
 $blueprint-identity-info-font-size: 10pt;
 $blueprint-identity-info-font-weight: 300;
 
-$blueprint-identity-button-color: hsl(0, 0, 100%);
-$blueprint-identity-button-font-size: 11pt;
-$blueprint-identity-button-font-weight: 100;
-$blueprint-identity-button-edit-background-color: hsl(31, 98%, 57%);
-$blueprint-identity-button-delete-background-color: hsl(1, 98%, 61%);
+
+@mixin blueprint-identity-icon {
+  @include display(flex);
+
+  border: 1pt solid $blueprint-identity-icon-border-color;
+  border-radius: $blueprint-identity-icon-size / 2;
+  
+  color: $blueprint-identity-icon-color;
+
+  font-size: $blueprint-identity-icon-font-size;
+  font-weight: $blueprint-identity-icon-font-weight;
+
+  height: $blueprint-identity-icon-size;
+  width: $blueprint-identity-icon-size;
+  
+  margin-right: $base-unit / 2;
+  
+  > * {
+    margin: auto;
+  }
+}
 
 
 @mixin blueprint-identity {
@@ -36,24 +52,7 @@ $blueprint-identity-button-delete-background-color: hsl(1, 98%, 61%);
   }
   
   > aside {
-    @include display(flex);
-
-    border: 1pt solid $blueprint-identity-icon-border-color;
-    border-radius: $blueprint-identity-icon-size / 2;
-    
-    color: $blueprint-identity-icon-color;
-
-    font-size: $blueprint-identity-icon-font-size;
-    font-weight: $blueprint-identity-icon-font-weight;
-
-    height: $blueprint-identity-icon-size;
-    width: $blueprint-identity-icon-size;
-    
-    margin-right: $base-unit / 2;
-    
-    > * {
-      margin: auto;
-    }
+    @include blueprint-identity-icon;
   }
   
   > section {
@@ -81,37 +80,6 @@ $blueprint-identity-button-delete-background-color: hsl(1, 98%, 61%);
     
   }
   
-  
-  > nav {
-    @include display(flex);
-    @include position(absolute, 0px 0px 0px 0);
-    @include transition(right 250ms);
-    
-    right: -100%;
-    
-    &.open {
-      right: 0%;
-    }
-    
-    > * {
-      border: none;
-      color: $blueprint-identity-button-color;
-      font-size: $blueprint-identity-button-font-size;
-      font-weight: $blueprint-identity-button-font-weight;
-      overflow: hidden;
-      padding: 0 $base-unit;
-      width: auto;
-    }
-    
-    > .edit {
-      background-color: $blueprint-identity-button-edit-background-color;
-    }
-
-    > .delete {
-      background-color: $blueprint-identity-button-delete-background-color;
-    }
-  }
-  
 
   &.person > aside {
     font-size: $blueprint-identity-person-icon-font-size;
@@ -125,6 +93,10 @@ $blueprint-identity-button-delete-background-color: hsl(1, 98%, 61%);
   
 }
 
+
+.blueprint-identity-icon {
+  @include blueprint-identity-icon;
+}
 
 .blueprint-identity {
   @include blueprint-identity;

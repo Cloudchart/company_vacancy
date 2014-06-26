@@ -43,6 +43,7 @@ main.blueprint .modal-container form.vacancy {
 
         border: 1px solid #ccc;
         border-radius: $base-unit * 2;
+        color: #fff;
         font-size: 20pt;
         height: $base-unit * 4;
         margin-right: $base-unit;
@@ -72,6 +73,11 @@ main.blueprint .modal-container form.person {
   
   section.fields {
     
+    aside {
+      font-size: 30pt !important;
+      font-weight: 300;
+    }
+    
     textarea.occupation {
       margin-left: $base-unit * 5;
       width: 100%;
@@ -86,6 +92,10 @@ main.blueprint .modal-container form.vacancy {
   
   section.fields {
     
+    aside {
+      background-color: $blueprint-identity-vacancy-icon-background-color;
+    }
+
     textarea.description {
       margin-left: $base-unit * 5;
       width: 100%;

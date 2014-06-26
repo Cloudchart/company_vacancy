@@ -130,9 +130,7 @@ PersonForm = React.createClass
     },
       (tag.section { className: 'fields' },
         (tag.div { className: 'name' },
-          (tag.aside { className: 'avatar' },
-            (tag.i { className: 'fa fa-users' })
-          )
+          (cc.blueprint.react.Identity.PersonIcon(@state))
           (PersonFirstName  @props, @state, @onFirstNameChange)
           (tag.div { className: 'spacer' })
           (PersonLastName   @props, @state, @onLastNameChange)

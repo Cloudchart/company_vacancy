@@ -9,15 +9,6 @@ tag = React.DOM
 #
 
 
-# Buttons
-#
-IdentityButtons = (self) ->
-  (tag.nav { ref: 'buttons' },
-    (tag.button { className: 'edit' },    'Edit')
-    (tag.button { className: 'delete' },  'Delete')
-  )
-
-
 #
 # Person
 #
@@ -36,7 +27,9 @@ PersonIconBackgroundColors = [
 #
 
 PersonIcon = (model) ->
-  code = model.first_name.charCodeAt(0) + model.last_name.charCodeAt(0)
+  code = _.reduce ['first_name', 'last_name'], (memo, name) ->
+    memo += model[name].charCodeAt(0) if model[name] ; memo
+  , 0
 
   (tag.aside {
     key: 'icon'
@@ -44,8 +37,8 @@ PersonIcon = (model) ->
       backgroundColor: PersonIconBackgroundColors[code % PersonIconBackgroundColors.length]
   },
     (tag.span {},
-      model.first_name.charAt(0)
-      model.last_name.charAt(0)
+      model.first_name.charAt(0) if model.first_name
+      model.last_name.charAt(0) if model.last_name
     )
     
   )
@@ -106,8 +99,6 @@ IdentityComponent = React.createClass
   onClick: (event) ->
     event.preventDefault()
     
-    @refs.buttons.getDOMNode().classList.toggle('open')
-    
     return if @props.model.is_synchronizing()
     
     form_options            = {}
@@ -139,7 +130,6 @@ IdentityComponent = React.createClass
       'data-behaviour':   'draggable' if @props.draggable == true
     },
       @props.renders[@props.model.constructor.className](@)
-      IdentityButtons(@)
     )
     
 
