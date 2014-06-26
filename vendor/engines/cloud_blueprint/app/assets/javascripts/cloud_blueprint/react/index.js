@@ -3,6 +3,7 @@
 //= require ./modal
 //= require ./forms
 //= require ./blueprint
+//= require ./identity
 //= require ./identity_filter
 
 this.cc                   || (this.cc                 = {})

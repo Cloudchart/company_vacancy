@@ -135,15 +135,12 @@ main.blueprint article.chart {
   ul.identities {
     @include clearfix;
     
-    //border: 2pt dashed #eee;
-    
     list-style: none;
     margin: $base-unit 0 0;
     padding: 0;
     overflow: scroll;
     
     > li {
-      @include filter-identity;
       float: left;
       margin: $base-unit 0 0;
       width: $base-unit * 15;

@@ -12,7 +12,7 @@ class Person extends cc.blueprint.models.Base
   # Match for filter
   #
   matches: (letters) ->
-    _.any ['first_name', 'last_name', 'occupation'], (attribute) => @[attribute].toLowerCase().indexOf(letters) >= 0
+    _.any ['first_name', 'last_name', 'occupation'], (attribute) => @[attribute].toLowerCase().indexOf(letters) >= 0 if @[attribute]
   
   
   # Can be deleted

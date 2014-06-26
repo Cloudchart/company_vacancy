@@ -1,3 +1,4 @@
+// Filter
 $identity-filter-width: $base-unit * 15;
 $identity-filter-z-index: 2000;
 
@@ -20,74 +21,6 @@ $identity-filter-search-input-font-weight: 300;
 $identity-filter-buttons-button-font-size: 15pt;
 $identity-filter-buttons-button-height: $base-unit * 2;
 $identity-filter-buttons-button-width: $base-unit * 3;
-
-
-@mixin filter-identity {
-  cursor: pointer;
-  list-style: none;
-  margin: 0;
-  min-height: $base-unit * 2;
-  padding-left: $base-unit * 2.5;
-  position: relative;
-  
-  aside {
-    @include display(flex);
-    @include position(absolute, 0px null null 0px);
-    
-    background-color: #eee;
-    border-radius: $base-unit;
-    border: 1pt solid #fff;
-    height: $base-unit * 2;
-    width: $base-unit * 2;
-    
-    > * {
-      font-size: 12pt;
-      margin: auto;
-    }
-    
-    > span {
-      color: hsl(0, 100%, 100%);
-      font-size: 15pt;
-      font-weight: 300;
-    }
-    
-  }
-  
-  h2 {
-    font-size: 15pt;
-    font-weight: 700;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    
-    span.light {
-      font-weight: 400;
-    }
-  }
-
-  p {
-    font-size: 10pt;
-    line-height: normal;
-    margin: 0;
-    opacity: .5;
-  }
-  
-  .lock {
-    font-size: 10pt;
-    line-height: 1em;
-    margin-top: -.5em;
-    position: absolute;
-    right: 0;
-    top: 50%;
-  }
-
-  &.vacancy aside {
-    background-color: hsl(1, 76%, 55%);
-    color: hsl(0, 100%, 100%);
-  }
-
-}
 
 
 aside.identity-filter {
@@ -154,7 +87,6 @@ aside.identity-filter {
     padding: 0;
 
     li {
-      @include filter-identity;
 
       margin: $base-unit 0;
 
@@ -186,9 +118,4 @@ aside.identity-filter {
   }
   
 
-}
-
-
-body .identity-draggable {
-  @include filter-identity;
 }

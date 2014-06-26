@@ -1,0 +1,89 @@
+$blueprint-identity-icon-border-color: hsl(0, 0%, 90%);
+$blueprint-identity-icon-color: hsl(0, 100%, 100%);
+$blueprint-identity-icon-font-size: 12pt;
+$blueprint-identity-icon-font-weight: 400;
+$blueprint-identity-icon-size: $base-unit * 2;
+
+$blueprint-identity-person-icon-font-size: 15pt;
+$blueprint-identity-person-icon-font-weight: 100;
+
+$blueprint-identity-vacancy-icon-background-color: hsl(1, 76%, 55%);
+
+$blueprint-identity-title-font-size: 15pt;
+$blueprint-identity-title-font-weight: 700;
+
+$blueprint-identity-info-color: hsl(0, 0%, 50%);
+$blueprint-identity-info-font-size: 10pt;
+$blueprint-identity-info-font-weight: 300;
+
+
+@mixin blueprint-identity {
+  @include display(flex);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  
+  > * {
+    margin: auto;
+  }
+  
+  > aside {
+    @include display(flex);
+
+    border: 1pt solid $blueprint-identity-icon-border-color;
+    border-radius: $blueprint-identity-icon-size / 2;
+    
+    color: $blueprint-identity-icon-color;
+
+    font-size: $blueprint-identity-icon-font-size;
+    font-weight: $blueprint-identity-icon-font-weight;
+
+    height: $blueprint-identity-icon-size;
+    width: $blueprint-identity-icon-size;
+    
+    margin-right: $base-unit / 2;
+    
+    > * {
+      margin: auto;
+    }
+  }
+  
+  > section {
+    @include display(flex);
+    @include flex-direction(column);
+    @include flex(1);
+    
+    > * {
+      margin: auto 0;
+    }
+    
+    > h2 {
+      font-size: $blueprint-identity-title-font-size;
+      font-weight: $blueprint-identity-title-font-weight;
+    }
+    
+    > p {
+      color: $blueprint-identity-info-color;
+      font-size: $blueprint-identity-info-font-size;
+      font-weight: $blueprint-identity-info-font-weight;
+    }
+    
+  }
+  
+
+  &.person > aside {
+    font-size: $blueprint-identity-person-icon-font-size;
+    font-weight: $blueprint-identity-person-icon-font-weight;
+  }
+  
+
+  &.vacancy > aside {
+    background-color: $blueprint-identity-vacancy-icon-background-color;
+  }
+  
+}
+
+
+.blueprint-identity {
+  @include blueprint-identity;
+}

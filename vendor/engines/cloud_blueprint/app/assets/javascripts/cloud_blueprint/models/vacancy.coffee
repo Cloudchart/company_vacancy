@@ -14,7 +14,7 @@ class Vacancy extends cc.blueprint.models.Base
   # Match for filter
   #
   matches: (letters) ->
-    _.any ['name', 'description'], (attribute) => @[attribute].toLowerCase().indexOf(letters) >= 0
+    _.any ['name', 'description'], (attribute) => @[attribute].toLowerCase().indexOf(letters) >= 0 if @[attribute]
 
 
   # Can be deleted
