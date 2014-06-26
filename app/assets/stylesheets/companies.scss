@@ -1,97 +1,117 @@
-main > article.company > section.search {
+main > article.companies-search {
     
   margin: 0 $base-unit * 5;
+
+  ul {
+    @include display(flex);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
   
   > h1 {
-    @include cloud-profile-section-header;
+    margin-top: 0;
+    font-weight: normal;
+    font-size: 25pt;
   }
-  
-  > form {
-    @include align-items(center);
-    @include display(flex);
 
-    .search-form-input {
-      @include appearance(none);
-      
-      background-color: hsl(0, 0%, 96%);
-      border: 1pt solid hsl(0, 0%, 78%);
-      border-radius: 5pt;
-      font-size: 12pt;
-      height: $base-unit * 2;
-      outline: none;
-      padding: 0 $base-unit / 2;
-    }
-    
-    input,
-    select {
-      @include flex(1);
-      @extend .search-form-input;
-    }
-    
-    select {
-      margin-left: $base-unit;
-    }
-    
-    .fa {
-      color: hsl(140, 77%, 31%);
-      font-size: 14pt;
-      left: - $base-unit * 1.5;
-      pointer-events: none;
-      position: relative;
-      width: 0;
-    }
-        
-  }
-  
-}
+  > nav {
+    margin-bottom: $base-unit;
 
+    > ul > li {
+      width: $base-unit * 5;
+      height: $base-unit * 1.5;
+      margin-right: $base-unit * 0.7;
+      text-align: center;
+      line-height: $base-unit * 1.6;
 
-main > article.company > section.new {
-  
-  input[type="file"] {
-    height: 0;
-    overflow: hidden;
-    width: 0;
-  }
-  
-  > form {
-    
-    position: relative;
-    width: $base-unit * 18;
-    
-    > label.logo {
-      @include align-items(center);
-      @include display(flex);
-      border: 1pt solid #ccc;
-      height: 150px;
-      margin: 0;
-      margin-right: $base-unit;
-      padding: $base-unit / 2;
-      position: absolute;
-      right: 100%;
-      top: 0;
-      width: 150px;
-      
-      img {
-        width: 100%;
+      > a {
+        background-color: $white-smoke;
+        color: $monsoon;
+        text-decoration: none;
+        display: block;
+
+        &:hover {
+          background-color: $ufo-green;
+          color: white;
+        }
       }
     }
-    
-    > label {
-      display: block;
-      margin-top: $base-unit;
-      position: relative;
-    }
-    
-    select {
-      width: 100%;
-    }
-    
-    button {
-      margin-top: $base-unit;
-      width: 100%;
-    }
-    
   }
-  
+
+  > div.search-result > section {
+    > header {
+      padding: $base-unit;
+      background-color: $white-smoke;
+
+      > ul.main-info {
+        @include justify-content(space-between);
+        margin-bottom: $base-unit;
+
+        > li {
+          margin-right: $base-unit;
+          font-size: 14pt;
+          font-weight: bold;
+
+          > a {
+            color: black;
+          }
+
+          &.vacancies-size > a {
+            color: $alizarin-crimson;
+          }
+
+          > a.star-link {
+            color: $mystic;
+          }
+        }
+      }
+
+      > ul.additional-info {
+        @include justify-content(space-between);
+        text-transform: uppercase;
+      }
+    }
+
+    > div.content {
+      padding: $base-unit;
+      background-color: $light-smoke;
+
+      > ul.charts {
+
+        > li {
+          width: $base-unit * 8;
+          height: $base-unit * 8;
+          margin-right: $base-unit;
+          text-align: center;
+          color: $dark-grey;
+
+          &:last-child > div.chart-preview {
+            background-color: white;
+
+            > a {
+              display: block;
+              > i.fa {
+                line-height: $base-unit * 6;
+                color: $ufo-green;
+                font-size: 14pt;
+              }
+            }
+          }
+
+          > div.chart-preview {
+            border: 1pt solid white;
+            height: $base-unit * 6;
+            margin-bottom: 0.5em;
+          }
+        }
+      }
+    }
+
+  }
+
 }
