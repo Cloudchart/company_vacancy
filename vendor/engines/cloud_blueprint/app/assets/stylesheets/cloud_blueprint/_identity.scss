@@ -16,12 +16,20 @@ $blueprint-identity-info-color: hsl(0, 0%, 50%);
 $blueprint-identity-info-font-size: 10pt;
 $blueprint-identity-info-font-weight: 300;
 
+$blueprint-identity-button-color: hsl(0, 0, 100%);
+$blueprint-identity-button-font-size: 11pt;
+$blueprint-identity-button-font-weight: 100;
+$blueprint-identity-button-edit-background-color: hsl(31, 98%, 57%);
+$blueprint-identity-button-delete-background-color: hsl(1, 98%, 61%);
+
 
 @mixin blueprint-identity {
   @include display(flex);
   list-style: none;
   margin: 0;
+  overflow: hidden;
   padding: 0;
+  position: relative;
   
   > * {
     margin: auto;
@@ -55,6 +63,9 @@ $blueprint-identity-info-font-weight: 300;
     
     > * {
       margin: auto 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     
     > h2 {
@@ -68,6 +79,37 @@ $blueprint-identity-info-font-weight: 300;
       font-weight: $blueprint-identity-info-font-weight;
     }
     
+  }
+  
+  
+  > nav {
+    @include display(flex);
+    @include position(absolute, 0px 0px 0px 0);
+    @include transition(right 250ms);
+    
+    right: -100%;
+    
+    &.open {
+      right: 0%;
+    }
+    
+    > * {
+      border: none;
+      color: $blueprint-identity-button-color;
+      font-size: $blueprint-identity-button-font-size;
+      font-weight: $blueprint-identity-button-font-weight;
+      overflow: hidden;
+      padding: 0 $base-unit;
+      width: auto;
+    }
+    
+    > .edit {
+      background-color: $blueprint-identity-button-edit-background-color;
+    }
+
+    > .delete {
+      background-color: $blueprint-identity-button-delete-background-color;
+    }
   }
   
 

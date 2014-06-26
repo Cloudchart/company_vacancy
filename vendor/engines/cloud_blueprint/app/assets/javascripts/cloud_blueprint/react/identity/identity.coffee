@@ -3,6 +3,21 @@
 
 tag = React.DOM
 
+
+#
+# Commons
+#
+
+
+# Buttons
+#
+IdentityButtons = (self) ->
+  (tag.nav { ref: 'buttons' },
+    (tag.button { className: 'edit' },    'Edit')
+    (tag.button { className: 'delete' },  'Delete')
+  )
+
+
 #
 # Person
 #
@@ -91,6 +106,8 @@ IdentityComponent = React.createClass
   onClick: (event) ->
     event.preventDefault()
     
+    @refs.buttons.getDOMNode().classList.toggle('open')
+    
     return if @props.model.is_synchronizing()
     
     form_options            = {}
@@ -122,6 +139,7 @@ IdentityComponent = React.createClass
       'data-behaviour':   'draggable' if @props.draggable == true
     },
       @props.renders[@props.model.constructor.className](@)
+      IdentityButtons(@)
     )
     
 
