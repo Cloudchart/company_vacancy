@@ -26,7 +26,7 @@
       <%# TODO: add established_on %>
       <li>1995</li>
       <li><%= font_awesome('signal') %></li>
-      <li><%= link_to font_awesome('angle-up'), '#' %></li>
+      <li><%= link_to font_awesome('angle-down'), '#', class: 'toggle-section' %></li>
     </ul>
 
     <ul class="additional-info">
@@ -59,7 +59,7 @@
 
     <ul class="vacancies">
       <% company.vacancies.each do |vacancy| %>
-        <li><%= vacancy.name %></li>
+        <li><%= link_to vacancy.name, vacancy %></li>
       <% end %>
     </ul>
   </div>  
