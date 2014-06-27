@@ -111,7 +111,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :country, :industry_ids, :description, logo_attributes: :image)
+    params.require(:company).permit(:name, :country, :industry_ids, :description, :established_on, logo_attributes: :image)
   end
 
 end

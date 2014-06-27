@@ -11,12 +11,12 @@
 
 @['companies#index'] = (data) ->
   $ ->
-    $('main').on 'click', '.companies-search .search-result .main-info .toggle-section', ->
+    $('main').on 'click', '.companies-search .search-result .main-info .toggle-elements', ->
       $(@).closest('section')
           .find('.additional-info, .country, .established-on, .charts, .vacancies')
           .toggle('slow')
 
-      $toggle_icon = $(@).closest('section').find('.toggle-section i')
+      $toggle_icon = $(@).closest('section').find('.toggle-elements i')
       if $toggle_icon.hasClass('fa fa-angle-down')
         $toggle_icon.removeClass().addClass('fa fa-angle-up')
       else

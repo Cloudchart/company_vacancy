@@ -16,6 +16,10 @@
     <%= form.select :industry_ids, full_industries_collection, {}, class: :cloud %>
   </label>
 
+  <label>
+    <%= form.date_select :established_on, { start_year: Date.today.year - 100, end_year: Date.today.year }, { class: :cloud } %>
+  </label>
+
   <button class="cloud">
     <%= font_awesome 'building-o' %>
     <%= t '.button_title', default: 'Create Company' %>
