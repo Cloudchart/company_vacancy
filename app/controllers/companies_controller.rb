@@ -102,7 +102,7 @@ private
   end
 
   def set_collection
-    @companies = Company.where(is_empty: false).includes(:logo, :industries, :people)
+    @companies = Company.where(is_empty: false).includes(:logo, :industries, :people).order(:name)
   end
 
   def set_person

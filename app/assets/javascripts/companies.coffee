@@ -11,24 +11,39 @@
 
 @['companies#index'] = (data) ->
   $ ->
-    $('.company').on 'input propertychange', '#query', ->
-      perform_search($(@))
+    $('main').on 'click', '.companies-search .search-result .main-info .toggle-section', ->
+      $(@).closest('section')
+          .find('.additional-info, .country, .established-on, .charts, .vacancies')
+          .toggle('slow')
+
+      $toggle_icon = $(@).closest('section').find('.toggle-section i')
+      if $toggle_icon.hasClass('fa fa-angle-down')
+        $toggle_icon.removeClass().addClass('fa fa-angle-up')
+      else
+        $toggle_icon.removeClass().addClass('fa fa-angle-down')
 
 
-    $('.company').on 'change', '#country, #industry_id', ->
-      $(@).closest('form').submit()
+      # .companies-search .search-result .content .charts,
+      # .companies-search .search-result .content .vacancies'
 
-    $(document).ajaxStart ->
-      $('.company .result').hide()
+  #   $('.company').on 'input propertychange', '#query', ->
+  #     perform_search($(@))
 
-  search_timeout = null
 
-  search = ($element) ->
-    value = $element.val().replace(/^\s+|\s+$/g, '') 
-    return if value.length < 3 and value.length > 0
+  #   $('.company').on 'change', '#country, #industry_id', ->
+  #     $(@).closest('form').submit()
 
-    $element.closest('form').submit()
+  #   $(document).ajaxStart ->
+  #     $('.company .result').hide()
 
-  perform_search = ($element) ->
-    clearTimeout(search_timeout)
-    search_timeout = setTimeout((-> search($element)), 700)  
+  # search_timeout = null
+
+  # search = ($element) ->
+  #   value = $element.val().replace(/^\s+|\s+$/g, '') 
+  #   return if value.length < 3 and value.length > 0
+
+  #   $element.closest('form').submit()
+
+  # perform_search = ($element) ->
+  #   clearTimeout(search_timeout)
+  #   search_timeout = setTimeout((-> search($element)), 700)

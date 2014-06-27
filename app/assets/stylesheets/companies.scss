@@ -44,25 +44,30 @@ main > article.companies-search {
   }
 
   > div.search-result > section {
+    margin-bottom: $base-unit;
+
     > header {
       padding: $base-unit;
       background-color: $white-smoke;
 
-      > ul.main-info {
+      > div.main-info > ul {
         @include justify-content(space-between);
-        margin-bottom: $base-unit;
 
         > li {
           margin-right: $base-unit;
           font-size: 14pt;
           font-weight: bold;
 
-          > a {
-            color: black;
-          }
-
           &.vacancies-size > a {
             color: $alizarin-crimson;
+          }
+
+          &.country, &.established-on {
+            display: none;
+          }
+
+          > a {
+            color: black;
           }
 
           > a.star-link {
@@ -71,9 +76,14 @@ main > article.companies-search {
         }
       }
 
-      > ul.additional-info {
-        @include justify-content(space-between);
+      > div.additional-info {
+        margin-top: $base-unit;
+        display: none;
         text-transform: uppercase;
+        
+        > ul {
+          @include justify-content(space-between);
+        }
       }
     }
 
@@ -81,9 +91,10 @@ main > article.companies-search {
       padding: $base-unit;
       background-color: $light-smoke;
 
-      > ul.charts {
-        
-        > li {
+      > div.charts {
+        display: none;
+
+        ul > li {
           width: $base-unit * 8;
           height: $base-unit * 7;
           margin-right: $base-unit;
@@ -95,6 +106,7 @@ main > article.companies-search {
 
             > a {
               display: block;
+
               > i.fa {
                 line-height: $base-unit * 6;
                 color: $ufo-green;
@@ -111,24 +123,27 @@ main > article.companies-search {
         }
       }
 
-      > ul.vacancies {
-        @include flex-flow(column wrap);
-        @include align-content(flex-start);
+      > div.vacancies {
+        > ul {
+          @include flex-flow(column wrap);
+          @include align-content(flex-start);
 
-        height: 65pt;
+          height: 65pt;
 
-        > li {
-          margin-right: $base-unit * 2;
-          line-height: $base-unit * 2;
+          > li {
+            margin-right: $base-unit * 2;
+            line-height: $base-unit * 2;
 
-          > a {
-            font-size: 14pt;
-            color: black;
+            > a {
+              font-size: 14pt;
+              color: black;
 
-            &:hover {
-              text-decoration: underline;
+              &:hover {
+                text-decoration: underline;
+              }
             }
           }
+          
         }
       }
     }
