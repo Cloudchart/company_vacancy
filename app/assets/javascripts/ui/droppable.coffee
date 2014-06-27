@@ -10,11 +10,15 @@ droppable_selector              = '[data-behaviour~="droppable"]'
 started                         = false
 
 
-unless Element.prototype.matches
-  prefixes                  = ['webkit', 'moz', 'ms', 'o']
-  name                      = 'MatchesSelector'
-  found_prefix              = prefixes.filter (prefix) -> Element.prototype[prefix + name]
-  Element.prototype.matches = Element.prototype[found_prefix + name] if found_prefix
+#unless Element.prototype.matches
+#  prefixes                  = ['webkit', 'moz', 'ms', 'o']
+#  name                      = 'MatchesSelector'
+#  found_prefix              = prefixes.filter (prefix) -> Element.prototype[prefix + name]
+#  Element.prototype.matches = Element.prototype[found_prefix + name] if found_prefix
+
+['webkit', 'moz', 'ms', 'o'].forEach (vendor) ->
+  return if Element.prototype.matches
+  Element.prototype.matches = Element.prototype["#{vendor}MatchesSelector"]
 
 
 #
