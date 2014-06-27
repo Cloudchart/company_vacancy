@@ -13,14 +13,14 @@
   $ ->
     $('main').on 'click', '.companies-search .search-result .main-info .toggle-elements', ->
       $(@).closest('section')
-          .find('.additional-info, .country, .established-on, .charts, .vacancies')
+          .find('.additional-info, .country, .established-on, .charts, .vacancies, .proximity')
           .toggle('slow')
 
       $toggle_icon = $(@).closest('section').find('.toggle-elements i')
-      if $toggle_icon.hasClass('fa fa-angle-down')
-        $toggle_icon.removeClass().addClass('fa fa-angle-up')
+      if $toggle_icon.hasClass('fa fa-chevron-down')
+        $toggle_icon.removeClass().addClass('fa fa-chevron-up')
       else
-        $toggle_icon.removeClass().addClass('fa fa-angle-down')
+        $toggle_icon.removeClass().addClass('fa fa-chevron-down')
 
 
       # .companies-search .search-result .content .charts,

@@ -66,6 +66,18 @@ main > article.companies-search {
             display: none;
           }
 
+          &.proximity > div {
+            width: 17pt;
+            height: 17pt;
+            overflow: hidden;
+            background: {
+              image: image-url('proximity.svg');
+              repeat: no-repeat;
+              size: 200%;
+            }
+
+          }
+
           > a {
             color: black;
           }

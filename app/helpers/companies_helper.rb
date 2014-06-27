@@ -16,11 +16,11 @@ module CompaniesHelper
     current_user.subscriptions.map(&:subscribable_id).include?(company.id)
   end
 
-  def calculate_social_relation_for_user(company)
+  def calculate_proximity(company)
     if can?(:update, company)
-      'you are the owner'
+      'You are the owner'
     elsif current_user.companies.include?(company)
-      'you work here'
+      'You work here'
     else
       friends_related_to_company = Friend.related_to_company(company.id)
       friends_working_in_company = Friend.working_in_company(company.id)
@@ -33,7 +33,7 @@ module CompaniesHelper
       elsif user_company_friends_of_friends_intersection.size > 0
         get_social_relation_weight(user_company_friends_of_friends_intersection, :friends_of_friends, company.people.size)
       else
-        'none'
+        'None'
       end
         
     end
@@ -47,17 +47,17 @@ private
 
     relation = if intersection_type == :friends
       if intersection_size / company_people_size >= 0.1
-        'strong'
+        'Strong'
       else
-        'significant'
+        'Significant'
       end
     elsif intersection_type == :friends_of_friends
       if intersection_size / company_people_size >= 0.5
-        'good'
+        'Good'
       elsif intersection_size / company_people_size >= 0.3
-        'small'
+        'Small'
       else
-        'tiny'
+        'Tiny'
       end
     end 
 

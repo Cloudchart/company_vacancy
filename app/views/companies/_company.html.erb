@@ -26,14 +26,13 @@
         </li>
         <li class="established-on"><%= company.established_on.try(:year) %></li>
         <li class="proximity"><%= font_awesome('signal') %></li>
-        <li><%= link_to font_awesome('angle-down'), '#', class: 'toggle-elements' %></li>
+        <li><%= link_to font_awesome('chevron-down'), '#', class: 'toggle-elements' %></li>
       </ul>
     </div>
 
     <div class="additional-info">
       <ul>
-        <%# TODO: add social relation %>
-        <li>Your friend Dmitry Kirillov and 3 other contacts work here</li>
+        <li>Proximity: <%= calculate_proximity(company) %></li>
       </ul>
     </div>
   </header>
