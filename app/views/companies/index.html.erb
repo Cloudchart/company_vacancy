@@ -1,23 +1,18 @@
-<article class="company">
-  
-  <section class="search">
+<article class="companies-search">
     
-    <h1>
-      <%= t '.search', default: 'Search Companies' %>
-    </h1>
-    
-    <%= form_tag search_companies_path, remote: true do -%>
-      <%= text_field_tag :query, params[:query], placeholder: t('.query_placeholder', default: "Type at least 3 characters") %>
-      <%= select_tag :country, options_for_select(Country.all.select { |country| @companies.map(&:country).uniq.include?(country[1]) }, selected: params[:country]), prompt: t('.country_prompt', default: 'Choose Country') %>
-      <%= font_awesome "chevron-down" %>
-      <%= select_tag :industry_id, options_for_select(companies_industries_collection, selected: params[:industry_id]), prompt: t('.industry_prompt', default: 'Choose Industry') %>
-      <%= font_awesome "chevron-down" %>
-    <%- end -%>
+  <h1><%= t("companies.search.companies", count: @companies.size) %></h1>
 
-  </section>
+  <nav>
+    <ul>
+      <li><%= link_to 'BASIC INFO', '#' %></li>
+      <li><%= link_to 'VACANCIES', '#'  %></li>
+      <li><%= link_to 'GEOGRAPHY', '#' %></li>
+      <li><%= link_to 'KPIs', '#' %></li>
+    </ul>
+  </nav>
 
-  <section class="result">
-    <%= render 'companies', collection: @companies %>
-  </section>
+  <div class="search-result">
+    <%= render partial: :company, collection: @companies %>
+  </div>
   
 </article>

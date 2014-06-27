@@ -13,6 +13,7 @@ class Vacancy < ActiveRecord::Base
   serialize :settings, VacancySetting
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
+  scope :by_status, -> (status) { where status: status }
 
   belongs_to :company
   belongs_to :author, class_name: 'User'
