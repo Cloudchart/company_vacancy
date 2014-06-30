@@ -90,12 +90,39 @@ VacancyRender = (self) ->
   ]
 
 
+
+
+DraggableIdentity =
+  
+  _addOrRemoveEventListeners: (type) ->
+    return unless @props.draggable
+
+    node  = @getDOMNode()
+    self  = @
+    
+    ['start', 'move', 'end'].forEach (eventName) ->
+      methodName = "onDrag#{eventName.charAt(0).toUpperCase()}#{eventName.slice(1)}"
+      node["#{type}EventListener"]("cc:drag:#{eventName}", self[methodName]) if self[methodName] instanceof Function
+
+
+  componentDidMount: ->
+    @_addOrRemoveEventListeners('add')
+
+  
+  
+  componentWillUnmount: ->
+    @_addOrRemoveEventListeners('remove')
+
+
+
+
 #
 # Identity component
 #
 
 IdentityComponent = React.createClass
 
+  
   onClick: (event) ->
     event.preventDefault()
     
@@ -128,6 +155,7 @@ IdentityComponent = React.createClass
       'data-id':          @props.model.uuid
       'data-class-name':  @props.model.constructor.className
       'data-behaviour':   'draggable' if @props.draggable == true
+      #'data-draggable':   'on' if @props.draggable == true
     },
       @props.renders[@props.model.constructor.className](@)
     )

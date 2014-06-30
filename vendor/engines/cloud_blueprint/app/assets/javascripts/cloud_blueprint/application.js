@@ -1,5 +1,6 @@
 //= require_self
 //= require_tree ./controllers
+//= require ./plugins
 //= require ./models
 //= require ./layouts
 //= require ./react
