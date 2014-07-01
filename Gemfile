@@ -23,7 +23,7 @@ gem 'puma'
 gem 'tire'
 gem 'rails_admin'
 gem 'warden'
-gem 'country_select'
+gem 'country_select', github: 'stefanpenner/country_select'
 gem 'kaminari'
 gem 'paper_trail' # tracks changes to model's data
 gem 'impressionist' # tracks page views

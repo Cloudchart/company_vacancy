@@ -13,10 +13,14 @@ main > article.companies-search {
     text-decoration: none;
   }
   
-  > h1 {
+  > .counter > h1 {
     margin-top: 0;
     font-weight: normal;
     font-size: 25pt;
+
+    > span.green {
+      color: $north-texas-green;
+    }
   }
 
   > nav {
@@ -43,7 +47,7 @@ main > article.companies-search {
     }
   }
 
-  > div.search-result > section {
+  > div.result > section {
     margin-bottom: $base-unit;
 
     > header {
@@ -94,7 +98,15 @@ main > article.companies-search {
         text-transform: uppercase;
         
         > ul {
-          @include justify-content(space-between);
+          @include justify-content(flex-start);
+
+          > li {
+            margin-right: $base-unit;
+
+            > a {
+              text-decoration: underline;
+            }
+          }
         }
       }
     }

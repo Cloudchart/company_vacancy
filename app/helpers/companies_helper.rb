@@ -39,6 +39,27 @@ module CompaniesHelper
     end
   end
 
+  def show_companies_counter(companies)
+    ''.tap do |content|
+      if companies.size > 0
+        content << companies.size.to_s
+        content << ' '
+      end
+
+      if companies.facets && companies.facets['industries']['count'] > 0
+        content << content_tag(:span, companies.first.industry.name, class: 'green')
+        content << ' '
+      end
+      
+      content << t("companies.search.companies", count: companies.size)
+
+      if companies.facets && companies.facets['countries']['count'] > 0
+        content << ' from '
+        content << content_tag(:span, companies.first.country, class: 'green')
+      end
+    end.html_safe    
+  end
+
 private
 
   def get_social_relation_weight(intersection, intersection_type, company_people_size)

@@ -1,6 +1,8 @@
 <article class="companies-search">
-    
-  <h1><%= t("companies.search.companies", count: @companies.size) %></h1>
+
+  <div class="counter">
+    <%= render 'counter', collection: @companies %>
+  </div>
 
   <nav>
     <ul>
@@ -11,7 +13,7 @@
     </ul>
   </nav>
 
-  <div class="search-result">
+  <div class="result">
     <%= render partial: :company, collection: @companies %>
   </div>
   

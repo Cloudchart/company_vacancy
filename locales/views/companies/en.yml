@@ -8,8 +8,8 @@ en:
     search:
       companies:
         zero: "no companies"
-        one: "1 company"
-        other: "%{count} companies"
+        one: "company"
+        other: "companies"
     hints:
       chart: &chart
         chart: "Chart goes here"

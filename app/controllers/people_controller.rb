@@ -16,7 +16,7 @@ class PeopleController < ApplicationController
   end
 
   def search
-    company_people = @company.people.search(params).results
+    company_people = Person.search(params).results
 
     if params[:vacancy_id]
       vacancy = Vacancy.find(params[:vacancy_id])
@@ -31,6 +31,7 @@ class PeopleController < ApplicationController
 
       company_people_friends = []
     else
+      # TODO: change tire search terms (related_to_company scope will not work)
       company_people_friends = Friend.related_to_company(@company.id).search(params).results
     end
 

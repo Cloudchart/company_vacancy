@@ -1,6 +1,6 @@
-module Tokenizable
+module Cloudchart::Utils
 
-  def self.tire_person_query_string(query, attributes)
+  def self.tokenized_query_string(query, attributes)
     tokens = query.split(/\s+/)
 
     attributes = if attributes.is_a?(Array)

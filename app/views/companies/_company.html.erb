@@ -1,3 +1,5 @@
+<% opened_vacancies = company.vacancies.select { |v| v.status == 'opened' } %>
+
 <section>
   <header>
     <div class="main-info">
@@ -17,7 +19,7 @@
         </li>
         <li class="vacancies-size">
           <%= link_to company_vacancies_path(company) do %>
-            <%= company.vacancies.by_status(:opened).size %>
+            <%= opened_vacancies.size %>
             <%= font_awesome('briefcase') %>
           <% end %>
         </li>
@@ -26,13 +28,28 @@
         </li>
         <li class="established-on"><%= company.established_on.try(:year) %></li>
         <li class="proximity"><%= font_awesome('signal') %></li>
-        <li><%= link_to font_awesome('chevron-down'), '#', class: 'toggle-elements' %></li>
+        <li><%= link_to font_awesome('chevron-down'), nil, class: 'toggle-elements' %></li>
       </ul>
     </div>
 
     <div class="additional-info">
       <ul>
-        <li>Proximity: <%= calculate_proximity(company) %></li>
+        <li>
+          <strong>Proximity:</strong>
+          <%= calculate_proximity(company) %>
+        </li>
+
+        <%# TODO: add modal window for subscriptions form %>
+         <% if can?(:manage, Subscription) && cannot?(:update, company) %>
+          <li style="display: none;">
+            <strong>Subscription:</strong>
+            <% unless subscribed_to_company?(company) %>
+              <%= render 'subscriptions/form', subscription: company.subscriptions.build %>
+            <% else %>
+              <%= link_to 'Unsubscribe', subscription_path(company.subscriptions.find_by(user_id: current_user.id)), method: :delete, data: { confirm: 'Are you sure?' } %>
+            <% end %>
+          </li>
+        <% end %>
       </ul>
     </div>
   </header>
@@ -63,7 +80,7 @@
 
     <div class="vacancies">
       <ul>
-        <% company.vacancies.each do |vacancy| %>
+        <% opened_vacancies.each do |vacancy| %>
           <li><%= link_to vacancy.name, vacancy %></li>
         <% end %>
       </ul>

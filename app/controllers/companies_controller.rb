@@ -13,20 +13,8 @@ class CompaniesController < ApplicationController
   end
 
   def search
-    @companies = @companies.find(Company.search(params).results.map(&:to_param))
-
-    if params[:country].present?
-      @companies = @companies.select { |company| company.country == params[:country] }
-    end
-
-    if params[:industry_id].present?
-      @companies = @companies.select do |company| 
-        company.industry.id == params[:industry_id] || company.industry.parent_id == params[:industry_id]
-      end
-    end
-
-    # render :index
     respond_to do |format|
+      format.html { render :index }
       format.js
     end
   end
@@ -39,9 +27,7 @@ class CompaniesController < ApplicationController
   # GET /companies/new
   def new
     @company = Company.find_or_create_placeholder_for(current_user)
-    # redirect_to edit_company_path(@company)
   end
-  
   
   # POST /companies/1/logo
   def upload_logo
@@ -53,8 +39,6 @@ class CompaniesController < ApplicationController
     end
   end
   
-  
-
   # GET /companies/1/edit
   def edit
   end
@@ -88,9 +72,7 @@ class CompaniesController < ApplicationController
 
   # DELETE /companies/1
   def destroy
-    company = @company
     @company.destroy
-    Activity.track_activity(current_user, params[:action], company)
     redirect_to companies_url, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
@@ -102,7 +84,8 @@ private
   end
 
   def set_collection
-    @companies = Company.where(is_empty: false).includes(:logo, :industries, :people).order(:name)
+    # @companies = Company.includes(:logo, :industries, :people, :vacancies).where(is_empty: false).order(:name)
+    @companies = Company.search(params)
   end
 
   def set_person
