@@ -101,9 +101,3 @@ $blueprint-identity-info-font-weight: 300;
 .blueprint-identity {
   @include blueprint-identity;
 }
-
-body > .blueprint-identity {
-  background-color: hsla(0, 0%, 75%, .5);
-  cursor: move;
-  opacity: .8;
-}

@@ -80,7 +80,7 @@ widget = ->
       element.style.zIndex  = 10000
       element.style.left    = event.pageX - self.dataTransfer.dragImage.x + 'px'
       element.style.top     = event.pageY - self.dataTransfer.dragImage.y + 'px'
-      
+    
     trigger('move', event)
   
   

@@ -8,16 +8,12 @@ self = {}
 #
 
 drag_image = (element) ->
-  clone = element.cloneNode(true)
-  document.body.appendChild(clone)
+  clone = document.body.appendChild(element.cloneNode(true))
   
-  bounds = element.getBoundingClientRect()
-
-  clone.classList.add('identity-draggable')
-
+  clone.style           = window.getComputedStyle(element).cssText
+  clone.style.cursor    = 'move'
   clone.style.position  = 'absolute'
-  clone.style.width     = bounds.width + 'px'
-  clone.style.height    = bounds.height + 'px'
+  clone.style.opacity   = .8
 
   clone
   

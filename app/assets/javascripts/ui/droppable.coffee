@@ -89,8 +89,8 @@ widget = ->
     dragImage.style.pointerEvents = 'none' if dragImage
     
     element   = document.elementFromPoint(event.pageX, event.pageY)
-    element   = element.parentNode while element.parentNode and !element.matches(selector)
-    element   = null unless element.parentNode
+    element   = element.parentNode while element and element.parentNode and !element.matches(selector)
+    element   = null unless element and element.parentNode
 
     dragImage.style.pointerEvents = dragImagePointerEventsStyle if dragImage
     
