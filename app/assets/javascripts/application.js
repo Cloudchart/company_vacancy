@@ -21,6 +21,7 @@
 //= require shared
 //= require ujs
 //= require utils
+//= require ./react_components
 //= require_tree .
 //= require_tree ./controllers
 //= require cloud_profile/application

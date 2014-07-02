@@ -9,9 +9,12 @@ defaults =
 state = {}
 
 
-# Draggable selector
+# Callbacks
 #
-draggable_selector = '[data-draggable="on"]'
+registered_callbacks =
+  start:  []
+  move:   []
+  end:    []
 
 
 # Find element valid for drag
@@ -35,18 +38,7 @@ is_distance_valid = (event) ->
 # Dispatch event
 #
 dispatchEvent = (type, originalEvent) ->
-  event = new CustomEvent "cc:drag:#{type}",
-    bubbles:    true
-    cancelable: true
-    detail:
-      dataTransfer:   state.dataTransfer
-      originalEvent:  originalEvent
-      pageX:          originalEvent.pageX
-      pageY:          originalEvent.pageY
-  
-  state.capturedTarget.dispatchEvent(event)
-
-  event
+  registered_callbacks[type].forEach (callback) -> callback(state.capturedTarget, originalEvent, state.dataTransfer)
 
 
 # On mouse down
@@ -130,8 +122,12 @@ onClick = (event) ->
 
 # Capture mouse down event
 #
-#document.addEventListener('mousedown', onMouseDown)
+document.addEventListener('mousedown', onMouseDown)
 
 
 # Provide interface for event registering
 #
+cc.ui.mouse_draggable =
+  register: (callbacks = {}) ->
+    ['start', 'move', 'end'].forEach (name) ->
+      registered_callbacks[name].push(callbacks[name]) if callbacks[name] instanceof Function

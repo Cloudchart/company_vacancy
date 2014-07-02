@@ -49,6 +49,7 @@ class CompaniesController < ApplicationController
     @company = Company.find(params[:id])
     @company.logo = logo
     respond_to do |format|
+      format.json { render nothing: true }
       format.js
     end
   end
@@ -111,7 +112,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :country, :industry_ids, :description, logo_attributes: :image)
+    params.require(:company).permit(:name, :country, :industry_ids, :description, sections: Company::SECTIONS.values, logo_attributes: :image)
   end
-
+  
 end

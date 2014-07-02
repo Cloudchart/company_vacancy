@@ -1,0 +1,54 @@
+$editor-sidebar-blocks-width: $base-unit * 13;
+$editor-sidebar-blocks-header-color: hsl(0, 0%, 35%);
+$editor-sidebar-blocks-header-font-size: 11pt;
+$editor-sidebar-blocks-header-icon-color: hsl(0, 0%, 75%);
+
+$editor-sidebar-blocks-item-background-color: hsl(0, 0%, 96%);
+$editor-sidebar-blocks-item-color: hsl(0, 0%, 35%);
+$editor-sidebar-blocks-item-font-size: 14pt;
+
+
+@mixin editor-sidebar-blocks-item {
+  background-color: $editor-sidebar-blocks-item-background-color;
+  color: $editor-sidebar-blocks-item-color;
+  cursor: move;
+  font-size: $editor-sidebar-blocks-item-font-size;
+  font-weight: 700;
+  list-style: none;
+  margin: 2pt 0;
+  padding: $base-unit / 4 * 3 $base-unit / 2;
+  
+  > i {
+    width: $base-unit * 2;
+    text-align: center;
+  }
+}
+
+
+.sidebar-blocks {
+  @include position(absolute, 0px $base-unit 0 0);
+  
+  width: $editor-sidebar-blocks-width;
+  
+  > header {
+    background-color: hsl(0, 0%, 93%);
+    color: $editor-sidebar-blocks-header-color;
+    font-size: $editor-sidebar-blocks-header-font-size;
+    padding: $base-unit / 4 * 3 $base-unit;
+    
+    > i {
+      color: $editor-sidebar-blocks-header-icon-color;
+    }
+  }
+  
+  > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+}
+
+.editor-sidebar-blocks-item {
+  @include editor-sidebar-blocks-item;
+}

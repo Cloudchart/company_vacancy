@@ -1,8 +1,13 @@
 en:
   block:
+    icons:
+      paragraph: 'fa-font'
+      block_image: 'fa-picture-o'
+      person: 'fa-male'
+      vacancy: 'fa-briefcase'
     types:
       paragraph: "Paragraph"
-      block_image: "BlockImage"
+      block_image: "Image"
       vacancy: "Vacancy"
       chart: "Chart"
       person: "Person"

@@ -71,5 +71,10 @@ class Company < ActiveRecord::Base
       is_company_owner: true
     )
   end
-
+  
+  
+  def as_json_for_editor
+    as_json(only: [:uuid], methods: :sections_titles)
+  end
+  
 end
