@@ -24,16 +24,12 @@ class Company < ActiveRecord::Base
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :name, analyzer: 'ngram_analyzer'
-      indexes :country, analyzer: 'snowball'
+      indexes :country_name, analyzer: 'snowball'
       indexes :is_empty, type: 'boolean'
       indexes :industries do
         indexes :name, analyzer: 'snowball'
       end
     end
-  end
-
-  def owner
-    people.find_by(is_company_owner: true).user
   end
 
   class << self
@@ -44,12 +40,12 @@ class Company < ActiveRecord::Base
           query do
             boolean do
               should { string Cloudchart::Utils.tokenized_query_string(params[:query], :name) }
-              should { string Cloudchart::Utils.tokenized_query_string(params[:query], ['industries.name', 'country']) }
+              should { string Cloudchart::Utils.tokenized_query_string(params[:query], ['industries.name', 'country_name']) }
             end
           end
 
           facet 'countries' do
-            query { string Cloudchart::Utils.tokenized_query_string(params[:query], :country, ' OR ') }
+            query { string Cloudchart::Utils.tokenized_query_string(params[:query], :country_name, ' OR ') }
           end
 
           facet 'industries' do
@@ -74,8 +70,22 @@ class Company < ActiveRecord::Base
     end
   end
 
+  def owner
+    people.find_by(is_company_owner: true).user
+  end  
+
   def industry
     industries.first
+  end
+
+  def country_name
+    iso_country = ISO3166::Country[country]
+
+    if iso_country
+      iso_country.translations[I18n.locale.to_s] || iso_country.name
+    else
+      nil
+    end
   end
 
   def build_objects
@@ -98,7 +108,10 @@ class Company < ActiveRecord::Base
   end
 
   def to_indexed_json
-    to_json(include: { industries: { only: [:name] } })
+    to_json(
+      include: { industries: { only: [:name] } }, 
+      methods: [:country_name]
+    )
   end
 
 end

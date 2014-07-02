@@ -79,7 +79,7 @@ module CompaniesHelper
 
       if companies.facets && companies.facets['countries']['count'] > 0
         content << ' from '
-        content << content_tag(:span, companies.first.country, class: 'green')
+        content << content_tag(:span, companies.first.country_name, class: 'green')
       end
     end.html_safe    
   end

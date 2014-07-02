@@ -5,11 +5,11 @@
   </label>
   
   <label>
-      <%= form.text_field :name, placeholder: t('.name_placeholder', default: 'Company Name'), class: :cloud %>
+    <%= form.text_field :name, placeholder: t('.name_placeholder', default: 'Company Name'), class: :cloud %>
   </label>
   
   <label>
-    <%= form.country_select :country, ['Russia', 'United States of America'], {}, { class: :cloud } %>
+    <%= form.country_select :country, { priority_countries: ['RU', 'US'] }, { class: :cloud } %>
   </label>
 
   <label>
