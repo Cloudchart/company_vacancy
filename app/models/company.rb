@@ -20,6 +20,8 @@ class Company < ActiveRecord::Base
   accepts_nested_attributes_for :logo, allow_destroy: true
 
   validates :name, :country, :industry_ids, presence: true, on: :update
+
+  default_scope { where(is_empty: false) }
   
   settings ElasticSearchNGramSettings do
     mapping do
