@@ -18,7 +18,7 @@ class Friend < ActiveRecord::Base
   def self.search(params)
     tire.search(load: true) do
       if params[:query].present?
-        query { string Tokenizable.tire_person_query_string(params[:query], :full_name) }
+        query { string Cloudchart::Utils.tokenized_query_string(params[:query], :full_name) }
       end
     end
   end

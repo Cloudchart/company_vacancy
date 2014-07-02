@@ -1,66 +1,109 @@
+<% opened_vacancies = company.vacancies.select { |v| v.status == 'opened' } %>
+
 <section>
   <header>
-    <ul class="main-info">
-      <li>
-        <%= link_to font_awesome('star-o'), '#', class: 'star-link' %> 
-        <%= link_to company.name, company %>
-      </li>
-      <li>
-        <%= company.industry.name %>
-      </li>
-      <li class="people-size">
-        <%= link_to company_people_path(company) do %>
-          <%= company.people.size %>
-          <%= font_awesome('male') %>
-        <% end %>
-      </li>
-      <li class="vacancies-size">
-        <%= link_to company_vacancies_path(company) do %>
-          <%= company.vacancies.by_status(:opened).size %>
-          <%= font_awesome('briefcase') %>
-        <% end %>
-      </li>
-      <li>
-        <%= Country.all.select { |c| c[1] == company.country }.first[0] %>
-      </li>
-      <%# TODO: add established_on %>
-      <li>1995</li>
-      <li><%= font_awesome('signal') %></li>
-      <li><%= link_to font_awesome('angle-down'), '#', class: 'toggle-section' %></li>
-    </ul>
+    <div class="main-info">
+      <ul>
+        <li>
+          <%= link_to font_awesome('star-o'), '#', class: 'star-link' %> 
+          <%= link_to company.name, company %>
+        </li>
 
-    <ul class="additional-info">
-      <%# TODO: add social relation %>
-      <li>Your friend Dmitry Kirillov and 3 other contacts work here</li>
-    </ul>
+        <li>
+          <%= company.industry.name %>
+        </li>
+
+        <li class="spacer"></li>
+
+        <li class="people-size">
+          <%= link_to company_people_path(company) do %>
+            <%= company.people.size %>
+            <%= font_awesome('male') %>
+          <% end %>
+        </li>
+
+        <li class="vacancies-size">
+          <%= link_to company_vacancies_path(company) do %>
+            <%= opened_vacancies.size %>
+            <%= font_awesome('briefcase') %>
+          <% end %>
+        </li>
+
+        <li class="country">
+          <%= company.country %>
+        </li>
+        
+        <li class="established-on">
+          <%= company.established_on.try(:year) %>
+        </li>
+
+        <% if current_user %>
+          <li class="proximity">
+            <div class="frame-<%= proximity(company).index %>"></div>
+          </li>
+        <% end %>
+
+        <li>
+          <%= link_to font_awesome('chevron-down'), nil, class: 'toggle-elements' %>
+        </li>
+      </ul>
+    </div>
+
+    <div class="additional-info">
+      <ul>
+        <% if current_user %>
+          <li>
+            <strong>Proximity:</strong>
+            <%= proximity(company).message %>
+          </li>
+        <% end %>
+
+        <%# TODO: add modal window for subscriptions form %>
+         <% if can?(:manage, Subscription) && cannot?(:update, company) %>
+          <li style="display: none;">
+            <strong>Subscription:</strong>
+            <% unless subscribed_to_company?(company) %>
+              <%= render 'subscriptions/form', subscription: company.subscriptions.build %>
+            <% else %>
+              <%= link_to 'Unsubscribe', subscription_path(company.subscriptions.find_by(user_id: current_user.id)), method: :delete, data: { confirm: 'Are you sure?' } %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
   </header>
 
   <div class="content">
-    <ul class="charts">
-      <li>
-        <div class="chart-preview"></div>
-        <strong>Main chart</strong>
-      </li>
-      <li>
-        <div class="chart-preview"></div>
-        Demo chart
-      </li>
-      <li>
-        <div class="chart-preview"></div>
-        Another chart
-      </li>
-      <li>
-        <div class="chart-preview">
-          <%= link_to font_awesome('plus-square'), '#' %>
-        </div>
-        ADD CHART
-      </li>
-    </ul>
+    <div class="charts">
+      <ul>
+        <li>
+          <div class="chart-preview"></div>
+          <strong>Main chart</strong>
+        </li>
+        <li>
+          <div class="chart-preview"></div>
+          Demo chart
+        </li>
+        <li>
+          <div class="chart-preview"></div>
+          Another chart
+        </li>
+        <li>
+          <div class="chart-preview">
+            <%= link_to font_awesome('plus-square'), '#' %>
+          </div>
+          ADD CHART
+        </li>
+      </ul>
+    </div>
 
-    <ul class="vacancies">
-      <% company.vacancies.each do |vacancy| %>
-        <li><%= link_to vacancy.name, vacancy %></li>
-      <% end %>
-    </ul>
+    <div class="vacancies">
+      <ul>
+        <% opened_vacancies.each do |vacancy| %>
+          <li><%= link_to vacancy.name, vacancy %></li>
+        <% end %>
+      </ul>
+    </div>
+
   </div>  
 </section>

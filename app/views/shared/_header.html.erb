@@ -6,8 +6,10 @@
 
 
   <div class="search">
-    <%= font_awesome('search') %>
-    <%= text_field_tag :q, nil, placeholder: t('.search_placeholder', default: 'Find companies and people'), autocomplete: :off %>
+    <%= form_tag main_app.search_companies_path, remote: controller_name == 'companies' && action_name =~ /index|search/ ? true : false do %>
+      <%= font_awesome('search') %>
+      <%= text_field_tag :query, params[:query], placeholder: t('.search_placeholder', default: 'Search companies'), autocomplete: :off %>
+    <% end %>
   </div>
   
 

@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/stefanpenner/country_select.git
+  revision: 20b9ef1a539d369c20ac0a7730096047ba5e75c4
+  specs:
+    country_select (2.0.0.beta2)
+      countries (~> 0.9.3)
+
+GIT
   remote: git@github.com:Cloudchart/pagescript.git
   revision: a6c78b18a589dc93e7ad5857ab361ad09d57e454
   specs:
@@ -109,8 +116,6 @@ GEM
     connection_pool (2.0.0)
     countries (0.9.3)
       currencies (~> 0.4.2)
-    country_select (1.3.1)
-      countries (= 0.9.3)
     currencies (0.4.2)
     diff-lcs (1.2.5)
     dotenv (0.10.0)
@@ -332,7 +337,7 @@ DEPENDENCIES
   cloud_oauth!
   cloud_profile!
   coffee-rails (~> 4.0.1)
-  country_select
+  country_select!
   dotenv-rails
   factory_girl_rails
   font-awesome-rails

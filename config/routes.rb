@@ -54,8 +54,8 @@ Cloudchart::Application.routes.draw do
     post :vote, on: :member
   end
 
-  resources :tokens, only: :destroy
   resources :subscriptions, only: [:create, :update, :destroy]
+  resources :tokens, only: :destroy
   resources :comments, only: [:create, :update, :destroy]
 
   scope 'vacancies/:vacancy_id' do

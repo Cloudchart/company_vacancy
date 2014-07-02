@@ -8,8 +8,19 @@ en:
     search:
       companies:
         zero: "no companies"
-        one: "1 company"
-        other: "%{count} companies"
+        one: "company"
+        other: "companies"
+    proximity:
+      "0": "None"
+      "1": "Tiny"
+      "2": "Small"
+      "3": "Good"
+      "4": "Significant"
+      "5": "Strong"
+      "6": "You work here"
+      "7": "You are the owner"
+      friends: "Friends work here"
+      friends_of_friends: "Friends of friends work here"
     hints:
       chart: &chart
         chart: "Chart goes here"

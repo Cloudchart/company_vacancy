@@ -24,6 +24,11 @@ class Company < ActiveRecord::Base
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :name, analyzer: 'ngram_analyzer'
+      indexes :country, analyzer: 'snowball'
+      indexes :is_empty, type: 'boolean'
+      indexes :industries do
+        indexes :name, analyzer: 'snowball'
+      end
     end
   end
 
@@ -33,8 +38,28 @@ class Company < ActiveRecord::Base
 
   class << self
     def search(params)
+      # TODO: get rid of load option (store everything in elascitsearch)
       tire.search(load: true) do
-        query { string "name:#{params[:query]}" } if params[:query].present?
+        if params[:query].present?
+          query do
+            boolean do
+              should { string Cloudchart::Utils.tokenized_query_string(params[:query], :name) }
+              should { string Cloudchart::Utils.tokenized_query_string(params[:query], ['industries.name', 'country']) }
+            end
+          end
+
+          facet 'countries' do
+            query { string Cloudchart::Utils.tokenized_query_string(params[:query], :country, ' OR ') }
+          end
+
+          facet 'industries' do
+            query { string Cloudchart::Utils.tokenized_query_string(params[:query], 'industries.name', ' OR ') }
+          end
+        end
+
+        sort { by :name } if params[:query].blank?
+        filter :term, is_empty: false
+
       end
     end
 
@@ -70,6 +95,10 @@ class Company < ActiveRecord::Base
       phone: user.phone,
       is_company_owner: true
     )
+  end
+
+  def to_indexed_json
+    to_json(include: { industries: { only: [:name] } })
   end
 
 end
