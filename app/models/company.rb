@@ -24,10 +24,10 @@ class Company < ActiveRecord::Base
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :name, analyzer: 'ngram_analyzer'
-      indexes :country, analyzer: 'ngram_analyzer'
+      indexes :country, analyzer: 'snowball'
       indexes :is_empty, type: 'boolean'
       indexes :industries do
-        indexes :name, analyzer: 'ngram_analyzer'
+        indexes :name, analyzer: 'snowball'
       end
     end
   end
@@ -43,17 +43,17 @@ class Company < ActiveRecord::Base
         if params[:query].present?
           query do
             boolean do
-              should { string "name:#{params[:query]}" }
+              should { string Cloudchart::Utils.tokenized_query_string(params[:query], :name) }
               should { string Cloudchart::Utils.tokenized_query_string(params[:query], ['industries.name', 'country']) }
             end
           end
 
           facet 'countries' do
-            query { string "country:#{params[:query]}" }
+            query { string Cloudchart::Utils.tokenized_query_string(params[:query], :country, ' OR ') }
           end
 
           facet 'industries' do
-            query { string "industries.name:#{params[:query]}" }
+            query { string Cloudchart::Utils.tokenized_query_string(params[:query], 'industries.name', ' OR ') }
           end
         end
 
