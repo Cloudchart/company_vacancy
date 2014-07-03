@@ -15,7 +15,7 @@ class Block < ActiveRecord::Base
   
   
   def as_json_for_editor
-    as_json(only: [:uuid, :section, :position, :is_locked, :identity_type])
+    as_json(only: [:uuid, :section, :position, :is_locked, :identity_type], include: { identities: { only: [:uuid, :content] }})
   end
   
 

@@ -31,6 +31,17 @@ SectionTitleInputComponent = React.createClass
     })
 
 
+# Undefined block component
+#
+UndefinedBlockComponent = React.createClass
+
+  render: ->
+    (tag.div {},
+      "Unknow block "
+      @props.identity_type
+    )
+
+
 # New block placeholder component
 # 
 NewBlockPlaceholderComponent = React.createClass
@@ -57,7 +68,7 @@ SectionComponent = React.createClass
     return if event.dataTransfer.types.indexOf('sidebar-blocks-item') == -1
 
     @setState
-      new_block_position: @props.blocks.length
+      new_block_position: @props.children.length
   
   
   onCCDropMove: (event) ->
@@ -87,11 +98,11 @@ SectionComponent = React.createClass
   
 
   render: ->
-    blocks = @props.blocks.map (props) ->
+    blocks = @props.children.map (props) =>
       if componentClass = cc.react.editor.blocks[props.identity_type]
         componentClass(props)
       else
-        "Block"
+        UndefinedBlockComponent(props)
     
     unless @state.new_block_position == null
       blocks.splice(@state.new_block_position, 0, (NewBlockPlaceholderComponent { key: 'new' }))

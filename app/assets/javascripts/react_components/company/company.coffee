@@ -55,11 +55,12 @@ MainComponent = React.createClass
 
   render: ->
     sections = @props.sections.map (props) =>
+      blocks              = @props.company_blocks.filter((block) -> block.section == props.key)
       props.ref           = props.key
       props.value         = @props.company.sections_titles[props.key]
+      props.url           = @props.url
       props.onTitleChange = @handleTitleChange
-      props.blocks        = @props.company_blocks.filter((block) -> block.section == props.key)
-      cc.react.editor.SectionComponent(props)
+      cc.react.editor.SectionComponent(props, blocks)
     
     (tag.article { className: 'editor' },
       sections

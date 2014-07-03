@@ -21,7 +21,7 @@ article.editor {
   
   > section {
     
-    padding: 0 0 $base-unit;
+    padding: 0 0 $base-unit * 2;
     
     > header {
       
@@ -36,6 +36,33 @@ article.editor {
       border: 2px dashed #eee;
       margin-top: $base-unit;
       padding: $base-unit;
+    }
+    
+    > .paragraph {
+      font-size: 15pt;
+      margin: $base-unit 0 0 $base-unit * 2;
+      padding: 0;
+      position: relative;
+      
+      > .lock {
+        @include position(absolute, 50% 0 0 $base-unit * -2);
+        font-size: 15pt;
+        margin-top: -.5em;
+        opacity: .5;
+        text-align: center;
+        width: $base-unit * 2;
+      }
+      
+      > div {
+        margin: 0;
+        outline: none;
+
+        &:empty:before {
+          content: attr(data-placeholder);
+          font-style: italic;
+          opacity: .25;
+        }
+      }
     }
     
   }
