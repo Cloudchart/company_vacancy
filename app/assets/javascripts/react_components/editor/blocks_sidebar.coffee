@@ -23,7 +23,7 @@ BlockComponent = React.createClass
   
   
   onCCDragStart: (event) ->
-    event.dataTransfer.setData('sidebar-blocks-item', @props.key)
+    event.dataTransfer.setData('sidebar-blocks-item', @props.identity_type)
   
   
   render: ->

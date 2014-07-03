@@ -82,6 +82,7 @@ SectionComponent = React.createClass
     
   
   onCCDropDrop: (event) ->
+    identity_type = event.dataTransfer.getData('sidebar-blocks-item')
     @clearNewBlockPlaceholder()
 
 
