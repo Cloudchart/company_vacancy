@@ -73,37 +73,40 @@
     </div>
   </header>
 
-  <div class="content">
-    <div class="charts">
-      <ul>
-        <li>
-          <div class="chart-preview"></div>
-          <strong>Main chart</strong>
-        </li>
-        <li>
-          <div class="chart-preview"></div>
-          Demo chart
-        </li>
-        <li>
-          <div class="chart-preview"></div>
-          Another chart
-        </li>
-        <li>
-          <div class="chart-preview">
-            <%= link_to font_awesome('plus-square'), '#' %>
-          </div>
-          ADD CHART
-        </li>
-      </ul>
-    </div>
+  <% if company.vacancies.any? %>
+    <div class="content">
+      <div class="charts">
+        <ul>
+          <li>
+            <div class="chart-preview"></div>
+            <strong>Main chart</strong>
+          </li>
+          <li>
+            <div class="chart-preview"></div>
+            Demo chart
+          </li>
+          <li>
+            <div class="chart-preview"></div>
+            Another chart
+          </li>
+          <li>
+            <div class="chart-preview">
+              <%= link_to font_awesome('plus-square'), '#' %>
+            </div>
+            ADD CHART
+          </li>
+        </ul>
+      </div>
 
-    <div class="vacancies">
-      <ul>
-        <% opened_vacancies.each do |vacancy| %>
-          <li><%= link_to vacancy.name, vacancy %></li>
-        <% end %>
-      </ul>
-    </div>
+      <div class="vacancies">
+        <ul>
+          <% opened_vacancies.each do |vacancy| %>
+            <li><%= link_to vacancy.name, vacancy %></li>
+          <% end %>
+        </ul>
+      </div>
 
-  </div>  
+    </div>
+  <% end %>
+
 </section>
