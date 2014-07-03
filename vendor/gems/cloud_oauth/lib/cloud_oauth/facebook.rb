@@ -6,7 +6,7 @@ module CloudOAuth
 
     config.site       = 'https://graph.facebook.com'
     config.token_url  = '/oauth/access_token'
-    config.scope      = 'public_profile email user_friends'
+    config.scope      = 'email user_friends'
     
     
     def profile(oauth_access_token)
