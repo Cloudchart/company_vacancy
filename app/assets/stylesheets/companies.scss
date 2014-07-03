@@ -71,8 +71,8 @@ main > article.companies-search {
           }
 
           &.proximity > div {
-            width: 17pt;
-            height: 22pt;
+            width: 13pt;
+            height: 16pt;
             background: {
               image: image-url('proximity.svg');
               repeat: no-repeat;
@@ -157,14 +157,10 @@ main > article.companies-search {
 
       > div.vacancies {
         > ul {
-          @include flex-flow(column wrap);
-          @include align-content(flex-start);
-
-          height: 65pt;
+          @include flex-flow(row wrap);
 
           > li {
             margin-right: $base-unit * 2;
-            line-height: $base-unit * 2;
 
             > a {
               font-size: 14pt;
