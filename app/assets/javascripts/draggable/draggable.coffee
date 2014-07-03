@@ -28,24 +28,27 @@ disposeCloneDragImage = (element) ->
 revertDragImage = (dragImage, element, callback = null) ->
   start           = null
   duration        = 250
-  offsetBounds    = dragImage.parentNode.getBoundingClientRect()
   dragImageBounds = dragImage.getBoundingClientRect()
   elementBounds   = element.getBoundingClientRect()
-  dx              = elementBounds.left  - dragImageBounds.left
-  dy              = elementBounds.top   - dragImageBounds.top
+  elementStyle    = window.getComputedStyle(element)
+  dx              = dragImageBounds.left  - elementBounds.left  + parseFloat(elementStyle.marginLeft)
+  dy              = dragImageBounds.top   - elementBounds.top   + parseFloat(elementStyle.marginTop)
   
-  
+
   position = (x, y) ->
-    dragImage.style.left  = dragImageBounds.left  + x + offsetBounds.left + 'px'
-    dragImage.style.top   = dragImageBounds.top   + y + offsetBounds.top  + 'px'
+    dragImage.style.left  = dragImageBounds.left  - x + window.pageXOffset  + 'px'
+    dragImage.style.top   = dragImageBounds.top   - y + window.pageYOffset  + 'px'
   
 
   tick = (timestamp) ->
     start     = timestamp unless start
     progress  = timestamp - start
     delta     = Math.min(1, progress / duration)
-    x         = dx * delta
-    y         = dy * delta
+    
+    delta     = 1 - Math.pow(1 - delta, 3) # qubic easing
+    
+    x         = Math.floor(dx * delta)
+    y         = Math.floor(dy * delta)
     
     if progress <= duration
       requestAnimationFrame(tick)
@@ -55,7 +58,7 @@ revertDragImage = (dragImage, element, callback = null) ->
       callback() if callback instanceof Function
   
   requestAnimationFrame(tick)
-  
+
 
 # Dispatch event
 #
@@ -84,18 +87,22 @@ onDragStart = (capturedTarget, originalEvent, dataTransfer) ->
   if dataTransfer.dragImage.element == null
     isDragImageOwner  = true
     dragImage         = cloneForDragImage(capturedTarget)
-    bounds            = customEvent.target.getBoundingClientRect()
-    dataTransfer.setDragImage(dragImage, event.pageX - bounds.left, event.pageY - bounds.top)
+    bounds            = capturedTarget.getBoundingClientRect()
+    style             = window.getComputedStyle(capturedTarget, null)
 
+    dataTransfer.setDragImage dragImage,
+      event.pageX - bounds.left + parseFloat(style.marginLeft),
+      event.pageY - bounds.top  + parseFloat(style.marginTop)
+  
 
 # On drag move
 #
 onDragMove = (capturedTarget, originalEvent, dataTransfer) ->
-  customEvent = dispatchEvent('move', capturedTarget, originalEvent, dataTransfer) ; return if customEvent.defaultPrevented
-  
-  if dragImage = dataTransfer.dragImage.element
-    dragImage.style.left  = originalEvent.pageX - dataTransfer.dragImage.x + 'px'
-    dragImage.style.top   = originalEvent.pageY - dataTransfer.dragImage.y + 'px'
+  customEvent   = dispatchEvent('move', capturedTarget, originalEvent, dataTransfer) ; return if customEvent.defaultPrevented
+
+  if (dragImage = dataTransfer.dragImage) and dragImage.element
+    dragImage.element.style.left  = event.pageX - dragImage.x + window.pageXOffset + 'px'
+    dragImage.element.style.top   = event.pageY - dragImage.y + window.pageYOffset + 'px'
 
 
 # On drag end
@@ -111,6 +118,7 @@ onDragEnd = (capturedTarget, originalEvent, dataTransfer) ->
     cleanup()
   else
     revertDragImage dragImage, capturedTarget, cleanup
+  
     
   
 # Register callbacks
