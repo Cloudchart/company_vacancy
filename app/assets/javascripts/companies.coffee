@@ -39,7 +39,7 @@ jQuery ->
           .find('.additional-info, .country, .established-on, .charts, .vacancies, .proximity')
           .toggle('slow')
 
-      $toggle_icon = $(@).closest('section').find('.toggle-elements i')
+      $toggle_icon = $(@).find('i')
       if $toggle_icon.hasClass('fa fa-chevron-down')
         $toggle_icon.removeClass().addClass('fa fa-chevron-up')
       else

@@ -3713,18 +3713,6 @@ var React = {
   }
 };
 
-if ("production" !== "development") {
-  var ExecutionEnvironment = _dereq_("./ExecutionEnvironment");
-  if (ExecutionEnvironment.canUseDOM &&
-      window.top === window.self &&
-      navigator.userAgent.indexOf('Chrome') > -1) {
-    console.debug(
-      'Download the React DevTools for a better development experience: ' +
-      'http://fb.me/react-devtools'
-    );
-  }
-}
-
 // Version exists only in the open-source version of React, not in Facebook's
 // internal version.
 React.version = '0.10.0';

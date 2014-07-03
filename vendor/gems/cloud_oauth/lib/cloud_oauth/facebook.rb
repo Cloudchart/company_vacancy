@@ -20,8 +20,9 @@ module CloudOAuth
 
     def friends(oauth_access_token)
       result = token(oauth_access_token).get('/me/friends').parsed
-
       data = result['data']
+      return [] unless data.present?
+
       next_page = result['paging']['next']
 
       while next_page do
