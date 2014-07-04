@@ -1,5 +1,6 @@
 jQuery ->
   # comanies search
+  #
   $('header').on 'input propertychange', '.search input', ->
     perform_search($(@))
 
@@ -32,6 +33,8 @@ jQuery ->
 
 @['companies#index'] = (data) ->
   $ ->
+    chevron_is_down = true
+
     $('main').on 'click', '.companies-search .result .main-info .toggle-elements', (element) ->
       element.preventDefault()
 
@@ -39,8 +42,11 @@ jQuery ->
           .find('.additional-info, .country, .established-on, .charts, .vacancies, .proximity')
           .toggle('slow')
 
-      $toggle_icon = $(@).find('i')
-      if $toggle_icon.hasClass('fa fa-chevron-down')
-        $toggle_icon.removeClass().addClass('fa fa-chevron-up')
+      $chevron_icon = $(@).find('i')
+
+      if chevron_is_down
+        chevron_is_down = false
+        $chevron_icon.attr('class', 'fa fa-chevron-up')
       else
-        $toggle_icon.removeClass().addClass('fa fa-chevron-down')
+        chevron_is_down = true
+        $chevron_icon.attr('class', 'fa fa-chevron-down')
