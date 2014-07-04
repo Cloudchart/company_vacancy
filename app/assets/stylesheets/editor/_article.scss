@@ -1,7 +1,6 @@
-$editor-article-width: $base-unit * 40;
-
 $editor-section-header-input-font-size: 15pt;
 $editor-section-header-input-font-weight: 700;
+
 
 // Editor section header input
 @mixin editor-section-header-input {
@@ -15,9 +14,8 @@ $editor-section-header-input-font-weight: 700;
 
 // Editor article
 article.editor {
-  width: $editor-article-width;
-  margin: 0 auto;
-  
+  margin: 0 $base-unit * 5;
+  padding: $base-unit * 2 $base-unit * 5;
   
   > section {
     

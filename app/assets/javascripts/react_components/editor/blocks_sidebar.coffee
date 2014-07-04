@@ -23,16 +23,17 @@ BlockComponent = React.createClass
   
   
   onCCDragStart: (event) ->
-    event.dataTransfer.setData('sidebar-blocks-item', @props.identity_type)
+    event.dataTransfer.setData('identity-type', @props.type)
   
   
   render: ->
     (tag.li {
-      className: 'editor-sidebar-blocks-item'
+      key:              @props.type
+      className:        'editor-sidebar-blocks-item'
       'data-draggable': 'on'
     }, 
       (tag.i { className: "fa #{@props.icon}" })
-      @props.title
+      (tag.span {}, @props.title)
     )
 
 
@@ -42,14 +43,15 @@ BlockComponent = React.createClass
 
 BlocksSidebarComponent = React.createClass
 
+  gatherBlocks: ->
+    @props.blocks.map (block_props) ->
+      block_props.key = block_props.type
+      (BlockComponent block_props)
+
   render: ->
-    blocks = @props.blocks.map (props) -> BlockComponent(props)
-    
     (tag.aside { className: 'sidebar-blocks' },
-      TitleComponent()
-      (tag.ul {},
-        blocks
-      )
+      (TitleComponent {})
+      (tag.ul {}, @gatherBlocks())
     )
 
 #

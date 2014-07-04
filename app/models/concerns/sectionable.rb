@@ -11,27 +11,27 @@ module Sectionable
     has_many :blocks, -> { order(:section, :position) }, as: :owner, dependent: :destroy, inverse_of: :owner
   end
 
+
   def blocks_by_section(section)
     section = section.to_s
     blocks.select { |b| b.section == section }
   end
 
+
   def should_build_objects!
     @should_build_objects = true
   end
+
 
   def should_build_objects?
     !!@should_build_objects
   end
   
-  def sections_titles
-    sections.marshal_dump
-  end
   
-  def sections=(data)
-    sections.marshal_load(data.marshal_dump)  and return if data.respond_to?(:marshal_dump)
-    sections.marshal_load(data.to_hash)       and return if data.respond_to?(:to_hash)
+  def sections_attributes=(attributes = {})
+    attributes.each { |key, value| sections[key] = value }
   end
+
 
 private
 

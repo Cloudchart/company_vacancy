@@ -7,6 +7,9 @@ class Company < ActiveRecord::Base
   SECTIONS = %i(about product people vacancies contacts).inject({}) { |hash, val| hash.merge({ I18n.t("company.sections.#{val}") => val }) }
   BLOCK_TYPES = %i(paragraph block_image person vacancy).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
 
+  BlockTypes  = ['Paragraph', 'BlockImage', 'Person', 'Vacancy']
+  Sections    = ['About', 'Product', 'People', 'Vacancies', 'Contacts']
+
   has_and_belongs_to_many :industries
   has_one :logo, as: :owner, dependent: :destroy
   has_many :vacancies, dependent: :destroy
@@ -54,12 +57,12 @@ class Company < ActiveRecord::Base
   end
 
   def build_objects
-    blocks.build(section: :about, position: 0, identity_type: 'Paragraph', is_locked: true)
-    blocks.build(section: :product, position: 0, identity_type: 'Paragraph', is_locked: true)
-    blocks.build(section: :product, position: 1, identity_type: 'BlockImage', is_locked: true)
-    blocks.build(section: :people, position: 0, identity_type: 'Person', is_locked: true)
-    blocks.build(section: :people, position: 1, identity_type: 'Paragraph', is_locked: true)
-    blocks.build(section: :vacancies, position: 0, identity_type: 'Vacancy', is_locked: true)
+    blocks.build(section: :about,       position: 0, identity_type: 'Paragraph',  is_locked: true)
+    blocks.build(section: :product,     position: 0, identity_type: 'Paragraph',  is_locked: true)
+    blocks.build(section: :product,     position: 1, identity_type: 'BlockImage', is_locked: true)
+    blocks.build(section: :people,      position: 0, identity_type: 'Person',     is_locked: true)
+    blocks.build(section: :people,      position: 1, identity_type: 'Paragraph',  is_locked: true)
+    blocks.build(section: :vacancies,   position: 0, identity_type: 'Vacancy',    is_locked: true)
   end  
 
   def associate_with_person(user)
@@ -77,4 +80,5 @@ class Company < ActiveRecord::Base
     as_json(only: [:uuid], methods: :sections_titles)
   end
   
+
 end

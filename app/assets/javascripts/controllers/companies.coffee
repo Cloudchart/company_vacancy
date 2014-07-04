@@ -21,16 +21,8 @@
 # Show company
 #
 @['companies#show'] = (data) ->
-
-  BlocksSidebar = cc.react.editor.BlocksSidebarComponent({
-    blocks:   data.blocks
-  })
-
-  React.renderComponent(cc.react.company.MainComponent({
-    url:            data.url
-    company:        data.company
-    company_blocks: data.company_blocks
-    sections:       data.sections
-  },
-    BlocksSidebar
-  ), document.querySelector('main'))
+  
+  companyComponent  = cc.react.company.Main(data.company)
+  container         = document.querySelector('main')
+  
+  React.renderComponent(companyComponent, container)

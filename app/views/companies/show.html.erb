@@ -1,7 +1,1 @@
-<%- pagescript_params uuid: @company.to_param,
-  url:      company_path(@company),
-  company:  @company.as_json_for_editor,
-  company_blocks: @company.blocks.map(&:as_json_for_editor),
-  sections: Company::SECTIONS.map { |title, key| { title: title, key: key }}.as_json,
-  blocks:   Company::BLOCK_TYPES.map { |title, key| { title: title, identity_type: key.to_s.classify, key: key, icon: t("block.icons.#{key}") }}.as_json
--%>
+<%- pagescript_params company: CompanyEditorSerializer.new(@company).as_json(root: false) -%>

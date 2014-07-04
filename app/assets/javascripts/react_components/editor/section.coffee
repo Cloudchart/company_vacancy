@@ -5,10 +5,22 @@ tag = React.DOM
 
 # Section title input component
 #
+# Properties
+#
+#   value:        initial value
+#   placeholder:  placeholder for empty value
+#   url:          url for ajax request
+#   key:          key for ajax requests
+#   owner:        owner key for ajax request
+#
 SectionTitleInputComponent = React.createClass
 
+
   getInitialState: ->
-    value: @props.value
+    value:            @props.value
+    is_editing:       false
+    should_update:    false
+    is_synchronizing: false
 
 
   onChange: (event) ->
@@ -16,115 +28,76 @@ SectionTitleInputComponent = React.createClass
       value: event.target.value
   
   
+  onFocus: (event) ->
+    @setState
+      is_editing: true
+  
+
   onBlur: (event) ->
-    @props.onTitleChange(@state.value)
+    @setState
+      is_editing:     false
+      should_update:  true
+  
+  
+  componentDidUpdate: ->
+    @save() if @state.should_update
+  
+  
+  save: ->
+    @setState
+      should_update:    false
+      is_synchronizing: true
+
+    attributes              = {}
+    attributes[@props.key]  = @state.value
+
+    data                    = {}
+    data[@props.owner]      = { sections_attributes: attributes }
+
+    $.ajax
+      url:      @props.url
+      type:     'PUT'
+      dataType: 'json'
+      data: data
 
 
   render: ->
     (tag.input {
-      type:         'text'
-      autoComplete: 'off'
-      placeholder:  @props.placeholder
-      value:        @state.value
-      onChange:     @onChange
-      onBlur:       @onBlur
+      type:           'text'
+      autoComplete:   'off'
+      placeholder:    @props.placeholder
+      value:          @state.value
+      onChange:       @onChange
+      onFocus:        @onFocus
+      onBlur:         @onBlur
     })
-
-
-# Undefined block component
-#
-UndefinedBlockComponent = React.createClass
-
-  render: ->
-    (tag.div {},
-      "Unknow block "
-      @props.identity_type
-    )
-
-
-# New block placeholder component
-# 
-NewBlockPlaceholderComponent = React.createClass
-
-  render: ->
-    (tag.div { className: 'new-block-placeholder' })
-
 
 # Section component
 #
-
+# Properties:
+#   title:        initial section title
+#   placeholder:  placeholder for empty title
+#   url:          url for ajax requests
+#   key:          key for ajax requests
+#   owner:        owner key for ajax requests
+#
 SectionComponent = React.createClass
 
 
-  mixins: [cc.react.mixins.Droppable]
-  
-  
-  clearNewBlockPlaceholder: ->
-    @setState
-      new_block_position: null
-
-
-  onCCDropEnter: (event) ->
-    return if event.dataTransfer.types.indexOf('sidebar-blocks-item') == -1
-
-    @setState
-      new_block_position: @props.children.length
-  
-  
-  onCCDropMove: (event) ->
-    return if event.dataTransfer.types.indexOf('sidebar-blocks-item') == -1
-    
-    event.preventDefault()
-
-
-  onCCDropLeave: (event) ->
-    @clearNewBlockPlaceholder()
-    
-  
-  onCCDropDrop: (event) ->
-    identity_type = event.dataTransfer.getData('sidebar-blocks-item')
-    @clearNewBlockPlaceholder()
-
-
-  onTitleChange: (title) ->
-    @props.onTitleChange() if @props.onTitleChange instanceof Function
-  
-  
-  getInitialState: ->
-    new_block_position: null
-
-  
-  title: ->
-    @refs.title_input.state.value
-  
-
   render: ->
-    blocks = @props.children.map (props) =>
-      if componentClass = cc.react.editor.blocks[props.identity_type]
-        componentClass(props)
-      else
-        UndefinedBlockComponent(props)
+    titleInputComponent = SectionTitleInputComponent
+      value:        @props.title
+      placeholder:  @props.placeholder
+      url:          @props.url
+      key:          @props.key
+      owner:        @props.owner
     
-    unless @state.new_block_position == null
-      blocks.splice(@state.new_block_position, 0, (NewBlockPlaceholderComponent { key: 'new' }))
-    
-    
-    (tag.section {
-      'data-droppable': 'on'
-    },
-      (tag.header { 'data-id': @props.key },
-        (SectionTitleInputComponent {
-          ref:            'title_input'
-          placeholder:    @props.title
-          value:          @props.value
-          onTitleChange:  @onTitleChange
-        })
+    (tag.section {},
+      (tag.header {},
+        (titleInputComponent)
       )
-      blocks...
     )
-
 
 # Expose Section component
 #
-
-@cc.react.editor.SectionComponent = SectionComponent
+@cc.react.editor.Section = SectionComponent
