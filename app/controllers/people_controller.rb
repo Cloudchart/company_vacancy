@@ -31,8 +31,7 @@ class PeopleController < ApplicationController
 
       company_people_friends = []
     else
-      # TODO: change tire search terms (related_to_company scope will not work)
-      company_people_friends = Friend.related_to_company(@company.id).search(params).results
+      company_people_friends = Friend.search(params).results
     end
 
     @people = company_people + company_people_friends

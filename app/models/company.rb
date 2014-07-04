@@ -70,7 +70,14 @@ class Company < ActiveRecord::Base
         company
       end
     end
-  end
+  end # of class methods
+
+  def to_indexed_json
+    to_json(
+      include: { industries: { only: [:name] } }, 
+      methods: [:country_name]
+    )
+  end  
 
   def owner
     people.find_by(is_company_owner: true).user
@@ -106,13 +113,6 @@ class Company < ActiveRecord::Base
       email: user.emails.first.address,
       phone: user.phone,
       is_company_owner: true
-    )
-  end
-
-  def to_indexed_json
-    to_json(
-      include: { industries: { only: [:name] } }, 
-      methods: [:country_name]
     )
   end
 

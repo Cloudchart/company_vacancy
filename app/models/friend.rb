@@ -12,6 +12,7 @@ class Friend < ActiveRecord::Base
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :full_name, analyzer: 'ngram_analyzer'
+      indexes :company_ids, index: :not_analyzed
     end
   end
 
@@ -20,7 +21,17 @@ class Friend < ActiveRecord::Base
       if params[:query].present?
         query { string Cloudchart::Utils.tokenized_query_string(params[:query], :full_name) }
       end
+
+      filter :term, company_ids: params[:company_id]
     end
+  end
+
+  def to_indexed_json
+    to_json( methods: [:company_ids])
+  end
+
+  def company_ids
+    users.joins(people: :company).select('companies.uuid').map(&:id)
   end
 
 end
