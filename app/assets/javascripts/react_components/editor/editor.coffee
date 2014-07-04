@@ -9,8 +9,8 @@ tag = React.DOM
 #   sections:         all sections to render
 #   sections_titles:  object sections titles
 #   blocks:           all existing blocks
-#   url:          url for ajax requests
-#   object:       object key for ajax requests
+#   url:              url for ajax requests
+#   object:           object key for ajax requests
 #
 MainComponent = React.createClass
 
@@ -23,6 +23,7 @@ MainComponent = React.createClass
         title:        @props.sections_titles[section.key]
         url:          @props.url
         owner:        @props.owner
+        blocks:       @props.blocks.filter((block) -> block.section == section.key)
     
     (tag.article { className: 'editor' },
       (sectionsComponents)

@@ -72,6 +72,7 @@ SectionTitleInputComponent = React.createClass
       onBlur:         @onBlur
     })
 
+
 # Section component
 #
 # Properties:
@@ -92,9 +93,12 @@ SectionComponent = React.createClass
       key:          @props.key
       owner:        @props.owner
     
+    blocksComponents = []
+    
     (tag.section {},
       (tag.header {},
         (titleInputComponent)
+        (blocksComponents) if blocksComponents.length > 0
       )
     )
 
