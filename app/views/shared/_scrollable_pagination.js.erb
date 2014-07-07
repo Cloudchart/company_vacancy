@@ -1,6 +1,0 @@
-$("#<%= collection.table_name %>").append('<%= j render(collection) %>');
-<% if collection.next_page %>
-  $('.pagination').replaceWith('<%= j paginate(collection) %>');
-<% else %>
-  $('.pagination').remove();
-<% end %>

@@ -1,0 +1,120 @@
+<section>
+  <header>
+    <div class="main-info">
+      <ul>
+        <li>
+          <%= link_to font_awesome('star-o'), '#', class: 'star-link' %> 
+          <%= link_to company.name, main_app.company_path(company) %>
+        </li>
+
+        <li>
+          <%= company.industry.name %>
+        </li>
+
+        <li class="spacer"></li>
+
+        <li class="people-size">
+          <%= link_to main_app.company_people_path(company) do %>
+            <%= company.people.size %>
+            <%= font_awesome('male') %>
+          <% end %>
+        </li>
+
+        <li class="vacancies-size">
+          <%= link_to main_app.company_vacancies_path(company) do %>
+            <%= company.vacancies.size %>
+            <%= font_awesome('briefcase') %>
+          <% end %>
+        </li>
+
+        <li class="country">
+          <%= company.country %>
+        </li>
+        
+        <li class="established-on">
+          <%= company.established_on.try(:year) %>
+        </li>
+
+        <li class="proximity">
+          <div class="frame-<%= proximity(company).index %>"></div>
+        </li>
+
+        <li>
+          <%= link_to font_awesome('chevron-down'), nil, class: 'toggle-elements' %>
+        </li>
+      </ul>
+    </div>
+
+    <div class="additional-info">
+      <ul>
+        <li>
+          <strong>Proximity:</strong>
+          <%= proximity(company).message %>
+        </li>
+
+        <% if can?(:edit, company) %>
+          <li>
+            <%= link_to 'Edit', main_app.edit_company_path(company) %>
+          </li>
+        <% end %>
+
+        <% if can?(:destroy, company) %>
+          <li>
+            <%= link_to 'Destroy', main_app.company_path(company), method: :delete, data: { confirm: 'Are you sure?' } %>
+          </li>
+        <% end %>
+
+        <%# link_to display_logo(company), main_app.company_path(company) if display_logo(company) %>
+
+        <%# TODO: add modal window for subscriptions form %>
+         <% if can?(:manage, Subscription) && cannot?(:update, company) %>
+          <li style="display: none;">
+            <strong>Subscription:</strong>
+            <% unless subscribed_to_company?(company) %>
+              <%= render 'subscriptions/form', subscription: company.subscriptions.build %>
+            <% else %>
+              <%= link_to 'Unsubscribe', subscription_path(company.subscriptions.find_by(user_id: current_user.id)), method: :delete, data: { confirm: 'Are you sure?' } %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </header>
+
+  <% if company.vacancies.any? %>
+    <div class="content">
+      <div class="charts">
+        <ul>
+          <li>
+            <div class="chart-preview"></div>
+            <strong>Main chart</strong>
+          </li>
+          <li>
+            <div class="chart-preview"></div>
+            Demo chart
+          </li>
+          <li>
+            <div class="chart-preview"></div>
+            Another chart
+          </li>
+          <li>
+            <div class="chart-preview">
+              <%= link_to font_awesome('plus-square'), '#' %>
+            </div>
+            ADD CHART
+          </li>
+        </ul>
+      </div>
+
+      <div class="vacancies">
+        <ul>
+          <% company.vacancies.each do |vacancy| %>
+            <li><%= link_to vacancy.name, main_app.vacancy_path(vacancy) %></li>
+          <% end %>
+        </ul>
+      </div>
+
+    </div>
+  <% end %>
+
+</section>

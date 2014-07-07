@@ -4,7 +4,6 @@ $base-unit: $base-font-size * .7;
 $base-font-family: 'proxima-nova';
 
 // Colors
-
 $athens-grey: hsl(0, 0, 87%);
 $dark-grey: hsl(60, 0, 35%);
 $north-texas-green: hsl(143, 100%, 26%);
@@ -33,9 +32,8 @@ $footer-font-size: 14pt;
 $footer-font-weight: normal;
 
 // Links
-
 a {
-    color: $north-texas-green;
+  color: $north-texas-green;
 }
 
 // Buttons
@@ -54,8 +52,3 @@ $button-font-weight: 700;
 
 $button-height: $base-unit * 2;
 $button-height-small: $base-unit * 1.3;
-
-
-//
-// Droppable article wrapper
-//

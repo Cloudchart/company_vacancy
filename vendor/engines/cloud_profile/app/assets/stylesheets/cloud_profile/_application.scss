@@ -4,23 +4,40 @@
 @import 'users';
 @import 'emails';
 @import 'password';
+@import 'companies';
 
 //
 // Base profile layout
 //
 
 main.cloud-profile {
-  @include cloud-profile-container;
-  
 
   > nav {
     @include cloud-profile-nav;
   }
 
+  > div.add-item {
+    width: $base-unit * 3;
+    height: $base-unit * 3;
+    position: absolute;
+    top: 0;
+    right: $base-unit;
+    border: 1pt solid black;
+    text-align: center;
+    line-height: $base-unit * 3;
+
+    > a {
+      font-size: 14pt;
+      display: block;
+    }
+  }
   
   > article {
-    @include cloud-profile-standalone-section;
-    
+    // @include cloud-profile-standalone-section;
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
+
     h1 {
       @include cloud-profile-section-header;
     }
