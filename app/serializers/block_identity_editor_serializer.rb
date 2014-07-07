@@ -16,6 +16,15 @@ class BlockIdentityEditorSerializer < ActiveModel::Serializer
       content: object.content
     }
   end
+  
+  
+  def block_image_attributes
+    {
+      uuid:     object.uuid,
+      image:    object.image.url,
+      meta:     object.meta.marshal_dump
+    }
+  end
 
 
 end

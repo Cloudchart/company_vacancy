@@ -1,14 +1,86 @@
-$editor-section-header-input-font-size: 15pt;
+$editor-section-header-input-font-size: 20pt;
 $editor-section-header-input-font-weight: 700;
 
 
 // Editor section header input
 @mixin editor-section-header-input {
+  @include placeholder {
+    font-style: italic;
+  }
+  
   border: none;
   font-size: $editor-section-header-input-font-size;
   font-weight: $editor-section-header-input-font-weight;
   outline: none;
   padding: 0;
+}
+
+
+// Editor image block
+@mixin editor-image-block {
+  margin-top: $base-unit;
+  position: relative;
+  
+  > .lock {
+    @include position(absolute, 50% 0 0 $base-unit * -2);
+    font-size: 15pt;
+    margin-top: -.5em;
+    opacity: .5;
+    text-align: center;
+    width: $base-unit * 2;
+  }
+
+
+  > input[type="file"] {
+    @include position(absolute, 0px 0px 0px 0px);
+    opacity: 0;
+  }
+  
+  > img {
+    width: 100%;
+  }
+  
+  > .placeholder {
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
+    @include justify-content(center);
+    
+    background-color: hsl(0, 0%, 75%);
+    border: 1pt solid hsl(0, 0%, 0%);
+    height: $base-unit * 20;
+    opacity: .3;
+    
+    header {
+      font-size: 15pt;
+      font-weight: 700;
+      position: relative;
+      width: $base-unit * 12;
+      
+      i {
+        margin-right: $base-unit / 2;
+        right: 100%;
+        position: absolute;
+      }
+    }
+    
+    p {
+      font-size: 12pt;
+      margin: $base-unit / 2 0 0;
+      width: $base-unit * 12;
+    }
+  }
+
+  > button.delete {
+    @include position(absolute, $base-unit $base-unit 0 0);
+    
+    visibility: hidden;
+  }
+
+  &:hover > button.delete {
+    visibility: visible;
+  }
+  
 }
 
 
@@ -38,7 +110,7 @@ article.editor {
     
     > .paragraph {
       font-size: 15pt;
-      margin: $base-unit 0 0 $base-unit * 2;
+      margin: $base-unit 0 0;
       padding: 0;
       position: relative;
       
@@ -61,6 +133,10 @@ article.editor {
           opacity: .25;
         }
       }
+    }
+
+    > .image {
+      @include editor-image-block;
     }
     
   }

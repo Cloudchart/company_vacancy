@@ -42,9 +42,9 @@ paramsForDelete = ->
 
 # Save paragraph
 #
-saveParagraph = (uuid, paragraph, content, done_callback, fail_callback) ->
+saveParagraph = (url, uuid, paragraph, content, done_callback, fail_callback) ->
   $.ajax
-    url:        "/blocks/#{uuid}"
+    url:        url
     type:       "PUT"
     dataType:   "json"
     data:       if content.length > 0 then paramsForCreateOrUpdate(paragraph, content) else paramsForDelete()
@@ -82,8 +82,9 @@ Component = React.createClass
   
   
   onChange: (event) ->
+    return if (@state.identity.content || "") == event.target.value
     @setState { synchronizing: true }
-    saveParagraph(@props.uuid, @state.identity, event.target.value, @onSaveComplete, @onSaveFailure)
+    saveParagraph(@props.url, @props.uuid, @state.identity, event.target.value, @onSaveComplete, @onSaveFailure)
     
 
   render: ->

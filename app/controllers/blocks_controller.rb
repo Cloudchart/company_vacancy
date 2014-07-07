@@ -24,7 +24,7 @@ class BlocksController < ApplicationController
     respond_to do |format|
       format.html { redirect_to @block.owner }
       format.js
-      format.json { render json: @block.as_json_for_editor }
+      format.json { render json: @block, serializer: BlockEditorSerializer, root: false }
     end
   end
 

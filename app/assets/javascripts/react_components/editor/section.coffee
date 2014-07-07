@@ -85,6 +85,20 @@ SectionTitleInputComponent = React.createClass
 SectionComponent = React.createClass
 
 
+  getInitialState: ->
+    blocks: @props.blocks
+  
+  
+  gatherBlocks: ->
+    @state.blocks.map (block) ->
+      block.key = block.uuid
+      
+      if blockComponentClass = cc.react.editor.blocks[block.identity_type]
+        blockComponentClass(block)
+
+    .filter((blockComponent) -> blockComponent)
+
+
   render: ->
     titleInputComponent = SectionTitleInputComponent
       value:        @props.title
@@ -93,13 +107,12 @@ SectionComponent = React.createClass
       key:          @props.key
       owner:        @props.owner
     
-    blocksComponents = []
-    
     (tag.section {},
+      (tag.a { name: @props.placeholder })
       (tag.header {},
         (titleInputComponent)
-        (blocksComponents) if blocksComponents.length > 0
       )
+      @gatherBlocks()
     )
 
 # Expose Section component
