@@ -42,12 +42,25 @@ paramsForDelete = ->
 
 # Save paragraph
 #
-saveParagraph = (url, uuid, paragraph, content, done_callback, fail_callback) ->
+saveParagraph = (paragraph, content, done_callback, fail_callback) ->
+
+  type = if !paragraph.uuid
+    if content then 'POST' else null
+  else
+    if content then 'PUT' else 'DELETE'
+
+  return done_callback(paragraph) if type == null
+  
+  data = new FormData
+  data.append("block_identity[identity_attributes][content]", content)
+  
   $.ajax
-    url:        url
-    type:       "PUT"
-    dataType:   "json"
-    data:       if content.length > 0 then paramsForCreateOrUpdate(paragraph, content) else paramsForDelete()
+    url:          paragraph.url
+    type:         type
+    data:         data
+    dataType:     'json'
+    contentType:  false
+    processData:  false
   .done done_callback
   .fail fail_callback
 
@@ -65,15 +78,19 @@ LockComponent = React.createClass
 
 Component = React.createClass
 
+  
+  emptyIdentity: ->
+    url: @props.url + '/identities'
+
 
   getInitialState: ->
-    identity:       @props.identities[0] || {}
+    identity:       @props.identities[0] || @emptyIdentity()
     synchronizing:  false
   
   
   onSaveComplete: (json) ->
     @setState
-      identity:       json.identities[0] || {}
+      identity:       json || @emptyIdentity()
       synchronizing:  false
   
 
@@ -84,7 +101,7 @@ Component = React.createClass
   onChange: (event) ->
     return if (@state.identity.content || "") == event.target.value
     @setState { synchronizing: true }
-    saveParagraph(@props.url, @props.uuid, @state.identity, event.target.value, @onSaveComplete, @onSaveFailure)
+    saveParagraph(@state.identity, event.target.value, @onSaveComplete, @onSaveFailure)
     
 
   render: ->

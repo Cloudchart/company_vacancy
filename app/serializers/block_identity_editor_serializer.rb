@@ -1,7 +1,12 @@
 class BlockIdentityEditorSerializer < ActiveModel::Serializer
 
 
-  attributes :uuid
+  attributes :uuid, :url
+
+
+  def url
+    identity_path(object.block_identity)
+  end
 
 
   def attributes

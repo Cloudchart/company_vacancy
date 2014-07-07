@@ -1,5 +1,7 @@
 class Paragraph < ActiveRecord::Base
   include Uuidable
+  
+  has_one :block_identity, as: :identity, inverse_of: :identity
 
   validates :content, presence: true
   
