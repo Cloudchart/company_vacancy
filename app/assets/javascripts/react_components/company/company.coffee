@@ -39,6 +39,7 @@ MainComponent = React.createClass
       sections_titles:    @props.sections
       blocks:             @props.blocks
       url:                @props.url
+      people_url:         @props.people_url
       owner:              'company'
     
     

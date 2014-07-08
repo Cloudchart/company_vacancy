@@ -19,6 +19,7 @@ Component = React.createClass
     blockComponentClass = switch @props.identity_type
       when 'Paragraph'  then cc.react.editor.blocks.Paragraph
       when 'BlockImage' then cc.react.editor.blocks.BlockImage
+      when 'Person'     then cc.react.editor.blocks.People
       else DefaultBlockComponent
     
     (tag.div { className: 'section-block' },

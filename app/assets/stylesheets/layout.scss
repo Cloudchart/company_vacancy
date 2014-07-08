@@ -38,6 +38,17 @@ body {
   top: 0;
 }
 
+input,
+textarea {
+  @include placeholder {
+    font-style: italic;
+  }
+}
+
+.placeholder {
+  font-style: italic;
+}
+
 
 @import 'layout/header';
 @import 'layout/footer';

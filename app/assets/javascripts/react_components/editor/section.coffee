@@ -90,8 +90,12 @@ SectionComponent = React.createClass
   
   
   gatherBlocks: ->
-    @state.blocks.map (block_props) ->
-      block_props.key = block_props.uuid
+    @state.blocks.map (block_props) =>
+      block_props.key             = block_props.uuid
+      block_props.collection_url  = switch block_props.identity_type
+        when 'Person' then @props.people_url
+        else null
+
       cc.react.editor.blocks.Main(block_props)
 
 

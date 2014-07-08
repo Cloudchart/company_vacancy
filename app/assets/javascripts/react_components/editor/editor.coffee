@@ -22,6 +22,7 @@ MainComponent = React.createClass
         placeholder:  section.title
         title:        @props.sections_titles[section.key]
         url:          @props.url
+        people_url:   @props.people_url
         owner:        @props.owner
         blocks:       @props.blocks.filter((block) -> block.section == section.key)
     

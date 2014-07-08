@@ -40,7 +40,6 @@ $editor-section-block-lock-font-size: 15pt;
 
 // Editor image block
 @mixin editor-image-block {
-  margin-top: $base-unit;
   position: relative;
   
   > input[type="file"] {
@@ -96,6 +95,82 @@ $editor-section-block-lock-font-size: 15pt;
 }
 
 
+// Editor person block
+@mixin editor-people-block {
+  @include clearfix;
+  
+  margin-top: -$base-unit;
+  
+  > div {
+    @include display(flex);
+    @include flex-direction(column);
+
+    background-color: hsl(0, 0%, 95%);
+    border: 1pt solid hsl(0, 0%, 85%);
+    float: left;
+    height: $base-unit * 6;
+    margin-top: $base-unit;
+    margin-left: 5%;
+    width: 30%;
+    
+    &:nth-child(3n + 1) {
+      margin-left: 0;
+    }
+    
+    > header {
+      border-bottom: 1pt solid hsl(0, 0%, 85%);
+      position: relative;
+      
+      input {
+        border: none;
+        font-size: 12pt;
+        font-weight: 300;
+        outline: none;
+        padding: 2pt 4pt;
+        width: 100%;
+      }
+      
+      ul {
+        @include position(absolute, 100% -1pt 0 -1pt);
+
+        border-top: 1pt solid hsl(0, 0%, 85%);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        z-index: 1000;
+        
+        li {
+          background-color: hsl(0, 0%, 100%);
+          border: 1pt solid hsl(0, 0%, 85%);
+          border-top-width: 0;
+          position: relative;
+          padding: $base-unit / 2;
+          padding-left: $base-unit * 3;
+          
+          aside {
+            @include position(absolute, 0 0 0 $base-unit / 2);
+          }
+        }
+      }
+      
+    }
+
+    > div {
+      color: hsl(0, 0%, 50%);
+      font-size: 12pt;
+      font-weight: 600;
+      margin: auto;
+      text-align: center;
+      
+      i {
+        margin-right: $base-unit / 2;
+      }
+    }
+  }
+  
+}
+
+
 // Editor article
 article.editor {
   margin: 0 $base-unit * 5;
@@ -144,6 +219,10 @@ article.editor {
       
       > .image {
         @include editor-image-block;
+      }
+
+      > .people {
+        @include editor-people-block;
       }
     }
     
