@@ -19,9 +19,17 @@ CloudProfile::Engine.routes.draw do
   get 'oauth/:provider',  to: 'social_networks#oauth_provider', as: 'oauth_provider'
 
   scope :profile do
+    
     # Root
     #
     root to: 'main#companies'
+
+    # Main
+    #
+    get 'companies', to: 'main#companies', as: :companies
+    get 'newsfeed', to: 'main#activities', as: :activities
+    get 'settings', to: 'main#settings', as: :settings
+    get 'subscriptions', to: 'main#subscriptions', as: :subscriptions
 
     # Activation
     #
@@ -32,14 +40,6 @@ CloudProfile::Engine.routes.draw do
     # 
     get 'associate_with_person/:id', to: 'users#associate_with_person', as: :associate_with_person
 
-    get 'companies', to: 'main#companies', as: :companies
-    get 'newsfeed', to: 'main#activities', as: :activities
-    get 'settings', to: 'main#settings', as: :settings
-    get 'subscriptions', to: 'main#subscriptions', as: :subscriptions
-
-    resources :vacancies, only: :index
-    resources :charts, only: :index
-    
     # Emails
     #
     resources :emails do
@@ -47,11 +47,9 @@ CloudProfile::Engine.routes.draw do
       get 'resend_verification', on: :member
     end
     
-
     # User
     #
     resource :user
-
 
     # Password
     #
@@ -63,10 +61,8 @@ CloudProfile::Engine.routes.draw do
     get   'password/:token/reset', to: 'passwords#reset', as: 'password_reset'
     post  'password/:token/reset', to: 'passwords#reset_complete'
     
-    
     # Social Networks
     #
-    
     get     'social_networks/attach',     to: 'social_networks#attach', as: :attach_social_network
     put     'social_networks/:id/toggle', to: 'social_networks#toggle', as: :toggle_social_network
     delete  'social_networks/:id/detach', to: 'social_networks#detach', as: :detach_social_network

@@ -43,24 +43,12 @@ class CompaniesController < ApplicationController
   def edit
   end
 
-  # POST /companies
-  # def create
-  #  @company = Company.new(company_params)
-  #  @company.associate_with_person(current_user)
-  #  @company.should_build_objects!
-
-  #  @company.save!
-  #  Activity.track_activity(current_user, params[:action], @company)
-  #  redirect_to @company, notice: t('messages.created', name: t('lexicon.company'))
-  # rescue ActiveRecord::RecordInvalid
-  #  render :new
-  # end
-
   # PATCH/PUT /companies/1
   def update
     @company.is_empty = false
     if @company.update(company_params)
       Activity.track_activity(current_user, params[:action], @company)
+
       respond_to do |format|
         format.html { redirect_to @company, notice: t('messages.updated', name: t('lexicon.company')) }
         format.js
@@ -73,7 +61,7 @@ class CompaniesController < ApplicationController
   # DELETE /companies/1
   def destroy
     @company.destroy
-    redirect_to companies_url, notice: t('messages.destroyed', name: t('lexicon.company'))
+    redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
 private

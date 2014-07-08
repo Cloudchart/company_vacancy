@@ -17,26 +17,24 @@ main.cloud-profile {
   }
 
   > div.add-item {
-    width: $base-unit * 3;
-    height: $base-unit * 3;
+    padding: 0 $base-unit;
     position: absolute;
     top: 0;
-    right: $base-unit;
-    border: 1pt solid black;
+    right: $base-unit * 11;
     text-align: center;
     line-height: $base-unit * 3;
+    background-color: $ufo-green;
 
     > a {
+      text-decoration: none;
+      color: white;
       font-size: 14pt;
       display: block;
     }
   }
   
   > article {
-    // @include cloud-profile-standalone-section;
-    @include display(flex);
-    @include flex-direction(column);
-    @include align-items(center);
+    margin: 0 $base-unit * 10;
 
     h1 {
       @include cloud-profile-section-header;
@@ -57,7 +55,7 @@ main.cloud-profile {
   
 
   > nav + article {
-    @include cloud-profile-navigated-section;
+    // @include cloud-profile-navigated-section;
     
     h1 a {
       margin-right: $base-unit / 2;

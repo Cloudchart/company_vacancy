@@ -53,8 +53,8 @@
         
         &.current,
         &:hover {
-          background-color: hsl(42, 82%, 55%);
-          color: hsl(0, 100%, 100%);
+          background-color: $ufo-green;
+          color: white;
           font-weight: 700;
         }
       }

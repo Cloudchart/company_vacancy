@@ -1,5 +1,6 @@
 @mixin companies-article {
   display: block;
+  margin: 0 $base-unit * 10;
 
   ul {
     @include display(flex);

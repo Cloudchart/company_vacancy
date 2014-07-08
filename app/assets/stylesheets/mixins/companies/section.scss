@@ -1,5 +1,5 @@
 @mixin companies-section {
-  margin-bottom: $base-unit;
+  margin-top: $base-unit;
 
   > header {
     padding: $base-unit;
@@ -84,25 +84,28 @@
         text-align: center;
         color: $dark-grey;
 
-        &:last-child > div.chart-preview {
-          background-color: white;
+        > div.chart-preview {
+          border: 1pt solid white;
+          height: $base-unit * 6;
+          margin-bottom: 0.5em;
 
           > a {
             display: block;
+            height: 100%;
+          }
 
-            > i.fa {
+          &:last-child {
+            background-color: white;
+
+            > a > i.fa {
               line-height: $base-unit * 6;
               color: $ufo-green;
               font-size: 14pt;
             }
           }
+
         }
 
-        > div.chart-preview {
-          border: 1pt solid white;
-          height: $base-unit * 6;
-          margin-bottom: 0.5em;
-        }
       }
     }
 

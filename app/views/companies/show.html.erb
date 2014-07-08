@@ -1,5 +1,6 @@
 <% if can?(:update, @company) %>
   <%= link_to 'Edit', edit_company_path(@company) %>
+  <%= link_to 'Destroy', main_app.company_path(@company), method: :delete, data: { confirm: 'Are you sure?' } %>
   <%= link_to 'Vacancies', company_vacancies_path(@company) %>
   <%= link_to 'People', company_people_path(@company) %>
   <%= link_to 'Events', company_events_path(@company) %>

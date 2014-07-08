@@ -1,8 +1,6 @@
 main.cloud-profile > article.companies {    
   @include companies-article;
 
-  margin-top: $base-unit;
-
   > section {
     @include companies-section;
   }

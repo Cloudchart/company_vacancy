@@ -45,26 +45,25 @@
       <%= t '.social_networks', default: 'Social Networks' %>
     </h1>
   
-    <ul>
-      <%- CloudOAuth.providers.each do |name, provider| -%>
-        <%- social_network = @social_networks.find { |sn| sn.name == name.to_s } -%>
-        <li>
-          <%= link_to oauth_provider_path(name, return_to: attach_social_network_path), class: :plaque do -%>
-            <%= font_awesome t("#{name}.icon", scope: :social_network) + '-square' %>
-            <%= t "#{name}.name", scope: :social_network %>
-          <%- end -%>
-          <%- if social_network.present? -%>
-            <%= social_network.first_name %>
-            <strong>
-              <%= social_network.last_name %>
-            </strong>
-            
-            <%= link_to font_awesome("eye#{ social_network.is_visible? ? '' : '-slash'}"), toggle_social_network_path(social_network), class: :visibility, method: :put %>
-            <%= link_to font_awesome('times'), detach_social_network_path(social_network), class: :destroy, method: :delete %>
-          <%- end -%>
-        </li>
-      <%- end -%>
-    </ul>
+    <%- CloudOAuth.providers.each do |name, provider| -%>
+      <%- social_network = @social_networks.find { |sn| sn.name == name.to_s } -%>
+      <p>
+        <%= link_to oauth_provider_path(name, return_to: attach_social_network_path), class: :plaque do -%>
+          <%= font_awesome t("#{name}.icon", scope: :social_network) + '-square' %>
+          <%= t "#{name}.name", scope: :social_network %>
+        <%- end -%>
+        <%- if social_network.present? -%>
+          <%= social_network.first_name %>
+          <strong>
+            <%= social_network.last_name %>
+          </strong>
+          
+          <%= link_to font_awesome("eye#{ social_network.is_visible? ? '' : '-slash'}"), toggle_social_network_path(social_network), class: :visibility, method: :put %>
+          <%= link_to font_awesome('times'), detach_social_network_path(social_network), class: :destroy, method: :delete %>
+        <%- end -%>
+      </p>
+    <%- end -%>
+
   </section>
 
   <%# temporary place for companies invites; shared/notice must be rendered in the future %>
@@ -72,13 +71,12 @@
     <section class="companies-invites">
       <h1>Companies Invites</h1>
 
-      <ul>
-        <% session[:company_invite].each do |session| %>
-          <li>
-            <%= t('messages.company_invite.you_have_invitation', href: main_app.company_invite_path(token_id: session[:token_id]), name: session[:company_name]).html_safe %>            
-          </li>
-        <% end %>
-      </ul>
+      <% session[:company_invite].each do |session| %>
+        <p>
+          <%= t('messages.company_invite.you_have_invitation', href: main_app.company_invite_path(token_id: session[:token_id]), name: session[:company_name]).html_safe %>            
+        </p>
+      <% end %>
+
     </section>
   <% end %>
 
