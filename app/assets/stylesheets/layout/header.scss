@@ -32,18 +32,18 @@ body > header {
     @include align-items(center);
     @include display(flex);
     
-    color: #000;
+    color: $north-texas-green;
     font-weight: 300;
     margin-top: 5pt;
     margin-right: $base-unit;
     
     &::before {
-      background: image-url('cloud-chart-logo.svg') no-repeat center center;
+      background: image-url('orgpad-logo.svg') no-repeat center center;
       content: '';
       display: inline-block;
       height: 38px;
       margin-top: -5pt;
-      margin-right: $base-unit / 2;
+      margin-right: $base-unit * 0.1;
       width: 56px;
     }
     
@@ -128,7 +128,7 @@ body > header {
     }
     
     > .logo::before {
-      background-image: image-url('cloud-chart-logo-neg.svg');
+      background-image: image-url('orgpad-logo-neg.svg');
     }
     
     > .links,

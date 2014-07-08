@@ -3,7 +3,7 @@
 
 
   <%= link_to current_user ? cloud_profile.root_path : main_app.root_path, class: 'logo' do %>
-    Cloud<strong>Chart</strong>
+    Org<strong>Pad</strong>
   <% end %>
 
 
@@ -21,16 +21,13 @@
 
   <ul class="links">
     <li>
-      <%= link_to t('.why_charting', default: 'Why charting?'), '' %>
+      <%= link_to 'Why OrgPad?', '#' %>
     </li>
     <li>
-      <%= link_to t('.companies', default: 'Companies'), main_app.companies_path %>
+      <%= link_to 'Companies', main_app.companies_path %>
     </li>
     <li>
-      <%= link_to t('.success_stories', default: 'Success stories'), '' %>
-    </li>
-    <li>
-      <%= link_to t('.pricing', default: 'Pricing'), '' %>
+      <%= link_to 'Pricing', '#' %>
     </li>
   </ul>
   
