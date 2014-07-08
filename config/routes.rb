@@ -52,7 +52,7 @@ Cloudchart::Application.routes.draw do
     post :update_position,  on: :collection
     post :update_section,   on: :collection
 
-    resources :identities, shallow: true, controller: :block_identities
+    resources :identities, shallow: true, controller: :block_identities, only: :destroy
   end
 
   resources :features do

@@ -17,8 +17,9 @@ class BlocksController < ApplicationController
 
   def update
     @block = Block.includes(:owner).find(params[:id])
-    @block.should_destroy_previous_block_images! if @block.identity_type == 'BlockImage' && @block.block_images.any?
+    #@block.should_destroy_previous_block_images! if @block.identity_type == 'BlockImage' && @block.block_images.any?
     @block.update!(block_params_for_update)
+
     Activity.track_activity(current_user, params[:action], @block, @block.owner)
 
     respond_to do |format|

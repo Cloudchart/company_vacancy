@@ -3,42 +3,40 @@
 tag = React.DOM
 
 
-# Placeholders
+# Fields for ajax requests
 #
-placeholders =
+ajaxAttributesPrefix = "block[block_images_attributes][]"
 
-  product:
-    1: "Product picture goes here."
-
-  default: "Default placeholder"
-
-
-placeholder = (section, position) ->
-  placeholders[section]?[position] || placeholders[section]?.default || placeholders.default
+attributesForAjax =
+  uuid: 'id'
+  file: 'image'
 
 
-# Save
+# File input component
 #
-save = (url, data, onDone, onFail) ->
-  $.ajax
-    url:          url
-    data:         data
-    type:         'PUT'
-    dataType:     'json'
-    contentType:  false
-    processData:  false
-  .done onDone
-  .fail onFail
-
-
-# Lock component
-#
-LockComponent = React.createClass
+FileInputComponent = React.createClass
 
   render: ->
-    (tag.i { className: 'fa fa-lock lock' })
+    (tag.input {
+      type:       'file'
+      onChange:   @props.onChange
+    })
 
-  
+
+# Delete button component
+#
+DeleteButtonComponent = React.createClass
+
+  render: ->
+    (tag.button {
+      className:  'delete'
+      onClick:    @props.onClick
+    },
+      "Delete"
+      (tag.i { className: 'fa fa-times' })
+    )
+
+
 # Placeholder component
 #
 PlaceholderComponent = React.createClass
@@ -54,88 +52,103 @@ PlaceholderComponent = React.createClass
     )
 
 
-
-# Upload button component
-#
-UploadButtonComponent = React.createClass
-
-  render: ->
-    (tag.input {
-      type:     'file'
-      onChange: @props.onChange
-    })
-
-
-# Delete Button component
-#
-DeleteButtonComponent = React.createClass
-
-  render: ->
-    (tag.button {
-      className: 'delete'
-      onClick:    @props.onClick
-    },
-      "Delete"
-      (tag.i { className: 'fa fa-times' })
-    )
-
-
-# Paragraph Block component
+# BlockImage component
 #
 Component = React.createClass
 
 
   getInitialState: ->
-    identity: @props.identities[0]
-  
-  
-  # On save done
-  onSaveDone: (json) ->
+    identity = @props.identities[0] || {}
+
+    uuid:       identity.uuid
+    url:        identity.url
+    image_url:  identity.image
+    file:       null
+
+
+  onAjaxDone: (json) ->
+    identity = json.identities[0] || {}
+
     @setState
-      synchronizing:  false
-      identity:       json.identities[0]
+      uuid:             identity.uuid
+      url:              identity.url
+      image_url:        identity.image
+      is_synchronizing: false
   
   
-  # On save failr
-  onSaveFail: ->
+  onAjaxFail: ->
     @setState
-      synchronizing:  false
-    console.log 'fail'
+      is_synchronizing: false
+
+
+  save: ->
+    data = Object.keys(attributesForAjax).reduce (memo, key) =>
+      memo.append("#{ajaxAttributesPrefix}[#{attributesForAjax[key]}]", @state[key]) if @state[key]
+      memo
+    , new FormData
     
-  
-  
-  # Delete Button Click
-  onDeleteButtonClick: (event) ->
-    event.preventDefault()
-    event.stopPropagation()
+    @setState
+      file:             null
+      is_synchronizing: true
     
-    data = new FormData
-    data.append("block[identity_ids][]", "")
-
-    @setState({ synchronizing: true })
-
-    save(@props.url, data, @onSaveDone, @onSaveFail)
+    $.ajax
+      url:          @props.url
+      data:         data
+      type:         'PUT'
+      dataType:     'json'
+      contentType:  false
+      processData:  false
+    .done @onAjaxDone
+    .fail @onAjaxFail
   
   
-  # On file upload
-  onFileUpload: (event) ->
-    data = new FormData
-    data.append("block[block_images_attributes][][image]", event.target.files[0])
+  onDeleteDone: (json) ->
+    @setState
+      uuid:             null
+      image_url:        null
+      is_synchronizing: false
+  
+  
+  onDeleteFail: ->
+    @setState
+      is_synchronizing: false
+  
+
+  delete: ->
+    @setState
+      file:             null
+      is_synchronizing: true
     
-    @setState({ synchronizing: true })
+    $.ajax
+      url:        @state.url
+      type:       'DELETE'
+      dataType:   'json'
+    .done @onDeleteDone
+    .fail @onDeleteFail
 
-    save(@props.url, data, @onSaveDone, @onSaveFail)
+
+  componentDidUpdate: ->
+    @save() if @state.file
 
 
+  onFileChange: (event) ->
+    file = event.target.files[0] ; return unless file
+    
+    @setState
+      file:       file
+      image_url:  URL.createObjectURL(file)
+  
+  
+  onImageLoad: ->
+    URL.revokeObjectURL(@state.image_url)
+  
+  
   render: ->
     (tag.div { className: 'image' },
-      (LockComponent {})                                          if @state.synchronizing
-      (PlaceholderComponent {
-        placeholder: placeholder(@props.section, @props.position)
-      })                                                          unless @state.identity
-      (tag.img { src: @state.identity.image })                    if @state.identity and !@state.synchronizing
-      (UploadButtonComponent { onChange: @onFileUpload })         unless @state.synchronizing
-      (DeleteButtonComponent { onClick: @onDeleteButtonClick })   if @state.identity and !@state.synchronizing
+      (tag.img { src: @state.image_url, onLoad: @onImageLoad }) if @state.image_url
+      (PlaceholderComponent {}) unless @state.image_url
+      (FileInputComponent { onChange: @onFileChange }) unless @state.is_synchronizing
+      (DeleteButtonComponent { onClick: @delete }) unless @state.is_synchronizing if @state.uuid
     )
 
 

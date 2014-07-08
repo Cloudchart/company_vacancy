@@ -1,4 +1,4 @@
-# Expose tags
+# Expose
 #
 tag = React.DOM
 
@@ -23,93 +23,115 @@ placeholder = (section, position) ->
   placeholders[section]?[position] || placeholders[section]?.default || placeholders.default
 
 
-# Params for create or update
+# Attribute prefix
 #
-paramsForCreateOrUpdate = (paragraph, content) ->
-  block:
-    paragraphs_attributes: [
-      id:       paragraph.uuid
-      content:  content
-    ]
+attributePrefix = "block[paragraphs_attributes][]"
 
 
-# Params for delete
+# Keys for ajax requests
 #
-paramsForDelete = ->
-  block:
-    identity_ids: ['']
+keysForCreate   = { content: 'content' }
+keysForUpdate   = { content: 'content', id: 'uuid' }
 
 
-# Save paragraph
+# Paragraph component
 #
-saveParagraph = (paragraph, content, done_callback, fail_callback) ->
-
-  type = if !paragraph.uuid
-    if content then 'POST' else null
-  else
-    if content then 'PUT' else 'DELETE'
-
-  return done_callback(paragraph) if type == null
-  
-  data = new FormData
-  data.append("block_identity[identity_attributes][content]", content)
-  
-  $.ajax
-    url:          paragraph.url
-    type:         type
-    data:         data
-    dataType:     'json'
-    contentType:  false
-    processData:  false
-  .done done_callback
-  .fail fail_callback
-
-
-# Lock component
-#
-LockComponent = React.createClass
-
-  render: ->
-    (tag.i { className: 'fa fa-lock lock' })
-
-  
-# Paragraph Block component
-#
-
 Component = React.createClass
 
-  
-  emptyIdentity: ->
-    url: @props.url + '/identities'
+
+  emptyParagraph: ->
+    uuid:     null
+    content:  ''
 
 
   getInitialState: ->
-    identity:       @props.identities[0] || @emptyIdentity()
-    synchronizing:  false
+    @props.identities[0] || @emptyParagraph()
   
   
-  onSaveComplete: (json) ->
+  save: ->
     @setState
-      identity:       json || @emptyIdentity()
-      synchronizing:  false
-  
+      synchronizing:        true
+      should_save_content:  false
 
-  onSaveFailure: ->
-    @setState { synchronizing: false }
+    return @create() unless @state.content.length == 0 unless @state.uuid
+    return @update() unless @state.content.length == 0
+    return @delete()
   
   
-  onChange: (event) ->
-    return if (@state.identity.content || "") == event.target.value
-    @setState { synchronizing: true }
-    saveParagraph(@state.identity, event.target.value, @onSaveComplete, @onSaveFailure)
+  onAjaxDone: (json) ->
+    @setState json.identities[0]
+    @setState
+      synchronizing: false
+  
+  
+  onAjaxFail: ->
+    @setState
+      synchronizing: false
+  
+  
+  onDeleteDone: ->
+    @setState @emptyParagraph()
+    @setState
+      synchronizing: false
+  
+  
+  onDeleteFail: ->
+    @setState
+      synchronizing: false
+  
+  
+  create: ->
+    keys = keysForCreate
+    data = Object.keys(keys).reduce ((memo, key) => memo.append("#{attributePrefix}[#{key}]", @state[keys[key]]) ; memo), new FormData
     
+    $.ajax
+      url:          @props.url
+      data:         data
+      type:         'PUT'
+      dataType:     'json'
+      contentType:  false
+      processData:  false
+    .done @onAjaxDone
+  
+  
+  update: ->
+    keys = keysForUpdate
+    data = Object.keys(keys).reduce ((memo, key) => memo.append("#{attributePrefix}[#{key}]", @state[keys[key]]) ; memo), new FormData
+
+    $.ajax
+      url:          @props.url
+      data:         data
+      type:         'PUT'
+      dataType:     'json'
+      contentType:  false
+      processData:  false
+    .done @onAjaxDone
+    .fail @onAjaxFail
+  
+  
+  delete: ->
+    $.ajax
+      url:          @state.url
+      type:         'DELETE'
+      dataType:     'json'
+    .done @onDeleteDone
+    .fail @onDeleteFail
+    
+
+  onChange: (event) ->
+    @setState
+      content:              event.target.value
+      should_save_content:  true
+
+  
+  componentDidUpdate: (prevProps, prevState) ->
+    @save() if prevState.content != @state.content if @state.should_save_content
+  
 
   render: ->
     (tag.div { className: 'paragraph' },
-      (LockComponent {}) if @state.synchronizing
       (cc.react.editor.ContentEditableComponent {
-        active:      !@state.synchronizing
-        value:        @state.identity.content
+        value:        @state.content
         placeholder:  placeholder(@props.section, @props.position)
         onChange:     @onChange
       })

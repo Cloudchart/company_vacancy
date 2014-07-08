@@ -90,13 +90,9 @@ SectionComponent = React.createClass
   
   
   gatherBlocks: ->
-    @state.blocks.map (block) ->
-      block.key = block.uuid
-      
-      if blockComponentClass = cc.react.editor.blocks[block.identity_type]
-        blockComponentClass(block)
-
-    .filter((blockComponent) -> blockComponent)
+    @state.blocks.map (block_props) ->
+      block_props.key = block_props.uuid
+      cc.react.editor.blocks.Main(block_props)
 
 
   render: ->

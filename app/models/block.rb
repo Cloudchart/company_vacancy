@@ -8,17 +8,13 @@ class Block < ActiveRecord::Base
   after_update    :destroy_previous_block_images, if: :should_destroy_previous_block_images?
   before_destroy  :destroy_identities
   after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
+  before_save     :ensure_identities
 
   belongs_to :owner, polymorphic: true
-  has_many :block_identities, -> { order(:position) }, inverse_of: :block
-  # has_paper_trail
-  
-  
-  def as_json_for_editor
-    as_json(only: [:uuid, :section, :position, :is_locked, :identity_type], include: { identities: { only: [:uuid, :content] }})
-  end
-  
 
+  has_many :block_identities, -> { order(:position) }, inverse_of: :block
+  
+  
   IdentitiesClasses.each do |identity_class|
     plural_identity_name = identity_class.name.underscore.pluralize
 
@@ -54,6 +50,7 @@ class Block < ActiveRecord::Base
   def identity_name
     @identity_name ||= identity_class.name.underscore
   end
+
   alias_method :singular_identity_name, :identity_name
 
   def plural_identity_name
@@ -82,15 +79,25 @@ class Block < ActiveRecord::Base
     end
   end
 
+
   def should_destroy_previous_block_images!
     @should_destroy_previous_block_images = true
   end
+
 
   def should_destroy_previous_block_images?
     !!@should_destroy_previous_block_images
   end
   
+
 private
+
+
+  def ensure_identities
+    Rails.logger.debug "Ensuring!!!"
+    Rails.logger.debug identities.size
+  end
+
 
   def ensure_position
     self.position = owner.blocks_by_section(section).length unless self.position

@@ -18,14 +18,13 @@ class BlockIdentityEditorSerializer < ActiveModel::Serializer
 
   def paragraph_attributes
     {
-      content: object.content
+      content:  object.content
     }
   end
   
   
   def block_image_attributes
     {
-      uuid:     object.uuid,
       image:    object.image.url,
       meta:     object.meta.marshal_dump
     }

@@ -1,6 +1,9 @@
 $editor-section-header-input-font-size: 20pt;
 $editor-section-header-input-font-weight: 700;
 
+$editor-section-block-lock-color: hsl(0, 0%, 75%);
+$editor-section-block-lock-font-size: 15pt;
+
 
 // Editor section header input
 @mixin editor-section-header-input {
@@ -16,21 +19,30 @@ $editor-section-header-input-font-weight: 700;
 }
 
 
+@mixin editor-paragraph-block {
+  font-size: 15pt;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  
+  > div {
+    margin: 0;
+    outline: none;
+
+    &:empty:before {
+      content: attr(data-placeholder);
+      font-style: italic;
+      opacity: .25;
+    }
+  }
+}
+
+
 // Editor image block
 @mixin editor-image-block {
   margin-top: $base-unit;
   position: relative;
   
-  > .lock {
-    @include position(absolute, 50% 0 0 $base-unit * -2);
-    font-size: 15pt;
-    margin-top: -.5em;
-    opacity: .5;
-    text-align: center;
-    width: $base-unit * 2;
-  }
-
-
   > input[type="file"] {
     @include position(absolute, 0px 0px 0px 0px);
     opacity: 0;
@@ -102,41 +114,44 @@ article.editor {
       
     }
     
+    
+    > .section-block {
+      padding-top: $base-unit;
+      position: relative;
+      
+      > .lock {
+        @include position(absolute, 50% 100% 0 0);
+
+        color: $editor-section-block-lock-color;
+        font-size: $editor-section-block-lock-font-size;
+        margin-top: - $editor-section-block-lock-font-size / 2;
+        margin-right: $base-unit;
+      }
+      
+      > .default {
+        border: 1pt dashed hsl(0, 0%, 0%);
+        font-size: 15pt;
+        font-style: italic;
+        font-weight: 600;
+        margin-top: $base-unit;
+        opacity: .25;
+        padding: $base-unit;
+      }
+      
+      > .paragraph {
+        @include editor-paragraph-block;
+      }
+      
+      > .image {
+        @include editor-image-block;
+      }
+    }
+    
+    
     > .new-block-placeholder {
       border: 2px dashed #eee;
       margin-top: $base-unit;
       padding: $base-unit;
-    }
-    
-    > .paragraph {
-      font-size: 15pt;
-      margin: $base-unit 0 0;
-      padding: 0;
-      position: relative;
-      
-      > .lock {
-        @include position(absolute, 50% 0 0 $base-unit * -2);
-        font-size: 15pt;
-        margin-top: -.5em;
-        opacity: .5;
-        text-align: center;
-        width: $base-unit * 2;
-      }
-      
-      > div {
-        margin: 0;
-        outline: none;
-
-        &:empty:before {
-          content: attr(data-placeholder);
-          font-style: italic;
-          opacity: .25;
-        }
-      }
-    }
-
-    > .image {
-      @include editor-image-block;
     }
     
   }
