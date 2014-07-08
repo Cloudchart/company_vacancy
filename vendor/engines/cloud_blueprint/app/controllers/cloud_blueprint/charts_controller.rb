@@ -63,14 +63,11 @@ module CloudBlueprint
       @chart      = Chart.new params.require(:chart).permit(:title, :company_id)
       @chart.save!
 
-      redirect_to cloud_profile.charts_path
+      redirect_to @chart
 
     rescue ActiveRecord::RecordInvalid
       render :new
     end
-    
-    
-    private
-    
+        
   end
 end

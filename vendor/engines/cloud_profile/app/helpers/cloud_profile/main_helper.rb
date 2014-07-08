@@ -1,5 +1,5 @@
 module CloudProfile
-  module ActivitiesHelper
+  module MainHelper
 
     def activity_message(activity)
       preposition = activity.group_type.to_s =~ /0|2/ ? 'a' : 'several'

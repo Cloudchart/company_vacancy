@@ -1,0 +1,7 @@
+main.cloud-profile > article.companies {    
+  @include companies-article;
+
+  > section {
+    @include companies-section;
+  }
+}

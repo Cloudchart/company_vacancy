@@ -1,0 +1,7 @@
+$('article.activities').append("<%= j render(partial: 'activity', collection: @activities) %>");
+
+<% if @activities.next_page %>
+  $('.pagination').replaceWith('<%= j paginate(@activities) %>');
+<% else %>
+  $('.pagination').remove();
+<% end %>

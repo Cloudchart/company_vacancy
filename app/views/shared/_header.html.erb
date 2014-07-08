@@ -2,7 +2,9 @@
 <header class="<%= header_class.blank? ? 'white' : header_class %>">
 
 
-  <a href="/" class="logo">Cloud<strong>Chart</strong></a>
+  <%= link_to current_user ? cloud_profile.root_path : main_app.root_path, class: 'logo' do %>
+    Cloud<strong>Chart</strong>
+  <% end %>
 
 
   <div class="search">

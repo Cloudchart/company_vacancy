@@ -1,0 +1,14 @@
+<%- class_for_main 'cloud-profile' -%>
+<%- cloud_profile_nav_current_tab :companies -%>
+<%= render 'shared/nav' %>
+
+<div class="add-item">
+  <%= link_to main_app.new_company_path do %>
+    Add
+    <%= font_awesome('plus') %>
+  <% end %>
+</div>
+
+<article class="companies">
+  <%= render partial: 'shared/companies/company', collection: @companies, locals: { rendered_from: :cloud_profile } %>
+</article>

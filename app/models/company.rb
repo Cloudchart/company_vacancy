@@ -20,8 +20,6 @@ class Company < ActiveRecord::Base
   accepts_nested_attributes_for :logo, allow_destroy: true
 
   validates :name, :country, :industry_ids, presence: true, on: :update
-
-  default_scope { where(is_empty: false) }
   
   settings ElasticSearchNGramSettings do
     mapping do
@@ -67,6 +65,7 @@ class Company < ActiveRecord::Base
         company.associate_with_person(user)
         company.should_build_objects!
         company.save!
+        Activity.track_activity(user, :create, company)
         company
       end
     end

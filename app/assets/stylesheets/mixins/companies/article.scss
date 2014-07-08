@@ -1,0 +1,15 @@
+@mixin companies-article {
+  display: block;
+  margin: 0 $base-unit * 10;
+
+  ul {
+    @include display(flex);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }  
+}

@@ -1,17 +1,5 @@
 main > article.companies-search {
-    
-  margin: 0 $base-unit * 5;
-
-  ul {
-    @include display(flex);
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  a {
-    text-decoration: none;
-  }
+  @include companies-article;
   
   > .counter > h1 {
     margin-top: 0;
@@ -24,7 +12,6 @@ main > article.companies-search {
   }
 
   > nav {
-    margin-bottom: $base-unit;
 
     > ul > li {
       width: $base-unit * 5;
@@ -48,134 +35,7 @@ main > article.companies-search {
   }
 
   > div.result > section {
-    margin-bottom: $base-unit;
-
-    > header {
-      padding: $base-unit;
-      background-color: $white-smoke;
-
-      > div.main-info > ul {
-        > li {
-          margin-right: $base-unit;
-          font-size: 14pt;
-          font-weight: bold;
-
-          &.spacer { @include flex(1); }
-
-          &.vacancies-size > a {
-            color: $alizarin-crimson;
-          }
-
-          &.country, &.established-on {
-            display: none;
-          }
-
-          &.proximity > div {
-            width: 13pt;
-            height: 16pt;
-            background: {
-              image: image-url('proximity.svg');
-              repeat: no-repeat;
-              size: 500%;
-              position: -100% center;
-            }
-
-            &.frame-1 { background-position: 0% center; }
-            &.frame-2 { background-position: 25% center; }
-            &.frame-3 { background-position: 50% center; }
-            &.frame-4 { background-position: 75% center; }
-            &.frame-5 { background-position: 100% center; }
-            &.frame-6 { background-position: 100% center; }
-            &.frame-7 { background-position: 100% center; }
-
-          }
-
-          > a {
-            color: black;
-          }
-
-          > a.star-link {
-            color: $mystic;
-          }
-        }
-      }
-
-      > div.additional-info {
-        margin-top: $base-unit;
-        display: none;
-        text-transform: uppercase;
-        
-        > ul {
-          @include justify-content(flex-start);
-
-          > li {
-            margin-right: $base-unit;
-
-            > a {
-              text-decoration: underline;
-            }
-          }
-        }
-      }
-    }
-
-    > div.content {
-      padding: $base-unit;
-      background-color: $light-smoke;
-
-      > div.charts {
-        display: none;
-
-        ul > li {
-          width: $base-unit * 8;
-          height: $base-unit * 7;
-          margin-right: $base-unit;
-          text-align: center;
-          color: $dark-grey;
-
-          &:last-child > div.chart-preview {
-            background-color: white;
-
-            > a {
-              display: block;
-
-              > i.fa {
-                line-height: $base-unit * 6;
-                color: $ufo-green;
-                font-size: 14pt;
-              }
-            }
-          }
-
-          > div.chart-preview {
-            border: 1pt solid white;
-            height: $base-unit * 6;
-            margin-bottom: 0.5em;
-          }
-        }
-      }
-
-      > div.vacancies {
-        > ul {
-          @include flex-flow(row wrap);
-
-          > li {
-            margin-right: $base-unit * 2;
-
-            > a {
-              font-size: 14pt;
-              color: black;
-
-              &:hover {
-                text-decoration: underline;
-              }
-            }
-          }
-          
-        }
-      }
-    }
-
+    @include companies-section;
   }
 
 }

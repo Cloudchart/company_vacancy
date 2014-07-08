@@ -27,32 +27,34 @@
   margin-left: $base-unit * 2;
 }
 
-
-
 @mixin cloud-profile-nav {
-  width: $base-unit * 12;
-  
+
   > ul {
+    @include display(flex);
+    @include justify-content(center);
+
     list-style: none;
     margin: 0;
     padding: 0;
     
     > li {
       background-color: hsl(0, 0%, 96%);
-      margin-top: 1pt;
+      margin-right: 1pt;
+      width: $base-unit * 12;
+      height: $base-unit * 3;
+      text-align: center;
+      line-height: $base-unit * 3;
       
       > a {
         color: hsl(0, 0%, 0%);
         display: block;
         font-size: 14pt;
-        padding: $base-unit * .8 0;
-        text-align: center;
         text-decoration: none;
         
         &.current,
         &:hover {
-          background-color: hsl(42, 82%, 55%);
-          color: hsl(0, 100%, 100%);
+          background-color: $ufo-green;
+          color: white;
           font-weight: 700;
         }
       }
