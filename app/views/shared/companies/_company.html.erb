@@ -10,12 +10,17 @@
 
 %>
 
-<section>
+<section id="<%= company.id %>">
   <header>
     <div class="main-info">
       <ul>
         <li>
-          <%= link_to font_awesome('star-o'), '#', class: 'star-link' if rendered_from == :cloud_profile %>
+          <% if rendered_from == :cloud_profile %>
+            <span class="favorites-link">
+              <%= render 'shared/favorites_link', object: company %>
+            </span>
+          <% end %>
+          
           <%= link_to company.name, main_app.company_path(company) %>
         </li>
 

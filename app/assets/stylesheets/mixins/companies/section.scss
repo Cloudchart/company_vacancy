@@ -45,8 +45,15 @@
           color: black;
         }
 
-        > a.star-link {
-          color: $mystic;
+        > span.favorites-link {
+
+          > a > i.fa-star-o {
+            color: $mystic;
+          }
+
+          > a > i.fa-star {
+            color: $ufo-green;
+          }
         }
       }
     }

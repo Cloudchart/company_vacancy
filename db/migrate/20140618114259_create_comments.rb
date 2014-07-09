@@ -12,7 +12,7 @@ class CreateComments < ActiveRecord::Migration
 
     add_index :comments, :user_id
     add_index :comments, [:commentable_id, :commentable_type]
-    execute 'ALTER TABLE comments ADD PRIMARY KEY (uuid); '
+    execute 'ALTER TABLE comments ADD PRIMARY KEY (uuid);'
   end
 
   def down

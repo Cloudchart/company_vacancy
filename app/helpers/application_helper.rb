@@ -67,4 +67,14 @@ module ApplicationHelper
     end
   end
 
+  def favorites_link(object)
+    favorite = current_user.favorites.find_by(favoritable_id: object.id)
+
+    if favorite
+      link_to font_awesome('star'), main_app.favorite_path(favorite), method: :delete, remote: true
+    else
+      link_to font_awesome('star-o'), main_app.favorites_path(favoritable_id: object.id, favoritable_type: object.class.name), method: :post, remote: true
+    end
+  end
+
 end
