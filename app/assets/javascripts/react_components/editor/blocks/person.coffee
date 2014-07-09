@@ -3,147 +3,212 @@
 tag = React.DOM
 
 
-# Filter people
+# Person component
 #
-filterPeople = (query) ->
-  query_parts = query.split(' ').map((part) -> part.trim()).filter((part) -> part.length) ; return [] if query_parts.length == 0
-  people      = Object.keys(cc.models.Person.instances).map (uuid) -> cc.models.Person.get(uuid)
-  
-  query_parts.forEach (part) ->
-    part    = part.toLowerCase()
-    people  = people.filter (person) ->
-      ['first_name', 'last_name', 'occupation'].some (attribute) ->
-        person[attribute].toLowerCase().indexOf(part) > -1 if person[attribute]
-  
-  people
-
-
-# Person item
-#
-PersonSearchItemConponent = React.createClass
-
-
-  getDefaultProps: ->
-    model: cc.models.Person.get(@props.key)
+PersonComponent = React.createClass
 
 
   letters: ->
     @_letters ||= @props.model.first_name.charAt(0).toUpperCase() + @props.model.last_name.charAt(0).toUpperCase()
-
-
-  onClick: (event) ->
-    @props.onClick({ target: { value: @props.key }}) if @props.onClick instanceof Function
+  
+  
+  onClick: ->
+    @props.onPersonDelete({ target: { value: @props.model.uuid }}) if @props.onPersonDelete instanceof Function
 
 
   render: ->
-    (tag.li {
-      onMouseDown: @onClick
-    },
-      (tag.aside {}, @letters())
-
-      (tag.div { className: 'name' },
-        @props.model.first_name
-        " "
-        (tag.strong {}, @props.model.last_name)
-      ) if @props.model.first_name and @props.model.last_name
-
-      (tag.div { className: 'occupation' },
-        @props.model.occupation
-      ) if @props.model.occupation
+    (tag.div { className: 'container' },
+      (tag.div {},
+        (tag.button {
+          className:  'change'
+          onClick:    @onClick
+        },
+          "Change"
+        )
+        (tag.button {
+          className:  'delete'
+          onClick:    @onClick
+        },
+          "Delete"
+        )
+        (tag.aside {}, @_letters)
+        (tag.div { className: 'name' },
+          @props.model.first_name
+          " "
+          (tag.strong {}, @props.model.last_name)
+        )
+        (tag.div { className: 'occupation' },
+          @props.model.occupation
+        ) if @props.model.occupation
+      )
     )
 
 
-# New person component
+# Person selector component
 #
-NewPersonComponent = React.createClass
+PersonSelectorComponent = React.createClass
+  
+  
+  toggleState: ->
+    @setState
+      searching: !@state.searching
+  
+  
+  preventIdentitySearchBlur: (event) ->
+    event.preventDefault() if @state.searching unless event.target == event.currentTarget
+  
 
+  onSearch: (search_result) ->
+    if search_result.Person
+      search_result.Person = search_result.Person.filter (uuid) => @props.people.indexOf(uuid) == -1
 
+    @setState
+      identities: search_result
+  
+  
   getInitialState: ->
-    people:   false
-    editor:   false
-    query:    ''
+    identities: []
+    searching:  false
   
   
-  onChange: (event) ->
-    @setState
-      query:  event.target.value
-  
-  
-  onClick: (event) ->
-    @setState
-      editor: true
+  onMouseDown: (event) ->
+    event.preventDefault() if @refs.search.state.active
   
 
-  onBlur: (event) ->
-    @setState
-      editor: false
-  
-
-  onKeyUp: (event) ->
-    @setState { editor: false } if event.which == 27
-  
-  
-  onPersonSelect: (event) ->
+  onPersonClick: (event) ->
+    @refs.search.blur()
     @props.onPersonSelect(event) if @props.onPersonSelect instanceof Function
   
   
-  componentDidMount: ->
-    cc.models.Person.load(@props.url).done => @setState { people: true }
-  
-    
-  componentDidUpdate: (prevProps, prevState) ->
-    @getDOMNode().querySelector('input').focus() if @state.editor
+  componentDidUpdate: ->
+    @refs.search.focus() if @state.searching
   
   
-  gatherPeople: ->
-    filterPeople(@state.query).map (person) =>
-      PersonSearchItemConponent({ key: person.uuid, onClick: @onPersonSelect })
-      
-
   render: ->
-    (tag.div {
-      onClick: @onClick
-    },
-      (tag.header {},
-        (tag.input {
-          type:         'text'
-          placeholder:  'Type name'
-          value:        @state.query
-          onChange:     @onChange
-          onBlur:       @onBlur
-          onKeyUp:      @onKeyUp
-        })
-        (tag.ul {},
-          @gatherPeople()
-          (tag.li { className: 'empty' },
-            (tag.i { className: 'fa fa-spinner' })
-          ) if @state.query.length unless @state.people
-        )
-      ) if @state.editor
+    (tag.div { className: 'container' },
+      (tag.div {
+        onMouseDown:  @preventIdentitySearchBlur
+      },
 
-      (tag.div {},
-        (tag.i { className: 'fa fa-female' })
-        "Uman"
-      ) unless @state.editor
+        (cc.react.shared.IdentitySearch {
+          ref:          'search'
+          placeholder:  'Type name'
+          models:       { Person: @props.url }
+          onSearch:     @onSearch
+          onBlur:       @toggleState
+        }) if @state.searching
+
+        (tag.button {
+          className:    'add'
+          onClick:      @toggleState
+        },
+          "Add "
+          (tag.i { className: 'fa fa-male' })
+        ) unless @state.searching
+
+
+      )
+    )
+  
+
+  renders: ->
+    (tag.div { className: 'container' },
+      (tag.div {
+        className:    'identity-selector'
+        onMouseDown:  @onMouseDown
+      },
+        (tag.header {},
+          (cc.react.shared.IdentitySearch {
+            ref:          'search'
+            placeholder:  'Type name'
+            models:       { Person: @props.url }
+            onSearch:     @onSearch
+          })
+          (cc.react.shared.IdentityList {
+            onClick:    @onPersonClick
+            identities: @state.identities
+          })
+        )
+        (tag.div {},
+          (tag.i { className: 'fa fa-female' })
+          "La femme"
+        )
+      )
     )
 
 
-# Person component
+# People component
 #
 Component = React.createClass
+
+  
+  onSaveDone: (json) ->
+    @setState
+      people: json.identities
+  
+  
+  onSaveFail: ->
+
+
+  save: ->
+    uuids = @state.people.map((person) -> person.uuid)
+
+    $.ajax
+      url:              @props.url
+      type:             'PUT'
+      dataType:         'JSON'
+      data:
+        block:
+          identity_ids: if uuids.length == 0 then [''] else uuids
+    .done @onSaveDone
+    .fail @onSaveFail
+
+
+  gatherPeople: (event) ->
+    @state.people.map (person) =>
+      PersonComponent
+        onPersonDelete: @onPersonDelete
+        key:            person.uuid
+        model:          person
+  
+  
+  onPersonSelect: (event) ->
+    people = @state.people.slice(0)
+    people.push(event.target.value)
+    @setState
+      people: people
+  
+  
+  onPersonDelete: (event) ->
+    person  = @state.people.filter((person) -> person.uuid == event.target.value)[0] ; return unless person
+    people  = @state.people.slice(0)
+    
+    people.splice(people.indexOf(person), 1)
+    
+    @setState
+      people: people
+    
 
 
   getInitialState: ->
     people: @props.identities
   
+  
+  componentDidUpdate: (prevProps, prevState) ->
+    prev_uuids  = prevState.people.map((person) -> person.uuid).sort()
+    uuids       = @state.people.map((person) -> person.uuid).sort()
 
-  onPersonSelect: (event) ->
-    
-
+    @save() if prev_uuids < uuids or prev_uuids > uuids
+  
 
   render: ->
     (tag.div { className: 'people' },
-      (NewPersonComponent { url: @props.collection_url, onPersonSelect: @onPersonSelect })
+      @gatherPeople()
+      (PersonSelectorComponent {
+        people:         @state.people.map((person) -> person.uuid)
+        onPersonSelect: @onPersonSelect
+        url:            @props.collection_url
+      })
     )
 
 

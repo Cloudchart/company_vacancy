@@ -3,6 +3,7 @@ class Person < ActiveRecord::Base
   include Tire::Model::Search
   include Tire::Model::Callbacks
 
+  has_one :block_identity, as: :identity, inverse_of: :identity
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
 

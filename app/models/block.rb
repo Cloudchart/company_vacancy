@@ -8,7 +8,6 @@ class Block < ActiveRecord::Base
   after_update    :destroy_previous_block_images, if: :should_destroy_previous_block_images?
   before_destroy  :destroy_identities
   after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
-  before_save     :ensure_identities
 
   belongs_to :owner, polymorphic: true
 
@@ -91,12 +90,6 @@ class Block < ActiveRecord::Base
   
 
 private
-
-
-  def ensure_identities
-    Rails.logger.debug "Ensuring!!!"
-    Rails.logger.debug identities.size
-  end
 
 
   def ensure_position

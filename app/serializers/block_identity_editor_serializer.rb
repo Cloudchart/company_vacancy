@@ -29,6 +29,15 @@ class BlockIdentityEditorSerializer < ActiveModel::Serializer
       meta:     object.meta.marshal_dump
     }
   end
+  
+  
+  def person_attributes
+    {
+      first_name:   object.first_name,
+      last_name:    object.last_name,
+      occupation:   object.occupation,
+    }
+  end
 
 
 end

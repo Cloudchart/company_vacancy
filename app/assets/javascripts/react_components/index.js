@@ -1,5 +1,6 @@
 //= require_self
 //= require ./mixins
+//= require ./shared
 //= require ./editor
 //= require ./company
 
