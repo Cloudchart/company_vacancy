@@ -6,12 +6,14 @@ class BlockIdentity < ActiveRecord::Base
   after_destroy   :reposition_siblings
   
   belongs_to :block, inverse_of: :block_identities
-  belongs_to :identity, polymorphic: true  
+  belongs_to :identity, polymorphic: true
   # has_paper_trail
   
+
   def self.accessible_attributes
     [:block_id, :identity_id, :identity_type]
   end
+  
   
   def skip_reposition!
     @should_skip_reposition = true
@@ -24,7 +26,7 @@ class BlockIdentity < ActiveRecord::Base
 protected
 
   def ensure_position
-    self.position = block.block_identities.size
+    self.position = block.block_identities.size unless self.position.present?
   end
   
   def destroy_identity

@@ -10,9 +10,10 @@ class Block < ActiveRecord::Base
   after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
 
   belongs_to :owner, polymorphic: true
-  has_many :block_identities, -> { order(:position) }, inverse_of: :block
-  # has_paper_trail
 
+  has_many :block_identities, -> { order(:position) }, inverse_of: :block
+  
+  
   IdentitiesClasses.each do |identity_class|
     plural_identity_name = identity_class.name.underscore.pluralize
 
@@ -48,6 +49,7 @@ class Block < ActiveRecord::Base
   def identity_name
     @identity_name ||= identity_class.name.underscore
   end
+
   alias_method :singular_identity_name, :identity_name
 
   def plural_identity_name
@@ -76,15 +78,19 @@ class Block < ActiveRecord::Base
     end
   end
 
+
   def should_destroy_previous_block_images!
     @should_destroy_previous_block_images = true
   end
+
 
   def should_destroy_previous_block_images?
     !!@should_destroy_previous_block_images
   end
   
+
 private
+
 
   def ensure_position
     self.position = owner.blocks_by_section(section).length unless self.position

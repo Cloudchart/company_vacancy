@@ -13,6 +13,11 @@ class PeopleController < ApplicationController
   def index
     @people = @company.people
     pagescript_params(company_id: @company.id)
+    
+    respond_to do |format|
+      format.html
+      format.json { render json: @people, root: false }
+    end
   end
 
   def search

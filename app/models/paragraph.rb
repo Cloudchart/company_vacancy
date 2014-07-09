@@ -1,8 +1,12 @@
 class Paragraph < ActiveRecord::Base
   include Uuidable
-
-  # has_paper_trail
+  
+  has_one :block_identity, as: :identity, inverse_of: :identity
 
   validates :content, presence: true
+  
+  def as_json_for_chart
+    as_json(only: [:uuid, :content])
+  end
   
 end

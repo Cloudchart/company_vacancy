@@ -22,6 +22,10 @@ class CompaniesController < ApplicationController
   # GET /companies/1
   def show
     pagescript_params(can_update_company: can?(:update, @company))
+    respond_to do |format|
+      format.html
+      format.json { render json: @company }
+    end
   end
 
   # GET /companies/new
@@ -35,6 +39,7 @@ class CompaniesController < ApplicationController
     @company = Company.find(params[:id])
     @company.logo = logo
     respond_to do |format|
+      format.json { render nothing: true }
       format.js
     end
   end
@@ -82,7 +87,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :country, :industry_ids, :description, :established_on, logo_attributes: :image)
+    params.require(:company).permit(:name, :country, :industry_ids, :description, sections_attributes: [Company::Sections.map(&:downcase)], logo_attributes: :image)
   end
-
+  
 end

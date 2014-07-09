@@ -1,0 +1,221 @@
+$editor-section-header-input-font-size: 20pt;
+$editor-section-header-input-font-weight: 700;
+
+$editor-section-block-lock-color: hsl(0, 0%, 75%);
+$editor-section-block-lock-font-size: 15pt;
+
+$editor-identity-item-background-color: hsl(0, 0%, 96%);
+
+
+// Editor section header input
+@mixin editor-section-header-input {
+  @include placeholder {
+    font-style: italic;
+  }
+  
+  border: none;
+  font-size: $editor-section-header-input-font-size;
+  font-weight: $editor-section-header-input-font-weight;
+  outline: none;
+  padding: 0;
+}
+
+
+@mixin editor-paragraph-block {
+  font-size: 15pt;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  
+  > div {
+    margin: 0;
+    outline: none;
+
+    &:empty:before {
+      content: attr(data-placeholder);
+      font-style: italic;
+      opacity: .25;
+    }
+  }
+}
+
+
+// Editor image block
+@mixin editor-image-block {
+  position: relative;
+  
+  > input[type="file"] {
+    @include position(absolute, 0px 0px 0px 0px);
+    opacity: 0;
+  }
+  
+  > img {
+    width: 100%;
+  }
+  
+  > .placeholder {
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
+    @include justify-content(center);
+    
+    background-color: hsl(0, 0%, 75%);
+    border: 1pt solid hsl(0, 0%, 0%);
+    height: $base-unit * 20;
+    opacity: .3;
+    
+    header {
+      font-size: 15pt;
+      font-weight: 700;
+      position: relative;
+      width: $base-unit * 12;
+      
+      i {
+        margin-right: $base-unit / 2;
+        right: 100%;
+        position: absolute;
+      }
+    }
+    
+    p {
+      font-size: 12pt;
+      margin: $base-unit / 2 0 0;
+      width: $base-unit * 12;
+    }
+  }
+
+  > button.delete {
+    @include position(absolute, $base-unit $base-unit 0 0);
+    
+    visibility: hidden;
+  }
+
+  &:hover > button.delete {
+    visibility: visible;
+  }
+  
+}
+
+
+// Identity item
+@mixin editor-identity-item($count: 3) {
+  float: left;
+  height: 0;
+  padding-bottom: 100% / $count;
+  position: relative;
+  width: 100% / $count;
+  
+  > * {
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
+    @include position(absolute, $base-unit 0px 0px 0px);
+    
+    background-color: $editor-identity-item-background-color;
+    margin: 0 $base-unit / 2;
+    
+    button.add {
+      margin: auto;
+      width: auto;
+    }
+    
+    input.identity-search {
+      background-color: #fff;
+      border: 4pt solid $editor-identity-item-background-color;
+      font-size: 15pt;
+      font-weight: 300;
+      margin: 0;
+      outline: none;
+      padding: 4pt 8pt;
+    }
+    
+  }
+  
+  &:nth-child(#{$count}n+1) > * {
+    margin-left: 0;
+  }
+  
+  &:nth-child(#{$count}n) > * {
+    margin-right: 0;
+  }
+}
+
+
+// Editor person block
+@mixin editor-people-block {
+  @include clearfix;
+  
+  margin-top: -$base-unit;
+
+  > .container {
+    @include editor-identity-item(4);
+  }
+  
+}
+
+
+// Editor article
+article.editor {
+  margin: 0 $base-unit * 5;
+  padding: $base-unit * 2 $base-unit * 5;
+  
+  > section {
+    
+    padding: 0 0 $base-unit * 2;
+    
+    > header {
+      
+      input {
+        @include editor-section-header-input;
+        width: 100%;
+      }
+      
+    }
+    
+    
+    > .section-block {
+      padding-top: $base-unit;
+      position: relative;
+      
+      > .lock {
+        @include position(absolute, 50% 100% 0 0);
+
+        color: $editor-section-block-lock-color;
+        font-size: $editor-section-block-lock-font-size;
+        margin-top: - $editor-section-block-lock-font-size / 2;
+        margin-right: $base-unit;
+      }
+      
+      > .default {
+        border: 1pt dashed hsl(0, 0%, 0%);
+        font-size: 15pt;
+        font-style: italic;
+        font-weight: 600;
+        margin-top: $base-unit;
+        opacity: .25;
+        padding: $base-unit;
+      }
+      
+      > .paragraph {
+        @include editor-paragraph-block;
+      }
+      
+      > .image {
+        @include editor-image-block;
+      }
+
+      > .people {
+        @include editor-people-block;
+      }
+    }
+    
+    
+    > .new-block-placeholder {
+      border: 2px dashed #eee;
+      margin-top: $base-unit;
+      padding: $base-unit;
+    }
+    
+  }
+  
+}

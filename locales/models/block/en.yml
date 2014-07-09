@@ -1,10 +1,25 @@
 en:
   block:
+
+    icons:
+      Paragraph:    'fa-font'
+      BlockImage:   'fa-picture-o'
+      Person:       'fa-male'
+      Vacancy:      'fa-briefcase'
+
+    titles:
+      Paragraph:    'Paragraph'
+      BlockImage:   'Picture'
+      Person:       'Person'
+      Vacancy:      'Vacancy'
+    
+    company: [Paragraph, BlockImage, Person, Vacancy]
+
     types:
-      paragraph: "Paragraph"
-      block_image: "BlockImage"
-      vacancy: "Vacancy"
-      chart: "Chart"
-      person: "Person"
-      widget: "Widget"
-      company: "Company"
+      paragraph:    "Paragraph"
+      block_image:  "Image"
+      vacancy:      "Vacancy"
+      chart:        "Chart"
+      person:       "Person"
+      widget:       "Widget"
+      company:      "Company"

@@ -16,3 +16,13 @@
       contentType:  false
 
     @innerHTML = @innerHTML
+
+
+# Show company
+#
+@['companies#show'] = (data) ->
+  
+  companyComponent  = cc.react.company.Main(data.company)
+  container         = document.querySelector('main')
+  
+  React.renderComponent(companyComponent, container)

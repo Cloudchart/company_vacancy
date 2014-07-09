@@ -15,11 +15,9 @@ Cloudchart::Application.routes.draw do
 
   # Concerns
   #
+  
   concern :blockable do
-    resources :blocks, only: [:create, :update, :destroy] do
-      post :update_position, on: :collection
-      post :update_section, on: :collection
-    end
+    resources :blocks, only: [:create]
   end
 
   concern :statusable do
@@ -48,6 +46,13 @@ Cloudchart::Application.routes.draw do
     end
 
     post :search, on: :collection
+  end
+
+  resources :blocks, only: [:update, :destroy] do
+    post :update_position,  on: :collection
+    post :update_section,   on: :collection
+
+    resources :identities, shallow: true, controller: :block_identities, only: :destroy
   end
 
   resources :features do
