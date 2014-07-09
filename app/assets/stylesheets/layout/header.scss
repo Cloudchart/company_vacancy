@@ -72,7 +72,7 @@ body > header {
     box-shadow: inset 0 2pt 0 0 $header-search-shadow-color;
     background: #fff;
     height: $base-unit * 2;
-    margin-right: $base-unit;
+    margin: 0 $base-unit * 2.2;
     padding: 0 $base-unit / 2;
     width: $base-unit * 13;
     
