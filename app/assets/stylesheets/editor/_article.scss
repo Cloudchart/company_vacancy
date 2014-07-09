@@ -143,25 +143,72 @@ $editor-identity-item-background-color: hsl(0, 0%, 96%);
 }
 
 
+$editor-person-button-green: hsl(136, 52%, 51%);
+$editor-person-button-red: hsl(1, 76%, 54%);
+
+// Person button
+@mixin editor-person-button {
+  border: none;
+  color: hsl(0, 0%, 100%);
+  font-size: 8pt;
+  line-height: 2em;
+  padding: 0;
+  text-transform: uppercase;
+}
+
+
 // Person item
 @mixin editor-people-block-person-item {
   @include align-items(flex-start);
   @include justify-content(flex-end);
   
+  button {
+    @include editor-person-button;
+    @include transition(opacity 100ms ease-out);
+    
+    visibility: hidden;
+    opacity: 0;
+  }
+  
+  &:hover button {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  button.delete {
+    @include position(absolute, $base-unit / 2 50% 0 $base-unit / 2);
+
+    background-color: $editor-person-button-red;
+    margin-right: $base-unit / 4;
+  }
+  
+  button.change {
+    @include position(absolute, $base-unit / 2 $base-unit / 2 0 50%);
+    
+    background-color: $editor-person-button-green;
+    margin-left: $base-unit / 4;
+  }
+  
   p.name,
   p.occupation {
-    background-color: hsla(0, 0%, 50%, .5);
+    background-color: hsla(0, 0%, 50%, .25);
     margin: 0;
     padding: $base-unit / 2;
     width: 100%;
   }
   
   p.name {
-    
+    font-size: 15pt;
+    overflow: hidden;
+    padding-bottom: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   p.occupation {
-    
+    font-size: 10pt;
+    padding-top: 0;
+    text-transform: uppercase;
   }
 }
 

@@ -148,8 +148,9 @@ Component = React.createClass
         className: 'container'
       },
         cc.react.editor.blocks.Person
-          onPersonDelete: @onPersonDelete
-          model:          person
+          onDelete:   @onPersonDelete
+          onChange:   @onPersonChange
+          model:      person
       )
   
   
@@ -168,6 +169,10 @@ Component = React.createClass
     
     @setState
       people: people
+  
+  
+  onPersonChange: (event) ->
+    alert 'Not implemented yet.'
     
 
 

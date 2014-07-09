@@ -20,6 +20,10 @@ class PersonModel extends @cc.models.Base
     ['first_name', 'last_name'].map (attribute_name) =>
       @[attribute_name].charAt(0).toUpperCase() if @[attribute_name]
     .join('')
+  
+
+  initials_hash: ->
+    @initials().split('').reduce ((memo, letter) -> memo + letter.charCodeAt(0)), 0
     
 
 
