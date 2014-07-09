@@ -108,7 +108,7 @@ MainComponent = React.createClass
   render: ->
     (tag.input {
       type:         'text'
-      className:    'identity-search'
+      className:    'identity-searchs'
       value:        @state.query
       placeholder:  @props.placeholder
       onChange:     @onChange

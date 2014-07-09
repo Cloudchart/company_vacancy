@@ -21,7 +21,7 @@ MainComponent = React.createClass
       className:  'person'
       onClick:    @onClick
     },
-      (tag.aside {}, @props.model.letters())
+      (tag.aside {}, @props.model.initials())
       (tag.div { className: 'name' },
         @props.model.first_name
         " "

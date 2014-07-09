@@ -119,14 +119,16 @@ $editor-identity-item-background-color: hsl(0, 0%, 96%);
       width: auto;
     }
     
-    input.identity-search {
+    input.identity-searchs {
       background-color: #fff;
-      border: 4pt solid $editor-identity-item-background-color;
+      border: 2pt solid $editor-identity-item-background-color;
       font-size: 15pt;
       font-weight: 300;
       margin: 0;
       outline: none;
-      padding: 4pt 8pt;
+      padding: 4pt;
+      position: relative;
+      width: 100%;
     }
     
   }
@@ -141,6 +143,29 @@ $editor-identity-item-background-color: hsl(0, 0%, 96%);
 }
 
 
+// Person item
+@mixin editor-people-block-person-item {
+  @include align-items(flex-start);
+  @include justify-content(flex-end);
+  
+  p.name,
+  p.occupation {
+    background-color: hsla(0, 0%, 50%, .5);
+    margin: 0;
+    padding: $base-unit / 2;
+    width: 100%;
+  }
+  
+  p.name {
+    
+  }
+  
+  p.occupation {
+    
+  }
+}
+
+
 // Editor person block
 @mixin editor-people-block {
   @include clearfix;
@@ -149,6 +174,10 @@ $editor-identity-item-background-color: hsl(0, 0%, 96%);
 
   > .container {
     @include editor-identity-item(4);
+    
+    .person {
+      @include editor-people-block-person-item;
+    }
   }
   
 }

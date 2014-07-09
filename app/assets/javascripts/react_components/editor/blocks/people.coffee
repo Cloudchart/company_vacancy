@@ -8,11 +8,7 @@ tag = React.DOM
 PersonComponent = React.createClass
 
 
-  letters: ->
-    @_letters ||= @props.model.first_name.charAt(0).toUpperCase() + @props.model.last_name.charAt(0).toUpperCase()
-  
-  
-  onClick: ->
+  onDeleteClick: ->
     @props.onPersonDelete({ target: { value: @props.model.uuid }}) if @props.onPersonDelete instanceof Function
 
 
@@ -21,17 +17,17 @@ PersonComponent = React.createClass
       (tag.div {},
         (tag.button {
           className:  'change'
-          onClick:    @onClick
+          onClick:    @onChangeClick
         },
           "Change"
-        )
+        ) if false
+
         (tag.button {
           className:  'delete'
-          onClick:    @onClick
+          onClick:    @onDeleteClick
         },
           "Delete"
         )
-        (tag.aside {}, @_letters)
         (tag.div { className: 'name' },
           @props.model.first_name
           " "
@@ -78,6 +74,8 @@ PersonSelectorComponent = React.createClass
   onPersonClick: (event) ->
     @refs.search.blur()
     @props.onPersonSelect(event) if @props.onPersonSelect instanceof Function
+    @setState
+      identities: []
   
   
   componentDidUpdate: ->
@@ -98,6 +96,11 @@ PersonSelectorComponent = React.createClass
           onBlur:       @toggleState
         }) if @state.searching
 
+        (cc.react.shared.IdentityList {
+          onClick:    @onPersonClick
+          identities: @state.identities
+        }) if @state.searching
+
         (tag.button {
           className:    'add'
           onClick:      @toggleState
@@ -110,32 +113,6 @@ PersonSelectorComponent = React.createClass
       )
     )
   
-
-  renders: ->
-    (tag.div { className: 'container' },
-      (tag.div {
-        className:    'identity-selector'
-        onMouseDown:  @onMouseDown
-      },
-        (tag.header {},
-          (cc.react.shared.IdentitySearch {
-            ref:          'search'
-            placeholder:  'Type name'
-            models:       { Person: @props.url }
-            onSearch:     @onSearch
-          })
-          (cc.react.shared.IdentityList {
-            onClick:    @onPersonClick
-            identities: @state.identities
-          })
-        )
-        (tag.div {},
-          (tag.i { className: 'fa fa-female' })
-          "La femme"
-        )
-      )
-    )
-
 
 # People component
 #
@@ -166,10 +143,14 @@ Component = React.createClass
 
   gatherPeople: (event) ->
     @state.people.map (person) =>
-      PersonComponent
-        onPersonDelete: @onPersonDelete
+      (tag.div {
         key:            person.uuid
-        model:          person
+        className: 'container'
+      },
+        cc.react.editor.blocks.Person
+          onPersonDelete: @onPersonDelete
+          model:          person
+      )
   
   
   onPersonSelect: (event) ->
