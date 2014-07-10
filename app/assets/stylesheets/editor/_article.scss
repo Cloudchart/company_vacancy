@@ -41,6 +41,14 @@ $editor-person-button-red: hsl(1, 76%, 54%);
   font-weight: $editor-section-header-input-font-weight;
   outline: none;
   padding: 0;
+  
+  &:disabled {
+    @include placeholder {
+      color: hsl(0, 0%, 0%);
+      font-style: normal;
+      font-weight: 300;
+    }
+  }
 }
 
 

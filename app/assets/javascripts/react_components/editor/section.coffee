@@ -65,6 +65,7 @@ SectionTitleInputComponent = React.createClass
     (tag.input {
       type:           'text'
       autoComplete:   'off'
+      disabled:       true
       placeholder:    @props.placeholder
       value:          @state.value
       onChange:       @onChange

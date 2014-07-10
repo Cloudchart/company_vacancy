@@ -27,7 +27,7 @@ article.company {
     @include flex-direction(column);
     @include justify-content(flex-end);
 
-    background-color: hsl(170, 25%, 25%);
+    background-color: hsl(0, 0%, 70%);
     min-height: $base-unit * 12;
     padding: $base-unit * 1.5;
     position: relative;
@@ -37,13 +37,12 @@ article.company {
       @include display(flex);
       @include position(absolute, 0 0 $base-unit * 1.5 $base-unit * 1.5);
       
-      background-color: hsl(230, 25%, 25%);
-      border: 1pt solid hsl(0, 0%, 100%);
+      background-color: hsl(0, 0%, 100%);
       height: $company-header-logo-size;
       width: $company-header-logo-size;
       
       > i.fa {
-        color: hsl(0, 0%, 100%);
+        color: hsl(0, 0%, 0%);
         font-size: 20pt;
         margin: auto;
       }
