@@ -16,6 +16,11 @@ class VacanciesController < ApplicationController
   # GET /vacancies
   def index
     @vacancies = @company.vacancies.order(:name)
+    
+    respond_to do |format|
+      format.html
+      format.json { render json: @vacancies, root: false }
+    end
   end
 
   # GET /vacancies/1

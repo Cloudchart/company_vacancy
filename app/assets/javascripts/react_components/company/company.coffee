@@ -40,6 +40,7 @@ MainComponent = React.createClass
       blocks:             @props.blocks
       url:                @props.url
       people_url:         @props.people_url
+      vacancies_url:      @props.vacancies_url
       owner:              'company'
     
     

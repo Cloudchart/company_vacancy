@@ -40,4 +40,12 @@ class BlockIdentityEditorSerializer < ActiveModel::Serializer
   end
 
 
+  def vacancy_attributes
+    {
+      name:         object.name,
+      description:  object.description
+    }
+  end
+
+
 end

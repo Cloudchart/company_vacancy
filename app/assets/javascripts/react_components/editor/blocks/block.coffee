@@ -20,6 +20,7 @@ Component = React.createClass
       when 'Paragraph'  then cc.react.editor.blocks.Paragraph
       when 'BlockImage' then cc.react.editor.blocks.BlockImage
       when 'Person'     then cc.react.editor.blocks.People
+      when 'Vacancy'    then cc.react.editor.blocks.Vacancies
       else DefaultBlockComponent
     
     (tag.div { className: 'section-block' },

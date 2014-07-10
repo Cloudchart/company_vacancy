@@ -22,6 +22,8 @@ class Vacancy < ActiveRecord::Base
   has_and_belongs_to_many :reviewers, class_name: 'Person', join_table: 'vacancy_reviewers'
   # has_paper_trail
 
+  has_one :block_identity, as: :identity, inverse_of: :identity
+
   validates :name, presence: true
   validate :validity_of_settings
 

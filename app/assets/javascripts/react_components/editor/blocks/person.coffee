@@ -41,12 +41,12 @@ MainComponent = React.createClass
       (tag.button { className: 'delete', onClick: @onDelete }, 'Delete')
       (tag.button { className: 'change', onClick: @onChange }, 'Change')
       
-      (tag.p { className: 'name' },
+      (tag.p { className: 'title' },
         @state.model.first_name
         " "
         (tag.strong {}, @state.model.last_name)
       )
-      (tag.p { className: 'occupation' }, @state.model.occupation)
+      (tag.p { className: 'note' }, @state.model.occupation)
     )
 
 

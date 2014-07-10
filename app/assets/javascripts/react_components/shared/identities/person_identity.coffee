@@ -35,12 +35,12 @@ MainComponent = React.createClass
         style:
           backgroundColor: PersonColors[@props.model.initials_hash() % PersonColors.length]
       }, @props.model.initials())
-      (tag.div { className: 'name' },
+      (tag.div { className: 'title' },
         @props.model.first_name
         " "
         (tag.strong {}, @props.model.last_name)
       )
-      (tag.div { className: 'occupation' },
+      (tag.div { className: 'note' },
         @props.model.occupation
       )
     )
