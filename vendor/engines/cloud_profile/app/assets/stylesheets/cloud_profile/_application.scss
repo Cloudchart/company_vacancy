@@ -5,6 +5,7 @@
 @import 'emails';
 @import 'password';
 @import 'companies';
+@import 'vacancies';
 
 //
 // Base profile layout
@@ -34,7 +35,7 @@ main.cloud-profile {
   }
   
   > article {
-    margin: 0 $base-unit * 10;
+    margin: 0 $base-unit * 9;
 
     h1 {
       @include cloud-profile-section-header;

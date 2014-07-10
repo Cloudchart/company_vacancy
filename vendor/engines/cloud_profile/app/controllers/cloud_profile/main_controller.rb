@@ -9,6 +9,10 @@ module CloudProfile
       @companies = current_user.companies.includes(:logo, :industries, :people, :vacancies, :favorites, :charts).order('favorites.created_at DESC')
     end
 
+    def vacancies
+      @companies = current_user.companies.includes(:vacancies, :favorites).order('favorites.created_at DESC')
+    end
+
     def activities
       @activities = Activity.includes(:user, :trackable, :source).by_user_or_companies(current_user).order(created_at: :desc).page(params[:page])
     end

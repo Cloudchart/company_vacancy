@@ -1,0 +1,67 @@
+main.cloud-profile > div.vacancies-wrapper {
+  margin: 0 $base-unit * 9;
+  font-size: 14pt;
+
+  ul {
+    @include display(flex);
+
+    list-style: none;
+    padding: 0;
+    margin: 0;    
+  }
+
+  > h1 {
+    @include cloud-profile-section-header;
+  }
+
+  > div.company {
+    margin-top: $base-unit * 2;
+
+    > header {
+      > ul {
+        font-weight: bold;
+
+        > li {
+          margin-right: $base-unit * 2;
+
+          &.opened {
+            color: $north-texas-green;
+          }
+
+          &.in-review {
+            color: $alizarin-crimson;
+          }
+
+          &.closed {
+            color: $dark-grey;
+          }
+        }
+      }
+    }
+
+    > div.vacancies {
+      > ul {
+        
+        > li {
+          width: 198pt;
+          padding: $base-unit;
+
+          &.name {
+            background-color: $white-smoke;
+          }
+
+          &.status {
+            background-color: $light-smoke;
+          }
+
+          &.actions {
+            background-color: $mystic;
+          }
+        }
+      }
+
+    }
+
+  }
+
+}

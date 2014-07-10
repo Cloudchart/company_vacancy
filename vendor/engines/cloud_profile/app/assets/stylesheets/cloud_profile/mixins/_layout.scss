@@ -5,13 +5,13 @@
 
 @mixin cloud-profile-section-header {
   font-size: 32pt;
-  font-weight: 800;
+  font-weight: normal;
   line-height: 1.25em;
   margin: 0 0 $base-unit;
   position: relative;
   
   > a {
-    margin-right: $base-unit * 2;
+    margin-right: $base-unit / 2;
     position: absolute;
     right: 100%;
   }
