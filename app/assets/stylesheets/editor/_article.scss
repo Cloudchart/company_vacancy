@@ -374,8 +374,7 @@ $editor-identity-selector-search-input-padding: 4pt;
       
       .flag {
         @include vacancy-flag(30pt, 17pt, hsl(0, 0%, 100%));
-        @include position(absolute, -.5pt $base-unit / 2 0 0);
-        border-top: 1pt solid hsla(1, 76%, 54%, .1);
+        @include position(absolute, 0px $base-unit / 2 0 0);
       }
     }
 
