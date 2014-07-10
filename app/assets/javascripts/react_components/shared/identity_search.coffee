@@ -38,20 +38,19 @@ MainComponent = React.createClass
     Object.keys(@props.models).reduce (memo, model_class_name) =>
       @preloadModels(model_class_name)
 
-      memo[model_class_name] = if @state.normalized_query.length == 0
-        []
-      else if @modelsLoaded(model_class_name)
+      memo[model_class_name] = if @modelsLoaded(model_class_name)
+        
         model_class = cc.models[model_class_name]
-        models      = Object.keys(model_class.instances).map((uuid) -> model_class.get(uuid))
-
-        @state.normalized_query.split(' ').forEach((query) ->
-          models = models.filter((model) -> model.matches(query))
-        )
-
-        models.map((model) -> model.uuid)
+        models      = model_class.instances
+          
+        _.each @state.normalized_query.split(' '), (query) ->
+          models = _.filter models, (model) -> model.matches(query)
+        
+        _.pluck models, 'uuid'
+        
       else
         false
-        
+      
       memo
     , {}
   
@@ -75,6 +74,7 @@ MainComponent = React.createClass
   
   
   onFocus: (event) ->
+    @search()
     @setState
       active: true
   
@@ -108,7 +108,7 @@ MainComponent = React.createClass
   render: ->
     (tag.input {
       type:         'text'
-      className:    'identity-searchs'
+      className:    'identity-search'
       value:        @state.query
       placeholder:  @props.placeholder
       onChange:     @onChange

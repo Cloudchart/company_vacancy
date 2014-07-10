@@ -6,6 +6,9 @@ $editor-section-block-lock-font-size: 15pt;
 
 $editor-identity-item-background-color: hsl(0, 0%, 96%);
 
+$editor-person-button-green: hsl(136, 52%, 51%);
+$editor-person-button-red: hsl(1, 76%, 54%);
+
 
 // Editor section header input
 @mixin editor-section-header-input {
@@ -21,6 +24,7 @@ $editor-identity-item-background-color: hsl(0, 0%, 96%);
 }
 
 
+// Editor paragraph block
 @mixin editor-paragraph-block {
   font-size: 15pt;
   margin: 0;
@@ -97,6 +101,100 @@ $editor-identity-item-background-color: hsl(0, 0%, 96%);
 }
 
 
+$list-identity-item-height: $base-unit * 1.75;
+
+$list-identity-item-icon-font-size: $list-identity-item-height * .5;
+$list-identity-item-icon-font-weight: 300;
+
+$list-identity-item-name-font-size: 12pt;
+$list-identity-item-name-font-weight: 300;
+
+$list-identity-item-occupation-font-size: 7pt;
+$list-identity-item-occupation-font-weight: 100;
+
+// Identity item
+//
+@mixin list-identity-item($padding: 0px) {
+  @include display(flex);
+  @include flex-direction(column);
+  @include justify-content(center);
+  
+  overflow: hidden;
+  padding: $padding;
+  padding-left: $list-identity-item-height + $base-unit / 2 + $padding;
+  position: relative;
+  height: $list-identity-item-height + $padding * 2;
+  
+  > aside {
+    @include position(absolute, $padding 0 0 $padding);
+    
+    background-color: #eee;
+    border-radius: $list-identity-item-height / 2;
+    color: hsl(0, 0%, 100%);
+    font-size: $list-identity-item-icon-font-size;
+    font-weight: $list-identity-item-icon-font-weight;
+    line-height: $list-identity-item-height;
+    width: $list-identity-item-height;
+    height: $list-identity-item-height;
+    text-align: center;
+  }
+  
+  > .name {
+    font-size: $list-identity-item-name-font-size;
+    font-size: $list-identity-item-name-font-weight;
+  }
+
+  > .occupation {
+    font-size: $list-identity-item-occupation-font-size;
+    font-size: $list-identity-item-occupation-font-weight;
+    text-transform: uppercase;
+  }
+  
+  &:hover {
+    background-color: hsla(0, 0%, 0%, .1);
+  }
+  
+}
+
+
+$editor-identity-selector-search-input-border-width: 3pt;
+$editor-identity-selector-search-input-font-size: 12pt;
+$editor-identity-selector-search-input-padding: 4pt;
+
+
+// Editor identity selector
+//
+@mixin editor-identity-selector {
+  
+  input.identity-search {
+    border: $editor-identity-selector-search-input-border-width solid $editor-identity-item-background-color;
+    border-bottom-width: 0;
+    font-size: $editor-identity-selector-search-input-font-size;
+    outline: none;
+    padding: $editor-identity-selector-search-input-padding;
+    position: relative;
+    width: 100%;
+  }
+  
+  ul.identity-list {
+    @include flex(1);
+
+    list-style: none;
+    margin: 0;
+    overflow-y: scroll;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    
+    > li {
+      @include list-identity-item(3pt);
+
+      cursor: pointer;
+    }
+  }
+}
+
+
 // Identity item
 @mixin editor-identity-item($count: 3) {
   float: left;
@@ -113,24 +211,6 @@ $editor-identity-item-background-color: hsl(0, 0%, 96%);
     
     background-color: $editor-identity-item-background-color;
     margin: 0 $base-unit / 2;
-    
-    button.add {
-      margin: auto;
-      width: auto;
-    }
-    
-    input.identity-searchs {
-      background-color: #fff;
-      border: 2pt solid $editor-identity-item-background-color;
-      font-size: 15pt;
-      font-weight: 300;
-      margin: 0;
-      outline: none;
-      padding: 4pt;
-      position: relative;
-      width: 100%;
-    }
-    
   }
   
   &:nth-child(#{$count}n+1) > * {
@@ -142,9 +222,6 @@ $editor-identity-item-background-color: hsl(0, 0%, 96%);
   }
 }
 
-
-$editor-person-button-green: hsl(136, 52%, 51%);
-$editor-person-button-red: hsl(1, 76%, 54%);
 
 // Person button
 @mixin editor-person-button {
@@ -224,6 +301,10 @@ $editor-person-button-red: hsl(1, 76%, 54%);
     
     .person {
       @include editor-people-block-person-item;
+    }
+    
+    .identity-selector {
+      @include editor-identity-selector;
     }
   }
   

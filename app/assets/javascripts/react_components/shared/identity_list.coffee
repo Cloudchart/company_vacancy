@@ -33,7 +33,9 @@ MainComponent = React.createClass
   
   
   render: ->
-    (tag.ul { className: 'identity-list' },
+    (tag.ul {
+      className: 'identity-list'
+    },
       @gatherIdentities()
     )
 
