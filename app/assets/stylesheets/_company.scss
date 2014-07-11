@@ -95,7 +95,7 @@ article.company {
         }
 
         &:not(:first-child) {
-          margin-left: $base-unit / 2;
+          margin-left: $base-unit;
         }
         
       }
