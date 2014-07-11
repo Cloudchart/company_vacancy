@@ -398,10 +398,22 @@ $editor-identity-selector-search-input-padding: 4pt;
 }
 
 
+@mixin editor-media-breakpoint($counter) {
+  @media (max-width: 1200px + $base-unit * $counter) {
+    padding-right: $base-unit * ($counter - 1);
+    padding-left: $base-unit * ($counter - 1);
+  }
+}
+
+
 // Editor article
 article.editor {
-  margin: 0 $base-unit * 5;
-  padding: $base-unit * 2 $base-unit * 5;
+  margin: 0 $base-unit * 2;
+  padding: $base-unit * 2 $base-unit * 6;
+  
+  @include editor-media-breakpoint(5);
+  @include editor-media-breakpoint(3);
+  @include editor-media-breakpoint(1);
   
   > section {
     
@@ -467,3 +479,5 @@ article.editor {
   }
   
 }
+
+

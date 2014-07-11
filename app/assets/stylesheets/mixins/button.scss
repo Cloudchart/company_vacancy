@@ -64,3 +64,42 @@ $cloud-button-icon-margin: $base-unit / 4;
 button.cloud {
   @include cloud-button;
 }
+
+
+$orgpad-button-background-color: hsl(136, 52%, 51%);
+$orgpad-button-background-color-alert: hsl(1, 76%, 54%);
+$orgpad-button-color: hsl(0, 0, 100%);
+
+
+@mixin orgpad-button {
+  background-color: $orgpad-button-background-color;
+  color: $orgpad-button-color;
+  
+  &.inverse {
+    color: $orgpad-button-background-color-alert;
+  }
+  
+  &.alert {
+    background-color: $orgpad-button-background-color-alert;
+    
+    &.inverse {
+      background-color: $orgpad-button-color;
+    }
+  }
+  
+  display: inline-block;
+  
+  text-align: center;
+  white-space: nowrap;
+
+  > i {
+    line-height: inherit;
+  }
+  
+}
+
+
+button.orgpad,
+.orgpad-button {
+  @include orgpad-button;
+}
