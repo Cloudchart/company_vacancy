@@ -56,7 +56,9 @@ article.company {
       margin: 0 0 $base-unit * 1.5;
       
       text-align: center;
-      text-shadow: hsla(0, 0%, 0%, .5) 0 2pt 2pt;
+      text-shadow: hsla(0, 0%, 0%, .75) 0 2pt 2pt;
+
+      width: 100%;
       
       > small {
         display: block;
@@ -64,6 +66,20 @@ article.company {
         font-weight: $company-header-title-small-font-weight;
         
         margin-top: $base-unit / 2;
+      }
+      
+      input {
+        background-color: transparent;
+        border: none;
+        color: inherit;
+        outline: none;
+        text-align: center;
+        text-shadow: inherit;
+        width: 100%;
+        
+        @include placeholder {
+          font-weight: 300;
+        }
       }
     }
     

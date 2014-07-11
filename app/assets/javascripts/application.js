@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require arbiter
 //= require t
+//= require module
 //= require react
 //= require block_identities
 //= require ui

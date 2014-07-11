@@ -36,4 +36,5 @@ MainComponent = React.createClass
 
 # Expose
 #
-@cc.react.editor.Main = MainComponent
+#@cc.react.editor.Main = MainComponent
+@cc.module('react/editor').exports = MainComponent

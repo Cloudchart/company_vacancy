@@ -22,7 +22,7 @@
 #
 @['companies#show'] = (data) ->
   
-  companyComponent  = cc.react.company.Main(data.company)
+  CompanyComponent  = cc.require('react/company')
   container         = document.querySelector('main')
   
-  React.renderComponent(companyComponent, container)
+  React.renderComponent(CompanyComponent(data.company), container)

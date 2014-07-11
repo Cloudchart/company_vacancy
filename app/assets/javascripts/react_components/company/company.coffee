@@ -1,32 +1,11 @@
+##= require react_components/company/header
+##= require react_components/editor
+
 #
 #
-tag = React.DOM
-
-
-# Company Header component
-#
-HeaderComponent = React.createClass
-
-
-  gatherSections: ->
-    @props.available_sections.map (section) ->
-      (tag.a {
-        key:  section.title
-        href: "##{section.title}"
-      }, section.title)
-
-
-  render: ->
-    (tag.header {},
-      (tag.aside { className: 'logo' },
-        (tag.i { className: 'fa fa-magic' })
-      )
-      (tag.h1   {},
-        @props.name
-        (tag.small {}, @props.description)
-      )
-      (tag.nav  {}, @gatherSections())
-    )
+tag             = cc.require('react/dom')
+HeaderComponent = cc.require('react/company/header')
+EditorComponent = cc.require('react/editor')
 
 
 # Company Main component
@@ -34,23 +13,23 @@ HeaderComponent = React.createClass
 MainComponent = React.createClass
 
   render: ->
-    editorComponent = cc.react.editor.Main
-      sections:               @props.available_sections
-      sections_titles:        @props.sections
-      available_block_types:  @props.available_block_types
-      blocks:                 @props.blocks
-      url:                    @props.url
-      blocks_url:             @props.blocks_url
-      people_url:             @props.people_url
-      vacancies_url:          @props.vacancies_url
-      owner:                  'company'
-    
     (tag.article { className: 'company' },
       (HeaderComponent @props)
-      (editorComponent)
+
+      (EditorComponent {
+        sections:               @props.available_sections
+        sections_titles:        @props.sections
+        available_block_types:  @props.available_block_types
+        blocks:                 @props.blocks
+        url:                    @props.url
+        blocks_url:             @props.blocks_url
+        people_url:             @props.people_url
+        vacancies_url:          @props.vacancies_url
+        owner:                  'company'
+      })
     )
 
 
 # Expose
 #
-@cc.react.company.Main = MainComponent
+cc.module('react/company').exports = MainComponent

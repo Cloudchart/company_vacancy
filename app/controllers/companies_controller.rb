@@ -57,6 +57,7 @@ class CompaniesController < ApplicationController
       respond_to do |format|
         format.html { redirect_to @company, notice: t('messages.updated', name: t('lexicon.company')) }
         format.js
+        format.json { render json: @company, only: [:name, :description], serializer: CompanyEditorSerializer, root: false }
       end
     else
       render :edit
