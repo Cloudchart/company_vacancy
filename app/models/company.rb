@@ -8,7 +8,7 @@ class Company < ActiveRecord::Base
   BLOCK_TYPES = %i(paragraph block_image person vacancy).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
 
   BlockTypes  = ['Paragraph', 'BlockImage', 'Person', 'Vacancy']
-  Sections    = ['About', 'Product', 'People', 'Vacancies', 'Contacts']
+  Sections    = ['About', 'Product', 'People', 'Vacancies']
 
   has_and_belongs_to_many :industries
   has_one :logo, as: :owner, dependent: :destroy
