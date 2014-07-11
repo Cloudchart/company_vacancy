@@ -1,0 +1,87 @@
+<%- class_for_main 'cloud-profile' -%>
+
+<div class="vacancies-wrapper">
+
+  <h1>
+    <%= link_to font_awesome('angle-left'), cloud_profile.root_path %>
+    <%= t '.vacancies', default: 'Vacancies' %>
+  </h1>
+
+  <% @companies.each do |company| %>
+
+    <div id="<%= company.id %>" class="company">
+      <header>
+        <ul>
+          <li>
+            <span class="favorites-link">
+              <%= render 'shared/favorites_link', object: company %>
+            </span>
+
+            <%= company.name %>
+          </li>
+
+          <li class="spacer"></li>
+
+          <li class="opened">
+            <%= company.vacancies.by_status(:opened).size %> opened vacancies
+          </li>
+
+          <li class="in-review">
+            0 in review
+          </li>
+
+          <li class="closed">
+            <%= company.vacancies.by_status(:closed).size %> closed
+          </li>
+
+          <li>
+            <%= render 'shared/add_item', path: main_app.new_company_vacancy_path(company) %>
+          </li>
+        </ul>  
+      </header>
+
+      <table class="vacancies">
+        <colgroup>
+          <col class="names"></col>
+          <col class="statuses"></col>
+          <col class="actions"></col>
+        </colgroup>
+
+        <tbody>
+          <% company.vacancies.each do |vacancy| %>
+            <tr>
+              <td>
+                <%= link_to vacancy.name, main_app.vacancy_path(vacancy) %>
+              </td>
+
+              <td>
+                <% if vacancy.responded_users.any? && can?(:access_vacancy_responses, vacancy) %>
+                  <%= link_to t('vacancies.applicants', count: vacancy.responded_users.size), main_app.vacancy_responses_path(vacancy) %>
+                <% else %>
+                  <%= vacancy.status %>
+                <% end %>
+              </td>
+
+              <td>
+                <% if can?(:change_status, vacancy) %>
+                  <% if vacancy.status == 'draft' %>
+                    <%= link_to 'Publish', main_app.change_status_vacancy_path(vacancy, :opened), method: :patch %>
+                  <% elsif vacancy.status == 'opened' %>
+                    <%= link_to 'Close', main_app.change_status_vacancy_path(vacancy, :closed), method: :patch %>
+                  <% end %>
+                <% end %>
+
+                <%= link_to 'Destroy', main_app.vacancy_path(vacancy), method: :delete, data: { confirm: 'Are you sure?' }, class: 'danger' if can?(:destroy, vacancy) %>
+              </td>
+            </tr>
+
+          <% end %>
+
+        </tbody>
+      </table>
+
+    </div>
+    
+  <% end %>
+  
+</div>

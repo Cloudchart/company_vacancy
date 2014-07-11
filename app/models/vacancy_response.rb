@@ -10,6 +10,8 @@ class VacancyResponse < ActiveRecord::Base
 
   validates :content, presence: true
 
+  scope :by_status, -> (status) { where(status: status) }
+
 private
 
   def set_default_status

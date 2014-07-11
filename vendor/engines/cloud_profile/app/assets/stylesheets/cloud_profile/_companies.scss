@@ -1,5 +1,21 @@
 main.cloud-profile > article.companies {    
+  position: relative;
   @include companies-article;
+
+  > div.add-item {
+    position: absolute;
+    top: -47pt;
+    right: 0;
+    background-color: $ufo-green;
+
+    > a {
+      text-decoration: none;
+      color: white;
+      font-size: 14pt;
+      display: block;
+      padding: $base-unit / 2 $base-unit;
+    }
+  }  
 
   > section {
     @include companies-section;

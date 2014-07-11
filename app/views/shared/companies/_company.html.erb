@@ -38,7 +38,7 @@
         </li>
 
         <li class="vacancies-size">
-          <%= link_to main_app.company_vacancies_path(company) do %>
+          <%= link_to rendered_from == :cloud_profile ? cloud_profile.vacancies_path : main_app.company_vacancies_path(company) do %>
             <%= vacancies.size %>
             <%= font_awesome('briefcase') %>
           <% end %>

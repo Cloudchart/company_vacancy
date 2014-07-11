@@ -45,7 +45,7 @@
             <% end %>
           </td>
           <td><%= link_to 'Destroy', vacancy, method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, vacancy) %></td>
-          <td><%= link_to 'Responses', main_app.vacancy_responses_path(vacancy) if vacancy.responded_users.any? %></td>
+          <td><%= link_to 'Responses', main_app.vacancy_responses_path(vacancy) if vacancy.responded_users.any? && can?(:access_vacancy_responses, vacancy) %></td>
         </tr>
       <% end %>
 

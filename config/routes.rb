@@ -15,7 +15,6 @@ Cloudchart::Application.routes.draw do
 
   # Concerns
   #
-  
   concern :blockable do
     resources :blocks, only: [:create]
   end
