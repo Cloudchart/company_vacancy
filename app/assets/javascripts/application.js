@@ -15,6 +15,7 @@
 //= require arbiter
 //= require t
 //= require module
+//= require placeholder
 //= require react
 //= require block_identities
 //= require ui

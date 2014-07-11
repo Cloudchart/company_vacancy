@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy, :subscribe, :unsubscribe]
+  before_action :set_company, only: [:show, :edit, :destroy, :subscribe, :unsubscribe]
   before_action :set_collection, only: [:index, :search]
 
   authorize_resource
@@ -50,17 +50,15 @@ class CompaniesController < ApplicationController
 
   # PATCH/PUT /companies/1
   def update
+    @company          = Company.find(params[:id])
     @company.is_empty = false
-    if @company.update(company_params)
-      Activity.track_activity(current_user, params[:action], @company)
+    
+    @company.update! company_params
 
-      respond_to do |format|
-        format.html { redirect_to @company, notice: t('messages.updated', name: t('lexicon.company')) }
-        format.js
-        format.json { render json: @company, only: [:name, :description], serializer: CompanyEditorSerializer, root: false }
-      end
-    else
-      render :edit
+    Activity.track_activity(current_user, params[:action], @company)
+    
+    respond_to do |format|
+      format.json { render json: @company, only: [:name, :description], serializer: Editor::CompanySerializer }
     end
   end
 

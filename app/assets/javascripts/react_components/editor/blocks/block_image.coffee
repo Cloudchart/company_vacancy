@@ -1,6 +1,10 @@
-# Expose tags
+##= require module
+##= require placeholder
+
+# Expose
 #
-tag = React.DOM
+tag         = React.DOM
+placeholder = cc.require('placeholder')
 
 
 # Fields for ajax requests
@@ -146,7 +150,9 @@ Component = React.createClass
   render: ->
     (tag.div { className: 'image' },
       (tag.img { src: @state.image_url, onLoad: @onImageLoad }) if @state.image_url
-      (PlaceholderComponent {}) unless @state.image_url
+      (PlaceholderComponent {
+        placeholder: placeholder('react/editor/placeholders', "block_image.#{@props.section}.#{@props.position}", ['block_image.default'])
+      }) unless @state.image_url
       (FileInputComponent { onChange: @onFileChange }) unless @state.is_synchronizing
       (DeleteButtonComponent { onClick: @delete }) unless @state.is_synchronizing if @state.uuid
     )

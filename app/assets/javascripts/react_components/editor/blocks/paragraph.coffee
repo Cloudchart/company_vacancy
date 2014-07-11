@@ -1,26 +1,10 @@
+##= require module
+##= require placeholder
+
 # Expose
 #
-tag = React.DOM
-
-
-# Placeholders
-#
-placeholders =
-
-  about:
-    0: "Tell a short story about your company — what does your company do and why it's important. Be brief, be clear, be straightforward. At about 70 words / 500 characters we'll crub your enthusiasm."
-
-  product:
-    0: "Tell us about your product or service. If you have several, add your bestseller or the one you're most proud of — you can add others later. About 70 words is enough."
-
-  people:
-    1: "Describe your team. Put forward the greatest and the brightest. Make sure they star prominently in your company chart. Up to 6 people should be enough for everyone."
-
-  default: "Type text here"
-
-
-placeholder = (section, position) ->
-  placeholders[section]?[position] || placeholders[section]?.default || placeholders.default
+tag         = React.DOM
+placeholder = cc.require('placeholder')
 
 
 # Attribute prefix
@@ -132,7 +116,7 @@ Component = React.createClass
     (tag.div { className: 'paragraph' },
       (cc.react.editor.ContentEditableComponent {
         value:        @state.content
-        placeholder:  placeholder(@props.section, @props.position)
+        placeholder:  placeholder('react/editor/placeholders', "paragraph.#{@props.section}.#{@props.position}")
         onChange:     @onChange
       })
     )

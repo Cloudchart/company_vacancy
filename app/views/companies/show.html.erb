@@ -1,1 +1,6 @@
-<%- pagescript_params company: CompanyEditorSerializer.new(@company).as_json(root: false) -%>
+<%-
+  pagescript_params(
+    company:        CompanyEditorSerializer.new(@company).as_json(root: false),
+    placeholders:   I18n.t('shared.editable_blocks')
+  )
+-%>

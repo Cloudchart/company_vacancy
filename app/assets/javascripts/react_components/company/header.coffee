@@ -2,12 +2,15 @@
 #
 tag = cc.require('react/dom')
 
+KEY_ESC   = 27
+KEY_ENTER = 13
+
 
 # Input Component
 #
 InputComponent = React.createClass
 
-  
+
   onChange: (event) ->
     @setState
       value: event.target.value
@@ -22,6 +25,17 @@ InputComponent = React.createClass
     @setState
       active: false
   
+  
+  onKeyUp: (event) ->
+    switch event.which
+      when KEY_ESC
+        @setState
+          value: @props.value
+        @getDOMNode().blur()
+
+      when KEY_ENTER
+        @getDOMNode().blur()
+
   
   componentWillReceiveProps: (nextProps) ->
     @setState
@@ -46,6 +60,7 @@ InputComponent = React.createClass
       onChange:       @onChange
       onFocus:        @onFocus
       onBlur:         @onBlur
+      onKeyUp:        @onKeyUp
     })
 
 
