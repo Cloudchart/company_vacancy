@@ -48,7 +48,7 @@ onDragMove = (capturedTarget, originalEvent, dataTransfer) ->
     storedPointerEventsStyle      = dragImage.style.pointerEvent
     dragImage.style.pointerEvents = 'none'
   
-  target = document.elementFromPoint(event.pageX, event.pageY)
+  target = document.elementFromPoint(event.pageX - window.pageXOffset, event.pageY - window.pageYOffset)
   target = target.parentNode while target and target.parentNode and target.dataset.droppable != 'on'
   target = null if target == document
 

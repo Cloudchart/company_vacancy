@@ -12,6 +12,7 @@ class BlocksController < ApplicationController
     respond_to do |format|
       format.html { redirect_to @block.owner }
       format.js
+      format.json { render json: @block.owner.blocks_by_section(@block.section), each_serializer: BlockEditorSerializer, root: false}
     end
   end
 
@@ -33,7 +34,11 @@ class BlocksController < ApplicationController
     block = Block.includes(:owner, { block_identities: :identity }).find(params[:id])
     authorize! :destroy, block
     block.destroy
-    redirect_to block.owner
+    
+    respond_to do |format|
+      format.html { redirect_to block.owner }
+      format.json { render json: block.owner.blocks_by_section(block.section), each_serializer: BlockEditorSerializer, root: false }
+    end
   end
 
   def update_position

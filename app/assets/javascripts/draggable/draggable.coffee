@@ -31,8 +31,8 @@ revertDragImage = (dragImage, element, callback = null) ->
   dragImageBounds = dragImage.getBoundingClientRect()
   elementBounds   = element.getBoundingClientRect()
   elementStyle    = window.getComputedStyle(element)
-  dx              = dragImageBounds.left  - elementBounds.left  + parseFloat(elementStyle.marginLeft)
-  dy              = dragImageBounds.top   - elementBounds.top   + parseFloat(elementStyle.marginTop)
+  dx              = dragImageBounds.left  - elementBounds.left
+  dy              = dragImageBounds.top   - elementBounds.top
   
 
   position = (x, y) ->
@@ -91,8 +91,8 @@ onDragStart = (capturedTarget, originalEvent, dataTransfer) ->
     style             = window.getComputedStyle(capturedTarget, null)
 
     dataTransfer.setDragImage dragImage,
-      event.pageX - bounds.left + parseFloat(style.marginLeft),
-      event.pageY - bounds.top  + parseFloat(style.marginTop)
+      originalEvent.pageX - bounds.left - window.pageXOffset + parseFloat(style.marginLeft),
+      originalEvent.pageY - bounds.top  - window.pageYOffset + parseFloat(style.marginTop)
   
 
 # On drag move
@@ -101,8 +101,8 @@ onDragMove = (capturedTarget, originalEvent, dataTransfer) ->
   customEvent   = dispatchEvent('move', capturedTarget, originalEvent, dataTransfer) ; return if customEvent.defaultPrevented
 
   if (dragImage = dataTransfer.dragImage) and dragImage.element
-    dragImage.element.style.left  = event.pageX - dragImage.x + window.pageXOffset + 'px'
-    dragImage.element.style.top   = event.pageY - dragImage.y + window.pageYOffset + 'px'
+    dragImage.element.style.left  = originalEvent.pageX - dragImage.x - window.pageXOffset + window.pageXOffset + 'px'
+    dragImage.element.style.top   = originalEvent.pageY - dragImage.y - window.pageYOffset + window.pageYOffset + 'px'
 
 
 # On drag end

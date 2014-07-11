@@ -15,6 +15,11 @@ DefaultBlockComponent = React.createClass
 #
 Component = React.createClass
 
+
+  onDeleteButtonClick: (event) ->
+    @props.onDelete({ target: { value: @props.key, url: @props.url }}) if @props.onDelete instanceof Function
+
+
   render: ->
     blockComponentClass = switch @props.identity_type
       when 'Paragraph'  then cc.react.editor.blocks.Paragraph
@@ -24,6 +29,12 @@ Component = React.createClass
       else DefaultBlockComponent
     
     (tag.div { className: 'section-block' },
+      
+      (tag.i {
+        className:  'fa fa-trash-o delete'
+        onClick:    @onDeleteButtonClick
+      }) unless @props.is_locked
+
       @transferPropsTo(blockComponentClass {})
     )
 

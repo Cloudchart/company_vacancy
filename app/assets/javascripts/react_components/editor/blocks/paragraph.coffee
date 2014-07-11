@@ -16,7 +16,7 @@ placeholders =
   people:
     1: "Describe your team. Put forward the greatest and the brightest. Make sure they star prominently in your company chart. Up to 6 people should be enough for everyone."
 
-  default: "Default placeholder"
+  default: "Type text here"
 
 
 placeholder = (section, position) ->

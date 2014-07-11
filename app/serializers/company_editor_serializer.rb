@@ -1,8 +1,8 @@
 class CompanyEditorSerializer < ActiveModel::Serializer
   
 
-  attributes :uuid, :name, :country, :description, :url, :sections, :available_sections, :available_block_types, :create_block_url
-  attributes :people_url, :vacancies_url
+  attributes :uuid, :name, :country, :description, :url, :sections, :available_sections, :available_block_types
+  attributes :blocks_url, :people_url, :vacancies_url
   
 
   has_many :blocks, serializer: BlockEditorSerializer
@@ -39,7 +39,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   end
   
 
-  def create_block_url
+  def blocks_url
     company_blocks_path(object)
   end
   

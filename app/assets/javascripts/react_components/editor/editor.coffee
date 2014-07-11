@@ -24,10 +24,12 @@ MainComponent = React.createClass
         url:            @props.url
         people_url:     @props.people_url
         vacancies_url:  @props.vacancies_url
+        blocks_url:     @props.blocks_url
         owner:          @props.owner
         blocks:         @props.blocks.filter((block) -> block.section == section.key)
     
     (tag.article { className: 'editor' },
+      (cc.react.editor.SidebarComponent { blocks: @props.available_block_types })
       (sectionsComponents)
     )
 

@@ -1,3 +1,13 @@
+$editor-max-width: 1200px;
+$editor-paragraph-max-width: 800px;
+
+$editor-sidebar-item-background-color: hsl(0, 0%, 96%);
+$editor-sidebar-item-background-color-draggable: hsl(0, 0%, 100%);
+$editor-sidebar-item-color: hsl(60, 4%, 11%);
+$editor-sidebar-item-color-draggable: $editor-sidebar-item-background-color;
+$editor-sidebar-item-font-size: 12pt;
+$editor-sidebar-item-size: $base-unit * 2.5;
+
 $editor-section-header-input-font-size: 20pt;
 $editor-section-header-input-font-weight: 700;
 
@@ -8,6 +18,68 @@ $editor-identity-item-background-color: hsl(0, 0%, 96%);
 
 $editor-person-button-green: hsl(136, 52%, 51%);
 $editor-person-button-red: hsl(1, 76%, 54%);
+
+
+$list-identity-item-height: $base-unit * 1.75;
+
+$list-identity-item-icon-font-size: $list-identity-item-height * .5;
+$list-identity-item-icon-font-weight: 300;
+
+$list-identity-item-name-font-size: 12pt;
+$list-identity-item-name-font-weight: 300;
+
+$list-identity-item-occupation-font-size: 7pt;
+$list-identity-item-occupation-font-weight: 100;
+
+
+
+$editor-identity-selector-search-input-border-width: 3pt;
+$editor-identity-selector-search-input-font-size: 12pt;
+$editor-identity-selector-search-input-padding: 4pt;
+
+
+
+// Editor sidebar
+//
+
+@mixin editor-sidebar-item {
+  cursor: move;
+  background-color: $editor-sidebar-item-background-color;
+  border: 1pt solid $editor-sidebar-item-background-color;
+  color: $editor-sidebar-item-color;
+  font-size: $editor-sidebar-item-font-size;
+  height: $editor-sidebar-item-size;
+  line-height: $editor-sidebar-item-size;
+  list-style: none;
+  text-align: center;
+  width: $editor-sidebar-item-size;
+  
+  &.draggable {
+    background-color: $editor-sidebar-item-background-color-draggable;
+    color: $editor-sidebar-item-color-draggable;
+  }
+}
+
+
+@mixin editor-sidebar {
+  @include position(fixed, 50% $base-unit * 2 0 0);
+  
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+    li {
+      @include editor-sidebar-item;
+      margin: 2pt 0;
+    }
+  }
+}
+
+
+.editor-sidebar-item {
+  @include editor-sidebar-item;
+}
 
 
 // Vacancy flag
@@ -56,6 +128,7 @@ $editor-person-button-red: hsl(1, 76%, 54%);
 @mixin editor-paragraph-block {
   font-size: 15pt;
   margin: 0;
+  max-width: $editor-paragraph-max-width;
   padding: 0;
   position: relative;
   
@@ -129,17 +202,6 @@ $editor-person-button-red: hsl(1, 76%, 54%);
 }
 
 
-$list-identity-item-height: $base-unit * 1.75;
-
-$list-identity-item-icon-font-size: $list-identity-item-height * .5;
-$list-identity-item-icon-font-weight: 300;
-
-$list-identity-item-name-font-size: 12pt;
-$list-identity-item-name-font-weight: 300;
-
-$list-identity-item-occupation-font-size: 7pt;
-$list-identity-item-occupation-font-weight: 100;
-
 // Identity item
 //
 @mixin list-identity-item($padding: 0px) {
@@ -201,11 +263,6 @@ $list-identity-item-occupation-font-weight: 100;
   }
   
 }
-
-
-$editor-identity-selector-search-input-border-width: 3pt;
-$editor-identity-selector-search-input-font-size: 12pt;
-$editor-identity-selector-search-input-padding: 4pt;
 
 
 // Editor identity selector
@@ -408,12 +465,13 @@ $editor-identity-selector-search-input-padding: 4pt;
 
 // Editor article
 article.editor {
-  margin: 0 $base-unit * 2;
+  margin: 0 auto;
+  max-width: $editor-max-width;
   padding: $base-unit * 2 $base-unit * 6;
   
-  @include editor-media-breakpoint(5);
-  @include editor-media-breakpoint(3);
-  @include editor-media-breakpoint(1);
+  > aside.sidebar {
+    @include editor-sidebar;
+  }
   
   > section {
     
@@ -430,8 +488,26 @@ article.editor {
     
     
     > .section-block {
+      margin-left: -$base-unit * 2;
       padding-top: $base-unit;
+      padding-left: $base-unit * 2;
       position: relative;
+      
+      > .delete {
+        @include position(absolute, $base-unit 100% 0 0);
+        
+        color: $editor-section-block-lock-color;
+        cursor: pointer;
+        font-size: $editor-section-block-lock-font-size;
+        line-height: 1em;
+        margin-right: - $base-unit;
+
+        visibility: hidden;
+      }
+      
+      &:hover > .delete {
+        visibility: visible;
+      }
       
       > .lock {
         @include position(absolute, 50% 100% 0 0);
@@ -447,7 +523,6 @@ article.editor {
         font-size: 15pt;
         font-style: italic;
         font-weight: 600;
-        margin-top: $base-unit;
         opacity: .25;
         padding: $base-unit;
       }

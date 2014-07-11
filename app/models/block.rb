@@ -4,7 +4,7 @@ class Block < ActiveRecord::Base
   
   IdentitiesClasses = [Paragraph, BlockImage, Person, Vacancy, Company]
   
-  before_create   :ensure_position, unless: Proc.new { |block| block.position.present? }
+  before_create   :ensure_position
   after_update    :destroy_previous_block_images, if: :should_destroy_previous_block_images?
   before_destroy  :destroy_identities
   after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
