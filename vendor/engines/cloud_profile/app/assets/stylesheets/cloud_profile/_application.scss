@@ -13,29 +13,23 @@
 
 main.cloud-profile {
 
+  span.favorites-link {
+
+    > a > i.fa-star-o {
+      color: $mystic;
+    }
+
+    > a > i.fa-star {
+      color: $ufo-green;
+    }
+  }
+
   > nav {
     @include cloud-profile-nav;
   }
-
-  > div.add-item {
-    padding: 0 $base-unit;
-    position: absolute;
-    top: 0;
-    right: $base-unit * 11;
-    text-align: center;
-    line-height: $base-unit * 3;
-    background-color: $ufo-green;
-
-    > a {
-      text-decoration: none;
-      color: white;
-      font-size: 14pt;
-      display: block;
-    }
-  }
   
   > article {
-    margin: 0 $base-unit * 9;
+    margin: 0 20%;
 
     h1 {
       @include cloud-profile-section-header;
@@ -65,7 +59,7 @@ main.cloud-profile {
     > section {
       margin-top: $base-unit * 2;
     }
-  }
+  } 
   
 }
 

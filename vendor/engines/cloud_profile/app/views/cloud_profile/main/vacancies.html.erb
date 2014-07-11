@@ -20,8 +20,10 @@
             <%= company.name %>
           </li>
 
+          <li class="spacer"></li>
+
           <li class="opened">
-            0 opened vacancies
+            <%= company.vacancies.by_status(:opened).size %> opened vacancies
           </li>
 
           <li class="in-review">
@@ -29,7 +31,7 @@
           </li>
 
           <li class="closed">
-            0 closed
+            <%= company.vacancies.by_status(:closed).size %> closed
           </li>
 
           <li>
@@ -38,32 +40,45 @@
         </ul>  
       </header>
 
-      <div class="vacancies">
-        <% company.vacancies.each do |vacancy| %>
-          <ul>
-            <li class="name">
-              <%= vacancy.name %>
-            </li>
+      <table class="vacancies">
+        <colgroup>
+          <col class="names"></col>
+          <col class="statuses"></col>
+          <col class="actions"></col>
+        </colgroup>
 
-            <li class="status">
-              <%= vacancy.status %>
-            </li>
+        <tbody>
+          <% company.vacancies.each do |vacancy| %>
+            <tr>
+              <td>
+                <%= link_to vacancy.name, main_app.vacancy_path(vacancy) %>
+              </td>
 
-            <li class="actions">
-              <% if can?(:change_status, vacancy) %>
-                <% if vacancy.status == 'draft' %>
-                  <%= link_to 'Publish', main_app.change_status_vacancy_path(vacancy, :opened), method: :patch %>
-                <% elsif vacancy.status == 'opened' %>
-                  <%= link_to 'Close', main_app.change_status_vacancy_path(vacancy, :closed), method: :patch %>
+              <td>
+                <% if vacancy.responded_users.any? && can?(:access_vacancy_responses, vacancy) %>
+                  <%= link_to t('vacancies.applicants', count: vacancy.responded_users.size), main_app.vacancy_responses_path(vacancy) %>
+                <% else %>
+                  <%= vacancy.status %>
                 <% end %>
-              <% end %>
+              </td>
 
-              <%= link_to 'Destroy', main_app.vacancy_path(vacancy), method: :delete, data: { confirm: 'Are you sure?' } if can?(:destroy, vacancy) %>
-            </li>
-          </ul>
+              <td>
+                <% if can?(:change_status, vacancy) %>
+                  <% if vacancy.status == 'draft' %>
+                    <%= link_to 'Publish', main_app.change_status_vacancy_path(vacancy, :opened), method: :patch %>
+                  <% elsif vacancy.status == 'opened' %>
+                    <%= link_to 'Close', main_app.change_status_vacancy_path(vacancy, :closed), method: :patch %>
+                  <% end %>
+                <% end %>
 
-        <% end %>
-      </div>
+                <%= link_to 'Destroy', main_app.vacancy_path(vacancy), method: :delete, data: { confirm: 'Are you sure?' }, class: 'danger' if can?(:destroy, vacancy) %>
+              </td>
+            </tr>
+
+          <% end %>
+
+        </tbody>
+      </table>
 
     </div>
     

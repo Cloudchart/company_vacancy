@@ -1,8 +1,9 @@
 <%- class_for_main 'cloud-profile' -%>
 <%- cloud_profile_nav_current_tab :companies -%>
 <%= render 'shared/nav' %>
-<%= render 'shared/add_item', path: main_app.new_company_path %>
 
 <article class="companies">
+  <%= render 'shared/add_item', path: main_app.new_company_path %>
+  
   <%= render partial: 'shared/companies/company', collection: @companies, locals: { rendered_from: :cloud_profile } %>
 </article>

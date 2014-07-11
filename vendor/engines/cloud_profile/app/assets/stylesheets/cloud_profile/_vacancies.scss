@@ -1,5 +1,5 @@
 main.cloud-profile > div.vacancies-wrapper {
-  margin: 0 $base-unit * 9;
+  margin: 0 20%;
   font-size: 14pt;
 
   ul {
@@ -10,6 +10,14 @@ main.cloud-profile > div.vacancies-wrapper {
     margin: 0;    
   }
 
+  a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   > h1 {
     @include cloud-profile-section-header;
   }
@@ -18,45 +26,86 @@ main.cloud-profile > div.vacancies-wrapper {
     margin-top: $base-unit * 2;
 
     > header {
+      margin-bottom: $base-unit / 3;
+
       > ul {
         font-weight: bold;
 
         > li {
-          margin-right: $base-unit * 2;
+
+          &.spacer { @include flex(1); }
 
           &.opened {
             color: $north-texas-green;
+            margin-right: $base-unit;
           }
 
           &.in-review {
             color: $alizarin-crimson;
+            margin-right: $base-unit;
           }
 
           &.closed {
             color: $dark-grey;
+            margin-right: $base-unit * 3.3;
+          }
+
+          > div.add-item {
+            background-color: $ufo-green;
+
+            > a {
+              padding: $base-unit / 4 $base-unit / 2;
+              color: white;
+              font-size: 10pt;
+              font-weight: normal;
+              text-decoration: none;
+              display: block;
+            }
           }
         }
+
       }
     }
 
-    > div.vacancies {
-      > ul {
-        
-        > li {
-          width: 198pt;
-          padding: $base-unit;
+    > table.vacancies {
+      width: 100.5%;
+      font-size: 12pt;
+      line-height: $base-unit * 1.2;
+      color: $bright-grey;
 
-          &.name {
-            background-color: $white-smoke;
+      > colgroup > col {
+        width: $base-unit * 6;
+
+        &.names {
+          background-color: $white-smoke;
+        }
+
+        &.statuses {
+          background-color: $light-smoke;
+        }
+
+        &.actions {
+          background-color: $mystic;
+        }
+      }
+
+      > tbody > tr {
+
+        &:first-child > td {
+          padding-top: $base-unit;
+        }
+
+        &:last-child > td {
+          padding-bottom: $base-unit;
+        }
+
+        > td {
+          padding-left: $base-unit;
+
+          &:not(:first-child) > a {
+            color: $bright-grey;
           }
 
-          &.status {
-            background-color: $light-smoke;
-          }
-
-          &.actions {
-            background-color: $mystic;
-          }
         }
       }
 

@@ -1,0 +1,6 @@
+en:
+  vacancies: 
+    applicants: 
+      zero: "no applicants"
+      one: "1 applicant"
+      other: "%{count} applicants"
