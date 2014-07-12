@@ -7,7 +7,8 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   has_many :blocks, serializer: BlockEditorSerializer
   
-
+  has_one :logo, serializer: Editor::LogoSerializer
+  
   def sections
     object.sections.marshal_dump
   end
@@ -33,7 +34,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     end
   end
   
-
+  
   def url
     company_path(object)
   end

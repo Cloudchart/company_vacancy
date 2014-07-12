@@ -75,6 +75,14 @@ $orgpad-button-color: hsl(0, 0, 100%);
   background-color: $orgpad-button-background-color;
   color: $orgpad-button-color;
   
+  border: none;
+  
+  display: inline-block;
+  
+  text-align: center;
+  white-space: nowrap;
+
+
   &.inverse {
     color: $orgpad-button-background-color-alert;
   }
@@ -87,10 +95,14 @@ $orgpad-button-color: hsl(0, 0, 100%);
     }
   }
   
-  display: inline-block;
   
-  text-align: center;
-  white-space: nowrap;
+  &.small {
+    font-size: 8pt;
+    font-weight: 300;
+    padding: $base-unit / 5;
+    text-transform: uppercase;
+  }
+
 
   > i {
     line-height: inherit;

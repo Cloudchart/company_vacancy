@@ -1,6 +1,11 @@
+##= require ./logo
+
 # imports
 #
 tag = cc.require('react/dom')
+
+ImageUploaderComponent  = cc.require('react/editor/image-uploader')
+LogoComponent           = cc.require('react/company/logo')
 
 KEY_ESC   = 27
 KEY_ENTER = 13
@@ -70,6 +75,7 @@ MainComponent = React.createClass
 
 
   onSaveDone: (json) ->
+    console.log json
     @setState
       name:         json.name
       description:  json.description
@@ -120,14 +126,14 @@ MainComponent = React.createClass
   
   
   componentDidUpdate: (prevProps, prevState) ->
-    @save() if ['name', 'description'].some((name) => prevState[name] != @state[name])
+    return @save() if ['name', 'description'].some((name) => prevState[name] != @state[name])
 
 
   render: ->
     (tag.header {},
-      (tag.aside { className: 'logo' },
-        (tag.i { className: 'fa fa-magic' })
-      )
+
+      (LogoComponent { logo: @props.logo, url: @props.url })
+      
       (tag.h1   {},
         (InputComponent {
           name:         'name'

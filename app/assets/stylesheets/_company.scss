@@ -38,11 +38,16 @@ article.company {
       @include position(absolute, 0 0 $base-unit * 1.5 $base-unit * 1.5);
       
       background-color: hsl(0, 0%, 100%);
+      background-position: center center;
+      background-repeat:  no-repeat;
+      background-size: contain;
+
+      border: $base-unit / 2 solid #fff;
       height: $company-header-logo-size;
       width: $company-header-logo-size;
       
       > i.fa {
-        color: hsl(0, 0%, 0%);
+        color: hsla(0, 0%, 0%, .25);
         font-size: 20pt;
         margin: auto;
       }

@@ -82,6 +82,55 @@ $editor-identity-selector-search-input-padding: 4pt;
 }
 
 
+
+// Image uploader
+@mixin editor-image-uploader {
+  background-position: center center;
+  background-repeat:  no-repeat;
+  background-size: contain;
+  
+  input[type="file"] {
+    height: 0;
+    overflow: hidden;
+    width: 0;
+  }
+  
+  button.create,
+  button.update,
+  button.delete
+   {
+    visibility: hidden;
+  }
+  
+  &:hover {
+    button.create,
+    button.update,
+    button.delete {
+      visibility: visible;
+    }
+  }
+  
+  button.create {
+    @include position(absolute, 0px 0px 0 0);
+    width: $base-unit * 1.1;
+  }
+  
+  button.update {
+    @include position(absolute, 0px 50% 0 0px);
+    margin-right: $base-unit / 2;
+  }
+
+  button.delete {
+    @include position(absolute, 0px 0px 0 50%);
+    margin-left: $base-unit / 2;
+  }
+}
+
+.editor-image-uploader {
+  @include editor-image-uploader;
+}
+
+
 // Vacancy flag
 //
 @mixin vacancy-flag($height, $width, $color) {
