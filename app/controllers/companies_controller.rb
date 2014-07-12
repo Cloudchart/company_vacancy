@@ -58,7 +58,7 @@ class CompaniesController < ApplicationController
     Activity.track_activity(current_user, params[:action], @company)
     
     respond_to do |format|
-      format.json { render json: @company.reload, serializer: Editor::CompanySerializer }
+      format.json { render json: @company, serializer: Editor::CompanySerializer }
     end
   end
 
@@ -86,7 +86,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :country, :industry_ids, :description, sections_attributes: [Company::Sections.map(&:downcase)], logo_attributes: [:id, :image, :_destroy])
+    params.require(:company).permit(:name, :country, :industry_ids, :description, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)], logo_attributes: [:id, :image, :_destroy])
   end
   
 end

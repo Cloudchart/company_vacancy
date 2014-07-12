@@ -11,7 +11,7 @@ attributes      =
   destroy:    '_destroy'
 
 
-parameter_prefix = "company[logo_attributes]"
+parameter_prefix = "company[logotype]"
 
 
 # Main Component
@@ -21,8 +21,7 @@ MainComponent = React.createClass
 
   onSaveDone: (json) ->
     @setState
-      uuid:       json.logo?.uuid
-      image_url:  json.logo?.image_url
+      image_url:  json.logotype_url
       image:      null
       destroy:    null
   
@@ -34,10 +33,9 @@ MainComponent = React.createClass
 
 
   save: ->
-    data = _.reduce attributes, (memo, parameter, attribute) =>
-      memo.append("#{parameter_prefix}[#{parameter}]", @state[attribute]) if @state[attribute]
-      memo
-    , new FormData
+    data = new FormData
+    data.append("company[logotype]", @state.image) if @state.image
+    data.append("company[remove_logotype]", true) if @state.destroy
     
     $.ajax
       url:        @props.url
@@ -75,8 +73,7 @@ MainComponent = React.createClass
 
 
   getInitialState: ->
-    image_url:  @props.logo?.image_url
-    uuid:       @props.logo?.uuid
+    image_url:  @props.logotype
   
   
   componentDidUpdate: (prevProps, prevState) ->
@@ -84,7 +81,6 @@ MainComponent = React.createClass
 
 
   render: ->
-    
     style                 = {}
     style.backgroundImage = "url(#{@state.image_url})" if @state.image_url
     

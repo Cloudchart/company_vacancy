@@ -132,7 +132,7 @@ MainComponent = React.createClass
   render: ->
     (tag.header {},
 
-      (LogoComponent { logo: @props.logo, url: @props.url })
+      (LogoComponent { logo: @props.logo, logotype: @props.logotype_url, url: @props.url })
       
       (tag.h1   {},
         (InputComponent {

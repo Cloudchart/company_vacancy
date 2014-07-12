@@ -30,6 +30,7 @@ gem 'impressionist' # tracks page views
 gem 'dotenv-rails' # loads environment variables from .env
 gem 'sidekiq' # background processing using redis
 gem 'active_model_serializers'
+gem 'dragonfly', "~>1.0.5"
 
 
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'

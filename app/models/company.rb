@@ -21,6 +21,10 @@ class Company < ActiveRecord::Base
   has_many :favorites, as: :favoritable, dependent: :destroy
   # has_paper_trail
 
+
+  dragonfly_accessor :logotype
+  
+
   accepts_nested_attributes_for :logo, allow_destroy: true
 
   validates :name, :country, :industry_ids, presence: true, on: :update

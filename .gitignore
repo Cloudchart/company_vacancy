@@ -20,6 +20,7 @@
 .powrc
 .powenv
 /public/uploads
+/public/system
 .rbenv-gemsets
 .gemfiles
 *.sock

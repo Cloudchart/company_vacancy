@@ -1,7 +1,7 @@
 class CompanyEditorSerializer < ActiveModel::Serializer
   
 
-  attributes :uuid, :name, :country, :description, :url, :sections, :available_sections, :available_block_types
+  attributes :uuid, :name, :country, :description, :logotype_url, :url, :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url
   
 
@@ -21,6 +21,11 @@ class CompanyEditorSerializer < ActiveModel::Serializer
         title:  section
       }
     end
+  end
+  
+  
+  def logotype_url
+    object.logotype.url if object.logotype_uid
   end
   
 
