@@ -26,6 +26,7 @@ article.company {
   > header {
     background-color: $company-header-background-color;
     margin: 0 auto;
+    max-height: $company-header-logo-size + $base-unit * 5;
     padding: $base-unit * 2 0;
     position: relative;
     
