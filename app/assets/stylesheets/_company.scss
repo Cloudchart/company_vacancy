@@ -1,3 +1,5 @@
+$company-header-background-color: hsl(0, 0%, 70%);
+
 $company-header-logo-size: $base-unit * 8;
 
 $company-header-title-color: hsl(0, 0, 100%);
@@ -22,108 +24,120 @@ article.company {
   
   
   > header {
-    @include align-items(center);
-    @include display(flex);
-    @include flex-direction(column);
-    @include justify-content(flex-end);
-
-    background-color: hsl(0, 0%, 70%);
-    min-height: $base-unit * 12;
-    padding: $base-unit * 1.5;
+    background-color: $company-header-background-color;
+    margin: 0 auto;
+    padding: $base-unit * 2 0;
     position: relative;
     
-    
-    > aside.logo {
-      @include display(flex);
-      @include position(absolute, 0 0 $base-unit * 1.5 $base-unit * 1.5);
-      
-      background-color: hsl(0, 0%, 100%);
-      background-position: center center;
-      background-repeat:  no-repeat;
-      background-size: contain;
-
-      border: $base-unit / 2 solid #fff;
-      height: $company-header-logo-size;
-      width: $company-header-logo-size;
-      
-      > i.fa {
-        color: hsla(0, 0%, 0%, .25);
-        font-size: 20pt;
-        margin: auto;
-      }
+    &::before {
+      content: '';
+      display: block;
+      padding-top: 15%;
     }
     
-    > h1 {
-      color: $company-header-title-color;
-      font-size: $company-header-title-font-size;
-      font-weight: $company-header-title-font-weight;
-      
-      margin: 0 0 $base-unit * 1.5;
-      
-      text-align: center;
-      text-shadow: hsla(0, 0%, 0%, .75) 0 2pt 2pt;
+    > .container {
+      @include position(absolute, 0px 0px 0px 0px);
+      @include display(flex);
+      @include flex-direction(column);
+      @include justify-content(flex-end);
 
-      width: 100%;
+      max-width: $editor-max-width;
+      margin: 0 auto;
+      padding: 0 $base-unit * 6;
+
+      > aside.logo {
+        @include display(flex);
+        @include position(absolute, 0 0 $base-unit * 1.5 $base-unit * 6);
       
-      > small {
-        display: block;
-        font-size: .75em;
-        font-weight: $company-header-title-small-font-weight;
-        
-        margin-top: $base-unit / 2;
+        background-color: hsl(0, 0%, 100%);
+        background-position: center center;
+        background-repeat:  no-repeat;
+        background-size: contain;
+
+        border: $base-unit / 2 solid #fff;
+        height: $company-header-logo-size;
+        width: $company-header-logo-size;
+      
+        > i.fa {
+          color: hsla(0, 0%, 0%, .25);
+          font-size: 20pt;
+          margin: auto;
+        }
       }
+
+      > h1 {
+        color: $company-header-title-color;
+        font-size: $company-header-title-font-size;
+        font-weight: $company-header-title-font-weight;
       
-      input {
-        background-color: transparent;
-        border: none;
-        color: inherit;
-        outline: none;
-        text-align: center;
-        text-shadow: inherit;
+        margin: 0 0 $base-unit * 1.5;
+        padding-left: $base-unit * 1.5 + $company-header-logo-size;
+      
+        text-shadow: hsla(0, 0%, 0%, .75) 0 2pt 2pt;
+
         width: 100%;
+      
+        > small {
+          display: block;
+          font-size: .75em;
+          font-weight: $company-header-title-small-font-weight;
         
-        @include placeholder {
-          font-weight: 300;
+          margin-top: $base-unit / 2;
+        }
+      
+        input {
+          background-color: transparent;
+          border: none;
+          color: inherit;
+          outline: none;
+          text-shadow: inherit;
+          width: 100%;
+        
+          @include placeholder {
+            font-weight: 300;
+          }
         }
       }
-    }
-    
-    > nav {
-      @include display(flex);
+
+      > nav {
+        @include display(flex);
       
-      a {
-        background-color: $company-header-nav-link-background-color;
-        color: $company-header-nav-link-color;
+        margin: 0 0 $base-unit * 1.5;
+        padding-left: $base-unit * 1.5 + $company-header-logo-size;
 
-        display: block;
-        
-        font-size: $company-header-nav-link-font-size;
-        font-weight: $company-header-nav-link-font-weight;
-        
-        height: $company-header-nav-link-height;
-        line-height: $company-header-nav-link-height + 1pt;
-        
-        text-align: center;
-        text-decoration: none;
-        text-transform: uppercase;
+        a {
+          background-color: $company-header-nav-link-background-color;
+          color: $company-header-nav-link-color;
 
-        width: $company-header-nav-link-width;
+          display: block;
         
-        &.current,
-        &:hover {
-          background-color: $company-header-nav-link-current-background-color;
-          color: $company-header-nav-link-current-color;
+          font-size: $company-header-nav-link-font-size;
+          font-weight: $company-header-nav-link-font-weight;
+        
+          height: $company-header-nav-link-height;
+          line-height: $company-header-nav-link-height + 1pt;
+        
+          text-align: center;
+          text-decoration: none;
+          text-transform: uppercase;
+
+          width: $company-header-nav-link-width;
+        
+          &.current,
+          &:hover {
+            background-color: $company-header-nav-link-current-background-color;
+            color: $company-header-nav-link-current-color;
+          }
+
+          &:not(:first-child) {
+            margin-left: $base-unit;
+          }
+        
         }
-
-        &:not(:first-child) {
-          margin-left: $base-unit;
-        }
-        
+      
       }
-      
+
     }
-    
   }
-  
   
 }

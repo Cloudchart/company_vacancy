@@ -131,27 +131,28 @@ MainComponent = React.createClass
 
   render: ->
     (tag.header {},
-
-      (LogoComponent { logo: @props.logo, logotype: @props.logotype_url, url: @props.url })
+      (tag.div { className: 'container' },
+        (LogoComponent { logo: @props.logo, logotype: @props.logotype_url, url: @props.url })
       
-      (tag.h1   {},
-        (InputComponent {
-          name:         'name'
-          value:        @state.name
-          onChange:     @onNameChange
-          placeholder:  'Company name'
-        })
-
-        (tag.small {},
+        (tag.h1   {},
           (InputComponent {
-            name:         'description'
-            value:        @state.description
-            onChange:     @onDescriptionChange
-            placeholder:  'Company description'
+            name:         'name'
+            value:        @state.name
+            onChange:     @onNameChange
+            placeholder:  'Company name'
           })
+
+          (tag.small {},
+            (InputComponent {
+              name:         'description'
+              value:        @state.description
+              onChange:     @onDescriptionChange
+              placeholder:  'Company description'
+            })
+          )
         )
+        (tag.nav  {}, @gatherSections())
       )
-      (tag.nav  {}, @gatherSections())
     )
 
 

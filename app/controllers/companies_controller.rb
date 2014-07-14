@@ -24,7 +24,7 @@ class CompaniesController < ApplicationController
     pagescript_params(can_update_company: can?(:update, @company))
     respond_to do |format|
       format.html
-      format.json { render json: @company }
+      format.json { render json: @company, serializer: Editor::CompanySerializer }
     end
   end
 
