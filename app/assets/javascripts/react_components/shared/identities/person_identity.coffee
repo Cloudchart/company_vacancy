@@ -49,3 +49,5 @@ MainComponent = React.createClass
 # Expose
 #
 @cc.react.shared.identities.Person = MainComponent
+
+cc.module('react/identities/person/colors').exports = PersonColors

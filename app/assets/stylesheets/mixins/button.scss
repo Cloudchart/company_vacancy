@@ -69,6 +69,11 @@ button.cloud {
 $orgpad-button-background-color: hsl(136, 52%, 51%);
 $orgpad-button-background-color-alert: hsl(1, 76%, 54%);
 $orgpad-button-color: hsl(0, 0, 100%);
+$orgpad-button-font-size: 14pt;
+$orgpad-button-font-weight: 400;
+$orgpad-button-height: 30pt;
+$orgpad-button-padding: 0 10pt;
+$orgpad-button-icon-margin: 8pt;
 
 
 @mixin orgpad-button {
@@ -77,10 +82,22 @@ $orgpad-button-color: hsl(0, 0, 100%);
   
   border: none;
   
-  display: inline-block;
+  @include display(flex);
+  //display: inline-block;
   
+  font-size: $orgpad-button-font-size;
+  font-weight: $orgpad-button-font-weight;
+  height: $orgpad-button-height;
+  padding: $orgpad-button-padding;
+
   text-align: center;
   white-space: nowrap;
+  
+  
+  > * {
+    margin: auto;
+    line-height: 1em;
+  }
 
 
   &.inverse {
@@ -102,12 +119,17 @@ $orgpad-button-color: hsl(0, 0, 100%);
     padding: $base-unit / 5;
     text-transform: uppercase;
   }
-
-
-  > i {
-    line-height: inherit;
+  
+  i.fa {
+    margin-left: 0;
+    margin-right: $orgpad-button-icon-margin;
   }
   
+  > * + i.fa {
+    margin-left: $orgpad-button-icon-margin;
+    margin-right: 0;
+  }
+
 }
 
 

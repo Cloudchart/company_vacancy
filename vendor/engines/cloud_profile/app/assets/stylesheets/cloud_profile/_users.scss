@@ -22,6 +22,26 @@ main.cloud-profile article.user section.welcome {
     position: relative;
     width: $base-unit * 20;
     
+    aside.avatar {
+      @include position(absolute, -7pt 100% 0 0);
+      margin-right: 10pt;
+      
+      figure.letter-avatar {
+        @include display(flex);
+        
+        border-radius: 25pt;
+        color: hsl(0, 0%, 100%);
+        font-size: 25pt;
+        font-weight: 300;
+        height: 50pt;
+        width: 50pt;
+        
+        > * {
+          margin: auto;
+        }
+      }
+    }
+    
     
     > label.avatar {
       @include align-items(center);

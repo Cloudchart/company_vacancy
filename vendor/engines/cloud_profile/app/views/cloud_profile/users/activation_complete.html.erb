@@ -1,19 +1,10 @@
 <%- class_for_root_tag main: 'cloud-profile' -%>
 
-<article class="user">
-  
-  <section class="welcome">
-    
-    <h1>
-      <%= t '.title', default: 'Welcome' %>
-    </h1>
-    
-    <p>
-      <%= t '.description', default: 'Knowing your name would help us.' %>
-    </p>
-    
-    <%= render partial: 'activation_complete_form' %>
-    
-  </section>
-  
+<article class="user" data-react-root="on">
 </article>
+
+<%-
+  pagescript_params(
+    user: CloudProfile::UserSerializer.new(current_user).as_json(root: false)
+  )
+-%>

@@ -69,11 +69,32 @@ module CloudProfile
     # Activation completion
     #
     def activation_complete
-      render and return if request.get?
-      current_user.update! params.require(:user).permit(:first_name, :last_name, avatar_attributes: [:image])
-      redirect_to :settings
+
+      respond_to do |format|
+        format.html
+        format.json { render_user_json }
+      end and return if request.get?
+
+      current_user.update! params.require(:user).permit(:full_name, :avatar)
+
+      respond_to do |format|
+        format.html { redirect_to :settings }
+        format.json do
+          if current_user.has_proper_name?
+            render json: { redirect_to: settings_path }
+          else
+            render_user_json
+          end
+        end
+      end
+
     rescue ActiveRecord::RecordInvalid
-      render
+
+      respond_to do |format|
+        format.html
+        format.json { render_user_json }
+      end
+
     end
     
 
@@ -102,6 +123,12 @@ module CloudProfile
       end
     end
 
+
+  private
+  
+    def render_user_json
+      render json: current_user, serializer: CloudProfile::UserSerializer, root: false
+    end
     
   end
 end
