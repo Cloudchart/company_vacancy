@@ -1,41 +1,37 @@
-<h1>Responses to <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %></h1>
+<%- class_for_main 'cloud-profile' -%>
 
-<ul>
-  <% @vacancy.responses.each do |response| %>
-    <% if can?(:read, response) %>
-      <li id="<%= response.id %>">
-        <%= link_to response.user.full_name, vacancy_response_path(response) %> |
-        <%= response.content %> |
-        <strong><%= response.status %></strong> |
-        <%= response.votes_total %> (<%= response.votes.size %>)
+<div class="vacancy-responses-wrapper">
 
-        <% if can?(:perform_admin_actions, @vacancy) %>
-          |
-          <% if response.status == 'pending' %>
-            <%= link_to 'Can be reviewed', change_status_vacancy_response_path(response, :in_review), method: :patch  %> |
-          <% elsif response.status == 'in_review' %>
-            <%= link_to 'Accept', change_status_vacancy_response_path(response, :accepted), method: :patch %> |
-            <%= link_to 'Decline', change_status_vacancy_response_path(response, :declined), method: :patch %> |
-          <% elsif response.status =~ /accepted|declined/ %>
-            <%= link_to 'Back to review', change_status_vacancy_response_path(response, :in_review), method: :patch %> |
-          <% end %>
+  <h1>
+    <%= link_to font_awesome('angle-left'), cloud_profile.vacancies_path %>
+    Responses to <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %>
+  </h1>
 
-          <%= link_to 'Destroy', vacancy_response_path(response.vacancy, response), remote: true, method: :delete, data: { confirm: 'Are you sure?' } %> |
-          <%= link_to 'Destroy and add user to the blacklist', '#' %>
-        <% end %>
-      </li>
+  <% %w[accepted in_review pending declined].each do |status| %>
+    <% responses = @vacancy.responses.select { |resonse| resonse.status == status } %>
+
+    <% if responses.any? %>
+      <h2 class="<%= status.dasherize %>">
+        <%= status.humanize %>
+      </h2>
+
+      <% responses.each do |response| %>
+        <%= render 'vacancy_response', response: response, status: status %>
+      <% end %>
     <% end %>
+  
   <% end %>
-</ul>
 
-<% if can?(:perform_admin_actions, @vacancy) %>
-  <h2>Reviewers</h2>
+  <% if can?(:perform_admin_actions, @vacancy) %>
+    <h2>Reviewers</h2>
 
-  <ul class="vacancy-reviewers">
-    <% @vacancy.reviewers.order(:first_name).each do |person| %>
-      <%= render 'people/person', person: person, vacancy_id: @vacancy.id %>
-    <% end %>
-  </ul>
+    <ul class="vacancy-reviewers">
+      <% @vacancy.reviewers.order(:first_name).each do |person| %>
+        <%= render 'people/person', person: person, vacancy_id: @vacancy.id %>
+      <% end %>
+    </ul>
 
-  <%= render 'shared/people_search' %>
-<% end %>
+    <%= render 'shared/people_search' %>
+  <% end %>
+  
+</div>

@@ -1,5 +1,6 @@
 @mixin cloud-profile-container {
-  @include display(flex);
+  margin: 0 20%;
+  font-size: 14pt;
 }
 
 
@@ -26,6 +27,24 @@
 @mixin cloud-profile-navigated-section {
   margin-left: $base-unit * 2;
 }
+
+
+@mixin cloud-profile-flex-list {
+  @include display(flex);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+@mixin cloud-profile-a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 
 @mixin cloud-profile-nav {
 

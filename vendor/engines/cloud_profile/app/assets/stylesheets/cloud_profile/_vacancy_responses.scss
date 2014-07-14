@@ -1,0 +1,76 @@
+main.cloud-profile > div.vacancy-responses-wrapper {
+  @include cloud-profile-container;
+
+  ul {
+    @include cloud-profile-flex-list;
+  }
+
+  a {
+    @include cloud-profile-a
+  }
+
+  > h1 {
+    @include cloud-profile-section-header;
+  }
+
+  > h2 {
+    font-weight: normal;
+
+    &.pending { color: $alizarin-crimson; }
+    &.accepted { color: $north-texas-green; }
+    &.declined { color: $grey; }
+  }
+
+  > div.vacancy-response {
+    padding: $base-unit;
+
+    &.odd {
+      background-color: $white-smoke;
+    }
+
+    &.even {
+      background-color: $ghost-white;
+    }
+
+    &.declined {
+      color: $grey !important;
+
+      a {
+        color: $grey !important;
+      }
+    }
+
+    header {
+      > ul > li {
+        margin-right: $base-unit;
+
+        &.spacer {
+          @include flex(1);
+        }
+
+        &.name > a {
+          color: black;
+        }
+
+        &.proximity {
+          @include proximity;
+        }
+
+        > a {
+          &.accept { color: $north-texas-green; }
+          &.decline { color: $alizarin-crimson; }
+        }
+      }
+      
+    }
+
+    div.content {
+      margin-top: $base-unit / 2;
+      font-size: 10pt;
+      text-transform: uppercase;
+    }
+
+  }
+
+
+}

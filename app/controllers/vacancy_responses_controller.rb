@@ -74,7 +74,7 @@ private
   end
 
   def set_vacancy
-    @vacancy = Vacancy.find(params[:vacancy_id])
+    @vacancy = Vacancy.includes(responses: [:user, :votes]).find(params[:vacancy_id])
   end
 
   def set_person

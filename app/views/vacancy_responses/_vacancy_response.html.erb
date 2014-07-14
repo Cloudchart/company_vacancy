@@ -1,0 +1,39 @@
+<div class="vacancy-response <%= status %> <%= cycle('odd', 'even') %>">
+
+  <header>
+    <ul>
+      <li class="name">
+        <%= link_to vacancy_response_path(response) do %>
+          <%= response.user.first_name %> 
+          <strong><%= response.user.last_name %></strong>
+        <% end %>
+      </li>
+
+      <li class="spacer"></li>
+
+      <% if can?(:perform_admin_actions, @vacancy) %>
+        <%= render 'status_actions', response: response, status: status %>
+        <li class="spacer"></li>
+      <% end %>
+
+      <li>
+        <strong><%= response.votes.positive.size %></strong>
+        <%= font_awesome('thumbs-o-up') %>
+      </li>
+
+      <li>
+        <strong><%= response.votes.negative.size %></strong>
+        <%= font_awesome('thumbs-o-down') %>
+      </li>
+
+      <li class="proximity">
+        <div class="frame-<%= proximity(@vacancy.company, response.user).index %>"></div>
+      </li>
+    </ul>
+  </header>
+
+  <div class="content">
+    <%= response.content.truncate(100) %>
+  </div>
+
+</div>

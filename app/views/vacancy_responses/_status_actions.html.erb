@@ -1,0 +1,35 @@
+<% if status == 'accepted' %>
+
+  <li>
+    <%= link_to 'Return to review', change_status_vacancy_response_path(response, :in_review), method: :patch %>
+  </li>
+
+  <li>
+    <%= link_to 'Decline', change_status_vacancy_response_path(response, :declined), method: :patch, class: 'decline' %>
+  </li>
+
+<% elsif status == 'in_review' %>
+
+  <li>
+    <%= link_to 'Accept', change_status_vacancy_response_path(response, :accepted), method: :patch, class: 'accept' %>
+  </li>
+
+  <li>
+    <%= link_to 'Decline', change_status_vacancy_response_path(response, :declined), method: :patch, class: 'decline' %>
+  </li>
+
+<% elsif status == 'pending' %>
+
+  <li>
+    <%= link_to 'Accept for review', change_status_vacancy_response_path(response, :in_review), method: :patch %>
+    <%= link_to 'Decline', change_status_vacancy_response_path(response, :declined), method: :patch, class: 'decline' %>
+  </li>
+
+<% elsif status == 'declined' %>
+
+  <li>
+    <%= link_to 'Reconsider', change_status_vacancy_response_path(response, :in_review), method: :patch %>
+    <%= link_to 'Destroy', vacancy_response_path(response.vacancy, response), remote: true, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </li>
+
+<% end %>

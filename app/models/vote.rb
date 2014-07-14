@@ -9,6 +9,8 @@ class Vote < ActiveRecord::Base
   validates :value, presence: true
 
   scope :by_destination, -> destination_id { where(destination_id: destination_id) }
+  scope :negative, -> { where('value < 0') }
+  scope :positive, -> { where('value > 0') }
 
 private
 

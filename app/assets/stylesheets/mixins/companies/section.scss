@@ -21,24 +21,8 @@
           display: none;
         }
 
-        &.proximity > div {
-          width: 13pt;
-          height: 16pt;
-          background: {
-            image: image-url('proximity.svg');
-            repeat: no-repeat;
-            size: 500%;
-            position: -100% center;
-          }
-
-          &.frame-1 { background-position: 0% center; }
-          &.frame-2 { background-position: 25% center; }
-          &.frame-3 { background-position: 50% center; }
-          &.frame-4 { background-position: 75% center; }
-          &.frame-5 { background-position: 100% center; }
-          &.frame-6 { background-position: 100% center; }
-          &.frame-7 { background-position: 100% center; }
-
+        &.proximity {
+          @include proximity;
         }
 
         > a {

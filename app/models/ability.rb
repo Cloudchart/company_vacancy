@@ -85,7 +85,8 @@ class Ability
 
       can :create, VacancyResponse do |vacancy_response|
         !user.vacancy_responses.map(&:vacancy_id).include?(vacancy_response.vacancy_id) &&
-        !user.companies.include?(vacancy_response.vacancy.company)
+        !user.companies.include?(vacancy_response.vacancy.company) &&
+        vacancy_response.vacancy.status == 'opened'
       end
 
       can [:read, :vote], VacancyResponse do |vacancy_response|

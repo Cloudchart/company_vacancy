@@ -1,6 +1,5 @@
 $base-font-size: 22pt;
 $base-unit: $base-font-size * .7;
-
 $base-font-family: 'proxima-nova';
 
 $min-page-width: 1024px;
@@ -8,9 +7,11 @@ $min-page-width: 1024px;
 // Colors
 $athens-grey: hsl(0, 0, 87%);
 $dark-grey: hsl(60, 0, 35%);
+$grey: hsl(60, 0%, 55%);
 $bright-grey: hsl(0, 0%, 35%);
 $north-texas-green: hsl(143, 100%, 26%);
 $white: hsl(0, 0, 100%);
+$ghost-white: hsl(0, 0%, 98%);
 $white-smoke: hsl(0, 0%, 96%);
 $light-smoke: hsl(0, 0%, 93%);
 $jumbo: hsl(0, 0%, 53%);
@@ -20,6 +21,8 @@ $gray-chateau: hsl(0, 0%, 64%);
 $monsoon: hsl(0, 0%, 48%);
 $ufo-green: hsl(139, 55%, 51%);
 $alizarin-crimson: hsl(359, 76%, 53%);
+$jonquil: hsl(62, 77%, 76%);
+$portage: hsl(232, 73%, 73%);
 
 // Body
 $body-font-size: 10pt;

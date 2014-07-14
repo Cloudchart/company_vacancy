@@ -17,23 +17,23 @@ module CompaniesHelper
     current_user.subscriptions.map(&:subscribable_id).include?(company.id)
   end
 
-  def proximity(company)
+  def proximity(company, user = current_user)
     # initialize result
     #
     result = OpenStruct.new
 
     # calculate index
     #
-    if can?(:update, company)
+    if user == current_user && can?(:update, company)
       result.index = 7 # you are the owner
-    elsif current_user.companies.include?(company)
+    elsif user.companies.include?(company)
       result.index = 6 # you work here
     else
       friends_working_in_company = Friend.working_in_company(company.id)
       friends_related_to_company = Friend.related_to_company(company.id)
 
-      user_company_friends_intersection = (current_user.friends & friends_working_in_company)
-      user_company_friends_of_friends_intersection = (current_user.friends & friends_related_to_company)
+      user_company_friends_intersection = (user.friends & friends_working_in_company)
+      user_company_friends_of_friends_intersection = (user.friends & friends_related_to_company)
 
       result.index = if user_company_friends_intersection.size > 0
         calculate_proximity_index(user_company_friends_intersection, :friends, company.people.size)

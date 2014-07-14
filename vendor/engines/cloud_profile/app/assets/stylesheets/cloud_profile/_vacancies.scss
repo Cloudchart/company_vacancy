@@ -1,21 +1,12 @@
 main.cloud-profile > div.vacancies-wrapper {
-  margin: 0 20%;
-  font-size: 14pt;
+  @include cloud-profile-container;
 
   ul {
-    @include display(flex);
-
-    list-style: none;
-    padding: 0;
-    margin: 0;    
+    @include cloud-profile-flex-list;   
   }
 
   a {
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
+    @include cloud-profile-a 
   }
 
   > h1 {

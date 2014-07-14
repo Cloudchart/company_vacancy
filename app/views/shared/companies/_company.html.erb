@@ -54,7 +54,7 @@
 
         <% if current_user && rendered_from != :cloud_profile %>
           <li class="proximity">
-            <div class="frame-<%= proximity(company).index %>"></div>
+            <div class="frame-<% proximity(company).index %>"></div>
           </li>
         <% end %>
 
