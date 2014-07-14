@@ -26,6 +26,12 @@ checksumFrom = (letters) ->
   letters.split('').reduce(((memo, letter) -> memo += letter.charCodeAt(0)), 0)
 
 
+# Background Color
+#
+backgroundColor = (string) ->
+  colours[checksumFrom(lettersFrom(string)) % colours.length]
+
+
 # State
 #
 calculateState = (string) ->
@@ -60,4 +66,5 @@ MainComponent = React.createClass
 
 # Exports
 #
-cc.module('react/shared/letter-avatar').exports = MainComponent
+cc.module('react/shared/letter-avatar').exports                   = MainComponent
+cc.module('react/shared/letter-avatar/background-color').exports  = backgroundColor

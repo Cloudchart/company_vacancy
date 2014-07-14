@@ -6,6 +6,7 @@ tag = cc.require('react/dom')
 
 ImageUploaderComponent  = cc.require('react/editor/image-uploader')
 LogoComponent           = cc.require('react/company/logo')
+backgroundColor         = cc.require('react/shared/letter-avatar/background-color')
 
 KEY_ESC   = 27
 KEY_ENTER = 13
@@ -75,7 +76,6 @@ MainComponent = React.createClass
 
 
   onSaveDone: (json) ->
-    console.log json
     @setState
       name:         json.name
       description:  json.description
@@ -130,7 +130,10 @@ MainComponent = React.createClass
 
 
   render: ->
-    (tag.header {},
+    (tag.header {
+      style:
+        backgroundColor: backgroundColor(@state.name)
+    },
       (tag.div { className: 'container' },
         (LogoComponent { logo: @props.logo, logotype: @props.logotype_url, url: @props.url })
       
