@@ -22,20 +22,27 @@ MainComponent = React.createClass
   onSaveDone: (json) ->
     @setState
       image_url:  json.logotype_url
-      image:      null
-      destroy:    null
+      image:          null
+      destroy:        null
+      synchronizing:  false
   
   
   onSaveFail: (json) ->
     @setState
-      image:    null
-      destroy:  null
+      image:          null
+      destroy:        null
+      synchronizing:  false
 
 
   save: ->
     data = new FormData
     data.append("company[logotype]", @state.image) if @state.image
     data.append("company[remove_logotype]", true) if @state.destroy
+    
+    @setState
+      image:          null
+      destroy:        null
+      synchronizing:  true
     
     $.ajax
       url:        @props.url
@@ -73,7 +80,8 @@ MainComponent = React.createClass
 
 
   getInitialState: ->
-    image_url:  @props.logotype
+    image_url:      @props.logotype
+    synchronizing:  false
   
   
   componentDidUpdate: (prevProps, prevState) ->
@@ -116,7 +124,8 @@ MainComponent = React.createClass
         (tag.i { className: 'fa fa-pencil'})
       ) unless @state.image_url
 
-      (tag.i { className: 'fa fa-picture-o' }) unless @state.image_url
+      (tag.i { className: 'fa fa-picture-o empty' }) unless @state.image_url
+      (tag.i { className: 'fa fa-cog fa-spin synchronizing' }) if @state.synchronizing
     )
 
 
