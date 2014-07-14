@@ -124,7 +124,7 @@ MainComponent = React.createClass
         (tag.i { className: 'fa fa-pencil'})
       ) unless @state.image_url
 
-      (tag.i { className: 'fa fa-picture-o empty' }) unless @state.image_url
+      (tag.i { className: 'fa fa-picture-o empty' }) unless @state.image_url or @state.synchronizing
       (tag.i { className: 'fa fa-cog fa-spin synchronizing' }) if @state.synchronizing
     )
 
