@@ -63,7 +63,7 @@ class Company < ActiveRecord::Base
         end
 
         sort { by :name } if params[:query].blank?
-        filter :term, is_listed: false
+        filter :term, is_listed: true
 
       end
     end
