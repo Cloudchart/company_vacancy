@@ -22,7 +22,9 @@
 #
 @['companies#show'] = (data) ->
   
-  cc.module('react/editor/placeholders').exports = data.placeholders
+  cc.module('react/editor/placeholders').exports  = data.placeholders
+  cc.module('countries').exports                  = data.countries
+  cc.module('industries').exports                 = data.industries
   
   CompanyComponent  = cc.require('react/company')
   container         = document.querySelector('main')

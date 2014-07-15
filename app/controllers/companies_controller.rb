@@ -87,7 +87,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :country, :industry_ids, :description, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)], logo_attributes: [:id, :image, :_destroy])
+    params.require(:company).permit(:name, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)], logo_attributes: [:id, :image, :_destroy])
   end
   
 end

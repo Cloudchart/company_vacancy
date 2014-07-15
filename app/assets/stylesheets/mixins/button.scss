@@ -76,6 +76,12 @@ $orgpad-button-height: 30pt;
 $orgpad-button-padding: 0 10pt;
 $orgpad-button-icon-margin: 8pt;
 
+$orgpad-button-font-size-small: 8pt;
+$orgpad-button-font-weight-small: 300;
+$orgpad-button-height-small: 16pt;
+$orgpad-button-padding-small: 0 10pt;
+
+
 
 @mixin orgpad-button {
   background-color: $orgpad-button-background-color;
@@ -83,8 +89,7 @@ $orgpad-button-icon-margin: 8pt;
   
   border: none;
   
-  @include display(flex);
-  //display: inline-block;
+  @include display(inline-flex);
   
   font-size: $orgpad-button-font-size;
   font-weight: $orgpad-button-font-weight;
@@ -113,11 +118,20 @@ $orgpad-button-icon-margin: 8pt;
     }
   }
   
+
+  &:disabled {
+    background-color: desaturate($orgpad-button-background-color, 100%);
+    
+    &.alert {
+      background-color: desaturate($orgpad-button-background-color-alert, 100%);
+    }
+  }
   
   &.small {
-    font-size: 8pt;
-    font-weight: 300;
-    padding: $base-unit / 5;
+    font-size: $orgpad-button-font-size-small;
+    font-weight: $orgpad-button-font-weight-small;
+    height: $orgpad-button-height-small;
+    padding: $orgpad-button-padding-small;
     text-transform: uppercase;
   }
   

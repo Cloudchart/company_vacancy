@@ -11,6 +11,7 @@ class Company < ActiveRecord::Base
   Sections    = ['About', 'Product', 'People', 'Vacancies']
 
   has_and_belongs_to_many :industries
+
   has_one :logo, as: :owner, dependent: :destroy
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy
@@ -92,6 +93,10 @@ class Company < ActiveRecord::Base
 
   def industry
     industries.first
+  end
+  
+  def industry=(industry_id)
+    self.industry_ids = [industry_id]
   end
 
   def country_name

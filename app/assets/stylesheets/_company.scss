@@ -138,5 +138,30 @@ article.company {
 
     }
   }
+
+
+  section.company-profile {
+    font-size: 15pt;
+    padding-bottom: $base-unit * 2;
+    
+    select {
+      font-size: 15pt;
+      margin-right: $base-unit;
+      margin-left: $base-unit / 2;
+      width: 200pt;
+    }
+    
+    p {
+      margin: $base-unit 0;
+    }
+    
+    footer {
+      font-size: 15pt;
+    }
+    
+    button {
+      margin-left: 10pt;
+    }
+  }
   
 }

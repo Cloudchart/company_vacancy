@@ -1,16 +1,23 @@
 class CompanyEditorSerializer < ActiveModel::Serializer
   
 
-  attributes :uuid, :name, :country, :description, :logotype, :logotype_url, :url, :sections, :available_sections, :available_block_types
+  attributes :uuid, :name, :country, :description, :is_listed, :logotype, :logotype_url, :url, :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url
+  attributes :industry_ids
   
 
   has_many :blocks, serializer: BlockEditorSerializer
   
   has_one :logo, serializer: Editor::LogoSerializer
   
+
   def sections
     object.sections.marshal_dump
+  end
+  
+  
+  def industry_ids
+    object.industries.map(&:to_param)
   end
   
 

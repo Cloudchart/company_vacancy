@@ -8,6 +8,7 @@ $editor-sidebar-item-color-draggable: $editor-sidebar-item-background-color;
 $editor-sidebar-item-font-size: 12pt;
 $editor-sidebar-item-size: $base-unit * 2.5;
 
+$editor-section-header-font-size: 20pt;
 $editor-section-header-input-font-size: 20pt;
 $editor-section-header-input-font-weight: 700;
 
@@ -116,13 +117,11 @@ $editor-identity-selector-search-input-padding: 4pt;
   }
   
   button.update {
-    @include position(absolute, 0px 50% 0 0px);
-    margin-right: $base-unit / 2;
+    @include position(absolute, 0px 0 0 0px);
   }
 
   button.delete {
-    @include position(absolute, 0px 0px 0 50%);
-    margin-left: $base-unit / 2;
+    @include position(absolute, 0px 0px 0 0);
   }
 }
 
@@ -527,6 +526,9 @@ article.editor {
     padding: 0 0 $base-unit * 2;
     
     > header {
+      
+      font-size: $editor-section-header-font-size;
+      font-weight: 300;
       
       input {
         @include editor-section-header-input;

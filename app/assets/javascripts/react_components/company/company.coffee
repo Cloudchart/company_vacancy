@@ -25,6 +25,9 @@ MainComponent = React.createClass
         blocks_url:             @props.blocks_url
         people_url:             @props.people_url
         vacancies_url:          @props.vacancies_url
+        country:                @props.country
+        industry_ids:           @props.industry_ids
+        is_listed:              @props.is_listed
         owner:                  'company'
       })
     )

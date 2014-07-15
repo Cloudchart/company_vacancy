@@ -1,6 +1,11 @@
+##= require ../company/profile
+
 # Expose
 #
 tag = React.DOM
+
+
+CompanyProfileComponent = cc.require('react/company/profile')
 
 
 # Main component
@@ -27,6 +32,14 @@ MainComponent = React.createClass
         blocks_url:     @props.blocks_url
         owner:          @props.owner
         blocks:         @props.blocks.filter((block) -> block.section == section.key)
+    
+    sectionsComponents.splice(1, 0, CompanyProfileComponent({
+      key:            'company-profile'
+      url:            @props.url
+      country:        @props.country
+      industry_ids:   @props.industry_ids
+      is_listed:      @props.is_listed
+    }))
     
     (tag.article { className: 'editor' },
       (cc.react.editor.SidebarComponent { blocks: @props.available_block_types })

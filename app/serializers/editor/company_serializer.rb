@@ -3,7 +3,9 @@ module Editor
     
     self.root = false
     
-    attributes :uuid, :name, :description, :logotype, :logotype_url, :url
+    attributes  :uuid, :name, :country, :description, :is_listed, :url
+    attributes  :logotype, :logotype_url
+    attributes  :industry_ids
     
 
     has_one :logo, serializer: Editor::LogoSerializer
@@ -16,8 +18,13 @@ module Editor
         height:   object.logotype.height,
       } if object.logotype_uid
     end
-  
-  
+
+
+    def industry_ids
+      object.industries.map(&:to_param)
+    end
+
+
     def logotype_url
       object.logotype.url if object.logotype_uid
     end
