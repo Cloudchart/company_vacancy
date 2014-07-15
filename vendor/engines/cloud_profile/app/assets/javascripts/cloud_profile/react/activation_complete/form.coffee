@@ -105,9 +105,7 @@ MainComponent = React.createClass
           onChange:         @onNameChange
         })
       )
-      
-      (tag.label { className: 'email'}, @props.user.email)
-        
+              
       (tag.button { className: 'orgpad'},
         'Start using OrgPad'
         (tag.i { className: 'fa fa-magic' })

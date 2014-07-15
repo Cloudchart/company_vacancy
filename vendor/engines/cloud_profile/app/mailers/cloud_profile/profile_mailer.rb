@@ -11,7 +11,7 @@ module CloudProfile
     
     def verification_email(token)
       @token = token
-      mail to: token.data[:address], subject: t('.verification_email', default: 'Verification e-mail')
+      mail to: token.data[:address]
     end
     
     

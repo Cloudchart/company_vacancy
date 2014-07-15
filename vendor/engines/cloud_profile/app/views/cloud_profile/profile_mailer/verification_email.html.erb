@@ -5,10 +5,16 @@
   </head>
   <body>
     <p>
-      <%= link_to "Verification", verify_email_url(@token) %>
+      You or someone else has added <%= @token.data[:address] %> to the list of your email addresses. Please click the link below to verify your new email address.
     </p>
     <p>
-      <%= @token.to_param %>
+      <%= link_to "Verify Your OrgPad Email", verify_email_url(@token) %>
     </p>
+    <p>
+      If you think it’s a mistake, just ignore this email.
+    </p>
+    
+    <%= render 'signature' %>
+    
   </body>
 </html>
