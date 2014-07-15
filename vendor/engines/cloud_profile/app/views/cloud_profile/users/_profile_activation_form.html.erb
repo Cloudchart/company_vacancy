@@ -1,9 +1,9 @@
 <%= form_tag profile_activation_path(token: params[:token]) do -%>
 
 
-  <label>
-    <%= text_field_tag :email, @email.address, disabled: :disabled %>
-  </label>
+  <p class="email">
+    <%= @email.address %>
+  </p>
   
 
   <%= content_tag :label, class: @password_invalid ? :error : nil do -%>

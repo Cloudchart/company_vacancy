@@ -34,10 +34,6 @@
           @include proximity;
         }
 
-        > a {
-          // color: $dark-grey;
-        }
-
       }
     }
 
@@ -69,7 +65,6 @@
       height: $base-unit * 7;
       margin-right: $base-unit;
       text-align: center;
-      // color: $dark-grey;
 
       > div.chart-preview {
         border: 1pt solid white;
@@ -108,7 +103,6 @@
 
         > a {
           font-size: 14pt;
-          // color: $dark-grey;
 
           &:hover {
             text-decoration: underline;

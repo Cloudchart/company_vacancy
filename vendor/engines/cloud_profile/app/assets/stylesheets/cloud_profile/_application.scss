@@ -14,6 +14,13 @@
 
 main.cloud-profile {
 
+  form > p.email {
+    font-size: 18pt;
+    color: $dark-grey;
+    padding-left: $base-unit / 2;
+  }
+
+
   span.favorites-link {
 
     > a > i.fa-star-o {

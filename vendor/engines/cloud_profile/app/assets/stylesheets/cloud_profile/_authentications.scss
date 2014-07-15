@@ -20,13 +20,6 @@ main.cloud-profile section.login-or-register {
 main.cloud-profile section.login {
 
   form {
-    
-    p.email {
-      font-size: 18pt;
-      color: $dark-grey;
-      padding-left: $base-unit / 2;
-    }
-
     @include cloud-profile-form;
   }
 

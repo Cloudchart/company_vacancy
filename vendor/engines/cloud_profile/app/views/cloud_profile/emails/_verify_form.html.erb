@@ -1,8 +1,8 @@
 <%= form_tag verify_email_path do -%>
 
-  <label>
-    <%= text_field_tag :email, @email.address, disabled: true %>
-  </label>
+  <p class="email">
+    <%= @email.address %>
+  </p>
   
   <%- error = @password_invalid ? t('.password_invalid', default: 'Wrong password') : nil -%>
   <label>
