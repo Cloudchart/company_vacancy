@@ -16,6 +16,9 @@ main.blueprint article.chart {
   @include position(absolute, 0px 0px 0px 0px);
 
   background-color: #eee;
+  background-image: image-url('chart-background.png');
+  background-position: center center;
+  background-size: 50pt;
   overflow: hidden;
   
   section.chart {
