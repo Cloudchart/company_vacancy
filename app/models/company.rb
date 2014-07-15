@@ -34,7 +34,7 @@ class Company < ActiveRecord::Base
     mapping do
       indexes :name, analyzer: 'ngram_analyzer'
       indexes :country_name, analyzer: 'snowball'
-      indexes :is_empty, type: 'boolean'
+      indexes :is_listed, type: 'boolean'
       indexes :industries do
         indexes :name, analyzer: 'snowball'
       end
@@ -63,7 +63,7 @@ class Company < ActiveRecord::Base
         end
 
         sort { by :name } if params[:query].blank?
-        filter :term, is_empty: false
+        filter :term, is_listed: false
 
       end
     end
