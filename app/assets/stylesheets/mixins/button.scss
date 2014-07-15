@@ -20,6 +20,7 @@ $cloud-button-icon-margin: $base-unit / 4;
 
 
 @mixin cloud-button {
+  width: 275pt;
 
   background-color: $cloud-button-background-color;
   border: $cloud-button-border-width solid $cloud-button-border-color;
