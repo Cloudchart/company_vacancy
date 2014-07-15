@@ -5,10 +5,21 @@
   </head>
   <body>
     <p>
-      <%= link_to "activation", profile_activation_url(token: @token.to_param) %>
+      Hello from OrgPad! Thanks for signing up. Please click the link below to set up your first pad.
     </p>
     <p>
-      <%= @token.to_param %>
+      <%= link_to "Verify Your Email and Enter OrgPad", profile_activation_url(token: @token.to_param) %>
+    </p>
+    <p>
+      OrgPad is a convenient tool to chart and profile your company. Use it to clarify your team structure, your products, your goals, and become transparent. Transparency benefits your teams, your partners, and your investors.
+    </p>
+    <p>
+      OrgPad is always free to use. If you have questions, want a product tour, or would just like to talk about OrgPad, simply reply to this email or write to <%= mail_to 'team@orgpad.com' %>
+    </p>
+    <p>
+      Good luck using OrgPad!
+      <br>
+      — Team OrgPad
     </p>
   </body>
 </html>

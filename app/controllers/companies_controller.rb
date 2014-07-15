@@ -58,6 +58,7 @@ class CompaniesController < ApplicationController
     Activity.track_activity(current_user, params[:action], @company)
     
     respond_to do |format|
+      format.html { redirect_to @company }
       format.json { render json: @company, serializer: Editor::CompanySerializer }
     end
   end

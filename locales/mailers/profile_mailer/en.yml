@@ -1,0 +1,7 @@
+en:
+  cloud_profile:
+    profile_mailer:
+      activation_email:
+        subject: "Invitation to OrgPad"
+      password_reset:
+        subject: "Reset your OrgPad password"

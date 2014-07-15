@@ -68,7 +68,7 @@ class Company < ActiveRecord::Base
     end
 
     def find_or_create_placeholder_for(user)
-      company = user.companies.find_by(is_empty: true) || begin
+      company = user.companies.unscoped.find_by(is_empty: true) || begin
         company = Company.new(is_empty: true)
         company.associate_with_person(user)
         company.should_build_objects!
