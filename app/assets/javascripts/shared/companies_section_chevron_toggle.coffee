@@ -7,7 +7,7 @@
     element.preventDefault()
 
     $(@).closest('section')
-        .find('.additional-info, .country, .established-on, .charts, .vacancies, .proximity')
+        .find('.additional-info, .country, .established-on, .proximity')
         .toggle()
 
     $chevron_icon = $(@).find('i')

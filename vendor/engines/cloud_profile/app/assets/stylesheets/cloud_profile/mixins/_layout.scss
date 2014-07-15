@@ -1,5 +1,5 @@
 @mixin cloud-profile-container {
-  margin: 0 20%;
+  margin: 0 15%;
   font-size: 14pt;
 }
 
@@ -59,7 +59,7 @@
     > li {
       background-color: hsl(0, 0%, 96%);
       margin-right: 1pt;
-      width: $base-unit * 10;
+      width: $base-unit * 6;
       height: $base-unit * 2;
       text-align: center;
       line-height: $base-unit * 2;

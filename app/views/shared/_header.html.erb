@@ -2,7 +2,7 @@
 <header class="<%= header_class.blank? ? 'white' : header_class %>">
 
 
-  <%= link_to current_user ? cloud_profile.root_path : main_app.root_path, class: 'logo' do %>
+  <%= link_to main_app.root_path, class: 'logo' do %>
     Org<strong>Pad</strong>
   <% end %>
 
@@ -37,7 +37,7 @@
 
 
   <%- if user_authenticated? -%>
-    <%= link_to current_user.full_name_or_email, cloud_profile.settings_path, class: :profile %>
+    <%= link_to current_user.full_name_or_email, cloud_profile.root_path, class: :profile %>
     <%= link_to font_awesome('sign-out'), cloud_profile.logout_path, class: 'sign-out' %>
   <%- else -%>
     <%= link_to t('.log-in', default: 'Log In'), cloud_profile.login_path, class: 'log-in' %>

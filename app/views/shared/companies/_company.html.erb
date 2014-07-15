@@ -21,10 +21,10 @@
             </span>
           <% end %>
           
-          <%= link_to company.name, main_app.company_path(company) %>
+          <strong><%= link_to company.name, main_app.company_path(company) %></strong>
         </li>
 
-        <li>
+        <li class="industry">
           <%= company.industry.name %>
         </li>
 
@@ -96,7 +96,7 @@
 
   </header>
 
-  <div class="content" style="display: <%= company.vacancies.empty? && company.charts.empty? && rendered_from != :cloud_profile ? 'none' : 'block' %>;">
+  <% if company.charts.any? %>
     <div class="charts">
       <ul>
         <% company.charts.each do |chart| %>
@@ -118,7 +118,9 @@
         <% end %>
       </ul>
     </div>
+  <% end %>
 
+  <% if vacancies.any? %>
     <div class="vacancies">
       <ul>
         <% vacancies.each do |vacancy| %>
@@ -126,7 +128,6 @@
         <% end %>
       </ul>
     </div>
-
-  </div>
+  <% end %>
 
 </section>

@@ -1,6 +1,9 @@
 <nav>
   <%= cloud_profile_nav do %>
-    <%= cloud_profile_nav_tab :companies, t('.companies'), :companies %>
+    <%= cloud_profile_nav_tab :companies, t('.companies', default: 'Companies'), :companies %>
     <%= cloud_profile_nav_tab :newsfeed, t('.activities', default: 'Newsfeed'), :activities %>
+    <%= cloud_profile_nav_tab :settings, t('.settings', default: 'Settings'), :settings %>
   <% end %>
+
+  <%= yield :add_item %>
 </nav>

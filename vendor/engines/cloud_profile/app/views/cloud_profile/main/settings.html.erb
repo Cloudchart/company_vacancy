@@ -1,6 +1,6 @@
 <%- class_for_main 'cloud-profile' -%>
 <%- cloud_profile_nav_current_tab :settings -%>
-<%= render 'shared/settings_nav' %>
+<%= render 'shared/nav' %>
 
 <article class="profile">
 
@@ -65,6 +65,16 @@
     <%- end -%>
 
   </section>
+
+  <% if current_user.subscriptions.any? %>
+    <section class="subscriptions">
+      <h1>Subscriptions</h1>
+
+      <p>
+        <%= link_to 'Show subscriptions', subscriptions_path %>
+      </p>
+    </section>
+  <% end %>
 
   <%# temporary place for companies invites; shared/notice must be rendered in the future %>
   <% if current_user && session[:company_invite].present? && !(request.path =~ /company_invite/) %>

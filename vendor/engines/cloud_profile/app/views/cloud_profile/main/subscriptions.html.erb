@@ -1,6 +1,6 @@
 <%- class_for_main 'cloud-profile' -%>
-<%- cloud_profile_nav_current_tab :subscriptions -%>
-<%= render 'shared/settings_nav' %>
+<%- cloud_profile_nav_current_tab :settings -%>
+<%= render 'shared/nav' %>
 
 <ul>
   <% @subscriptions.each do |subscription| %>

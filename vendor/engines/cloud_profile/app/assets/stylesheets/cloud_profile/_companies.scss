@@ -1,19 +1,19 @@
 main.cloud-profile > article.companies {    
-  position: relative;
   @include companies-article;
 
   > div.add-item {
-    position: absolute;
-    top: -46pt;
-    right: 0;
     background-color: $ufo-green;
+    width: $base-unit * 4;
+    height: $base-unit * 2;
+    margin-top: $base-unit;
 
     > a {
       text-decoration: none;
       color: white;
       font-size: 14pt;
       display: block;
-      padding: $base-unit / 2.2 $base-unit / 2;
+      text-align: center;
+      line-height: $base-unit * 2;
     }
   }  
 
