@@ -26,6 +26,10 @@ main.cloud-profile > div.vacancies-wrapper {
 
           &.spacer { @include flex(1); }
 
+          &.name > a {
+            color: black;
+          }
+
           &.opened {
             color: $north-texas-green;
             margin-right: $base-unit;
