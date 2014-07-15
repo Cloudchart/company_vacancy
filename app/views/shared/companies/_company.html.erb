@@ -96,7 +96,7 @@
 
   </header>
 
-  <% if company.charts.any? %>
+  <% if company.charts.any? || rendered_from == :cloud_profile %>
     <div class="charts">
       <ul>
         <% company.charts.each do |chart| %>
