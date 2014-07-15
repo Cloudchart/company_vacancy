@@ -24,6 +24,18 @@ main.blueprint article.chart {
   section.chart {
     @include position(absolute, 0px 0px 0px 0px);
     
+
+    > h1.placeholder {
+      @include position(absolute, 50% 0px 0 0px);
+      font-size: 40pt;
+      font-weight: 600;
+      margin: -25pt 0 0;
+      opacity: .05;
+      white-space: nowrap;
+      text-align: center;
+    }
+    
+
     > .node {
       @include position(absolute, 0px null null 0px);
       background-color: #f99;

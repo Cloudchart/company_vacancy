@@ -230,6 +230,7 @@ Chart = React.createClass
         relations
       )
       (nodes)
+      (tag.h1 { className: 'placeholder' }, 'Tap anywhere to add node.') if nodes.length == 0
     )
 
 
