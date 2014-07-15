@@ -2,7 +2,7 @@
   <% if activity.subscriber_id.present? %>
     <%= activity.action == 'respond' ? activity.user.full_name : activity.trackable.company.name %>
   <% elsif current_user == activity.user %> 
-    <%= link_to 'You', root_path(current_user) %>
+    You
   <% else %>
     <%= activity.user.full_name %>
   <% end %>
