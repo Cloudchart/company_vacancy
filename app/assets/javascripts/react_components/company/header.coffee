@@ -121,8 +121,8 @@ MainComponent = React.createClass
   
   
   getInitialState: ->
-    name:         @props.name
-    description:  @props.description
+    name:         @props.name         || ''
+    description:  @props.description  || ''
   
   
   componentDidUpdate: (prevProps, prevState) ->

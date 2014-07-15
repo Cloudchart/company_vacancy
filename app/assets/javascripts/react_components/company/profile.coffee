@@ -139,7 +139,7 @@ MainComponent = React.createClass
 
 
   save: ->
-    data = ['country', 'industry', 'is_listed'].reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) ; memo), new FormData
+    data = ['country', 'industry', 'is_listed'].reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]; memo), new FormData
     
     @setState
       synchronizing: true

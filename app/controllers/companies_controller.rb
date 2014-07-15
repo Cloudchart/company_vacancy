@@ -31,6 +31,7 @@ class CompaniesController < ApplicationController
   # GET /companies/new
   def new
     @company = Company.find_or_create_placeholder_for(current_user)
+    redirect_to @company
   end
   
   # POST /companies/1/logo

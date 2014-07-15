@@ -28,7 +28,7 @@ class Company < ActiveRecord::Base
 
   accepts_nested_attributes_for :logo, allow_destroy: true
 
-  validates :name, :country, :industry_ids, presence: true, on: :update
+  #validates :name, :country, :industry_ids, presence: true, on: :update
   
   settings ElasticSearchNGramSettings do
     mapping do
@@ -70,7 +70,7 @@ class Company < ActiveRecord::Base
 
     def find_or_create_placeholder_for(user)
       company = user.companies.unscoped.find_by(is_empty: true) || begin
-        company = Company.new(is_empty: true)
+        company = Company.new(is_empty: true, name: 'Default Company')
         company.associate_with_person(user)
         company.should_build_objects!
         company.save!

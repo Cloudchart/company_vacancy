@@ -9,7 +9,7 @@ colours = cc.require('colours')
 
 # 2 Letters from String
 #
-lettersFrom = (string) ->
+lettersFrom = (string = '') ->
   uppercasedLetters = string.toUpperCase().split('').filter((letter, i) -> letter != ' ' and letter == string[i]).join('')
   initialLetters    = string.split(' ').map((part) -> part.charAt(0)).join('')
   
