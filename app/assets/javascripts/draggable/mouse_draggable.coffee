@@ -38,6 +38,9 @@ is_distance_valid = (event) ->
 # Dispatch event
 #
 dispatchEvent = (type, originalEvent) ->
+  originalEvent.deltaX = originalEvent.pageX - state.capturedEvent.pageX
+  originalEvent.deltaY = originalEvent.pageY - state.capturedEvent.pageY
+
   registered_callbacks[type].forEach (callback) -> callback(state.capturedTarget, originalEvent, state.dataTransfer)
 
 
@@ -94,8 +97,8 @@ onMouseUp = (event) ->
     # Dispatch on drag end event
     dispatchEvent('end', event)
 
-    # Prevent click event if event target if the same as captured event target
-    event.target.addEventListener('click', onClick) if event.target == state.capturedTarget
+    # Prevent click event
+    event.target.addEventListener('click', onClick)
   
   # Release mouse move event
   document.removeEventListener('mousemove', onMouseMove)

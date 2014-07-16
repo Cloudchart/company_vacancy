@@ -74,6 +74,8 @@ dispatchEvent = (type, capturedTarget, originalEvent, dataTransfer) ->
   event.dataTransfer  = dataTransfer
   event.pageX         = originalEvent.pageX
   event.pageY         = originalEvent.pageY
+  event.deltaX        = originalEvent.deltaX
+  event.deltaY        = originalEvent.deltaY
   
   capturedTarget.dispatchEvent(event)
   

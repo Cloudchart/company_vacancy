@@ -60,14 +60,14 @@ MainComponent = React.createClass
     width     = Math.max(nodeBounds.width   - hBorders, layout.bounds.width   + @props.horizontal_padding * 2)
     height    = Math.max(nodeBounds.height  - vBorders, layout.bounds.height  + @props.vertical_padding   * 2)
 
-    xOffset   = width / 2 + @props.horizontal_padding
+    xOffset   = width / 2
     yOffset   = @props.vertical_padding
 
     nodesContainerNode.style.width  = width   + 'px'
     nodesContainerNode.style.height = height  + 'px'
     
     
-    Object.keys(nodes).forEach (uuid) ->
+    Object.keys(nodes).forEach (uuid) =>
       position = layout.positions[uuid]
 
       nodes[uuid].position
@@ -85,7 +85,7 @@ MainComponent = React.createClass
         to:
           x: (position.connectTo.x + xOffset if position.connectTo)
           y: (position.connectTo.y + yOffset if position.connectTo)
-
+    
 
     @setState
       should_recalculate_layout:  false

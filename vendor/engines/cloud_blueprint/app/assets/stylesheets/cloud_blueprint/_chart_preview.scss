@@ -41,7 +41,7 @@ $chart-preview-node-header-font-weight: 600;
   @include position(absolute, 0px 0px 0px 0px);
   
   border: 1pt solid $chart-preview-border-color;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 
