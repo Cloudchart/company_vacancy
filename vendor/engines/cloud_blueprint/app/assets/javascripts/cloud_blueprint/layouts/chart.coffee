@@ -1,13 +1,13 @@
 # Prepare descriptor
 #
 
-prepare_descriptor = (node, view) ->
+prepare_descriptor = (root, node, view) ->
   id:         node.uuid
   knots:      node.knots
-  parent_id:  if node instanceof cc.blueprint.models.Chart then null else node.parent_id
+  parent_id:  if node == root then null else node.parent_id
   children:   []
-  width:      view.getWidth()   if view
-  height:     view.getHeight()  if view
+  width:      view.width || view.getWidth()   if view
+  height:     view.width || view.getHeight()  if view
 
 
 # Horizontal distance
@@ -112,7 +112,7 @@ layout = (root, views) ->
   # Prepare descriptors
   #
   descriptors = _.reduce [root, nodes...], (memo, node) ->
-    memo[node.uuid] = prepare_descriptor(node, views[node.uuid])
+    memo[node.uuid] = prepare_descriptor(root, node, views[node.uuid])
     memo
   , {}
   

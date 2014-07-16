@@ -1,4 +1,5 @@
 ##= require ../company/profile
+##= require cloud_blueprint/react/chart_preview
 
 # Expose
 #
@@ -6,6 +7,8 @@ tag = React.DOM
 
 
 CompanyProfileComponent = cc.require('react/company/profile')
+ChartPreviewComponent   = cc.require('blueprint/react/chart-preview')
+
 
 
 # Main component
@@ -43,6 +46,18 @@ MainComponent = React.createClass
     
     (tag.article { className: 'editor' },
       (cc.react.editor.SidebarComponent { blocks: @props.available_block_types })
+
+      (tag.section {
+        className: 'chart-preview-container'
+        style:
+          width: '100%'
+          height: '200pt'
+          marginBottom: '40pt'
+          position: 'relative'
+      },
+        ChartPreviewComponent({ id: '07a3922a-7633-4997-8a1c-024039c3648d', scale: 1 })
+      )
+
       (sectionsComponents)
     )
 

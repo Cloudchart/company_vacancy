@@ -15,6 +15,27 @@ module CloudBlueprint
         format.html
       end
     end
+    
+    
+    # Load chart preview
+    #
+    def preview
+      chart = Chart.includes(nodes: { identities: :identity }).find(params[:id])
+      
+      respond_to do |format|
+        format.json {
+          render json: chart, include: {
+            nodes: { 
+              include: {
+                identities: {
+                  include: :identity
+                }
+              }
+            }
+          } 
+        }
+      end
+    end
 
     
     # Synchronize chart
@@ -47,8 +68,12 @@ module CloudBlueprint
     # GET /charts/new
     #
     def new
-      @chart      = Chart.new
-      @companies  = current_user.companies.where(is_empty: false)
+      company = current_user.companies.find(params[:company_id])
+      chart   = Chart.new(title: 'Default Chart')
+      company.charts << chart
+      redirect_to chart
+    rescue ActiveRecord::RecordNotFound
+      redirect_to :back and return unless company
     end
     
 

@@ -1,0 +1,62 @@
+$chart-preview-node-font-size: 10pt;
+$chart-preview-node-padding: 5pt 10pt;
+$chart-preview-node-header-font-weight: 600;
+
+// Chart preview node
+//
+
+@mixin chart-preview-node {
+  display: inline-block;
+  font-size: $chart-preview-node-font-size;
+  padding: $chart-preview-node-padding;
+  position: absolute;
+  text-align: center;
+  
+  header {
+    font-weight: $chart-preview-node-header-font-weight;
+  }
+  
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+    li.vacancy {
+      font-style: italic;
+    }
+  }
+  
+  header + ul {
+    margin-top: 2pt;
+  }
+}
+
+
+// Chart preview container
+//
+
+.blueprint-chart-preview-container {
+  @include position(absolute, 0px 0px 0px 0px);
+  
+  overflow: scroll;
+}
+
+
+// Chart preview
+//
+
+.blueprint-chart-preview {
+  @include position(absolute, 0px 0px 0px 0px);
+  @include transform-origin(0px 0px);
+
+  background-image: image-url('chart-background.png');
+  background-position: center center;
+  background-size: 50pt;
+  position: relative;
+  
+  
+  > .node {
+    @include chart-preview-node;
+  }
+  
+}

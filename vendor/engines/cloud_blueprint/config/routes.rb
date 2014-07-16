@@ -1,8 +1,13 @@
 CloudBlueprint::Engine.routes.draw do
+
+  resources :companies, except: [:index, :show, :new, :create, :edit, :update, :destroy] do
+    resources :charts, only: :new
+  end
   
-  resources :charts do
+  resources :charts, except: [:index, :new, :create, :edit, :update] do
     
-    get :pull, on: :member
+    get :pull,    on: :member
+    get :preview, on: :member
     
     resources :identities, only: [:create, :update, :destroy]
     
