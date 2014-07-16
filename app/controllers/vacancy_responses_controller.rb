@@ -7,7 +7,12 @@ class VacancyResponsesController < ApplicationController
   authorize_resource except: :index
 
   def index
-    pagescript_params(company_id: @vacancy.company_id, vacancy_id: @vacancy.id)
+    pagescript_params(company_id: @vacancy.company_id, vacancy_id: @vacancy.id, collection_url: vacancy_responses_path(@vacancy))
+    
+    respond_to do |format|
+      format.html
+      format.json { render json: @vacancy.company.people, root: false }
+    end
   end
 
   def show

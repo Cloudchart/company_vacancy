@@ -19,6 +19,8 @@ Component = React.createClass
 
 
   save: ->
+    return @props.save(@) if @props.save instanceof Function
+
     uuids = @state.people.map((person) -> person.uuid)
 
     $.ajax
@@ -68,7 +70,7 @@ Component = React.createClass
 
 
   getInitialState: ->
-    people: @props.identities
+    people: @props.identities || []
   
   
   componentDidUpdate: (prevProps, prevState) ->
