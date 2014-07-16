@@ -5,11 +5,6 @@
   Element.prototype.matches = Element.prototype["#{vendor}MatchesSelector"]
 
 
-# Selector
-#
-droppable_selector = '[data-droppable="on"]'
-
-
 # Captured droppable
 #
 capturedDroppable = null
