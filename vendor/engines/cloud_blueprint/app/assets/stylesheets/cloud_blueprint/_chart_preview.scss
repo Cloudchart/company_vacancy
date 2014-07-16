@@ -1,3 +1,5 @@
+$chart-preview-border-color: hsl(0, 0%, 87%);
+
 $chart-preview-node-font-size: 10pt;
 $chart-preview-node-padding: 5pt 10pt;
 $chart-preview-node-header-font-weight: 600;
@@ -38,6 +40,7 @@ $chart-preview-node-header-font-weight: 600;
 .blueprint-chart-preview-container {
   @include position(absolute, 0px 0px 0px 0px);
   
+  border: 1pt solid $chart-preview-border-color;
   overflow: scroll;
 }
 
@@ -52,11 +55,18 @@ $chart-preview-node-header-font-weight: 600;
   background-image: image-url('chart-background.png');
   background-position: center center;
   background-size: 50pt;
+  cursor: move;
   position: relative;
   
   
-  > .node {
+  svg {
+    @include position(absolute, 0px 0px 0px 0px);
+  }
+  
+  .node {
     @include chart-preview-node;
+
+    cursor: pointer;
   }
   
 }

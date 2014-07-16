@@ -58,6 +58,7 @@ MainComponent = React.createClass
         ref:    'nodes-container'
         scale:  @props.scale
         nodes:  @state.nodes
+        url:    "/charts/#{@props.id}"
       },
         (tag.svg {
           ref: 'relations-container'

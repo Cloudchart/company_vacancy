@@ -13,15 +13,23 @@ MainComponent = React.createClass
 
 
   nodes: ->
-    @props.nodes.map (node) ->
+    @props.nodes.map (node) =>
       node.key  = node.uuid
       node.ref  = node.uuid
+      node.url  = @props.url
+
       NodeComponent(node)
 
 
   componentDidUpdate: ->
     bounds  = @getDOMNode().getBoundingClientRect()
     layout  = Layout(@refs)
+    
+    width   = Math.max(bounds.width,  layout.bounds.width  + 40)
+    height  = Math.max(bounds.height, layout.bounds.height + 40)
+    
+    @getDOMNode().style.width = width     + 'px'
+    @getDOMNode().style.height = height   + 'px'
 
     xOffset = bounds.width / 2
     yOffset = 20
@@ -44,8 +52,8 @@ MainComponent = React.createClass
         '-ms-transform':      "scale(#{@props.scale})"
         transform:            "scale(#{@props.scale})"
     },
-      @nodes()
       @props.children
+      @nodes()
     )
 
 

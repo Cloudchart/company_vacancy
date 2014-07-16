@@ -3,10 +3,16 @@
 calculateBounds = (descriptors) ->
   descriptors = Object.keys(descriptors).map (uuid) -> descriptors[uuid]
 
-  top:      descriptors.reduce ((memo, descriptor) -> Math.min(memo, descriptor.y)), 0
-  right:    descriptors.reduce ((memo, descriptor) -> Math.max(memo, descriptor.x)), 0
-  bottom:   descriptors.reduce ((memo, descriptor) -> Math.max(memo, descriptor.y)), 0
-  left:     descriptors.reduce ((memo, descriptor) -> Math.min(memo, descriptor.x)), 0
+  bounds =
+    top:      descriptors.reduce ((memo, descriptor) -> Math.min(memo, descriptor.y - descriptor.height / 2)), 0
+    right:    descriptors.reduce ((memo, descriptor) -> Math.max(memo, descriptor.x + descriptor.width  / 2)), 0
+    bottom:   descriptors.reduce ((memo, descriptor) -> Math.max(memo, descriptor.y + descriptor.height / 2)), 0
+    left:     descriptors.reduce ((memo, descriptor) -> Math.min(memo, descriptor.x - descriptor.width  / 2)), 0
+  
+  bounds.width  = bounds.right  - bounds.left
+  bounds.height = bounds.bottom - bounds.top
+  
+  bounds
 
 
 # Calculate levels
