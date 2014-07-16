@@ -34,10 +34,13 @@ revertDragImage = (dragImage, element, callback = null) ->
   dx              = dragImageBounds.left  - elementBounds.left
   dy              = dragImageBounds.top   - elementBounds.top
   
+  offsetX         = parseFloat(elementStyle.borderLeftWidth)  - parseFloat(elementStyle.marginLeft)
+  offsetY         = parseFloat(elementStyle.borderTopWidth)   - parseFloat(elementStyle.marginTop)
+  
 
   position = (x, y) ->
-    dragImage.style.left  = dragImageBounds.left  - x + window.pageXOffset  + 'px'
-    dragImage.style.top   = dragImageBounds.top   - y + window.pageYOffset  + 'px'
+    dragImage.style.left  = dragImageBounds.left  - x - offsetX + window.pageXOffset  + 'px'
+    dragImage.style.top   = dragImageBounds.top   - y - offsetY + window.pageYOffset  + 'px'
   
 
   tick = (timestamp) ->
@@ -51,8 +54,8 @@ revertDragImage = (dragImage, element, callback = null) ->
     y         = Math.floor(dy * delta)
     
     if progress <= duration
-      requestAnimationFrame(tick)
       position(x, y)
+      requestAnimationFrame(tick)
     else
       position(x, y)
       callback() if callback instanceof Function
