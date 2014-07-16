@@ -3,7 +3,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   attributes :uuid, :name, :country, :description, :is_listed, :logotype, :logotype_url, :url, :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url
-  attributes :industry_ids
+  attributes :industry_ids, :chart_ids
   
 
   has_many :blocks, serializer: BlockEditorSerializer
@@ -18,6 +18,11 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   
   def industry_ids
     object.industries.map(&:to_param)
+  end
+  
+
+  def chart_ids
+    object.charts.map(&:to_param)
   end
   
 

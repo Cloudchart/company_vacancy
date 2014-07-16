@@ -55,8 +55,8 @@ MainComponent = React.createClass
           marginBottom: '40pt'
           position: 'relative'
       },
-        ChartPreviewComponent({ id: '07a3922a-7633-4997-8a1c-024039c3648d', scale: 1 })
-      )
+        ChartPreviewComponent({ id: @props.chart_ids[0], scale: 1 })
+      ) if @props.chart_ids.length > 0
 
       (sectionsComponents)
     )

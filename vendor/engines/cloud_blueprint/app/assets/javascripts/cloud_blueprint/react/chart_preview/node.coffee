@@ -36,6 +36,10 @@ MainComponent = React.createClass
   
   getPosition: ->
     @props.position
+  
+  
+  setActualDimensions: ->
+    @getDOMNode().style.minWidth = (@props.children_count + 1) * @props.space_per_child + 'px'
 
 
   resetDimensions: ->
@@ -56,8 +60,9 @@ MainComponent = React.createClass
   
   position: (position) ->
     node = @getDOMNode()
-    node.style.left = position.left - @getWidth()   / 2 + 'px'
-    node.style.top  = position.top  - @getHeight()  / 2 + 'px'
+
+    node.style.left = position.x  - @getWidth()   / 2 + 'px'
+    node.style.top  = position.y  - @getHeight()  / 2 + 'px'
 
 
   identities: ->
@@ -73,19 +78,30 @@ MainComponent = React.createClass
         vacancy_props.key = vacancy_props.uuid
         VacancyComponent(vacancy_props)
     ]
+  
+  
+  onClick: ->
+    window.location.href = @props.url if @props.url
 
 
   componentDidMount: ->
+    @setActualDimensions()
     @resetDimensions()
   
 
   componentDidUpdate: ->
+    @setActualDimensions()
     @resetDimensions()
+
+
+  getDefaultProps: ->
+    space_per_child: 10
 
 
   render: ->
     (tag.div {
-      className: 'node'
+      className:  'node'
+      onClick:    @onClick
       style:
         backgroundColor: colors[@props.color_index % colors.length]
     },

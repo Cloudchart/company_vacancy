@@ -27,6 +27,7 @@ MainComponent = React.createClass
         vacancies_url:          @props.vacancies_url
         country:                @props.country
         industry_ids:           @props.industry_ids
+        chart_ids:              @props.chart_ids
         is_listed:              @props.is_listed
         owner:                  'company'
       })
