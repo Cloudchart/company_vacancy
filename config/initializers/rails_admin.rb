@@ -1,5 +1,5 @@
 RailsAdmin.config do |config|
-  config.main_app_name = ['CloudChart', 'Admin']
+  config.main_app_name = ['OrgPad', 'Admin']
   config.included_models = ['Company', 'Feature', 'User', 'Industry']
 
   config.authenticate_with do
