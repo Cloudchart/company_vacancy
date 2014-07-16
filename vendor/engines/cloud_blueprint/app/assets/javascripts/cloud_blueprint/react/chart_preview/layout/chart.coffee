@@ -1,8 +1,6 @@
 # Calculate bounds
 #
 calculateBounds = (descriptors) ->
-  descriptors = Object.keys(descriptors).map (uuid) -> descriptors[uuid]
-
   bounds =
     top:      descriptors.reduce ((memo, descriptor) -> Math.min(memo, descriptor.y - descriptor.height / 2)), 0
     right:    descriptors.reduce ((memo, descriptor) -> Math.max(memo, descriptor.x + descriptor.width  / 2)), 0
@@ -15,6 +13,27 @@ calculateBounds = (descriptors) ->
   bounds
 
 
+# Calculate connections
+#
+calculateConnections = (descriptors) ->
+  descriptors.forEach (descriptor) ->
+
+    descriptor.connectFrom =
+      x: descriptor.x
+      y: descriptor.y - descriptor.height / 2
+    
+    return if descriptor.children.length == 0
+
+    delta   = descriptor.width / (descriptor.children.length + 1)
+    xOffset = descriptor.x - descriptor.width   / 2
+    yOffset = descriptor.y + descriptor.height  / 2
+
+    descriptor.children.forEach (child, i) ->
+      child.connectTo =
+        x: (i + 1) * delta + xOffset
+        y: yOffset
+
+
 # Calculate levels
 #
 calculateLevels = (descriptors) ->
@@ -24,23 +43,23 @@ calculateLevels = (descriptors) ->
 
   # Calculate max level
   #
-  maxLevel = Object.keys(descriptors).reduce (memo, uuid) ->
-    Math.max(memo, descriptors[uuid].level)
+  maxLevel = descriptors.reduce (memo, descriptor) ->
+    Math.max(memo, descriptor.level)
   , 0
   
 
   # Shift levels
   #
   [1..maxLevel].forEach (level) ->
-    levelDescriptors = Object.keys(descriptors).filter (uuid) -> descriptors[uuid].level == level
+    levelDescriptors = descriptors.filter (descriptor) -> descriptor.level == level
 
-    levelMaxHeight = levelDescriptors.reduce (memo, uuid) ->
-      Math.max(memo, descriptors[uuid].height)
+    levelMaxHeight = levelDescriptors.reduce (memo, descriptor) ->
+      Math.max(memo, descriptor.height)
     , 0
     
     levelOffset = levelOffset + levelMaxHeight / 2 + prevLevelMaxHeight / 2
     
-    levelDescriptors.forEach (uuid) -> descriptors[uuid].y = levelOffset
+    levelDescriptors.forEach (descriptor) -> descriptor.y = levelOffset
     
     prevLevelMaxHeight = levelMaxHeight
     
@@ -86,10 +105,14 @@ Layout = (components) ->
     descriptor.parent.children.push(descriptor)
   
 
+  # Unwrap descriptors
+  #
+  descriptors = Object.keys(descriptors).map (uuid) -> descriptors[uuid]
+  
+
   # Sort descriptor children
   #
-  Object.keys(descriptors).forEach (uuid) ->
-    descriptor          = descriptors[uuid]
+  descriptors.forEach (descriptor) ->
     children            = descriptor.children
     descriptor.children = descriptor.children.sort (a, b) -> a.position - b.position
 
@@ -107,17 +130,23 @@ Layout = (components) ->
   calculateLevels(descriptors)
   
 
+  # Calculate connections
+  #
+  calculateConnections(descriptors)
+  
+  
   # Calculate bounds
   #
   bounds = calculateBounds(descriptors)
   
-  
+
   bounds:     bounds
-  positions:  Object.keys(descriptors).reduce (memo, uuid) ->
-      descriptor = descriptors[uuid]
-      memo[uuid] = 
-        x:  descriptor.x
-        y:  descriptor.y
+  positions:  descriptors.reduce (memo, descriptor) ->
+      memo[descriptor.id] = 
+        x:            descriptor.x
+        y:            descriptor.y
+        connectFrom:  descriptor.connectFrom
+        connectTo:    descriptor.connectTo
       memo
     , {}
 

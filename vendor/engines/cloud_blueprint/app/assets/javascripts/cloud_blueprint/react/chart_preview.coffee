@@ -7,6 +7,7 @@
 tag                     = React.DOM
 Layout                  = cc.require('blueprint/react/chart-preview/layout/chart')
 NodesContainerComponent = cc.require('blueprint/react/chart-preview/nodes-container')
+LinksContainerComponent = cc.require('blueprint/react/chart-preview/links-container')
 
 
 # Main Component
@@ -48,17 +49,23 @@ MainComponent = React.createClass
 
     layout          = Layout(nodes)
     
+    nodeBounds            = @getDOMNode().getBoundingClientRect()
+    nodeStyle             = window.getComputedStyle(@getDOMNode())
     nodesContainerNode    = nodesContainer.getDOMNode()
     nodesContainerBounds  = nodesContainerNode.getBoundingClientRect()
+    
+    hBorders  = parseFloat(nodeStyle.borderLeftWidth)  + parseFloat(nodeStyle.borderRightWidth)
+    vBorders  = parseFloat(nodeStyle.borderTopWidth)   + parseFloat(nodeStyle.borderBottomWidth)
 
-    width           = Math.max(nodesContainerBounds.width,  layout.bounds.width   + @props.horizontal_padding * 2)
-    height          = Math.max(nodesContainerBounds.height, layout.bounds.height  + @props.vertical_padding   * 2)
+    width     = Math.max(nodeBounds.width   - hBorders, layout.bounds.width   + @props.horizontal_padding * 2)
+    height    = Math.max(nodeBounds.height  - vBorders, layout.bounds.height  + @props.vertical_padding   * 2)
+
+    xOffset   = width / 2 + @props.horizontal_padding
+    yOffset   = @props.vertical_padding
 
     nodesContainerNode.style.width  = width   + 'px'
     nodesContainerNode.style.height = height  + 'px'
     
-    xOffset         = width / 2 + @props.horizontal_padding
-    yOffset         = @props.vertical_padding
     
     Object.keys(nodes).forEach (uuid) ->
       position = layout.positions[uuid]
@@ -66,13 +73,31 @@ MainComponent = React.createClass
       nodes[uuid].position
         x:  position.x + xOffset
         y:  position.y + yOffset
+    
+
+    Object.keys(links).forEach (uuid) ->
+      position = layout.positions[uuid]
+      
+      links[uuid].position
+        from:
+          x: position.connectFrom.x + xOffset
+          y: position.connectFrom.y + yOffset
+        to:
+          x: (position.connectTo.x + xOffset if position.connectTo)
+          y: (position.connectTo.y + yOffset if position.connectTo)
+
 
     @setState
       should_recalculate_layout:  false
   
+  
+  onResize: (event) ->
+    # Process resize event
+  
 
   componentWillMount: ->
     @load()
+    window.addEventListener('resize', @onResize)
   
   
   componentDidUpdate: ->
@@ -94,7 +119,8 @@ MainComponent = React.createClass
 
   render: ->
     (tag.div {
-      className: 'blueprint-chart-preview-container'
+      className:  'blueprint-chart-preview-container'
+      onResize:   @onResize
     },
       (NodesContainerComponent {
         ref:      'nodes-container'
@@ -104,8 +130,9 @@ MainComponent = React.createClass
         height:   @state.height
         url:      "/charts/#{@props.id}"
       },
-        (tag.svg {
-          ref: 'links-container'
+        (LinksContainerComponent {
+          ref:    'links-container'
+          nodes:  @state.nodes
         })
       )
     )
