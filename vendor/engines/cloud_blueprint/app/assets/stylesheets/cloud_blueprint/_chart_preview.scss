@@ -4,7 +4,33 @@ $chart-preview-node-font-size: 10pt;
 $chart-preview-node-padding: 5pt 10pt;
 $chart-preview-node-header-font-weight: 600;
 
-// Chart preview node
+$chart-preview-node-flag-color: hsl(0, 82%, 57%);
+$chart-preview-node-flag-height: 15pt;
+$chart-preview-node-flag-width: 9pt;
+
+
+// Chart preview node flag mixin
+//
+
+@mixin chart-preview-node-flag($color: $chart-preview-node-flag-color, $width: $chart-preview-node-flag-width, $height: $chart-preview-node-flag-height) {
+  background-color: $color;
+  height: $height - $width;
+  width: $width;
+  
+  &::after {
+    border: $width / 2 solid $color;
+    border-bottom-color: transparent;
+    bottom: - $width;
+    content: '';
+    height: $width;
+    left: 0;
+    position: absolute;
+    width: $width;
+  }
+}
+
+
+// Chart preview node mixin
 //
 
 @mixin chart-preview-node {
@@ -30,6 +56,11 @@ $chart-preview-node-header-font-weight: 600;
   
   header + ul {
     margin-top: 2pt;
+  }
+  
+  .flag {
+    @include chart-preview-node-flag;
+    @include position(absolute, -2pt 2pt 0 0);
   }
 }
 

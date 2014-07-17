@@ -85,6 +85,7 @@ MainComponent = React.createClass
         to:
           x: (position.connectTo.x + xOffset if position.connectTo)
           y: (position.connectTo.y + yOffset if position.connectTo)
+        midpoint: position.midpoint + yOffset
     
 
     @setState

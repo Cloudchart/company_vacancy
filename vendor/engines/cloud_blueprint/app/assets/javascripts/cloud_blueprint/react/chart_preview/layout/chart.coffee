@@ -32,6 +32,44 @@ calculateConnections = (descriptors) ->
       child.connectTo =
         x: (i + 1) * delta + xOffset
         y: yOffset
+    
+    calculateMidpoints(descriptor)
+
+
+# Calculate midpoints
+#
+calculateMidpoints = (descriptor) ->
+  counters = descriptor.children.reduce (memo, child) ->
+    memo.lt++ if child.connectFrom.x  < child.connectTo.x
+    memo.eq++ if child.connectFrom.x == child.connectTo.x
+    memo.gt++ if child.connectFrom.x  > child.connectTo.x
+    memo
+  , { lt: 0, eq: 0, gt: 0}
+  
+  if counters.lt > 0
+    children  = descriptor.children[0 ... counters.lt]
+    delta     = calculateMidpointDelta(children)
+    children.forEach (child, i) ->
+      child.midpoint = child.connectTo.y + delta * (i + 1)
+  
+  if counters.eq > 0
+    children  = descriptor.children[counters.lt ... counters.lt + counters.eq]
+    delta     = calculateMidpointDelta(children)
+    children.forEach (child, i) ->
+      child.midpoint = child.connectTo.y + delta
+
+  if counters.gt > 0
+    children  = descriptor.children[counters.lt + counters.eq ... counters.length]
+    delta     = calculateMidpointDelta(children)
+    children.forEach (child, i) ->
+      child.midpoint = child.connectTo.y + delta * (children.length - i)
+    
+
+# Calculate midpoint delta
+#
+calculateMidpointDelta = (children) ->
+  maxHeight = Math.max(children.map((child) -> child.height)...)
+  (children[0].y - maxHeight / 2 - children[0].connectTo.y) / (children.length + 1)
 
 
 # Calculate levels
@@ -147,6 +185,7 @@ Layout = (components) ->
         y:            descriptor.y
         connectFrom:  descriptor.connectFrom
         connectTo:    descriptor.connectTo
+        midpoint:     descriptor.midpoint
       memo
     , {}
 

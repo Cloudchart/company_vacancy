@@ -6,6 +6,7 @@ tag               = React.DOM
 defaultNodeColor  = 'hsl(0, 0%, 73%)'
 colors            = cc.require('colors') ; colors.unshift(defaultNodeColor)
 
+Layout            = cc.require('blueprint/react/chart-preview/layout/link')
 
 # Main Component
 #
@@ -15,16 +16,20 @@ MainComponent = React.createClass
   position: (position) ->
     return unless position.to.x? and position.to.y?
     
-    midpoint = (position.from.y + position.to.y) / 2
+    path = Layout(position.to.x, position.to.y, position.from.x, position.from.y, position.midpoint, @props.radius)
     
-    @getDOMNode().setAttribute('d', "M #{position.from.x}, #{position.from.y + 1} C #{position.from.x} #{midpoint} #{position.to.x} #{midpoint} #{position.to.x} #{position.to.y - 1}")
+    @getDOMNode().setAttribute('d', path)
+  
+  
+  getDefaultProps: ->
+    radius: 8
 
 
   render: ->
     (tag.path {
       fill:         'none'
-      stroke:       '#000'
-      strokeWidth:  1.1
+      stroke:       colors[@props.colorIndex % colors.length]
+      strokeWidth:  1.2
     })
 
 

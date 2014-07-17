@@ -14,9 +14,9 @@ MainComponent = React.createClass
   links: ->
     @props.nodes.map (node) ->
       LinkComponent
-        key:  node.uuid
-        ref:  node.uuid
-        
+        key:          node.uuid
+        ref:          node.uuid
+        colorIndex:   node.color_index
 
 
   render: ->
