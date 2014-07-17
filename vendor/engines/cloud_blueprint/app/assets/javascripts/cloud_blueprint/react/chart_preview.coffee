@@ -119,10 +119,18 @@ MainComponent = React.createClass
 
 
   render: ->
+    console.log @props
+    
     (tag.div {
       className:  'blueprint-chart-preview-container'
       onResize:   @onResize
     },
+
+      (tag.a { className: 'orgpad-button edit', href: '/charts/' + @props.id },
+        'Tap to edit your chart'
+        (tag.i { className: 'fa fa-sitemap' })
+      ) if @state.nodes.length == 0
+
       (NodesContainerComponent {
         ref:      'nodes-container'
         scale:    @props.scale
@@ -136,6 +144,7 @@ MainComponent = React.createClass
           nodes:  @state.nodes
         })
       )
+
     )
 
 

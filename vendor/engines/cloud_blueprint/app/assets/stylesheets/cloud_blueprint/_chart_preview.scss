@@ -70,9 +70,17 @@ $chart-preview-node-flag-width: 9pt;
 //
 
 .blueprint-chart-preview-container {
+  @include display(flex);
   @include position(absolute, 0px 0px 0px 0px);
+
   border: 1pt solid $chart-preview-border-color;
   overflow: hidden;
+  
+  > a.edit {
+    margin: auto;
+    z-index: 1;
+  }
+  
 }
 
 
