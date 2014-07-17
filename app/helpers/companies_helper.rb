@@ -1,4 +1,3 @@
-# TODO: refactor
 module CompaniesHelper
   
   def display_logo(company)
@@ -17,6 +16,7 @@ module CompaniesHelper
     current_user.subscriptions.map(&:subscribable_id).include?(company.id)
   end
 
+  # TODO: refactor
   def proximity(company, user = current_user)
     # initialize result
     #

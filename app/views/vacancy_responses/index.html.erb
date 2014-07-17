@@ -25,18 +25,8 @@
   <% if can?(:perform_admin_actions, @vacancy) %>
     <h2>Reviewers</h2>
 
-    <!--div class="editor-people-block">
-      <div class="container" data-react-mount-point="reviewers">
-      </div>
-    </div-->
+    <div class="reviewers"></div>
 
-    <ul class="vacancy-reviewers">
-      <% @vacancy.reviewers.order(:first_name).each do |person| %>
-        <%= render 'people/person', person: person, vacancy_id: @vacancy.id %>
-      <% end %>
-    </ul>
-
-    <%= render 'shared/people_search' %>
   <% end %>
   
 </div>

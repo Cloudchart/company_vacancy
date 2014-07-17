@@ -33,7 +33,9 @@ Cloudchart::Application.routes.draw do
     
     post :logo, to: 'companies#upload_logo', on: :member
     
-    resources :vacancies, except: [:edit], concerns: [:blockable, :statusable]
+    resources :vacancies, except: [:edit], concerns: [:blockable, :statusable] do
+      match :update_reviewers, on: :member, via: [:put, :patch]
+    end
     
     resources :people do
       post :send_invite_to_user, on: :member
@@ -64,10 +66,7 @@ Cloudchart::Application.routes.draw do
   resources :favorites, only: [:create, :destroy]
 
   scope 'vacancies/:vacancy_id' do
-    resources :vacancy_responses, path: 'responses', only: [:index, :new, :create] do
-      post 'invite_person/:person_id', on: :collection, action: :invite_person, as: :invite_person
-      delete 'kick_person/:person_id', on: :collection, action: :kick_person, as: :kick_person
-    end
+    resources :vacancy_responses, path: 'responses', only: [:index, :new, :create]      
   end
 
   resources :vacancy_responses, only: [:show, :destroy], concerns: [:statusable] do

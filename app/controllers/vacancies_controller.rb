@@ -1,5 +1,5 @@
 class VacanciesController < ApplicationController
-  before_action :set_vacancy, only: [:show, :update, :destroy, :change_status]
+  before_action :set_vacancy, only: [:show, :update, :destroy, :change_status, :update_reviewers]
   before_action :set_company, only: [:index, :new, :create]
   before_action :build_vacancy, only: :new
   before_action :build_vacancy_with_params, only: :create
@@ -77,6 +77,15 @@ class VacanciesController < ApplicationController
     redirect_to :back, notice: 'Status has been updated'
   end
 
+  def update_reviewers
+    @vacancy.update(vacancy_params)
+    render nothing: true
+
+    # respond_to do |format|
+    #   format.json { render json: @vacancy.reviewers.select(:uuid, :first_name, :last_name, :occupation), root: false }
+    # end
+  end
+
 private
   # Use callbacks to share common setup or constraints between actions.
   def set_vacancy
@@ -89,7 +98,14 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def vacancy_params
-    params.require(:vacancy).permit(:name, :description, :salary, :location, settings: VacancySetting.attributes.symbolize_keys.keys)
+    params.require(:vacancy).permit(
+      :name,
+      :description,
+      :salary,
+      :location,
+      reviewer_ids: [],
+      settings: VacancySetting.attributes.symbolize_keys.keys
+    )
   end
 
   def build_vacancy

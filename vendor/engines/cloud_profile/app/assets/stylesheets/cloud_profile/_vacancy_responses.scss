@@ -1,14 +1,6 @@
 main.cloud-profile > div.vacancy-responses-wrapper {
   @include cloud-profile-container;
 
-  ul {
-    @include cloud-profile-flex-list;
-  }
-
-  a {
-    @include cloud-profile-a
-  }
-
   > h1 {
     @include cloud-profile-section-header;
   }
@@ -23,6 +15,10 @@ main.cloud-profile > div.vacancy-responses-wrapper {
 
   > div.vacancy-response {
     padding: $base-unit;
+
+    a {
+      @include cloud-profile-a
+    }
 
     &.odd {
       background-color: $white-smoke;
@@ -41,24 +37,29 @@ main.cloud-profile > div.vacancy-responses-wrapper {
     }
 
     header {
-      > ul > li {
-        margin-right: $base-unit;
 
-        &.spacer {
-          @include flex(1);
-        }
+      > ul {
+        @include cloud-profile-flex-list;
 
-        &.name > a {
-          color: black;
-        }
+        > li {
+          margin-right: $base-unit;
 
-        &.proximity {
-          @include proximity;
-        }
+          &.spacer {
+            @include flex(1);
+          }
 
-        > a {
-          &.accept { color: $north-texas-green; }
-          &.decline { color: $alizarin-crimson; }
+          &.name > a {
+            color: black;
+          }
+
+          &.proximity {
+            @include proximity;
+          }
+
+          > a {
+            &.accept { color: $north-texas-green; }
+            &.decline { color: $alizarin-crimson; }
+          }
         }
       }
       
@@ -71,6 +72,10 @@ main.cloud-profile > div.vacancy-responses-wrapper {
     }
 
   }
+
+  > div.reviewers > .people {
+    @include editor-people-block;
+  }  
 
 
 }

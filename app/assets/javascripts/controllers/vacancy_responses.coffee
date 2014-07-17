@@ -1,31 +1,27 @@
 @['vacancy_responses#index'] = (data) ->
-  @cc.ujs.people_search(data)
-
-  mountingPoint = document.querySelector('[data-react-mount-point~="reviewers"]')
+  mountingPoint = document.querySelector('main.cloud-profile div.vacancy-responses-wrapper div.reviewers')
   
   peopleComponent = cc.react.editor.blocks.People
     collection_url: data.collection_url
-    url:            null
+    identities: data.reviewers
 
     save: (component) ->
 
-      people  = component.state.people
-      uuids   = people.map((person) -> person.uuid)
+      people = component.state.people
+      uuids = people.map((person) -> person.uuid)
 
-      ###
       $.ajax
-        url:  null
+        url: data.reviewers_url
         type: 'PUT'
         dataType: 'json'
         data:
           vacancy:
-            reviewer_ids: uuids
+            reviewer_ids: if uuids.length == 0 then [''] else uuids
 
       .done (json) ->
         component.setState({ people: json })
 
-      .fail ->
-      ###
+      # .fail ->
   
 
   React.renderComponent(peopleComponent, mountingPoint) if mountingPoint

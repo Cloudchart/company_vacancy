@@ -1,17 +1,27 @@
 class VacancyResponsesController < ApplicationController
   before_action :set_vacancy, except: [:show, :destroy, :vote, :change_status]
   before_action :set_vacancy_response, only: [:show, :destroy, :vote, :change_status]
-  before_action :set_person, only: [:invite_person, :kick_person]
   before_action :authorize_vacancy, only: :index
 
   authorize_resource except: :index
 
   def index
-    pagescript_params(company_id: @vacancy.company_id, vacancy_id: @vacancy.id, collection_url: vacancy_responses_path(@vacancy))
-    
+    pagescript_params(
+      collection_url: vacancy_responses_path(@vacancy),
+      reviewers_url: update_reviewers_vacancy_path(@vacancy),
+      reviewers: @vacancy.reviewers
+    )
+
+    @company_people = @vacancy.company.people.select do |person| 
+      person.user_id.present? &&
+      !@vacancy.reviewers.map(&:id).include?(person.id) &&
+      person.user_id != current_user.id &&
+      person.user_id != @vacancy.author_id
+    end
+
     respond_to do |format|
       format.html
-      format.json { render json: @vacancy.company.people, root: false }
+      format.json { render json: @company_people, root: false }
     end
   end
 
@@ -43,17 +53,6 @@ class VacancyResponsesController < ApplicationController
     @vacancy_response.destroy
   end
 
-  def invite_person
-    unless @vacancy.reviewers.include?(@person)
-      @vacancy.reviewers << @person
-      @success = true
-    end
-  end
-
-  def kick_person
-    @vacancy.reviewers.delete(@person)
-  end
-
   def vote
     vote = Vote.find_by(source: current_user, destination: @vacancy_response)
 
@@ -80,10 +79,6 @@ private
 
   def set_vacancy
     @vacancy = Vacancy.includes(responses: [:user, :votes]).find(params[:vacancy_id])
-  end
-
-  def set_person
-    @person = Person.find(params[:person_id])
   end
 
   # Only allow a trusted parameter "white list" through.
