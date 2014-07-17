@@ -71,11 +71,8 @@ $chart-preview-node-flag-width: 9pt;
 
 .blueprint-chart-preview-container {
   @include position(absolute, 0px 0px 0px 0px);
-  
   border: 1pt solid $chart-preview-border-color;
-  height: $chart-preview-height;
   overflow: hidden;
-  position: relative;
 }
 
 
@@ -90,7 +87,6 @@ $chart-preview-node-flag-width: 9pt;
   background-position: center center;
   background-size: 50pt;
   cursor: move;
-  position: relative;
   
   
   svg {

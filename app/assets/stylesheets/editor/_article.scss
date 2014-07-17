@@ -541,6 +541,12 @@ article.editor {
       
     }
     
+    &.chart-preview-container {
+      height: 300px;
+      position: relative;
+      margin-bottom: $base-unit * 2;
+    }
+    
     
     > .section-block {
       margin-left: -$base-unit * 2;
