@@ -14,8 +14,8 @@ header.blueprint {
   .chart-title-editor {
     input {
       border: none;
-      font-size: 25pt;
-      font-weight: 600;
+      font-size: inherit;
+      font-weight: $header-title-small-font-weight;
       outline: none;
       width: 200pt;
     }

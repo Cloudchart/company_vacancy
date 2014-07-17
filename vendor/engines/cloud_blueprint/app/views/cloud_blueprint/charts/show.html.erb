@@ -1,54 +1,8 @@
-<%- pagescript_params id: @chart.to_param,
-  chart:  @chart.as_json(only: [:uuid, :title]),
-  url:    chart_path(@chart)
--%>
-
 <%- class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint -%>
 
-<!--
-
-<article class="chart" data-uuid="<%= @chart.to_param %>">
-  <aside class="person-vacancy-filter">
-    
-    <div class="people-vacancies">
-    </div>
-    
-    <nav class="buttons">
-      <button class="person cloud" data-class-name="Person">
-        <%= font_awesome 'users' %>
-      </button>
-
-      <button class="vacancy cloud" data-class-name="Vacancy">
-        <%= font_awesome 'briefcase' %>
-      </button>
-    </nav>
-    
-  </aside>
-<article>
-  
-
-<template id="chart-template">
-  <section class="chart" data-id="<%= @chart.to_param %>" data-behaviour="chart-container">
-    <svg>
-    </svg>
-  </section>
-</template>
-  
-  
-  
-<template id="node-template">
-  <div class="node" data-id="{{=uuid}}" data-class-name="Node" data-behaviour="node droppable" data-droppable-target="node" style="background-color: {{=color}};">
-    <div class="flag"></div>
-    <h2>{{=title}}</h2>
-    <ul>
-      {{@people}}
-        <li class="person">{{=_val.first_name}} {{=_val.last_name}}</li>
-      {{/@people}}
-      {{@vacancies}}
-        <li class="vacancy">{{=_title}}</li>
-      {{/@vacancies}}
-    </ul>
-  </div>
-</template>
-
--->
+<%- pagescript_params id: @chart.to_param,
+  chart:        @chart.as_json(only: [:uuid, :title]),
+  url:          chart_path(@chart),
+  company_url:  main_app.company_path(@chart.company),
+  company_name: @chart.company.name
+-%>

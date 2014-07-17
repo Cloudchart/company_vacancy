@@ -8,12 +8,18 @@
   can_edit_chart = true
   
   
-  ChartTitleComponent = cc.require('blueprint/react/chart-title')
   
-  headerMountPoint = document.querySelector('[data-header-react-mount-point]')
-  
-  if headerMountPoint
-    React.renderComponent(ChartTitleComponent({ title: data.chart.title, url: data.url, disabled: !can_edit_chart }), headerMountPoint)
+  if headerMountPoint = document.querySelector('[data-header-react-mount-point]')
+
+    ChartTitleComponent = cc.require('blueprint/react/chart-title')
+
+    React.renderComponent(ChartTitleComponent({
+      title:          data.chart.title
+      url:            data.url
+      company_url:    data.company_url
+      company_name:   data.company_name
+      disabled:      !can_edit_chart
+    }), headerMountPoint)
   
 
   # Access functions

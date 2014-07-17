@@ -85,6 +85,17 @@ MainComponent = React.createClass
 
   render: ->
     (tag.div { className: 'chart-title-editor' },
+
+      (tag.a {
+        className:  'title'
+        href:       @props.company_url
+      },
+        @props.company_name
+        " "
+        (tag.i { className: 'fa fa-angle-right' })
+        " "
+      )
+
       (tag.input {
         ref:          'input'
         type:         'text'

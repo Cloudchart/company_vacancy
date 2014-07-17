@@ -2,15 +2,16 @@
 <header class="<%= header_class.blank? ? 'white' : header_class %>">
 
 
-  <%= link_to main_app.root_path, class: 'logo' do %>
-    Org<strong>Pad</strong>
-  <% end %>
-  
-  
+  <%= link_to "", main_app.root_path, class: 'logo' %>
+
+
   <div data-header-react-mount-point>
-    
+    <%= link_to main_app.root_path, class: :title do -%>
+      <small>Org</small>Pad
+    <%- end -%>
   </div>
   
+
   <div class="search">
     <%= form_tag main_app.search_companies_path, remote: controller_name == 'companies' && action_name =~ /index|search/ ? true : false do %>
       <%= font_awesome('search') %>

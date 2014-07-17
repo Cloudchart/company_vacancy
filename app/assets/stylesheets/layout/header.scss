@@ -10,6 +10,51 @@ $white-header-search-border-color: hsl(0, 0%, 78%);
 
 $header-link-color: hsl(140, 77%, 31%);
 
+
+// Header logo variables
+//
+
+$header-logo-background-image: image-url('orgpad-logo.svg');
+$header-logo-top-margin: -3pt;
+$header-logo-right-margin: 10pt;
+$header-logo-width: 36pt;
+$header-logo-height: 34pt;
+
+// Header logo mixin
+//
+
+@mixin header-logo {
+  background: $header-logo-background-image no-repeat center center;
+  background-size: auto 100%;
+
+  display: block;
+
+  margin-top: $header-logo-top-margin;
+  margin-right: $header-logo-right-margin;
+  height: $header-logo-height;
+  width: $header-logo-width;
+}
+
+
+// Header title variables
+//
+
+$header-title-font-size: 20pt;
+$header-title-small-font-weight: 300;
+
+
+// Header title link mixin
+//
+
+@mixin header-title {
+  font-size: $header-title-font-size;
+  > small {
+    font-size: inherit;
+    font-weight: $header-title-small-font-weight;
+  }
+}
+
+
 body > header {
   @include align-items(center);
   @include display(flex);
@@ -28,28 +73,16 @@ body > header {
   }
   
   
-  > .logo {
-    @include align-items(center);
-    @include display(flex);
-    
-    color: $north-texas-green;
-    font-weight: 300;
-    margin-top: 5pt;
-    margin-right: $base-unit;
-    
-    &::before {
-      background: image-url('orgpad-logo.svg') no-repeat center center;
-      content: '';
-      display: inline-block;
-      height: 38px;
-      margin-top: -5pt;
-      margin-right: $base-unit * 0.1;
-      width: 56px;
-    }
-    
+  
+  > a.logo {
+    @include header-logo;
   }
   
+  a.title {
+    @include header-title;
+  }
   
+
   > .links {
     @include display(flex);
     
@@ -92,8 +125,12 @@ body > header {
     }
   }
   
+  a.profile {
+    font-weight: $header-title-small-font-weight;
+  }
   
   > .log-in {
+    font-weight: $header-title-small-font-weight;
     margin-right: $base-unit / 2;
   }
     
@@ -104,6 +141,7 @@ body > header {
     border-radius: 5pt;
     color: #fff;
     height: $base-unit * 2;
+    font-weight: $header-title-small-font-weight;
     line-height: $base-unit * 2;
     margin-left: $base-unit / 2;
     padding: 0 $base-unit / 2;

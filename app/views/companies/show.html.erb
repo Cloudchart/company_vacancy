@@ -1,3 +1,6 @@
+<%- content_for :header_breadcrumbs do -%>
+<%- end -%>
+
 <%-
   pagescript_params(
     company:        CompanyEditorSerializer.new(@company).as_json(root: false),
