@@ -57,8 +57,8 @@ MainComponent = React.createClass
     hBorders  = parseFloat(nodeStyle.borderLeftWidth)  + parseFloat(nodeStyle.borderRightWidth)
     vBorders  = parseFloat(nodeStyle.borderTopWidth)   + parseFloat(nodeStyle.borderBottomWidth)
 
-    width     = Math.max(nodeBounds.width   - hBorders, layout.bounds.width   + @props.horizontal_padding * 2)
-    height    = Math.max(nodeBounds.height  - vBorders, layout.bounds.height  + @props.vertical_padding   * 2)
+    width     = Math.max(nodeBounds.width   - hBorders, (layout.bounds.width   + @props.horizontal_padding * 2) * @props.scale) / @props.scale
+    height    = Math.max(nodeBounds.height  - vBorders, (layout.bounds.height  + @props.vertical_padding   * 2) * @props.scale) / @props.scale
 
     xOffset   = width / 2
     yOffset   = @props.vertical_padding

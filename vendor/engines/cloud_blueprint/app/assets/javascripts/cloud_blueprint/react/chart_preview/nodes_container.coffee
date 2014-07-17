@@ -61,6 +61,7 @@ MainComponent = React.createClass
       node.ref            = node.uuid
       node.url            = @props.url
       node.children_count = @props.nodes.filter((n) -> n.parent_id == node.uuid).length
+      node.scale          = @props.scale
       
       NodeComponent(node)
 

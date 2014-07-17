@@ -1,4 +1,5 @@
 $chart-preview-border-color: hsl(0, 0%, 87%);
+$chart-preview-height: 200pt;
 
 $chart-preview-node-font-size: 10pt;
 $chart-preview-node-padding: 5pt 10pt;
@@ -72,7 +73,9 @@ $chart-preview-node-flag-width: 9pt;
   @include position(absolute, 0px 0px 0px 0px);
   
   border: 1pt solid $chart-preview-border-color;
+  height: $chart-preview-height;
   overflow: hidden;
+  position: relative;
 }
 
 

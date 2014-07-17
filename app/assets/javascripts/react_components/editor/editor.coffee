@@ -49,11 +49,6 @@ MainComponent = React.createClass
 
       (tag.section {
         className: 'chart-preview-container'
-        style:
-          width: '100%'
-          height: '200pt'
-          marginBottom: '40pt'
-          position: 'relative'
       },
         ChartPreviewComponent({ id: @props.chart_ids[0], scale: 1 })
       ) if @props.chart_ids.length > 0

@@ -51,11 +51,11 @@ MainComponent = React.createClass
   
   
   getWidth: ->
-    @getDimensions().width
+    @getDimensions().width / @props.scale
   
   
   getHeight: ->
-    @getDimensions().height
+    @getDimensions().height / @props.scale
   
   
   position: (position) ->
