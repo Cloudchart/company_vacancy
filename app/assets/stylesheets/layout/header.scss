@@ -15,6 +15,7 @@ $header-link-color: hsl(140, 77%, 31%);
 //
 
 $header-logo-background-image: image-url('orgpad-logo.svg');
+$header-logo-background-image-inverse: image-url('orgpad-logo-neg.svg');
 $header-logo-top-margin: -3pt;
 $header-logo-right-margin: 10pt;
 $header-logo-width: 36pt;
@@ -40,6 +41,7 @@ $header-logo-height: 34pt;
 //
 
 $header-title-font-size: 20pt;
+$header-title-font-weight: 700;
 $header-title-small-font-weight: 300;
 
 
@@ -48,6 +50,8 @@ $header-title-small-font-weight: 300;
 
 @mixin header-title {
   font-size: $header-title-font-size;
+  font-weight: $header-title-font-weight;
+
   > small {
     font-size: inherit;
     font-weight: $header-title-small-font-weight;
@@ -68,15 +72,20 @@ body > header {
   
   a {
     color: $header-link-color;
-    font-weight: 700;
+    font-weight: 300;
     text-decoration: none;
   }
+
   
-  
-  
-  > a.logo {
+  a.logo {
     @include header-logo;
   }
+  
+
+  &.green a.logo {
+    background-image: $header-logo-background-image-inverse;
+  }
+  
   
   a.title {
     @include header-title;
@@ -149,19 +158,10 @@ body > header {
       color: #fff;
     }
     
-    > .logo::before {
-      background-image: image-url('orgpad-logo-neg.svg');
-    }
-    
     > .links {
       font-size: 14pt;
     }
     
-    //> .sign-up {
-    //  background-color: #fff;
-    //  border-color: #fff;
-    //  color: $header-link-color;
-    //}
     
   }
   
