@@ -33,36 +33,38 @@ calculateConnections = (descriptors) ->
         x: (i + 1) * delta + xOffset
         y: yOffset
     
-    calculateMidpoints(descriptor)
-
 
 # Calculate midpoints
 #
-calculateMidpoints = (descriptor) ->
-  counters = descriptor.children.reduce (memo, child) ->
-    memo.lt++ if child.connectFrom.x  < child.connectTo.x
-    memo.eq++ if child.connectFrom.x == child.connectTo.x
-    memo.gt++ if child.connectFrom.x  > child.connectTo.x
-    memo
-  , { lt: 0, eq: 0, gt: 0}
+calculateMidpoints = (descriptors) ->
+  descriptors.forEach (descriptor) ->
+    
+    return if descriptor.children.length == 0
   
-  if counters.lt > 0
-    children  = descriptor.children[0 ... counters.lt]
-    delta     = calculateMidpointDelta(children)
-    children.forEach (child, i) ->
-      child.midpoint = child.connectTo.y + delta * (i + 1)
+    counters = descriptor.children.reduce (memo, child) ->
+      memo.lt++ if child.connectFrom.x  < child.connectTo.x
+      memo.eq++ if child.connectFrom.x == child.connectTo.x
+      memo.gt++ if child.connectFrom.x  > child.connectTo.x
+      memo
+    , { lt: 0, eq: 0, gt: 0}
   
-  if counters.eq > 0
-    children  = descriptor.children[counters.lt ... counters.lt + counters.eq]
-    delta     = calculateMidpointDelta(children)
-    children.forEach (child, i) ->
-      child.midpoint = child.connectTo.y + delta
+    if counters.lt > 0
+      children  = descriptor.children[0 ... counters.lt]
+      delta     = calculateMidpointDelta(children)
+      children.forEach (child, i) ->
+        child.midpoint = child.connectTo.y + delta * (i + 1)
+  
+    if counters.eq > 0
+      children  = descriptor.children[counters.lt ... counters.lt + counters.eq]
+      delta     = calculateMidpointDelta(children)
+      children.forEach (child, i) ->
+        child.midpoint = child.connectTo.y + delta
 
-  if counters.gt > 0
-    children  = descriptor.children[counters.lt + counters.eq ... counters.length]
-    delta     = calculateMidpointDelta(children)
-    children.forEach (child, i) ->
-      child.midpoint = child.connectTo.y + delta * (children.length - i)
+    if counters.gt > 0
+      children  = descriptor.children[counters.lt + counters.eq ... counters.length]
+      delta     = calculateMidpointDelta(children)
+      children.forEach (child, i) ->
+        child.midpoint = child.connectTo.y + delta * (children.length - i)
     
 
 # Calculate midpoint delta
@@ -171,6 +173,11 @@ Layout = (components) ->
   # Calculate connections
   #
   calculateConnections(descriptors)
+  
+  
+  # Calculate midpoints
+  #
+  calculateMidpoints(descriptors)
   
   
   # Calculate bounds
