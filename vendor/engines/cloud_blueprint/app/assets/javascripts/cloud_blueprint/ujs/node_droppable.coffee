@@ -22,7 +22,8 @@ on_leave = (event) ->
 #
 on_move = (event) ->
   return unless event.dataTransfer
-  on_node_move(event) if event.dataTransfer.types.indexOf('node') > -1
+  on_node_move(event)     if event.dataTransfer.types.indexOf('node') > -1
+  on_identity_move(event) if event.dataTransfer.types.indexOf('identity') > -1
 
 
 # On drop
@@ -157,6 +158,8 @@ on_identity_enter = (event) ->
   
   event.dataTransfer.setData('captured', captured)
   event.target.classList.toggle('captured', captured)
+  event.preventDefault()
+  event.stopPropagation()
   
 
 # On identity leave
@@ -166,9 +169,18 @@ on_identity_leave = (event) ->
   event.target.classList.remove('captured')
 
 
+# On identity leave
+#
+on_identity_move = (event) ->
+  event.preventDefault()
+  event.stopPropagation()
+
+
 # On identity drop
 #
 on_identity_drop = (event) ->
+  event.stopPropagation()
+  
   event.target.classList.remove('captured')
 
   identity_data   = JSON.parse(event.dataTransfer.getData('identity'))

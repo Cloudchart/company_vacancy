@@ -151,6 +151,25 @@ Chart = React.createClass
   ]
   
   
+  onDropIdentity: (event) ->
+    parent    = calculate_parent(@refs, event.detail.pageX, event.detail.pageY)
+    position  = calculate_position(@refs, parent, event.detail.pageX)
+    nodeModel = cc.blueprint.models.Node.create({ chart_id: @props.root.uuid, parent_id: parent, position: position, color_index: 0 })
+
+    cc.blueprint.models.Node.sync()
+
+    json = JSON.parse(event.detail.identity)
+
+    identityModel = cc.blueprint.models.Identity.create({
+      chart_id:       @props.root.uuid
+      node_id:        nodeModel.uuid
+      identity_id:    json.uuid
+      identity_type:  json.className
+    })
+    
+    identityModel.save()
+  
+  
   onClick: (event) ->
     parent    = calculate_parent(@refs, event.pageX, event.pageY)
     position  = calculate_position(@refs, parent, event.pageX)
@@ -172,6 +191,7 @@ Chart = React.createClass
   componentDidMount: ->
     @reposition()
     _.each @props.subscribe_on, (message) => Arbiter.subscribe message, @refresh
+    @getDOMNode().addEventListener('drop:identity', @onDropIdentity)
    
   
 
@@ -223,8 +243,9 @@ Chart = React.createClass
       }
     
     (tag.section {
-      className: 'chart'
-      onClick: @onClick
+      className:          'chart'
+      onClick:            @onClick
+      'data-behaviour':   'droppable' if @props.can_be_edited
     },
       (tag.svg {},
         relations
