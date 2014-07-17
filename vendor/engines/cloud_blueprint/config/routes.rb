@@ -4,7 +4,7 @@ CloudBlueprint::Engine.routes.draw do
     resources :charts, only: :new
   end
   
-  resources :charts, except: [:index, :new, :create, :edit, :update] do
+  resources :charts, except: [:index, :new, :create, :edit] do
     
     get :pull,    on: :member
     get :preview, on: :member

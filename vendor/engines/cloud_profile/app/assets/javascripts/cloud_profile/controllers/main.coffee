@@ -12,10 +12,9 @@
   $ -> cc.companies_section_chevron_toggle()
 
 
-  ChartPreviewComponent = cc.require('blueprint/react/chart-preview')
-
-  chartPreviewContainers = document.querySelectorAll("[data-react-mount-point-for-chart]")
+  ChartPreviewComponent   = cc.require('blueprint/react/chart-preview')
+  chartPreviewContainers  = document.querySelectorAll("[data-react-mount-point-for-chart]")
   
   _.each chartPreviewContainers, (root) ->
     chartUUID = root.dataset.reactMountPointForChart
-    React.renderComponent(ChartPreviewComponent({ id: chartUUID, scale: .5 }), root)
+    React.renderComponent(ChartPreviewComponent({ id: chartUUID, scale: .25 }), root)

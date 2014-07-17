@@ -1,9 +1,19 @@
+##= require ../react/chart_title
+
 @['cloud_blueprint/charts#show'] = (data) ->
   
-
+  
   # Variables
   #
   can_edit_chart = true
+  
+  
+  ChartTitleComponent = cc.require('blueprint/react/chart-title')
+  
+  headerMountPoint = document.querySelector('[data-header-react-mount-point]')
+  
+  if headerMountPoint
+    React.renderComponent(ChartTitleComponent({ title: data.chart.title, url: data.url }), headerMountPoint)
   
 
   # Access functions

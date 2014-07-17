@@ -3,9 +3,26 @@ $person-vacancy-filter-toggle-button-size: $base-unit * 2;
 $person-vacancy-filter-toggle-button-font-size: 14pt;
 $person-vacancy-filter-z-index: 2000;
 
+
 header.blueprint {
   margin-bottom: 0;
+  
+  .search {
+    display: none;
+  }
+  
+  .chart-title-editor {
+    input {
+      border: none;
+      font-size: 25pt;
+      font-weight: 600;
+      outline: none;
+      width: 200pt;
+    }
+  }
+  
 }
+
 
 footer.blueprint {
   display: none;
