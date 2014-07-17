@@ -129,30 +129,14 @@ body > header {
     font-weight: $header-title-small-font-weight;
   }
   
-  > .log-in {
-    font-weight: $header-title-small-font-weight;
-    margin-right: $base-unit / 2;
-  }
-    
-  > .sign-up,
-  > .sign-out {
-    background-color: $header-button-background-color;
-    border: 1pt solid $header-button-border-color;
-    border-radius: 5pt;
-    color: #fff;
-    height: $base-unit * 2;
-    font-weight: $header-title-small-font-weight;
-    line-height: $base-unit * 2;
-    margin-left: $base-unit / 2;
-    padding: 0 $base-unit / 2;
+  a.sign-out {
+    margin-left: 10pt;
+    font-size: 18pt;
+    padding: 0;
+    width: $orgpad-button-height;
   }
   
-  > .sign-out {
-    width: $base-unit * 2;
-    text-align: center;
-  }
-  
-  
+
   > .spacer {
     @include flex(1);
   }
@@ -169,17 +153,15 @@ body > header {
       background-image: image-url('orgpad-logo-neg.svg');
     }
     
-    > .links,
-    > .log-in,
-    > .sign-up {
+    > .links {
       font-size: 14pt;
     }
     
-    > .sign-up {
-      background-color: #fff;
-      border-color: #fff;
-      color: $header-link-color;
-    }
+    //> .sign-up {
+    //  background-color: #fff;
+    //  border-color: #fff;
+    //  color: $header-link-color;
+    //}
     
   }
   

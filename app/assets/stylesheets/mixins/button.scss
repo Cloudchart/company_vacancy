@@ -136,14 +136,12 @@ $orgpad-button-padding-small: 0 10pt;
     text-transform: uppercase;
   }
   
-  i.fa {
-    margin-left: 0;
-    margin-right: $orgpad-button-icon-margin;
+  > i.fa + * {
+    margin-left: $orgpad-button-icon-margin;
   }
   
   > * + i.fa {
     margin-left: $orgpad-button-icon-margin;
-    margin-right: 0;
   }
 
 }

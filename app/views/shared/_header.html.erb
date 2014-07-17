@@ -42,11 +42,17 @@
 
 
   <%- if user_authenticated? -%>
+
     <%= link_to current_user.full_name_or_email, cloud_profile.root_path, class: :profile %>
-    <%= link_to font_awesome('sign-out'), cloud_profile.logout_path, class: 'sign-out' %>
+    <%= link_to font_awesome('external-link-square'), cloud_profile.logout_path, class: 'sign-out orgpad-button' %>
+
   <%- else -%>
-    <%= link_to t('.log-in', default: 'Log In'), cloud_profile.login_path, class: 'log-in' %>
-    <%= link_to font_awesome('pencil') + t('.sign-up', default: 'Sign Up'), cloud_profile.register_path, class: 'sign-up' %>
+
+    <%= link_to cloud_profile.login_path, class: 'sign-up orgpad-button' do -%>
+      <span>Sign Up</span>
+      <%= font_awesome('pencil') %>
+    <%- end -%>
+
   <%- end -%>
   
 </header>
