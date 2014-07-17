@@ -74,6 +74,10 @@ MainComponent = React.createClass
     @focus()  if @state.value == 'Default Chart'
 
 
+  getDefaultProps: ->
+    disabled: true
+
+
   getInitialState: ->
     value:      @props.title
     prevValue:  @props.title
@@ -85,6 +89,7 @@ MainComponent = React.createClass
         ref:          'input'
         type:         'text'
         placeholder:  'Chart name'
+        disabled:     @props.disabled
         value:        @state.value
         onChange:     @onChange
         onBlur:       @onBlur

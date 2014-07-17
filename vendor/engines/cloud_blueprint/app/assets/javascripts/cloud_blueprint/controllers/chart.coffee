@@ -13,7 +13,7 @@
   headerMountPoint = document.querySelector('[data-header-react-mount-point]')
   
   if headerMountPoint
-    React.renderComponent(ChartTitleComponent({ title: data.chart.title, url: data.url }), headerMountPoint)
+    React.renderComponent(ChartTitleComponent({ title: data.chart.title, url: data.url, disabled: !can_edit_chart }), headerMountPoint)
   
 
   # Access functions
