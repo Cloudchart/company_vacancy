@@ -101,8 +101,8 @@
       <ul>
         <% company.charts.each do |chart| %>
           <li class="chart-preview-container">
-            <div class="chart-preview" data-react-mount-point-for-chart="<%= chart.to_param %>" style="position: relative; overflow: hidden;">
-              <%#= link_to '', cloud_blueprint.chart_path(chart) %>
+            <div class="chart-preview">
+              <%= link_to '', cloud_blueprint.chart_path(chart) %>
             </div>
             <strong><%= chart.title %></strong>
           </li>
