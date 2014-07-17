@@ -29,7 +29,7 @@ module CloudProfile
       email = Email.find_by(address: params[:email])
       raise ActiveRecord::RecordNotFound unless email.present? && email.user.present? && email.user.authenticate(params[:password])
       warden.set_user(email.user, scope: :user)
-      redirect_to_stored_path_or_root
+      redirect_to_stored_path_or main_app.companies_path
     rescue ActiveRecord::RecordNotFound
       flash.now[:error] = 'So email. Much credentials. Very password. Wow. But no.'
       @email = Email.new(address: params[:email])

@@ -17,7 +17,9 @@ module CloudProfile
     end
     
     def redirect_to_stored_path_or(path = main_app.root_path)
-      redirect_to session.delete(session_store_key) || path
+      stored_path = session.delete(session_store_key)
+      stored_path = path if stored_path == main_app.root_path or stored_path == main_app.root_url
+      redirect_to stored_path || path
     end
     
     def session_store_key

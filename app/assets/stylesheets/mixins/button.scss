@@ -90,6 +90,8 @@ $orgpad-button-padding-small: 0 10pt;
   border: none;
   
   @include display(inline-flex);
+  @include justify-content(center);
+  @include align-items(center);
   
   font-size: $orgpad-button-font-size;
   font-weight: $orgpad-button-font-weight;
@@ -102,7 +104,6 @@ $orgpad-button-padding-small: 0 10pt;
   
   
   > * {
-    margin: auto;
     line-height: 1em;
   }
 

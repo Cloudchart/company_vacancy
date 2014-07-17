@@ -78,10 +78,10 @@ module CloudProfile
       current_user.update! params.require(:user).permit(:full_name, :avatar)
 
       respond_to do |format|
-        format.html { redirect_to :settings }
+        format.html { redirect_to main_app.companies_path }
         format.json do
           if current_user.has_proper_name?
-            render json: { redirect_to: settings_path }
+            render json: { redirect_to: main_app.companies_path }
           else
             render_user_json
           end

@@ -1,6 +1,6 @@
 main.welcome {
-  @include align-items(center);
   @include display(flex);
+  @include align-items(center);
   @include justify-content(center);
 }
 
@@ -11,22 +11,21 @@ main > article > section {
     width: $base-unit * 30;
     
     > a {
-      @include cloud-button;
+      @include display(flex);
+      margin: 0 auto;
+      width: 200pt;
     }
   }
   
   > h1 {
     @include cloud-profile-section-header;
+    font-weight: 100;
   }
   
   > p {
     font-size: 20pt;
     font-weight: 300;
     margin: $base-unit * 2 0;
-  }
-  
-  > button {
-    @include cloud-button;
   }
   
 }
