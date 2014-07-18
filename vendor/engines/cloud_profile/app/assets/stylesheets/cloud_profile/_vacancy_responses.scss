@@ -1,12 +1,14 @@
 main.cloud-profile > div.vacancy-responses-wrapper {
-  @include cloud-profile-container;
+  @include base-wrapper;
+  font-size: 14pt;
 
   > h1 {
     @include cloud-profile-section-header;
   }
 
   > h2 {
-    font-weight: normal;
+    font-weight: 100;
+    margin-bottom: $base-unit / 3;
 
     &.pending { color: $alizarin-crimson; }
     &.accepted { color: $north-texas-green; }
@@ -39,7 +41,7 @@ main.cloud-profile > div.vacancy-responses-wrapper {
     header {
 
       > ul {
-        @include cloud-profile-flex-list;
+        @include flex-ul;
 
         > li {
           margin-right: $base-unit;

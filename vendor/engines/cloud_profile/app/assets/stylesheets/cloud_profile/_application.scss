@@ -41,7 +41,7 @@ main.cloud-profile {
   }
   
   > article {
-    margin: 0 15%;
+    @include base-wrapper;
 
     h1 {
       @include cloud-profile-section-header;

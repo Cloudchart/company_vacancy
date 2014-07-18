@@ -1,5 +1,9 @@
 main.cloud-profile > article.companies {    
-  @include companies-article;
+  @include base-wrapper;
+
+  a {
+    text-decoration: none;
+  }
 
   > div.add-item {
     background-color: $ufo-green;

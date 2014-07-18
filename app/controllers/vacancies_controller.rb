@@ -81,6 +81,7 @@ class VacanciesController < ApplicationController
     @vacancy.update(vacancy_params)
     render nothing: true
 
+    # TODO: add sorting?
     # respond_to do |format|
     #   format.json { render json: @vacancy.reviewers.select(:uuid, :first_name, :last_name, :occupation), root: false }
     # end

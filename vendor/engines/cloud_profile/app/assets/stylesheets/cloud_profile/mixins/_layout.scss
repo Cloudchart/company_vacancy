@@ -1,12 +1,6 @@
-@mixin cloud-profile-container {
-  margin: 0 15%;
-  font-size: 14pt;
-}
-
-
 @mixin cloud-profile-section-header {
   font-size: 32pt;
-  font-weight: normal;
+  font-weight: 300;
   line-height: 1.25em;
   margin: 0 0 $base-unit;
   position: relative;
@@ -18,22 +12,8 @@
   }
 }
 
-
-@mixin cloud-profile-standalone-section {
-  margin: 0 auto;
-}
-
-
 @mixin cloud-profile-navigated-section {
   margin-left: $base-unit * 2;
-}
-
-
-@mixin cloud-profile-flex-list {
-  @include display(flex);
-  list-style: none;
-  padding: 0;
-  margin: 0;
 }
 
 

@@ -4,7 +4,7 @@
 
   <h1>
     <%= link_to font_awesome('angle-left'), cloud_profile.vacancies_path %>
-    Responses to <%= @vacancy.name %> vacancy at <%= @vacancy.company.name %>
+    <%= @vacancy.name %> responses at <%= @vacancy.company.name %>
   </h1>
 
   <% %w[accepted in_review pending declined].each do |status| %>

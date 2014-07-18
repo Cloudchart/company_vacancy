@@ -1,9 +1,6 @@
 main.cloud-profile > div.vacancies-wrapper {
-  @include cloud-profile-container;
-
-  ul {
-    @include cloud-profile-flex-list;   
-  }
+  @include base-wrapper;
+  font-size: 14pt;
 
   a {
     @include cloud-profile-a 
@@ -20,6 +17,7 @@ main.cloud-profile > div.vacancies-wrapper {
       margin-bottom: $base-unit / 3;
 
       > ul {
+        @include flex-ul;
         font-weight: bold;
 
         > li {
