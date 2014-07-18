@@ -119,8 +119,6 @@ MainComponent = React.createClass
 
 
   render: ->
-    console.log @props
-    
     (tag.div {
       className:  'blueprint-chart-preview-container'
       onResize:   @onResize

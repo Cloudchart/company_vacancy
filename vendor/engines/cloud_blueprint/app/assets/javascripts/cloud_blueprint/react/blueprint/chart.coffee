@@ -116,9 +116,47 @@ Calculations =
   
   reposition: ->
     @layout = @calculateLayout()
+    
+    t = _.reduce @layout, (memo, node) ->
+      return memo unless node.height
+      Math.min(memo, node.y - node.height / 2)
+    , 0
+    
+    r = _.reduce @layout, (memo, node) ->
+      return memo unless node.width
+      Math.max(memo, node.x + node.width / 2)
+    , 0
+    
+    b = _.reduce @layout, (memo, node) ->
+      return memo unless node.height
+      Math.max(memo, node.y + node.height / 2)
+    , 0
+    
+    l = _.reduce @layout, (memo, node) ->
+      return memo unless node.width
+      Math.min(memo, node.x - node.width / 2)
+    , 0
+
+    w = r - l
+    h = b - t
+
+    
+    parentNodeBounds  = @getDOMNode().parentNode.getBoundingClientRect()
+    parentNodeStyle   = window.getComputedStyle(@getDOMNode().parentNode)
+    
+    hBorders = parseFloat(parentNodeStyle.borderLeftWidth) + parseFloat(parentNodeStyle.borderRightWidth)
+    vBorders = parseFloat(parentNodeStyle.borderTopWidth) + parseFloat(parentNodeStyle.borderBottomWidth)
+    
+    width   = Math.max(parentNodeBounds.width - hBorders, w + 80)
+    height  = Math.max(parentNodeBounds.height - vBorders, h + 80)
+    
+    
+    @getDOMNode().style.width   = width + 'px'
+    @getDOMNode().style.height  = height + 'px'
+    
 
     offset =
-      x:  @getWidth() / 2
+      x:  width / 2
       y:  @props.top_padding
     
 
@@ -148,7 +186,45 @@ Chart = React.createClass
 
   mixins: [
     Calculations
+    cc.react.mixins.Draggable
   ]
+  
+  
+  onCCDragStart: (event) ->
+    event.dataTransfer.setDragImage(false)
+
+    @__origin =
+      x: event.pageX
+      y: event.pageY
+  
+
+  onCCDragMove: (event) ->
+    node          = @getDOMNode()
+    nodeBounds    = node.getBoundingClientRect()
+    nodeStyle     = window.getComputedStyle(node)
+    parentBounds  = node.parentNode.getBoundingClientRect()
+    parentStyle   = window.getComputedStyle(node.parentNode)
+    
+    dx = @__origin.x - event.pageX
+    dy = @__origin.y - event.pageY
+    
+    realX = parseFloat(nodeStyle.left)  - dx
+    realY = parseFloat(nodeStyle.top)   - dy
+    
+    minX = 0
+    minY = 0
+    maxX = parentBounds.width   - nodeBounds.width  - parseFloat(parentStyle.borderLeftWidth) - parseFloat(parentStyle.borderRightWidth)
+    maxY = parentBounds.height  - nodeBounds.height - parseFloat(parentStyle.borderTopWidth)  - parseFloat(parentStyle.borderBottomWidth)
+
+    x = Math.min(Math.max(maxX, realX), minX)
+    y = Math.min(Math.max(maxY, realY), minY)
+    
+    node.style.left = x + 'px'
+    node.style.top  = y + 'px'
+    
+    @__origin.pageX = event.pageX
+    @__origin.pageY = event.pageY
+    
   
   
   onDropIdentity: (event) ->
@@ -246,6 +322,7 @@ Chart = React.createClass
       className:          'chart'
       onClick:            @onClick
       'data-behaviour':   'droppable' if @props.can_be_edited
+      'data-draggable':   'on'
     },
       (tag.svg {},
         relations
