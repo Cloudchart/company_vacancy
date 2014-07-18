@@ -15,9 +15,9 @@ Component = React.createClass
       name:           json.full_name
       prevName:       json.full_name
       avatar_url:     json.avatar_url
-      src:            null unless json.avatar_url
-      prevSrc:        null unless json.avatar_url
       synchronizing:  false
+    
+    @setState({ src: null, prevSrc: null }) unless json.avatar_url
   
   
   onSaveFail: (xhr) ->
