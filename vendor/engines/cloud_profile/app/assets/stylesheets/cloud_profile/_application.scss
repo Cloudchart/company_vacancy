@@ -63,7 +63,8 @@ main.cloud-profile {
       @include display(flex);
       @include flex-direction(column);
       @include align-items(center);
-      margin: $base-unit * 2 0 0 0;      
+      max-width: 100%;
+      margin: $base-unit * 2 0 0 0;
     }
     
   }

@@ -101,10 +101,10 @@
       <ul>
         <% company.charts.each do |chart| %>
           <li class="chart-preview-container">
-            <div class="chart-preview" data-react-mount-point-for-chart="<%= chart.id %>" style="position: relative;">
-              <%= link_to '', cloud_blueprint.chart_path(chart) %>
-            </div>
-            <strong><%= chart.title %></strong>
+          
+            <div class="chart-preview" data-react-mount-point-for-chart="<%= chart.id %>" style="position: relative;"></div>
+
+            <strong><%= link_to chart.title, cloud_blueprint.chart_path(chart) %></strong>
           </li>
         <% end %>
 

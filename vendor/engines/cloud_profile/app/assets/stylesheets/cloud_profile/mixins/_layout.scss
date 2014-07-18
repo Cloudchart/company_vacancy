@@ -27,6 +27,7 @@
 
 
 @mixin cloud-profile-nav {
+  margin-bottom: $base-unit;
 
   > ul {
     @include display(flex);
