@@ -41,6 +41,11 @@ main.blueprint article.chart {
   section.chart {
     @include position(absolute, 0px 0px 0px 0px);
     
+    > svg {
+      @include position(absolute, 0px 0 0 0px);
+      width: 100%;
+      height: 100%;
+    }
 
     > h1.placeholder {
       @include position(absolute, 50% 0px 0 0px);

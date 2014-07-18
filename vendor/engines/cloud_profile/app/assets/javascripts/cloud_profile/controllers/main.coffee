@@ -11,7 +11,6 @@
 @['cloud_profile/main#companies'] = (data) ->
   $ -> cc.companies_section_chevron_toggle()
 
-
   ChartPreviewComponent   = cc.require('blueprint/react/chart-preview')
   chartPreviewContainers  = document.querySelectorAll("[data-react-mount-point-for-chart]")
   
