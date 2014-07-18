@@ -1,0 +1,127 @@
+$profile-settings-section-margins: 30pt 0;
+$profile-settings-section-header-font-size: 30pt;
+$profile-settings-section-header-margins: 0 0 10pt;
+
+
+$profile-settings-personal-avatar-size: 125pt;
+$profile-settings-personal-letter-avatar-size: $profile-settings-personal-avatar-size / 3;
+$profile-settings-personal-letter-avatar-font-size: $profile-settings-personal-letter-avatar-size / 1.5;
+$profile-settings-personal-letter-avatar-font-weight: 300;
+
+$profile-settings-personal-occupations-font-size: 11pt;
+$profile-settings-personal-occupations-font-weight: 400;
+
+@mixin profile-settings-personal-section {
+
+  @include display(flex);
+  @include flex-direction(column);
+  @include justify-content(center);
+
+  padding-left: $profile-settings-personal-avatar-size + 20pt;
+  padding-right: 20pt;
+  min-height: $profile-settings-personal-avatar-size;
+  position: relative;
+
+  
+  aside.avatar {
+    @include position(absolute, 0px 0 0 0px);
+    
+    background-color: hsla(0, 0%, 75%, .1);
+    background-position: center center;
+    background-size: cover;
+    height: $profile-settings-personal-avatar-size;
+    width: $profile-settings-personal-avatar-size;
+    
+    > input[type="file"] {
+      @include position(absolute, 0px 0 0 0px);
+      height: 0;
+      overflow: hidden;
+      width: 0;
+    }
+  
+    > figure {
+      @include display(flex);
+      @include position(absolute, 50% 0 0 50%);
+
+      border-radius: $profile-settings-personal-letter-avatar-size / 2;
+      font-size: $profile-settings-personal-letter-avatar-font-size;
+      font-weight: $profile-settings-personal-letter-avatar-font-weight;
+      height: $profile-settings-personal-letter-avatar-size;
+      margin-top: - $profile-settings-personal-letter-avatar-size / 2 ;
+      margin-left: - $profile-settings-personal-letter-avatar-size / 2 ;
+      width: $profile-settings-personal-letter-avatar-size;
+      
+      > * {
+        margin: auto;
+      }
+    }
+    
+    > label,
+    > button {
+      @include position(absolute, 5pt 0 0 0);
+
+      opacity: .9;
+      visibility: hidden;
+      
+      &.create,
+      &.delete {
+        right: 5pt;
+      }
+      
+      &.update {
+        left: 5pt;
+      }
+    }
+    
+    &:hover > label,
+    &:hover > button {
+      visibility: visible;
+    }
+    
+    > p.overlay {
+      @include position(absolute, 0 0px 0px 0px);
+
+      background-color: hsla(0, 0%, 0%, .25);
+      height: 30%;
+      margin: 0;
+    }
+  }
+
+  
+  ul.occupations {
+    font-size: $profile-settings-personal-occupations-font-size;
+    font-weight: $profile-settings-personal-occupations-font-weight;
+    list-style: none;
+    margin: 5pt 0 0;
+    padding: 0;
+    
+    > li {
+      margin: 2pt 0;
+      text-transform: uppercase;
+      
+      > a {
+        text-decoration: none;
+      }
+    }
+  }
+  
+}
+
+
+main.cloud-profile > article.profile {
+  > section {
+    margin: $profile-settings-section-margins;
+    position: relative;
+    
+    > header {
+      font-size: $profile-settings-section-header-font-size;
+      margin: $profile-settings-section-header-margins;
+    }
+    
+    &.personal .content {
+      @include profile-settings-personal-section;
+    }
+    
+  }
+
+}

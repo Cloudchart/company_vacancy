@@ -96,6 +96,7 @@ $orgpad-button-padding-small: 0 10pt;
   font-size: $orgpad-button-font-size;
   font-weight: $orgpad-button-font-weight;
   height: $orgpad-button-height;
+  overflow: hidden;
   padding: $orgpad-button-padding;
 
   text-align: center;
@@ -105,6 +106,15 @@ $orgpad-button-padding-small: 0 10pt;
   
   > * {
     line-height: 1em;
+  }
+  
+  &.square {
+    width: $orgpad-button-height;
+    padding: 0;
+    
+    > i {
+      margin: 0 auto;
+    }
   }
 
 
@@ -135,6 +145,11 @@ $orgpad-button-padding-small: 0 10pt;
     height: $orgpad-button-height-small;
     padding: $orgpad-button-padding-small;
     text-transform: uppercase;
+    
+    &.square {
+      width: $orgpad-button-height-small;
+      padding: 0;
+    }
   }
   
   > i.fa + * {

@@ -10,6 +10,8 @@
 @import 'vacancies';
 @import 'vacancy_responses';
 
+@import 'profile';
+
 //
 // Base profile layout
 //
@@ -75,7 +77,8 @@ main.cloud-profile {
     }
     
     > section {
-      margin-top: $base-unit * 2;
+      //margin-top: $base-unit * 2;
+      margin-bottom: 30pt;
     }
   } 
   

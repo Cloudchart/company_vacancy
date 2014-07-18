@@ -3,7 +3,27 @@
 <%= render 'shared/nav' %>
 
 <article class="profile">
+  
+  <section class="personal">
+    <header>
+      <%= t '.personal', default: 'Personal' %>
+    </header>
+    <div data-react-mount-point="personal">
+    </div>
+  </section>
+  
+  <section class="email">
+    <header>
+      <%= t '.emails', default: 'Emails' %>
+    </header>
+    <div data-react-mount-point="emails">
 
+      Emails go here
+
+    </div>
+  </section>
+  
+  <!--
   <section class="profile-name">
     <h1>
       <%= t '.name', default: 'Personal' %>
@@ -89,5 +109,6 @@
 
     </section>
   <% end %>
+  -->
 
 </article>

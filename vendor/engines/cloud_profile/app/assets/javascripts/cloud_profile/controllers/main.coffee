@@ -18,3 +18,16 @@
   _.each chartPreviewContainers, (root) ->
     chartUUID = root.dataset.reactMountPointForChart
     React.renderComponent(ChartPreviewComponent({ id: chartUUID, scale: .25 }), root)
+
+
+# Settings
+#
+@['cloud_profile/main#settings'] = (data) ->
+
+  # Settings / Personal
+  #
+  if personalComponentMountPoint = document.querySelector('[data-react-mount-point="personal"]')
+
+    PersonalComponent = cc.require('profile/react/settings/personal')
+    
+    React.renderComponent PersonalComponent(data.personal), personalComponentMountPoint

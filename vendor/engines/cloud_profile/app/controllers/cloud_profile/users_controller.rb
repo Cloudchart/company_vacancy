@@ -38,7 +38,7 @@ module CloudProfile
     
     
     def update
-      current_user.update! params.require(:user).permit([:first_name, :last_name])
+      current_user.update! params.require(:user).permit([:name, :first_name, :last_name])
       render nothing: true
     end
     
