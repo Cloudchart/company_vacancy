@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
   end
 
   def full_name=(full_name)
-    parts             = full_name.split(' ').select { |part| part.present? }
+    parts             = full_name.split(/\s+/).select { |part| part.present? }
     self.first_name   = parts.first
     self.last_name    = parts.drop(1).join(' ')
   end

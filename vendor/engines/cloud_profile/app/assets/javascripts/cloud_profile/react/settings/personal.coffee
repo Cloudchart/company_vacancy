@@ -3,6 +3,7 @@
 tag = React.DOM
 
 LetterAvatarComponent = cc.require('react/shared/letter-avatar')
+InputComponent        = cc.require('react/shared/input')
 
 
 # Component
@@ -12,8 +13,6 @@ Component = React.createClass
 
   onSaveDone: (json) ->
     @setState
-      name:           json.full_name
-      prevName:       json.full_name
       avatar_url:     json.avatar_url
       synchronizing:  false
     
@@ -22,7 +21,6 @@ Component = React.createClass
   
   onSaveFail: (xhr) ->
     @setState
-      name:           @state.prevName
       src:            @state.prevSrc
       synchronizing:  false
 
@@ -34,7 +32,6 @@ Component = React.createClass
     
     data = new FormData
 
-    data.append('user[full_name]',      @state.name)
     data.append('user[avatar]',         @state.file) if @state.file
     data.append('user[remove_avatar]',  true) unless @state.file or @state.src
     
@@ -87,22 +84,7 @@ Component = React.createClass
   
 
   onNameChange: (event) ->
-    @setState
-      name: event.target.value
-  
-
-  onNameBlur: (event) ->
-    @setState({ should_save: true }) unless @state.name is @state.prevName
-  
-  
-  onNameKeyUp: (event) ->
-    switch event.key
-
-      when 'Escape'
-        @setState({ name: @state.prevName })
-
-      when 'Enter'
-        @refs.input.getDOMNode().blur()
+    @setState({ name: event.target.value })
   
   
   componentDidUpdate: ->
@@ -112,7 +94,6 @@ Component = React.createClass
 
   getInitialState: ->
     name:     @props.full_name
-    prevName: @props.full_name
     src:      @props.avatar_url
     prevSrc:  @props.avatar_url
 
@@ -164,17 +145,19 @@ Component = React.createClass
         
         (tag.p { className: 'overlay' }) if @state.src
       )
-
-      (tag.input {
-        ref:            'input'
+      
+      (InputComponent {
         type:           'text'
         autoComplete:   'off'
-        placeholder:    'Name Surname'
+        plaeholder:     'Name Surname'
         className:      'name'
         value:          @state.name
+
         onChange:       @onNameChange
-        onBlur:         @onNameBlur
-        onKeyUp:        @onNameKeyUp
+
+        url:            @props.url
+        readAttribute:  'full_name'
+        saveAttribute:  'user[full_name]'
       })
 
       (tag.ul { className: 'occupations' }, occupations) if occupations.length > 0
