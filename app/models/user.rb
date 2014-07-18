@@ -21,10 +21,20 @@ class User < ActiveRecord::Base
   has_many  :vacancies, foreign_key: :author_id
   has_many  :vacancy_responses
   has_many  :favorites, dependent: :destroy
+  
+  validates :first_name, :last_name, presence: true, if: :should_validate_name?
+  
+  def should_validate_name?
+    @should_validate_name
+  end
+  
+  def should_validate_name!
+    @should_validate_name = true
+  end
 
-  has_one   :avatar, as: :owner, dependent: :destroy
-
-  accepts_nested_attributes_for :avatar, allow_destroy: true
+  #has_one   :avatar, as: :owner, dependent: :destroy
+  #accepts_nested_attributes_for :avatar, allow_destroy: true
+  dragonfly_accessor :avatar
 
   def has_already_voted_for?(object)
     votes.map(&:destination_id).include?(object.id)
@@ -35,7 +45,7 @@ class User < ActiveRecord::Base
   end
 
   def full_name=(full_name)
-    parts             = full_name.split(' ')
+    parts             = full_name.split(' ').select { |part| part.present? }
     self.first_name   = parts.first
     self.last_name    = parts.drop(1).join(' ')
   end

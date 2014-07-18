@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140715143611) do
+ActiveRecord::Schema.define(version: 20140718100900) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(version: 20140715143611) do
     t.datetime "updated_at"
     t.date     "established_on"
     t.string   "logotype_uid"
-    t.boolean  "is_listed"
+    t.boolean  "is_listed",      default: false, null: false
   end
 
   create_table "companies_industries", id: false, force: true do |t|
@@ -296,6 +296,7 @@ ActiveRecord::Schema.define(version: 20140715143611) do
     t.boolean  "is_admin",        default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "avatar_uid"
   end
 
   create_table "vacancies", primary_key: "uuid", force: true do |t|

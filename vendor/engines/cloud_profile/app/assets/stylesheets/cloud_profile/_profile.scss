@@ -8,6 +8,8 @@ $profile-settings-personal-letter-avatar-size: $profile-settings-personal-avatar
 $profile-settings-personal-letter-avatar-font-size: $profile-settings-personal-letter-avatar-size / 1.5;
 $profile-settings-personal-letter-avatar-font-weight: 300;
 
+$profile-settings-personal-name-font-size: 18pt;
+
 $profile-settings-personal-occupations-font-size: 11pt;
 $profile-settings-personal-occupations-font-weight: 400;
 
@@ -82,11 +84,18 @@ $profile-settings-personal-occupations-font-weight: 400;
       @include position(absolute, 0 0px 0px 0px);
 
       background-color: hsla(0, 0%, 0%, .25);
-      height: 30%;
+      height: 20%;
       margin: 0;
     }
   }
 
+  
+  input.name {
+    border: none;
+    font-size: $profile-settings-personal-name-font-size;
+    outline: none;
+  }
+  
   
   ul.occupations {
     font-size: $profile-settings-personal-occupations-font-size;

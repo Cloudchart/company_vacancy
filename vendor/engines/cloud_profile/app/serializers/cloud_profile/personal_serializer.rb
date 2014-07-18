@@ -19,7 +19,7 @@ module CloudProfile
     end
 
 
-    attributes :uuid, :first_name, :last_name, :url
+    attributes :uuid, :full_name, :avatar_url, :url
 
     has_many :companies, serializer: CompanySerializer
 
@@ -28,6 +28,10 @@ module CloudProfile
     
     def url
       user_path
+    end
+    
+    def avatar_url
+      object.avatar.url if object.avatar_stored?
     end
     
 

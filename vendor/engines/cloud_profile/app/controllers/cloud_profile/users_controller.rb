@@ -38,8 +38,15 @@ module CloudProfile
     
     
     def update
-      current_user.update! params.require(:user).permit([:name, :first_name, :last_name])
-      render nothing: true
+      current_user.should_validate_name!
+      current_user.update! params.require(:user).permit([:full_name, :avatar, :remove_avatar])
+
+      respond_to do |format|
+        format.json { render json: current_user, only: [:full_name, :avatar_url], serializer: PersonalSerializer, root: false }
+      end
+    
+    rescue ActiveRecord::RecordInvalid
+      render json: current_user.errors, status: 422
     end
     
 

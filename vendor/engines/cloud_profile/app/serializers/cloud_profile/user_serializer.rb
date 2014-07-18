@@ -1,7 +1,7 @@
 module CloudProfile
   class UserSerializer < ActiveModel::Serializer
 
-    attributes :uuid, :full_name, :email, :avatar, :avatar_url
+    attributes :uuid, :full_name, :email, :avatar_url
     attributes :profile_activation_url
     
     
@@ -11,7 +11,7 @@ module CloudProfile
     
     
     def avatar_url
-      avatar.url rescue nil
+      object.avatar.url if object.avatar_stored?
     end
 
   end
