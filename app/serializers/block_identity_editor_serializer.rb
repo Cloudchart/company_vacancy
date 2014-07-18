@@ -32,11 +32,15 @@ class BlockIdentityEditorSerializer < ActiveModel::Serializer
   
   
   def person_attributes
-    {
+    data = {
       first_name:   object.first_name,
       last_name:    object.last_name,
-      occupation:   object.occupation,
+      occupation:   object.occupation
     }
+    
+    data.merge!({ avatar_url: object.user.avatar.url }) if object.user and object.user.avatar_stored?
+    
+    data
   end
 
 

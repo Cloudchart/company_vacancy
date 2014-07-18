@@ -36,6 +36,7 @@ MainComponent = React.createClass
     (tag.div {
       className: 'person'
       style:
+        backgroundImage: "url(#{@props.avatar_url || ''})"
         backgroundColor: PersonColors[@state.model.initials_hash() % PersonColors.length]
     },
       (tag.button { className: 'delete', onClick: @onDelete }, 'Delete')

@@ -38,12 +38,13 @@ Component = React.createClass
     @state.people.map (person) =>
       (tag.div {
         key:            person.uuid
-        className: 'container'
+        className:      'container'
       },
         cc.react.editor.blocks.Person
           onDelete:   @onPersonDelete
           onChange:   @onPersonChange
           model:      person
+          avatar_url: person.avatar_url
       )
   
   

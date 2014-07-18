@@ -391,6 +391,9 @@ $editor-identity-selector-search-input-padding: 4pt;
 @mixin editor-identity-block-item {
   @include align-items(flex-start);
   @include justify-content(flex-end);
+  
+  background-size: cover;
+  background-position: center center;
 
   button {
     @include editor-person-button;
