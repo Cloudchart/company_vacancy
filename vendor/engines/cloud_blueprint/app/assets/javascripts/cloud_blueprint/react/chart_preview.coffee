@@ -18,7 +18,7 @@ MainComponent = React.createClass
   onLoadDone: (json) ->
     @setState
       loading:                    false
-      should_recalculate_layout:  true
+      should_recalculate_layout:  json.nodes.length > 0
       nodes:                      json.nodes
   
   
@@ -124,11 +124,6 @@ MainComponent = React.createClass
       onResize:   @onResize
     },
 
-      (tag.a { className: 'orgpad-button edit', href: '/charts/' + @props.id },
-        'Tap to edit your chart'
-        (tag.i { className: 'fa fa-sitemap' })
-      ) if @state.nodes.length == 0
-
       (NodesContainerComponent {
         ref:      'nodes-container'
         scale:    @props.scale
@@ -140,8 +135,17 @@ MainComponent = React.createClass
         (LinksContainerComponent {
           ref:    'links-container'
           nodes:  @state.nodes
-        })
-      )
+        }) 
+      ) if @state.nodes.length > 0
+
+      (tag.a { className: "orgpad-button edit", href: '/charts/' + @props.id },
+        'Tap to edit your chart'
+        (tag.i { className: 'fa fa-sitemap' })
+      ) if @state.nodes.length == 0 unless @props.small
+
+      (tag.a { className: "orgpad-button edit small", href: '/charts/' + @props.id },
+        'Empty chart'
+      ) if @state.nodes.length == 0 if @props.small
 
     )
 

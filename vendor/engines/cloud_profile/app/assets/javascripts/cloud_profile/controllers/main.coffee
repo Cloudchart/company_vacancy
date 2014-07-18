@@ -17,7 +17,7 @@
   
   _.each chartPreviewContainers, (root) ->
     chartUUID = root.dataset.reactMountPointForChart
-    React.renderComponent(ChartPreviewComponent({ id: chartUUID, scale: .25 }), root)
+    React.renderComponent(ChartPreviewComponent({ id: chartUUID, scale: .4, small: true }), root)
 
 
 # Settings
