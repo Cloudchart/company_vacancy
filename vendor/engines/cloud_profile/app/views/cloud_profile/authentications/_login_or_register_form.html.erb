@@ -1,7 +1,7 @@
 <form action="<%= login_path %>" class="login-or-register" method="get">
 
   <%= content_tag(:span, content_tag(:i, t('.not_an_email', default: "Doesn't looks line an e-mail to us")), class: :error) if params.has_key?(:email) && @email.invalid? %>
-  <%= text_field_tag :email, @email.address, autocomplete: :off, autofocus: true, placeholder: t('.email', default: 'E-mail') %>
+  <%= email_field_tag :email, @email.address, autofocus: true, placeholder: t('.email', default: 'E-mail') %>
 
   <button>
     <%= font_awesome('magic') %>

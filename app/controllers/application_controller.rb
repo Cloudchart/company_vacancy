@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
 
 
   def require_authenticated_user!
-    redirect_to main_app.root_path unless user_authenticated?
+    redirect_to cloud_profile.login_path unless user_authenticated?
   end
   
 

@@ -3,7 +3,8 @@ require_dependency "cloud_blueprint/application_controller"
 module CloudBlueprint
   class ChartsController < ApplicationController
     
-    before_action :require_authenticated_user!
+    # before_action :require_authenticated_user!
+    authorize_resource
     
     
     # Render chart

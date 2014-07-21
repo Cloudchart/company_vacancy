@@ -22,15 +22,15 @@ class Ability
     
     # Anyone
     can [:read, :search], Company
-
-    can :read, Vacancy do |vacancy|
-      vacancy.settings.accessible_to == 'everyone'
-    end
-
     can :read, Event
     can :read, Feature
     can :access_vacancies, Company
     can :access_events, Company
+    can [:read, :preview], CloudBlueprint::Chart
+
+    can :read, Vacancy do |vacancy|
+      vacancy.settings.accessible_to == 'everyone'
+    end
 
     return unless user
 
@@ -62,6 +62,10 @@ class Ability
       end
 
       can [:access_people], Company do |company|
+        user.companies.include?(company)
+      end
+
+      can [:create, :update, :pull], CloudBlueprint::Chart do |chart|
         user.companies.include?(company)
       end
 
