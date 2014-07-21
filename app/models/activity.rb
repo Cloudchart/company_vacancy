@@ -1,7 +1,7 @@
 class Activity < ActiveRecord::Base
   include Uuidable
 
-  paginates_per 20
+  paginates_per 30
 
   belongs_to :user
   belongs_to :source, polymorphic: true

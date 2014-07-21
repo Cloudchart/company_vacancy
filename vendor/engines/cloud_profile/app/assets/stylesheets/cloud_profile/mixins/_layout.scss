@@ -12,6 +12,7 @@
   }
 }
 
+
 @mixin cloud-profile-navigated-section {
   margin-left: $base-unit * 2;
 }
@@ -27,7 +28,7 @@
 
 
 @mixin cloud-profile-nav {
-  margin-bottom: $base-unit;
+  margin: $base-unit 0;
 
   > ul {
     @include display(flex);

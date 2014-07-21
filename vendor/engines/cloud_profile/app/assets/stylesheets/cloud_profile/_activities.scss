@@ -1,0 +1,17 @@
+main.cloud-profile > div.activities {
+  @include base-wrapper;
+  font-size: 14pt;
+
+  a {
+    @include cloud-profile-a 
+  }
+
+  > ul {
+    list-style: none;
+
+    > li {
+      margin-bottom: $base-unit;
+    }
+  }
+
+}

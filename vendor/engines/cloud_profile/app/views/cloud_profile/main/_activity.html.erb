@@ -1,4 +1,4 @@
-<section style="font-size: 14pt;">
+<li>
   <% if activity.subscriber_id.present? %>
     <%= activity.action == 'respond' ? activity.user.full_name : activity.trackable.company.name %>
   <% elsif current_user == activity.user %> 
@@ -13,4 +13,4 @@
 
   <%= time_ago_in_words(activity.updated_at) %>
   ago
-</section>
+</li>

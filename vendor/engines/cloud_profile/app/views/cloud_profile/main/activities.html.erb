@@ -2,8 +2,10 @@
 <%- cloud_profile_nav_current_tab :newsfeed -%>
 <%= render 'shared/nav' %>
 
-<article class="activities">
-  <%= render partial: 'activity', collection: @activities %>
-</article>
+<div class="activities">
+  <ul>
+    <%= render partial: 'activity', collection: @activities %>
+  </ul>
+</div>
 
 <%= paginate @activities %>
