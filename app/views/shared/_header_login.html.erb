@@ -1,9 +1,0 @@
-<%= form_tag main_app.sessions_path, class: :login, style: 'display: none;' do -%>
-  <%= text_field_tag :email, nil, id: nil, autofocus: 'true', placeholder: t('.email_placeholder') -%>
-  <%= password_field_tag :password, nil, id: nil, placeholder: t('.password_placeholder') -%>
-  <button>
-    <%= t '.enter' %>
-    <i class="fa fa-refresh fa-spin"></i>
-  </button>
-  <%= link_to content_tag(:i, nil, class: 'fa fa-times'), "", data: { behaviour: 'block-toggle', toggle: 'header .login-and-signup, header form.login' } -%>
-<%- end -%>

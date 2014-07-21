@@ -1,3 +1,15 @@
+// Header variables
+//
+
+$header-spacer: 10pt;
+
+$header-background-color: hsl(0, 0%, 97%);
+$header-font-size: 13pt;
+$header-font-weight: 300;
+$header-padding: $header-spacer;
+
+$header-link-color: hsl(139, 72%, 35%);
+
 $header-search-shadow-color: hsl(0, 0%, 78%);
 $header-button-background-color: hsl(137, 51%, 51%);
 $header-button-border-color: hsl(140, 77%, 31%);
@@ -8,18 +20,36 @@ $white-header-search-background-color: hsl(0, 0%, 98%);
 $white-header-search-border-color: hsl(0, 0%, 78%);
 
 
-$header-link-color: hsl(140, 77%, 31%);
-
-
 // Header logo variables
 //
 
 $header-logo-background-image: image-url('orgpad-logo.svg');
 $header-logo-background-image-inverse: image-url('orgpad-logo-neg.svg');
 $header-logo-top-margin: -3pt;
-$header-logo-right-margin: 10pt;
-$header-logo-width: 36pt;
-$header-logo-height: 34pt;
+$header-logo-right-margin: 5pt;
+$header-logo-width: 29pt;
+$header-logo-height: 27pt;
+
+
+// Header title variables
+//
+
+$header-title-font-size: 18pt;
+$header-title-font-weight: 700;
+$header-title-small-font-weight: 300;
+
+
+// Header search variables
+//
+$header-search-background-color: hsl(0, 0%, 100%);
+$header-search-font-size: inherit;
+$header-search-font-weight: 300;
+$header-search-height: 24pt;
+$header-search-margins: 0 $header-spacer 0 0;
+$header-search-paddings: 0 5pt;
+$header-search-width: 200pt;
+$header-search-placeholder-color: hsl(0, 0%, 73%);
+
 
 // Header logo mixin
 //
@@ -37,14 +67,6 @@ $header-logo-height: 34pt;
 }
 
 
-// Header title variables
-//
-
-$header-title-font-size: 20pt;
-$header-title-font-weight: 700;
-$header-title-small-font-weight: 300;
-
-
 // Header title link mixin
 //
 
@@ -56,143 +78,98 @@ $header-title-small-font-weight: 300;
     font-size: inherit;
     font-weight: $header-title-small-font-weight;
   }
+  
 }
 
 
-body > header {
-  @include align-items(center);
-  @include display(flex);
-  @include justify-content(space-between);
+// Header input mixin
+//
 
-  background-color: #eee;
-  font-size: 18pt;
-  padding: $base-unit;
-  margin-bottom: $base-unit;
+@mixin header-input {
+  background-color: inherit;
+  border: none;
+  font-size: $header-title-font-size;
+  font-weight: inherit;
+  outline: none;
+}
+
+
+// Header search mixin
+//
+
+@mixin header-search {
+  @include display(flex);
+  @include align-items(center);
   
+  background-color: $header-search-background-color;
+  font-size: $header-search-font-size;
+  font-weight: $header-search-font-weight;
+  height: $header-search-height;
+  margin: $header-search-margins;
+  padding: $header-search-paddings;
+  width: $header-search-width;
+  
+  input {
+    @include flex(1);
+    
+    @include placeholder {
+      color: $header-search-placeholder-color;
+      font-style: normal;
+    }
+    
+    font-size: $header-font-size;
+  }
+  
+  i {
+    color: $header-search-placeholder-color;
+  }
+}
+
+
+// Header
+//
+
+body > header {
+  @include display(flex);
+  @include align-items(center);
+  @include justify-content(space-between);
+  
+  background-color: $header-background-color;
+  font-size: $header-font-size;
+  font-weight: $header-font-weight;
+  padding: $header-padding;
   
   a {
     color: $header-link-color;
-    font-weight: 300;
     text-decoration: none;
   }
-
   
   a.logo {
     @include header-logo;
   }
   
-
-  &.green a.logo {
+  &.inverse a.logo {
     background-image: $header-logo-background-image-inverse;
   }
-  
   
   a.title {
     @include header-title;
   }
   
-
-  > .links {
-    @include display(flex);
-    
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    
-    li {
-      margin-right: $base-unit / 2;
-    }
-  }
-  
-  
-  > .search {
-    @include align-items(center);
-    @include display(flex);
-
-    border: 1pt solid #eee;
-    border-radius: 5pt;
-    box-shadow: inset 0 2pt 0 0 $header-search-shadow-color;
-    background: #fff;
-    height: $base-unit * 2;
-    margin: 0 $base-unit;
-    padding: 0 $base-unit / 2;
-    width: $base-unit * 13;
-    
-    input {
-      @include flex(1);
-      
-      border: none;
-      font-size: 12pt;
-      margin-left: $base-unit / 2;
-      outline: none;
-      padding: 0 $base-unit / 4;
-      
-      @include placeholder {
-        font-weight: 300;
-      }
-      
-    }
-  }
-  
   a.profile {
-    font-weight: $header-title-small-font-weight;
+    margin-right: $header-spacer;
   }
   
-  a.sign-out {
-    margin-left: 10pt;
-    font-size: 18pt;
-    padding: 0;
-    width: $orgpad-button-height;
+  input {
+    @include header-input;
   }
   
-
-  > .spacer {
+  .search {
+    @include header-search;
+  }
+  
+  .spacer {
     @include flex(1);
   }
-
-
-  &.green {
-    background-color: $green-header-background-color;
-    
-    a {
-      color: #fff;
-    }
-    
-    > .links {
-      font-size: 14pt;
-    }
-    
-    
-  }
-  
-  
-  &.white {
-    background-color: #fff;
-    
-    > .search {
-      background-color: $white-header-search-background-color;
-      border: 1pt solid $white-header-search-border-color;
-      box-shadow: none;
-      
-      input {
-        background-color: inherit;
-      }
-    }
-  }
-  
-  
-  &.green {
-    > .search {
-      display: none;
-    }
-  }
-  
-
-  &:not(.green) {
-    > .links {
-      display: none;
-    }
-  }
-  
-
 }
+
