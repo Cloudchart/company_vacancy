@@ -9,14 +9,9 @@
 # Companies
 #
 @['cloud_profile/main#companies'] = (data) ->
-  $ -> cc.companies_section_chevron_toggle()
-
-  ChartPreviewComponent   = cc.require('blueprint/react/chart-preview')
-  chartPreviewContainers  = document.querySelectorAll("[data-react-mount-point-for-chart]")
-  
-  _.each chartPreviewContainers, (root) ->
-    chartUUID = root.dataset.reactMountPointForChart
-    React.renderComponent(ChartPreviewComponent({ id: chartUUID, scale: .4, small: true }), root)
+  $ -> 
+    cc.companies_section_chevron_toggle()
+    cc.init_chart_preview()
 
 
 # Settings

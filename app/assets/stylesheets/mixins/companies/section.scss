@@ -76,6 +76,7 @@
           border: 1pt solid white;
           height: $base-unit * 6;
           margin-bottom: 0.5em;
+          text-align: left;
 
           > a {
             display: block;
@@ -84,6 +85,7 @@
 
           &:last-child {
             background-color: white;
+            text-align: center;
 
             > a > i.fa {
               line-height: $base-unit * 6;

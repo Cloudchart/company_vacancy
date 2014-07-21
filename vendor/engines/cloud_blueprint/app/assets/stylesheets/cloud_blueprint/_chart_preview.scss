@@ -99,6 +99,8 @@ $chart-preview-node-flag-width: 9pt;
   
   svg {
     @include position(absolute, 0px 0px 0px 0px);
+    width: 100%;
+    height: 100%;
   }
   
   .node {

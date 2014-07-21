@@ -28,6 +28,6 @@ module CloudProfile
     def subscriptions
       @subscriptions = current_user.subscriptions.order(created_at: :desc)
     end
-    
+
   end
 end
