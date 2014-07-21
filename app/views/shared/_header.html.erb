@@ -4,29 +4,28 @@
 
   <%= link_to "", main_app.root_path, class: 'logo' %>
 
-  <div data-header-react-mount-point>
-    <%= link_to main_app.root_path, class: :title do -%>
-      <small>Org</small>Pad
-    <%- end -%>
-  </div>
+  <%- if content_for(:title).present? -%>
+    <%= yield :title %>
+  <%- else -%>
+    <div data-header-react-mount-point>
+      <%= link_to main_app.root_path, class: :title do -%>
+        <small>Org</small>Pad
+      <%- end -%>
+    </div>
+  <%- end -%>
+  
+
+  <div class="spacer"></div>
+
+  <%= yield :header %>
   
   <div class="spacer"></div>
 
-
-
-  <!--ul class="links">
-    <li>
-      <%= link_to 'Why OrgPad?', '#' %>
-    </li>
-    <li>
-      <%= link_to 'Companies', main_app.companies_path %>
-    </li>
-    <li>
-      <%= link_to 'Pricing', '#' %>
-    </li>
-  </ul-->
-  
-  <%= render partial: 'shared/header_search' %>
+  <%- if content_for(:search).present? -%>
+    <%= yield :search %>
+  <%- else -%>
+    <%= render partial: 'shared/header_search' %>
+  <%- end -%>
 
   <%= render partial: 'shared/header_authentication' %>
   

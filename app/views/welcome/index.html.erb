@@ -18,3 +18,23 @@
   </section>
   
 </article>
+
+
+<%- content_for :search do -%>
+  <noscript></noscript>
+<%- end -%>
+
+
+<%- content_for :header do -%>
+  <ul class="welcome-links">
+    <li>
+      <%= link_to 'Why OrgPad?', '#' %>
+    </li>
+    <li>
+      <%= link_to 'Companies', main_app.companies_path %>
+    </li>
+    <li>
+      <%= link_to 'Pricing', '#' %>
+    </li>
+  </ul>
+<%- end -%>
