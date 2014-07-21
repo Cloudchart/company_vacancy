@@ -102,7 +102,7 @@
         <% company.charts.each do |chart| %>
           <li class="chart-preview-container">
           
-            <div class="chart-preview" data-react-mount-point-for-chart="<%= chart.id %>" style="position: relative;"></div>
+            <div class="chart-preview" data-react-mount-point-for-chart="<%= chart.id %>"></div>
 
             <strong><%= link_to chart.title, cloud_blueprint.chart_path(chart) %></strong>
           </li>
@@ -111,7 +111,9 @@
         <% if rendered_from == :cloud_profile %>
           <li>
             <div class="chart-preview">
-              <%= link_to font_awesome('plus-square'), cloud_blueprint.new_company_chart_path(company) %>
+              <%= link_to cloud_blueprint.new_company_chart_path(company) do %>
+                <div class="plus"><%= font_awesome('plus') %></div>
+              <% end %>
             </div>
             ADD CHART
           </li>

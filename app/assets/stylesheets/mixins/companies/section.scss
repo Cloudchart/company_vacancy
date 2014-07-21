@@ -77,6 +77,7 @@
           height: $base-unit * 6;
           margin-bottom: 0.5em;
           text-align: left;
+          position: relative;
 
           > a {
             display: block;
@@ -85,13 +86,24 @@
 
           &:last-child {
             background-color: white;
-            text-align: center;
 
-            > a > i.fa {
-              line-height: $base-unit * 6;
-              color: $ufo-green;
-              font-size: 14pt;
+            > a {
+              @include display(flex);
+              @include justify-content(center);
+              @include align-items(center);
+
+              > div.plus {
+                font-size: 10pt;
+                color: white;
+                background-color: $ufo-green;
+                width: 12pt;
+                height: 12pt;
+                text-align: center;
+                line-height: 14pt;
+
+              }
             }
+
           }
 
         }
@@ -112,7 +124,7 @@
         margin-right: $base-unit * 2;
 
         > a {
-          font-size: 14pt;
+          font-size: 12pt;
 
           &:hover {
             text-decoration: underline;
