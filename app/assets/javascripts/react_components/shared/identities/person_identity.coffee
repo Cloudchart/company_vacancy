@@ -18,12 +18,12 @@ PersonColors = [
 MainComponent = React.createClass
 
 
-  getDefaultProps: ->
+  getInitialState: ->
     model: PersonModel.get(@props.key)
   
   
   onClick: (event) ->
-    @props.onClick({ target: { value: @props.model.uuid }}) if @props.onClick instanceof Function
+    @props.onClick({ target: { value: @state.model.uuid }}) if @props.onClick instanceof Function
   
   
   render: ->
@@ -33,15 +33,15 @@ MainComponent = React.createClass
     },
       (tag.aside {
         style:
-          backgroundColor: PersonColors[@props.model.initials_hash() % PersonColors.length]
-      }, @props.model.initials())
+          backgroundColor: PersonColors[@state.model.initials_hash() % PersonColors.length]
+      }, @state.model.initials())
       (tag.div { className: 'title' },
-        @props.model.first_name
+        @state.model.first_name
         " "
-        (tag.strong {}, @props.model.last_name)
+        (tag.strong {}, @state.model.last_name)
       )
       (tag.div { className: 'note' },
-        @props.model.occupation
+        @state.model.occupation
       )
     )
 
