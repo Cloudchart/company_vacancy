@@ -8,6 +8,8 @@ main.cloud-profile > div.activities {
 
   > ul {
     list-style: none;
+    padding: 0;
+    // @include flex-ul;
 
     > li {
       margin-bottom: $base-unit;

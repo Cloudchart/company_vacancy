@@ -3,7 +3,7 @@
     <%= cloud_profile_nav_tab :companies, t('.companies', default: 'Companies'), :companies %>
     <%= cloud_profile_nav_tab :newsfeed, t('.activities', default: 'Newsfeed'), :activities %>
     <%= cloud_profile_nav_tab :settings, t('.settings', default: 'Settings'), :settings %>
+    <li class="spacer"></li>
+    <%= cloud_profile_nav_tab :new_company, t('.new_company', default: 'Add company'), main_app.new_company_path %>
   <% end %>
-
-  <%= yield :add_item %>
 </nav>
