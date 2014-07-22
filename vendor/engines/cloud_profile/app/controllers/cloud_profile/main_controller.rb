@@ -6,7 +6,7 @@ module CloudProfile
     before_action :require_authenticated_user!
     
     def companies
-      @companies = current_user.companies.includes(:logo, :industries, :people, :vacancies, :favorites, :charts).order('favorites.created_at DESC')
+      @companies = current_user.companies.includes(:industries, :people, :vacancies, :favorites, :charts).order('favorites.created_at DESC')
     end
 
     def vacancies

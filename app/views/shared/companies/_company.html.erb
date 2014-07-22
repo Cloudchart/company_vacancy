@@ -32,7 +32,9 @@
 
         <li class="people-size">
           <%= link_to main_app.company_people_path(company) do %>
-            <%= company.people.size %>
+            <% # .size returns invalid number because of current_user.companies through people %>
+            <% # counter cache is needed in the future %>
+            <%= rendered_from == :cloud_profile ? company.people.count : company.people.size %>
             <%= font_awesome('male') %>
           <% end %>
         </li>

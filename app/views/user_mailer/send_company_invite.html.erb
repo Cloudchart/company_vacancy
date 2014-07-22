@@ -3,8 +3,10 @@
 </p>
 
 <p>
-  You have been invited to join OrgPad as a member of <%= @company.name %> company. Please click the following link to begin:
+  You have been invited to join OrgPad as a member of <%= @company.name %>. Please click the following link to begin:
   <%= link_to company_invite_url(token_id: @token.id), company_invite_url(token_id: @token.id) %>
 </p>
 
 <p>If you have nothing with <%= @company.name %>, please ignore this message.</p>
+
+<%= render 'shared/mailer_signature' %>

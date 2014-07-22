@@ -3,13 +3,10 @@ class Person < ActiveRecord::Base
   include Tire::Model::Search
   include Tire::Model::Callbacks
 
-  has_one :block_identity, as: :identity, inverse_of: :identity
-
-  scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
-
-
   belongs_to :user
   belongs_to :company
+
+  has_one :block_identity, as: :identity, inverse_of: :identity
   has_and_belongs_to_many :vacancy_reviews, class_name: 'Vacancy', join_table: 'vacancy_reviewers'
   # has_paper_trail
 

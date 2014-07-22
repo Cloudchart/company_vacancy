@@ -9,7 +9,7 @@ class LandingsController < ApplicationController
       company_invite_session = session[:company_invite] ||= []
       company_invite_session << { token_id: token.id, company_name: Person.find(token.data).company.name }
       company_invite_session.uniq!
-      redirect_to token.owner ? cloud_profile.login_path : cloud_profile.register_path
+      redirect_to cloud_profile.login_path
     end
   end
 

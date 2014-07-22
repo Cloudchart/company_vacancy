@@ -4,15 +4,21 @@ class Company < ActiveRecord::Base
   include Tire::Model::Search
   include Tire::Model::Callbacks  
 
+  # -- deprecated
   SECTIONS = %i(about product people vacancies contacts).inject({}) { |hash, val| hash.merge({ I18n.t("company.sections.#{val}") => val }) }
   BLOCK_TYPES = %i(paragraph block_image person vacancy).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
+  # --
 
   BlockTypes  = ['Paragraph', 'BlockImage', 'Person', 'Vacancy']
   Sections    = ['About', 'Product', 'People', 'Vacancies']
+  
+  dragonfly_accessor :logotype
 
   has_and_belongs_to_many :industries
 
+  # -- deprecated
   has_one :logo, as: :owner, dependent: :destroy
+  # --
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy
   has_many :events, dependent: :destroy
@@ -22,13 +28,9 @@ class Company < ActiveRecord::Base
   has_many :favorites, as: :favoritable, dependent: :destroy
   # has_paper_trail
 
-
-  dragonfly_accessor :logotype
-  
-
   accepts_nested_attributes_for :logo, allow_destroy: true
 
-  #validates :name, :country, :industry_ids, presence: true, on: :update
+  # validates :name, :country, :industry_ids, presence: true, on: :update
   
   settings ElasticSearchNGramSettings do
     mapping do
@@ -128,10 +130,8 @@ class Company < ActiveRecord::Base
     )
   end
   
-  
   def as_json_for_editor
     as_json(only: [:uuid], methods: :sections_titles)
   end
-  
 
 end

@@ -21,6 +21,30 @@
       Account goes here
     </div>
   </section>
+
+  <% if current_user.subscriptions.any? %>
+    <section class="subscriptions">
+      <header>Subscriptions</header>
+
+      <div>
+        <%= link_to 'Show subscriptions', subscriptions_path %>
+      </div>
+    </section>
+  <% end %>
+
+  <%# temporary place for companies invites; shared/notice must be rendered in the future %>
+  <% if current_user && session[:company_invite].present? && !(request.path =~ /company_invite/) %>
+    <section class="companies-invites">
+      <header>Companies Invites</header>
+
+      <% session[:company_invite].each do |session| %>
+        <div>
+          <%= t('messages.company_invite.you_have_invitation', href: main_app.company_invite_path(token_id: session[:token_id]), name: session[:company_name]).html_safe %>            
+        </div>
+      <% end %>
+
+    </section>
+  <% end %>
   
   <!--
   <section class="profile-name">
@@ -85,29 +109,6 @@
 
   </section>
 
-  <% if current_user.subscriptions.any? %>
-    <section class="subscriptions">
-      <h1>Subscriptions</h1>
-
-      <p>
-        <%= link_to 'Show subscriptions', subscriptions_path %>
-      </p>
-    </section>
-  <% end %>
-
-  <%# temporary place for companies invites; shared/notice must be rendered in the future %>
-  <% if current_user && session[:company_invite].present? && !(request.path =~ /company_invite/) %>
-    <section class="companies-invites">
-      <h1>Companies Invites</h1>
-
-      <% session[:company_invite].each do |session| %>
-        <p>
-          <%= t('messages.company_invite.you_have_invitation', href: main_app.company_invite_path(token_id: session[:token_id]), name: session[:company_name]).html_safe %>            
-        </p>
-      <% end %>
-
-    </section>
-  <% end %>
   -->
 
 </article>

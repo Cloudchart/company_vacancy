@@ -26,7 +26,7 @@ class VacancyResponsesController < ApplicationController
   end
 
   def show
-    @comments = @vacancy_response.comments.includes(user: :avatar).order(updated_at: :desc)
+    @comments = @vacancy_response.comments.includes(:user).order(updated_at: :desc)
     @comment = @vacancy_response.comments.build
     @current_vote = @vacancy_response.votes.find_by(source: current_user).try(:value)
   end

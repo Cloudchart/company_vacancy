@@ -11,7 +11,7 @@
       <%= link_to "Verify Your Email and Enter OrgPad", profile_activation_url(token: @token.to_param) %>
     </p>
     
-    <%= render 'signature' %>
+    <%= render 'shared/mailer_signature' %>
 
   </body>
 </html>

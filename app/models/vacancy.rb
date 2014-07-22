@@ -11,21 +11,21 @@ class Vacancy < ActiveRecord::Base
   is_impressionable counter_cache: true, unique: true
 
   serialize :settings, VacancySetting
-
-  scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
-  scope :by_status, -> (status) { where status: status }
-
+  
   belongs_to :company
   belongs_to :author, class_name: 'User'
+
+  has_one :block_identity, as: :identity, inverse_of: :identity
   has_many :responses, class_name: 'VacancyResponse'
   has_many :responded_users, through: :responses, source: :user
   has_and_belongs_to_many :reviewers, class_name: 'Person', join_table: 'vacancy_reviewers'
   # has_paper_trail
 
-  has_one :block_identity, as: :identity, inverse_of: :identity
-
   validates :name, presence: true
   validate :validity_of_settings
+
+  scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
+  scope :by_status, -> (status) { where status: status }
 
   def settings=(hash)
     settings.attributes = hash
