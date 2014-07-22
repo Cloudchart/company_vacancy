@@ -6,6 +6,7 @@ Cloudchart::Application.routes.draw do
   # Errors
   #
   match '/404', to: 'errors#not_found', via: [:get, :post]
+  match '/500', to: 'errors#internal_error', via: :all
 
   # Engines
   #

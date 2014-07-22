@@ -23,7 +23,7 @@
           <li class="spacer"></li>
 
           <li class="opened">
-            <%= company.vacancies.by_status(:opened).size %> opened vacancies
+            <%= company.vacancies.by_status(:opened).size %> opened
           </li>
 
           <li class="in-review">
@@ -35,7 +35,9 @@
           </li>
 
           <li>
-            <%= render 'shared/add_item', path: main_app.new_company_vacancy_path(company) %>
+            <div class="add-item">
+              <%= link_to t('.new_vacancy', default: 'Add vacancy'), main_app.new_company_vacancy_path(company) %>
+            </div>          
           </li>
         </ul>  
       </header>
