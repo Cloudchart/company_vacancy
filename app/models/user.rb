@@ -7,6 +7,10 @@ class User < ActiveRecord::Base
 
   has_secure_password
 
+  #has_one   :avatar, as: :owner, dependent: :destroy
+  #accepts_nested_attributes_for :avatar, allow_destroy: true
+  dragonfly_accessor :avatar
+
   has_and_belongs_to_many :friends
 
   has_many  :emails, -> { order(:address) }, class_name: CloudProfile::Email, dependent: :destroy
@@ -23,6 +27,18 @@ class User < ActiveRecord::Base
   has_many  :favorites, dependent: :destroy
   
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
+
+  rails_admin do
+
+    list do
+      exclude_fields :password_digest
+    end
+
+    edit do
+      include_fields :is_admin
+    end
+
+  end
   
   def should_validate_name?
     @should_validate_name
@@ -31,10 +47,6 @@ class User < ActiveRecord::Base
   def should_validate_name!
     @should_validate_name = true
   end
-
-  #has_one   :avatar, as: :owner, dependent: :destroy
-  #accepts_nested_attributes_for :avatar, allow_destroy: true
-  dragonfly_accessor :avatar
 
   def has_already_voted_for?(object)
     votes.map(&:destination_id).include?(object.id)

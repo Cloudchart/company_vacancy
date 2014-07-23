@@ -15,14 +15,16 @@ RailsAdmin.config do |config|
     dashboard # mandatory
     index # mandatory
     new do
-      except ['Company']
+      except ['Company', 'User']
     end
     export
     bulk_delete
     show do
-      except ['Feature']
+      except ['Industry']
     end
-    edit
+    edit do
+      except ['Company']
+    end
     delete
     show_in_app
     history_index do
