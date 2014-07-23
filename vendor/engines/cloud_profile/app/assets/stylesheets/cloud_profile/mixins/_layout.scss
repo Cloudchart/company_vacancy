@@ -29,35 +29,17 @@
 
 @mixin cloud-profile-nav {
   @include base-wrapper;
+  @include base-horizontal-nav;
 
-  > ul {
-    @include flex-ul;
-    
-    > li {
-      background-color: $white-smoke;
-      margin-right: 1pt;
-      width: $base-unit * 6;
-      height: $base-unit * 2;
-      text-align: center;
-      line-height: $base-unit * 2;
+  > ul > li {
 
-      &.spacer {
-        @include flex(1);
-        background: none;
-      }
-      
-      > a {
-        color: $bright-grey;
-        display: block;
-        font-size: 12pt;
-        text-decoration: none;
-        
-        &.current,
-        &:hover {
-          background-color: $ufo-green;
-          color: white;
-        }
-      }
+    &.spacer {
+      @include flex(1);
+      background: none;
+    }
+
+    &:last-child {
+      margin-right: 0;
     }
   }
 

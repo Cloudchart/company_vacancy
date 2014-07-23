@@ -16,6 +16,35 @@
   margin: 0;
 }
 
+@mixin base-horizontal-nav {
+  > ul {
+    @include flex-ul;
+
+    > li {
+      width: $base-unit * 6;
+      height: $base-unit * 1.5;
+      margin-right: $base-unit * 0.5;
+      text-align: center;
+      line-height: $base-unit * 1.6;
+
+      > a {
+        background-color: $white-smoke;
+        color: $monsoon;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 10pt;
+        display: block;
+
+        &.current, &:hover {
+          background-color: $ufo-green;
+          color: white;
+        }
+      }
+    }
+    
+  }
+}
+
 // Buttons
 
 @mixin button($back-color, $text-color) {
