@@ -26,7 +26,7 @@ class Ability
     can :read, Feature
     can :access_vacancies, Company
     can :access_events, Company
-    can [:read, :preview], CloudBlueprint::Chart
+    can :preview, CloudBlueprint::Chart
 
     can :read, Vacancy do |vacancy|
       vacancy.settings.accessible_to == 'everyone'
@@ -61,12 +61,12 @@ class Ability
         end
       end
 
-      can [:access_people], Company do |company|
+      can :access_people, Company do |company|
         user.companies.include?(company)
       end
 
-      can [:create, :update, :pull], CloudBlueprint::Chart do |chart|
-        user.companies.include?(company)
+      can :manage, CloudBlueprint::Chart do |chart|
+        user.companies.include?(chart.company)
       end
 
       can :read, Vacancy do |vacancy|
@@ -76,7 +76,7 @@ class Ability
         vacancy.settings.accessible_to == 'everyone'        
       end
 
-      can [:manage], VacancyResponse do |vacancy_response|
+      can :manage, VacancyResponse do |vacancy_response|
         (user.people & vacancy_response.vacancy.company.people).first.try(:is_company_owner?) ||
         user.vacancies.include?(vacancy_response.vacancy)
       end

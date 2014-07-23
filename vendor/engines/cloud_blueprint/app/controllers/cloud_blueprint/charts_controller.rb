@@ -3,7 +3,7 @@ require_dependency "cloud_blueprint/application_controller"
 module CloudBlueprint
   class ChartsController < ApplicationController
     
-    # before_action :require_authenticated_user!
+    before_action :set_chart, only: [:show, :pull, :update]
     authorize_resource
     
     
@@ -11,7 +11,6 @@ module CloudBlueprint
     # GET /charts/:id
     #
     def show
-      @chart      = Chart.find(params[:id])
       respond_to do |format|
         format.html
       end
@@ -43,8 +42,6 @@ module CloudBlueprint
     # GET /charts/:id/pull
     #
     def pull
-      @chart = Chart.find(params[:id])
-      
       last_accessed_at = Time.at(params[:last_accessed_at].to_i / 1000)
       
       respond_to do |format|
@@ -100,15 +97,18 @@ module CloudBlueprint
     # PUT /charts/:id
     #
     def update
-      chart = current_user.charts.find(params[:id])
-
-      chart.update! params.require(:chart).permit(:title)
-      
       respond_to do |format|
         format.json do
-          render json: chart, only: params[:only]
+          render json: @chart, only: params[:only]
         end
       end
+    end
+
+
+  private
+
+    def set_chart
+      @chart = Chart.find(params[:id])
     end
     
         
