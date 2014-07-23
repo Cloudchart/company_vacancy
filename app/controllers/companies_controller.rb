@@ -54,7 +54,6 @@ class CompaniesController < ApplicationController
   # PATCH/PUT /companies/1
   def update    
     @company.update!(company_params)
-
     Activity.track_activity(current_user, params[:action], @company)
     
     respond_to do |format|

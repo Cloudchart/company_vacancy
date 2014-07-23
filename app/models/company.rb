@@ -22,7 +22,8 @@ class Company < ActiveRecord::Base
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy
   has_many :events, dependent: :destroy
-  has_many :activities, as: :source, dependent: :destroy
+  has_many :activities, as: :trackable, dependent: :destroy
+  has_many :nested_activities, class_name: Activity.name, as: :source, dependent: :destroy
   has_many :subscriptions, as: :subscribable, dependent: :destroy
   has_many :charts, class_name: CloudBlueprint::Chart.name, dependent: :destroy
   has_many :favorites, as: :favoritable, dependent: :destroy
