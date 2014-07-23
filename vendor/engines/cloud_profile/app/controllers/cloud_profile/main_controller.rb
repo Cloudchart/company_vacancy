@@ -10,7 +10,7 @@ module CloudProfile
     end
 
     def vacancies
-      @companies = current_user.companies.includes(:vacancies, :favorites).order('favorites.created_at DESC')
+      @companies = current_user.companies.joins(:vacancies).includes(:favorites).order('favorites.created_at DESC')
     end
 
     def activities
