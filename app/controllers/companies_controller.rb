@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :destroy, :subscribe, :unsubscribe]
+  before_action :set_company, only: [:show, :edit, :update, :destroy]
   before_action :set_collection, only: [:index, :search]
 
   authorize_resource
@@ -22,6 +22,7 @@ class CompaniesController < ApplicationController
   # GET /companies/1
   def show
     pagescript_params(can_update_company: can?(:update, @company))
+
     respond_to do |format|
       format.html
       format.json { render json: @company, serializer: Editor::CompanySerializer }
@@ -39,6 +40,7 @@ class CompaniesController < ApplicationController
     logo = Logo.new image: params[:image]
     @company = Company.find(params[:id])
     @company.logo = logo
+
     respond_to do |format|
       format.json { render nothing: true }
       format.js
@@ -50,11 +52,8 @@ class CompaniesController < ApplicationController
   end
 
   # PATCH/PUT /companies/1
-  def update
-    @company          = Company.find(params[:id])
-    @company.is_empty = false
-    
-    @company.update! company_params
+  def update    
+    @company.update!(company_params)
 
     Activity.track_activity(current_user, params[:action], @company)
     
@@ -74,7 +73,7 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    @company = Company.includes(:logo, blocks: { block_identities: :identity }).find(params[:id])
+    @company = Company.find(params[:id])
   end
 
   def set_collection
@@ -88,7 +87,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)], logo_attributes: [:id, :image, :_destroy])
+    params.require(:company).permit(:name, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
   end
   
 end
