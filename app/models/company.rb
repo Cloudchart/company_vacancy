@@ -15,6 +15,7 @@ class Company < ActiveRecord::Base
   dragonfly_accessor :logotype
 
   has_and_belongs_to_many :industries
+  has_and_belongs_to_many :banned_users, class_name: 'User', join_table: 'companies_banned_users'
 
   # -- deprecated
   has_one :logo, as: :owner, dependent: :destroy
@@ -23,9 +24,9 @@ class Company < ActiveRecord::Base
   has_many :people, dependent: :destroy
   has_many :events, dependent: :destroy
   has_many :activities, as: :trackable, dependent: :destroy
-  has_many :nested_activities, class_name: Activity.name, as: :source, dependent: :destroy
+  has_many :nested_activities, class_name: 'Activity', as: :source, dependent: :destroy
   has_many :subscriptions, as: :subscribable, dependent: :destroy
-  has_many :charts, class_name: CloudBlueprint::Chart.name, dependent: :destroy
+  has_many :charts, class_name: 'CloudBlueprint::Chart', dependent: :destroy
   has_many :favorites, as: :favoritable, dependent: :destroy
   # has_paper_trail
 

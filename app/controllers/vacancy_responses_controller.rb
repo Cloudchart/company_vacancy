@@ -1,6 +1,6 @@
 class VacancyResponsesController < ApplicationController
-  before_action :set_vacancy, except: [:show, :destroy, :vote, :change_status]
-  before_action :set_vacancy_response, only: [:show, :destroy, :vote, :change_status]
+  before_action :set_vacancy, only: [:index, :new, :create]
+  before_action :set_vacancy_response, only: [:show, :destroy, :vote, :change_status, :ban_user]
   before_action :authorize_vacancy, only: :index
 
   authorize_resource except: :index
@@ -73,6 +73,14 @@ class VacancyResponsesController < ApplicationController
     end
 
     redirect_to :back, notice: 'Status has been updated'
+  end
+
+  def ban_user
+    unless @vacancy_response.vacancy.company.banned_users.include?(@vacancy_response.user)
+      @vacancy_response.vacancy.company.banned_users << @vacancy_response.user
+    end
+    
+    redirect_to :back, notice: 'This user has been added to the banlist and will never bother you again.'
   end
 
 private

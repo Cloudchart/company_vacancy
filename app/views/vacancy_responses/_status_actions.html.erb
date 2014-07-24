@@ -29,6 +29,7 @@
 
   <li>
     <%= link_to 'Reconsider', change_status_vacancy_response_path(response, :in_review), method: :patch %>
+    <%= link_to 'Ban', ban_user_vacancy_response_path(response), method: :post unless response.vacancy.company.banned_users.include?(response.user) %>
     <%= link_to 'Destroy', vacancy_response_path(response.vacancy, response), remote: true, method: :delete, data: { confirm: 'Are you sure?' } %>
   </li>
 
