@@ -67,11 +67,12 @@ Cloudchart::Application.routes.draw do
   resources :favorites, only: [:create, :destroy]
 
   scope 'vacancies/:vacancy_id' do
-    resources :vacancy_responses, path: 'responses', only: [:index, :new, :create]      
+    resources :vacancy_responses, path: 'responses', only: [:index, :new, :create]
   end
 
   resources :vacancy_responses, only: [:show, :destroy], concerns: [:statusable] do
     post 'vote/:vote', on: :member, action: :vote, as: :vote
+    post :ban_user, on: :member
   end
 
 end
