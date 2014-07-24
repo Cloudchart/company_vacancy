@@ -66,8 +66,12 @@ class VacancyResponsesController < ApplicationController
   end
 
   def change_status
-    # TODO: add status check
-    @vacancy_response.update(status: params[:status])
+    status = params[:status]
+
+    if status.present? && %[in_review accepted declined].include?(status)
+      @vacancy_response.update(status: status)
+    end
+
     redirect_to :back, notice: 'Status has been updated'
   end
 
