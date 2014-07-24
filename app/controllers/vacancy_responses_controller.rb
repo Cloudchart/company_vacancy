@@ -51,6 +51,7 @@ class VacancyResponsesController < ApplicationController
 
   def destroy
     @vacancy_response.destroy
+    redirect_to :back, notice: 'Vacancy response was destroyed'
   end
 
   def vote
@@ -79,8 +80,8 @@ class VacancyResponsesController < ApplicationController
     unless @vacancy_response.vacancy.company.banned_users.include?(@vacancy_response.user)
       @vacancy_response.vacancy.company.banned_users << @vacancy_response.user
     end
-    
-    redirect_to :back, notice: 'This user has been added to the banlist and will never bother you again.'
+
+    redirect_to :back, notice: 'This user has been added to the banlist and will never bother you again'
   end
 
 private
