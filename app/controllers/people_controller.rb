@@ -1,5 +1,4 @@
 class PeopleController < ApplicationController
-  include TokenableController
 
   before_action :set_person, only: [:show, :edit, :update, :destroy, :send_invite_to_user]
   before_action :set_company, only: [:index, :new, :create, :search]
@@ -115,12 +114,13 @@ private
   end
 
   def create_company_invite_token_and_send_email(person_id, email=nil)
-    clean_session_and_destroy_token(Token.find_by(data: person_id.to_yaml))
-    token = Token.new(name: :company_invite, data: person_id)
-    token.owner = email.try(:user)
-    token.save!
-    email = params[:email] unless email
-    UserMailer.send_company_invite(@person.company, email, token).deliver
+    token = Token.find_by(name: :company_invite, data: person_id.to_yaml, owner: email.try(:user))
+
+    unless token
+      token = Token.create!(name: :company_invite, data: person_id, owner: email.try(:user))
+    end
+
+    UserMailer.send_company_invite(@person.company, email || params[:email], token).deliver
   end
 
 end

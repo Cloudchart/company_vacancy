@@ -32,16 +32,21 @@
     </section>
   <% end %>
 
-  <%# temporary place for companies invites; shared/notice must be rendered in the future %>
-  <% if current_user && session[:company_invite].present? && !(request.path =~ /company_invite/) %>
+  <%# session[:company_invite].clear %>
+  <% if session[:company_invite].present? %>
     <section class="companies-invites">
       <header>Companies Invites</header>
 
-      <% session[:company_invite].each do |session| %>
-        <div>
-          <%= t('messages.company_invite.you_have_invitation', href: main_app.company_invite_path(token_id: session[:token_id]), name: session[:company_name]).html_safe %>            
-        </div>
-      <% end %>
+      <ul>
+        <% session[:company_invite].each do |session| %>
+          <li>
+            <% company = Company.find(session[:company_id]) %>
+            <%= link_to company.name, main_app.company_path(company) %> |
+            <%= link_to 'Accept', cloud_profile.associate_with_person_path(current_user, token_id: session[:token_id]) %> |
+            <%= link_to 'Decline', main_app.token_path(session[:token_id]), method: :delete, data: { confirm: 'Are you sure?' } %>            
+          </li>
+        <% end %>
+      </ul>
 
     </section>
   <% end %>

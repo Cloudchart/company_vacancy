@@ -4,8 +4,9 @@ class TokensController < ApplicationController
   load_and_authorize_resource
   
   def destroy
-    clean_session_and_destroy_token(@token)
-    redirect_to root_url, notice: 'Your request has been completed.'
+    clean_company_invite_session(@token)
+    @token.destroy
+    redirect_to :back, notice: 'Your request has been completed.'
   end
 
 end

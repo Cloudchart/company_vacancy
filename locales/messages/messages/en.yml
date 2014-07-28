@@ -2,9 +2,9 @@ en:
   messages:
     login_or_register: "Please login or register"
     are_you_sure: "Are you sure?"
-    created: "%{name} was successfully created."
-    updated: "%{name} was successfully updated."
-    destroyed: "%{name} was successfully destroyed."
+    created: "%{name} was created."
+    updated: "%{name} was updated."
+    destroyed: "%{name} was destroyed."
     signed_up: "Signed up."
     logged_in: "Logged in."
     logged_out: "Logged out."
@@ -14,21 +14,20 @@ en:
       state_match_failed: "State doesn't match current user token."
       not_found: "There was a problem with your %{action}. Please try again or send email to our support team."
     email_sent: "We've sent you an email. Please click on the provided link to %{action}."    
-    successful_action: "Your %{thing} has been successfully %{action}. Please login."
+    successful_action: "Your %{thing} has been %{action}. Please login."
     validations:
       invalid_email: "must be a valid email"
       invalid_url: "must be a valid URL"
-    invitation_completed: "Invitation has been successfully completed."
+    invitation_completed: "Now you are a part of this company."
     company_invite: 
       token_not_found: "Sorry, we couldn't find this invitation."
-      email_sent: "Invite has been sent successfully."
+      email_sent: "Invite has been sent."
       user_has_already_been_associated: "User with this email is already associated with your company."
       you_are_already_associated: "You are already associated with %{name}."
       email_blank: "Invitation email can't be blank."
-      you_have_invitation: "You have <a href='%{href}'>invitation</a> from %{name}."
     verifications:
       event:
-        success: "Your event was successfully verified."
+        success: "Your event was verified."
         fail: "There was a problem with event verification. Please try again."
     subscriptions:
       create: "Your subscription has been created"

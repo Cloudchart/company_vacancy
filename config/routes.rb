@@ -24,10 +24,6 @@ Cloudchart::Application.routes.draw do
     match 'change_status/:status', on: :member, action: :change_status, as: :change_status, via: [:put, :patch]
   end
 
-  # Custom
-  #
-  get 'company_invite/:token_id', to: 'landings#company_invite', as: 'company_invite'
-
   # Resources
   #
   resources :companies, shallow: true, concerns: [:blockable] do

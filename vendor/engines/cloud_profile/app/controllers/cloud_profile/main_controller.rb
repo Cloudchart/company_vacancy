@@ -3,6 +3,7 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class MainController < ApplicationController
 
+    before_action :handle_company_invite_token, only: :settings, if: 'params[:token_id].present?'
     before_action :require_authenticated_user!
     
     def companies
@@ -27,6 +28,20 @@ module CloudProfile
 
     def subscriptions
       @subscriptions = current_user.subscriptions.order(created_at: :desc)
+    end
+
+  private
+
+    def handle_company_invite_token
+      token = Token.find(params[:token_id]) rescue nil
+
+      if token
+        session[:company_invite] ||= []
+        session_data = { token_id: token.id, company_id: Person.find(token.data).company_id }
+        session[:company_invite] << session_data unless session[:company_invite].include?(session_data)
+      end
+
+      redirect_to cloud_profile.login_path unless current_user
     end
 
   end

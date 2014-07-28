@@ -113,7 +113,7 @@ module CloudProfile
         person = Person.find(token.data)
 
         if user.people.map(&:company_id).include?(person.company_id)
-          return redirect_to main_app.company_invite_path(token), alert: t('messages.company_invite.you_are_already_associated', name: person.company.name)
+          return redirect_to cloud_profile.settings_path, alert: t('messages.company_invite.you_are_already_associated', name: person.company.name)
         end
 
         # create subscription (only to vacancies and events so far)
@@ -122,7 +122,11 @@ module CloudProfile
 
         user.people << person
         user.save!
-        clean_session_and_destroy_token(token)
+
+        # destroy all possible and impossible invites associated with this person
+        Token.where.not(uuid: token.id).where(data: token.data.to_yaml).destroy_all
+        clean_company_invite_session(token)
+        token.destroy
 
         redirect_to main_app.company_path(person.company), notice: t('messages.invitation_completed')
       else
