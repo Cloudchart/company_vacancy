@@ -70,6 +70,7 @@ button.cloud {
 $orgpad-button-background-color: hsl(136, 52%, 51%);
 $orgpad-button-background-color-alert: hsl(1, 76%, 54%);
 $orgpad-button-color: hsl(0, 0, 100%);
+$orgpad-button-color-inverse: hsl(139, 72%, 35%);
 $orgpad-button-font-size: 14pt;
 $orgpad-button-font-weight: 400;
 $orgpad-button-height: 30pt;
@@ -119,7 +120,8 @@ $orgpad-button-padding-small: 0 10pt;
 
 
   &.inverse {
-    color: $orgpad-button-background-color-alert;
+    background-color: $orgpad-button-color;
+    color: $orgpad-button-color-inverse;
   }
   
   &.alert {

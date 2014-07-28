@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(version: 20140724142442) do
     t.datetime "updated_at"
     t.date     "established_on"
     t.string   "logotype_uid"
-    t.boolean  "is_listed",      default: false
+    t.boolean  "is_listed",      default: false, null: false
   end
 
   create_table "companies_banned_users", id: false, force: true do |t|

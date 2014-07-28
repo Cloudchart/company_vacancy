@@ -1,4 +1,6 @@
 $header-background-color: hsl(0, 0%, 97%);
+$header-background-color-inverse: hsl(139, 72%, 35%);
+$header-color-inverse: hsl(0, 100%, 100%);
 $header-font-size: 16px;
 $header-font-weight: 400;
 $header-height: 50px;
@@ -6,6 +8,7 @@ $header-padding: 10px;
 
 
 $header-logo-background-image: image-url('orgpad-logo.svg');
+$header-logo-background-image-inverse: image-url('orgpad-logo-neg.svg');
 $header-logo-height: 32px;
 $header-logo-margins: -3px 0 0;
 $header-logo-width: 35px;
@@ -170,6 +173,23 @@ body > header {
   
   .auth {
     margin-left: $header-padding;
+  }
+  
+}
+
+// Inverse header style
+//
+
+body > header.inverse {
+  background-color: $header-background-color-inverse;
+  color: $header-color-inverse;
+
+  a {
+    color: inherit;
+  }
+  
+  .logo {
+    background-image: $header-logo-background-image-inverse;
   }
   
 }

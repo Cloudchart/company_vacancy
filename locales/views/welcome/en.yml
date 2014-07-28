@@ -1,0 +1,15 @@
+en:
+  welcome:
+    index:
+      newsplash:
+        title: Map your company in seconds
+
+        header: |
+          Register to see how best Valley startups are built:
+          <br />
+          <strong>Buffer</strong>, <strong>Pinterest</strong>, <strong>Evernote</strong> and more.
+        
+        note: |
+          Here's how <strong>Westeros</strong> chart looks.
+          <br />
+          Chart like that in under 5 minutes. Interested?

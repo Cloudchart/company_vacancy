@@ -1,8 +1,15 @@
 body > footer {
   background: $footer-background-color;
+  color: $footer-link-color;
   font-size: $footer-font-size;
   font-weight: $footer-font-weight;
   padding: $base-unit * .75;
+  
+  &.inverse {
+    background-color: hsl(0, 0%, 78%);
+    color: hsl(0, 0%, 100%);
+    font-weight: 300;
+  }
 
   ul {
     @include display(flex);
@@ -17,7 +24,7 @@ body > footer {
     }
 
     a {
-      color: $footer-link-color;
+      color: inherit;
       text-decoration: none;
     }
 
