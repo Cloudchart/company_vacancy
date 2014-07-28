@@ -1,33 +1,124 @@
+$modal-overlay-background-color: hsla(0, 0%, 50%, .5);
 $modal-overlay-z-index: 10000;
 
-body > .modal-overlay {
-  @include display(flex);
-  @include position(absolute, 0px 0px 0px 0px);
-  
-  background-color: hsla(0, 0%, 0%, .25);
-  z-index: $modal-overlay-z-index;
-  
-  .modal-container {
-    margin: auto;
-    
-    > * {
-      background-color: hsl(0, 100%, 100%);
-    }
-    
-    > .lock {
-      @include display(flex);
+$modal-container-background-color: hsl(0, 100%, 100%);
 
-      background-color: hsla(0, 100%, 100%, .75);
-      border-radius: $base-unit;
-      font-size: $base-unit * 2;
-      height: $base-unit * 5;
-      width: $base-unit * 5;
+// Modal form
+//
+
+$modal-form-font-size: 18px;
+$modal-form-padding: 20px 50px 40px;
+
+$modal-form-header-font-size: 50px;
+$modal-form-header-font-weight: 300;
+
+$modal-form-fieldset-margin: 20px 0 0;
+$modal-form-fieldset-label-margin: 15px 0;
+
+$modal-form-footer-margin: 30px 0 0;
+
+$modal-form-input-background-color: hsl(0, 0%, 96%);
+$modal-form-input-padding: 8px 10px;
+
+$modal-form-button-background-color: hsl(137, 51%, 51%);
+$modal-form-button-background-color-alert: hsl(358, 77%, 56%);
+$modal-form-button-color: hsl(0, 100%, 100%);
+$modal-form-button-font-size: 16px;
+$modal-form-button-height: 35px;
+$modal-form-button-padding: 0 20px;
+
+
+@mixin modal-form-button {
+  background-color: $modal-form-button-background-color;
+  border: none;
+  color: $modal-form-button-color;
+  font-size: $modal-form-button-font-size;
+  height: $modal-form-button-height;
+  margin: 0;
+  padding: $modal-form-button-padding;
   
-      > i {
-        margin: auto;
-      }
-    }
-    
+  &:disabled {
+    background-color: desaturate($modal-form-button-background-color, 100%);
   }
   
+  &.alert {
+    background-color: $modal-form-button-background-color-alert;
+    
+    &:disabled {
+      background-color: desaturate($modal-form-button-background-color-alert, 100%);
+    }
+  }
+  
+  > i.fa {
+    margin-left: 8px;
+  }
 }
+
+
+@mixin modal-auth-form {
+  font-size: $modal-form-font-size;
+  padding: $modal-form-padding;
+  width: $login-form-width;
+  
+  > header {
+    font-size: $modal-form-header-font-size;
+    font-weight: $modal-form-header-font-weight;
+    
+    a {
+      margin-right: 10px;
+    }
+  }
+  
+  > fieldset {
+    border: none;
+    margin: $modal-form-fieldset-margin;
+    padding: 0;
+    
+    > label {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(flex-end);
+      
+      font-weight: 300;
+      margin: $modal-form-fieldset-label-margin;
+      
+      > input {
+        background-color: $modal-form-input-background-color;
+        border: none;
+        margin-left: 10px;
+        outline: none;
+        padding: $modal-form-input-padding;
+        width: 70%;
+      }
+    }
+  }
+  
+  > footer {
+    @include display(flex);
+    @include justify-content(space-between);
+    
+    margin: $modal-form-footer-margin;
+    
+    button {
+      @include modal-form-button;
+    }
+  }
+}
+
+
+
+body .modal-overlay {
+  @include display(flex);
+  @include position(fixed, 0px 0px 0px 0px);
+  
+  background-color: $modal-overlay-background-color;
+  overflow: hidden;
+  
+  > .modal-container {
+    background-color: $modal-container-background-color;
+    margin: auto;
+  }
+}
+
+
+@import 'modals/login-form';

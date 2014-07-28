@@ -1,0 +1,12 @@
+$login-form-width: 480px;
+
+.modal-container > form.login,
+.modal-container > form.register {
+  @include modal-auth-form;
+  
+  button.register i {
+    position: relative;
+    top: 1px;
+  }
+  
+}

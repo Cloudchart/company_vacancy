@@ -3,6 +3,7 @@
 //= require ./shared
 //= require ./editor
 //= require ./company
+//= require_tree ./modals
 
 this.cc       || ( this.cc        = {} )
 this.cc.react || ( this.cc.react  = {} )

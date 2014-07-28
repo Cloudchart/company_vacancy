@@ -3,6 +3,7 @@ require_dependency "cloud_blueprint/application_controller"
 module CloudBlueprint
   class ChartsController < ApplicationController
     
+    skip_before_action :require_authenticated_user!, only: :preview, if: -> { request.format.json? }
     before_action :set_chart, only: [:show, :pull, :update]
     authorize_resource
     

@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   
   before_action :require_properly_named_user!
+  before_action :require_authenticated_user!
 
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to main_app.root_path, alert: exception.message
@@ -20,12 +21,12 @@ class ApplicationController < ActionController::Base
 
 
   def require_authenticated_user!
-    redirect_to cloud_profile.login_path unless user_authenticated?
+    redirect_to main_app.root_path unless user_authenticated?
   end
   
 
   def require_unauthenticated_user!
-    redirect_to main_app.root_path if user_authenticated?
+    #redirect_to main_app.root_path if user_authenticated?
   end
   
   

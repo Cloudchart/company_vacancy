@@ -24,14 +24,13 @@
   
 </section>
 
-
 <%- pagescript_params chart_id: ENV['NEWSPLASH_CHART_ID'] -%>
 
 
 <%- content_for :search, "&nbsp;".html_safe -%>
 
 <%- content_for :authentication do -%>
-  <%= link_to "Log In", cloud_profile.login_path %>
+  <%= link_to "Log In", cloud_profile.login_path, data: { behaviour: "login-button" } %>
 
   <button class="orgpad inverse auth">
     <span>
