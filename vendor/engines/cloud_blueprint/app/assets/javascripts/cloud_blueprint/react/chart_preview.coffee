@@ -18,6 +18,7 @@ MainComponent = React.createClass
   onLoadDone: (json) ->
     @setState
       loading:                    false
+      loaded:                     true
       should_recalculate_layout:  json.nodes.length > 0
       nodes:                      json.nodes
   
@@ -25,12 +26,14 @@ MainComponent = React.createClass
   onLoadFail: ->
     console.warn "Fail: Chart preview loading."
     @setState
-      loading: false
+      loading:  false
+      loaded:   false
 
 
   load: ->
     @setState
-      loading: true
+      loading:  true
+      loaded:   false
     
     $.ajax
       url:      "/charts/#{@props.id}/preview"
@@ -38,6 +41,10 @@ MainComponent = React.createClass
       dataType: "JSON"
     .done @onLoadDone
     .fail @onLoadFail
+  
+  
+  centerAtRoot: ->
+
   
   
   calculateLayout: ->
@@ -60,11 +67,16 @@ MainComponent = React.createClass
     width     = Math.max(nodeBounds.width   - hBorders, (layout.bounds.width   + @props.horizontal_padding * 2) * @props.scale) / @props.scale
     height    = Math.max(nodeBounds.height  - vBorders, (layout.bounds.height  + @props.vertical_padding   * 2) * @props.scale) / @props.scale
 
-    xOffset   = width / 2
+    xOffset   = - width / layout.bounds.width * layout.bounds.left
     yOffset   = @props.vertical_padding
-
+    
+    left      = 0
+    top       = 0
+    
     nodesContainerNode.style.width  = width   + 'px'
     nodesContainerNode.style.height = height  + 'px'
+    nodesContainerNode.style.left   = left + 'px'
+    nodesContainerNode.style.top    = top + 'px'
     
     
     Object.keys(nodes).forEach (uuid) =>
@@ -90,6 +102,8 @@ MainComponent = React.createClass
 
     @setState
       should_recalculate_layout:  false
+    
+    @centerAtRoot()
   
   
   onResize: (event) ->
@@ -112,6 +126,7 @@ MainComponent = React.createClass
   
   
   getInitialState: ->
+    loaded:   false
     loading:  false
     nodes:    []
     width:    null
@@ -141,11 +156,11 @@ MainComponent = React.createClass
       (tag.a { className: "orgpad-button edit", href: '/charts/' + @props.id },
         'Tap to edit your chart'
         (tag.i { className: 'fa fa-sitemap' })
-      ) if @state.nodes.length == 0 unless @props.small
+      ) if @state.nodes.length == 0 unless @props.small if @state.loaded
 
       (tag.a { className: "orgpad-button edit small", href: '/charts/' + @props.id },
         'Empty chart'
-      ) if @state.nodes.length == 0 if @props.small
+      ) if @state.nodes.length == 0 if @props.small if @state.loaded
 
     )
 

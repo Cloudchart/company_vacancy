@@ -76,14 +76,12 @@ main.newsplash {
       
       > div {
         @include position(absolute, 25px 0 0 50%);
+
+        border: none;
         height: 300px;
         margin-left: -240px;
         position: absolute;
         width: 481px;
-        
-        > * {
-          border: none;
-        }
       }
     }
 
