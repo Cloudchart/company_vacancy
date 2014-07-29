@@ -20,25 +20,22 @@ RailsAdmin.config do |config|
     collection :invite do
       link_icon 'icon-envelope'
       only ['Token']
-
-      http_methods do 
-        [:get, :post]
-      end
+      http_methods { [:get, :post] }
 
       controller do
         proc do
 
           if request.post?
-            @token = Token.new(params.require(:token).permit(data: [:name, :email]))
-            @token.name = :invite
+            @object = Token.new(params.require(:token).permit(data: [:name, :email]))
+            @object.name = :invite
             
             if params[:token][:data][:name].blank? && params[:token][:data][:email].blank?
-              @token.data = nil
+              @object.data = nil
             end
 
-            if @token.save
-              UserMailer.app_invite(@token).deliver if @token.data.present?
-              redirect_to index_path(:token)
+            if @object.save
+              UserMailer.app_invite(@object).deliver if @object.data.present?
+              redirect_to index_path(:token), notice: 'Invite has been created'
             else
               render action: @action.template_name
             end
@@ -46,6 +43,20 @@ RailsAdmin.config do |config|
 
         end
       end      
+    end
+
+    member :accept_invite do
+      link_icon 'icon-ok'
+      only ['Token']
+      visible { bindings[:object].name == 'request_invite' }
+
+      controller do
+        proc do
+          @object.update(name: :invite)
+          UserMailer.app_invite(@object).deliver if @object.data.present?
+          redirect_to index_path(:token), notice: 'Request has been accepted'
+        end
+      end
     end
 
     # default
