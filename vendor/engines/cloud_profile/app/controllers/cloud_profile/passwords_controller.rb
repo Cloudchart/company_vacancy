@@ -23,31 +23,63 @@ module CloudProfile
     end
     
     
-    # Reset password form
+    # Request reset password
     #
     def reset
       token = Token.find(params[:token]) rescue nil
       redirect_to main_app.root_path(password_reset: token)
     end
     
+    
+    # Reset password
+    #
+    def complete_reset
+      token = Token.find(params[:token])
+      user  = User.find_by_email(token.data[:address])
+      
+      user.password_digest = nil
+      user.update! params.require(:user).permit(:password, :password_confirmation)
+      
+      token.destroy
+      
+      warden.set_user(user, scope: :user)
+      
+      respond_to do |format|
+        format.json { render json: { status: :ok } }
+      end
+      
+    rescue ActiveRecord::RecordNotFound
+
+      respond_to do |format|
+        format.json { render json: :nok, status: 403 }
+      end
+
+    rescue ActiveRecord::RecordInvalid
+
+      respond_to do |format|
+        format.json { render json: user.errors, status: 412 }
+      end
+
+    end
+    
 
     # Reset password
     #
-    def reset_complete
-      @token  = Token.find(params[:token])
-      @email  = Email.find_by(address: @token.data[:address])
-      @user   = @email.user
-      
-      @user.password_digest = nil
-      @user.update! params.require(:user).permit([:password, :password_confirmation])
-      
-      @token.destroy
-      
-      redirect_to login_path(email: @email.address)
-
-    rescue ActiveRecord::RecordInvalid
-      render :reset
-    end
+    #def reset_complete
+    #  @token  = Token.find(params[:token])
+    #  @email  = Email.find_by(address: @token.data[:address])
+    #  @user   = @email.user
+    #  
+    #  @user.password_digest = nil
+    #  @user.update! params.require(:user).permit([:password, :password_confirmation])
+    #  
+    #  @token.destroy
+    #  
+    #  redirect_to login_path(email: @email.address)
+    #
+    #rescue ActiveRecord::RecordInvalid
+    #  render :reset
+    #end
     
     
     # Update current password

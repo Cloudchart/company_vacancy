@@ -67,7 +67,7 @@ CloudProfile::Engine.routes.draw do
     end
     
     get   'password/:token/reset', to: 'passwords#reset', as: 'password_reset'
-    post  'password/:token/reset', to: 'passwords#reset_complete'
+    post  'password/:token/reset', to: 'passwords#complete_reset'
     
     # Social Networks
     #

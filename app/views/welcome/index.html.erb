@@ -26,7 +26,8 @@
 
 <%-
   pagescript_params(
-    chart_id: ENV['NEWSPLASH_CHART_ID']
+    chart_id: ENV['NEWSPLASH_CHART_ID'],
+    password_reset_token: (Token.where(name: 'password-reset').find(params[:password_reset]).to_param rescue nil)
   ) 
 -%>
 

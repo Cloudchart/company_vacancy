@@ -80,6 +80,10 @@ class User < ActiveRecord::Base
   def email=(email)
     self.emails = [CloudProfile::Email.new(address: email)]
   end
+  
+  def self.find_by_email(email)
+    CloudProfile::Email.includes(:user).find_by(address: email).user rescue nil
+  end
 
   # Invite
   #

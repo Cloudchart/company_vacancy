@@ -39,6 +39,16 @@
       window.dispatchEvent(event)
 
 
+  # Password reset
+  #
+  if data.password_reset_token and (PasswordResetForm = cc.require('react/modals/password-reset-form'))
+    event = new CustomEvent 'modal:push',
+      detail:
+        component: PasswordResetForm({ token: data.password_reset_token })
+    
+    window.dispatchEvent(event)
+
+
   #event = new CustomEvent 'modal:push',
   #  detail:
   #    component: cc.require('react/modals/invite-splash')({})
