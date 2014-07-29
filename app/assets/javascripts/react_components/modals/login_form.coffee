@@ -50,6 +50,10 @@ Component = React.createClass
         password: @state.password
     .done @onLoginDone
     .fail @onLoginFail
+  
+  
+  onLoginButtonClick: (event) ->
+    @onSubmit(event)
 
 
   onResetButtonClick: (event) ->
@@ -118,7 +122,7 @@ Component = React.createClass
         # Login Button
         #
         (tag.button {
-          type:       'submit'
+          type:       'button'
           className:  'login'
           onClick:    @onLoginButtonClick
           disabled:   !@isValidForLogin()
