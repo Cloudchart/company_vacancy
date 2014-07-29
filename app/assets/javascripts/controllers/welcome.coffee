@@ -12,12 +12,35 @@
     ModalComponent = cc.require('react/shared/modal')
     React.renderComponent(ModalComponent({}), modalMountPoint)
 
-    if (loginButton = document.querySelector('[data-behaviour~="login-button"]')) and (LoginForm = cc.require('react/modals/login-form'))
-      loginButton.addEventListener 'click', (event) ->
-        event.preventDefault()
-        
-        event = new CustomEvent 'modal:push',
-          detail:
-            component: LoginForm({})
 
-        window.dispatchEvent(event)
+  # Login form
+  #
+  if (loginButton = document.querySelector('[data-behaviour~="login-button"]')) and (LoginForm = cc.require('react/modals/login-form'))
+    loginButton.addEventListener 'click', (event) ->
+      event.preventDefault()
+      
+      event = new CustomEvent 'modal:push',
+        detail:
+          component: LoginForm({})
+
+      window.dispatchEvent(event)
+
+
+  # Register form
+  #
+  if (inviteButton = document.querySelector('[data-behaviour~="invite-button"]')) and (RegisterForm  = cc.require('react/modals/register-form'))
+    inviteButton.addEventListener 'click', (event) ->
+      event.preventDefault()
+      
+      event = new CustomEvent 'modal:push',
+        detail:
+          component: RegisterForm({})
+        
+      window.dispatchEvent(event)
+
+
+  #event = new CustomEvent 'modal:push',
+  #  detail:
+  #    component: cc.require('react/modals/invite-splash')({})
+  #
+  #window.dispatchEvent(event)

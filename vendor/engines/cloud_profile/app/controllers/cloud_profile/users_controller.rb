@@ -6,6 +6,32 @@ module CloudProfile
     
     before_action :require_authenticated_user!, only: :activation_complete
     skip_before_action :require_properly_named_user!, only: :activation_complete
+    
+    
+    # Request invite
+    #
+    def invite
+      user = User.new params.require(:user).permit(:email, :full_name)
+      user.password = user.password_confirmation = 'dummy'
+      
+      if user.valid?
+        Token.transaction do
+          tokens = Token.where(name: 'request-invite').select { |token| token.data && token.data[:email] == user.email }.each(&:destroy)
+          Token.create name: 'request-invite', data: { full_name: user.full_name, email: user.email }
+        end
+        
+        respond_to do |format|
+          format.json { render json: { state: :ok } }
+        end
+        
+      else
+
+        respond_to do |format|
+          format.json { render json: { errors: user.errors.keys }, status: 403 }
+        end
+
+      end
+    end
 
 
     # Registration form
@@ -18,22 +44,48 @@ module CloudProfile
     
 
     # Registration
+    # params: email, full_name, password, password_confirmation, invite
     #
     def create
-      @email  = Email.new address: params[:email]
-      @user   = User.new password: params[:password], password_confirmation: params[:password]
-
-      @user.emails << @email
-      #@user.should_validate_password!
+      user = User.new params.require(:user).permit(:email, :full_name, :password, :password_confirmation, :invite)
       
-      if @user.valid?
-        token = Token.new name: 'registration', data: { address: @email.address, password_digest: @user.password_digest }
-        token.save!
-        ProfileMailer.activation_email(token).deliver
-        redirect_to :register_complete
+      user.should_validate_invite!
+      
+      if user.valid?
+        
+        if user.invite.data && user.invite.data[:email] == user.email
+          user.save!
+          user.invite.destroy
+          warden.set_user(user, scope: :user)
+          respond_to do |format|
+            format.json { render json: { state: :login }}
+          end
+        else
+          # activate
+          respond_to do |format|
+            format.json { render json: { state: :activation }}
+          end
+        end
+        
       else
-        render :new
+        respond_to do |format|
+          format.json { render json: { errors: user.errors.keys }, status: 403 }
+        end
       end
+      
+      #@email  = Email.new address: params[:email]
+      #@user   = User.new password: params[:password], password_confirmation: params[:password]
+
+      #@user.emails << @email
+      
+      #if @user.valid?
+      #  token = Token.new name: 'registration', data: { address: @email.address, password_digest: @user.password_digest }
+      #  token.save!
+      #  ProfileMailer.activation_email(token).deliver
+      #  redirect_to :register_complete
+      #else
+      #  render :new
+      #end
     end
     
     
@@ -140,6 +192,5 @@ module CloudProfile
     def render_user_json
       render json: current_user, serializer: CloudProfile::UserSerializer, root: false
     end
-    
   end
 end

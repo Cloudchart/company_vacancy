@@ -70,8 +70,34 @@ class User < ActiveRecord::Base
     first_name.present? && last_name.present?
   end
   
+  # Emails
+  #
+  
   def email
     emails.first.address
+  end
+  
+  def email=(email)
+    self.emails = [CloudProfile::Email.new(address: email)]
+  end
+
+  # Invite
+  #
+
+  validates :invite, presence: true, if: :should_validate_invite?
+
+  attr_reader :invite
+  
+  def invite=(invite)
+    @invite = Token.where(name: :invite).find(invite) rescue Token.where(name: :invite).find(Cloudchart::RFC1751::decode(invite)) rescue nil
+  end
+  
+  def should_validate_invite?
+    @should_validate_invite
+  end
+  
+  def should_validate_invite!
+    @should_validate_invite = true
   end
 
 private

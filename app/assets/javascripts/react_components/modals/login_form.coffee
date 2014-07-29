@@ -35,7 +35,7 @@ Component = React.createClass
   
   
   onLoginFail: (xhr) ->
-    @setState({ password: '', error: true })
+    @setState({ error: true })
   
   
   onSubmit: (event) ->
@@ -52,12 +52,30 @@ Component = React.createClass
     .fail @onLoginFail
   
   
+  onFocus: (event) ->
+    @setState({ error: false }) if event.target.name == 'password'
+  
+  
   onLoginButtonClick: (event) ->
     @onSubmit(event)
 
 
+  onResetDone: (json) ->
+    event = new CustomEvent 'modal:close'
+    window.dispatchEvent(event)
+
+  onResetFail: (xhr) ->
+
+
   onResetButtonClick: (event) ->
-    alert 'TODO'
+    $.ajax
+      url:      '/profile/password/forgot'
+      type:     'POST'
+      dataType: 'json'
+      data:
+        email:  @state.email
+    .done @onResetDone
+    .fail @onResetFail
 
 
   onRegisterButtonClick: (event) ->
@@ -109,9 +127,12 @@ Component = React.createClass
           'Password'
           (tag.input {
             type:         'password'
+            name:         'password'
+            className:    'error' if @state.error
             autoFocus:    @state.email.length isnt 0
             autoComplete: 'off'
             value:        @state.password
+            onFocus:      @onFocus
             onChange:     @onPasswordChange
           })
         )

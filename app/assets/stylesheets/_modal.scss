@@ -18,6 +18,8 @@ $modal-form-fieldset-label-margin: 15px 0;
 $modal-form-footer-margin: 30px 0 0;
 
 $modal-form-input-background-color: hsl(0, 0%, 96%);
+$modal-form-input-background-color-error: hsl(359, 67%, 87%);
+$modal-form-input-color-error: hsl(0, 10%, 49%);
 $modal-form-input-padding: 8px 10px;
 
 $modal-form-button-background-color: hsl(137, 51%, 51%);
@@ -89,6 +91,11 @@ $modal-form-button-padding: 0 20px;
         outline: none;
         padding: $modal-form-input-padding;
         width: 70%;
+        
+        &.error {
+          background-color: $modal-form-input-background-color-error;
+          color: $modal-form-input-color-error;
+        }
       }
     }
   }
@@ -122,3 +129,4 @@ body .modal-overlay {
 
 
 @import 'modals/login-form';
+@import 'modals/splash';

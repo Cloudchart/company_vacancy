@@ -1,0 +1,35 @@
+$modal-splash-width: 480px;
+
+.modal-container > .splash {
+
+  font-size: $modal-form-font-size * 1.25;
+  padding: 20px;
+  text-align: center;
+  width: $modal-splash-width;
+  
+  > header {
+    font-size: $modal-form-header-font-size;
+    font-weight: $modal-form-header-font-weight;
+  }
+  
+  > figure.cloud-chart {
+    
+    background-image: image-url('cloud-chart-logo.svg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    display: block;
+    height: 75px;
+    margin: 30px 0;
+    
+  }
+  
+  a {
+    text-decoration: none;
+  }
+  
+  button {
+    @include modal-form-button;
+  }
+  
+}

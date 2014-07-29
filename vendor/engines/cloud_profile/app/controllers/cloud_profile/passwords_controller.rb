@@ -10,21 +10,24 @@ module CloudProfile
     # Send password reset link
     #
     def create
-      email = Email.find_by!(address: params[:address])
-      @token = Token.create name: 'password-reset', data: { address: email.address }
-      ProfileMailer.password_reset(@token).deliver
-      redirect_to :login
-    rescue ActiveRecord::RecordNotFound
-      @email = Email.new
-      @email.errors.add(:address, :invalid)
-      render :new
+      email = Email.find_by(address: params[:email])
+      
+      if email.present?
+        token = Token.create(name: 'password-reset', data: { address: email.address })
+        ProfileMailer.password_reset(token).deliver
+      end
+      
+      respond_to do |format|
+        format.json { render json: { state: :ok } }
+      end
     end
     
-
+    
     # Reset password form
     #
     def reset
-      @token = Token.find(params[:token])
+      token = Token.find(params[:token]) rescue nil
+      redirect_to main_app.root_path(password_reset: token)
     end
     
 

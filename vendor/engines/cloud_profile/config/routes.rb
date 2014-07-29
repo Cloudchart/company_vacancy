@@ -6,12 +6,19 @@ CloudProfile::Engine.routes.draw do
   post  'login',  to: 'authentications#create'
   get   'logout', to: 'authentications#destroy'
   
+  
+  # Invitation
+  #
+  post 'invite', to: 'users#invite'
+  
+  
   # Registration
   #
   get   'register',           to: 'users#new',              as: :register
   post  'register',           to: 'users#create'
   get   'register/complete',  to: 'users#create_complete',  as: :register_complete
   
+
   # Social Networks / OAuth2
   #
   get 'oauth/callback',   to: 'social_networks#oauth_callback', as: 'oauth_callback'

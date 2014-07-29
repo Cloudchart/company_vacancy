@@ -7,12 +7,14 @@ module Cloudchart
     end
 
     def encode(uuid)
-      parts = uuid.split('-').join('').scan(/.{16}/).map { |n| n.to_i(16) }
+      parts = uuid.gsub('-', '').scan(/.{16}/).map { |n| n.to_i(16) }
       parts.map { |part| words(part) }.join(' ')
     end
     
     def decode(string)
-      "%s%s-%s-%s-%s-%s%s%s" % string.split(' ').each_slice(6).map { |part| '%016x' % numbers(part) }.join('').scan(/.{4}/)
+      words = string.upcase.split(' ')
+      raise ParityError unless words.length == 12
+      "%s%s-%s-%s-%s-%s%s%s" % words.each_slice(6).map { |part| '%016x' % numbers(part) }.join('').scan(/.{4}/)
     end
   
   private
