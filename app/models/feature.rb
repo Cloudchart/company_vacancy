@@ -13,8 +13,7 @@ class Feature < ActiveRecord::Base
     end
 
     edit do
-      exclude_fields :uuid
-      exclude_fields :votes_total
+      exclude_fields :uuid, :votes_total
     end
 
   end
