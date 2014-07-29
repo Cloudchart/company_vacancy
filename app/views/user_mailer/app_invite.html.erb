@@ -1,0 +1,12 @@
+<p>
+  Hello <%= @name %>,
+</p>
+
+<p>
+  You have been invited to try OrgPad. Please click the following link to begin:
+  <%= link_to cloud_profile.login_url(token_id: @token.id), cloud_profile.login_url(token_id: @token.id) %>
+</p>
+
+<p>If you have no idea what is going on, please ignore this message.</p>
+
+<%= render 'shared/mailer_signature' %>

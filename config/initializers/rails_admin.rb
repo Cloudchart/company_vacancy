@@ -29,14 +29,15 @@ RailsAdmin.config do |config|
         proc do
 
           if request.post?
-            @object = Token.new(params.require(:token).permit(data: [:name, :email]))
-            @object.name = :invite
-
+            @token = Token.new(params.require(:token).permit(data: [:name, :email]))
+            @token.name = :invite
+            
             if params[:token][:data][:name].blank? && params[:token][:data][:email].blank?
-              @object.data = nil
+              @token.data = nil
             end
 
-            if @object.save
+            if @token.save
+              UserMailer.app_invite(@token).deliver if @token.data.present?
               redirect_to index_path(:token)
             else
               render action: @action.template_name
