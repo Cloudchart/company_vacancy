@@ -3,10 +3,11 @@
 </p>
 
 <p>
-  You have been invited to try OrgPad. Please click the following link to begin:
-  <%= link_to cloud_profile.login_url(token_id: @token.id), cloud_profile.login_url(token_id: @token.id) %>
+  You are invited to CloudChart.
 </p>
 
-<p>If you have no idea what is going on, please ignore this message.</p>
+<p>
+  <%= link_to 'Please Click To Continue With Registration', main_app.root_url(token_id: @token.id) %>
+</p>
 
 <%= render 'shared/mailer_signature' %>
