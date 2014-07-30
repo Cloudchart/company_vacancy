@@ -20,9 +20,7 @@ module CloudBlueprint
     #
     def create
       chart    = Chart.includes(:company).find(params[:chart_id])
-      person   = Person.new person_params_for_create
-
-      chart.company.people << person
+      person   = chart.company.people.create! person_params_for_create
 
       respond_to do |format|
         format.json { render json: person.as_json_for_chart }
@@ -64,11 +62,11 @@ module CloudBlueprint
     
 
     def person_params_for_create
-      params.require(:person).permit(:uuid, :first_name, :last_name, :occupation)
+      params.require(:person).permit(:uuid, :full_name, :occupation)
     end
 
     def person_params_for_update
-      params.require(:person).permit(:first_name, :last_name, :occupation)
+      params.require(:person).permit(:full_name, :occupation)
     end
 
 

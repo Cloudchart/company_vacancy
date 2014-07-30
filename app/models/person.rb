@@ -37,9 +37,15 @@ class Person < ActiveRecord::Base
   def full_name
     @full_name ||= [first_name, last_name].compact.join(' ')
   end
+  
+  def full_name=(full_name)
+    parts             = full_name.split(/\s+/).select { |part| part.present? }
+    self.first_name   = parts.first
+    self.last_name    = parts.drop(1).join(' ')
+  end
 
   def as_json_for_chart
-    as_json(only: [:uuid, :first_name, :last_name, :email, :occupation])
+    as_json(only: [:uuid, :full_name, :first_name, :last_name, :email, :occupation])
   end
 
 end

@@ -51,16 +51,16 @@ UnlinkButton = (props, state, onClick) ->
 
 # Person first name
 #
-PersonFirstName = (props, state, onChange) ->
+PersonFullName = (props, state, onChange) ->
   (tag.label {},
     (tag.input {
       type:         'text'
-      name:         'first_name'
-      placeholder:  'Name'
-      className:    'blueprint first-name'
+      name:         'full_name'
+      placeholder:  'Name Surname'
+      className:    'blueprint full-name'
       autoComplete: 'off'
       autoFocus:    props.model.is_new_record()
-      value:        state.first_name
+      value:        state.full_name
       onChange:     onChange
       required:     true
     })
@@ -105,12 +105,15 @@ PersonForm = React.createClass
 
 
   getInitialState: ->
-    @props.model.attributes
+    data = _.extend({}, @props.model.attributes)
+    data.full_name = [@props.model.first_name, @props.model.last_name].filter((part) -> part).join(' ')
+    data
+    
 
 
-  onFirstNameChange: (event) ->
+  onFullNameChange: (event) ->
     @setState
-      first_name: event.target.value
+      full_name: event.target.value
   
 
   onLastNameChange: (event) ->
@@ -131,9 +134,7 @@ PersonForm = React.createClass
       (tag.section { className: 'fields' },
         (tag.div { className: 'name' },
           (cc.blueprint.react.Identity.PersonIcon(@state))
-          (PersonFirstName  @props, @state, @onFirstNameChange)
-          (tag.div { className: 'spacer' })
-          (PersonLastName   @props, @state, @onLastNameChange)
+          (PersonFullName  @props, @state, @onFullNameChange)
         )
         (PersonOccupation @props, @state, @onOccupationChange)
       )
@@ -282,6 +283,71 @@ Identity = React.createClass
         (UnlinkButton @props, @state, @onUnlink) if @props.node_uuid
         (tag.div {})
         (SubmitButton @props, @state)
+      )
+    )
+
+
+# Spacer tag
+#
+SpacerComponent = ->
+  (tag.div { className: 'spacer' })
+
+
+# Delete button
+#
+DeleteButtonComponent = (model, callback) ->
+  (tag.button {
+    type:       'button'
+    className:  'orgpad alert'
+    onClick:    callback
+  },
+    "Delete"
+    (tag.i { className: 'fa fa-times' })
+  )
+
+
+# Submit button
+#
+SubmitButtonComponent = (model, callback) ->
+  (tag.button {
+    type:       'submit'
+    className:  'orgpad'
+    onClick:    callback
+  },
+    "Create"  unless model.is_persisted()
+    "Update"  if model.is_persisted()
+    (tag.i { className: 'fa fa-check' })
+  )
+
+
+# Main Component
+#
+Component = React.createClass
+
+
+  onSubmit: (event) ->
+    event.preventDefault()
+  
+  
+  onDelete: (event) ->
+    event.preventDefault()
+
+  
+  getInitialState: ->
+    model: @props.model.attributes
+  
+  
+  render: ->
+    (tag.form {
+      onSubmit: @onSubmit
+    },
+    
+      (tag.section {
+        className: 'controls'
+      },
+        (DeleteButtonComponent @props.model, @onDelete) if @props.model.can_be_deleted()
+        (SpacerComponent null)
+        (SubmitButtonComponent @props.model, @onSubmit)
       )
     )
 

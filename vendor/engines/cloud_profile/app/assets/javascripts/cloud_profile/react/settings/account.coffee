@@ -27,18 +27,50 @@ EmailComponent = React.createClass
 #
 TokenComponent = React.createClass
 
+
+  onDeleteDone: (json) ->
+    @setState({ deleting: false })
+    @props.onDelete({ target: { value: json.verification_tokens }}) if @props.onDelete instanceof Function
+  
+  
+  onDeleteFail: (xhr) ->
+    @setState({ deleting: false })
+
+
+  onDeleteButtonClick: ->
+    
+    $.ajax
+      url:      "/profile/emails/#{@props.key}"
+      type:     "DELETE"
+      dataType: "json"
+    .done @onDeleteDone
+    .fail @onDeleteFail
+    
+    @setState({ deleting: true })
+  
+  
+  getInitialState: ->
+    deleting: false
+
+
   render: ->
     (tag.li {
       className: 'token'
     },
-      (tag.button {},
+      (tag.button {
+        disabled: @state.deleting
+      },
         "Verify"
         (tag.i { className: 'fa fa-envelope-o' })
       )
       @props.address
 
-      (tag.button {},
-        (tag.i { className: 'fa fa-times' })
+      (tag.button {
+        onClick:  @onDeleteButtonClick
+        disabled: @state.deleting
+      },
+        (tag.i { className: 'fa fa-times' }) unless @state.deleting
+        (tag.i { className: 'fa fa-spinner fa-spin' }) if @state.deleting
       )
     )
 
@@ -57,8 +89,6 @@ NewEmailComponent = React.createClass
   
   
   onCreateDone: (json) ->
-    console.log json
-
     @setState
       synchronizing:  false
       error:          false
@@ -67,8 +97,6 @@ NewEmailComponent = React.createClass
   
   
   onCreateFail: ->
-    console.log 'nok'
-
     @setState
       synchronizing:  false
       error:          true
@@ -169,6 +197,16 @@ Component = React.createClass
       TokenComponent
         key:      token_props.uuid
         address:  token_props.data.address
+        onDelete: @onTokenDelete
+  
+  
+  onTokenDelete: (event) ->
+    @setState({ tokens: event.target.value })
+  
+  
+  onNewEmailCreate: (event) ->
+    console.log 'create'
+    @setState({ tokens: event.target.value, adding: false })
   
   
   onAddCancel: ->
@@ -199,6 +237,7 @@ Component = React.createClass
 
         (NewEmailComponent {
           onCancel: @onAddCancel
+          onCreate: @onNewEmailCreate
         }) if @state.adding
 
       )

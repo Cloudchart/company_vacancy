@@ -10,7 +10,7 @@ main.blueprint article.chart > section.modal-overlay {
   
   > header {
     font-size: $blueprint-modal-header-font-size;
-    font-weight: bold;
+    font-weight: 300;
     padding: $base-unit $base-unit * 2 0;
     position: relative;
   

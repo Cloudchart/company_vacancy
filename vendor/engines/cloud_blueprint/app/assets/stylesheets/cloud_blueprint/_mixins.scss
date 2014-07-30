@@ -41,7 +41,7 @@ textarea.blueprint {
 //
 
 @mixin blueprint-button {
-  @include cloud-button;
+  @include orgpad-button;
 }
 
 a.blueprint-button,

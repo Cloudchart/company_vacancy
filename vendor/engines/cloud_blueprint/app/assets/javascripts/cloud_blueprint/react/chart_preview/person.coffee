@@ -11,9 +11,7 @@ MainComponent = React.createClass
     (tag.li {
       className: 'person'
     },
-      @props.first_name
-      " "
-      @props.last_name
+      @props.full_name
     )
 
 
