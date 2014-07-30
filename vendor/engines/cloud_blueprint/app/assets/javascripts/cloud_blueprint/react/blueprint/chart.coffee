@@ -320,7 +320,7 @@ Chart = React.createClass
     
     (tag.section {
       className:          'chart'
-      onClick:            @onClick
+      onClick:            @onClick if @props.can_be_edited
       'data-behaviour':   'droppable' if @props.can_be_edited
       'data-draggable':   'on'
     },

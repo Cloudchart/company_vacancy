@@ -5,7 +5,7 @@
   
   # Variables
   #
-  can_edit_chart = true
+  can_edit_chart = data.editable
   
   
   

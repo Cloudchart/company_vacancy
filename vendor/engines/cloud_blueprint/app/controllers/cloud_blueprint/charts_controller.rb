@@ -18,6 +18,9 @@ module CloudBlueprint
     # GET /charts/:id
     #
     def show
+      
+      pagescript_params editable: can?(:edit, @chart)
+      
       respond_to do |format|
         format.html
       end
