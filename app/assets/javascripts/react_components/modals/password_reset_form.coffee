@@ -81,10 +81,11 @@ Component = React.createClass
         (tag.label {},
           'Password',
           (tag.input {
-            type:     'password'
-            name:     'password'
-            value:    @state.password
-            onChange: @onInputChange
+            type:       'password'
+            name:       'password'
+            value:      @state.password
+            autoFocus:  true
+            onChange:   @onInputChange
           })
         )
       

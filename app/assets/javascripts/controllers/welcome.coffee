@@ -1,4 +1,9 @@
 @['welcome#index'] = (data) ->
+  
+  # Components
+  #
+  PasswordResetComponent = cc.require('react/modals/password-reset-form')
+
 
   if data.chart_id and chartPreviewMountPoint = document.querySelector('[data-react-chart-preview-mount-point]')
     ChartPreviewComponent = cc.require('blueprint/react/chart-preview')
@@ -49,6 +54,9 @@
     
       when 'invite'
         RegisterForm({ invite: token.rfc1751, email: token.data.email, full_name: token.data.full_name })
+      
+      when 'password'
+        PasswordResetComponent({ token: token.uuid })
       
     
     if component

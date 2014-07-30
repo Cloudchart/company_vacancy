@@ -1,8 +1,138 @@
+##= require ./input
+##= require ./reset_splash
 #
 #
 tag = cc.require('react/dom')
 
+InputComponent = cc.require('react/modals/input')
+
 email_re = /.+@.+/i
+
+
+# Login mixin
+#
+LoginMixin =
+  
+  
+  onLoginRequestDone: ->
+    location.reload()
+  
+  
+  onLoginRequestFail: ->
+    @setState
+      errors:
+        password: 'invalid'
+      reset: true
+  
+  
+  loginRequest: ->
+    $.ajax
+      url:        '/login'
+      type:       'POST'
+      dataType:   'json'
+      data:
+        email:      @state.email
+        password:   @state.password
+    .done @onLoginRequestDone
+    .fail @onLoginRequestFail
+
+
+# Reset password mixin
+#
+ResetPasswordMixin =
+  
+
+  onResetPasswordRequestDone: ->
+    component = cc.require('react/modals/reset-splash')
+
+    event = new CustomEvent 'modal:push',
+      detail:
+        component: (component {})
+    
+    dispatchEvent(event)
+  
+
+  resetPasswordRequest: ->
+    $.ajax
+      url:      '/profile/password/forgot'
+      type:     'POST'
+      dataType: 'json'
+      data:
+        email:  @state.email
+    .done @onResetPasswordRequestDone
+
+
+# Email
+#
+EmailInput = (value, is_error, callback) ->
+  (tag.label {},
+    'Email'
+    (InputComponent {
+      type:       'email'
+      name:       'email'
+      className:  'error' if is_error
+      autoFocus:  true
+      value:      value
+      onChange:   callback
+    })
+  )
+
+
+# Password
+#
+PasswordInput = (value, is_error, callback) ->
+  (tag.label {},
+    'Password'
+    (InputComponent {
+      type:       'password'
+      name:       'password'
+      className:  'error' if is_error
+      value:      value
+      onChange:   callback
+    })
+  )
+
+
+# Login button
+#
+LoginButton = (is_disabled, callback) ->
+  (tag.button {
+    type:       'submit'
+    className:  'login'
+    disabled:   is_disabled
+    onClick:    callback
+  },
+    'Login'
+    (tag.i { className: 'fa fa-check' })
+  )
+
+
+# Reset Button
+#
+ResetButton = (is_disabled, callback) ->
+  (tag.button {
+    type:       'button'
+    className:  'reset'
+    disabled:   is_disabled
+    onClick:    callback
+  },
+    'Reset'
+    (tag.i { className: 'fa fa-repeat' })
+  )
+
+
+# Register button
+#
+RegisterButton = (is_disabled, callback) ->
+  (tag.button {
+    type:       'submit'
+    className:  'alert register'
+    disabled:   is_disabled
+    onClick:    callback
+  },
+    'Register'
+    (tag.i { className: 'fa fa-pencil-square-o' })
+  )
 
 
 #
@@ -10,93 +140,59 @@ email_re = /.+@.+/i
 Component = React.createClass
 
 
-  isValidForLogin: ->
-    @isValidForRegister() and @state.password.length > 0
+  mixins: [
+    LoginMixin
+    ResetPasswordMixin
+  ]
 
 
-  isValidForReset: ->
-    @isValidForRegister()
+  isLoginButtonDisabled: ->
+    !email_re.test(@state.email) or @state.password.length == 0
+  
+  
+  isResetButtonDisabled: ->
+    !email_re.test(@state.email)
 
+  
+  isRegisterButtonDisabled: ->
+    !email_re.test(@state.email)
 
-  isValidForRegister: ->
-    email_re.test(@state.email)
-  
-
-  onEmailChange: (event) ->
-    @setState({ email: event.target.value })
-  
-  
-  onPasswordChange: (event) ->
-    @setState({ password: event.target.value })
-
-
-  onLoginDone: (json) ->
-    window.location.reload()
-  
-  
-  onLoginFail: (xhr) ->
-    @setState({ error: true })
-  
-  
-  onSubmit: (event) ->
-    event.preventDefault()
-    
-    $.ajax
-      url:        '/login'
-      type:       'POST'
-      dataType:   'json'
-      data:
-        email:    @state.email
-        password: @state.password
-    .done @onLoginDone
-    .fail @onLoginFail
-  
-  
-  onFocus: (event) ->
-    @setState({ error: false }) if event.target.name == 'password'
-  
   
   onLoginButtonClick: (event) ->
-    @onSubmit(event)
-
-
-  onResetDone: (json) ->
-    event = new CustomEvent 'modal:close'
-    window.dispatchEvent(event)
-
-  onResetFail: (xhr) ->
-
-
+    event.preventDefault()
+    
+    @loginRequest()
+  
+  
   onResetButtonClick: (event) ->
-    $.ajax
-      url:      '/profile/password/forgot'
-      type:     'POST'
-      dataType: 'json'
-      data:
-        email:  @state.email
-    .done @onResetDone
-    .fail @onResetFail
-
-
+    event.preventDefault()
+    
+    @resetPasswordRequest()
+  
+  
   onRegisterButtonClick: (event) ->
-    RegisterFormComponent = cc.require('react/modals/register-form')
+    event.preventDefault()
+    
+    alert 'register'
 
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: RegisterFormComponent
-          email: @state.email
 
-    window.dispatchEvent(event)
-  
-  
-  getDefaultProps: ->
-    email: ''
+  onSubmit: (event) ->
+    event.preventDefault()
+
+
+  onChange: (event) ->
+    delete @state.errors[event.target.name]
+
+    data = {} ; data[event.target.name] = event.target.value
+
+    @setState(data)
   
   
   getInitialState: ->
-    email:    @props.email
+    email:    @props.email || ''
     password: ''
-    error:    false
+    errors:   {}
+    reset:    false
 
   
   render: ->
@@ -104,77 +200,41 @@ Component = React.createClass
       className:  'login'
       onSubmit:   @onSubmit
     },
+    
+      # Header
+      #
       (tag.header {}, 'Login or Register')
-      
+
+      # Fieldset
+      # Email & Password fields
+      #
       (tag.fieldset {},
-        
+
         # Email Input
         #
-        (tag.label {},
-          'Email'
-          (tag.input {
-            type:         'text'
-            autoFocus:    @state.email.length is 0
-            autoComplete: 'off'
-            value:        @state.email
-            onChange:     @onEmailChange
-          })
-        )
+        (EmailInput @state.email, !!@state.errors['email'], @onChange)
 
         # Password Input
         #
-        (tag.label {},
-          'Password'
-          (tag.input {
-            type:         'password'
-            name:         'password'
-            className:    'error' if @state.error
-            autoFocus:    @state.email.length isnt 0
-            autoComplete: 'off'
-            value:        @state.password
-            onFocus:      @onFocus
-            onChange:     @onPasswordChange
-          })
-        )
+        (PasswordInput @state.password, !!@state.errors['password'], @onChange)
       )
       
+      # Footer
+      # Login & Reset & Register buttons
+      #
       (tag.footer {},
 
         # Login Button
         #
-        (tag.button {
-          type:       'button'
-          className:  'login'
-          onClick:    @onLoginButtonClick
-          disabled:   !@isValidForLogin()
-        },
-          'Login'
-          (tag.i { className: 'fa fa-check' })
-        )
+        (LoginButton @isLoginButtonDisabled(), @onLoginButtonClick)
 
         # Reset Button
         #
-        (tag.button {
-          type:       'button'
-          className:  'reset'
-          onClick:    @onResetButtonClick
-          disabled:   !@isValidForReset()
-        },
-          'Reset'
-          (tag.i { className: 'fa fa-repeat' })
-        ) if @state.error
+        (ResetButton @isResetButtonDisabled(), @onResetButtonClick) if @state.reset
 
         # Register Button
         #
-        (tag.button {
-          type:       'button'
-          className:  'alert register'
-          onClick:    @onRegisterButtonClick
-          disabled:   !@isValidForRegister()
-        },
-          'Register'
-          (tag.i { className: 'fa fa-pencil-square-o' })
-        )
+        (RegisterButton @isRegisterButtonDisabled(), @onRegisterButtonClick)
       )
     )
 

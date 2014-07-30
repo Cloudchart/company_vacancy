@@ -13,7 +13,7 @@ module CloudProfile
       email = Email.find_by(address: params[:email])
       
       if email.present?
-        token = Token.create(name: 'password-reset', data: { address: email.address })
+        token = Token.create(name: :password, data: { address: email.address })
         ProfileMailer.password_reset(token).deliver
       end
       
@@ -26,8 +26,8 @@ module CloudProfile
     # Request reset password
     #
     def reset
-      token = Token.find(params[:token]) rescue nil
-      redirect_to main_app.root_path(password_reset: token)
+      token = Token.where(name: :password).find(params[:token]) rescue nil
+      redirect_to main_app.root_path(token: token)
     end
     
     
@@ -63,25 +63,6 @@ module CloudProfile
     end
     
 
-    # Reset password
-    #
-    #def reset_complete
-    #  @token  = Token.find(params[:token])
-    #  @email  = Email.find_by(address: @token.data[:address])
-    #  @user   = @email.user
-    #  
-    #  @user.password_digest = nil
-    #  @user.update! params.require(:user).permit([:password, :password_confirmation])
-    #  
-    #  @token.destroy
-    #  
-    #  redirect_to login_path(email: @email.address)
-    #
-    #rescue ActiveRecord::RecordInvalid
-    #  render :reset
-    #end
-    
-    
     # Update current password
     #
     def update

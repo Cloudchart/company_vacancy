@@ -117,6 +117,10 @@ Component = React.createClass
     window.dispatchEvent(event)
   
   
+  onSubmit: (event) ->
+    event.preventDefault()
+  
+  
   getDefaultProps: ->
     email:      ''
     full_name:  ''
@@ -217,7 +221,7 @@ Component = React.createClass
       
       (tag.footer {},
         (tag.button {
-          type:       'button'
+          type:       'submit'
           className:  'invite'
           disabled:   !@isValidForInvite()
           onClick:    @onInviteButtonClick
@@ -227,7 +231,7 @@ Component = React.createClass
         )
 
         (tag.button {
-          type:       'button'
+          type:       'submit'
           className:  'alert register'
           disabled:   !@isValidForRegister()
           onClick:    @onRegisterButtonClick
