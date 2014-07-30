@@ -29,7 +29,7 @@ class Token < ActiveRecord::Base
 
       field :uuid do
         formatted_value { Cloudchart::RFC1751.encode(value) }        
-        column_width 400
+        column_width 500
         filterable false
       end
 
@@ -38,7 +38,7 @@ class Token < ActiveRecord::Base
       end
 
       field :data do
-        column_width 200
+        # column_width 200
         formatted_value { value ? [value[:full_name], value[:email]].join(' – ') : nil }
         filterable false
       end
