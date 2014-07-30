@@ -54,8 +54,8 @@ module CloudBlueprint
       chart    = Chart.find(params[:chart_id])
       vacancy  = chart.vacancies.find(params[:id])
 
-      vacancy.destroy
-      
+      vacancy.destroy unless chart.identities.where(identity_id: vacancy.to_param).size > 0      
+
       respond_to do |format|
         format.json { render json: vacancy.as_json_for_chart }
       end

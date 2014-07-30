@@ -52,7 +52,7 @@ module CloudBlueprint
       chart    = Chart.find(params[:chart_id])
       person   = chart.people.find(params[:id])
 
-      person.destroy
+      person.destroy unless chart.identities.where(identity_id: person.to_param).size > 0
       
       respond_to do |format|
         format.json { render json: person.as_json_for_chart }

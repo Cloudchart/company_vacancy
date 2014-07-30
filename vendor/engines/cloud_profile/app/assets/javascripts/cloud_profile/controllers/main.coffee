@@ -25,3 +25,18 @@
     PersonalComponent = cc.require('profile/react/settings/personal')
     
     React.renderComponent PersonalComponent(data.personal), personalComponentMountPoint
+
+  
+  # Account /Emails
+  #
+  if accountMountPoint = document.querySelector('[data-react-mount-point="account"]')
+    AccountComponent = cc.require('profile/react/settings/account')
+    
+    React.renderComponent(
+      (AccountComponent {
+        emails:   data.personal.emails
+        tokens:   data.personal.verification_tokens
+        readOnly: false
+      })
+      accountMountPoint
+    )

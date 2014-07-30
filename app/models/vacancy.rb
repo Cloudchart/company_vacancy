@@ -19,6 +19,9 @@ class Vacancy < ActiveRecord::Base
   has_many :responses, class_name: 'VacancyResponse'
   has_many :responded_users, through: :responses, source: :user
   has_and_belongs_to_many :reviewers, class_name: 'Person', join_table: 'vacancy_reviewers'
+  
+  has_many :node_identities, as: :identity, dependent: :destroy, class_name: CloudBlueprint::Identity
+  
   # has_paper_trail
 
   validates :name, presence: true

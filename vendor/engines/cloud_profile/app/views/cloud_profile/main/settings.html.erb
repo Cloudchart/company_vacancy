@@ -1,5 +1,6 @@
 <%- class_for_main 'cloud-profile' -%>
 <%- cloud_profile_nav_current_tab :settings -%>
+
 <%= render 'shared/nav' %>
 
 <article class="profile">
@@ -18,7 +19,7 @@
       <%= t '.account', default: 'Account' %>
     </header>
     <div data-react-mount-point="account">
-      Account goes here
+      <i class="fa fa-spinner fa-spin"></i>
     </div>
   </section>
 
@@ -50,70 +51,5 @@
 
     </section>
   <% end %>
-  
-  <!--
-  <section class="profile-name">
-    <h1>
-      <%= t '.name', default: 'Personal' %>
-    </h1>
-
-    <%= form_for current_user, html: { class: nil, id: nil } do |form| %>
-      <%= form.text_field :first_name, id: nil, size: 10, placeholder: t('.first_name_placeholder', default: 'First name') %>
-      <%= form.text_field :last_name, id: nil, size: 10, placeholder: t('.last_name_placeholder', default: 'Last name') %>
-    <%- end -%>
-
-  </section>
-  
-
-  <section class="profile-emails">
-    <h1>
-      <%= t '.emails', default: 'Emails' %>
-    </h1>
-    
-    <p class="emails">
-      <%- emails = current_user.emails.to_a -%>
-      
-      <%= link_to :emails do %>
-        <%= emails.first.address %>
-        <%- if emails.size > 1 -%>
-          <span>+ <%= pluralize (emails.size - 1), 'other' %></span>
-        <%- end -%>
-      <%- end -%>
-    </p>
-    
-    <p class="password">
-      <%= link_to t('.change_password', default: 'Change password for email login'), :password %>
-    </p>
-  
-  </section>  
-  
-  <section class="social-networks">
-
-    <h1>
-      <%= t '.social_networks', default: 'Social Networks' %>
-    </h1>
-  
-    <%- CloudOAuth.providers.each do |name, provider| -%>
-      <%- social_network = @social_networks.find { |sn| sn.name == name.to_s } -%>
-      <p>
-        <%= link_to oauth_provider_path(name, return_to: attach_social_network_path), class: :plaque do -%>
-          <%= font_awesome t("#{name}.icon", scope: :social_network) + '-square' %>
-          <%= t "#{name}.name", scope: :social_network %>
-        <%- end -%>
-        <%- if social_network.present? -%>
-          <%= social_network.first_name %>
-          <strong>
-            <%= social_network.last_name %>
-          </strong>
-          
-          <%= link_to font_awesome("eye#{ social_network.is_visible? ? '' : '-slash'}"), toggle_social_network_path(social_network), class: :visibility, method: :put %>
-          <%= link_to font_awesome('times'), detach_social_network_path(social_network), class: :destroy, method: :delete %>
-        <%- end -%>
-      </p>
-    <%- end -%>
-
-  </section>
-
-  -->
 
 </article>

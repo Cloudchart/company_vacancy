@@ -6,8 +6,30 @@ module CloudProfile
 
     before_action :require_authenticated_user!
 
-    
+
     def create
+      email = Email.new(params.permit(:address))
+      
+      if email.valid?
+        
+        token = current_user.tokens.create name: 'email_verification', data: { address: email.address }
+        ProfileMailer.verification_email(token).deliver
+        
+        respond_to do |format|
+          format.json { render json: current_user, serializer: PersonalSerializer, only: :verification_tokens, root: false }
+        end
+        
+      else
+        
+        respond_to do |format|
+          format.json { render json: :nok, state: 412 }
+        end
+        
+      end
+    end
+
+    
+    def _create_
       @email = Email.new params.require(:email).permit(:address)
       if @email.valid?
         @token = current_user.tokens.create! name: 'email-verification', data: { address: @email.address }
