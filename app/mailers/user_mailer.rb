@@ -17,8 +17,14 @@ class UserMailer < ActionMailer::Base
 
   def app_invite(token)
     @token = token
-    @name = @token.data['name']
-    email = @token.data['email']
+    @name = @token.data[:full_name]
+    email = @token.data[:email]
+    mail to: email
+  end
+
+  def thanks_for_invite_request(token)
+    @name = token.data[:full_name]
+    email = token.data[:email]
     mail to: email
   end
 

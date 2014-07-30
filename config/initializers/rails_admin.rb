@@ -18,27 +18,34 @@ RailsAdmin.config do |config|
     # custom
     # 
     collection :invite do
-      link_icon 'icon-envelope'
       only ['Token']
+      link_icon 'icon-envelope'
       http_methods { [:get, :post] }
 
       controller do
         proc do
 
           if request.post?
-            @object = Token.new(params.require(:token).permit(data: [:name, :email]))
-            @object.name = :invite
-            
-            if params[:token][:data][:name].blank? && params[:token][:data][:email].blank?
-              @object.data = nil
-            end
+            full_name = params[:full_name]
+            email = params[:email]
 
-            if @object.save
-              UserMailer.app_invite(@object).deliver if @object.data.present?
-              redirect_to index_path(:token), notice: 'Invite has been created'
+            if full_name.blank? && email.present? || full_name.present? && email.blank?
+              redirect_to :back, alert: 'Full name and email must be filled both or left blank'
+            elsif email.present? && CloudProfile::Email.find_by(address: email)
+              redirect_to :back, alert: 'We already have user with this email address in database'
             else
-              render action: @action.template_name
+              @object = Token.new(
+                name: :invite,
+                data: { full_name: full_name, email: email }
+              )
+              @object.data = nil if full_name.blank? && email.blank?
+              @object.save
+
+              UserMailer.app_invite(@object).deliver if @object.data.present?
+
+              redirect_to index_path(:token), notice: 'Invite has been created'
             end
+            
           end
 
         end
@@ -46,8 +53,8 @@ RailsAdmin.config do |config|
     end
 
     member :accept_invite do
-      link_icon 'icon-ok'
       only ['Token']
+      link_icon 'icon-ok'
       visible { bindings[:object].name == 'request_invite' }
 
       controller do

@@ -16,8 +16,9 @@ module CloudProfile
       
       if user.valid?
         Token.transaction do
-          tokens = Token.where(name: 'request-invite').select { |token| token.data && token.data[:email] == user.email }.each(&:destroy)
-          Token.create name: 'request-invite', data: { full_name: user.full_name, email: user.email }
+          tokens = Token.where(name: 'request_invite').select { |token| token.data && token.data[:email] == user.email }.each(&:destroy)
+          token = Token.create name: 'request_invite', data: { full_name: user.full_name, email: user.email }
+          UserMailer.thanks_for_invite_request(token).deliver
         end
         
         respond_to do |format|
