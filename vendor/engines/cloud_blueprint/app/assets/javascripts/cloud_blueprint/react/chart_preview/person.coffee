@@ -11,7 +11,7 @@ MainComponent = React.createClass
     (tag.li {
       className: 'person'
     },
-      @props.full_name
+      [@props.first_name, @props.last_name].filter((part) -> part).join(' ')
     )
 
 
