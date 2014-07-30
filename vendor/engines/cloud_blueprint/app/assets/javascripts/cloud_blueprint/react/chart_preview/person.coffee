@@ -13,7 +13,7 @@ MainComponent = React.createClass
     },
       @props.first_name
       " "
-      (tag.strong {}, @props.last_name)
+      @props.last_name
     )
 
 

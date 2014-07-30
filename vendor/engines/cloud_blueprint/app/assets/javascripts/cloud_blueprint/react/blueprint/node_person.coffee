@@ -13,7 +13,7 @@ NodePerson = React.createClass
     (tag.li { className: 'person' },
       @props.model.first_name,
       " ",
-      (tag.strong {}, @props.model.last_name)
+      @props.model.last_name
     )
 
 #
