@@ -80,7 +80,7 @@ module CloudBlueprint
     # POST /charts
     #
     def create
-      @companies  = current_user.companies.where(is_empty: false)
+      @companies  = current_user.companies
       
       redirect_to new_chart_path and return unless @companies.map(&:to_param).include?(params[:chart][:company_id])
       

@@ -76,7 +76,6 @@ private
   end
 
   def set_collection
-    # @companies = Company.includes(:logo, :industries, :people, :vacancies).where(is_empty: false).order(:name)
     @companies = Company.search(params)
   end
 

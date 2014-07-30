@@ -73,15 +73,14 @@ class Company < ActiveRecord::Base
     end
 
     def find_or_create_placeholder_for(user)
-      company = user.companies.unscoped.find_by(is_empty: true) || begin
-        company = Company.new(is_empty: true, name: 'Default Company')
-        company.associate_with_person(user)
-        company.should_build_objects!
-        company.save!
-        Activity.track_activity(user, :create, company)
-        company
-      end
+      company = Company.new(name: 'Default Company')
+      company.associate_with_person(user)
+      company.should_build_objects!
+      company.save!
+      Activity.track_activity(user, :create, company)
+      company
     end
+    
   end # of class methods
 
   def to_indexed_json

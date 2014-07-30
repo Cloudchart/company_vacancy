@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140724142442) do
+ActiveRecord::Schema.define(version: 20140730094129) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -130,7 +130,6 @@ ActiveRecord::Schema.define(version: 20140724142442) do
   create_table "companies", primary_key: "uuid", force: true do |t|
     t.string   "name"
     t.string   "country"
-    t.boolean  "is_empty",       default: true
     t.text     "description"
     t.text     "sections"
     t.datetime "created_at"
