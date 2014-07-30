@@ -107,7 +107,7 @@ MainComponent = React.createClass
       )
               
       (tag.button { className: 'orgpad'},
-        'Start using OrgPad'
+        'Start using CloudChart'
         (tag.i { className: 'fa fa-magic' })
       )
       
