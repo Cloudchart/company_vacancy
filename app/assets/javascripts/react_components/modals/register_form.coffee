@@ -6,7 +6,7 @@ tag = cc.require('react/dom')
 
 SplashComponent = cc.require('react/modals/invite-splash')
 
-email_re = /.+@.+/i
+email_re = /@/i
 
 
 #
@@ -235,6 +235,7 @@ Component = React.createClass
       )
       
     )
+
 
 #
 #

@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(version: 20140730141416) do
     t.datetime "updated_at"
     t.date     "established_on"
     t.string   "logotype_uid"
-    t.boolean  "is_listed",      default: false
+    t.boolean  "is_listed",      default: false, null: false
     t.boolean  "is_public",      default: false
   end
 

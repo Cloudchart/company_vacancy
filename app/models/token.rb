@@ -6,7 +6,18 @@ class Token < ActiveRecord::Base
   belongs_to :owner, polymorphic: true
 
   scope :invites, -> { where(arel_table[:name].eq(:invite).or(arel_table[:name].eq(:request_invite))) }
+  
+  
+  
+  class << self
+    
+    def find_by_rfc1751(param)
+      find(Cloudchart::RFC1751::decode(param.upcase.gsub(/[^A-Z]+/, ' '))) rescue nil
+    end
 
+  end
+  
+  
   rails_admin do
     label 'Invite'
     label_plural 'Invites'
