@@ -54,14 +54,21 @@ module CloudProfile
       if user.valid?
         
         if user.invite.data && user.invite.data[:email] == user.email
+          # Register and login
+
           user.save!
           user.invite.destroy
           warden.set_user(user, scope: :user)
+
           respond_to do |format|
             format.json { render json: { state: :login }}
           end
         else
-          # activate
+          # Send activation email
+
+          token = Token.create(name: 'registration', data: { full_name: user.full_name, address: user.email, password_digest: user.password_digest })
+          ProfileMailer.activation_email(token).deliver
+
           respond_to do |format|
             format.json { render json: { state: :activation }}
           end
@@ -105,6 +112,21 @@ module CloudProfile
     # Activation
     #
     def activation
+      token = Token.find(params[:token])
+      email = Email.new(address: token.data[:address])
+      raise ActiveRecord::RecordNotFound if email.invalid?
+      
+      user = User.new(full_name: token.data[:full_name] || '', password_digest: token.data[:password_digest])
+      user.emails << email
+      user.save!
+      token.destroy
+      warden.set_user(user, scope: :user)
+
+      redirect_to main_app.root_path
+    end
+    
+    
+    def activation_
       @token = Token.find(params[:token])
       @email = Email.new(address: @token.data[:address])
       
