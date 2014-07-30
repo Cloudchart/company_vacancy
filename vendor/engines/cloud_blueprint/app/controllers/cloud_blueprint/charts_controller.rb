@@ -98,9 +98,11 @@ module CloudBlueprint
     # PUT /charts/:id
     #
     def update
+      @chart.update! params.require(:chart).permit(:title)
+      
       respond_to do |format|
         format.json do
-          render json: @chart, only: params[:only]
+          render json: @chart, only: [:uuid, :title]
         end
       end
     end
