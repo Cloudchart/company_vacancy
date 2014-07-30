@@ -28,15 +28,17 @@
 
   # Register form
   #
-  if (inviteButton = document.querySelector('[data-behaviour~="invite-button"]')) and (RegisterForm  = cc.require('react/modals/register-form'))
-    inviteButton.addEventListener 'click', (event) ->
-      event.preventDefault()
-      
-      event = new CustomEvent 'modal:push',
-        detail:
-          component: RegisterForm({})
+  if (inviteButton = document.querySelectorAll('[data-behaviour~="invite-button"]')) and (RegisterForm  = cc.require('react/modals/register-form'))
+    _.each inviteButton, (root) ->
+
+      root.addEventListener 'click', (event) ->
+        event.preventDefault()
         
-      window.dispatchEvent(event)
+        event = new CustomEvent 'modal:push',
+          detail:
+            component: RegisterForm({})
+          
+        window.dispatchEvent(event)
 
 
   # Password reset

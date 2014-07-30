@@ -16,7 +16,6 @@ PATH
   remote: vendor/engines/cloud_blueprint
   specs:
     cloud_blueprint (0.0.1)
-      rails (~> 4.1.0)
 
 PATH
   remote: vendor/engines/cloud_profile

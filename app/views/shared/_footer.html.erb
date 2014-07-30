@@ -1,13 +1,13 @@
 <ul>
   <li>
-    <%= link_to t('.about_us', default: 'About us'), '' %>
+    <%= link_to t('.about_us', default: 'About us'), '#' %>
   </li>
 
   <li>
-    <%= link_to t('.support', default: 'Support'), '' %>
+    <%= mail_to ENV['DEFAULT_SUPPORT'], t('.support', default: 'Support') %>
   </li>
   
   <li>
-    <%= link_to t('.contacts', default: 'Contacts'), '' %>
+    <%= mail_to ENV['DEFAULT_REPLY_TO'], t('.contacts', default: 'Contacts') %>
   </li>
 </ul>

@@ -1,5 +1,6 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy]
+  # skip_before_action :require_authenticated_user!, if: -> { false }, only: :show
   before_action :set_collection, only: [:index, :search]
 
   authorize_resource
@@ -35,7 +36,6 @@ class CompaniesController < ApplicationController
     @company.associate_with_person(current_user)
     @company.should_build_objects!
     @company.save!
-    Activity.track_activity(current_user, :create, @company)
     redirect_to @company
   end
   

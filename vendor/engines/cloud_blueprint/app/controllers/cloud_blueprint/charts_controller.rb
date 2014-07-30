@@ -5,6 +5,7 @@ module CloudBlueprint
     
     skip_before_action :require_authenticated_user!, only: :preview, if: -> { request.format.json? }
     before_action :set_chart, only: [:show, :pull, :update]
+    # skip_before_action :require_authenticated_user!, only: [:show, :pull], if: -> { @chart.is_public? }
     authorize_resource
     
     
