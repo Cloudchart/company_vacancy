@@ -39,7 +39,7 @@ class Token < ActiveRecord::Base
 
       field :data do
         column_width 200
-        formatted_value { value ? [value[:full_name], value[:email]].join(' ') : nil }
+        formatted_value { value ? [value[:full_name], value[:email]].join(' – ') : nil }
         filterable false
       end
 
