@@ -2,8 +2,8 @@ en:
   cloud_profile:
     profile_mailer:
       activation_email:
-        subject: "Invitation to OrgPad"
+        subject: "Invitation to CloudChart"
       password_reset:
-        subject: "Reset your OrgPad password"
+        subject: "Reset your CloudChart password"
       verification_email:
-        subject: "Verify your OrgPad email"
+        subject: "Verify your CloudChart email"

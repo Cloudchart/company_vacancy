@@ -1,4 +1,8 @@
 en:
   user_mailer:
-    send_company_invite:
+    company_invite:
       subject: "Invitation from company"
+    vacancy_response:
+      subject: "Vacancy response"
+    app_invite:
+      subject: "Invitation to CloudChart"

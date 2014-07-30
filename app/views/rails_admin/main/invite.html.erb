@@ -1,0 +1,21 @@
+<%= form_for @abstract_model.model.new, url: invite_path, html: { multipart: true, class: 'form-horizontal denser', data: { title: @page_name } } do |f| %>
+  
+  <fieldset>
+    <div class="control-group">
+      <%= f.label :data, 'Name', class: 'control-label' %>
+      <div class="controls">
+        <%= f.text_field :data, name: 'token[data][name]' %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :data, 'Email', class: 'control-label' %>
+      <div class="controls">
+        <%= f.email_field :data, name: 'token[data][email]' %>
+      </div>
+    </div>
+  </fieldset>  
+
+  <%= render 'submit_buttons' %>
+
+<% end %>

@@ -1,0 +1,11 @@
+en:
+  admin:
+    actions:
+      invite:
+        menu: "New invite"
+        breadcrumb: "New invite"
+        title: "New invite"
+      accept_invite:
+        menu: "Accept invite"
+        breadcrumb: "Accept invite"
+        title: "Accept invite"

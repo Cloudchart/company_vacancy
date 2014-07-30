@@ -120,7 +120,7 @@ private
       token = Token.create!(name: :company_invite, data: person_id, owner: email.try(:user))
     end
 
-    UserMailer.send_company_invite(@person.company, email || params[:email], token).deliver
+    UserMailer.company_invite(@person.company, email || params[:email], token).deliver
   end
 
 end

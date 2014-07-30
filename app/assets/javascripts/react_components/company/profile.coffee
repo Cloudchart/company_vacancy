@@ -200,7 +200,7 @@ MainComponent = React.createClass
           onChange:   @onCountryChange
         })
 
-        (tag.p {}, 'To become listed on the OrgPad company search, please fill out your industry and your region.')
+        (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
 
         (tag.footer {},
           'Your company is'

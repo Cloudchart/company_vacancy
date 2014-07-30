@@ -42,7 +42,7 @@ class VacancyResponsesController < ApplicationController
 
     if @vacancy_response.save
       Activity.track_activity(current_user, 'respond', @vacancy)
-      UserMailer.send_vacancy_response(@vacancy, @vacancy.company.owner.emails.first).deliver
+      UserMailer.vacancy_response(@vacancy, @vacancy.company.owner.emails.first).deliver
       redirect_to @vacancy, notice: t('messages.vacancies.respond.success')
     else
       render :new
