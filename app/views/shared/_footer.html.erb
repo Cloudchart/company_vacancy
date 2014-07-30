@@ -1,6 +1,6 @@
 <ul>
   <li>
-    <%= link_to t('.about_us', default: 'About us'), '#' %>
+    <%= link_to t('.about_us', default: 'About us'), main_app.company_path(ENV['ABOUT_US_COMPANY_ID']) %>
   </li>
 
   <li>

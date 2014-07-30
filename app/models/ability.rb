@@ -28,6 +28,10 @@ class Ability
     can :access_events, Company
     can :preview, CloudBlueprint::Chart
 
+    can [:read, :pull], CloudBlueprint::Chart do |chart|
+      chart.is_public?
+    end
+
     can :read, Vacancy do |vacancy|
       vacancy.settings.accessible_to == 'everyone'
     end

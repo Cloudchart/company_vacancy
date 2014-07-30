@@ -1,6 +1,12 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy]
-  # skip_before_action :require_authenticated_user!, if: -> { false }, only: :show
+
+  # -- https://github.com/rails/rails/issues/9703
+  # 
+  skip_before_action :require_authenticated_user!, only: :show
+  before_action :require_authenticated_user!, only: :show, unless: -> { @company.is_public? }
+  # --
+
   before_action :set_collection, only: [:index, :search]
 
   authorize_resource

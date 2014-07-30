@@ -3,11 +3,16 @@ require_dependency "cloud_blueprint/application_controller"
 module CloudBlueprint
   class ChartsController < ApplicationController
     
-    skip_before_action :require_authenticated_user!, only: :preview, if: -> { request.format.json? }
+    skip_before_action :require_authenticated_user!, only: :preview
     before_action :set_chart, only: [:show, :pull, :update]
-    # skip_before_action :require_authenticated_user!, only: [:show, :pull], if: -> { @chart.is_public? }
+
+    # -- https://github.com/rails/rails/issues/9703
+    # 
+    skip_before_action :require_authenticated_user!, only: [:show, :pull]
+    before_action :require_authenticated_user!, only: [:show, :pull], unless: -> { @chart.is_public? }
+    # --
+
     authorize_resource
-    
     
     # Render chart
     # GET /charts/:id
@@ -22,11 +27,11 @@ module CloudBlueprint
     # Load chart preview
     #
     def preview
-      chart = Chart.includes(nodes: { identities: :identity }).find(params[:id])
+      @chart = Chart.includes(nodes: { identities: :identity }).find(params[:id])
       
       respond_to do |format|
         format.json {
-          render json: chart, include: {
+          render json: @chart, include: {
             nodes: { 
               include: {
                 identities: {
