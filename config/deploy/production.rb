@@ -1,5 +1,10 @@
-set :deploy_to, '/home/rails/apps/cloudchart'
-set :branch, 'master'
+set :user, 'rails'
+
+set :deploy_to, '/home/rails/apps/cloudchart_mvp'
+set :branch, 'develop'
+
+set :puma_conf, "#{shared_path}/config/puma.rb"
+set :rbenv_ruby, '2.1.1'
 
 # Simple Role Syntax
 # ==================
@@ -19,6 +24,7 @@ set :branch, 'master'
 # used to set extended properties on the server.
 
 # server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value
+server '5.9.115.242', user: fetch(:user), roles: %w{web app db}
 
 
 # Custom SSH Options
