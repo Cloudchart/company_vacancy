@@ -7,7 +7,7 @@
 </p>
 
 <p>
-  <%= link_to 'Please Click To Continue With Registration', main_app.root_url(token_id: @token.id) %>
+  <%= link_to 'Please Click To Continue With Registration', main_app.root_url(token: @token.id) %>
 </p>
 
 <%= render 'shared/mailer_signature' %>
