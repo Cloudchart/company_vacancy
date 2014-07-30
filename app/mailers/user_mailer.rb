@@ -16,9 +16,9 @@ class UserMailer < ActionMailer::Base
   end
 
   def app_invite(token)
-    @token = token
-    @name = @token.data[:full_name]
-    email = @token.data[:email]
+    @token = Cloudchart::RFC1751.encode(token.id).downcase.gsub(/ /, '-')
+    @name = token.data[:full_name]
+    email = token.data[:email]
     mail to: email
   end
 
