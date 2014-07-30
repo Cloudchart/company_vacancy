@@ -4,7 +4,11 @@ module CloudProfile
   class MainController < ApplicationController
 
     before_action :handle_company_invite_token, only: :settings, if: 'params[:token_id].present?'
+
+    # TODO: use cancan instead
     before_action :require_authenticated_user!
+
+    before_action :create_default_company, only: :companies, if: 'current_user.companies.blank?'
     
     def companies
       @companies = current_user.companies.includes(:industries, :people, :vacancies, :favorites, :charts).order('favorites.created_at DESC')
@@ -42,6 +46,10 @@ module CloudProfile
       end
 
       redirect_to cloud_profile.login_path unless current_user
+    end
+
+    def create_default_company
+      redirect_to main_app.new_company_path
     end
 
   end

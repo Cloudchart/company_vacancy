@@ -31,7 +31,11 @@ class CompaniesController < ApplicationController
 
   # GET /companies/new
   def new
-    @company = Company.find_or_create_placeholder_for(current_user)
+    @company = Company.new(name: 'Default Company')
+    @company.associate_with_person(current_user)
+    @company.should_build_objects!
+    @company.save!
+    Activity.track_activity(current_user, :create, @company)
     redirect_to @company
   end
   
