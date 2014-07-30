@@ -7,6 +7,9 @@ calculateBounds = (descriptors) ->
     bottom:   descriptors.reduce ((memo, descriptor) -> Math.max(memo, descriptor.y + descriptor.height / 2)), 0
     left:     descriptors.reduce ((memo, descriptor) -> Math.min(memo, descriptor.x - descriptor.width  / 2)), 0
   
+  roots = descriptors.filter((descriptor) -> !descriptor.parent_id).map((descriptor) -> descriptor.x)
+  
+  bounds.axis   = (Math.min(roots...) + Math.max(roots)) / 2
   bounds.width  = bounds.right  - bounds.left
   bounds.height = bounds.bottom - bounds.top
   

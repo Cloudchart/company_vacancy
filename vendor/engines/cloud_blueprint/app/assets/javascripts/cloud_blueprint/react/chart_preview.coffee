@@ -43,10 +43,6 @@ MainComponent = React.createClass
     .fail @onLoadFail
   
   
-  centerAtRoot: ->
-
-  
-  
   calculateLayout: ->
     nodesContainer  = @refs['nodes-container']
     linksContainer  = @refs['links-container']
@@ -70,7 +66,7 @@ MainComponent = React.createClass
     xOffset   = - width / layout.bounds.width * layout.bounds.left
     yOffset   = @props.vertical_padding
     
-    left      = 0
+    left      = Math.max(Math.min(0, nodeBounds.width / 2 - xOffset * @props.scale - hBorders / 2), nodeBounds.width * @props.scale - width)
     top       = 0
     
     nodesContainerNode.style.width  = width   + 'px'
@@ -102,8 +98,6 @@ MainComponent = React.createClass
 
     @setState
       should_recalculate_layout:  false
-    
-    @centerAtRoot()
   
   
   onResize: (event) ->
