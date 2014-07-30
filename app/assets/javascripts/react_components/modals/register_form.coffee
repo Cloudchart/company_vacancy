@@ -58,7 +58,10 @@ Component = React.createClass
   
   
   onInviteFail: (xhr) ->
-    console.log xhr.responseJSON
+    errors = xhr.responseJSON.errors
+    errors.splice(errors.indexOf('emails'), 1, 'email') if errors.indexOf('emails') > - 1
+    @setState
+      errors: errors
   
   
   onInviteButtonClick: (event) ->
