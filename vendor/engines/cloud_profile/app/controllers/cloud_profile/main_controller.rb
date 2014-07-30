@@ -11,11 +11,13 @@ module CloudProfile
     before_action :create_default_company, only: :companies, if: 'current_user.companies.blank?'
     
     def companies
-      @companies = current_user.companies.includes(:industries, :people, :vacancies, :favorites, :charts).order('favorites.created_at DESC')
+      @companies = current_user.companies.includes(:industries, :people, :vacancies, :favorites, :charts)
+      @companies = order_by_updated_at_or_favorites(@companies)
     end
 
     def vacancies
-      @companies = current_user.companies.joins(:vacancies).includes(:favorites).order('favorites.created_at DESC')
+      @companies = current_user.companies.includes(:vacancies, :favorites)
+      @companies = order_by_updated_at_or_favorites(@companies)
     end
 
     def activities
@@ -50,6 +52,14 @@ module CloudProfile
 
     def create_default_company
       redirect_to main_app.new_company_path
+    end
+
+    def order_by_updated_at_or_favorites(collection)
+      if collection.joins(:favorites).any?
+        collection.order('favorites.created_at DESC')
+      else
+        collection.order(updated_at: :desc)
+      end      
     end
 
   end
