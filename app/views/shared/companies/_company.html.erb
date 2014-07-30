@@ -30,8 +30,12 @@
 
         <li class="spacer"></li>
 
+        <li class="country">
+          <%= company.country_name %>
+        </li>
+        
         <li class="people-size">
-          <%= link_to main_app.company_people_path(company) do %>
+          <%= link_to '#' do %>
             <% # .size returns invalid number because of current_user.companies through people %>
             <% # counter cache is needed in the future %>
             <%= rendered_from == :cloud_profile ? company.people.count : company.people.size %>
@@ -40,61 +44,60 @@
         </li>
 
         <li class="vacancies-size">
-          <%= link_to rendered_from == :cloud_profile ? cloud_profile.vacancies_path : main_app.company_vacancies_path(company) do %>
+          <%= link_to rendered_from == :cloud_profile ? '#' : '#' do %>
             <%= vacancies.size %>
             <%= font_awesome('briefcase') %>
           <% end %>
         </li>
 
-        <li class="country">
-          <%= company.country %>
-        </li>
-        
-        <li class="established-on">
-          <%= company.established_on.try(:year) %>
-        </li>
-
-        <% if current_user && rendered_from != :cloud_profile %>
+        <!-- 
+        <%# if current_user && rendered_from != :cloud_profile %>
           <li class="proximity">
-            <div class="frame-<% proximity(company).index %>"></div>
+            <div class="frame-<%# proximity(company).index %>"></div>
           </li>
-        <% end %>
+        <%# end %>
+        <li class="established-on">
+          <%# company.established_on.try(:year) %>
+        </li>
 
         <li>
-          <%= link_to font_awesome('chevron-down'), nil, class: 'toggle-elements' %>
+          <%# link_to font_awesome('chevron-down'), nil, class: 'toggle-elements' %>
         </li>
+        -->
       </ul>
     </div>
 
-    <% unless rendered_from == :cloud_profile %>
+    <!--
+    <%# unless rendered_from == :cloud_profile %>
 
       <div class="additional-info">
         <ul>
-          <% if current_user %>
+          <%# if current_user %>
             <li>
               <strong>Proximity:</strong>
               <%= proximity(company).message %>
             </li>
-          <% end %>
+          <%# end %>
 
           <%# how to display logo? %>
           <%# link_to display_logo(company), main_app.company_path(company) if display_logo(company) %>
 
           <%# TODO: design needed %>
-           <% if can?(:manage, Subscription) && cannot?(:update, company) %>
+           <%# if can?(:manage, Subscription) && cannot?(:update, company) %>
             <li style="display: none;">
               <strong>Subscription:</strong>
-              <% unless subscribed_to_company?(company) %>
-                <%= render 'subscriptions/form', subscription: company.subscriptions.build %>
-              <% else %>
-                <%= link_to 'Unsubscribe', subscription_path(company.subscriptions.find_by(user_id: current_user.id)), method: :delete, data: { confirm: 'Are you sure?' } %>
-              <% end %>
+              <%# unless subscribed_to_company?(company) %>
+                <%# render 'subscriptions/form', subscription: company.subscriptions.build %>
+              <%# else %>
+                <%# link_to 'Unsubscribe', subscription_path(company.subscriptions.find_by(user_id: current_user.id)), method: :delete, data: { confirm: 'Are you sure?' } %>
+              <%# end %>
             </li>
-          <% end %>
+          <%# end %>
         </ul>
       </div>
 
-    <% end %>
+    <%# end %>
+    -->
 
   </header>
 
@@ -128,7 +131,7 @@
     <div class="vacancies">
       <ul>
         <% vacancies.each do |vacancy| %>
-          <li><%= link_to vacancy.name, main_app.vacancy_path(vacancy) %></li>
+          <li><%= link_to vacancy.name, '#' %></li>
         <% end %>
       </ul>
     </div>
