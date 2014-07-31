@@ -3,8 +3,9 @@ class CompaniesController < ApplicationController
 
   # -- https://github.com/rails/rails/issues/9703
   # 
-  skip_before_action :require_authenticated_user!, only: :show
+  skip_before_action :require_authenticated_user!
   before_action :require_authenticated_user!, only: :show, unless: -> { @company.is_public? }
+  before_action :require_authenticated_user!, except: :show
   # --
 
   before_action :set_collection, only: [:index, :search]

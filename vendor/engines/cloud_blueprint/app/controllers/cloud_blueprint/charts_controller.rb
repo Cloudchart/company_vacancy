@@ -1,15 +1,14 @@
 require_dependency "cloud_blueprint/application_controller"
 
 module CloudBlueprint
-  class ChartsController < ApplicationController
-    
-    skip_before_action :require_authenticated_user!, only: :preview
+  class ChartsController < ApplicationController    
     before_action :set_chart, only: [:show, :pull, :update]
 
     # -- https://github.com/rails/rails/issues/9703
     # 
-    skip_before_action :require_authenticated_user!, only: [:show, :pull]
+    skip_before_action :require_authenticated_user!
     before_action :require_authenticated_user!, only: [:show, :pull], unless: -> { @chart.is_public? }
+    before_action :require_authenticated_user!, except: [:show, :pull, :preview]
     # --
 
     authorize_resource
