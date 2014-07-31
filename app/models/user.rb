@@ -31,11 +31,18 @@ class User < ActiveRecord::Base
   rails_admin do
 
     list do
-      exclude_fields :password_digest
-    end
+      include_fields :first_name, :is_admin, :companies, :created_at
+      sort_by :created_at
 
-    edit do
-      include_fields :is_admin
+      field :first_name do
+        label 'Full name'
+        formatted_value { bindings[:view].mail_to bindings[:object].email, bindings[:object].full_name }
+      end
+
+      field :companies do
+        pretty_value { value.map { |company| bindings[:view].link_to(company.name, bindings[:view].main_app.company_path(company)) }.join(', ').html_safe }
+      end
+
     end
 
   end

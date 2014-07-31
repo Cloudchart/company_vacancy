@@ -7,8 +7,6 @@ class Token < ActiveRecord::Base
 
   scope :invites, -> { where(arel_table[:name].eq(:invite).or(arel_table[:name].eq(:request_invite))) }
   
-  
-  
   class << self
     
     def find_by_rfc1751(param)
@@ -16,7 +14,6 @@ class Token < ActiveRecord::Base
     end
 
   end
-  
   
   rails_admin do
     label 'Invite'

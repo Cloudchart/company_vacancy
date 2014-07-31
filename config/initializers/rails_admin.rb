@@ -10,6 +10,10 @@ RailsAdmin.config do |config|
   config.authorize_with :cancan
   config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail >= 3.0.0
 
+  config.model 'Company' do
+    visible false
+  end  
+
   # https://github.com/sferik/rails_admin/wiki/Actions
   config.actions do
     dashboard # mandatory
@@ -79,27 +83,27 @@ RailsAdmin.config do |config|
     # default
     # 
     new do
-      except ['Company', 'User', 'Token']
+      except ['User', 'Token']
     end
     export do
       except ['Token']
     end
     bulk_delete
     show do
-      except ['Industry', 'Token']
+      except ['User', 'Industry', 'Token']
     end
     edit do
-      except ['Company', 'Token']
+      except ['User', 'Token']
     end
     delete
     show_in_app do
-      except ['Token']
+      except ['User', 'Token']
     end
     history_index do
-      except ['Industry', 'Token']
+      except ['User', 'Industry', 'Token']
     end
     history_show do
-      except ['Industry', 'Token']
+      except ['User', 'Industry', 'Token']
     end
   end
   
