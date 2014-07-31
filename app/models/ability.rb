@@ -49,7 +49,8 @@ class Ability
       can :vote, Feature
       can :destroy, Token
       can :manage, Subscription
-
+      can [:read, :pull], CloudBlueprint::Chart
+      
       # User (conditional)
       can [:update, :destroy, :upload_logo], Company do |company|
         (user.people & company.people).first.try(:is_company_owner?)
