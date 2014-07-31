@@ -62,6 +62,22 @@ ResetPasswordMixin =
     .done @onResetPasswordRequestDone
 
 
+# Register mixin
+#
+RegisterMixin =
+  
+  onRegisterButtonClick: (event) ->
+    event.preventDefault()
+    
+    component = cc.require('react/modals/register-form')
+    
+    event = new CustomEvent 'modal:push',
+      detail:
+        component: (component { email: @state.email })
+    
+    dispatchEvent(event)
+
+
 # Email
 #
 EmailInput = (value, is_error, callback) ->
@@ -143,6 +159,7 @@ Component = React.createClass
   mixins: [
     LoginMixin
     ResetPasswordMixin
+    RegisterMixin
   ]
 
 
@@ -170,12 +187,6 @@ Component = React.createClass
     @resetPasswordRequest()
   
   
-  onRegisterButtonClick: (event) ->
-    event.preventDefault()
-    
-    alert 'register'
-
-
   onSubmit: (event) ->
     event.preventDefault()
 
@@ -197,6 +208,7 @@ Component = React.createClass
   
   render: ->
     (tag.form {
+      ref:        'form'
       className:  'login'
       onSubmit:   @onSubmit
     },
