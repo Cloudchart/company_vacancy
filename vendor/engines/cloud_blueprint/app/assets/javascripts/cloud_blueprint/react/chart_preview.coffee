@@ -103,7 +103,7 @@ MainComponent = React.createClass
   onResize: (event) ->
     # Process resize event
   
-
+  
   componentWillMount: ->
     @load()
     window.addEventListener('resize', @onResize)

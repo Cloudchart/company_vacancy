@@ -52,6 +52,31 @@ MainComponent = React.createClass
     
     @__origin.pageX = event.pageX
     @__origin.pageY = event.pageY
+  
+  
+  
+  onWheel: (event) ->
+    event.preventDefault()
+    
+    node          = @getDOMNode()
+    nodeBounds    = node.getBoundingClientRect()
+    nodeStyle     = window.getComputedStyle(node)
+    parentBounds  = node.parentNode.getBoundingClientRect()
+    parentStyle   = window.getComputedStyle(node.parentNode)
+
+    realX = parseFloat(nodeStyle.left)  - event.deltaX
+    realY = parseFloat(nodeStyle.top)   - event.deltaY
+
+    minX = 0
+    minY = 0
+    maxX = parentBounds.width   - nodeBounds.width  - parseFloat(parentStyle.borderLeftWidth) - parseFloat(parentStyle.borderRightWidth)
+    maxY = parentBounds.height  - nodeBounds.height - parseFloat(parentStyle.borderTopWidth)  - parseFloat(parentStyle.borderBottomWidth)
+    
+    x = Math.min(Math.max(maxX, realX), minX)
+    y = Math.min(Math.max(maxY, realY), minY)
+    
+    node.style.left = x + 'px'
+    node.style.top  = y + 'px'
     
     
   
@@ -70,6 +95,7 @@ MainComponent = React.createClass
     (tag.div {
       className:          'blueprint-chart-preview'
       'data-draggable':   'on'
+      onWheel:            @onWheel
       style:
         '-webkit-transform':  "scale(#{@props.scale})"
         '-moz-transform':     "scale(#{@props.scale})"

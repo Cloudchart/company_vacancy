@@ -12,7 +12,7 @@ class Person < ActiveRecord::Base
   
   has_many :node_identities, as: :identity, dependent: :destroy, class_name: CloudBlueprint::Identity
 
-  validates :first_name, :last_name, presence: true
+  #validates :first_name, :last_name, presence: true
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
 
