@@ -64,8 +64,8 @@ MainComponent = React.createClass
     parentBounds  = node.parentNode.getBoundingClientRect()
     parentStyle   = window.getComputedStyle(node.parentNode)
 
-    realX = parseFloat(nodeStyle.left)  - event.deltaX
-    realY = parseFloat(nodeStyle.top)   - event.deltaY
+    realX = parseFloat(nodeStyle.left)  - event.deltaX / 3
+    realY = parseFloat(nodeStyle.top)   - event.deltaY / 3
 
     minX = 0
     minY = 0

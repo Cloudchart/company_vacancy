@@ -31,8 +31,8 @@ LoginMixin =
       type:       'POST'
       dataType:   'json'
       data:
-        email:      @state.email
-        password:   @state.password
+        email:      @refs.email.getDOMNode().value
+        password:   @refs.password.getDOMNode().value
     .done @onLoginRequestDone
     .fail @onLoginRequestFail
 
@@ -58,7 +58,7 @@ ResetPasswordMixin =
       type:     'POST'
       dataType: 'json'
       data:
-        email:  @state.email
+        email:  @refs.email.getDOMNode().value
     .done @onResetPasswordRequestDone
 
 
@@ -84,12 +84,13 @@ EmailInput = (value, is_error, callback) ->
   (tag.label {},
     'Email'
     (InputComponent {
+      ref:        'email'
       type:       'email'
       name:       'email'
       className:  'error' if is_error
       autoFocus:  true
-      value:      value
-      onChange:   callback
+      defaultValue:      value
+      #onChange:   callback
     })
   )
 
@@ -100,11 +101,12 @@ PasswordInput = (value, is_error, callback) ->
   (tag.label {},
     'Password'
     (InputComponent {
+      ref:        'password'
       type:       'password'
       name:       'password'
       className:  'error' if is_error
-      value:      value
-      onChange:   callback
+      defaultValue:      value
+      #onChange:   callback
     })
   )
 
@@ -164,15 +166,18 @@ Component = React.createClass
 
 
   isLoginButtonDisabled: ->
-    !email_re.test(@state.email) or @state.password.length == 0
+    #!email_re.test(@state.email) or @state.password.length == 0
+    false
   
   
   isResetButtonDisabled: ->
-    !email_re.test(@state.email)
+    #!email_re.test(@state.email)
+    false
 
   
   isRegisterButtonDisabled: ->
-    !email_re.test(@state.email)
+    #!email_re.test(@state.email)
+    false
 
   
   onLoginButtonClick: (event) ->
