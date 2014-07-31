@@ -55,12 +55,22 @@ RailsAdmin.config do |config|
     member :accept_invite do
       only ['Token']
       link_icon 'icon-ok'
-      visible { bindings[:object].name == 'request_invite' }
+
+      register_instance_option :pjax? do 
+        false
+      end
+
+      register_instance_option :visible? do 
+        bindings[:object].name == 'request_invite'
+      end
 
       controller do
         proc do
-          @object.update(name: :invite)
-          UserMailer.app_invite(@object).deliver if @object.data.present?
+          unless @object.name == 'invite'
+            @object.update(name: :invite)
+            UserMailer.app_invite(@object).deliver if @object.data.present?
+          end
+          
           redirect_to index_path(:token), notice: 'Request has been accepted'
         end
       end
