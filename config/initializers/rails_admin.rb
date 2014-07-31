@@ -61,7 +61,7 @@ RailsAdmin.config do |config|
       end
 
       register_instance_option :visible? do 
-        bindings[:object].name == 'request_invite'
+        bindings[:object].try(:name) == 'request_invite'
       end
 
       controller do
