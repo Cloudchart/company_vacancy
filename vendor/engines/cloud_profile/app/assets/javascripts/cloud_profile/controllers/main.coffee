@@ -34,8 +34,8 @@
     
     React.renderComponent(
       (AccountComponent {
-        emails:   data.personal.emails
-        tokens:   data.personal.verification_tokens
+        emails: data.personal.emails
+        verification_tokens: data.personal.verification_tokens
         readOnly: false
       })
       accountMountPoint
