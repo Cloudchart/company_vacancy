@@ -49,8 +49,9 @@ private
     blocks.build(section: :benefits, position: 0, identity_type: 'Paragraph', is_locked: true)
   end
 
+  # TODO: return :draft
   def set_default_status
-    self.status = :draft
+    self.status = :opened
   end
 
 end
