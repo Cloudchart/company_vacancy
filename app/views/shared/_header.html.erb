@@ -19,13 +19,19 @@
 
   <%= yield :header %>
 
-  <!--
-  <%# if current_user %>
+  <% if current_user %>
     <ul class="welcome-links">
-      <li><%# link_to t('.companies', default: 'Companies'), main_app.companies_path %></li>
+      <li>
+        <%= link_to t('.about_us', default: 'About us'), main_app.company_path(ENV['ABOUT_US_COMPANY_ID']) %>
+      </li>
+      <li>
+        <%= link_to t('.companies', default: 'Companies'), main_app.companies_path %>
+      </li>
+      <li>
+        <%= mail_to ENV['DEFAULT_SUPPORT'], t('.support', default: 'Support') %>
+      </li>
     </ul>
-  <%# end %>
-  -->
+  <% end %>
   
   <div class="spacer"></div>
 
