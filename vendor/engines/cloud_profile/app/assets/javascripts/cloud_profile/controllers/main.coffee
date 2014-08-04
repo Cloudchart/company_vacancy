@@ -37,6 +37,7 @@
         emails: data.personal.emails
         verification_tokens: data.personal.verification_tokens
         readOnly: false
+        emails_path: data.emails_path
       })
       accountMountPoint
     )

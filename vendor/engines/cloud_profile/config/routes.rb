@@ -51,8 +51,8 @@ CloudProfile::Engine.routes.draw do
     # Emails
     #
     resources :emails do
-      match 'verify', on: :member, via: [:get, :post]
-      get 'resend_verification', on: :member
+      get :verify, on: :member
+      match :resend_verification, on: :member, via: [:put, :patch]
     end
     
     # User
