@@ -22,7 +22,7 @@ module CloudProfile
       else
         
         respond_to do |format|
-          format.json { render json: :nok, status: 412 }
+          format.json { render json: { message: 'This email is invalid or already in use' }, status: 412 }
         end
         
       end

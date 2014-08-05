@@ -2,7 +2,28 @@
 #
 tag = cc.require('react/dom')
 
-email_re = /(.)@(.)/ # aka hairy chest regex
+# email_re = /(.)@(.)/ # aka hairy chest regex
+email_re = /.+@.+\..+/i # like in CloudProfile::Email
+
+# 
+# 
+CancelLinkComponent = React.createClass
+
+  render: ->
+    (tag.a {
+      onClick: @onClick
+      className: 'delete-link'
+      href: ''
+    },
+      (tag.i { className: 'fa fa-times' })
+    )
+
+  getDefaultProps: ->
+    disabled: false
+
+  onClick: (event) ->
+    event.preventDefault()
+    @props.onDelete() unless @props.disabled
 
 # 
 # 
@@ -10,30 +31,31 @@ VerificationTokenComponent = React.createClass
   
   render: ->
     (tag.li {},
+
       (tag.button {
         onClick: @onResendButtonClick
         disabled: @state.sync
+        className: 'orgpad resend'
       },
-        'Resend'
-        (tag.i { className: 'fa fa-envelope-o' })
+        (tag.ul {},
+          (tag.li {}, 'Resend')
+          (tag.li {}, (tag.i { className: 'fa fa-envelope-o' }))
+        )
       )
 
-      @props.address
+      (tag.div { className: 'address grey' }, @props.address)
 
-      (tag.a {
-        href: ''
-        onClick: @onDeleteClick
+      (CancelLinkComponent {
+        onDelete: @onDeleteClick  
         disabled: @state.sync
-      },
-        (tag.i { className: 'fa fa-times' })
-      )
+      })
+
     )
 
   getInitialState: ->
     sync: false
 
   onDeleteClick: (event) ->
-    event.preventDefault()
     @setState({ sync: true })
 
     $.ajax
@@ -65,14 +87,20 @@ EmailComponent = React.createClass
   render: ->
 
     (tag.li {},
-      @props.address
 
-      (tag.a {
+      (tag.button {
         onClick: @onDeleteClick
-        href: ''
+        disabled: @state.sync
+        className: 'orgpad alert'
       },
-        (tag.i { className: 'fa fa-times' })
+        (tag.ul {},
+          (tag.li {}, 'Delete')
+          (tag.li {}, (tag.i { className: 'fa fa-eraser' }))
+        )
       ) unless @props.length == 1
+
+      (tag.div { className: 'address green' }, @props.address)
+
     )
 
   getInitialState: ->
@@ -80,6 +108,7 @@ EmailComponent = React.createClass
 
   onDeleteClick: (event) ->
     event.preventDefault()
+    confirm('Are you sure?')
     @setState({ sync: true })
 
     $.ajax
@@ -99,36 +128,42 @@ NewEmailComponent = React.createClass
   render: ->
 
     (tag.li {},
+
       (tag.button {
         disabled: !@isEmailValid() or @state.sync
         onClick: @onVerifyButtonClick
+        className: 'orgpad verify'
       },
-        'Verify'
-        (tag.i { className: 'fa fa-envelope-o' })
+        (tag.ul {},
+          (tag.li {}, 'Verify')
+          (tag.li {}, (tag.i { className: 'fa fa-envelope-o' }))
+        )
       )
 
       (tag.input {
         type: 'email'
+        name: 'address'
         value: @state.address
+        className: 'error' if @state.error
+        disabled: @state.sync
+        autoComplete: 'off'
         autoFocus: true
         onKeyUp: @onKeyUp
         onChange: @onChange
-        disabled: @state.sync
-        autoComplete: 'off'
+        onBlur: @onBlur
+        onFocus: @onFocus
       })
 
-      (tag.a {
-        onClick: @onDeleteClick
-        href: ''
-      },
-        (tag.i { className: 'fa fa-times' })
-      )
+      (CancelLinkComponent {
+        onDelete: @onDeleteClick
+      })
 
     )
 
   getInitialState: ->
     address: ''
     sync: false
+    error: false
 
   onKeyUp: (event) ->
     switch event.key
@@ -142,8 +177,13 @@ NewEmailComponent = React.createClass
   onChange: (event) ->
     @setState({ address: event.target.value })
 
+  onFocus: (event) ->
+    @setState({ error: false })
+  
+  onBlur: (event) ->
+    @props.onCancel() if @state.address.length == 0
+
   onDeleteClick:(event) ->
-    event.preventDefault()
     @props.onCancel()
 
   isEmailValid: ->
@@ -164,11 +204,13 @@ NewEmailComponent = React.createClass
     .fail @onCreateFail
 
   onCreateDone: (json) ->
+    # console.log json
     @setState({ sync: false })
     @props.onCreate({ target: { value: json.verification_tokens } })
 
-  onCreateFail: ->
-    console.log 'Fail'
+  onCreateFail: (json) ->
+    # console.log json
+    @setState({ sync: false, error: true })
 # 
 # 
 Component = React.createClass
@@ -179,7 +221,9 @@ Component = React.createClass
         className: 'content'
       },
 
-      (tag.ul {},
+      (tag.ul {
+        className: 'emails'  
+      },
         @emailComponents()
         @verificationTokenComponents()
 
@@ -192,9 +236,12 @@ Component = React.createClass
 
       (tag.button {
         onClick: @onAddButtonClick
+        className: 'orgpad add'
       },
-        'Add'
-        (tag.i { className: 'fa fa-plus' })
+        (tag.ul {},
+          (tag.li {}, 'Add')
+          (tag.li {}, (tag.i { className: 'fa fa-plus' }))
+        )
       ) unless @props.readOnly or @state.adding
       
     )
@@ -218,7 +265,7 @@ Component = React.createClass
         key: email_props.uuid
         address: email_props.address
         readOnly: @props.readOnly
-        length: @props.emails.length
+        length: @state.emails.length
         email_path: email_props.email_path
         onDelete: @onEmailDelete
 
