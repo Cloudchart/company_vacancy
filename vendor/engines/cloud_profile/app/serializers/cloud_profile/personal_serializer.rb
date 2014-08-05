@@ -22,9 +22,26 @@ module CloudProfile
     #
     #
     class EmailSerializer < ActiveModel::Serializer
-      attributes :uuid, :address
+      attributes :uuid, :address, :email_path
+
+      def email_path
+        cloud_profile.email_path(object)
+      end
     end
 
+    # 
+    # 
+    class VerificationTokenSerializer < ActiveModel::Serializer
+      attributes :uuid, :data, :email_path, :resend_verification_email_path
+
+      def email_path
+        cloud_profile.email_path(object)
+      end
+
+      def resend_verification_email_path
+        cloud_profile.resend_verification_email_path(object)
+      end
+    end
 
     attributes :uuid, :full_name, :avatar_url, :url, :emails, :verification_tokens
 
@@ -44,11 +61,12 @@ module CloudProfile
     
 
     def emails
-      ActiveModel::ArraySerializer.new(object.emails.order(:created_at), each_serializer: EmailSerializer)
+      ActiveModel::ArraySerializer.new(object.emails, each_serializer: EmailSerializer)
     end
+
     
     def verification_tokens
-      ActiveModel::ArraySerializer.new(object.tokens.where(name: 'email_verification').order(:created_at), only: [:uuid, :data])
+      ActiveModel::ArraySerializer.new(object.tokens.where(name: 'email_verification'), each_serializer: VerificationTokenSerializer)
     end
     
 

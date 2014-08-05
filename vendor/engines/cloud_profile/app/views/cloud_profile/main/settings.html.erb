@@ -14,44 +14,43 @@
     </div>
   </section>
   
-  <!--
   <section class="account">
     <header>
-      <%# t '.account', default: 'Account' %>
+      <%= t '.account', default: 'Account' %>
     </header>
     <div data-react-mount-point="account">
       <i class="fa fa-spinner fa-spin"></i>
     </div>
   </section>
 
-  <%# if current_user.subscriptions.any? %>
+  <!--
+  <% if current_user.subscriptions.any? %>
     <section class="subscriptions">
       <header>Subscriptions</header>
 
       <div>
-        <%# link_to 'Show subscriptions', subscriptions_path %>
+        <%= link_to 'Show subscriptions', subscriptions_path %>
       </div>
     </section>
-  <%# end %>
+  <% end %>
 
-  <%## session[:company_invite].clear %>
-  <%# if session[:company_invite].present? %>
+  <% if session[:company_invite].present? %>
     <section class="companies-invites">
       <header>Companies Invites</header>
 
       <ul>
-        <%# session[:company_invite].each do |session| %>
+        <% session[:company_invite].each do |session| %>
           <li>
-            <%# company = Company.find(session[:company_id]) %>
-            <%# link_to company.name, main_app.company_path(company) %> |
-            <%# link_to 'Accept', cloud_profile.associate_with_person_path(current_user, token_id: session[:token_id]) %> |
-            <%# link_to 'Decline', main_app.token_path(session[:token_id]), method: :delete, data: { confirm: 'Are you sure?' } %>            
+            <%= company = Company.find(session[:company_id]) %>
+            <%= link_to company.name, main_app.company_path(company) %> |
+            <%= link_to 'Accept', cloud_profile.associate_with_person_path(current_user, token_id: session[:token_id]) %> |
+            <%= link_to 'Decline', main_app.token_path(session[:token_id]), method: :delete, data: { confirm: 'Are you sure?' } %>            
           </li>
-        <%# end %>
+        <% end %>
       </ul>
 
     </section>
-  <%# end %>
+  <% end %>
   -->
 
 </article>

@@ -8,7 +8,7 @@
       You or someone else has added <%= @token.data[:address] %> to the list of your email addresses. Please click the link below to verify your new email address.
     </p>
     <p>
-      <%= link_to "Verify Your CloudChart Email", verify_email_url(@token) %>
+      <%= link_to "Verify Your CloudChart Email", cloud_profile.verify_email_url(@token) %>
     </p>
     <p>
       If you think it’s a mistake, just ignore this email.

@@ -26,7 +26,8 @@ module CloudProfile
 
     def settings
       pagescript_params(
-        personal: PersonalSerializer.new(current_user).as_json(root: false)
+        personal: PersonalSerializer.new(current_user).as_json(root: false),
+        emails_path: emails_path
       )
 
       @social_networks = current_user.social_networks

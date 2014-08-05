@@ -116,6 +116,33 @@ $profile-settings-personal-occupations-font-weight: 400;
   
 }
 
+@mixin profile-settingsfa-spinner {
+  @include position(absolute, 50% 0 0 50%);
+  color: hsla(0, 0%, 0%, .1);
+  font-size: 40pt;
+  line-height: 40pt;
+  margin-top: -20pt;
+  margin-left: -20pt;
+  height: 40pt;
+  width: 40pt;
+  text-align: center;  
+}
+
+@mixin profile-settings-fixed-width-button {
+  > ul {
+    @include flex-ul;
+    @include justify-content(center);
+
+    width: $base-unit * 4;
+    font-size: 12pt;
+
+    > li {
+      > i.fa {
+        margin-left: 8pt;
+      }
+    }
+  }
+}
 
 main.cloud-profile > article.profile {
   > section {
@@ -126,6 +153,81 @@ main.cloud-profile > article.profile {
       font-size: $profile-settings-section-header-font-size;
       margin: $profile-settings-section-header-margins;
     }
+
+    &.account {
+
+      [data-react-mount-point='account'] {
+
+        > i {
+          @include profile-settingsfa-spinner
+        }
+
+        > div.content {
+            font-size: 14pt;
+            font-weight: $profile-settings-personal-occupations-font-weight;
+
+          > ul.emails {
+            @include flex-ul;
+            @include flex-direction(column);
+
+            > li {
+              @include display(flex);
+
+              margin-bottom: $base-unit / 1.5;
+
+              > div.address {
+
+                &.green {
+                  color: $north-texas-green;
+                }
+
+                &.grey {
+                  color: $jumbo;
+                }
+              }
+
+              > button.orgpad {
+                @include profile-settings-fixed-width-button;
+
+                &.resend, &.verify {
+                  margin-right: $base-unit / 2;
+                }
+              }
+
+              > a.delete-link {
+                color: $cg-red;
+                padding-top: 8px;
+                margin-left: $base-unit / 2;
+              }
+
+              > input[type='email'] {
+                background-color: $white-smoke;
+                border: none;
+                outline: none;
+                height: $orgpad-button-height;
+
+                &.error {
+                  background-color: $baby-pink;
+                }
+              }
+
+              > div.address, input[type='email'] {
+                padding: 8px 10px;
+                width: $base-unit * 12;
+              }
+
+            }
+
+          }
+
+          > button {
+            @include profile-settings-fixed-width-button;
+          }
+
+        }
+      }
+
+    }
     
     &.personal {
       
@@ -133,15 +235,7 @@ main.cloud-profile > article.profile {
         min-height: $profile-settings-personal-avatar-size;
         position: relative;
         > i {
-          @include position(absolute, 50% 0 0 50%);
-          color: hsla(0, 0%, 0%, .1);
-          font-size: 40pt;
-          line-height: 40pt;
-          margin-top: -20pt;
-          margin-left: -20pt;
-          height: 40pt;
-          width: 40pt;
-          text-align: center;
+          @include profile-settingsfa-spinner
         }
       }
       
