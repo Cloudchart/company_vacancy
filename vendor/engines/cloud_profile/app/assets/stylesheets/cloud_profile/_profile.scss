@@ -134,6 +134,7 @@ $profile-settings-personal-occupations-font-weight: 400;
     @include justify-content(center);
 
     width: $base-unit * 4;
+    font-size: 12pt;
 
     > li {
       > i.fa {
@@ -175,8 +176,6 @@ main.cloud-profile > article.profile {
               margin-bottom: $base-unit / 1.5;
 
               > div.address {
-                width: $base-unit * 12;
-                padding: 8px 10px;
 
                 &.green {
                   color: $north-texas-green;
@@ -189,7 +188,6 @@ main.cloud-profile > article.profile {
 
               > button.orgpad {
                 @include profile-settings-fixed-width-button;
-                font-size: 12pt;
 
                 &.resend, &.verify {
                   margin-right: $base-unit / 2;
@@ -200,19 +198,22 @@ main.cloud-profile > article.profile {
                 color: $cg-red;
                 padding-top: 8px;
                 margin-left: $base-unit / 2;
-
-                &:disabled {
-                  color: $jumbo;
-                }
               }
 
               > input[type='email'] {
                 background-color: $white-smoke;
                 border: none;
                 outline: none;
+                height: $orgpad-button-height;
+
+                &.error {
+                  background-color: $baby-pink;
+                }
+              }
+
+              > div.address, input[type='email'] {
                 padding: 8px 10px;
                 width: $base-unit * 12;
-                height: $orgpad-button-height;
               }
 
             }
@@ -221,7 +222,6 @@ main.cloud-profile > article.profile {
 
           > button {
             @include profile-settings-fixed-width-button;
-            font-size: 12pt;
           }
 
         }
