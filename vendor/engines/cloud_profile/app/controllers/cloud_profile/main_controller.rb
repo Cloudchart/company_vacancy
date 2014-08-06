@@ -2,13 +2,12 @@ require_dependency "cloud_profile/application_controller"
 
 module CloudProfile
   class MainController < ApplicationController
-
-    before_action :handle_company_invite_token, only: :settings, if: 'params[:token_id].present?'
+    before_action :handle_company_invite_token, only: :companies
 
     # TODO: use cancan instead
     before_action :require_authenticated_user!
 
-    before_action :create_default_company, only: :companies, if: 'current_user.companies.blank?'
+    before_action :create_default_company, only: :companies, if: -> { current_user.companies.blank? }
     
     def companies
       @companies = current_user.companies.includes(:industries, :people, :vacancies, :favorites, :charts)
@@ -40,15 +39,39 @@ module CloudProfile
   private
 
     def handle_company_invite_token
-      token = Token.find(params[:token_id]) rescue nil
-
-      if token
-        session[:company_invite] ||= []
-        session_data = { token_id: token.id, company_id: Person.find(token.data).company_id }
-        session[:company_invite] << session_data unless session[:company_invite].include?(session_data)
+      token_id = if params[:token].present?
+        Cloudchart::RFC1751.decode(params[:token].gsub(/-/, ' '))
+      elsif session[:company_invite].present?
+        session[:company_invite]
+      else
+        nil
       end
 
-      redirect_to cloud_profile.login_path unless current_user
+      return unless token_id
+
+      token = Token.where(name: :company_invite).find(token_id) rescue nil
+
+      if token && current_user
+        person = Person.find(token.data)
+
+        unless current_user.people.map(&:company_id).include?(person.company_id)
+          current_user.people << person
+          
+          # TODO: add default subscription
+          # current_user.subscriptions.find_by(subscribable: person.company).try(:destroy)
+          # current_user.subscriptions.create!(subscribable: person.company, types: [:vacancies, :events])
+
+          Token.transaction do
+            Token.where(data: token.data.to_yaml).destroy_all
+          end
+
+          session[:company_invite] = nil if session[:company_invite].present?
+        end
+
+      elsif token
+        session[:company_invite] = token.id
+        redirect_to main_app.root_path(modal: 'login-form')
+      end
     end
 
     def create_default_company

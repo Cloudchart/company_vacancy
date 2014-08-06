@@ -2,11 +2,8 @@ require_dependency "cloud_profile/application_controller"
 
 module CloudProfile
   class UsersController < ApplicationController
-    include TokenableController
-    
     before_action :require_authenticated_user!, only: :activation_complete
     skip_before_action :require_properly_named_user!, only: :activation_complete
-    
     
     # Request invite
     #
@@ -178,42 +175,12 @@ module CloudProfile
       end
 
     end
-    
-
-    def associate_with_person
-      user = User.find(params[:id])
-      token = Token.find(params[:token_id]) rescue nil
-
-      if token
-        person = Person.find(token.data)
-
-        if user.people.map(&:company_id).include?(person.company_id)
-          return redirect_to cloud_profile.settings_path, alert: t('messages.company_invite.you_are_already_associated', name: person.company.name)
-        end
-
-        # create subscription (only to vacancies and events so far)
-        user.subscriptions.find_by(subscribable: person.company).try(:destroy)
-        user.subscriptions.create!(subscribable: person.company, types: [:vacancies, :events])
-
-        user.people << person
-        user.save!
-
-        # destroy all possible and impossible invites associated with this person
-        Token.where.not(uuid: token.id).where(data: token.data.to_yaml).destroy_all
-        clean_company_invite_session(token)
-        token.destroy
-
-        redirect_to main_app.company_path(person.company), notice: t('messages.invitation_completed')
-      else
-        redirect_to main_app.root_path, alert: t('messages.tokens.not_found', action: t('actions.company_invite'))
-      end
-    end
-
 
   private
   
     def render_user_json
       render json: current_user, serializer: CloudProfile::UserSerializer, root: false
     end
+    
   end
 end

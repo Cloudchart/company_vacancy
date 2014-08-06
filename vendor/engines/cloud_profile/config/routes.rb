@@ -44,10 +44,6 @@ CloudProfile::Engine.routes.draw do
     match 'activation/complete', to: 'users#activation_complete', as: :profile_activation_completion, via: [:get, :put]
     match 'activation(/:token)', to: 'users#activation', as: :profile_activation, via: [:get, :post]
 
-    # Associate with person
-    # 
-    get 'associate_with_person/:id', to: 'users#associate_with_person', as: :associate_with_person
-
     # Emails
     #
     resources :emails do

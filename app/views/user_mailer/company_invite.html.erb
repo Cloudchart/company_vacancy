@@ -3,10 +3,15 @@
 </p>
 
 <p>
-  You have been invited to join CloudChart as a member of <%= @company.name %>. Please click the following link to begin:
-  <%= link_to cloud_profile.settings_url(token_id: @token.id), cloud_profile.settings_url(token_id: @token.id) %>
+  You have been invited to join CloudChart as a member of <%= @company.name %>. Please click the following link to continue:
 </p>
 
-<p>If you have nothing with <%= @company.name %>, please ignore this message.</p>
+<p>
+  <%= link_to "Accept Invitation From #{@company.name}", cloud_profile.root_url(token: @token) %>
+</p>
+
+<p>
+  If you have nothing with <%= @company.name %>, please ignore this message.
+</p>
 
 <%= render 'shared/mailer_signature' %>

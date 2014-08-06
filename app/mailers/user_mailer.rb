@@ -4,7 +4,7 @@ class UserMailer < ActionMailer::Base
   def company_invite(company, email, token)
     @company = company
     @user = email.try(:user)
-    @token = token
+    @token = Cloudchart::RFC1751.encode(token.id).downcase.gsub(/ /, '-')
     email = email.try(:address) || email
     mail to: email
   end

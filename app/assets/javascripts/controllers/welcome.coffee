@@ -30,6 +30,7 @@
 
       window.dispatchEvent(event)
 
+    loginButton.click() if data.modal == 'login-form'
 
   # Register form
   #

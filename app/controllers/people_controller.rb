@@ -69,13 +69,13 @@ class PeopleController < ApplicationController
 
   # POST /people/1/send_invite_to_user
   def send_invite_to_user
-    return redirect_to person_path(@person), alert: t('messages.company_invite.email_blank') if params[:email].blank?
+    return redirect_to :back, alert: t('messages.company_invite.email_blank') if params[:email].blank?
     email = CloudProfile::Email.find_by(address: params[:email])
  
     if email
       # check if user already has person in this company
       if email.user.people.map(&:company_id).include?(@person.company_id)
-        return redirect_to person_path(@person), alert: t('messages.company_invite.user_has_already_been_associated')
+        return redirect_to :back, alert: t('messages.company_invite.user_has_already_been_associated')
       else
         create_company_invite_token_and_send_email(@person.id, email)
       end
@@ -83,7 +83,7 @@ class PeopleController < ApplicationController
       create_company_invite_token_and_send_email(@person.id)
     end
 
-    redirect_to person_path(@person), notice: t('messages.company_invite.email_sent')
+    redirect_to :back, notice: t('messages.company_invite.email_sent')
   end
 
 private
