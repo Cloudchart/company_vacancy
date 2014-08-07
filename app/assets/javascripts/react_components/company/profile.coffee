@@ -2,8 +2,54 @@
 
 # Imports
 #
-tag             = cc.require('react/dom')
+tag = cc.require('react/dom')
+profile_attributes = ['country', 'industry', 'is_listed', 'short_name']
 
+# Short Url Component
+# 
+ShortUrlComponent = React.createClass
+
+  render: ->
+    (tag.fieldset {},
+      (tag.label { htmlFor: 'short_url' }, 'Short URL')
+
+      (tag.input {
+        id: 'short_url'
+        name: 'short_url'
+        placeholder: 'Type company name'
+        onKeyUp: @onKeyUp
+        onChange: @onChange
+        # onFocus: @onFocus
+        value: @state.value
+        className: 'error' if @state.error
+      },
+        (tag.button {},
+          (tag.i { className: 'fa fa-pencil' })
+        )
+      )
+    )
+
+  getInitialState: ->
+    value: @props.value
+    error: @props.error
+
+  onKeyUp: (event) ->
+    switch event.key
+      when 'Enter'
+        # console.log 'Enter'
+        @props.onChange
+          target:
+            value: @state.value
+      # when 'Escape'
+        # console.log 'Escape'
+
+  onChange: (event) ->
+    @setState
+      value: event.target.value
+
+  onFocus: (event) ->
+    @setState
+      error: false
 
 # Country Select Component
 #
@@ -128,6 +174,7 @@ MainComponent = React.createClass
       country:        json.country
       industry:       json.industry_ids[0]
       is_listed:      json.is_listed
+      short_name:     json.short_name
       synchronizing:  false
     
   
@@ -135,11 +182,12 @@ MainComponent = React.createClass
     console.warn "Fail: Company profile save."
 
     @setState
+      error: true
       synchronizing:  false
 
 
   save: ->
-    data = ['country', 'industry', 'is_listed'].reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
+    data = profile_attributes.reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
     
     @setState
       synchronizing: true
@@ -153,7 +201,7 @@ MainComponent = React.createClass
       processData:  false
 
     .done @onSaveDone
-    .fail @onDaveFail
+    .fail @onSaveFail
   
   
   toggleListing: ->
@@ -169,16 +217,23 @@ MainComponent = React.createClass
   onIndustryChange: (event) ->
     @setState
       industry: event.target.value
-  
+
+  onShortNameChange: (event) ->
+    @setState
+      short_name: event.target.value  
   
   getInitialState: ->
+    error: false
+    synchronizing: false
+
     country:    @props.country
     industry:   @props.industry_ids[0]
     is_listed:  @props.is_listed
+    short_name: @props.short_name
   
   
   componentDidUpdate: (prevProps, prevState) ->
-    @save() if ['country', 'industry', 'is_listed'].some((name) => @state[name] isnt prevState[name])
+    @save() if profile_attributes.some((name) => @state[name] isnt prevState[name])
 
 
   render: ->
@@ -188,6 +243,13 @@ MainComponent = React.createClass
       (tag.header {}, 'Company Profile')
       
       (tag.div { className: 'section-block' },
+
+        (ShortUrlComponent {
+          value: @state.short_name
+          onChange: @onShortNameChange
+          error: @state.error
+        })
+
         'Industry'
         (IndustrySelectComponent {
           value:      @state.industry

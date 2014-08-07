@@ -29,7 +29,7 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
-    pagescript_params(can_update_company: can?(:update, @company))
+    # pagescript_params(can_update_company: can?(:update, @company))
 
     respond_to do |format|
       format.html
@@ -64,12 +64,20 @@ class CompaniesController < ApplicationController
 
   # PATCH/PUT /companies/1
   def update    
-    @company.update!(company_params)
-    Activity.track_activity(current_user, params[:action], @company)
-    
-    respond_to do |format|
-      format.html { redirect_to @company }
-      format.json { render json: @company, serializer: Editor::CompanySerializer }
+    if @company.update(company_params)
+      Activity.track_activity(current_user, params[:action], @company)
+
+      respond_to do |format|
+        format.html { redirect_to @company }
+        format.json { render json: @company, serializer: Editor::CompanySerializer }
+      end
+
+    else
+
+      respond_to do |format|
+        format.json { render json: :nok, status: 412 }
+      end
+
     end
   end
 
@@ -83,7 +91,11 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    @company = Company.find(params[:id])
+    @company = if params[:short_name].present?
+      Company.find_by(short_name: params[:short_name])
+    else
+      Company.find(params[:id])
+    end
   end
 
   def set_collection
@@ -96,7 +108,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
+    params.require(:company).permit(:name, :short_name, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
   end
   
 end
