@@ -30,7 +30,7 @@
 
       window.dispatchEvent(event)
 
-    loginButton.click() if data.modal == 'login-form'
+    loginButton.click() if window.location.hash == '#login'
 
   # Register form
   #

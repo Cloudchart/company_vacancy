@@ -70,7 +70,7 @@ module CloudProfile
 
       elsif token
         session[:company_invite] = token.id
-        redirect_to main_app.root_path(modal: 'login-form')
+        redirect_to main_app.root_path(anchor: :login)
       end
     end
 
