@@ -5,9 +5,10 @@
 tag = cc.require('react/dom')
 profile_attributes = ['country', 'industry', 'is_listed', 'short_name']
 
-# Short Url Component
+
+# Short Name Component
 # 
-ShortUrlComponent = React.createClass
+ShortNameComponent = React.createClass
 
   render: ->
     (tag.fieldset {},
@@ -19,7 +20,8 @@ ShortUrlComponent = React.createClass
         placeholder: 'Type company name'
         onKeyUp: @onKeyUp
         onChange: @onChange
-        # onFocus: @onFocus
+        onFocus: @onFocus
+        onBlur: @onBlur
         value: @state.value
         className: 'error' if @state.error
       },
@@ -29,17 +31,28 @@ ShortUrlComponent = React.createClass
       )
     )
 
+  componentWillReceiveProps: (nextProps) ->
+    @setState
+      value:  nextProps.value
+      error:  nextProps.error
+
   getInitialState: ->
     value: @props.value
     error: @props.error
 
+  updateValue: ->
+    @props.onChange({ target: { value: @state.value } })
+
+  onBlur: ->
+    @updateValue()
+
   onKeyUp: (event) ->
+    @setState({ error: false }) if @state.error
+
     switch event.key
       when 'Enter'
         # console.log 'Enter'
-        @props.onChange
-          target:
-            value: @state.value
+        @updateValue()
       # when 'Escape'
         # console.log 'Escape'
 
@@ -48,14 +61,12 @@ ShortUrlComponent = React.createClass
       value: event.target.value
 
   onFocus: (event) ->
-    @setState
-      error: false
+    @setState({ error: false })
+
 
 # Country Select Component
 #
 CountrySelectComponent = React.createClass
-
-
   emptyCountry: ->
     (tag.option {
       key: 'empty'
@@ -244,7 +255,7 @@ MainComponent = React.createClass
       
       (tag.div { className: 'section-block' },
 
-        (ShortUrlComponent {
+        (ShortNameComponent {
           value: @state.short_name
           onChange: @onShortNameChange
           error: @state.error
