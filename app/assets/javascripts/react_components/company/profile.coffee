@@ -11,57 +11,69 @@ profile_attributes = ['country', 'industry', 'is_listed', 'short_name']
 ShortNameComponent = React.createClass
 
   render: ->
-    (tag.fieldset {},
-      (tag.label { htmlFor: 'short_url' }, 'Short URL')
+    (tag.div { className: 'fields' },
+      (tag.label { htmlFor: 'short_name' }, 'Short Name')
 
-      (tag.input {
-        id: 'short_url'
-        name: 'short_url'
-        placeholder: 'Type company name'
-        onKeyUp: @onKeyUp
-        onChange: @onChange
-        onFocus: @onFocus
-        onBlur: @onBlur
-        value: @state.value
-        className: 'error' if @state.error
-      },
-        (tag.button {},
-          (tag.i { className: 'fa fa-pencil' })
+      (tag.div { className: 'input-wrapper'},
+        (tag.input {
+          id: 'short_name'
+          name: 'short_name'
+          placeholder: 'Type name'
+          onKeyUp: @onKeyUp
+          onChange: @onChange
+          onBlur: @onBlur
+          value: @state.value
+        })
+
+        (tag.button {
+          className: 'red' if @props.error
+        },
+          (tag.i { 
+            className: 
+              if @props.sync
+                'fa fa-spinner'
+              else if @props.error
+                'fa fa-times'
+              else if @props.success
+                'fa fa-check'
+              else
+                'fa fa-pencil'
+            onClick: @onClick
+          })
         )
-      )
-    )
 
-  componentWillReceiveProps: (nextProps) ->
-    @setState
-      value:  nextProps.value
-      error:  nextProps.error
+      )
+
+    )
 
   getInitialState: ->
     value: @props.value
-    error: @props.error
+
+  # componentWillReceiveProps: (nextProps) ->
+  #   @setState({  })
 
   updateValue: ->
     @props.onChange({ target: { value: @state.value } })
 
+  undoTyping: ->
+    @setState({ value: @props.value })
+
   onBlur: ->
-    @updateValue()
+    @undoTyping()
 
   onKeyUp: (event) ->
-    @setState({ error: false }) if @state.error
-
     switch event.key
       when 'Enter'
-        # console.log 'Enter'
         @updateValue()
-      # when 'Escape'
-        # console.log 'Escape'
+      when 'Escape'
+        @undoTyping()
+
+  onClick: (event) ->
+    @updateValue()
 
   onChange: (event) ->
     @setState
       value: event.target.value
-
-  onFocus: (event) ->
-    @setState({ error: false })
 
 
 # Country Select Component
@@ -179,30 +191,28 @@ IndustrySelectComponent = React.createClass
 #
 MainComponent = React.createClass
 
-
   onSaveDone: (json) ->
     @setState
       country:        json.country
       industry:       json.industry_ids[0]
       is_listed:      json.is_listed
       short_name:     json.short_name
-      synchronizing:  false
-    
+      sync: false
+      success: true
   
   onSaveFail: ->
-    console.warn "Fail: Company profile save."
-
     @setState
+      sync: false
       error: true
-      synchronizing:  false
 
 
   save: ->
     data = profile_attributes.reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
     
     @setState
-      synchronizing: true
-    
+      sync: true
+      error: false
+
     $.ajax
       url:        @props.url
       data:       data
@@ -218,12 +228,10 @@ MainComponent = React.createClass
   toggleListing: ->
     @setState
       is_listed: !@state.is_listed
-
   
   onCountryChange: (event) ->
     @setState
       country: event.target.value
-  
   
   onIndustryChange: (event) ->
     @setState
@@ -235,7 +243,8 @@ MainComponent = React.createClass
   
   getInitialState: ->
     error: false
-    synchronizing: false
+    sync: false
+    success: false
 
     country:    @props.country
     industry:   @props.industry_ids[0]
@@ -258,6 +267,8 @@ MainComponent = React.createClass
         (ShortNameComponent {
           value: @state.short_name
           onChange: @onShortNameChange
+          sync: @state.sync
+          success: @state.success
           error: @state.error
         })
 

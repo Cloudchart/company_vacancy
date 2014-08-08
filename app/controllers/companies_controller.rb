@@ -29,12 +29,6 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
-    # pagescript_params(can_update_company: can?(:update, @company))
-
-    respond_to do |format|
-      format.html
-      format.json { render json: @company, serializer: Editor::CompanySerializer }
-    end
   end
 
   # GET /companies/new
@@ -91,11 +85,7 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    @company = if params[:short_name].present?
-      Company.find_by(short_name: params[:short_name])
-    else
-      Company.find(params[:id])
-    end
+    @company = Company.find_by(short_name: params[:id]) || Company.find(params[:id])
   end
 
   def set_collection

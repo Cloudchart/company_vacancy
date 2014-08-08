@@ -24,10 +24,6 @@ Cloudchart::Application.routes.draw do
     match 'change_status/:status', on: :member, action: :change_status, as: :change_status, via: [:put, :patch]
   end
 
-  # Custom
-  # 
-  get '/:short_name', to: 'companies#show', as: :company_short
-
   # Resources
   #
   resources :companies, shallow: true, concerns: [:blockable] do

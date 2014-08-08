@@ -3,7 +3,7 @@ module Editor
     
     self.root = false
     
-    attributes  :uuid, :name, :country, :description, :is_listed, :url
+    attributes  :uuid, :name, :country, :description, :is_listed, :url, :short_name
     attributes  :logotype, :logotype_url
     attributes  :industry_ids
     
