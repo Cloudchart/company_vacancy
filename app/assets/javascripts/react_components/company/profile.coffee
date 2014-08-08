@@ -27,6 +27,7 @@ ShortNameComponent = React.createClass
 
         (tag.button {
           className: 'red' if @props.error
+          # onClick: @onClick
         },
           (tag.i { 
             className: 
@@ -38,7 +39,6 @@ ShortNameComponent = React.createClass
                 'fa fa-check'
               else
                 'fa fa-pencil'
-            onClick: @onClick
           })
         )
 
@@ -68,8 +68,8 @@ ShortNameComponent = React.createClass
       when 'Escape'
         @undoTyping()
 
-  onClick: (event) ->
-    @updateValue()
+  # onClick: (event) ->
+  #   @updateValue()
 
   onChange: (event) ->
     @setState
