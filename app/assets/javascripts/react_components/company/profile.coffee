@@ -28,6 +28,7 @@ ShortNameComponent = React.createClass
         (tag.button {
           className: 'red' if @props.error
           # onClick: @onClick
+          disabled: true
         },
           (tag.i { 
             className: 
