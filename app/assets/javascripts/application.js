@@ -17,6 +17,7 @@
 //= require module
 //= require placeholder
 //= require react
+//= require flux.dispatcher
 //= require block_identities
 //= require ui
 //= require plugins

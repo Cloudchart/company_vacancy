@@ -1,8 +1,18 @@
 <%- class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint -%>
 
 <%- pagescript_params id: @chart.to_param,
-  chart:        @chart.as_json(only: [:uuid, :title]),
+  chart:        @chart,
   url:          chart_path(@chart),
   company_url:  main_app.company_path(@chart.company),
   company_name: @chart.company.name
 -%>
+
+<%- content_for :title do -%>
+    <%= link_to main_app.company_path(@chart.company), class: 'title' do -%>
+      <%= @chart.company.name %>
+      <%= font_awesome 'angle-right' %>
+    <%- end -%>
+    <div data-header-chart-title-mount-point>
+      <span class="title"><small><%= @chart.title %></small></span>
+    </div>
+<%- end -%>

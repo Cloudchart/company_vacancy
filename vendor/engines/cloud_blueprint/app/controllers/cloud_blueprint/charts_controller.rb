@@ -22,6 +22,7 @@ module CloudBlueprint
       
       respond_to do |format|
         format.html
+        format.json { render json: @chart }
       end
     end
     
@@ -106,12 +107,16 @@ module CloudBlueprint
     # PUT /charts/:id
     #
     def update
-      @chart.update! params.require(:chart).permit(:title)
+      @chart.update! params.require(:chart).permit([:title, :is_public])
       
       respond_to do |format|
-        format.json do
-          render json: @chart, only: [:uuid, :title]
-        end
+        format.json { render json: @chart }
+      end
+      
+    rescue ActiveRecord::RecordInvalid
+      
+      respond_to do |format|
+        format.json { render json: @chart.reload, status: 422 }
       end
     end
 

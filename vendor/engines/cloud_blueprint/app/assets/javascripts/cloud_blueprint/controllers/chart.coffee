@@ -1,26 +1,32 @@
-##= require ../react/chart_title
-
 @['cloud_blueprint/charts#show'] = (data) ->
+  
+  
+  ChartActionsCreator = cc.require('cc.blueprint.actions.ChartActionsCreator')
+  ChartStore          = cc.require('cc.blueprint.stores.ChartStore')
   
   
   # Variables
   #
-  can_edit_chart = data.editable
+  can_edit_chart  = data.editable
+  isReadOnly      = !!data.editable
   
   
+  # Store chart
+  #
+  ChartActionsCreator.receiveOne(data.chart)
   
-  if headerMountPoint = document.querySelector('[data-header-react-mount-point]')
+  
+  # Chart Title Composer
+  #
+  if isReadOnly and (headerMountPoint = document.querySelector('[data-header-chart-title-mount-point]'))
+    ChartTitleComposer = cc.require('cc.blueprint.components.chart.ChartTitleComposer')
+    
+    React.renderComponent(
+      (ChartTitleComposer { key: data.id })
+    ,
+      headerMountPoint
+    ) if ChartTitleComposer
 
-    ChartTitleComponent = cc.require('blueprint/react/chart-title')
-
-    React.renderComponent(ChartTitleComponent({
-      title:          data.chart.title
-      url:            data.url
-      company_url:    data.company_url
-      company_name:   data.company_name
-      disabled:      !can_edit_chart
-    }), headerMountPoint)
-  
 
   # Access functions
   #

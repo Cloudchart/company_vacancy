@@ -53,6 +53,7 @@ $header-button-height: $header-height - $header-padding * 2;
 @mixin header-title {
   font-size: $header-title-font-size;
   font-weight: $header-title-font-weight;
+  margin-right: 5px;
   
   small {
     font-size: inherit;
@@ -96,10 +97,12 @@ $header-button-height: $header-height - $header-padding * 2;
 //
 @mixin header-input {
   background-color: inherit;
+  border: none;
   font-size: $header-input-font-size;
   font-weight: $header-input-font-weight;
-  border: none;
+  margin: 0;
   outline: none;
+  padding: 0;
 }
 
 
