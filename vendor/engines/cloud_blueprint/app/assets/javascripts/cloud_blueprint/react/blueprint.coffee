@@ -105,7 +105,7 @@ ModalComponent = React.createClass
 
   render: ->
     (tag.section {
-      className: 'modal-overlay'
+      className: 'modal-overlay blueprint'
       style:
         visibility:  if @state.is_visible then 'visible' else 'hidden'
     },

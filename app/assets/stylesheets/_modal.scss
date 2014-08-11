@@ -125,6 +125,10 @@ body .modal-overlay {
     background-color: $modal-container-background-color;
     margin: auto;
   }
+  
+  &.blueprint > .modal-container {
+    margin: 0;
+  }
 }
 
 
