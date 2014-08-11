@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140730141416) do
+ActiveRecord::Schema.define(version: 20140807124436) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -139,7 +139,10 @@ ActiveRecord::Schema.define(version: 20140730141416) do
     t.string   "logotype_uid"
     t.boolean  "is_listed",      default: false
     t.boolean  "is_public",      default: false
+    t.string   "short_name"
   end
+
+  add_index "companies", ["short_name"], name: "index_companies_on_short_name", unique: true, using: :btree
 
   create_table "companies_banned_users", id: false, force: true do |t|
     t.string "company_id", limit: 36, null: false

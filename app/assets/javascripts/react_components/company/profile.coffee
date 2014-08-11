@@ -2,14 +2,83 @@
 
 # Imports
 #
-tag             = cc.require('react/dom')
+tag = cc.require('react/dom')
+profile_attributes = ['country', 'industry', 'is_listed', 'short_name']
+
+
+# Short Name Component
+# 
+ShortNameComponent = React.createClass
+
+  render: ->
+    (tag.div { className: 'fields' },
+      (tag.label { htmlFor: 'short_name' }, 'Short Name')
+
+      (tag.div { className: 'input-wrapper'},
+        (tag.input {
+          id: 'short_name'
+          name: 'short_name'
+          placeholder: 'Type name'
+          onKeyUp: @onKeyUp
+          onChange: @onChange
+          onBlur: @onBlur
+          value: @state.value
+        })
+
+        (tag.button {
+          className: 'red' if @props.error
+          # onClick: @onClick
+        },
+          (tag.i { 
+            className: 
+              if @props.sync
+                'fa fa-spinner'
+              else if @props.error
+                'fa fa-times'
+              else if @props.success
+                'fa fa-check'
+              else
+                'fa fa-pencil'
+          })
+        )
+
+      )
+
+    )
+
+  getInitialState: ->
+    value: @props.value
+
+  # componentWillReceiveProps: (nextProps) ->
+  #   @setState({  })
+
+  updateValue: ->
+    @props.onChange({ target: { value: @state.value } })
+
+  undoTyping: ->
+    @setState({ value: @props.value })
+
+  onBlur: ->
+    @undoTyping()
+
+  onKeyUp: (event) ->
+    switch event.key
+      when 'Enter'
+        @updateValue()
+      when 'Escape'
+        @undoTyping()
+
+  # onClick: (event) ->
+  #   @updateValue()
+
+  onChange: (event) ->
+    @setState
+      value: event.target.value
 
 
 # Country Select Component
 #
 CountrySelectComponent = React.createClass
-
-
   emptyCountry: ->
     (tag.option {
       key: 'empty'
@@ -122,28 +191,28 @@ IndustrySelectComponent = React.createClass
 #
 MainComponent = React.createClass
 
-
   onSaveDone: (json) ->
     @setState
       country:        json.country
       industry:       json.industry_ids[0]
       is_listed:      json.is_listed
-      synchronizing:  false
-    
+      short_name:     json.short_name
+      sync: false
+      success: true
   
   onSaveFail: ->
-    console.warn "Fail: Company profile save."
-
     @setState
-      synchronizing:  false
+      sync: false
+      error: true
 
 
   save: ->
-    data = ['country', 'industry', 'is_listed'].reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
+    data = profile_attributes.reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
     
     @setState
-      synchronizing: true
-    
+      sync: true
+      error: false
+
     $.ajax
       url:        @props.url
       data:       data
@@ -153,32 +222,38 @@ MainComponent = React.createClass
       processData:  false
 
     .done @onSaveDone
-    .fail @onDaveFail
+    .fail @onSaveFail
   
   
   toggleListing: ->
     @setState
       is_listed: !@state.is_listed
-
   
   onCountryChange: (event) ->
     @setState
       country: event.target.value
   
-  
   onIndustryChange: (event) ->
     @setState
       industry: event.target.value
-  
+
+  onShortNameChange: (event) ->
+    @setState
+      short_name: event.target.value  
   
   getInitialState: ->
+    error: false
+    sync: false
+    success: false
+
     country:    @props.country
     industry:   @props.industry_ids[0]
     is_listed:  @props.is_listed
+    short_name: @props.short_name
   
   
   componentDidUpdate: (prevProps, prevState) ->
-    @save() if ['country', 'industry', 'is_listed'].some((name) => @state[name] isnt prevState[name])
+    @save() if profile_attributes.some((name) => @state[name] isnt prevState[name])
 
 
   render: ->
@@ -188,6 +263,15 @@ MainComponent = React.createClass
       (tag.header {}, 'Company Profile')
       
       (tag.div { className: 'section-block' },
+
+        (ShortNameComponent {
+          value: @state.short_name
+          onChange: @onShortNameChange
+          sync: @state.sync
+          success: @state.success
+          error: @state.error
+        })
+
         'Industry'
         (IndustrySelectComponent {
           value:      @state.industry

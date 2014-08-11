@@ -29,6 +29,7 @@ MainComponent = React.createClass
         industry_ids:           @props.industry_ids
         chart_ids:              @props.chart_ids
         is_listed:              @props.is_listed
+        short_name:             @props.short_name
         owner:                  'company'
       })
     )

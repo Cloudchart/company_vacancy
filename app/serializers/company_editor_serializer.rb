@@ -3,7 +3,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   attributes :uuid, :name, :country, :description, :is_listed, :logotype, :logotype_url, :url, :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url
-  attributes :industry_ids, :chart_ids
+  attributes :industry_ids, :chart_ids, :short_name
   
 
   has_many :blocks, serializer: BlockEditorSerializer

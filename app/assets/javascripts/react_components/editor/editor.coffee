@@ -42,6 +42,7 @@ MainComponent = React.createClass
       country:        @props.country
       industry_ids:   @props.industry_ids
       is_listed:      @props.is_listed
+      short_name:     @props.short_name
     }))
     
     (tag.article { className: 'editor' },

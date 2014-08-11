@@ -157,11 +157,65 @@ article.company {
     
     footer {
       font-size: 15pt;
+
+      > button {
+        margin-left: 10pt;
+      }
+
     }
-    
-    button {
-      margin-left: 10pt;
+
+    > .section-block {
+
+      > div.fields {
+        @include display(flex);
+        @include align-items(center);
+
+        margin: 0 0 $base-unit;
+
+        > label {
+          margin-right: $base-unit;
+        }
+
+        > .input-wrapper {
+          @include display(flex);
+          @include justify-content(space-between);
+
+          width: 200px;
+          padding: 2px;
+          border: 3pt solid $white-smoke;
+
+          > input {
+            height: 30px;
+            outline: none;
+            border: none;
+            width: 150px;
+            font-weight: 300;
+          }
+
+          > button {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            margin: 0;
+            background-color: $ufo-green;
+            color: white;
+            border: none;
+
+            &.red {
+              background-color: $cg-red;
+            }
+
+            > i {
+              font-size: 11pt;
+              line-height: 30px;
+            }
+          }
+
+        }
+
+      }
     }
+
   }
   
 }
