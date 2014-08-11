@@ -32,7 +32,7 @@ ShortNameComponent = React.createClass
           (tag.i { 
             className: 
               if @props.sync
-                'fa fa-spinner'
+                'fa fa-spinner fa-spin'
               else if @props.error
                 'fa fa-times'
               else if @props.success
