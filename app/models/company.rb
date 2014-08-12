@@ -34,6 +34,7 @@ class Company < ActiveRecord::Base
 
   # validates :name, :country, :industry_ids, presence: true, on: :update
   validates :short_name, uniqueness: true, allow_blank: true
+  validates :url, url: true, allow_blank: true
   
   settings ElasticSearchNGramSettings do
     mapping do

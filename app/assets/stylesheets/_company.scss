@@ -168,47 +168,71 @@ article.company {
 
       > div.fields {
         @include display(flex);
-        @include align-items(center);
+        @include justify-content(space-between);
 
-        margin: 0 0 $base-unit;
+        margin-bottom: $base-unit * 2;
 
-        > label {
-          margin-right: $base-unit;
-        }
+        > div.field {
+          @include display(inline-flex);
+          @include align-items(center);
 
-        > .input-wrapper {
-          @include display(flex);
-          @include justify-content(space-between);
 
-          width: 200px;
-          padding: 2px;
-          border: 3pt solid $white-smoke;
+          > label {
+            margin-right: $base-unit;
+          }
 
           > input {
-            height: 30px;
+            margin-right: $base-unit / 2;
+            padding: 4px;
+            width: 200px;
+            border: 3pt solid $white-smoke;
             outline: none;
-            border: none;
-            width: 150px;
             font-weight: 300;
           }
 
           > button {
-            width: 30px;
-            height: 30px;
-            padding: 0;
-            margin: 0;
-            background-color: $ufo-green;
-            color: white;
-            border: none;
+            margin-right: $base-unit / 2;
+          }
 
-            &.red {
-              background-color: $cg-red;
+          > a {
+            color: $ufo-green;
+          }
+
+          > .input-wrapper {
+            @include display(flex);
+            @include justify-content(space-between);
+
+            width: 200px;
+            padding: 2px;
+            border: 3pt solid $white-smoke;
+
+            > input {
+              height: 30px;
+              outline: none;
+              border: none;
+              width: 150px;
+              font-weight: 300;
             }
 
-            > i {
-              font-size: 11pt;
-              line-height: 30px;
+            > button {
+              width: 30px;
+              height: 30px;
+              padding: 0;
+              margin: 0;
+              background-color: $ufo-green;
+              color: white;
+              border: none;
+
+              &.red {
+                background-color: $cg-red;
+              }
+
+              > i {
+                font-size: 11pt;
+                line-height: 30px;
+              }
             }
+
           }
 
         }

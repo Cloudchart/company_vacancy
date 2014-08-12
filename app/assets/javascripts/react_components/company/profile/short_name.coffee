@@ -3,7 +3,7 @@ tag = React.DOM
 Component = React.createClass
 
   render: ->
-    (tag.div { className: 'fields' },
+    (tag.div { className: 'field' },
       (tag.label { htmlFor: 'short_name' }, 'Short Name')
 
       (tag.div { className: 'input-wrapper'},

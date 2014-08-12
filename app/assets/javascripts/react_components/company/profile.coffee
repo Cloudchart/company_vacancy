@@ -2,15 +2,17 @@
 ##= require ./profile/country_select
 ##= require ./profile/industry_select
 ##= require ./profile/short_name
+##= require ./profile/url
 
-# Imports
-#
 tag = React.DOM
 company_attributes = ['country', 'industry', 'is_listed']
 
-ShortNameComponent = cc.require('react/company/short_name')
+# Imports
+#
 CountrySelectComponent = cc.require('react/company/country_select')
 IndustrySelectComponent = cc.require('react/company/industry_select')
+ShortNameComponent = cc.require('react/company/short_name')
+UrlComponent = cc.require('react/company/url')
 
 # Main Component
 #
@@ -24,11 +26,19 @@ Component = React.createClass
       
       (tag.div { className: 'section-block' },
 
-        (ShortNameComponent {
-          value: @state.short_name
-          onChange: @onShortNameChange
-          url: @props.url
-        })
+        (tag.div { className: 'fields' },
+          (UrlComponent {
+            value: @state.url
+            onChange: @onUrlChange
+            url: @props.company_url
+          })
+          
+          (ShortNameComponent {
+            value: @state.short_name
+            onChange: @onShortNameChange
+            url: @props.company_url
+          })
+        )
 
         'Industry'
         (IndustrySelectComponent {
@@ -68,6 +78,7 @@ Component = React.createClass
     industry:   @props.industry_ids[0]
     is_listed:  @props.is_listed
     short_name: @props.short_name
+    url:        @props.url
   
   componentDidUpdate: (prevProps, prevState) ->
     @save() if company_attributes.some((name) => @state[name] isnt prevState[name])
@@ -76,7 +87,7 @@ Component = React.createClass
     data = company_attributes.reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
 
     $.ajax
-      url:        @props.url
+      url:        @props.company_url
       data:       data
       type:       'PUT'
       dataType:   'json'
@@ -111,6 +122,10 @@ Component = React.createClass
   onShortNameChange: (event) ->
     @setState
       short_name: event.target.value  
+
+  onUrlChange: (event) ->
+    @setState
+      url: event.target.value       
   # --
 
 # Exports

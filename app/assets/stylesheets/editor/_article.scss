@@ -152,9 +152,9 @@ $editor-identity-selector-search-input-padding: 4pt;
 
 // Editor section header input
 @mixin editor-section-header-input {
-  @include placeholder {
-    font-style: italic;
-  }
+  // @include placeholder {
+  //   font-style: italic;
+  // }
   
   border: none;
   font-size: $editor-section-header-input-font-size;
@@ -186,7 +186,7 @@ $editor-identity-selector-search-input-padding: 4pt;
 
     &:empty:before {
       content: attr(data-placeholder);
-      font-style: italic;
+      // font-style: italic;
       opacity: .25;
     }
   }
@@ -581,7 +581,7 @@ article.editor {
       > .default {
         border: 1pt dashed hsl(0, 0%, 0%);
         font-size: 15pt;
-        font-style: italic;
+        // font-style: italic;
         font-weight: 600;
         opacity: .25;
         padding: $base-unit;

@@ -3,8 +3,8 @@ module Editor
     
     self.root = false
     
-    attributes  :uuid, :name, :country, :description, :is_listed, :url, :short_name
-    attributes  :logotype, :logotype_url
+    attributes  :uuid, :name, :country, :description, :is_listed, :short_name, :url
+    attributes  :logotype, :logotype_url, :company_url
     attributes  :industry_ids
     
 
@@ -30,7 +30,7 @@ module Editor
     end
 
 
-    def url
+    def company_url
       company_path(object)
     end
     
