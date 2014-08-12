@@ -57,9 +57,14 @@ class CompaniesController < ApplicationController
   end
 
   # PATCH/PUT /companies/1
-  def update    
+  def update
     if @company.update(company_params)
       Activity.track_activity(current_user, params[:action], @company)
+
+      if company_params[:url].present?
+        token = current_user.tokens.create(name: :company_url, data: @company.id)
+        UserMailer.company_url_verification(token).deliver
+      end
 
       respond_to do |format|
         format.html { redirect_to @company }
@@ -81,6 +86,19 @@ class CompaniesController < ApplicationController
     redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
+  # def verify_url
+  #   token = @event.token
+  #   uri = URI.parse(@event.url)
+  #   uri.path = "/cloudchart_event_verification_#{token.id}.txt"
+  #   res = Net::HTTP.get_response(uri)
+  #   if res.is_a?(Net::HTTPSuccess)
+  #     token.destroy
+  #     redirect_to @event, message: t('messages.verifications.event.success')
+  #   else
+  #     redirect_to @event, alert: t('messages.verifications.event.fail')
+  #   end
+  # end
+
 private
   
   # Use callbacks to share common setup or constraints between actions.
@@ -98,7 +116,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :short_name, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
+    params.require(:company).permit(:name, :short_name, :url, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
   end
   
 end

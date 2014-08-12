@@ -11,7 +11,7 @@ class Company < ActiveRecord::Base
 
   BlockTypes  = ['Paragraph', 'BlockImage', 'Person', 'Vacancy']
   Sections    = ['About', 'Product', 'People', 'Vacancies']
-  
+
   dragonfly_accessor :logotype
 
   has_and_belongs_to_many :industries

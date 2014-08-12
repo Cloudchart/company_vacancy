@@ -30,13 +30,13 @@ Component = React.createClass
           (UrlComponent {
             value: @state.url
             onChange: @onUrlChange
-            url: @props.company_url
+            company_url: @props.company_url
           })
-          
+
           (ShortNameComponent {
             value: @state.short_name
             onChange: @onShortNameChange
-            url: @props.company_url
+            company_url: @props.company_url
           })
         )
 

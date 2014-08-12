@@ -9,7 +9,7 @@ Component = React.createClass
   #
   render: ->
     (tag.div { className: 'field' }, 
-      (tag.label { htmlFor: 'url' }, 'URL')
+      (tag.label { htmlFor: 'url' }, 'Site URL')
 
       (tag.input {
         id: 'url'
@@ -24,7 +24,7 @@ Component = React.createClass
       (tag.button {
         className: 'orgpad'
         disabled: true unless @isValid()
-        # onClick: @onClick
+        onClick: @save
       }, 
         'Go'
         (tag.i { className: 'fa fa-envelope-o' })
@@ -50,14 +50,41 @@ Component = React.createClass
   onKeyUp: (event) ->
     switch event.key
       when 'Enter'
-        console.log 'Enter'
-        # @save() unless @props.value == @state.value
+        @save() if @isValid()
       when 'Escape'
         console.log 'Escape'
         # @undoTyping()
 
   isValid: ->
     regex.test(@state.value)
+
+  save: ->
+    unless @props.value == @state.value
+
+      data = new FormData
+      data.append('company[url]', @state.value)
+
+      @setState({ sync: true, error: false })
+
+      $.ajax
+        url: @props.company_url
+        data: data
+        type: 'PUT'
+        dataType: 'json'
+        contentType:  false
+        processData:  false
+
+      .done @onSaveDone
+      .fail @onSaveFail
+
+  onSaveDone: (json) ->
+    @setState({ sync: false })
+    @props.onChange({ target: { value: @state.value } })
+  
+  onSaveFail: ->
+    @setState
+      sync: false
+      error: true
 
   # Lifecycle Methods
   #

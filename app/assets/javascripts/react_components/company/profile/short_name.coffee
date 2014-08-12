@@ -55,7 +55,7 @@ Component = React.createClass
     @setState({ sync: true, error: false })
 
     $.ajax
-      url: @props.url
+      url: @props.company_url
       data: data
       type: 'PUT'
       dataType: 'json'
