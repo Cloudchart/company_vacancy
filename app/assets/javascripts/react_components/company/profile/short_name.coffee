@@ -18,17 +18,17 @@ Component = React.createClass
         })
 
         (tag.button {
-          className: 'red' if @props.error
+          className: 'red' if @state.error
           # onClick: @onClick
           disabled: true
         },
           (tag.i { 
             className: 
-              if @props.sync
+              if @state.sync
                 'fa fa-spinner fa-spin'
-              else if @props.error
+              else if @state.error
                 'fa fa-times'
-              else if @props.success
+              else if @state.success
                 'fa fa-check'
               else
                 'fa fa-pencil'
@@ -41,15 +41,47 @@ Component = React.createClass
 
   getInitialState: ->
     value: @props.value
+    sync: false
+    error: false
+    success: false
 
   # componentWillReceiveProps: (nextProps) ->
-  #   @setState({  })
+  # componentDidUpdate: (prevProps, prevState) ->
 
-  updateValue: ->
+  save: ->
+    data = new FormData
+    data.append('company[short_name]', @state.value)
+
+    @setState({ sync: true, error: false })
+
+    $.ajax
+      url: @props.url
+      data: data
+      type: 'PUT'
+      dataType: 'json'
+      contentType:  false
+      processData:  false
+
+    .done @onSaveDone
+    .fail @onSaveFail
+
+  onSaveDone: (json) ->
+    @setState
+      sync: false
+      success: true
+
     @props.onChange({ target: { value: @state.value } })
+  
+  onSaveFail: ->
+    @setState
+      sync: false
+      error: true    
 
   undoTyping: ->
-    @setState({ value: @props.value })
+    @setState
+      value: @props.value
+      error: false
+      success: false
 
   onBlur: ->
     @undoTyping()
@@ -57,7 +89,7 @@ Component = React.createClass
   onKeyUp: (event) ->
     switch event.key
       when 'Enter'
-        @updateValue()
+        @save() unless @props.value == @state.value
       when 'Escape'
         @undoTyping()
 

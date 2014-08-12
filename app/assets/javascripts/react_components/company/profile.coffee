@@ -1,12 +1,12 @@
 ##= require module
-##= require ./country_select
-##= require ./industry_select
-##= require ./short_name
+##= require ./profile/country_select
+##= require ./profile/industry_select
+##= require ./profile/short_name
 
 # Imports
 #
 tag = React.DOM
-company_attributes = ['country', 'industry', 'is_listed', 'short_name']
+company_attributes = ['country', 'industry', 'is_listed']
 
 ShortNameComponent = cc.require('react/company/short_name')
 CountrySelectComponent = cc.require('react/company/country_select')
@@ -27,9 +27,7 @@ Component = React.createClass
         (ShortNameComponent {
           value: @state.short_name
           onChange: @onShortNameChange
-          sync: @state.sync
-          success: @state.success
-          error: @state.error
+          url: @props.url
         })
 
         'Industry'
@@ -66,10 +64,6 @@ Component = React.createClass
     )
   
   getInitialState: ->
-    error: false
-    sync: false
-    success: false
-
     country:    @props.country
     industry:   @props.industry_ids[0]
     is_listed:  @props.is_listed
@@ -80,10 +74,6 @@ Component = React.createClass
 
   save: ->
     data = company_attributes.reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
-    
-    @setState
-      sync: true
-      error: false
 
     $.ajax
       url:        @props.url
@@ -101,19 +91,15 @@ Component = React.createClass
       country:        json.country
       industry:       json.industry_ids[0]
       is_listed:      json.is_listed
-      short_name:     json.short_name
-      sync: false
-      success: true
   
   onSaveFail: ->
-    @setState
-      sync: false
-      error: true
-  
+    console.warn 'Save Fail'
+
   toggleListing: ->
     @setState
       is_listed: !@state.is_listed
   
+  # -- equal logic
   onCountryChange: (event) ->
     @setState
       country: event.target.value
@@ -125,6 +111,7 @@ Component = React.createClass
   onShortNameChange: (event) ->
     @setState
       short_name: event.target.value  
+  # --
 
 # Exports
 #
