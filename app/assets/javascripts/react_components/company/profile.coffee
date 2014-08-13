@@ -31,6 +31,7 @@ Component = React.createClass
             value: @state.url
             onChange: @onUrlChange
             company_url: @props.company_url
+            is_url_verified: @props.is_url_verified
           })
 
           (ShortNameComponent {
@@ -71,6 +72,8 @@ Component = React.createClass
         )
 
       )
+
+      console.log @props.is_url_verified
     )
   
   getInitialState: ->

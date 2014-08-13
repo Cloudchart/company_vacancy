@@ -55,7 +55,7 @@ SectionTitleInputComponent = React.createClass
     data[@props.owner]      = { sections_attributes: attributes }
 
     $.ajax
-      url:      @props.url
+      url:      @props.company_url
       type:     'PUT'
       dataType: 'json'
       data: data
@@ -194,7 +194,7 @@ SectionComponent = React.createClass
     titleInputComponent = SectionTitleInputComponent
       value:        @props.title
       placeholder:  @props.placeholder
-      url:          @props.url
+      url:          @props.company_url
       key:          @props.key
       owner:        @props.owner
     

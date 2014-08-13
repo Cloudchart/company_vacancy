@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy]
+  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_url]
 
   # -- https://github.com/rails/rails/issues/9703
   # 
@@ -62,7 +62,12 @@ class CompaniesController < ApplicationController
       Activity.track_activity(current_user, params[:action], @company)
 
       if company_params[:url].present?
-        token = @company.tokens.create!(name: :url_verification, data: { user_id: current_user.id })
+        token = @company.tokens.find_by(name: :url_verification)
+
+        unless token
+          token = @company.tokens.create!(name: :url_verification, data: { user_id: current_user.id })
+        end
+
         UserMailer.company_url_verification(token).deliver
       end
 
@@ -86,18 +91,28 @@ class CompaniesController < ApplicationController
     redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
-  # def verify_url
-  #   token = @event.token
-  #   uri = URI.parse(@event.url)
-  #   uri.path = "/cloudchart_event_verification_#{token.id}.txt"
-  #   res = Net::HTTP.get_response(uri)
-  #   if res.is_a?(Net::HTTPSuccess)
-  #     token.destroy
-  #     redirect_to @event, message: t('messages.verifications.event.success')
-  #   else
-  #     redirect_to @event, alert: t('messages.verifications.event.fail')
-  #   end
-  # end
+  def verify_url
+    token = Token.find_by_rfc1751(params[:token])
+    url = @company.url
+    url = 'http://' + @company.url unless @company.url.match(/http:\/\/|https:\/\//)
+    uri = URI.parse(url)
+    uri.path = '/cloudchart_company_url_verification.txt'
+    response = Net::HTTP.get_response(uri)
+
+    if response.is_a?(Net::HTTPSuccess)
+      token = Token.find_by_rfc1751(response.body)
+
+      if token
+        @company.tokens.where(name: :url_verification).destroy_all
+        redirect_to @company, notice: 'Site URL verified'
+      else
+        redirect_to @company, alert: 'Site URL verification failed. Code: TNF.'
+      end
+      
+    else
+      redirect_to @company, alert: 'Site URL verification failed. Code: RNF.'
+    end
+  end
 
 private
   

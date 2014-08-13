@@ -7,11 +7,11 @@
 </p>
 
 <p>
-  <%= link_to "Verify #{@company.name}'s site URL", '#' %>
+  <%= link_to "Verify #{@company.name}'s site URL", verify_url_company_url(@company) %>
 </p>
 
 <p>
-  As alternative use your <%= link_to 'company editor', main_app.company_url(@company) %>.
+  You may remove this file after verification.
 </p>
 
 <p>

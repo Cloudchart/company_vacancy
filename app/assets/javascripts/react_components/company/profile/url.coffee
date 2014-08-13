@@ -8,7 +8,7 @@ Component = React.createClass
   # Component Specifications
   #
   render: ->
-    (tag.div { className: 'field' }, 
+    (tag.div { className: 'field' },   
       (tag.label { htmlFor: 'url' }, 'Site URL')
 
       (tag.input {
@@ -21,70 +21,91 @@ Component = React.createClass
         # onBlur: @onBlur
       })
 
-      (tag.button {
-        className: 'orgpad'
-        disabled: true unless @isValid()
-        onClick: @save
-      }, 
-        'Go'
-        (tag.i { className: 'fa fa-envelope-o' })
-        # (tag.i { className: 'fa fa-cloud-download' })
-      )
+      (tag.div {},
+        (tag.button {
+          className: 'orgpad'
+          disabled: true if !@isValid() or @state.is_url_verified
+          onClick: @save
+        },
+          unless @state.is_url_verified
+            if @state.verification_sent 
+              'Resend' 
+            else 
+              'Verify'
 
-      # (tag.a { href: '#' },
-      #   (tag.i { className: 'fa fa-envelope' })
-      # )
+          (tag.i { className: if @state.is_url_verified then 'fa fa-check' else 'fa fa-envelope-o' })
+        )
+      )
 
     )
 
   getInitialState: ->
     value: @props.value
-    error: false
     sync: false
+    error: false
+    verification_sent: @props.verification_sent
+    is_url_verified: @props.is_url_verified
 
-  # getDefaultProps: ->
+  getDefaultProps: ->
+    verification_sent: if @props.value.length > 0 then true else false
 
   onChange: (event) ->
     @setState({ value: event.target.value })
 
   onKeyUp: (event) ->
+    @setState
+      verification_sent: if @props.value == @state.value then true else false
+      is_url_verified: if @props.is_url_verified and @props.value == @state.value then true else false
+
     switch event.key
       when 'Enter'
         @save() if @isValid()
       when 'Escape'
-        console.log 'Escape'
-        # @undoTyping()
+        @undo()
+
+  # onBlur: ->
+  #   @undo()
 
   isValid: ->
     regex.test(@state.value)
 
   save: ->
-    unless @props.value == @state.value
+    # unless @props.value == @state.value
 
-      data = new FormData
-      data.append('company[url]', @state.value)
+    data = new FormData
+    data.append('company[url]', @state.value)
 
-      @setState({ sync: true, error: false })
+    @setState({ sync: true, error: false })
 
-      $.ajax
-        url: @props.company_url
-        data: data
-        type: 'PUT'
-        dataType: 'json'
-        contentType:  false
-        processData:  false
+    $.ajax
+      url: @props.company_url
+      data: data
+      type: 'PUT'
+      dataType: 'json'
+      contentType:  false
+      processData:  false
 
-      .done @onSaveDone
-      .fail @onSaveFail
+    .done @onSaveDone
+    .fail @onSaveFail
 
   onSaveDone: (json) ->
-    @setState({ sync: false })
+    @setState
+      sync: false
+      verification_sent: true
+      is_url_verified: false
+
     @props.onChange({ target: { value: @state.value } })
   
   onSaveFail: ->
     @setState
       sync: false
       error: true
+
+  undo: ->
+    @setState
+      value: @props.value
+      verification_sent: @props.verification_sent
+      is_url_verified: @props.is_url_verified
 
   # Lifecycle Methods
   #

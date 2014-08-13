@@ -21,7 +21,7 @@ MainComponent = React.createClass
         sections_titles:        @props.sections
         available_block_types:  @props.available_block_types
         blocks:                 @props.blocks
-        url:                    @props.url
+        company_url:            @props.company_url
         blocks_url:             @props.blocks_url
         people_url:             @props.people_url
         vacancies_url:          @props.vacancies_url
@@ -30,6 +30,8 @@ MainComponent = React.createClass
         chart_ids:              @props.chart_ids
         is_listed:              @props.is_listed
         short_name:             @props.short_name
+        url:                    @props.url
+        is_url_verified:        @props.is_url_verified
         owner:                  'company'
       })
     )
