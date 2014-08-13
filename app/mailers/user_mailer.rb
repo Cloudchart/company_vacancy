@@ -10,9 +10,18 @@ class UserMailer < ActionMailer::Base
   end
 
   def company_url_verification(token)
-    @company = Company.find(token.data)
-    @user = token.owner
-    @token = rfc1751(token)
+    @company = token.owner
+    @user = User.find(token.data[:user_id])
+    token = rfc1751(token)
+    @file_name = 'cloudchart_company_url_verification.txt'
+
+    dir_location = File.join(Rails.root, 'tmp', 'attachments')
+    FileUtils.mkdir_p(dir_location)
+    file_location = File.join(dir_location, "#{token}.txt")
+    File.open(file_location, "w") { |f| f.write(token) }
+    attachments[@file_name] = File.read(file_location)
+    File.delete(file_location)
+
     mail to: @user.email
   end
 

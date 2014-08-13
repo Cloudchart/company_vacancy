@@ -62,7 +62,7 @@ class CompaniesController < ApplicationController
       Activity.track_activity(current_user, params[:action], @company)
 
       if company_params[:url].present?
-        token = current_user.tokens.create(name: :company_url, data: @company.id)
+        token = @company.tokens.create!(name: :url_verification, data: { user_id: current_user.id })
         UserMailer.company_url_verification(token).deliver
       end
 

@@ -28,6 +28,7 @@ class Company < ActiveRecord::Base
   has_many :subscriptions, as: :subscribable, dependent: :destroy
   has_many :charts, class_name: 'CloudBlueprint::Chart', dependent: :destroy
   has_many :favorites, as: :favoritable, dependent: :destroy
+  has_many :tokens, as: :owner, dependent: :destroy
   # has_paper_trail
 
   accepts_nested_attributes_for :logo, allow_destroy: true
