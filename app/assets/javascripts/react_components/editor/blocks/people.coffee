@@ -1,9 +1,12 @@
+##= require ../../../components/Person
+
 # Expose
 #
 tag         = React.DOM
 
 PersonModel = cc.models.Person
 
+PersonComponent = cc.require('cc.components.Person')
 
 # People component
 #
@@ -40,11 +43,23 @@ Component = React.createClass
         key:            person.uuid
         className:      'container'
       },
-        cc.react.editor.blocks.Person
-          onDelete:   @onPersonDelete
-          onChange:   @onPersonChange
-          model:      person
-          avatar_url: person.avatar_url
+
+        # Person Component
+        #
+        (PersonComponent {
+          key:                          person.uuid
+          shouldRenderLettersInAvatar:  false
+        },
+
+          # Delete Person from block
+          #
+          (tag.button { className: 'delete', onClick: @onPersonDelete.bind(@, person.uuid) }, 'Delete')
+            
+          # Change Person in block
+          #
+          (tag.button { className: 'change', onClick: @onPersonChange.bind(@, person.uuid) }, 'Change')
+
+        )
       )
   
   
@@ -55,9 +70,9 @@ Component = React.createClass
       people: people
   
   
-  onPersonDelete: (event) ->
-    person  = @state.people.filter((person) -> person.uuid == event.target.value)[0] ; return unless person
-    people  = @state.people.slice(0)
+  onPersonDelete: (uuid) ->
+    person  = @state.people.filter((person) -> person.uuid == uuid)[0] ; return unless person
+    people  = @state.people[..]
     
     people.splice(people.indexOf(person), 1)
     
@@ -65,9 +80,8 @@ Component = React.createClass
       people: people
   
   
-  onPersonChange: (event) ->
+  onPersonChange: (uuid) ->
     alert 'Not implemented yet.'
-    
 
 
   getInitialState: ->

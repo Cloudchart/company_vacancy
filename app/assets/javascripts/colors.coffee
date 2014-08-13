@@ -1,6 +1,6 @@
 ##= require module
 
-colours = [
+colors = [
   'hsl( 39, 85%, 71%)'
   'hsl(141, 46%, 59%)'
   'hsl(196, 91%, 69%)'
@@ -15,4 +15,6 @@ colours = [
   'hsl(206, 57%, 76%)'
 ]
 
-cc.module('colors').exports = cc.module('colours').exports = colours
+cc.module('colors').exports = cc.module('colours').exports = colors
+
+cc.module('cc.Colors').exports = colors

@@ -29,6 +29,10 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
+    respond_to do |format|
+      format.html
+      format.json { render json: @company }
+    end
   end
 
   # GET /companies/new

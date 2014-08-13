@@ -10,7 +10,8 @@ class PeopleController < ApplicationController
 
   # GET /people
   def index
-    @people = @company.people
+    @people = @company.people.includes(:user)
+
     pagescript_params(company_id: @company.id)
     
     respond_to do |format|

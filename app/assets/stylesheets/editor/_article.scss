@@ -274,7 +274,7 @@ $editor-identity-selector-search-input-padding: 4pt;
   position: relative;
   height: $list-identity-item-height + $padding-top + $padding-bottom;
   
-  aside {
+  > * > figure {
     @include position(absolute, $padding-top 0 0 $padding-left);
     
     border-radius: $list-identity-item-height / 2;
@@ -287,25 +287,14 @@ $editor-identity-selector-search-input-padding: 4pt;
     text-align: center;
   }
   
-  .title,
-  .note {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-  }
-  
-  .title {
+  > * > header {
     font-size: $list-identity-item-name-font-size;
-    font-size: $list-identity-item-name-font-weight;
-  }
-
-  .note {
-    font-size: $list-identity-item-occupation-font-size;
-    font-size: $list-identity-item-occupation-font-weight;
-    text-transform: uppercase;
   }
   
+  > * > footer {
+    font-size: $list-identity-item-occupation-font-size;
+  }
+    
   &:hover {
     background-color: hsla(0, 0%, 0%, .1);
   }
@@ -342,6 +331,7 @@ $editor-identity-selector-search-input-padding: 4pt;
       @include list-identity-item(3pt);
 
       cursor: pointer;
+      
     }
   }
 }
@@ -392,9 +382,38 @@ $editor-identity-selector-search-input-padding: 4pt;
   @include align-items(flex-start);
   @include justify-content(flex-end);
   
-  background-size: cover;
-  background-position: center center;
-
+  position: absolute;
+  
+  
+  > figure {
+    @include position(absolute, 0px 0px 0px 0px);
+  }
+  
+  > header,
+  > footer {
+    color: hsl(0, 100%, 100%);
+    padding: 10px;
+    width: 100%;
+  }
+  
+  &.with-avatar {
+    > header,
+    > footer {
+      background-color: hsla(0, 0%, 0%, .25);
+    }
+  }
+  
+  > header {
+    font-size: 20px;
+    padding-bottom: 0;
+  }
+  
+  > footer {
+    font-size: 10px;
+    padding-top: 0;
+  }
+  
+  
   button {
     @include editor-person-button;
     @include transition(opacity 100ms ease-out);
@@ -456,7 +475,7 @@ $editor-identity-selector-search-input-padding: 4pt;
   > .container {
     @include editor-identity-item(4);
     
-    .person {
+    > .person {
       @include editor-identity-block-item;
     }
     

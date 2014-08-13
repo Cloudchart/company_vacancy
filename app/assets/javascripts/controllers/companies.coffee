@@ -19,6 +19,7 @@
 
 #     @innerHTML = @innerHTML
 
+
 # Show
 #
 @['companies#show'] = (data) ->
@@ -26,10 +27,19 @@
   cc.module('countries').exports                  = data.countries
   cc.module('industries').exports                 = data.industries
   
+  PersonStore       = cc.require('cc.stores.PersonStore')
+  VacancyStore      = cc.require('cc.stores.VacancyStore')
+  
   CompanyComponent  = cc.require('react/company')
   container         = document.querySelector('main')
   
   React.renderComponent(CompanyComponent(data.company), container)
+
+  PersonStore.load(data.company.people_url)
+  VacancyStore.load(data.company.vacancies_url)
+  
+  
+
 
 # Search
 # 

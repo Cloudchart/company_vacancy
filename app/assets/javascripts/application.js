@@ -18,12 +18,13 @@
 //= require placeholder
 //= require react
 //= require flux.dispatcher
-//= require block_identities
+//= require lodash
 //= require ui
 //= require plugins
 //= require shared
 //= require ujs
 //= require utils
+//= require block_identities
 //= require ./models
 //= require ./react_components
 //= require_tree .

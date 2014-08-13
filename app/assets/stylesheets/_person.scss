@@ -1,0 +1,40 @@
+@mixin person {
+  
+  > figure {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    font-weight: 300;
+    position: relative;
+    text-align: center;
+    
+    &::before {
+      content: '';
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+  }
+  
+  > header,
+  > footer {
+    overflow: hidden;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  > header {
+    font-weight: 400;
+  }
+  
+  > footer {
+    font-weight: 300;
+    text-transform: uppercase;
+  }
+  
+}
+
+.person {
+  @include person;
+}

@@ -9,7 +9,7 @@ module CloudBlueprint
       @chart = Chart.includes(company: :people).find(params[:chart_id])
       respond_to do |format|
         format.json do
-          render json: @chart.company.people.as_json(only: [:uuid, :first_name, :last_name, :occupation])
+          render json: @chart.company.people, root: false
         end
       end
     end

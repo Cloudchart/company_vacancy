@@ -33,6 +33,10 @@ class Base
     (@attributes ||= []).push attributes...
   
   
+  @all: ->
+    @instances
+  
+
   @get: (uuid) -> @instances[uuid]
   
   
@@ -262,3 +266,4 @@ class Base
 # Expose
 #
 @cc.models.Base = Base
+cc.module('cc.models.BaseModel').exports = Base

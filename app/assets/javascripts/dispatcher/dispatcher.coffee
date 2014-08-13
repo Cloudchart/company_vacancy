@@ -13,7 +13,7 @@ class Dispatcher extends Flux.Dispatcher
   handleClientAction: (action) ->
     payload =
       action: action
-      source: 'clients'
+      source: 'client'
     @dispatch(payload)
 
 

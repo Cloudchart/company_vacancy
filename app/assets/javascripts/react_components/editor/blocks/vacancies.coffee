@@ -1,8 +1,13 @@
+##= require components/Vacancy
+
 # Expose
 #
 tag         = React.DOM
 
 Model       = cc.models.Vacancy
+
+
+VacancyComponent = cc.require('cc.components.Vacancy')
 
 
 # Main component
@@ -32,8 +37,8 @@ MainComponent = React.createClass
   failSave: ->
   
   
-  onIdentityDelete: (event) ->
-    identity    = _.find @state.identities, (identity) -> identity.uuid == event.target.value
+  onIdentityDelete: (uuid) ->
+    identity    = _.find @state.identities, (identity) -> identity.uuid == uuid
     identities  = @state.identities.slice(0)
 
     identities.splice(identities.indexOf(identity), 1)
@@ -57,10 +62,27 @@ MainComponent = React.createClass
         key:        identity.uuid
         className:  'container'
       },
-        cc.react.editor.blocks.Vacancy
-          onDelete:   @onIdentityDelete
-          onChange:   @onIdentityChange
-          model:      identity
+
+        # Identity Component
+        #
+        (VacancyComponent {
+          key:                      identity.uuid
+          shouldRenderIconInAvatar: false
+        },
+
+          # Delete Vacancy from block
+          #
+          (tag.button { className: 'delete', onClick: @onIdentityDelete.bind(@, identity.uuid) }, 'Delete')
+            
+          # Change Vacancy in block
+          #
+          (tag.button { className: 'change', onClick: @onIdentityChange.bind(@, identity.uuid) }, 'Change')
+
+        )
+        # cc.react.editor.blocks.Vacancy
+        #   onDelete:   @onIdentityDelete
+        #   onChange:   @onIdentityChange
+        #   model:      identity
       )
 
 
