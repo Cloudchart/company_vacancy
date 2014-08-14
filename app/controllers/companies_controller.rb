@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy]
+  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_url]
 
   # -- https://github.com/rails/rails/issues/9703
   # 
@@ -61,9 +61,19 @@ class CompaniesController < ApplicationController
   end
 
   # PATCH/PUT /companies/1
-  def update    
+  def update
     if @company.update(company_params)
       Activity.track_activity(current_user, params[:action], @company)
+
+      if company_params[:url].present?
+        token = @company.tokens.find_by(name: :url_verification)
+
+        unless token
+          token = @company.tokens.create!(name: :url_verification, data: { user_id: current_user.id })
+        end
+
+        UserMailer.company_url_verification(token).deliver
+      end
 
       respond_to do |format|
         format.html { redirect_to @company }
@@ -85,6 +95,29 @@ class CompaniesController < ApplicationController
     redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
+  def verify_url
+    token = Token.find_by_rfc1751(params[:token])
+    url = @company.url
+    url = 'http://' + @company.url unless @company.url.match(/http:\/\/|https:\/\//)
+    uri = URI.parse(url)
+    uri.path = '/cloudchart_company_url_verification.txt'
+    response = Net::HTTP.get_response(uri)
+
+    if response.is_a?(Net::HTTPSuccess)
+      token = Token.find_by_rfc1751(response.body)
+
+      if token
+        @company.tokens.where(name: :url_verification).destroy_all
+        redirect_to @company, notice: 'Site URL verified'
+      else
+        redirect_to @company, alert: 'Site URL verification failed. Code: TNF.'
+      end
+      
+    else
+      redirect_to @company, alert: 'Site URL verification failed. Code: RNF.'
+    end
+  end
+
 private
   
   # Use callbacks to share common setup or constraints between actions.
@@ -102,7 +135,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :short_name, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
+    params.require(:company).permit(:name, :short_name, :url, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
   end
   
 end

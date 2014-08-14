@@ -44,6 +44,7 @@ Cloudchart::Application.routes.draw do
     end
 
     post :search, on: :collection
+    get :verify_url, on: :member
   end
 
   resources :blocks, only: [:update, :destroy] do

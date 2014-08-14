@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140807124436) do
+ActiveRecord::Schema.define(version: 20140811105515) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -140,6 +140,7 @@ ActiveRecord::Schema.define(version: 20140807124436) do
     t.boolean  "is_listed",      default: false
     t.boolean  "is_public",      default: false
     t.string   "short_name"
+    t.string   "url"
   end
 
   add_index "companies", ["short_name"], name: "index_companies_on_short_name", unique: true, using: :btree

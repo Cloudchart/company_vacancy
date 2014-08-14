@@ -1,261 +1,22 @@
 ##= require module
+##= require ./profile/country_select
+##= require ./profile/industry_select
+##= require ./profile/short_name
+##= require ./profile/url
+
+tag = React.DOM
+company_attributes = ['country', 'industry', 'is_listed']
 
 # Imports
 #
-tag = cc.require('react/dom')
-profile_attributes = ['country', 'industry', 'is_listed', 'short_name']
-
-
-# Short Name Component
-# 
-ShortNameComponent = React.createClass
-
-  render: ->
-    (tag.div { className: 'fields' },
-      (tag.label { htmlFor: 'short_name' }, 'Short Name')
-
-      (tag.div { className: 'input-wrapper'},
-        (tag.input {
-          id: 'short_name'
-          name: 'short_name'
-          placeholder: 'Type name'
-          onKeyUp: @onKeyUp
-          onChange: @onChange
-          onBlur: @onBlur
-          value: @state.value
-        })
-
-        (tag.button {
-          className: 'red' if @props.error
-          # onClick: @onClick
-          disabled: true
-        },
-          (tag.i { 
-            className: 
-              if @props.sync
-                'fa fa-spinner fa-spin'
-              else if @props.error
-                'fa fa-times'
-              else if @props.success
-                'fa fa-check'
-              else
-                'fa fa-pencil'
-          })
-        )
-
-      )
-
-    )
-
-  getInitialState: ->
-    value: @props.value
-
-  # componentWillReceiveProps: (nextProps) ->
-  #   @setState({  })
-
-  updateValue: ->
-    @props.onChange({ target: { value: @state.value } })
-
-  undoTyping: ->
-    @setState({ value: @props.value })
-
-  onBlur: ->
-    @undoTyping()
-
-  onKeyUp: (event) ->
-    switch event.key
-      when 'Enter'
-        @updateValue()
-      when 'Escape'
-        @undoTyping()
-
-  # onClick: (event) ->
-  #   @updateValue()
-
-  onChange: (event) ->
-    @setState
-      value: event.target.value
-
-
-# Country Select Component
-#
-CountrySelectComponent = React.createClass
-  emptyCountry: ->
-    (tag.option {
-      key: 'empty'
-    }, 'Country...')
-
-
-  items: ->
-    items = @props.countries.map (pair) ->
-      [name, code] = pair
-
-      (tag.option {
-        key:    code
-        value:  code
-      }, name)
-    
-    items.unshift(@emptyCountry()) unless @state.value
-    
-    items
-
-
-  onChange: (event) ->
-    @setState
-      value: event.target.value
-
-  
-  getDefaultProps: ->
-    countries: cc.require('countries')
-
-
-  getInitialState: ->
-    value: @props.value
-  
-  
-  componentDidUpdate: (prevProps, prevState) ->
-    @props.onChange({ target: { value: @state.value }}) if @props.onChange instanceof Function and @state.value != prevState.value
-
-
-  render: ->
-    (tag.select {
-      className:  'country-list'
-      value:      @state.value
-      onChange:   @onChange
-    }, @items())
-  
-
-
-# Industry Select Component
-#
-IndustrySelectComponent = React.createClass
-
-
-  emptyIndustry: ->
-    (tag.option {
-      key: 'empty'
-    }, 'Industry...')
-
-
-  items: ->
-    roots = _.sortBy @props.industries.filter((industry) -> !industry.parent_id), 'name'
-
-    items = roots.map (industry) =>
-
-      children  = _.sortBy @props.industries.filter((child) -> child.parent_id == industry.uuid), 'name'
-
-      [
-        (tag.option {
-          key:    industry.uuid
-          value:  industry.uuid
-        }, industry.name),
-
-        children.map (child) ->
-          (tag.option {
-            key:    child.id
-            value:  child.uuid
-          }, "— #{child.name}")
-      ]
-    
-    items.unshift(@emptyIndustry()) unless @state.value
-
-    items
-  
-  
-  onChange: (event) ->
-    @setState
-      value: event.target.value
-
-
-  getDefaultProps: ->
-    industries: cc.require('industries')
-
-
-  getInitialState: ->
-    value: @props.value
-  
-  
-  componentDidUpdate: (prevProps, prevState) ->
-    @props.onChange({ target: { value: @state.value }}) if @props.onChange instanceof Function and @state.value != prevState.value
-
-
-  render: ->
-    (tag.select {
-      className: 'industry-select'
-      value:      @state.value
-      onChange:   @onChange
-    }, @items())
-
-
+CountrySelectComponent = cc.require('react/company/country_select')
+IndustrySelectComponent = cc.require('react/company/industry_select')
+ShortNameComponent = cc.require('react/company/short_name')
+UrlComponent = cc.require('react/company/url')
 
 # Main Component
 #
-MainComponent = React.createClass
-
-  onSaveDone: (json) ->
-    @setState
-      country:        json.country
-      industry:       json.industry_ids[0]
-      is_listed:      json.is_listed
-      short_name:     json.short_name
-      sync: false
-      success: true
-  
-  onSaveFail: ->
-    @setState
-      sync: false
-      error: true
-
-
-  save: ->
-    data = profile_attributes.reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
-    
-    @setState
-      sync: true
-      error: false
-
-    $.ajax
-      url:        @props.url
-      data:       data
-      type:       'PUT'
-      dataType:   'json'
-      contentType:  false
-      processData:  false
-
-    .done @onSaveDone
-    .fail @onSaveFail
-  
-  
-  toggleListing: ->
-    @setState
-      is_listed: !@state.is_listed
-  
-  onCountryChange: (event) ->
-    @setState
-      country: event.target.value
-  
-  onIndustryChange: (event) ->
-    @setState
-      industry: event.target.value
-
-  onShortNameChange: (event) ->
-    @setState
-      short_name: event.target.value  
-  
-  getInitialState: ->
-    error: false
-    sync: false
-    success: false
-
-    country:    @props.country
-    industry:   @props.industry_ids[0]
-    is_listed:  @props.is_listed
-    short_name: @props.short_name
-  
-  
-  componentDidUpdate: (prevProps, prevState) ->
-    @save() if profile_attributes.some((name) => @state[name] isnt prevState[name])
-
+Component = React.createClass
 
   render: ->
     (tag.section {
@@ -265,13 +26,20 @@ MainComponent = React.createClass
       
       (tag.div { className: 'section-block' },
 
-        (ShortNameComponent {
-          value: @state.short_name
-          onChange: @onShortNameChange
-          sync: @state.sync
-          success: @state.success
-          error: @state.error
-        })
+        (tag.div { className: 'fields' },
+          (UrlComponent {
+            value: @state.url
+            onChange: @onUrlChange
+            company_url: @props.company_url
+            is_url_verified: @props.is_url_verified
+          })
+
+          (ShortNameComponent {
+            value: @state.short_name
+            onChange: @onShortNameChange
+            company_url: @props.company_url
+          })
+        )
 
         'Industry'
         (IndustrySelectComponent {
@@ -305,9 +73,64 @@ MainComponent = React.createClass
 
       )
 
+      console.log @props.is_url_verified
     )
+  
+  getInitialState: ->
+    country:    @props.country
+    industry:   @props.industry_ids[0]
+    is_listed:  @props.is_listed
+    short_name: @props.short_name
+    url:        @props.url
+  
+  componentDidUpdate: (prevProps, prevState) ->
+    @save() if company_attributes.some((name) => @state[name] isnt prevState[name])
 
+  save: ->
+    data = company_attributes.reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
+
+    $.ajax
+      url:        @props.company_url
+      data:       data
+      type:       'PUT'
+      dataType:   'json'
+      contentType:  false
+      processData:  false
+
+    .done @onSaveDone
+    .fail @onSaveFail
+
+  onSaveDone: (json) ->
+    @setState
+      country:        json.country
+      industry:       json.industry_ids[0]
+      is_listed:      json.is_listed
+  
+  onSaveFail: ->
+    console.warn 'Save Fail'
+
+  toggleListing: ->
+    @setState
+      is_listed: !@state.is_listed
+  
+  # -- equal logic
+  onCountryChange: (event) ->
+    @setState
+      country: event.target.value
+  
+  onIndustryChange: (event) ->
+    @setState
+      industry: event.target.value
+
+  onShortNameChange: (event) ->
+    @setState
+      short_name: event.target.value  
+
+  onUrlChange: (event) ->
+    @setState
+      url: event.target.value       
+  # --
 
 # Exports
 #
-cc.module('react/company/profile').exports = MainComponent
+cc.module('react/company/profile').exports = Component

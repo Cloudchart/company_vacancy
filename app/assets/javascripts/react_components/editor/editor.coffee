@@ -5,23 +5,12 @@
 #
 tag = React.DOM
 
-
 CompanyProfileComponent = cc.require('react/company/profile')
 ChartPreviewComponent   = cc.require('blueprint/react/chart-preview')
 
-
-
 # Main component
 #
-# Properties:
-#   sections:         all sections to render
-#   sections_titles:  object sections titles
-#   blocks:           all existing blocks
-#   url:              url for ajax requests
-#   object:           object key for ajax requests
-#
 MainComponent = React.createClass
-
 
   render: ->
     sectionsComponents = @props.sections.map (section) =>
@@ -29,7 +18,7 @@ MainComponent = React.createClass
         key:            section.key
         placeholder:    section.title
         title:          @props.sections_titles[section.key]
-        url:            @props.url
+        company_url:    @props.company_url
         people_url:     @props.people_url
         vacancies_url:  @props.vacancies_url
         blocks_url:     @props.blocks_url
@@ -37,12 +26,14 @@ MainComponent = React.createClass
         blocks:         @props.blocks.filter((block) -> block.section == section.key)
     
     sectionsComponents.splice(1, 0, CompanyProfileComponent({
-      key:            'company-profile'
-      url:            @props.url
-      country:        @props.country
-      industry_ids:   @props.industry_ids
-      is_listed:      @props.is_listed
-      short_name:     @props.short_name
+      key:             'company-profile'
+      company_url:     @props.company_url
+      country:         @props.country
+      industry_ids:    @props.industry_ids
+      is_listed:       @props.is_listed
+      short_name:      @props.short_name
+      url:             @props.url
+      is_url_verified: @props.is_url_verified
     }))
     
     (tag.article { className: 'editor' },

@@ -19,7 +19,7 @@ article section {
         &:empty::before {
           color: hsl(0, 0, 78%);
           content: attr(data-placeholder);
-          font-style: italic;
+          // font-style: italic;
           font-weight: 600;
         }
         

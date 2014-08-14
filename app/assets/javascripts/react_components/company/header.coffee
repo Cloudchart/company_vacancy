@@ -86,12 +86,12 @@ MainComponent = React.createClass
 
 
   save: ->
-    return unless @props.url
+    return unless @props.company_url
     
     data = ['name', 'description'].reduce(((memo, name) => memo.append("company[#{name}]", @state[name]) ; memo), new FormData)
     
     $.ajax
-      url:          @props.url
+      url:          @props.company_url
       type:         'PUT'
       dataType:     'json'
       data:         data
@@ -135,7 +135,7 @@ MainComponent = React.createClass
         backgroundColor: backgroundColor(@state.name)
     },
       (tag.div { className: 'container' },
-        (LogoComponent { logo: @props.logo, logotype: @props.logotype_url, url: @props.url })
+        (LogoComponent { logo: @props.logo, logotype: @props.logotype_url, url: @props.company_url })
       
         (tag.h1   {},
           (InputComponent {

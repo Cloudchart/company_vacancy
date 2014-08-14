@@ -1,0 +1,21 @@
+<p>
+  Hello<%= @user.present? ? " #{@user.full_name_or_email}" : '' %>,
+</p>
+
+<p>
+  You or someone else has changed <%= link_to @company.name, main_app.company_url(@company) %>'s site URL. Please put attached "<%= @file_name %>" file in your website's root directory. When done, click the following link to continue:
+</p>
+
+<p>
+  <%= link_to "Verify #{@company.name}'s site URL", verify_url_company_url(@company) %>
+</p>
+
+<p>
+  You may remove this file after verification.
+</p>
+
+<p>
+  If you think it’s a mistake, just ignore this email.
+</p>
+
+<%= render 'shared/mailer_signature' %>

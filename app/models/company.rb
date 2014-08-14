@@ -11,7 +11,7 @@ class Company < ActiveRecord::Base
 
   BlockTypes  = ['Paragraph', 'BlockImage', 'Person', 'Vacancy']
   Sections    = ['About', 'Product', 'People', 'Vacancies']
-  
+
   dragonfly_accessor :logotype
 
   has_and_belongs_to_many :industries
@@ -28,12 +28,14 @@ class Company < ActiveRecord::Base
   has_many :subscriptions, as: :subscribable, dependent: :destroy
   has_many :charts, class_name: 'CloudBlueprint::Chart', dependent: :destroy
   has_many :favorites, as: :favoritable, dependent: :destroy
+  has_many :tokens, as: :owner, dependent: :destroy
   # has_paper_trail
 
   accepts_nested_attributes_for :logo, allow_destroy: true
 
   # validates :name, :country, :industry_ids, presence: true, on: :update
   validates :short_name, uniqueness: true, allow_blank: true
+  validates :url, url: true, allow_blank: true
   
   settings ElasticSearchNGramSettings do
     mapping do

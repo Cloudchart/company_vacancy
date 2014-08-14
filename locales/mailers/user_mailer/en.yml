@@ -8,3 +8,5 @@ en:
       subject: "Invitation to CloudChart"
     thanks_for_invite_request:
       subject: "Thank you for requesting an invitation to CloudChart!"
+    company_url_verification:
+      subject: "CloudChart company site URL changed"
