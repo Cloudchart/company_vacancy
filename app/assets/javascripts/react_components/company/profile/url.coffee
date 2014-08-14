@@ -21,38 +21,39 @@ Component = React.createClass
         # onBlur: @onBlur
       })
 
-      (tag.button {
-        className: "orgpad#{if @state.can_delete then ' alert' else ''}"
-        disabled: true if @state.is_url_verified or !@state.can_delete and !@isValid() or @state.sync
-        onClick: @save
-      },
-        if @state.is_url_verified
-          (tag.i { className: 'fa fa-check' })
-        else if @state.verification_sent
-          [
-            (tag.span { key: 'button_value' }, 'Resend')
-            (tag.i { 
-              key: 'button_icon'
-              className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
-            })
-          ]
-        else if @state.can_delete
-          [
-            (tag.span { key: 'button_value' }, 'Delete')
-            (tag.i { 
-              key: 'button_icon' 
-              className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-times'
-            })
-          ]
-        else 
-          [
-            (tag.span { key: 'button_value' }, 'Verify')
-            (tag.i { 
-              key: 'button_icon'
-              className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
-            })
-          ]
-      )
+      if @state.is_url_verified
+        (tag.i { className: 'fa fa-check-circle' })
+      else
+        (tag.button {
+          className: "orgpad#{if @state.can_delete then ' alert' else ''}"
+          disabled: true if @state.is_url_verified or !@state.can_delete and !@isValid() or @state.sync
+          onClick: @save
+        },
+          if @state.verification_sent
+            [
+              (tag.span { key: 'button_value' }, 'Resend')
+              (tag.i { 
+                key: 'button_icon'
+                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
+              })
+            ]
+          else if @state.can_delete
+            [
+              (tag.span { key: 'button_value' }, 'Delete')
+              (tag.i { 
+                key: 'button_icon' 
+                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-times'
+              })
+            ]
+          else 
+            [
+              (tag.span { key: 'button_value' }, 'Verify')
+              (tag.i { 
+                key: 'button_icon'
+                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
+              })
+            ]
+        )
 
     )
 
@@ -78,7 +79,7 @@ Component = React.createClass
           false
       is_url_verified: 
         if @props.is_url_verified and @props.value == @state.value and @state.value != ''
-          true 
+          true
         else 
           false
       can_delete: 
@@ -112,8 +113,8 @@ Component = React.createClass
       data: data
       type: 'PUT'
       dataType: 'json'
-      contentType:  false
-      processData:  false
+      contentType: false
+      processData: false
 
     .done @onSaveDone
     .fail @onSaveFail
@@ -125,7 +126,12 @@ Component = React.createClass
       is_url_verified: false
       can_delete: false
 
-    @props.onChange({ target: { value: @state.value, verification_sent: @state.verification_sent } })
+    @props.onChange(
+      target:
+        value: @state.value
+        verification_sent: @state.verification_sent
+        is_url_verified: @state.is_url_verified
+    )
   
   onSaveFail: ->
     @setState
@@ -137,6 +143,7 @@ Component = React.createClass
       value: @props.value
       verification_sent: @props.verification_sent
       is_url_verified: @props.is_url_verified unless @props.value == ''
+      can_delete: false
 
   # Lifecycle Methods
   #

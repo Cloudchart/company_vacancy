@@ -189,6 +189,10 @@ article.company {
             font-weight: 300;
           }
 
+          > i {
+            color: $ufo-green;
+          }
+
           > .input-wrapper {
             @include display(flex);
             @include justify-content(space-between);

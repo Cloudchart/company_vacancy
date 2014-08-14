@@ -31,7 +31,7 @@ Component = React.createClass
             value: @state.url
             onChange: @onUrlChange
             company_url: @props.company_url
-            is_url_verified: @props.is_url_verified
+            is_url_verified: @state.is_url_verified
             verification_sent: @state.verification_sent
           })
 
@@ -76,11 +76,12 @@ Component = React.createClass
     )
   
   getInitialState: ->
-    country:    @props.country
-    industry:   @props.industry_ids[0]
-    is_listed:  @props.is_listed
-    short_name: @props.short_name
-    url:        @props.url
+    country:           @props.country
+    industry:          @props.industry_ids[0]
+    is_listed:         @props.is_listed
+    short_name:        @props.short_name
+    url:               @props.url
+    is_url_verified:   @props.is_url_verified
     verification_sent: 
       if @props.url == null or @props.url == '' then false else true
 
@@ -130,6 +131,7 @@ Component = React.createClass
     @setState
       url: event.target.value
       verification_sent: event.target.verification_sent
+      is_url_verified: event.is_url_verified
 
 # Exports
 #
