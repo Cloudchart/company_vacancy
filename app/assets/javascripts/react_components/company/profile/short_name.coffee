@@ -22,7 +22,7 @@ Component = React.createClass
         (tag.button {
           className: 'orgpad'
           onClick: @onClick
-          disabled: true if @state.sync
+          disabled: true if @state.sync or @state.value == '' and @state.value == @props.value
         },
           (tag.span {}, 'Edit') 
           (tag.i { 
@@ -86,7 +86,7 @@ Component = React.createClass
 
   onKeyUp: (event) ->
     @setState
-      success: if @state.value == @props.value then true else false
+      success: if @state.value == @props.value and @state.value != '' then true else false
 
     switch event.key
       when 'Enter'
