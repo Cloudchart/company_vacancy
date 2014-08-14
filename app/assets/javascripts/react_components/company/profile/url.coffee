@@ -21,30 +21,39 @@ Component = React.createClass
         # onBlur: @onBlur
       })
 
-      (tag.div {},
-        (tag.button {
-          className: 'orgpad'
-          disabled: true if !@isValid() or @state.is_url_verified
-          onClick: @save
-        },
-          unless @state.is_url_verified
-            if @state.verification_sent 
-              'Resend' 
-            else 
-              'Verify'
-
-          (tag.i { className: if @state.is_url_verified then 'fa fa-check' else 'fa fa-envelope-o' })
-        )
+      (tag.button {
+        className: "orgpad#{if @state.can_delete then ' alert' else ''}"
+        disabled: true if @state.is_url_verified or !@state.can_delete and !@isValid()
+        onClick: @save
+      },
+        if @state.is_url_verified
+          (tag.i { className: 'fa fa-check' })
+        else if @state.verification_sent 
+          [
+            (tag.span { key: 'button_value' }, 'Resend')
+            (tag.i { key: 'button_icon', className: 'fa fa-envelope-o' })
+          ]
+        else if @state.can_delete
+          [
+            (tag.span { key: 'button_value' }, 'Delete')
+            (tag.i { key: 'button_icon', className: 'fa fa-times' })
+          ]
+        else 
+          [
+            (tag.span { key: 'button_value' }, 'Verify')
+            (tag.i { key: 'button_icon', className: 'fa fa-envelope-o' })
+          ]
       )
 
     )
 
   getInitialState: ->
     value: @props.value
-    sync: false
-    error: false
     verification_sent: @props.verification_sent
     is_url_verified: @props.is_url_verified
+    sync: false
+    error: false
+    can_delete: false
 
   # getDefaultProps: ->
 
@@ -55,10 +64,11 @@ Component = React.createClass
     @setState
       verification_sent: if @props.value == @state.value and @state.value != '' then true else false
       is_url_verified: if @props.is_url_verified and @props.value == @state.value then true else false
+      can_delete: if @state.value == '' and @props.value != @state.value then true else false
 
     switch event.key
       when 'Enter'
-        @save() if @isValid()
+        @save() if @isValid() or @state.value == '' and @props.value != @state.value
       when 'Escape'
         @undo()
 
@@ -90,8 +100,9 @@ Component = React.createClass
   onSaveDone: (json) ->
     @setState
       sync: false
-      verification_sent: true
+      verification_sent: if @state.value == '' then false else true
       is_url_verified: false
+      can_delete: false
 
     @props.onChange({ target: { value: @state.value, verification_sent: @state.verification_sent } })
   

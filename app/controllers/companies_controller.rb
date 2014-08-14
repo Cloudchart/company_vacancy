@@ -73,6 +73,8 @@ class CompaniesController < ApplicationController
         end
 
         UserMailer.company_url_verification(token).deliver
+      elsif company_params[:url] == ''
+        @company.tokens.where(name: :url_verification).destroy_all
       end
 
       respond_to do |format|

@@ -176,7 +176,6 @@ article.company {
           @include display(inline-flex);
           @include align-items(center);
 
-
           > label {
             margin-right: $base-unit;
           }
@@ -188,14 +187,6 @@ article.company {
             border: 3pt solid $white-smoke;
             outline: none;
             font-weight: 300;
-          }
-
-          > button {
-            margin-right: $base-unit / 2;
-          }
-
-          > a {
-            color: $ufo-green;
           }
 
           > .input-wrapper {
