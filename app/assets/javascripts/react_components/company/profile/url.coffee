@@ -46,15 +46,14 @@ Component = React.createClass
     verification_sent: @props.verification_sent
     is_url_verified: @props.is_url_verified
 
-  getDefaultProps: ->
-    verification_sent: if @props.value.length > 0 then true else false
+  # getDefaultProps: ->
 
   onChange: (event) ->
     @setState({ value: event.target.value })
 
   onKeyUp: (event) ->
     @setState
-      verification_sent: if @props.value == @state.value then true else false
+      verification_sent: if @props.value == @state.value and @state.value.length != 0 then true else false
       is_url_verified: if @props.is_url_verified and @props.value == @state.value then true else false
 
     switch event.key
@@ -94,7 +93,7 @@ Component = React.createClass
       verification_sent: true
       is_url_verified: false
 
-    @props.onChange({ target: { value: @state.value } })
+    @props.onChange({ target: { value: @state.value, verification_sent: @state.verification_sent } })
   
   onSaveFail: ->
     @setState

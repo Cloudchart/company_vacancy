@@ -32,6 +32,7 @@ Component = React.createClass
             onChange: @onUrlChange
             company_url: @props.company_url
             is_url_verified: @props.is_url_verified
+            verification_sent: @state.verification_sent
           })
 
           (ShortNameComponent {
@@ -72,8 +73,6 @@ Component = React.createClass
         )
 
       )
-
-      console.log @props.is_url_verified
     )
   
   getInitialState: ->
@@ -82,7 +81,9 @@ Component = React.createClass
     is_listed:  @props.is_listed
     short_name: @props.short_name
     url:        @props.url
-  
+    verification_sent: 
+      if @props.url.length > 0 then true else false
+
   componentDidUpdate: (prevProps, prevState) ->
     @save() if company_attributes.some((name) => @state[name] isnt prevState[name])
 
@@ -113,7 +114,6 @@ Component = React.createClass
     @setState
       is_listed: !@state.is_listed
   
-  # -- equal logic
   onCountryChange: (event) ->
     @setState
       country: event.target.value
@@ -128,8 +128,8 @@ Component = React.createClass
 
   onUrlChange: (event) ->
     @setState
-      url: event.target.value       
-  # --
+      url: event.target.value
+      verification_sent: event.target.verification_sent
 
 # Exports
 #
