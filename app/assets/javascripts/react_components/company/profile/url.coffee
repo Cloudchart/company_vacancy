@@ -53,7 +53,7 @@ Component = React.createClass
 
   onKeyUp: (event) ->
     @setState
-      verification_sent: if @props.value == @state.value and @state.value.length != 0 then true else false
+      verification_sent: if @props.value == @state.value and @state.value != '' then true else false
       is_url_verified: if @props.is_url_verified and @props.value == @state.value then true else false
 
     switch event.key

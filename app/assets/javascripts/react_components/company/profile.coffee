@@ -82,7 +82,7 @@ Component = React.createClass
     short_name: @props.short_name
     url:        @props.url
     verification_sent: 
-      if @props.url.length > 0 then true else false
+      if @props.url == null or @props.url == '' then false else true
 
   componentDidUpdate: (prevProps, prevState) ->
     @save() if company_attributes.some((name) => @state[name] isnt prevState[name])
