@@ -6,36 +6,33 @@ Component = React.createClass
     (tag.div { className: 'field' },
       (tag.label { htmlFor: 'short_name' }, 'Short Name')
 
-      (tag.div { className: 'input-wrapper'},
-        (tag.input {
-          id: 'short_name'
-          name: 'short_name'
-          placeholder: 'Type name'
-          onKeyUp: @onKeyUp
-          onChange: @onChange
-          onBlur: @onBlur
-          value: @state.value
-        })
+      (tag.input {
+        id: 'short_name'
+        name: 'short_name'
+        value: @state.value
+        placeholder: 'Type name'
+        className: 'error' if @state.error
+        onKeyUp: @onKeyUp
+        onChange: @onChange
+      })
 
+      if @state.success
+        (tag.i { className: 'fa fa-check-circle' })
+      else
         (tag.button {
-          className: 'red' if @state.error
-          # onClick: @onClick
-          disabled: true
+          className: 'orgpad'
+          onClick: @onClick
+          disabled: true if @state.sync
         },
+          (tag.span {}, 'Edit') 
           (tag.i { 
             className: 
               if @state.sync
                 'fa fa-spinner fa-spin'
-              else if @state.error
-                'fa fa-times'
-              else if @state.success
-                'fa fa-check'
               else
-                'fa fa-pencil'
+                'fa fa-pencil' 
           })
         )
-
-      )
 
     )
 
@@ -43,7 +40,11 @@ Component = React.createClass
     value: @props.value
     sync: false
     error: false
-    success: false
+    success: 
+      if @props.value == '' or @props.value == null 
+        false
+      else
+        true
 
   # componentWillReceiveProps: (nextProps) ->
   # componentDidUpdate: (prevProps, prevState) ->
@@ -68,7 +69,7 @@ Component = React.createClass
   onSaveDone: (json) ->
     @setState
       sync: false
-      success: true
+      success: if @state.value != '' then true else false
 
     @props.onChange({ target: { value: @state.value } })
   
@@ -83,18 +84,18 @@ Component = React.createClass
       error: false
       success: false
 
-  onBlur: ->
-    @undoTyping()
-
   onKeyUp: (event) ->
+    @setState
+      success: if @state.value == @props.value then true else false
+
     switch event.key
       when 'Enter'
         @save() unless @props.value == @state.value
       when 'Escape'
         @undoTyping()
 
-  # onClick: (event) ->
-  #   @updateValue()
+  onClick: (event) ->
+    @save() unless @props.value == @state.value
 
   onChange: (event) ->
     @setState

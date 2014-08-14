@@ -16,6 +16,7 @@ Component = React.createClass
         name: 'url'
         value: @state.value
         placeholder: 'Type URL'
+        className: 'error' if @state.error
         onChange: @onChange
         onKeyUp: @onKeyUp
         # onBlur: @onBlur
@@ -144,6 +145,7 @@ Component = React.createClass
       verification_sent: @props.verification_sent
       is_url_verified: @props.is_url_verified unless @props.value == ''
       can_delete: false
+      error: false
 
   # Lifecycle Methods
   #
