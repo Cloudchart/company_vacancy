@@ -62,9 +62,21 @@ Component = React.createClass
 
   onKeyUp: (event) ->
     @setState
-      verification_sent: if @props.value == @state.value and @state.value != '' then true else false
-      is_url_verified: if @props.is_url_verified and @props.value == @state.value then true else false
-      can_delete: if @state.value == '' and @props.value != @state.value then true else false
+      verification_sent: 
+        if @props.value == @state.value and @state.value != ''
+          true
+        else
+          false
+      is_url_verified: 
+        if @props.is_url_verified and @props.value == @state.value and @state.value != ''
+          true 
+        else 
+          false
+      can_delete: 
+        if @state.value == '' and @props.value != @state.value 
+          true 
+        else
+          false
 
     switch event.key
       when 'Enter'
@@ -115,7 +127,7 @@ Component = React.createClass
     @setState
       value: @props.value
       verification_sent: @props.verification_sent
-      is_url_verified: @props.is_url_verified
+      is_url_verified: @props.is_url_verified unless @props.value == ''
 
   # Lifecycle Methods
   #
