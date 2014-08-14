@@ -23,25 +23,34 @@ Component = React.createClass
 
       (tag.button {
         className: "orgpad#{if @state.can_delete then ' alert' else ''}"
-        disabled: true if @state.is_url_verified or !@state.can_delete and !@isValid()
+        disabled: true if @state.is_url_verified or !@state.can_delete and !@isValid() or @state.sync
         onClick: @save
       },
         if @state.is_url_verified
           (tag.i { className: 'fa fa-check' })
-        else if @state.verification_sent 
+        else if @state.verification_sent
           [
             (tag.span { key: 'button_value' }, 'Resend')
-            (tag.i { key: 'button_icon', className: 'fa fa-envelope-o' })
+            (tag.i { 
+              key: 'button_icon'
+              className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
+            })
           ]
         else if @state.can_delete
           [
             (tag.span { key: 'button_value' }, 'Delete')
-            (tag.i { key: 'button_icon', className: 'fa fa-times' })
+            (tag.i { 
+              key: 'button_icon' 
+              className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-times'
+            })
           ]
         else 
           [
             (tag.span { key: 'button_value' }, 'Verify')
-            (tag.i { key: 'button_icon', className: 'fa fa-envelope-o' })
+            (tag.i { 
+              key: 'button_icon'
+              className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
+            })
           ]
       )
 
