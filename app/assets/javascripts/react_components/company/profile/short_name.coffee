@@ -22,7 +22,8 @@ Component = React.createClass
         (tag.button {
           className: 'orgpad'
           onClick: @onClick
-          disabled: true if @state.sync or @state.value == '' and @state.value == @props.value
+          disabled: true if @state.sync or 
+            (@state.value == '' or @state.value == null and @state.value == @props.value)
         },
           (tag.span {}, 'Edit') 
           (tag.i { 
