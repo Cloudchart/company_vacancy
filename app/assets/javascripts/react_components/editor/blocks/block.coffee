@@ -35,7 +35,9 @@ Component = React.createClass
         onClick:    @onDeleteButtonClick
       }) unless @props.is_locked
 
-      @transferPropsTo(blockComponentClass {})
+      @transferPropsTo(blockComponentClass {
+        key: @props.key
+      })
     )
 
 

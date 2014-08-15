@@ -1,4 +1,4 @@
-##= require ../dispatcher/dispatcher
+##= require dispatcher/Dispatcher
 
 # Imports
 #

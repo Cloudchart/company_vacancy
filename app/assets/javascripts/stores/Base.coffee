@@ -1,3 +1,10 @@
+# uuid
+#
+uuid = ->
+  objectURL = URL.createObjectURL(new Blob) ; URL.revokeObjectURL(objectURL)
+  objectURL.split('/').pop()
+
+
 # Store Persistence
 #
 
@@ -117,11 +124,31 @@ class Store
 
   @add: (model) ->
     throw new Error("#{@displayName}.add(model): model should be instance of #{@displayName}") unless model instanceof @
-    @GetModels().push(model)
+
+    if prevModel = @find(model.to_param())
+      prevModel.attr(model.attr())
+      model = prevModel
+    else
+      @all().push(model)
+    
+    model
+  
+  
+  @remove: (model) ->
+    @__models.splice(@__models.indexOf(model), 1) if _.contains(@__models, model)
+  
+  
+  @create: (attributes) ->
+    attributes[@unique_key] = uuid() unless attributes[@unique_key]
+    new @(attributes)
+  
+  
+  @all: ->
+    @GetModels()
   
   
   @find: (id) ->
-    _.find @GetModels(), (model) -> model.to_param() == id
+    _.find @all(), (model) -> model.to_param() == id
   
   
   constructor: (attributes) ->
@@ -133,6 +160,12 @@ class Store
   
   to_param: ->
     @attr(@constructor.unique_key)
+  
+  
+  matches: (query) ->
+    _.any @attr(), (value) ->
+      return false unless _.isString(value)
+      !!~value.toLowerCase().indexOf(query)
   
   
   # Clear all changes

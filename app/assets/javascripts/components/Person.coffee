@@ -50,6 +50,7 @@ Component = React.createClass
       
       classList = {
         'person':         true
+        'identity':       true
         'with-avatar':  !!avatarURL
       }
       

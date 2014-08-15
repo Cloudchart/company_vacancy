@@ -466,21 +466,191 @@ $editor-identity-selector-search-input-padding: 4pt;
 }
 
 
+@mixin aspect-ratio {
+  position: relative;
+  
+  &::before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+  }
+  
+  > .content {
+    @include position(absolute, 0px 0px 0px 0px);
+  }
+}
+
+.aspect-ratio-1x1 {
+  @include aspect-ratio;
+}
+
+
+@mixin identity-button {
+  background-color: hsl(136, 52%, 51%);
+  border: none;
+  color: hsl(0, 100%, 100%);
+  font-size: 11px;
+  font-weight: 400;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+  
+  &.delete {
+    background-color: hsl(1, 76%, 54%);
+  }
+}
+
+
+@mixin identity-selector-button {
+  background-color: hsl(136, 52%, 51%);
+  border: none;
+  color: hsl(0, 100%, 100%);
+  font-size: 18px;
+  font-weight: 400;
+  height: 40px;
+  line-height: 40px;
+  margin: 0;
+  padding: 0 15px;
+  
+  > i.fa {
+    margin-left: 10px;
+  }
+}
+
+
 // Editor person block
 @mixin editor-people-block {
-  @include clearfix;
   
-  margin-top: -$base-unit;
+  @include display(flex);
+  @include flex-wrap(wrap);
+  
+  margin-right: -20px;
+  
+  > .controller,
+  > .identity-selector {
+    width: 25%;
 
-  > .container {
-    @include editor-identity-item(4);
+    > .content {
+      margin: 0 20px 20px 0;
+    }
+  }
+  
+  
+  > .identity-selector {
     
-    > .person {
-      @include editor-identity-block-item;
+    > .content {
+      @include align-items(center);
+      @include display(flex);
+      @include flex-direction(column);
+
+      background-color: hsl(0, 0%, 96%);
+      overflow: hidden;
+      padding: 5px;
+      
+      > input {
+        border: none;
+        font-size: 16px;
+        font-weight: 400;
+        height: 35px;
+        margin: 0;
+        padding: 0 5px;
+        outline: none;
+        position: relative;
+        width: 100%;
+      }
+      
+      > button {
+        @include identity-selector-button;
+        margin: auto;
+      }
+      
+      > ul {
+        list-style: none;
+        margin: 5px -5px 0;
+        overflow: scroll;
+        padding: 0;
+        width: 100%;
+        
+        > li {
+          cursor: pointer;
+          padding: 5px;
+          margin: 0;
+          
+          &:hover {
+            background-color: #eee;
+          }
+          
+        }
+      }
+    }
+  }
+  
+
+  > .controller {
+    
+    .buttons {
+      @include display(flex);
+      @include position(absolute, 10px 10px 0 10px);
+      
+      visibility: hidden;
+      
+      > button {
+        @include flex(1);
+        @include identity-button;
+        margin: 0 5px;
+        
+        &:first-child {
+          margin-left: 0;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
     }
     
-    .identity-selector {
-      @include editor-identity-selector;
+    &:hover .buttons {
+      visibility: visible;
+    }
+    
+    .person {
+      @include display(flex);
+      @include flex-direction(column);
+      @include justify-content(flex-end);
+      
+      height: 100%;
+    }
+
+    .person > figure {
+      @include position(absolute, 0px 0px 0px 0px);
+      
+      > * {
+        display: none;
+      }
+    }
+    
+    .person.with-avatar {
+      > header,
+      > footer {
+        background-color: hsla(0, 0%, 0%, .5);
+      }
+    }
+    
+    .person > header,
+    .person > footer {
+      color: hsl(0, 100%, 100%);
+      padding: 10px;
+    }
+    
+    .person > header {
+      font-size: 20px;
+      padding-bottom: 0;
+    }
+    
+    .person > footer {
+      font-size: 10px;
+      padding-top: 0;
     }
   }
   

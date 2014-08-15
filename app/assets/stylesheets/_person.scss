@@ -1,19 +1,21 @@
+$person-editor-identity-selector-item-header-font-size: 15px;
+$person-editor-identity-selector-item-footer-font-size: 10px;
+$person-editor-identity-selector-item-size: 35px;
+
+
 @mixin person {
   
   > figure {
+    @include display(flex);
+    @include align-items(center);
+    @include justify-content(center);
+    
     background-position: center center;
     background-repeat: no-repeat;
     background-size: contain;
     font-weight: 300;
     position: relative;
     text-align: center;
-    
-    &::before {
-      content: '';
-      display: inline-block;
-      height: 100%;
-      vertical-align: middle;
-    }
   }
   
   > header,
@@ -37,4 +39,35 @@
 
 .person {
   @include person;
+}
+
+
+// Person in editor identity selector
+//
+.editor .identity-selector .person {
+  @include display(flex);
+  @include flex-direction(column);
+  @include justify-content(center);
+  
+  height: $person-editor-identity-selector-item-size;
+  padding-left: $person-editor-identity-selector-item-size + 10px;
+  position: relative;
+  
+  > figure {
+    @include position(absolute, 0px 0 0 0px);
+    
+    border-radius: $person-editor-identity-selector-item-size / 2;
+    font-size: $person-editor-identity-selector-item-size / 2;
+    height: $person-editor-identity-selector-item-size;
+    width: $person-editor-identity-selector-item-size;
+  }
+  
+  > header {
+    font-size: $person-editor-identity-selector-item-header-font-size;
+  }
+  
+  > footer {
+    font-size: $person-editor-identity-selector-item-footer-font-size;
+  }
+  
 }
