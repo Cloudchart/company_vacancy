@@ -2,6 +2,7 @@
 ##= require components/Person
 ##= require components/Vacancy
 ##= require components/QueryInput
+##= require components/IdentityList
 ##= require stores/PersonStore
 ##= require stores/VacancyStore
 
@@ -12,12 +13,13 @@ tag = React.DOM
 
 BlockIdentityActionsCreator = cc.require('cc.actions.BlockIdentityActionsCreator')
 
-PersonComponent     = cc.require('cc.components.Person')
-VacancyComponent    = cc.require('cc.components.Vacancy')
-QueryInputComponent = cc.require('cc.components.QueryInput')
+PersonComponent       = cc.require('cc.components.Person')
+VacancyComponent      = cc.require('cc.components.Vacancy')
+QueryInputComponent   = cc.require('cc.components.QueryInput')
+IdentityListComponent = cc.require('cc.components.IdentityList')
 
-PersonStore       = cc.require('cc.stores.PersonStore')
-VacancyStore      = cc.require('cc.stores.VacancyStore')
+PersonStore           = cc.require('cc.stores.PersonStore')
+VacancyStore          = cc.require('cc.stores.VacancyStore')
 
 
 IdentityStores =
@@ -35,30 +37,18 @@ IdentityComponents =
 Component = React.createClass
 
 
-  identityList: ->
+  gatherIdentities: ->
     identityComponent = IdentityComponents[@props.identity_type]
     identityStore     = IdentityStores[@props.identity_type]
 
     identities = _.chain(identityStore.all())
       .reject (identity) => _.contains(@props.filtered_identities, identity.to_param())
       .filter (identity) => _.all @state.query, (q) -> identity.matches(q)
+      .sortBy (identity) -> identity.sortValue()
       .value()
-
-    identities = identities.map (identity) =>
-      (tag.li {
-        key: identity.to_param()
-        className: 'identity-list-item'
-        onClick:  @onIdentitySelect.bind(@, identity.to_param())
-      },
-        (identityComponent { key: identity.to_param() })
-      )
     
-    (tag.ul {
-      key:        'identity-list'
-      className:  'identity-list'
-    },
-      identities
-    )
+    _.map identities, (identity) ->
+      (identityComponent { key: identity.to_param() })
   
   
   addButton: ->
@@ -81,8 +71,16 @@ Component = React.createClass
             placeholder:  'Type name'
             autoFocus:    true
             onChange:     @onQueryChange
+            onCancel:     @onQueryCancel
           })
-          @identityList()
+
+          (IdentityListComponent {
+            key:            'identity-list'
+            identity_type:  @props.identity_type
+            onSelect:       @onIdentitySelect
+          },
+            @gatherIdentities()
+          )
         ]
       
       when 'view'
@@ -99,6 +97,12 @@ Component = React.createClass
   onQueryChange: (query) ->
     @setState
       query: query
+  
+  
+  onQueryCancel: ->
+    @setState
+      query:  []
+      mode:   'view'
   
   
   onIdentitySelect: (key) ->

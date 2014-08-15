@@ -116,6 +116,9 @@ class Store
   
   @unique_key:  'uuid'
   @displayName: 'Store'
+
+  @attributesForSort:   [@unique_key]
+  @attributesForMatch:  []
   
 
   @GetModels: ->
@@ -163,9 +166,14 @@ class Store
   
   
   matches: (query) ->
-    _.any @attr(), (value) ->
-      return false unless _.isString(value)
-      !!~value.toLowerCase().indexOf(query)
+    attributesForMatch = _.map @constructor.attributesForMatch, (name) => @attr(name)
+    
+    _.any attributesForMatch, (value) ->
+      _.contains value.toLowerCase(), query if _.isString(value)
+  
+
+  sortValue: ->
+    _.map @constructor.attributesForSort, (name) => @attr(name)
   
   
   # Clear all changes

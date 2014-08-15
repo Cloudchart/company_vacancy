@@ -16,6 +16,9 @@ class PersonStore extends Base
   
   @displayName:       'PersonStore'
   
+  @attributesForSort:   ['last_name', 'first_name']
+  @attributesForMatch:  ['last_name', 'first_name', 'occupation']
+  
 
   parse_created_at: parseDate
   parse_updated_at: parseDate

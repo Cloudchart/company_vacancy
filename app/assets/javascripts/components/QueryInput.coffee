@@ -15,6 +15,11 @@ prepareQuery = (query) ->
 Component = React.createClass
 
 
+  cancel: ->
+    @blur()
+    @props.onCancel() if _.isFunction(@props.onCancel)
+
+
   blur: ->
     @refs['query-input'].getDOMNode().blur()
 
@@ -28,7 +33,7 @@ Component = React.createClass
     switch event.key
     
       when 'Escape'
-        @blur() if @state.query == ''
+        @cancel() if @state.query == ''
         @setState({ query: '', source: 'self' })
   
   
