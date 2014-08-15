@@ -3878,6 +3878,7 @@ var React = {
   }
 };
 
+/*
 if ("production" !== "development") {
   var ExecutionEnvironment = _dereq_("./ExecutionEnvironment");
   if (ExecutionEnvironment.canUseDOM &&
@@ -3889,6 +3890,7 @@ if ("production" !== "development") {
     );
   }
 }
+*/
 
 // Version exists only in the open-source version of React, not in Facebook's
 // internal version.
