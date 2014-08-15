@@ -50,7 +50,7 @@
 # 
 @['companies#index'] = (data) ->
   $ ->
-    cc.companies_section_chevron_toggle()
+    # cc.companies_section_chevron_toggle()
     cc.init_chart_preview()
 
 

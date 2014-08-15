@@ -117,6 +117,8 @@ MainComponent = React.createClass
     scale:                1
     horizontal_padding:   20
     vertical_padding:     20
+    # chart_url: '/charts/' + @props.id # TODO: company id is needed
+    chart_url: '/companies/' + @props.company_id + '/charts/' + @props.id
   
   
   getInitialState: ->
@@ -139,7 +141,7 @@ MainComponent = React.createClass
         nodes:    @state.nodes
         width:    @state.width
         height:   @state.height
-        url:      "/charts/#{@props.id}"
+        url:      @props.chart_url
       },
         (LinksContainerComponent {
           ref:    'links-container'
@@ -147,12 +149,12 @@ MainComponent = React.createClass
         }) 
       ) if @state.nodes.length > 0
 
-      (tag.a { className: "orgpad-button edit", href: '/charts/' + @props.id },
+      (tag.a { className: "orgpad-button edit", href: @props.chart_url },
         'Tap to edit your chart'
         (tag.i { className: 'fa fa-sitemap' })
       ) if @state.nodes.length == 0 unless @props.small if @state.loaded
 
-      (tag.a { className: "orgpad-button edit small", href: '/charts/' + @props.id },
+      (tag.a { className: "orgpad-button edit small", href: @props.chart_url },
         'Empty chart'
       ) if @state.nodes.length == 0 if @props.small if @state.loaded
 

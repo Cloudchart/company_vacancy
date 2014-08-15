@@ -24,13 +24,6 @@
   
 </section>
 
-<%-
-  pagescript_params(
-    chart_id:   ENV['NEWSPLASH_CHART_ID'],
-    token:      TokenSerializer.new(( Token.find(params[:token]) rescue Token.find_by_rfc1751(params[:token]) rescue nil )).as_json
-  )
--%>
-
 <%- content_for :search, "&nbsp;".html_safe -%>
 
 <%- content_for :authentication do -%>

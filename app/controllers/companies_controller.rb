@@ -29,6 +29,8 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
+    # @company = Company.find_by(short_name: params[:id]) || Company.find(params[:id])
+
     respond_to do |format|
       format.html
       format.json { render json: @company }
@@ -124,7 +126,7 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    @company = Company.find_by(short_name: params[:id]) || Company.find(params[:id])
+    @company = Company.find_by_short_name(params[:id])
   end
 
   def set_collection

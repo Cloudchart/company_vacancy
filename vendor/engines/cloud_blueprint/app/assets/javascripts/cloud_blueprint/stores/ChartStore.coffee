@@ -9,7 +9,7 @@ ChartSyncAPI  = cc.require('cc.blueprint.utils.ChartSyncAPI')
 
 # Chart attributes
 #
-_knownAttributes = ['uuid', 'company_id', 'title', 'is_public', 'created_at', 'updated_at']
+_knownAttributes = ['uuid', 'company_id', 'title', 'is_public', 'permalink', 'created_at', 'updated_at']
 
 
 # Globals

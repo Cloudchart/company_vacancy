@@ -107,9 +107,15 @@
         <% company.charts.each do |chart| %>
           <li class="chart-preview-container">
           
-            <div class="chart-preview" data-react-mount-point-for-chart="<%= chart.id %>"></div>
+            <!-- <div class="chart-preview" data-react-mount-point-for-chart="<%= chart.id %>"></div> -->
 
-            <strong><%= link_to chart.title, cloud_blueprint.chart_path(chart) %></strong>
+            <%= content_tag(:div, nil, class: 'chart-preview', data:
+              { 'react-mount-point-for-chart' => chart.id,
+                'react-company-id' => chart.company_id
+              })
+            %>
+
+            <strong><%= link_to chart.title, cloud_blueprint.company_chart_path(company, chart) %></strong>
           </li>
         <% end %>
 

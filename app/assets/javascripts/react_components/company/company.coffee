@@ -17,6 +17,7 @@ MainComponent = React.createClass
       (HeaderComponent @props)
       
       (EditorComponent {
+        company_id:             @props.uuid
         sections:               @props.available_sections
         sections_titles:        @props.sections
         available_block_types:  @props.available_block_types

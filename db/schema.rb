@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140811105515) do
+ActiveRecord::Schema.define(version: 20140815134735) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(version: 20140811105515) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_public",             default: false
+    t.string   "permalink"
   end
 
   create_table "cloud_blueprint_identities", primary_key: "uuid", force: true do |t|

@@ -2,7 +2,7 @@ require_dependency "cloud_blueprint/application_controller"
 
 module CloudBlueprint
   class ChartsController < ApplicationController    
-    before_action :set_chart, only: [:show, :pull, :update]
+    before_action :set_chart, only: [:pull, :update]
 
     # -- https://github.com/rails/rails/issues/9703
     # 
@@ -11,12 +11,14 @@ module CloudBlueprint
     before_action :require_authenticated_user!, except: [:show, :pull, :preview]
     # --
 
+    before_action :set_company, only: [:show, :new]
+
     authorize_resource
     
     # Render chart
-    # GET /charts/:id
     #
     def show
+      @chart = @company.charts.find_by(permalink: params[:id]) || @company.charts.find(params[:id])
       
       pagescript_params editable: can?(:edit, @chart)
       
@@ -73,15 +75,13 @@ module CloudBlueprint
 
 
     # New chart
-    # GET /charts/new
     #
     def new
-      company = current_user.companies.find(params[:company_id])
-      chart   = Chart.new(title: 'Default Chart')
-      company.charts << chart
+      chart = Chart.new(title: 'Default Chart')
+      @company.charts << chart
       redirect_to chart
     rescue ActiveRecord::RecordNotFound
-      redirect_to :back and return unless company
+      redirect_to :back and return unless @company
     end
     
 
@@ -89,11 +89,11 @@ module CloudBlueprint
     # POST /charts
     #
     def create
-      @companies  = current_user.companies
+      @companies = current_user.companies
       
       redirect_to new_chart_path and return unless @companies.map(&:to_param).include?(params[:chart][:company_id])
       
-      @chart      = Chart.new params.require(:chart).permit(:title, :company_id)
+      @chart = Chart.new params.require(:chart).permit(:title, :company_id)
       @chart.save!
 
       redirect_to @chart
@@ -125,6 +125,10 @@ module CloudBlueprint
 
     def set_chart
       @chart = Chart.find(params[:id])
+    end
+
+    def set_company
+      @company = Company.find_by_short_name(params[:company_id])
     end
     
         

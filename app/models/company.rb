@@ -36,6 +36,8 @@ class Company < ActiveRecord::Base
   # validates :name, :country, :industry_ids, presence: true, on: :update
   validates :short_name, uniqueness: true, allow_blank: true
   validates :url, url: true, allow_blank: true
+
+  scope :find_by_short_name, -> (id) { find_by(short_name: id) || find(id) }
   
   settings ElasticSearchNGramSettings do
     mapping do

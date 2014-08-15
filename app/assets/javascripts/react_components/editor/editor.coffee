@@ -42,7 +42,7 @@ MainComponent = React.createClass
       (tag.section {
         className: 'chart-preview-container'
       },
-        ChartPreviewComponent({ id: @props.chart_ids[0], scale: 1 })
+        ChartPreviewComponent({ id: @props.chart_ids[0], scale: 1, company_id: @props.company_id })
       ) if @props.chart_ids.length > 0
 
       (sectionsComponents)

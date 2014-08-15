@@ -18,6 +18,7 @@ getStateFromStore = (key) ->
   chart:      chart
   title:      chart.title || ''
   prevTitle:  chart.title || ''
+  permalink:  chart.permalink
 
 
 # Component
@@ -59,6 +60,16 @@ Component = React.createClass
   
   componentWillUnmount: ->
     ChartStore.off('change', @onChartStoreChange)
+
+
+  # TODO move to controller
+  # componentDidUpdate: (prevProps, prevState) ->
+  #   if @state.permalink isnt prevState.permalink
+  #     url = window.location.href
+  #     parts = url.split('/')
+  #     parts.pop()
+  #     parts.push(@state.permalink)
+  #     window.location.href = parts.join('/')
 
 
   getInitialState: ->
