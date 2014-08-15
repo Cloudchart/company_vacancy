@@ -147,17 +147,22 @@ Calculations =
     hBorders = parseFloat(parentNodeStyle.borderLeftWidth) + parseFloat(parentNodeStyle.borderRightWidth)
     vBorders = parseFloat(parentNodeStyle.borderTopWidth) + parseFloat(parentNodeStyle.borderBottomWidth)
     
-    width   = Math.max(parentNodeBounds.width - hBorders, w + 80)
+    width   = Math.max(parentNodeBounds.width - hBorders, w + 80) + 600
     height  = Math.max(parentNodeBounds.height - vBorders, h + 80)
     
     
     @getDOMNode().style.width   = width + 'px'
     @getDOMNode().style.height  = height + 'px'
     
+    @getDOMNode().style.left    = parentNodeBounds.width / 2 - width / 2 + 'px'
+    
 
     offset =
       x:  width / 2
       y:  @props.top_padding
+    
+    
+    
     
 
     _.each @refs, (child) =>
@@ -222,8 +227,8 @@ Chart = React.createClass
     node.style.left = x + 'px'
     node.style.top  = y + 'px'
     
-    @__origin.pageX = event.pageX
-    @__origin.pageY = event.pageY
+    @__origin.x = event.pageX
+    @__origin.y = event.pageY
     
   
   
@@ -258,6 +263,8 @@ Chart = React.createClass
   getDefaultProps: ->
     colors:       default_colors
     top_padding:  20
+    left_padding: 300
+    right_padding: 300
   
   
   getInitialState: ->
