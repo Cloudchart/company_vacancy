@@ -106,7 +106,16 @@ Node = React.createClass
   mixins: [
     DOM
     Events
+    cc.react.mixins.Draggable
   ]
+  
+  
+  onCCDragStart: (event) ->
+    event.dataTransfer.setDragImage(false)
+  
+  
+  onCCDragMove: (event) ->
+    #cc.blueprint.react.Blueprint.Relation.get(@props.je)
 
   
   getDefaultProps: ->
@@ -156,6 +165,7 @@ Node = React.createClass
       onClick:                  @onClick              if @props.can_be_edited
       'data-id':                @props.key
       'data-behaviour':         'draggable droppable' if @props.can_be_edited
+      'data-draggable':         'on' if @props.can_be_edited
       onDragOver:               @onDragOver           if @props.can_be_edited
       onDrop:                   @onDrop               if @props.can_be_edited
       style:

@@ -67,7 +67,7 @@ revertDragImage = (dragImage, element, callback = null) ->
 #
 dispatchEvent = (type, capturedTarget, originalEvent, dataTransfer) ->
   event = new CustomEvent "cc:drag:#{type}",
-    bubbles:    true
+    bubbles:    false
     cancelable: true
 
   event.originalEvent = originalEvent
