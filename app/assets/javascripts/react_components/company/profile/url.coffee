@@ -8,55 +8,76 @@ Component = React.createClass
   # Component Specifications
   #
   render: ->
-    (tag.div { className: 'field' },   
-      (tag.label { htmlFor: 'url' }, 'Site URL')
-
-      (tag.input {
-        id: 'url'
-        name: 'url'
-        value: @state.value
-        placeholder: 'Type URL'
-        className: 'error' if @state.error
-        onChange: @onChange
-        onKeyUp: @onKeyUp
-        # onBlur: @onBlur
-      })
-
-      if @state.is_url_verified
-        (tag.i { className: 'fa fa-check-circle' })
+      if @state.verification_sent
+        (tag.div { className: 'profile-item' },
+          (tag.div { className: 'content' },
+            "Download this file and make it accessible from the root directory of your domain www.ludikakludi.com"
+          )
+        )
       else
-        (tag.button {
-          className: "orgpad#{if @state.can_delete then ' alert' else ''}"
-          disabled: true if @state.is_url_verified or !@state.can_delete and !@isValid() or @state.sync
-          onClick: @save
-        },
-          if @state.verification_sent
-            [
-              (tag.span { key: 'button_value' }, 'Resend')
-              (tag.i { 
-                key: 'button_icon'
-                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
-              })
-            ]
-          else if @state.can_delete
-            [
-              (tag.span { key: 'button_value' }, 'Delete')
-              (tag.i { 
-                key: 'button_icon' 
-                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-times'
-              })
-            ]
-          else 
-            [
-              (tag.span { key: 'button_value' }, 'Verify')
-              (tag.i { 
-                key: 'button_icon'
-                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
-              })
-            ]
+        (tag.div { className: 'profile-item' },
+          (tag.div { className: 'content field' },
+            (tag.label { htmlFor: 'url' }, 'Site URL')
+
+            (tag.input {
+              id: 'url'
+              name: 'url'
+              value: @state.value
+              placeholder: 'Type URL'
+              className: 'error' if @state.error
+              onChange: @onChange
+              onKeyUp: @onKeyUp
+              # onBlur: @onBlur
+            })
+          )
+
+          (tag.button {
+            className: "orgpad#{if @state.can_delete then ' alert' else ''}"
+            disabled: true if @state.is_url_verified or !@state.can_delete and !@isValid() or @state.sync
+            onClick: @save
+          },
+            (tag.span {}, 'Verify')
+            (tag.i { 
+              className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
+            })
+          )
         )
 
-    )
+      # if @state.is_url_verified
+      #   (tag.i { className: 'fa fa-check-circle' })
+      # else
+      #   (tag.button {
+      #     className: "orgpad#{if @state.can_delete then ' alert' else ''}"
+      #     disabled: true if @state.is_url_verified or !@state.can_delete and !@isValid() or @state.sync
+      #     onClick: @save
+      #   },
+      #     if @state.verification_sent
+      #       [
+      #         (tag.span { key: 'button_value' }, 'Resend')
+      #         (tag.i { 
+      #           key: 'button_icon'
+      #           className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
+      #         })
+      #       ]
+      #     else if @state.can_delete
+      #       [
+      #         (tag.span { key: 'button_value' }, 'Delete')
+      #         (tag.i { 
+      #           key: 'button_icon' 
+      #           className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-times'
+      #         })
+      #       ]
+      #     else 
+      #       [
+      #         (tag.span { key: 'button_value' }, 'Verify')
+      #         (tag.i { 
+      #           key: 'button_icon'
+      #           className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
+      #         })
+      #       ]
+      #   )
+
+    # )
 
   getInitialState: ->
     value: @props.value

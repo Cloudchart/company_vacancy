@@ -166,40 +166,52 @@ article.company {
 
     > .section-block {
 
-      > div.fields {
-        @include display(flex);
-        @include justify-content(space-between);
+      // > div.fields {
+        // @include display(flex);
+        // @include justify-content(space-between);
 
-        margin-bottom: $base-unit * 2;
+        // margin-bottom: $base-unit * 2;
+        // $deep-carmine-pink
 
-        > div.field {
-          @include display(inline-flex);
-          @include align-items(center);
+        > div.profile-item {
+          @include display(flex);
+          // @include justify-content(space-between);
 
-          > label {
-            margin-right: $base-unit / 2;
-          }
-
-          > input {
-            margin-right: $base-unit / 2;
-            padding: 4px;
-            width: 150px;
-            border: 3pt solid $white-smoke;
-            outline: none;
-            font-weight: 300;
-
-            &.error {
-              border-color: $baby-pink;
-            }
-          }
+          margin-bottom: $base-unit * 2;
 
           > i {
             color: $ufo-green;
           }
 
+          div.content {
+            width: 450px;
+            margin-right: $base-unit;
+
+            &.field {
+              @include display(inline-flex);
+              @include align-items(center);              
+            }
+
+            > label {
+              width: 150px;
+            }
+
+            > input {
+              padding: 4px;
+              width: 300px;
+              border: 3pt solid $white-smoke;
+              outline: none;
+              font-weight: 300;
+
+              &.error {
+                border-color: $baby-pink;
+              }
+            }
+          }
+
         }
 
-      }
+      // }
     }
 
   }

@@ -26,52 +26,52 @@ Component = React.createClass
       
       (tag.div { className: 'section-block' },
 
-        (tag.div { className: 'fields' },
-          (UrlComponent {
-            value: @state.url
-            onChange: @onUrlChange
-            company_url: @props.company_url
-            is_url_verified: @state.is_url_verified
-            verification_sent: @state.verification_sent
-          })
-
-          (ShortNameComponent {
-            value: @state.short_name
-            onChange: @onShortNameChange
-            company_url: @props.company_url
-            company_uuid: @props.company_uuid
-          })
-        )
-
-        'Industry'
-        (IndustrySelectComponent {
-          value:      @state.industry
-          onChange:   @onIndustryChange
+        # (tag.div { className: 'fields' },
+        (UrlComponent {
+          value: @state.url
+          onChange: @onUrlChange
+          company_url: @props.company_url
+          is_url_verified: @state.is_url_verified
+          verification_sent: @state.verification_sent
         })
+
+        # (ShortNameComponent {
+        #   value: @state.short_name
+        #   onChange: @onShortNameChange
+        #   company_url: @props.company_url
+        #   company_uuid: @props.company_uuid
+        # })
+        # # )
+
+        # 'Industry'
+        # (IndustrySelectComponent {
+        #   value:      @state.industry
+        #   onChange:   @onIndustryChange
+        # })
         
-        'Region'
-        (CountrySelectComponent {
-          value:      @state.country
-          onChange:   @onCountryChange
-        })
+        # 'Region'
+        # (CountrySelectComponent {
+        #   value:      @state.country
+        #   onChange:   @onCountryChange
+        # })
 
-        (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
+        # (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
 
-        (tag.footer {},
-          'Your company is'
+        # (tag.footer {},
+        #   'Your company is'
 
-          (tag.button {
-            className:  'orgpad'
-            disabled:   !(@state.country and @state.industry)
-            onClick:    @toggleListing
-          }, 'Unlisted') unless @state.is_listed
+        #   (tag.button {
+        #     className:  'orgpad'
+        #     disabled:   !(@state.country and @state.industry)
+        #     onClick:    @toggleListing
+        #   }, 'Unlisted') unless @state.is_listed
 
-          (tag.button {
-            className: 'orgpad'
-            onClick:    @toggleListing
-          }, 'Listed') if @state.is_listed
+        #   (tag.button {
+        #     className: 'orgpad'
+        #     onClick:    @toggleListing
+        #   }, 'Listed') if @state.is_listed
 
-        )
+        # )
 
       )
     )
