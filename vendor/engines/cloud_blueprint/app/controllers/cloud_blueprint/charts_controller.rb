@@ -2,24 +2,23 @@ require_dependency "cloud_blueprint/application_controller"
 
 module CloudBlueprint
   class ChartsController < ApplicationController    
+    # before action horror
     before_action :set_chart, only: [:pull, :update]
+    before_action :set_company, only: [:show, :new]
+    before_action :set_chart_with_permalink, only: :show
 
     # -- https://github.com/rails/rails/issues/9703
     # 
     skip_before_action :require_authenticated_user!
-    before_action :require_authenticated_user!, only: [:show, :pull], unless: -> { @chart.is_public? }
     before_action :require_authenticated_user!, except: [:show, :pull, :preview]
+    before_action :require_authenticated_user!, only: [:show, :pull], unless: -> { @chart.is_public? }
     # --
-
-    before_action :set_company, only: [:show, :new]
 
     authorize_resource
     
     # Render chart
     #
-    def show
-      @chart = @company.charts.find_by(permalink: params[:id]) || @company.charts.find(params[:id])
-      
+    def show      
       pagescript_params editable: can?(:edit, @chart)
       
       respond_to do |format|
@@ -130,7 +129,10 @@ module CloudBlueprint
     def set_company
       @company = Company.find(params[:company_id])
     end
-    
+
+    def set_chart_with_permalink
+      @chart = @company.charts.find_by(permalink: params[:id]) || @company.charts.find(params[:id])
+    end
         
   end
 end

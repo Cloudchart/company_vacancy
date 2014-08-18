@@ -2,10 +2,10 @@ class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_url]
 
   # -- https://github.com/rails/rails/issues/9703
-  # 
+  #
   skip_before_action :require_authenticated_user!
-  before_action :require_authenticated_user!, only: :show, unless: -> { @company.is_public? }
   before_action :require_authenticated_user!, except: :show
+  before_action :require_authenticated_user!, only: :show, unless: -> { @company.is_public? }
   # --
 
   before_action :set_collection, only: [:index, :search]
@@ -29,8 +29,6 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
-    # @company = Company.find_by(short_name: params[:id]) || Company.find(params[:id])
-
     respond_to do |format|
       format.html
       format.json { render json: @company }
