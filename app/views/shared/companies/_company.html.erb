@@ -25,7 +25,7 @@
         </li>
 
         <li class="industry">
-          <%= company.industry.name rescue '' %>
+          <%= company.industry.name.truncate(30) rescue '' %>
         </li>
 
         <li class="spacer"></li>
