@@ -17,7 +17,8 @@ MainComponent = React.createClass
       (HeaderComponent @props)
       
       (EditorComponent {
-        company_id:             @props.uuid
+        company_uuid:           @props.uuid
+        company_id:             @props.id
         sections:               @props.available_sections
         sections_titles:        @props.sections
         available_block_types:  @props.available_block_types
@@ -33,6 +34,7 @@ MainComponent = React.createClass
         short_name:             @props.short_name
         url:                    @props.url
         is_url_verified:        @props.is_url_verified
+        chart_permalinks:       @props.chart_permalinks
         owner:                  'company'
       })
     )

@@ -27,6 +27,7 @@ MainComponent = React.createClass
     
     sectionsComponents.splice(1, 0, CompanyProfileComponent({
       key:             'company-profile'
+      company_uuid:    @props.company_uuid
       company_url:     @props.company_url
       country:         @props.country
       industry_ids:    @props.industry_ids
@@ -42,7 +43,11 @@ MainComponent = React.createClass
       (tag.section {
         className: 'chart-preview-container'
       },
-        ChartPreviewComponent({ id: @props.chart_ids[0], scale: 1, company_id: @props.company_id })
+        ChartPreviewComponent
+          id: @props.chart_ids[0]
+          permalink: @props.chart_permalinks[0]
+          company_id: @props.company_id
+          scale: 1
       ) if @props.chart_ids.length > 0
 
       (sectionsComponents)

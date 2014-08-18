@@ -1,10 +1,13 @@
-<%- class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint -%>
+<%-
+class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint
 
-<%- pagescript_params id: @chart.to_param,
+pagescript_params(
+  id:           @chart.id,
   chart:        @chart,
-  url:          chart_path(@chart),
+  url:          chart_path(@chart.id),
   company_url:  main_app.company_path(@chart.company),
   company_name: @chart.company.name
+)
 -%>
 
 <%- content_for :title do -%>

@@ -11,8 +11,13 @@
 
 <section>
   
-  <figure data-react-chart-preview-mount-point>
-  </figure>
+  <%= content_tag(:figure, nil, class: 'chart-preview', 
+    data: {
+      'react-chart-preview-mount-point' => @chart.id,
+      'react-permalink' => @chart.permalink,
+      'react-company-id' => @chart.company.to_param
+    })
+  %>
   
   <p>
     <%= t('.newsplash.note').html_safe %>

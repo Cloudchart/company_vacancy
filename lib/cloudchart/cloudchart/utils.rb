@@ -18,6 +18,10 @@ module Cloudchart::Utils
     else
       attributes.map { |attribute| "#{attribute}:#{query}" }.join(' OR ')
     end
-  end  
+  end
+
+  def self.is_uuid?(param)
+    !!param.to_s.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
+  end
 
 end

@@ -63,13 +63,13 @@ Component = React.createClass
 
 
   # TODO move to controller
-  # componentDidUpdate: (prevProps, prevState) ->
-  #   if @state.permalink isnt prevState.permalink
-  #     url = window.location.href
-  #     parts = url.split('/')
-  #     parts.pop()
-  #     parts.push(@state.permalink)
-  #     window.location.href = parts.join('/')
+  componentDidUpdate: (prevProps, prevState) ->
+    if @state.permalink isnt prevState.permalink
+      url = window.location.href
+      parts = url.split('/')
+      parts.pop()
+      parts.push(@state.permalink)
+      window.location.href = parts.join('/')
 
 
   getInitialState: ->

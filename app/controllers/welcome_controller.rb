@@ -4,12 +4,10 @@ class WelcomeController < ApplicationController
   before_action :redirect_to_profile, only: :index, if: :user_authenticated?
 
   def index
-    chart = CloudBlueprint::Chart.find(ENV['NEWSPLASH_CHART_ID'])
+    @chart = CloudBlueprint::Chart.find(ENV['NEWSPLASH_CHART_ID'])
 
     pagescript_params(
-      chart_id:    chart.id,
-      company_id:  chart.company_id,
-      token:       TokenSerializer.new(( Token.find(params[:token]) rescue Token.find_by_rfc1751(params[:token]) rescue nil )).as_json
+      token: TokenSerializer.new(( Token.find(params[:token]) rescue Token.find_by_rfc1751(params[:token]) rescue nil )).as_json
     )
   end
   

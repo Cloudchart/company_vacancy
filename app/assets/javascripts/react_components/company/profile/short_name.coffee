@@ -47,9 +47,6 @@ Component = React.createClass
       else
         true
 
-  # componentWillReceiveProps: (nextProps) ->
-  # componentDidUpdate: (prevProps, prevState) ->
-
   save: ->
     data = new FormData
     data.append('company[short_name]', @state.value)
@@ -71,6 +68,13 @@ Component = React.createClass
     @setState
       sync: false
       success: if @state.value != '' then true else false
+
+    # change url
+    url = window.location.href
+    parts = url.split('/')
+    parts.pop()
+    parts.push(if @state.value == '' then @props.company_uuid else @state.value)
+    window.location.href = parts.join('/')
 
     @props.onChange({ target: { value: @state.value } })
   

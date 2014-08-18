@@ -76,8 +76,17 @@ class Company < ActiveRecord::Base
 
       end
     end
+
+    def find(*args)
+      return super if Cloudchart::Utils.is_uuid?(args.first)
+      find_by(short_name: args.first) || super
+    end
     
   end # of class methods
+
+  def to_param
+    short_name.present? ? short_name : super
+  end
 
   def to_indexed_json
     to_json(

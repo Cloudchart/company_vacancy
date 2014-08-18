@@ -79,7 +79,7 @@ module CloudBlueprint
     def new
       chart = Chart.new(title: 'Default Chart')
       @company.charts << chart
-      redirect_to chart
+      redirect_to company_chart_path(@company, chart)
     rescue ActiveRecord::RecordNotFound
       redirect_to :back and return unless @company
     end
@@ -128,7 +128,7 @@ module CloudBlueprint
     end
 
     def set_company
-      @company = Company.find_by_short_name(params[:company_id])
+      @company = Company.find(params[:company_id])
     end
     
         

@@ -19,11 +19,17 @@
       chevron_is_down = true
       $chevron_icon.attr('class', 'fa fa-chevron-down')
 
-@cc.init_chart_preview = ->
+@cc.init_chart_preview = (small=false, scale=1) ->
   ChartPreviewComponent = cc.require('blueprint/react/chart-preview')
-  chartPreviewContainers = document.querySelectorAll("[data-react-mount-point-for-chart]")
+  chartPreviewContainers = document.querySelectorAll('[data-react-chart-preview-mount-point]')
     
   _.each chartPreviewContainers, (root) ->
-    chartUUID = root.dataset.reactMountPointForChart
-    companyUUID = root.dataset.reactCompanyId
-    React.renderComponent(ChartPreviewComponent({ id: chartUUID, company_id: companyUUID, scale: .4, small: true }), root)
+    React.renderComponent(
+      ChartPreviewComponent({
+        id: root.dataset.reactChartPreviewMountPoint
+        permalink: root.dataset.reactPermalink
+        company_id: root.dataset.reactCompanyId
+        scale: scale
+        small: small
+      }), root
+    )

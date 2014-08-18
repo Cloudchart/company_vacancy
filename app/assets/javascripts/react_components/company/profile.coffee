@@ -39,6 +39,7 @@ Component = React.createClass
             value: @state.short_name
             onChange: @onShortNameChange
             company_url: @props.company_url
+            company_uuid: @props.company_uuid
           })
         )
 

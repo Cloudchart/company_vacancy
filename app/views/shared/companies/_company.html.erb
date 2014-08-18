@@ -107,11 +107,10 @@
         <% company.charts.each do |chart| %>
           <li class="chart-preview-container">
           
-            <!-- <div class="chart-preview" data-react-mount-point-for-chart="<%= chart.id %>"></div> -->
-
             <%= content_tag(:div, nil, class: 'chart-preview', data:
-              { 'react-mount-point-for-chart' => chart.id,
-                'react-company-id' => chart.company_id
+              { 'react-chart-preview-mount-point' => chart.id,
+                'react-permalink' => chart.permalink,
+                'react-company-id' => chart.company.to_param
               })
             %>
 

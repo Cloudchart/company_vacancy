@@ -12,7 +12,7 @@ CloudBlueprint::Engine.routes.draw do
     get 'charts/:id', to: 'charts#show', as: :company_chart
   end  
 
-  resources :charts, only: [:show, :create, :update] do
+  resources :charts, only: [:create, :update] do
     
     get :pull,    on: :member
     get :preview, on: :member

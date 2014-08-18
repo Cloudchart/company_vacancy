@@ -5,12 +5,13 @@
   PasswordResetComponent = cc.require('react/modals/password-reset-form')
 
 
-  if data.chart_id and chartPreviewMountPoint = document.querySelector('[data-react-chart-preview-mount-point]')
-    ChartPreviewComponent = cc.require('blueprint/react/chart-preview')
+  cc.init_chart_preview()
+  # if data.chart_id and chartPreviewMountPoint = document.querySelector('[data-react-chart-preview-mount-point]')
+  #   ChartPreviewComponent = cc.require('blueprint/react/chart-preview')
   
-    chartPreview = ChartPreviewComponent({ id: data.chart_id, company_id: data.company_id, scale: 1 })
+  #   chartPreview = ChartPreviewComponent({ id: data.chart_id, company_id: data.company_id, scale: 1 })
 
-    React.renderComponent(chartPreview, chartPreviewMountPoint)
+  #   React.renderComponent(chartPreview, chartPreviewMountPoint)
   
   
   if modalMountPoint = document.querySelector('[data-modal-mount-point]')

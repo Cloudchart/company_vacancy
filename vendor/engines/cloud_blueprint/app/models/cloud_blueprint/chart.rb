@@ -13,6 +13,12 @@ module CloudBlueprint
     
     validates :title, presence: true
 
+    # will work only if chart is nested inside company 
+    # cause permalink isn't unique
+    def to_param
+      permalink.present? ? permalink : super
+    end
+
   private
     
     def assign_permalink

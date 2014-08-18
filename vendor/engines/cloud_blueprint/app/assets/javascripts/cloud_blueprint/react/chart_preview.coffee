@@ -117,9 +117,8 @@ MainComponent = React.createClass
     scale:                1
     horizontal_padding:   20
     vertical_padding:     20
-    # chart_url: '/charts/' + @props.id # TODO: company id is needed
-    chart_url: '/companies/' + @props.company_id + '/charts/' + @props.id
-  
+    chart_url: '/companies/' + @props.company_id + '/charts/' + @props.permalink
+      
   
   getInitialState: ->
     loaded:   false
