@@ -128,6 +128,7 @@ Component = React.createClass
     @setState
       short_name: event.target.value  
 
+  # TODO: remove unnecessary params 
   onUrlChange: (event) ->
     @setState
       url: event.target.value

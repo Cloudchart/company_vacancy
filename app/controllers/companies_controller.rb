@@ -65,17 +65,7 @@ class CompaniesController < ApplicationController
     if @company.update(company_params)
       Activity.track_activity(current_user, params[:action], @company)
 
-      if company_params[:url].present?
-        token = @company.tokens.find_by(name: :url_verification)
-
-        unless token
-          token = @company.tokens.create!(name: :url_verification, data: { user_id: current_user.id })
-        end
-
-        UserMailer.company_url_verification(token).deliver
-      elsif company_params[:url] == ''
-        @company.tokens.where(name: :url_verification).destroy_all
-      end
+      update_url_verification(@company) if company_params[:url]
 
       respond_to do |format|
         format.html { redirect_to @company }
@@ -138,6 +128,22 @@ private
   # Only allow a trusted parameter "white list" through.
   def company_params
     params.require(:company).permit(:name, :short_name, :url, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
+  end
+
+  # generate tmp file here
+  def update_url_verification(company)
+    if company_params[:url] == ''
+      company.tokens.where(name: :url_verification).destroy_all
+    else
+      token = company.tokens.find_by(name: :url_verification)
+
+      unless token
+        token = company.tokens.create!(name: :url_verification, data: { user_id: current_user.id })
+      end
+
+      UserMailer.company_url_verification(token).deliver
+    end
+
   end
   
 end

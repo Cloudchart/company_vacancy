@@ -1,17 +1,97 @@
 tag = React.DOM
 regex = /(.+)\.(.+)/
 
-# Main Component
+# CancelVerificationComponent
+# 
+CancelVerificationComponent = React.createClass
+  
+  render: ->
+    (tag.button {
+      className: 'orgpad alert'
+      disabled: true if @state.sync
+      onClick: @save
+    },
+      (tag.span {}, 'Cancel')
+      (tag.i { 
+        className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-eraser'
+      })
+    )
+
+  getInitialState: ->
+    value: ''
+    sync: false
+    error: false
+    verification_sent: false
+
+  # onCancelClick: ->
+    # console.log 'click'
+
+  # onChange: (event) ->
+    # @setState({ value: event.target.value })
+
+  save: ->
+    data = new FormData
+    data.append('company[url]', @state.value)
+
+    @setState({ sync: true, error: false })
+
+    $.ajax
+      url: @props.company_url
+      data: data
+      type: 'PUT'
+      dataType: 'json'
+      contentType: false
+      processData: false
+
+    .done @onSaveDone
+    .fail @onSaveFail
+
+  onSaveDone: (json) ->
+    @setState
+      sync: false
+
+    @props.onChange(
+      target:
+        value: @state.value
+        verification_sent: @state.verification_sent
+    )
+  
+  onSaveFail: ->
+    @setState
+      sync: false
+      error: true
+
+# MainComponent
 #
-Component = React.createClass
+MainComponent = React.createClass
 
   # Component Specifications
   #
   render: ->
       if @state.verification_sent
         (tag.div { className: 'profile-item' },
+
           (tag.div { className: 'content' },
             "Download this file and make it accessible from the root directory of your domain www.ludikakludi.com"
+          )
+
+          (tag.div { className: 'actions' },
+            (tag.button {
+              className: 'orgpad'
+              disabled: true if @state.sync
+              # onClick: @save
+            },
+              (tag.span {}, 'Check file')
+              (tag.i { 
+                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-file-text-o'
+              })
+            )
+
+            (CancelVerificationComponent {
+              value: @state.value
+              company_url: @props.company_url
+              onChange: @onCancelButtonChange
+            })          
           )
         )
       else
@@ -32,8 +112,8 @@ Component = React.createClass
           )
 
           (tag.button {
-            className: "orgpad#{if @state.can_delete then ' alert' else ''}"
-            disabled: true if @state.is_url_verified or !@state.can_delete and !@isValid() or @state.sync
+            className: 'orgpad'
+            disabled: true if !@isValid() or @state.sync
             onClick: @save
           },
             (tag.span {}, 'Verify')
@@ -89,30 +169,36 @@ Component = React.createClass
 
   # getDefaultProps: ->
 
+  onCancelButtonChange: (event) ->
+    @setState(
+      value: event.target.value 
+      verification_sent: event.target.verification_sent
+    )
+
   onChange: (event) ->
     @setState({ value: event.target.value })
 
   onKeyUp: (event) ->
-    @setState
-      verification_sent: 
-        if @props.value == @state.value and @state.value != ''
-          true
-        else
-          false
-      is_url_verified: 
-        if @props.is_url_verified and @props.value == @state.value and @state.value != ''
-          true
-        else 
-          false
-      can_delete: 
-        if @state.value == '' and @props.value != @state.value 
-          true 
-        else
-          false
+    # @setState
+    #   verification_sent: 
+    #     if @props.value == @state.value and @state.value != ''
+    #       true
+    #     else
+    #       false
+    #   is_url_verified: 
+    #     if @props.is_url_verified and @props.value == @state.value and @state.value != ''
+    #       true
+    #     else 
+    #       false
+    #   can_delete: 
+    #     if @state.value == '' and @props.value != @state.value 
+    #       true 
+    #     else
+    #       false
 
     switch event.key
       when 'Enter'
-        @save() if @isValid() or @state.value == '' and @props.value != @state.value
+        @save() if @isValid()
       when 'Escape'
         @undo()
 
@@ -144,14 +230,14 @@ Component = React.createClass
   onSaveDone: (json) ->
     @setState
       sync: false
-      verification_sent: if @state.value == '' then false else true
+      verification_sent: true
       is_url_verified: false
       can_delete: false
 
     @props.onChange(
       target:
         value: @state.value
-        verification_sent: @state.verification_sent
+        # verification_sent: @state.verification_sent
         is_url_verified: @state.is_url_verified
     )
   
@@ -162,11 +248,11 @@ Component = React.createClass
 
   undo: ->
     @setState
-      value: @props.value
-      verification_sent: @props.verification_sent
-      is_url_verified: @props.is_url_verified unless @props.value == ''
-      can_delete: false
+      value: ''
       error: false
+      # verification_sent: @props.verification_sent
+      # is_url_verified: @props.is_url_verified unless @props.value == ''
+      # can_delete: false
 
   # Lifecycle Methods
   #
@@ -180,4 +266,4 @@ Component = React.createClass
 
 # Exports
 #
-cc.module('react/company/url').exports = Component
+cc.module('react/company/url').exports = MainComponent
