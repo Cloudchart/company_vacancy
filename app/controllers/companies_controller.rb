@@ -134,7 +134,7 @@ private
       file_location = File.join(dir_location, "#{company.humanized_id}.txt")
       unless File.exists?(file_location)
         FileUtils.mkdir_p(dir_location)
-        File.new(file_location, 'w')
+        File.open(file_location, 'w') { |f| f.write('Good luck using CloudChart!') }
       end
 
       UserMailer.company_url_verification(token).deliver
