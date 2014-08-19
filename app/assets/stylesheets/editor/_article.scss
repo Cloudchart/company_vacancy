@@ -1,5 +1,6 @@
 $editor-max-width: 1200px;
 $editor-paragraph-max-width: 800px;
+$editor-paragraph-line-height: 140%;
 
 $editor-sidebar-item-background-color: hsl(0, 0%, 96%);
 $editor-sidebar-item-background-color-draggable: hsl(0, 0%, 100%);
@@ -8,8 +9,8 @@ $editor-sidebar-item-color-draggable: $editor-sidebar-item-background-color;
 $editor-sidebar-item-font-size: 12pt;
 $editor-sidebar-item-size: $base-unit * 2.5;
 
-$editor-section-header-font-size: 20pt;
-$editor-section-header-input-font-size: 20pt;
+$editor-section-header-font-size: 22pt;
+$editor-section-header-input-font-size: 22pt;
 $editor-section-header-input-font-weight: 700;
 
 $editor-section-block-lock-color: hsl(0, 0%, 75%);
@@ -179,6 +180,7 @@ $editor-identity-selector-search-input-padding: 4pt;
   max-width: $editor-paragraph-max-width;
   padding: 0;
   position: relative;
+  line-height: $editor-paragraph-line-height;
   
   > div {
     margin: 0;
@@ -186,7 +188,6 @@ $editor-identity-selector-search-input-padding: 4pt;
 
     &:empty:before {
       content: attr(data-placeholder);
-      // font-style: italic;
       opacity: .25;
     }
   }
@@ -728,7 +729,99 @@ article.editor {
       }
       
     }
-    
+
+    &.profile {
+      font-size: 15pt;
+      padding-bottom: $base-unit * 2;
+      
+      select {
+        font-size: 15pt;
+        margin-right: $base-unit;
+        margin-left: $base-unit / 2;
+        width: 200pt;
+      }
+      
+      p {
+        margin: $base-unit 0;
+      }
+      
+      footer {
+        font-size: 15pt;
+
+        > button {
+          margin-left: 10pt;
+        }
+
+      }
+
+      > .section-block {
+        > div.profile-item {
+          @include display(flex);
+
+          &:not(:last-child) {
+            margin-bottom: $base-unit;
+          }
+
+          div.content {
+            width: 480px;
+            margin-right: $base-unit;
+
+            &.paragraph {
+              line-height: $editor-paragraph-line-height;
+            }
+
+            &.field {
+              @include display(inline-flex);
+              @include align-items(center);
+
+              > div.spacer {
+                @include flex(1)
+              }
+
+              > span.label {
+                width: 120px;
+              }
+
+              > i {
+                color: $ufo-green;
+              }
+
+              > a {
+                margin-right: $base-unit / 2;
+              }
+
+              > input {
+                padding: 4px;
+                width: 300px;
+                border: 3pt solid $white-smoke;
+                outline: none;
+                font-weight: 300;
+
+                &.error {
+                  border-color: $baby-pink;
+                }
+
+                &#short_name {
+                  width: 120px;
+                }
+              }
+            }
+
+          }
+
+          > div.actions {
+
+            > button {
+              margin-right: $base-unit / 2;
+            }
+
+          }
+
+        }
+      }
+
+    }
+
     &.chart-preview-container {
       height: 300px;
       position: relative;
@@ -770,7 +863,6 @@ article.editor {
       > .default {
         border: 1pt dashed hsl(0, 0%, 0%);
         font-size: 15pt;
-        // font-style: italic;
         font-weight: 600;
         opacity: .25;
         padding: $base-unit;

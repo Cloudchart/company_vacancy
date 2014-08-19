@@ -1,109 +1,233 @@
 tag = React.DOM
 regex = /(.+)\.(.+)/
 
-# Main Component
+# CheckFileComponent
+# 
+CheckFileComponent = React.createClass
+  render: ->
+    (tag.button {
+      className: 'orgpad'
+      disabled: true if @state.sync
+      onClick: @checkFile
+    },
+      (tag.span {}, 'Check file')
+      (tag.i { 
+        className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-file-text-o'
+      })
+    )
+
+  getInitialState: ->
+    sync: false
+
+  checkFile: ->
+    @setState({ sync: true })
+
+    $.ajax
+      url: @props.verify_url
+      type: 'GET'
+      dataType: 'json'
+
+    .done @onCheckFileDone
+    .fail @onCheckFileFail
+
+  onCheckFileDone: (json) ->
+    @setState({ sync: false })
+
+    if json == 'ok'
+      is_url_verified = true
+      url_verification_failed = false
+    else
+      is_url_verified = false
+      url_verification_failed = true
+
+    @props.onChange(
+      target:
+        is_url_verified: is_url_verified
+        url_verification_failed: url_verification_failed
+    )
+
+  onCheckFileFail: (json) ->
+    @setState({ sync: false })
+    console.warn 'checkFile fail'
+
+# CancelVerificationComponent
+# 
+CancelVerificationComponent = React.createClass
+  
+  render: ->
+    (tag.button {
+      className: 'orgpad alert'
+      disabled: true if @state.sync
+      onClick: @save
+    },
+      (tag.span {}, @props.button_value)
+      (tag.i { 
+        className: if @state.sync then 'fa fa-spinner fa-spin' else @props.button_icon
+      })
+    )
+
+  getInitialState: ->
+    value: ''
+    sync: false
+
+  save: ->
+    data = new FormData
+    data.append('company[url]', @state.value)
+
+    @setState({ sync: true })
+
+    $.ajax
+      url: @props.company_url
+      data: data
+      type: 'PUT'
+      dataType: 'json'
+      contentType: false
+      processData: false
+
+    .done @onSaveDone
+    .fail @onSaveFail
+
+  onSaveDone: (json) ->
+    @setState({ sync: false })
+
+    @props.onChange(
+      target:
+        value: @state.value
+        verification_sent: false
+        is_url_verified: false
+        url_verification_failed: false
+    )
+  
+  onSaveFail: ->
+    @setState({ sync: false })
+    console.warn 'CancelVerificationComponent save fail'
+
+# MainComponent
 #
-Component = React.createClass
+MainComponent = React.createClass
 
   # Component Specifications
   #
   render: ->
-    (tag.div { className: 'field' },   
-      (tag.label { htmlFor: 'url' }, 'Site URL')
-
-      (tag.input {
-        id: 'url'
-        name: 'url'
-        value: @state.value
-        placeholder: 'Type URL'
-        className: 'error' if @state.error
-        onChange: @onChange
-        onKeyUp: @onKeyUp
-        # onBlur: @onBlur
-      })
-
       if @state.is_url_verified
-        (tag.i { className: 'fa fa-check-circle' })
-      else
-        (tag.button {
-          className: "orgpad#{if @state.can_delete then ' alert' else ''}"
-          disabled: true if @state.is_url_verified or !@state.can_delete and !@isValid() or @state.sync
-          onClick: @save
-        },
-          if @state.verification_sent
-            [
-              (tag.span { key: 'button_value' }, 'Resend')
-              (tag.i { 
-                key: 'button_icon'
-                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
-              })
-            ]
-          else if @state.can_delete
-            [
-              (tag.span { key: 'button_value' }, 'Delete')
-              (tag.i { 
-                key: 'button_icon' 
-                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-times'
-              })
-            ]
-          else 
-            [
-              (tag.span { key: 'button_value' }, 'Verify')
-              (tag.i { 
-                key: 'button_icon'
-                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
-              })
-            ]
-        )
+        (tag.div { className: 'profile-item' },
+          (tag.div { className: 'content field' },
+            (tag.span { className: 'label' }, 'Site URL')
+            @formattedSiteLink(@state.value)
+            (tag.i { className: 'fa fa-check-circle' })
+          )
 
-    )
+          (tag.div { className: 'actions' },
+            (CancelVerificationComponent {
+              company_url: @props.company_url
+              onChange: @onCancelButtonChange
+              button_value: 'Remove'
+              button_icon: 'fa fa-eraser'
+            })
+          )
+        )
+      else if @state.verification_sent
+        (tag.div { className: 'profile-item' },
+          (tag.div { className: 'content paragraph' },
+            (tag.strong {}, 'File not found. ') if @state.url_verification_failed
+            (tag.a { href: @props.download_verification_file_url }, 'Download this file')
+            (tag.span {}, ' and make it accessible from the root directory of your domain ')
+            @formattedSiteLink(@state.value)
+          )
+
+          (tag.div { className: 'actions' },
+            (CheckFileComponent {
+              verify_url: @props.verify_url
+              onChange: @onCheckFileChange
+            })
+
+            (CancelVerificationComponent {
+              company_url: @props.company_url
+              onChange: @onCancelButtonChange
+              button_value: 'Cancel'
+              button_icon: 'fa fa-undo'
+            })          
+          )
+        )
+      else
+        (tag.div { className: 'profile-item' },
+          (tag.div { className: 'content field' },
+            (tag.label { htmlFor: 'url' }, 'Site URL')
+
+            (tag.div { className: 'spacer' })
+
+            (tag.input {
+              id: 'url'
+              name: 'url'
+              value: @state.value
+              placeholder: 'Type URL'
+              className: 'error' if @state.error
+              onChange: @onChange
+              onKeyUp: @onKeyUp
+            })
+          )
+
+          (tag.div { className: 'actions' },
+            (tag.button {
+              className: 'orgpad'
+              disabled: true if !@isValid() or @state.sync
+              onClick: @save
+            },
+              (tag.span {}, 'Verify')
+              (tag.i { 
+                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
+              })
+            )
+          )
+
+        )
 
   getInitialState: ->
     value: @props.value
     verification_sent: @props.verification_sent
     is_url_verified: @props.is_url_verified
+    url_verification_failed: @props.url_verification_failed
     sync: false
     error: false
-    can_delete: false
+    verification_sent:
+      if @props.value == null or @props.value == '' then false else true
 
   # getDefaultProps: ->
+
+  formattedSiteLink: (value) ->
+    if /http:\/\/|https:\/\//.test(value)
+      formatted_site_url = value
+    else
+      formatted_site_url = 'http://' + value
+
+    (tag.a { href: formatted_site_url, target: '_blank' }, value)
 
   onChange: (event) ->
     @setState({ value: event.target.value })
 
-  onKeyUp: (event) ->
+  onCancelButtonChange: (event) ->
     @setState
-      verification_sent: 
-        if @props.value == @state.value and @state.value != ''
-          true
-        else
-          false
-      is_url_verified: 
-        if @props.is_url_verified and @props.value == @state.value and @state.value != ''
-          true
-        else 
-          false
-      can_delete: 
-        if @state.value == '' and @props.value != @state.value 
-          true 
-        else
-          false
+      value: event.target.value 
+      verification_sent: event.target.verification_sent
+      is_url_verified: event.target.is_url_verified
+      url_verification_failed: event.url_verification_failed
 
+  onCheckFileChange: (event) ->
+    @setState
+      is_url_verified: event.target.is_url_verified
+      url_verification_failed: event.target.url_verification_failed
+
+  onKeyUp: (event) ->
     switch event.key
       when 'Enter'
-        @save() if @isValid() or @state.value == '' and @props.value != @state.value
+        @save() if @isValid()
       when 'Escape'
         @undo()
-
-  # onBlur: ->
-  #   @undo()
 
   isValid: ->
     regex.test(@state.value)
 
   save: ->
-    # unless @props.value == @state.value
-
     data = new FormData
     data.append('company[url]', @state.value)
 
@@ -123,16 +247,8 @@ Component = React.createClass
   onSaveDone: (json) ->
     @setState
       sync: false
-      verification_sent: if @state.value == '' then false else true
+      verification_sent: true
       is_url_verified: false
-      can_delete: false
-
-    @props.onChange(
-      target:
-        value: @state.value
-        verification_sent: @state.verification_sent
-        is_url_verified: @state.is_url_verified
-    )
   
   onSaveFail: ->
     @setState
@@ -141,10 +257,7 @@ Component = React.createClass
 
   undo: ->
     @setState
-      value: @props.value
-      verification_sent: @props.verification_sent
-      is_url_verified: @props.is_url_verified unless @props.value == ''
-      can_delete: false
+      value: ''
       error: false
 
   # Lifecycle Methods
@@ -159,4 +272,4 @@ Component = React.createClass
 
 # Exports
 #
-cc.module('react/company/url').exports = Component
+cc.module('react/company/url').exports = MainComponent

@@ -20,40 +20,42 @@ Component = React.createClass
 
   render: ->
     (tag.section {
-      className: 'company-profile'
+      className: 'profile'
     },
-      (tag.header {}, 'Company Profile')
+      (tag.header {}, 'Profile')
       
       (tag.div { className: 'section-block' },
 
-        (tag.div { className: 'fields' },
-          (UrlComponent {
-            value: @state.url
-            onChange: @onUrlChange
-            company_url: @props.company_url
-            is_url_verified: @state.is_url_verified
-            verification_sent: @state.verification_sent
-          })
+        (UrlComponent {
+          value: @props.url
+          company_url: @props.company_url
+          verify_url: @props.verify_url
+          download_verification_file_url: @props.download_verification_file_url
+          is_url_verified: @props.is_url_verified
+        })
 
-          (ShortNameComponent {
-            value: @state.short_name
-            onChange: @onShortNameChange
-            company_url: @props.company_url
-            company_uuid: @props.company_uuid
+        (ShortNameComponent {
+          value: @props.short_name
+          company_url: @props.company_url
+          company_uuid: @props.company_uuid
+          default_host: @props.default_host
+        })
+
+        (tag.div { className: 'profile-item' },
+          'Industry'
+          (IndustrySelectComponent {
+            value:      @state.industry
+            onChange:   @onIndustryChange
           })
         )
-
-        'Industry'
-        (IndustrySelectComponent {
-          value:      @state.industry
-          onChange:   @onIndustryChange
-        })
         
-        'Region'
-        (CountrySelectComponent {
-          value:      @state.country
-          onChange:   @onCountryChange
-        })
+        (tag.div { className: 'profile-item' },
+          'Region'
+          (CountrySelectComponent {
+            value:      @state.country
+            onChange:   @onCountryChange
+          })
+        )
 
         (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
 
@@ -70,7 +72,6 @@ Component = React.createClass
             className: 'orgpad'
             onClick:    @toggleListing
           }, 'Listed') if @state.is_listed
-
         )
 
       )
@@ -80,11 +81,6 @@ Component = React.createClass
     country:           @props.country
     industry:          @props.industry_ids[0]
     is_listed:         @props.is_listed
-    short_name:        @props.short_name
-    url:               @props.url
-    is_url_verified:   @props.is_url_verified
-    verification_sent: 
-      if @props.url == null or @props.url == '' then false else true
 
   componentDidUpdate: (prevProps, prevState) ->
     @save() if company_attributes.some((name) => @state[name] isnt prevState[name])
@@ -124,15 +120,6 @@ Component = React.createClass
     @setState
       industry: event.target.value
 
-  onShortNameChange: (event) ->
-    @setState
-      short_name: event.target.value  
-
-  onUrlChange: (event) ->
-    @setState
-      url: event.target.value
-      verification_sent: event.target.verification_sent
-      is_url_verified: event.is_url_verified
 
 # Exports
 #

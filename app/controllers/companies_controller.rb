@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_url]
+  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_url, :download_verification_file]
 
   # -- https://github.com/rails/rails/issues/9703
   #
@@ -65,17 +65,7 @@ class CompaniesController < ApplicationController
     if @company.update(company_params)
       Activity.track_activity(current_user, params[:action], @company)
 
-      if company_params[:url].present?
-        token = @company.tokens.find_by(name: :url_verification)
-
-        unless token
-          token = @company.tokens.create!(name: :url_verification, data: { user_id: current_user.id })
-        end
-
-        UserMailer.company_url_verification(token).deliver
-      elsif company_params[:url] == ''
-        @company.tokens.where(name: :url_verification).destroy_all
-      end
+      update_url_verification(@company) if company_params[:url]
 
       respond_to do |format|
         format.html { redirect_to @company }
@@ -98,29 +88,58 @@ class CompaniesController < ApplicationController
   end
 
   def verify_url
-    token = Token.find_by_rfc1751(params[:token])
-    url = @company.url
-    url = 'http://' + @company.url unless @company.url.match(/http:\/\/|https:\/\//)
-    uri = URI.parse(url)
-    uri.path = '/cloudchart_company_url_verification.txt'
+    uri = URI.parse(@company.formatted_site_url)
+    uri.path = "/#{@company.humanized_id}.txt"
     response = Net::HTTP.get_response(uri)
 
     if response.is_a?(Net::HTTPSuccess)
-      token = Token.find_by_rfc1751(response.body)
+      @company.tokens.where(name: :url_verification).destroy_all
+      File.delete(File.join(Rails.root, 'tmp', 'verifications', "#{@company.humanized_id}.txt"))
 
-      if token
-        @company.tokens.where(name: :url_verification).destroy_all
-        redirect_to @company, notice: 'Site URL verified'
-      else
-        redirect_to @company, alert: 'Site URL verification failed. Code: TNF.'
+      respond_to do |format|
+        format.html { redirect_to @company, notice: 'Site URL verified' }
+        format.json { render json: :ok }
       end
-      
     else
-      redirect_to @company, alert: 'Site URL verification failed. Code: RNF.'
+      respond_to do |format|
+        format.html { redirect_to @company, alert: 'Site URL verification failed.' }
+        format.json { render json: :fail }
+      end
+    end
+
+  end
+
+  def download_verification_file
+    file_path = File.join(Rails.root, 'tmp', 'verifications', "#{@company.humanized_id}.txt")
+    if File.exists?(file_path)
+      send_file(file_path)
+    else
+      redirect_to :back, alert: 'Error. We did not find this file.'
     end
   end
 
 private
+
+  def update_url_verification(company)
+    if company_params[:url] == ''
+      company.tokens.where(name: :url_verification).destroy_all
+    else
+      token = company.tokens.find_by(name: :url_verification)
+
+      unless token
+        token = company.tokens.create!(name: :url_verification, data: { user_id: current_user.id })
+      end
+
+      dir_location = File.join(Rails.root, 'tmp', 'verifications')
+      file_location = File.join(dir_location, "#{company.humanized_id}.txt")
+      unless File.exists?(file_location)
+        FileUtils.mkdir_p(dir_location)
+        File.new(file_location, 'w')
+      end
+
+      UserMailer.company_url_verification(token).deliver
+    end
+  end
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
@@ -139,5 +158,5 @@ private
   def company_params
     params.require(:company).permit(:name, :short_name, :url, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
   end
-  
+
 end

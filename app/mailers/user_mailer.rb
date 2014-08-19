@@ -12,15 +12,9 @@ class UserMailer < ActionMailer::Base
   def company_url_verification(token)
     @company = token.owner
     @user = User.find(token.data[:user_id])
-    token = rfc1751(token)
-    @file_name = 'cloudchart_company_url_verification.txt'
 
-    dir_location = File.join(Rails.root, 'tmp', 'attachments')
-    FileUtils.mkdir_p(dir_location)
-    file_location = File.join(dir_location, "#{token}.txt")
-    File.open(file_location, "w") { |f| f.write(token) }
-    attachments[@file_name] = File.read(file_location)
-    File.delete(file_location)
+    file_name = "#{@company.humanized_id}.txt"
+    attachments[file_name] = File.read(File.join(Rails.root, 'tmp', 'verifications', file_name))
 
     mail to: @user.email
   end
@@ -42,12 +36,6 @@ class UserMailer < ActionMailer::Base
     @name = token.data[:full_name]
     email = token.data[:email]
     mail to: email
-  end
-
-private
-
-  def rfc1751(token)
-    Cloudchart::RFC1751.encode(token.id).downcase.gsub(/ /, '-')
   end
 
 end
