@@ -29,6 +29,7 @@ MainComponent = React.createClass
         vacancies_url:                  @props.vacancies_url
         verify_url:                     @props.verify_url
         download_verification_file_url: @props.download_verification_file_url 
+        default_host:                   @props.default_host
         country:                        @props.country
         industry_ids:                   @props.industry_ids
         chart_ids:                      @props.chart_ids

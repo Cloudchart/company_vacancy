@@ -37,6 +37,7 @@ MainComponent = React.createClass
       short_name: @props.short_name
       url: @props.url
       is_url_verified: @props.is_url_verified
+      default_host: @props.default_host
     }))
     
     (tag.article { className: 'editor' },

@@ -62,7 +62,7 @@ CancelVerificationComponent = React.createClass
     },
       (tag.span {}, @props.button_value)
       (tag.i { 
-        className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-eraser'
+        className: if @state.sync then 'fa fa-spinner fa-spin' else @props.button_icon
       })
     )
 
@@ -112,7 +112,7 @@ MainComponent = React.createClass
       if @state.is_url_verified
         (tag.div { className: 'profile-item' },
           (tag.div { className: 'content field' },
-            (tag.span {}, 'Site URL')
+            (tag.span { className: 'label' }, 'Site URL')
             @formattedSiteLink(@state.value)
             (tag.i { className: 'fa fa-check-circle' })
           )
@@ -122,12 +122,12 @@ MainComponent = React.createClass
               company_url: @props.company_url
               onChange: @onCancelButtonChange
               button_value: 'Remove'
+              button_icon: 'fa fa-eraser'
             })
           )
         )
       else if @state.verification_sent
         (tag.div { className: 'profile-item' },
-
           (tag.div { className: 'content paragraph' },
             (tag.strong {}, 'File not found. ') if @state.url_verification_failed
             (tag.a { href: @props.download_verification_file_url }, 'Download this file')
@@ -145,6 +145,7 @@ MainComponent = React.createClass
               company_url: @props.company_url
               onChange: @onCancelButtonChange
               button_value: 'Cancel'
+              button_icon: 'fa fa-undo'
             })          
           )
         )
@@ -152,6 +153,8 @@ MainComponent = React.createClass
         (tag.div { className: 'profile-item' },
           (tag.div { className: 'content field' },
             (tag.label { htmlFor: 'url' }, 'Site URL')
+
+            (tag.div { className: 'spacer' })
 
             (tag.input {
               id: 'url'
@@ -164,16 +167,19 @@ MainComponent = React.createClass
             })
           )
 
-          (tag.button {
-            className: 'orgpad'
-            disabled: true if !@isValid() or @state.sync
-            onClick: @save
-          },
-            (tag.span {}, 'Verify')
-            (tag.i { 
-              className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
-            })
+          (tag.div { className: 'actions' },
+            (tag.button {
+              className: 'orgpad'
+              disabled: true if !@isValid() or @state.sync
+              onClick: @save
+            },
+              (tag.span {}, 'Verify')
+              (tag.i { 
+                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
+              })
+            )
           )
+
         )
 
   getInitialState: ->

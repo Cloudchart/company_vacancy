@@ -759,11 +759,11 @@ article.editor {
           @include display(flex);
 
           &:not(:last-child) {
-            margin-bottom: $base-unit * 2;
+            margin-bottom: $base-unit;
           }
 
           div.content {
-            width: 450px;
+            width: 480px;
             margin-right: $base-unit;
 
             &.paragraph {
@@ -772,10 +772,14 @@ article.editor {
 
             &.field {
               @include display(inline-flex);
-              @include align-items(center);              
+              @include align-items(center);
 
-              > label, span {
-                width: 150px;
+              > div.spacer {
+                @include flex(1)
+              }
+
+              > span.label {
+                width: 120px;
               }
 
               > i {
@@ -795,6 +799,10 @@ article.editor {
 
                 &.error {
                   border-color: $baby-pink;
+                }
+
+                &#short_name {
+                  width: 120px;
                 }
               }
             }
@@ -855,7 +863,6 @@ article.editor {
       > .default {
         border: 1pt dashed hsl(0, 0%, 0%);
         font-size: 15pt;
-        // font-style: italic;
         font-weight: 600;
         opacity: .25;
         padding: $base-unit;

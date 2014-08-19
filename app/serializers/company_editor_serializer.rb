@@ -3,7 +3,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :id, :uuid, :name, :country, :description, :is_listed, :logotype
   attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
-  attributes :verify_url, :download_verification_file_url
+  attributes :verify_url, :download_verification_file_url, :default_host
   attributes :industry_ids, :chart_ids, :short_name, :url, :is_url_verified, :chart_permalinks
 
   has_many :blocks, serializer: BlockEditorSerializer
@@ -92,9 +92,9 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     download_verification_file_company_path(object.id)
   end
 
-  # def formatted
-    
-  # end
+  def default_host
+    ENV['ACTION_MAILER_DEFAULT_HOST']
+  end
 
   def is_url_verified
     object.url.present? && object.tokens.find_by(name: :url_verification).blank?

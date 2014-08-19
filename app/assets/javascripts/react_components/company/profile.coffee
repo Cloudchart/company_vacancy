@@ -34,41 +34,45 @@ Component = React.createClass
           is_url_verified: @props.is_url_verified
         })
 
-        # (ShortNameComponent {
-        #   value: @state.short_name
-        #   onChange: @onShortNameChange
-        #   company_url: @props.company_url
-        #   company_uuid: @props.company_uuid
-        # })
+        (ShortNameComponent {
+          value: @props.short_name
+          company_url: @props.company_url
+          company_uuid: @props.company_uuid
+          default_host: @props.default_host
+        })
 
-        # 'Industry'
-        # (IndustrySelectComponent {
-        #   value:      @state.industry
-        #   onChange:   @onIndustryChange
-        # })
+        (tag.div { className: 'profile-item' },
+          'Industry'
+          (IndustrySelectComponent {
+            value:      @state.industry
+            onChange:   @onIndustryChange
+          })
+        )
         
-        # 'Region'
-        # (CountrySelectComponent {
-        #   value:      @state.country
-        #   onChange:   @onCountryChange
-        # })
+        (tag.div { className: 'profile-item' },
+          'Region'
+          (CountrySelectComponent {
+            value:      @state.country
+            onChange:   @onCountryChange
+          })
+        )
 
-        # (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
+        (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
 
-        # (tag.footer {},
-        #   'Your company is'
+        (tag.footer {},
+          'Your company is'
 
-        #   (tag.button {
-        #     className:  'orgpad'
-        #     disabled:   !(@state.country and @state.industry)
-        #     onClick:    @toggleListing
-        #   }, 'Unlisted') unless @state.is_listed
+          (tag.button {
+            className:  'orgpad'
+            disabled:   !(@state.country and @state.industry)
+            onClick:    @toggleListing
+          }, 'Unlisted') unless @state.is_listed
 
-        #   (tag.button {
-        #     className: 'orgpad'
-        #     onClick:    @toggleListing
-        #   }, 'Listed') if @state.is_listed
-
+          (tag.button {
+            className: 'orgpad'
+            onClick:    @toggleListing
+          }, 'Listed') if @state.is_listed
+        )
 
       )
     )
@@ -77,7 +81,6 @@ Component = React.createClass
     country:           @props.country
     industry:          @props.industry_ids[0]
     is_listed:         @props.is_listed
-    short_name:        @props.short_name
 
   componentDidUpdate: (prevProps, prevState) ->
     @save() if company_attributes.some((name) => @state[name] isnt prevState[name])
@@ -117,9 +120,6 @@ Component = React.createClass
     @setState
       industry: event.target.value
 
-  onShortNameChange: (event) ->
-    @setState
-      short_name: event.target.value
 
 # Exports
 #
