@@ -1,11 +1,12 @@
 class CompanyEditorSerializer < ActiveModel::Serializer
 
-  attributes :id, :uuid, :name, :country, :description, :is_listed, :logotype, :sections, :available_sections, :available_block_types
+  attributes :id, :uuid, :name, :country, :description, :is_listed, :logotype
+  attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
+  attributes :verify_url, :download_verification_file_url
   attributes :industry_ids, :chart_ids, :short_name, :url, :is_url_verified, :chart_permalinks
 
   has_many :blocks, serializer: BlockEditorSerializer
-  
   has_one :logo, serializer: Editor::LogoSerializer
   
   def id
@@ -82,6 +83,18 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   def vacancies_url
     company_vacancies_path(object)
   end
+
+  def verify_url
+    verify_url_company_path(object.id)
+  end
+
+  def download_verification_file_url
+    download_verification_file_company_path(object.id)
+  end
+
+  # def formatted
+    
+  # end
 
   def is_url_verified
     object.url.present? && object.tokens.find_by(name: :url_verification).blank?

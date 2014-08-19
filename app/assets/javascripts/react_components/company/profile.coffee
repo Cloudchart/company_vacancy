@@ -20,19 +20,18 @@ Component = React.createClass
 
   render: ->
     (tag.section {
-      className: 'company-profile'
+      className: 'profile'
     },
-      (tag.header {}, 'Company Profile')
+      (tag.header {}, 'Profile')
       
       (tag.div { className: 'section-block' },
 
-        # (tag.div { className: 'fields' },
         (UrlComponent {
-          value: @state.url
-          onChange: @onUrlChange
+          value: @props.url
           company_url: @props.company_url
-          is_url_verified: @state.is_url_verified
-          verification_sent: @state.verification_sent
+          verify_url: @props.verify_url
+          download_verification_file_url: @props.download_verification_file_url
+          is_url_verified: @props.is_url_verified
         })
 
         # (ShortNameComponent {
@@ -41,7 +40,6 @@ Component = React.createClass
         #   company_url: @props.company_url
         #   company_uuid: @props.company_uuid
         # })
-        # # )
 
         # 'Industry'
         # (IndustrySelectComponent {
@@ -71,7 +69,6 @@ Component = React.createClass
         #     onClick:    @toggleListing
         #   }, 'Listed') if @state.is_listed
 
-        # )
 
       )
     )
@@ -81,10 +78,6 @@ Component = React.createClass
     industry:          @props.industry_ids[0]
     is_listed:         @props.is_listed
     short_name:        @props.short_name
-    url:               @props.url
-    is_url_verified:   @props.is_url_verified
-    verification_sent: 
-      if @props.url == null or @props.url == '' then false else true
 
   componentDidUpdate: (prevProps, prevState) ->
     @save() if company_attributes.some((name) => @state[name] isnt prevState[name])
@@ -126,14 +119,7 @@ Component = React.createClass
 
   onShortNameChange: (event) ->
     @setState
-      short_name: event.target.value  
-
-  # TODO: remove unnecessary params 
-  onUrlChange: (event) ->
-    @setState
-      url: event.target.value
-      verification_sent: event.target.verification_sent
-      is_url_verified: event.is_url_verified
+      short_name: event.target.value
 
 # Exports
 #

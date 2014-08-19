@@ -26,14 +26,16 @@ MainComponent = React.createClass
         blocks:         @props.blocks.filter((block) -> block.section == section.key)
     
     sectionsComponents.splice(1, 0, CompanyProfileComponent({
-      key:             'company-profile'
-      company_uuid:    @props.company_uuid
-      company_url:     @props.company_url
-      country:         @props.country
-      industry_ids:    @props.industry_ids
-      is_listed:       @props.is_listed
-      short_name:      @props.short_name
-      url:             @props.url
+      key: 'profile'
+      company_uuid: @props.company_uuid
+      company_url: @props.company_url
+      verify_url: @props.verify_url
+      download_verification_file_url: @props.download_verification_file_url
+      country: @props.country
+      industry_ids: @props.industry_ids
+      is_listed: @props.is_listed
+      short_name: @props.short_name
+      url: @props.url
       is_url_verified: @props.is_url_verified
     }))
     

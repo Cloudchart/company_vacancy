@@ -27,8 +27,11 @@ Cloudchart::Application.routes.draw do
   # Resources
   #
   resources :companies, shallow: true, concerns: [:blockable] do
-    
+
     post :logo, to: 'companies#upload_logo', on: :member
+    post :search, on: :collection
+    get :verify_url, on: :member
+    get :download_verification_file, on: :member
     
     resources :vacancies, except: [:edit], concerns: [:blockable, :statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
@@ -43,8 +46,6 @@ Cloudchart::Application.routes.draw do
       post :verify, on: :member
     end
 
-    post :search, on: :collection
-    get :verify_url, on: :member
   end
 
   resources :blocks, only: [:update, :destroy] do

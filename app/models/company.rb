@@ -93,7 +93,19 @@ class Company < ActiveRecord::Base
       include: { industries: { only: [:name] } }, 
       methods: [:country_name]
     )
-  end  
+  end
+
+  def humanized_id
+    Cloudchart::RFC1751.encode(id).downcase.gsub(/\s/, '-')
+  end
+
+  def formatted_site_url
+    if url.match(/http:\/\/|https:\/\//)
+      url
+    else
+      'http://' + url
+    end
+  end
 
   def owner
     people.find_by(is_company_owner: true).user
