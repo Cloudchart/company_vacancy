@@ -6,10 +6,10 @@ module Uuidable
     before_create :generate_uuid
   end
 
-  private
+private
 
-    def generate_uuid
-      self.id = SecureRandom.uuid unless self.id.present?
-    end
+  def generate_uuid
+    self.id = SecureRandom.uuid unless self.id.present?
+  end
 
 end

@@ -73,4 +73,6 @@ Cloudchart::Application.routes.draw do
     post :ban_user, on: :member
   end
 
+  get ':id', to: 'pages#show', as: :page
+
 end

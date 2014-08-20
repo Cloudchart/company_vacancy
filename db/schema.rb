@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140815134735) do
+ActiveRecord::Schema.define(version: 20140820100112) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -256,6 +256,14 @@ ActiveRecord::Schema.define(version: 20140815134735) do
   end
 
   add_index "industries", ["parent_id"], name: "index_industries_on_parent_id", using: :btree
+
+  create_table "pages", primary_key: "uuid", force: true do |t|
+    t.string   "title"
+    t.text     "body"
+    t.string   "permalink"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "paragraphs", primary_key: "uuid", force: true do |t|
     t.text     "content",    null: false

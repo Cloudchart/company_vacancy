@@ -67,6 +67,8 @@ GEM
     arel (5.0.1.20140414130214)
     awesome_print (1.2.0)
     bcrypt (3.1.7)
+    bootstrap-wysihtml5-rails (0.3.1.24)
+      railties (>= 3.0)
     bourbon (3.2.3)
       sass (~> 3.2)
       thor
@@ -328,6 +330,7 @@ DEPENDENCIES
   active_model_serializers
   awesome_print
   bcrypt (~> 3.1.7)
+  bootstrap-wysihtml5-rails (= 0.3.1.24)
   bourbon
   cancan
   capistrano (~> 3.2.0)

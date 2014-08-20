@@ -1,6 +1,6 @@
 RailsAdmin.config do |config|
   config.main_app_name = ['CloudChart', 'Admin']
-  config.included_models = ['Company', 'Feature', 'User', 'Industry', 'Token']
+  config.included_models = ['Company', 'Feature', 'User', 'Industry', 'Token', 'Page']
 
   config.authenticate_with do
     authenticate_user
