@@ -1,5 +1,21 @@
+##= require stores/CountryStore
+
+# Imports
+#
+#
 tag = React.DOM
 
+CountryStore = cc.require('cc.stores.CountryStore')
+
+
+# Functions
+#
+getStateFromStores = ->
+  countries: _.sortBy CountryStore.all(), (country) -> country.sortValue()
+
+
+# Main Component
+#
 Component = React.createClass
   emptyCountry: ->
     (tag.option {
@@ -8,13 +24,11 @@ Component = React.createClass
 
 
   items: ->
-    items = @props.countries.map (pair) ->
-      [name, code] = pair
-
+    items = @state.countries.map (country) ->
       (tag.option {
-        key:    code
-        value:  code
-      }, name)
+        key:    country.to_param()
+        value:  country.to_param()
+      }, country.attr('name'))
     
     items.unshift(@emptyCountry()) unless @state.value
     
@@ -24,14 +38,23 @@ Component = React.createClass
   onChange: (event) ->
     @setState
       value: event.target.value
+    
+  
+  onStoresChange: ->
+    @setState getStateFromStores()
+  
+  
+  componentDidMount: ->
+    CountryStore.on('change', @onStoresChange)
+  
+  
+  componentWillUnmout: ->
+    CountryStore.off('change', @onStoresChange)
 
   
-  getDefaultProps: ->
-    countries: cc.require('countries')
-
-
   getInitialState: ->
-    value: @props.value
+    _.extend {}, getStateFromStores(),
+      value: @props.value
   
   
   componentDidUpdate: (prevProps, prevState) ->
