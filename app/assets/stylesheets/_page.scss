@@ -1,4 +1,6 @@
 main > article.page {
+  @include base-wrapper;
+
   font-size: 15pt;
   line-height: 140%;
 
