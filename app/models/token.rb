@@ -15,6 +15,10 @@ class Token < ActiveRecord::Base
       find(Cloudchart::RFC1751::decode(param.upcase.gsub(/[^A-Z]+/, ' '))) rescue nil
     end
 
+    def find_or_create_token_by!(attributes)
+      find_by(name: attributes[:name], owner: attributes[:owner]) || create!(attributes)   
+    end
+
   end
   
   rails_admin do

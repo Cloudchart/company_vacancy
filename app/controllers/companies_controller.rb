@@ -118,18 +118,21 @@ class CompaniesController < ApplicationController
     end
   end
 
+  # def transfer_ownership
+  #   token = Token.find_or_create_token_by!(name: :transfer_ownership, owner: @company, data: { user_id: current_user.id, email: params[:email] })
+  #   redirect_to :back
+  # end
+
+  # def obtain_ownership 
+  # end
+
 private
 
   def update_site_url_verification(company)
     if company_params[:site_url] == ''
       company.tokens.where(name: :site_url_verification).destroy_all
     else
-      token = company.tokens.find_by(name: :site_url_verification)
-
-      unless token
-        token = company.tokens.create!(name: :site_url_verification, data: { user_id: current_user.id })
-      end
-
+      token = Token.find_or_create_token_by!(name: :site_url_verification, owner: company, data: { user_id: current_user.id })
       dir_location = File.join(Rails.root, 'tmp', 'verifications')
       file_location = File.join(dir_location, "#{company.humanized_id}.txt")
       unless File.exists?(file_location)
@@ -156,7 +159,19 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :short_name, :site_url, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
+    params.require(:company).permit(
+      :name,
+      :short_name,
+      :site_url,
+      :country, 
+      :industry, 
+      :industry_ids, 
+      :description, 
+      :is_listed, 
+      :logotype, 
+      :remove_logotype, 
+      sections_attributes: [Company::Sections.map(&:downcase)]
+    )
   end
 
 end

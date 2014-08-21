@@ -13,6 +13,7 @@ CountrySelectComponent = cc.require('react/company/country_select')
 IndustrySelectComponent = cc.require('react/company/industry_select')
 ShortNameComponent = cc.require('react/company/short_name')
 UrlComponent = cc.require('react/company/site_url')
+# TransferOwnershipComponent = cc.require('react/company/transfer_ownership')
 
 # Main Component
 #
@@ -40,6 +41,10 @@ Component = React.createClass
           company_uuid: @props.company_uuid
           default_host: @props.default_host
         })
+
+        # (TransferOwnershipComponent {
+        #   transfer_ownership_url: @props.transfer_ownership_url
+        # })
 
         (tag.div { className: 'profile-item' },
           'Industry'

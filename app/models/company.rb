@@ -4,11 +4,6 @@ class Company < ActiveRecord::Base
   include Tire::Model::Search
   include Tire::Model::Callbacks  
 
-  # -- deprecated
-  SECTIONS = %i(about product people vacancies contacts).inject({}) { |hash, val| hash.merge({ I18n.t("company.sections.#{val}") => val }) }
-  BLOCK_TYPES = %i(paragraph block_image person vacancy).inject({}) { |hash, val| hash.merge({ I18n.t("block.types.#{val}") => val }) }
-  # --
-
   BlockTypes  = ['Paragraph', 'BlockImage', 'Person', 'Vacancy']
   Sections    = ['About', 'Product', 'People', 'Vacancies']
 

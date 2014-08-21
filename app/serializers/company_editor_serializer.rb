@@ -5,6 +5,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :verify_site_url, :download_verification_file_url, :default_host
   attributes :industry_ids, :chart_ids, :is_site_url_verified, :chart_permalinks
+  # attributes :transfer_ownership_url
 
   has_many :blocks, serializer: BlockEditorSerializer
   has_one :logo, serializer: Editor::LogoSerializer
@@ -91,6 +92,10 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   def download_verification_file_url
     download_verification_file_company_path(object.id)
   end
+
+  # def transfer_ownership_url
+  #   transfer_ownership_company_path(object.uuid)
+  # end
 
   def default_host
     ENV['ACTION_MAILER_DEFAULT_HOST']

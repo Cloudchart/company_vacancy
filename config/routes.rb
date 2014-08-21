@@ -32,6 +32,8 @@ Cloudchart::Application.routes.draw do
     post :search, on: :collection
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
+    # post :transfer_ownership, on: :member
+    # get :obtain_ownership, on: :member
     
     resources :vacancies, except: [:edit], concerns: [:blockable, :statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
