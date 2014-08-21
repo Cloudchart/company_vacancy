@@ -12,9 +12,29 @@ class Person < ActiveRecord::Base
   
   has_many :node_identities, as: :identity, dependent: :destroy, class_name: CloudBlueprint::Identity
 
-  #validates :first_name, :last_name, presence: true
+  # validates :first_name, :last_name, presence: true
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
+
+  rails_admin do
+    object_label_method :full_name
+
+    list do
+      exclude_fields :uuid, :phone, :email
+
+      field :user do
+        pretty_value { bindings[:view].mail_to value.email, value.full_name if value }
+      end
+
+      field :company do
+        pretty_value { bindings[:view].link_to(value.name, bindings[:view].main_app.company_path(value)) }
+      end
+    end
+
+    edit do
+      include_fields :is_company_owner
+    end
+  end
 
   settings ElasticSearchNGramSettings do
     mapping do
