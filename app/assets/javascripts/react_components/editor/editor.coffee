@@ -13,11 +13,11 @@ ChartPreviewComponent   = cc.require('blueprint/react/chart-preview')
 MainComponent = React.createClass
 
   render: ->
-    sectionsComponents = @props.sections.map (section) =>
+    sectionsComponents = @props.available_sections.map (section) =>
       cc.react.editor.Section
         key:            section.key
         placeholder:    section.title
-        title:          @props.sections_titles[section.key]
+        title:          @props.sections[section.key]
         company_url:    @props.company_url
         people_url:     @props.people_url
         vacancies_url:  @props.vacancies_url
@@ -27,17 +27,17 @@ MainComponent = React.createClass
     
     sectionsComponents.splice(1, 0, CompanyProfileComponent({
       key: 'profile'
-      company_uuid: @props.company_uuid
+      company_uuid: @props.uuid
       company_url: @props.company_url
-      verify_site_url: @props.verify_site_url
-      download_verification_file_url: @props.download_verification_file_url
       country: @props.country
       industry_ids: @props.industry_ids
       is_listed: @props.is_listed
       short_name: @props.short_name
-      site_url: @props.site_url
-      is_site_url_verified: @props.is_site_url_verified
       default_host: @props.default_host
+      site_url: @props.site_url
+      verify_site_url: @props.verify_site_url
+      download_verification_file_url: @props.download_verification_file_url
+      is_site_url_verified: @props.is_site_url_verified
     }))
     
     (tag.article { className: 'editor' },
@@ -49,15 +49,14 @@ MainComponent = React.createClass
         ChartPreviewComponent
           id: @props.chart_ids[0]
           permalink: @props.chart_permalinks[0]
-          company_id: @props.company_id
+          company_id: @props.id
           scale: 1
       ) if @props.chart_ids.length > 0
 
       (sectionsComponents)
     )
 
-
 # Expose
 #
-#@cc.react.editor.Main = MainComponent
+# @cc.react.editor.Main = MainComponent
 @cc.module('react/editor').exports = MainComponent
