@@ -52,7 +52,7 @@ class Ability
       can [:read, :pull], CloudBlueprint::Chart
 
       # User (conditional)
-      can [:update, :destroy, :upload_logo, :verify_url, :download_verification_file], Company do |company|
+      can [:update, :destroy, :upload_logo, :verify_site_url, :download_verification_file], Company do |company|
         (user.people & company.people).first.try(:is_company_owner?)
       end
 

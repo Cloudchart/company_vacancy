@@ -2,7 +2,7 @@
 ##= require ./profile/country_select
 ##= require ./profile/industry_select
 ##= require ./profile/short_name
-##= require ./profile/url
+##= require ./profile/site_url
 
 tag = React.DOM
 company_attributes = ['country', 'industry', 'is_listed']
@@ -12,7 +12,7 @@ company_attributes = ['country', 'industry', 'is_listed']
 CountrySelectComponent = cc.require('react/company/country_select')
 IndustrySelectComponent = cc.require('react/company/industry_select')
 ShortNameComponent = cc.require('react/company/short_name')
-UrlComponent = cc.require('react/company/url')
+UrlComponent = cc.require('react/company/site_url')
 
 # Main Component
 #
@@ -27,11 +27,11 @@ Component = React.createClass
       (tag.div { className: 'section-block' },
 
         (UrlComponent {
-          value: @props.url
+          value: @props.site_url
           company_url: @props.company_url
-          verify_url: @props.verify_url
+          verify_site_url: @props.verify_site_url
           download_verification_file_url: @props.download_verification_file_url
-          is_url_verified: @props.is_url_verified
+          is_site_url_verified: @props.is_site_url_verified
         })
 
         (ShortNameComponent {

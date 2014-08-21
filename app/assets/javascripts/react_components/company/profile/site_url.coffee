@@ -23,7 +23,7 @@ CheckFileComponent = React.createClass
     @setState({ sync: true })
 
     $.ajax
-      url: @props.verify_url
+      url: @props.verify_site_url
       type: 'GET'
       dataType: 'json'
 
@@ -34,16 +34,16 @@ CheckFileComponent = React.createClass
     @setState({ sync: false })
 
     if json == 'ok'
-      is_url_verified = true
-      url_verification_failed = false
+      is_site_url_verified = true
+      site_url_verification_failed = false
     else
-      is_url_verified = false
-      url_verification_failed = true
+      is_site_url_verified = false
+      site_url_verification_failed = true
 
     @props.onChange(
       target:
-        is_url_verified: is_url_verified
-        url_verification_failed: url_verification_failed
+        is_site_url_verified: is_site_url_verified
+        site_url_verification_failed: site_url_verification_failed
     )
 
   onCheckFileFail: (json) ->
@@ -72,7 +72,7 @@ CancelVerificationComponent = React.createClass
 
   save: ->
     data = new FormData
-    data.append('company[url]', @state.value)
+    data.append('company[site_url]', @state.value)
 
     @setState({ sync: true })
 
@@ -94,8 +94,8 @@ CancelVerificationComponent = React.createClass
       target:
         value: @state.value
         verification_sent: false
-        is_url_verified: false
-        url_verification_failed: false
+        is_site_url_verified: false
+        site_url_verification_failed: false
     )
   
   onSaveFail: ->
@@ -109,7 +109,7 @@ MainComponent = React.createClass
   # Component Specifications
   #
   render: ->
-      if @state.is_url_verified
+      if @state.is_site_url_verified
         (tag.div { className: 'profile-item' },
           (tag.div { className: 'content field' },
             (tag.span { className: 'label' }, 'Site URL')
@@ -129,7 +129,7 @@ MainComponent = React.createClass
       else if @state.verification_sent
         (tag.div { className: 'profile-item' },
           (tag.div { className: 'content paragraph' },
-            (tag.strong {}, 'File not found. ') if @state.url_verification_failed
+            (tag.strong {}, 'File not found. ') if @state.site_url_verification_failed
             (tag.a { href: @props.download_verification_file_url }, 'Download this file')
             (tag.span {}, ' and make it accessible from the root directory of your domain ')
             @formattedSiteLink(@state.value)
@@ -137,7 +137,7 @@ MainComponent = React.createClass
 
           (tag.div { className: 'actions' },
             (CheckFileComponent {
-              verify_url: @props.verify_url
+              verify_site_url: @props.verify_site_url
               onChange: @onCheckFileChange
             })
 
@@ -152,13 +152,13 @@ MainComponent = React.createClass
       else
         (tag.div { className: 'profile-item' },
           (tag.div { className: 'content field' },
-            (tag.label { htmlFor: 'url' }, 'Site URL')
+            (tag.label { htmlFor: 'site_url' }, 'Site URL')
 
             (tag.div { className: 'spacer' })
 
             (tag.input {
-              id: 'url'
-              name: 'url'
+              id: 'site_url'
+              name: 'site_url'
               value: @state.value
               placeholder: 'Type URL'
               className: 'error' if @state.error
@@ -185,8 +185,8 @@ MainComponent = React.createClass
   getInitialState: ->
     value: @props.value
     verification_sent: @props.verification_sent
-    is_url_verified: @props.is_url_verified
-    url_verification_failed: @props.url_verification_failed
+    is_site_url_verified: @props.is_site_url_verified
+    site_url_verification_failed: @props.site_url_verification_failed
     sync: false
     error: false
     verification_sent:
@@ -209,13 +209,13 @@ MainComponent = React.createClass
     @setState
       value: event.target.value 
       verification_sent: event.target.verification_sent
-      is_url_verified: event.target.is_url_verified
-      url_verification_failed: event.url_verification_failed
+      is_site_url_verified: event.target.is_site_url_verified
+      site_url_verification_failed: event.site_url_verification_failed
 
   onCheckFileChange: (event) ->
     @setState
-      is_url_verified: event.target.is_url_verified
-      url_verification_failed: event.target.url_verification_failed
+      is_site_url_verified: event.target.is_site_url_verified
+      site_url_verification_failed: event.target.site_url_verification_failed
 
   onKeyUp: (event) ->
     switch event.key
@@ -229,7 +229,7 @@ MainComponent = React.createClass
 
   save: ->
     data = new FormData
-    data.append('company[url]', @state.value)
+    data.append('company[site_url]', @state.value)
 
     @setState({ sync: true, error: false })
 
@@ -248,7 +248,7 @@ MainComponent = React.createClass
     @setState
       sync: false
       verification_sent: true
-      is_url_verified: false
+      is_site_url_verified: false
   
   onSaveFail: ->
     @setState
@@ -272,4 +272,4 @@ MainComponent = React.createClass
 
 # Exports
 #
-cc.module('react/company/url').exports = MainComponent
+cc.module('react/company/site_url').exports = MainComponent

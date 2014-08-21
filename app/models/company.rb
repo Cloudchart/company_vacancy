@@ -35,7 +35,7 @@ class Company < ActiveRecord::Base
 
   # validates :name, :country, :industry_ids, presence: true, on: :update
   validates :short_name, uniqueness: true, allow_blank: true
-  validates :url, url: true, allow_blank: true
+  validates :site_url, url: true, allow_blank: true
 
   settings ElasticSearchNGramSettings do
     mapping do
@@ -98,10 +98,10 @@ class Company < ActiveRecord::Base
   end
 
   def formatted_site_url
-    if url.match(/http:\/\/|https:\/\//)
-      url
+    if site_url.match(/http:\/\/|https:\/\//)
+      site_url
     else
-      'http://' + url
+      'http://' + site_url
     end
   end
 

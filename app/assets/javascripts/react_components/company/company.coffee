@@ -27,7 +27,7 @@ MainComponent = React.createClass
         blocks_url:                     @props.blocks_url
         people_url:                     @props.people_url
         vacancies_url:                  @props.vacancies_url
-        verify_url:                     @props.verify_url
+        verify_site_url:                @props.verify_site_url
         download_verification_file_url: @props.download_verification_file_url 
         default_host:                   @props.default_host
         country:                        @props.country
@@ -35,8 +35,8 @@ MainComponent = React.createClass
         chart_ids:                      @props.chart_ids
         is_listed:                      @props.is_listed
         short_name:                     @props.short_name
-        url:                            @props.url
-        is_url_verified:                @props.is_url_verified
+        site_url:                       @props.site_url
+        is_site_url_verified:           @props.is_site_url_verified
         chart_permalinks:               @props.chart_permalinks
         owner:                          'company'
       })

@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_url, :download_verification_file]
+  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file]
 
   # -- https://github.com/rails/rails/issues/9703
   #
@@ -65,7 +65,7 @@ class CompaniesController < ApplicationController
     if @company.update(company_params)
       Activity.track_activity(current_user, params[:action], @company)
 
-      update_url_verification(@company) if company_params[:url]
+      update_site_url_verification(@company) if company_params[:site_url]
 
       respond_to do |format|
         format.html { redirect_to @company }
@@ -87,13 +87,13 @@ class CompaniesController < ApplicationController
     redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
-  def verify_url
+  def verify_site_url
     uri = URI.parse(@company.formatted_site_url)
     uri.path = "/#{@company.humanized_id}.txt"
     response = Net::HTTP.get_response(uri)
 
     if response.is_a?(Net::HTTPSuccess)
-      @company.tokens.where(name: :url_verification).destroy_all
+      @company.tokens.where(name: :site_url_verification).destroy_all
       File.delete(File.join(Rails.root, 'tmp', 'verifications', "#{@company.humanized_id}.txt"))
 
       respond_to do |format|
@@ -120,14 +120,14 @@ class CompaniesController < ApplicationController
 
 private
 
-  def update_url_verification(company)
-    if company_params[:url] == ''
-      company.tokens.where(name: :url_verification).destroy_all
+  def update_site_url_verification(company)
+    if company_params[:site_url] == ''
+      company.tokens.where(name: :site_url_verification).destroy_all
     else
-      token = company.tokens.find_by(name: :url_verification)
+      token = company.tokens.find_by(name: :site_url_verification)
 
       unless token
-        token = company.tokens.create!(name: :url_verification, data: { user_id: current_user.id })
+        token = company.tokens.create!(name: :site_url_verification, data: { user_id: current_user.id })
       end
 
       dir_location = File.join(Rails.root, 'tmp', 'verifications')
@@ -156,7 +156,7 @@ private
 
   # Only allow a trusted parameter "white list" through.
   def company_params
-    params.require(:company).permit(:name, :short_name, :url, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
+    params.require(:company).permit(:name, :short_name, :site_url, :country, :industry, :industry_ids, :description, :is_listed, :logotype, :remove_logotype, sections_attributes: [Company::Sections.map(&:downcase)])
   end
 
 end

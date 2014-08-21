@@ -30,7 +30,7 @@ Cloudchart::Application.routes.draw do
 
     post :logo, to: 'companies#upload_logo', on: :member
     post :search, on: :collection
-    get :verify_url, on: :member
+    get :verify_site_url, on: :member
     get :download_verification_file, on: :member
     
     resources :vacancies, except: [:edit], concerns: [:blockable, :statusable] do

@@ -29,14 +29,14 @@ MainComponent = React.createClass
       key: 'profile'
       company_uuid: @props.company_uuid
       company_url: @props.company_url
-      verify_url: @props.verify_url
+      verify_site_url: @props.verify_site_url
       download_verification_file_url: @props.download_verification_file_url
       country: @props.country
       industry_ids: @props.industry_ids
       is_listed: @props.is_listed
       short_name: @props.short_name
-      url: @props.url
-      is_url_verified: @props.is_url_verified
+      site_url: @props.site_url
+      is_site_url_verified: @props.is_site_url_verified
       default_host: @props.default_host
     }))
     
