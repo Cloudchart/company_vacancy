@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: git@github.com:Cloudchart/bootstrap-wysihtml5-rails.git
-  revision: 2092b158cf8bff0834fbd73a8f0bbf3ab67f2f01
+  revision: 2b5d2fde02be16857f509251eb3dab49625b425e
   specs:
     bootstrap-wysihtml5-rails (0.3.1.24)
       railties (>= 3.0)
