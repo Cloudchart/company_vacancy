@@ -1,16 +1,21 @@
-<%-
-class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint
+<% content_for :meta do %>
+  <meta property="og:title" content="<%= @chart.company.name %> > <%= @chart.title %>" />
+  <meta property="og:image" content="<%= @chart.company.logotype.try(:url, host: request.protocol + request.host) || image_url('cloudchart-logo-square.png') %>">
+  <meta property="og:url" content="<%= company_chart_url(@chart.company, @chart) %>" />
+  <meta property="og:description" content="<%= @chart.company.description %>" />
+<% end %>
 
-pagescript_params(
+<% class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint %>
+
+<% pagescript_params(
   id:           @chart.id,
   chart:        @chart,
   url:          chart_path(@chart.id),
   company_url:  main_app.company_path(@chart.company),
   company_name: @chart.company.name
-)
--%>
+) %>
 
-<%- content_for :title do -%>
+<% content_for :title do %>
     <%= link_to main_app.company_path(@chart.company), class: 'title' do -%>
       <%= @chart.company.name %>
       <%= font_awesome 'angle-right' %>
@@ -18,4 +23,4 @@ pagescript_params(
     <div data-header-chart-title-mount-point>
       <span class="title"><small><%= @chart.title %></small></span>
     </div>
-<%- end -%>
+<% end %>

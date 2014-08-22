@@ -1,3 +1,10 @@
+<% content_for :meta do %>
+  <meta property="og:title" content="CloudChart" />
+  <meta property="og:image" content="<%= image_url('cloudchart-logo-square.png') %>">
+  <meta property="og:url" content="<%= root_url %>" />
+  <meta property="og:description" content="CloudChart is a convenient tool to chart and profile your company. Use it to clarify your team structure, your products, your goals, and become transparent. Transparency benefits your teams, your partners, and your investors." />
+<% end %>
+
 <%- class_for_root_tag main: :newsplash, header: :inverse, footer: :inverse -%>
 
 <header>

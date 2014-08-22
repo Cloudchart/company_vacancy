@@ -1,6 +1,6 @@
 <% content_for :meta do %>
   <meta property="og:title" content="<%= @company.name %>" />
-  <meta property="og:image" content="<%= @company.logotype.url(host: request.protocol + request.host) %>">
+  <meta property="og:image" content="<%= @company.logotype.try(:url, host: request.protocol + request.host) || image_url('cloudchart-logo-square.png') %>">
   <meta property="og:url" content="<%= company_url(@company) %>" />
   <meta property="og:description" content="<%= @company.description %>" />
 <% end %>
