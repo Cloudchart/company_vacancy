@@ -6,6 +6,13 @@ GIT
       countries (~> 0.9.3)
 
 GIT
+  remote: git@github.com:Cloudchart/bootstrap-wysihtml5-rails.git
+  revision: 2092b158cf8bff0834fbd73a8f0bbf3ab67f2f01
+  specs:
+    bootstrap-wysihtml5-rails (0.3.1.24)
+      railties (>= 3.0)
+
+GIT
   remote: git@github.com:Cloudchart/pagescript.git
   revision: a6c78b18a589dc93e7ad5857ab361ad09d57e454
   specs:
@@ -67,8 +74,6 @@ GEM
     arel (5.0.1.20140414130214)
     awesome_print (1.2.0)
     bcrypt (3.1.7)
-    bootstrap-wysihtml5-rails (0.3.1.24)
-      railties (>= 3.0)
     bourbon (3.2.3)
       sass (~> 3.2)
       thor
@@ -330,7 +335,7 @@ DEPENDENCIES
   active_model_serializers
   awesome_print
   bcrypt (~> 3.1.7)
-  bootstrap-wysihtml5-rails (= 0.3.1.24)
+  bootstrap-wysihtml5-rails!
   bourbon
   cancan
   capistrano (~> 3.2.0)
