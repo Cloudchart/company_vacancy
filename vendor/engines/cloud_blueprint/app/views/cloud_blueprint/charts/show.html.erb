@@ -2,7 +2,7 @@
   <meta property="og:title" content="<%= @chart.company.name %> > <%= @chart.title %>" />
   <meta property="og:image" content="<%= @chart.company.logotype.try(:url, host: request.protocol + request.host) || image_url('cloudchart-logo-square.png') %>">
   <meta property="og:url" content="<%= company_chart_url(@chart.company, @chart) %>" />
-  <meta property="og:description" content="<%= @chart.company.description %>" />
+  <meta property="og:description" content="<%= CompanyDecorator.new(@chart.company).about || @chart.company.description %>" />
 <% end %>
 
 <% class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint %>
