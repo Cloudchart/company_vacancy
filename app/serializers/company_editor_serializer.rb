@@ -5,6 +5,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :verify_site_url, :download_verification_file_url, :default_host
   attributes :industry_ids, :chart_ids, :is_site_url_verified, :chart_permalinks
+  attributes :owners
   # attributes :transfer_ownership_url
 
   has_many :blocks, serializer: BlockEditorSerializer
@@ -17,7 +18,6 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   def sections
     object.sections.marshal_dump
   end
-  
   
   def industry_ids
     object.industries.map(&:id)
