@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
 
-  before_action :set_person, only: [:show, :edit, :update, :destroy, :send_invite_to_user]
+  before_action :set_person, only: [:show, :edit, :update, :destroy, :send_invite_to_user, :make_owner]
   before_action :set_company, only: [:index, :new, :create, :search]
   before_action :build_person, only: :new
   before_action :build_person_with_params, only: :create
@@ -87,6 +87,35 @@ class PeopleController < ApplicationController
     redirect_to :back, notice: t('messages.company_invite.email_sent')
   end
 
+  def make_owner
+    if @person.user
+      @person.update(is_company_owner: true)
+
+      respond_to do |format|
+        format.json { render json: { owners: @person.company.owners } }
+      end
+
+    elsif @person.email.present?
+      email = CloudProfile::Email.find_by(address: @person.email)
+
+      if email && email.user.people.map(&:company_id).include?(@person.company_id)
+        respond_to do |format|
+          format.json { render json: { message: t('messages.company_invite.user_has_already_been_associated') } }
+        end
+      else
+        create_company_invite_token_and_send_email(@person, email)
+        invited_person_ids = Token.where(name: :company_invite, owner: @person.company).map { |token| token.data[:person_id] }
+
+        respond_to do |format|
+          format.json { render json: { invites: Person.find(invited_person_ids) } }
+        end
+      end
+
+    else
+      # render input
+    end
+  end
+
 private
   # Use callbacks to share common setup or constraints between actions.
   def set_person
@@ -114,14 +143,14 @@ private
     authorize! :access_people, @company
   end
 
-  def create_company_invite_token_and_send_email(person_id, email=nil)
-    token = Token.find_by(name: :company_invite, data: person_id.to_yaml, owner: email.try(:user))
+  def create_company_invite_token_and_send_email(person, email)
+    token = Token.where(name: :company_invite, owner: person.company).select { |token| token.data[:person_id] == person.id }.first
 
     unless token
-      token = Token.create!(name: :company_invite, data: person_id, owner: email.try(:user))
+      token = Token.create!(name: :company_invite, data: { user_id: current_user.id, person_id: person.id }, owner: person.company)
     end
 
-    UserMailer.company_invite(@person.company, email || params[:email], token).deliver
+    UserMailer.company_invite(email || params[:email], token).deliver
   end
 
 end

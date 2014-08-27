@@ -28,6 +28,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     object.charts.map(&:id)
   end
 
+
   def chart_permalinks
     object.charts.map(&:permalink)
   end

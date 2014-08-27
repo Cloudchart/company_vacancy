@@ -1,9 +1,16 @@
+##= require components/QueryInput
+##= require components/Person
+##= require components/IdentityList
+##= require stores/PersonStore
+
 # Imports
 # 
 tag = React.DOM
 
-QueryInputComponent   = cc.require('cc.components.QueryInput')
+QueryInputComponent = cc.require('cc.components.QueryInput')
 PersonComponent = cc.require('cc.components.Person')
+IdentityListComponent = cc.require('cc.components.IdentityList')
+PersonStore = cc.require('cc.stores.PersonStore')
 
 # Main Component
 #
@@ -49,22 +56,27 @@ MainComponent = React.createClass
             onCancel:     @onQueryCancel
           })
 
-          @gatherPeople()
+          (IdentityListComponent {
+            key:            'people-list'
+            onSelect:       @onPersonSelect
+          },
+            @gatherPeople()
+          )
+
         ]
       
       when 'view'
         @addButton()
 
   gatherPeople: ->
-    (tag.ul { key: 'people-list', className: 'identity-list' },
-      # _.chain
-      (tag.li { 
-        className: 'identity' 
-        onClick: @onPersonClick
-      }, 
-        (PersonComponent { key: 'e23dc502-6922-4465-b59c-79cdb9720eb5' })
-      )
-    )
+    people = _.chain(PersonStore.all())
+      .reject (person) => _.contains(@props.filtered_people, person.to_param())
+      .filter (person) => _.all @state.query, (q) -> person.matches(q)
+      .sortBy (person) -> person.sortValue()
+      .value()
+
+    _.map people, (person) ->
+      (PersonComponent { key: person.to_param() })
 
   addButton: ->
     (tag.button {
@@ -75,12 +87,24 @@ MainComponent = React.createClass
       (tag.i { className: 'fa fa-male' })
     )
 
-  # Events
-  # 
-  onPersonClick: ->
-    # change owners collection
+  onPersonSelectDone: (json) ->
+    console.log json
+    @props.onChange({ target: { value: json }})
     @setState
       mode: 'view'
+
+  onPersonSelectFail: ->
+    console.warn 'onPersonSelectFail'
+
+  # Events
+  # 
+  onPersonSelect: (key) ->
+    $.ajax
+      url: "/people/#{key}/make_owner"
+      method: 'PUT'
+      dataType: 'json'
+    .done @onPersonSelectDone
+    .fail @onPersonSelectFail
 
   onAddButtonClick: ->
     @setState

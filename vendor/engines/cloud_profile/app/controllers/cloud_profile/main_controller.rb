@@ -52,7 +52,7 @@ module CloudProfile
       token = Token.where(name: :company_invite).find(token_id) rescue nil
 
       if token && current_user
-        person = Person.find(token.data)
+        person = Person.find(token.data[:person_id])
 
         unless current_user.people.map(&:company_id).include?(person.company_id)
           current_user.people << person
@@ -61,10 +61,7 @@ module CloudProfile
           # current_user.subscriptions.find_by(subscribable: person.company).try(:destroy)
           # current_user.subscriptions.create!(subscribable: person.company, types: [:vacancies, :events])
 
-          Token.transaction do
-            Token.where(data: token.data.to_yaml).destroy_all
-          end
-
+          token.destroy
           session[:company_invite] = nil if session[:company_invite].present?
         end
 

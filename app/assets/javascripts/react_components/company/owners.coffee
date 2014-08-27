@@ -23,7 +23,8 @@ Component = React.createClass
           # @gatherButtons() unless @props.isReadOnly
 
           (OwnerSelectorComponent {
-            filtered_people: @state.owners
+            filtered_people: @state.owners.map (person) -> person.uuid
+            onChange: @onOwnerSelectorChange
           })
         )
       )
@@ -36,6 +37,9 @@ Component = React.createClass
 
   getDefaultProps: ->
     isReadOnly: false
+
+  onOwnerSelectorChange: (event) ->
+    @setState(event.target.value)
 
   # onChange: (event) ->
   #   @setState({ value: event.target.value })
@@ -50,7 +54,8 @@ Component = React.createClass
   gatherOwners: ->
     _.chain(@state.owners)
 
-      .sortBy (owner) -> owner.first_name
+      # TODO: check this sort
+      .sortBy (owner) -> [owner.first_name, owner.last_name]
 
       .map (owner) ->
         (tag.div { key: owner.uuid, className: 'controller aspect-ratio-1x1' },
