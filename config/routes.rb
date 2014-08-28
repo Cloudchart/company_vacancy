@@ -40,9 +40,9 @@ Cloudchart::Application.routes.draw do
     end
     
     resources :people do
-      # post :send_invite_to_user, on: :member
-      patch :make_or_invite_owner, on: :member
       post :search, on: :collection
+      patch :make_or_invite_owner, on: :member
+      delete :cancel_owner_invite, on: :member
     end
 
     resources :events, concerns: [:blockable] do
@@ -62,8 +62,8 @@ Cloudchart::Application.routes.draw do
     post :vote, on: :member
   end
 
-  resources :subscriptions, only: [:create, :update, :destroy]
   resources :tokens, only: :destroy
+  resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :favorites, only: [:create, :destroy]
 

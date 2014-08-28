@@ -87,15 +87,6 @@ MainComponent = React.createClass
       (tag.i { className: 'fa fa-male' })
     )
 
-  onPersonSelectDone: (json) ->
-    console.log json
-    @props.onChange({ target: { value: json }})
-    @setState
-      mode: 'view'
-
-  onPersonSelectFail: ->
-    console.warn 'onPersonSelectFail'
-
   # Events
   # 
   onPersonSelect: (key) ->
@@ -105,6 +96,15 @@ MainComponent = React.createClass
       dataType: 'json'
     .done @onPersonSelectDone
     .fail @onPersonSelectFail
+
+  onPersonSelectDone: (json) ->
+    console.log json
+    @props.onChange({ target: { value: json }})
+    @setState
+      mode: 'view'
+
+  onPersonSelectFail: ->
+    console.warn 'onPersonSelectFail'
 
   onAddButtonClick: ->
     @setState

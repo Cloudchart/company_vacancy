@@ -21,10 +21,9 @@ Component = React.createClass
         (tag.div { className: 'people' },
           @gatherOwners()
           @gatherInvites()
-          # @gatherButtons() unless @props.isReadOnly
 
           (OwnerSelectorComponent {
-            filtered_people: @state.owners.map (person) -> person.uuid
+            filtered_people: @filteredPeople()
             onChange: @onOwnerSelectorChange
           })
         )
@@ -34,8 +33,8 @@ Component = React.createClass
   getInitialState: ->
     owners: @props.owners
     owner_invites: @props.owner_invites
-    error: false
-    sync: false
+    # error: false
+    # sync: false
 
   getDefaultProps: ->
     isReadOnly: false
@@ -65,26 +64,67 @@ Component = React.createClass
         (tag.div { key: person.uuid, className: 'controller aspect-ratio-1x1' },
           (tag.div { className: 'content' },
             (PersonComponent { key: person.uuid })
-
-            (tag.section { className: 'buttons' },
-              (tag.button { className: 'delete', onClick: @onDeleteClick }, 'Delete')
-              (tag.button { className: 'change', onClick: @onResendClick }, 'Resend')
-            )
+            @gatherButtons(person.uuid) unless @props.isReadOnly
           )
         )
 
       .value()
+
+  gatherButtons: (key) ->
+    (tag.section { className: 'buttons' },
+      (tag.button { 
+        className: 'delete'
+        value: key
+        onClick: @onCancelClick
+      }, 
+        'Cancel'
+      )
+
+      (tag.button { 
+        className: 'change'
+        value: key
+        onClick: @onResendClick
+      }, 
+        'Resend'
+      )
+    )
+
+  filteredPeople: -> 
+    _.union(
+      @state.owners.map((person) -> person.uuid), 
+      @state.owner_invites.map((person) -> person.uuid)
+    )
 
   # Events
   # 
   onOwnerSelectorChange: (event) ->
     @setState(event.target.value)  
 
-  onDeleteClick: (event) ->
-    console.log 'onDeleteClick'
+  onCancelClick: (event) ->
+    $.ajax
+      url: "/people/#{event.target.value}/cancel_owner_invite"
+      method: 'DELETE'
+      dataType: 'json'
+    .done @onCancelClickDone
+    .fail @onCancelClickFail
+
+  onCancelClickDone: (json) ->
+    @setState(json)
+
+  onCancelClickFail: ->
+    console.warn 'onCancelClickFail'
 
   onResendClick: (event) ->
-    console.log 'onResendClick'
+    $.ajax
+      url: "/people/#{event.target.value}/make_or_invite_owner"
+      method: 'PATCH'
+      dataType: 'json'
+    .done @onResendClickDone
+    .fail @onResendClickFail
+
+  onResendClickDone: ->
+  onResendClickFail: ->
+    console.warn 'onResendClickFail'
 
   # Lifecycle Methods
   #

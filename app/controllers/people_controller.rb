@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
 
-  before_action :set_person, only: [:show, :edit, :update, :destroy, :make_or_invite_owner]
+  before_action :set_person, only: [:show, :edit, :update, :destroy, :make_or_invite_owner, :cancel_owner_invite]
   before_action :set_company, only: [:index, :new, :create, :search]
   before_action :build_person, only: :new
   before_action :build_person_with_params, only: :create
@@ -104,7 +104,6 @@ class PeopleController < ApplicationController
         respond_to do |format|
           format.json { render json: { message: t('messages.company_invite.user_has_already_been_associated') } }
         end
-      # elsif email
       else
         create_invite_token_and_send_email(@person, email, { make_owner: true })
         invited_person_ids = Token.where(name: :invite, owner: @person.company).map { |token| token.data[:person_id] }
@@ -116,6 +115,17 @@ class PeopleController < ApplicationController
 
     else
       # render input
+    end
+  end
+
+  def cancel_owner_invite
+    token = Token.where(name: :invite, owner: @person.company).select { |token| token.data[:person_id] == @person.id }.first
+    token.destroy
+
+    invited_person_ids = Token.where(name: :invite, owner: @person.company).map { |token| token.data[:person_id] }
+
+    respond_to do |format|
+      format.json { render json: { owner_invites: Person.find(invited_person_ids) } }
     end
   end
 
