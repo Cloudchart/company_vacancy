@@ -49,12 +49,13 @@ module CloudProfile
 
       return unless token_id
 
-      token = Token.where(name: :company_invite).find(token_id) rescue nil
+      token = Token.where(name: :invite).find(token_id) rescue nil
 
       if token && current_user
         person = Person.find(token.data[:person_id])
 
         unless current_user.people.map(&:company_id).include?(person.company_id)
+          person.update(is_company_owner: true) if token.data[:make_owner]
           current_user.people << person
           
           # TODO: add default subscription
