@@ -20,6 +20,7 @@ Component = React.createClass
       (tag.div { className: 'section-block' },
         (tag.div { className: 'people' },
           @gatherOwners()
+          @gatherInvites()
           # @gatherButtons() unless @props.isReadOnly
 
           (OwnerSelectorComponent {
@@ -32,29 +33,18 @@ Component = React.createClass
 
   getInitialState: ->
     owners: @props.owners
+    owner_invites: @props.owner_invites
     error: false
     sync: false
 
   getDefaultProps: ->
     isReadOnly: false
 
-  onOwnerSelectorChange: (event) ->
-    @setState(event.target.value)
-
-  # onChange: (event) ->
-  #   @setState({ value: event.target.value })
-
-  # onKeyUp: (event) ->
-  #   switch event.key
-  #     when 'Enter'
-  #       @transferOwnership() if @isValid()
-  #     when 'Escape'
-  #       console.log 'Escape'
-
+  # Instance methods
+  # 
   gatherOwners: ->
     _.chain(@state.owners)
 
-      # TODO: check this sort
       .sortBy (owner) -> [owner.first_name, owner.last_name]
 
       .map (owner) ->
@@ -66,36 +56,35 @@ Component = React.createClass
 
       .value()
 
-  # gatherButtons: ->
-  #   (tag.section {
-  #     className: 'buttons'
-  #   },
-  #     (tag.button { className: 'delete', onClick: @onDeleteClick }, 'Delete')
-  #     (tag.button { ckassName: 'change', onClick: @onChangeClick }, 'Change')
-  #   )
+  gatherInvites: ->
+    _.chain(@state.owner_invites)
 
-  # isValid: ->
-  #   email_re.test(@state.value)
+      .sortBy (person) -> [person.first_name, person.last_name]
 
-  # transferOwnership: ->
-  #   @setState({ sync: true, error: false })
+      .map (person) =>
+        (tag.div { key: person.uuid, className: 'controller aspect-ratio-1x1' },
+          (tag.div { className: 'content' },
+            (PersonComponent { key: person.uuid })
 
-  #   $.ajax
-  #     url: @props.transfer_ownership_url
-  #     type: 'POST'
-  #     dataType: 'json'
-  #     data:
-  #       email: @state.value
-  #   .done @onTransferOwnershipDone
-  #   .fail @onTransferOwnershipFail
+            (tag.section { className: 'buttons' },
+              (tag.button { className: 'delete', onClick: @onDeleteClick }, 'Delete')
+              (tag.button { className: 'change', onClick: @onResendClick }, 'Resend')
+            )
+          )
+        )
 
-  # onTransferOwnershipDone: ->
-  #   @setState({ sync: false })
-  #   console.log 'Done'
+      .value()
 
-  # onTransferOwnershipFail: ->
-  #   @setState({ sync: false, error: true })
-  #   console.warn 'Fail'
+  # Events
+  # 
+  onOwnerSelectorChange: (event) ->
+    @setState(event.target.value)  
+
+  onDeleteClick: (event) ->
+    console.log 'onDeleteClick'
+
+  onResendClick: (event) ->
+    console.log 'onResendClick'
 
   # Lifecycle Methods
   #

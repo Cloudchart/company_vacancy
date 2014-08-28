@@ -40,8 +40,8 @@ Cloudchart::Application.routes.draw do
     end
     
     resources :people do
-      post :send_invite_to_user, on: :member
-      match :make_owner, on: :member, via: [:put, :patch]
+      # post :send_invite_to_user, on: :member
+      patch :make_or_invite_owner, on: :member
       post :search, on: :collection
     end
 

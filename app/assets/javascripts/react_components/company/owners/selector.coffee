@@ -100,8 +100,8 @@ MainComponent = React.createClass
   # 
   onPersonSelect: (key) ->
     $.ajax
-      url: "/people/#{key}/make_owner"
-      method: 'PUT'
+      url: "/people/#{key}/make_or_invite_owner"
+      method: 'PATCH'
       dataType: 'json'
     .done @onPersonSelectDone
     .fail @onPersonSelectFail

@@ -45,6 +45,7 @@ MainComponent = React.createClass
     sectionsComponents.splice(2, 0, CompanyOwnersComponent({
       key: 'owners'
       owners: @props.owners
+      owner_invites: @props.owner_invites
     }))
     
     (tag.article { className: 'editor' },

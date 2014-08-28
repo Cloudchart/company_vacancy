@@ -109,6 +109,10 @@ class Company < ActiveRecord::Base
     people.where(is_company_owner: true)
   end
 
+  def invite_tokens
+    tokens.where(name: :invite)
+  end
+
   def industry
     industries.first
   end

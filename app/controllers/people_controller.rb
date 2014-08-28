@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
 
-  before_action :set_person, only: [:show, :edit, :update, :destroy, :send_invite_to_user, :make_owner]
+  before_action :set_person, only: [:show, :edit, :update, :destroy, :make_or_invite_owner]
   before_action :set_company, only: [:index, :new, :create, :search]
   before_action :build_person, only: :new
   before_action :build_person_with_params, only: :create
@@ -68,26 +68,28 @@ class PeopleController < ApplicationController
     redirect_to company_people_url(company), notice: t('messages.destroyed', name: t('lexicon.person'))
   end
 
+  # deprecated
   # POST /people/1/send_invite_to_user
-  def send_invite_to_user
-    return redirect_to :back, alert: t('messages.company_invite.email_blank') if params[:email].blank?
-    email = CloudProfile::Email.find_by(address: params[:email])
+  # def send_invite_to_user
+  #   return redirect_to :back, alert: t('messages.company_invite.email_blank') if params[:email].blank?
+  #   email = CloudProfile::Email.find_by(address: params[:email])
  
-    if email
-      # check if user already has person in this company
-      if email.user.people.map(&:company_id).include?(@person.company_id)
-        return redirect_to :back, alert: t('messages.company_invite.user_has_already_been_associated')
-      else
-        create_company_invite_token_and_send_email(@person.id, email)
-      end
-    else
-      create_company_invite_token_and_send_email(@person.id)
-    end
+  #   if email
+  #     # check if user already has person in this company
+  #     if email.user.people.map(&:company_id).include?(@person.company_id)
+  #       return redirect_to :back, alert: t('messages.company_invite.user_has_already_been_associated')
+  #     else
+  #       create_company_invite_token_and_send_email(@person.id, email)
+  #     end
+  #   else
+  #     create_company_invite_token_and_send_email(@person.id)
+  #   end
 
-    redirect_to :back, notice: t('messages.company_invite.email_sent')
-  end
+  #   redirect_to :back, notice: t('messages.company_invite.email_sent')
+  # end
 
-  def make_owner
+  # must be separate actions
+  def make_or_invite_owner
     if @person.user
       @person.update(is_company_owner: true)
 
@@ -102,12 +104,13 @@ class PeopleController < ApplicationController
         respond_to do |format|
           format.json { render json: { message: t('messages.company_invite.user_has_already_been_associated') } }
         end
+      # elsif email
       else
-        create_company_invite_token_and_send_email(@person, email)
-        invited_person_ids = Token.where(name: :company_invite, owner: @person.company).map { |token| token.data[:person_id] }
+        create_invite_token_and_send_email(@person, email, { make_owner: true })
+        invited_person_ids = Token.where(name: :invite, owner: @person.company).map { |token| token.data[:person_id] }
 
         respond_to do |format|
-          format.json { render json: { invites: Person.find(invited_person_ids) } }
+          format.json { render json: { owner_invites: Person.find(invited_person_ids) } }
         end
       end
 
@@ -143,14 +146,27 @@ private
     authorize! :access_people, @company
   end
 
-  def create_company_invite_token_and_send_email(person, email)
-    token = Token.where(name: :company_invite, owner: person.company).select { |token| token.data[:person_id] == person.id }.first
+  def create_invite_token_and_send_email(person, email, options={})
+    options[:make_owner] ||= false
+    email = email || params[:email]
+
+    token = Token.where(name: :invite, owner: person.company).select { |token| token.data[:person_id] == person.id }.first
 
     unless token
-      token = Token.create!(name: :company_invite, data: { user_id: current_user.id, person_id: person.id }, owner: person.company)
+      token = Token.create!(
+        name: :invite,
+        owner: person.company,
+        data: {
+          author_id: current_user.id,
+          person_id: person.id,
+          full_name: person.full_name,
+          email: person.email,
+          make_owner: options[:make_owner] # role mask will be here
+        }
+      )
     end
 
-    UserMailer.company_invite(email || params[:email], token).deliver
+    UserMailer.company_invite(email, token).deliver
   end
 
 end
