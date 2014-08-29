@@ -13,8 +13,8 @@ module CloudProfile
       
       if user.valid?
         Token.transaction do
-          tokens = Token.where(name: 'request_invite').select { |token| token.data && token.data[:email] == user.email }.each(&:destroy)
-          token = Token.create name: 'request_invite', data: { full_name: user.full_name, email: user.email }
+          tokens = Token.where(name: :request_invite).select { |token| token.data && token.data[:email] == user.email }.each(&:destroy)
+          token = Token.create name: :request_invite, data: { full_name: user.full_name, email: user.email }
           UserMailer.thanks_for_invite_request(token).deliver
         end
         
@@ -55,7 +55,18 @@ module CloudProfile
           # Register and login
 
           user.save!
+
+          # associate with person based on invite data
+          if user.invite.data[:person_id]
+            person = Person.find(user.invite.data[:person_id]) rescue nil
+            if person && !user.people.map(&:company_id).include?(person.company_id)
+              person.update(is_company_owner: true) if user.invite.data[:make_owner]
+              user.people << person
+            end
+          end
+
           user.invite.destroy
+          
           warden.set_user(user, scope: :user)
 
           respond_to do |format|
@@ -64,7 +75,7 @@ module CloudProfile
         else
           # Send activation email
 
-          token = Token.create(name: 'registration', data: { full_name: user.full_name, address: user.email, password_digest: user.password_digest })
+          token = Token.create(name: :registration, data: { full_name: user.full_name, address: user.email, password_digest: user.password_digest })
           ProfileMailer.activation_email(token).deliver
 
           respond_to do |format|

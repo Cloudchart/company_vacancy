@@ -1,12 +1,14 @@
-##= require ../company/profile
 ##= require cloud_blueprint/react/chart_preview
+##= require ../company/profile
+##= require ../company/owners
 
 # Expose
 #
 tag = React.DOM
 
-CompanyProfileComponent = cc.require('react/company/profile')
 ChartPreviewComponent   = cc.require('blueprint/react/chart-preview')
+CompanyProfileComponent = cc.require('react/company/profile')
+CompanyOwnersComponent  = cc.require('react/company/owners')
 
 # Main component
 #
@@ -38,6 +40,12 @@ MainComponent = React.createClass
       verify_site_url: @props.verify_site_url
       download_verification_file_url: @props.download_verification_file_url
       is_site_url_verified: @props.is_site_url_verified
+    }))
+
+    sectionsComponents.splice(2, 0, CompanyOwnersComponent({
+      key: 'owners'
+      owners: @props.owners
+      owner_invites: @props.owner_invites
     }))
     
     (tag.article { className: 'editor' },

@@ -21,7 +21,7 @@ MainComponent = React.createClass
     )
 
   extendedProps: ->
-    $.extend({ owner: 'company' }, @props)
+    _.extend({ owner: 'company' }, @props)
 
 # Expose
 #

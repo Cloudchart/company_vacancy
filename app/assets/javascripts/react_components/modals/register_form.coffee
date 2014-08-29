@@ -40,7 +40,11 @@ Component = React.createClass
 
   onInviteChange: (event) ->
     @setState({ invite: event.target.value })
-  
+
+  onPasswordKeyUp: (event) ->
+    switch event.key
+      when 'Enter'
+        @onRegisterButtonClick() if @isValidForRegister()
   
   onInputFocus: (event) ->
     errors = @state.errors[0..]
@@ -196,9 +200,11 @@ Component = React.createClass
             name:         'password'
             className:    'error' if @state.errors.indexOf('password') > -1
             autoComplete: 'off'
+            autoFocus:    @state.email.length > 0 and @state.full_name.length > 0
             value:        @state.password
             onFocus:      @onInputFocus
             onChange:     @onPasswordChange
+            onKeyUp:      @onPasswordKeyUp
           })
         )
 

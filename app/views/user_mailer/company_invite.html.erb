@@ -7,7 +7,7 @@
 </p>
 
 <p>
-  <%= link_to "Accept Invitation From #{@company.name}", cloud_profile.root_url(token: @token) %>
+  <%= link_to "Accept Invitation From #{@company.name}", @user.present? ? cloud_profile.root_url(token: @token) : main_app.root_url(token: @token) %>
 </p>
 
 <p>

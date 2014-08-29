@@ -49,22 +49,20 @@ module CloudProfile
 
       return unless token_id
 
-      token = Token.where(name: :company_invite).find(token_id) rescue nil
+      token = Token.where(name: :invite).find(token_id) rescue nil
 
       if token && current_user
-        person = Person.find(token.data)
+        person = Person.find(token.data[:person_id])
 
         unless current_user.people.map(&:company_id).include?(person.company_id)
+          person.update(is_company_owner: true) if token.data[:make_owner]
           current_user.people << person
           
           # TODO: add default subscription
           # current_user.subscriptions.find_by(subscribable: person.company).try(:destroy)
           # current_user.subscriptions.create!(subscribable: person.company, types: [:vacancies, :events])
 
-          Token.transaction do
-            Token.where(data: token.data.to_yaml).destroy_all
-          end
-
+          token.destroy
           session[:company_invite] = nil if session[:company_invite].present?
         end
 

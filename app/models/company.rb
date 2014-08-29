@@ -102,7 +102,16 @@ class Company < ActiveRecord::Base
 
   def owner
     people.find_by(is_company_owner: true).user
-  end  
+  end
+
+  # company temporary can have multiple owners
+  def owners
+    people.where(is_company_owner: true)
+  end
+
+  def invite_tokens
+    tokens.where(name: :invite)
+  end
 
   def industry
     industries.first
