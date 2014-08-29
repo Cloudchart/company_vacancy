@@ -1,5 +1,5 @@
 <% content_for :meta do %>
-  <meta property="og:title" content="<%= @chart.company.name %> > <%= @chart.title %>" />
+  <meta property="og:title" content="<%= og_company_name(@company) %> > <%= @chart.title %>" />
   <meta property="og:image" content="<%= @chart.company.logotype.try(:url, host: request.protocol + request.host) || image_url('cloudchart-logo-square.png') %>">
   <meta property="og:url" content="<%= company_chart_url(@chart.company, @chart) %>" />
   <meta property="og:description" content="<%= CompanyDecorator.new(@chart.company).about || @chart.company.description %>" />
