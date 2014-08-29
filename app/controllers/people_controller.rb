@@ -155,7 +155,7 @@ private
 
   def create_invite_token_and_send_email(person, email, options={})
     options[:make_owner] ||= false
-    email = email || params[:email]
+    email = email || person.email
 
     token = Token.where(name: :invite, owner: person.company).select { |token| token.data[:person_id] == person.id }.first
 
