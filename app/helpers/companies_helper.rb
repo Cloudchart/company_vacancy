@@ -1,4 +1,9 @@
 module CompaniesHelper
+
+  def og_company_name(company)
+    prefix = company.name == 'CloudChart' ? '' : 'CloudChart: '
+    "#{prefix}#{company.name}"
+  end
   
   def display_logo(company)
     if company.logo.present?
