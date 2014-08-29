@@ -6,6 +6,7 @@
 # Imports
 # 
 tag = React.DOM
+email_re = /.+@.+\..+/i
 
 QueryInputComponent = cc.require('cc.components.QueryInput')
 PersonComponent = cc.require('cc.components.Person')
@@ -28,6 +29,7 @@ MainComponent = React.createClass
   getInitialState: ->
     mode: 'view'
     query: []
+    email: []
 
   # getDefaultProps: ->
 
@@ -46,7 +48,7 @@ MainComponent = React.createClass
   gatherControls: ->
     switch @state.mode
     
-      when 'edit'
+      when 'select'
         [
           (QueryInputComponent {
             key:          'query-input'
@@ -65,6 +67,19 @@ MainComponent = React.createClass
 
         ]
       
+      when 'email'
+        [
+          (tag.input {
+            key: 'email-input'
+            placeholder: 'Type email'
+            autoFocus: true
+            onChange: @onEmailChange
+            onKeyUp: @onEmailKeyUp
+          })
+
+          (tag.header { key: 'email-header' }, @state.person_for_email.attr('full_name'))
+        ]
+
       when 'view'
         @addButton()
 
@@ -87,28 +102,35 @@ MainComponent = React.createClass
       (tag.i { className: 'fa fa-male' })
     )
 
+  isEmailValid: ->
+    email_re.test(@state.email)
+
   # Events
   # 
+  onEmailKeyUp: (event) ->
+    switch event.key
+      when 'Enter'
+        @inviteOwner(@state.person_for_email.to_param(), @state.email) if @isEmailValid()
+      when 'Escape'
+        @setState
+          email: []
+          mode: 'select'
+
   onPersonSelect: (key) ->
-    $.ajax
-      url: "/people/#{key}/make_or_invite_owner"
-      method: 'PATCH'
-      dataType: 'json'
-    .done @onPersonSelectDone
-    .fail @onPersonSelectFail
+    person = PersonStore.find(key)
 
-  onPersonSelectDone: (json) ->
-    console.log json
-    @props.onChange({ target: { value: json }})
-    @setState
-      mode: 'view'
-
-  onPersonSelectFail: ->
-    console.warn 'onPersonSelectFail'
+    if person.attr('user_id')
+      @makeOwner(key)
+    else if person.attr('email')
+      @inviteOwner(key)
+    else
+      @setState
+        mode: 'email'
+        person_for_email: person
 
   onAddButtonClick: ->
     @setState
-      mode: 'edit'
+      mode: 'select'
 
   onQueryChange: (query) ->
     @setState
@@ -118,6 +140,46 @@ MainComponent = React.createClass
     @setState
       query:  []
       mode:   'view'  
+
+  onEmailChange: (event) ->
+    @setState
+      email: event.target.value
+
+  # Ajax
+  # 
+  makeOwner: (key) ->
+    $.ajax
+      url: "/people/#{key}/make_owner"
+      method: 'PUT'
+      dataType: 'json'
+    .done @onMakeOwnerDone
+    .fail @onMakeOwnerFail
+        
+  onMakeOwnerDone: (json) ->
+    @props.onChange({ target: { value: json } })
+    @setState
+      mode: 'view'
+
+  onMakeOwnerFail: ->
+    console.warn 'onMakeOwnerFail'
+
+  inviteOwner: (key, email=null) ->
+    $.ajax
+      url: "/people/#{key}/invite_owner"
+      method: 'POST'
+      dataType: 'json'
+      data:
+        email: email
+    .done @onInviteOwnerDone
+    .fail @onInviteOwnerFail    
+
+  onInviteOwnerDone: (json) ->
+    @props.onChange({ target: { value: json } })
+    @setState
+      mode: 'view'
+
+  onInviteOwnerFail: ->
+    console.warn 'onInviteOwnerFail'
 
 # Exports
 #

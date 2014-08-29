@@ -565,6 +565,19 @@ $editor-identity-selector-search-input-padding: 4pt;
         @include identity-selector-button;
         margin: auto;
       }
+
+      > header {
+        position: absolute;
+        bottom: 0;
+        font-size: 20px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        background-color: hsla(0, 0%, 0%, .5);
+        padding: 10px;
+        color: white;
+        width: 100%;
+      }
       
       > ul {
         list-style: none;

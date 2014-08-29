@@ -16,7 +16,7 @@ Component = React.createClass
   #
   render: ->
     (tag.section {},
-      (tag.header {}, 'Editors')
+      (tag.header {}, 'Owners')
       (tag.div { className: 'section-block' },
         (tag.div { className: 'people' },
           @gatherOwners()
@@ -115,16 +115,7 @@ Component = React.createClass
     console.warn 'onCancelClickFail'
 
   onResendClick: (event) ->
-    $.ajax
-      url: "/people/#{event.target.value}/make_or_invite_owner"
-      method: 'PATCH'
-      dataType: 'json'
-    .done @onResendClickDone
-    .fail @onResendClickFail
-
-  onResendClickDone: ->
-  onResendClickFail: ->
-    console.warn 'onResendClickFail'
+    alert 'Not implemented'
 
   # Lifecycle Methods
   #

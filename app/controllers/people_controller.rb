@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
 
-  before_action :set_person, only: [:show, :edit, :update, :destroy, :make_or_invite_owner, :cancel_owner_invite]
+  before_action :set_person, only: [:show, :edit, :update, :destroy, :make_owner, :invite_owner, :cancel_owner_invite]
   before_action :set_company, only: [:index, :new, :create, :search]
   before_action :build_person, only: :new
   before_action :build_person_with_params, only: :create
@@ -88,33 +88,30 @@ class PeopleController < ApplicationController
   #   redirect_to :back, notice: t('messages.company_invite.email_sent')
   # end
 
-  # must be separate actions
-  def make_or_invite_owner
-    if @person.user
-      @person.update(is_company_owner: true)
+  def make_owner
+    @person.update(is_company_owner: true)
+
+    respond_to do |format|
+      format.json { render json: { owners: @person.company.owners } }
+    end      
+  end
+
+  def invite_owner
+    @person.update(email: params[:email]) if @person.email.blank? && params[:email].present?
+
+    email = CloudProfile::Email.find_by(address: @person.email)
+
+    if email && email.user.people.map(&:company_id).include?(@person.company_id)
+      respond_to do |format|
+        format.json { render json: { message: t('messages.company_invite.user_has_already_been_associated') } }
+      end
+    else
+      create_invite_token_and_send_email(@person, email, { make_owner: true })
+      invited_person_ids = Token.where(name: :invite, owner: @person.company).map { |token| token.data[:person_id] }
 
       respond_to do |format|
-        format.json { render json: { owners: @person.company.owners } }
+        format.json { render json: { owner_invites: Person.find(invited_person_ids) } }
       end
-
-    elsif @person.email.present?
-      email = CloudProfile::Email.find_by(address: @person.email)
-
-      if email && email.user.people.map(&:company_id).include?(@person.company_id)
-        respond_to do |format|
-          format.json { render json: { message: t('messages.company_invite.user_has_already_been_associated') } }
-        end
-      else
-        create_invite_token_and_send_email(@person, email, { make_owner: true })
-        invited_person_ids = Token.where(name: :invite, owner: @person.company).map { |token| token.data[:person_id] }
-
-        respond_to do |format|
-          format.json { render json: { owner_invites: Person.find(invited_person_ids) } }
-        end
-      end
-
-    else
-      # render input
     end
   end
 
