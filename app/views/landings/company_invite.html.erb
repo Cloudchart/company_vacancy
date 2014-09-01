@@ -1,0 +1,22 @@
+<p>
+  <%= @author.full_name %> invited you to to manage this company:
+</p>
+<p>
+  <%= image_tag(@company.logotype.url) if @company.logotype %>
+</p>
+<p>
+  <strong><%= @company.name %></strong>
+</p>
+<p>
+  <%= @company.industry.name %>, 
+  <%= @company.country_name %>
+</p>
+<p>
+  If you want to join as the manager, please approve this invitation.
+</p>
+<p>
+  <button class="orgpad">Approve</button>
+</p>
+<p>
+  <%= link_to 'No, thanks', '#' %>
+</p>

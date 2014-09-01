@@ -79,6 +79,7 @@ Cloudchart::Application.routes.draw do
 
   # Custom
   # 
+  get 'company_invite/:token', to: 'landings#company_invite', as: :company_invite
   get ':id', to: 'pages#show', as: :page
 
 end
