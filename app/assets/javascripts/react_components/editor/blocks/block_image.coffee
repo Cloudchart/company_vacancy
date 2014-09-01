@@ -52,7 +52,7 @@ PlaceholderComponent = React.createClass
         @props.placeholder
       )
       (tag.p {}, "Use professional photography or graphics design.")
-      (tag.p {}, "Use pictures at leat 1500px wide.")
+      (tag.p {}, "Use pictures at least 1500px wide.")
     )
 
 
