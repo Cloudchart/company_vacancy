@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140821092045) do
+ActiveRecord::Schema.define(version: 20140901150856) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -272,16 +272,23 @@ ActiveRecord::Schema.define(version: 20140821092045) do
   end
 
   create_table "people", primary_key: "uuid", force: true do |t|
-    t.string   "first_name",                                  null: false
-    t.string   "last_name",                                   null: false
+    t.string   "first_name",                                                           null: false
+    t.string   "last_name",                                                            null: false
     t.string   "email"
     t.string   "occupation"
     t.string   "phone"
     t.string   "user_id",          limit: 36
-    t.string   "company_id",       limit: 36,                 null: false
-    t.boolean  "is_company_owner",            default: false
+    t.string   "company_id",       limit: 36,                                          null: false
+    t.boolean  "is_company_owner",                                     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "hired_on"
+    t.date     "fired_on"
+    t.string   "skype"
+    t.string   "int_phone"
+    t.text     "bio"
+    t.date     "birthday"
+    t.decimal  "salary",                      precision: 10, scale: 0, default: 0
   end
 
   add_index "people", ["company_id"], name: "index_people_on_company_id", using: :btree
