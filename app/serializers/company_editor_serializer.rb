@@ -20,7 +20,9 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   end
 
   def owner_invites
-    Person.find(object.invite_tokens.map { |token| token.data[:person_id] })
+    object.invite_tokens.map do |token|
+      Person.find(token.data[:person_id]).attributes.merge(invite: token.id)
+    end
   end
   
   def industry_ids

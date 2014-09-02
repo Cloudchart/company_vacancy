@@ -2,8 +2,6 @@ require_dependency "cloud_profile/application_controller"
 
 module CloudProfile
   class MainController < ApplicationController
-    before_action :handle_company_invite_token, only: :companies
-
     # TODO: use cancan instead
     before_action :require_authenticated_user!
 
@@ -37,40 +35,6 @@ module CloudProfile
     end
 
   private
-
-    def handle_company_invite_token
-      token_id = if params[:token].present?
-        Cloudchart::RFC1751.decode(params[:token].gsub(/-/, ' '))
-      elsif session[:company_invite].present?
-        session[:company_invite]
-      else
-        nil
-      end
-
-      return unless token_id
-
-      token = Token.where(name: :invite).find(token_id) rescue nil
-
-      if token && current_user
-        person = Person.find(token.data[:person_id])
-
-        unless current_user.people.map(&:company_id).include?(person.company_id)
-          person.update(is_company_owner: true) if token.data[:make_owner]
-          current_user.people << person
-          
-          # TODO: add default subscription
-          # current_user.subscriptions.find_by(subscribable: person.company).try(:destroy)
-          # current_user.subscriptions.create!(subscribable: person.company, types: [:vacancies, :events])
-
-          token.destroy
-          session[:company_invite] = nil if session[:company_invite].present?
-        end
-
-      elsif token
-        session[:company_invite] = token.id
-        redirect_to main_app.root_path(anchor: :login)
-      end
-    end
 
     def create_default_company
       redirect_to main_app.new_company_path

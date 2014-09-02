@@ -42,8 +42,7 @@ Cloudchart::Application.routes.draw do
     resources :people do
       post :search, on: :collection
       match :make_owner, on: :member, via: [:put, :patch]
-      post :invite_owner, on: :member
-      delete :cancel_owner_invite, on: :member
+      post :invite_user, on: :member
     end
 
     resources :events, concerns: [:blockable] do
@@ -63,7 +62,6 @@ Cloudchart::Application.routes.draw do
     post :vote, on: :member
   end
 
-  resources :tokens, only: :destroy
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :favorites, only: [:create, :destroy]
@@ -77,9 +75,15 @@ Cloudchart::Application.routes.draw do
     post :ban_user, on: :member
   end
 
+  resources :company_invites, only: [:show, :create, :destroy] do
+    patch :accept, on: :member
+  end
+
   # Custom
   # 
-  get 'company_invite/:token', to: 'landings#company_invite', as: :company_invite
+  # get 'company_invite/:token', to: 'landings#company_invite', as: :company_invite
+  # match 'accept_company_invite/:token', to: 'invitations#accept_company_invite', as: :accept_company_invite, via: [:put, :patch]
+  # delete 'company_invites/:id/cancel', to: 'invitations#cancel_company_invite', as: :cancel_company_invite
   get ':id', to: 'pages#show', as: :page
 
 end

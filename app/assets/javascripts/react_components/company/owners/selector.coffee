@@ -165,11 +165,13 @@ MainComponent = React.createClass
 
   inviteOwner: (key, email=null) ->
     $.ajax
-      url: "/people/#{key}/invite_owner"
+      url: '/company_invites'
       method: 'POST'
       dataType: 'json'
       data:
         email: email
+        person_id: key
+        make_owner: true
     .done @onInviteOwnerDone
     .fail @onInviteOwnerFail    
 

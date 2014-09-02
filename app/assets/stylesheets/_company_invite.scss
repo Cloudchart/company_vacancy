@@ -39,10 +39,6 @@ main > article.company-invite {
   }
 
   > div.company {
-    // @include display(flex);
-    // @include align-items(center);
-    // @include flex-direction(column);
-    
     margin-bottom: $base-unit * 2;
 
     > a {

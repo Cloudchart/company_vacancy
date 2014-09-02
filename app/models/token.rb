@@ -19,6 +19,10 @@ class Token < ActiveRecord::Base
       find_by(name: attributes[:name], owner: attributes[:owner]) || create!(attributes)   
     end
 
+    def find(*args)
+      find_by_rfc1751(args.first) || super
+    end
+
   end
   
   rails_admin do

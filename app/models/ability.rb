@@ -47,7 +47,6 @@ class Ability
     else
       can :create, Company
       can :vote, Feature
-      can :destroy, Token
       can :manage, Subscription
       can [:read, :pull], CloudBlueprint::Chart
 

@@ -169,3 +169,26 @@ button.orgpad,
 .orgpad-button {
   @include orgpad-button;
 }
+
+div.button {
+
+  &.green {
+    background-color: $orgpad-button-background-color;
+    height: $orgpad-button-height;
+    border: none;
+    overflow: hidden;
+    white-space: nowrap;    
+    text-align: center;
+    line-height: $orgpad-button-height;
+    
+    > a {
+      font-size: $orgpad-button-font-size;
+      font-weight: $orgpad-button-font-weight;
+      color: $orgpad-button-color;
+      padding: $orgpad-button-padding;
+      text-decoration: none;
+      display: block;
+    }
+  }
+}
+
