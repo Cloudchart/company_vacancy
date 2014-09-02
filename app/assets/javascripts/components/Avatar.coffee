@@ -24,7 +24,7 @@ Component = React.createClass
 
   render: ->
     letters = Letters(@props.value)
-    
+    console.log @props.avatarURL
     (tag.figure {
       style:
         backgroundColor:  @props.backgroundColor || Colors[ColorIndex(letters)]
