@@ -23,10 +23,14 @@ cc.module('react/shared/letter-avatar')
   if (loginButton = document.querySelector('[data-behaviour="login-button"]')) and (LoginForm = cc.require('react/modals/login-form'))
     loginButton.addEventListener 'click', (event) ->
       event.preventDefault()
-      
+
       event = new CustomEvent 'modal:push',
         detail:
-          component: LoginForm({})
+          component: LoginForm({
+            invite: data.token.rfc1751
+            email: data.token.data.email
+            full_name: data.token.data.full_name
+          })
 
       window.dispatchEvent(event)
 

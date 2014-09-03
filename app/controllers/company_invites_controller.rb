@@ -9,7 +9,8 @@ class CompanyInvitesController < ApplicationController
 
     pagescript_params(
       author_full_name: @author.full_name,
-      author_avatar_url: @author.avatar.try(:url)
+      author_avatar_url: @author.avatar.try(:url),
+      token: TokenSerializer.new(@token).as_json
     )
   end
 

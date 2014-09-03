@@ -73,7 +73,11 @@ RegisterMixin =
     
     event = new CustomEvent 'modal:push',
       detail:
-        component: (component { email: @state.email })
+        component: (component { 
+          email: @state.email
+          invite: @state.invite
+          full_name: @state.full_name
+        })
     
     dispatchEvent(event)
 
@@ -209,6 +213,8 @@ Component = React.createClass
     password: ''
     errors:   {}
     reset:    false
+    invite: @props.invite || ''
+    full_name: @props.full_name || ''
 
   
   render: ->
