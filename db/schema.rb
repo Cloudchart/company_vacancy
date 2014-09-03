@@ -288,7 +288,7 @@ ActiveRecord::Schema.define(version: 20140901150856) do
     t.string   "int_phone"
     t.text     "bio"
     t.date     "birthday"
-    t.decimal  "salary",                      precision: 10, scale: 0, default: 0
+    t.decimal  "salary",                      precision: 10, scale: 2, default: 0.0
   end
 
   add_index "people", ["company_id"], name: "index_people_on_company_id", using: :btree
