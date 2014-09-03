@@ -20,7 +20,7 @@ cc.module('react/shared/letter-avatar')
 
   # Login form
   #
-  if (loginButton = document.querySelector('[data-behaviour="login-button"]')) and (LoginForm = cc.require('react/modals/login-form'))
+  if (loginButton = document.querySelector('[data-behaviour="invite-login-button"]')) and (LoginForm = cc.require('react/modals/login-form'))
     loginButton.addEventListener 'click', (event) ->
       event.preventDefault()
 
@@ -33,19 +33,3 @@ cc.module('react/shared/letter-avatar')
           })
 
       window.dispatchEvent(event)
-
-    # loginButton.click() if window.location.hash == '#login'
-
-  # Register form
-  #
-  # if (inviteButton = document.querySelectorAll('[data-behaviour~="invite-button"]')) and (RegisterForm  = cc.require('react/modals/register-form'))
-  #   _.each inviteButton, (root) ->
-
-  #     root.addEventListener 'click', (event) ->
-  #       event.preventDefault()
-        
-  #       event = new CustomEvent 'modal:push',
-  #         detail:
-  #           component: RegisterForm({})
-          
-  #       window.dispatchEvent(event)

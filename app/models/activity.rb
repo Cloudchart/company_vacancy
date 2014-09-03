@@ -8,7 +8,7 @@ class Activity < ActiveRecord::Base
   belongs_to :trackable, polymorphic: true
 
   class << self
-    def track_activity(user, action, trackable, source = nil)
+    def track_activity(user, action, trackable, source = nil, subscriber_id = nil)
       last_activity = where(subscriber_id: nil).order(created_at: :desc).first
       group_type = nil
 
@@ -19,7 +19,7 @@ class Activity < ActiveRecord::Base
         group_type = 1
         last_activity.update(group_type: group_type)
       else
-        create(user: user, action: action, trackable: trackable, source: source)
+        create(user: user, action: action, trackable: trackable, source: source, subscriber_id: subscriber_id)
       end
 
       # duplicate activity for subscribers via sidekiq (only company subscription so far)
@@ -42,7 +42,8 @@ class Activity < ActiveRecord::Base
 
     def group_activities?(user, action, trackable, source, last_activity)
       last_activity && last_activity.action == action && last_activity.user_id == user.id &&
-      last_activity.source_id == source.try(:id) && last_activity.trackable_type == trackable.class.name
+      last_activity.source_id == source.try(:id) && last_activity.trackable_type == trackable.class.name &&
+      action != 'invite'
     end
 
   end

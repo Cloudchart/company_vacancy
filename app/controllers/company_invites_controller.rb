@@ -17,15 +17,17 @@ class CompanyInvitesController < ApplicationController
   def create
     person = Person.find(params[:person_id])
 
-    person.update(email: params[:email]) if person.email.blank? && params[:email].present?
+    address = person.email.present? ? person.email : params[:email]
 
-    email = CloudProfile::Email.find_by(address: person.email)
+    email = CloudProfile::Email.find_by(address: address)
 
     if email && email.user.people.map(&:company_id).include?(person.company_id)
       respond_to do |format|
-        format.json { render json: { message: t('messages.company_invite.user_has_already_been_associated') } }
+        format.json { render json: t('messages.company_invite.user_has_already_been_associated'), status: 412 }
       end
     else
+      email = email || address
+
       create_invite_token_and_send_email(person, email, { make_owner: params[:make_owner] })
 
       respond_to do |format|
@@ -74,7 +76,7 @@ private
 
   def create_invite_token_and_send_email(person, email, options={})
     options[:make_owner] = options[:make_owner].present?
-    email = email || person.email
+    address = email.try(:address) || email
 
     token = Token.where(name: :invite, owner: person.company).select { |token| token.data[:person_id] == person.id }.first
 
@@ -86,10 +88,15 @@ private
           author_id: current_user.id,
           person_id: person.id,
           full_name: person.full_name,
-          email: person.email,
+          email: address,
           make_owner: options[:make_owner] # role mask will be here
         }
       )
+
+      if email.try(:user)
+        Activity.track_activity(current_user, 'invite', email.user, token.owner)
+        Activity.track_activity(current_user, 'invite', email.user, token.owner, email.user_id)
+      end
     end
 
     UserMailer.company_invite(email, token).deliver

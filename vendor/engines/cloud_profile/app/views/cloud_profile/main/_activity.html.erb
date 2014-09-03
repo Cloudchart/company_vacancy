@@ -1,6 +1,6 @@
 <li>
   <% if activity.subscriber_id.present? %>
-    <%= activity.action == 'respond' ? activity.user.full_name : activity.trackable.company.name %>
+    <%= activity.action =~ /respond|invite/ ? activity.user.full_name : activity.trackable.company.name %>
   <% elsif current_user == activity.user %> 
     You
   <% else %>
