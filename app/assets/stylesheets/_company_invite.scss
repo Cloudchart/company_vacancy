@@ -1,0 +1,50 @@
+main > article.company-invite {
+  @include base-wrapper;
+  @include display(flex);
+  @include flex-direction(column);
+  @include align-items(center);
+
+  font-size: 15pt;
+  line-height: 140%;
+
+  .login-link {
+    margin-right: $base-unit;
+  }
+
+  > div.author {
+    @include display(inline-flex);
+    @include align-items(center);
+
+    margin-bottom: $base-unit * 2;
+
+    > [data-react-mount-point='avatar'] {
+      > figure {
+        @include display(flex);
+        @include justify-content(center);
+        @include align-items(center);
+
+        margin-right: $base-unit / 2;
+        border-radius: 30px;
+        height: 60px;
+        width: 60px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        font-weight: 300;
+        text-transform: uppercase;
+      }
+      
+    }
+
+  }
+
+  > div.company {
+    margin-bottom: $base-unit * 2;
+
+    > a {
+      color: black;
+      text-decoration: none;
+    }
+    
+  }
+}

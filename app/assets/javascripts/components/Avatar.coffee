@@ -24,7 +24,6 @@ Component = React.createClass
 
   render: ->
     letters = Letters(@props.value)
-    
     (tag.figure {
       style:
         backgroundColor:  @props.backgroundColor || Colors[ColorIndex(letters)]

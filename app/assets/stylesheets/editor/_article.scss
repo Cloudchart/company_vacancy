@@ -559,6 +559,10 @@ $editor-identity-selector-search-input-padding: 4pt;
         outline: none;
         position: relative;
         width: 100%;
+
+        &.error {
+          background-color: $baby-pink;
+        }
       }
       
       > button {

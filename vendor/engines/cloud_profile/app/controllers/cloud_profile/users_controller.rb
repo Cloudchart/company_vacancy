@@ -56,16 +56,7 @@ module CloudProfile
 
           user.save!
 
-          # associate with person based on invite data
-          if user.invite.data[:person_id]
-            person = Person.find(user.invite.data[:person_id]) rescue nil
-            if person && !user.people.map(&:company_id).include?(person.company_id)
-              person.update(is_company_owner: true) if user.invite.data[:make_owner]
-              user.people << person
-            end
-          end
-
-          user.invite.destroy
+          user.invite.destroy unless user.invite.owner.instance_of?(Company)
           
           warden.set_user(user, scope: :user)
 

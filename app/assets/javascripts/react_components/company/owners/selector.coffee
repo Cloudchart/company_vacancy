@@ -30,6 +30,7 @@ MainComponent = React.createClass
     mode: 'view'
     query: []
     email: []
+    error: false
 
   # getDefaultProps: ->
 
@@ -71,6 +72,7 @@ MainComponent = React.createClass
         [
           (tag.input {
             key: 'email-input'
+            className: 'error' if @state.error
             placeholder: 'Type email'
             autoFocus: true
             onChange: @onEmailChange
@@ -164,12 +166,16 @@ MainComponent = React.createClass
     console.warn 'onMakeOwnerFail'
 
   inviteOwner: (key, email=null) ->
+    @setState({ error: false })
+
     $.ajax
-      url: "/people/#{key}/invite_owner"
+      url: '/company_invites'
       method: 'POST'
       dataType: 'json'
       data:
         email: email
+        person_id: key
+        make_owner: true
     .done @onInviteOwnerDone
     .fail @onInviteOwnerFail    
 
@@ -178,8 +184,10 @@ MainComponent = React.createClass
     @setState
       mode: 'view'
 
-  onInviteOwnerFail: ->
-    console.warn 'onInviteOwnerFail'
+  onInviteOwnerFail: (json) ->
+    # console.warn json.responseText
+    @setState
+      error: true
 
 # Exports
 #

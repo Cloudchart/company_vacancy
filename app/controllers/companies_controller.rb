@@ -29,6 +29,10 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
+    if token = @company.invite_tokens.select { |token| token.data[:user_id] == current_user.id }.first
+      flash.now[:notice] = "You are invited to join this company. <a href='#{company_invite_path(token)}'>Please confirm</a>.".html_safe
+    end
+
     respond_to do |format|
       format.html
       format.json { render json: @company }

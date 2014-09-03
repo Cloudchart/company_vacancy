@@ -58,23 +58,23 @@ Component = React.createClass
   gatherInvites: ->
     _.chain(@state.owner_invites)
 
-      .sortBy (person) -> [person.first_name, person.last_name]
+      .sortBy (invite) -> invite.full_name
 
-      .map (person) =>
-        (tag.div { key: person.uuid, className: 'controller aspect-ratio-1x1' },
+      .map (invite) =>
+        (tag.div { key: invite.uuid, className: 'controller aspect-ratio-1x1' },
           (tag.div { className: 'content' },
-            (PersonComponent { key: person.uuid })
-            @gatherButtons(person.uuid) unless @props.isReadOnly
+            (PersonComponent { key: invite.person_id })
+            @gatherButtons(invite.uuid) unless @props.isReadOnly
           )
         )
 
       .value()
 
-  gatherButtons: (key) ->
+  gatherButtons: (invite) ->
     (tag.section { className: 'buttons' },
       (tag.button { 
         className: 'delete'
-        value: key
+        value: invite
         onClick: @onCancelClick
       }, 
         'Cancel'
@@ -82,7 +82,6 @@ Component = React.createClass
 
       (tag.button { 
         className: 'change'
-        value: key
         onClick: @onResendClick
       }, 
         'Resend'
@@ -102,7 +101,7 @@ Component = React.createClass
 
   onCancelClick: (event) ->
     $.ajax
-      url: "/people/#{event.target.value}/cancel_owner_invite"
+      url: "/company_invites/#{event.target.value}"
       method: 'DELETE'
       dataType: 'json'
     .done @onCancelClickDone

@@ -27,6 +27,7 @@ class Ability
     can :access_vacancies, Company
     can :access_events, Company
     can :preview, CloudBlueprint::Chart
+    can :access_people, Company
 
     can [:read, :pull], CloudBlueprint::Chart do |chart|
       chart.is_public?
@@ -47,7 +48,6 @@ class Ability
     else
       can :create, Company
       can :vote, Feature
-      can :destroy, Token
       can :manage, Subscription
       can [:read, :pull], CloudBlueprint::Chart
 
@@ -64,10 +64,6 @@ class Ability
         can :manage, model do |resource|
           (user.people & resource.company.people).first.try(:is_company_owner?)
         end
-      end
-
-      can :access_people, Company do |company|
-        user.companies.include?(company)
       end
 
       can :manage, CloudBlueprint::Chart do |chart|
@@ -106,6 +102,10 @@ class Ability
 
       can :manage, Comment do |comment|
         comment.user == user
+      end
+
+      can :create_company_invite do |company|
+        (user.people & company.people).first.try(:is_company_owner?)
       end
 
     end

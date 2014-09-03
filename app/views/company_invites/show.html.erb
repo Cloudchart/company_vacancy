@@ -1,0 +1,48 @@
+<article class="company-invite">
+
+  <div class="author">
+    <div data-react-mount-point="avatar"></div>
+    <%= @author.full_name %> invited you to manage this company:
+  </div>
+
+  <div class="company">
+    <%= link_to company_path(@company) do %>
+      <% if @company.logotype %>
+        <%= image_tag(@company.logotype.url) %> <br>
+      <% end %>
+      <strong><%= @company.name %></strong>
+    <% end %>
+
+    <p>
+      <%= @company.industry.name %>, 
+      <%= @company.country_name %>
+    </p>
+
+  </div>
+
+  <% if current_user %>
+    <p>
+      If you want to join as the manager, please accept this invitation.
+    </p>
+    <p>
+      <div class="button green">
+        <%= link_to 'Accept', accept_company_invite_path(@token), method: :patch %>
+      </div>
+    </p>
+    <p>
+      <%= link_to 'No, thanks', company_invite_path(@token), method: :delete, data: { confirm: 'Are you sure?' } %>
+    </p>
+
+  <% else %>
+    <p>
+      Since you're not logged in, please login or register to accept this invitation.
+    </p>
+    <p>
+      <button class="orgpad" data-behaviour="invite-login-button">
+        Login or Register
+      </button>
+    </p>
+    
+  <% end %>
+  
+</article>
