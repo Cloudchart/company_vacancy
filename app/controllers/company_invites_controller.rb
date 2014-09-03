@@ -16,6 +16,7 @@ class CompanyInvitesController < ApplicationController
 
   def create
     person = Person.find(params[:person_id])
+    authorize! :create_company_invite, person
 
     address = person.email.present? ? person.email : params[:email]
 
@@ -70,7 +71,7 @@ private
 
   def owner_invites(company)
     company.invite_tokens.map do |token|
-      Person.find(token.data[:person_id]).attributes.merge(invite: token.id)
+      { uuid: token.id, full_name: token.data[:full_name], person_id: token.data[:person_id] }
     end
   end
 
@@ -87,6 +88,7 @@ private
         data: {
           author_id: current_user.id,
           person_id: person.id,
+          user_id: email.try(:user_id),
           full_name: person.full_name,
           email: address,
           make_owner: options[:make_owner] # role mask will be here

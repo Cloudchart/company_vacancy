@@ -58,13 +58,13 @@ Component = React.createClass
   gatherInvites: ->
     _.chain(@state.owner_invites)
 
-      .sortBy (person) -> [person.first_name, person.last_name]
+      .sortBy (invite) -> invite.full_name
 
-      .map (person) =>
-        (tag.div { key: person.uuid, className: 'controller aspect-ratio-1x1' },
+      .map (invite) =>
+        (tag.div { key: invite.uuid, className: 'controller aspect-ratio-1x1' },
           (tag.div { className: 'content' },
-            (PersonComponent { key: person.uuid })
-            @gatherButtons(person.invite) unless @props.isReadOnly
+            (PersonComponent { key: invite.person_id })
+            @gatherButtons(invite.uuid) unless @props.isReadOnly
           )
         )
 

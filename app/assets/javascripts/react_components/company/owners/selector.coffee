@@ -185,7 +185,7 @@ MainComponent = React.createClass
       mode: 'view'
 
   onInviteOwnerFail: (json) ->
-    console.warn json.responseText
+    # console.warn json.responseText
     @setState
       error: true
 
