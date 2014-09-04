@@ -147,7 +147,7 @@ ResetButton = (is_disabled, callback) ->
 #
 RegisterButton = (is_disabled, callback) ->
   (tag.button {
-    type:       'submit'
+    type:       'button'
     className:  'alert register'
     disabled:   is_disabled
     onClick:    callback
@@ -247,17 +247,17 @@ Component = React.createClass
       #
       (tag.footer {},
 
-        # Login Button
+        # Register Button
         #
-        (LoginButton @isLoginButtonDisabled(), @onLoginButtonClick)
+        (RegisterButton @isRegisterButtonDisabled(), @onRegisterButtonClick)
 
         # Reset Button
         #
         (ResetButton @isResetButtonDisabled(), @onResetButtonClick) if @state.reset
 
-        # Register Button
+        # Login Button
         #
-        (RegisterButton @isRegisterButtonDisabled(), @onRegisterButtonClick)
+        (LoginButton @isLoginButtonDisabled(), @onLoginButtonClick)
       )
     )
 
