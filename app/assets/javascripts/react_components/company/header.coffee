@@ -103,12 +103,35 @@ MainComponent = React.createClass
 
 
   gatherSections: ->
-    @props.available_sections.map (section) ->
+    [
       (tag.a {
-        key:  section.title
-        href: "##{section.title}"
-      }, section.title)
+        key: 'editor'
+        id: 'editor'
+        className: 'current' if @props.toggle_value == 'editor'
+        href: '#'
+        onClick: @onTabClick
+      }, 'Company'),
 
+      (tag.a {
+        key: 'burn_rate'
+        id: 'burn_rate'
+        className: 'current' if @props.toggle_value == 'burn_rate'
+        href: '#'
+        onClick: @onTabClick
+      }, 'Burn rate'),
+
+      (tag.a {
+        key: 'settings'
+        id: 'settings'
+        className: 'current' if @props.toggle_value == 'settings'
+        href: ''
+        onClick: @onTabClick
+      }, 'Settings')      
+    ]
+
+  onTabClick: (event) ->
+    event.preventDefault()
+    @props.onChange(event.target.id) unless event.target.id == @props.toggle_value
 
   onNameChange: (value) ->
     @setState

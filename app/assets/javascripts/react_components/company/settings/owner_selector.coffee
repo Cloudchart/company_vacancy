@@ -191,4 +191,4 @@ MainComponent = React.createClass
 
 # Exports
 #
-cc.module('react/company/owners/selector').exports = MainComponent
+cc.module('react/company/settings/owner_selector').exports = MainComponent
