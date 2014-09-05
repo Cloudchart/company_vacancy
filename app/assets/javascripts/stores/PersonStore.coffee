@@ -1,6 +1,8 @@
 ##= require ./Base
+##= require dispatcher/dispatcher.module
 
-Base = cc.require('cc.stores.Base')
+Base        = cc.require('cc.stores.Base')
+Dispatcher  = require('dispatcher/dispatcher')
 
 
 parseDate = (value) ->
@@ -8,6 +10,10 @@ parseDate = (value) ->
   value = new Date(value)   if _.isNumber(value)
   value = null unless _.isDate(value)
   value
+
+
+parseDecimals = (value) ->
+  parseInt(value, 10) || null
 
 
 # Person Store
@@ -20,9 +26,51 @@ class PersonStore extends Base
   @attributesForMatch:  ['last_name', 'first_name', 'occupation']
   
 
+  parse_salary:     parseDecimals
+  parse_birthday:   parseDate
+  parse_hired_on:   parseDate
+  parse_fired_on:   parseDate
   parse_created_at: parseDate
   parse_updated_at: parseDate
   
+
+# Dispatch Token
+#
+PersonStore.dispatchToken = Dispatcher.register (payload) ->
+  action = payload.action
+  
+  switch action.type
+    
+    # Fetch done
+    #
+    when 'person:fetch:done'
+      _.each action.json, (attributes) -> PersonStore.add(new PersonStore(attributes))
+      PersonStore.emitChange()
+    
+
+    # Update
+    #
+    when 'person:update'
+      model = PersonStore.find(action.key)
+      
+      throw new Error("#{PersonStore.displayName}: Object with key \"#{action.key}\" not found.") unless model
+      
+      model.attr(action.attributes)
+      PersonStore.emitChange()
+    
+
+    # Update done
+    #
+    when 'person:update:done'
+      PersonStore.add(new PersonStore(action.json))
+      PersonStore.emitChange()
+    
+
+    # Update fail
+    #
+    when 'person:update:fail'
+      _.noop
+    
 
 # Exports
 #

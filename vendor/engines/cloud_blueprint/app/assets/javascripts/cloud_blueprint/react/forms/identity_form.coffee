@@ -320,38 +320,6 @@ SubmitButtonComponent = (model, callback) ->
   )
 
 
-# Main Component
-#
-Component = React.createClass
-
-
-  onSubmit: (event) ->
-    event.preventDefault()
-  
-  
-  onDelete: (event) ->
-    event.preventDefault()
-
-  
-  getInitialState: ->
-    model: @props.model.attributes
-  
-  
-  render: ->
-    (tag.form {
-      onSubmit: @onSubmit
-    },
-    
-      (tag.section {
-        className: 'controls'
-      },
-        (DeleteButtonComponent @props.model, @onDelete) if @props.model.can_be_deleted()
-        (SpacerComponent null)
-        (SubmitButtonComponent @props.model, @onSubmit)
-      )
-    )
-
-
 #
 # Availability
 #

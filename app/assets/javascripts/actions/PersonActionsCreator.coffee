@@ -1,8 +1,10 @@
 ##= require dispatcher/Dispatcher
+##= require stores/PersonStore
 
 # Imports
 #
-Dispatcher = cc.require('cc.Dispatcher')
+Dispatcher  = cc.require('cc.Dispatcher')
+PersonStore = cc.require('cc.stores.PersonStore')
 
 
 # Creator
@@ -10,7 +12,9 @@ Dispatcher = cc.require('cc.Dispatcher')
 Creator =
 
 
-  noop: ->
+  update: (key, attributes = {}) ->
+    console.log key, attributes
+    
 
 
 # Exports

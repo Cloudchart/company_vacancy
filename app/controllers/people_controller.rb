@@ -32,6 +32,10 @@ class PeopleController < ApplicationController
 
   # GET /people/1
   def show
+    respond_to do |format|
+      format.html
+      format.json { render json: @person, root: false }
+    end
   end
 
   # GET /people/new
@@ -53,10 +57,16 @@ class PeopleController < ApplicationController
 
   # PATCH/PUT /people/1
   def update
-    if @person.update(person_params)
-      redirect_to @person, notice: t('messages.updated', name: t('lexicon.person'))
+    if @person.update(params_for_update)
+      respond_to do |format|
+        format.html { redirect_to @person, notice: t('messages.updated', name: t('lexicon.person')) }
+        format.json { render json: @person, root: false }
+      end
     else
-      render action: 'edit'
+      respond_to do |format|
+        format.html { render action: 'edit' }
+        format.json { render json: {}, status: 422 }
+      end
     end
   end
 
@@ -89,6 +99,12 @@ private
   def person_params
     params.require(:person).permit(:first_name, :last_name, :email, :phone, :occupation)
   end
+  
+  
+  def params_for_update
+    params.require(:person).permit([:first_name, :last_name, :full_name, :birthday, :email, :phone, :int_phone, :occupation, :hired_on, :fired_on, :salary])
+  end
+  
 
   def build_person
     @person = @company.people.build

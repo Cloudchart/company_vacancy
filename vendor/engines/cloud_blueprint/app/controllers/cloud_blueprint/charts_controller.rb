@@ -61,7 +61,7 @@ module CloudBlueprint
             available_vacancies:    @chart.vacancies.select(:uuid).map(&:uuid),
             vacancies:              @chart.vacancies.later_then(last_accessed_at).map(&:as_json_for_chart),
             available_people:       @chart.people.select(:uuid).map(&:uuid),
-            people:                 @chart.people.later_then(last_accessed_at).map(&:as_json_for_chart),
+            people:                 ActiveModel::ArraySerializer.new(@chart.people.later_then(last_accessed_at), each_serializer: CloudBlueprint::PersonSerializer).as_json,
             available_nodes:        @chart.nodes.select(:uuid).map(&:uuid),
             nodes:                  @chart.nodes.later_then(last_accessed_at).map(&:as_json_for_chart),
             available_identities:   @chart.identities.select(:uuid).map(&:uuid),

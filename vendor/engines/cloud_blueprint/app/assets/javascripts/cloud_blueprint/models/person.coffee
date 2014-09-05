@@ -1,8 +1,14 @@
+##= require stores/PersonStore
+
+
+PersonStore = cc.require('cc.stores.PersonStore')
+
+
 class Person extends cc.blueprint.models.Base
   
   @className:     'Person'
 
-  @attr_accessor  'uuid', 'full_name', 'first_name', 'last_name', 'occupation'
+  @attr_accessor  'uuid', 'full_name', 'first_name', 'last_name', 'email', 'skype', 'phone', 'int_phone', 'occupation', 'bio', 'birthday', 'hired_on', 'fired_on', 'salary'
 
   @instances:         {}
   @created_instances: []
@@ -19,7 +25,21 @@ class Person extends cc.blueprint.models.Base
   #
   can_be_deleted: ->
     super() and _.filter(cc.blueprint.models.Identity.instances, (instance) => instance.identity_id == @uuid).length == 0
-  
+
+
+#
+#
+#
+
+PersonStore.on 'change', ->
+  _.each PersonStore.all(), (record) ->
+    if instance = Person.get(record.to_param())
+      instance.set_attributes(record.attr())
+    else
+      instance = new Person(record.attr())
+    instance.synchronize()
+    
+  Arbiter.publish(Person.broadcast_topic() + '/' + 'update')
 
 #
 #

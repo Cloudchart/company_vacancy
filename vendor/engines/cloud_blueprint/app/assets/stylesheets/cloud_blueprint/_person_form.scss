@@ -1,0 +1,82 @@
+.modal-container form.person {
+  
+  section.fields {
+    padding-left: 200px;
+    position: relative;
+  }
+  
+  section.fields > aside.avatar {
+    @include position(absolute, 10px 0 0 0px);
+    
+    background-color: hsl(0, 0%, 96%);
+    height: 180px;
+    width: 180px;
+  }
+  
+  section.fields > label {
+
+    display: block;
+    font-size: 16px;
+    margin: 10px 0;
+    padding-left: 35px;
+    position: relative;
+    width: 400px;
+    
+    &.full-name {
+      font-size: 32px;
+      padding-left: 0;
+      
+      > input {
+        font-weight: 300;
+        height: 50px;
+        padding: 0 15px;
+      }
+    }
+    
+    > i.fa {
+      @include position(absolute, 0px 0 0 0px);
+
+      line-height: 30px;
+      text-align: center;
+      width: 30px;
+    }
+    
+    > input,
+    > textarea {
+      background-color: hsl(0, 0%, 96%);
+      border: none;
+      outline: none;
+      padding: 0 10px;
+      width: 100%;
+      
+      &.invalid {
+        background-color: hsl(0, 50%, 96%);
+      }
+    }
+
+    > input {
+      height: 30px;
+    }
+    
+    > textarea {
+      height: 100px;
+      padding: 5px 10px;
+      resize: none;
+    }
+    
+    
+  }
+  
+}
+
+
+.modal-container form.person > footer {
+  @include display(flex);
+  
+  margin-top: $base-unit;
+  
+  > .spacer {
+    @include flex(1);
+  }
+  
+}

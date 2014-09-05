@@ -65,7 +65,7 @@ class Person < ActiveRecord::Base
   end
 
   def as_json_for_chart
-    as_json(only: [:uuid, :full_name, :first_name, :last_name, :email, :occupation])
+    as_json(only: [:uuid, :full_name, :first_name, :last_name, :email, :occupation, :salary])
   end
 
 end

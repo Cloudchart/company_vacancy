@@ -132,7 +132,11 @@ IdentityComponent = React.createClass
     form_options.model      = @props.model
     form_options.node_uuid  = @props.node.uuid if @props.node
 
-    form = cc.blueprint.react.forms.Identity(form_options)
+    form = if @props.model.constructor.className == 'Person'
+      cc.require('cc.blueprint.components.PersonForm')
+        key:        @props.model.uuid
+    else
+      cc.blueprint.react.forms.Identity(form_options)
 
     cc.blueprint.react.modal.show form,
       key:    "identity",

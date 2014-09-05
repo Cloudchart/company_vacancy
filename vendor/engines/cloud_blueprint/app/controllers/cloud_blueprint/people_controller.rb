@@ -15,6 +15,20 @@ module CloudBlueprint
     end
     
     
+    # Show person for chart
+    #
+    def show
+      chart   = Chart.find(params[:chart_id])
+      person  = chart.people.find(params[:id])
+      
+      respond_to do |format|
+        format.json do
+          render json: person, root: false, serializer: CloudBlueprint::PersonSerializer
+        end
+      end
+    end
+    
+    
     # Create new person for chart
     # POST /charts/:id/people
     #
