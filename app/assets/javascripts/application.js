@@ -22,7 +22,6 @@
 //= require promise
 //= require date
 //= require moment
-//= require module
 //= require ui
 //= require plugins
 //= require shared

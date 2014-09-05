@@ -129,6 +129,10 @@ Component = React.createClass
     @setState({ shouldUpdate: true })
   
   
+  onCloseButtonClick: ->
+    
+  
+  
   gatherFields: ->
     _.map FormFields, (field) =>
       
@@ -239,6 +243,7 @@ Component = React.createClass
         (tag.button {
           className:  'blueprint'
           type:       'button'
+          onClick:    @onCloseButtonClick
         },
           'Close'
           (tag.i { className: 'fa fa-check' })
