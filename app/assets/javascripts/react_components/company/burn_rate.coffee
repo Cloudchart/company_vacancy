@@ -1,10 +1,12 @@
+##= require components/Person
+##= require stores/PersonStore
+
 # Imports
 # 
 tag = React.DOM
-current_date = new Date
-current_month = current_date.getMonth()
 
-# SomeComponent = cc.require('')
+PersonStore = cc.require('cc.stores.PersonStore')
+PersonComponent = cc.require('cc.components.Person')
 
 # Main Component
 # 
@@ -17,16 +19,19 @@ MainComponent = React.createClass
       (tag.table {},
         (tag.thead {},
           (tag.tr {},
-            (tag.th {}, moment(current_date.setMonth(current_month - 4)).format('MMM YY'))
-            (tag.th {}, moment(current_date.setMonth(current_month - 3)).format('MMM YY'))
-            (tag.th {}, moment(current_date.setMonth(current_month - 2)).format('MMM YY'))
-            (tag.th {}, moment(current_date.setMonth(current_month - 1)).format('MMM YY'))
+            (tag.th {})
+            (tag.th {}, moment(@monthShiftedTime(-3)).format('MMM YY'))
+            (tag.th {}, moment(@monthShiftedTime(-2)).format('MMM YY'))
+            (tag.th {}, moment(@monthShiftedTime(-1)).format('MMM YY'))
             (tag.th {}, moment().format('MMM YY'))
           )
         )
         (tag.tbody {},
+          @gatherPeople()
           (tag.tr {},
-            (tag.td {})
+            (tag.td {},
+              (tag.strong {}, 'Total')
+            )
             (tag.td {})
             (tag.td {})
             (tag.td {})
@@ -51,7 +56,32 @@ MainComponent = React.createClass
 
   # Instance Methods
   # 
-  # gatherSomething: ->
+  gatherPeople: ->
+    people = _.chain(PersonStore.all())
+      .sortBy (person) -> person.sortValue()
+      .value()
+
+    _.map people, (person) =>
+      (tag.tr { key: person.to_param() },
+        (tag.td {}, person.attr('full_name'))
+        (tag.td {}, @showSalary(person, -3))
+        (tag.td {}, @showSalary(person, -2))
+        (tag.td {}, @showSalary(person, -1))
+        (tag.td {}, @showSalary(person))
+      )
+
+  showSalary: (person, offset=0) ->
+    if person.attr('hired_on') and 
+      new Date(person.attr('hired_on')).getTime() < @monthShiftedTime(offset) and
+      (!person.attr('fired_on') or new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset))
+
+        person.attr('salary')
+
+  monthShiftedTime: (offset) ->
+    current_date = new Date
+    current_month = current_date.getMonth()
+
+    current_date.setMonth(current_month + offset)
 
   # Events
   # 

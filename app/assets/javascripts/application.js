@@ -19,7 +19,6 @@
 //= require flux.dispatcher
 //= require lodash
 //= require promise
-//= require module
 //= require ui
 //= require plugins
 //= require shared
