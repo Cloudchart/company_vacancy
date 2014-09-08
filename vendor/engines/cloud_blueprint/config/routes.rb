@@ -17,7 +17,7 @@ CloudBlueprint::Engine.routes.draw do
     get :pull,    on: :member
     get :preview, on: :member
     
-    resources :identities, only: [:create, :update, :destroy]
+    resources :identities, only: [:index, :create, :update, :destroy]
     
     resources :vacancies do
       put '/', on: :collection, action: :push

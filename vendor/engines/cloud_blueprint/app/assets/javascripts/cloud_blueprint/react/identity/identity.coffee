@@ -1,7 +1,11 @@
+##= require cloud_blueprint/stores/node_identity_store.module
+
 # Shotcuts
 #
 
 tag = React.DOM
+
+NodeIdentityStore = require('cloud_blueprint/stores/node_identity_store')
 
 
 #
@@ -131,6 +135,11 @@ IdentityComponent = React.createClass
     
     return if @props.model.is_synchronizing()
     
+    identity = if @props.node
+      _.find NodeIdentityStore.all(), (i) => i.attr('node_id') == @props.node.uuid and i.attr('identity_id') == @props.model.uuid
+    else
+      null
+      
     form_options            = {}
     form_options.model      = @props.model
     form_options.node_uuid  = @props.node.uuid if @props.node
@@ -143,7 +152,8 @@ IdentityComponent = React.createClass
         PersonSyncAPI.fetch("/people/#{@props.model.uuid}")
         
       cc.require('cc.blueprint.components.PersonForm')
-        model: model
+        model:    model
+        identity: identity
     else
       cc.blueprint.react.forms.Identity(form_options)
 

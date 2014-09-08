@@ -19,6 +19,8 @@ ModalWindowActionsCreator   = require('cloud_blueprint/actions/modal_window_acti
 PersonSyncAPI               = require('utils/person_sync_api')
 
 PersonStore                 = cc.require('cc.stores.PersonStore')
+NodeIdentityStore           = require('cloud_blueprint/stores/node_identity_store')
+NodeIdentityActions         = require('cloud_blueprint/actions/node_identity_actions')
 
 
 # Known Attributes
@@ -97,8 +99,10 @@ FormFields = [
 
 # Functions
 #
-getStateFromStores = (model) ->
-  filterAttributes(model.attr())
+getStateFromStores = (props) ->
+  attributes = filterAttributes(props.model.attr())
+  _.extend attributes,
+    identity: NodeIdentityStore.find(props.identity.to_param()) if props.identity
 
 
 filterAttributes = (attributes = {}) ->
@@ -167,15 +171,17 @@ Component = React.createClass
   
   
   refreshStateFromStores: ->
-    @setState getStateFromStores(@props.model)
+    @setState getStateFromStores(@props)
 
 
   componentDidMount: ->
     PersonStore.on('change', @refreshStateFromStores)
+    NodeIdentityStore.on('change', @refreshStateFromStores)
   
   
   componentWillUnmount: ->
     PersonStore.off('change', @refreshStateFromStores)
+    NodeIdentityStore.off('change', @refreshStateFromStores)
   
   
   componentDidUpdate: ->
@@ -183,7 +189,7 @@ Component = React.createClass
 
 
   getInitialState: ->
-    getStateFromStores(@props.model)
+    getStateFromStores(@props)
 
 
   render: ->
@@ -241,6 +247,17 @@ Component = React.createClass
       #
       (tag.footer {
       },
+        
+        
+        (tag.button {
+          className:  'blueprint alert'
+          type:       'button'
+          onClick:    NodeIdentityActions.destroy.bind(null, @props.identity)
+        },
+          'Remove from Group'
+          (tag.i { className: 'fa fa-times' })
+        ) if @state.identity
+        
         
         (tag.div { className: 'spacer' })
         

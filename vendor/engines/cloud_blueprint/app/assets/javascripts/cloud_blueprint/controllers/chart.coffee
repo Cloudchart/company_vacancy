@@ -3,6 +3,9 @@
   ChartActionsCreator = cc.require('cc.blueprint.actions.ChartActionsCreator')
   ChartStore          = cc.require('cc.blueprint.stores.ChartStore')
   
+  NodeIdentityStore   = require('cloud_blueprint/stores/node_identity_store')
+  NodeIdentitySyncAPI = require('cloud_blueprint/utils/node_identity_sync_api')
+  
   
   # Variables
   #
@@ -13,6 +16,9 @@
   # Store chart
   #
   ChartActionsCreator.receiveOne(data.chart)
+  
+  
+  nodesIdentitiesAreLoaded = NodeIdentitySyncAPI.fetch("/charts/#{data.id}/identities")
   
   
   # Chart Title Composer
@@ -91,7 +97,7 @@
 
   # Initial chart data pull
   #
-  chart.pull().done ->
+  nodesIdentitiesAreLoaded.then -> chart.pull().done ->
     # Mount blueprint
     React.renderComponent(blueprint, document.querySelector('main'))
     

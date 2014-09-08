@@ -3,6 +3,18 @@ require_dependency "cloud_blueprint/application_controller"
 module CloudBlueprint
   class IdentitiesController < ApplicationController
     
+    
+    # List identities for chart
+    #
+    def index
+      identities = Chart.find(params[:chart_id]).identities
+      
+      respond_to do |format|
+        format.json { render json: identities, root: false }
+      end
+    end
+    
+    
     # Create identity
     #
     def create
@@ -35,7 +47,7 @@ module CloudBlueprint
 
       respond_to do |format|
         format.json do
-          render json: identity.as_json_for_chart
+          render json: identity
         end
       end
     end

@@ -1,3 +1,5 @@
+NodeIdentityStore = require('cloud_blueprint/stores/node_identity_store')
+
 #
 #
 #
@@ -12,7 +14,6 @@ class Identity extends cc.blueprint.models.Base
   @created_instances: []
   @deleted_instances: []
   
-
 #
 #
 #
