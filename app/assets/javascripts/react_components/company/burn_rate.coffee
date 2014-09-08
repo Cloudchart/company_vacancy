@@ -88,18 +88,19 @@ MainComponent = React.createClass
       )
 
   showSalary: (person, offset=0) ->
-    if person.attr('salary') and 
-      (
-        person.attr('hired_on') and
-        new Date(person.attr('hired_on')).getTime() < @monthShiftedTime(offset) and
-        (!person.attr('fired_on') or new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset))
-      ) or (
-        !person.attr('hired_on') and
-        !person.attr('fired_on')
-      ) or (
-        !person.attr('hired_on') and
-        person.attr('fired_on') and
-        new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset)
+    if person.attr('salary') and (
+        (
+          person.attr('hired_on') and
+          new Date(person.attr('hired_on')).getTime() < @monthShiftedTime(offset) and
+          (!person.attr('fired_on') or new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset))
+        ) or (
+          !person.attr('hired_on') and
+          !person.attr('fired_on')
+        ) or (
+          !person.attr('hired_on') and
+          person.attr('fired_on') and
+          new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset)
+        )
       )
 
         parseInt(person.attr('salary'))
