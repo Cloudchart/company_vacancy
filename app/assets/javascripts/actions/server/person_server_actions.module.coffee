@@ -23,6 +23,24 @@ module.exports =
       type: 'person:fetch:fail'
       xhr:  xhr
   
+  
+  # Create done
+  #
+  createDone: (model, json) ->
+    Dispatcher.handleServerAction
+      type:   'person:create:done'
+      model:  model
+      json:   json
+  
+  
+  # Create fail
+  #
+  createFail: (model, xhr) ->
+    Dispatcher.handleServerAction
+      type:   'person:create:fail'
+      model:  model
+      xhr:    xhr
+  
 
   # Update done
   #

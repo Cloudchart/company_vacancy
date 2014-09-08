@@ -2,6 +2,7 @@
 ##= require actions/person_actions_creator.module
 ##= require utils/person_sync_api.module
 ##= require stores/PersonStore
+##= require cloud_blueprint/actions/modal_window_actions_creator.module
 
 # Imports
 #
@@ -10,16 +11,19 @@ tag = React.DOM
 
 # Date Input Component
 #
-DateInputComponent    = require('cloud_blueprint/components/inputs/date_input')
-PersonActionsCreator  = require('actions/person_actions_creator')
-PersonSyncAPI         = require('utils/person_sync_api')
+DateInputComponent          = require('cloud_blueprint/components/inputs/date_input')
+InputComponent              = require('cloud_blueprint/components/inputs/input')
 
-PersonStore           = cc.require('cc.stores.PersonStore')
+PersonActionsCreator        = require('actions/person_actions_creator')
+ModalWindowActionsCreator   = require('cloud_blueprint/actions/modal_window_actions_creator')
+PersonSyncAPI               = require('utils/person_sync_api')
+
+PersonStore                 = cc.require('cc.stores.PersonStore')
 
 
 # Known Attributes
 #
-KnownAttributes = [PersonStore.unique_key, 'full_name', 'email', 'occupation', 'phone', 'int_phone', 'skype', 'birthday', 'hired_on', 'fired_on', 'salary']
+KnownAttributes = [PersonStore.unique_key, 'full_name', 'email', 'occupation', 'phone', 'int_phone', 'skype', 'birthday', 'hired_on', 'fired_on', 'salary', 'bio']
 
 # Form fields
 #
@@ -93,8 +97,8 @@ FormFields = [
 
 # Functions
 #
-getStateFromStores = (key) ->
-  if model = PersonStore.find(key) then filterAttributes(model.attr()) else {}
+getStateFromStores = (model) ->
+  filterAttributes(model.attr())
 
 
 filterAttributes = (attributes = {}) ->
@@ -108,29 +112,33 @@ filterAttributes = (attributes = {}) ->
 Component = React.createClass
 
 
-  mixins: [
-    React.addons.LinkedStateMixin
-  ]
-  
-  
+  isValid: ->
+    @state['full_name'] and @state['full_name'].trim().length > 0
+
+
   update: ->
-    PersonActionsCreator.update(@props.key, filterAttributes(@state), true)
+    PersonActionsCreator.update(@props.model.to_param(), filterAttributes(@state), true) if @props.model.to_param()
     @setState({ shouldUpdate: false })
   
   
+  onCreateButtonClick: ->
+    PersonActionsCreator.create(@props.company_id, @props.model, filterAttributes(@state))
+  
+  
+  onNameChange: (event) ->
+    @setState({ full_name: event.target.value })
+  
+  
   onDateChange: (field_name, value) ->
-    data              = {}
-    data[field_name]  = value
-    @setState(data)
-    @setState({ shouldUpdate: true })
+    state             = { shouldUpdate: true }
+    state[field_name] = value
+    @setState(state)
   
   
-  onFieldBlur: (field_name) ->
-    @setState({ shouldUpdate: true })
-  
-  
-  onCloseButtonClick: ->
-    
+  onFieldBlur: (field_name, event) ->
+    state             = { shouldUpdate: true }
+    state[field_name] = event.target.value
+    @setState(state)
   
   
   gatherFields: ->
@@ -150,9 +158,8 @@ Component = React.createClass
             onChange:     @onDateChange.bind(@, field.name)
           })
         else
-          (tag.input {
-            type:         field.type
-            valueLink:    @linkState(field.name)
+          (InputComponent {
+            value:        @state[field.name]
             placeholder:  field.placeholder
             onBlur:       @onFieldBlur.bind(@, field.name)
           })
@@ -160,13 +167,8 @@ Component = React.createClass
   
   
   refreshStateFromStores: ->
-    @setState getStateFromStores(@props.key)
+    @setState getStateFromStores(@props.model)
 
-
-  componentWillMount: ->
-    unless @state[PersonStore.unique_key]
-      PersonSyncAPI.fetch("/people/#{@props.key}")
-  
 
   componentDidMount: ->
     PersonStore.on('change', @refreshStateFromStores)
@@ -181,7 +183,7 @@ Component = React.createClass
 
 
   getInitialState: ->
-    getStateFromStores(@props.key)
+    getStateFromStores(@props.model)
 
 
   render: ->
@@ -206,10 +208,11 @@ Component = React.createClass
         (tag.label {
           className: 'full-name'
         },
-          (tag.input {
-            type:         'text'
-            valueLink:    @linkState('full_name')
+          (InputComponent {
+            value:        @state['full_name']
             placeholder:  'Name Surname'
+            onChange:     @onNameChange unless @props.model.to_param()
+            onBlur:       @onFieldBlur.bind(@, 'full_name')
           })
         )
 
@@ -226,8 +229,9 @@ Component = React.createClass
           (tag.i { className: 'fa fa-file-text-o' })
         
           (tag.textarea {
-            valueLink:    @linkState('bio')
+            defaultValue: @state['bio']
             placeholder:  'Bio'
+            onBlur:       @onFieldBlur.bind(@, 'bio')
           })
         )
 
@@ -243,11 +247,22 @@ Component = React.createClass
         (tag.button {
           className:  'blueprint'
           type:       'button'
-          onClick:    @onCloseButtonClick
+          onClick:    ModalWindowActionsCreator.close
         },
           'Close'
           (tag.i { className: 'fa fa-check' })
-        )
+        ) if @props.model.to_param()
+        
+        
+        (tag.button {
+          className:  'blueprint'
+          type:       'button'
+          disabled:   !@isValid()
+          onClick:    @onCreateButtonClick
+        },
+          'Create'
+          (tag.i { className: 'fa fa-check' })
+        ) unless @props.model.to_param()
       
       )
 

@@ -1,7 +1,10 @@
+##= require stores/PersonStore
+
 # Shortcuts
 #
 tag = React.DOM
 
+PersonStore = cc.require('cc.stores.PersonStore')
 
 # Button
 #
@@ -22,7 +25,9 @@ Buttons = React.createClass
   
 
     onNewPersonClick: ->
-      identity_form = cc.blueprint.react.forms.Identity({ model: new cc.blueprint.models.Person })
+      identity_form = cc.require('cc.blueprint.components.PersonForm')({ model: new PersonStore, company_id: @props.company_id })
+
+      #identity_form = cc.blueprint.react.forms.Identity({ model: new cc.blueprint.models.Person })
       cc.blueprint.react.modal.show(identity_form, { key: 'identity', title: "New person" })
       
     
@@ -36,6 +41,7 @@ Buttons = React.createClass
         Button('male',     @onNewPersonClick)
         Button('briefcase', @onNewVacancyClick)
       )
+
 
 #
 #

@@ -31,6 +31,19 @@ Module =
   
   #
   #
+  create: (company, model) ->
+    Promise.resolve(
+      $.ajax
+        url:        "/companies/#{company}/people"
+        type:       "POST"
+        dataType:   "json"
+        data:
+          person:   model.attr()
+    ).then(PersonServerActions.createDone.bind(null, model), PersonServerActions.createFail.bind(null, model))
+  
+
+  #
+  #
   update: (key) ->
     Promise.resolve(
       $.ajax
@@ -41,7 +54,7 @@ Module =
           person:   PersonStore.find(key).attr()
     ).then(PersonServerActions.updateDone, PersonServerActions.updateFail)
   
-
+  
 # Exports
 #
 module.exports = Module

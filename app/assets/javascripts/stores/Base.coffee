@@ -123,6 +123,9 @@ class Store
 
   @GetModels: ->
     @__models ||= []
+  
+  
+  @uuid: uuid
 
 
   @add: (model) ->
@@ -141,7 +144,7 @@ class Store
     @__models.splice(@__models.indexOf(model), 1) if _.contains(@__models, model)
   
   
-  @create: (attributes) ->
+  @create: (attributes = {}) ->
     attributes[@unique_key] = uuid() unless attributes[@unique_key]
     new @(attributes)
   

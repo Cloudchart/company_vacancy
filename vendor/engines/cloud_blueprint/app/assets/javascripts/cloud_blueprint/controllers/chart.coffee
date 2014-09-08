@@ -1,6 +1,5 @@
 @['cloud_blueprint/charts#show'] = (data) ->
   
-  
   ChartActionsCreator = cc.require('cc.blueprint.actions.ChartActionsCreator')
   ChartStore          = cc.require('cc.blueprint.stores.ChartStore')
   
@@ -61,6 +60,7 @@
   # Identity filter view
   #
   identity_filter_view = cc.blueprint.react.IdentityFilter {
+    company_id:   data.chart.company_id
     subscribe_on: [
       'cc:blueprint:model:person/*'
       'cc:blueprint:model:vacancy/*'

@@ -49,9 +49,15 @@ class PeopleController < ApplicationController
   # POST /people
   def create
     if @person.save
-      redirect_to @person, notice: t('messages.created', name: t('lexicon.person'))
+      respond_to do |format|
+        format.html { redirect_to @person, notice: t('messages.created', name: t('lexicon.person')) }
+        format.json { render json: @person, root: false }
+      end
     else
-      render action: 'new'
+      respond_to do |format|
+        format.html { render action: 'new' }
+        format.json { render json: @person, root: false, status: 422 }
+      end
     end
   end
 
@@ -63,9 +69,10 @@ class PeopleController < ApplicationController
         format.json { render json: @person, root: false }
       end
     else
+      set_person
       respond_to do |format|
         format.html { render action: 'edit' }
-        format.json { render json: {}, status: 422 }
+        format.json { render json: @person, root: false, status: 422 }
       end
     end
   end
@@ -101,8 +108,12 @@ private
   end
   
   
+  def params_for_create
+    params.require(:person).permit([:first_name, :last_name, :full_name, :birthday, :email, :phone, :int_phone, :skype, :occupation, :hired_on, :fired_on, :salary, :bio])
+  end
+
   def params_for_update
-    params.require(:person).permit([:first_name, :last_name, :full_name, :birthday, :email, :phone, :int_phone, :occupation, :hired_on, :fired_on, :salary])
+    params.require(:person).permit([:first_name, :last_name, :full_name, :birthday, :email, :phone, :int_phone, :skype, :occupation, :hired_on, :fired_on, :salary, :bio])
   end
   
 
@@ -111,7 +122,7 @@ private
   end
 
   def build_person_with_params
-    @person = @company.people.build(person_params)
+    @person = @company.people.build(params_for_create)
   end
 
   def authorize_company

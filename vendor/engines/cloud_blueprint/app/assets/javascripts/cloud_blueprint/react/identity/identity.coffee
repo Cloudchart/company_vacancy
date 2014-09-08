@@ -12,6 +12,9 @@ tag = React.DOM
 #
 # Person
 #
+PersonStore = cc.require('cc.stores.PersonStore')
+PersonSyncAPI = require('utils/person_sync_api')
+
 
 # Person icon background color
 #
@@ -133,17 +136,22 @@ IdentityComponent = React.createClass
     form_options.node_uuid  = @props.node.uuid if @props.node
 
     form = if @props.model.constructor.className == 'Person'
+      model = PersonStore.find(@props.model.uuid)
+
+      unless model
+        model = PersonStore.add new PersonStore({ uuid: @props.model.uuid })
+        PersonSyncAPI.fetch("/people/#{@props.model.uuid}")
+        
       cc.require('cc.blueprint.components.PersonForm')
-        key:        @props.model.uuid
+        model: model
     else
       cc.blueprint.react.forms.Identity(form_options)
 
     cc.blueprint.react.modal.show form,
       key:    "identity",
       title:  "Edit #{@props.model.constructor.className.toLowerCase()}"
-    
 
-  
+
   getDefaultProps: ->
     draggable:  false
     renders:

@@ -10,9 +10,19 @@ PersonSyncAPI = require('utils/person_sync_api')
 
 # Actions
 #
-actions = 
+actions =
+  
+  
+  create: (company, model, attributes) ->
+    Dispatcher.handleClientAction
+      type:       'person:create'
+      model:      model
+      attributes: attributes
 
-  update: (key, attributes = {}, shouldSync = false) ->
+    PersonSyncAPI.create(company, model)
+  
+
+  update: (key, attributes = {}) ->
     Dispatcher.handleClientAction
       type:       'person:update'
       key:        key

@@ -47,6 +47,21 @@ PersonStore.dispatchToken = Dispatcher.register (payload) ->
       _.each action.json, (attributes) -> PersonStore.add(new PersonStore(attributes))
       PersonStore.emitChange()
     
+    
+    # Create
+    #
+    when 'person:create'
+      action.model.attr(action.attributes)
+      PersonStore.emitChange()
+    
+    
+    # Create done
+    #
+    when 'person:create:done'
+      action.model.attr(action.json)
+      PersonStore.add(action.model)
+      PersonStore.emitChange()
+    
 
     # Update
     #
@@ -69,7 +84,10 @@ PersonStore.dispatchToken = Dispatcher.register (payload) ->
     # Update fail
     #
     when 'person:update:fail'
-      _.noop
+      attributes = action.xhr.responseJSON
+      model = PersonStore.find(attributes[PersonStore.unique_key])
+      model.attr(attributes)
+      PersonStore.emitChange()
     
 
 # Exports

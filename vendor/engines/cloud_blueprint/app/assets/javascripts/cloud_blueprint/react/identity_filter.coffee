@@ -102,7 +102,7 @@ IdentityFilter = React.createClass
       Toggle({ ref: 'toggle', callback: @onToggle })
       cc.blueprint.react.IdentityFilter.Search({ ref: 'search', callback: @onSearchChange })
       cc.blueprint.react.IdentityFilter.IdentityList({ ref: 'list', subscribe_on: @props.subscribe_on })
-      cc.blueprint.react.IdentityFilter.Buttons({ ref: 'buttons' })
+      cc.blueprint.react.IdentityFilter.Buttons({ ref: 'buttons', company_id: @props.company_id })
     )
 
 #
