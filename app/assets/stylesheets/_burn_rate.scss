@@ -1,62 +1,80 @@
-main > article.company > article.burn-rate {
+main > article.company > div.burn-rate {
+  margin: 0 auto;
+  padding: $base-unit * 2 0;
   background-color: $white-smoke;
 
-  > table {
-    border-collapse: separate;
-    border-spacing: $base-unit / 4;
-    font-size: 15pt;
-    line-height: 140%;
+  > div.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 $base-unit * 6;
 
-    > thead {
-      text-transform: uppercase;
+    > table {
+      border-collapse: separate;
+      border-spacing: $base-unit / 3;
+      margin-left: -$base-unit / 3;
+      font-size: 15pt;
 
-      > tr > th {
-        font-weight: 300;
+      > thead {
+        text-transform: uppercase;
 
-        &.current-month {
-          color: $ufo-green;
+        > tr > th {
+          font-weight: 300;
+
+          &.current-month {
+            color: $ufo-green;
+          }
         }
+
+        .fa-chevron-left {
+          float: left;
+          margin-top: 4px;
+        }
+
+        .fa-chevron-right {
+          float: right;
+          margin-top: 4px;
+        }
+
+        .fa-chevron-left, .fa-chevron-right {
+          color: $gray-chateau;
+          font-size: 12pt;
+        }
+
       }
 
-      .fa-chevron-left {
-        float: left;
-        margin-top: 7px;
-      }
+      > tbody {
+        > tr {
 
-      .fa-chevron-right {
-        float: right;
-        margin-top: 7px;
-      }
+          &.total {
+            font-weight: bold;
+          }
 
-      .fa-chevron-left, .fa-chevron-right {
-        color: $dark-grey;
-        font-size: 12pt;
-      }
+          > td.title {
+            > div.name {
+              font-weight: 400;
+            }
 
+            > div.occupation {
+              text-transform: uppercase;
+              font-size: 10pt;
+              color: $gray-chateau;
+            }
+
+          }
+
+          > td.data, td.total {
+            height: $base-unit * 2;
+            width: $base-unit * 6;
+            text-align: right;
+            vertical-align: middle;
+            padding-right: $base-unit / 2;
+            background-color: white;
+          }
+
+        }
+
+      }
     }
 
-    > tbody {
-      > tr {
-
-        &.total {
-          font-weight: bold;
-        }
-
-        > td.name {
-          @include list-identity-item;
-        }
-
-        > td.data, td.total {
-          height: $base-unit * 2;
-          width: $base-unit * 6;
-          text-align: right;
-          vertical-align: middle;
-          padding-right: $base-unit / 2;
-          background-color: white;
-        }
-
-      }
-
-    }
   }
 }

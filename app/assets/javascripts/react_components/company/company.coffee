@@ -27,7 +27,7 @@ MainComponent = React.createClass
 
   getInitialState: ->
     people_loaded: false
-    toggle_value: 'editor'
+    toggle_value: 'burn_rate'
 
   componentDidMount: ->
     PersonStore.on('change', @onPeresonStoreChange)

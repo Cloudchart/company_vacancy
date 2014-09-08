@@ -13,38 +13,41 @@ MainComponent = React.createClass
   # Component Specifications
   # 
   render: ->
-    (tag.article { key: 'burn-rate-article', className: 'editor burn-rate' },
+    (tag.div { key: 'burn-rate-article', className: 'burn-rate' },
+      (tag.div { className: 'container' },
 
-      (tag.table {},
-        (tag.thead {},
-          (tag.tr {},
-            (tag.th {})
-            (tag.th {}, 
-              (tag.a { href: '#' },
-                (tag.i { className: 'fa fa-chevron-left' })
-              )              
-              moment(@monthShiftedTime(-3)).format('MMM YY')
-            )
-            (tag.th {}, moment(@monthShiftedTime(-2)).format('MMM YY'))
-            (tag.th {}, moment(@monthShiftedTime(-1)).format('MMM YY'))
-            (tag.th { className: 'current-month' },
-              moment().format('MMM YY')
-              (tag.a { href: '#' },
-                (tag.i { className: 'fa fa-chevron-right' })
+        (tag.table {},
+          (tag.thead {},
+            (tag.tr {},
+              (tag.th {})
+              (tag.th {}, 
+                (tag.a { href: '#' },
+                  (tag.i { className: 'fa fa-chevron-left' })
+                )              
+                moment(@monthShiftedTime(-3)).format('MMM YY')
+              )
+              (tag.th {}, moment(@monthShiftedTime(-2)).format('MMM YY'))
+              (tag.th {}, moment(@monthShiftedTime(-1)).format('MMM YY'))
+              (tag.th { className: 'current-month' },
+                moment().format('MMM YY')
+                (tag.a { href: '#' },
+                  (tag.i { className: 'fa fa-chevron-right' })
+                )
               )
             )
           )
-        )
-        (tag.tbody {},
-          @gatherPeople()
-          (tag.tr { className: 'total' },
-            (tag.td {}, 'Total')
-            (tag.td { className: 'total', offset: '-3' })
-            (tag.td { className: 'total', offset: '-2' })
-            (tag.td { className: 'total', offset: '-1' })
-            (tag.td { className: 'total', offset: 'current' })
+          (tag.tbody {},
+            @gatherPeople()
+            (tag.tr { className: 'total' },
+              (tag.td {}, 'Total')
+              (tag.td { className: 'total', offset: '-3' })
+              (tag.td { className: 'total', offset: '-2' })
+              (tag.td { className: 'total', offset: '-1' })
+              (tag.td { className: 'total', offset: 'current' })
+            )
           )
         )
+
       )
     )
 
@@ -74,7 +77,10 @@ MainComponent = React.createClass
 
     _.map people, (person) =>
       (tag.tr { key: person.to_param() },
-        (tag.td { className: 'name' }, PersonComponent({ key: person.to_param() }))
+        (tag.td { className: 'title' }, 
+          (tag.div { className: 'name' }, person.attr('full_name'))
+          (tag.div { className: 'occupation' }, person.attr('occupation'))
+        )
         (tag.td { className: 'data month--3' }, @showSalary(person, -3))
         (tag.td { className: 'data month--2' }, @showSalary(person, -2))
         (tag.td { className: 'data month--1' }, @showSalary(person, -1))
@@ -82,9 +88,19 @@ MainComponent = React.createClass
       )
 
   showSalary: (person, offset=0) ->
-    if person.attr('hired_on') and 
-      new Date(person.attr('hired_on')).getTime() < @monthShiftedTime(offset) and
-      (!person.attr('fired_on') or new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset))
+    if person.attr('salary') and 
+      (
+        person.attr('hired_on') and
+        new Date(person.attr('hired_on')).getTime() < @monthShiftedTime(offset) and
+        (!person.attr('fired_on') or new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset))
+      ) or (
+        !person.attr('hired_on') and
+        !person.attr('fired_on')
+      ) or (
+        !person.attr('hired_on') and
+        person.attr('fired_on') and
+        new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset)
+      )
 
         parseInt(person.attr('salary'))
         # TODO: add formatting – .toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
