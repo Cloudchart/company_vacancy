@@ -1,11 +1,9 @@
 ##= require components/Person
-##= require stores/PersonStore
 
 # Imports
 # 
 tag = React.DOM
 
-PersonStore = cc.require('cc.stores.PersonStore')
 PersonComponent = cc.require('cc.components.Person')
 
 # Main Component
@@ -15,27 +13,36 @@ MainComponent = React.createClass
   # Component Specifications
   # 
   render: ->
-    (tag.article { className: 'editor burn-rate' },
+    (tag.article { key: 'burn-rate-article', className: 'editor burn-rate' },
+
       (tag.table {},
         (tag.thead {},
           (tag.tr {},
             (tag.th {})
-            (tag.th {}, moment(@monthShiftedTime(-3)).format('MMM YY'))
+            (tag.th {}, 
+              (tag.a { href: '#' },
+                (tag.i { className: 'fa fa-chevron-left' })
+              )              
+              moment(@monthShiftedTime(-3)).format('MMM YY')
+            )
             (tag.th {}, moment(@monthShiftedTime(-2)).format('MMM YY'))
             (tag.th {}, moment(@monthShiftedTime(-1)).format('MMM YY'))
-            (tag.th {}, moment().format('MMM YY'))
+            (tag.th { className: 'current-month' },
+              moment().format('MMM YY')
+              (tag.a { href: '#' },
+                (tag.i { className: 'fa fa-chevron-right' })
+              )
+            )
           )
         )
         (tag.tbody {},
           @gatherPeople()
-          (tag.tr {},
-            (tag.td {},
-              (tag.strong {}, 'Total')
-            )
-            (tag.td {})
-            (tag.td {})
-            (tag.td {})
-            (tag.td {})
+          (tag.tr { className: 'total' },
+            (tag.td {}, 'Total')
+            (tag.td { className: 'total', offset: '-3' })
+            (tag.td { className: 'total', offset: '-2' })
+            (tag.td { className: 'total', offset: '-1' })
+            (tag.td { className: 'total', offset: 'current' })
           )
         )
       )
@@ -47,27 +54,31 @@ MainComponent = React.createClass
   # Lifecycle Methods
   # 
   # componentWillMount: ->
-  # componentDidMount: ->
+  componentDidMount: ->
+    @showTotal()
+    
   # componentWillReceiveProps: (nextProps) ->
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
-  # componentDidUpdate: (prevProps, prevState) ->
+  componentDidUpdate: (prevProps, prevState) ->
+    @showTotal()
+
   # componentWillUnmount: ->
 
   # Instance Methods
   # 
   gatherPeople: ->
-    people = _.chain(PersonStore.all())
+    people = _.chain(@props.people)
       .sortBy (person) -> person.sortValue()
       .value()
 
     _.map people, (person) =>
       (tag.tr { key: person.to_param() },
-        (tag.td {}, person.attr('full_name'))
-        (tag.td {}, @showSalary(person, -3))
-        (tag.td {}, @showSalary(person, -2))
-        (tag.td {}, @showSalary(person, -1))
-        (tag.td {}, @showSalary(person))
+        (tag.td { className: 'name' }, PersonComponent({ key: person.to_param() }))
+        (tag.td { className: 'data month--3' }, @showSalary(person, -3))
+        (tag.td { className: 'data month--2' }, @showSalary(person, -2))
+        (tag.td { className: 'data month--1' }, @showSalary(person, -1))
+        (tag.td { className: 'data month-current' }, @showSalary(person))
       )
 
   showSalary: (person, offset=0) ->
@@ -75,13 +86,26 @@ MainComponent = React.createClass
       new Date(person.attr('hired_on')).getTime() < @monthShiftedTime(offset) and
       (!person.attr('fired_on') or new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset))
 
-        person.attr('salary')
+        parseInt(person.attr('salary'))
+        # TODO: add formatting – .toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 
   monthShiftedTime: (offset) ->
     current_date = new Date
     current_month = current_date.getMonth()
 
     current_date.setMonth(current_month + offset)
+
+  showTotal: ->
+    _.forEach document.body.querySelectorAll('td.total'), (element) =>
+      element.innerHTML = @calculateTotal(element.getAttribute('offset'))
+
+  calculateTotal: (offset) ->
+    sum = 0
+
+    _.forEach document.body.querySelectorAll("td.data.month-#{offset}"), (element) ->
+      sum += parseFloat(element.innerHTML) unless element.innerHTML.length == 0 or isNaN(element.innerHTML)
+
+    sum
 
   # Events
   # 
