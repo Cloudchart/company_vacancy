@@ -1,3 +1,5 @@
+NodeIdentityStore = require('cloud_blueprint/stores/node_identity_store')
+
 #
 #
 #
@@ -31,19 +33,19 @@ class Node extends cc.blueprint.models.Element
   
   
   identities: ->
-    _.filter cc.blueprint.models.Identity.instances, (identity) => !identity.is_deleted() and @uuid == identity.node_id
+    _.filter NodeIdentityStore.all(), (i) => i.attr('node_id') == @uuid
   
   
   people: ->
     @identities()
-      .filter((identity) -> identity.identity_type == 'Person')
-      .map((identity) -> cc.blueprint.models.Person.get(identity.identity_id))
+      .filter((i) -> i.attr('identity_type') == 'Person')
+      .map((i) -> cc.blueprint.models.Person.get(i.attr('identity_id')))
   
   
   vacancies: ->
     @identities()
-      .filter((identity) -> identity.identity_type == 'Vacancy')
-      .map((identity) -> cc.blueprint.models.Vacancy.get(identity.identity_id))
+      .filter((i) -> i.attr('identity_type') == 'Vacancy')
+      .map((i) -> cc.blueprint.models.Vacancy.get(i.attr('identity_id')))
     
 
   consolidate: ->
