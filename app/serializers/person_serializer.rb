@@ -1,5 +1,4 @@
 class PersonSerializer < ActiveModel::Serializer
-
   attributes :uuid
   attributes :user_id
   attributes :company_id, :is_company_owner

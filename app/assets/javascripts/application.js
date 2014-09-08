@@ -13,7 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require arbiter
-//= require t
 //= require module
 //= require placeholder
 //= require react

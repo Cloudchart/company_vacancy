@@ -1,12 +1,12 @@
 ##= require components/Person
-##= require ./owners/selector
+##= require ./settings/owner_selector
 
 # Imports
 # 
 tag = React.DOM
 
 PersonComponent = cc.require('cc.components.Person')
-OwnerSelectorComponent = cc.require('react/company/owners/selector')
+OwnerSelectorComponent = cc.require('react/company/settings/owner_selector')
 
 # Main Component
 #

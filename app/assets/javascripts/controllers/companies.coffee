@@ -30,11 +30,8 @@
   PersonStore       = cc.require('cc.stores.PersonStore')
   VacancyStore      = cc.require('cc.stores.VacancyStore')
   CountryStore      = cc.require('cc.stores.CountryStore')
-  
   CompanyComponent  = cc.require('react/company')
   container         = document.querySelector('main')
-  
-  React.renderComponent(CompanyComponent(data.company), container)
 
   PersonStore.load(data.company.people_url)
   VacancyStore.load(data.company.vacancies_url)
@@ -43,9 +40,8 @@
     CountryStore.add(new CountryStore({ id: pair[1], name: pair[0] }))
   
   CountryStore.emitChange()
-  
-  
 
+  React.renderComponent(CompanyComponent(data.company), container)
 
 # Search
 # 

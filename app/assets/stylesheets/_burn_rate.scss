@@ -1,0 +1,62 @@
+main > article.company > article.burn-rate {
+  background-color: $white-smoke;
+
+  > table {
+    border-collapse: separate;
+    border-spacing: $base-unit / 4;
+    font-size: 15pt;
+    line-height: 140%;
+
+    > thead {
+      text-transform: uppercase;
+
+      > tr > th {
+        font-weight: 300;
+
+        &.current-month {
+          color: $ufo-green;
+        }
+      }
+
+      .fa-chevron-left {
+        float: left;
+        margin-top: 7px;
+      }
+
+      .fa-chevron-right {
+        float: right;
+        margin-top: 7px;
+      }
+
+      .fa-chevron-left, .fa-chevron-right {
+        color: $dark-grey;
+        font-size: 12pt;
+      }
+
+    }
+
+    > tbody {
+      > tr {
+
+        &.total {
+          font-weight: bold;
+        }
+
+        > td.name {
+          @include list-identity-item;
+        }
+
+        > td.data, td.total {
+          height: $base-unit * 2;
+          width: $base-unit * 6;
+          text-align: right;
+          vertical-align: middle;
+          padding-right: $base-unit / 2;
+          background-color: white;
+        }
+
+      }
+
+    }
+  }
+}
