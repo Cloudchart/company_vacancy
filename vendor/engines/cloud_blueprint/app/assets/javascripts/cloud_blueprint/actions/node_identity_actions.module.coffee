@@ -9,6 +9,15 @@ NodeIdentitySyncAPI = require('cloud_blueprint/utils/node_identity_sync_api')
 #
 Module =
   
+  
+  # Create
+  #
+  create: (model) ->
+    NodeIdentitySyncAPI.create(model)
+  
+
+  # Destroy
+  #
   destroy: (model) ->
     NodeIdentitySyncAPI.destroy(model)
   

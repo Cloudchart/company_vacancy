@@ -3,6 +3,8 @@
 tag = React.DOM
 
 
+
+
 # Instances pool
 #
 instances = {}
@@ -116,7 +118,7 @@ Node = React.createClass
   
   onCCDragMove: (event) ->
     #cc.blueprint.react.Blueprint.Relation.get(@props.je)
-
+  
   
   getDefaultProps: ->
     model:            cc.blueprint.models.Node.get(@props.key)

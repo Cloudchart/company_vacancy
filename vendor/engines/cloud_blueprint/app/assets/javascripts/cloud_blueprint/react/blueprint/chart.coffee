@@ -4,6 +4,8 @@
 #
 tag = React.DOM
 
+NodeIdentityStore = require('cloud_blueprint/stores/node_identity_store')
+
 
 # Default colors
 #
@@ -275,6 +277,7 @@ Chart = React.createClass
     @reposition()
     _.each @props.subscribe_on, (message) => Arbiter.subscribe message, @refresh
     @getDOMNode().addEventListener('drop:identity', @onDropIdentity)
+    NodeIdentityStore.on('change', @refresh)
    
   
 

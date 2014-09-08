@@ -18,6 +18,19 @@ Module =
     ).then(NodeIdentityServerActions.fetchDone, NodeIdentityServerActions.fetchFail)
   
   
+  # Create
+  #
+  create: (model) ->
+    Promise.resolve(
+      $.ajax
+        url:        "/charts/#{model.attr('chart_id')}/identities"
+        type:       "POST"
+        dataType:   "json"
+        data:
+          identity: model.attr()
+    ).then(NodeIdentityServerActions.createDone.bind(null, model), NodeIdentityServerActions.createFail.bind(null, model))
+  
+  
   # Destroy
   #
   destroy: (model) ->

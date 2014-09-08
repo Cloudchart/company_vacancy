@@ -24,6 +24,12 @@ Store.dispatchToken = Dispatcher.register (payload) ->
       Store.emitChange()
     
     
+    when 'node_identity:create:done'
+      action.model.attr(action.json)
+      Store.add(action.model)
+      Store.emitChange()
+    
+    
     when 'node_identity:destroy:done'
       Store.remove(action.model)
       Store.emitChange()

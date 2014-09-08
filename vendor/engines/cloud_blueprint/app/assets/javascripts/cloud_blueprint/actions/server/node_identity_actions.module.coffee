@@ -28,6 +28,25 @@ Module =
       json: xhr.responseJSON
   
   
+  # Create done
+  #
+  createDone: (model, json) ->
+    Dispatcher.handleServerAction
+      type:   'node_identity:create:done'
+      model:  model
+      json:   json
+  
+  
+  # Create fail
+  #
+  createFail: (model, xhr) ->
+    Dispatcher.handleServerAction
+      type:   'node_identity:create:fail'
+      model:  model
+      xhr:    xhr
+      json:   xhr.responseJSON
+
+
   # Destroy done
   #
   destroyDone: (model, json) ->

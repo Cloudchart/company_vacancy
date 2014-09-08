@@ -1,3 +1,6 @@
+NodeIdentityStore     = require('cloud_blueprint/stores/node_identity_store')
+NodeIdentityActions   = require('cloud_blueprint/actions/node_identity_actions')
+
 #
 #
 #
@@ -34,15 +37,27 @@ on_drop = (event) ->
   event.target.classList.remove('captured')
 
   identity_data   = JSON.parse(event.dataTransfer.getData('identity'))
-  identity_model  = cc.blueprint.models[identity_data.className].get(identity_data.uuid)
+  nodeModel       = cc.blueprint.models.Node.get(event.target.dataset.id)
 
-  identity = cc.blueprint.models.Identity.create
-    chart_id:       identity_model.chart_id
-    node_id:        event.target.dataset.id
+
+  nodeIdentity = new NodeIdentityStore
+    chart_id:       nodeModel.chart_id
+    node_id:        nodeModel.uuid
     identity_id:    identity_data.uuid
     identity_type:  identity_data.className
   
-  identity.save()
+  NodeIdentityActions.create(nodeIdentity)  
+
+  # identity_data   = JSON.parse(event.dataTransfer.getData('identity'))
+  # identity_model  = cc.blueprint.models[identity_data.className].get(identity_data.uuid)
+  #
+  # identity = cc.blueprint.models.Identity.create
+  #   chart_id:       identity_model.chart_id
+  #   node_id:        event.target.dataset.id
+  #   identity_id:    identity_data.uuid
+  #   identity_type:  identity_data.className
+  #
+  # identity.save()
   
 
 #

@@ -5,6 +5,9 @@
 tag = React.DOM
 
 
+NodeIdentityStore     = require('cloud_blueprint/stores/node_identity_store')
+
+
 # Empty Identity Component
 #
 EmptyIdentityComponent = React.createClass
@@ -123,10 +126,12 @@ Node = React.createClass
 
 
   componentDidMount: ->
+    NodeIdentityStore.on('change', @refresh)
     Arbiter.subscribe "#{cc.blueprint.models.Identity.broadcast_topic()}/*", @refresh
   
-  
+
   componentWillUnmout: ->
+    NodeIdentityStore.off('change', @refresh)
     Arbiter.unsubscribe "#{cc.blueprint.models.Identity.broadcast_topic()}/*", @refresh
 
 
@@ -180,6 +185,7 @@ Node = React.createClass
     _.sortBy(@props.model.people(), ['last_name', 'first_name']).map (person) =>
       cc.blueprint.react.Identity { key: person.uuid, model: person, node: @props.model }
   
+
   gatherVacancies: ->
     @props.model.vacancies().map (vacancy) =>
       cc.blueprint.react.Identity { key: vacancy.uuid, model: vacancy, node: @props.model }
