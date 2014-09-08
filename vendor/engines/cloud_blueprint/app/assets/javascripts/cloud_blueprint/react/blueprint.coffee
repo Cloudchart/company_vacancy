@@ -49,7 +49,6 @@ ModalComponent = React.createClass
     # Unmount previous modal component
     React.unmountComponentAtNode(@refs.container.getDOMNode())
     
-    console.log @state.modal_component
     # Render current modal component if it exists
     React.renderComponent(@state.modal_component, @refs.container.getDOMNode()) if @state.modal_component
   
