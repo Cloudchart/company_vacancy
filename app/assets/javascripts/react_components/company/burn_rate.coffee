@@ -69,7 +69,7 @@ MainComponent = React.createClass
               (tag.td { className: 'total', offset: '3' })
               (tag.td { className: 'total', offset: '2' })
               (tag.td { className: 'total', offset: '1' })
-              (tag.td { className: 'total', offset: 'current' })
+              (tag.td { className: 'total', offset: 'selected' })
             )
           )
         )
@@ -112,7 +112,7 @@ MainComponent = React.createClass
         (tag.td { className: 'data month-3' }, @showSalary(person, 3))
         (tag.td { className: 'data month-2' }, @showSalary(person, 2))
         (tag.td { className: 'data month-1' }, @showSalary(person, 1))
-        (tag.td { className: 'data month-current' }, @showSalary(person))
+        (tag.td { className: 'data month-selected' }, @showSalary(person))
       )
 
   showSalary: (person, offset=0) ->
@@ -131,10 +131,7 @@ MainComponent = React.createClass
         )
       )
 
-        parseInt(person.attr('salary'))
-        # TODO: add formatting
-          # .toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-          # http://numeraljs.com/
+        numeral(person.attr('salary')).format('0,0')
 
   monthSubtractedMoment: (offset) ->
     moment(@state.selected_time).subtract(offset, 'months')
@@ -147,9 +144,9 @@ MainComponent = React.createClass
     sum = 0
 
     _.forEach document.body.querySelectorAll("td.data.month-#{offset}"), (element) ->
-      sum += parseFloat(element.innerHTML) unless element.innerHTML.length == 0 or isNaN(element.innerHTML)
+      sum += numeral().unformat(element.innerHTML)
 
-    sum
+    numeral(sum).format('0,0')
 
   checkCurrentMonth: (given_moment) ->
     if given_moment.month() == moment().month() and
