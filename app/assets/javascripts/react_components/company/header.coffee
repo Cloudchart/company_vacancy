@@ -177,7 +177,7 @@ MainComponent = React.createClass
             })
           )
         )
-        (tag.nav  {}, @gatherSections())
+        (tag.nav  {}, @gatherSections()) if @props.is_owner
       )
     )
 

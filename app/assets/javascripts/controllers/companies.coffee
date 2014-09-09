@@ -41,7 +41,7 @@
   
   CountryStore.emitChange()
 
-  React.renderComponent(CompanyComponent(data.company), container)
+  React.renderComponent(CompanyComponent(_.extend({ is_owner: data.is_owner }, data.company)), container)
 
 # Search
 # 
