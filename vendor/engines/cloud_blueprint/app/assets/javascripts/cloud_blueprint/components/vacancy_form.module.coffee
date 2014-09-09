@@ -8,6 +8,9 @@ ModalWindowActions  = require('cloud_blueprint/actions/modal_window_actions_crea
 VacancyStore    = require('stores/vacancy_store')
 VacancyActions  = require('actions/vacancy_actions')
 
+NodeIdentityStore           = require('cloud_blueprint/stores/node_identity_store')
+NodeIdentityActions         = require('cloud_blueprint/actions/node_identity_actions')
+
 
 knownAttributes = ['name', 'description']
 
@@ -38,6 +41,10 @@ Component = React.createClass
     VacancyActions.update(@props.model, filterAttributes(@state))
   
   
+  refresh: ->
+    @setState({ refreshedAt: + new Date })
+  
+  
   getStateFromModel: (model) ->
     filterAttributes(model.attr())
   
@@ -56,10 +63,12 @@ Component = React.createClass
 
   componentDidMount: ->
     VacancyStore.on('change', @onStoreChange)
+    NodeIdentityStore.on('change', @refresh)
   
   
   componentWillUnmount: ->
     VacancyStore.off('change', @onStoreChange)
+    NodeIdentityStore.off('change', @refresh)
   
   
   componentWillReceiveProps: (nextProps) ->
@@ -125,6 +134,18 @@ Component = React.createClass
       (tag.footer {
         className: 'buttons'
       },
+
+        # Remove button
+        #
+        (tag.button {
+          className:  'blueprint alert'
+          type:       'button'
+          onClick:    NodeIdentityActions.destroy.bind(null, @props.identity)
+        },
+          'Remove from Group'
+          (tag.i { className: 'fa fa-times' })
+        ) if @props.identity and @props.identity.exists()
+
 
         # Spacer
         #

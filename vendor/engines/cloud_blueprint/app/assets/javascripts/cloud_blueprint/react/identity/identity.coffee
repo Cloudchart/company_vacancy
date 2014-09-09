@@ -161,8 +161,8 @@ IdentityComponent = React.createClass
       
     else
       require('cloud_blueprint/components/vacancy_form')
-        model: VacancyStore.find(@props.model.uuid)
-      #cc.blueprint.react.forms.Identity(form_options)
+        model:    VacancyStore.find(@props.model.uuid)
+        identity: identity
 
     cc.blueprint.react.modal.show form,
       key:    "identity",

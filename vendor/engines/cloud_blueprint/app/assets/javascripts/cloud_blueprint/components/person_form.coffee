@@ -256,7 +256,7 @@ Component = React.createClass
         (tag.button {
           className:  'blueprint alert'
           type:       'button'
-          onClick:    NodeIdentityActions.destroy.bind(null, @props.identity)
+          onClick:    NodeIdentityActions.destroy.bind(null, @state.identity)
         },
           'Remove from Group'
           (tag.i { className: 'fa fa-times' })

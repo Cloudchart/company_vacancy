@@ -164,6 +164,10 @@ class Store
     @reset()
   
   
+  exists: ->
+    !!@to_param() and !!@constructor.find(@to_param())
+  
+  
   to_param: ->
     @attr(@constructor.unique_key)
   
