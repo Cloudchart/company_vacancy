@@ -7,6 +7,9 @@
 tag = React.DOM
 
 
+ChartModalWindow = require('cloud_blueprint/components/chart/modal_window')
+
+
 # Modal Title Component
 #
 ModalTitleComponent = React.createClass
@@ -47,10 +50,10 @@ ModalComponent = React.createClass
     Arbiter.publish "cc:blueprint:identity-filter/#{if @state.is_visible then 'show' else 'hide'}"
     
     # Unmount previous modal component
-    React.unmountComponentAtNode(@refs.container.getDOMNode())
+    # React.unmountComponentAtNode(@refs.container.getDOMNode())
     
     # Render current modal component if it exists
-    React.renderComponent(@state.modal_component, @refs.container.getDOMNode()) if @state.modal_component
+    # React.renderComponent(@state.modal_component, @refs.container.getDOMNode()) if @state.modal_component
   
   
   getDefaultProps: ->
@@ -110,7 +113,7 @@ ModalComponent = React.createClass
         visibility:  if @state.is_visible then 'visible' else 'hidden'
     },
       (ModalTitleComponent { title: @state.title || @props.title })
-      (tag.div { ref: 'container', className: 'modal-container' })
+      (tag.div { ref: 'container', className: 'modal-container' }, @state.modal_component)
     )
 
 
@@ -124,6 +127,7 @@ Blueprint = React.createClass
   render: ->
     (tag.article { className: 'chart' },
       @props.children
+      #(ChartModalWindow null)
       (ModalComponent {})
     )
 

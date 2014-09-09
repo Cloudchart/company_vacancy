@@ -42,9 +42,15 @@ class VacanciesController < ApplicationController
 
     if @vacancy.save
       Activity.track_activity(current_user, 'open', @vacancy)
-      redirect_to @vacancy, notice: t('messages.created', name: t('lexicon.vacancy'))
+      respond_to do |format|
+        format.html { redirect_to @vacancy, notice: t('messages.created', name: t('lexicon.vacancy')) }
+        format.json { render json: @vacancy, root: false }
+      end
     else
-      render :new
+      respond_to do |format|
+        format.html { render :new }
+        format.json { render json: @vacancy, root: false, status: 422 }
+      end
     end
   end
 
@@ -52,9 +58,15 @@ class VacanciesController < ApplicationController
   def update
     if @vacancy.update(vacancy_params)
       Activity.track_activity(current_user, 'edit', @vacancy)
-      redirect_to @vacancy, notice: t('messages.updated', name: t('lexicon.vacancy'))
+      respond_to do |format|
+        format.html { redirect_to @vacancy, notice: t('messages.updated', name: t('lexicon.vacancy')) }
+        format.json { render json: @vacancy, root: false }
+      end
     else
-      render :show
+      respond_to do |format|
+        format.html { render :show }
+        format.json { render json: @vacancy.reload, root: false, status: 422 }
+      end
     end
   end
 

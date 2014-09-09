@@ -7,10 +7,10 @@ module CloudBlueprint
     # GET /charts/:id/vacancies
     #
     def index
-      @chart = Chart.includes(:vacancies).find(params[:chart_id])
+      chart = Chart.includes(:vacancies).find(params[:chart_id])
       respond_to do |format|
         format.json do
-          render json: @chart.vacancies.as_json_for_chart
+          render json: chart.vacancies, root: false
         end
       end
     end

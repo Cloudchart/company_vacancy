@@ -186,6 +186,10 @@ Component = React.createClass
   
   componentDidUpdate: ->
     @update() if @state.shouldUpdate
+  
+  
+  componentWillReceiveProps: (nextProps) ->
+    @setState getStateFromStores(nextProps)
 
 
   getInitialState: ->

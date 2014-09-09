@@ -1,3 +1,5 @@
+VacancyStore = require('stores/vacancy_store')
+
 #
 #
 #
@@ -21,6 +23,21 @@ class Vacancy extends cc.blueprint.models.Base
   #
   can_be_deleted: ->
     super() and _.filter(cc.blueprint.models.Identity.instances, (instance) => instance.identity_id == @uuid).length == 0
+
+
+#
+# Ugly Hack
+#
+
+VacancyStore.on 'change', ->
+  _.each VacancyStore.all(), (record) ->
+    if instance = Vacancy.get(record.to_param())
+      instance.set_attributes(record.attr())
+    else
+      instance = new Vacancy(record.attr())
+    instance.synchronize()
+    
+  Arbiter.publish(Vacancy.broadcast_topic() + '/' + 'update')
 
 #
 #

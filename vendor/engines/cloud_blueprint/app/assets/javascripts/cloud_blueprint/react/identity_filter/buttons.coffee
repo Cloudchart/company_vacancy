@@ -5,6 +5,7 @@
 tag = React.DOM
 
 PersonStore = cc.require('cc.stores.PersonStore')
+VacancyStore  = require('stores/vacancy_store')
 
 # Button
 #
@@ -32,7 +33,9 @@ Buttons = React.createClass
       
     
     onNewVacancyClick: ->
-      identity_form = cc.blueprint.react.forms.Identity({ model: new cc.blueprint.models.Vacancy })
+      identity_form = require('cloud_blueprint/components/vacancy_form')({ model: new VacancyStore({ company_id: @props.company_id }) })
+
+      #identity_form = cc.blueprint.react.forms.Identity({ model: new cc.blueprint.models.Vacancy })
       cc.blueprint.react.modal.show(identity_form, { key: 'identity', title: "New vacancy" })
   
 

@@ -141,7 +141,7 @@ class Store
   
   
   @remove: (model) ->
-    @__models.splice(@__models.indexOf(model), 1) if _.contains(@__models, model)
+    @all().splice(@all().indexOf(model), 1) if _.contains(@all(), model)
   
   
   @create: (attributes = {}) ->

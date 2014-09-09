@@ -1,3 +1,4 @@
+##= require cloud_blueprint/actions/modal_window_actions_creator.module
 ##= require cloud_blueprint/stores/node_identity_store.module
 
 # Shotcuts
@@ -6,6 +7,7 @@
 tag = React.DOM
 
 NodeIdentityStore = require('cloud_blueprint/stores/node_identity_store')
+ModalWindowActions = require('cloud_blueprint/actions/modal_window_actions_creator')
 
 
 #
@@ -18,6 +20,8 @@ NodeIdentityStore = require('cloud_blueprint/stores/node_identity_store')
 #
 PersonStore = cc.require('cc.stores.PersonStore')
 PersonSyncAPI = require('utils/person_sync_api')
+
+VacancyStore = require('stores/vacancy_store')
 
 
 # Person icon background color
@@ -154,8 +158,11 @@ IdentityComponent = React.createClass
       cc.require('cc.blueprint.components.PersonForm')
         model:    model
         identity: identity
+      
     else
-      cc.blueprint.react.forms.Identity(form_options)
+      require('cloud_blueprint/components/vacancy_form')
+        model: VacancyStore.find(@props.model.uuid)
+      #cc.blueprint.react.forms.Identity(form_options)
 
     cc.blueprint.react.modal.show form,
       key:    "identity",
