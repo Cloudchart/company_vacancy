@@ -7,6 +7,9 @@ class PeopleController < ApplicationController
 
   authorize_resource except: :index
 
+  skip_before_action :require_authenticated_user!
+  before_action :require_authenticated_user!, except: :index
+
   # GET /people
   def index
     @people = @company.people.includes(:user)

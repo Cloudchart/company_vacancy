@@ -7,6 +7,9 @@ class VacanciesController < ApplicationController
 
   authorize_resource except: :index
 
+  skip_before_action :require_authenticated_user!
+  before_action :require_authenticated_user!, except: :index
+
   impressionist actions: [:show], unique: [:ip_address]
 
   rescue_from CanCan::AccessDenied do |exception|

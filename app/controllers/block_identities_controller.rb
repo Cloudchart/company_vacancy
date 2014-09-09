@@ -1,5 +1,6 @@
 class BlockIdentitiesController < ApplicationController
-
+  skip_before_action :require_authenticated_user!
+  before_action :require_authenticated_user!, except: :index
 
   # Index
   #
