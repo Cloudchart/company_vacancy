@@ -10,4 +10,8 @@
   <li>
     <%= mail_to ENV['DEFAULT_REPLY_TO'], t('.contacts', default: 'Contacts') %>
   </li>
+
+  <li>
+    <%= link_to t('.legal', default: 'Legal'), main_app.page_path(:legal) %>
+  </li>
 </ul>
