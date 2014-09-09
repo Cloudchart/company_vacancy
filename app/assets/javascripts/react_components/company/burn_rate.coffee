@@ -13,24 +13,48 @@ MainComponent = React.createClass
   # Component Specifications
   # 
   render: ->
-    (tag.div { key: 'burn-rate-article', className: 'burn-rate' },
+    (tag.div { className: 'burn-rate' },
       (tag.div { className: 'container' },
 
         (tag.table {},
           (tag.thead {},
             (tag.tr {},
               (tag.th {})
-              (tag.th {}, 
-                (tag.a { href: '#' },
+
+              (tag.th {
+                className: @checkCurrentMonth(@monthSubtractedMoment(3))  
+              },
+                (tag.a { 
+                  href: ''
+                  className: 'chevron-left'
+                  onClick: @onChevronLeftClick 
+                },
                   (tag.i { className: 'fa fa-chevron-left' })
-                )              
-                moment(@monthShiftedTime(-3)).format('MMM YY')
+                )
+                @monthSubtractedMoment(3).format('MMM YY')
               )
-              (tag.th {}, moment(@monthShiftedTime(-2)).format('MMM YY'))
-              (tag.th {}, moment(@monthShiftedTime(-1)).format('MMM YY'))
-              (tag.th { className: 'current-month' },
-                moment().format('MMM YY')
-                (tag.a { href: '#' },
+
+              (tag.th {
+                className: @checkCurrentMonth(@monthSubtractedMoment(2))
+              }, 
+                @monthSubtractedMoment(2).format('MMM YY')
+              )
+
+              (tag.th { 
+                className: @checkCurrentMonth(@monthSubtractedMoment(1))
+              }, 
+                @monthSubtractedMoment(1).format('MMM YY')
+              )
+
+              (tag.th { 
+                className: @checkCurrentMonth(moment(@state.selected_time))
+              },
+                moment(@state.selected_time).format('MMM YY')
+                (tag.a { 
+                  href: '#'
+                  className: 'chevron-right'
+                  onClick: @onChevronRightClick
+                },
                   (tag.i { className: 'fa fa-chevron-right' })
                 )
               )
@@ -38,11 +62,13 @@ MainComponent = React.createClass
           )
           (tag.tbody {},
             @gatherPeople()
-            (tag.tr { className: 'total' },
+          )
+          (tag.tfoot {},
+            (tag.tr {},
               (tag.td {}, 'Total')
-              (tag.td { className: 'total', offset: '-3' })
-              (tag.td { className: 'total', offset: '-2' })
-              (tag.td { className: 'total', offset: '-1' })
+              (tag.td { className: 'total', offset: '3' })
+              (tag.td { className: 'total', offset: '2' })
+              (tag.td { className: 'total', offset: '1' })
               (tag.td { className: 'total', offset: 'current' })
             )
           )
@@ -51,7 +77,9 @@ MainComponent = React.createClass
       )
     )
 
-  # getInitialState: ->
+  getInitialState: ->
+    selected_time: moment()._d
+
   # getDefaultProps: ->
 
   # Lifecycle Methods
@@ -81,9 +109,9 @@ MainComponent = React.createClass
           (tag.div { className: 'name' }, person.attr('full_name'))
           (tag.div { className: 'occupation' }, person.attr('occupation'))
         )
-        (tag.td { className: 'data month--3' }, @showSalary(person, -3))
-        (tag.td { className: 'data month--2' }, @showSalary(person, -2))
-        (tag.td { className: 'data month--1' }, @showSalary(person, -1))
+        (tag.td { className: 'data month-3' }, @showSalary(person, 3))
+        (tag.td { className: 'data month-2' }, @showSalary(person, 2))
+        (tag.td { className: 'data month-1' }, @showSalary(person, 1))
         (tag.td { className: 'data month-current' }, @showSalary(person))
       )
 
@@ -91,26 +119,25 @@ MainComponent = React.createClass
     if person.attr('salary') and (
         (
           person.attr('hired_on') and
-          new Date(person.attr('hired_on')).getTime() < @monthShiftedTime(offset) and
-          (!person.attr('fired_on') or new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset))
+          moment(person.attr('hired_on')) < @monthSubtractedMoment(offset) and
+          (!person.attr('fired_on') or moment(person.attr('fired_on')) > @monthSubtractedMoment(offset))
         ) or (
           !person.attr('hired_on') and
           !person.attr('fired_on')
         ) or (
           !person.attr('hired_on') and
           person.attr('fired_on') and
-          new Date(person.attr('fired_on')).getTime() > @monthShiftedTime(offset)
+          moment(person.attr('fired_on')) > @monthSubtractedMoment(offset)
         )
       )
 
         parseInt(person.attr('salary'))
-        # TODO: add formatting – .toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        # TODO: add formatting
+          # .toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          # http://numeraljs.com/
 
-  monthShiftedTime: (offset) ->
-    current_date = new Date
-    current_month = current_date.getMonth()
-
-    current_date.setMonth(current_month + offset)
+  monthSubtractedMoment: (offset) ->
+    moment(@state.selected_time).subtract(offset, 'months')
 
   showTotal: ->
     _.forEach document.body.querySelectorAll('td.total'), (element) =>
@@ -124,9 +151,20 @@ MainComponent = React.createClass
 
     sum
 
+  checkCurrentMonth: (given_moment) ->
+    if given_moment.month() == moment().month() and
+      given_moment.year() == moment().year()
+        'current-month' 
+
   # Events
   # 
-  # onThingClick: ->
+  onChevronLeftClick: (event) ->
+    event.preventDefault()
+    @setState({ selected_time: moment(@state.selected_time).subtract(1, 'month') })
+
+  onChevronRightClick: (event) ->
+    event.preventDefault()
+    @setState({ selected_time: moment(@state.selected_time).add(1, 'month') })
 
 # Exports
 # 

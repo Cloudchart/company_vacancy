@@ -9,10 +9,21 @@ main > article.company > div.burn-rate {
     padding: 0 $base-unit * 6;
 
     > table {
+      table-layout: fixed;
+      width: 100%;
       border-collapse: separate;
       border-spacing: $base-unit / 3;
       margin-left: -$base-unit / 3;
       font-size: 15pt;
+
+      td.data, td.total {
+        height: $base-unit * 2;
+        width: $base-unit * 6;
+        text-align: right;
+        vertical-align: middle;
+        padding-right: $base-unit / 2;
+        background-color: white;
+      }
 
       > thead {
         text-transform: uppercase;
@@ -23,21 +34,29 @@ main > article.company > div.burn-rate {
           &.current-month {
             color: $ufo-green;
           }
+
+          &:first-child {
+            width: 30%;
+          }
         }
 
-        .fa-chevron-left {
+        a.chevron-left {
           float: left;
-          margin-top: 4px;
+          margin-top: 2px;
         }
 
-        .fa-chevron-right {
+        a.chevron-right {
           float: right;
-          margin-top: 4px;
+          margin-top: 2px;
         }
 
-        .fa-chevron-left, .fa-chevron-right {
+        a.chevron-left, a.chevron-right {
           color: $gray-chateau;
           font-size: 12pt;
+
+          > i {
+            position: relative;
+          }
         }
 
       }
@@ -45,11 +64,14 @@ main > article.company > div.burn-rate {
       > tbody {
         > tr {
 
-          &.total {
-            font-weight: bold;
-          }
-
           > td.title {
+
+            > div.name, div.occupation {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
             > div.name {
               font-weight: 400;
             }
@@ -62,17 +84,12 @@ main > article.company > div.burn-rate {
 
           }
 
-          > td.data, td.total {
-            height: $base-unit * 2;
-            width: $base-unit * 6;
-            text-align: right;
-            vertical-align: middle;
-            padding-right: $base-unit / 2;
-            background-color: white;
-          }
-
         }
 
+      }
+
+      > tfoot {
+        font-weight: bold;
       }
     }
 
