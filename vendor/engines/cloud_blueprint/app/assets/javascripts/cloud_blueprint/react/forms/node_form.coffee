@@ -130,7 +130,7 @@ Node = React.createClass
     Arbiter.subscribe "#{cc.blueprint.models.Identity.broadcast_topic()}/*", @refresh
   
 
-  componentWillUnmout: ->
+  componentWillUnmount: ->
     NodeIdentityStore.off('change', @refresh)
     Arbiter.unsubscribe "#{cc.blueprint.models.Identity.broadcast_topic()}/*", @refresh
 

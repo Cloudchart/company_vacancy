@@ -64,6 +64,7 @@ ModalComponent = React.createClass
   getInitialState: ->
     is_visible:       false
     modal_component:  null
+    title:            null
   
   
   toggle: ->
