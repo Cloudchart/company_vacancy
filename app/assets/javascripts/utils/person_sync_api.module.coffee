@@ -45,14 +45,15 @@ Module =
   #
   #
   update: (key) ->
+    model = PersonStore.find(key)
     Promise.resolve(
       $.ajax
         url:        "/people/#{key}"
         type:       "PUT"
         dataType:   "JSON"
         data:
-          person:   PersonStore.find(key).attr()
-    ).then(PersonServerActions.updateDone, PersonServerActions.updateFail)
+          person:   model.attr()
+    ).then(PersonServerActions.updateDone.bind(null, model), PersonServerActions.updateFail.bind(null, model))
   
   
 # Exports

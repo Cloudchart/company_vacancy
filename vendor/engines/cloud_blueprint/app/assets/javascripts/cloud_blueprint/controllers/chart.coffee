@@ -3,9 +3,8 @@
   ChartActionsCreator = cc.require('cc.blueprint.actions.ChartActionsCreator')
   ChartStore          = cc.require('cc.blueprint.stores.ChartStore')
   
-  VacancyStore        = require('stores/vacancy_store')
+  PersonSyncAPI       = require('utils/person_sync_api')
   VacancySyncAPI      = require('utils/vacancy_sync_api')
-  NodeIdentityStore   = require('cloud_blueprint/stores/node_identity_store')
   NodeIdentitySyncAPI = require('cloud_blueprint/utils/node_identity_sync_api')
   
   
@@ -21,7 +20,7 @@
   
   
   nodesIdentitiesAreLoaded = NodeIdentitySyncAPI.fetch("/charts/#{data.id}/identities")
-  
+  peopleAreLoaded = PersonSyncAPI.fetch("/charts/#{data.id}/people")
   vacanciesAreLoaded = VacancySyncAPI.fetch("/charts/#{data.id}/vacancies")
   
   
@@ -101,7 +100,7 @@
 
   # Initial chart data pull
   #
-  Promise.all([nodesIdentitiesAreLoaded, vacanciesAreLoaded]).then -> chart.pull().done ->
+  Promise.all([nodesIdentitiesAreLoaded, peopleAreLoaded, vacanciesAreLoaded]).then -> chart.pull().done ->
     # Mount blueprint
     React.renderComponent(blueprint, document.querySelector('main'))
     
