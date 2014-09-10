@@ -27,7 +27,7 @@ MainComponent = React.createClass
 
   getInitialState: ->
     people_loaded: false
-    toggle_value: 'editor'
+    toggle_value: 'burn_rate'
 
   componentDidMount: ->
     PersonStore.on('change', @onPeresonStoreChange)
@@ -52,8 +52,9 @@ MainComponent = React.createClass
       editor: (EditorComponent @extendedPropsForEditor())
       settings: (SettingsComponent @props)
       burn_rate: (BurnRateComponent { 
-        people: PersonStore.all()
-        charts: @props.charts_for_select
+        # people: PersonStore.all()
+        charts_for_select: @props.charts_for_select
+        charts: @props.charts
       })
     }
 

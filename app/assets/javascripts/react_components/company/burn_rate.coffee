@@ -14,16 +14,16 @@ MainComponent = React.createClass
   # 
   render: ->
     (tag.div { className: 'wrapper' },
-      # (tag.header {}, 
-      #   'Your Burn Rate according to'
-      #   (tag.select {
-      #     value: @state.selected_chart.uuid
-      #     onChange: @onChartChange
-      #   },
-      #     _.map @props.charts, (chart) ->
-      #       (tag.option { key: chart.uuid, value: chart.uuid }, chart.title)
-      #   )
-      # )
+      (tag.header {}, 
+        'Your Burn Rate according to'
+        (tag.select {
+          value: @state.selected_chart.uuid
+          onChange: @onChartChange
+        },
+          _.map @props.charts, (chart) ->
+            (tag.option { key: chart.uuid, value: chart.uuid }, chart.title)
+        )
+      )
       (tag.div { className: 'content' },
 
         # TODO: write generic method
@@ -93,6 +93,7 @@ MainComponent = React.createClass
   getInitialState: ->
     selected_time: moment()._d
     selected_chart: @props.charts[0]
+    people: @props.charts[0].people_
 
   # getDefaultProps: ->
 
@@ -110,19 +111,19 @@ MainComponent = React.createClass
 
   # componentWillUnmount: ->
 
-  # Instance Methods
+  # Helpers
   # 
   gatherPeople: ->
-    people = _.chain(@props.people)
-      .sortBy (person) -> person.sortValue()
+    people = _.chain(@state.people)
+      .sortBy (person) -> person.full_name
       .value()
 
     # TODO: add timestamp key to <td>
     _.map people, (person) =>
-      (tag.tr { key: person.to_param() },
+      (tag.tr { key: person.uuid },
         (tag.td { className: 'title' }, 
-          (tag.div { className: 'name' }, person.attr('full_name'))
-          (tag.div { className: 'occupation' }, person.attr('occupation'))
+          (tag.div { className: 'name' }, person.full_name)
+          (tag.div { className: 'occupation' }, person.occupation)
         )
         (tag.td { className: 'data month-3' }, @showSalary(person, 3))
         (tag.td { className: 'data month-2' }, @showSalary(person, 2))
@@ -131,22 +132,22 @@ MainComponent = React.createClass
       )
 
   showSalary: (person, offset=0) ->
-    if person.attr('salary') and (
+    if person.salary and (
         (
-          person.attr('hired_on') and
-          moment(person.attr('hired_on')) < @monthSubtractedMoment(offset) and
-          (!person.attr('fired_on') or moment(person.attr('fired_on')) > @monthSubtractedMoment(offset))
+          person.hired_on and
+          moment(person.hired_on) < @monthSubtractedMoment(offset) and
+          (!person.fired_on or moment(person.fired_on) > @monthSubtractedMoment(offset))
         ) or (
-          !person.attr('hired_on') and
-          !person.attr('fired_on')
+          !person.hired_on and
+          !person.fired_on
         ) or (
-          !person.attr('hired_on') and
-          person.attr('fired_on') and
-          moment(person.attr('fired_on')) > @monthSubtractedMoment(offset)
+          !person.hired_on and
+          person.fired_on and
+          moment(person.fired_on) > @monthSubtractedMoment(offset)
         )
       )
 
-        numeral(person.attr('salary')).format('0,0')
+        numeral(person.salary).format('0,0')
 
   monthSubtractedMoment: (offset) ->
     moment(@state.selected_time).subtract(offset, 'months')
@@ -179,7 +180,7 @@ MainComponent = React.createClass
     @setState({ selected_time: moment(@state.selected_time).add(1, 'month') })
 
   onChartChange: (event) ->
-    console.log 'onChartChange'
+    @setState({ selected_chart: event.target.value })
 
 # Exports
 # 

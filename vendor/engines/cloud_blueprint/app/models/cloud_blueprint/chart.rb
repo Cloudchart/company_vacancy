@@ -9,8 +9,12 @@ module CloudBlueprint
     has_many :nodes, dependent: :destroy
     has_many :identities
     has_many :vacancies, through: :company
-    has_many :people, through: :company
+
+    has_many :people, through: :company # TODO: rename to company_people
+    has_many :people_, through: :nodes, source: :people
     
+    # TODO: escape chars like '?'
+    # validate uniqueness inside company
     validates :title, presence: true
 
   private
