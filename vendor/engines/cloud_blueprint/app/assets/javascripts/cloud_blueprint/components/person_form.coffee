@@ -24,7 +24,9 @@ NodeIdentityStore           = require('cloud_blueprint/stores/node_identity_stor
 NodeIdentityActions         = require('cloud_blueprint/actions/node_identity_actions')
 
 
-percentage_re = /^[0-9]+([\.\,][0-9]+){0,1}$/
+# Validations
+#
+validatePercentage          = require('validators/percentage')
 
 
 # Known Attributes
@@ -103,6 +105,11 @@ FormFields = [
     icon:         'bar-chart-o'
     type:         'percentage'
     placeholder:  'Stock options'
+    validator:    validatePercentage
+    validatorOptions:
+      minValue:     0
+      maxValue:     100
+      acceptsBlank: true
   }
   
 ]
@@ -140,52 +147,42 @@ Component = React.createClass
     PersonActionsCreator.create(@props.company_id, @props.model, filterAttributes(@state))
   
   
-  onNameChange: (event) ->
-    @setState({ full_name: event.target.value })
-  
-  
   onDateChange: (field_name, value) ->
     state             = { shouldUpdate: true }
     state[field_name] = value
     @setState(state)
   
   
-  onPercentageChange: (field, event) ->
+  onFieldChange: (field, event) ->
     value = event.target.value
     state = {}
-
-    # { parsedValue, valueIsValid } = parsePercentageValue(value)
-    parsedValue = parseFloat(value)
-    valid       = value.length == 0 or (percentage_re.test(value) and parsedValue >= 0 and parsedValue <= 100)
     
-    state["#{field.name}_is_valid"] = valid
-    state[field.name]               = value
-
-    @setState(state)
-  
-  
-  onPercentageBlur: (field, event) ->
-    value       = event.target.value
-    state       = {}
-
-    parsedValue = parseFloat(value) || ''
-    valid       = value.length == 0 or (percentage_re.test(value) and parsedValue >= 0 and parsedValue <= 100)
+    state[field.name] = value
     
-    state["#{field.name}_is_valid"] = true
-
-    if valid
-      state[field.name]     = parsedValue
-      state['shouldUpdate'] = parsedValue != @props.model.attr(field.name)
-    else
-      state[field.name] = @props.model.attr(field.name) || ''
+    if field.validator
+      { valueIsValid } = field.validator(value, field.validatorOptions)
+      state["#{field.name}_is_valid"] = valueIsValid
     
     @setState(state)
+
+
+  onFieldBlur: (field, event) ->
+    value = event.target.value
+    state = {}
     
-  
-  
-  onFieldBlur: (field_name, event) ->
-    state             = { shouldUpdate: true }
-    state[field_name] = event.target.value
+    state[field.name] = value
+
+    if field.validator
+      { parsedValue, valueIsValid }   = field.validator(value, field.validatorOptions)
+      state["#{field.name}_is_valid"] = true
+
+      if valueIsValid
+        state[field.name]     = parsedValue
+      else
+        state[field.name]     = @props.model.attr(field.name) || ''
+    
+    state['shouldUpdate'] = state[field.name] isnt @props.model.attr(field.name)
+    
     @setState(state)
   
   
@@ -207,19 +204,14 @@ Component = React.createClass
               placeholder:  field.placeholder
               onChange:     @onDateChange.bind(@, field.name)
             })
-          when 'percentage'
-            (tag.input {
-              className:  'invalid' if @state["#{field.name}_is_valid"] == false
-              type:       'text'
-              value:      @state[field.name]
-              onChange:   @onPercentageChange.bind(@, field)
-              onBlur:     @onPercentageBlur.bind(@, field)
-            })
           else
-            (InputComponent {
+            (tag.input {
+              className:    'invalid' if @state["#{field.name}_is_valid"] == false
+              type:         'text'
               value:        @state[field.name]
               placeholder:  field.placeholder
-              onBlur:       @onFieldBlur.bind(@, field.name)
+              onChange:     @onFieldChange.bind(@, field)
+              onBlur:       @onFieldBlur.bind(@, field)
             })
       )
   
@@ -275,8 +267,8 @@ Component = React.createClass
           (InputComponent {
             value:        @state['full_name']
             placeholder:  'Name Surname'
-            onChange:     @onNameChange unless @props.model.to_param()
-            onBlur:       @onFieldBlur.bind(@, 'full_name')
+            onChange:     @onFieldChange.bind(@, { name: 'full_name' }) unless @props.model.to_param()
+            onBlur:       @onFieldBlur.bind(@, { name: 'full_name' })
           })
         )
 
@@ -293,9 +285,10 @@ Component = React.createClass
           (tag.i { className: 'fa fa-file-text-o' })
         
           (tag.textarea {
-            defaultValue: @state['bio']
-            placeholder:  'Bio'
-            onBlur:       @onFieldBlur.bind(@, 'bio')
+            value:          @state['bio']
+            placeholder:    'Bio'
+            onChange:       @onFieldChange.bind(@, { name: 'bio' })
+            onBlur:         @onFieldBlur.bind(@, { name: 'bio' })
           })
         )
 
