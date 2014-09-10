@@ -11,8 +11,9 @@ tag = React.DOM
 
 # Date Input Component
 #
-DateInputComponent          = require('cloud_blueprint/components/inputs/date_input')
 InputComponent              = require('cloud_blueprint/components/inputs/input')
+DateInputComponent          = require('cloud_blueprint/components/inputs/date_input')
+PercentageInputComponent    = require('cloud_blueprint/components/inputs/percentage_input')
 
 PersonActionsCreator        = require('actions/person_actions_creator')
 ModalWindowActionsCreator   = require('cloud_blueprint/actions/modal_window_actions_creator')
@@ -23,9 +24,12 @@ NodeIdentityStore           = require('cloud_blueprint/stores/node_identity_stor
 NodeIdentityActions         = require('cloud_blueprint/actions/node_identity_actions')
 
 
+percentage_re = /^[0-9]+([\.\,][0-9]+){0,1}$/
+
+
 # Known Attributes
 #
-KnownAttributes = [PersonStore.unique_key, 'full_name', 'email', 'occupation', 'phone', 'int_phone', 'skype', 'birthday', 'hired_on', 'fired_on', 'salary', 'bio']
+KnownAttributes = [PersonStore.unique_key, 'full_name', 'email', 'occupation', 'phone', 'int_phone', 'skype', 'birthday', 'hired_on', 'fired_on', 'salary', 'stock_options', 'bio']
 
 # Form fields
 #
@@ -94,6 +98,13 @@ FormFields = [
     placeholder:  'Salary'
   }
   
+  {
+    name:         'stock_options'
+    icon:         'bar-chart-o'
+    type:         'percentage'
+    placeholder:  'Stock options'
+  }
+  
 ]
 
 
@@ -139,6 +150,39 @@ Component = React.createClass
     @setState(state)
   
   
+  onPercentageChange: (field, event) ->
+    value = event.target.value
+    state = {}
+
+    # { parsedValue, valueIsValid } = parsePercentageValue(value)
+    parsedValue = parseFloat(value)
+    valid       = value.length == 0 or (percentage_re.test(value) and parsedValue >= 0 and parsedValue <= 100)
+    
+    state["#{field.name}_is_valid"] = valid
+    state[field.name]               = value
+
+    @setState(state)
+  
+  
+  onPercentageBlur: (field, event) ->
+    value       = event.target.value
+    state       = {}
+
+    parsedValue = parseFloat(value) || ''
+    valid       = value.length == 0 or (percentage_re.test(value) and parsedValue >= 0 and parsedValue <= 100)
+    
+    state["#{field.name}_is_valid"] = true
+
+    if valid
+      state[field.name]     = parsedValue
+      state['shouldUpdate'] = parsedValue != @props.model.attr(field.name)
+    else
+      state[field.name] = @props.model.attr(field.name) || ''
+    
+    @setState(state)
+    
+  
+  
   onFieldBlur: (field_name, event) ->
     state             = { shouldUpdate: true }
     state[field_name] = event.target.value
@@ -154,19 +198,29 @@ Component = React.createClass
       },
       
         (tag.i { className: "fa fa-#{field.icon}"}) if field.icon
-      
-        if field.type == 'date'
-          (DateInputComponent {
-            date:         @state[field.name]
-            placeholder:  field.placeholder
-            onChange:     @onDateChange.bind(@, field.name)
-          })
-        else
-          (InputComponent {
-            value:        @state[field.name]
-            placeholder:  field.placeholder
-            onBlur:       @onFieldBlur.bind(@, field.name)
-          })
+          
+        switch field.type
+          
+          when 'date'
+            (DateInputComponent {
+              date:         @state[field.name]
+              placeholder:  field.placeholder
+              onChange:     @onDateChange.bind(@, field.name)
+            })
+          when 'percentage'
+            (tag.input {
+              className:  'invalid' if @state["#{field.name}_is_valid"] == false
+              type:       'text'
+              value:      @state[field.name]
+              onChange:   @onPercentageChange.bind(@, field)
+              onBlur:     @onPercentageBlur.bind(@, field)
+            })
+          else
+            (InputComponent {
+              value:        @state[field.name]
+              placeholder:  field.placeholder
+              onBlur:       @onFieldBlur.bind(@, field.name)
+            })
       )
   
   

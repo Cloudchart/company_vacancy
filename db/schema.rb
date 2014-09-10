@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140901150856) do
+ActiveRecord::Schema.define(version: 20140910100519) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -289,6 +289,7 @@ ActiveRecord::Schema.define(version: 20140901150856) do
     t.text     "bio"
     t.date     "birthday"
     t.decimal  "salary",                      precision: 10, scale: 2, default: 0.0
+    t.float    "stock_options",    limit: 24
   end
 
   add_index "people", ["company_id"], name: "index_people_on_company_id", using: :btree

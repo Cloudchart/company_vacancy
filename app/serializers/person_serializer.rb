@@ -5,7 +5,7 @@ class PersonSerializer < ActiveModel::Serializer
   attributes :full_name, :first_name, :last_name, :birthday, :bio
   attributes :email, :phone, :int_phone, :skype
   attributes :created_at, :updated_at
-  attributes :hired_on, :fired_on, :salary, :occupation
+  attributes :hired_on, :fired_on, :salary, :stock_options, :occupation
   attributes :avatar_url
   
   def avatar_url
