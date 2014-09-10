@@ -43,6 +43,7 @@ $chart-preview-node-flag-width: 9pt;
   
   header {
     font-weight: $chart-preview-node-header-font-weight;
+    white-space: nowrap;
   }
   
   ul {
@@ -94,7 +95,7 @@ $chart-preview-node-flag-width: 9pt;
   background-image: image-url('chart-background.png');
   background-position: center center;
   background-size: 50pt;
-  cursor: move;
+  cursor: pointer;
   
   
   svg {

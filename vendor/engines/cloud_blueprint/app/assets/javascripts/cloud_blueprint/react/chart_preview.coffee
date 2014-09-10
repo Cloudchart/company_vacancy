@@ -104,6 +104,10 @@ MainComponent = React.createClass
     # Process resize event
   
   
+  onClick: (event) ->
+    window.location.href = @props.chart_url if @props.chart_url
+
+
   componentWillMount: ->
     @load()
     window.addEventListener('resize', @onResize)
@@ -132,6 +136,7 @@ MainComponent = React.createClass
     (tag.div {
       className:  'blueprint-chart-preview-container'
       onResize:   @onResize
+      onClick:    @onClick
     },
 
       (NodesContainerComponent {
