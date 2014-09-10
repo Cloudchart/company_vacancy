@@ -13,72 +13,86 @@ MainComponent = React.createClass
   # Component Specifications
   # 
   render: ->
-    (tag.div { className: 'burn-rate' },
-      (tag.div { className: 'container' },
+    (tag.div { className: 'wrapper' },
+      # (tag.header {}, 
+      #   'Your Burn Rate according to'
+      #   (tag.select {
+      #     value: @state.selected_chart.uuid
+      #     onChange: @onChartChange
+      #   },
+      #     _.map @props.charts, (chart) ->
+      #       (tag.option { key: chart.uuid, value: chart.uuid }, chart.title)
+      #   )
+      # )
+      (tag.div { className: 'content' },
 
-        (tag.table {},
-          (tag.thead {},
-            (tag.tr {},
-              (tag.th {})
+        # TODO: write generic method
+        (tag.div { className: 'burn-rate' },
 
-              (tag.th {
-                className: @checkCurrentMonth(@monthSubtractedMoment(3))  
-              },
-                (tag.a { 
-                  href: ''
-                  className: 'chevron-left'
-                  onClick: @onChevronLeftClick 
+          (tag.table {},
+            (tag.thead {},
+              (tag.tr {},
+                (tag.th {})
+
+                (tag.th {
+                  className: @checkCurrentMonth(@monthSubtractedMoment(3))  
                 },
-                  (tag.i { className: 'fa fa-chevron-left' })
+                  (tag.a { 
+                    href: ''
+                    className: 'chevron-left'
+                    onClick: @onChevronLeftClick 
+                  },
+                    (tag.i { className: 'fa fa-chevron-left' })
+                  )
+                  @monthSubtractedMoment(3).format('MMM YY')
                 )
-                @monthSubtractedMoment(3).format('MMM YY')
-              )
 
-              (tag.th {
-                className: @checkCurrentMonth(@monthSubtractedMoment(2))
-              }, 
-                @monthSubtractedMoment(2).format('MMM YY')
-              )
+                (tag.th {
+                  className: @checkCurrentMonth(@monthSubtractedMoment(2))
+                }, 
+                  @monthSubtractedMoment(2).format('MMM YY')
+                )
 
-              (tag.th { 
-                className: @checkCurrentMonth(@monthSubtractedMoment(1))
-              }, 
-                @monthSubtractedMoment(1).format('MMM YY')
-              )
+                (tag.th { 
+                  className: @checkCurrentMonth(@monthSubtractedMoment(1))
+                }, 
+                  @monthSubtractedMoment(1).format('MMM YY')
+                )
 
-              (tag.th { 
-                className: @checkCurrentMonth(moment(@state.selected_time))
-              },
-                moment(@state.selected_time).format('MMM YY')
-                (tag.a { 
-                  href: '#'
-                  className: 'chevron-right'
-                  onClick: @onChevronRightClick
+                (tag.th { 
+                  className: @checkCurrentMonth(moment(@state.selected_time))
                 },
-                  (tag.i { className: 'fa fa-chevron-right' })
+                  moment(@state.selected_time).format('MMM YY')
+                  (tag.a { 
+                    href: '#'
+                    className: 'chevron-right'
+                    onClick: @onChevronRightClick
+                  },
+                    (tag.i { className: 'fa fa-chevron-right' })
+                  )
                 )
               )
             )
-          )
-          (tag.tbody {},
-            @gatherPeople()
-          )
-          (tag.tfoot {},
-            (tag.tr {},
-              (tag.td {}, 'Total')
-              (tag.td { className: 'total', offset: '3' })
-              (tag.td { className: 'total', offset: '2' })
-              (tag.td { className: 'total', offset: '1' })
-              (tag.td { className: 'total', offset: 'selected' })
+            (tag.tbody {},
+              @gatherPeople()
+            )
+            (tag.tfoot {},
+              (tag.tr {},
+                (tag.td {}, 'Total')
+                (tag.td { className: 'total', offset: '3' })
+                (tag.td { className: 'total', offset: '2' })
+                (tag.td { className: 'total', offset: '1' })
+                (tag.td { className: 'total', offset: 'selected' })
+              )
             )
           )
         )
-
       )
     )
 
   getInitialState: ->
     selected_time: moment()._d
+    selected_chart: @props.charts[0]
 
   # getDefaultProps: ->
 
@@ -103,6 +117,7 @@ MainComponent = React.createClass
       .sortBy (person) -> person.sortValue()
       .value()
 
+    # TODO: add timestamp key to <td>
     _.map people, (person) =>
       (tag.tr { key: person.to_param() },
         (tag.td { className: 'title' }, 
@@ -162,6 +177,9 @@ MainComponent = React.createClass
   onChevronRightClick: (event) ->
     event.preventDefault()
     @setState({ selected_time: moment(@state.selected_time).add(1, 'month') })
+
+  onChartChange: (event) ->
+    console.log 'onChartChange'
 
 # Exports
 # 

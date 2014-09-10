@@ -1,14 +1,11 @@
 class CompanyEditorSerializer < ActiveModel::Serializer
-
   attributes :id, :uuid, :name, :country, :description, :is_listed, :logotype, :short_name, :site_url
   attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :verify_site_url, :download_verification_file_url, :default_host
-  attributes :industry_ids, :chart_ids, :is_site_url_verified, :chart_permalinks
-  attributes :owners, :owner_invites, :can_update
+  attributes :industry_ids, :charts, :is_site_url_verified, :chart_permalinks
+  attributes :owners, :owner_invites, :can_update, :charts_for_select
   # attributes :transfer_ownership_url
-
-  # delegate :current_user, to: :scope
 
   has_many :blocks, serializer: BlockEditorSerializer
   has_one :logo, serializer: Editor::LogoSerializer
@@ -35,16 +32,17 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     object.industries.map(&:id)
   end
   
-
-  def chart_ids
-    object.charts.map(&:id)
+  def charts
+    object.charts.select(:uuid, :title)
   end
 
+  def charts_for_select
+    object.charts.select(:uuid, :title).joins(nodes: :people).uniq
+  end
 
   def chart_permalinks
     object.charts.map(&:permalink)
   end
-  
 
   def available_sections
     object.class::Sections.map do |section|
@@ -55,7 +53,6 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     end
   end
   
-  
   def logotype
     {
       url:      object.logotype.url,
@@ -64,11 +61,9 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     } if object.logotype_uid
   end
   
-  
   def logotype_url
     object.logotype.url if object.logotype_uid
   end
-  
 
   def available_block_types
     object.class::BlockTypes.map do |type|
@@ -80,11 +75,9 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     end
   end
   
-  
   def company_url
     company_path(object)
   end
-  
 
   def blocks_url
     company_blocks_path(object)

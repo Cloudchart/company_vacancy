@@ -59,7 +59,7 @@ Component = React.createClass
   
 
   componentWillUnmount: ->
-    BlockIdentityStore.on('change', @onBlockIdentityStoreChange)
+    BlockIdentityStore.off('change', @onBlockIdentityStoreChange)
   
 
   getInitialState: ->

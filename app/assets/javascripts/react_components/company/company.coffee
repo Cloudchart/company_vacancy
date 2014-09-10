@@ -51,7 +51,10 @@ MainComponent = React.createClass
     {
       editor: (EditorComponent @extendedPropsForEditor())
       settings: (SettingsComponent @props)
-      burn_rate: (BurnRateComponent { people: PersonStore.all() })
+      burn_rate: (BurnRateComponent { 
+        people: PersonStore.all()
+        charts: @props.charts_for_select
+      })
     }
 
 # Exports

@@ -30,11 +30,11 @@ MainComponent = React.createClass
         className: 'chart-preview-container'
       },
         ChartPreviewComponent
-          id: @props.chart_ids[0]
+          id: @props.charts[0].uuid
           permalink: @props.chart_permalinks[0]
           company_id: @props.id
           scale: 1
-      ) if @props.chart_ids.length > 0
+      ) if @props.charts.length > 0
 
       (sectionsComponents)
     )

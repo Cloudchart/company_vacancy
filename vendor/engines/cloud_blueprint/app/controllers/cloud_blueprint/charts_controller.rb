@@ -131,7 +131,11 @@ module CloudBlueprint
     end
 
     def set_chart_with_permalink
-      @chart = @company.charts.find_by(permalink: params[:id]) || @company.charts.find(params[:id])
+      if params[:company_id].present?
+        @chart = @company.charts.find_by(permalink: params[:id]) || @company.charts.find(params[:id])
+      else
+        set_chart
+      end
     end
         
   end

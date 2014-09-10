@@ -114,7 +114,7 @@
               })
             %>
 
-            <strong><%= link_to chart.title, cloud_blueprint.company_chart_path(company, chart) %></strong>
+            <strong><%= link_to chart.title, cloud_blueprint.company_chart_path(company, chart.permalink) %></strong>
           </li>
         <% end %>
 

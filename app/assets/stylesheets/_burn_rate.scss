@@ -1,97 +1,113 @@
-main > article.company > div.burn-rate {
-  margin: 0 auto;
-  padding: $base-unit * 2 0;
-  background-color: $white-smoke;
+main > article.company > div.wrapper {
+  font-size: 15pt;
 
-  > div.container {
-    max-width: 1200px;
+  > header {
+    position: relative;
+    text-align: center;
+    margin: $base-unit 0 $base-unit;
+
+    > select {
+      margin-left: $base-unit;
+    }
+
+  }
+
+  > div.content {
     margin: 0 auto;
-    padding: 0 $base-unit * 6;
+    padding: $base-unit * 2 0;
+    background-color: $white-smoke;
 
-    > table {
-      table-layout: fixed;
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: $base-unit / 3;
-      margin-left: -$base-unit / 3;
-      font-size: 15pt;
+    > div.burn-rate {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 $base-unit * 6;
 
-      td.data, td.total {
-        height: $base-unit * 2;
-        width: $base-unit * 6;
-        text-align: right;
-        vertical-align: middle;
-        padding-right: $base-unit / 2;
-        background-color: white;
-      }
+      > table {
+        table-layout: fixed;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: $base-unit / 3;
+        margin-left: -$base-unit / 3;
 
-      > thead {
-        text-transform: uppercase;
-
-        > tr > th {
-          font-weight: 300;
-
-          &.current-month {
-            color: $ufo-green;
-          }
-
-          &:first-child {
-            width: 30%;
-          }
+        td.data, td.total {
+          height: $base-unit * 2;
+          width: $base-unit * 6;
+          text-align: right;
+          vertical-align: middle;
+          padding-right: $base-unit / 2;
+          background-color: white;
         }
 
-        a.chevron-left {
-          float: left;
-          margin-top: 2px;
-        }
+        > thead {
+          text-transform: uppercase;
 
-        a.chevron-right {
-          float: right;
-          margin-top: 2px;
-        }
+          > tr > th {
+            font-weight: 300;
 
-        a.chevron-left, a.chevron-right {
-          color: $gray-chateau;
-          font-size: 12pt;
-
-          > i {
-            position: relative;
-          }
-        }
-
-      }
-
-      > tbody {
-        > tr {
-
-          > td.title {
-
-            > div.name, div.occupation {
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
+            &.current-month {
+              color: $ufo-green;
             }
 
-            > div.name {
-              font-weight: 400;
+            &:first-child {
+              width: 30%;
             }
+          }
 
-            > div.occupation {
-              text-transform: uppercase;
-              font-size: 10pt;
-              color: $gray-chateau;
+          a.chevron-left {
+            float: left;
+            margin-top: 2px;
+          }
+
+          a.chevron-right {
+            float: right;
+            margin-top: 2px;
+          }
+
+          a.chevron-left, a.chevron-right {
+            color: $gray-chateau;
+            font-size: 12pt;
+
+            > i {
+              position: relative;
+            }
+          }
+
+        }
+
+        > tbody {
+          > tr {
+
+            > td.title {
+
+              > div.name, div.occupation {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+
+              > div.name {
+                font-weight: 400;
+              }
+
+              > div.occupation {
+                text-transform: uppercase;
+                font-size: 10pt;
+                color: $gray-chateau;
+              }
+
             }
 
           }
 
         }
 
-      }
-
-      > tfoot {
-        font-weight: bold;
+        > tfoot {
+          font-weight: bold;
+        }
       }
     }
 
   }
+
 }
+
