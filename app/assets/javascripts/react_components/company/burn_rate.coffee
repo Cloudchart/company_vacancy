@@ -113,7 +113,7 @@ MainComponent = React.createClass
   # Helpers
   # 
   gatherPeople: ->
-    people = _.chain(_.uniq(@state.selected_chart.people_))
+    people = _.chain(_.uniq(@state.selected_chart.people_, 'uuid'))
       .sortBy (person) -> person.full_name
       .value()
 
