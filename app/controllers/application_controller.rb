@@ -19,20 +19,12 @@ class ApplicationController < ActionController::Base
     authenticate(options)
   end
 
-
   def require_authenticated_user!
     redirect_to main_app.root_path unless user_authenticated?
   end
   
-
-  def require_unauthenticated_user!
-    #redirect_to main_app.root_path if user_authenticated?
-  end
-  
-  
   def require_properly_named_user!
     redirect_to cloud_profile.profile_activation_completion_path if user_authenticated? && !current_user.has_proper_name?
   end
-
 
 end

@@ -9,6 +9,7 @@ class CompaniesController < ApplicationController
   # --
 
   before_action :set_collection, only: [:index, :search]
+  before_action :show_invite_notice, only: :show
 
   authorize_resource
 
@@ -29,10 +30,6 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
-    if token = @company.invite_tokens.select { |token| token.data[:user_id] == current_user.id }.first
-      flash.now[:notice] = "You are invited to join this company. <a href='#{company_invite_path(token)}'>Please confirm</a>.".html_safe
-    end
-
     respond_to do |format|
       format.html
       format.json { render json: @company }
@@ -159,6 +156,12 @@ private
 
   def set_person
     @person = (current_user.people & @company.people).first
+  end
+
+  def show_invite_notice
+    if token = @company.invite_tokens.select { |token| token.data[:user_id] == current_user.id }.first
+      flash.now[:notice] = "You are invited to join this company. <a href='#{company_invite_path(token)}'>Please confirm</a>.".html_safe
+    end
   end
 
   # Only allow a trusted parameter "white list" through.

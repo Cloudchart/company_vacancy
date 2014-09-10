@@ -5,8 +5,10 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :verify_site_url, :download_verification_file_url, :default_host
   attributes :industry_ids, :chart_ids, :is_site_url_verified, :chart_permalinks
-  attributes :owners, :owner_invites
+  attributes :owners, :owner_invites, :can_update
   # attributes :transfer_ownership_url
+
+  # delegate :current_user, to: :scope
 
   has_many :blocks, serializer: BlockEditorSerializer
   has_one :logo, serializer: Editor::LogoSerializer
@@ -23,6 +25,10 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     object.invite_tokens.map do |token|
       { uuid: token.id, full_name: token.data[:full_name], person_id: token.data[:person_id] }
     end
+  end
+
+  def can_update
+    Ability.new(scope).can?(:update, object)
   end
   
   def industry_ids

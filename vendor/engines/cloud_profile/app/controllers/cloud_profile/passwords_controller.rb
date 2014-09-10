@@ -4,8 +4,6 @@ module CloudProfile
   class PasswordsController < ApplicationController
 
     before_action :require_authenticated_user!, only: [:show, :update]
-    before_action :require_unauthenticated_user!, only: [:new, :create]
-    
     
     # Send password reset link
     #
