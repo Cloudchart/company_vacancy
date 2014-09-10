@@ -44,7 +44,7 @@ MainComponent = React.createClass
   # componentDidUpdate: (prevProps, prevState) ->
   # componentWillUnmount: ->
 
-  # Instance Methods
+  # Helpers
   # 
   gatherControls: ->
     switch @state.mode

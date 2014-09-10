@@ -3,10 +3,11 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :verify_site_url, :download_verification_file_url, :default_host
-  attributes :industry_ids, :charts, :is_site_url_verified, :chart_permalinks
-  attributes :owners, :owner_invites, :can_update, :charts_for_select
+  attributes :industry_ids, :is_site_url_verified, :owners, :owner_invites
+  attributes :can_update, :charts_for_select
   # attributes :transfer_ownership_url
 
+  has_many :charts, serializer: ChartSerializer
   has_many :blocks, serializer: BlockEditorSerializer
   has_one :logo, serializer: Editor::LogoSerializer
   
@@ -27,21 +28,13 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   def can_update
     Ability.new(scope).can?(:update, object)
   end
-  
+
   def industry_ids
-    object.industries.map(&:id)
+    object.industries.ids
   end
   
-  def charts
-    object.charts.select(:uuid, :title)
-  end
-
   def charts_for_select
-    object.charts.select(:uuid, :title).joins(nodes: :people).uniq
-  end
-
-  def chart_permalinks
-    object.charts.map(&:permalink)
+    object.charts.joins(nodes: :people).select(:uuid, :title).uniq
   end
 
   def available_sections
