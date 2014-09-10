@@ -278,6 +278,9 @@ Chart = React.createClass
     _.each @props.subscribe_on, (message) => Arbiter.subscribe message, @refresh
     @getDOMNode().addEventListener('drop:identity', @onDropIdentity)
     NodeIdentityStore.on('change', @refresh)
+
+    if @props.root.descendants.length == 0
+      Arbiter.publish "cc:blueprint:identity-filter/show"
    
   
 
