@@ -22,8 +22,8 @@ ModalTitleComponent = React.createClass
   render: ->
     (tag.header {},
       (tag.a {
-        href: '#',
-        onClick: @onClick
+        href:     '#'
+        onClick:  @onClick
       },
         (tag.i { className: 'fa fa-angle-left' })
       )
@@ -108,14 +108,15 @@ ModalComponent = React.createClass
 
 
   render: ->
-    (tag.section {
-      className: 'modal-overlay blueprint'
-      style:
-        visibility:  if @state.is_visible then 'visible' else 'hidden'
-    },
-      (ModalTitleComponent { title: @state.title || @props.title })
-      (tag.div { ref: 'container', className: 'modal-container' }, @state.modal_component)
-    )
+    if @state.is_visible
+      (tag.section {
+        className: 'modal-overlay blueprint'
+      },
+        (ModalTitleComponent { title: @state.title || @props.title })
+        (tag.div { ref: 'container', className: 'modal-container' }, @state.modal_component)
+      )
+    else
+      (tag.noscript null)
 
 
 #
@@ -128,7 +129,6 @@ Blueprint = React.createClass
   render: ->
     (tag.article { className: 'chart' },
       @props.children
-      #(ChartModalWindow null)
       (ModalComponent {})
     )
 
