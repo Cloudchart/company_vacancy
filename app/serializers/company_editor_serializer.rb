@@ -7,8 +7,8 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :can_update, :charts_for_select
   # attributes :transfer_ownership_url
 
-  has_many :blocks, serializer: BlockEditorSerializer
   has_many :charts, serializer: ChartSerializer
+  has_many :blocks, serializer: BlockEditorSerializer
   has_one :logo, serializer: Editor::LogoSerializer
   
   def id

@@ -93,7 +93,6 @@ MainComponent = React.createClass
   getInitialState: ->
     selected_time: moment()._d
     selected_chart: @props.charts[0]
-    people: @props.charts[0].people_
 
   # getDefaultProps: ->
 
@@ -114,7 +113,7 @@ MainComponent = React.createClass
   # Helpers
   # 
   gatherPeople: ->
-    people = _.chain(@state.people)
+    people = _.chain(@state.selected_chart.people_)
       .sortBy (person) -> person.full_name
       .value()
 
@@ -180,7 +179,7 @@ MainComponent = React.createClass
     @setState({ selected_time: moment(@state.selected_time).add(1, 'month') })
 
   onChartChange: (event) ->
-    @setState({ selected_chart: event.target.value })
+    @setState({ selected_chart: _.filter(@props.charts, { 'uuid': event.target.value })[0] })
 
 # Exports
 # 
