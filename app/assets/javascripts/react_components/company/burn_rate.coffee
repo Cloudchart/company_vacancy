@@ -119,6 +119,7 @@ MainComponent = React.createClass
 
     # TODO: add timestamp key to <td>
     _.map people, (person) =>
+      console.log person
       (tag.tr { key: person.uuid },
         (tag.td { className: 'title' }, 
           (tag.div { className: 'name' }, person.full_name)
@@ -131,7 +132,7 @@ MainComponent = React.createClass
       )
 
   showSalary: (person, offset=0) ->
-    if person.salary and (
+    if person.salary and person.salary != '0.0' and (
         (
           person.hired_on and
           moment(person.hired_on) < @monthSubtractedMoment(offset) and
