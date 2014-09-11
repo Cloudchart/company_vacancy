@@ -52,6 +52,7 @@ MainComponent = React.createClass
       editor: (EditorComponent @extendedPropsForEditor())
       settings: (SettingsComponent @props)
       burn_rate: (BurnRateComponent { 
+        # TODO: new store for chart people
         # people: PersonStore.all()
         charts_for_select: @props.charts_for_select
         charts: @props.charts

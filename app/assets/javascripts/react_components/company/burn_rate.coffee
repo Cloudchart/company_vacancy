@@ -113,13 +113,12 @@ MainComponent = React.createClass
   # Helpers
   # 
   gatherPeople: ->
-    people = _.chain(_.uniq(@state.selected_chart.people_, 'uuid'))
+    people = _.chain(_.uniq(@state.selected_chart.people, 'uuid'))
       .sortBy (person) -> person.full_name
       .value()
 
     # TODO: add timestamp key to <td>
     _.map people, (person) =>
-      console.log person
       (tag.tr { key: person.uuid },
         (tag.td { className: 'title' }, 
           (tag.div { className: 'name' }, person.full_name)
