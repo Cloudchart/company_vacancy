@@ -1,15 +1,7 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file]
-
-  # -- https://github.com/rails/rails/issues/9703
-  #
-  skip_before_action :require_authenticated_user!
-  before_action :require_authenticated_user!, except: :show
-  before_action :require_authenticated_user!, only: :show, unless: -> { @company.is_public? }
-  # --
-
   before_action :set_collection, only: [:index, :search]
-  before_action :show_invite_notice, only: :show
+  before_action :display_invite_notice, only: :show
 
   authorize_resource
 
@@ -154,11 +146,7 @@ private
     @companies = Company.search(params)
   end
 
-  def set_person
-    @person = (current_user.people & @company.people).first
-  end
-
-  def show_invite_notice
+  def display_invite_notice
     if token = @company.invite_tokens.select { |token| token.data[:user_id] == current_user.id }.first
       flash.now[:notice] = "You are invited to join this company. <a href='#{company_invite_path(token)}'>Please confirm</a>.".html_safe
     end

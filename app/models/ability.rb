@@ -21,17 +21,20 @@ class Ability
     # https://github.com/ryanb/cancan/wiki/Defining-Abilities
     
     # Anyone
-    can [:read, :search], Company
+    # 
+    can :read, Page
     can :read, Event
     can :read, Feature
+    can :read, BlockIdentity
+
+    can :read, Company, is_public: true
+
+    # TODO: not all
     can :access_vacancies, Company
     can :access_events, Company
-    can :preview, CloudBlueprint::Chart
     can :access_people, Company
 
-    can [:read, :pull], CloudBlueprint::Chart do |chart|
-      chart.is_public?
-    end
+    can [:preview, :read, :pull], CloudBlueprint::Chart, is_public: true
 
     can :read, Vacancy do |vacancy|
       vacancy.settings.accessible_to == 'everyone'
@@ -40,27 +43,26 @@ class Ability
     return unless user
 
     # Admin
+    # 
     if user.is_admin?
       # can :access, :rails_admin
       # can :dashboard
       can :manage, :all
     # User
+    # 
     else
-      can :create, Company
+      can [:create, :read, :search], Company
       can :vote, Feature
       can :manage, Subscription
-      can [:read, :pull], CloudBlueprint::Chart
+      can [:preview, :read, :pull], CloudBlueprint::Chart
 
       # User (conditional)
+      # 
       can [:update, :destroy, :upload_logo, :verify_site_url, :download_verification_file], Company do |company|
         (user.people & company.people).first.try(:is_company_owner?)
       end
 
-      can :manage, Block do |block|
-        (user.people & block.company.people).first.try(:is_company_owner?)
-      end
-
-      [Person, Vacancy, Event].each do |model|
+      [Person, Vacancy, Event, Block, BlockIdentity].each do |model|
         can :manage, model do |resource|
           (user.people & resource.company.people).first.try(:is_company_owner?)
         end

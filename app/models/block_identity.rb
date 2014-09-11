@@ -7,13 +7,12 @@ class BlockIdentity < ActiveRecord::Base
   
   belongs_to :block, inverse_of: :block_identities
   belongs_to :identity, polymorphic: true
+
   # has_paper_trail
-  
 
   def self.accessible_attributes
     [:block_id, :identity_id, :identity_type]
-  end
-  
+  end  
   
   def skip_reposition!
     @should_skip_reposition = true
@@ -21,6 +20,10 @@ class BlockIdentity < ActiveRecord::Base
 
   def should_skip_reposition?
     !!@should_skip_reposition
+  end
+
+  def company
+    block.company
   end
   
 protected
