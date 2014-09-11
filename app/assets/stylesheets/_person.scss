@@ -43,8 +43,12 @@ $person-editor-identity-selector-item-size: 35px;
 
 
 // Person in editor identity selector
+// Person in chart identity filter
+// Draggable person
 //
-.editor .identity-selector .person {
+.editor .identity-selector .person,
+.blueprint .identity-filter .person,
+.draggable .person {
   @include display(flex);
   @include flex-direction(column);
   @include justify-content(center);

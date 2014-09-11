@@ -101,3 +101,8 @@ $blueprint-identity-info-font-weight: 300;
 .blueprint-identity {
   @include blueprint-identity;
 }
+
+li.draggable {
+  list-style: none;
+  margin: 0;
+}

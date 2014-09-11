@@ -1,3 +1,4 @@
+#= require ./identity_filter/identity_list.module
 #= require_self
 #= require_tree ./identity_filter
 
@@ -5,6 +6,9 @@
 # Shortcuts
 #
 tag = React.DOM
+
+
+IdentityListComponent = require('cloud_blueprint/react/identity_filter/identity_list')
 
 
 #
@@ -94,14 +98,20 @@ IdentityFilter = React.createClass
 
 
   onSearchChange: (value) ->
-    @refs.list.search(_.reject value.trim().replace(/\s+/, ' ').toLowerCase().split(' '), (part) -> part.length == 0)
+    query = _.reject value.trim().replace(/\s+/, ' ').toLowerCase().split(' '), (part) -> part.length == 0
+    @refs.list.search(query)
     
 
   render: ->
     (tag.aside { className: 'identity-filter' },
       Toggle({ ref: 'toggle', callback: @onToggle })
+
       cc.blueprint.react.IdentityFilter.Search({ ref: 'search', callback: @onSearchChange })
-      cc.blueprint.react.IdentityFilter.IdentityList({ ref: 'list', subscribe_on: @props.subscribe_on })
+
+      IdentityListComponent({
+        ref:          'list'
+      })
+
       cc.blueprint.react.IdentityFilter.Buttons({ ref: 'buttons', company_id: @props.company_id })
     )
 
