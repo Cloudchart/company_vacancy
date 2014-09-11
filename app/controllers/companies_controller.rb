@@ -168,7 +168,6 @@ private
   def company_params
     params.require(:company).permit(
       :name,
-      :short_name,
       :site_url,
       :country, 
       :industry, 
@@ -177,6 +176,7 @@ private
       :is_listed, 
       :logotype, 
       :remove_logotype, 
+      :slug,
       sections_attributes: [Company::Sections.map(&:downcase)]
     )
   end

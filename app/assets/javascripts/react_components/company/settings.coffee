@@ -2,7 +2,7 @@
 ##= require ./owners
 ##= require ./settings/country_select
 ##= require ./settings/industry_select
-##= require ./settings/short_name
+##= require ./settings/slug
 ##= require ./settings/site_url
 
 tag = React.DOM
@@ -12,7 +12,7 @@ company_attributes = ['country', 'industry', 'is_listed']
 #
 CountrySelectComponent = cc.require('react/company/country_select')
 IndustrySelectComponent = cc.require('react/company/industry_select')
-ShortNameComponent = cc.require('react/company/short_name')
+SlugComponent = cc.require('react/company/slug')
 UrlComponent = cc.require('react/company/site_url')
 CompanyOwnersComponent  = cc.require('react/company/owners')
 # TransferOwnershipComponent = cc.require('react/company/transfer_ownership')
@@ -38,8 +38,8 @@ MainComponent = React.createClass
             is_site_url_verified: @props.is_site_url_verified
           })
 
-          (ShortNameComponent {
-            value: @props.short_name
+          (SlugComponent {
+            value: @props.slug
             company_url: @props.company_url
             company_uuid: @props.uuid
             default_host: @props.default_host

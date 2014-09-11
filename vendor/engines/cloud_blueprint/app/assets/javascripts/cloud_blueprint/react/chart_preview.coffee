@@ -121,7 +121,7 @@ MainComponent = React.createClass
     scale:                1
     horizontal_padding:   20
     vertical_padding:     20
-    chart_url: '/companies/' + @props.company_id + '/charts/' + @props.permalink
+    chart_url: '/companies/' + @props.company_id + '/charts/' + @props.slug
       
   
   getInitialState: ->

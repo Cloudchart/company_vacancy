@@ -1,5 +1,5 @@
 class ChartSerializer < ActiveModel::Serializer
-  attributes :uuid, :title, :permalink
+  attributes :uuid, :title, :slug
 
   has_many :people, serializer: PersonSerializer
 

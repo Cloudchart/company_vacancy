@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140910100519) do
+ActiveRecord::Schema.define(version: 20140911110705) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(version: 20140910100519) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_public",             default: false
-    t.string   "permalink"
+    t.string   "slug"
   end
 
   create_table "cloud_blueprint_identities", primary_key: "uuid", force: true do |t|
@@ -140,11 +140,11 @@ ActiveRecord::Schema.define(version: 20140910100519) do
     t.string   "logotype_uid"
     t.boolean  "is_listed",      default: false
     t.boolean  "is_public",      default: false
-    t.string   "short_name"
+    t.string   "slug"
     t.string   "site_url"
   end
 
-  add_index "companies", ["short_name"], name: "index_companies_on_short_name", unique: true, using: :btree
+  add_index "companies", ["slug"], name: "index_companies_on_slug", unique: true, using: :btree
 
   create_table "companies_banned_users", id: false, force: true do |t|
     t.string "company_id", limit: 36, null: false
@@ -260,10 +260,12 @@ ActiveRecord::Schema.define(version: 20140910100519) do
   create_table "pages", primary_key: "uuid", force: true do |t|
     t.string   "title"
     t.text     "body"
-    t.string   "permalink"
+    t.string   "slug"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "pages", ["slug"], name: "index_pages_on_slug", unique: true, using: :btree
 
   create_table "paragraphs", primary_key: "uuid", force: true do |t|
     t.text     "content",    null: false

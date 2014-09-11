@@ -18,7 +18,7 @@ getStateFromStore = (key) ->
   chart:      chart
   title:      chart.title || ''
   prevTitle:  chart.title || ''
-  permalink:  chart.permalink
+  slug:  chart.slug
 
 
 # Component
@@ -64,11 +64,11 @@ Component = React.createClass
 
   # TODO move to controller
   componentDidUpdate: (prevProps, prevState) ->
-    if @state.permalink isnt prevState.permalink
+    if @state.slug isnt prevState.slug
       url = window.location.href
       parts = url.split('/')
       parts.pop()
-      parts.push(@state.permalink)
+      parts.push(@state.slug)
       window.location.href = parts.join('/')
 
 

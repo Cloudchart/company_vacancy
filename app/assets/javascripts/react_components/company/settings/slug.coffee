@@ -1,8 +1,8 @@
 tag = React.DOM
 
-# RemoveShortNameComponent
+# RemoveSlugComponent
 # 
-RemoveShortNameComponent = React.createClass
+RemoveSlugComponent = React.createClass
 
   render: ->
     (tag.button { 
@@ -22,7 +22,7 @@ RemoveShortNameComponent = React.createClass
 
   save: ->    
     data = new FormData
-    data.append('company[short_name]', '')
+    data.append('company[slug]', '')
 
     @setState({ sync: true })
 
@@ -45,14 +45,14 @@ RemoveShortNameComponent = React.createClass
     window.location.href = parts.join('/')
 
   onSaveFail: ->
-    console.warn 'RemoveShortNameComponent fail'
+    console.warn 'RemoveSlugComponent fail'
 
 # Main Component
 # 
 Component = React.createClass
 
   render: ->
-    if @state.is_short_name_valid
+    if @state.is_slug_valid
       (tag.div { className: 'profile-item' },
         (tag.div { className: 'content field' },
           (tag.span { className: 'label' }, 'Short URL')
@@ -61,7 +61,7 @@ Component = React.createClass
         )
 
         (tag.div { className: 'actions' },
-          (RemoveShortNameComponent {
+          (RemoveSlugComponent {
             company_uuid: @props.company_uuid
           })
         )
@@ -69,13 +69,13 @@ Component = React.createClass
     else
       (tag.div { className: 'profile-item' },
         (tag.div { className: 'content field' },
-          (tag.label { htmlFor: 'short_name' }, 'Short URL')
+          (tag.label { htmlFor: 'slug' }, 'Short URL')
           (tag.div { className: 'spacer' })
           (tag.span {}, @props.default_host + '/companies/')
 
           (tag.input {
-            id: 'short_name'
-            name: 'short_name'
+            id: 'slug'
+            name: 'slug'
             value: @state.value
             placeholder: 'Type name'
             className: 'error' if @state.error
@@ -102,7 +102,7 @@ Component = React.createClass
     value: @props.value
     sync: false
     error: false
-    is_short_name_valid: 
+    is_slug_valid: 
       if @props.value == '' or @props.value == null 
         false
       else
@@ -110,7 +110,7 @@ Component = React.createClass
 
   save: ->    
     data = new FormData
-    data.append('company[short_name]', @state.value)
+    data.append('company[slug]', @state.value)
 
     @setState({ sync: true, error: false })
 
@@ -157,4 +157,4 @@ Component = React.createClass
 
 # Exports
 #
-cc.module('react/company/short_name').exports = Component
+cc.module('react/company/slug').exports = Component

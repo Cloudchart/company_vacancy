@@ -1,5 +1,5 @@
 class CompanyEditorSerializer < ActiveModel::Serializer
-  attributes :id, :uuid, :name, :country, :description, :is_listed, :logotype, :short_name, :site_url
+  attributes :id, :uuid, :name, :country, :description, :is_listed, :logotype, :slug, :site_url
   attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :verify_site_url, :download_verification_file_url, :default_host

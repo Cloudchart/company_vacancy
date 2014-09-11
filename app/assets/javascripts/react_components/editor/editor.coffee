@@ -31,7 +31,7 @@ MainComponent = React.createClass
       },
         ChartPreviewComponent
           id: @props.charts[0].uuid
-          permalink: @props.charts[0].permalink
+          slug: @props.charts[0].slug
           company_id: @props.id
           scale: 1
       ) if @props.charts.length > 0

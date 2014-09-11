@@ -2,7 +2,7 @@ module CloudBlueprint
   class Chart < ActiveRecord::Base
     include Uuidable
 
-    before_validation :assign_permalink
+    before_validation :build_slug
     
     belongs_to :company, class_name: Company.name
     
@@ -11,14 +11,14 @@ module CloudBlueprint
     has_many :vacancies, through: :nodes
     has_many :people, through: :nodes
     
-    # TODO: escape chars like '?'
-    # validate uniqueness inside company
+    # TODO: validate uniqueness inside company
     validates :title, presence: true
 
   private
     
-    def assign_permalink
-      self.permalink = title.downcase.squish.gsub(/\s/, '-')
+    # TODO: escape unwelcome chars like '?'
+    def build_slug
+      self.slug = title.downcase.squish.gsub(/\s/, '-')
     end
     
   end

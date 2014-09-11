@@ -1,6 +1,7 @@
 class Company < ActiveRecord::Base
   include Uuidable
   include Sectionable
+  include Sluggable
   include Tire::Model::Search
   include Tire::Model::Callbacks  
 
@@ -29,7 +30,6 @@ class Company < ActiveRecord::Base
   accepts_nested_attributes_for :logo, allow_destroy: true
 
   # validates :name, :country, :industry_ids, presence: true, on: :update
-  validates :short_name, uniqueness: true, allow_blank: true
   validates :site_url, url: true, allow_blank: true
 
   settings ElasticSearchNGramSettings do
@@ -69,17 +69,8 @@ class Company < ActiveRecord::Base
 
       end
     end
-
-    def find(*args)
-      return super if Cloudchart::Utils.is_uuid?(args.first)
-      find_by(short_name: args.first) || super
-    end
     
   end # of class methods
-
-  def to_param
-    short_name.present? ? short_name : super
-  end
 
   def to_indexed_json
     to_json(

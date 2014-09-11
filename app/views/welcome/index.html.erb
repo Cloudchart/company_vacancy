@@ -21,7 +21,7 @@
   <%= content_tag(:figure, nil, class: 'chart-preview', 
     data: {
       'react-chart-preview-mount-point' => @chart.id,
-      'react-permalink' => @chart.permalink,
+      'react-slug' => @chart.slug,
       'react-company-id' => @chart.company.to_param
     })
   %>

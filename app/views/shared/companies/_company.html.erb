@@ -109,12 +109,12 @@
           
             <%= content_tag(:div, nil, class: 'chart-preview', data:
               { 'react-chart-preview-mount-point' => chart.id,
-                'react-permalink' => chart.permalink,
+                'react-slug' => chart.slug,
                 'react-company-id' => chart.company.to_param
               })
             %>
 
-            <strong><%= link_to chart.title, cloud_blueprint.company_chart_path(company, chart.permalink) %></strong>
+            <strong><%= link_to chart.title, cloud_blueprint.company_chart_path(company, chart.slug) %></strong>
           </li>
         <% end %>
 

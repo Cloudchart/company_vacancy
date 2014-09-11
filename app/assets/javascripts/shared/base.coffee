@@ -27,7 +27,7 @@
     React.renderComponent(
       ChartPreviewComponent({
         id: root.dataset.reactChartPreviewMountPoint
-        permalink: root.dataset.reactPermalink
+        slug: root.dataset.reactSlug
         company_id: root.dataset.reactCompanyId
         scale: scale
         small: small

@@ -5,7 +5,7 @@ module CloudBlueprint
     # before action horror
     before_action :set_chart, only: [:pull, :update]
     before_action :set_company, only: [:show, :new]
-    before_action :set_chart_with_permalink, only: :show
+    before_action :set_chart_with_slug, only: :show
 
     # -- https://github.com/rails/rails/issues/9703
     # 
@@ -130,9 +130,9 @@ module CloudBlueprint
       @company = Company.find(params[:company_id])
     end
 
-    def set_chart_with_permalink
+    def set_chart_with_slug
       if params[:company_id].present?
-        @chart = @company.charts.find_by(permalink: params[:id]) || @company.charts.find(params[:id])
+        @chart = @company.charts.find_by(slug: params[:id]) || @company.charts.find(params[:id])
       else
         set_chart
       end
