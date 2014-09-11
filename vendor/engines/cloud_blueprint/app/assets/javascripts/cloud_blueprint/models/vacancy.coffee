@@ -11,6 +11,8 @@ class Vacancy extends cc.blueprint.models.Base
   @attr_accessor  'uuid', 'name', 'description'
 
   @instances:     {}
+  @created_instances: []
+  @deleted_instances: []
   
 
   # Match for filter

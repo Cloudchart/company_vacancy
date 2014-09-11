@@ -19,11 +19,11 @@
   ChartActionsCreator.receiveOne(data.chart)
   
   
-  nodesIdentitiesAreLoaded = NodeIdentitySyncAPI.fetch("/charts/#{data.id}/identities")
-  peopleAreLoaded = PersonSyncAPI.fetch("/charts/#{data.id}/people")
-  vacanciesAreLoaded = VacancySyncAPI.fetch("/charts/#{data.id}/vacancies")
-  
-  
+  nodesIdentitiesAreLoaded  = NodeIdentitySyncAPI.fetch("/charts/#{data.id}/identities")
+  peopleAreLoaded           = PersonSyncAPI.fetch("/companies/#{data.chart.company_id}/people")
+  vacanciesAreLoaded        = VacancySyncAPI.fetch("/companies/#{data.chart.company_id}/vacancies")
+
+
   # Chart Title Composer
   #
   if isReadOnly and (headerMountPoint = document.querySelector('[data-header-chart-title-mount-point]'))
