@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   
-  before_action :require_properly_named_user!
   before_action :require_authenticated_user!
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -21,10 +20,6 @@ class ApplicationController < ActionController::Base
 
   def require_authenticated_user!
     redirect_to main_app.root_path unless user_authenticated?
-  end
-  
-  def require_properly_named_user!
-    redirect_to cloud_profile.profile_activation_completion_path if user_authenticated? && !current_user.has_proper_name?
   end
 
 end
