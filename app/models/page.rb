@@ -2,7 +2,7 @@ class Page < ActiveRecord::Base
   include Uuidable
   include Sluggable
 
-  before_validation :build_slug
+  after_validation :build_slug
 
   has_paper_trail
 
@@ -18,7 +18,7 @@ class Page < ActiveRecord::Base
 private
 
   def build_slug
-    self.slug = title.downcase.squish.gsub(/\s/, '-')
+    self.slug = title.parameterize
   end
 
 end

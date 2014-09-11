@@ -5,3 +5,4 @@ en:
       size_too_small: "is too small (should be at least %{file_size})"
       size_too_big: "is too big (should be at most %{file_size})"
       width_too_small: "width is too small (should be at least 100px)"
+      title_is_not_unique: "title is not unique"
