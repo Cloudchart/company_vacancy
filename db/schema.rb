@@ -72,6 +72,8 @@ ActiveRecord::Schema.define(version: 20140911110705) do
     t.string   "slug"
   end
 
+  add_index "cloud_blueprint_charts", ["slug"], name: "index_cloud_blueprint_charts_on_slug", using: :btree
+
   create_table "cloud_blueprint_identities", primary_key: "uuid", force: true do |t|
     t.string   "chart_id",      limit: 36,                 null: false
     t.string   "node_id",       limit: 36,                 null: false
