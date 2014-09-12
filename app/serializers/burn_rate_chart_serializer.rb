@@ -1,4 +1,4 @@
-class ChartSerializer < ActiveModel::Serializer
+class BurnRateChartSerializer < ActiveModel::Serializer
   attributes :uuid, :title, :slug
 
   has_many :people, serializer: PersonSerializer
