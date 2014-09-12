@@ -272,4 +272,4 @@ MainComponent = React.createClass
 
 # Exports
 #
-cc.module('react/company/site_url').exports = MainComponent
+cc.module('react/company/settings/site_url').exports = MainComponent

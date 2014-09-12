@@ -111,14 +111,6 @@ class CompaniesController < ApplicationController
     end
   end
 
-  # def transfer_ownership
-  #   token = Token.find_or_create_token_by!(name: :transfer_ownership, owner: @company, data: { user_id: current_user.id, email: params[:email] })
-  #   redirect_to :back
-  # end
-
-  # def obtain_ownership 
-  # end
-
 private
 
   def update_site_url_verification(company)
@@ -161,6 +153,7 @@ private
       :industry, 
       :industry_ids, 
       :description, 
+      :established_on,
       :is_listed, 
       :logotype, 
       :remove_logotype, 

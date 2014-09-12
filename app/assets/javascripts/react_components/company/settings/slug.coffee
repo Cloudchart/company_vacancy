@@ -49,7 +49,7 @@ RemoveSlugComponent = React.createClass
 
 # Main Component
 # 
-Component = React.createClass
+MainComponent = React.createClass
 
   render: ->
     if @state.is_slug_valid
@@ -157,4 +157,4 @@ Component = React.createClass
 
 # Exports
 #
-cc.module('react/company/slug').exports = Component
+cc.module('react/company/settings/slug').exports = MainComponent

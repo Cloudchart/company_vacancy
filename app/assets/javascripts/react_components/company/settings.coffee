@@ -4,18 +4,20 @@
 ##= require ./settings/industry_select
 ##= require ./settings/slug
 ##= require ./settings/site_url
+##= require ./settings/established_on
 
 tag = React.DOM
-company_attributes = ['country', 'industry', 'is_listed']
+company_attributes = ['country', 'industry', 'is_listed', 'established_on']
 
 # Imports
 #
 CountrySelectComponent = cc.require('react/company/country_select')
 IndustrySelectComponent = cc.require('react/company/industry_select')
-SlugComponent = cc.require('react/company/slug')
-UrlComponent = cc.require('react/company/site_url')
+
 CompanyOwnersComponent  = cc.require('react/company/owners')
-# TransferOwnershipComponent = cc.require('react/company/transfer_ownership')
+UrlComponent = cc.require('react/company/settings/site_url')
+SlugComponent = cc.require('react/company/settings/slug')
+EstablishedOnComponent = cc.require('react/company/settings/established_on')
 
 # Main Component
 #
@@ -45,9 +47,10 @@ MainComponent = React.createClass
             default_host: @props.default_host
           })
 
-          # (TransferOwnershipComponent {
-          #   transfer_ownership_url: @props.transfer_ownership_url
-          # })
+          (EstablishedOnComponent {
+            value: @state.established_on
+            onChange: @onEstablishedOnChange
+          })
 
           (tag.div { className: 'profile-item' },
             'Industry'
@@ -94,6 +97,7 @@ MainComponent = React.createClass
     country:           @props.country
     industry:          @props.industry_ids[0]
     is_listed:         @props.is_listed
+    established_on:    @props.established_on
 
   componentDidUpdate: (prevProps, prevState) ->
     @save() if company_attributes.some((name) => @state[name] isnt prevState[name])
@@ -117,6 +121,7 @@ MainComponent = React.createClass
       country:        json.country
       industry:       json.industry_ids[0]
       is_listed:      json.is_listed
+      established_on: json.established_on
   
   onSaveFail: ->
     console.warn 'Save Fail'
@@ -132,6 +137,10 @@ MainComponent = React.createClass
   onIndustryChange: (event) ->
     @setState
       industry: event.target.value
+
+  onEstablishedOnChange: (event) ->
+    @setState
+      established_on: event.target.value
 
 
 # Exports
