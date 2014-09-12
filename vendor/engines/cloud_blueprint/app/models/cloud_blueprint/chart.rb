@@ -21,7 +21,7 @@ module CloudBlueprint
     end
 
     def title_uniqueness_inside_company
-      if company.charts.pluck(:title).include?(title)
+      if company.charts.map { |chart| chart.title.downcase.squish }.include?(title.downcase.squish)
         errors.add :title, I18n.t('errors.messages.title_is_not_unique')
       end
     end

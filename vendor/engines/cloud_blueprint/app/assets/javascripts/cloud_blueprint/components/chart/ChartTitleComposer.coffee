@@ -68,7 +68,7 @@ Component = React.createClass
       url = window.location.href
       parts = url.split('/')
       parts.pop()
-      parts.push(@state.slug)
+      parts.push(@state.slug || @props.key)
       window.location.href = parts.join('/')
 
 
