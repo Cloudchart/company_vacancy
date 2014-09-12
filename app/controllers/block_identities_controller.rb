@@ -1,6 +1,7 @@
 class BlockIdentitiesController < ApplicationController
-  skip_before_action :require_authenticated_user!
-  before_action :require_authenticated_user!, except: :index
+  before_action :set_block_identity, only: [:update, :destroy]
+
+  authorize_resource
 
   # Index
   #
@@ -16,10 +17,10 @@ class BlockIdentitiesController < ApplicationController
   # Create
   #
   def create
-    block_identity = Block.find(params[:block_id]).block_identities.create!(params_for_create)
+    @block_identity = Block.find(params[:block_id]).block_identities.create!(params_for_create)
     
     respond_to do |format|
-      format.json { render json: block_identity, root: false }
+      format.json { render json: @block_identity, root: false }
     end
   end
   
@@ -27,11 +28,10 @@ class BlockIdentitiesController < ApplicationController
   # Update
   #
   def update
-    block_identity = BlockIdentity.find(params[:id])
-    block_identity.update!(params_for_update)
+    @block_identity.update!(params_for_update)
 
     respond_to do |format|
-      format.json { render json: block_identity, root: false }
+      format.json { render json: @block_identity, root: false }
     end
   end
 
@@ -39,18 +39,21 @@ class BlockIdentitiesController < ApplicationController
   # Destroy block identity
   #
   def destroy
-    block_identity  = BlockIdentity.find(params[:id])
-    block_identity.destroy
+    @block_identity.destroy
     
     respond_to do |format|
       format.json do
-        render json: block_identity, root: false
+        render json: @block_identity, root: false
       end
     end
   end
 
 
 private
+
+  def set_block_identity
+    @block_identity = BlockIdentity.find(params[:id])
+  end
 
 
   def params_for_create

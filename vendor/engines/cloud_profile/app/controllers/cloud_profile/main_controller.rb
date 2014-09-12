@@ -2,10 +2,9 @@ require_dependency "cloud_profile/application_controller"
 
 module CloudProfile
   class MainController < ApplicationController
-    # TODO: use cancan instead
-    before_action :require_authenticated_user!
-
     before_action :create_default_company, only: :companies, if: -> { current_user.companies.blank? }
+
+    authorize_resource class: false
     
     def companies
       @companies = current_user.companies.includes(:industries, :people, :vacancies, :favorites, :charts)

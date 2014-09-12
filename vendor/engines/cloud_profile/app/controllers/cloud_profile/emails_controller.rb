@@ -3,9 +3,8 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class EmailsController < ApplicationController
 
-
-    before_action :require_authenticated_user!
-
+    authorize_resource class: false, only: [:verify, :resend_verification]
+    authorize_resource only: [:create, :destroy]
 
     def create
       email = Email.new(params.permit(:address))
@@ -54,16 +53,15 @@ module CloudProfile
     
     
     def destroy
-      email = Email.find(params[:id]) rescue Token.find(params[:id]) rescue nil
+      @email = Email.find(params[:id]) rescue Token.find(params[:id]) rescue nil
 
-      email.destroy if email && email.instance_of?(Token) or current_user.emails.size > 1
+      @email.destroy if @email && @email.instance_of?(Token) or current_user.emails.size > 1
       
       respond_to do |format|
         format.json { render json: current_user, serializer: PersonalSerializer, only: [:emails, :verification_tokens], root: false }
       end
       
     end
-    
 
   end
 end

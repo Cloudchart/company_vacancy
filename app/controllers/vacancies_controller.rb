@@ -1,14 +1,8 @@
 class VacanciesController < ApplicationController
-  before_action :set_vacancy, only: [:show, :update, :destroy, :change_status, :update_reviewers]
   before_action :set_company, only: [:index, :new, :create]
-  before_action :build_vacancy, only: :new
-  before_action :build_vacancy_with_params, only: :create
-  before_action :authorize_company, only: :index
+  before_action :set_vacancy, only: [:show, :update, :destroy, :change_status, :update_reviewers]
 
-  authorize_resource except: :index
-
-  skip_before_action :require_authenticated_user!
-  before_action :require_authenticated_user!, except: :index
+  authorize_resource
 
   impressionist actions: [:show], unique: [:ip_address]
 
@@ -36,10 +30,13 @@ class VacanciesController < ApplicationController
 
   # GET /vacancies/new
   def new
+    @vacancy = @company.vacancies.build
   end
 
   # POST /vacancies
   def create
+    @vacancy = @company.vacancies.build(vacancy_params)
+
     @vacancy.should_build_objects!
     @vacancy.author = current_user
 
@@ -103,16 +100,15 @@ class VacanciesController < ApplicationController
   end
 
 private
-  # Use callbacks to share common setup or constraints between actions.
-  def set_vacancy
-    @vacancy = Vacancy.find(params[:id])
-  end
 
   def set_company
     @company = Company.find(params[:company_id])
   end
 
-  # Only allow a trusted parameter "white list" through.
+  def set_vacancy
+    @vacancy = Vacancy.find(params[:id])
+  end
+
   def vacancy_params
     params.require(:vacancy).permit(
       :name,
@@ -123,17 +119,5 @@ private
       settings: VacancySetting.attributes.symbolize_keys.keys
     )
   end
-
-  def build_vacancy
-    @vacancy = @company.vacancies.build
-  end
-
-  def build_vacancy_with_params
-    @vacancy = @company.vacancies.build(vacancy_params)
-  end
-
-  def authorize_company
-    authorize! :access_vacancies, @company
-  end 
-
+  
 end

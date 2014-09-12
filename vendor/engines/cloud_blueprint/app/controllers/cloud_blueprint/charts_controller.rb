@@ -2,17 +2,8 @@ require_dependency "cloud_blueprint/application_controller"
 
 module CloudBlueprint
   class ChartsController < ApplicationController    
-    # before action horror
-    before_action :set_chart, only: [:pull, :update]
     before_action :set_company, only: [:show, :new]
-    before_action :set_chart_with_slug, only: :show
-
-    # -- https://github.com/rails/rails/issues/9703
-    # 
-    skip_before_action :require_authenticated_user!
-    before_action :require_authenticated_user!, except: [:show, :pull, :preview]
-    before_action :require_authenticated_user!, only: [:show, :pull], unless: -> { @chart.is_public? }
-    # --
+    before_action :set_chart, only: [:show, :pull, :update]
 
     authorize_resource
     
@@ -136,19 +127,15 @@ module CloudBlueprint
 
   private
 
-    def set_chart
-      @chart = Chart.find(params[:id])
-    end
-
     def set_company
       @company = Company.find(params[:company_id])
     end
 
-    def set_chart_with_slug
-      if params[:company_id].present?
-        @chart = @company.charts.find_by(slug: params[:id]) || @company.charts.find(params[:id])
+    def set_chart
+      @chart = if params[:company_id].present?
+        @company.charts.find_by(slug: params[:id]) || @company.charts.find(params[:id])
       else
-        set_chart
+        Chart.find(params[:id])
       end
     end
         
