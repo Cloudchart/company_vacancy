@@ -1,6 +1,4 @@
-class WelcomeController < ApplicationController
-  
-  skip_before_action :require_authenticated_user!
+class WelcomeController < ApplicationController  
   before_action :redirect_to_profile, only: :index, if: :user_authenticated?
 
   def index

@@ -1,14 +1,8 @@
 class PeopleController < ApplicationController
-  before_action :set_person, only: [:show, :edit, :update, :destroy, :make_owner, :invite_user]
   before_action :set_company, only: [:index, :new, :create, :search]
-  before_action :build_person, only: :new
-  before_action :build_person_with_params, only: :create
-  before_action :authorize_company, only: :index
+  before_action :set_person, only: [:show, :edit, :update, :destroy, :make_owner, :invite_user]
 
-  authorize_resource except: :index
-
-  skip_before_action :require_authenticated_user!
-  before_action :require_authenticated_user!, except: :index
+  authorize_resource
 
   # GET /people
   def index
@@ -43,6 +37,7 @@ class PeopleController < ApplicationController
 
   # GET /people/new
   def new
+    @person = @company.people.build
   end
 
   # GET /people/1/edit
@@ -51,6 +46,8 @@ class PeopleController < ApplicationController
 
   # POST /people
   def create
+    @person = @company.people.build(person_params)
+
     if @person.save
       respond_to do |format|
         format.html { redirect_to @person, notice: t('messages.created', name: t('lexicon.person')) }
@@ -66,7 +63,7 @@ class PeopleController < ApplicationController
 
   # PATCH/PUT /people/1
   def update
-    if @person.update(params_for_update)
+    if @person.update(person_params)
       respond_to do |format|
         format.html { redirect_to @person, notice: t('messages.updated', name: t('lexicon.person')) }
         format.json { render json: @person, root: false }
@@ -96,40 +93,17 @@ class PeopleController < ApplicationController
   end
 
 private
-  # Use callbacks to share common setup or constraints between actions.
-  def set_person
-    @person = Person.find(params[:id])
-  end
 
   def set_company
     @company = Company.find(params[:company_id])
   end
 
-  # Only allow a trusted parameter "white list" through.
+  def set_person
+    @person = Person.find(params[:id])
+  end
+
   def person_params
-    params.require(:person).permit(:first_name, :last_name, :email, :phone, :occupation)
-  end
-  
-  
-  def params_for_create
     params.require(:person).permit([:first_name, :last_name, :full_name, :birthday, :email, :phone, :int_phone, :skype, :occupation, :hired_on, :fired_on, :salary, :stock_options, :bio])
-  end
-
-  def params_for_update
-    params.require(:person).permit([:first_name, :last_name, :full_name, :birthday, :email, :phone, :int_phone, :skype, :occupation, :hired_on, :fired_on, :salary, :stock_options, :bio])
-  end
-  
-
-  def build_person
-    @person = @company.people.build
-  end
-
-  def build_person_with_params
-    @person = @company.people.build(params_for_create)
-  end
-
-  def authorize_company
-    authorize! :access_people, @company
   end
 
 end

@@ -22,18 +22,20 @@ class Ability
     
     # Anyone
     # 
+    can :read, :company_invite
+
     can :read, Page
     can :read, Event
     can :read, Feature
     can :read, BlockIdentity
 
-    can :read, Company, is_public: true
+    # TODO: not all (maybe which only belongs to chart)
+    can :read, Person
+    can :read, Vacancy
 
-    # TODO: not all
-    can :access_vacancies, Company
     can :access_events, Company
-    can :access_people, Company
 
+    can :read, Company, is_public: true
     can [:preview, :read, :pull], CloudBlueprint::Chart, is_public: true
 
     can :read, Vacancy do |vacancy|
@@ -51,13 +53,20 @@ class Ability
     # User
     # 
     else
+      can [:accept, :destroy], :company_invite
+      can [:verify, :resend_verification], :email
+      can :manage, :main
+
+      can :create, CloudProfile::Email
       can [:create, :read, :search], Company
       can :vote, Feature
       can :manage, Subscription
       can [:preview, :read, :pull], CloudBlueprint::Chart
 
       # User (conditional)
-      # 
+      #
+      can :destroy, CloudProfile::Email, user_id: user.id
+
       can [:update, :destroy, :upload_logo, :verify_site_url, :download_verification_file], Company do |company|
         (user.people & company.people).first.try(:is_company_owner?)
       end
@@ -106,7 +115,7 @@ class Ability
         comment.user == user
       end
 
-      can :create_company_invite do |company|
+      can :create_company_invite, Company do |company|
         (user.people & company.people).first.try(:is_company_owner?)
       end
 

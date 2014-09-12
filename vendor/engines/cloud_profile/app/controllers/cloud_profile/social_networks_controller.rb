@@ -2,10 +2,6 @@ require_dependency "cloud_profile/application_controller"
 
 module CloudProfile
   class SocialNetworksController < ApplicationController
-    
-
-    before_action :require_authenticated_user!, only: :attach
-    
     # Attach social network to current user
     #
     def attach

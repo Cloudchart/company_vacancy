@@ -3,8 +3,6 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class PasswordsController < ApplicationController
 
-    before_action :require_authenticated_user!, only: [:show, :update]
-    
     # Send password reset link
     #
     def create
@@ -59,25 +57,6 @@ module CloudProfile
       end
 
     end
-    
-
-    # Update current password
-    #
-    def update
-      unless current_user.authenticate(params[:current_password])
-        current_user.errors.add(:current_password, :invalid)
-        raise ActiveRecord::RecordInvalid.new(current_user)
-      end
-
-      current_user.password_digest = nil
-      current_user.update!(password: params[:password], password_confirmation: params[:password_confirmation])
-
-      redirect_to :settings
-
-    rescue ActiveRecord::RecordInvalid
-      render :show
-    end
-    
 
   end
 end

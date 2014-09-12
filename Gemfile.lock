@@ -85,7 +85,7 @@ GEM
       sass (~> 3.2)
       thor
     builder (3.2.2)
-    cancan (1.6.10)
+    cancancan (1.9.2)
     capistrano (3.2.0)
       i18n
       rake (>= 10.0.0)
@@ -344,7 +344,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootstrap-wysihtml5-rails!
   bourbon
-  cancan
+  cancancan
   capistrano (~> 3.2.0)
   capistrano-rails (~> 1.1)
   capistrano-rbenv

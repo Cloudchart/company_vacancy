@@ -1,7 +1,7 @@
 class CompanyInvitesController < ApplicationController
-  skip_before_action :require_authenticated_user!
-  before_action :require_authenticated_user!, only: [:accept, :destroy]
   before_action :set_token, only: [:show, :accept, :destroy]
+
+  authorize_resource class: false, except: :create
 
   def show
     @company = @token.owner
@@ -16,7 +16,7 @@ class CompanyInvitesController < ApplicationController
 
   def create
     person = Person.find(params[:person_id])
-    authorize! :create_company_invite, person
+    authorize! :create_company_invite, person.company
 
     address = person.email.present? ? person.email : params[:email]
 
