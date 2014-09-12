@@ -2,7 +2,7 @@ module CloudBlueprint
   class Chart < ActiveRecord::Base
     include Uuidable
 
-    after_validation :build_slug
+    after_validation :generate_slug
     
     belongs_to :company, class_name: Company.name
     
@@ -12,12 +12,32 @@ module CloudBlueprint
     has_many :people, through: :nodes
     
     validates :title, presence: true
-    validate :title_uniqueness_inside_company
+    validate :title_uniqueness_inside_company, on: :update
 
   private
     
-    def build_slug
-      self.slug = title.parameterize
+    def generate_slug
+      new_slug = title.parameterize
+
+      self.slug = if new_slug.present?
+        available_slugs = company.charts.pluck(:slug)
+
+        i = 1
+        while available_slugs.include?(new_slug)
+
+          new_slug = if new_slug.match(/-\d$/)
+            new_slug.gsub(/-\d$/, "-#{i}")
+          else
+            "#{new_slug}-1"
+          end
+
+          i += 1
+        end
+
+        new_slug
+      else
+        nil
+      end
     end
 
     def title_uniqueness_inside_company

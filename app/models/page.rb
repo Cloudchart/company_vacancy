@@ -2,7 +2,7 @@ class Page < ActiveRecord::Base
   include Uuidable
   include Sluggable
 
-  after_validation :build_slug
+  after_validation :generate_slug
 
   has_paper_trail
 
@@ -17,7 +17,7 @@ class Page < ActiveRecord::Base
 
 private
 
-  def build_slug
+  def generate_slug
     self.slug = title.parameterize
   end
 
