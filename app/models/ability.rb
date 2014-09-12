@@ -28,12 +28,11 @@ class Ability
     can :read, Event
     can :read, Feature
     can :read, BlockIdentity
+    can :read, Event
 
     # TODO: not all (maybe which only belongs to chart)
     can :read, Person
     can :read, Vacancy
-
-    can :access_events, Company
 
     can :read, Company, is_public: true
     can [:preview, :read, :pull], CloudBlueprint::Chart, is_public: true

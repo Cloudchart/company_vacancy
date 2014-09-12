@@ -1,11 +1,8 @@
 class EventsController < ApplicationController
   before_action :set_company, only: [:index, :new, :create]  
   before_action :set_event, only: [:show, :edit, :update, :destroy, :verify]
-  before_action :build_event, only: :new
-  before_action :build_event_with_params, only: :create
-  before_action :authorize_company, only: :index
 
-  authorize_resource except: :index
+  authorize_resource
 
   # GET /events
   def index
@@ -22,6 +19,7 @@ class EventsController < ApplicationController
 
   # GET /events/new
   def new
+    @event = @company.events.build
   end
 
   # GET /events/1/edit
@@ -30,6 +28,8 @@ class EventsController < ApplicationController
 
   # POST /events
   def create
+    @event = @company.events.build(event_params)
+
     @event.author = current_user
     @event.should_build_objects!
 
@@ -72,30 +72,17 @@ class EventsController < ApplicationController
   end
 
 private
-  # Use callbacks to share common setup or constraints between actions.
+
+  def set_company
+    @company = Company.find(params[:company_id])
+  end
+
   def set_event
     @event = Event.find(params[:id])
   end
 
-  def set_company
-    @company = Company.find(params[:company_id])
-  end  
-
-  # Only allow a trusted parameter "white list" through.
   def event_params
     params.require(:event).permit(:name, :url, :location, :start_at, :end_at)
-  end
-
-  def build_event
-    @event = @company.events.build
-  end
-
-  def build_event_with_params
-    @event = @company.events.build(event_params)
-  end
-
-  def authorize_company
-    authorize! :access_events, @company
   end
 
 end
