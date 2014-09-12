@@ -56,6 +56,7 @@ MainComponent = React.createClass
         # people: PersonStore.all()
         charts_for_select: @props.charts_for_select
         charts: @props.charts
+        established_on: @props.established_on
       })
     }
 

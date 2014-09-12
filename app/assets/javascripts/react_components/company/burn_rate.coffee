@@ -37,13 +37,15 @@ MainComponent = React.createClass
                 (tag.th {
                   className: @checkCurrentMonth(@monthSubtractedMoment(3))  
                 },
+
                   (tag.a { 
                     href: ''
                     className: 'chevron-left'
                     onClick: @onChevronLeftClick 
                   },
                     (tag.i { className: 'fa fa-chevron-left' })
-                  )
+                  ) unless @monthSubtractedMoment(3).startOf('month') <= moment(@props.established_on)
+
                   @monthSubtractedMoment(3).format('MMM YY')
                 )
 
