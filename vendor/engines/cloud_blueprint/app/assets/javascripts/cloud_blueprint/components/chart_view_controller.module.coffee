@@ -3,6 +3,7 @@
 tag = React.DOM
 
 ChartAppSettingsStore   = require('cloud_blueprint/stores/chart_app_settings_store')
+ChartStore              = require('cloud_blueprint/stores/chart_store')
 
 Chart                   = require('cloud_blueprint/components/chart')
 IdentityBox             = require('cloud_blueprint/components/identity_box')
@@ -14,6 +15,7 @@ IdentityBoxToggleButton = require('cloud_blueprint/components/identity_box_toggl
 getStateFromStores = (key) ->
   state           = {}
   state.settings  = ChartAppSettingsStore.get()
+  state.chart     = ChartStore.get(key)?.toJSON()
   state
 
 
@@ -28,7 +30,7 @@ Component = React.createClass
 
   componentDidMount: ->
     ChartAppSettingsStore.on('change', @refreshStateFromStores)
-    # ChartStore.on('change', @refreshStateFromStores)
+    ChartStore.on('change', @refreshStateFromStores)
     # PersonStore.on('change', @refreshStateFromStores)
     # VacancyStore.on('change', @refreshStateFromStores)
     # NodeStore.on('change', @refreshStateFromStores)
@@ -37,23 +39,18 @@ Component = React.createClass
   
   componentWillUnmount: ->
     ChartAppSettingsStore.off('change', @refreshStateFromStores)
-    # ChartStore.off('change', @refreshStateFromStores)
+    ChartStore.off('change', @refreshStateFromStores)
     # PersonStore.off('change', @refreshStateFromStores)
     # VacancyStore.off('change', @refreshStateFromStores)
     # NodeStore.off('change', @refreshStateFromStores)
     # NodeIdentityStore.off('change', @refreshStateFromStores)
   
   
-  getDefaultProps: ->
-    props = {}
-    props
-
-
   getInitialState: ->
     state = getStateFromStores(@props.key)
     state
-
-
+  
+  
   render: ->
     (tag.div {
       style:

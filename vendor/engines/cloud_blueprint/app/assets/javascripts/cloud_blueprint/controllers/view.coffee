@@ -10,7 +10,12 @@
   
   # Perform data loading
   #
+  ChartStore    = require('cloud_blueprint/stores/chart_store')
+  ChartSyncAPI  = require('cloud_blueprint/utils/chart_sync_api')
+  
+  chartXHR = ChartSyncAPI.fetch(ChartID)
   
   # Render Component
   #
-  React.renderComponent(ChartViewController({ key: ChartID }), document.querySelector('main'))
+  Promise.all([chartXHR]).then ->
+    React.renderComponent(ChartViewController({ key: ChartID }), document.querySelector('main'))
