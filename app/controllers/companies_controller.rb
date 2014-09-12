@@ -4,11 +4,7 @@ class CompaniesController < ApplicationController
   before_action :display_invite_notice, only: :show
 
   authorize_resource
-
-  rescue_from CanCan::AccessDenied do |exception|
-    redirect_to (@company || companies_path), alert: exception.message
-  end
-
+  
   # GET /companies
   def index
   end

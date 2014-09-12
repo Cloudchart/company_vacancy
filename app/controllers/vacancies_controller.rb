@@ -6,10 +6,6 @@ class VacanciesController < ApplicationController
 
   impressionist actions: [:show], unique: [:ip_address]
 
-  rescue_from CanCan::AccessDenied do |exception|
-    redirect_to (@vacancy ? company_vacancies_path(@vacancy.company) : companies_path), alert: exception.message
-  end
-
   # GET /vacancies
   def index
     @vacancies = @company.vacancies.order(:name)
