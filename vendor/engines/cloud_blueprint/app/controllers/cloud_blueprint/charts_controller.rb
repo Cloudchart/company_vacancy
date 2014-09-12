@@ -128,11 +128,11 @@ module CloudBlueprint
   private
 
     def set_company
-      @company = Company.find(params[:company_id])
+      @company ||= Company.find(params[:company_id]) if params[:company_id].present?
     end
 
     def set_chart
-      @chart = if params[:company_id].present?
+      @chart ||= if @company.present?
         @company.charts.find_by(slug: params[:id]) || @company.charts.find(params[:id])
       else
         Chart.find(params[:id])

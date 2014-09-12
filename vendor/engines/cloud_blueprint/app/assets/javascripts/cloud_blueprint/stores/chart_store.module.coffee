@@ -1,6 +1,7 @@
 # Imports
 #
-Dispatcher = require('dispatcher/dispatcher')
+Dispatcher  = require('dispatcher/dispatcher')
+Constants   = require('cloud_blueprint/constants')
 
 
 # Main
@@ -17,10 +18,12 @@ Store =
 Store.dispatchToken = Dispatcher.register (payload) ->
   action = payload.action
   
+  console.log action
+  
   switch action.type
     
-    when 'chart:fetch:done'
-      console.log 'chart loaded'
+    when Constants.Chart.DONE_FETCH_CHART
+      console.log 'chart loaded: ', action.key, ' ', action.json.uuid
 
 
 # Exports

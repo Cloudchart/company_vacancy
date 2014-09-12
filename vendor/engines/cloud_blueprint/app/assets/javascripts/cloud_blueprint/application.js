@@ -9,6 +9,7 @@
 //= require ./layouts
 //= require ./react
 //= require ./ujs
+//= require_tree .
 
 this.cc           || (this.cc = {})
 this.cc.blueprint || (this.cc.blueprint = {})
