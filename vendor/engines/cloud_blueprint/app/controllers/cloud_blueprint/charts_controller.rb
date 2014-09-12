@@ -40,7 +40,7 @@ module CloudBlueprint
       
       respond_to do |format|
         format.json {
-          render json: @chart, include: {
+          render json: @chart.to_json( include: {
             nodes: { 
               include: {
                 identities: {
@@ -48,7 +48,7 @@ module CloudBlueprint
                 }
               }
             }
-          } 
+          }) 
         }
       end
     end
