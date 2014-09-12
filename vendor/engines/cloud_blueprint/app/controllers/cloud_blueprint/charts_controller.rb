@@ -28,6 +28,20 @@ module CloudBlueprint
     end
     
     
+    # New chart component controller
+    #
+    def view
+      respond_to do |format|
+        format.html
+
+        format.json do
+          chart = Chart.includes(:company).find(params[:id])
+          render json: chart, serializer: CloudBlueprint::ChartSerializer, root: false
+        end
+      end
+    end
+    
+    
     # Load chart preview
     #
     def preview
@@ -58,10 +72,10 @@ module CloudBlueprint
       respond_to do |format|
         format.json do
           render json: {
-            available_vacancies:    @chart.vacancies.select(:uuid).map(&:uuid),
-            vacancies:              @chart.vacancies.later_then(last_accessed_at).map(&:as_json_for_chart),
-            available_people:       @chart.people.select(:uuid).map(&:uuid),
-            people:                 ActiveModel::ArraySerializer.new(@chart.people.later_then(last_accessed_at), each_serializer: CloudBlueprint::PersonSerializer).as_json,
+            available_vacancies:    @chart.company.vacancies.select(:uuid).map(&:uuid),
+            vacancies:              @chart.company.vacancies.later_then(last_accessed_at).map(&:as_json_for_chart),
+            available_people:       @chart.company.people.select(:uuid).map(&:uuid),
+            people:                 ActiveModel::ArraySerializer.new(@chart.company.people.later_then(last_accessed_at), each_serializer: CloudBlueprint::PersonSerializer).as_json,
             available_nodes:        @chart.nodes.select(:uuid).map(&:uuid),
             nodes:                  @chart.nodes.later_then(last_accessed_at).map(&:as_json_for_chart),
             available_identities:   @chart.identities.select(:uuid).map(&:uuid),

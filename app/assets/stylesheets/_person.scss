@@ -47,7 +47,7 @@ $person-editor-identity-selector-item-size: 35px;
 // Draggable person
 //
 .editor .identity-selector .person,
-.blueprint .identity-filter .person,
+//.blueprint .identity-filter .person,
 .draggable .person {
   @include display(flex);
   @include flex-direction(column);

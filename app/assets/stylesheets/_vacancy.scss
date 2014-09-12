@@ -47,7 +47,7 @@ $vacancy-editor-identity-selector-item-size: 35px;
 // Vacancy in chart identity filter
 // Draggable vacancy
 //
-.blueprint .identity-filter .vacancy,
+//.blueprint .identity-filter .vacancy,
 .draggable .vacancy {
   @include display(flex);
   @include flex-direction(column);

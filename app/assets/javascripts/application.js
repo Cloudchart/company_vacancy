@@ -15,6 +15,7 @@
 //= require arbiter
 //= require module
 //= require placeholder
+//= require immutable
 //= require react
 //= require flux.dispatcher
 //= require lodash

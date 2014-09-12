@@ -9,6 +9,7 @@ CloudBlueprint::Engine.routes.draw do
     
     get :pull,    on: :member
     get :preview, on: :member
+    get :view,    on: :member
     
     resources :identities, only: [:index, :create, :update, :destroy]
     

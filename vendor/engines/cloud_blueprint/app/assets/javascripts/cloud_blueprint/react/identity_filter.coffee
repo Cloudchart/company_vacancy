@@ -108,9 +108,10 @@ IdentityFilter = React.createClass
 
       cc.blueprint.react.IdentityFilter.Search({ ref: 'search', callback: @onSearchChange })
 
-      IdentityListComponent({
-        ref:          'list'
-      })
+      #IdentityListComponent({
+      #  ref:          'list'
+      #})
+      cc.blueprint.react.IdentityFilter.IdentityList({ ref: 'list', subscribe_on: @props.subscribe_on })
 
       cc.blueprint.react.IdentityFilter.Buttons({ ref: 'buttons', company_id: @props.company_id })
     )
