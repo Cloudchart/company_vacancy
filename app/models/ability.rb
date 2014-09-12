@@ -55,6 +55,7 @@ class Ability
       can [:accept, :destroy], :company_invite
       can [:verify, :resend_verification], :email
       can :manage, :main
+      can :update, :user
 
       can :create, CloudProfile::Email
       can [:create, :read, :search], Company
@@ -77,32 +78,32 @@ class Ability
       end
 
       can :manage, CloudBlueprint::Chart do |chart|
-        user.companies.include?(chart.company)
+        user.company_ids.include?(chart.company_id)
       end
 
       can :read, Vacancy do |vacancy|
-        user.vacancies.include?(vacancy) ||
-        vacancy.settings.accessible_to =~ /company|company_plus_one_share/ && user.companies.include?(vacancy.company) ||
+        user.vacancy_ids.include?(vacancy.id) ||
+        vacancy.settings.accessible_to =~ /company|company_plus_one_share/ && user.company_ids.include?(vacancy.company_id) ||
         vacancy.settings.accessible_to == 'company_plus_one_share' && user.friends.working_in_company(vacancy.company_id).any? ||
         vacancy.settings.accessible_to == 'everyone'        
       end
 
       can :manage, VacancyResponse do |vacancy_response|
         (user.people & vacancy_response.vacancy.company.people).first.try(:is_company_owner?) ||
-        user.vacancies.include?(vacancy_response.vacancy)
+        user.vacancy_ids.include?(vacancy_response.vacancy_id)
       end
 
       can :access_vacancy_responses, Vacancy do |vacancy|
         (user.people & vacancy.company.people).first.try(:is_company_owner?) ||
-        user.vacancies.include?(vacancy) ||
+        user.vacancy_ids.include?(vacancy.id) ||
         (vacancy.reviewers & user.people).any?
       end
 
       can :create, VacancyResponse do |vacancy_response|
-        !user.vacancy_responses.map(&:vacancy_id).include?(vacancy_response.vacancy_id) &&
-        !user.companies.include?(vacancy_response.vacancy.company) &&
+        !user.vacancy_responses.pluck(:vacancy_id).include?(vacancy_response.vacancy_id) &&
+        !user.company_ids.include?(vacancy_response.vacancy.company_id) &&
         vacancy_response.vacancy.status == 'opened' &&
-        !vacancy_response.vacancy.company.banned_users.include?(user)
+        !vacancy_response.vacancy.company.banned_users.pluck(:uuid).include?(user.id)
       end
 
       can [:read, :vote], VacancyResponse do |vacancy_response|

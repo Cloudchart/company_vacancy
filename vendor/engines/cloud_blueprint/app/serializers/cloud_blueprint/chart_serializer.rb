@@ -5,6 +5,7 @@ module CloudBlueprint
     attributes  :company_id
     attributes  :title
     attributes  :is_public
+    attributes  :slug
     attributes  :created_at, :updated_at
     
   end

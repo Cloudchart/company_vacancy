@@ -2,6 +2,8 @@ require_dependency "cloud_profile/application_controller"
 
 module CloudProfile
   class UsersController < ApplicationController    
+    authorize_resource class: false, only: :update
+
     # Request invite
     #
     def invite
