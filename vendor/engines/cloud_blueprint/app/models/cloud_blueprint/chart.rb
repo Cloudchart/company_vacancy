@@ -24,13 +24,8 @@ module CloudBlueprint
 
         i = 1
         while available_slugs.include?(new_slug)
-
-          new_slug = if new_slug.match(/-\d$/)
-            new_slug.gsub(/-\d$/, "-#{i}")
-          else
-            "#{new_slug}-1"
-          end
-
+          new_slug += '-0' unless new_slug.match(/-\d$/)
+          new_slug.gsub!(/-\d$/, "-#{i}")
           i += 1
         end
 
