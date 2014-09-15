@@ -10,8 +10,34 @@ DateInputComponent = require('cloud_blueprint/components/inputs/date_input')
 # 
 MainComponent = React.createClass
 
+
+  # Helpers
+  # 
+  # gatherSomething: ->
+
+
+  # Events
+  # 
+  onChange: (value) ->
+    @props.onChange({ target: { value: value } })
+
+
+  # Lifecycle Methods
+  # 
+  # componentWillMount: ->
+  # componentDidMount: ->
+  # componentWillUnmount: ->
+  # componentWillReceiveProps: (nextProps) ->
+  # shouldComponentUpdate: (nextProps, nextState) ->
+  # componentWillUpdate: (nextProps, nextState) ->
+  # componentDidUpdate: (prevProps, prevState) ->
+
+
   # Component Specifications
   # 
+  # getDefaultProps: ->
+  # getInitialState: ->
+
   render: ->
     (tag.div { className: 'profile-item' },
       (tag.div { className: 'content field' },
@@ -29,27 +55,6 @@ MainComponent = React.createClass
       )
     )    
 
-  # getInitialState: ->
-  # getDefaultProps: ->
-
-  # Lifecycle Methods
-  # 
-  # componentWillMount: ->
-  # componentDidMount: ->
-  # componentWillReceiveProps: (nextProps) ->
-  # shouldComponentUpdate: (nextProps, nextState) ->
-  # componentWillUpdate: (nextProps, nextState) ->
-  # componentDidUpdate: (prevProps, prevState) ->
-  # componentWillUnmount: ->
-
-  # Helpers
-  # 
-  # gatherSomething: ->
-
-  # Events
-  # 
-  onChange: (value) ->
-    @props.onChange({ target: { value: value } })
 
 # Exports
 # 

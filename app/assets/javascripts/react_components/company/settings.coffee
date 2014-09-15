@@ -5,9 +5,13 @@
 ##= require ./settings/slug
 ##= require ./settings/site_url
 ##= require ./settings/established_on
+##= require constants.module
+##= require utils/event_emitter.module
+##= require stores/company_store.module
 
 tag = React.DOM
-company_attributes = ['country', 'industry', 'is_listed', 'established_on']
+company_attributes  = ['country', 'industry', 'is_listed', 'established_on']
+CompanyStore        = require('stores/company_store')
 
 # Imports
 #
@@ -94,15 +98,27 @@ MainComponent = React.createClass
 
   
   getInitialState: ->
-    country:           @props.country
-    industry:          @props.industry_ids[0]
-    is_listed:         @props.is_listed
-    established_on:    @props.established_on
+    @getStateFromProps(@props)
+
 
   componentDidUpdate: (prevProps, prevState) ->
-    @save() if company_attributes.some((name) => @state[name] isnt prevState[name])
+    @save() if @state.shouldSave and company_attributes.some((name) => @state[name] isnt prevState[name])
+  
+  
+  componentWillReceiveProps: (nextProps) ->
+    @setState @getStateFromProps(nextProps)
+  
+  
+  getStateFromProps: (props) ->
+    country:           props.country
+    industry:          props.industry_ids[0]
+    is_listed:         props.is_listed
+    established_on:    props.established_on
+
 
   save: ->
+    @setState({ shouldSave: false })
+
     data = company_attributes.reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
 
     $.ajax
@@ -116,31 +132,38 @@ MainComponent = React.createClass
     .done @onSaveDone
     .fail @onSaveFail
 
+
   onSaveDone: (json) ->
-    @setState
-      country:        json.country
-      industry:       json.industry_ids[0]
-      is_listed:      json.is_listed
-      established_on: json.established_on
+    CompanyStore.update(@props.uuid, @getStateFromProps(json))
+    
   
+
   onSaveFail: ->
     console.warn 'Save Fail'
+
 
   toggleListing: ->
     @setState
       is_listed: !@state.is_listed
+      shouldSave: true
   
+
   onCountryChange: (event) ->
     @setState
       country: event.target.value
+      shouldSave: true
   
+
   onIndustryChange: (event) ->
     @setState
       industry: event.target.value
+      shouldSave: true
+
 
   onEstablishedOnChange: (event) ->
     @setState
       established_on: event.target.value
+      shouldSave: true
 
 
 # Exports

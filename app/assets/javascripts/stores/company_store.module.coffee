@@ -1,34 +1,59 @@
 # Imports
 #
-Dispatcher  = require('dispatcher/dispatcher')
-Constants   = require('constants')
+Dispatcher    = require('dispatcher/dispatcher')
+EventEmitter  = require('utils/event_emitter')
+Constants     = require('constants')
 
 
 # Data
 #
-data = new Immutable.Map({})
+data    = new Immutable.Map({})
+
+
+deserialize = (attributes = {}) ->
+  attributes
 
 
 # Store
 #
-Store =
+Store = {}
+
+_.extend Store, {},
+  
+  deserialize: (attributes) ->
+    deserialize(attributes)
   
 
-  find: (predicate) ->
+  get: (key) ->
+    data.get(key).toJS()
   
-  
+
   add: (json) ->
-    
+    found_record = data.find (record) -> record.get('uuid') == json.uuid
 
+    if found_record
+      throw new Error('CompanyStore.add: Record with key ' + json.uuid + ' already exists in store.')
+    else
+      data = data.set(json.uuid, Immutable.fromJS(json))
 
-# Dispatcher
-#
-Store.dispatchToken = Dispatcher.register (payload) ->
-  action = payload.action
+    Store.emitChange()
   
-  switch action.type
-    when Constants.Company.COMPANY_FETCH_DONE
-      _.noop
+  
+  update: (key, attributes) ->
+    record = data.find (record) -> record.get('uuid') == key
+
+    unless record
+      throw new Error('CompanyStore.update: Record with key ' + json.uuid + ' doesn\'t exist in store.')
+    else
+      record  = record.merge(@deserialize(attributes))
+      data    = data.set(key, record)
+    
+    Store.emitChange()
+
+
+# Extend Store with event emitter
+#
+_.extend Store, EventEmitter
 
 
 # Exports

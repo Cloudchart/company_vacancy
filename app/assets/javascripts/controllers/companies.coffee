@@ -32,16 +32,23 @@
   CountryStore      = cc.require('cc.stores.CountryStore')
   CompanyComponent  = cc.require('react/company')
   container         = document.querySelector('main')
-
+  
+  CompanyStore      = require('stores/company_store')
+  
+  
+  CompanyStore.add(data.company)
   PersonStore.load(data.company.people_url)
   VacancyStore.load(data.company.vacancies_url)
   
+
   _.each data.countries, (pair) ->
     CountryStore.add(new CountryStore({ id: pair[1], name: pair[0] }))
   
+
   CountryStore.emitChange()
 
-  React.renderComponent(CompanyComponent(data.company), container)
+  React.renderComponent(CompanyComponent({ key: data.company.uuid }), container)
+
 
 # Search
 # 
