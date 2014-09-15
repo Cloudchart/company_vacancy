@@ -69,8 +69,8 @@ Component = React.createClass
       parts = url.split('/')
       parts.pop()
       parts.push(@state.slug || @props.key)
-      window.location.href = parts.join('/')
-
+      # https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Manipulating_the_browser_history#The_pushState().C2.A0method
+      history.replaceState(null, document.title, parts.join('/'))
 
   getInitialState: ->
     getStateFromStore(@props.key)

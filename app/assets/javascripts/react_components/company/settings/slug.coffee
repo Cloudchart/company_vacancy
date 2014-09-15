@@ -42,7 +42,10 @@ RemoveSlugComponent = React.createClass
     parts = url.split('/')
     parts.pop()
     parts.push(@props.company_uuid)
-    window.location.href = parts.join('/')
+    history.replaceState(null, document.title, parts.join('/'))
+
+    @setState({ sync: false })
+    @props.onChange()
 
   onSaveFail: ->
     console.warn 'RemoveSlugComponent fail'
@@ -63,6 +66,7 @@ MainComponent = React.createClass
         (tag.div { className: 'actions' },
           (RemoveSlugComponent {
             company_uuid: @props.company_uuid
+            onChange: @onRemoveSlugChange
           })
         )
       )
@@ -130,7 +134,11 @@ MainComponent = React.createClass
     parts = url.split('/')
     parts.pop()
     parts.push(@state.value)
-    window.location.href = parts.join('/')
+    history.replaceState(null, document.title, parts.join('/'))
+
+    @setState
+      sync: false
+      is_slug_valid: true
 
   onSaveFail: ->
     @setState
@@ -154,6 +162,9 @@ MainComponent = React.createClass
 
   onChange: (event) ->
     @setState({ value: event.target.value })
+
+  onRemoveSlugChange: (event) ->
+    @setState({ value: null, is_slug_valid: false })
 
 # Exports
 #
