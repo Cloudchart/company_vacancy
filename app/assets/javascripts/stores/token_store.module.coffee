@@ -8,10 +8,26 @@ Dispatcher = require('dispatcher/dispatcher')
 uuid = -> blobURL = URL.createObjectURL(new Blob) ; URL.revokeObjectURL(blobURL) ; blobURL.split('/').pop()
 
 
-# Filter Attributes
+# Parse server data
 #
-filterAttributes = (attributes = {}) ->
-  _.reduce KnownAttributes, ((memo, attribute) -> memo[attribute] = attributes[attribute] ; memo), {}
+parseServerData = (attributes = {}) ->
+  uuid:         attributes['uuid']
+  name:         attributes['name']
+  data:         attributes['data']
+  owner_id:     attributes['owner_id']
+  owner_type:   attributes['owner_type']
+  created_at:   Date.parse(attributes['created_at'])
+  updated_at:   Date.parse(attributes['updated_at'])
+
+
+# Parse client data
+#
+parseClientData = (attributes = {}) ->
+  uuid:         attributes['uuid']
+  name:         attributes['name']
+  data:         attributes['data']
+  owner_id:     attributes['owner_id']
+  owner_type:   attributes['owner_type']
 
 
 # Variables
@@ -22,19 +38,19 @@ data = {}
 KnownAttributes = ['uuid', 'name', 'data', 'owner_id', 'owner_type', 'created_at', 'updated_at']
 
 
-data = new Immutable.Sequence
+data = new Immutable.Vector
 
 
 # Main
 #
-class Store
+Store =
   
-  @build: (attributes = {}) ->
+  build: (attributes = {}) ->
     key               = uuid()
-    attributes        = filterAttributes(attributes)
+    attributes        = parseClientData(attributes)
     attributes.__key  = attributes
-    model             = new Immutable.Map(attributes)
-    data = data.push(model)
+    model             = Immutable.fromJS(attributes)
+    data              = data.push(model)
     model
 
 

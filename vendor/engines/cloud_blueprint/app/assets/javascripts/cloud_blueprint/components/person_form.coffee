@@ -38,19 +38,19 @@ KnownAttributes = [PersonStore.unique_key, 'full_name', 'email', 'occupation', '
 FormFields = [
   
   {
-    name:         'occupation'
-    icon:         'institution'
-    type:         'text'
-    placeholder:  'Occupation'
-  }
-  
-  {
     name:         'email'
     icon:         'envelope-o'
     type:         'email'
     placeholder:  'Email'
   }
 
+  {
+    name:         'occupation'
+    icon:         'institution'
+    type:         'text'
+    placeholder:  'Occupation'
+  }
+  
   {
     name:         'phone'
     icon:         'mobile'
