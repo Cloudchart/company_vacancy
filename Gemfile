@@ -33,7 +33,6 @@ gem 'sidekiq' # background processing using redis
 gem 'active_model_serializers'
 gem 'dragonfly', '~> 1.0.5'
 gem 'sprockets-commonjs', git: 'git@github.com:maccman/sprockets-commonjs.git'
-
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 
 # CloudProfile Engine
@@ -77,6 +76,10 @@ group :production, :staging, :beta do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :ruby
   gem 'postmark-rails'
+end
+
+group :production do
+  gem 'intercom-rails', '~> 0.2.24'
 end
 
 # Use debugger
