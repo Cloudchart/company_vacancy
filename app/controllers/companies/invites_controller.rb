@@ -8,7 +8,10 @@ module Companies
     
     def create
       company     = Company.find(params[:company_id])
-      token       = company.tokens.build params.require(:token).permit(data: [ :email, :role ] ).merge(name: :invite)
+      token       = Token.new params.require(:token).permit(data: [ :email, :role ] ).merge(name: 'invite', owner: company)
+      
+      token.save!
+
       render nothing: true
     end
     

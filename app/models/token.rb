@@ -3,11 +3,13 @@ class Token < ActiveRecord::Base
 
   serialize :data
 
-  belongs_to :owner, polymorphic: true
+  belongs_to :owner, polymorphic: true, inverse_of: :tokens
 
   scope :invites, -> { where(arel_table[:name].eq(:invite).or(arel_table[:name].eq(:request_invite))) }
 
   validates :name, presence: true
+  
+  validates_with CompanyInviteValidator, if: :should_validate_as_company_invite?
   
   class << self
     
@@ -24,6 +26,12 @@ class Token < ActiveRecord::Base
     end
 
   end
+  
+  
+  def data=(data_attribute)
+    write_attribute(:data, data_attribute.to_hash.symbolize_keys)
+  end
+  
   
   rails_admin do
     label 'Invite'
@@ -55,6 +63,13 @@ class Token < ActiveRecord::Base
       end
 
     end
+  end
+
+
+  private
+  
+  def should_validate_as_company_invite?
+    owner_type == Company.name and name.to_sym == :invite
   end
   
 end
