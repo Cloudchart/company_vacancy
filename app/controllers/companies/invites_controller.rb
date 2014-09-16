@@ -1,4 +1,4 @@
-module Company
+module Companies
   class InvitesController < ApplicationController
   #   before_action :set_token, only: [:show, :accept, :destroy]
 
