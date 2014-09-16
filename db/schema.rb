@@ -165,7 +165,7 @@ ActiveRecord::Schema.define(version: 20140916132538) do
   create_table "company_access_rights", primary_key: "uuid", force: true do |t|
     t.string   "user_id",    limit: 36, null: false
     t.string   "company_id", limit: 36, null: false
-    t.string   "role"
+    t.string   "role",                  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -68,17 +68,13 @@ class Ability
       can :destroy, CloudProfile::Email, user_id: user.id
 
       can :manage, Company do |company|
-        (user.people & company.people).first.try(:is_company_owner?)
+        user.company_access_rights.find_by(company_id: company.id).try(:role) =~ /owner|editor/
       end
 
-      [Person, Vacancy, Event, Block, BlockIdentity].each do |model|
+      [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart].each do |model|
         can :manage, model do |resource|
-          (user.people & resource.company.people).first.try(:is_company_owner?)
+          user.company_access_rights.find_by(company_id: resource.company.id).try(:role) =~ /owner|editor/
         end
-      end
-
-      can :manage, CloudBlueprint::Chart do |chart|
-        user.company_ids.include?(chart.company_id)
       end
 
       can :read, Vacancy do |vacancy|
@@ -89,12 +85,12 @@ class Ability
       end
 
       can :manage, VacancyResponse do |vacancy_response|
-        (user.people & vacancy_response.vacancy.company.people).first.try(:is_company_owner?) ||
+        user.company_access_rights.find_by(company_id: vacancy_response.vacancy.company_id).try(:role) =~ /owner|editor/ ||
         user.vacancy_ids.include?(vacancy_response.vacancy_id)
       end
 
       can :access_vacancy_responses, Vacancy do |vacancy|
-        (user.people & vacancy.company.people).first.try(:is_company_owner?) ||
+        user.company_access_rights.find_by(company_id: vacancy.company_id).try(:role) =~ /owner|editor/ ||
         user.vacancy_ids.include?(vacancy.id) ||
         (vacancy.reviewers & user.people).any?
       end
@@ -116,7 +112,7 @@ class Ability
       end
 
       can :create_company_invite, Company do |company|
-        (user.people & company.people).first.try(:is_company_owner?)
+        user.company_access_rights.find_by(company_id: company.id).try(:role) == :owner
       end
 
     end

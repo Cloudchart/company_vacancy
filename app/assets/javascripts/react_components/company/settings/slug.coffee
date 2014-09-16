@@ -66,6 +66,7 @@ MainComponent = React.createClass
         (tag.div { className: 'actions' },
           (RemoveSlugComponent {
             company_uuid: @props.company_uuid
+            company_url: @props.company_url
             onChange: @onRemoveSlugChange
           })
         )

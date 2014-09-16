@@ -4,7 +4,7 @@ class CreateCompanyAccessRights < ActiveRecord::Migration
       t.string :uuid, limit: 36
       t.string :user_id, limit: 36, null: false
       t.string :company_id, limit: 36, null: false
-      t.string :role
+      t.string :role, null: false
 
       t.timestamps
     end
@@ -18,16 +18,17 @@ class CreateCompanyAccessRights < ActiveRecord::Migration
     say 'Migrating people to access_rights'
     Company.all.each do |company|
       company.people.joins(:user).order(:created_at).each_with_index do |person, index|
-        car = CompanyAccessRight.create(user_id: person.user_id, company_id: person.company_id)
+        car = CompanyAccessRight.new(user_id: person.user_id, company_id: person.company_id)
 
         if index == 0 && person.is_company_owner?
-          car.update(role: :owner)
+          car.role = :owner
         elsif index > 0 && person.is_company_owner?
-          car.update(role: :editor)
+          car.role = :editor
         else
-          car.update(role: :public_reader)
+          car.role = :public_reader
         end
 
+        car.save
         say "#{car.role} role for #{company.name} created", true
       end
     end

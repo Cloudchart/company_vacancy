@@ -68,7 +68,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   end
   
   def company_url
-    company_path(object)
+    company_path(object.id)
   end
 
   def blocks_url

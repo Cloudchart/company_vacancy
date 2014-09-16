@@ -13,9 +13,10 @@ class Company < ActiveRecord::Base
   has_and_belongs_to_many :industries
   has_and_belongs_to_many :banned_users, class_name: 'User', join_table: 'companies_banned_users'
 
-  # -- deprecated
+  # deprecated
   has_one :logo, as: :owner, dependent: :destroy
-  # --
+  accepts_nested_attributes_for :logo, allow_destroy: true
+
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy
   has_many :events, dependent: :destroy
@@ -25,9 +26,8 @@ class Company < ActiveRecord::Base
   has_many :charts, class_name: 'CloudBlueprint::Chart', dependent: :destroy
   has_many :favorites, as: :favoritable, dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
+  has_many :access_rights, class_name: 'CompanyAccessRight', dependent: :destroy
   # has_paper_trail
-
-  accepts_nested_attributes_for :logo, allow_destroy: true
 
   # validates :name, :country, :industry_ids, presence: true, on: :update
   validates :site_url, url: true, allow_blank: true
@@ -130,16 +130,6 @@ class Company < ActiveRecord::Base
     blocks.build(section: :people,      position: 1, identity_type: 'Paragraph',  is_locked: true)
     blocks.build(section: :vacancies,   position: 0, identity_type: 'Vacancy',    is_locked: true)
     charts.build(title: 'Default Chart')
-  end  
-
-  def associate_with_person(user)
-    people << user.people.build(
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: user.emails.first.address,
-      phone: user.phone,
-      is_company_owner: true
-    )
   end
   
   def as_json_for_editor
