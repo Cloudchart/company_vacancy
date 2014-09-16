@@ -67,7 +67,7 @@ class Ability
       #
       can :destroy, CloudProfile::Email, user_id: user.id
 
-      can [:update, :destroy, :upload_logo, :verify_site_url, :download_verification_file], Company do |company|
+      can :manage, Company do |company|
         (user.people & company.people).first.try(:is_company_owner?)
       end
 

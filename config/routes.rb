@@ -47,6 +47,9 @@ Cloudchart::Application.routes.draw do
       post :verify, on: :member
     end
 
+    resources :access_rights, controller: 'companies/access_rights'
+    resources :invites, controller: 'companies/invites'
+
   end
 
   resources :blocks, only: [:update, :destroy] do
