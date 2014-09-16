@@ -7,3 +7,14 @@ module.exports =
     
     COMPANY_UPDATE_DONE:  'company:update:done'
     COMPANY_UPDATE_FAIL:  'company:update:fail'
+  
+  
+  Token:
+    CREATE_DONE: 'token:create:done'
+    CREATE_FAIL: 'token:create:fail'
+
+    UPDATE_DONE: 'token:update:done'
+    UPDATE_FAIL: 'token:update:fail'
+
+    DELETE_DONE: 'token:delete:done'
+    DELETE_FAIL: 'token:delete:fail'

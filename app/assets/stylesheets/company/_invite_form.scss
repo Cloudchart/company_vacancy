@@ -1,0 +1,59 @@
+main.company-access-rights form.invite {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  margin: 20px 0;
+  padding: 0 10px;
+  
+  width: 500px;
+  
+  > header,
+  > fieldset,
+  > footer {
+    margin: 20px 10px;
+    text-align: center;
+  }
+  
+  > fieldset {
+    border: none;
+    padding: 0;
+    text-align: left;
+    
+    label {
+      display: block;
+      font-size: 15px;
+      margin: 10px auto;
+      padding-left: 20px;
+      position: relative;
+      width: 75%;
+      
+      input {
+        @include position(absolute, 2px 0 0 2px);
+
+        font-size: inherit;
+      }
+      
+      p {
+        font-size: 12px;
+        margin: 0 0 10px;
+        opacity: .5;
+      }
+    }
+    
+    input.email {
+      display: block;
+      font-size: 16px;
+      margin: 20px auto 0;
+      padding: 2px 5px;
+      width: 75%;
+    }
+  }
+  
+  button {
+    font-size: 12px;
+    padding: 5px 10px;
+
+    i.fa {
+      margin-left: 5px;
+    }
+  }
+}

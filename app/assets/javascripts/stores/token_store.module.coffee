@@ -1,63 +1,60 @@
 # Imports
 #
-Dispatcher = require('dispatcher/dispatcher')
-
-
-# UUID
-#
-uuid = -> blobURL = URL.createObjectURL(new Blob) ; URL.revokeObjectURL(blobURL) ; blobURL.split('/').pop()
-
-
-# Parse server data
-#
-parseServerData = (attributes = {}) ->
-  uuid:         attributes['uuid']
-  name:         attributes['name']
-  data:         attributes['data']
-  owner_id:     attributes['owner_id']
-  owner_type:   attributes['owner_type']
-  created_at:   Date.parse(attributes['created_at'])
-  updated_at:   Date.parse(attributes['updated_at'])
-
-
-# Parse client data
-#
-parseClientData = (attributes = {}) ->
-  uuid:         attributes['uuid']
-  name:         attributes['name']
-  data:         attributes['data']
-  owner_id:     attributes['owner_id']
-  owner_type:   attributes['owner_type']
+Dispatcher    = require('dispatcher/dispatcher')
+EventEmitter  = require('utils/event_emitter')
+Constants     = require('constants')
+uuid          = require('utils/uuid')
 
 
 # Variables
 #
-data = {}
 
 
-KnownAttributes = ['uuid', 'name', 'data', 'owner_id', 'owner_type', 'created_at', 'updated_at']
-
-
-data = new Immutable.Vector
+data = new Immutable.Map
 
 
 # Main
 #
 Store =
   
-  build: (attributes = {}) ->
-    key               = uuid()
-    attributes        = parseClientData(attributes)
-    attributes.__key  = attributes
-    model             = Immutable.fromJS(attributes)
-    data              = data.push(model)
-    model
+  # Create
+  #
+  create: ->
+    key   = uuid()
+    model = new Immutable.Map
+    data  = data.set(key, model)
+    key
+  
+  
+  # Get
+  #
+  get: (key) ->
+    data.get(key).toJS()
+  
+  
+  # Update
+  #
+  update: (key, attributes = {}) ->
+    console.log key
+    model = data.get(key).merge(attributes)
+    data  = data.set(key, model)
+  
+
+# Event Emitter
+#
+_.extend Store, EventEmitter
 
 
 # Dispatching
 #
 Store.dispatchToken = Dispatcher.register (payload) ->
   action = payload.action      
+
+  switch action.type
+
+    when Constants.Token.CREATE
+      Store.update(action.key, action.attributes)
+      Store.emitChange()
 
 
 # Exports

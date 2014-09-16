@@ -1,5 +1,18 @@
 module Companies
   class InvitesController < ApplicationController
+    
+    
+    def index
+    end
+    
+    
+    def create
+      company     = Company.find(params[:company_id])
+      token       = company.tokens.build params.require(:token).permit(data: [ :email, :role ] ).merge(name: :invite)
+      render nothing: true
+    end
+    
+
   #   before_action :set_token, only: [:show, :accept, :destroy]
 
   #   authorize_resource class: false, except: :create
