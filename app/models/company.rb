@@ -7,6 +7,9 @@ class Company < ActiveRecord::Base
 
   BlockTypes  = ['Paragraph', 'BlockImage', 'Person', 'Vacancy']
   Sections    = ['About', 'Product', 'People', 'Vacancies']
+  
+  INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
+  ROLES           = ([:owner] << INVITABLE_ROLES.dup).flatten.freeze
 
   dragonfly_accessor :logotype
 

@@ -8,6 +8,10 @@ Buttons         = require('components/company/buttons')
 InviteUserForm  = require('components/company/invite_user_form')
 
 
+# Get State From Stores
+#
+
+
 # Main
 #
 Component = React.createClass

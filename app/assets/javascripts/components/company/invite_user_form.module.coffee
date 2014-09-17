@@ -15,7 +15,6 @@ Component = React.createClass
 
 
   render: ->
-    console.log @props
     (tag.form {
       className:  'invite-user'
       onSubmit:   @onSubmit
