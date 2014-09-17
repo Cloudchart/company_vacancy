@@ -47,8 +47,12 @@ Cloudchart::Application.routes.draw do
       post :verify, on: :member
     end
 
-    resources :access_rights, controller: 'companies/access_rights'
-    resources :invites, controller: 'companies/invites'
+    resources :access_rights, controller: 'companies/access_rights' do
+    end
+
+    resources :invites, controller: 'companies/invites' do
+      match :resend, on: :member, via: [:put, :patch]
+    end
 
   end
 

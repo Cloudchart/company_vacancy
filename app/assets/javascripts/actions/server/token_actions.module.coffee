@@ -32,6 +32,21 @@ module.exports =
       xhr:  xhr
   
   
+  updateDone: (key, json) ->
+    Dispatcher.handleServerAction
+      type: Constants.Token.UPDATE_DONE
+      key:  key
+      json: json
+  
+  
+  updateFail: (key, xhr) ->
+    Dispatcher.handleServerAction
+      type: Constants.Token.UPDATE_FAIL
+      key:  key
+      json: xhr.responseJSON
+      xhr:  xhr
+  
+  
   deleteDone: (key, json) ->
     Dispatcher.handleServerAction
       type: Constants.Token.DELETE_DONE

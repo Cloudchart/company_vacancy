@@ -36,6 +36,18 @@ module.exports =
     ).then(done, fail)
   
   
+  resendCompanyInvite: (key, company_key) ->
+    done = (TokenServerActions.updateDone or _.noop).bind(null, key)
+    fail = (TokenServerActions.updateFail or _.noop).bind(null, key)
+    
+    Promise.resolve(
+      $.ajax
+        url:        "/companies/#{company_key}/invites/#{key}/resend"
+        type:       "PATCH"
+        dataType:   "json"
+    ).then(done, fail)
+  
+  
   deleteCompanyInvite: (key, company_key) ->
     model = TokenStore.get(key)
     
@@ -44,7 +56,7 @@ module.exports =
 
     Promise.resolve(
       $.ajax
-        url:        "/invites/#{key}"
+        url:        "/companies/#{company_key}/invites/#{key}"
         type:       "DELETE"
         dataType:   "json"
     ).then(done, fail)

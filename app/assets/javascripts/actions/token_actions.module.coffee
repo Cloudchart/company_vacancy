@@ -19,6 +19,15 @@ module.exports =
     TokenSyncAPI.createCompanyInvite(key, company_key)
   
   
+  resendCompanyInvite: (key, company_key) ->
+    Dispatcher.handleClientAction
+      type:       Constants.Token.UPDATE
+      key:        key
+      attributes: {}
+    
+    TokenSyncAPI.resendCompanyInvite(key, company_key)
+  
+  
   deleteCompanyInvite: (key, company_key) ->
     Dispatcher.handleClientAction
       type: Constants.Token.DELETE

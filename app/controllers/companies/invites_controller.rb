@@ -2,6 +2,8 @@ module Companies
   class InvitesController < ApplicationController
     
     
+    # List
+    #
     def index
       company     = Company.find(params[:company_id])
       
@@ -11,6 +13,8 @@ module Companies
     end
     
     
+    # Create
+    #
     def create
       company     = Company.find(params[:company_id])
       token       = Token.new params.require(:token).permit(data: [ :email, :role ] ).merge(name: 'invite', owner: company)
@@ -30,7 +34,23 @@ module Companies
       end
     end
     
+
+    # Resend
+    #
+    def resend
+      company   = Company.find(params[:company_id])
+      token     = company.tokens.where(name: :invite).find(params[:id])
+      
+      UserMailer.company_invite(token.data[:email], token).deliver
+
+      respond_to do |format|
+        format.json { render json: token }
+      end
+    end
     
+    
+    # Destroy
+    #
     def destroy
       token       = Token.find(params[:id])
       token.destroy

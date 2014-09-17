@@ -8,13 +8,31 @@ uuid          = require('utils/uuid')
 
 # Variables
 #
-data    = new Immutable.Map
-errors  = new Immutable.Map
+data      = new Immutable.Map
+errors    = new Immutable.Map
+syncs     = new Immutable.Map
+
+
+startSync = (key, mode) ->
+  syncs = syncs.set(key, mode)
+  
+
+stopSync = (key) ->
+  syncs = syncs.remove(key)
 
 
 # Main
 #
 Store =
+  
+  startSync: startSync
+  
+  stopSync: stopSync
+  
+
+  getSync: (key) ->
+    syncs.get(key)
+    
   
   # Create
   #
@@ -64,7 +82,7 @@ Store =
   # Update
   #
   update: (key, attributes = {}) ->
-    model = data.get(key).merge(attributes)
+    model = data.get(key).mergeDeep(attributes)
     data  = data.set(key, model)
   
   
@@ -105,22 +123,49 @@ Store.dispatchToken = Dispatcher.register (payload) ->
       
 
     when Constants.Token.CREATE
+      startSync(action.key, 'create')
       Store.update(action.key, action.attributes)
       Store.emitChange()
     
     
     when Constants.Token.CREATE_DONE
+      stopSync(action.key, 'create')
       Store.remove(action.key)
       Store.add(action.json)
       Store.emitChange()
     
     
     when Constants.Token.CREATE_FAIL
+      stopSync(action.key, 'create')
       errors = errors.set(action.key, Immutable.fromJS(action.json.errors))
       Store.emitChange()
     
     
+    when Constants.Token.UPDATE
+      startSync(action.key, 'update')
+      Store.update(action.key, action.attributes)
+      Store.emitChange()
+    
+    
+    when Constants.Token.UPDATE_DONE
+      stopSync(action.key, 'update')
+      #Store.update(action.key, action.attributes)
+      Store.emitChange()
+    
+    
+    when Constants.Token.UPDATE_FAIL
+      stopSync(action.key, 'update')
+      #Store.update(action.key, action.attributes)
+      Store.emitChange()
+    
+    
+    when Constants.Token.DELETE
+      startSync(action.key, 'delete')
+      Store.emitChange()
+
+
     when Constants.Token.DELETE_DONE
+      stopSync(action.key, 'delete')
       Store.remove(action.key)
       Store.emitChange()
 
