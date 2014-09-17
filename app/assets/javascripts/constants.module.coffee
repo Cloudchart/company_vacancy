@@ -10,11 +10,17 @@ module.exports =
   
   
   Token:
-    CREATE_DONE: 'token:create:done'
-    CREATE_FAIL: 'token:create:fail'
+    FETCH_DONE:   'token:fetch:done'
+    FETCH_FAIL:   'token:fetch:fail'
+    
+    CREATE:       'token:create'
+    CREATE_DONE:  'token:create:done'
+    CREATE_FAIL:  'token:create:fail'
 
-    UPDATE_DONE: 'token:update:done'
-    UPDATE_FAIL: 'token:update:fail'
+    UPDATE:       'token:update'
+    UPDATE_DONE:  'token:update:done'
+    UPDATE_FAIL:  'token:update:fail'
 
-    DELETE_DONE: 'token:delete:done'
-    DELETE_FAIL: 'token:delete:fail'
+    DELETE:       'token:delete'
+    DELETE_DONE:  'token:delete:done'
+    DELETE_FAIL:  'token:delete:fail'

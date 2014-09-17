@@ -29,8 +29,6 @@ class User < ActiveRecord::Base
   has_many  :people, dependent: :destroy
   has_many :companies, through: :people
   
-  has_many :companies, through: :people
-  
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
 
   rails_admin do

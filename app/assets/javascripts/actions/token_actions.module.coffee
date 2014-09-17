@@ -17,3 +17,11 @@ module.exports =
       attributes: attributes
     
     TokenSyncAPI.createCompanyInvite(key, company_key)
+  
+  
+  deleteCompanyInvite: (key, company_key) ->
+    Dispatcher.handleClientAction
+      type: Constants.Token.DELETE
+      key:  key
+    
+    TokenSyncAPI.deleteCompanyInvite(key, company_key)

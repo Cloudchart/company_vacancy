@@ -3,6 +3,11 @@ module Companies
     
     
     def index
+      company     = Company.find(params[:company_id])
+      
+      respond_to do |format|
+        format.json { render json: company.invite_tokens, root: false }
+      end
     end
     
     
@@ -11,8 +16,26 @@ module Companies
       token       = Token.new params.require(:token).permit(data: [ :email, :role ] ).merge(name: 'invite', owner: company)
       
       token.save!
+      
+      respond_to do |format|
+        format.json { render json: token }
+      end
 
-      render nothing: true
+    rescue ActiveRecord::RecordInvalid
+      
+      respond_to do |format|
+        format.json { render json: { token: token, errors: token.errors }, status: 412 }
+      end
+    end
+    
+    
+    def destroy
+      token       = Token.find(params[:id])
+      token.destroy
+      
+      respond_to do |format|
+        format.json { render json: token }
+      end
     end
     
 

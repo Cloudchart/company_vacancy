@@ -102,6 +102,7 @@ Component = React.createClass
         
         (tag.input {
           autoFocus:    true
+          autoComplete: 'off'
           className:    'email'
           name:         'email'
           value:        @state.email
