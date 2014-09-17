@@ -163,9 +163,9 @@ ActiveRecord::Schema.define(version: 20140916132538) do
   add_index "companies_industries", ["company_id", "industry_id"], name: "index_companies_industries_on_company_id_and_industry_id", unique: true, using: :btree
 
   create_table "company_access_rights", primary_key: "uuid", force: true do |t|
-    t.string   "user_id",    limit: 36,              null: false
-    t.string   "company_id", limit: 36,              null: false
-    t.string   "role",                  default: "", null: false
+    t.string   "user_id",    limit: 36, null: false
+    t.string   "company_id", limit: 36, null: false
+    t.string   "role",                  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
