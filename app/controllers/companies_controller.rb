@@ -27,16 +27,10 @@ class CompaniesController < ApplicationController
   # GET /companies/new
   def new
     @company = Company.new(name: 'Default Company')
-    # @company.people << current_user.people.build(
-    #   first_name: current_user.first_name,
-    #   last_name: current_user.last_name,
-    #   email: current_user.emails.first.address,
-    #   phone: current_user.phone,
-    #   is_company_owner: true # deprecated
-    # )
     @company.access_rights.create(user: current_user, role: :owner)
     @company.should_build_objects!
     @company.save!
+    
     redirect_to @company
   end
   

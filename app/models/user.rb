@@ -7,8 +7,8 @@ class User < ActiveRecord::Base
 
   has_secure_password
 
-  #has_one   :avatar, as: :owner, dependent: :destroy
-  #accepts_nested_attributes_for :avatar, allow_destroy: true
+  # has_one   :avatar, as: :owner, dependent: :destroy
+  # accepts_nested_attributes_for :avatar, allow_destroy: true
   dragonfly_accessor :avatar
 
   has_and_belongs_to_many :friends
@@ -23,11 +23,12 @@ class User < ActiveRecord::Base
   has_many :vacancies, foreign_key: :author_id
   has_many :vacancy_responses
   has_many :favorites, dependent: :destroy
-  has_many :company_access_rights, dependent: :destroy
+  has_many :company_access_rights, class_name: 'Company::AccessRight', dependent: :destroy
+  has_many :companies, through: :company_access_rights
 
   # deprecated
-  has_many  :people, dependent: :destroy
-  has_many :companies, through: :people
+  # has_many  :people, dependent: :destroy
+  # has_many :companies, through: :people
   
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
 

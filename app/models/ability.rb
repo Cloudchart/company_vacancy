@@ -37,9 +37,9 @@ class Ability
     can :read, Company, is_public: true
     can [:preview, :read, :pull], CloudBlueprint::Chart, is_public: true
 
-    can :read, Vacancy do |vacancy|
-      vacancy.settings.accessible_to == 'everyone'
-    end
+    # can :read, Vacancy do |vacancy|
+    #   vacancy.settings.accessible_to == 'everyone'
+    # end
 
     return unless user
 
@@ -77,43 +77,43 @@ class Ability
         end
       end
 
-      can :read, Vacancy do |vacancy|
-        user.vacancy_ids.include?(vacancy.id) ||
-        vacancy.settings.accessible_to =~ /company|company_plus_one_share/ && user.company_ids.include?(vacancy.company_id) ||
-        vacancy.settings.accessible_to == 'company_plus_one_share' && user.friends.working_in_company(vacancy.company_id).any? ||
-        vacancy.settings.accessible_to == 'everyone'        
-      end
-
-      can :manage, VacancyResponse do |vacancy_response|
-        user.company_access_rights.find_by(company_id: vacancy_response.vacancy.company_id).try(:role) =~ /owner|editor/ ||
-        user.vacancy_ids.include?(vacancy_response.vacancy_id)
-      end
-
-      can :access_vacancy_responses, Vacancy do |vacancy|
-        user.company_access_rights.find_by(company_id: vacancy.company_id).try(:role) =~ /owner|editor/ ||
-        user.vacancy_ids.include?(vacancy.id) ||
-        (vacancy.reviewers & user.people).any?
-      end
-
-      can :create, VacancyResponse do |vacancy_response|
-        !user.vacancy_responses.pluck(:vacancy_id).include?(vacancy_response.vacancy_id) &&
-        !user.company_ids.include?(vacancy_response.vacancy.company_id) &&
-        vacancy_response.vacancy.status == 'opened' &&
-        !vacancy_response.vacancy.company.banned_users.pluck(:uuid).include?(user.id)
-      end
-
-      can [:read, :vote], VacancyResponse do |vacancy_response|
-        (vacancy_response.vacancy.reviewers & user.people).any? &&
-        vacancy_response.status == 'in_review'
-      end
-
-      can :manage, Comment do |comment|
-        comment.user == user
-      end
-
       can :create_company_invite, Company do |company|
         user.company_access_rights.find_by(company_id: company.id).try(:role) == :owner
       end
+
+      # can :read, Vacancy do |vacancy|
+      #   user.vacancy_ids.include?(vacancy.id) ||
+      #   vacancy.settings.accessible_to =~ /company|company_plus_one_share/ && user.company_ids.include?(vacancy.company_id) ||
+      #   vacancy.settings.accessible_to == 'company_plus_one_share' && user.friends.working_in_company(vacancy.company_id).any? ||
+      #   vacancy.settings.accessible_to == 'everyone'        
+      # end
+
+      # can :manage, VacancyResponse do |vacancy_response|
+      #   user.company_access_rights.find_by(company_id: vacancy_response.vacancy.company_id).try(:role) =~ /owner|editor/ ||
+      #   user.vacancy_ids.include?(vacancy_response.vacancy_id)
+      # end
+
+      # can :access_vacancy_responses, Vacancy do |vacancy|
+      #   user.company_access_rights.find_by(company_id: vacancy.company_id).try(:role) =~ /owner|editor/ ||
+      #   user.vacancy_ids.include?(vacancy.id) ||
+      #   (vacancy.reviewers & user.people).any?
+      # end
+
+      # can :create, VacancyResponse do |vacancy_response|
+      #   !user.vacancy_responses.pluck(:vacancy_id).include?(vacancy_response.vacancy_id) &&
+      #   !user.company_ids.include?(vacancy_response.vacancy.company_id) &&
+      #   vacancy_response.vacancy.status == 'opened' &&
+      #   !vacancy_response.vacancy.company.banned_users.pluck(:uuid).include?(user.id)
+      # end
+
+      # can [:read, :vote], VacancyResponse do |vacancy_response|
+      #   (vacancy_response.vacancy.reviewers & user.people).any? &&
+      #   vacancy_response.status == 'in_review'
+      # end
+
+      # can :manage, Comment do |comment|
+      #   comment.user == user
+      # end
 
     end
   end

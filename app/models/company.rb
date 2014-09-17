@@ -9,16 +9,16 @@ class Company < ActiveRecord::Base
   Sections    = ['About', 'Product', 'People', 'Vacancies']
   
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
-  ROLES           = ([:owner] << INVITABLE_ROLES.dup).flatten.freeze
+  ROLES           = ([:owner] + INVITABLE_ROLES).freeze
 
   dragonfly_accessor :logotype
-
-  has_and_belongs_to_many :industries
-  has_and_belongs_to_many :banned_users, class_name: 'User', join_table: 'companies_banned_users'
 
   # deprecated
   has_one :logo, as: :owner, dependent: :destroy
   accepts_nested_attributes_for :logo, allow_destroy: true
+
+  has_and_belongs_to_many :industries
+  has_and_belongs_to_many :banned_users, class_name: 'User', join_table: 'companies_banned_users'
 
   has_many :vacancies, dependent: :destroy
   has_many :people, dependent: :destroy
@@ -29,7 +29,7 @@ class Company < ActiveRecord::Base
   has_many :charts, class_name: 'CloudBlueprint::Chart', dependent: :destroy
   has_many :favorites, as: :favoritable, dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
-  has_many :access_rights, class_name: 'CompanyAccessRight', dependent: :destroy
+  has_many :access_rights, class_name: 'Company::AccessRight', dependent: :destroy
   # has_paper_trail
 
   # validates :name, :country, :industry_ids, presence: true, on: :update
