@@ -31,10 +31,16 @@ Store =
     errors.get(key)
   
   
+  # Has
+  #
+  has: (key) ->
+    data.has(key)
+  
+  
   # Get
   #
   get: (key) ->
-    data.get(key).toJS()
+    data.get(key)
   
   
   # Get key
@@ -46,7 +52,7 @@ Store =
   # Find
   #
   filter: (predicate) ->
-    data.filter(predicate).toVector().toJS()
+    data.filter(predicate)
   
   
   # Add
@@ -75,7 +81,9 @@ Store =
   # Remove
   #
   remove: (key) ->
-    data = data.remove(key)
+    data    = data.remove(key)
+    errors  = errors.remove(key)
+    key
   
 
 # Event Emitter
@@ -108,6 +116,7 @@ Store.dispatchToken = Dispatcher.register (payload) ->
     
     
     when Constants.Token.CREATE_FAIL
+      errors = errors.set(action.key, Immutable.fromJS(action.json.errors))
       Store.emitChange()
     
     

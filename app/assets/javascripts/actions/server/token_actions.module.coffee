@@ -26,7 +26,7 @@ module.exports =
   
   createFail: (key, xhr) ->
     Dispatcher.handleServerAction
-      type: Constants.Token.CREATE_DONE
+      type: Constants.Token.CREATE_FAIL
       key:  key
       json: xhr.responseJSON
       xhr:  xhr

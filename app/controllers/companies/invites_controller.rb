@@ -20,6 +20,8 @@ module Companies
       respond_to do |format|
         format.json { render json: token }
       end
+      
+      UserMailer.company_invite(token.data[:email], token).deliver
 
     rescue ActiveRecord::RecordInvalid
       

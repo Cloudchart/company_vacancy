@@ -1,6 +1,6 @@
 <% class_for_root_tag main: 'company-access-rights' %>
 
-<% pagescript_params company: CompanySerializer.new(@company) %>
+<% pagescript_params company: CompanySerializer.new(@company), roles: Company::INVITABLE_ROLES %>
 
 <h1>Access Rights</h1>
 

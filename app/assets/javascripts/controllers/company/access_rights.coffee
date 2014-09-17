@@ -5,6 +5,11 @@
   TokenSyncAPI  = require('sync/token_sync_api')
   
   
+  # Fetch tokens
+  #
+  TokenSyncAPI.fetchByCompany(data.company.uuid)
+  #UserSyncAPI.fetchByCompany(data.company.uuid)
+
   # Add loaded company
   #
   CompanyStore.add(data.company)
@@ -14,10 +19,6 @@
   #
   AccessRightsComponent = require('components/company/access_rights')
   
-  React.renderComponent(AccessRightsComponent({ key: data.company.uuid }), document.querySelector('[data-react-mount-point="access-rights"]'))
+  React.renderComponent(AccessRightsComponent({ key: data.company.uuid, roles: data.roles }), document.querySelector('[data-react-mount-point="access-rights"]'))
   
   
-  # Fetch tokens
-  #
-  TokenSyncAPI.fetchByCompany(data.company.uuid)
-  #UserSyncAPI.fetchByCompany(data.company.uuid)

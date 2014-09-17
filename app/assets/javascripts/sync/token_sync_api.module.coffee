@@ -32,7 +32,7 @@ module.exports =
         type:       "POST"
         dataType:   "json"
         data:
-          token:    model
+          token:    model.toJS()
     ).then(done, fail)
   
   
