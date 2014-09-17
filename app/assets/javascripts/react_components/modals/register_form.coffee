@@ -4,9 +4,9 @@
 #
 tag = cc.require('react/dom')
 
-SplashComponent = cc.require('react/modals/invite-splash')
+SplashComponent = cc.require('react/modals/splash')
 
-email_re = /@/i
+email_re = /.+@.+\..+/i
 
 
 #
@@ -16,14 +16,10 @@ Component = React.createClass
 
   isEmailAndNameValid: ->
     email_re.test(@state.email) and @state.full_name.length > 0
-
-
-  isValidForInvite: ->
-    @isEmailAndNameValid() and !@isValidForRegister()
   
   
   isValidForRegister: ->
-    @isEmailAndNameValid() and @state.password.length > 0 and @state.invite.length > 0
+    @isEmailAndNameValid() and @state.password.length > 0 and @props.invite.length > 0
   
   
   onEmailChange: (event) ->
@@ -37,15 +33,6 @@ Component = React.createClass
   onPasswordChange: (event) ->
     @setState({ password: event.target.value })
 
-
-  onInviteChange: (event) ->
-    @setState({ invite: event.target.value })
-
-  onPasswordKeyUp: (event) ->
-    switch event.key
-      when 'Enter'
-        @onRegisterButtonClick() if @isValidForRegister()
-  
   onInputFocus: (event) ->
     errors = @state.errors[0..]
     errors.splice(errors.indexOf(event.target.name), 1)
@@ -53,51 +40,35 @@ Component = React.createClass
       errors: errors
   
   
-  onInviteDone: (json) ->
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: SplashComponent({})
-    
-    window.dispatchEvent(event)
-  
-  
-  onInviteFail: (xhr) ->
-    errors = xhr.responseJSON.errors
-    errors.splice(errors.indexOf('emails'), 1, 'email') if errors.indexOf('emails') > - 1
-    @setState
-      errors: errors
-  
-  
-  onInviteButtonClick: (event) ->
-    $.ajax
-      url:      '/invite'
-      type:     'POST'
-      dataType: 'json'
-      data:
-        user:
-          email:      @state.email
-          full_name:  @state.full_name
-    .done @onInviteDone
-    .fail @onInviteFail
-  
-  
   onRegisterDone: (json) ->
+    @setState({ sync: false })
+
     if json.state == 'login'
       window.location.reload()
     
-    if json.state == 'activate'
-      pass
+    if json.state == 'activation'
+      event = new CustomEvent 'modal:push',
+        detail:
+          component: SplashComponent({
+            header: 'Activation'
+            note: 'We have sent an activation email.'
+          })
+      
+      window.dispatchEvent(event)
   
   
   
   onRegisterFail: (xhr) ->
+    @setState({ sync: false })
+
     errors = xhr.responseJSON.errors
     errors.splice(errors.indexOf('emails'), 1, 'email') if errors.indexOf('emails') > - 1
     @setState
       errors: errors
   
-  
   onRegisterButtonClick: (event) ->
+    @setState({ sync: true })
+
     $.ajax
       url:      '/register'
       type:     'POST'
@@ -108,7 +79,7 @@ Component = React.createClass
           full_name:              @state.full_name
           password:               @state.password
           password_confirmation:  @state.password
-          invite:                 @state.invite
+          invite:                 @props.invite
     .done @onRegisterDone
     .fail @onRegisterFail
 
@@ -123,20 +94,19 @@ Component = React.createClass
   
   onSubmit: (event) ->
     event.preventDefault()
+    @onRegisterButtonClick()
   
   
   getDefaultProps: ->
     email:      ''
     full_name:  ''
-    invite:     ''
-  
   
   getInitialState: ->
     errors:     []
     email:      @props.email
     full_name:  @props.full_name
-    invite:     @props.invite
     password:   ''
+    sync: false
 
 
 
@@ -158,22 +128,6 @@ Component = React.createClass
       
       
       (tag.fieldset {},
-      
-        # Email Input
-        #
-        (tag.label {},
-          'Email'
-          (tag.input {
-            type:         'text'
-            name:         'email'
-            className:    'error' if @state.errors.indexOf('email') > -1
-            autoFocus:    @state.email.length == 0
-            autoComplete: @false
-            value:        @state.email
-            onFocus:      @onInputFocus
-            onChange:     @onEmailChange
-          })
-        )
         
         # Name Input
         #
@@ -183,11 +137,27 @@ Component = React.createClass
             type:         'text'
             name:         'full_name'
             className:    'error' if @state.errors.indexOf('full_name') > -1
-            autoFocus:    @state.email.length > 0
+            autoFocus:    true
             autoComplete: 'off'
             value:        @state.full_name
             onFocus:      @onInputFocus
             onChange:     @onFullNameChange
+          })
+        )
+      
+        # Email Input
+        #
+        (tag.label {},
+          'Email'
+          (tag.input {
+            type:         'text'
+            name:         'email'
+            className:    'error' if @state.errors.indexOf('email') > -1
+            # autoFocus:    @state.email.length == 0
+            autoComplete: @false
+            value:        @state.email
+            onFocus:      @onInputFocus
+            onChange:     @onEmailChange
           })
         )
 
@@ -204,42 +174,31 @@ Component = React.createClass
             value:        @state.password
             onFocus:      @onInputFocus
             onChange:     @onPasswordChange
-            onKeyUp:      @onPasswordKeyUp
           })
         )
 
         # Invite Code Input
         #
-        (tag.label {},
+        (tag.label { style: { display: 'none' } },
           'Invite code'
           (tag.input {
             type:         'text'
             name:         'invite'
-            className:    'error' if @state.errors.indexOf('invite') > -1
+            disabled:     true
             autoComplete: 'off'
-            value:        @state.invite
-            onFocus:      @onInputFocus
-            onChange:     @onInviteChange
+            value:        @props.invite
           })
         )
       )
       
       
       (tag.footer {},
-        (tag.button {
-          type:       'submit'
-          className:  'invite'
-          disabled:   !@isValidForInvite()
-          onClick:    @onInviteButtonClick
-        },
-          'Request Invite'
-          (tag.i { className: 'fa fa-ticket' })
-        )
+        (tag.div { className: 'spacer' })
 
         (tag.button {
           type:       'submit'
-          className:  'alert register'
-          disabled:   !@isValidForRegister()
+          className:  'register'
+          disabled:   !@isValidForRegister() or @state.sync
           onClick:    @onRegisterButtonClick
         },
           'Register'

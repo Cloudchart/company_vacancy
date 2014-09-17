@@ -6,8 +6,7 @@ tag = cc.require('react/dom')
 
 InputComponent = cc.require('react/modals/input')
 
-email_re = /.+@.+/i
-
+email_re = /.+@.+\..+/i
 
 # Login mixin
 #
@@ -69,14 +68,14 @@ RegisterMixin =
   onRegisterButtonClick: (event) ->
     event.preventDefault()
     
-    component = cc.require('react/modals/register-form')
+    component = cc.require("react/modals/#{if @state.invite then 'register-form' else 'invite-form'}")
     
     event = new CustomEvent 'modal:push',
       detail:
-        component: (component { 
-          email: @state.email
+        component: (component {
           invite: @state.invite
           full_name: @state.full_name
+          email: @state.email
         })
     
     dispatchEvent(event)
@@ -146,14 +145,15 @@ ResetButton = (is_disabled, callback) ->
 # Register button
 #
 RegisterButton = (is_disabled, callback) ->
-  (tag.button {
-    type:       'button'
+  (tag.a {
+    # type:       'button'
+    href: ''
     className:  'alert register'
     disabled:   is_disabled
     onClick:    callback
   },
     'Register'
-    (tag.i { className: 'fa fa-pencil-square-o' })
+    # (tag.i { className: 'fa fa-pencil-square-o' })
   )
 
 
@@ -206,7 +206,7 @@ Component = React.createClass
     data = {} ; data[event.target.name] = event.target.value
 
     @setState(data)
-  
+
   
   getInitialState: ->
     email:    @props.email || ''
@@ -253,7 +253,7 @@ Component = React.createClass
 
         # Reset Button
         #
-        (ResetButton @isResetButtonDisabled(), @onResetButtonClick) if @state.reset
+        (ResetButton @isResetButtonDisabled(), @onResetButtonClick) if @state.reset and @refs.email.getDOMNode().value
 
         # Login Button
         #

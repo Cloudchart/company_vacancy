@@ -10,4 +10,8 @@
   <%= link_to 'Please Click To Continue With Registration', main_app.root_url(token: @token) %>
 </p>
 
+<p>
+  Your invite code: <%= @code %>.
+</p>
+
 <%= render 'shared/mailer_signature' %>
