@@ -26,24 +26,24 @@ Cloudchart::Application.routes.draw do
 
   # Resources
   #
-  resources :companies, shallow: true, concerns: [:blockable] do
+  resources :companies, concerns: [:blockable] do
 
     post :logo, to: 'companies#upload_logo', on: :member
     post :search, on: :collection
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
     
-    resources :vacancies, except: [:edit], concerns: [:blockable, :statusable] do
+    resources :vacancies, except: :edit, shallow: true, concerns: [:blockable, :statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
     end
     
-    resources :people do
+    resources :people, shallow: true do
       post :search, on: :collection
       match :make_owner, on: :member, via: [:put, :patch]
       post :invite_user, on: :member
     end
 
-    resources :events, concerns: [:blockable] do
+    resources :events, shallow: true, concerns: [:blockable] do
       post :verify, on: :member
     end
 
