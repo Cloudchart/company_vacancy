@@ -12,6 +12,13 @@ module Companies
       end
     end
     
+
+    # Show
+    #
+    def show
+      
+    end
+    
     
     # Create
     #
