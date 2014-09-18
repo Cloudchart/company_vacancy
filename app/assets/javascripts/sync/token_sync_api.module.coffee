@@ -8,9 +8,11 @@ TokenServerActions  = require('actions/server/token_actions')
 module.exports =
   
 
-  fetchByCompany: (company_key) ->
-    done = (TokenServerActions.fetchDone or _.noop)
-    fail = (TokenServerActions.fetchFail or _.noop)
+  # Fetch tokens by Company ID
+  #
+  fetchByCompany: (company_key, token) ->
+    done = (TokenServerActions.fetchDone or _.noop).bind(null, token)
+    fail = (TokenServerActions.fetchFail or _.noop).bind(null, token)
 
     Promise.resolve(
       $.ajax
@@ -20,9 +22,9 @@ module.exports =
     ).then(done, fail)
   
 
+  # Create Company Invite
+  #
   createCompanyInvite: (key, company_key) ->
-    model = TokenStore.get(key)
-    
     done = (TokenServerActions.createDone or _.noop).bind(null, key)
     fail = (TokenServerActions.createFail or _.noop).bind(null, key)
 
@@ -32,10 +34,12 @@ module.exports =
         type:       "POST"
         dataType:   "json"
         data:
-          token:    model.toJS()
+          token:    TokenStore.get(key).toJSON()
     ).then(done, fail)
   
   
+  # Resend Company Invite
+  #
   resendCompanyInvite: (key, company_key) ->
     done = (TokenServerActions.updateDone or _.noop).bind(null, key)
     fail = (TokenServerActions.updateFail or _.noop).bind(null, key)
@@ -47,10 +51,10 @@ module.exports =
         dataType:   "json"
     ).then(done, fail)
   
-  
+
+  # Delete Company Invite
+  #
   deleteCompanyInvite: (key, company_key) ->
-    model = TokenStore.get(key)
-    
     done = (TokenServerActions.deleteDone or _.noop).bind(null, key)
     fail = (TokenServerActions.deleteFail or _.noop).bind(null, key)
 

@@ -8,13 +8,19 @@ Constants   = require('constants')
 #
 module.exports =
   
-  fetchDone: (json) ->
+  fetchDone: (token, json) ->
     Dispatcher.handleServerAction
-      type: Constants.Token.FETCH_DONE
-      json: json
+      type:   Constants.Token.FETCH_DONE
+      json:   json
+      token:  token
   
   
-  fetchFail: (xhr) ->
+  fetchFail: (token, xhr) ->
+    Dispatcher.handleServerAction
+      type:   Constants.Token.FETCH_FAIL
+      json:   xhr.responseJSON
+      token:  token
+      xhr:    xhr
   
   
   createDone: (key, json) ->

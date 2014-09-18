@@ -30,6 +30,7 @@ class Company < ActiveRecord::Base
   has_many :favorites, as: :favoritable, dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :access_rights, class_name: 'Company::AccessRight', dependent: :destroy
+  has_many :users, through: :access_rights
   # has_paper_trail
 
   # validates :name, :country, :industry_ids, presence: true, on: :update

@@ -160,13 +160,18 @@ Store.dispatchToken = Dispatcher.register (payload) ->
     
     
     when Constants.Token.DELETE
-      startSync(action.key, 'delete')
+      startSync(action.key, action.syncToken or 'delete')
       Store.emitChange()
 
 
     when Constants.Token.DELETE_DONE
-      stopSync(action.key, 'delete')
+      stopSync(action.key, action.syncToken or 'delete')
       Store.remove(action.key)
+      Store.emitChange()
+
+
+    when Constants.Token.DELETE_FAIL
+      stopSync(action.key, action.syncToken or 'delete')
       Store.emitChange()
 
 

@@ -20,5 +20,18 @@
   AccessRightsComponent = require('components/company/access_rights')
   
   React.renderComponent(AccessRightsComponent({ key: data.company.uuid, roles: data.roles }), document.querySelector('[data-react-mount-point="access-rights"]'))
+
+
+  #
+  #
+  CloudFlux   = require('cloud_flux')
+  Dispatcher  = require('dispatcher/dispatcher')
+  Actions     = require('actions/company_access_rights')
+  UsersStore  = require('stores/users')
+
+  UsersStore.on('change', ->
+    console.log 'abc'
+    console.log UsersStore.all()
+  )
   
-  
+  Actions.fetch(data.company.uuid)

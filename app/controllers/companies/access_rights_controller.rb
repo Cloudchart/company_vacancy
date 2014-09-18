@@ -6,7 +6,7 @@ module Companies
       
       respond_to do |format|
         format.html
-        format.json { render json: { company: CompanySerializer.new(@company) } }
+        format.json { render json: { users: @company.users, access_rights: @company.access_rights } }
       end
     end
 
