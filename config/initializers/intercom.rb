@@ -9,7 +9,7 @@ if Rails.env.production?
     # This is required to enable secure mode, you can find it on your Intercom 
     # "security" configuration page.
     # 
-    config.api_secret = 'ios_sdk-9e34c27cd3dfd0924cabe7165ca5141d178cdcca'
+    config.api_secret = ENV['INTERCOM_API_SECRET']
 
     # == Intercom API Key
     # This is required for some Intercom rake tasks like importing your users;

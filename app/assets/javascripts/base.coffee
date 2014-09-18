@@ -4,8 +4,8 @@ if modalMountPoint = document.querySelector('[data-modal-mount-point]')
 
 # Login form
 #
-if (loginButton = document.querySelector('[data-behaviour~="login-button"]')) and (LoginForm = cc.require('react/modals/login-form'))
-  loginButton.addEventListener 'click', (event) ->
+if (LoginButton = document.querySelector('[data-behaviour~="login-button"]')) and (LoginForm = cc.require('react/modals/login-form'))
+  LoginButton.addEventListener 'click', (event) ->
     event.preventDefault()
     
     event = new CustomEvent 'modal:push',
@@ -14,4 +14,18 @@ if (loginButton = document.querySelector('[data-behaviour~="login-button"]')) an
 
     window.dispatchEvent(event)
 
-  loginButton.click() if window.location.hash == '#login'
+  LoginButton.click() if window.location.hash == '#login'
+
+# Invite form
+#
+if (InviteButton = document.querySelector('[data-behaviour~="invite-button"]')) and (InviteForm = cc.require('react/modals/invite-form'))
+  InviteButton.addEventListener 'click', (event) ->
+    event.preventDefault()
+    
+    event = new CustomEvent 'modal:push',
+      detail:
+        component: InviteForm({})
+
+    window.dispatchEvent(event)
+
+  InviteButton.click() if window.location.hash == '#invite'

@@ -10,6 +10,7 @@ CloudProfile::Engine.routes.draw do
   # Invitation
   #
   post 'invite', to: 'users#invite'
+  get 'check_invite', to: 'users#check_invite'
   
   
   # Registration

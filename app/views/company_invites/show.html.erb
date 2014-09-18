@@ -35,11 +35,15 @@
 
   <% else %>
     <p>
-      Since you're not logged in, please login or register to accept this invitation.
+      Since you're not logged in, please log in or sign up to accept this invitation.
     </p>
     <p>
-      <button class="orgpad" data-behaviour="invite-login-button">
-        Login or Register
+      <%= link_to "Log In", '', data: { behaviour: "invite-login-button" } %>
+
+      or
+
+      <button class="orgpad" data-behaviour="signup-button">
+        Sign Up
       </button>
     </p>
     

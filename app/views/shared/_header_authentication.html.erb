@@ -5,9 +5,13 @@
 
 <%- else -%>
 
-  <%= link_to '', class: 'sign-up orgpad-button header auth', data: { behaviour: 'login-button' } do -%>
-    <span>Sign Up</span>
-    <%= font_awesome('pencil') %>
-  <%- end -%>
+  <%= link_to "Log In", '', data: { behaviour: "login-button" } %>
+
+  <button class="orgpad auth" data-behaviour="invite-button">
+    <span>
+      Invited?
+    </span>
+    <%= font_awesome "ticket" %>
+  </button>
 
 <%- end -%>

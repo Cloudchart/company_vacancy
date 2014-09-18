@@ -1,5 +1,8 @@
 cc.module('react/shared/letter-avatar')
 
+SignUpForm = cc.require('react/modals/register-form')
+SignUpButton = document.querySelector('[data-behaviour="signup-button"]')
+
 # Company Invite
 # 
 @['company_invites#show'] = (data) ->
@@ -27,9 +30,24 @@ cc.module('react/shared/letter-avatar')
       event = new CustomEvent 'modal:push',
         detail:
           component: LoginForm({
-            invite: data.token.rfc1751
             email: data.token.data.email
-            full_name: data.token.data.full_name
+            invite: data.token.rfc1751
           })
 
       window.dispatchEvent(event)
+
+
+  # Signup form
+  # 
+  SignUpButton.addEventListener 'click', (event) ->
+    event.preventDefault()
+
+    event = new CustomEvent 'modal:push',
+      detail:
+        component: SignUpForm({
+          full_name: data.token.data.full_name
+          email: data.token.data.email
+          invite: data.token.rfc1751
+        })
+
+    window.dispatchEvent(event)
