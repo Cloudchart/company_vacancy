@@ -87,7 +87,7 @@ Component = React.createClass
         },
           (tag.i { className: 'fa fa-angle-left' })
         )
-        'Invitation only'
+        'Invite'
       )
       
       
@@ -101,6 +101,7 @@ Component = React.createClass
             name:         'invite'
             className:    'error' if @state.errors.indexOf('invite') > -1
             autoComplete: 'off'
+            autoFocus:    true
             value:        @state.invite
             onFocus:      @onInputFocus
             onChange:     @onInviteChange

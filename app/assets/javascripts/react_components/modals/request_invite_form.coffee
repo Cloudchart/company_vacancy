@@ -91,7 +91,7 @@ Component = React.createClass
         },
           (tag.i { className: 'fa fa-angle-left' })
         )
-        'Request invite'
+        'Request Invite'
       )
       
       

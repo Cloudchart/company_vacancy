@@ -17,7 +17,7 @@ LoginMixin =
     location.reload()
   
   
-  onLoginRequestFail: ->
+  onLoginRequestFail: (xhr) ->
     @setState
       errors:
         password: 'invalid'
@@ -65,10 +65,10 @@ ResetPasswordMixin =
 #
 RegisterMixin =
   
-  onRegisterButtonClick: (event) ->
+  onInviteButtonClick: (event) ->
     event.preventDefault()
     
-    component = cc.require("react/modals/#{if @state.invite then 'register-form' else 'invite-form'}")
+    component = cc.require("react/modals/invite-form")
     
     event = new CustomEvent 'modal:push',
       detail:
@@ -144,16 +144,14 @@ ResetButton = (is_disabled, callback) ->
 
 # Register button
 #
-RegisterButton = (is_disabled, callback) ->
+InviteButton = (is_disabled, callback) ->
   (tag.a {
-    # type:       'button'
     href: ''
-    className:  'alert register'
+    className:  'invite'
     disabled:   is_disabled
     onClick:    callback
   },
-    'Register'
-    # (tag.i { className: 'fa fa-pencil-square-o' })
+    'invited?'
   )
 
 
@@ -179,7 +177,7 @@ Component = React.createClass
     false
 
   
-  isRegisterButtonDisabled: ->
+  isInviteButtonDisabled: ->
     #!email_re.test(@state.email)
     false
 
@@ -226,7 +224,7 @@ Component = React.createClass
     
       # Header
       #
-      (tag.header {}, 'Login or Register')
+      (tag.header {}, 'Log In')
 
       # Fieldset
       # Email & Password fields
@@ -249,7 +247,10 @@ Component = React.createClass
 
         # Register Button
         #
-        (RegisterButton @isRegisterButtonDisabled(), @onRegisterButtonClick)
+        if @state.invite
+          (tag.div { className: 'spacer' })
+        else
+          (InviteButton @isInviteButtonDisabled(), @onInviteButtonClick)
 
         # Reset Button
         #

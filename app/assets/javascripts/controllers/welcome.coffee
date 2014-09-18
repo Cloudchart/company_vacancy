@@ -3,24 +3,38 @@
   # Components
   #
   PasswordResetComponent = cc.require('react/modals/password-reset-form')
+  RegisterForm = cc.require('react/modals/register-form')
+  InviteForm = cc.require('react/modals/invite-form')
+  RequestInviteForm = cc.require('react/modals/request-invite-form')
+
+  InviteButton = document.querySelector('[data-behaviour~="invite-button"]')
+  RequestInviteButton = document.querySelector('[data-behaviour~="request-invite-button"]')
 
   # Chart Preview
   # 
   cc.init_chart_preview()
 
-  # Register form
+  # Invite form
   #
-  if (inviteButton = document.querySelectorAll('[data-behaviour~="invite-button"]')) and (RegisterForm  = cc.require('react/modals/register-form'))
-    _.each inviteButton, (root) ->
+  InviteButton.addEventListener 'click', (event) ->
+    event.preventDefault()
+    
+    event = new CustomEvent 'modal:push',
+      detail:
+        component: InviteForm({})
+      
+    window.dispatchEvent(event)
 
-      root.addEventListener 'click', (event) ->
-        event.preventDefault()
-        
-        event = new CustomEvent 'modal:push',
-          detail:
-            component: RegisterForm({})
-          
-        window.dispatchEvent(event)
+  # Request invite form
+  # 
+  RequestInviteButton.addEventListener 'click', (event) ->
+    event.preventDefault()
+    
+    event = new CustomEvent 'modal:push',
+      detail:
+        component: RequestInviteForm({})
+      
+    window.dispatchEvent(event)  
 
 
   # Token

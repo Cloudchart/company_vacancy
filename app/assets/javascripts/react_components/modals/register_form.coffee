@@ -123,7 +123,7 @@ Component = React.createClass
         },
           (tag.i { className: 'fa fa-angle-left' })
         )
-        'Register'
+        'Sign Up'
       )
       
       
@@ -201,7 +201,7 @@ Component = React.createClass
           disabled:   !@isValidForRegister() or @state.sync
           onClick:    @onRegisterButtonClick
         },
-          'Register'
+          'Sign Up'
           (tag.i { className: 'fa fa-pencil-square-o' })
         )
       )
