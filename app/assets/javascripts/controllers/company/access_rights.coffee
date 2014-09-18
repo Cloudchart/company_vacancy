@@ -1,37 +1,29 @@
 @['companies/access_rights#index'] = (data) ->
   
-  CompanyStore  = require('stores/company_store')
-  TokenStore    = require('stores/token_store')
-  TokenSyncAPI  = require('sync/token_sync_api')
+  CompanyStore              = require('stores/company_store')
+  TokenStore                = require('stores/token_store')
+  UsersStore                = require('stores/users')
+  CompanyAccessRightsStore  = require('stores/company_access_rights')
+
+  TokenSyncAPI    = require('sync/token_sync_api')
+  
+  CompanyActions  = require('actions/company')
   
   
-  # Fetch tokens
+  # Fetch data
   #
-  TokenSyncAPI.fetchByCompany(data.company.uuid)
-  #UserSyncAPI.fetchByCompany(data.company.uuid)
+  promises = [
+    CompanyActions.fetchAccessRights(data.company.uuid)
+    TokenSyncAPI.fetchByCompany(data.company.uuid)
+  ]
 
   # Add loaded company
   #
   CompanyStore.add(data.company)
   
-
   # Access Rights component
   #
   AccessRightsComponent = require('components/company/access_rights')
   
-  React.renderComponent(AccessRightsComponent({ key: data.company.uuid, roles: data.roles }), document.querySelector('[data-react-mount-point="access-rights"]'))
-
-
-  #
-  #
-  CloudFlux   = require('cloud_flux')
-  Dispatcher  = require('dispatcher/dispatcher')
-  Actions     = require('actions/company_access_rights')
-  UsersStore  = require('stores/users')
-
-  UsersStore.on('change', ->
-    console.log 'abc'
-    console.log UsersStore.all()
-  )
-  
-  Actions.fetch(data.company.uuid)
+  Promise.all(promises).then ->
+    React.renderComponent(AccessRightsComponent({ key: data.company.uuid, roles: data.roles }), document.querySelector('[data-react-mount-point="access-rights"]'))

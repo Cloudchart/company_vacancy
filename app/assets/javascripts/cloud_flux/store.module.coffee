@@ -20,7 +20,7 @@ Factory = (definition) ->
   Store =
     
     all: ->
-      __data
+      _.values(__data)
     
 
     get: (key) ->
@@ -55,8 +55,8 @@ Factory = (definition) ->
       delete __data[key]
     
     
-    waitFor: (stores) ->
-      Dispatcher.waitFor(stores)
+    wait_for: (stores) ->
+      Dispatcher.waitFor(_.map(stores, 'dispatchToken'))
       
     
     # Sync
@@ -93,14 +93,19 @@ Factory = (definition) ->
       definedActions[payload.action.type].apply(definition, payload.action.data)
   
 
-  # Set data
+  # Set store
   #
   definition.store = Store
   
-  
-  # Return store
+
+  # Freeze store
   #
   Object.freeze(Store)
+  
+
+  # Return store
+  #
+  Store
 
 
 # Exports

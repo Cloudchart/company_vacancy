@@ -2,8 +2,10 @@
 #
 tag = React.DOM
 
-CompanyStore    = require('stores/company_store')
-TokenStore      = require('stores/token_store')
+CompanyStore              = require('stores/company_store')
+UsersStore                = require('stores/users')
+CompanyAccessRightsStore  = require('stores/company_access_rights')
+TokenStore                = require('stores/token_store')
 
 Buttons           = require('components/company/buttons')
 InviteUserForm    = require('components/company/invite_user_form')
@@ -22,10 +24,15 @@ tokenFilter = (key, record) ->
 # Get State From Stores
 #
 getStateFromStores = (key) ->
-  tokens = TokenStore.filter(tokenFilter.bind(null, key))
+  tokens        = TokenStore.filter(tokenFilter.bind(null, key))
+  access_rights = CompanyAccessRightsStore.filter (item) -> item.company_id == key
+  user_ids      = _.pluck access_rights, 'user_id'
+  users         = UsersStore.filter (item) -> _.contains user_ids, item.uuid
 
-  company:  CompanyStore.get(key)
-  tokens:   if tokens then tokens.toJS() else {}
+  company:        CompanyStore.get(key)
+  users:          users
+  access_rights:  access_rights
+  tokens:         if tokens then tokens.toJS() else {}
 
 
 # Main
@@ -54,10 +61,14 @@ Component = React.createClass
   
   componentDidMount: ->
     TokenStore.on('change', @refreshStateFromStores)
+    UsersStore.on('change', @refreshStateFromStores)
+    CompanyAccessRightsStore.on('change', @refreshStateFromStores)
   
   
   componentWillUnmount: ->
     TokenStore.off('change', @refreshStateFromStores)
+    UsersStore.off('change', @refreshStateFromStores)
+    CompanyAccessRightsStore.off('change', @refreshStateFromStores)
   
   
   getDefaultProps: ->
@@ -94,9 +105,10 @@ Component = React.createClass
             #
             (CurrentUsersList {
               key:      'current-users-list'
-              company:  @state.company
-              tokens:   @state.tokens
-              users:    []
+              company:        @state.company
+              tokens:         @state.tokens
+              users:          @state.users
+              access_rights:  @state.access_rights
             })
           ]
         

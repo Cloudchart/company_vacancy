@@ -73,6 +73,22 @@ CancelCompanyInviteButton = (props, state, callback) ->
   )
 
 
+# Revoke Role Button
+#
+RevokeRoleButton = (props) ->
+  (tag.button {
+    className:  props.className or 'revoke'
+    disabled:   props.disabled
+    onClick:    props.onClick
+  },
+    props.title     or "Revoke" unless props.sync
+    props.syncTitle or "Revoke" if props.sync
+
+    (tag.i { className: 'fa fa-times fa-fw' }) unless props.sync
+    (tag.i { className: 'fa fa-spin fa-spinner fa-fw' }) if props.sync
+  )
+
+
 # Exports
 #
 module.exports =
@@ -81,3 +97,4 @@ module.exports =
   SendInviteButton:           SendInviteButton
   ResendCompanyInviteButton:  ResendCompanyInviteButton
   CancelCompanyInviteButton:  CancelCompanyInviteButton
+  RevokeRoleButton:           RevokeRoleButton
