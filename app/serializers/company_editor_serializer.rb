@@ -3,7 +3,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :verify_site_url, :download_verification_file_url, :default_host
-  attributes :industry_ids, :is_site_url_verified, :owners, :owner_invites
+  attributes :industry_ids, :is_site_url_verified #, :owners, :owner_invites
   attributes :can_update, :charts_for_select, :established_on
 
   has_many :charts, serializer: BurnRateChartSerializer
@@ -18,11 +18,12 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     object.sections.marshal_dump
   end
 
-  def owner_invites
-    object.invite_tokens.map do |token|
-      { uuid: token.id, full_name: token.data[:full_name], person_id: token.data[:person_id] }
-    end
-  end
+  # deprecated
+  # def owner_invites
+  #   object.invite_tokens.map do |token|
+  #     { uuid: token.id, full_name: token.data[:full_name], person_id: token.data[:person_id] }
+  #   end
+  # end
 
   def can_update
     Ability.new(scope).can?(:update, object)

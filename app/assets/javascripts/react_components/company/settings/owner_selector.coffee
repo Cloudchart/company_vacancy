@@ -1,3 +1,6 @@
+# deprecated
+# 
+
 ##= require components/QueryInput
 ##= require components/Person
 ##= require components/IdentityList

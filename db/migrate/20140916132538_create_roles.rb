@@ -15,24 +15,6 @@ class CreateRoles < ActiveRecord::Migration
     add_index :roles, [:user_id, :owner_id], unique: true
     add_index :roles, :value
     execute 'ALTER TABLE roles ADD PRIMARY KEY (uuid);'
-
-    say 'Migrating people access rights to roles'
-    Company.all.each do |company|
-      company.people.joins(:user).order(:created_at).each_with_index do |person, index|
-        role = Role.new(user_id: person.user_id, owner: person.company)
-
-        if index == 0 && person.is_company_owner?
-          role.value = :owner
-        elsif index > 0 && person.is_company_owner?
-          role.value = :editor
-        else
-          role.value = :public_reader
-        end
-
-        role.save
-        say "#{role.value} role for #{company.name} created", true
-      end
-    end
   end
 
   def down

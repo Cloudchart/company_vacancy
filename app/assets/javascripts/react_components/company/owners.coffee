@@ -1,3 +1,6 @@
+# deprecated
+# 
+
 ##= require components/Person
 ##= require ./settings/owner_selector
 

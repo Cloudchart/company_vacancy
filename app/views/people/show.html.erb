@@ -33,10 +33,5 @@
   <%= @person.company.name %>
 </p>
 
-<p>
-  <strong>Company owner:</strong>
-  <%= @person.is_company_owner? %>
-</p>
-
 <%= link_to 'Edit', edit_person_path(@person) %> |
 <%= link_to 'Back', company_people_path(@person.company) %>

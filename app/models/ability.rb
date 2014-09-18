@@ -68,17 +68,17 @@ class Ability
       can :destroy, CloudProfile::Email, user_id: user.id
 
       can :manage, Company do |company|
-        user.company_access_rights.find_by(company_id: company.id).try(:role) =~ /owner|editor/
+        user.roles.find_by(owner: company).try(:value) =~ /owner|editor/
       end
 
       [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart].each do |model|
         can :manage, model do |resource|
-          user.company_access_rights.find_by(company_id: resource.company.id).try(:role) =~ /owner|editor/
+          user.roles.find_by(owner: resource.company).try(:value) =~ /owner|editor/
         end
       end
 
       can :create_company_invite, Company do |company|
-        user.company_access_rights.find_by(company_id: company.id).try(:role) == :owner
+        user.roles.find_by(owner: company).try(:value) == :owner
       end
 
       # can :read, Vacancy do |vacancy|

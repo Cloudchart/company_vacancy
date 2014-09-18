@@ -1,5 +1,6 @@
+# = require ./owners
+
 ##= require module
-##= require ./owners
 ##= require ./settings/country_select
 ##= require ./settings/industry_select
 ##= require ./settings/slug
@@ -18,7 +19,7 @@ CompanyStore        = require('stores/company_store')
 CountrySelectComponent = cc.require('react/company/country_select')
 IndustrySelectComponent = cc.require('react/company/industry_select')
 
-CompanyOwnersComponent  = cc.require('react/company/owners')
+# CompanyOwnersComponent  = cc.require('react/company/owners')
 UrlComponent = cc.require('react/company/settings/site_url')
 SlugComponent = cc.require('react/company/settings/slug')
 EstablishedOnComponent = cc.require('react/company/settings/established_on')
@@ -91,8 +92,9 @@ MainComponent = React.createClass
 
         )
       )
-
-      CompanyOwnersComponent({ owners: @props.owners, owner_invites: @props.owner_invites })
+  
+      # deprecated
+      # CompanyOwnersComponent({ owners: @props.owners, owner_invites: @props.owner_invites })
 
     )
 

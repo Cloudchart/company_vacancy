@@ -32,9 +32,6 @@ class Person < ActiveRecord::Base
       end
     end
 
-    edit do
-      include_fields :is_company_owner
-    end
   end
 
   settings ElasticSearchNGramSettings do
