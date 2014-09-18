@@ -129,25 +129,26 @@ module CloudProfile
     end
     
     
-    def activation_
-      @token = Token.find(params[:token])
-      @email = Email.new(address: @token.data[:address])
+    # deprecated
+    # def activation_
+    #   @token = Token.find(params[:token])
+    #   @email = Email.new(address: @token.data[:address])
       
-      raise ActiveRecord::RecordNotFound if @email.invalid?
+    #   raise ActiveRecord::RecordNotFound if @email.invalid?
 
-      if request.post?
-        @user = User.new(password_digest: @token.data[:password_digest])
-        if @user.authenticate(params[:password])
-          @user.emails << @email
-          @user.save!
-          @token.destroy
-          warden.set_user(@user, scope: :user)
-          redirect_to :root
-        else
-          @password_invalid = true
-        end
-      end
-    end
+    #   if request.post?
+    #     @user = User.new(password_digest: @token.data[:password_digest])
+    #     if @user.authenticate(params[:password])
+    #       @user.emails << @email
+    #       @user.save!
+    #       @token.destroy
+    #       warden.set_user(@user, scope: :user)
+    #       redirect_to :root
+    #     else
+    #       @password_invalid = true
+    #     end
+    #   end
+    # end
     
   end
 end
