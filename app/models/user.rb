@@ -13,8 +13,8 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :friends
 
-  has_many :emails, -> { order(:address) }, class_name: CloudProfile::Email, dependent: :destroy
-  has_many :social_networks, inverse_of: :user, class_name: CloudProfile::SocialNetwork, dependent: :destroy
+  has_many :emails, -> { order(:address) }, class_name: 'CloudProfile::Email', dependent: :destroy
+  has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :charts, through: :companies
   has_many :votes, as: :source
@@ -23,8 +23,8 @@ class User < ActiveRecord::Base
   has_many :vacancies, foreign_key: :author_id
   has_many :vacancy_responses
   has_many :favorites, dependent: :destroy
-  has_many :company_access_rights, class_name: 'Company::AccessRight', dependent: :destroy
-  has_many :companies, through: :company_access_rights
+  has_many :roles, dependent: :destroy
+  has_many :companies, through: :roles, source: :owner, source_type: 'Company'
 
   # deprecated
   # has_many  :people, dependent: :destroy

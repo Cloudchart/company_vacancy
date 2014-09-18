@@ -29,8 +29,8 @@ class Company < ActiveRecord::Base
   has_many :charts, class_name: 'CloudBlueprint::Chart', dependent: :destroy
   has_many :favorites, as: :favoritable, dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
-  has_many :access_rights, class_name: 'Company::AccessRight', dependent: :destroy
-  has_many :users, through: :access_rights
+  has_many :roles, as: :owner, dependent: :destroy
+  has_many :users, through: :roles
   # has_paper_trail
 
   # validates :name, :country, :industry_ids, presence: true, on: :update

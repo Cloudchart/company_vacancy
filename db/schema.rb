@@ -162,19 +162,6 @@ ActiveRecord::Schema.define(version: 20140916132538) do
 
   add_index "companies_industries", ["company_id", "industry_id"], name: "index_companies_industries_on_company_id_and_industry_id", unique: true, using: :btree
 
-  create_table "company_access_rights", primary_key: "uuid", force: true do |t|
-    t.string   "user_id",    limit: 36, null: false
-    t.string   "company_id", limit: 36, null: false
-    t.string   "role",                  null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "company_access_rights", ["company_id"], name: "index_company_access_rights_on_company_id", using: :btree
-  add_index "company_access_rights", ["role"], name: "index_company_access_rights_on_role", using: :btree
-  add_index "company_access_rights", ["user_id", "company_id"], name: "index_company_access_rights_on_user_id_and_company_id", unique: true, using: :btree
-  add_index "company_access_rights", ["user_id"], name: "index_company_access_rights_on_user_id", using: :btree
-
   create_table "events", primary_key: "uuid", force: true do |t|
     t.string   "name",                  null: false
     t.string   "url"
@@ -311,6 +298,20 @@ ActiveRecord::Schema.define(version: 20140916132538) do
 
   add_index "people", ["company_id"], name: "index_people_on_company_id", using: :btree
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
+
+  create_table "roles", primary_key: "uuid", force: true do |t|
+    t.string   "value",                 null: false
+    t.string   "user_id",    limit: 36, null: false
+    t.string   "owner_id",   limit: 36, null: false
+    t.string   "owner_type", limit: 36, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "roles", ["owner_id", "owner_type"], name: "index_roles_on_owner_id_and_owner_type", using: :btree
+  add_index "roles", ["user_id", "owner_id"], name: "index_roles_on_user_id_and_owner_id", unique: true, using: :btree
+  add_index "roles", ["user_id"], name: "index_roles_on_user_id", using: :btree
+  add_index "roles", ["value"], name: "index_roles_on_value", using: :btree
 
   create_table "subscriptions", primary_key: "uuid", force: true do |t|
     t.string   "user_id",           limit: 36, null: false
