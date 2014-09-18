@@ -4,7 +4,7 @@ class UserMailer < ActionMailer::Base
   def company_invite(email, token)
     @company = token.owner
     @user = email.try(:user)
-    @token = rfc1751(token.id)
+    @token = rfc1751(token.id).parameterize
     email = email.try(:address) || email
     mail to: email
   end
@@ -26,7 +26,8 @@ class UserMailer < ActionMailer::Base
   end
 
   def app_invite(token)
-    @token = rfc1751(token.id)
+    @token = rfc1751(token.id).parameterize
+    @code = rfc1751(token.id)
     @name = token.data[:full_name]
     email = token.data[:email]
     mail to: email
@@ -41,7 +42,7 @@ class UserMailer < ActionMailer::Base
 private
 
   def rfc1751(id)
-    Cloudchart::RFC1751.encode(id).downcase.gsub(/\s/, '-')
+    Cloudchart::RFC1751.encode(id)
   end
 
 end

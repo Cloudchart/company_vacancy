@@ -93,6 +93,23 @@ module CloudProfile
     rescue ActiveRecord::RecordInvalid
       render json: current_user.errors, status: 422
     end
+
+
+    def check_invite
+      token = Token.find_by_rfc1751(params[:invite])
+
+      if token
+        respond_to do |format|
+          format.json { render json: { state: :register } }
+        end
+      else
+        respond_to do |format|
+          format.json { render json: { errors: [:invite] }, status: 422 }
+          # TODO: add error message
+          # { invite: "Sorry. We didn't find this code." }
+        end
+      end
+    end
     
 
     # Activation

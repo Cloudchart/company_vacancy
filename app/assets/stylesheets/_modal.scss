@@ -103,7 +103,8 @@ $modal-form-button-padding: 0 20px;
   > footer {
     @include display(flex);
     @include justify-content(space-between);
-    
+    @include align-items(center);
+
     margin: $modal-form-footer-margin;
     
     button {

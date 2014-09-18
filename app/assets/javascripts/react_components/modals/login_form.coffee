@@ -6,8 +6,7 @@ tag = cc.require('react/dom')
 
 InputComponent = cc.require('react/modals/input')
 
-email_re = /.+@.+/i
-
+email_re = /.+@.+\..+/i
 
 # Login mixin
 #
@@ -18,7 +17,7 @@ LoginMixin =
     location.reload()
   
   
-  onLoginRequestFail: ->
+  onLoginRequestFail: (xhr) ->
     @setState
       errors:
         password: 'invalid'
@@ -66,17 +65,17 @@ ResetPasswordMixin =
 #
 RegisterMixin =
   
-  onRegisterButtonClick: (event) ->
+  onInviteButtonClick: (event) ->
     event.preventDefault()
     
-    component = cc.require('react/modals/register-form')
+    component = cc.require("react/modals/invite-form")
     
     event = new CustomEvent 'modal:push',
       detail:
-        component: (component { 
-          email: @state.email
+        component: (component {
           invite: @state.invite
           full_name: @state.full_name
+          email: @state.email
         })
     
     dispatchEvent(event)
@@ -145,15 +144,14 @@ ResetButton = (is_disabled, callback) ->
 
 # Register button
 #
-RegisterButton = (is_disabled, callback) ->
-  (tag.button {
-    type:       'button'
-    className:  'alert register'
+InviteButton = (is_disabled, callback) ->
+  (tag.a {
+    href: ''
+    className:  'invite'
     disabled:   is_disabled
     onClick:    callback
   },
-    'Register'
-    (tag.i { className: 'fa fa-pencil-square-o' })
+    'invited?'
   )
 
 
@@ -179,7 +177,7 @@ Component = React.createClass
     false
 
   
-  isRegisterButtonDisabled: ->
+  isInviteButtonDisabled: ->
     #!email_re.test(@state.email)
     false
 
@@ -206,7 +204,7 @@ Component = React.createClass
     data = {} ; data[event.target.name] = event.target.value
 
     @setState(data)
-  
+
   
   getInitialState: ->
     email:    @props.email || ''
@@ -226,7 +224,7 @@ Component = React.createClass
     
       # Header
       #
-      (tag.header {}, 'Login or Register')
+      (tag.header {}, 'Log In')
 
       # Fieldset
       # Email & Password fields
@@ -249,11 +247,14 @@ Component = React.createClass
 
         # Register Button
         #
-        (RegisterButton @isRegisterButtonDisabled(), @onRegisterButtonClick)
+        if @state.invite
+          (tag.div { className: 'spacer' })
+        else
+          (InviteButton @isInviteButtonDisabled(), @onInviteButtonClick)
 
         # Reset Button
         #
-        (ResetButton @isResetButtonDisabled(), @onResetButtonClick) if @state.reset
+        (ResetButton @isResetButtonDisabled(), @onResetButtonClick) if @state.reset and @refs.email.getDOMNode().value
 
         # Login Button
         #
