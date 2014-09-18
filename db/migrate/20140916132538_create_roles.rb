@@ -1,4 +1,4 @@
-class CreateCompanyAccessRights < ActiveRecord::Migration
+class CreateRoles < ActiveRecord::Migration
   def up
     create_table :roles, id: false do |t|
       t.string :uuid, limit: 36

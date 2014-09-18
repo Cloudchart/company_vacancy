@@ -4,7 +4,7 @@ tag = React.DOM
 
 CompanyStore              = require('stores/company_store')
 UsersStore                = require('stores/users')
-CompanyAccessRightsStore  = require('stores/company_access_rights')
+RolesStore                = require('stores/roles')
 TokenStore                = require('stores/token_store')
 
 Buttons           = require('components/company/buttons')
@@ -25,13 +25,13 @@ tokenFilter = (key, record) ->
 #
 getStateFromStores = (key) ->
   tokens        = TokenStore.filter(tokenFilter.bind(null, key))
-  access_rights = CompanyAccessRightsStore.filter (item) -> item.company_id == key
-  user_ids      = _.pluck access_rights, 'user_id'
+  roles         = RolesStore.filter (item) -> item.owner_id == key and item.owner_type == 'Company'
+  user_ids      = _.pluck roles, 'user_id'
   users         = UsersStore.filter (item) -> _.contains user_ids, item.uuid
-
+  
   company:        CompanyStore.get(key)
   users:          users
-  access_rights:  access_rights
+  roles:          roles
   tokens:         if tokens then tokens.toJS() else {}
 
 
@@ -62,13 +62,13 @@ Component = React.createClass
   componentDidMount: ->
     TokenStore.on('change', @refreshStateFromStores)
     UsersStore.on('change', @refreshStateFromStores)
-    CompanyAccessRightsStore.on('change', @refreshStateFromStores)
+    RolesStore.on('change', @refreshStateFromStores)
   
   
   componentWillUnmount: ->
     TokenStore.off('change', @refreshStateFromStores)
     UsersStore.off('change', @refreshStateFromStores)
-    CompanyAccessRightsStore.off('change', @refreshStateFromStores)
+    RolesStore.off('change', @refreshStateFromStores)
   
   
   getDefaultProps: ->
@@ -105,10 +105,10 @@ Component = React.createClass
             #
             (CurrentUsersList {
               key:      'current-users-list'
-              company:        @state.company
-              tokens:         @state.tokens
-              users:          @state.users
-              access_rights:  @state.access_rights
+              company:  @state.company
+              tokens:   @state.tokens
+              users:    @state.users
+              roles:    @state.roles
             })
           ]
         
@@ -129,7 +129,7 @@ Component = React.createClass
             (InviteUserForm {
               key:      @state.newTokenKey
               company:  @state.company
-              roles:    @state.roles
+              roles:    @props.roles
               token:    TokenStore.get(@state.newTokenKey)
               errors:   TokenStore.getErrors(@state.newTokenKey)
             })

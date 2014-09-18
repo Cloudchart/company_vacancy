@@ -11,8 +11,8 @@ module Companies
         format.html
         format.json do
           render json: {
-            users:          ActiveModel::ArraySerializer.new(@company.users.includes(:emails)),
-            access_rights:  ActiveModel::ArraySerializer.new(@company.access_rights)
+            users:  ActiveModel::ArraySerializer.new(@company.users.includes(:emails)),
+            roles:  ActiveModel::ArraySerializer.new(@company.roles)
           }
         end
       end
@@ -22,9 +22,9 @@ module Companies
     # Destroy
     #
     def destroy
-      role = Company::AccessRight.find(params[:id])
+      role = Role.find(params[:id])
       
-      if role.role.to_s == Company::ROLES.first.to_s
+      if role.value.to_s == Company::ROLES.first.to_s
         render json: { errors: { base: 'owner' } }, status: 422
       else
         role.destroy

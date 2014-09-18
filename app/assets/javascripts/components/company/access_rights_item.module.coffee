@@ -14,7 +14,7 @@ module.exports = React.createClass
       (tag.td {
         className: 'role'
       },
-        @props.access_right.role
+        @props.role.value
       )
       
       (tag.td {

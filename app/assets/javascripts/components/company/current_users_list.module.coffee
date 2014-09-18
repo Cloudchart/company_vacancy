@@ -3,11 +3,11 @@
 tag = React.DOM
 
 
-AccessRightsStore   = require('stores/company_access_rights')
-AccessRightsActions = require('actions/access_rights')
-TokenStore          = require('stores/token_store')
-TokenItem           = require('components/company/token_item')
-Buttons             = require('components/company/buttons')
+RolesStore    = require('stores/roles')
+RolesActions  = require('actions/roles')
+TokenStore    = require('stores/token_store')
+TokenItem     = require('components/company/token_item')
+Buttons       = require('components/company/buttons')
 
 
 # Main
@@ -16,13 +16,13 @@ Component = React.createClass
 
 
   onRevokeRoleButtonClick: (key) ->
-    AccessRightsActions.revoke(key, key)
+    RolesActions.revoke(key, key)
 
 
   currentUsers: ->
     _.map @props.users, (user) =>
       
-      ar = _.find @props.access_rights, (ar) -> ar.user_id == user.uuid
+      role = _.find @props.roles, (role) -> role.user_id == user.uuid
       
       (tag.tr {
         key: user.uuid
@@ -39,17 +39,17 @@ Component = React.createClass
         (tag.td {
           className: 'role'
         },
-          ar.role if ar
+          role.value if role
         )
         
         (tag.td {
           className: 'actions'
         },
           (Buttons.RevokeRoleButton {
-            sync:       AccessRightsStore.is_in_sync(ar.uuid)
-            disabled:   AccessRightsStore.is_in_sync(ar.uuid)
-            onClick:    @onRevokeRoleButtonClick.bind(@, ar.uuid)
-          })
+            sync:       RolesStore.is_in_sync(role.uuid)
+            disabled:   RolesStore.is_in_sync(role.uuid)
+            onClick:    @onRevokeRoleButtonClick.bind(@, role.uuid)
+          }) unless role.value == 'owner'
         )
       
       )

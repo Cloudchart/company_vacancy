@@ -9,8 +9,7 @@ module.exports = CloudFlux.createStore
 
 
   onAccessRightsFetchDone: (key, json) ->
-    _.each (json.access_rights), (props) => @store.add_or_update(props.uuid, props)
-    
+    _.each (json.roles), (props) => @store.add_or_update(props.uuid, props)
     @store.emitChange()
   
   
@@ -27,13 +26,12 @@ module.exports = CloudFlux.createStore
   
   onRevokeFail: (key) ->
     @store.stop_sync(key, 'revoke')
-    #@store.set_errors(key, { 'base': 'server' })
     @store.emitChange()
   
 
   getActions: ->
     'company:access_rights:fetch:done': @onAccessRightsFetchDone
 
-    'access_rights:revoke':       @onRevoke
-    'access_rights:revoke:done':  @onRevokeDone
-    'access_rights:revoke:fail':  @onRevokeFail
+    'role:revoke':       @onRevoke
+    'role:revoke:done':  @onRevokeDone
+    'role:revoke:fail':  @onRevokeFail

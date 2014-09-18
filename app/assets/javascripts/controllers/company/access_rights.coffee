@@ -1,9 +1,9 @@
 @['companies/access_rights#index'] = (data) ->
   
-  CompanyStore              = require('stores/company_store')
-  TokenStore                = require('stores/token_store')
-  UsersStore                = require('stores/users')
-  CompanyAccessRightsStore  = require('stores/company_access_rights')
+  CompanyStore  = require('stores/company_store')
+  TokenStore    = require('stores/token_store')
+  UsersStore    = require('stores/users')
+  RolesStore    = require('stores/roles')
 
   TokenSyncAPI    = require('sync/token_sync_api')
   
@@ -25,5 +25,5 @@
   #
   AccessRightsComponent = require('components/company/access_rights')
   
-  Promise.all(promises).then ->
-    React.renderComponent(AccessRightsComponent({ key: data.company.uuid, roles: data.roles }), document.querySelector('[data-react-mount-point="access-rights"]'))
+  #Promise.all(promises).then ->
+  React.renderComponent(AccessRightsComponent({ key: data.company.uuid, roles: data.roles }), document.querySelector('[data-react-mount-point="access-rights"]'))
