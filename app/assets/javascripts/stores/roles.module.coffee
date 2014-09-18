@@ -28,6 +28,16 @@ module.exports = CloudFlux.createStore
     @store.stop_sync(key, 'revoke')
     @store.emitChange()
   
+  
+  getSchema: ->
+    uuid:       ''
+    value:      ''
+    user_id:    ''
+    owner_id:   ''
+    owner_type: ''
+    created_at: ''
+    updated_at: ''
+  
 
   getActions: ->
     'company:access_rights:fetch:done': @onAccessRightsFetchDone

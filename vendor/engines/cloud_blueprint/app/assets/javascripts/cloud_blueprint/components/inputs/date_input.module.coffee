@@ -6,7 +6,7 @@ tag = React.DOM
 # Functions
 #
 formatDate = (date, format = 'll') ->
-  if date instanceof Date then moment(date).format(format) else ''
+  if date instanceof Date then moment(date).utc().format(format) else ''
 
 
 getStateFromDate = (date) ->

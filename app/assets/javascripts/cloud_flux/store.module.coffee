@@ -13,6 +13,22 @@ Factory = (definition) ->
   __data  = {}
   __sync  = {}
   __errs  = {}
+  __schm  = null
+  
+
+  # Get Actions
+  #
+  actions = if _.isFunction(definition.getActions) then definition.getActions() else {}
+  
+  
+  # Get Schema
+  #
+  schema = if _.isFunction(definition.getSchema) then definition.getSchema()
+  
+  
+  # Parse Attributes
+  #
+  parseAttributes = _.identity
   
 
   # Store definition
@@ -40,11 +56,13 @@ Factory = (definition) ->
     
     
     add: (key, attributes = {}) ->
-      __data[key] = attributes
+      attributes = parseAttributes(attributes)
+      __data[key] = (if __schm then new __schm(attributes) else attributes)
     
     
     update: (key, attributes = {}) ->
-      _.merge __data[key], attributes
+      attributes = parseAttributes(attributes)
+      __data[key] = __data[key].merge(attributes)
     
     
     add_or_update: (key, attributes = {}) ->
@@ -81,16 +99,19 @@ Factory = (definition) ->
   _.extend Store, EventEmitter ; Store.GetElementForEmitter()
   
 
-  # Get defined actions
-  #
-  definedActions = if _.isFunction(definition.getActions) then definition.getActions() else {}
+  if schema
+    attributes = _.reduce schema, (memo, value, key) ->
+      memo[key] = value.default || value || null
+      memo
+    , {}
+    __schm = Immutable.Record(attributes)
   
-  
+
   # Register dispatchers
   #
   Store.dispatchToken = Dispatcher.register (payload) ->
-    if _.has(definedActions, payload.action.type)
-      definedActions[payload.action.type].apply(definition, payload.action.data)
+    if _.has(actions, payload.action.type)
+      actions[payload.action.type].apply(definition, payload.action.data)
   
 
   # Set store

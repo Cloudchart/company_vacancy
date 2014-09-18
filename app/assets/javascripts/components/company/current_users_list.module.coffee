@@ -24,6 +24,8 @@ Component = React.createClass
       
       role = _.find @props.roles, (role) -> role.user_id == user.uuid
       
+      console.log role
+      
       (tag.tr {
         key: user.uuid
       },
