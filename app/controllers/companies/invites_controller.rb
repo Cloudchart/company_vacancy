@@ -8,7 +8,7 @@ module Companies
     # List
     #
     def index
-      authorize! :list_company_invites, @company
+      authorize! :manage_company_invites, @company
 
       respond_to do |format|
         format.json { render json: @company.invite_tokens, root: false }
@@ -31,7 +31,7 @@ module Companies
     # Create
     #
     def create
-      authorize! :create_company_invite, @company
+      authorize! :manage_company_invites, @company
       token = Token.new params.require(:token).permit(data: [ :email, :role ] ).merge(name: 'invite', owner: @company)
 
       token.save!
