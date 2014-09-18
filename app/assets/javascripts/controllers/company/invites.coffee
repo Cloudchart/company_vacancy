@@ -1,8 +1,7 @@
 cc.module('react/shared/letter-avatar')
 
+LoginForm = cc.require('react/modals/login-form')
 SignUpForm = cc.require('react/modals/register-form')
-SignUpButton = document.querySelector('[data-behaviour="signup-button"]')
-
 # Company Invite
 # 
 @['companies/invites#show'] = (data) ->
@@ -16,13 +15,10 @@ SignUpButton = document.querySelector('[data-behaviour="signup-button"]')
     avatarURL: data.author_avatar_url
   ), container)
 
-  # if modalMountPoint = document.querySelector('[data-modal-mount-point]')
-  #   ModalComponent = cc.require('react/shared/modal')
-  #   React.renderComponent(ModalComponent({}), modalMountPoint)
 
   # Login form
   #
-  if (loginButton = document.querySelector('[data-behaviour="invite-login-button"]')) and (LoginForm = cc.require('react/modals/login-form'))
+  if loginButton = document.querySelector('[data-behaviour="invite-login-button"]')
     loginButton.addEventListener 'click', (event) ->
       event.preventDefault()
 
@@ -38,15 +34,16 @@ SignUpButton = document.querySelector('[data-behaviour="signup-button"]')
 
   # Signup form
   # 
-  SignUpButton.addEventListener 'click', (event) ->
-    event.preventDefault()
+  if SignUpButton = document.querySelector('[data-behaviour="signup-button"]')
+    SignUpButton.addEventListener 'click', (event) ->
+      event.preventDefault()
 
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: SignUpForm({
-          full_name: data.token.data.full_name
-          email: data.token.data.email
-          invite: data.token.rfc1751
-        })
+      event = new CustomEvent 'modal:push',
+        detail:
+          component: SignUpForm({
+            full_name: data.token.data.full_name
+            email: data.token.data.email
+            invite: data.token.rfc1751
+          })
 
-    window.dispatchEvent(event)
+      window.dispatchEvent(event)

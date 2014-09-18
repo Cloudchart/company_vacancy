@@ -39,22 +39,17 @@ Cloudchart::Application.routes.draw do
     
     resources :people, shallow: true do
       post :search, on: :collection
-
-      # deprecated
-      # match :make_owner, on: :member, via: [:put, :patch]
-      # post :invite_user, on: :member
-
     end
 
     resources :events, shallow: true, concerns: [:blockable] do
       post :verify, on: :member
     end
 
-    resources :access_rights, controller: 'companies/access_rights' do
-    end
+    resources :access_rights, controller: 'companies/access_rights'
 
     resources :invites, controller: 'companies/invites' do
       match :resend, on: :member, via: [:put, :patch]
+      post :accept, on: :member
     end
 
   end
@@ -88,11 +83,6 @@ Cloudchart::Application.routes.draw do
   end
 
   # Custom
-  # 
-  # deprecated
-  # get 'company_invite/:token', to: 'landings#company_invite', as: :company_invite
-  # match 'accept_company_invite/:token', to: 'invitations#accept_company_invite', as: :accept_company_invite, via: [:put, :patch]
-  # delete 'company_invites/:id/cancel', to: 'invitations#cancel_company_invite', as: :cancel_company_invite
   # 
   get ':id', to: 'pages#show', as: :page
 
