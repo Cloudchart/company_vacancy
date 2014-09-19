@@ -201,6 +201,7 @@ $editor-identity-selector-search-input-padding: 4pt;
   > input[type="file"] {
     @include position(absolute, 0px 0px 0px 0px);
     opacity: 0;
+    width: 100%;
   }
   
   > img {

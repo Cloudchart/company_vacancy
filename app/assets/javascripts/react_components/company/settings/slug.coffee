@@ -82,7 +82,7 @@ MainComponent = React.createClass
             id: 'slug'
             name: 'slug'
             value: @state.value
-            placeholder: 'Type name'
+            placeholder: 'shortname'
             className: 'error' if @state.error
             onKeyUp: @onKeyUp
             onChange: @onChange

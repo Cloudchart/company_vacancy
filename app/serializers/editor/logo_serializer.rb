@@ -1,3 +1,4 @@
+# deprecated
 module Editor
   class LogoSerializer < ActiveModel::Serializer
 

@@ -28,7 +28,9 @@ Cloudchart::Application.routes.draw do
   #
   resources :companies, concerns: [:blockable] do
 
-    post :logo, to: 'companies#upload_logo', on: :member
+    # deprecated
+    # post :logo, to: 'companies#upload_logo', on: :member
+    
     post :search, on: :collection
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member

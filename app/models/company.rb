@@ -14,8 +14,8 @@ class Company < ActiveRecord::Base
   dragonfly_accessor :logotype
 
   # deprecated
-  has_one :logo, as: :owner, dependent: :destroy
-  accepts_nested_attributes_for :logo, allow_destroy: true
+  # has_one :logo, as: :owner, dependent: :destroy
+  # accepts_nested_attributes_for :logo, allow_destroy: true
 
   has_and_belongs_to_many :industries
   has_and_belongs_to_many :banned_users, class_name: 'User', join_table: 'companies_banned_users'

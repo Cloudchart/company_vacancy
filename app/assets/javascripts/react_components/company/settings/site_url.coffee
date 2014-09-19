@@ -160,7 +160,7 @@ MainComponent = React.createClass
               id: 'site_url'
               name: 'site_url'
               value: @state.value
-              placeholder: 'Type URL'
+              placeholder: 'www.example.com'
               className: 'error' if @state.error
               onChange: @onChange
               onKeyUp: @onKeyUp

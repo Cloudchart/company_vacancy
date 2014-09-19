@@ -63,6 +63,7 @@ InputComponent = React.createClass
       value:          @state.value
       placeholder:    @props.placeholder
       autoComplete:   'off'
+      autoFocus:      @props.autofocus
       onChange:       @onChange
       onFocus:        @onFocus
       onBlur:         @onBlur
@@ -122,7 +123,7 @@ MainComponent = React.createClass
         className: 'current' if @props.toggle_value == 'burn_rate'
         href: '#'
         onClick: @onTabClick
-      }, 'Burn rate') 
+      }, 'Finance') 
     ) if @props.is_editor or @props.is_trusted_reader
 
     sections.push(
@@ -143,7 +144,8 @@ MainComponent = React.createClass
 
   onNameChange: (value) ->
     @setState
-      name: if value.trim().length == 0 then @state.name else value
+      # name: if value.trim().length == 0 then @state.name else value
+      name: value
   
   
   onDescriptionChange: (value) ->
@@ -172,8 +174,9 @@ MainComponent = React.createClass
           (InputComponent {
             name:         'name'
             value:        @state.name
+            autofocus:    true unless @state.name
             onChange:     @onNameChange
-            placeholder:  'Name'
+            placeholder:  'Tap to add company name'
           })
 
           (tag.small {},
@@ -181,7 +184,7 @@ MainComponent = React.createClass
               name:         'description'
               value:        @state.description
               onChange:     @onDescriptionChange
-              placeholder:  'Tap here to add short description'
+              placeholder:  'Tap to add short description'
             })
           )
         )

@@ -22,8 +22,9 @@ FileInputComponent = React.createClass
 
   render: ->
     (tag.input {
-      type:       'file'
-      onChange:   @props.onChange
+      type: 'file'
+      ref: 'file-input'
+      onChange: @props.onChange
     })
 
 
@@ -133,7 +134,6 @@ Component = React.createClass
 
   componentDidUpdate: ->
     @save() if @state.file
-
 
   onFileChange: (event) ->
     file = event.target.files[0] ; return unless file

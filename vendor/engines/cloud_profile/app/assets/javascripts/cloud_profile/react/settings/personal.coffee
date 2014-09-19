@@ -61,7 +61,7 @@ Component = React.createClass
     @props.people.map (person) =>
       company = @props.companies.filter((company) -> company.uuid == person.company_id)[0]
       (tag.li { key: company.uuid },
-        (person.occupation || 'Employeé')
+        (person.occupation || 'Works')
         ' at '
         (tag.a { href: company.url }, company.name)
       )

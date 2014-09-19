@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   has_many :favorites, dependent: :destroy
   has_many :roles, dependent: :destroy
   has_many :companies, through: :roles, source: :owner, source_type: 'Company'
+  has_many :people, dependent: :destroy
   
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
 

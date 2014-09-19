@@ -28,7 +28,7 @@ class CompaniesController < ApplicationController
 
   # GET /companies/new
   def new
-    @company = Company.new(name: 'ACME')
+    @company = Company.new
     @company.roles.build(user: current_user, value: :owner)
     @company.should_build_objects!
     @company.save!
@@ -36,17 +36,18 @@ class CompaniesController < ApplicationController
     redirect_to @company
   end
   
+  # deprecated
   # POST /companies/1/logo
-  def upload_logo
-    logo = Logo.new image: params[:image]
-    @company = Company.find(params[:id])
-    @company.logo = logo
+  # def upload_logo
+  #   logo = Logo.new image: params[:image]
+  #   @company = Company.find(params[:id])
+  #   @company.logo = logo
 
-    respond_to do |format|
-      format.json { render nothing: true }
-      format.js
-    end
-  end
+  #   respond_to do |format|
+  #     format.json { render nothing: true }
+  #     format.js
+  #   end
+  # end
   
   # GET /companies/1/edit
   def edit

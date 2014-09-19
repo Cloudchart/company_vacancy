@@ -49,7 +49,7 @@ MainComponent = React.createClass
           id: 'established_on'
           name: 'established_on'
           date: if @props.value then new Date @props.value else ''
-          placeholder: 'Type date'
+          placeholder: 'Jan 1, 2014'
           onChange: @onChange
         })
       )

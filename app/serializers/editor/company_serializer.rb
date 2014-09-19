@@ -9,7 +9,8 @@ module Editor
     attributes  :industry_ids
     
 
-    has_one :logo, serializer: Editor::LogoSerializer
+    # deprecated
+    # has_one :logo, serializer: Editor::LogoSerializer
     
     
     def logotype

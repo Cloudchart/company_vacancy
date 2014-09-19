@@ -9,7 +9,9 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   has_many :charts, serializer: BurnRateChartSerializer
   has_many :blocks, serializer: BlockEditorSerializer
-  has_one :logo, serializer: Editor::LogoSerializer
+
+  # deprecated
+  # has_one :logo, serializer: Editor::LogoSerializer
 
   alias_method :current_user, :scope
   alias_method :company, :object

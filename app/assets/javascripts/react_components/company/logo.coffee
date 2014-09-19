@@ -95,6 +95,7 @@ MainComponent = React.createClass
     (tag.aside {
       className:  'logo editor-image-uploader'
       style:      style
+      onClick:    @onUpdateClick unless @state.image_url
     },
     
       (tag.input {
@@ -118,13 +119,19 @@ MainComponent = React.createClass
       ) if @state.image_url
 
       (tag.button {
-        className:  'create orgpad small'
-        onClick:    @onUpdateClick
+        className:  'create orgpad small square'
+        # onClick:    @onUpdateClick
       },
         (tag.i { className: 'fa fa-pencil'})
       ) unless @state.image_url
 
-      (tag.i { className: 'fa fa-picture-o empty' }) unless @state.image_url or @state.synchronizing
+      unless @state.image_url or @state.synchronizing
+        (tag.div {},
+          (tag.i { className: 'fa fa-picture-o empty' }),
+          (tag.br {})
+          'Tap to add logo'
+        )
+
       (tag.i { className: 'fa fa-cog fa-spin synchronizing' }) if @state.synchronizing
     )
 

@@ -21,7 +21,7 @@
             </span>
           <% end %>
           
-          <strong><%= link_to company.name, main_app.company_path(company) %></strong>
+          <strong><%= link_to company.name.present? ? company.name : 'Unnamed', main_app.company_path(company) %></strong>
         </li>
 
         <li class="industry">
