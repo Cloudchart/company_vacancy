@@ -5,7 +5,7 @@ tag = React.DOM
 CompanyStore              = require('stores/company_store')
 UsersStore                = require('stores/users')
 RolesStore                = require('stores/roles')
-TokenStore                = require('stores/token_store')
+TokenStore                = require('stores/token')
 
 Buttons           = require('components/company/buttons')
 InviteUserForm    = require('components/company/invite_user_form')
@@ -18,21 +18,22 @@ Modes           = ['view', 'edit']
 #
 #
 tokenFilter = (key, record) ->
-  record.get('owner_id') == key and record.get('owner_type') == 'Company' and record.get('name') == 'invite'
+  record.owner_id == key and record.owner_type == 'Company' and record.name == 'invite'
+
+
+roleFilter = (key, record) ->
+  record.owner_id == key and record.owner_type == 'Company'
 
 
 # Get State From Stores
 #
 getStateFromStores = (key) ->
   tokens        = TokenStore.filter(tokenFilter.bind(null, key))
-  roles         = RolesStore.filter (item) -> item.owner_id == key and item.owner_type == 'Company'
-  user_ids      = _.pluck roles, 'user_id'
-  users         = UsersStore.filter (item) -> _.contains user_ids, item.uuid
+  roles         = RolesStore.filter(roleFilter.bind(null, key))
   
-  company:        CompanyStore.get(key)
-  users:          users
-  roles:          roles
-  tokens:         if tokens then tokens.toJS() else {}
+  company:  CompanyStore.get(key)
+  roles:    roles
+  tokens:   tokens
 
 
 # Main
@@ -50,7 +51,7 @@ Component = React.createClass
 
 
   onInviteUserButtonClick: (event) ->
-    @setState({ newTokenKey: TokenStore.create() }) unless @hasNewToken()
+    @setState({ newTokenKey: TokenStore.create({ owner_id: @props.key, owner_type: 'Company' }) }) unless @hasNewToken()
     @setState({ mode: 'edit' })
   
   
@@ -77,8 +78,7 @@ Component = React.createClass
   
   getInitialState: ->
     state = getStateFromStores(@props.key)
-    state.roles           = @props.roles
-    state.mode            = @props.mode
+    state.mode = @props.mode
     state
 
 
@@ -107,7 +107,6 @@ Component = React.createClass
               key:      'current-users-list'
               company:  @state.company
               tokens:   @state.tokens
-              users:    @state.users
               roles:    @state.roles
             })
           ]
@@ -131,7 +130,8 @@ Component = React.createClass
               company:  @state.company
               roles:    @props.roles
               token:    TokenStore.get(@state.newTokenKey)
-              errors:   TokenStore.getErrors(@state.newTokenKey)
+              errors:   TokenStore.errorsFor(@state.newTokenKey)
+              sync:     TokenStore.getSync(@state.newTokenKey)
             })
           ]
 

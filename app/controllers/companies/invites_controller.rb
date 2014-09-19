@@ -8,7 +8,7 @@ module Companies
       company     = Company.find(params[:company_id])
       
       respond_to do |format|
-        format.json { render json: company.invite_tokens, root: false }
+        format.json { render json: { tokens: company.invite_tokens }, root: false }
       end
     end
     
@@ -38,7 +38,7 @@ module Companies
       token.save!
       
       respond_to do |format|
-        format.json { render json: token }
+        format.json { render json: token, root: :token }
       end
       
       UserMailer.company_invite(token.data[:email], token).deliver
@@ -46,7 +46,7 @@ module Companies
     rescue ActiveRecord::RecordInvalid
       
       respond_to do |format|
-        format.json { render json: { token: token, errors: token.errors }, status: 412 }
+        format.json { render json: token, root: :token, status: 412 }
       end
     end
     
@@ -60,7 +60,7 @@ module Companies
       UserMailer.company_invite(token.data[:email], token).deliver
 
       respond_to do |format|
-        format.json { render json: token }
+        format.json { render json: token, root: :token }
       end
     end
     
@@ -72,7 +72,7 @@ module Companies
       token.destroy
       
       respond_to do |format|
-        format.json { render json: token }
+        format.json { render json: token, root: :token }
       end
     end
   

@@ -89,6 +89,29 @@ RevokeRoleButton = (props) ->
   )
 
 
+# Sync Button
+#
+SyncButton = (props) ->
+  (tag.button {
+    type:       'button'
+    className:  props.className || 'sync'
+    disabled:   props.disabled
+    onClick:    props.onClick
+  },
+  
+    if props.sync
+      [
+        props.syncTitle || props.title || 'Sync'
+        (tag.i { key: 'button', className: "fa fa-fw fa-spin fa-spinner" })
+      ]
+    else
+      [
+        props.title || 'Sync'
+        (tag.i { key: 'button', className: "fa fa-fw #{props.icon || 'fa-times'}" })
+      ]
+  )
+
+
 # Exports
 #
 module.exports =
@@ -98,3 +121,4 @@ module.exports =
   ResendCompanyInviteButton:  ResendCompanyInviteButton
   CancelCompanyInviteButton:  CancelCompanyInviteButton
   RevokeRoleButton:           RevokeRoleButton
+  SyncButton:                 SyncButton

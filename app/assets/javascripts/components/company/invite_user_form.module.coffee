@@ -2,15 +2,16 @@
 #
 tag = React.DOM
 
-Buttons       = require('components/company/buttons')
-TokenActions  = require('actions/token_actions')
+
+Buttons     = require('components/company/buttons')
+Actions     = require('actions/company')
 
 
 # Get State from Props
 #
 getStateFromProps = (props) ->
-  role:   props.token.get('role')   || props.roles[0]
-  email:  props.token.get('email')  || ''
+  role:   props.token.data.role   || props.roles[0]
+  email:  props.token.data.email  || ''
 
 
 # Errors
@@ -63,11 +64,11 @@ Component = React.createClass
           onChange:       @onEmailChange
         })
       
-        if @props.errors and errors = @props.errors.get('email')
+        if @props.errors and (errors = @props.errors['email'])
           (tag.i {
             className: 'error'
           },
-            Errors.email[errors.get(0)]
+            Errors.email[errors[0]] || errors[0]
           )
       )
     )
@@ -75,7 +76,8 @@ Component = React.createClass
 
   onSubmit: (event) ->
     event.preventDefault()
-    TokenActions.createCompanyInvite(@props.key, @props.company.uuid, {
+
+    Actions.sendInvite(@props.key, {
       data:
         email:  @state.email
         role:   @state.role
@@ -136,9 +138,12 @@ Component = React.createClass
       # Footer / Button
       #
       (tag.footer null,
-        (Buttons.SendInviteButton {
-          type:     'button'
-          onClick:  @onSendInviteButtonClick
+        (Buttons.SyncButton {
+          title:    'Send invite'
+          icon:     'fa-envelope-o'
+          sync:     @props.sync == 'send-invite'
+          disabled: @props.sync
+          onClick:  @onSubmit
         })
       )
     

@@ -3,8 +3,8 @@
 tag = React.DOM
 
 
-Actions     = require('actions/token_actions')
-TokenStore  = require('stores/token_store')
+Actions     = require('actions/company')
+TokenStore  = require('stores/token')
 Buttons     = require('components/company/buttons')
 
 
@@ -18,11 +18,11 @@ Component = React.createClass
 
 
   onCancelButtonClick: ->
-    Actions.deleteCompanyInvite(@props.key, @props.company.key)
+    Actions.cancelInvite(@props.key, 'delete')
   
   
   onResendButtonClick: ->
-    Actions.resendCompanyInvite(@props.key, @props.company.key)
+    Actions.resendInvite(@props.key, 'update')
   
   
   componentWillReceiveProps: (nextProps) ->

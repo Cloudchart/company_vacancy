@@ -4,10 +4,11 @@ tag = React.DOM
 
 
 RolesStore    = require('stores/roles')
-RolesActions  = require('actions/roles')
-TokenStore    = require('stores/token_store')
+TokenStore    = require('stores/token')
+UsersStore    = require('stores/users')
+
+RoleItem      = require('components/company/role_item')
 TokenItem     = require('components/company/token_item')
-Buttons       = require('components/company/buttons')
 
 
 # Main
@@ -20,52 +21,22 @@ Component = React.createClass
 
 
   currentUsers: ->
-    _.map @props.users, (user) =>
-      
-      role = _.find @props.roles, (role) -> role.user_id == user.uuid
-      
-      console.log role
-      
-      (tag.tr {
-        key: user.uuid
-      },
-      
-        (tag.td {
-          className: 'name'
-        },
-          user.full_name
-          (tag.br null)
-          user.email
-        )
-        
-        (tag.td {
-          className: 'role'
-        },
-          role.value if role
-        )
-        
-        (tag.td {
-          className: 'actions'
-        },
-          (Buttons.RevokeRoleButton {
-            sync:       RolesStore.is_in_sync(role.uuid)
-            disabled:   RolesStore.is_in_sync(role.uuid)
-            onClick:    @onRevokeRoleButtonClick.bind(@, role.uuid)
-          }) unless role.value == 'owner'
-        )
-      
-      )
+    _.map @props.roles, (role) ->
+      (RoleItem {
+        key:    role.uuid
+        role:   role.value
+        user:   UsersStore.get(role.user_id)
+        sync:   RolesStore.getSync(role.uuid)
+      })
       
   
   currentTokens: ->
-    _.map @props.tokens, (token, key) ->
+    _.map @props.tokens, (token) ->
       (TokenItem {
-        key:    key
+        key:    token.uuid
         email:  token.data.email
         role:   token.data.role
-        sync:   TokenStore.getSync(key)
-        company:
-          key:  token.owner_id
+        sync:   TokenStore.getSync(token.uuid)
       })
   
   
