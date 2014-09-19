@@ -173,7 +173,7 @@ MainComponent = React.createClass
             name:         'name'
             value:        @state.name
             onChange:     @onNameChange
-            placeholder:  'Company name'
+            placeholder:  'Name'
           })
 
           (tag.small {},
@@ -181,7 +181,7 @@ MainComponent = React.createClass
               name:         'description'
               value:        @state.description
               onChange:     @onDescriptionChange
-              placeholder:  'Company description'
+              placeholder:  'Tap here to add short description'
             })
           )
         )

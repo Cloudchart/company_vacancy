@@ -28,7 +28,7 @@ class CompaniesController < ApplicationController
 
   # GET /companies/new
   def new
-    @company = Company.new(name: 'Default Company')
+    @company = Company.new(name: 'ACME')
     @company.roles.build(user: current_user, value: :owner)
     @company.should_build_objects!
     @company.save!
