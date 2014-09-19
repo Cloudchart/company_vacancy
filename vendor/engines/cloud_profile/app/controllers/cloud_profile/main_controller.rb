@@ -2,7 +2,7 @@ require_dependency "cloud_profile/application_controller"
 
 module CloudProfile
   class MainController < ApplicationController
-    authorize_resource class: false
+    authorize_resource class: :cloud_profile_main
     before_action :create_default_company, only: :companies, if: -> { current_user.companies.blank? }
     
     def companies

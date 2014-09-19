@@ -3,30 +3,39 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :verify_site_url, :download_verification_file_url, :default_host
-  attributes :industry_ids, :is_site_url_verified #, :owners, :owner_invites
-  attributes :can_update, :charts_for_select, :established_on
+  attributes :industry_ids, :is_site_url_verified
+  attributes :charts_for_select, :established_on
+  attributes :is_editor, :is_public_reader, :is_trusted_reader
 
   has_many :charts, serializer: BurnRateChartSerializer
   has_many :blocks, serializer: BlockEditorSerializer
   has_one :logo, serializer: Editor::LogoSerializer
+
+  alias_method :current_user, :scope
+  alias_method :company, :object
   
+  def is_editor
+    Ability.new(current_user).can?(:manage, company)
+  end
+
+  def is_public_reader
+    Ability.new(current_user).can?(:partly_read, company)
+  end
+
+  def is_trusted_reader
+    Ability.new(current_user).can?(:fully_read, company)
+  end
+
+  def is_site_url_verified
+    object.site_url.present? && object.tokens.find_by(name: :site_url_verification).blank?
+  end
+
   def id
     object.to_param
   end
 
   def sections
     object.sections.marshal_dump
-  end
-
-  # deprecated
-  # def owner_invites
-  #   object.invite_tokens.map do |token|
-  #     { uuid: token.id, full_name: token.data[:full_name], person_id: token.data[:person_id] }
-  #   end
-  # end
-
-  def can_update
-    Ability.new(scope).can?(:update, object)
   end
 
   def industry_ids
@@ -94,10 +103,6 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   def default_host
     ENV['ACTION_MAILER_DEFAULT_HOST']
-  end
-
-  def is_site_url_verified
-    object.site_url.present? && object.tokens.find_by(name: :site_url_verification).blank?
   end
 
 end

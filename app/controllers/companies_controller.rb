@@ -1,7 +1,9 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file]
   before_action :set_collection, only: [:index, :search]
-  before_action :display_invite_notice, only: :show
+
+  # legacy
+  # before_action :display_invite_notice, only: :show
 
   authorize_resource
   
@@ -135,11 +137,12 @@ private
     @companies = Company.search(params)
   end
 
-  def display_invite_notice
-    if token = @company.invite_tokens.select { |token| token.data[:user_id] == current_user.id }.first
-      flash.now[:notice] = "You are invited to join this company. <a href='#{company_invite_path(token)}'>Please confirm</a>.".html_safe
-    end
-  end
+  # legacy
+  # def display_invite_notice
+  #   if token = @company.invite_tokens.select { |token| token.data[:user_id] == current_user.id }.first
+  #     flash.now[:notice] = "You are invited to join this company. <a href='#{company_invite_path(token)}'>Please confirm</a>.".html_safe
+  #   end
+  # end
 
   # Only allow a trusted parameter "white list" through.
   def company_params

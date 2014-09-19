@@ -3,7 +3,7 @@ module Companies
     before_action :set_company, only: [:index, :create, :resend]
     before_action :set_token, only: [:show, :accept, :destroy]
 
-    authorize_resource class: :company_invite, except: [:create, :index]
+    authorize_resource class: :company_invite, except: [:index, :create, :resend]
     
     # List
     #
@@ -33,8 +33,8 @@ module Companies
     #
     def create
       authorize! :manage_company_invites, @company
-      token = Token.new params.require(:token).permit(data: [ :email, :role ] ).merge(name: 'invite', owner: @company)
 
+      token = Token.new params.require(:token).permit(data: [ :email, :role ] ).merge(name: 'invite', owner: @company)
       token.save!
       
       respond_to do |format|
@@ -53,8 +53,9 @@ module Companies
     # Resend
     #
     def resend
+      authorize! :manage_company_invites, @company
+
       token = @company.tokens.where(name: :invite).find(params[:id])
-      
       UserMailer.company_invite(token.data[:email], token).deliver
 
       respond_to do |format|
