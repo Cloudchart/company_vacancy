@@ -11,14 +11,11 @@ module Companies
       authorize! :manage_company_invites, @company
 
       respond_to do |format|
-<<<<<<< HEAD
-        format.json { render json: { tokens: company.invite_tokens }, root: false }
-=======
-        format.json { render json: @company.invite_tokens, root: false }
->>>>>>> FETCH_HEAD
+        format.json { render json: { tokens: @company.invite_tokens } }
       end
     end
     
+
     # Show
     #
     def show
@@ -82,12 +79,8 @@ module Companies
       @token.destroy
       
       respond_to do |format|
-<<<<<<< HEAD
-        format.json { render json: token, root: :token }
-=======
         format.html { redirect_to cloud_profile.root_path }
-        format.json { render json: @token }
->>>>>>> FETCH_HEAD
+        format.json { render json: @token, root: :token }
       end
     end
 

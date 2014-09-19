@@ -100,7 +100,7 @@ module.exports =
     
     fail = (xhr) ->
       handleServerStoreFailAction(Constants.Token.CREATE_DONE, key, xhr, token)
-    
+      
     SyncAPI.resendInvite(record.owner_id, key, done, fail)
 
 
