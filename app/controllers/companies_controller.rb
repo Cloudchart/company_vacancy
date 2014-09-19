@@ -29,7 +29,7 @@ class CompaniesController < ApplicationController
   # GET /companies/new
   def new
     @company = Company.new(name: 'Default Company')
-    @company.access_rights.create(user: current_user, role: :owner)
+    @company.roles.build(user: current_user, value: :owner)
     @company.should_build_objects!
     @company.save!
     
