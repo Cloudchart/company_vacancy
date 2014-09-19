@@ -12,7 +12,7 @@ InviteUserForm    = require('components/company/invite_user_form')
 CurrentUsersList  = require('components/company/current_users_list')
 
 
-Modes           = ['view', 'edit']
+Modes             = ['view', 'edit']
 
 
 #
@@ -40,7 +40,7 @@ getStateFromStores = (key) ->
 #
 Component = React.createClass
 
-  
+
   hasNewToken: ->
     @state.newTokenKey and TokenStore.has(@state.newTokenKey)
 
@@ -48,8 +48,8 @@ Component = React.createClass
   refreshStateFromStores: ->
     @setState getStateFromStores(@props.key)
     @setState({ mode: 'view' }) unless @hasNewToken()
-
-
+  
+  
   onInviteUserButtonClick: (event) ->
     @setState({ newTokenKey: TokenStore.create({ owner_id: @props.key, owner_type: 'Company' }) }) unless @hasNewToken()
     @setState({ mode: 'edit' })
