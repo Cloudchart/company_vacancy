@@ -52,10 +52,10 @@ class Ability
     # User
     # 
     else
+      can [:verify, :resend_verification], :cloud_profile_email
+      can :manage, :cloud_profile_main
+      can :update, :cloud_profile_user
       can [:accept, :destroy], :company_invite
-      can [:verify, :resend_verification], :email
-      can :manage, :main
-      can :update, :user
 
       can :create, CloudProfile::Email
       can [:create, :read, :search], Company
@@ -68,17 +68,25 @@ class Ability
       can :destroy, CloudProfile::Email, user_id: user.id
 
       can :manage, Company do |company|
-        user.roles.find_by(owner: company).try(:value) =~ /owner|editor/
+        Role.find_by(user: user, owner: company).try(:value) =~ /owner|editor/
+      end
+
+      can :partly_read, Company do |company|
+        Role.find_by(user: user, owner: company).try(:value) == 'public_reader'
+      end
+
+      can :fully_read, Company do |company|
+        Role.find_by(user: user, owner: company).try(:value) == 'trusted_reader'
       end
 
       [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart].each do |model|
         can :manage, model do |resource|
-          user.roles.find_by(owner: resource.company).try(:value) =~ /owner|editor/
+          Role.find_by(user: user, owner: resource.company).try(:value) =~ /owner|editor/
         end
       end
 
       can [:manage_company_invites, :manage_company_access_rights], Company do |company|
-        user.roles.find_by(owner: company).try(:value) == :owner
+        Role.find_by(user: user, owner: company).try(:value) == :owner
       end
 
       # can :read, Vacancy do |vacancy|

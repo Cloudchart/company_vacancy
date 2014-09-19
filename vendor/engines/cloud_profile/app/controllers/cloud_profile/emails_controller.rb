@@ -3,7 +3,7 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class EmailsController < ApplicationController
 
-    authorize_resource class: false, only: [:verify, :resend_verification]
+    authorize_resource class: :cloud_profile_email, only: [:verify, :resend_verification]
     authorize_resource only: [:create, :destroy]
 
     def create

@@ -3,7 +3,7 @@ module Companies
     before_action :set_company, only: [:index, :create, :resend]
     before_action :set_token, only: [:show, :accept, :destroy]
 
-    authorize_resource class: :company_invite, except: [:create, :index]
+    authorize_resource class: :company_invite, except: [:index, :create, :resend]
     
     # List
     #
@@ -11,10 +11,11 @@ module Companies
       authorize! :manage_company_invites, @company
 
       respond_to do |format|
-        format.json { render json: @company.invite_tokens, root: false }
+        format.json { render json: { tokens: @company.invite_tokens } }
       end
     end
     
+
     # Show
     #
     def show
@@ -32,12 +33,12 @@ module Companies
     #
     def create
       authorize! :manage_company_invites, @company
-      token = Token.new params.require(:token).permit(data: [ :email, :role ] ).merge(name: 'invite', owner: @company)
 
+      token = Token.new params.require(:token).permit(data: [ :email, :role ] ).merge(name: 'invite', owner: @company)
       token.save!
       
       respond_to do |format|
-        format.json { render json: token }
+        format.json { render json: token, root: :token }
       end
       
       UserMailer.company_invite(token.data[:email], token).deliver
@@ -45,19 +46,20 @@ module Companies
     rescue ActiveRecord::RecordInvalid
       
       respond_to do |format|
-        format.json { render json: { token: token, errors: token.errors }, status: 412 }
+        format.json { render json: token, root: :token, status: 412 }
       end
     end
 
     # Resend
     #
     def resend
+      authorize! :manage_company_invites, @company
+
       token = @company.tokens.where(name: :invite).find(params[:id])
-      
       UserMailer.company_invite(token.data[:email], token).deliver
 
       respond_to do |format|
-        format.json { render json: token }
+        format.json { render json: token, root: :token }
       end
     end
 
@@ -79,7 +81,7 @@ module Companies
       
       respond_to do |format|
         format.html { redirect_to cloud_profile.root_path }
-        format.json { render json: @token }
+        format.json { render json: @token, root: :token }
       end
     end
 

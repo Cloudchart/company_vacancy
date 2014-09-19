@@ -103,31 +103,39 @@ MainComponent = React.createClass
 
 
   gatherSections: ->
-    [
+    sections = []
+
+    sections.push(
       (tag.a {
         key: 'editor'
         id: 'editor'
         className: 'current' if @props.toggle_value == 'editor'
         href: '#'
         onClick: @onTabClick
-      }, 'Company'),
+      }, 'Company')
+    )
 
+    sections.push(
       (tag.a {
         key: 'burn_rate'
         id: 'burn_rate'
         className: 'current' if @props.toggle_value == 'burn_rate'
         href: '#'
         onClick: @onTabClick
-      }, 'Burn rate'),
+      }, 'Burn rate') 
+    ) if @props.is_editor or @props.is_trusted_reader
 
+    sections.push(
       (tag.a {
         key: 'settings'
         id: 'settings'
         className: 'current' if @props.toggle_value == 'settings'
         href: ''
         onClick: @onTabClick
-      }, 'Settings')      
-    ]
+      }, 'Settings')
+    )
+
+    sections
 
   onTabClick: (event) ->
     event.preventDefault()
@@ -177,7 +185,7 @@ MainComponent = React.createClass
             })
           )
         )
-        (tag.nav  {}, @gatherSections()) if @props.can_update
+        (tag.nav  {}, @gatherSections()) if @props.is_editor or @props.is_public_reader or @props.is_trusted_reader
       )
     )
 

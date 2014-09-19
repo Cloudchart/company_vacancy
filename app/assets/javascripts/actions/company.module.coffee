@@ -1,7 +1,27 @@
 # Imports
 #
 Dispatcher  = require('dispatcher/dispatcher')
+TokenStore  = require('stores/token')
 SyncAPI     = require('sync/company')
+Constants   = require('constants')
+
+
+handleClientStoreAction = (type, key, attributes, token) ->
+  Dispatcher.handleClientAction
+    type: [type]
+    data: [key, attributes, token]
+
+
+handleServerStoreDoneAction = (type, key, json, token) ->
+  Dispatcher.handleServerAction
+    type: type
+    data: [key, json, token]
+
+
+handleServerStoreFailAction = (type, key, xhr, token) ->
+  Dispatcher.handleServerAction
+    type: type
+    data: [key, xhr.responseJSON, xhr, token]
 
 
 # Exports
@@ -9,6 +29,8 @@ SyncAPI     = require('sync/company')
 module.exports =
   
 
+  #
+  #
   fetchAccessRights: (key, token) ->
     Dispatcher.handleClientAction
       type: 'company:access_rights:fetch'
@@ -28,3 +50,71 @@ module.exports =
     
 
     SyncAPI.fetchAccessRights(key, done, fail)
+  
+  
+  #
+  #
+  fetchInviteTokens: (key, token) ->
+    Dispatcher.handleClientAction
+      type: Constants.Company.FETCH_INVITE_TOKENS
+      data: [key, token]
+    
+    done = (json) ->
+      Dispatcher.handleServerAction
+        type: Constants.Company.FETCH_INVITE_TOKENS_DONE
+        data: [key, json, token]
+    
+    fail = (xhr) ->
+      Dispatcher.handleServerAction
+        type: Constants.Company.FETCH_INVITE_TOKENS_FAIL
+        data: [key, xhr.responseJSON, xhr, token]
+    
+    SyncAPI.fetchInviteTokens(key, done, fail)
+
+
+  # Send invite
+  #
+  sendInvite: (key, attributes = {}, token = 'send') ->
+    handleClientStoreAction(Constants.Token.CREATE, key, attributes, token)
+    
+    record = TokenStore.get(key)
+
+    done = (json) -> 
+      handleServerStoreDoneAction(Constants.Token.CREATE_DONE, key, json, token)
+    
+    fail = (xhr) ->
+      handleServerStoreFailAction(Constants.Token.CREATE_FAIL, key, xhr, token)
+    
+    SyncAPI.sendInvite(record.owner_id, record.toJSON(), done, fail)
+
+
+  # Resend invite
+  #
+  resendInvite: (key, token = 'resend') ->
+    handleClientStoreAction(Constants.Token.UPDATE, key, null, token)
+    
+    record = TokenStore.get(key)
+    
+    done = (json) ->
+      handleServerStoreDoneAction(Constants.Token.UPDATE_DONE, key, json, token)
+    
+    fail = (xhr) ->
+      handleServerStoreFailAction(Constants.Token.UPDATE_FAIL, key, xhr, token)
+      
+    SyncAPI.resendInvite(record.owner_id, key, done, fail)
+
+
+  # Cancel invite
+  #
+  cancelInvite: (key, token = 'cancel') ->
+    handleClientStoreAction(Constants.Token.DELETE, key, token)
+  
+    record = TokenStore.get(key)
+  
+    done = (json) ->
+      handleServerStoreDoneAction(Constants.Token.DELETE_DONE, key, json, token)
+
+    fail = (xhr) ->
+      handleServerStoreFailAction(Constants.Token.CREATE_FAIL, key, xhr, token)
+    
+    SyncAPI.cancelInvite(record.owner_id, key, done, fail)

@@ -7,6 +7,14 @@ module.exports =
     
     COMPANY_UPDATE_DONE:  'company:update:done'
     COMPANY_UPDATE_FAIL:  'company:update:fail'
+    
+    FETCH_INVITE_TOKENS:        'company:invite_tokens:fetch'
+    FETCH_INVITE_TOKENS_DONE:   'company:invite_tokens:fetch:done'
+    FETCH_INVITE_TOKENS_FAIL:   'company:invite_tokens:fetch:fail'
+    
+    REVOKE_ROLE:        'company:role:revoke'
+    REVOKE_ROLE_DONE:   'company:role:revoke:done'
+    REVOKE_ROLE_FAIL:   'company:role:revoke:fail'
   
   
   Token:

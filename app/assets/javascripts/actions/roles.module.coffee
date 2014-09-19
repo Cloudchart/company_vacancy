@@ -1,7 +1,9 @@
 # Imports
 #
 Dispatcher  = require('dispatcher/dispatcher')
-SyncAPI     = require('sync/roles')
+RolesStore  = require('stores/roles')
+Constants   = require('constants')
+CompanySync = require('sync/company')
 
 
 # Exports
@@ -11,19 +13,21 @@ module.exports =
 
   # Revoke
   #
-  revoke: (company_key, key, token) ->
+  revoke: (key, token = 'revoke') ->
     Dispatcher.handleClientAction
-      type: 'role:revoke'
+      type: Constants.Company.REVOKE_ROLE
       data: [key, token]
     
+    record = RolesStore.get(key)
+
     done = (json) ->
       Dispatcher.handleServerAction
-        type: 'role:revoke:done'
+        type: Constants.Company.REVOKE_ROLE_DONE
         data: [key, json, token]
     
     fail = (xhr) ->
       Dispatcher.handleServerAction
-        type: 'role:revoke:fail'
+        type: Constants.Company.REVOKE_ROLE_FAIL
         data: [key, xhr.responseJSON, xhr, token]
-    
-    SyncAPI.revoke(company_key, key, done, fail)
+
+    CompanySync.revokeRole(record.owner_id, record.uuid, done, fail)

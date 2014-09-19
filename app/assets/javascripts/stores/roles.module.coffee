@@ -1,6 +1,7 @@
 # Imports
 #
 CloudFlux = require('cloud_flux')
+Constants = require('constants')
 
 
 # Exports
@@ -13,19 +14,19 @@ module.exports = CloudFlux.createStore
     @store.emitChange()
   
   
-  onRevoke: (key) ->
-    @store.start_sync(key, 'revoke')
+  onDelete: (key, token = 'delete') ->
+    @store.start_sync(key, token)
     @store.emitChange()
   
   
-  onRevokeDone: (key) ->
-    @store.stop_sync(key, 'revoke')
+  onDeleteDone: (key, json, token = 'delete') ->
     @store.remove(key)
+    @store.stop_sync(key, token)
     @store.emitChange()
   
   
-  onRevokeFail: (key) ->
-    @store.stop_sync(key, 'revoke')
+  onDeleteFail: (key, json, xhr, token = 'delete') ->
+    @store.stop_sync(key, token)
     @store.emitChange()
   
   
@@ -40,8 +41,12 @@ module.exports = CloudFlux.createStore
   
 
   getActions: ->
-    'company:access_rights:fetch:done': @onAccessRightsFetchDone
+    actions = {}
+    
+    actions['company:access_rights:fetch:done'] = @onAccessRightsFetchDone
+    
+    actions[Constants.Company.REVOKE_ROLE]      = @onDelete
+    actions[Constants.Company.REVOKE_ROLE_DONE] = @onDeleteDone
+    actions[Constants.Company.REVOKE_ROLE_FAIL] = @onDeleteFail
 
-    'role:revoke':       @onRevoke
-    'role:revoke:done':  @onRevokeDone
-    'role:revoke:fail':  @onRevokeFail
+    actions

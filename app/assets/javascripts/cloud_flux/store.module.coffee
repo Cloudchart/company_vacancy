@@ -2,6 +2,7 @@
 #
 Dispatcher    = require('dispatcher/dispatcher')
 EventEmitter  = require('utils/event_emitter')
+uuid          = require('utils/uuid')
 
 # Factory
 #
@@ -13,17 +14,24 @@ Factory = (definition) ->
   __data  = {}
   __sync  = {}
   __errs  = {}
-  __schm  = null
-  
-
-  # Get Actions
-  #
-  actions = if _.isFunction(definition.getActions) then definition.getActions() else {}
+  __undo  = {}
+  __redo  = {}
   
   
   # Get Schema
   #
-  schema = if _.isFunction(definition.getSchema) then definition.getSchema()
+  schema = if _.isFunction(definition.getSchema) then definition.getSchema() else null
+  throw new Error("Store #{definition.displayName}: getSchema should be defined.") unless schema
+  
+
+  # Define schema
+  #
+  class __schm extends Immutable.Record(schema)
+  
+  
+  # Get Actions
+  #
+  actions = if _.isFunction(definition.getActions) then definition.getActions() else {}
   
   
   # Parse Attributes
@@ -35,12 +43,20 @@ Factory = (definition) ->
   #
   Store =
     
+
+    create: (attributes = {}) ->
+      key = uuid()
+      @add(key, attributes)
+      key
+    
+
     all: ->
       _.values(__data)
     
 
     get: (key) ->
-      __data[key]
+      record = __data[key]
+      record
     
 
     has: (key) ->
@@ -56,13 +72,11 @@ Factory = (definition) ->
     
     
     add: (key, attributes = {}) ->
-      attributes = parseAttributes(attributes)
-      __data[key] = (if __schm then new __schm(attributes) else attributes)
+      __data[key] = new __schm(attributes)
     
     
     update: (key, attributes = {}) ->
-      attributes = parseAttributes(attributes)
-      __data[key] = __data[key].merge(attributes)
+      __data[key] = __data[key].mergeDeep(attributes)
     
     
     add_or_update: (key, attributes = {}) ->
@@ -70,7 +84,16 @@ Factory = (definition) ->
     
     
     remove: (key) ->
+      delete __errs[key]
       delete __data[key]
+    
+    
+    add_errors: (key, errors) ->
+      __errs[key] = errors
+
+
+    errorsFor: (key) ->
+      __errs[key]
     
     
     wait_for: (stores) ->
@@ -92,19 +115,14 @@ Factory = (definition) ->
     is_in_sync: (key) ->
       return @is_in_sync('base') if arguments.length < 1
       _.has(__sync, key)
+    
+    
+    getSync: (key = 'base') -> __sync[key]
   
   
   # Event emitter
   #
   _.extend Store, EventEmitter ; Store.GetElementForEmitter()
-  
-
-  if schema
-    attributes = _.reduce schema, (memo, value, key) ->
-      memo[key] = value.default || value || null
-      memo
-    , {}
-    __schm = Immutable.Record(attributes)
   
 
   # Register dispatchers
