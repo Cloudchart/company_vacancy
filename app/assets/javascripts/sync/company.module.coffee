@@ -3,6 +3,15 @@
 module.exports =
   
   
+  fetchAccessRights: (key, done, fail) ->
+    $.ajax
+      url:        "/companies/#{key}/access_rights"
+      type:       "GET"
+      dataType:   "json"
+    .done done
+    .fail fail
+
+
   fetchInviteTokens: (key, done, fail) ->
     $.ajax
       url:        "/companies/#{key}/invites"
@@ -36,15 +45,6 @@ module.exports =
     $.ajax
       url:        "/companies/#{key}/invites/#{token_key}"
       type:       "DELETE"
-      dataType:   "json"
-    .done done
-    .fail fail
-
-
-  fetchAccessRights: (key, done, fail) ->
-    $.ajax
-      url:        "/companies/#{key}/access_rights"
-      type:       "GET"
       dataType:   "json"
     .done done
     .fail fail
