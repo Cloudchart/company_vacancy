@@ -26,11 +26,11 @@
     </p>
     <p>
       <div class="button green">
-        <%= link_to 'Accept', accept_company_invite_path(@token), method: :patch %>
+        <%= link_to 'Accept', accept_company_invite_path(@token.owner, @token), method: :post %>
       </div>
     </p>
     <p>
-      <%= link_to 'No, thanks', company_invite_path(@token), method: :delete, data: { confirm: 'Are you sure?' } %>
+      <%= link_to 'No, thanks', company_invite_path(@token.owner, @token), method: :delete, data: { confirm: 'Are you sure?' } %>
     </p>
 
   <% else %>

@@ -84,14 +84,6 @@ class PeopleController < ApplicationController
     redirect_to company_people_url(company), notice: t('messages.destroyed', name: t('lexicon.person'))
   end
 
-  # def make_owner
-  #   @person.update(is_company_owner: true)
-
-  #   respond_to do |format|
-  #     format.json { render json: { owners: @person.company.owners } }
-  #   end      
-  # end
-
 private
 
   def set_company
