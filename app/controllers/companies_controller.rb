@@ -2,7 +2,7 @@ class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file]
   before_action :set_collection, only: [:index, :search]
 
-  # legacy
+  # TODO: update
   # before_action :display_invite_notice, only: :show
 
   authorize_resource
