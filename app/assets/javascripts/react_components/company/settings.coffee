@@ -6,12 +6,13 @@
 ##= require ./settings/slug
 ##= require ./settings/site_url
 ##= require ./settings/established_on
+##= require ./settings/tag_list
 ##= require constants.module
 ##= require utils/event_emitter.module
 ##= require stores/company_store.module
 
 tag = React.DOM
-company_attributes  = ['country', 'industry', 'is_listed', 'established_on']
+company_attributes  = ['country', 'industry', 'is_listed', 'established_on', 'tag_list']
 CompanyStore        = require('stores/company_store')
 
 # Imports
@@ -23,6 +24,7 @@ IndustrySelectComponent = cc.require('react/company/industry_select')
 UrlComponent = cc.require('react/company/settings/site_url')
 SlugComponent = cc.require('react/company/settings/slug')
 EstablishedOnComponent = cc.require('react/company/settings/established_on')
+TagListComponent = cc.require('react/company/settings/tag_list')
 
 # Main Component
 #
@@ -56,6 +58,8 @@ MainComponent = React.createClass
             value: @state.established_on
             onChange: @onEstablishedOnChange
           })
+
+          (TagListComponent { value: @props.tag_list, onChange: @onTagsChange })
 
           (tag.div { className: 'profile-item' },
             'Industry'
@@ -116,6 +120,7 @@ MainComponent = React.createClass
     industry:          props.industry_ids[0]
     is_listed:         props.is_listed
     established_on:    props.established_on
+    tag_list:          props.tag_list
 
 
   save: ->
@@ -167,6 +172,10 @@ MainComponent = React.createClass
       established_on: event.target.value
       shouldSave: true
 
+  onTagsChange: (event) ->
+    @setState
+      tag_list: event.target.value
+      shouldSave: true
 
 # Exports
 #

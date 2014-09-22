@@ -6,10 +6,11 @@ class User < ActiveRecord::Base
   before_destroy :mark_emails_for_destruction
 
   has_secure_password
+  dragonfly_accessor :avatar
 
+  # deprecated
   # has_one   :avatar, as: :owner, dependent: :destroy
   # accepts_nested_attributes_for :avatar, allow_destroy: true
-  dragonfly_accessor :avatar
 
   has_and_belongs_to_many :friends
 

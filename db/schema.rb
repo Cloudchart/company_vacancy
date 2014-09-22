@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140918131345) do
+ActiveRecord::Schema.define(version: 20140922120919) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -322,6 +322,26 @@ ActiveRecord::Schema.define(version: 20140918131345) do
 
   add_index "subscriptions", ["subscribable_id", "subscribable_type"], name: "index_subscriptions_on_subscribable_id_and_subscribable_type", using: :btree
   add_index "subscriptions", ["user_id"], name: "index_subscriptions_on_user_id", using: :btree
+
+  create_table "taggings", primary_key: "uuid", force: true do |t|
+    t.string "tag_id",        limit: 36, null: false
+    t.string "taggable_id",   limit: 36, null: false
+    t.string "taggable_type",            null: false
+    t.string "tagger_id",     limit: 36
+    t.string "tagger_type"
+  end
+
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
+  add_index "taggings", ["tag_id"], name: "index_taggings_on_tag_id", using: :btree
+  add_index "taggings", ["taggable_id", "taggable_type"], name: "index_taggings_on_taggable_id_and_taggable_type", using: :btree
+  add_index "taggings", ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type", using: :btree
+
+  create_table "tags", primary_key: "uuid", force: true do |t|
+    t.string  "name"
+    t.integer "taggings_count", default: 0
+  end
+
+  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "tokens", primary_key: "uuid", force: true do |t|
     t.string   "name",                  null: false
