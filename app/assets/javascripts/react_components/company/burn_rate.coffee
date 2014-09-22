@@ -14,16 +14,22 @@ MainComponent = React.createClass
   # 
   render: ->
     (tag.div { className: 'wrapper' },
-      (tag.header {}, 
-        'Your Burn Rate according to'
-        (tag.select {
-          value: @state.selected_chart.uuid
-          onChange: @onChartChange
-        },
-          _.map @props.charts, (chart) ->
-            (tag.option { key: chart.uuid, value: chart.uuid }, chart.title)
+      if @state.selected_chart.should_display_table
+        (tag.header {},
+          'Your expenses and revenue according to'
+          (tag.select {
+            value: @state.selected_chart.uuid
+            onChange: @onChartChange
+          },
+            _.map @props.charts, (chart) ->
+              (tag.option { key: chart.uuid, value: chart.uuid }, chart.title)
+          )
         )
-      )
+      else
+        (tag.header {},
+          'Please set salaries to your employees to see expenses and revenue'
+        )
+
       (tag.div { className: 'content' },
 
         # TODO: write generic method
@@ -89,7 +95,8 @@ MainComponent = React.createClass
             )
           )
         )
-      )
+      ) if @state.selected_chart.should_display_table
+
     )
 
   getInitialState: ->
