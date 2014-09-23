@@ -59,40 +59,44 @@ MainComponent = React.createClass
             onChange: @onEstablishedOnChange
           })
 
-          (TagListComponent { value: @props.tag_list, onChange: @onTagsChange })
+          (TagListComponent { 
+            selected: @state.tag_list
+            options: @state.available_tags
+            onChange: @onTagsChange
+          })
 
-          (tag.div { className: 'profile-item' },
-            'Industry'
-            (IndustrySelectComponent {
-              value:      @state.industry
-              onChange:   @onIndustryChange
-            })
-          )
+          # (tag.div { className: 'profile-item' },
+          #   'Industry'
+          #   (IndustrySelectComponent {
+          #     value:      @state.industry
+          #     onChange:   @onIndustryChange
+          #   })
+          # )
           
-          (tag.div { className: 'profile-item' },
-            'Region'
-            (CountrySelectComponent {
-              value:      @state.country
-              onChange:   @onCountryChange
-            })
-          )
+          # (tag.div { className: 'profile-item' },
+          #   'Region'
+          #   (CountrySelectComponent {
+          #     value:      @state.country
+          #     onChange:   @onCountryChange
+          #   })
+          # )
 
-          (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
+          # (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
 
-          (tag.footer {},
-            'Your company is'
+          # (tag.footer {},
+          #   'Your company is'
 
-            (tag.button {
-              className:  'orgpad'
-              disabled:   !(@state.country and @state.industry)
-              onClick:    @toggleListing
-            }, 'Unlisted') unless @state.is_listed
+          #   (tag.button {
+          #     className:  'orgpad'
+          #     disabled:   !(@state.country and @state.industry)
+          #     onClick:    @toggleListing
+          #   }, 'Unlisted') unless @state.is_listed
 
-            (tag.button {
-              className: 'orgpad'
-              onClick:    @toggleListing
-            }, 'Listed') if @state.is_listed
-          )
+          #   (tag.button {
+          #     className: 'orgpad'
+          #     onClick:    @toggleListing
+          #   }, 'Listed') if @state.is_listed
+          # )
 
         )
       )
@@ -121,6 +125,7 @@ MainComponent = React.createClass
     is_listed:         props.is_listed
     established_on:    props.established_on
     tag_list:          props.tag_list
+    available_tags:    props.available_tags
 
 
   save: ->
@@ -175,6 +180,7 @@ MainComponent = React.createClass
   onTagsChange: (event) ->
     @setState
       tag_list: event.target.value
+      available_tags: event.target.options
       shouldSave: true
 
 # Exports
