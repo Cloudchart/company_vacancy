@@ -60,8 +60,9 @@ MainComponent = React.createClass
           })
 
           (TagListComponent { 
-            selected: @state.tag_list
-            options: @state.available_tags
+            selected_tags: @state.tag_list
+            all_tags: @props.all_tags
+            available_tags: @state.available_tags
             onChange: @onTagsChange
           })
 
@@ -125,7 +126,7 @@ MainComponent = React.createClass
     is_listed:         props.is_listed
     established_on:    props.established_on
     tag_list:          props.tag_list
-    available_tags:    props.available_tags
+    available_tags:    []
 
 
   save: ->
@@ -179,8 +180,8 @@ MainComponent = React.createClass
 
   onTagsChange: (event) ->
     @setState
-      tag_list: event.target.value
-      available_tags: event.target.options
+      tag_list: event.target.selected_tags
+      available_tags: event.target.available_tags
       shouldSave: true
 
 # Exports

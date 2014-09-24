@@ -15,38 +15,47 @@ MainComponent = React.createClass
   # Helpers
   # 
   gatherComboboxOptions: ->
-    selected_ids = _.pluck(@state.selected, 'id')
-    filtered_options = _.filter(@state.options, (tag) -> !_.contains(selected_ids, tag.id))
-
-    _.map filtered_options, (tag) ->
+    _.map @state.filtered_tags || @state.available_tags, (tag) ->
       (ComboboxOption { key: tag.id, value: tag }, tag.name)
 
   save: ->
-    selected_names = _.map(@state.selected, (tag) -> tag.name).join(', ')
-    @props.onChange({ target: { value: selected_names, options: @state.options } })
+    selected_tags = _.map(@state.selected_tags, (tag) -> tag.name).join(', ')
+    @props.onChange({ target: { selected_tags: selected_tags, available_tags: @state.available_tags } })
+
+  availableTags: ->
+    if @props.available_tags.length > 0
+      @props.available_tags
+    else if @props.selected_tags.length > 0
+      _.filter(@props.all_tags, (tag) => !_.contains(_.pluck(@props.selected_tags, 'id'), tag.id))
+    else
+      @props.all_tags
 
   # Events
   # 
-  onChange: (event) ->
-    @setState({ selected: event.target.value })
+  # onChange: (event) ->
 
   onInput: (query) ->
-    if query == ''
-      @setState({ options: @props.options })
+    if query == '' or query == undefined
+      @setState({ filtered_tags: null })
     else
       query_re = new RegExp(query, 'i')
-      filtered_options = _.filter @props.options, (tag) -> query_re.test(tag.name)
-      @setState({ options: filtered_options })
+      filtered_tags = _.filter @state.available_tags, (tag) -> query_re.test(tag.name)
+      @setState({ filtered_tags: filtered_tags })
 
   onSelect: (value) ->
     @setState
-      selected: _.union(@state.selected, [value])
+      selected_tags: _.union(@state.selected_tags, [value])
+      available_tags: _.pull(@state.available_tags, value)
+      filtered_tags: null
       should_save: true
 
   onRemove: (value) ->
-    @setState
-      selected: _.pull(@state.selected, value)
-      should_save: true
+    if value != undefined and value != ''
+      @setState
+        selected_tags: _.pull(@state.selected_tags, value)
+        available_tags: _.union(@state.available_tags, [value]) || @props.all_tags
+        filtered_tags: null
+        should_save: true
 
   # Lifecycle Methods
   # 
@@ -65,20 +74,20 @@ MainComponent = React.createClass
   # 
   # getDefaultProps: ->
   getInitialState: ->
-    selected: @props.selected || []
-    options: @props.options || []
+    selected_tags: @props.selected_tags
+    available_tags: @availableTags()
     should_save: false
+    filtered_tags: null
 
   render: ->
     # (tag.div { className: 'profile-item' },
     (tag.div {},
 
       (TokenInput {
-        onChange: @onChange
         onInput: @onInput
         onSelect: @onSelect
         onRemove: @onRemove
-        selected: @state.selected
+        selected: @state.selected_tags
         menuContent: @gatherComboboxOptions()
       })      
       # (tag.div { className: 'content field' },
@@ -95,14 +104,6 @@ MainComponent = React.createClass
         #   onBlur: @onBlur
         # })
 
-        # (TokenInput {
-        #   onChange: @onChange
-        #   onInput: @onInput
-        #   onSelect: @onSelect
-        #   onRemove: @onRemove
-        #   selected: @state.selected
-        #   menuContent: @gatherComboboxOptions()
-        # })
       # )
     )
 
