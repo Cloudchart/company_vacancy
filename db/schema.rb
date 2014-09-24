@@ -339,6 +339,7 @@ ActiveRecord::Schema.define(version: 20140922120919) do
   create_table "tags", primary_key: "uuid", force: true do |t|
     t.string  "name"
     t.integer "taggings_count", default: 0
+    t.boolean "is_acceptable",  default: false
   end
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree

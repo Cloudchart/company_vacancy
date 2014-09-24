@@ -4,6 +4,7 @@ class CreateTags < ActiveRecord::Migration
       t.string :uuid, limit: 36
       t.string :name
       t.integer :taggings_count, default: 0
+      t.boolean :is_acceptable, default: false
     end
 
     add_index :tags, :name, unique: true

@@ -46,7 +46,10 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   end
 
   def all_tags
-    Tag.all.map { |tag| { id: tag.id, name: tag.name } }
+    company_unacceptable_tags = object.tags.where(is_acceptable: false)
+    acceplable_tags = Tag.where(is_acceptable: true)
+
+    (company_unacceptable_tags + acceplable_tags).map { |tag| { id: tag.id, name: tag.name } }
   end
   
   def charts_for_select
