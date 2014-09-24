@@ -43,6 +43,8 @@ MainComponent = React.createClass
       @setState({ filtered_tags: filtered_tags })
 
   onSelect: (value) ->
+    value = { id: cc.utils.generateUUID(), name: value } unless typeof(value) == 'object'
+
     @setState
       selected_tags: _.union(@state.selected_tags, [value])
       available_tags: _.pull(@state.available_tags, value)
@@ -84,6 +86,7 @@ MainComponent = React.createClass
     (tag.div {},
 
       (TokenInput {
+        onChange: @onChange
         onInput: @onInput
         onSelect: @onSelect
         onRemove: @onRemove
