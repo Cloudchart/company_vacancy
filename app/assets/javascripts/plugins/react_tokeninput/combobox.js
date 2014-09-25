@@ -1,7 +1,6 @@
 //= require ./add-class
 //= require ./option
 
-// var React = require('react');
 var guid = 0;
 var k = function(){};
 var addClass = cc.require('plugins/react_tokeninput/add-class');

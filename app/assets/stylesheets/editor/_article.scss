@@ -823,6 +823,11 @@ article.editor {
                   width: 120px;
                 }
               }
+
+              > div.tags {
+                @include tag_list;
+              }
+
             }
 
           }

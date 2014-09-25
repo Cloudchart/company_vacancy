@@ -1,0 +1,69 @@
+@mixin tag_list {
+  padding: 4px;
+  width: 300px;
+  border: 3pt solid $white-smoke;
+  font-weight: 300;
+
+  > ul {
+    @include flex-ul;
+    @include flex-wrap(wrap);
+
+    > li:not(:last-child) {
+      background-color: $white-smoke;
+      padding: 4px 8px;
+      margin: 0 4px 4px 0;
+
+      > span.ic-token-delete-button {
+        font-size: 1rem;
+        margin-left: 4px;
+        cursor: pointer;
+      }
+    }
+
+    > li:last-child {
+      width: 100%;
+
+      > div.ic-tokeninput {
+        &.ic-tokeninput-is-open > div.ic-tokeninput-list {
+          display: block;
+        }
+
+        > input.ic-tokeninput-input {
+          width: 100%;
+          border: none;
+          outline: none;
+        }
+
+        > span.ic-tokeninput-button {
+          display: none;
+        }
+
+        > div.ic-tokeninput-list {
+          display: none;
+          border: 3pt solid $white-smoke;
+          width: 300px;
+          padding: 4px;
+          position: absolute;
+          z-index: 1;
+          top: 100%;
+          overflow: auto;
+          margin-left: -8px;
+          border-top: none;
+
+          > div.ic-tokeninput-option {
+            cursor: default;
+
+            &:focus {
+              outline: none;
+              background-color: $white-smoke;
+            }
+
+          }
+
+        }
+
+      }
+    }
+  }
+
+}

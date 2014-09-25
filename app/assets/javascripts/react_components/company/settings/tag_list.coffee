@@ -82,32 +82,23 @@ MainComponent = React.createClass
     filtered_tags: null
 
   render: ->
-    # (tag.div { className: 'profile-item' },
-    (tag.div {},
+    (tag.div { className: 'profile-item' },
 
-      (TokenInput {
-        onChange: @onChange
-        onInput: @onInput
-        onSelect: @onSelect
-        onRemove: @onRemove
-        selected: @state.selected_tags
-        menuContent: @gatherComboboxOptions()
-      })      
-      # (tag.div { className: 'content field' },
-        # (tag.label { htmlFor: 'tag_list' }, 'Tags')
+      (tag.div { className: 'content field' },
+        (tag.label { htmlFor: 'tag_list' }, 'Tags')
+        (tag.div { className: 'spacer' })
+        (tag.div { className: 'tags' },
+          (TokenInput {
+            onChange: @onChange
+            onInput: @onInput
+            onSelect: @onSelect
+            onRemove: @onRemove
+            selected: @state.selected_tags
+            menuContent: @gatherComboboxOptions()
+          })
+        )
 
-        # (tag.div { className: 'spacer' })
-
-        # (tag.input {
-        #   id: 'tag_list'
-        #   name: 'tag_list'
-        #   placeholder: 'russia, entertainment, games'
-        #   value: @state.value
-        #   onChange: @onChange
-        #   onBlur: @onBlur
-        # })
-
-      # )
+      )
     )
 
 # Exports

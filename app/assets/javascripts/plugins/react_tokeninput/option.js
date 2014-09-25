@@ -1,13 +1,11 @@
 //= require ./add-class
 
-// var React = require('react');
 var addClass = cc.require('plugins/react_tokeninput/add-class');
 var div = React.DOM.div;
 
 MainComponent = React.createClass({
 
   propTypes: {
-
     /**
      * The value that will be sent to the `onSelect` handler of the
      * parent Combobox.

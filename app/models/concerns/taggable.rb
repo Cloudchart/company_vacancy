@@ -6,11 +6,7 @@ module Taggable
     has_many :tags, through: :taggings
   end
 
-  # module ClassMethods
-  # end
-
   def tag_list
-    # tags.pluck(:name).join(', ')
     tags.map { |tag| { id: tag.id, name: tag.name } }
   end
 

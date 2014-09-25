@@ -1,7 +1,6 @@
 //= require ./combobox
 //= require ./token
 
-// var React = require('react');
 var Combobox = cc.require('plugins/react_tokeninput/combobox');
 var Token = cc.require('plugins/react_tokeninput/token');
 var ul = React.DOM.ul;
