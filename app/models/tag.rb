@@ -13,7 +13,12 @@ class Tag < ActiveRecord::Base
   rails_admin do
 
     list do
+      sort_by :taggings_count
       fields :name, :is_acceptable, :taggings_count
+
+      field :taggings_count do
+        sort_reverse true
+      end
     end
 
     edit do
