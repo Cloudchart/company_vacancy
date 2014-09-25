@@ -324,11 +324,12 @@ ActiveRecord::Schema.define(version: 20140922120919) do
   add_index "subscriptions", ["user_id"], name: "index_subscriptions_on_user_id", using: :btree
 
   create_table "taggings", primary_key: "uuid", force: true do |t|
-    t.string "tag_id",        limit: 36, null: false
-    t.string "taggable_id",   limit: 36, null: false
-    t.string "taggable_type",            null: false
-    t.string "tagger_id",     limit: 36
-    t.string "tagger_type"
+    t.string   "tag_id",        limit: 36, null: false
+    t.string   "taggable_id",   limit: 36, null: false
+    t.string   "taggable_type",            null: false
+    t.string   "tagger_id",     limit: 36
+    t.string   "tagger_type"
+    t.datetime "created_at"
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
@@ -337,9 +338,11 @@ ActiveRecord::Schema.define(version: 20140922120919) do
   add_index "taggings", ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type", using: :btree
 
   create_table "tags", primary_key: "uuid", force: true do |t|
-    t.string  "name"
-    t.integer "taggings_count", default: 0
-    t.boolean "is_acceptable",  default: false
+    t.string   "name"
+    t.integer  "taggings_count", default: 0
+    t.boolean  "is_acceptable",  default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree

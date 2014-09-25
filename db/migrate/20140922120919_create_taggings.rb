@@ -7,6 +7,7 @@ class CreateTaggings < ActiveRecord::Migration
       t.string :taggable_type, null: false
       t.string :tagger_id, limit: 36
       t.string :tagger_type
+      t.datetime :created_at
     end
 
     add_index :taggings, :tag_id

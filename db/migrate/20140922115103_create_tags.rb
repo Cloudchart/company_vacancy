@@ -5,6 +5,8 @@ class CreateTags < ActiveRecord::Migration
       t.string :name
       t.integer :taggings_count, default: 0
       t.boolean :is_acceptable, default: false
+      
+      t.timestamps
     end
 
     add_index :tags, :name, unique: true
