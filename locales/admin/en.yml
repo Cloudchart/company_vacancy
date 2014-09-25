@@ -9,3 +9,5 @@ en:
         menu: "Accept invite"
         breadcrumb: "Accept invite"
         title: "Accept invite"
+      make_acceptable:
+        bulk_link: "Make acceptable"

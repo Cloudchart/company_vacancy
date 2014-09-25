@@ -21,6 +21,20 @@ RailsAdmin.config do |config|
 
     # custom
     # 
+    member :make_acceptable do
+      only ['Tag']
+      http_methods { [:put, :patch] }
+      register_instance_option :bulkable? do
+        true
+      end
+      controller do
+        proc do
+          Tag.find(params[:bulk_ids]).each { |tag| tag.update(is_acceptable: true) }
+          redirect_to index_path(:tag), notice: 'All selected tags have become acceptable'
+        end
+      end
+    end
+
     collection :invite do
       only ['Token']
       link_icon 'icon-envelope'
@@ -90,7 +104,7 @@ RailsAdmin.config do |config|
     end
     bulk_delete
     show do
-      except ['User', 'Industry', 'Token', 'Person']
+      except ['User', 'Industry', 'Token', 'Person', 'Tag']
     end
     edit do
       except ['User', 'Token']

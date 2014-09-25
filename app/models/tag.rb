@@ -11,9 +11,9 @@ class Tag < ActiveRecord::Base
   validates :name, presence: true
 
   rails_admin do
-    
+
     list do
-      exclude_fields :uuid
+      fields :name, :is_acceptable, :taggings_count
     end
 
     edit do
