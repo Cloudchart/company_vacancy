@@ -18,6 +18,7 @@ class CompaniesController < ApplicationController
     end
   end
 
+
   # GET /companies/1
   def show
     respond_to do |format|
@@ -25,6 +26,7 @@ class CompaniesController < ApplicationController
       format.json { render json: @company }
     end
   end
+
 
   # GET /companies/new
   def new

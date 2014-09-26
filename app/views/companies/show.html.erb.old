@@ -5,6 +5,14 @@
   <meta property="og:description" content="<%= CompanyDecorator.new(@company).about || @company.description %>" />
 <% end %>
 
-<% content_for :header do %>
-  <%= render 'shared/company_header' %>
-<% end %>
+<%- content_for :header_breadcrumbs do -%>
+<%- end -%>
+
+<%-
+  pagescript_params(
+    company:        CompanyEditorSerializer.new(@company, scope: current_user).as_json,
+    placeholders:   I18n.t('shared.editable_blocks'),
+    countries:      ActionView::Helpers::FormOptionsHelper::COUNTRIES,
+    industries:     ActiveModel::ArraySerializer.new(Industry.all)
+  )
+-%>

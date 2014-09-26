@@ -1,22 +1,56 @@
+@['companies#show'] = (data) ->
+  CompanyApp      = require('components/company_app')
+  CompanyStore    = require('stores/company')
+  BlockStore      = require('stores/block_store')
+  PictureStore    = require('stores/picture_store')
+  ParagraphStore  = require('stores/paragraph_store')
+
+
+  CompanyStore.add(data.company.uuid, data.company)
+  
+  _.each data.blocks, (block) -> BlockStore.add(block.uuid, block)
+  _.each data.pictures, (picture) -> PictureStore.add(picture.uuid, picture)
+  _.each data.paragraphs, (paragraph) -> ParagraphStore.add(paragraph.uuid, paragraph)
+  
+  React.renderComponent(
+    CompanyApp({ key: data.company.uuid })
+    document.querySelector('body > main')
+  )
+
 # Show
 #
 @['companies#show'] = (data) ->
   cc.module('react/editor/placeholders').exports  = data.placeholders
+  #cc.module('countries').exports                  = data.countries
+  cc.module('industries').exports                 = data.industries
   
   PersonStore       = cc.require('cc.stores.PersonStore')
   VacancyStore      = cc.require('cc.stores.VacancyStore')
   CompanyStore      = require('stores/company_store')
   TagStore          = require('stores/tag_store')
   TagActions        = -> require('actions/tag_actions')
+  CountryStore      = cc.require('cc.stores.CountryStore')
+
   CompanyComponent  = cc.require('react/company')
   container         = document.querySelector('main')
+  
+  CompanyStore      = require('stores/company_store')
+  
   
   CompanyStore.add(data.company)
   PersonStore.load(data.company.people_url)
   VacancyStore.load(data.company.vacancies_url)
   TagActions().fetch()
   
+
+  _.each data.countries, (pair) ->
+    CountryStore.add(new CountryStore({ id: pair[1], name: pair[0] }))
+  
+
+  CountryStore.emitChange()
+
   React.renderComponent(CompanyComponent({ key: data.company.uuid }), container)
+
 
 # Search
 # 
