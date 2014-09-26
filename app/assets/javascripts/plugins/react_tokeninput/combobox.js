@@ -187,7 +187,8 @@ MainComponent = React.createClass({
   hideOnEscape: function(event) {
     this.hideList();
     this.focusInput();
-    event.preventDefault();
+    // there is react proxy constructor here instead of event
+    // event.preventDefault();
   },
 
   focusInput: function() {

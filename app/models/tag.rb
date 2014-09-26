@@ -32,11 +32,11 @@ class Tag < ActiveRecord::Base
 
       field :is_acceptable do
         html_attributes do
-          { checked: 'checked' }
+          { checked:  bindings[:object].new_record? ? 'checked' : '' }
         end
 
         default_value do
-          '1'
+          '1' if bindings[:object].new_record?
         end
       end
 

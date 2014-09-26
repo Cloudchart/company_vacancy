@@ -5,7 +5,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :verify_site_url, :download_verification_file_url, :default_host
   attributes :industry_ids, :is_site_url_verified
-  attributes :charts_for_select, :established_on, :tag_list, :all_tags, :tags
+  attributes :charts_for_select, :established_on, :tags
   attributes :is_editor, :is_public_reader, :is_trusted_reader
 
   has_many :charts, serializer: BurnRateChartSerializer
@@ -15,13 +15,11 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   # has_one :logo, serializer: Editor::LogoSerializer
 
   alias_method :current_user, :scope
-  alias_method :company, :object
-  
+  alias_method :company, :object  
   
   def tags
     object.tags.pluck(:tag_id)
   end
-  
   
   def is_editor
     Ability.new(current_user).can?(:manage, company)
@@ -49,10 +47,6 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   def industry_ids
     object.industries.ids
-  end
-
-  def all_tags
-    Tag.where(is_acceptable: true).map { |tag| { id: tag.id, name: tag.name } }
   end
   
   def charts_for_select

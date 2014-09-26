@@ -29,6 +29,7 @@ class Ability
     can :read, Feature
     can :read, BlockIdentity
     can :read, Event
+    can :read, Tag
 
     # TODO: not all (maybe which only belongs to chart)
     can :read, Person
@@ -62,6 +63,7 @@ class Ability
       can :vote, Feature
       can :manage, Subscription
       can [:preview, :read, :pull], CloudBlueprint::Chart
+      can :create, Tag
 
       # User (conditional)
       #

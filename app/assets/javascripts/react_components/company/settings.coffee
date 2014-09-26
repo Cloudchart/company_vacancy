@@ -69,9 +69,6 @@ MainComponent = React.createClass
           (TagListComponent {
             stored_tags:    @state.tags
             tags:           @props.tags
-
-            #selected_tags:  @state.tag_list
-            #all_tags:       @props.all_tags
             onChange:       @onTagsChange
           })
 
@@ -153,8 +150,6 @@ MainComponent = React.createClass
     industry:          props.industry_ids[0]
     is_listed:         props.is_listed
     established_on:    props.established_on
-    tag_list:          props.tag_list
-
 
   save: ->
     @setState({ shouldSave: false })
@@ -175,12 +170,9 @@ MainComponent = React.createClass
 
   onSaveDone: (json) ->
     CompanyStore.update(@props.uuid, @getStateFromProps(json))
-    
-  
 
   onSaveFail: ->
     console.warn 'Save Fail'
-
 
   toggleListing: ->
     @setState
@@ -188,16 +180,16 @@ MainComponent = React.createClass
       shouldSave: true
   
 
-  onCountryChange: (event) ->
-    @setState
-      country: event.target.value
-      shouldSave: true
+  # onCountryChange: (event) ->
+  #   @setState
+  #     country: event.target.value
+  #     shouldSave: true
   
 
-  onIndustryChange: (event) ->
-    @setState
-      industry: event.target.value
-      shouldSave: true
+  # onIndustryChange: (event) ->
+  #   @setState
+  #     industry: event.target.value
+  #     shouldSave: true
 
 
   onEstablishedOnChange: (event) ->
