@@ -33,5 +33,44 @@ body > header.company {
   }
   
   
+  > .router {
+    margin: 0 50px;
+    
+    ul {
+      @include display(flex);
+      
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      
+      > li {
+        margin: 0 10px;
+        
+        &:first-child {
+          margin-left: 0;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+  
+  
+  > .browse-companies {
+    margin: 0 50px;
+  }
+  
+
+  a.base {
+    color: hsl(0, 0%, 0%);
+    
+    &.strong {
+      font-weight: 700;
+    }
+    
+  }
+  
   
 }
