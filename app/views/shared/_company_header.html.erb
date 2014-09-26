@@ -12,8 +12,32 @@
     </div>
   </div>
   
+  <div class="router" data-company-router-mount-point>
+    <ul>
+      <li>
+        <%= link_to "Summary",  "", class: 'base strong' %>
+      </li>
+      <li>
+        <%= link_to "Chart",    "", class: 'base' %>
+      </li>
+      <li>
+        <%= link_to "Finance",  "", class: 'base' %>
+      </li>
+      <li>
+        <%= link_to "Traction", "", class: 'base' %>
+      </li>
+    </ul>
+  </div>
+  
+  <div class="spacer">
+  </div>
+  
+  <div class="browse-companies">
+    <%= link_to "Browse Companies", companies_path, class: 'base strong' %>
+  </div>
+  
   <div>
-    
+    AUTH BE HERE
   </div>
   
 </header>
