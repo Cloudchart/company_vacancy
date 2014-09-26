@@ -83,6 +83,12 @@ Cloudchart::Application.routes.draw do
   resources :company_invites, only: [:show, :create, :destroy] do
     patch :accept, on: :member
   end
+  
+  
+  # Tags
+  #
+  resources :tags, only: [:index, :create]
+  
 
   # Custom
   # 

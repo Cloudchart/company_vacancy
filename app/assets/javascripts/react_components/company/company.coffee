@@ -41,7 +41,7 @@ MainComponent = React.createClass
   getInitialState: ->
     state = getStateFromStores(@props.key)
     state.people_loaded = false
-    state.toggle_value  = 'editor'
+    state.toggle_value  = 'settings'
     state
 
 

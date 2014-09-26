@@ -2,6 +2,7 @@ class Company < ActiveRecord::Base
   include Uuidable
   include Sectionable
   include Sluggable
+  include Taggable
   include Tire::Model::Search
   include Tire::Model::Callbacks  
 

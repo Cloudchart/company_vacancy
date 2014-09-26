@@ -1,1 +1,1 @@
-//= require ./article
+// this.cc || (this.cc = {})

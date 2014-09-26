@@ -6,13 +6,21 @@
 ##= require ./settings/slug
 ##= require ./settings/site_url
 ##= require ./settings/established_on
+##= require ./settings/tag_list
 ##= require constants.module
+##= require utils/uuid.module
+##= require cloud_flux/mixins.module
+##= require cloud_flux/store.module
+##= require cloud_flux.module
 ##= require utils/event_emitter.module
 ##= require stores/company_store.module
+##= require stores/tag_store.module
 
 tag = React.DOM
-company_attributes  = ['country', 'industry', 'is_listed', 'established_on']
+company_attributes  = ['country', 'industry', 'is_listed', 'established_on', 'tag_list']
 CompanyStore        = require('stores/company_store')
+TagStore            = require('stores/tag_store')
+TagActions          = -> require('actions/tag_actions')
 
 # Imports
 #
@@ -23,6 +31,7 @@ IndustrySelectComponent = cc.require('react/company/industry_select')
 UrlComponent = cc.require('react/company/settings/site_url')
 SlugComponent = cc.require('react/company/settings/slug')
 EstablishedOnComponent = cc.require('react/company/settings/established_on')
+TagListComponent = cc.require('react/company/settings/tag_list')
 
 # Main Component
 #
@@ -57,38 +66,44 @@ MainComponent = React.createClass
             onChange: @onEstablishedOnChange
           })
 
-          (tag.div { className: 'profile-item' },
-            'Industry'
-            (IndustrySelectComponent {
-              value:      @state.industry
-              onChange:   @onIndustryChange
-            })
-          )
+          (TagListComponent {
+            stored_tags:    @state.tags
+            tags:           @props.tags
+            onChange:       @onTagsChange
+          })
+
+          # (tag.div { className: 'profile-item' },
+          #   'Industry'
+          #   (IndustrySelectComponent {
+          #     value:      @state.industry
+          #     onChange:   @onIndustryChange
+          #   })
+          # )
           
-          (tag.div { className: 'profile-item' },
-            'Region'
-            (CountrySelectComponent {
-              value:      @state.country
-              onChange:   @onCountryChange
-            })
-          )
+          # (tag.div { className: 'profile-item' },
+          #   'Region'
+          #   (CountrySelectComponent {
+          #     value:      @state.country
+          #     onChange:   @onCountryChange
+          #   })
+          # )
 
-          (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
+          # (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
 
-          (tag.footer {},
-            'Your company is'
+          # (tag.footer {},
+          #   'Your company is'
 
-            (tag.button {
-              className:  'orgpad'
-              disabled:   !(@state.country and @state.industry)
-              onClick:    @toggleListing
-            }, 'Unlisted') unless @state.is_listed
+          #   (tag.button {
+          #     className:  'orgpad'
+          #     disabled:   !(@state.country and @state.industry)
+          #     onClick:    @toggleListing
+          #   }, 'Unlisted') unless @state.is_listed
 
-            (tag.button {
-              className: 'orgpad'
-              onClick:    @toggleListing
-            }, 'Listed') if @state.is_listed
-          )
+          #   (tag.button {
+          #     className: 'orgpad'
+          #     onClick:    @toggleListing
+          #   }, 'Listed') if @state.is_listed
+          # )
 
         )
       )
@@ -100,7 +115,18 @@ MainComponent = React.createClass
 
   
   getInitialState: ->
-    @getStateFromProps(@props)
+    state = @getStateFromProps(@props)
+    _.extend state, @getStateFromStore()
+    state
+  
+  
+  componentDidMount: ->
+    TagStore.on('change', @refreshStateFromStore)
+    TagActions().fetch()
+  
+  
+  componentWillUnmount: ->
+    TagStore.off('change', @refreshStateFromStore)
 
 
   componentDidUpdate: (prevProps, prevState) ->
@@ -111,12 +137,19 @@ MainComponent = React.createClass
     @setState @getStateFromProps(nextProps)
   
   
+  refreshStateFromStore: ->
+    @setState(@getStateFromStore())
+  
+  
+  getStateFromStore: ->
+    tags: TagStore.all()
+  
+  
   getStateFromProps: (props) ->
     country:           props.country
     industry:          props.industry_ids[0]
     is_listed:         props.is_listed
     established_on:    props.established_on
-
 
   save: ->
     @setState({ shouldSave: false })
@@ -137,12 +170,9 @@ MainComponent = React.createClass
 
   onSaveDone: (json) ->
     CompanyStore.update(@props.uuid, @getStateFromProps(json))
-    
-  
 
   onSaveFail: ->
     console.warn 'Save Fail'
-
 
   toggleListing: ->
     @setState
@@ -150,16 +180,16 @@ MainComponent = React.createClass
       shouldSave: true
   
 
-  onCountryChange: (event) ->
-    @setState
-      country: event.target.value
-      shouldSave: true
+  # onCountryChange: (event) ->
+  #   @setState
+  #     country: event.target.value
+  #     shouldSave: true
   
 
-  onIndustryChange: (event) ->
-    @setState
-      industry: event.target.value
-      shouldSave: true
+  # onIndustryChange: (event) ->
+  #   @setState
+  #     industry: event.target.value
+  #     shouldSave: true
 
 
   onEstablishedOnChange: (event) ->
@@ -167,6 +197,10 @@ MainComponent = React.createClass
       established_on: event.target.value
       shouldSave: true
 
+  onTagsChange: (event) ->
+    @setState
+      tag_list: event.target.value
+      shouldSave: true
 
 # Exports
 #

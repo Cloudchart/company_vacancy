@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 4.1.4'
 gem 'mysql2'
+gem 'puma'
 
 gem 'sass-rails', '~> 4.0.3'
 gem 'uglifier', '~> 2.5.0'
@@ -11,18 +12,13 @@ gem 'coffee-rails', '~> 4.0.1'
 gem 'jquery-rails'
 gem 'bourbon'
 gem 'font-awesome-rails'
-gem 'carrierwave'
-gem 'carrierwave-meta'
 gem 'mini_magick'
-gem 'simple_form'
 gem 'bcrypt', '~> 3.1.7'
 gem 'oauth2'
 gem 'active_attr'
 gem 'cancancan'
-gem 'puma'
 gem 'tire'
 gem 'rails_admin'
-gem 'bootstrap-wysihtml5-rails', git: 'git@github.com:Cloudchart/bootstrap-wysihtml5-rails.git'
 gem 'warden'
 gem 'country_select', github: 'stefanpenner/country_select'
 gem 'kaminari'
@@ -33,17 +29,24 @@ gem 'sidekiq' # background processing using redis
 gem 'active_model_serializers'
 gem 'dragonfly', '~> 1.0.5'
 gem 'sprockets-commonjs', git: 'git@github.com:maccman/sprockets-commonjs.git'
-gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 
-# CloudProfile Engine
+# Deprecated
+# 
+gem 'carrierwave'
+gem 'carrierwave-meta'
+gem 'simple_form'
+
+# Engines
 #
 gem 'cloud_profile', path: 'vendor/engines/cloud_profile'
-
-# CloudBlueprint Engine
-#
 gem 'cloud_blueprint', path: 'vendor/engines/cloud_blueprint'
 
-# CloudOAuth Gem
+# Cloudchart Gems
+# 
+gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
+gem 'bootstrap-wysihtml5-rails', git: 'git@github.com:Cloudchart/bootstrap-wysihtml5-rails.git'
+
+# Internal Gems
 #
 gem 'cloud_oauth', path: 'vendor/gems/cloud_oauth'
 
