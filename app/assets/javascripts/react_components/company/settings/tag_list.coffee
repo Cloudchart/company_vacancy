@@ -1,101 +1,145 @@
 ##= require ../../../plugins/react_tokeninput/main
 ##= require ../../../plugins/react_tokeninput/option
+##= require utils/uuid.module
+##= require utils/event_emitter.module
+##= require cloud_flux/store.module
+##= require cloud_flux/mixins.module
+##= require cloud_flux.module
 
 # Imports
 # 
 tag = React.DOM
 
-TokenInput = cc.require('plugins/react_tokeninput/main')
-ComboboxOption = cc.require('plugins/react_tokeninput/option')
+TokenInput      = cc.require('plugins/react_tokeninput/main')
+ComboboxOption  = cc.require('plugins/react_tokeninput/option')
+CloudFlux       = require('cloud_flux')
+TagActions      = -> require('actions/tag_actions')
+TagStore        = -> require('stores/tag_store')
+Constants       = -> require('constants')
+
 
 # Main Component
 # 
 MainComponent = React.createClass
 
-  # Helpers
-  # 
+
+  mixins: [CloudFlux.mixins.Actions]
+  
+
+  syncTaggable: (tags) ->
+    tagNames = TagStore().filter((tag) -> tags.contains(tag.uuid)).map((tag) -> tag.name).join(',')
+    @props.onChange({ target: { value: tagNames }}) if _.isFunction(@props.onChange)
+  
+  
+  onCreate: (key) ->
+    @addTag(key, false)
+    @setState({ keys_to_create: @state.keys_to_create.push(key) })
+  
+  
+  onCreateDone: (key, json) ->
+    if @state.keys_to_create.contains(key)
+      @setState({ keys_to_create: @state.keys_to_create.remove(@state.keys_to_create.indexOf(key)) })
+
+    @removeTag(key, false)
+    @addTag(json.tag.uuid)
+  
+  
+  onCreateFail: (key) ->
+    if @state.keys_to_create.contains(key)
+      @setState({ keys_to_create: @state.keys_to_create.remove(@state.keys_to_create.indexOf(key)) })
+    
+    @removeTag(key, false)
+  
+  
+  getCloudFluxActions: ->
+    actions = {}
+
+    actions[Constants().Tag.CREATE]       = @onCreate
+    actions[Constants().Tag.CREATE_DONE]  = @onCreateDone
+    actions[Constants().Tag.CREATE_FAIL]  = @onCreateFail
+
+    actions
+
+
+  addTag: (key, sync = true) ->
+    unless @state.tags.contains(key)
+      tags = @state.tags.push(key)
+      @syncTaggable(tags) if sync
+      @setState({ query: '', tags: tags })
+  
+  
+  removeTag: (key, sync = true) ->
+    if @state.tags.contains(key)
+      tags = @state.tags.remove(@state.tags.indexOf(key))
+      @syncTaggable(tags) if sync
+      @setState({ query: '', tags: tags })
+  
+  
+  createTag: (name) ->
+    TagActions().create(name)
+
+
   gatherComboboxOptions: ->
-    _.map @state.filtered_tags || @state.available_tags, (tag) ->
-      (ComboboxOption { key: tag.id, value: tag }, tag.name)
+    _.map @getAvailableTags(), (tag) =>
+      (ComboboxOption {
+        key:    tag.uuid
+        value:  tag.uuid
+      },
+        tag.name
+      )
 
-  save: ->
-    selected_tags = _.map(@state.selected_tags, (tag) -> tag.name).join(', ')
-    @props.onChange({ target: { selected_tags: selected_tags, available_tags: @state.available_tags } })
 
-  availableTags: ->
-    if @props.available_tags.length > 0
-      @props.available_tags
-    else if @props.selected_tags.length > 0
-      _.filter(@props.all_tags, (tag) => !_.contains(_.pluck(@props.selected_tags, 'id'), tag.id))
-    else
-      @props.all_tags
+  getAvailableTags: ->
+    query = @state.query.trim().toLowerCase()
+    
+    _(@props.stored_tags)
+      .reject (tag) => @state.tags.contains(tag.uuid)
+      .filter (tag) => query.length == 0 or tag.name.toLowerCase().indexOf(query) >= 0
+      .value()
 
-  # Events
-  # 
-  # onChange: (event) ->
+
+  getSelectedTags: ->
+    _(@props.stored_tags)
+      .filter (tag) => @state.tags.contains(tag.uuid)
+      .sortBy (tag) => @state.tags.indexOf(tag.uuid)
+      .map (tag) => { key: tag.uuid, id: tag.uuid, name: tag.name, sync: TagStore().is_in_sync(tag.uuid) }
+      .value()
+  
 
   onInput: (query) ->
-    if query == '' or query == undefined
-      @setState({ filtered_tags: null })
-    else
-      query_re = new RegExp(query, 'i')
-      filtered_tags = _.filter @state.available_tags, (tag) -> query_re.test(tag.name)
-      @setState({ filtered_tags: filtered_tags })
+    @setState({ query: query })
+
 
   onSelect: (value) ->
-    value = { id: cc.utils.generateUUID(), name: value } unless typeof(value) == 'object'
+    if TagStore().has(value) then @addTag(value) else @createTag(value)
 
-    @setState
-      selected_tags: _.union(@state.selected_tags, [value])
-      available_tags: _.pull(@state.available_tags, value)
-      filtered_tags: null
-      should_save: true
 
   onRemove: (value) ->
-    if value != undefined and value != ''
-      @setState
-        selected_tags: _.pull(@state.selected_tags, value)
-        available_tags: _.union(@state.available_tags, [value]) || @props.all_tags
-        filtered_tags: null
-        should_save: true
+    @removeTag(value.key) if value
+      
 
-  # Lifecycle Methods
-  # 
-  # componentWillMount: ->
-  # componentDidMount: ->
-  componentWillReceiveProps: (nextProps) ->
-    @setState({ should_save: false })
-  # shouldComponentUpdate: (nextProps, nextState) ->
-  # componentWillUpdate: (nextProps, nextState) ->
-  componentDidUpdate: (prevProps, prevState) ->
-    @save() if @state.should_save
-    
-  # componentWillUnmount: ->
-
-  # Component Specifications
-  # 
-  # getDefaultProps: ->
   getInitialState: ->
-    selected_tags: @props.selected_tags
-    available_tags: @availableTags()
-    should_save: false
-    filtered_tags: null
+    tags:           new Immutable.Vector(@props.tags...)
+    keys_to_create: new Immutable.Vector
+    query:          ''
+
 
   render: ->
     (tag.div { className: 'profile-item' },
-
       (tag.div { className: 'content field' },
         (tag.label { htmlFor: 'tag_list' }, 'Tags')
         (tag.div { className: 'spacer' })
         (tag.div { className: 'tags' },
+
           (TokenInput {
-            onChange: @onChange
-            onInput: @onInput
-            onSelect: @onSelect
-            onRemove: @onRemove
-            selected: @state.selected_tags
-            menuContent: @gatherComboboxOptions()
+            onChange:     @onChange
+            onInput:      @onInput
+            onSelect:     @onSelect
+            onRemove:     @onRemove
+            selected:     @getSelectedTags()
+            menuContent:  @gatherComboboxOptions()
           })
+
         )
 
       )

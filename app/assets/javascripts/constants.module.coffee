@@ -32,3 +32,13 @@ module.exports =
     DELETE:       'token:delete'
     DELETE_DONE:  'token:delete:done'
     DELETE_FAIL:  'token:delete:fail'
+  
+  
+  Tag:
+    FETCH:        'tag:fetch'
+    FETCH_DONE:   'tag:fetch:done'
+    FETCH_FAIL:   'tag:fetch:fail'
+    
+    CREATE:       'tag:create'
+    CREATE_DONE:  'tag:create:done'
+    CREATE_FAIL:  'tag:create:fail'

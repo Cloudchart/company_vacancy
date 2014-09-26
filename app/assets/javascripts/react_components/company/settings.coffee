@@ -8,12 +8,19 @@
 ##= require ./settings/established_on
 ##= require ./settings/tag_list
 ##= require constants.module
+##= require utils/uuid.module
+##= require cloud_flux/mixins.module
+##= require cloud_flux/store.module
+##= require cloud_flux.module
 ##= require utils/event_emitter.module
 ##= require stores/company_store.module
+##= require stores/tag_store.module
 
 tag = React.DOM
 company_attributes  = ['country', 'industry', 'is_listed', 'established_on', 'tag_list']
 CompanyStore        = require('stores/company_store')
+TagStore            = require('stores/tag_store')
+TagActions          = -> require('actions/tag_actions')
 
 # Imports
 #
@@ -59,11 +66,13 @@ MainComponent = React.createClass
             onChange: @onEstablishedOnChange
           })
 
-          (TagListComponent { 
-            selected_tags: @state.tag_list
-            all_tags: @props.all_tags
-            available_tags: @state.available_tags
-            onChange: @onTagsChange
+          (TagListComponent {
+            stored_tags:    @state.tags
+            tags:           @props.tags
+
+            #selected_tags:  @state.tag_list
+            #all_tags:       @props.all_tags
+            onChange:       @onTagsChange
           })
 
           # (tag.div { className: 'profile-item' },
@@ -109,7 +118,18 @@ MainComponent = React.createClass
 
   
   getInitialState: ->
-    @getStateFromProps(@props)
+    state = @getStateFromProps(@props)
+    _.extend state, @getStateFromStore()
+    state
+  
+  
+  componentDidMount: ->
+    TagStore.on('change', @refreshStateFromStore)
+    TagActions().fetch()
+  
+  
+  componentWillUnmount: ->
+    TagStore.off('change', @refreshStateFromStore)
 
 
   componentDidUpdate: (prevProps, prevState) ->
@@ -120,13 +140,20 @@ MainComponent = React.createClass
     @setState @getStateFromProps(nextProps)
   
   
+  refreshStateFromStore: ->
+    @setState(@getStateFromStore())
+  
+  
+  getStateFromStore: ->
+    tags: TagStore.all()
+  
+  
   getStateFromProps: (props) ->
     country:           props.country
     industry:          props.industry_ids[0]
     is_listed:         props.is_listed
     established_on:    props.established_on
     tag_list:          props.tag_list
-    available_tags:    []
 
 
   save: ->
@@ -180,8 +207,7 @@ MainComponent = React.createClass
 
   onTagsChange: (event) ->
     @setState
-      tag_list: event.target.selected_tags
-      available_tags: event.target.available_tags
+      tag_list: event.target.value
       shouldSave: true
 
 # Exports
