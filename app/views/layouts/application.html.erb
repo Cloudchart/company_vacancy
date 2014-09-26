@@ -8,7 +8,12 @@
   </head>
 
   <body>
-    <%= render 'shared/header' %>
+    <%- if content_for(:header).present? -%>
+      <%= yield(:header) %>
+    <%- else -%>
+      <%= render 'shared/header' %>
+    <%- end -%>
+
     <%= render 'shared/flash' %>
 
     <%= content_tag :main, class: yield(:class_for_main) do -%>
