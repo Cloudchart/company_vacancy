@@ -2,7 +2,7 @@ class TagsController < ApplicationController
   authorize_resource
   
   def index
-    tags = Tag.where(is_acceptable: true).all
+    tags = Tag.all
 
     respond_to do |format|
       format.json { render json: { tags: tags.active_model_serializer.new(tags) }}

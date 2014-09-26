@@ -93,7 +93,7 @@ MainComponent = React.createClass
     query = @state.query.trim().toLowerCase()
     
     _(@props.stored_tags)
-      .reject (tag) => @state.tags.contains(tag.uuid)
+      .reject (tag) => @state.tags.contains(tag.uuid) or !tag.is_acceptable
       .filter (tag) => query.length == 0 or tag.name.toLowerCase().indexOf(query) >= 0
       .value()
 
