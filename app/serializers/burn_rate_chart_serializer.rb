@@ -4,7 +4,7 @@ class BurnRateChartSerializer < ActiveModel::Serializer
   has_many :people, serializer: PersonSerializer
 
   def should_display_table
-    object.people.pluck(:salary).uniq.sum > 0
+    object.people.pluck(:salary).reject(&:blank?).uniq.sum > 0
   end
 
 end
