@@ -1,54 +1,19 @@
-# Deprecated
-# 
-# @['companies#new'] = @['companies#edit'] = ->
-  
-#   $('input[type="file"]').on 'change', (event) ->
-    
-#     $el = $(@)
-    
-#     data = new FormData
-#     data.append($el.attr('name'), @files[0])
-    
-#     $.ajax
-#       url:          $el.data('path')
-#       type:         'POST'
-#       data:         data
-#       dataType:     'script'
-#       processData:  false
-#       contentType:  false
-
-#     @innerHTML = @innerHTML
-
-
 # Show
 #
 @['companies#show'] = (data) ->
   cc.module('react/editor/placeholders').exports  = data.placeholders
-  #cc.module('countries').exports                  = data.countries
-  cc.module('industries').exports                 = data.industries
   
   PersonStore       = cc.require('cc.stores.PersonStore')
   VacancyStore      = cc.require('cc.stores.VacancyStore')
-  CountryStore      = cc.require('cc.stores.CountryStore')
+  CompanyStore      = require('stores/company_store')
   CompanyComponent  = cc.require('react/company')
   container         = document.querySelector('main')
-  
-  CompanyStore      = require('stores/company_store')
-  
   
   CompanyStore.add(data.company)
   PersonStore.load(data.company.people_url)
   VacancyStore.load(data.company.vacancies_url)
   
-
-  _.each data.countries, (pair) ->
-    CountryStore.add(new CountryStore({ id: pair[1], name: pair[0] }))
-  
-
-  CountryStore.emitChange()
-
   React.renderComponent(CompanyComponent({ key: data.company.uuid }), container)
-
 
 # Search
 # 

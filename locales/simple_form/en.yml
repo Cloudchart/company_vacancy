@@ -43,6 +43,3 @@ en:
         description: "Entering text here, focus on, makes it wiggle uncontrollably and excitedly. Focus off, this green pasture wanders off. Makes for a brighter, richer experience with out new Cloud-on-a- Chart whirlygig."
       company:
         description: "Type your company description here. Be concise."
-    prompts:
-      industry: "< Select industry >"
-      country: "< Select country >"

@@ -1,8 +1,6 @@
 # = require ./owners
 
 ##= require module
-##= require ./settings/country_select
-##= require ./settings/industry_select
 ##= require ./settings/slug
 ##= require ./settings/site_url
 ##= require ./settings/established_on
@@ -17,16 +15,13 @@
 ##= require stores/tag_store.module
 
 tag = React.DOM
-company_attributes  = ['country', 'industry', 'is_listed', 'established_on', 'tag_list']
+company_attributes  = ['is_listed', 'established_on', 'tag_list']
 CompanyStore        = require('stores/company_store')
 TagStore            = require('stores/tag_store')
 TagActions          = -> require('actions/tag_actions')
 
 # Imports
 #
-CountrySelectComponent = cc.require('react/company/country_select')
-IndustrySelectComponent = cc.require('react/company/industry_select')
-
 # CompanyOwnersComponent  = cc.require('react/company/owners')
 UrlComponent = cc.require('react/company/settings/site_url')
 SlugComponent = cc.require('react/company/settings/slug')
@@ -72,30 +67,14 @@ MainComponent = React.createClass
             onChange:       @onTagsChange
           })
 
-          # (tag.div { className: 'profile-item' },
-          #   'Industry'
-          #   (IndustrySelectComponent {
-          #     value:      @state.industry
-          #     onChange:   @onIndustryChange
-          #   })
-          # )
-          
-          # (tag.div { className: 'profile-item' },
-          #   'Region'
-          #   (CountrySelectComponent {
-          #     value:      @state.country
-          #     onChange:   @onCountryChange
-          #   })
-          # )
-
-          # (tag.p {}, 'To become listed on the CloudChart company search, please fill out your industry and your region.')
+          # (tag.p {}, 'To become listed on the CloudChart company search, please fill out tags.')
 
           # (tag.footer {},
           #   'Your company is'
 
           #   (tag.button {
           #     className:  'orgpad'
-          #     disabled:   !(@state.country and @state.industry)
+          #     disabled:   !@state.tags
           #     onClick:    @toggleListing
           #   }, 'Unlisted') unless @state.is_listed
 
@@ -146,8 +125,6 @@ MainComponent = React.createClass
   
   
   getStateFromProps: (props) ->
-    country:           props.country
-    industry:          props.industry_ids[0]
     is_listed:         props.is_listed
     established_on:    props.established_on
 
@@ -178,19 +155,6 @@ MainComponent = React.createClass
     @setState
       is_listed: !@state.is_listed
       shouldSave: true
-  
-
-  # onCountryChange: (event) ->
-  #   @setState
-  #     country: event.target.value
-  #     shouldSave: true
-  
-
-  # onIndustryChange: (event) ->
-  #   @setState
-  #     industry: event.target.value
-  #     shouldSave: true
-
 
   onEstablishedOnChange: (event) ->
     @setState

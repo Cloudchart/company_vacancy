@@ -11,8 +11,6 @@
 <%-
   pagescript_params(
     company:        CompanyEditorSerializer.new(@company, scope: current_user).as_json,
-    placeholders:   I18n.t('shared.editable_blocks'),
-    countries:      ActionView::Helpers::FormOptionsHelper::COUNTRIES,
-    industries:     ActiveModel::ArraySerializer.new(Industry.all)
+    placeholders:   I18n.t('shared.editable_blocks')
   )
 -%>

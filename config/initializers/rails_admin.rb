@@ -1,6 +1,6 @@
 RailsAdmin.config do |config|
   config.main_app_name = ['CloudChart', 'Admin']
-  config.included_models = ['Company', 'Feature', 'User', 'Industry', 'Token', 'Page', 'Person', 'Tag']
+  config.included_models = ['Company', 'Feature', 'User', 'Token', 'Page', 'Person', 'Tag']
 
   config.authenticate_with do
     authenticate_user
@@ -104,7 +104,7 @@ RailsAdmin.config do |config|
     end
     bulk_delete
     show do
-      except ['User', 'Industry', 'Token', 'Person', 'Tag']
+      except ['User', 'Token', 'Person', 'Tag']
     end
     edit do
       except ['User', 'Token']
@@ -116,10 +116,10 @@ RailsAdmin.config do |config|
       except ['User', 'Token', 'Person', 'Tag']
     end
     history_index do
-      except ['User', 'Industry', 'Token', 'Person']
+      except ['User', 'Token', 'Person']
     end
     history_show do
-      except ['User', 'Industry', 'Token', 'Person']
+      except ['User', 'Token', 'Person']
     end
   end
   

@@ -1,5 +1,6 @@
 @cc ?= {}
 
+# deprecated
 @cc.companies_section_chevron_toggle = ->
   chevron_is_down = true
 
@@ -7,7 +8,7 @@
     element.preventDefault()
 
     $(@).closest('section')
-        .find('.additional-info, .country, .established-on, .proximity')
+        .find('.additional-info, .established-on, .proximity')
         .toggle()
 
     $chevron_icon = $(@).find('i')

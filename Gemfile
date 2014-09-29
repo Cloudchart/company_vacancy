@@ -20,7 +20,6 @@ gem 'cancancan'
 gem 'tire'
 gem 'rails_admin'
 gem 'warden'
-gem 'country_select', github: 'stefanpenner/country_select'
 gem 'kaminari'
 gem 'paper_trail' # tracks changes to model's data
 gem 'impressionist' # tracks page views
@@ -75,7 +74,7 @@ group :test do
   gem 'capybara'
 end
 
-group :production, :staging, :beta do
+group :production, :staging do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :ruby
   gem 'postmark-rails'

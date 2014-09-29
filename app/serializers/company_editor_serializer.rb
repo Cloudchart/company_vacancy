@@ -1,11 +1,10 @@
 # TODO: don not load data without cancan ability
 class CompanyEditorSerializer < ActiveModel::Serializer
-  attributes :id, :uuid, :name, :country, :description, :is_listed, :logotype, :slug, :site_url
+  attributes :id, :uuid, :name, :description, :is_listed, :logotype, :slug, :site_url
   attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :verify_site_url, :download_verification_file_url, :default_host
-  attributes :industry_ids, :is_site_url_verified
-  attributes :charts_for_select, :established_on, :tags
+  attributes :is_site_url_verified, :charts_for_select, :established_on, :tags
   attributes :is_editor, :is_public_reader, :is_trusted_reader
 
   has_many :charts, serializer: BurnRateChartSerializer
@@ -43,10 +42,6 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   def sections
     object.sections.marshal_dump
-  end
-
-  def industry_ids
-    object.industries.ids
   end
   
   def charts_for_select

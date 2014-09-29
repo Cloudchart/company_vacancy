@@ -150,9 +150,6 @@ private
     params.require(:company).permit(
       :name,
       :site_url,
-      :country, 
-      :industry, 
-      :industry_ids, 
       :description, 
       :established_on,
       :is_listed, 

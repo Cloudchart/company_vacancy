@@ -24,16 +24,8 @@
           <strong><%= link_to company.name.present? ? company.name : 'Unnamed', main_app.company_path(company) %></strong>
         </li>
 
-        <li class="industry">
-          <%= company.industry.name.truncate(30) rescue '' %>
-        </li>
-
         <li class="spacer"></li>
 
-        <li class="country">
-          <%= company.country_name %>
-        </li>
-        
         <li class="people-size">
           <%= link_to '#' do %>
             <% # .size returns invalid number because of current_user.companies through people %>

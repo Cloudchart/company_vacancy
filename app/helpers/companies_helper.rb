@@ -74,18 +74,9 @@ module CompaniesHelper
         content << companies.size.to_s
         content << ' '
       end
-
-      if companies.facets && companies.facets['industries']['count'] > 0
-        content << content_tag(:span, companies.first.industry.name, class: 'green')
-        content << ' '
-      end
       
       content << t("companies.search.companies", count: companies.size)
-
-      if companies.facets && companies.facets['countries']['count'] > 0
-        content << ' from '
-        content << content_tag(:span, companies.first.country_name, class: 'green')
-      end
+      
     end.html_safe    
   end
 

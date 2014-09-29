@@ -67,10 +67,6 @@ Cloudchart::Application.routes.draw do
     post :vote, on: :member
   end
 
-  resources :subscriptions, only: [:create, :update, :destroy]
-  resources :comments, only: [:create, :update, :destroy]
-  resources :favorites, only: [:create, :destroy]
-
   scope 'vacancies/:vacancy_id' do
     resources :vacancy_responses, path: 'responses', only: [:index, :new, :create]
   end
@@ -83,12 +79,11 @@ Cloudchart::Application.routes.draw do
   resources :company_invites, only: [:show, :create, :destroy] do
     patch :accept, on: :member
   end
-  
-  
-  # Tags
-  #
-  resources :tags, only: [:index, :create]
-  
+
+  resources :subscriptions, only: [:create, :update, :destroy]
+  resources :comments, only: [:create, :update, :destroy]
+  resources :favorites, only: [:create, :destroy]
+  resources :tags, only: [:index, :create]  
 
   # Custom
   # 

@@ -18,7 +18,6 @@ class Company < ActiveRecord::Base
   # has_one :logo, as: :owner, dependent: :destroy
   # accepts_nested_attributes_for :logo, allow_destroy: true
 
-  has_and_belongs_to_many :industries
   has_and_belongs_to_many :banned_users, class_name: 'User', join_table: 'companies_banned_users'
 
   has_many :vacancies, dependent: :destroy
@@ -34,17 +33,13 @@ class Company < ActiveRecord::Base
   has_many :users, through: :roles
   # has_paper_trail
 
-  # validates :name, :country, :industry_ids, presence: true, on: :update
+  # validates :name, presence: true, on: :update
   validates :site_url, url: true, allow_blank: true
 
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :name, analyzer: 'ngram_analyzer'
-      indexes :country_name, analyzer: 'snowball'
       indexes :is_listed, type: 'boolean'
-      indexes :industries do
-        indexes :name, analyzer: 'snowball'
-      end
     end
   end
 
@@ -56,16 +51,7 @@ class Company < ActiveRecord::Base
           query do
             boolean do
               should { string Cloudchart::Utils.tokenized_query_string(params[:query], :name) }
-              should { string Cloudchart::Utils.tokenized_query_string(params[:query], ['industries.name', 'country_name']) }
             end
-          end
-
-          facet 'countries' do
-            query { string Cloudchart::Utils.tokenized_query_string(params[:query], :country_name, ' OR ') }
-          end
-
-          facet 'industries' do
-            query { string Cloudchart::Utils.tokenized_query_string(params[:query], 'industries.name', ' OR ') }
           end
         end
 
@@ -76,13 +62,6 @@ class Company < ActiveRecord::Base
     end
     
   end # of class methods
-
-  def to_indexed_json
-    to_json(
-      include: { industries: { only: [:name] } }, 
-      methods: [:country_name]
-    )
-  end
 
   def humanized_id
     Cloudchart::RFC1751.encode(id).downcase.gsub(/\s/, '-')
@@ -102,24 +81,6 @@ class Company < ActiveRecord::Base
 
   def invite_tokens
     tokens.where(name: :invite)
-  end
-
-  def industry
-    industries.first
-  end
-  
-  def industry=(industry_id)
-    self.industry_ids = [industry_id]
-  end
-
-  def country_name
-    iso_country = ISO3166::Country[country]
-
-    if iso_country
-      iso_country.translations[I18n.locale.to_s] || iso_country.name
-    else
-      nil
-    end
   end
 
   def build_objects

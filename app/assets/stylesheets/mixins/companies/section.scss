@@ -22,18 +22,10 @@
         font-size: 14pt;
         font-weight: bold;
 
-        &.industry {
-          font-weight: normal;
-        }
-
         &.spacer { @include flex(1); }
 
         &.vacancies-size > a {
           color: $alizarin-crimson;
-        }
-
-        &.country, &.established-on {
-          // display: none;
         }
 
         &.proximity {

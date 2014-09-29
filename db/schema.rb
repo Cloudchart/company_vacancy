@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140922120919) do
+ActiveRecord::Schema.define(version: 20140929081817) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -133,7 +133,6 @@ ActiveRecord::Schema.define(version: 20140922120919) do
 
   create_table "companies", primary_key: "uuid", force: true do |t|
     t.string   "name"
-    t.string   "country"
     t.text     "description"
     t.text     "sections"
     t.datetime "created_at"
@@ -154,13 +153,6 @@ ActiveRecord::Schema.define(version: 20140922120919) do
   end
 
   add_index "companies_banned_users", ["company_id", "user_id"], name: "index_companies_banned_users_on_company_id_and_user_id", unique: true, using: :btree
-
-  create_table "companies_industries", id: false, force: true do |t|
-    t.string "company_id",  limit: 36, null: false
-    t.string "industry_id", limit: 36, null: false
-  end
-
-  add_index "companies_industries", ["company_id", "industry_id"], name: "index_companies_industries_on_company_id_and_industry_id", unique: true, using: :btree
 
   create_table "events", primary_key: "uuid", force: true do |t|
     t.string   "name",                  null: false
@@ -249,15 +241,6 @@ ActiveRecord::Schema.define(version: 20140922120919) do
   add_index "impressions", ["impressionable_type", "impressionable_id", "session_hash"], name: "poly_session_index", using: :btree
   add_index "impressions", ["impressionable_type", "message", "impressionable_id"], name: "impressionable_type_message_index", length: {"impressionable_type"=>nil, "message"=>255, "impressionable_id"=>nil}, using: :btree
   add_index "impressions", ["user_id"], name: "index_impressions_on_user_id", using: :btree
-
-  create_table "industries", primary_key: "uuid", force: true do |t|
-    t.string   "name",                  null: false
-    t.string   "parent_id",  limit: 36
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "industries", ["parent_id"], name: "index_industries_on_parent_id", using: :btree
 
   create_table "pages", primary_key: "uuid", force: true do |t|
     t.string   "title"
