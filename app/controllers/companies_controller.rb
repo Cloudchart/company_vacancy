@@ -152,7 +152,7 @@ private
       :site_url,
       :description, 
       :established_on,
-      :is_listed, 
+      :is_published,
       :logotype, 
       :remove_logotype, 
       :slug,
