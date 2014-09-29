@@ -81,9 +81,7 @@ MainComponent = React.createClass
       settings: (SettingsComponent @state.company)
       burn_rate: (BurnRateComponent { 
         # TODO: new store for chart people
-        # people: PersonStore.all()
-        charts_for_select: @state.company.charts_for_select
-        charts: @state.company.charts
+        charts: @state.company.burn_rate_charts
         established_on: @state.company.established_on
       })
     }

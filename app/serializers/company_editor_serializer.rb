@@ -1,13 +1,12 @@
-# TODO: don not load data without cancan ability
 class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :id, :uuid, :name, :description, :is_listed, :logotype, :slug, :site_url
   attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
-  attributes :verify_site_url, :download_verification_file_url, :default_host
-  attributes :is_site_url_verified, :charts_for_select, :established_on, :tags
+  attributes :default_host, :settings, :established_on, :tags
   attributes :is_editor, :is_public_reader, :is_trusted_reader
 
-  has_many :charts, serializer: BurnRateChartSerializer
+  has_many :charts
+  has_many :burn_rate_charts, serializer: BurnRateChartSerializer
   has_many :blocks, serializer: BlockEditorSerializer
 
   # deprecated
@@ -15,7 +14,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   alias_method :current_user, :scope
   alias_method :company, :object  
-  
+
   def tags
     object.tags.pluck(:tag_id)
   end
@@ -32,8 +31,28 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     Ability.new(current_user).can?(:fully_read, company)
   end
 
-  def is_site_url_verified
-    object.site_url.present? && object.tokens.find_by(name: :site_url_verification).blank?
+  def include_burn_rate_charts?
+    is_editor || is_trusted_reader
+  end
+
+  def attributes
+    data = super
+
+    data.delete(:settings) unless is_editor && is_trusted_reader && is_public_reader
+
+    data
+  end
+
+  def burn_rate_charts
+    company.charts
+  end
+
+  def settings
+    {
+      verify_site_url: verify_site_url_company_path(company.id),
+      download_verification_file_url: download_verification_file_company_path(company.id),
+      is_site_url_verified: company.site_url.present? && company.tokens.find_by(name: :site_url_verification).blank?
+    }
   end
 
   def id
@@ -42,10 +61,6 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   def sections
     object.sections.marshal_dump
-  end
-  
-  def charts_for_select
-    object.charts.joins(nodes: :people).select(:uuid, :title).uniq
   end
 
   def available_sections
@@ -93,14 +108,6 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   def vacancies_url
     company_vacancies_path(object)
-  end
-
-  def verify_site_url
-    verify_site_url_company_path(object.id)
-  end
-
-  def download_verification_file_url
-    download_verification_file_company_path(object.id)
   end
 
   def default_host

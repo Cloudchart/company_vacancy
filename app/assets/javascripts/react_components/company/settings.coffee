@@ -44,9 +44,9 @@ MainComponent = React.createClass
           (UrlComponent {
             value: @props.site_url
             company_url: @props.company_url
-            verify_site_url: @props.verify_site_url
-            download_verification_file_url: @props.download_verification_file_url
-            is_site_url_verified: @props.is_site_url_verified
+            verify_site_url: @props.settings.verify_site_url
+            download_verification_file_url: @props.settings.download_verification_file_url
+            is_site_url_verified: @props.settings.is_site_url_verified
           })
 
           (SlugComponent {

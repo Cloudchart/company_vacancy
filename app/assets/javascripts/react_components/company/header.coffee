@@ -124,7 +124,7 @@ MainComponent = React.createClass
         href: '#'
         onClick: @onTabClick
       }, 'Finance') 
-    ) if @props.is_editor or @props.is_trusted_reader
+    ) if @props.burn_rate_charts
 
     sections.push(
       (tag.a {
