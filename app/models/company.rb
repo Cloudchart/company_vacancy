@@ -40,6 +40,9 @@ class Company < ActiveRecord::Base
     mapping do
       indexes :name, analyzer: 'ngram_analyzer'
       indexes :is_listed, type: 'boolean'
+      indexes :tags do
+        indexes :name, analyzer: 'ngram_analyzer'
+      end
     end
   end
 
@@ -51,6 +54,7 @@ class Company < ActiveRecord::Base
           query do
             boolean do
               should { string Cloudchart::Utils.tokenized_query_string(params[:query], :name) }
+              should { string Cloudchart::Utils.tokenized_query_string(params[:query], ['name', 'tags.name'], 'OR') }
             end
           end
         end
@@ -62,6 +66,12 @@ class Company < ActiveRecord::Base
     end
     
   end # of class methods
+
+  def to_indexed_json
+    to_json(
+      include: { tags: { only: [:name] } }
+    )
+  end
 
   def humanized_id
     Cloudchart::RFC1751.encode(id).downcase.gsub(/\s/, '-')
