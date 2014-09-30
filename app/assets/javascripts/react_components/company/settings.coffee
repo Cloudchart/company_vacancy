@@ -103,7 +103,9 @@ MainComponent = React.createClass
       shouldSave: true
 
   handleProgressChange: (event) ->
-    console.log event.target.value
+    @setState
+      is_published: event.target.value
+      shouldSave: true
 
   render: ->
     (tag.article { className: 'editor settings' },
@@ -145,12 +147,13 @@ MainComponent = React.createClass
 
       (tag.section { className: 'progress' },
         (tag.header {}, 'Progress')
-        
+
         (ProgressComponent { 
           name: @props.name
           logotype: @props.logotype
           tags: @props.tags
-          charts: @props.charts
+          is_chart_with_nodes_created: @props.is_chart_with_nodes_created
+          people: @props.people
           is_published: @state.is_published
           onChange: @handleProgressChange
         })

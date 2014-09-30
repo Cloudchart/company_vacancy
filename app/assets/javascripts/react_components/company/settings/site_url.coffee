@@ -175,7 +175,7 @@ MainComponent = React.createClass
             },
               (tag.span {}, 'Verify')
               (tag.i { 
-                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-envelope-o'
+                className: if @state.sync then 'fa fa-spinner fa-spin' else 'fa fa-paper-plane-o'
               })
             )
           )
