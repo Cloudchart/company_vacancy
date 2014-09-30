@@ -1,9 +1,9 @@
 class CompanyEditorSerializer < ActiveModel::Serializer
-  attributes :id, :uuid, :name, :description, :is_listed, :logotype, :slug, :site_url
+  attributes :id, :uuid, :name, :description, :is_published, :logotype, :slug, :site_url
   attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :default_host, :settings, :established_on, :tags
-  attributes :is_editor, :is_public_reader, :is_trusted_reader
+  attributes :is_editor, :is_public_reader, :is_trusted_reader, :is_chart_with_nodes_created
 
   has_many :charts
   has_many :burn_rate_charts, serializer: BurnRateChartSerializer
@@ -33,6 +33,10 @@ class CompanyEditorSerializer < ActiveModel::Serializer
 
   def include_burn_rate_charts?
     is_editor || is_trusted_reader
+  end
+
+  def is_chart_with_nodes_created
+    company.charts.first.try(:nodes).try(:any?)
   end
 
   def attributes

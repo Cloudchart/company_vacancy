@@ -22,7 +22,6 @@ CompanyStore          = require('stores/company_store')
 #
 getStateFromStores = (key) ->
   company: CompanyStore.get(key)
-  
 
 # Company Main component
 #
@@ -41,7 +40,7 @@ MainComponent = React.createClass
   getInitialState: ->
     state = getStateFromStores(@props.key)
     state.people_loaded = false
-    state.toggle_value  = 'editor'
+    state.toggle_value  = 'settings'
     state
 
 
@@ -66,6 +65,8 @@ MainComponent = React.createClass
   extendedPropsForEditor: ->
     _.extend({ owner: 'company' }, @state.company) # TODO: need to pass people and vacancies as props...
 
+  extendedPropsForSettings: ->
+    _.extend({ people: PersonStore.all() }, @state.company)
 
   onHeaderNavChange: (value) ->
     @setState({ toggle_value: value })
@@ -78,7 +79,7 @@ MainComponent = React.createClass
   contentToggler: ->
     {
       editor: (EditorComponent @extendedPropsForEditor())
-      settings: (SettingsComponent @state.company)
+      settings: (SettingsComponent @extendedPropsForSettings())
       burn_rate: (BurnRateComponent { 
         # TODO: new store for chart people
         charts: @state.company.burn_rate_charts

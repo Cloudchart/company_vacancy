@@ -13,9 +13,10 @@
 ##= require utils/event_emitter.module
 ##= require stores/company_store.module
 ##= require stores/tag_store.module
+##= require components/company/progress.module
 
 tag = React.DOM
-company_attributes  = ['is_listed', 'established_on', 'tag_list']
+company_attributes  = ['is_published', 'established_on', 'tag_list']
 CompanyStore        = require('stores/company_store')
 TagStore            = require('stores/tag_store')
 TagActions          = -> require('actions/tag_actions')
@@ -27,10 +28,84 @@ UrlComponent = cc.require('react/company/settings/site_url')
 SlugComponent = cc.require('react/company/settings/slug')
 EstablishedOnComponent = cc.require('react/company/settings/established_on')
 TagListComponent = cc.require('react/company/settings/tag_list')
+ProgressComponent = require('components/company/progress')
 
 # Main Component
 #
 MainComponent = React.createClass
+  
+  getInitialState: ->
+    state = @getStateFromProps(@props)
+    _.extend state, @getStateFromStore()
+    state
+  
+  
+  componentDidMount: ->
+    TagStore.on('change', @refreshStateFromStore)
+    TagActions().fetch()
+  
+  
+  componentWillUnmount: ->
+    TagStore.off('change', @refreshStateFromStore)
+
+
+  componentDidUpdate: (prevProps, prevState) ->
+    @save() if @state.shouldSave and company_attributes.some((name) => @state[name] isnt prevState[name])
+  
+  
+  componentWillReceiveProps: (nextProps) ->
+    @setState @getStateFromProps(nextProps)
+  
+  
+  refreshStateFromStore: ->
+    @setState(@getStateFromStore())
+  
+  
+  getStateFromStore: ->
+    tags: TagStore.all()
+  
+  
+  getStateFromProps: (props) ->
+    is_published:      props.is_published
+    established_on:    props.established_on
+
+  save: ->
+    @setState({ shouldSave: false })
+
+    data = company_attributes.reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
+
+    $.ajax
+      url:        @props.company_url
+      data:       data
+      type:       'PUT'
+      dataType:   'json'
+      contentType:  false
+      processData:  false
+
+    .done @onSaveDone
+    .fail @onSaveFail
+
+
+  onSaveDone: (json) ->
+    CompanyStore.update(@props.uuid, @getStateFromProps(json))
+
+  onSaveFail: ->
+    console.warn 'Save Fail'
+
+  onEstablishedOnChange: (event) ->
+    @setState
+      established_on: event.target.value
+      shouldSave: true
+
+  onTagsChange: (event) ->
+    @setState
+      tag_list: event.target.value
+      shouldSave: true
+
+  handleProgressChange: (event) ->
+    @setState
+      is_published: event.target.value
+      shouldSave: true
 
   render: ->
     (tag.article { className: 'editor settings' },
@@ -67,104 +142,26 @@ MainComponent = React.createClass
             onChange:       @onTagsChange
           })
 
-          # (tag.p {}, 'To become listed on the CloudChart company search, please fill out tags.')
-
-          # (tag.footer {},
-          #   'Your company is'
-
-          #   (tag.button {
-          #     className:  'orgpad'
-          #     disabled:   !@state.tags
-          #     onClick:    @toggleListing
-          #   }, 'Unlisted') unless @state.is_listed
-
-          #   (tag.button {
-          #     className: 'orgpad'
-          #     onClick:    @toggleListing
-          #   }, 'Listed') if @state.is_listed
-          # )
-
         )
+      )
+
+      (tag.section { className: 'progress' },
+        (tag.header {}, 'Progress')
+
+        (ProgressComponent { 
+          name: @props.name
+          logotype: @props.logotype
+          tags: @props.tags
+          is_chart_with_nodes_created: @props.is_chart_with_nodes_created
+          people: @props.people
+          is_published: @state.is_published
+          onChange: @handleProgressChange
+        })
       )
   
       # deprecated
       # CompanyOwnersComponent({ owners: @props.owners, owner_invites: @props.owner_invites })
-
     )
-
-  
-  getInitialState: ->
-    state = @getStateFromProps(@props)
-    _.extend state, @getStateFromStore()
-    state
-  
-  
-  componentDidMount: ->
-    TagStore.on('change', @refreshStateFromStore)
-    TagActions().fetch()
-  
-  
-  componentWillUnmount: ->
-    TagStore.off('change', @refreshStateFromStore)
-
-
-  componentDidUpdate: (prevProps, prevState) ->
-    @save() if @state.shouldSave and company_attributes.some((name) => @state[name] isnt prevState[name])
-  
-  
-  componentWillReceiveProps: (nextProps) ->
-    @setState @getStateFromProps(nextProps)
-  
-  
-  refreshStateFromStore: ->
-    @setState(@getStateFromStore())
-  
-  
-  getStateFromStore: ->
-    tags: TagStore.all()
-  
-  
-  getStateFromProps: (props) ->
-    is_listed:         props.is_listed
-    established_on:    props.established_on
-
-  save: ->
-    @setState({ shouldSave: false })
-
-    data = company_attributes.reduce ((memo, name) => memo.append("company[#{name}]", @state[name]) if @state[name]?; memo), new FormData
-
-    $.ajax
-      url:        @props.company_url
-      data:       data
-      type:       'PUT'
-      dataType:   'json'
-      contentType:  false
-      processData:  false
-
-    .done @onSaveDone
-    .fail @onSaveFail
-
-
-  onSaveDone: (json) ->
-    CompanyStore.update(@props.uuid, @getStateFromProps(json))
-
-  onSaveFail: ->
-    console.warn 'Save Fail'
-
-  toggleListing: ->
-    @setState
-      is_listed: !@state.is_listed
-      shouldSave: true
-
-  onEstablishedOnChange: (event) ->
-    @setState
-      established_on: event.target.value
-      shouldSave: true
-
-  onTagsChange: (event) ->
-    @setState
-      tag_list: event.target.value
-      shouldSave: true
 
 # Exports
 #
