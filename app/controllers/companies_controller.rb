@@ -55,26 +55,33 @@ class CompaniesController < ApplicationController
   def edit
   end
 
+
   # PATCH/PUT /companies/1
   def update
-    if @company.update(company_params)
-      Activity.track_activity(current_user, params[:action], @company)
-
-      update_site_url_verification(@company) if company_params[:site_url]
-
-      respond_to do |format|
-        format.html { redirect_to @company }
-        format.json { render json: @company, serializer: Editor::CompanySerializer }
-      end
-
-    else
-
-      respond_to do |format|
-        format.json { render json: :nok, status: 412 }
-      end
-
+    @company.update!(company_params)
+    
+    respond_to do |format|
+      format.json { render json: @company }
     end
+    # if @company.update(company_params)
+    #   Activity.track_activity(current_user, params[:action], @company)
+    #
+    #   update_site_url_verification(@company) if company_params[:site_url]
+    #
+    #   respond_to do |format|
+    #     format.html { redirect_to @company }
+    #     format.json { render json: @company, serializer: Editor::CompanySerializer }
+    #   end
+    #
+    # else
+    #
+    #   respond_to do |format|
+    #     format.json { render json: :nok, status: 412 }
+    #   end
+    #
+    # end
   end
+
 
   # DELETE /companies/1
   def destroy
