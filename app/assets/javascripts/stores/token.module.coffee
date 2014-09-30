@@ -58,7 +58,6 @@ module.exports = CloudFlux.createStore
 
   onUpdateDone: (key, json, token = 'update') ->
     @store.stop_sync(key, token)
-    @store.update(key, attributes)
     @store.emitChange()
 
 

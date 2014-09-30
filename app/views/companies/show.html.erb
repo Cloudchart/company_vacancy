@@ -8,3 +8,5 @@
 <% content_for :header do %>
   <%= render 'shared/company_header' %>
 <% end %>
+
+<%- pagescript_params company: @company.active_model_serializer.new(@company) -%>

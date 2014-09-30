@@ -3,6 +3,20 @@
 module.exports =
   
   
+  update: (key, data, done, fail) ->
+    data = _.reduce data, ((memo, value, key) -> memo.append("company[#{key}]", value) ; memo), new FormData
+    
+    $.ajax
+      url:          "/companies/#{key}"
+      type:         "PUT"
+      dataType:     "json"
+      data:         data
+      contentType:  false
+      processData:  false
+    .done done
+    .fail fail
+  
+  
   fetchAccessRights: (key, done, fail) ->
     $.ajax
       url:        "/companies/#{key}/access_rights"
