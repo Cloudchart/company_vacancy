@@ -12,6 +12,8 @@ class Company < ActiveRecord::Base
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
   ROLES           = ([:owner] + INVITABLE_ROLES).freeze
 
+  before_update :publish_check, if: 'is_published && is_published_changed?'
+
   dragonfly_accessor :logotype
 
   # deprecated
@@ -105,6 +107,15 @@ class Company < ActiveRecord::Base
   
   def as_json_for_editor
     as_json(only: [:uuid], methods: :sections_titles)
+  end
+
+private
+
+  def publish_check
+    unless name.present? && logotype.present? && people.any? && tags.any? && charts.first.try(:nodes).try(:any?)
+      self.is_published = false
+      return true
+    end
   end
 
 end

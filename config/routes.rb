@@ -83,7 +83,7 @@ Cloudchart::Application.routes.draw do
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :favorites, only: [:create, :destroy]
-  resources :tags, only: [:index, :create]  
+  resources :tags, only: [:index, :create]
 
   # Custom
   # 
