@@ -92,7 +92,7 @@ class Company < ActiveRecord::Base
   
   
   def pictures
-    blocks.select { |b| b.identity_type == 'Picture' }.map(&:identities).flatten
+    blocks.select { |b| b.identity_type == 'Picture' }.map(&:picture).compact
   end
   
 

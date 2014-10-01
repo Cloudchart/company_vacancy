@@ -11,12 +11,23 @@ module.exports = CloudFlux.createStore
   onUpdate: (key, attributes, token) ->
     @store.update(key, attributes)
     @store.emitChange()
+  
+  
+  onUpdateDone: (key, json, token) ->
+    @store.update(key, json)
+    @store.emitChange()
+
+
+  onUpdateFail: (key, json, token) ->
+    @store.emitChange()
 
 
   getActions: ->
     actions = {}
     
-    actions['block:update'] = @onUpdate
+    actions['block:update']       = @onUpdate
+    actions['block:update:done']  = @onUpdateDone
+    actions['block:update:fail']  = @onUpdateFail
     
     actions
 

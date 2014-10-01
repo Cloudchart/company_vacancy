@@ -13,6 +13,11 @@ class Block < ActiveRecord::Base
 
   has_many :block_identities, -> { order(:position) }, inverse_of: :block, dependent: :destroy
   
+
+  # Picture
+  #
+  has_one :picture, as: :owner, dependent: :destroy
+
   
   IdentitiesClasses.each do |identity_class|
     plural_identity_name = identity_class.name.underscore.pluralize
@@ -31,7 +36,7 @@ class Block < ActiveRecord::Base
   end
   
   def self.identities_to_destroy_with_block
-    [Paragraph, BlockImage, Picture]
+    [Paragraph, BlockImage]
   end
 
   def company
