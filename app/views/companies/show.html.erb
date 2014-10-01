@@ -9,4 +9,10 @@
   <%= render 'shared/company_header' %>
 <% end %>
 
-<%- pagescript_params company: @company.active_model_serializer.new(@company) -%>
+<%-
+  pagescript_params(
+    company:    @company.active_model_serializer.new(@company),
+    blocks:     @company.blocks.active_model_serializer.new(@company.blocks),
+    pictures:   @company.pictures.active_model_serializer.new(@company.pictures)
+  ) 
+-%>
