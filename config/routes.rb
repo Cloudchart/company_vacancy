@@ -61,7 +61,9 @@ Cloudchart::Application.routes.draw do
     post :update_section,   on: :collection
 
     resources :identities, shallow: true, controller: :block_identities, only: [:index, :create, :destroy]
-    resource :picture
+
+    resource :picture,    type: :block, only: [:create, :update, :destroy]
+    resource :paragraph,  type: :block, only: [:create, :update, :destroy]
   end
 
   resources :features do

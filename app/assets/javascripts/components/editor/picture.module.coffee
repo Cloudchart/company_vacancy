@@ -2,11 +2,10 @@
 #
 tag = React.DOM
 
-BlockActions  = require('actions/block_actions')
-BlockStore    = require('stores/block_store')
-PictureStore  = require('stores/picture_store')
+PictureActions  = require('actions/picture_actions')
+PictureStore    = require('stores/picture_store')
 
-ImageInput    = require('components/form/image_input')
+ImageInput      = require('components/form/image_input')
 
 
 # Placeholder
@@ -40,30 +39,38 @@ Component = React.createClass
 
 
   onChange: (file) ->
-    BlockActions.update @props.key,
-      "block[pictures_attributes][][image]": file
+    if @state.picture
+      PictureActions.update(@state.picture.uuid, { image: file })
+    else
+      PictureActions.create(@props.key, { image: file })
 
 
   onDelete: ->
-    if @props.block.identity_ids.length > 0
-      BlockActions.update @props.key,
-        "block[identity_ids][]": []
+    PictureActions.destroy(@state.picture.uuid)
   
   
   onError: ->
     console.log 'Error'
   
+    
+  getStateFromStores: ->
+    picture: PictureStore.find (item) => item.owner_id == @props.key and item.owner_type == 'Block'
   
-  componentWillReceiveProps: (nextProps) ->
-    @setState(@getStateFromStores(nextProps))
+  
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores())
   
   
-  getStateFromStores: (props) ->
-    src: if (picture = PictureStore.get(props.block.identity_ids[0])) then picture.url else null
+  componentDidMount: ->
+    PictureStore.on('change', @refreshStateFromStores)
+  
+  
+  componentWillUnmount: ->
+    PictureStore.off('change', @refreshStateFromStores)
 
 
   getInitialState: ->
-    @getStateFromStores(@props)
+    @getStateFromStores()
 
 
   render: ->
@@ -72,7 +79,7 @@ Component = React.createClass
     },
 
       (ImageInput {
-        src:          @state.src
+        src:          @state.picture.url if @state.picture
         onChange:     @onChange
         onDelete:     @onDelete
         onError:      @onError
