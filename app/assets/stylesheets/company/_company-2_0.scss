@@ -126,6 +126,7 @@ $company-article-block-margin: 30px;
   margin: $company-article-block-margin auto;
 
   > .image-input {
+    
     position: relative;
     
     button.delete {
@@ -147,6 +148,7 @@ $company-article-block-margin: 30px;
     }
     
     label {
+      cursor: pointer;
       display: block;
       position: relative;
     }
