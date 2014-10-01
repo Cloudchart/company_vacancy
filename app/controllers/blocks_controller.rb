@@ -26,7 +26,7 @@ class BlocksController < ApplicationController
     respond_to do |format|
       format.html { redirect_to @block.owner }
       format.js
-      format.json { render json: @block, serializer: BlockEditorSerializer, root: false }
+      format.json { render json: { block: @block.active_model_serializer.new(@block), identities: @block.identities.active_model_serializer.new(@block.identities) } }
     end
   end
 
@@ -68,7 +68,8 @@ private
     params.require(:block).permit(
       identity_ids:             [],
       paragraphs_attributes:    [:id, :content],
-      block_images_attributes:  [:id, :image]
+      block_images_attributes:  [:id, :image],
+      pictures_attributes:      [:id, :image]
     )
   end
 

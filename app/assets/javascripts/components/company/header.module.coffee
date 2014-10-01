@@ -13,6 +13,8 @@ Component = React.createClass
 
 
   update: ->
+    return if @props.readOnly
+
     attributes =
       name:             @state.name
       description:      @state.description
@@ -21,10 +23,14 @@ Component = React.createClass
   
   
   updateLogotype: (file) ->
+    return if @props.readOnly
+
     CompanyActions.update(@props.key, { logotype: file })
   
   
   removeLogotype: ->
+    return if @props.readOnly
+
     CompanyActions.update(@props.key, { logotype_url: null, remove_logotype: true })
 
 
@@ -102,14 +108,14 @@ Component = React.createClass
             type:     'file'
             onChange: @onLogotypeChange
           })
-        )
+        ) unless @props.readOnly
 
         (tag.button {
           className:  'remove'
           onClick:    @removeLogotype
         },
           (tag.i { className: 'fa fa-times' })
-        ) if @state.logotype_url
+        ) unless @props.readOnly if @state.logotype_url
 
       )
       
@@ -124,6 +130,7 @@ Component = React.createClass
           onChange:     @onFieldChange.bind(@, 'name')
           onKeyUp:      @onFieldKeyUp
           placeholder:  'Company name'
+          readOnly:     @props.readOnly
         })
 
         (tag.a {
@@ -146,6 +153,7 @@ Component = React.createClass
           onChange:     @onFieldChange.bind(@, 'description')
           onKeyUp:      @onFieldKeyUp
           placeholder:  'Company description'
+          readOnly:     @props.readOnly
         })
       )
     

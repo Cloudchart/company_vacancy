@@ -120,6 +120,80 @@ $company-article-block-margin: 30px;
 }
 
 
+// Picture section
+//
+@mixin company-article-picture-2_0 {
+  margin: $company-article-block-margin auto;
+
+  > .image-input {
+    position: relative;
+    
+    button.delete {
+      @include position(absolute, 5px 5px 0 0);
+      
+      background-color: hsl(1, 76%, 54%);
+      border: none;
+      color: hsl(0, 100%, 100%);
+      font-size: 12px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+      visibility: hidden;
+      width: 20px;
+    }
+    
+    &:hover button.delete {
+      visibility: visible;
+    }
+    
+    label {
+      display: block;
+      position: relative;
+    }
+    
+    input[type="file"] {
+      height: 0;
+      overflow: hidden;
+      position: absolute;
+      width: 0;
+    }
+  }
+  
+  .placeholder {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+    
+    background-color: hsl(0, 0%, 96%);
+    padding: 100px 0;
+    
+    > header,
+    > p {
+      font-size: 13px;
+      margin: 5px 0;
+      opacity: .25;
+      width: 250px;
+    }
+    
+    > header {
+      font-size: 16px;
+      font-weight: 700;
+      
+      > i.fa {
+        margin-left: -2em;
+        width: 2em;
+      }
+    }
+  }
+  
+  img {
+    border: none;
+    display: block;
+    width: 100%;
+  }
+}
+
+
 article.company-2_0 {
   
   margin: auto;
@@ -270,4 +344,8 @@ article.company-2_0 {
 
 article.company-2_0 > header {
   @include company-article-header-2_0;
+}
+
+article.company-2_0 > section.picture {
+  @include company-article-picture-2_0;
 }

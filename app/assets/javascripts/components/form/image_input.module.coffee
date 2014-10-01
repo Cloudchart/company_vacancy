@@ -1,0 +1,57 @@
+# Imports
+#
+tag = React.DOM
+
+
+# Main
+#
+Component = React.createClass
+
+  
+  onChange: (event) ->
+    file  = event.target.files[0] ; return unless file
+    image = new Image
+
+    image.addEventListener 'load', =>
+      @props.onChange(file) if _.isFunction(@props.onChange)
+      URL.revokeObjectURL(image.src)
+    
+    image.addEventListener 'error', =>
+      @props.onError() if _.isFunction(@props.onError)
+      URL.revokeObjectURL(image.src)
+
+    image.src = URL.createObjectURL(file)
+
+
+  render: ->
+    (tag.div {
+      className: 'image-input'
+    },
+
+      (tag.label {
+      },
+        (tag.input {
+          type:       'file'
+          onChange:   @onChange
+          value:      ''
+        })
+
+        @props.placeholder unless @props.src
+      
+        @transferPropsTo((tag.img {})) if @props.src
+
+      )
+
+      (tag.button {
+        className:  'delete'
+        onClick:    @props.onDelete
+        type:       'button'
+      },
+        (tag.i { className: 'fa fa-times' })
+      ) if @props.src
+    )
+
+
+# Exports
+#
+module.exports = Component

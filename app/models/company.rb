@@ -89,6 +89,12 @@ class Company < ActiveRecord::Base
   def owner
     roles.find_by(value: :owner).user
   end
+  
+  
+  def pictures
+    blocks.select { |b| b.identity_type == 'Picture' }.map(&:identities).flatten
+  end
+  
 
   def invite_tokens
     tokens.where(name: :invite)
