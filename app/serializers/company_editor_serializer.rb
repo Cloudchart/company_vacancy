@@ -2,7 +2,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :id, :uuid, :name, :description, :is_published, :logotype, :slug, :site_url
   attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
-  attributes :default_host, :settings, :established_on, :tags
+  attributes :default_host, :settings, :established_on, :tag_list
   attributes :is_editor, :is_public_reader, :is_trusted_reader, :is_chart_with_nodes_created
 
   has_many :charts
@@ -13,11 +13,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   # has_one :logo, serializer: Editor::LogoSerializer
 
   alias_method :current_user, :scope
-  alias_method :company, :object  
-
-  def tags
-    object.tags.pluck(:tag_id)
-  end
+  alias_method :company, :object
   
   def is_editor
     Ability.new(current_user).can?(:manage, company)

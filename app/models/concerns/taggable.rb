@@ -7,7 +7,7 @@ module Taggable
   end
 
   def tag_list
-    tags.map { |tag| { id: tag.id, name: tag.name } }
+    tags.pluck(:tag_id)
   end
 
   def tag_list=(names)

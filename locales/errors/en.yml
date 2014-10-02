@@ -6,3 +6,4 @@ en:
       size_too_big: "is too big (should be at most %{file_size})"
       width_too_small: "width is too small (should be at least 100px)"
       title_is_not_unique: "title is not unique"
+      company_can_not_become_published: "company can't become published"

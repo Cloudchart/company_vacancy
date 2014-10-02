@@ -6,12 +6,15 @@
   PersonStore       = cc.require('cc.stores.PersonStore')
   VacancyStore      = cc.require('cc.stores.VacancyStore')
   CompanyStore      = require('stores/company_store')
+  TagStore          = require('stores/tag_store')
+  TagActions        = -> require('actions/tag_actions')
   CompanyComponent  = cc.require('react/company')
   container         = document.querySelector('main')
   
   CompanyStore.add(data.company)
   PersonStore.load(data.company.people_url)
   VacancyStore.load(data.company.vacancies_url)
+  TagActions().fetch()
   
   React.renderComponent(CompanyComponent({ key: data.company.uuid }), container)
 

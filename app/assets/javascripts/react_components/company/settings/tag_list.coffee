@@ -5,6 +5,7 @@
 ##= require cloud_flux/store.module
 ##= require cloud_flux/mixins.module
 ##= require cloud_flux.module
+##= require stores/tag_store.module
 
 # Imports
 # 

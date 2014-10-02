@@ -12,62 +12,39 @@
 ##= require cloud_flux.module
 ##= require utils/event_emitter.module
 ##= require stores/company_store.module
-##= require stores/tag_store.module
 ##= require components/company/progress.module
-
-tag = React.DOM
-company_attributes  = ['is_published', 'established_on', 'tag_list']
-CompanyStore        = require('stores/company_store')
-TagStore            = require('stores/tag_store')
-TagActions          = -> require('actions/tag_actions')
 
 # Imports
 #
-# CompanyOwnersComponent  = cc.require('react/company/owners')
+tag = React.DOM
+company_attributes  = ['is_published', 'established_on', 'tag_list']
+
+CompanyStore        = require('stores/company_store')
+
 UrlComponent = cc.require('react/company/settings/site_url')
 SlugComponent = cc.require('react/company/settings/slug')
 EstablishedOnComponent = cc.require('react/company/settings/established_on')
 TagListComponent = cc.require('react/company/settings/tag_list')
 ProgressComponent = require('components/company/progress')
+# CompanyOwnersComponent  = cc.require('react/company/owners')
 
 # Main Component
 #
 MainComponent = React.createClass
   
   getInitialState: ->
-    state = @getStateFromProps(@props)
-    _.extend state, @getStateFromStore()
-    state
-  
-  
-  componentDidMount: ->
-    TagStore.on('change', @refreshStateFromStore)
-    TagActions().fetch()
-  
-  
-  componentWillUnmount: ->
-    TagStore.off('change', @refreshStateFromStore)
-
+    @getStateFromProps(@props)
 
   componentDidUpdate: (prevProps, prevState) ->
     @save() if @state.shouldSave and company_attributes.some((name) => @state[name] isnt prevState[name])
   
-  
   componentWillReceiveProps: (nextProps) ->
     @setState @getStateFromProps(nextProps)
-  
-  
-  refreshStateFromStore: ->
-    @setState(@getStateFromStore())
-  
-  
-  getStateFromStore: ->
-    tags: TagStore.all()
-  
   
   getStateFromProps: (props) ->
     is_published:      props.is_published
     established_on:    props.established_on
+    tag_list:          props.tag_list
 
   save: ->
     @setState({ shouldSave: false })
@@ -85,12 +62,11 @@ MainComponent = React.createClass
     .done @onSaveDone
     .fail @onSaveFail
 
-
   onSaveDone: (json) ->
     CompanyStore.update(@props.uuid, @getStateFromProps(json))
 
   onSaveFail: ->
-    console.warn 'Save Fail'
+    @setState @getInitialState()
 
   onEstablishedOnChange: (event) ->
     @setState
@@ -132,13 +108,13 @@ MainComponent = React.createClass
           })
 
           (EstablishedOnComponent {
-            value: @state.established_on
+            value: @props.established_on
             onChange: @onEstablishedOnChange
           })
 
           (TagListComponent {
-            stored_tags:    @state.tags
-            tags:           @props.tags
+            stored_tags:    @props.all_tags #@state.tags
+            tags:           @props.tag_list
             onChange:       @onTagsChange
           })
 
@@ -151,10 +127,10 @@ MainComponent = React.createClass
         (ProgressComponent { 
           name: @props.name
           logotype: @props.logotype
-          tags: @props.tags
+          tag_list: @props.tag_list
           is_chart_with_nodes_created: @props.is_chart_with_nodes_created
           people: @props.people
-          is_published: @state.is_published
+          is_published: @props.is_published
           onChange: @handleProgressChange
         })
       )

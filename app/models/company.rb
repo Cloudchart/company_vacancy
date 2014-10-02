@@ -12,8 +12,6 @@ class Company < ActiveRecord::Base
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
   ROLES           = ([:owner] + INVITABLE_ROLES).freeze
 
-  before_update :publish_check, if: 'is_published && is_published_changed?'
-
   dragonfly_accessor :logotype
 
   # deprecated
@@ -37,6 +35,7 @@ class Company < ActiveRecord::Base
 
   # validates :name, presence: true, on: :update
   validates :site_url, url: true, allow_blank: true
+  validate  :publish_check, if: 'is_published && is_published_changed?'
 
   settings ElasticSearchNGramSettings do
     mapping do
@@ -113,8 +112,7 @@ private
 
   def publish_check
     unless name.present? && logotype.present? && people.any? && tags.any? && charts.first.try(:nodes).try(:any?)
-      self.is_published = false
-      return true
+      errors.add(:is_published, I18n.t('errors.messages.company_can_not_become_published'))
     end
   end
 

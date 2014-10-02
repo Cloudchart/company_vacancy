@@ -16,7 +16,7 @@ MainComponent = React.createClass
       { message: 'Upload logo', is_checked: !!@props.logotype },
       { message: 'Create first chart', is_checked: !!@props.is_chart_with_nodes_created },
       { message: 'Add some people', is_checked: @props.people.length > 0 },
-      { message: 'Assign keywords', is_checked: @props.tags.length > 0 }
+      { message: 'Assign keywords', is_checked: @props.tag_list.length > 0 }
     ]
 
   progressItem: (item, index) ->
