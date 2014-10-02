@@ -12,6 +12,7 @@ CompanyHeader   = require('components/company/header')
 blockComponents =
   Picture:    require('components/editor/picture')
   Paragraph:  require('components/editor/paragraph')
+  Vacancy:    require('components/editor/vacancy')
 
 
 # Main
@@ -28,7 +29,7 @@ Component = React.createClass
           key:        block.uuid
           block:      block
           readOnly:   @props.readOnly
-        })
+        }) if component
       .value()
 
 
