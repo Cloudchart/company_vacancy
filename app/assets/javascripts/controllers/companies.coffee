@@ -4,7 +4,7 @@
   BlockStore      = require('stores/block_store')
   PictureStore    = require('stores/picture_store')
   ParagraphStore  = require('stores/paragraph_store')
-  
+
   CompanyStore.add(data.company.uuid, data.company)
   
   _.each data.blocks, (block) -> BlockStore.add(block.uuid, block)

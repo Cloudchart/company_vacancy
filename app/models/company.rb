@@ -95,6 +95,11 @@ class Company < ActiveRecord::Base
     blocks.select { |b| b.identity_type == 'Picture' }.map(&:picture).compact
   end
   
+  
+  def paragraphs
+    blocks.select { |b| b.identity_type == 'Paragraph' }.map(&:paragraph).compact
+  end
+  
 
   def invite_tokens
     tokens.where(name: :invite)

@@ -196,151 +196,31 @@ $company-article-block-margin: 30px;
 }
 
 
+// Paragraph section
+//
+@mixin company-article-paragraph-2_0 {
+  
+  font-size: 16px;
+  line-height: 22px;
+  margin: $company-article-block-margin auto;
+  
+  [contenteditable] {
+    outline: none;
+
+    &:empty::before {
+      content: attr(data-placeholder);
+      opacity: .25;
+      outline: none;
+    }
+  }
+
+}
+
+
 article.company-2_0 {
   
   margin: auto;
   width: 800px;
-  
-
-  > aside.logo {
-    @include display(flex);
-    
-    background-color: #ccc;
-    height: 105px;
-    margin: auto;
-    width: 105px;
-    
-    > figure {
-      @include display(flex);
-      
-      background-color: #999;
-      border-radius: 25px;
-      height: 50px;
-      margin: auto;
-      overflow: hidden;
-      width: 50px;
-      
-      > span {
-        color: hsl(0, 100%, 100%);
-        font-size: 25px;
-        font-weight: 300;
-        margin: auto;
-      }
-    }
-  }
-  
-  
-  > div.name input,
-  > div.description input {
-    border: none;
-    margin: 0;
-    outline: none;
-    padding: 0;
-    
-    @include placeholder {
-      color: inherit;
-      opacity: .5;
-    }
-    
-  }
-  
-  
-  > div.name {
-    margin: 20px 0;
-    position: relative;
-    text-align: center;
-    
-    a.share-link {
-      color: hsl(137, 50%, 59%);
-      font-size: 16px;
-      height: 1em;
-      margin-top: -.5em;
-      margin-left: 20px;
-      position: absolute;
-      top: 50%;
-    }
-    
-    input {
-      font-size: 32px;
-    }
-    
-  }
-  
-  
-  > div.description {
-    margin: 20px 0;
-    position: relative;
-    text-align: center;
-    
-    input {
-      font-size: 22px;
-      font-weight: 300;
-    }
-  }
-  
-  
-  > header {
-    font-size: 22px;
-    font-weight: 300;
-    margin: 20px 0;
-    text-align: center;
-  }
-  
-  
-  > div.paragraph {
-
-    font-size: 16px;
-    line-height: 22px;
-    margin: 20px auto;
-    width: 750px;
-
-  }
-  
-  
-  > div.image {
-    
-    margin: 20px auto;
-    width: 750px;
-    
-    > div.placeholder {
-      background-color: hsl(0, 0%, 96%);
-      height: 0;
-      overflow: hidden;
-      padding-top: 50%;
-      position: relative;
-      
-      > label {
-        @include align-items(center);
-        @include display(flex);
-        @include flex-direction(column);
-        @include justify-content(center);
-        @include position(absolute, 0px 0px 0px 0px);
-        
-        cursor: pointer;
-        opacity: .25;
-        
-        > h2,
-        > p {
-          margin: 5px 0;
-          width: 220px;
-        }
-        
-        > h2 {
-          font-size: 16px;
-          font-weight: 700;
-          position: relative;
-          
-          > i.fa {
-            @include position(absolute, 1px 100% 0 0);
-            margin-right: 10px;
-          }
-        }
-      }
-      
-    }
-      
-  }
-  
   
 }
 
@@ -350,4 +230,8 @@ article.company-2_0 > header {
 
 article.company-2_0 > section.picture {
   @include company-article-picture-2_0;
+}
+
+article.company-2_0 > section.paragraph {
+  @include company-article-paragraph-2_0;
 }

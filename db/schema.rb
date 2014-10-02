@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140930120825) do
+ActiveRecord::Schema.define(version: 20141001145247) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -253,9 +253,11 @@ ActiveRecord::Schema.define(version: 20140930120825) do
   add_index "pages", ["slug"], name: "index_pages_on_slug", unique: true, using: :btree
 
   create_table "paragraphs", primary_key: "uuid", force: true do |t|
-    t.text     "content",    null: false
+    t.text     "content",               null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "owner_id",   limit: 36
+    t.string   "owner_type"
   end
 
   create_table "people", primary_key: "uuid", force: true do |t|
@@ -282,8 +284,8 @@ ActiveRecord::Schema.define(version: 20140930120825) do
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
   create_table "pictures", primary_key: "uuid", force: true do |t|
-    t.string   "owner_id",   limit: 36, null: false
-    t.string   "owner_type",            null: false
+    t.string   "owner_id",   limit: 36, default: ""
+    t.string   "owner_type",            default: ""
     t.string   "image_uid"
     t.datetime "created_at"
     t.datetime "updated_at"

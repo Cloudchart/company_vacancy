@@ -2,7 +2,7 @@ class Block < ActiveRecord::Base
   include Uuidable
   include Trackable
   
-  IdentitiesClasses = [Paragraph, BlockImage, Picture, Person, Vacancy, Company]
+  IdentitiesClasses = [Picture, Paragraph, BlockImage, Person, Vacancy, Company]
   
   before_create   :ensure_position
   after_update    :destroy_previous_block_images, if: :should_destroy_previous_block_images?
@@ -17,6 +17,11 @@ class Block < ActiveRecord::Base
   # Picture
   #
   has_one :picture, as: :owner, dependent: :destroy
+  
+
+  # Paragraph
+  #
+  has_one :paragraph, as: :owner, dependent: :destroy
 
   
   IdentitiesClasses.each do |identity_class|
@@ -36,7 +41,7 @@ class Block < ActiveRecord::Base
   end
   
   def self.identities_to_destroy_with_block
-    [Paragraph, BlockImage]
+    []
   end
 
   def company
