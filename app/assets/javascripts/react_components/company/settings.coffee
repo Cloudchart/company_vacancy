@@ -44,7 +44,6 @@ MainComponent = React.createClass
   getStateFromProps: (props) ->
     is_published:      props.is_published
     established_on:    @formatDate(props.established_on)
-    tag_list:          props.tag_list
 
   save: ->
     @setState({ shouldSave: false })
