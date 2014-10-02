@@ -4,6 +4,7 @@ tag = React.DOM
 
 
 BlockActions  = require('actions/block_actions')
+ModalActions  = require('actions/modal_actions')
 
 VacancyStore  = require('stores/vacancy')
 
@@ -23,6 +24,10 @@ Component = React.createClass
         (tag.i { className: 'fa fa-briefcase' })
         vacancy.name
       )
+  
+
+  onNewVacancyClick: ->
+    
   
   
   onVacancyClick: (key) ->
@@ -60,6 +65,12 @@ Component = React.createClass
       )
       
       (tag.section null,
+        (tag.div {
+          onClick:  @onNewVacancyClick
+        },
+          (tag.i { className: 'fa fa-plus' })
+          "New vacancy"
+        )
         @gatherVacancies()
       )
       
