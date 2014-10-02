@@ -322,14 +322,15 @@ ActiveRecord::Schema.define(version: 20141001145247) do
     t.string   "tag_id",        limit: 36, null: false
     t.string   "taggable_id",   limit: 36, null: false
     t.string   "taggable_type",            null: false
-    t.string   "user_id",       limit: 36
+    t.string   "tagger_id",     limit: 36
+    t.string   "tagger_type"
     t.datetime "created_at"
   end
 
-  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "user_id"], name: "taggings_idx", unique: true, using: :btree
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
   add_index "taggings", ["tag_id"], name: "index_taggings_on_tag_id", using: :btree
   add_index "taggings", ["taggable_id", "taggable_type"], name: "index_taggings_on_taggable_id_and_taggable_type", using: :btree
-  add_index "taggings", ["user_id"], name: "index_taggings_on_user_id", using: :btree
+  add_index "taggings", ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type", using: :btree
 
   create_table "tags", primary_key: "uuid", force: true do |t|
     t.string   "name"
