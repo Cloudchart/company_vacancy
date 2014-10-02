@@ -34,7 +34,6 @@ Component = React.createClass
   
   
   componentWillReceiveProps: (nextProps) ->
-    console.log 'componentWillReceiveProps', nextProps.date
     @setState _.extend getStateFromDate(nextProps.date), { shouldPropagate: false }
   
   
