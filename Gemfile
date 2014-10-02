@@ -18,7 +18,7 @@ gem 'oauth2'
 gem 'active_attr'
 gem 'cancancan'
 gem 'tire'
-gem 'rails_admin'
+gem 'rails_admin', '~> 0.6.3'
 gem 'warden'
 gem 'kaminari'
 gem 'paper_trail' # tracks changes to model's data
