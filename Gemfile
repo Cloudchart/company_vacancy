@@ -25,7 +25,7 @@ gem 'paper_trail' # tracks changes to model's data
 gem 'impressionist' # tracks page views
 gem 'dotenv-rails' # loads environment variables from .env
 gem 'sidekiq' # background processing using redis
-gem 'active_model_serializers', '~> 0.8.2'
+gem 'active_model_serializers', '= 0.8.1'
 gem 'dragonfly', '~> 1.0.5'
 gem 'sprockets-commonjs', git: 'git@github.com:maccman/sprockets-commonjs.git'
 

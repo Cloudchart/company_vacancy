@@ -3,7 +3,6 @@
 ##= require module
 ##= require ./settings/slug
 ##= require ./settings/site_url
-##= require ./settings/established_on
 ##= require ./settings/tag_list
 ##= require constants.module
 ##= require utils/uuid.module
@@ -13,6 +12,7 @@
 ##= require utils/event_emitter.module
 ##= require stores/company_store.module
 ##= require components/company/progress.module
+##= require cloud_blueprint/components/inputs/date_input.module
 
 # Imports
 #
@@ -23,9 +23,9 @@ CompanyStore        = require('stores/company_store')
 
 UrlComponent = cc.require('react/company/settings/site_url')
 SlugComponent = cc.require('react/company/settings/slug')
-EstablishedOnComponent = cc.require('react/company/settings/established_on')
 TagListComponent = cc.require('react/company/settings/tag_list')
 ProgressComponent = require('components/company/progress')
+DateInputComponent = require('cloud_blueprint/components/inputs/date_input')
 # CompanyOwnersComponent  = cc.require('react/company/owners')
 
 # Main Component
@@ -43,7 +43,7 @@ MainComponent = React.createClass
   
   getStateFromProps: (props) ->
     is_published:      props.is_published
-    established_on:    props.established_on
+    established_on:    @formatDate(props.established_on)
     tag_list:          props.tag_list
 
   save: ->
@@ -68,9 +68,14 @@ MainComponent = React.createClass
   onSaveFail: ->
     @setState @getInitialState()
 
-  onEstablishedOnChange: (event) ->
+  formatDate: (date) ->
+    if date instanceof Date then date else Date.parse(date)
+
+  onEstablishedOnChange: (value) ->
+    value = if value == null then '' else value
+
     @setState
-      established_on: event.target.value
+      established_on: value
       shouldSave: true
 
   onTagsChange: (event) ->
@@ -107,13 +112,24 @@ MainComponent = React.createClass
             default_host: @props.default_host
           })
 
-          (EstablishedOnComponent {
-            value: @props.established_on
-            onChange: @onEstablishedOnChange
-          })
+          (tag.div { className: 'profile-item' },
+            (tag.div { className: 'content field' },
+              (tag.label { htmlFor: 'established_on' }, 'Established on')
+
+              (tag.div { className: 'spacer' })
+
+              (DateInputComponent {
+                id: 'established_on'
+                name: 'established_on'
+                date: @state.established_on
+                placeholder: 'Jan 1, 2014'
+                onChange: @onEstablishedOnChange
+              })
+            )
+          )
 
           (TagListComponent {
-            stored_tags:    @props.all_tags #@state.tags
+            stored_tags:    @props.all_tags
             tags:           @props.tag_list
             onChange:       @onTagsChange
           })

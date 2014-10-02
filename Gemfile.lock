@@ -54,7 +54,7 @@ GEM
     active_attr (0.8.3)
       activemodel (>= 3.0.2, < 4.2)
       activesupport (>= 3.0.2, < 4.2)
-    active_model_serializers (0.8.2)
+    active_model_serializers (0.8.1)
       activemodel (>= 3.0)
     activemodel (4.1.4)
       activesupport (= 4.1.4)
@@ -331,7 +331,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_attr
-  active_model_serializers (~> 0.8.2)
+  active_model_serializers (= 0.8.1)
   awesome_print
   bcrypt (~> 3.1.7)
   bootstrap-wysihtml5-rails!
