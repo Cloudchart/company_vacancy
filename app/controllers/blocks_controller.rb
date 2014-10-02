@@ -66,6 +66,7 @@ private
   
   def block_params_for_update
     params.require(:block).permit(
+      :clear_identity_ids,
       identity_ids:             [],
       paragraphs_attributes:    [:id, :content],
       block_images_attributes:  [:id, :image],

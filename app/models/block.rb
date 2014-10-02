@@ -87,6 +87,10 @@ class Block < ActiveRecord::Base
       block_identity.update_attribute :position, ids.index(block_identity.identity_id)
     end
   end
+  
+  def clear_identity_ids=(status)
+    self.identity_ids = [] if status
+  end
 
 
   def should_destroy_previous_block_images!
