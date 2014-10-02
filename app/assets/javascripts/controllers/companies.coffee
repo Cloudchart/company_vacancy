@@ -50,7 +50,6 @@
 
   React.renderComponent(CompanyComponent({ key: data.company.uuid }), container)
 
-
 # Search
 # 
 @['companies#search'] = (data) ->
