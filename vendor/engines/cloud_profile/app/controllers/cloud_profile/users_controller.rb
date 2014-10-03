@@ -51,10 +51,9 @@ module CloudProfile
       if user.valid?
         
         if user.invite.data && user.invite.data[:email] == user.email
-          # Register and login
-
+          # Activate and login
+          # 
           user.save!
-
           user.invite.destroy unless user.invite.owner.instance_of?(Company)
           
           warden.set_user(user, scope: :user)
@@ -63,9 +62,18 @@ module CloudProfile
             format.json { render json: { state: :login }}
           end
         else
-          # Send activation email
+          # Create activation token and send email
+          # 
+          token = Token.create(
+            name: :activation,
+            data: { 
+              full_name: user.full_name,
+              address: user.email,
+              password_digest: user.password_digest,
+              invite_id: user.invite.id
+            }
+          )
 
-          token = Token.create(name: :registration, data: { full_name: user.full_name, address: user.email, password_digest: user.password_digest })
           ProfileMailer.activation_email(token).deliver
 
           respond_to do |format|

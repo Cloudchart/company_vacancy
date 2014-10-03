@@ -65,8 +65,7 @@ class Token < ActiveRecord::Base
     end
   end
 
-
-  private
+private
   
   def should_validate_as_company_invite?
     owner_type == Company.name and name.to_sym == :invite
