@@ -6,6 +6,7 @@ tag = React.DOM
 ModalActions    = require('actions/modal_actions')
 BlockActions    = require('actions/block_actions')
 
+BlockStore      = require('stores/block_store')
 VacancyStore    = require('stores/vacancy')
 
 VacancyChooser  = require('components/editor/vacancy_chooser')
@@ -18,7 +19,7 @@ Component = React.createClass
 
   gatherVacancies: ->
     _.chain(@state.vacancies)
-      .sortBy (vacancy) => _.indexOf(@props.block.identity_ids, vacancy.uuid)
+      .sortBy (vacancy) => _.indexOf(@state.block.identity_ids, vacancy.uuid)
       .map (vacancy) =>
         (tag.div {
           key: vacancy.uuid
@@ -33,27 +34,28 @@ Component = React.createClass
   
   
   onDeleteButtonClick: (key) ->
-    identity_ids  = _.without(@props.block.identity_ids, key)
-    attributes    = if identity_ids.length == 0
-      { clear_identity_ids: true }
-    else
-      { identity_ids: identity_ids }
-
-    BlockActions.update(@props.block.uuid, attributes)
+    identity_ids  = _.without(@state.block.identity_ids, key)
+    BlockActions.update(@state.block.uuid, { identity_ids: identity_ids })
 
 
   onAddVacancyClick: ->
     ModalActions.show(VacancyChooser({
-      block:  @props.block
+      key:  @props.key
     }))
 
 
-  getStateFromStore: ->
-    vacancies: VacancyStore.filter (item) => _.contains(@props.block.identity_ids, item.uuid)
+  getStateFromStores: ->
+    block = BlockStore.get(@props.key)
+    block:      block
+    vacancies:  VacancyStore.filter (item) => _.contains(block.identity_ids, item.uuid)
+  
+  
+  componentWillReceiveProps: ->
+    @setState(@getStateFromStores())
 
 
   getInitialState: ->
-    @getStateFromStore()
+    @getStateFromStores()
 
 
   render: ->
