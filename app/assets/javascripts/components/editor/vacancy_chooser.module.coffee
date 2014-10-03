@@ -6,6 +6,7 @@ tag = React.DOM
 BlockActions  = require('actions/block_actions')
 ModalActions  = require('actions/modal_actions')
 
+BlockStore    = require('stores/block_store')
 VacancyStore  = require('stores/vacancy')
 
 
@@ -15,15 +16,22 @@ Component = React.createClass
 
 
   gatherVacancies: ->
-    _.map @state.vacancies, (vacancy) =>
-      (tag.div {
-        key:          vacancy.uuid
-        className:    'vacancy'
-        onClick:      @onVacancyClick.bind(@, vacancy.uuid)
-      },
-        (tag.i { className: 'fa fa-briefcase' })
-        vacancy.name
-      )
+    _.chain (@state.vacancies)
+      .reject (vacancy) => _.contains(@state.block.identity_ids, vacancy.uuid)
+      .map (vacancy) =>
+        (tag.div {
+          key:          vacancy.uuid
+          className:    'vacancy'
+          onClick:      @onVacancyClick.bind(@, vacancy.uuid)
+        },
+          (tag.i { className: 'fa fa-briefcase' })
+          vacancy.name
+        )
+      .value()
+  
+  
+  focus: ->
+    @refs['query-input'].getDOMNode().focus()
   
 
   onNewVacancyClick: ->
@@ -31,17 +39,33 @@ Component = React.createClass
   
   
   onVacancyClick: (key) ->
-    identity_ids = @props.block.identity_ids[..] ; identity_ids.push(key)
-    BlockActions.update(@props.block.uuid, { identity_ids: identity_ids })
+    identity_ids = @state.block.identity_ids[..] ; identity_ids.push(key)
+    BlockActions.update(@props.key, { identity_ids: identity_ids })
+    @focus()
     
 
   
   onQueryChange: (event) ->
     @setState({ query: event.target.value })
+  
+  
+  componentDidMount: ->
+    BlockStore.on('change', @refreshStateFromStores)
+  
+  
+  componentWillUnmount: ->
+    BlockStore.off('change', @refreshStateFromStores)
+  
+  
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores())
 
 
   getStateFromStores: ->
-    vacancies: VacancyStore.filter((vacancy) => vacancy.company_id == @props.block.owner_id)
+    block = BlockStore.get(@props.key)
+
+    block:      block
+    vacancies:  VacancyStore.filter((vacancy) => vacancy.company_id == block.owner_id)
 
 
   getInitialState: ->
@@ -57,6 +81,7 @@ Component = React.createClass
       
       (tag.header null,
         (tag.input {
+          ref:          'query-input'
           autoFocus:    true
           value:        @state.query
           onChange:     @onQueryChange
