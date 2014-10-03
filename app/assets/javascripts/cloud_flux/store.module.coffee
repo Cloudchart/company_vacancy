@@ -76,7 +76,12 @@ Factory = (definition) ->
     
     
     update: (key, attributes = {}) ->
+      prevRecord  = __data[key]
       __data[key] = __data[key].mergeDeep(attributes)
+
+      (__undo[key] ||= []).push(prevRecord) ; delete __redo[key]
+
+      __data[key]
     
     
     add_or_update: (key, attributes = {}) ->
@@ -86,6 +91,9 @@ Factory = (definition) ->
     remove: (key) ->
       delete __errs[key]
       delete __data[key]
+      delete __sync[key]
+      delete __undo[key]
+      delete __redo[key]
     
     
     add_errors: (key, errors) ->
@@ -98,6 +106,36 @@ Factory = (definition) ->
     
     wait_for: (stores) ->
       Dispatcher.waitFor(_.map(stores, 'dispatchToken'))
+    
+    
+    # Undo/Redo
+    #
+    undo: (key) ->
+      prevRecord = if __undo[key] and __undo[key].length > 0 then __undo[key].pop()
+      if prevRecord
+        record = __data[key]
+        (__redo[key] ||= []).push(record)
+        __data[key] = record
+    
+
+    redo: (key) ->
+      nextRecord = if __redo[key] and __redo[key].length > 0 then __redo[key].pop)
+      if nextRecord
+        record = __data[key]
+        (__undo[key] ||= []).push(record)
+        __data[key] = nextRecord
+    
+
+    commit: (key) ->
+      delete __undo[key]
+      delete __redo[key]
+    
+    
+    rollback: (key) ->
+      originalRecord = if __undo[key] and __undo[key].lenght > 0 then __undo[0]
+      if originalRecord
+        __data[key] = originalRecord
+      @commit(key)
       
     
     # Sync
