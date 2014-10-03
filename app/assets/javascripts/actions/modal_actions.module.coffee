@@ -8,10 +8,10 @@ Dispatcher = require('dispatcher/dispatcher')
 module.exports =
   
 
-  show: (component) ->
+  show: (component, options = {}) ->
     Dispatcher.handleClientAction
       type: 'modal:show'
-      data: [component]
+      data: [component, options]
     
     
   hide: ->

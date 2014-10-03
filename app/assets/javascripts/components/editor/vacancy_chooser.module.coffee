@@ -9,6 +9,8 @@ ModalActions  = require('actions/modal_actions')
 BlockStore    = require('stores/block_store')
 VacancyStore  = require('stores/vacancy')
 
+VacancyForm   = require('components/form/vacancy_form')
+
 
 # Main
 #
@@ -16,8 +18,12 @@ Component = React.createClass
 
 
   gatherVacancies: ->
+    queries = _.compact(@state.query.toLowerCase().split(/\s+/))
+    
     _.chain (@state.vacancies)
       .reject (vacancy) => _.contains(@state.block.identity_ids, vacancy.uuid)
+      .filter (vacancy) -> _.all queries, (query) -> vacancy.name.toLowerCase().indexOf(query) >= 0
+      .sortBy (vacancy) -> vacancy.name
       .map (vacancy) =>
         (tag.div {
           key:          vacancy.uuid
@@ -35,14 +41,22 @@ Component = React.createClass
   
 
   onNewVacancyClick: ->
-    
+    newVacancyKey = VacancyStore.create({ company_id: @state.block.owner_id })
+
+    component = VacancyForm
+      key:          newVacancyKey
+      onCreate:  -> setTimeout ModalActions.hide
+        
+
+    ModalActions.show component,
+      beforeHide: ->
+        VacancyStore.remove(newVacancyKey)
   
   
   onVacancyClick: (key) ->
     identity_ids = @state.block.identity_ids[..] ; identity_ids.push(key)
     BlockActions.update(@props.key, { identity_ids: identity_ids })
-    @focus()
-    
+    ModalActions.hide()
 
   
   onQueryChange: (event) ->
@@ -91,7 +105,8 @@ Component = React.createClass
       
       (tag.section null,
         (tag.div {
-          onClick:  @onNewVacancyClick
+          className:  'new'
+          onClick:    @onNewVacancyClick
         },
           (tag.i { className: 'fa fa-plus' })
           "New vacancy"

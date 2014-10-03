@@ -28,15 +28,19 @@ Component = React.createClass
     @close()
     
     
-  show: (component) ->
-    @setState({ components: @state.components.push(component) })
+  show: (component, options = {}) ->
+    options.beforeShow() if _.isFunction(options.beforeShow)
+    @setState({ components: @state.components.push(component), options: @state.options.push(options) })
   
   
   hide: ->
-    @setState({ components: @state.components.pop() })
+    options = @state.options.last()
+    options.beforeHide() if options and _.isFunction(options.beforeHide)
+    @setState({ components: @state.components.pop(), options: @state.options.pop() })
   
   
   close: ->
+    @state.options.forEach (options) -> options.beforeHide() if _.isFunction(options.beforeHide)
     @setState(@getInitialState())
 
 
@@ -67,6 +71,7 @@ Component = React.createClass
 
   getInitialState: ->
     components:       new Immutable.Vector
+    options:          new Immutable.Vector
 
 
   render: ->
