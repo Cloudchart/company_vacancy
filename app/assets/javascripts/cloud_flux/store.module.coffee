@@ -119,7 +119,7 @@ Factory = (definition) ->
     
 
     redo: (key) ->
-      nextRecord = if __redo[key] and __redo[key].length > 0 then __redo[key].pop)
+      nextRecord = if __redo[key] and __redo[key].length > 0 then __redo[key].pop()
       if nextRecord
         record = __data[key]
         (__undo[key] ||= []).push(record)
