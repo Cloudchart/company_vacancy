@@ -67,6 +67,7 @@ Component = React.createClass
         logotype_url: @state.company.logotype_url
         name:         @state.company.name
         description:  @state.company.description
+        readOnly:     @props.readOnly
       })
       
       @gatherBlocks()
