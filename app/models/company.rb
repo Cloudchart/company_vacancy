@@ -101,6 +101,19 @@ class Company < ActiveRecord::Base
   end
   
 
+  # temporary has_one simulation
+  def chart
+    charts.order(:created_at).first
+  end
+  
+  def pictures
+    blocks.select { |b| b.identity_type == 'Picture' }.map(&:picture).compact
+  end
+  
+  def paragraphs
+    blocks.select { |b| b.identity_type == 'Paragraph' }.map(&:paragraph).compact
+  end
+
   def invite_tokens
     tokens.where(name: :invite)
   end

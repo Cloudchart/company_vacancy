@@ -1,5 +1,8 @@
 module ApplicationHelper
 
+  def link_with_class_for_current(name, path, class_name='')
+    link_to name, path, class: "#{class_name}#{current_page?(path) ? ' current' : ''}"
+  end
   
   def class_for_main(content = nil)
     if content
