@@ -19,6 +19,11 @@ module Companies
     # Show
     #
     def show
+      # simulate the exception if token is locked with specific user
+      if @token.data[:user_id].present? && @token.data[:user_id] != current_user.id
+        raise ActiveRecord::RecordNotFound
+      end
+
       @company = @token.owner
       @author = @company.owner
 
@@ -68,7 +73,7 @@ module Companies
     def accept
       current_user.roles.create!(value: @token.data[:role], owner: @token.owner)
       @token.destroy
-      
+
       redirect_to cloud_profile.root_path
     end
     

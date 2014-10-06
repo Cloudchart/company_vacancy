@@ -54,7 +54,12 @@ module CloudProfile
           # Activate and login
           # 
           user.save!
-          user.invite.destroy unless user.invite.owner.instance_of?(Company)
+
+          if user.invite.owner.instance_of?(Company)
+            user.invite.update(data: user.invite.data.merge({ user_id: user.id }) )
+          else
+            user.invite.destroy
+          end
           
           warden.set_user(user, scope: :user)
 
@@ -124,16 +129,39 @@ module CloudProfile
     #
     def activation
       token = Token.find(params[:token])
+
+      # destroy token if invite could not be found
+      # 
+      begin
+        invite_token = Token.find(token.data[:invite_id])
+        
+      rescue ActiveRecord::RecordNotFound
+        token.destroy
+        return redirect_to main_app.root_path, alert: t('errors.messages.invite_not_found')
+      end
+
       email = Email.new(address: token.data[:address])
       raise ActiveRecord::RecordNotFound if email.invalid?
-      
+
       user = User.new(full_name: token.data[:full_name] || '', password_digest: token.data[:password_digest])
       user.emails << email
       user.save!
+
       token.destroy
+
       warden.set_user(user, scope: :user)
 
-      redirect_to main_app.root_path
+      if invite_token.owner.instance_of?(Company)
+        invite_token.data[:user_id] = user.id
+        invite_token.save
+
+        redirect_to main_app.company_invite_url(invite_token.owner, invite_token)
+      else
+        invite_token.destroy
+
+        redirect_to main_app.root_path
+      end
+
     end
     
     

@@ -7,5 +7,6 @@ en:
       width_too_small: "width is too small (should be at least 100px)"
       title_is_not_unique: "title is not unique"
       company_can_not_become_published: "company can't become published"
+      invite_not_found: "Sorry, your invite code is already used"
     roles:
       acceptance: "you can't accept this invitation, because you are the member of the company"

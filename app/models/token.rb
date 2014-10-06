@@ -9,7 +9,7 @@ class Token < ActiveRecord::Base
 
   validates :name, presence: true
   
-  validates_with CompanyInviteValidator, if: :should_validate_as_company_invite?
+  validates_with CompanyInviteValidator, if: :should_validate_as_company_invite?, on: :create
   
   class << self
     
@@ -27,11 +27,9 @@ class Token < ActiveRecord::Base
 
   end
   
-  
   def data=(data_attribute)
-    write_attribute(:data, data_attribute.to_hash.symbolize_keys)
+    write_attribute(:data, data_attribute.try(:to_hash).try(:symbolize_keys))
   end
-  
   
   rails_admin do
     label 'Invite'
