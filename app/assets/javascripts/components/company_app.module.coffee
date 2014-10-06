@@ -12,6 +12,7 @@ CompanyHeader   = require('components/company/header')
 blockComponents =
   Picture:    require('components/editor/picture')
   Paragraph:  require('components/editor/paragraph')
+  Person:     require('components/editor/person')
   Vacancy:    require('components/editor/vacancy')
 
 

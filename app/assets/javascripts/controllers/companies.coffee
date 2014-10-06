@@ -17,7 +17,8 @@
     CompanyApp({ key: data.company.uuid })
     document.querySelector('body > main')
   )
-
+  
+  
 # Show
 #
 @['companies#show_old'] = (data) ->
@@ -51,6 +52,7 @@
   CountryStore.emitChange()
 
   React.renderComponent(CompanyComponent({ key: data.company.uuid }), container)
+  
 
 # Search
 # 

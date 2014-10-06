@@ -60,13 +60,26 @@ Component = React.createClass
   
   onOverlayClick: (event) ->
     @close() if event.target == @refs['overlay'].getDOMNode()
-    
+  
+  
+  componentDidUpdate: ->
+    if @state.components.count() > 0
+      @props.bodyNode.style.overflow = 'hidden'
+    else
+      @props.bodyNode.style.overflow = @props.bodyOverflow
   
   
   getCloudFluxActions: ->
     'modal:show':   @show
     'modal:hide':   @hide
     'modal:close':  @close
+  
+  
+  getDefaultProps: ->
+    bodyNode = document.querySelector('body')
+
+    bodyNode:     bodyNode
+    bodyOverflow: window.getComputedStyle(bodyNode).overflow
 
 
   getInitialState: ->
