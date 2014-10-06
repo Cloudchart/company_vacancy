@@ -3,6 +3,10 @@
 tag = React.DOM
 
 
+BlockStore  = require('stores/block_store')
+PersonStore = require('stores/person')
+
+
 # New Person component
 #
 NewPersonComponent = ->
@@ -20,17 +24,45 @@ NewPersonComponent = ->
 Component = React.createClass
 
 
+  gatherPeople: ->
+    _.chain(@state.people)
+      .sortBy(['last_name', 'first_name'])
+      .map (person) =>
+        (tag.div {
+          key:        person.uuid
+          className:  'person'
+          onClick:    @onPersonClick.bind(@, person.uuid)
+        },
+          (tag.i { className: 'fa fa-user' })
+          person.full_name
+        )
+      .value()
+  
+  
+  onPersonClick: (key, event) ->
+    @props.onSelect(key) if _.isFunction(@props.onSelect)
+
+
   onQueryChange: (event) ->
     @setState({ query: event.target.value })
+  
+  
+  getStateFromStores: ->
+    block = BlockStore.get(@props.key)
+    
+    block:  block
+    people: PersonStore.filter (person) -> person.company_id == block.owner_id
 
 
   getInitialState: ->
-    query: ''
+    state         = @getStateFromStores()
+    state.query   = ''
+    state
 
 
   render: ->
     (tag.div {
-      className: 'person-chooser'
+      className: 'vacancy-chooser'
     },
     
       # Query
@@ -46,8 +78,15 @@ Component = React.createClass
       )
       
       (tag.section null,
+        # New person
+        #
         NewPersonComponent.apply(@)
+
+        # People list
+        #
+        @gatherPeople()
       )
+      
     )
 
 
