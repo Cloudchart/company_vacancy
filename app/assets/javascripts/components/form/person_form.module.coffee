@@ -64,6 +64,10 @@ Text = (name, icon, placeholder) ->
 Component = React.createClass
 
 
+  isValid: ->
+    @state.attributes.get('full_name').length > 0
+
+
   onFieldChange: (name, value) ->
     @setState({ attributes: @state.attributes.set(name, event.target.value) })
   
@@ -121,7 +125,7 @@ Component = React.createClass
         #
         (tag.button {
           className:  'cc'
-          disabled:   true
+          disabled:   !@isValid()
           type:       'submit'
         },
           "Create"

@@ -27,6 +27,7 @@ Component = React.createClass
   gatherPeople: ->
     _.chain(@state.people)
       .sortBy(['last_name', 'first_name'])
+      .reject (person) => _.contains(@state.block.identity_ids, person.uuid)
       .map (person) =>
         (tag.div {
           key:        person.uuid
@@ -41,6 +42,10 @@ Component = React.createClass
   
   onPersonClick: (key, event) ->
     @props.onSelect(key) if _.isFunction(@props.onSelect)
+  
+  
+  onNewPersonClick: (event) ->
+    @props.onCreateClick() if _.isFunction(@props.onCreateClick)
 
 
   onQueryChange: (event) ->
