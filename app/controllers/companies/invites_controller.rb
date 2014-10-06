@@ -19,6 +19,11 @@ module Companies
     # Show
     #
     def show
+      # simulate the exception if token is locked with specific user
+      if @token.data[:user_id].present? && @token.data[:user_id] != current_user.id
+        raise ActiveRecord::RecordNotFound
+      end
+
       @company = @token.owner
       @author = @company.owner
 
@@ -34,7 +39,7 @@ module Companies
     def create
       authorize! :manage_company_invites, @company
 
-      token = Token.new params.require(:token).permit(data: [ :email, :role ] ).merge(name: 'invite', owner: @company)
+      token = Token.new params.require(:token).permit(data: [:email, :role] ).merge(name: 'invite', owner: @company)
       token.save!
       
       respond_to do |format|
@@ -66,9 +71,7 @@ module Companies
     # Accept
     # 
     def accept
-      # TODO: add validations
-      current_user.roles.create(value: @token.data[:role], owner: @token.owner)
-
+      current_user.roles.create!(value: @token.data[:role], owner: @token.owner)
       @token.destroy
 
       redirect_to cloud_profile.root_path
