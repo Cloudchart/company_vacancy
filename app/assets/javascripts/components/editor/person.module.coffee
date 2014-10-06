@@ -18,11 +18,14 @@ PersonForm    = require('components/form/person_form')
 
 
 initials      = require('utils/initials')
+colors        = require('utils/colors')
 
 
 # Person component
 #
 PersonComponent = (person) ->
+  personInitials = initials(person.full_name)
+  
   (tag.div {
     key:        person.uuid
     className:  'editor-person'
@@ -31,9 +34,10 @@ PersonComponent = (person) ->
     (tag.aside {
       className: if person.avatar_url then '' else 'no-avatar' 
       style:
+        backgroundColor:  if person.avatar_url then 'transparent' else colors.colors[colors.colorIndex(personInitials)]
         backgroundImage:  if person.avatar_url then "url(#{person.avatar_url})" else "none"
     },
-      (tag.figure null, initials(person.full_name)) unless person.avatar_url
+      (tag.figure null, personInitials) unless person.avatar_url
     )
     
     (tag.footer null,
