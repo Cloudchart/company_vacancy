@@ -59,14 +59,14 @@ body > header.company {
   
   
   > .browse-companies {
-    margin: 0 50px;
+    margin: 0 30px;
   }
   
 
   a.base {
     color: hsl(0, 0%, 0%);
     
-    &.strong {
+    &.strong, &.current {
       font-weight: 700;
     }
     
