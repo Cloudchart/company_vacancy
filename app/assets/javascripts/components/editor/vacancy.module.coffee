@@ -60,21 +60,24 @@ Component = React.createClass
 
   render: ->
     (tag.section {
-      className: 'vacancy'
     },
     
       (tag.header null, "Open Positions")
       
-      @gatherVacancies()
-      
       (tag.div {
-        className: 'add'
-        onClick:    @onAddVacancyClick
+        className: 'editor-vacancies'
       },
-        (tag.i { className: 'fa fa-plus' })
-        "Add vacancy"
+        @gatherVacancies()
+      
+        (tag.div {
+          className: 'add'
+          onClick:    @onAddVacancyClick
+        },
+          (tag.i { className: 'fa fa-plus' })
+          "Add vacancy"
+        )
       )
-    
+
     )
 
 

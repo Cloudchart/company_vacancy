@@ -1,0 +1,26 @@
+.editor-vacancies {
+  @include display(flex);
+  @include flex-wrap(wrap);
+  
+  padding: 10px 0;
+  
+  > * {
+    @include flex(1 0 33.3333%);
+
+    background-color: #ccc;
+    margin: 0;
+    padding: 0 10px;
+    
+    &.add {
+      
+      text-align: center;
+      
+      &:nth-child(3n+2) {
+        @include flex(1 0 66.6666%);
+        background-color: #ccc;
+      }
+    }
+  }
+
+  background-color: #eee;
+}
