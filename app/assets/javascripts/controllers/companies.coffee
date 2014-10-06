@@ -1,3 +1,5 @@
+# Show
+# 
 @['companies#show'] = (data) ->
   CompanyApp      = require('components/company_app')
   CompanyStore    = require('stores/company')
@@ -19,41 +21,63 @@
     CompanyApp({ key: data.company.uuid })
     document.querySelector('body > main')
   )
+
+# Finance
+# 
+@['companies#finance'] = (data) ->
+  BurnRate = cc.require('react/company/burn_rate')
+
+  React.renderComponent(
+    BurnRate(data.company)
+    document.querySelector('body > main')
+  )
   
-  
+# Settings
+# 
+@['companies#settings'] = (data) ->
+  Settings = cc.require('react/company/settings')
+  TagActions = -> require('actions/tag_actions')
+
+  TagActions().fetch()
+
+  React.renderComponent(
+    Settings(_.extend({ people: data.people }, data.company))
+    document.querySelector('body > main')
+  )
+
 # Show
 #
-@['companies#show_old'] = (data) ->
-  cc.module('react/editor/placeholders').exports  = data.placeholders
-  #cc.module('countries').exports                  = data.countries
-  cc.module('industries').exports                 = data.industries
+# @['companies#show_old'] = (data) ->
+#   cc.module('react/editor/placeholders').exports  = data.placeholders
+#   #cc.module('countries').exports                  = data.countries
+#   cc.module('industries').exports                 = data.industries
   
-  PersonStore       = cc.require('cc.stores.PersonStore')
-  VacancyStore      = cc.require('cc.stores.VacancyStore')
-  CompanyStore      = require('stores/company_store')
-  TagStore          = require('stores/tag_store')
-  TagActions        = -> require('actions/tag_actions')
-  CountryStore      = cc.require('cc.stores.CountryStore')
+#   PersonStore       = cc.require('cc.stores.PersonStore')
+#   VacancyStore      = cc.require('cc.stores.VacancyStore')
+#   CompanyStore      = require('stores/company_store')
+#   TagStore          = require('stores/tag_store')
+#   TagActions        = -> require('actions/tag_actions')
+#   CountryStore      = cc.require('cc.stores.CountryStore')
 
-  CompanyComponent  = cc.require('react/company')
-  container         = document.querySelector('main')
+#   CompanyComponent  = cc.require('react/company')
+#   container         = document.querySelector('main')
   
-  CompanyStore      = require('stores/company_store')
+#   CompanyStore      = require('stores/company_store')
   
   
-  CompanyStore.add(data.company)
-  PersonStore.load(data.company.people_url)
-  VacancyStore.load(data.company.vacancies_url)
-  TagActions().fetch()
-  
-
-  _.each data.countries, (pair) ->
-    CountryStore.add(new CountryStore({ id: pair[1], name: pair[0] }))
+#   CompanyStore.add(data.company)
+#   PersonStore.load(data.company.people_url)
+#   VacancyStore.load(data.company.vacancies_url)
+#   TagActions().fetch()
   
 
-  CountryStore.emitChange()
+#   _.each data.countries, (pair) ->
+#     CountryStore.add(new CountryStore({ id: pair[1], name: pair[0] }))
+  
 
-  React.renderComponent(CompanyComponent({ key: data.company.uuid }), container)
+#   CountryStore.emitChange()
+
+#   React.renderComponent(CompanyComponent({ key: data.company.uuid }), container)
   
 
 # Search

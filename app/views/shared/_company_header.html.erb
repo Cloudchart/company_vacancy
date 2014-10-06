@@ -21,14 +21,12 @@
         <%= link_with_class_for_current('Chart', cloud_blueprint.company_chart_path(@company, @company.chart.slug), 'base') %>
       </li>
       <li>
-        <%= link_to 'Finance',  '#', class: 'base' %>
+        <%= link_with_class_for_current('Finance', main_app.finance_company_path(@company), 'base') %>
       </li>
       <li>
-        <%= link_to 'Settings', '#', class: 'base' %>
+        <%= link_with_class_for_current('Settings', main_app.settings_company_path(@company), 'base') %>
       </li>
-      <li>
-        <%= link_to 'Traction', '#', class: 'base' %>
-      </li>
+      <%# link_to 'Traction', '#', class: 'base' %>
     </ul>
   </div>
   

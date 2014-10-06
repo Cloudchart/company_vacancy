@@ -19,7 +19,8 @@
 tag = React.DOM
 company_attributes  = ['is_published', 'established_on', 'tag_list']
 
-CompanyStore        = require('stores/company_store')
+CompanyStore = require('stores/company_store')
+TagStore = require('stores/tag_store')
 
 UrlComponent = cc.require('react/company/settings/site_url')
 SlugComponent = cc.require('react/company/settings/slug')
@@ -37,6 +38,15 @@ MainComponent = React.createClass
 
   componentDidUpdate: (prevProps, prevState) ->
     @save() if @state.shouldSave and company_attributes.some((name) => @state[name] isnt prevState[name])
+
+  componentDidMount: ->
+    TagStore.on('change', @onTagStoreChange)
+
+  componentWillUnmount: ->
+    TagStore.off('change', @onTagStoreChange)
+
+  onTagStoreChange: ->
+    @setState({ all_tags: TagStore.all() })
   
   componentWillReceiveProps: (nextProps) ->
     @setState @getStateFromProps(nextProps)
@@ -128,7 +138,7 @@ MainComponent = React.createClass
           )
 
           (TagListComponent {
-            stored_tags:    @props.all_tags
+            stored_tags:    @state.all_tags
             tags:           @props.tag_list
             onChange:       @onTagsChange
           })

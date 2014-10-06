@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file]
+  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file, :finance, :settings]
   before_action :set_collection, only: [:index, :search]
 
   # TODO: update

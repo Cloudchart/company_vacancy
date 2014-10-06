@@ -6,7 +6,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :is_editor, :is_public_reader, :is_trusted_reader, :is_chart_with_nodes_created
 
   has_many :charts
-  has_many :burn_rate_charts, serializer: BurnRateChartSerializer
+  # has_many :burn_rate_charts, serializer: BurnRateChartSerializer
   has_many :blocks, serializer: BlockEditorSerializer
 
   # deprecated
@@ -27,9 +27,9 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     Ability.new(current_user).can?(:fully_read, company)
   end
 
-  def include_burn_rate_charts?
-    is_editor || is_trusted_reader
-  end
+  # def include_burn_rate_charts?
+  #   is_editor || is_trusted_reader
+  # end
 
   def is_chart_with_nodes_created
     company.charts.first.try(:nodes).try(:any?)
@@ -43,9 +43,9 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     data
   end
 
-  def burn_rate_charts
-    company.charts
-  end
+  # def burn_rate_charts
+  #   company.charts
+  # end
 
   def settings
     {
