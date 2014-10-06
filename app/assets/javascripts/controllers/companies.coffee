@@ -4,6 +4,7 @@
   BlockStore      = require('stores/block_store')
   PictureStore    = require('stores/picture_store')
   ParagraphStore  = require('stores/paragraph_store')
+  PersonStore     = require('stores/person')
   VacancyStore    = require('stores/vacancy')
 
   CompanyStore.add(data.company.uuid, data.company)
@@ -11,6 +12,7 @@
   _.each data.blocks,     (block)     -> BlockStore.add(block.uuid, block)
   _.each data.pictures,   (picture)   -> PictureStore.add(picture.uuid, picture)
   _.each data.paragraphs, (paragraph) -> ParagraphStore.add(paragraph.uuid, paragraph)
+  _.each data.people,     (person)    -> PersonStore.add(person.uuid, person)
   _.each data.vacancies,  (vacancy)   -> VacancyStore.add(vacancy.uuid, vacancy)
   
   React.renderComponent(
