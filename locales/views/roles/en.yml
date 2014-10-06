@@ -1,0 +1,5 @@
+en:
+  roles:
+    editor: "editor"
+    trusted_reader: "trusted reader"
+    public_reader: "public reader"
