@@ -17,6 +17,50 @@ PersonChooser = require('components/editor/person_chooser')
 PersonForm    = require('components/form/person_form')
 
 
+initials      = require('utils/initials')
+
+
+# Person component
+#
+PersonComponent = (person) ->
+  (tag.div {
+    key:        person.uuid
+    className:  'editor-person'
+  },
+  
+    (tag.aside {
+      className: if person.avatar_url then '' else 'no-avatar' 
+      style:
+        backgroundImage:  if person.avatar_url then "url(#{person.avatar_url})" else "none"
+    },
+      (tag.figure null, initials(person.full_name)) unless person.avatar_url
+    )
+    
+    (tag.footer null,
+      (tag.p { className: 'name' }, person.full_name)
+      (tag.p { className: 'occupation' }, person.occupation)
+    )
+    
+    (tag.button {
+      onClick: @onDeletePersonClick.bind(@, person.uuid)
+    }, (tag.i { className: 'fa fa-times' })) unless @props.readOnly
+    
+  )
+
+
+# New Person component
+#
+NewPersonComponent = ->
+  (tag.div {
+    className:  'editor-person add'
+    onClick:    @onAddPersonClick
+  },
+    (tag.aside null,
+      (tag.figure null, '+')
+    )
+  )
+
+
 # Main
 #
 Component = React.createClass
@@ -35,18 +79,8 @@ Component = React.createClass
 
   gatherPeople: ->
     _.chain(@state.people)
-      .map (person) =>
-        (tag.div {
-          key: person.uuid
-        },
-          (tag.i { className: 'fa fa-user' })
-          person.full_name
-          ' - '
-          person.occupation
-          (tag.button {
-            onClick: @onDeletePersonClick.bind(@, person.uuid)
-          })
-        )
+      .sortBy (person) => _.indexOf(@state.block.identity_ids, person.uuid)
+      .map (person) => PersonComponent.call(@, person)
       .value()
 
   
@@ -114,20 +148,14 @@ Component = React.createClass
 
   render: ->
     (tag.section {
-      className: 'people'
+      className: 'editor-people'
     },
     
     
       @gatherPeople()
+      
+      NewPersonComponent.apply(@)
     
-    
-      (tag.div {
-        className: 'add'
-        onClick:    @onAddPersonClick
-      },
-        (tag.i { className: 'fa fa-plus' })
-        'Add person'
-      )
     
     )
 

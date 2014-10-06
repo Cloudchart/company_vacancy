@@ -38,9 +38,10 @@ module.exports = CloudFlux.createStore
 
 
   getSchema: ->
-    uuid:         ''
+    uuid:         null
     company_id:   ''
     full_name:    ''
     first_name:   ''
     last_name:    ''
     occupation:   ''
+    avatar_url:   ''
