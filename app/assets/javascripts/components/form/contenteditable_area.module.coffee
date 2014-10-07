@@ -20,12 +20,12 @@ Component = React.createClass
   
   
   getInitialState: ->
-    value: @props.value
+    value:    @props.value
 
 
   render: ->
     (tag.div {
-      contentEditable:          true
+      contentEditable:          !@props.readOnly
       dangerouslySetInnerHTML:  { __html: @props.value }
       'data-placeholder':       @props.placeholder
       onBlur:                   @onBlur

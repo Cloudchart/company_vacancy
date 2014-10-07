@@ -34,7 +34,7 @@ Component = React.createClass
           type:       'file'
           onChange:   @onChange
           value:      ''
-        })
+        }) unless @props.readOnly
 
         @props.placeholder unless @props.src
       
@@ -48,7 +48,7 @@ Component = React.createClass
         type:       'button'
       },
         (tag.i { className: 'fa fa-times' })
-      ) if @props.src
+      ) if @props.src unless @props.readOnly
     )
 
 

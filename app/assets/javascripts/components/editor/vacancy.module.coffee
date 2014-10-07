@@ -55,7 +55,7 @@ Component = React.createClass
               onClick: @onDeleteButtonClick.bind(@, vacancy.uuid)
             },
               (tag.i { className: 'fa fa-times' })
-            )
+            ) unless @props.readOnly
           
           )
         )
@@ -88,29 +88,28 @@ Component = React.createClass
 
 
   render: ->
-    (tag.section {
-    },
-    
-      (tag.header null, "Open Positions")
-      
-      (tag.div {
-        className: 'editor-vacancies'
+    vacancies = @gatherVacancies()
+
+    if @props.readOnly and vacancies.length == 0
+      (tag.noscript null)
+    else
+
+      (tag.section {
       },
-
-        @gatherVacancies()
-        
-        AddVacancyComponent.apply(@)
+    
+        (tag.header null, "Open Positions")
       
-        # (tag.div {
-        #   className: 'add'
-        #   onClick:    @onAddVacancyClick
-        # },
-        #   (tag.i { className: 'fa fa-plus' })
-        #   "Add vacancy"
-        # )
-      )
+        (tag.div {
+          className: 'editor-vacancies'
+        },
 
-    )
+          @gatherVacancies()
+        
+          AddVacancyComponent.apply(@) unless @props.readOnly
+      
+        )
+
+      )
 
 
 # Exports

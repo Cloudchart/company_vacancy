@@ -37,6 +37,8 @@ Component = React.createClass
 
 
   onChange: (content) ->
+    return if @props.readOnly
+    
     if content.length == 0
       @delete()
     else
@@ -78,8 +80,9 @@ Component = React.createClass
       (ContentEditableArea {
         onChange:     @onChange
         placeholder:  CompanyPlaceholder
+        readOnly:     @props.readOnly
         value:        @state.paragraph.content
-      })
+      }) if @state.paragraph.content or !@props.readOnly
       
     )
 

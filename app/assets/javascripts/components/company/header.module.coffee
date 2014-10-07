@@ -139,7 +139,7 @@ Component = React.createClass
           onClick:    @onShareLinkClick
         },
           (tag.i { className: 'fa fa-share' })
-        )
+        ) unless @props.readOnly
       )
       
       # Description
@@ -155,7 +155,7 @@ Component = React.createClass
           placeholder:  'Company description'
           readOnly:     @props.readOnly
         })
-      )
+      ) if @state.description or !@props.readOnly
     
     )
 

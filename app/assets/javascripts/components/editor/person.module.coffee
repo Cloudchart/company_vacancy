@@ -154,13 +154,8 @@ Component = React.createClass
     (tag.section {
       className: 'editor-people'
     },
-    
-    
       @gatherPeople()
-      
-      NewPersonComponent.apply(@)
-    
-    
+      NewPersonComponent.apply(@) unless @props.readOnly
     )
 
 

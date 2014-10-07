@@ -84,7 +84,8 @@ Component = React.createClass
         onDelete:     @onDelete
         onError:      @onError
         placeholder:  (Placeholder {})
-      })
+        readOnly:     @props.readOnly
+      }) if @state.picture or !@props.readOnly
       
     )
 

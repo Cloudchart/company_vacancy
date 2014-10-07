@@ -39,7 +39,7 @@ module.exports =
       handleServerStoreDoneAction(Constants.Company.UPDATE_DONE, key, json, token)
   
     fail = (xhr) ->
-      handleServerStoreDoneAction(Constants.Company.UPDATE_DONE, key, xhr, token)
+      handleServerStoreDoneAction(Constants.Company.UPDATE_FAIL, key, xhr, token)
     
     SyncAPI.update(key, attributes, done, fail)
   

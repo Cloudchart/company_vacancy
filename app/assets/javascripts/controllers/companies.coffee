@@ -18,9 +18,20 @@
   _.each data.vacancies,  (vacancy)   -> VacancyStore.add(vacancy.uuid, vacancy)
   
   React.renderComponent(
-    CompanyApp({ key: data.company.uuid })
+    CompanyApp({ key: data.company.uuid, readOnly: false })
     document.querySelector('body > main')
   )
+  
+  
+  # Company name
+  #
+  if mountPoint = document.querySelector('[data-company-name-mount-point]')
+    CompanyNameComponent = require('components/company/name')
+    React.renderComponent(
+      CompanyNameComponent({ key: data.company.uuid })
+      mountPoint
+    )
+  
 
 # Finance
 # 
