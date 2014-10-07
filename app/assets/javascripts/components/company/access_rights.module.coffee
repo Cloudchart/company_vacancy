@@ -56,6 +56,8 @@ Component = React.createClass
   
   
   onCurrentUsersButtonClick: (event) ->
+    event.preventDefault()
+
     TokenStore.remove(@state.newTokenKey) if @hasNewToken()
     @setState({ mode: 'view' })
   
@@ -92,14 +94,18 @@ Component = React.createClass
         
         when 'view'
           [
+            (tag.header {},
+              (tag.strong {}, @state.company.name)
+              " security settings"
+            )
+
             # Invite User Button
             #
             (Buttons.InviteUserButton {
-              key:      'invite-user-button'
-              onClick:  @onInviteUserButtonClick
+              className: 'cc cc-wide'
+              key:       'invite-user-button'
+              onClick:   @onInviteUserButtonClick
             })
-            
-            (tag.hr { key: 'hr' })
             
             # Current Users List
             #
@@ -114,15 +120,20 @@ Component = React.createClass
         
         when 'edit'
           [
-            # Current Users Button
-            #
-            (Buttons.CurrentUsersButton {
-              key:      'current-users-button'
-              onClick:  @onCurrentUsersButtonClick
-            })
-            
-            (tag.hr { key: 'hr' })
+            (tag.header null,
+              tag.a { 
+                href: ""
+                onClick:   @onCurrentUsersButtonClick
+              },
+                tag.i {
+                  className: "fa fa-angle-left"
+                }
 
+              "Share "
+              (tag.strong {}, @state.company.name)
+              " company, chart and financials"
+            )
+            
             # Invite User Form
             #
             (InviteUserForm {

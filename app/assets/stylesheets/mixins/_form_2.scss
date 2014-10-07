@@ -1,0 +1,193 @@
+@mixin form-field-radio {
+  cursor: pointer;
+  position: relative;
+
+  input[type="radio"] {
+    display: none;
+  }
+
+  input[type="radio"] + .title {
+    margin-top: 5px;
+    margin-left: 40px;
+
+    &:before {
+      @include position(absolute, 0px 0 0 -10px);
+
+      background-color: hsl(0, 100%, 100%);
+      border: 3px solid hsl(137, 51%, 51%);
+      border-radius: 100%;
+      content: '';
+      height: 35px;
+      width: 35px;
+    }
+  }
+
+  input[type="radio"]:checked + .title {
+    &:before {
+      background-color: hsl(137, 51%, 51%);
+      border-radius: 100%;
+    }
+  }
+}
+
+@mixin form-field {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-wrap(wrap);
+  @include justify-content(flex-end);
+
+  font-size: 16px;
+  padding-bottom: 12px;
+
+  .title {
+    font-weight: 300;
+    padding-right: 10px;
+    text-align: right;
+    width: 25%;
+  }
+
+  .input,
+  .error,
+  .hint {
+    width: 100%;
+  }
+  
+  .title ~ .input,
+  .title ~ .error,
+  .title ~ .hint {
+    width: 75%;
+  }
+  
+  .input {
+    @include align-items(center);
+    @include display(flex);
+    
+    background-color: hsl(0, 0%, 96%);
+    padding: 5px 10px;
+    
+    input {
+      @include flex(1);
+      
+      background-color: transparent;
+      border: none;
+      color: inherit;
+      outline: none;
+      
+      @include placeholder {
+        color: hsl(0, 0%, 48%);
+      }
+    }
+    
+    .fa {
+      margin-left: 5px;
+
+      &.clickable {
+        cursor: pointer;
+      }
+    }
+
+    .fa-close {
+      color: hsl(358, 77%, 56%);
+    }
+
+    .fa-eye {
+      color: hsl(137, 51%, 51%);
+    }
+
+    .fa-eye-slash {
+      color: hsl(0, 0%, 60%);
+    }
+  }
+
+  .error,
+  .hint {
+    padding: 0 10px;
+  }
+
+  .error {
+    color: hsl(358, 77%, 56%);
+    font-size: 12px;
+    padding-top: 3px;
+  }
+
+  &.checked {
+
+    .input {
+      border: 2px solid hsl(137, 51%, 51%);
+      color: hsl(137, 51%, 51%);
+    }
+  }
+
+  &.invalid {
+    .input {
+      background-color: hsl(358, 77%, 78%);
+    }
+  }
+
+  &.locked {
+    color: hsl(0, 0%, 50%);
+  }
+}
+
+@mixin form-2 {
+  > header {
+    font-size: 42px;
+    margin-bottom: 25px;
+
+    > a {
+      color: hsl(139, 72%, 35%);
+      margin-right: 5px;
+      text-decoration: none;
+    }
+  }
+  
+  > fieldset {
+    border: 0;
+    padding: 0;
+    padding-bottom: 15px;
+
+    > label {
+      @include form-field;
+    }
+  }
+  
+  > footer {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(space-between);
+  }
+}
+
+@mixin form-dimensions($form-size, $label-size:"25%") {
+  width: $form-size;
+
+  > fieldset {
+
+    > label {
+      .title {
+        width: $label-size;
+      }
+
+      .input,
+      .error,
+      .hint {
+        width: 100%;
+      }
+
+      .title ~ .input,
+      .title ~ .error,
+      .title ~ .hint {
+        width: 100% - $label-size;
+      }
+    }
+
+  }
+}
+
+.form-field-radio-2 {
+  @include form-field-radio;
+}
+
+.form-field-2 {
+  @include form-field;
+}

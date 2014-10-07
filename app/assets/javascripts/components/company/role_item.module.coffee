@@ -4,7 +4,7 @@ tag = React.DOM
 
 Buttons = require('components/company/buttons')
 Actions = require('actions/roles')
-
+roleMaps = require('utils/role_maps')
 
 # Main
 #
@@ -25,7 +25,7 @@ Component = React.createClass
       },
         @props.user.full_name
 
-        (tag.i {
+        (tag.span {
           className: 'email'
           style:
             display: 'block'
@@ -36,9 +36,9 @@ Component = React.createClass
       
       
       (tag.td {
-        className: 'role'
+        className: 'user-role'
       },
-        @props.role
+        roleMaps.RoleNameMap[@props.role]
       )
       
       (tag.td {
@@ -46,6 +46,7 @@ Component = React.createClass
       },
       
         (Buttons.SyncButton {
+          className: 'cc-table revoke'
           title:    'Revoke'
           sync:     @props.sync == 'revoke'
           disabled: @props.sync
