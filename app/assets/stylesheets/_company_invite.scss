@@ -44,6 +44,10 @@ main > article.company-invite {
     > a {
       color: black;
       text-decoration: none;
+
+      > img {
+        width: 145px;
+      }
     }
     
   }
