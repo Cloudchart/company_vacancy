@@ -21,10 +21,6 @@ main > article.companies-search {
     @include base-horizontal-nav;
   }
 
-  > div.result > section {
-    @include companies-section;
-  }
-
 }
 
 main > article.company > section.new {

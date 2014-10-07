@@ -3,5 +3,5 @@
 <%= render 'shared/nav' %>
 
 <article class="companies">
-  <%= render partial: 'shared/companies/company', collection: @companies, locals: { rendered_from: :cloud_profile } %>
+  <%= render partial: 'shared/companies/company', collection: @companies, locals: { show_favorite_link: true } %>
 </article>

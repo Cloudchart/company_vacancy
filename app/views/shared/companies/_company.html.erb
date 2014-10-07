@@ -1,137 +1,40 @@
-<%
-  # could it be done via collection from a controller?
-  rendered_from ||= nil
+<% show_favorite_link ||= false %>
 
-  vacancies = if rendered_from == :cloud_profile
-    company.vacancies
-  else
-    company.vacancies.select { |v| v.status == 'opened' }
-  end
-
-%>
-
-<section id="<%= company.id %>">
-  <header>
-    <div class="main-info">
-      <ul>
-        <li>
-          <% if rendered_from == :cloud_profile %>
-            <span class="favorites-link">
-              <%= render 'shared/favorites_link', object: company %>
-            </span>
-          <% end %>
-          
-          <strong><%= link_to company.name.present? ? company.name : 'Unnamed', main_app.company_path(company) %></strong>
-        </li>
-
-        <li class="spacer"></li>
-
-        <li class="people-size">
-          <%= link_to '#' do %>
-            <% # .size returns invalid number because of current_user.companies through people %>
-            <% # counter cache is needed in the future %>
-            <%= rendered_from == :cloud_profile ? company.people.count : company.people.size %>
-            <%= font_awesome('male') %>
-          <% end %>
-        </li>
-
-        <li class="vacancies-size">
-          <%= link_to rendered_from == :cloud_profile ? '#' : '#' do %>
-            <%= vacancies.size %>
-            <%= font_awesome('briefcase') %>
-          <% end %>
-        </li>
-
-        <!-- 
-        <%# if current_user && rendered_from != :cloud_profile %>
-          <li class="proximity">
-            <div class="frame-<%# proximity(company).index %>"></div>
-          </li>
-        <%# end %>
-        <li class="established-on">
-          <%# company.established_on.try(:year) %>
-        </li>
-
-        <li>
-          <%# link_to font_awesome('chevron-down'), nil, class: 'toggle-elements' %>
-        </li>
-        -->
-      </ul>
+<article id="<%= company.id %>" class="company-preview">
+  <header class="company-preview-header">
+    <div class="company-preview-logo">
+      <%= link_to main_app.company_path(company) do %>
+        <%= image_tag(company.logotype.url) if company.logotype_uid %>
+      <% end %>
     </div>
-
-    <!--
-    <%# unless rendered_from == :cloud_profile %>
-
-      <div class="additional-info">
-        <ul>
-          <%# if current_user %>
-            <li>
-              <strong>Proximity:</strong>
-              <%# proximity(company).message %>
-            </li>
-          <%# end %>
-
-          <%# how to display logo? %>
-          <%# link_to display_logo(company), main_app.company_path(company) if display_logo(company) %>
-
-          <%# TODO: design needed %>
-           <%# if can?(:manage, Subscription) && cannot?(:update, company) %>
-            <li style="display: none;">
-              <strong>Subscription:</strong>
-              <%# unless subscribed_to_company?(company) %>
-                <%# render 'subscriptions/form', subscription: company.subscriptions.build %>
-              <%# else %>
-                <%# link_to 'Unsubscribe', subscription_path(company.subscriptions.find_by(user_id: current_user.id)), method: :delete, data: { confirm: 'Are you sure?' } %>
-              <%# end %>
-            </li>
-          <%# end %>
-        </ul>
-      </div>
-
-    <%# end %>
-    -->
-
+    <% if show_favorite_link %>
+      <span class="favorites-link">
+        <%= render 'shared/favorites_link', object: company %>
+      </span>
+    <% end %>
   </header>
-
-  <% if company.charts.any? || rendered_from == :cloud_profile %>
-    <div class="charts">
-      <ul>
-        <% company.charts.each do |chart| %>
-          <li class="chart-preview-container">
-          
-            <%= content_tag(:div, nil, class: 'chart-preview', data:
-              { 'react-chart-preview-mount-point' => chart.id,
-                'react-slug' => chart.slug,
-                'react-company-id' => chart.company.to_param
-              })
-            %>
-
-            <strong><%= link_to chart.title, cloud_blueprint.company_chart_path(company, chart.slug.present? ? chart.slug : chart.id) %></strong>
-          </li>
-        <% end %>
-
-        <% if rendered_from == :cloud_profile %>
-          <li>
-            <div class="chart-preview">
-              <%= link_to cloud_blueprint.new_company_chart_path(company) do %>
-                <div class="plus"><%= font_awesome('plus') %></div>
-              <% end %>
-            </div>
-            ADD CHART
-          </li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <% if vacancies.any? %>
-    <div class="vacancies">
-      <ul>
-        <% vacancies.each do |vacancy| %>
-          <li><%= link_to vacancy.name, '#' %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-</section>
+  <section class="company-preview-info">
+    <section class="company-preview-data">
+      <div class="company-preview-name">
+        <%= link_to (company.name || 
+        'Unnamed'), main_app.company_path(company) %>
+      </div>
+      <div class="company-preview-size">
+        <%= company.people.count %>
+        <i class="fa fa-male"></i>
+      </div>
+      <div class="company-preview-motto">
+        Stealing Everyone's Files
+      </div>
+      <div class="company-preview-burn-rate">
+        $300K
+        <span>month</span>
+      </div>
+    </section>
+    <section class="company-preview-description">
+      <p>
+        <%= company.description %>
+      </p>
+    </section>
+  <section>
+</article>
