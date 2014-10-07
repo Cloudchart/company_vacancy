@@ -44,7 +44,7 @@ MainComponent = React.createClass
 
   componentWillUnmount: ->
     TagStore.off('change', @onTagStoreChange)
-
+  
   onTagStoreChange: ->
     @setState({ all_tags: TagStore.all() })
   
@@ -155,7 +155,7 @@ MainComponent = React.createClass
           tag_list: @props.tag_list
           is_chart_with_nodes_created: @props.is_chart_with_nodes_created
           people: @props.people
-          is_published: @props.is_published
+          is_published: @state.is_published
           onChange: @handleProgressChange
         })
       )

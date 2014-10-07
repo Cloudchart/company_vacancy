@@ -43,7 +43,7 @@ _.extend Store, {},
     record = data.find (record) -> record.get('uuid') == key
 
     unless record
-      throw new Error('CompanyStore.update: Record with key ' + json.uuid + ' doesn\'t exist in store.')
+      throw new Error('CompanyStore.update: Record with key ' + key + ' doesn\'t exist in store.')
     else
       record  = record.merge(@deserialize(attributes))
       data    = data.set(key, record)

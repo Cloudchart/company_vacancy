@@ -35,16 +35,18 @@
 # Settings
 # 
 @['companies#settings'] = (data) ->
-  Settings = cc.require('react/company/settings')
-  TagActions = -> require('actions/tag_actions')
+  Settings      = cc.require('react/company/settings')
+  TagActions    = require('actions/tag_actions')
+  CompanyStore  = require('stores/company_store')
 
-  TagActions().fetch()
+  CompanyStore.add(data.company)
+  TagActions.fetch()
 
   React.renderComponent(
     Settings(_.extend({ people: data.people }, data.company))
     document.querySelector('body > main')
   )
-
+  
 # Show
 #
 # @['companies#show_old'] = (data) ->
