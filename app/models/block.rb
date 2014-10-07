@@ -4,10 +4,10 @@ class Block < ActiveRecord::Base
   
   IdentitiesClasses = [Picture, Paragraph, BlockImage, Person, Vacancy, Company]
   
-  before_create   :ensure_position
+  # before_create   :ensure_position
   after_update    :destroy_previous_block_images, if: :should_destroy_previous_block_images?
   before_destroy  :destroy_identities
-  after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
+  # after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
 
   belongs_to :owner, polymorphic: true
 
@@ -102,22 +102,20 @@ class Block < ActiveRecord::Base
     !!@should_destroy_previous_block_images
   end
   
-
 private
 
-
-  def ensure_position
-    self.position = owner.blocks_by_section(section).length unless self.position
-    Block.where(owner_id: owner.to_param, owner_type: owner.class, section: section).where('position >= ?', position).update_all('position = (position + 1)')
-  end
+  # def ensure_position
+  #   self.position = owner.blocks_by_section(section).length unless self.position
+  #   Block.where(owner_id: owner.to_param, owner_type: owner.class, section: section).where('position >= ?', position).update_all('position = (position + 1)')
+  # end
   
-  def reposition_siblings
-    Block.transaction do
-      owner.blocks_by_section(section).each_with_index do |sibling, index|
-        sibling.update_attribute :position, index
-      end
-    end
-  end
+  # def reposition_siblings
+  #   Block.transaction do
+  #     owner.blocks_by_section(section).each_with_index do |sibling, index|
+  #       sibling.update_attribute :position, index
+  #     end
+  #   end
+  # end
   
   def destroy_identities
     block_identities.each(&:skip_reposition!).each(&:destroy!)

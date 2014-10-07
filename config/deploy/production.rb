@@ -24,7 +24,7 @@ set :rbenv_ruby, '2.1.1'
 # used to set extended properties on the server.
 
 # server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value
-server 'hetzner', user: fetch(:user), roles: %w{web app db}
+server '5.9.115.242', user: fetch(:user), roles: %w{web app db}
 
 
 # Custom SSH Options
