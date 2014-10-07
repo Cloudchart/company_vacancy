@@ -1,0 +1,76 @@
+@mixin grid-with-gutter($gutter: 10px) {
+  margin-left: -$gutter;
+  
+  > .cell {
+    padding-left: $gutter;
+  }
+}
+
+
+.grid {
+  @include display(flex);
+  
+  &.top {
+    @include align-items(flex-start);
+  }
+  
+  &.center {
+    @include align-items(center);
+  }
+  
+  &.bottom {
+    @include align-items(flex-end);
+  }
+  
+  &._1x2 > .cell,
+  > .cell._1x2 {
+    @include flex(0 0 50%);
+  }
+
+  &._1x3 > .cell,
+  > .cell._1x3 {
+    @include flex(0 0 33.3333%);
+  }
+  
+  &._2x3 > .cell,
+  > .cell._2x3 {
+    @include flex(0 0 66.6666%);
+  }
+  
+  &._1x4 > .cell,
+  > .cell._1x4 {
+    @include flex(0 0 25%);
+  }
+  
+  &._3x4 > .cell,
+  > .cell._3x4 {
+    @include flex(0 0 75%);
+  }
+  
+  > .cell {
+    @include flex(1);
+    
+    &.top {
+      @include align-self(flex-start);
+    }
+
+    &.center {
+      @include align-self(center);
+    }
+
+    &.bottom {
+      @include align-self(flex-end);
+    }
+  }
+
+}
+
+.grid-with-10px-gutter {
+  @extend .grid;
+  @include grid-with-gutter;
+}
+
+.grid-with-20px-gutter {
+  @extend .grid;
+  @include grid-with-gutter(20px);
+}
