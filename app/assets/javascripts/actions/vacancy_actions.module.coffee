@@ -29,6 +29,8 @@ Module =
       attributes: attributes
     
     VacancySyncAPI.update(model)
+  
+  
     
 
 

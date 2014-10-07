@@ -5,8 +5,9 @@ module.exports =
     COMPANY_FETCH_DONE:   'company:fetch:done'
     COMPANY_FETCH_FAIL:   'company:fetch:fail'
     
-    COMPANY_UPDATE_DONE:  'company:update:done'
-    COMPANY_UPDATE_FAIL:  'company:update:fail'
+    UPDATE:       'company:update'
+    UPDATE_DONE:  'company:update:done'
+    UPDATE_FAIL:  'company:update:fail'
     
     FETCH_INVITE_TOKENS:        'company:invite_tokens:fetch'
     FETCH_INVITE_TOKENS_DONE:   'company:invite_tokens:fetch:done'

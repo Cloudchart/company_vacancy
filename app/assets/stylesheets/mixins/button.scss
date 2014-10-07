@@ -67,6 +67,59 @@ button.cloud {
 }
 
 
+$cc-button-background-color: hsl(136, 52%, 51%);
+$cc-button-background-color-disabled: hsl(0, 0%, 88%);
+$cc-button-color: hsl(0, 100%, 100%);
+$cc-button-table-background-color: hsl(0, 0%, 98%);
+$cc-button-table-color: hsl(0, 0%, 0%);
+$cc-button-font-size: 15px;
+$cc-button-height: 34px;
+$cc-button-padding: 10px;
+$cc-button-wide-padding: 40px;
+
+
+@mixin cc-button {
+  background-color: $cc-button-background-color;
+  border: none;
+  color: $cc-button-color;
+  font-size: $cc-button-font-size;
+  height: $cc-button-height;
+  padding: 0 $cc-button-padding;
+  
+  > i.fa {
+    margin-left: 5px;
+  }
+  
+  &[disabled] {
+    background-color: $cc-button-background-color-disabled;
+  }
+}
+
+button.cc {
+  @include cc-button;
+
+  &.cc-wide {
+    padding: 0 $cc-button-wide-padding;
+
+    > i.fa {
+      margin-left: 7px;
+    }
+  }
+
+  &.cc-table {
+    background-color: $cc-button-table-background-color;
+    color: $cc-button-table-color;
+  }
+
+  &.cancel,
+  &.revoke {
+    i.fa {
+      color: hsl(355, 87%, 47%);
+    }
+  }
+}
+
+
 $orgpad-button-background-color: hsl(136, 52%, 51%);
 $orgpad-button-background-color-alert: hsl(1, 76%, 54%);
 $orgpad-button-color: hsl(0, 0, 100%);

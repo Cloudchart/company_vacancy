@@ -5,12 +5,17 @@
   <meta property="og:description" content="<%= CompanyDecorator.new(@company).about || @company.description %>" />
 <% end %>
 
-<%- content_for :header_breadcrumbs do -%>
-<%- end -%>
+<% content_for :header do %>
+  <%= render 'shared/company_header' %>
+<% end %>
 
 <%-
   pagescript_params(
-    company:        CompanyEditorSerializer.new(@company, scope: current_user).as_json,
-    placeholders:   I18n.t('shared.editable_blocks')
-  )
+    company:      @company.active_model_serializer.new(@company, scope: current_user),
+    blocks:       @company.blocks.active_model_serializer.new(@company.blocks),
+    pictures:     @company.pictures.active_model_serializer.new(@company.pictures),
+    paragraphs:   @company.paragraphs.active_model_serializer.new(@company.paragraphs),
+    people:       @company.people.active_model_serializer.new(@company.people),
+    vacancies:    @company.vacancies.active_model_serializer.new(@company.vacancies)
+  ) 
 -%>

@@ -7,6 +7,10 @@
 
 <% class_for_root_tag header: 'white blueprint', main: :blueprint, footer: :blueprint %>
 
+<% content_for :header do %>
+  <%= render 'shared/company_header' %>
+<% end %>
+
 <% pagescript_params(
   id:           @chart.id,
   chart:        @chart,

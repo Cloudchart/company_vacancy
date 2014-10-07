@@ -1,0 +1,10 @@
+<% content_for :header do %>
+  <%= render 'shared/company_header' %>
+<% end %>
+
+<% 
+  pagescript_params(
+    company: CompanyEditorSerializer.new(@company, scope: current_user),
+    people: @company.people.active_model_serializer.new(@company.people)
+  )
+%>

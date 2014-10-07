@@ -90,17 +90,28 @@ class Company < ActiveRecord::Base
     roles.find_by(value: :owner).user
   end
 
+  # temporary has_one simulation
+  def chart
+    charts.order(:created_at).first
+  end
+  
+  def pictures
+    blocks.select { |b| b.identity_type == 'Picture' }.map(&:picture).compact
+  end
+  
+  def paragraphs
+    blocks.select { |b| b.identity_type == 'Paragraph' }.map(&:paragraph).compact
+  end
+
   def invite_tokens
     tokens.where(name: :invite)
   end
 
   def build_objects
-    blocks.build(section: :about,       position: 0, identity_type: 'Paragraph',  is_locked: true)
-    blocks.build(section: :product,     position: 0, identity_type: 'Paragraph',  is_locked: true)
-    blocks.build(section: :product,     position: 1, identity_type: 'BlockImage', is_locked: true)
-    blocks.build(section: :people,      position: 0, identity_type: 'Person',     is_locked: true)
-    blocks.build(section: :people,      position: 1, identity_type: 'Paragraph',  is_locked: true)
-    blocks.build(section: :vacancies,   position: 0, identity_type: 'Vacancy',    is_locked: true)
+    blocks.build(section: :main, position: 0, identity_type: 'Person', is_locked: true)
+    blocks.build(section: :main, position: 1, identity_type: 'Paragraph', is_locked: true)
+    blocks.build(section: :main, position: 2, identity_type: 'Vacancy', is_locked: true)
+    blocks.build(section: :main, position: 3, identity_type: 'Picture', is_locked: true)
     charts.build(title: 'Default Chart')
   end
   

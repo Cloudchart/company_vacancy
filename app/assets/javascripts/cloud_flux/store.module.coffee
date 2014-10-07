@@ -88,6 +88,11 @@ Factory = (definition) ->
       if @has(key) then @update(key, attributes) else @add(key, attributes)
     
     
+    reset: (key) ->
+      @remove(key)
+      @add(key) 
+    
+    
     remove: (key) ->
       delete __errs[key]
       delete __data[key]

@@ -13,90 +13,95 @@ MainComponent = React.createClass
   # Component Specifications
   # 
   render: ->
-    (tag.div { className: 'wrapper' },
-      if @state.selected_chart.should_display_table
-        (tag.header {},
-          'Your expenses and revenue according to'
-          (tag.select {
-            value: @state.selected_chart.uuid
-            onChange: @onChartChange
-          },
-            _.map @props.charts, (chart) ->
-              (tag.option { key: chart.uuid, value: chart.uuid }, chart.title)
+    (tag.article { className: 'company' },
+      (tag.div { className: 'wrapper' },
+        if @state.selected_chart.should_display_table
+          (tag.header {},
+            'Your expenses and revenue according to chart data'
           )
-        )
-      else
-        (tag.header {},
-          'Please set salaries to your employees to see expenses and revenue'
-        )
+          # (tag.header {},
+          #   'Your expenses and revenue according to'
+          #   (tag.select {
+          #     value: @state.selected_chart.uuid
+          #     onChange: @onChartChange
+          #   },
+          #     _.map @props.charts, (chart) ->
+          #       (tag.option { key: chart.uuid, value: chart.uuid }, chart.title)
+          #   )
+          # )
+        else
+          (tag.header {},
+            'Please set salaries to your employees to see expenses and revenue'
+          )
 
-      (tag.div { className: 'content' },
+        (tag.div { className: 'content' },
 
-        # TODO: write generic method
-        (tag.div { className: 'burn-rate' },
+          # TODO: write generic method
+          (tag.div { className: 'burn-rate' },
 
-          (tag.table {},
-            (tag.thead {},
-              (tag.tr {},
-                (tag.th {})
+            (tag.table {},
+              (tag.thead {},
+                (tag.tr {},
+                  (tag.th {})
 
-                (tag.th {
-                  className: @checkCurrentMonth(@monthSubtractedMoment(3))  
-                },
-
-                  (tag.a { 
-                    href: ''
-                    className: 'chevron-left'
-                    onClick: @onChevronLeftClick 
+                  (tag.th {
+                    className: @checkCurrentMonth(@monthSubtractedMoment(3))  
                   },
-                    (tag.i { className: 'fa fa-chevron-left' })
-                  ) unless @monthSubtractedMoment(3).startOf('month') <= moment(@props.established_on)
 
-                  @monthSubtractedMoment(3).format('MMM YY')
-                )
+                    (tag.a { 
+                      href: ''
+                      className: 'chevron-left'
+                      onClick: @onChevronLeftClick 
+                    },
+                      (tag.i { className: 'fa fa-chevron-left' })
+                    ) unless @monthSubtractedMoment(3).startOf('month') <= moment(@props.established_on)
 
-                (tag.th {
-                  className: @checkCurrentMonth(@monthSubtractedMoment(2))
-                }, 
-                  @monthSubtractedMoment(2).format('MMM YY')
-                )
+                    @monthSubtractedMoment(3).format('MMM YY')
+                  )
 
-                (tag.th { 
-                  className: @checkCurrentMonth(@monthSubtractedMoment(1))
-                }, 
-                  @monthSubtractedMoment(1).format('MMM YY')
-                )
+                  (tag.th {
+                    className: @checkCurrentMonth(@monthSubtractedMoment(2))
+                  }, 
+                    @monthSubtractedMoment(2).format('MMM YY')
+                  )
 
-                (tag.th { 
-                  className: @checkCurrentMonth(moment(@state.selected_time))
-                },
-                  moment(@state.selected_time).format('MMM YY')
-                  (tag.a { 
-                    href: '#'
-                    className: 'chevron-right'
-                    onClick: @onChevronRightClick
+                  (tag.th { 
+                    className: @checkCurrentMonth(@monthSubtractedMoment(1))
+                  }, 
+                    @monthSubtractedMoment(1).format('MMM YY')
+                  )
+
+                  (tag.th { 
+                    className: @checkCurrentMonth(moment(@state.selected_time))
                   },
-                    (tag.i { className: 'fa fa-chevron-right' })
+                    moment(@state.selected_time).format('MMM YY')
+                    (tag.a { 
+                      href: '#'
+                      className: 'chevron-right'
+                      onClick: @onChevronRightClick
+                    },
+                      (tag.i { className: 'fa fa-chevron-right' })
+                    )
                   )
                 )
               )
-            )
-            (tag.tbody {},
-              @gatherPeople()
-            )
-            (tag.tfoot {},
-              (tag.tr {},
-                (tag.td {}, 'Total')
-                (tag.td { className: 'total', offset: '3' })
-                (tag.td { className: 'total', offset: '2' })
-                (tag.td { className: 'total', offset: '1' })
-                (tag.td { className: 'total', offset: 'selected' })
+              (tag.tbody {},
+                @gatherPeople()
+              )
+              (tag.tfoot {},
+                (tag.tr {},
+                  (tag.td {}, 'Total')
+                  (tag.td { className: 'total', offset: '3' })
+                  (tag.td { className: 'total', offset: '2' })
+                  (tag.td { className: 'total', offset: '1' })
+                  (tag.td { className: 'total', offset: 'selected' })
+                )
               )
             )
           )
-        )
-      ) if @state.selected_chart.should_display_table
+        ) if @state.selected_chart.should_display_table
 
+      )
     )
 
   getInitialState: ->

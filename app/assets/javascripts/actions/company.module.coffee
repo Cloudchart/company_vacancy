@@ -1,9 +1,10 @@
 # Imports
 #
-Dispatcher  = require('dispatcher/dispatcher')
-TokenStore  = require('stores/token')
-SyncAPI     = require('sync/company')
-Constants   = require('constants')
+Dispatcher    = require('dispatcher/dispatcher')
+CompanyStore  = require('stores/company')
+TokenStore    = require('stores/token')
+SyncAPI       = require('sync/company')
+Constants     = require('constants')
 
 
 handleClientStoreAction = (type, key, attributes, token) ->
@@ -27,6 +28,20 @@ handleServerStoreFailAction = (type, key, xhr, token) ->
 # Exports
 #
 module.exports =
+  
+  
+  # Update
+  #
+  update: (key, attributes, token = 'update') ->
+    handleClientStoreAction(Constants.Company.UPDATE, key, attributes, token)
+    
+    done = (json) ->
+      handleServerStoreDoneAction(Constants.Company.UPDATE_DONE, key, json, token)
+  
+    fail = (xhr) ->
+      handleServerStoreDoneAction(Constants.Company.UPDATE_FAIL, key, xhr, token)
+    
+    SyncAPI.update(key, attributes, done, fail)
   
 
   #

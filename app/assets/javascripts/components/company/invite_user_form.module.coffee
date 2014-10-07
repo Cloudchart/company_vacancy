@@ -5,6 +5,7 @@ tag = React.DOM
 
 Buttons     = require('components/company/buttons')
 Actions     = require('actions/company')
+roleMaps    = require('utils/role_maps')
 
 
 # Get State from Props
@@ -21,7 +22,6 @@ Errors =
     missing:  'Enter email, please!'
     taken:    'User with this email already invited to company.'
 
-
 # Main
 #
 Component = React.createClass
@@ -31,7 +31,7 @@ Component = React.createClass
     _.map @props.roles, (role) =>
       (tag.label {
         key:        role
-        className:  'role'
+        className:  'role form-field-radio-2'
       },
         (tag.input {
           checked:    role == @state.role
@@ -40,12 +40,12 @@ Component = React.createClass
           value:      role
           onChange:   @onRoleChange
         })
-        (tag.span {},
-          role.toUpperCase()
-          (tag.i {
+        (tag.div {className: 'title'},
+          roleMaps.RoleDescriptionMap[role]
+          (tag.div {
             className: 'hint'
           },
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+            'Company HR managers or managing partners usually need access to editing'
           )
         )
       )
@@ -53,9 +53,9 @@ Component = React.createClass
 
   emailInput: ->
     (tag.label {
-      className: 'email'
+      className: 'form-field-2'
     },
-      (tag.span {},
+      (tag.span { className: 'input' },
         (tag.input {
           autoComplete:   'off'
           autoFocus:      true
@@ -65,7 +65,7 @@ Component = React.createClass
         })
       
         if @props.errors and (errors = @props.errors['email'])
-          (tag.i {
+          (tag.span {
             className: 'error'
           },
             Errors.email[errors[0]] || errors[0]
@@ -103,14 +103,6 @@ Component = React.createClass
       onSubmit:   @onSubmit
     },
     
-      # Header
-      #
-      (tag.header {},
-        "You're about to share "
-        (tag.strong {}, @props.company.name)
-        " company and chart"
-      )
-    
       # Fieldset / Roles
       #
       (tag.fieldset {
@@ -139,11 +131,12 @@ Component = React.createClass
       #
       (tag.footer null,
         (Buttons.SyncButton {
-          title:    'Send invite'
-          icon:     'fa-envelope-o'
-          sync:     @props.sync == 'send-invite'
-          disabled: @props.sync
-          onClick:  @onSubmit
+          className: 'cc-wide'
+          title:     'Invite'
+          icon:      'fa-ticket'
+          sync:      @props.sync == 'send-invite'
+          disabled:  @props.sync
+          onClick:   @onSubmit
         })
       )
     

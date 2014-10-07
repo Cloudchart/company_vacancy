@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file]
+  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file, :finance, :settings]
   before_action :set_collection, only: [:index, :search]
 
   # TODO: update
@@ -18,13 +18,17 @@ class CompaniesController < ApplicationController
     end
   end
 
+
   # GET /companies/1
   def show
+    @company.blocks.includes(:identities)
+    
     respond_to do |format|
       format.html
-      format.json { render json: @company }
+      format.json { render json: { company: @company } }
     end
   end
+
 
   # GET /companies/new
   def new
@@ -53,26 +57,26 @@ class CompaniesController < ApplicationController
   def edit
   end
 
+
   # PATCH/PUT /companies/1
   def update
-    if @company.update(company_params)
-      Activity.track_activity(current_user, params[:action], @company)
+    @company.update!(company_params)
+    
+    Activity.track_activity(current_user, params[:action], @company)
+    
+    update_site_url_verification(@company) if company_params[:site_url]
+    
+    respond_to do |format|
+      format.json { render json: CompanyEditorSerializer.new(@company) }
+    end
 
-      update_site_url_verification(@company) if company_params[:site_url]
+  rescue ActiveRecord::RecordInvalid
 
-      respond_to do |format|
-        format.html { redirect_to @company }
-        format.json { render json: @company, serializer: Editor::CompanySerializer }
-      end
-
-    else
-
-      respond_to do |format|
-        format.json { render json: :nok, status: 412 }
-      end
-
+    respond_to do |format|
+      format.json { render json: :nok, status: 412 }
     end
   end
+
 
   # DELETE /companies/1
   def destroy

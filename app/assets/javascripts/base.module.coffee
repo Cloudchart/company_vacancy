@@ -1,6 +1,7 @@
 if modalMountPoint = document.querySelector('[data-modal-mount-point]')
-  ModalComponent = cc.require('react/shared/modal')
-  React.renderComponent(ModalComponent({}), modalMountPoint)
+  ModalComponent = require('components/modal_window')
+  React.renderComponent(ModalComponent(), modalMountPoint)
+
 
 # Login form
 #
@@ -15,6 +16,7 @@ if (LoginButton = document.querySelector('[data-behaviour~="login-button"]')) an
     window.dispatchEvent(event)
 
   LoginButton.click() if window.location.hash == '#login'
+
 
 # Invite form
 #

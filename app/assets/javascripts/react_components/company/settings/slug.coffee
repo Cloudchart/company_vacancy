@@ -41,8 +41,11 @@ RemoveSlugComponent = React.createClass
     url = window.location.href
     parts = url.split('/')
     parts.pop()
+    parts.pop()
     parts.push(@props.company_uuid)
-    history.replaceState(null, document.title, parts.join('/'))
+    parts.push('settings')
+    window.location.href = parts.join('/')
+    #history.replaceState(null, document.title, parts.join('/'))
 
     @setState({ sync: false })
     @props.onChange()
@@ -134,8 +137,11 @@ MainComponent = React.createClass
     url = window.location.href
     parts = url.split('/')
     parts.pop()
+    parts.pop()
     parts.push(@state.value)
-    history.replaceState(null, document.title, parts.join('/'))
+    parts.push('settings')
+    window.location.href = parts.join('/')
+    # history.replaceState(null, document.title, parts.join('/'))
 
     @setState
       sync: false
@@ -165,7 +171,7 @@ MainComponent = React.createClass
     @setState({ value: event.target.value })
 
   onRemoveSlugChange: (event) ->
-    @setState({ value: null, is_slug_valid: false })
+    @setState({ value: '', is_slug_valid: false })
 
 # Exports
 #

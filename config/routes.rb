@@ -34,6 +34,8 @@ Cloudchart::Application.routes.draw do
     post :search, on: :collection
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
+    get :finance, on: :member
+    get :settings, on: :member
     
     resources :vacancies, except: :edit, shallow: true, concerns: [:blockable, :statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
@@ -61,6 +63,9 @@ Cloudchart::Application.routes.draw do
     post :update_section,   on: :collection
 
     resources :identities, shallow: true, controller: :block_identities, only: [:index, :create, :destroy]
+
+    resource :picture,    type: :block, only: [:create, :update, :destroy]
+    resource :paragraph,  type: :block, only: [:update, :destroy]
   end
 
   resources :features do

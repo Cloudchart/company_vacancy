@@ -1,0 +1,88 @@
+.company-access-rights {
+  padding: 30px;
+}
+
+.access-rights {
+  font-size: 15px;
+  width: 700px;
+
+  header {
+    font-size: 24px;
+    width: 500px;
+    margin-bottom: 25px;
+
+    a {
+      margin-right: 5px;
+    }
+  }
+
+  .current-users-list {
+    border-collapse: separate;
+    border-spacing: 5px;
+    font-size: 16px;
+    width: 100%;
+
+    tr, td {
+      height: 40px;
+    }
+
+    .name {
+      width: 30%;
+    }
+
+    .email {
+      font-size: 12px;
+    }
+
+    .user-role {
+      background-color: hsl(0, 0%, 98%);
+      padding: 0 30px;
+      text-align: right;
+      width: 30%;
+    }
+
+    .token .name {
+      color: hsl(0, 0%, 70%);
+    }
+
+    .actions > * {
+      margin-right: 5px;
+    }
+
+    button {
+      font-size: 16px;
+      height: 100%;
+    }
+  }
+
+  .invite-user {
+    font-size: 16px;
+
+    fieldset {
+      border: none;
+    }
+
+    .email {
+      @include display(flex);
+
+      .form-field-2 {
+        margin: auto;
+        width: 250px;
+      }
+    }
+
+    .roles {
+      font-size: 20px;
+      width: 320px;
+
+      .hint {
+        font-size: 14px;
+      }
+    }
+
+    .email,
+    footer {
+      text-align: center;
+    }
+  }
+}

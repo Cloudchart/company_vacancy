@@ -6,11 +6,10 @@ tag = React.DOM
 Actions     = require('actions/company')
 TokenStore  = require('stores/token')
 Buttons     = require('components/company/buttons')
-
+roleMaps    = require('utils/role_maps')
 
 syncIcon = ->
   (tag.i { className: 'fa fa-spinner fa-spin fa-fw' })
-
 
 # Main
 #
@@ -39,16 +38,16 @@ Component = React.createClass
     },
     
       (tag.td {
-        className: 'email'
+        className: 'name'
       },
         @props.email
       )
       
       
       (tag.td {
-        className: 'role'
+        className: 'user-role'
       },
-        @props.role
+        "Invited as #{roleMaps.RoleNameMap[@props.role]}"
       )
       
       
@@ -56,8 +55,8 @@ Component = React.createClass
         className: 'actions'
       },
         
-        Buttons.ResendCompanyInviteButton(@props, @state, @onResendButtonClick)
-        Buttons.CancelCompanyInviteButton(@props, @state, @onCancelButtonClick)
+        Buttons.ResendCompanyInviteButton({className: 'cc-table'}, @state, @onResendButtonClick)
+        Buttons.CancelCompanyInviteButton({className: 'cc-table'}, @state, @onCancelButtonClick)
       
       )
     

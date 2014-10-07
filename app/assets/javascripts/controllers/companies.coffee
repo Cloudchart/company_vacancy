@@ -1,22 +1,97 @@
 # Show
-#
+# 
 @['companies#show'] = (data) ->
-  cc.module('react/editor/placeholders').exports  = data.placeholders
+  CompanyApp      = require('components/company_app')
+  CompanyStore    = require('stores/company')
+  BlockStore      = require('stores/block_store')
+  PictureStore    = require('stores/picture_store')
+  ParagraphStore  = require('stores/paragraph_store')
+  PersonStore     = require('stores/person')
+  VacancyStore    = require('stores/vacancy')
+
+  CompanyStore.add(data.company.uuid, data.company)
   
-  PersonStore       = cc.require('cc.stores.PersonStore')
-  VacancyStore      = cc.require('cc.stores.VacancyStore')
-  CompanyStore      = require('stores/company_store')
-  TagStore          = require('stores/tag_store')
-  TagActions        = -> require('actions/tag_actions')
-  CompanyComponent  = cc.require('react/company')
-  container         = document.querySelector('main')
+  _.each data.blocks,     (block)     -> BlockStore.add(block.uuid, block)
+  _.each data.pictures,   (picture)   -> PictureStore.add(picture.uuid, picture)
+  _.each data.paragraphs, (paragraph) -> ParagraphStore.add(paragraph.uuid, paragraph)
+  _.each data.people,     (person)    -> PersonStore.add(person.uuid, person)
+  _.each data.vacancies,  (vacancy)   -> VacancyStore.add(vacancy.uuid, vacancy)
   
+  React.renderComponent(
+    CompanyApp({ key: data.company.uuid })
+    document.querySelector('body > main')
+  )
+  
+  
+  # Company name
+  #
+  if mountPoint = document.querySelector('[data-company-name-mount-point]')
+    CompanyNameComponent = require('components/company/name')
+    React.renderComponent(
+      CompanyNameComponent({ key: data.company.uuid })
+      mountPoint
+    )
+  
+
+# Finance
+# 
+@['companies#finance'] = (data) ->
+  BurnRate = cc.require('react/company/burn_rate')
+
+  React.renderComponent(
+    BurnRate(data.company)
+    document.querySelector('body > main')
+  )
+  
+# Settings
+# 
+@['companies#settings'] = (data) ->
+  Settings      = cc.require('react/company/settings')
+  TagActions    = require('actions/tag_actions')
+  CompanyStore  = require('stores/company_store')
+
   CompanyStore.add(data.company)
-  PersonStore.load(data.company.people_url)
-  VacancyStore.load(data.company.vacancies_url)
-  TagActions().fetch()
+  TagActions.fetch()
+
+  React.renderComponent(
+    Settings(_.extend({ people: data.people }, data.company))
+    document.querySelector('body > main')
+  )
   
-  React.renderComponent(CompanyComponent({ key: data.company.uuid }), container)
+# Show
+#
+# @['companies#show_old'] = (data) ->
+#   cc.module('react/editor/placeholders').exports  = data.placeholders
+#   #cc.module('countries').exports                  = data.countries
+#   cc.module('industries').exports                 = data.industries
+  
+#   PersonStore       = cc.require('cc.stores.PersonStore')
+#   VacancyStore      = cc.require('cc.stores.VacancyStore')
+#   CompanyStore      = require('stores/company_store')
+#   TagStore          = require('stores/tag_store')
+#   TagActions        = -> require('actions/tag_actions')
+#   CountryStore      = cc.require('cc.stores.CountryStore')
+
+#   CompanyComponent  = cc.require('react/company')
+#   container         = document.querySelector('main')
+  
+#   CompanyStore      = require('stores/company_store')
+  
+  
+#   CompanyStore.add(data.company)
+#   PersonStore.load(data.company.people_url)
+#   VacancyStore.load(data.company.vacancies_url)
+#   TagActions().fetch()
+  
+
+#   _.each data.countries, (pair) ->
+#     CountryStore.add(new CountryStore({ id: pair[1], name: pair[0] }))
+  
+
+#   CountryStore.emitChange()
+
+#   React.renderComponent(CompanyComponent({ key: data.company.uuid }), container)
+  
 
 # Search
 # 

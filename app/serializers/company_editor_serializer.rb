@@ -1,12 +1,12 @@
 class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :id, :uuid, :name, :description, :is_published, :logotype, :slug, :site_url
-  attributes :sections, :available_sections, :available_block_types
+  # attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :default_host, :settings, :established_on, :tag_list
   attributes :is_editor, :is_public_reader, :is_trusted_reader, :is_chart_with_nodes_created
 
   has_many :charts
-  has_many :burn_rate_charts, serializer: BurnRateChartSerializer
+  # has_many :burn_rate_charts, serializer: BurnRateChartSerializer
   has_many :blocks, serializer: BlockEditorSerializer
 
   # deprecated
@@ -27,9 +27,9 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     Ability.new(current_user).can?(:fully_read, company)
   end
 
-  def include_burn_rate_charts?
-    is_editor || is_trusted_reader
-  end
+  # def include_burn_rate_charts?
+  #   is_editor || is_trusted_reader
+  # end
 
   def is_chart_with_nodes_created
     company.charts.first.try(:nodes).try(:any?)
@@ -43,9 +43,9 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     data
   end
 
-  def burn_rate_charts
-    company.charts
-  end
+  # def burn_rate_charts
+  #   company.charts
+  # end
 
   def settings
     {
@@ -59,18 +59,18 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     object.to_param
   end
 
-  def sections
-    object.sections.marshal_dump
-  end
+  # def sections
+  #   object.sections.marshal_dump
+  # end
 
-  def available_sections
-    object.class::Sections.map do |section|
-      {
-        key:    section.downcase,
-        title:  section
-      }
-    end
-  end
+  # def available_sections
+  #   object.class::Sections.map do |section|
+  #     {
+  #       key:    section.downcase,
+  #       title:  section
+  #     }
+  #   end
+  # end
   
   def logotype
     {
@@ -84,15 +84,15 @@ class CompanyEditorSerializer < ActiveModel::Serializer
     object.logotype.url if object.logotype_uid
   end
 
-  def available_block_types
-    object.class::BlockTypes.map do |type|
-      {
-        type:   type,
-        icon:   I18n.t("block.icons.#{type}"),
-        title:  I18n.t("block.titles.#{type}")
-      }
-    end
-  end
+  # def available_block_types
+  #   object.class::BlockTypes.map do |type|
+  #     {
+  #       type:   type,
+  #       icon:   I18n.t("block.icons.#{type}"),
+  #       title:  I18n.t("block.titles.#{type}")
+  #     }
+  #   end
+  # end
   
   def company_url
     company_path(object.id)

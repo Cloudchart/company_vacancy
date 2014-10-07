@@ -1,19 +1,22 @@
 # Imports
 #
 tag = React.DOM
+cx = React.addons.classSet
 
-
+extendClasses = (className, genericClass='cc') ->
+  _.compact([className, genericClass]).join(' ')
+ 
 # Invite User Button
 #
 InviteUserButton = React.createClass
 
-
   render: ->
     (tag.button {
+      className: extendClasses(@props.className)
       onClick: @props.onClick
     },
-      'Invite User'
-      (tag.i { className: 'fa fa-send-o' })
+      'Invite'
+      (tag.i { className: 'fa fa-ticket' })
     )
 
 
@@ -24,6 +27,7 @@ CurrentUsersButton = React.createClass
 
   render: ->
     (tag.button {
+      className: extendClasses(@props.className)
       onClick: @props.onClick
     },
       'Current Users'
@@ -49,7 +53,7 @@ SendInviteButton = React.createClass
 #
 ResendCompanyInviteButton = (props, state, callback) ->
   (tag.button {
-    className:  'resend'
+    className:  extendClasses(props.className, 'cc resend')
     disabled: !!state.sync
     onClick:    callback
   },
@@ -63,7 +67,7 @@ ResendCompanyInviteButton = (props, state, callback) ->
 #
 CancelCompanyInviteButton = (props, state, callback) ->
   (tag.button {
-    className:  'cancel'
+    className:  extendClasses(props.className, 'cc cancel')
     disabled: !!state.sync
     onClick:    callback
   },
@@ -77,7 +81,7 @@ CancelCompanyInviteButton = (props, state, callback) ->
 #
 RevokeRoleButton = (props) ->
   (tag.button {
-    className:  props.className or 'revoke'
+    className:  extendClasses(props.className, 'cc revoke')
     disabled:   props.disabled
     onClick:    props.onClick
   },
@@ -94,7 +98,7 @@ RevokeRoleButton = (props) ->
 SyncButton = (props) ->
   (tag.button {
     type:       'button'
-    className:  props.className || 'sync'
+    className:  extendClasses(props.className, 'cc sync')
     disabled:   props.disabled
     onClick:    props.onClick
   },

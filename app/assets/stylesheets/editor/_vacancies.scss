@@ -1,0 +1,91 @@
+@mixin vacancy-flag($height, $width, $color) {
+  background-color: $color;
+  height: $height - $width;
+  width: $width;
+  
+  &::after {
+    border: $width / 2 solid $color;
+    border-bottom-color: transparent;
+    bottom: - $width;
+    content: '';
+    height: $width;
+    left: 0;
+    position: absolute;
+    width: $width;
+  }
+}
+
+
+.editor-vacancies {
+  @include display(flex);
+  @include flex-wrap(wrap);
+  
+  margin: 10px -40px;
+  padding: 10px 40px 10px 20px;
+  
+  > .cell {
+    @include flex(0 0 33.3333%);
+
+    height: 0;
+    margin: 0;
+    position: relative;
+    padding-top: 20%;
+    
+    > .vacancy {
+      @include display(flex);
+      @include align-items(flex-end);
+      @include position(absolute, 0px 0px 0px 0px);
+
+      background-color: white;
+      border: 2px solid hsl(1, 76%, 54%);
+      color: hsl(1, 76%, 54%);
+      font-size: 15px;
+      font-weight: 600;
+      margin: 10px 20px;
+      margin-right: 0;
+      padding: 10px;
+      text-transform: uppercase;
+      
+      > button {
+        @include position(absolute, 5px 0 0 5px);
+        
+        background-color: hsl(1, 76%, 54%);
+        border: none;
+        border-radius: 30px;
+        color: white;
+        font-size: 20px;
+        height: 30px;
+        visibility: hidden;
+        width: 30px;
+      }
+      
+      &:hover > button {
+        visibility: visible;
+      }
+      
+      > .flag {
+        @include vacancy-flag(25px, 14px, hsl(1, 76%, 54%));
+        @include position(absolute, 0px 14px 0 0);
+      }
+      
+      &.add {
+        @include align-items(center);
+        @include flex-direction(column);
+        @include justify-content(center);
+        
+        border-color: hsl(0, 0%, 90%);
+        border-width: 1px;
+        color: hsl(0, 0%, 75%);
+        cursor: pointer;
+        font-weight: 300;
+        
+        > i.fa {
+          margin-bottom: 10px;
+        }
+        
+      }
+      
+    }
+  }
+  
+}
