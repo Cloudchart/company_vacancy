@@ -12,6 +12,23 @@ VacancyStore    = require('stores/vacancy')
 VacancyChooser  = require('components/editor/vacancy_chooser')
 
 
+# Add Vacancy component
+#
+AddVacancyComponent = ->
+  (tag.div {
+    key:        'add'
+    className:  'cell'
+    onClick:    @onAddVacancyClick
+  },
+    (tag.div {
+      className: 'vacancy add'
+    },
+      (tag.i { className: 'fa fa-plus' })
+      (tag.span null, 'Add vacancy')
+    )
+  )
+
+
 # Main
 #
 Component = React.createClass
@@ -22,13 +39,25 @@ Component = React.createClass
       .sortBy (vacancy) => _.indexOf(@state.block.identity_ids, vacancy.uuid)
       .map (vacancy) =>
         (tag.div {
-          key: vacancy.uuid
+          key:        vacancy.uuid
+          className:  'cell'
         },
-          (tag.i { className: 'fa fa-briefcase' })
-          vacancy.name
-          (tag.button {
-            onClick: @onDeleteButtonClick.bind(@, vacancy.uuid)
-          })
+        
+          (tag.div {
+            className: 'vacancy'
+          },
+          
+            (tag.figure { className: 'flag' })
+
+            vacancy.name
+
+            (tag.button {
+              onClick: @onDeleteButtonClick.bind(@, vacancy.uuid)
+            },
+              (tag.i { className: 'fa fa-times' })
+            )
+          
+          )
         )
       .value()
   
@@ -67,15 +96,18 @@ Component = React.createClass
       (tag.div {
         className: 'editor-vacancies'
       },
+
         @gatherVacancies()
+        
+        AddVacancyComponent.apply(@)
       
-        (tag.div {
-          className: 'add'
-          onClick:    @onAddVacancyClick
-        },
-          (tag.i { className: 'fa fa-plus' })
-          "Add vacancy"
-        )
+        # (tag.div {
+        #   className: 'add'
+        #   onClick:    @onAddVacancyClick
+        # },
+        #   (tag.i { className: 'fa fa-plus' })
+        #   "Add vacancy"
+        # )
       )
 
     )
