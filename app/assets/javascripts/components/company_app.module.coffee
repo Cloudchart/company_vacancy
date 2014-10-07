@@ -29,7 +29,7 @@ Component = React.createClass
         (component {
           key:        block.uuid
           block:      block
-          readOnly:   @props.readOnly
+          readOnly:   @state.company.is_read_only
         }) if component
       .value()
 
@@ -67,7 +67,7 @@ Component = React.createClass
         logotype_url: @state.company.logotype_url
         name:         @state.company.name
         description:  @state.company.description
-        readOnly:     @props.readOnly
+        readOnly:     @state.company.is_read_only
       })
       
       @gatherBlocks()

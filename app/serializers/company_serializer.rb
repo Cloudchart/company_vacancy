@@ -1,8 +1,18 @@
 class CompanySerializer < ActiveModel::Serializer
 
-  attributes :uuid, :name, :description
+  attributes  :uuid, :name, :description
+  attributes  :is_trusted, :is_read_only
+  attributes  :logotype_url
   
-  attributes :logotype_url
+  
+  def is_read_only
+    !Ability.new(scope).can?(:manage, object)
+  end
+  
+  
+  def is_trusted
+    Ability.new(scope).can?(:fully_read, object)
+  end
   
   
   def logotype_url

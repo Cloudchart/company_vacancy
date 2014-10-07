@@ -18,7 +18,7 @@
   _.each data.vacancies,  (vacancy)   -> VacancyStore.add(vacancy.uuid, vacancy)
   
   React.renderComponent(
-    CompanyApp({ key: data.company.uuid, readOnly: false })
+    CompanyApp({ key: data.company.uuid })
     document.querySelector('body > main')
   )
   
