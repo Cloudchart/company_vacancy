@@ -12,6 +12,8 @@ class Company < ActiveRecord::Base
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
   ROLES           = ([:owner] + INVITABLE_ROLES).freeze
 
+  before_save :nullify_slug, if: 'slug.blank?'
+
   dragonfly_accessor :logotype
 
   # deprecated
@@ -125,6 +127,10 @@ private
     unless name.present? && logotype.present? && people.any? && tags.any? && charts.first.try(:nodes).try(:any?)
       errors.add(:is_published, I18n.t('errors.messages.company_can_not_become_published'))
     end
+  end
+
+  def nullify_slug
+    self.slug = nil
   end
 
 end
