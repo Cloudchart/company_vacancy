@@ -1,7 +1,8 @@
 <%- class_for_main 'cloud-profile' -%>
-<%- cloud_profile_nav_current_tab :settings -%>
 
-<%= render 'shared/nav' %>
+<% content_for :header_menu do %>
+  <%= render 'shared/header_menu' %>
+<% end %>
 
 <article class="profile">
   
@@ -22,17 +23,5 @@
       <i class="fa fa-spinner fa-spin"></i>
     </div>
   </section>
-
-  <!--
-  <%# if current_user.subscriptions.any? %>
-    <section class="subscriptions">
-      <header>Subscriptions</header>
-
-      <div>
-        <%# link_to 'Show subscriptions', subscriptions_path %>
-      </div>
-    </section>
-  <%# end %>
-  -->
-
+  
 </article>

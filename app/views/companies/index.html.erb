@@ -1,19 +1,12 @@
+<% content_for :search do %>
+  <%= render partial: 'shared/header_search' %>
+<% end %>
+
 <article class="companies-search">
 
   <div class="counter">
     <%= render 'counter', collection: @companies %>
   </div>
-
-  <!--
-  <nav>
-    <ul>
-      <li><%= link_to 'BASIC INFO', '#' %></li>
-      <li><%= link_to 'VACANCIES', '#'  %></li>
-      <li><%= link_to 'GEOGRAPHY', '#' %></li>
-      <li><%= link_to 'KPIs', '#' %></li>
-    </ul>
-  </nav>
-  -->
 
   <div class="result">
     <%= render partial: 'shared/companies/company', collection: @companies %>

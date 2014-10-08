@@ -1,9 +1,9 @@
-$header-background-color: hsl(0, 0%, 97%);
+$header-background-color: hsl(0, 100%, 100%);
 $header-background-color-inverse: hsl(139, 72%, 35%);
 $header-color-inverse: hsl(0, 100%, 100%);
-$header-font-size: 16px;
+$header-font-size: 15px;
 $header-font-weight: 400;
-$header-height: 50px;
+$header-height: auto;
 $header-padding: 10px;
 
 
@@ -30,7 +30,7 @@ $header-input-font-weight: 300;
 
 
 $header-button-font-size: 12pt;
-$header-button-height: $header-height - $header-padding * 2;
+$header-button-height: 50px - $header-padding * 2;
 
 
 // Header logo
@@ -75,6 +75,7 @@ $header-button-height: $header-height - $header-padding * 2;
   margin: 0 $header-padding * 2;
   padding: 0 $header-padding;
   width: $header-search-width;
+  border: 2px solid $white-smoke;
   
   > input {
     @include flex(1);
@@ -106,24 +107,8 @@ $header-button-height: $header-height - $header-padding * 2;
 }
 
 
-// Welcome links
-//
-@mixin welcome-links {
-  @include display(flex);
-
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  
-  > li {
-    margin: 0 $header-padding;
-  }
-}
-
-
 // Main header style
 //
-
 body > header {
   @include display(flex);
   @include align-items(center);
@@ -133,11 +118,74 @@ body > header {
   font-size: $header-font-size;
   font-weight: $header-font-weight;
   height: $header-height;
-  padding: $header-padding;
+  padding: 20px 25px;
   
   
   a {
     text-decoration: none;
+    
+    &.base {
+      color: hsl(0, 0%, 0%);
+    }
+    
+    &.strong, &.current {
+      font-weight: 700;
+    }
+  }
+
+  > .breadcrumbs {
+    @include align-items(center);
+    @include display(flex);
+
+    > a.back-link {
+      @include display(flex);
+
+      background-color: hsl(136, 52%, 51%);
+      color: hsl(0, 100%, 100%);
+      font-size: 17px;
+      height: 34px;
+      text-align: center;
+      width: 40px;
+    
+      > i {
+        margin: auto;
+      }
+    }
+    
+    > .company-name {
+      color: HSL(139, 72%, 35%);
+      font-size: 25px;
+      font-weight: 300;
+      margin-left: 15px;
+    }
+  }
+
+  > .router {
+    margin: 0 40px;
+    
+    ul {
+      @include display(flex);
+      
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      
+      > li {
+        margin: 0 10px;
+        
+        &:first-child {
+          margin-left: 0;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  > .browse-companies {
+    margin-right: 20px;
   }
   
   input {
@@ -154,10 +202,6 @@ body > header {
   
   .search {
     @include header-search;
-  }
-  
-  .welcome-links {
-    @include welcome-links;
   }
   
   .spacer {
@@ -182,7 +226,6 @@ body > header {
 
 // Inverse header style
 //
-
 body > header.inverse {
   background-color: $header-background-color-inverse;
   color: $header-color-inverse;

@@ -5,7 +5,14 @@
   <meta property="og:description" content="CloudChart is a convenient tool to chart and profile your company. Use it to clarify your team structure, your products, your goals, and become transparent. Transparency benefits your teams, your partners, and your investors." />
 <% end %>
 
-<%- class_for_root_tag main: :newsplash, header: :inverse, footer: :inverse -%>
+<%
+  class_for_root_tag(
+    main: :newsplash,
+    header: :inverse,
+    footer: :inverse,
+    header_authentication: :inverse
+  )
+%>
 
 <header>
   <h1>
@@ -33,18 +40,5 @@
   <button data-behaviour="request-invite-button">
     Request Invite
   </button>
-  
+
 </section>
-
-<%- content_for :search, "&nbsp;".html_safe -%>
-
-<%- content_for :authentication do -%>
-  <%= link_to "Log In", '', data: { behaviour: "login-button" } %>
-
-  <button class="orgpad inverse auth" data-behaviour="invite-button">
-    <span>
-      Invited?
-    </span>
-    <%= font_awesome "ticket" %>
-  </button>
-<%- end -%>

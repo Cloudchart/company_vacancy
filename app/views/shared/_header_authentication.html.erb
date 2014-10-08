@@ -7,7 +7,7 @@
 
   <%= link_to "Log In", '', data: { behaviour: "login-button" } %>
 
-  <button class="orgpad auth" data-behaviour="invite-button">
+  <button class="orgpad auth <%= yield(:class_for_header_authentication) %>" data-behaviour="invite-button">
     <span>
       Invited?
     </span>

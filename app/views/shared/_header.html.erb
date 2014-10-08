@@ -1,50 +1,24 @@
-<%- header_class = yield(:class_for_header) -%>
-
-<header class="<%= header_class %>">
-
+<% if content_for(:header_breadcrumbs).present? %>
+  <%= yield :header_breadcrumbs %>
+<% else %>
   <%= link_to "", main_app.root_path, class: 'logo' %>
+  <div data-header-react-mount-point>
+    <%= link_to main_app.root_path, class: :title do -%>
+      <small>Cloud</small>Chart
+    <% end %>
+  </div>
+<% end %>
 
-  <%- if content_for(:title).present? -%>
-    <%= yield :title %>
-  <%- else -%>
-    <div data-header-react-mount-point>
-      <%= link_to main_app.root_path, class: :title do -%>
-        <small>Cloud</small>Chart
-      <%- end -%>
-    </div>
-  <%- end -%>
-  
+<%= yield :header_menu %>
 
-  <div class="spacer"></div>
+<div class="spacer"></div>
 
-  <%= yield :header %>
+<% if content_for(:search).present? %>
+  <%= yield :search %>
+<% elsif can?(:list, :companies) %>
+  <div class="browse-companies">
+    <%= link_to 'Browse Companies', main_app.companies_path, class: 'base strong' %>
+  </div>
+<% end %>
 
-  <% if current_user %>
-    <ul class="welcome-links">
-      <li>
-        <%= link_to t('.about_us', default: 'About us'), main_app.company_path(ENV['ABOUT_US_COMPANY_ID']) %>
-      </li>
-      <li>
-        <%= link_to t('.companies', default: 'Companies'), main_app.companies_path %>
-      </li>
-      <li>
-        <%= mail_to ENV['DEFAULT_SUPPORT'], t('.support', default: 'Support') %>
-      </li>
-    </ul>
-  <% end %>
-  
-  <div class="spacer"></div>
-
-  <%- if content_for(:search).present? -%>
-    <%= yield :search %>
-  <%- else -%>
-    <%= render partial: 'shared/header_search' %>
-  <%- end -%>
-
-  <%- if content_for(:authentication).present? -%>
-    <%= yield :authentication %>
-  <%- else -%>
-    <%= render partial: 'shared/header_authentication' %>
-  <%- end -%>
-  
-</header>
+<%= render partial: 'shared/header_authentication' %>

@@ -1,6 +1,0 @@
-<li class="token" id="<%= token.to_param %>">
-  <%= font_awesome 'question-circle' %>
-  <span class="address"><%= token.data[:address] %></span>
-  <%= link_to font_awesome('envelope'), resend_verification_email_path(token), class: :envelope %>
-  <%= link_to font_awesome('times-circle'), email_path(token), class: :cancel, data: { method: :delete, confirm: t('.confirm', default: 'Are you sure?') } %>
-</li>

@@ -30,7 +30,7 @@ CloudProfile::Engine.routes.draw do
     
     # Root
     #
-    root to: 'main#companies'
+    root to: 'main#settings'
 
     # Main
     #

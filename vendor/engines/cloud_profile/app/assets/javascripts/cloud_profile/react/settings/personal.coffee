@@ -60,11 +60,12 @@ Component = React.createClass
   occupations: ->
     @props.people.map (person) =>
       company = @props.companies.filter((company) -> company.uuid == person.company_id)[0]
-      (tag.li { key: company.uuid },
-        (person.occupation || 'Works')
-        ' at '
-        (tag.a { href: company.url }, company.name)
-      )
+      if company.name
+        (tag.li { key: company.uuid },
+          (person.occupation || 'Works')
+          ' at '
+          (tag.a { href: company.url }, company.name)
+        )
   
   
   onFileChange: (event) ->
