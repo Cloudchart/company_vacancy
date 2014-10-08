@@ -16,8 +16,7 @@
   <section class="company-preview-info">
     <section class="company-preview-data">
       <div class="company-preview-name">
-        <%= link_to (company.name || 
-        'Unnamed'), main_app.company_path(company) %>
+        <%= link_to company.name.present? ? company.name : 'Unnamed', main_app.company_path(company) %>
       </div>
       <div class="company-preview-size">
         <%= company.people.count %>
