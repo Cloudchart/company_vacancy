@@ -31,10 +31,15 @@ PersonComponent = (person) ->
     className:  'editor-person'
   },
   
+    (tag.i {
+      className:  'fa fa-times-circle-o'
+      onClick:    @onDeletePersonClick.bind(@, person.uuid)
+    }) unless @props.readOnly
+    
     (tag.aside {
       className: if person.avatar_url then '' else 'no-avatar' 
       style:
-        backgroundColor:  if person.avatar_url then 'transparent' else colors.colors[colors.colorIndex(personInitials)]
+        backgroundColor:  if person.avatar_url then 'none' else colors.colors[colors.colorIndex(personInitials)]
         backgroundImage:  if person.avatar_url then "url(#{person.avatar_url})" else "none"
     },
       (tag.figure null, personInitials) unless person.avatar_url
@@ -44,10 +49,6 @@ PersonComponent = (person) ->
       (tag.p { className: 'name' }, person.full_name)
       (tag.p { className: 'occupation' }, person.occupation)
     )
-    
-    (tag.button {
-      onClick: @onDeletePersonClick.bind(@, person.uuid)
-    }, (tag.i { className: 'fa fa-times' })) unless @props.readOnly
     
   )
 
@@ -151,11 +152,45 @@ Component = React.createClass
     
 
   render: ->
+    people = @gatherPeople()
+    
     (tag.section {
       className: 'editor-people'
     },
-      @gatherPeople()
-      NewPersonComponent.apply(@) unless @props.readOnly
+      (tag.ul {
+        className: 'grid _1x3 top'
+      },
+      
+        # People
+        #
+        _.map people, (person) ->
+          (tag.li {
+            key:        person.props.key
+            className:  'cell'
+          }, person)
+        
+        
+        # Add person
+        #
+        (tag.li {
+          className: 'cell add'
+        },
+          (tag.div {
+            className: 'editor-person'
+          },
+            (tag.aside {
+            },
+              (tag.figure {
+                onClick: @onAddPersonClick
+              },
+                if people.length == 0 then 'Add person' else '+'
+              )
+            )
+          )
+        ) unless @props.readOnly
+
+      )
+
     )
 
 

@@ -69,6 +69,7 @@ button.cloud {
 
 $cc-button-background-color: hsl(136, 52%, 51%);
 $cc-button-background-color-disabled: hsl(0, 0%, 88%);
+$cc-button-background-color-alert: hsl(0, 75%, 55%);
 $cc-button-color: hsl(0, 100%, 100%);
 $cc-button-table-background-color: hsl(0, 0%, 98%);
 $cc-button-table-color: hsl(0, 0%, 0%);
@@ -90,9 +91,14 @@ $cc-button-wide-padding: 40px;
     margin-left: 5px;
   }
   
+  &.alert {
+    background-color: $cc-button-background-color-alert;
+  }
+
   &[disabled] {
     background-color: $cc-button-background-color-disabled;
   }
+  
 }
 
 button.cc {
@@ -105,7 +111,7 @@ button.cc {
       margin-left: 7px;
     }
   }
-
+  
   &.cc-table {
     background-color: $cc-button-table-background-color;
     color: $cc-button-table-color;

@@ -9,6 +9,7 @@
 
 .grid {
   @include display(flex);
+  @include flex-wrap(wrap);
   
   &.top {
     @include align-items(flex-start);
