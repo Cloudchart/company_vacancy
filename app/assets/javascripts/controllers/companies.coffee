@@ -1,34 +1,37 @@
 # Show
 # 
 @['companies#show'] = (data) ->
-  CompanyApp      = require('components/company_app')
-  CompanyStore    = require('stores/company')
-  BlockStore      = require('stores/block_store')
-  PictureStore    = require('stores/picture_store')
-  ParagraphStore  = require('stores/paragraph_store')
-  PersonStore     = require('stores/person')
-  VacancyStore    = require('stores/vacancy')
 
-  CompanyStore.add(data.company.uuid, data.company)
-  
-  _.each data.blocks,     (block)     -> BlockStore.add(block.uuid, block)
-  _.each data.pictures,   (picture)   -> PictureStore.add(picture.uuid, picture)
-  _.each data.paragraphs, (paragraph) -> ParagraphStore.add(paragraph.uuid, paragraph)
-  _.each data.people,     (person)    -> PersonStore.add(person.uuid, person)
-  _.each data.vacancies,  (vacancy)   -> VacancyStore.add(vacancy.uuid, vacancy)
-  
+  CompanyAppComponent = require('components/company_app')({ key: data.id })
+  mountNode           = document.querySelector('body > main')
+
+  require('sync/company').fetch(data.id).done (json) ->
+    CompanyStore = require('stores/company')
+
+    _.each {
+      blocks:     require('stores/block_store')
+      pictures:   require('stores/picture_store')
+      paragraphs: require('stores/paragraph_store')
+      people:     require('stores/person')
+      vacancies:  require('stores/vacancy') 
+    }, (store, key) ->
+      _.each json[key], (item) -> store.add(item.uuid, item)
+
+    CompanyStore.add(json.company.uuid, json.company)
+    CompanyStore.emitChange()
+
   React.renderComponent(
-    CompanyApp({ key: data.company.uuid })
-    document.querySelector('body > main')
+    CompanyAppComponent
+    mountNode
   )
   
-  
+
   # Company name
   #
   if mountPoint = document.querySelector('[data-company-name-mount-point]')
     CompanyNameComponent = require('components/company/name')
     React.renderComponent(
-      CompanyNameComponent({ key: data.company.uuid })
+      CompanyNameComponent({ key: data.id, value: mountPoint.innerText })
       mountPoint
     )
   

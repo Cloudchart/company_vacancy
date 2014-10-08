@@ -26,7 +26,7 @@
 
     <div data-modal-mount-point></div>
 
-    <%= javascript_include_tag 'application' %>
+    <%= javascript_include_tag 'application', debug: false %>
     <%= pagescript %>
     <%= render 'shared/google_analytics' if Rails.env.production? %>
   </body>

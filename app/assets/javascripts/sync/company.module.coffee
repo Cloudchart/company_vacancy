@@ -3,6 +3,15 @@
 module.exports =
   
   
+  fetch: (key, done, fail) ->
+    $.ajax
+      url:        "/companies/#{key}"
+      type:       "GET"
+      dataType:   "json"
+    .done done
+    .fail fail
+  
+  
   update: (key, data, done, fail) ->
     data = _.reduce data, ((memo, value, key) -> memo.append("company[#{key}]", value) ; memo), new FormData
     

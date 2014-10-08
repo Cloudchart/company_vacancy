@@ -26,7 +26,7 @@ class CompaniesController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.json { render json: { company: @company } }
+      format.json #{ render json: { company: @company } }
     end
   end
 

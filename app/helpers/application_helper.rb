@@ -79,5 +79,5 @@ module ApplicationHelper
       link_to font_awesome('star-o'), main_app.favorites_path(favoritable_id: object.id, favoritable_type: object.class.name), method: :post, remote: true
     end
   end
-
+  
 end

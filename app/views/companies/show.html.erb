@@ -11,11 +11,6 @@
 
 <%-
   pagescript_params(
-    company:      @company.active_model_serializer.new(@company, scope: current_user),
-    blocks:       @company.blocks.active_model_serializer.new(@company.blocks),
-    pictures:     @company.pictures.active_model_serializer.new(@company.pictures),
-    paragraphs:   @company.paragraphs.active_model_serializer.new(@company.paragraphs),
-    people:       @company.people.active_model_serializer.new(@company.people),
-    vacancies:    @company.vacancies.active_model_serializer.new(@company.vacancies)
+    id:           @company.uuid
   ) 
 -%>

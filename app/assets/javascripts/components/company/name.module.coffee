@@ -32,7 +32,7 @@ Component = React.createClass
 
 
   render: ->
-    (tag.span null, @state.company.name)
+    (tag.span null, @state.company.name || @props.value)
 
 
 # Exports

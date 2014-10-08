@@ -51,28 +51,31 @@ Component = React.createClass
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
     BlockStore.off('change', @refreshStateFromStores)
-
-
+  
+  
   getInitialState: ->
     @getStateFromStores()
 
 
   render: ->
-    (tag.article {
-      className: 'company-2_0'
-    },
+    if @state.company
+      (tag.article {
+        className: 'company-2_0'
+      },
     
-      (CompanyHeader {
-        key:          @props.key
-        logotype_url: @state.company.logotype_url
-        name:         @state.company.name
-        description:  @state.company.description
-        readOnly:     @state.company.is_read_only
-      })
+        (CompanyHeader {
+          key:          @props.key
+          logotype_url: @state.company.logotype_url
+          name:         @state.company.name
+          description:  @state.company.description
+          readOnly:     @state.company.is_read_only
+        })
       
-      @gatherBlocks()
+        @gatherBlocks()
             
-    )
+      )
+    else
+      (tag.noscript null)
 
 
 # Exports
