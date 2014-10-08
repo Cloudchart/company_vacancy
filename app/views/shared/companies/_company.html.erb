@@ -4,7 +4,7 @@
   <header class="company-preview-header">
     <div class="company-preview-logo">
       <%= link_to main_app.company_path(company) do %>
-        <%= image_tag(company.logotype.url) if company.logotype_uid %>
+        <%= image_tag(company.logotype.url) if company.logotype %>
       <% end %>
     </div>
     <% if show_favorite_link %>
@@ -19,7 +19,7 @@
         <%= link_to company.name.present? ? company.name : 'Unnamed', main_app.company_path(company) %>
       </div>
       <div class="company-preview-size">
-        <%= company.people.count %>
+        <%= company.people.size %>
         <i class="fa fa-male"></i>
       </div>
       <div class="company-preview-motto">
