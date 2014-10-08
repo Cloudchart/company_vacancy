@@ -4,15 +4,18 @@
 
 .access-rights {
   font-size: 15px;
-  width: 700px;
+  width: 600px;
+  margin: 0 auto;
 
   header {
     font-size: 24px;
-    width: 500px;
     margin-bottom: 25px;
+    position: relative;
 
     a {
-      margin-right: 5px;
+      @include position(absolute, 0px 0 0 -14px);
+
+      margin-right: 5px;      
     }
   }
 
@@ -36,7 +39,7 @@
 
     .user-role {
       background-color: hsl(0, 0%, 98%);
-      padding: 0 30px;
+      padding: 0 15px;
       text-align: right;
       width: 30%;
     }
@@ -60,10 +63,14 @@
 
     fieldset {
       border: none;
+      padding: 0;
+      margin: 0;
     }
 
     .email {
       @include display(flex);
+
+      margin-bottom: 7px;
 
       .form-field-2 {
         margin: auto;
@@ -74,6 +81,7 @@
     .roles {
       font-size: 20px;
       width: 320px;
+      margin-bottom: 15px;
 
       .hint {
         font-size: 14px;

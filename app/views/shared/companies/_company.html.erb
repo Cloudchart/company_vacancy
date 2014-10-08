@@ -1,40 +1,61 @@
 <% show_favorite_link ||= false %>
 
 <article id="<%= company.id %>" class="company-preview">
-  <header class="company-preview-header">
-    <div class="company-preview-logo">
-      <%= link_to main_app.company_path(company) do %>
-        <%= image_tag(company.logotype.url) if company.logotype_uid %>
-      <% end %>
-    </div>
-    <% if show_favorite_link %>
-      <span class="favorites-link">
-        <%= render 'shared/favorites_link', object: company %>
-      </span>
-    <% end %>
-  </header>
-  <section class="company-preview-info">
-    <section class="company-preview-data">
-      <div class="company-preview-name">
-        <%= link_to (company.name || 
-        'Unnamed'), main_app.company_path(company) %>
+  <%= link_to main_app.company_path(company), class: "company-preview-link" do %>
+    <header class="company-preview-header">
+      <div class="company-preview-logo">
+        <% if company.logotype_uid.present? %>
+          <%= image_tag(company.logotype.url) %>
+        <% else %>
+          <figure style="background-color: <%= company_color(company || 'Unnamed')%>">
+            <%= initials(company.name || 'Unnamed') %>
+          </figure>
+        <% end %>
       </div>
-      <div class="company-preview-size">
-        <%= company.people.count %>
-        <i class="fa fa-male"></i>
-      </div>
-      <div class="company-preview-motto">
-      </div>
-      <div class="company-preview-burn-rate">
-        <!--$300K
-        <span>month</span>
-          -->
-      </div>
+    </header>
+    <section class="company-preview-info">
+      <table class="company-preview-data">
+        <tr>
+          <td class="company-preview-name">
+            <%= (company.name.present? ? company.name : 'Unnamed') %>
+          </td>
+          <td class="company-preview-size">
+            <%= company.people.count %><i class="fa fa-male"></i>
+          </td>
+        </tr>
+        <tr>
+          <td class="company-preview-motto">
+            <%= company.description %>
+          </td>
+          <td class="company-preview-burn-rate">
+            <!-- $300K<span>month</span> -->
+          </td>
+        </tr>
+      </table>
+      <section class="company-preview-description">
+        <p>
+          <%= company_tags(company) %>
+        </p>
+      </section>
     </section>
-    <section class="company-preview-description">
-      <p>
-        <%= company.description %>
-      </p>
-    </section>
-  <section>
+  <% end %>
+
+  <!-- TODO rewrite favorites_link as button -->
+
+  <% if show_favorite_link %>
+    <span class="favorites-link">
+      <%= render 'shared/favorites_link', object: company %>
+    </span>
+  <% end %>
+
+<!--   <section class="company-preview-buttons">
+    <button class="cc">
+      Decline
+      <i class="fa fa-close"></i> 
+    </button>
+    <button class="cc decline">
+      Accept
+      <i class="fa fa-check"></i>
+    </button>
+  </section> -->
 </article>

@@ -80,7 +80,55 @@ module CompaniesHelper
     end.html_safe    
   end
 
+  def company_tags(company)
+    company.tags.map { |tag| "##{tag.name}" }.join(', ')
+  end
+
+# TODO get rid of dublicity
+
+  def initials(value)
+    value ||= ''
+
+    uppercasedLetters = value.split('').select do |letter, i| 
+      letter != ' ' and letter == letter.upcase
+    end.join('')
+
+    initialLetters = value.split(' ').map { |part| part[0] }.join('')
+
+    initials = if uppercasedLetters.length >= 2 then uppercasedLetters
+    elsif initialLetters.length >= 2 then initialLetters
+    else value
+    end
+
+    initials[0...2].upcase
+  end
+
+  def company_color(company)
+    color_index = initials(company.name).split('').inject(0) do |memo, letter|
+      memo += letter.ord
+    end % placeholder_colors.length
+  
+    placeholder_colors[color_index]
+  end
+
 private
+
+  def placeholder_colors
+    [
+      'hsl( 39, 85%, 71%)',
+      'hsl(141, 46%, 59%)',
+      'hsl(196, 91%, 69%)',
+      'hsl( 25, 80%, 67%)',
+      'hsl(265, 55%, 76%)',
+      'hsl(344, 88%, 76%)',
+      'hsl( 84, 75%, 75%)',
+      'hsl(229, 75%, 72%)',
+      'hsl( 59, 76%, 76%)',
+      'hsl(144, 75%, 75%)',
+      'hsl(359, 57%, 76%)',
+      'hsl(206, 57%, 76%)'
+    ]
+  end
 
   def calculate_proximity_index(intersection, intersection_type, company_people_size)
     company_people_size = company_people_size.to_f
