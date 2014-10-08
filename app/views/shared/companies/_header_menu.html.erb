@@ -13,9 +13,12 @@
       </li>
 
       <li>
+        <%= link_with_class_for_current('Users', main_app.company_access_rights_path(@company), 'base') %>
+      </li>
+
+      <li>
         <%= link_with_class_for_current('Settings', main_app.settings_company_path(@company), 'base') %>
       </li>
     <% end %>
-    <%# link_to 'Traction', '#', class: 'base' %>
   </ul>
 </div>

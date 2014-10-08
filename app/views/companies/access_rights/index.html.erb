@@ -1,5 +1,13 @@
 <% class_for_root_tag main: 'company-access-rights' %>
 
+<% content_for :header_breadcrumbs do %>
+  <%= render 'shared/companies/header_breadcrumbs' %>
+<% end %>
+
+<% content_for :header_menu do %>
+  <%= render 'shared/companies/header_menu' %>
+<% end %>
+
 <% pagescript_params company: CompanySerializer.new(@company), roles: Company::INVITABLE_ROLES %>
 
 <section class="company-access-rights-container" data-react-mount-point="access-rights">
