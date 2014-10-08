@@ -53,6 +53,7 @@ class Ability
     # User
     # 
     else
+      can :list, :companies
       can [:verify, :resend_verification], :cloud_profile_email
       can :manage, :cloud_profile_main
       can :update, :cloud_profile_user

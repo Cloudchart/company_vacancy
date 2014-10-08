@@ -37,9 +37,11 @@
   <div class="spacer">
   </div>
   
-  <div class="browse-companies">
-    <%= link_to 'Browse Companies', main_app.companies_path, class: 'base strong' %>
-  </div>
+  <% if can?(:list, :companies) %>
+    <div class="browse-companies">
+      <%= link_to 'Browse Companies', main_app.companies_path, class: 'base strong' %>
+    </div>
+  <% end %>
   
   <div>
     <%- if content_for(:authentication).present? -%>

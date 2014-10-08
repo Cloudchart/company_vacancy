@@ -9,6 +9,7 @@ class CompaniesController < ApplicationController
   
   # GET /companies
   def index
+    authorize! :list, :companies
   end
 
   def search
