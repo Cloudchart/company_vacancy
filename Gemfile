@@ -63,6 +63,8 @@ group :development do
   gem 'capistrano-rbenv'
   gem 'capistrano3-puma'
   gem 'capistrano-sidekiq'
+
+  gem 'pry'
 end
 
 group :development, :test do
