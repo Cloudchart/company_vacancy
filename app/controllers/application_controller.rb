@@ -16,4 +16,9 @@ class ApplicationController < ActionController::Base
     authenticate(options)
   end
 
+  def decorate(object, klass=nil)
+    klass ||= "#{object.class}Decorator".constantize
+    decorator = klass.new(object)
+  end
+  
 end

@@ -1,5 +1,12 @@
 module ApplicationHelper
 
+  def decorate(object, klass=nil)
+    klass ||= "#{object.class}Decorator".constantize
+    decorator = klass.new(object)
+    yield decorator if block_given?
+    decorator
+  end
+
   def link_with_class_for_current(name, path, class_name='')
     link_to name, path, class: "#{class_name}#{current_page?(path) ? ' current' : ''}"
   end

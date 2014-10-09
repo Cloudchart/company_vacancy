@@ -1,39 +1,43 @@
 <% show_favorite_link ||= false %>
 
-<article id="<%= company.id %>" class="company-preview">
-  <header class="company-preview-header">
-    <div class="company-preview-logo">
-      <%= link_to main_app.company_path(company) do %>
-        <%= image_tag(company.logotype.url) if company.logotype %>
+<% decorate company do |company| %>
+
+  <article id="<%= company.id %>" class="company-preview">
+    <header class="company-preview-header">
+      <div class="company-preview-logo">
+        <%= link_to main_app.company_path(company) do %>
+          <%= image_tag(company.logotype.url) if company.logotype %>
+        <% end %>
+      </div>
+      <% if show_favorite_link %>
+        <span class="favorites-link">
+          <%= render 'shared/favorites_link', object: company %>
+        </span>
       <% end %>
-    </div>
-    <% if show_favorite_link %>
-      <span class="favorites-link">
-        <%= render 'shared/favorites_link', object: company %>
-      </span>
-    <% end %>
-  </header>
-  <section class="company-preview-info">
-    <section class="company-preview-data">
-      <div class="company-preview-name">
-        <%= link_to company.name.present? ? company.name : 'Unnamed', main_app.company_path(company) %>
-      </div>
-      <div class="company-preview-size">
-        <%= company.people.size %>
-        <i class="fa fa-male"></i>
-      </div>
-      <div class="company-preview-motto">
-      </div>
-      <div class="company-preview-burn-rate">
-        <!--$300K
-        <span>month</span>
-          -->
-      </div>
-    </section>
-    <section class="company-preview-description">
-      <p>
-        <%= company.description %>
-      </p>
-    </section>
-  <section>
-</article>
+    </header>
+    <section class="company-preview-info">
+      <section class="company-preview-data">
+        <div class="company-preview-name">
+          <%= link_to company.name.present? ? company.name : 'Unnamed', main_app.company_path(company) %>
+        </div>
+        <div class="company-preview-size">
+          <%= company.people.size %>
+          <i class="fa fa-male"></i>
+        </div>
+        <div class="company-preview-motto">
+        </div>
+        <div class="company-preview-burn-rate">
+          <!--$300K
+          <span>month</span>
+            -->
+        </div>
+      </section>
+      <section class="company-preview-description">
+        <p>
+          <%= company.description %>
+        </p>
+      </section>
+    <section>
+  </article>
+
+<% end %>
