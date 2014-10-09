@@ -11,7 +11,7 @@ class Friend < ActiveRecord::Base
 
   settings ElasticSearchNGramSettings do
     mapping do
-      indexes :full_name, analyzer: 'ngram_analyzer'
+      indexes :full_name, type: 'string', analyzer: 'ngram_analyzer'
       indexes :company_ids, index: :not_analyzed
     end
   end

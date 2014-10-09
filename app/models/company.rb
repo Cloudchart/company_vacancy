@@ -41,10 +41,10 @@ class Company < ActiveRecord::Base
 
   settings ElasticSearchNGramSettings do
     mapping do
-      indexes :name, analyzer: 'ngram_analyzer'
+      indexes :name, type: 'string', analyzer: 'ngram_analyzer'
       indexes :is_published, type: 'boolean'
       indexes :tags do
-        indexes :name, analyzer: 'ngram_analyzer'
+        indexes :name, type: 'string', analyzer: 'ngram_analyzer'
       end
     end
   end

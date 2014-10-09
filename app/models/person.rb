@@ -36,8 +36,8 @@ class Person < ActiveRecord::Base
 
   settings ElasticSearchNGramSettings do
     mapping do
-      indexes :first_name, analyzer: 'ngram_analyzer'
-      indexes :last_name, analyzer: 'ngram_analyzer'
+      indexes :first_name, type: 'string', analyzer: 'ngram_analyzer'
+      indexes :last_name, type: 'string', analyzer: 'ngram_analyzer'
       indexes :company_id, index: :not_analyzed
     end
   end
