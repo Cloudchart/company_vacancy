@@ -6,7 +6,7 @@ class CompanySerializer < ActiveModel::Serializer
   
   
   def is_read_only
-    !Ability.new(scope).can?(:manage, object)
+    Ability.new(scope).cannot?(:manage, object)
   end
   
   
