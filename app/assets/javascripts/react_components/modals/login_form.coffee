@@ -13,8 +13,11 @@ email_re = /.+@.+\..+/i
 LoginMixin =
   
   
-  onLoginRequestDone: ->
-    location.reload()
+  onLoginRequestDone: (json) ->
+    if json.admin_path
+      location.href = json.admin_path
+    else
+      location.reload()
   
   
   onLoginRequestFail: (xhr) ->
