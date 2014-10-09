@@ -34,6 +34,11 @@ class Company < ActiveRecord::Base
   has_many :roles, as: :owner, dependent: :destroy
   has_many :users, through: :roles
   # has_paper_trail
+  
+  
+  has_many :pictures, through: :blocks, source: :picture
+  has_many :paragraphs, through: :blocks, source: :paragraph
+  
 
   # validates :name, presence: true, on: :update
   validates :site_url, url: true, allow_blank: true
@@ -97,13 +102,13 @@ class Company < ActiveRecord::Base
     charts.order(:created_at).first
   end
   
-  def pictures
-    blocks.select { |b| b.identity_type == 'Picture' }.map(&:picture).compact
-  end
+  #def pictures
+  #  blocks.select { |b| b.identity_type == 'Picture' }.map(&:picture).compact
+  #end
   
-  def paragraphs
-    blocks.select { |b| b.identity_type == 'Paragraph' }.map(&:paragraph).compact
-  end
+  #def paragraphs
+  #  blocks.select { |b| b.identity_type == 'Paragraph' }.map(&:paragraph).compact
+  #end
 
   def invite_tokens
     tokens.where(name: :invite)

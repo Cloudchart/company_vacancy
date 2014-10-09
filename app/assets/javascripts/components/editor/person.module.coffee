@@ -37,7 +37,8 @@ PersonComponent = (person) ->
     }) unless @props.readOnly
     
     (tag.aside {
-      className: if person.avatar_url then '' else 'no-avatar' 
+      className:  if person.avatar_url then '' else 'no-avatar' 
+      onClick:    @onEditPersonClick.bind(@, person.uuid)
       style:
         backgroundColor:  if person.avatar_url then 'none' else colors.colors[colors.colorIndex(personInitials)]
         backgroundImage:  if person.avatar_url then "url(#{person.avatar_url})" else "none"
@@ -78,8 +79,13 @@ Component = React.createClass
     setTimeout ModalActions.hide
   
   
+  onPersonUpdateDone: ->
+    setTimeout ModalActions.hide
+  
+  
   getCloudFluxActions: ->
     'person:create:done-': @onPersonCreateDone
+    'person:update-:done': @onPersonUpdateDone
 
 
   gatherPeople: ->
@@ -115,9 +121,20 @@ Component = React.createClass
     })
   
   
+  onEditPersonClick: (key) ->
+    console.log key
+    ModalActions.show(PersonForm({
+      attributes: PersonStore.get(key).toJSON()
+      onSubmit:   @onPersonFormSubmit.bind(@, key)
+    }))
+  
+  
   onPersonFormSubmit: (key, attributes) ->
-    PersonActions.create(key, attributes.toJSON())
-    @setState({ create_person: key })
+    person = PersonStore.get(key)
+    if person.uuid
+      PersonActions.update(key, attributes.toJSON())
+    else
+      PersonActions.create(key, attributes.toJSON())
   
   
   onDeletePersonClick: (key) ->
@@ -136,11 +153,11 @@ Component = React.createClass
   
   
   componentDidMount: ->
-    PersonStore.on('change', @refreshStateFromStore)
+    PersonStore.on('change', @refreshStateFromStores)
   
   
   componentWillUnount: ->
-    PersonStore.off('change', @refreshStateFromStore)
+    PersonStore.off('change', @refreshStateFromStores)
   
   
   componentWillReceiveProps: ->

@@ -128,7 +128,7 @@ Component = React.createClass
           disabled:   !@isValid()
           type:       'submit'
         },
-          "Create"
+          if @state.attributes.get('uuid') then "Update" else "Create"
           (tag.i { className: 'fa fa-check' })
         )
       )

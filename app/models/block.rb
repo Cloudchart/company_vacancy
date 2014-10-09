@@ -75,7 +75,8 @@ class Block < ActiveRecord::Base
   end
   
   def identity_ids
-    public_send :"#{singular_identity_name}_ids"
+    #public_send :"#{singular_identity_name}_ids"
+    block_identities.map(&:identity_id)
   end
   
   def identity_ids=(args)

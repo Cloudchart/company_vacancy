@@ -22,11 +22,9 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
-    @company.blocks.includes(:identities)
-    
     respond_to do |format|
       format.html
-      format.json #{ render json: { company: @company } }
+      format.json
     end
   end
 
