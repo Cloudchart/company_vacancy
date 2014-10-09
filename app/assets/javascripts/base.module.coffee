@@ -31,3 +31,16 @@ if (InviteButton = document.querySelector('[data-behaviour~="invite-button"]')) 
     window.dispatchEvent(event)
 
   InviteButton.click() if window.location.hash == '#invite'
+
+
+#
+#
+_.each document.querySelectorAll('[data-react-class]'), (node) ->
+  try
+    reactClass  = require(node.dataset.reactClass)
+    reactProps  = JSON.parse(node.dataset.reactProps)
+    
+    React.renderComponent(reactClass(reactProps), node)
+    
+  catch
+    _.noop

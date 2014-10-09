@@ -13,10 +13,10 @@
     </header>
 
     <%= render 'shared/flash' %>
-
-    <main class="<%= yield(:class_for_main) %>">
+    
+    <%= content_tag :main, class: yield(:class_for_main), data: { 'react-class' => yield(:react_class_for_main), 'react-props' => yield(:react_props_for_main) } do %>
       <%= yield %>
-    </main>
+    <%- end -%>
 
     <footer class="<%= yield(:class_for_footer) %>">
       <%= render 'shared/footer' %>

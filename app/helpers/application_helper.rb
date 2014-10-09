@@ -12,6 +12,7 @@ module ApplicationHelper
     end
   end
   
+
   def class_for_root_tag(options = {})
     options.each do |name, value|
       @view_flow.set(:"class_for_#{name}", value.to_s)

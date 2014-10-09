@@ -13,8 +13,9 @@
   <%= render 'shared/companies/header_menu' %>
 <% end %>
 
-<%-
-  pagescript_params(
-    id:           @company.uuid
-  ) 
--%>
+
+<%= content_for :react_class_for_main, 'components/company_app' %>
+<%= content_for :react_props_for_main, { key: @company.uuid }.to_json %>
+
+
+<%- pagescript_params(id: @company.uuid) -%>

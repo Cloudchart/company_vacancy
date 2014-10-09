@@ -2,9 +2,6 @@
 # 
 @['companies#show'] = (data) ->
 
-  CompanyAppComponent = require('components/company_app')({ key: data.id })
-  mountNode           = document.querySelector('body > main')
-
   require('sync/company').fetch(data.id).done (json) ->
     CompanyStore = require('stores/company')
 
@@ -19,22 +16,6 @@
 
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
-
-  React.renderComponent(
-    CompanyAppComponent
-    mountNode
-  )
-  
-
-  # Company name
-  #
-  if mountPoint = document.querySelector('[data-company-name-mount-point]')
-    CompanyNameComponent = require('components/company/name')
-    React.renderComponent(
-      CompanyNameComponent({ key: data.id, value: mountPoint.innerText })
-      mountPoint
-    )
-  
 
 # Finance
 # 
