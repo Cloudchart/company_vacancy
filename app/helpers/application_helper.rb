@@ -31,14 +31,6 @@ module ApplicationHelper
     model.errors.full_messages_for(name).first
   end
 
-  def custom_section?(klass, section)
-    if klass == Vacancy && section =~ /settings|vacancy/
-      true
-    else
-      false
-    end
-  end
-
   def favorites_link(object)
     favorite = current_user.favorites.find_by(favoritable_id: object.id)
 
