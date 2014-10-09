@@ -15,7 +15,7 @@ MainComponent = React.createClass
   render: ->
     (tag.article { className: 'company' },
       (tag.div { className: 'wrapper' },
-        if @state.selected_chart.should_display_table
+        if @state.selected_chart.people.length > 0
           (tag.header {},
             'Your expenses and revenue according to chart data'
           )
@@ -99,7 +99,7 @@ MainComponent = React.createClass
               )
             )
           )
-        ) if @state.selected_chart.should_display_table
+        ) if @state.selected_chart.people.length > 0
 
       )
     )
@@ -127,6 +127,8 @@ MainComponent = React.createClass
   # Helpers
   # 
   gatherPeople: ->
+    console.log @state.selected_chart.people
+
     people = _.chain(_.uniq(@state.selected_chart.people, 'uuid'))
       .sortBy (person) -> person.full_name
       .value()

@@ -1,10 +1,6 @@
 class BurnRateChartSerializer < ActiveModel::Serializer
-  attributes :uuid, :title, :slug, :should_display_table
+  attributes :uuid, :title, :slug
 
   has_many :people, serializer: PersonSerializer
-
-  def should_display_table
-    object.people.pluck(:salary).reject(&:blank?).uniq.sum > 0
-  end
 
 end
