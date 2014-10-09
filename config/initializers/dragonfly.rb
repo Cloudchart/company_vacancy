@@ -8,6 +8,10 @@ Dragonfly.app.configure do
   secret "e3abcde82d70489133c44e2d5f4d20f26a61de6256fc0ad51358ae5671142819"
 
   url_format "/media/:job/:name"
+  
+  if Rails.env.production?
+    url_host '//i.cloudchart.co'
+  end
 
   datastore :file,
     root_path: Rails.root.join('public/system/dragonfly', Rails.env),
