@@ -13,10 +13,6 @@
       <header>
         <ul>
           <li class="name">
-            <span class="favorites-link">
-              <%= render 'shared/favorites_link', object: company %>
-            </span>
-
             <%= link_to company.name, main_app.company_path(company) %>
           </li>
 

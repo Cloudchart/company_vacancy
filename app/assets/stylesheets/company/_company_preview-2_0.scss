@@ -19,12 +19,6 @@
 .company-preview-header {
   padding: 12px;
   position: relative;
-
-  .favorites-link {
-    @include position(absolute, 16px 12px 0 0);
-
-    font-size: 20px;
-  }
 }
 
 .company-preview-logo {

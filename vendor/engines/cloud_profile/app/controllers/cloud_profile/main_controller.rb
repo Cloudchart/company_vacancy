@@ -3,16 +3,14 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class MainController < ApplicationController
     authorize_resource class: :cloud_profile_main
-    before_action :create_default_company, only: :companies, if: -> { current_user.companies.blank? }
+    before_action :create_default_company, only: :companies, unless: -> { current_user.companies.any? }
     
     def companies
-      @companies = current_user.companies.includes(:people, :vacancies, :favorites, :charts)
-      @companies = order_by_updated_at_or_favorites(@companies)
+      @companies = current_user.companies.includes(:people, :vacancies, :charts).order(updated_at: :desc)
     end
 
     def vacancies
-      @companies = current_user.companies.includes(:vacancies, :favorites)
-      @companies = order_by_updated_at_or_favorites(@companies)
+      @companies = current_user.companies.includes(:vacancies).order(updated_at: :desc)
     end
 
     def activities
@@ -36,14 +34,6 @@ module CloudProfile
 
     def create_default_company
       redirect_to main_app.new_company_path
-    end
-
-    def order_by_updated_at_or_favorites(collection)
-      if collection.joins(:favorites).any?
-        collection.order('favorites.created_at DESC')
-      else
-        collection.order(updated_at: :desc)
-      end      
     end
 
   end

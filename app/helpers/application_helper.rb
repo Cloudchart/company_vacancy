@@ -18,7 +18,6 @@ module ApplicationHelper
       @view_flow.get(:class_for_main).presence
     end
   end
-  
 
   def class_for_root_tag(options = {})
     options.each do |name, value|
@@ -37,16 +36,6 @@ module ApplicationHelper
 
   def first_error(model, name)
     model.errors.full_messages_for(name).first
-  end
-
-  def favorites_link(object)
-    favorite = current_user.favorites.find_by(favoritable_id: object.id)
-
-    if favorite
-      link_to font_awesome('star'), main_app.favorite_path(favorite), method: :delete, remote: true
-    else
-      link_to font_awesome('star-o'), main_app.favorites_path(favoritable_id: object.id, favoritable_type: object.class.name), method: :post, remote: true
-    end
   end
   
 end
