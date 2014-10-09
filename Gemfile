@@ -55,6 +55,7 @@ group :doc do
 end
 
 group :development do
+  gem 'pry' # An IRB alternative and runtime developer console
   gem 'awesome_print' # styled print for ruby objects in rails console
   gem 'quiet_assets' # mutes assets pipeline log messages
   gem 'letter_opener' # preview mail in the browser instead of sending
@@ -63,8 +64,6 @@ group :development do
   gem 'capistrano-rbenv'
   gem 'capistrano3-puma'
   gem 'capistrano-sidekiq'
-
-  gem 'pry'
 end
 
 group :development, :test do

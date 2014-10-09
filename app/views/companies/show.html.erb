@@ -1,8 +1,8 @@
 <% content_for :meta do %>
-  <meta property="og:title" content="<%= og_company_name(@company) %>" />
+  <meta property="og:title" content="<%= decorate(@company).og_name %>" />
   <meta property="og:image" content="<%= @company.logotype.try(:url, host: request.protocol + request.host) || image_url('cloudchart-logo-square.png') %>">
   <meta property="og:url" content="<%= company_url(@company) %>" />
-  <meta property="og:description" content="<%= CompanyDecorator.new(@company).about || @company.description %>" />
+  <meta property="og:description" content="<%= @company.description %>" />
 <% end %>
 
 <% content_for :header_breadcrumbs do %>

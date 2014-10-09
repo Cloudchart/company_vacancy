@@ -1,26 +1,18 @@
 module CompaniesHelper
 
-  def og_company_name(company)
-    prefix = company.name == 'CloudChart' ? '' : 'CloudChart: '
-    "#{prefix}#{company.name}"
-  end
-  
-  def display_logo(company)
-    if company.logo.present?
-      image = if company.logo.image.thumb.present?
-        company.logo.image.thumb.url
-      else
-        company.logo.image.url
+  def show_companies_counter(companies)
+    ''.tap do |content|
+      if companies.size > 0
+        content << companies.size.to_s
+        content << ' '
       end
       
-      image_tag image
-    end
+      content << t("companies.search.companies", count: companies.size)
+      
+    end.html_safe    
   end
 
-  def subscribed_to_company?(company)
-    current_user.subscriptions.map(&:subscribable_id).include?(company.id)
-  end
-
+  # deprecated
   # TODO: refactor
   def proximity(company, user = current_user)
     # initialize result
@@ -68,68 +60,9 @@ module CompaniesHelper
     result
   end
 
-  def show_companies_counter(companies)
-    ''.tap do |content|
-      if companies.size > 0
-        content << companies.size.to_s
-        content << ' '
-      end
-      
-      content << t("companies.search.companies", count: companies.size)
-      
-    end.html_safe    
-  end
-
-  def company_tags(company)
-    company.tags.map { |tag| "##{tag.name}" }.join(', ')
-  end
-
-# TODO get rid of dublicity
-
-  def initials(value)
-    value ||= ''
-
-    uppercasedLetters = value.split('').select do |letter, i| 
-      letter != ' ' and letter == letter.upcase
-    end.join('')
-
-    initialLetters = value.split(' ').map { |part| part[0] }.join('')
-
-    initials = if uppercasedLetters.length >= 2 then uppercasedLetters
-    elsif initialLetters.length >= 2 then initialLetters
-    else value
-    end
-
-    initials[0...2].upcase
-  end
-
-  def company_color(company)
-    color_index = initials(company.name).split('').inject(0) do |memo, letter|
-      memo += letter.ord
-    end % placeholder_colors.length
-  
-    placeholder_colors[color_index]
-  end
-
 private
 
-  def placeholder_colors
-    [
-      'hsl( 39, 85%, 71%)',
-      'hsl(141, 46%, 59%)',
-      'hsl(196, 91%, 69%)',
-      'hsl( 25, 80%, 67%)',
-      'hsl(265, 55%, 76%)',
-      'hsl(344, 88%, 76%)',
-      'hsl( 84, 75%, 75%)',
-      'hsl(229, 75%, 72%)',
-      'hsl( 59, 76%, 76%)',
-      'hsl(144, 75%, 75%)',
-      'hsl(359, 57%, 76%)',
-      'hsl(206, 57%, 76%)'
-    ]
-  end
-
+  # deprecated
   def calculate_proximity_index(intersection, intersection_type, company_people_size)
     company_people_size = company_people_size.to_f
     intersection_size = intersection.size.to_f
