@@ -25,9 +25,12 @@ Component = React.createClass
 
 
   gatherPeople: ->
+    queries = _.compact(@state.query.toLowerCase().split(/\s+/))
+    
     _.chain(@state.people)
       .sortBy(['last_name', 'first_name'])
       .reject (person) => _.contains(@state.block.identity_ids, person.uuid)
+      .filter (person) -> _.all queries, (query) -> person.full_name.toLowerCase().indexOf(query) >= 0
       .map (person) =>
         (tag.div {
           key:        person.uuid
