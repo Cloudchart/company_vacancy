@@ -7,6 +7,7 @@ Buttons     = require('components/company/buttons')
 Actions     = require('actions/company')
 roleMaps    = require('utils/role_maps')
 
+cx = React.addons.classSet
 
 # Get State from Props
 #
@@ -52,10 +53,15 @@ Component = React.createClass
   
 
   emailInput: ->
+    errorTag = if @props.errors && errors = @props.errors["email"]
+      (tag.span {className: "error"},
+        Errors.email[errors[0]]
+      )
+
     (tag.label {
-      className: 'form-field-2'
+      className: cx({ "form-field-2": true, invalid: @props.errors })
     },
-      (tag.span { className: 'input' },
+      (tag.span { className: "input" },
         (tag.input {
           autoComplete:   'off'
           autoFocus:      true
@@ -63,14 +69,8 @@ Component = React.createClass
           value:          @state.email
           onChange:       @onEmailChange
         })
-      
-        if @props.errors and (errors = @props.errors['email'])
-          (tag.span {
-            className: 'error'
-          },
-            Errors.email[errors[0]] || errors[0]
-          )
       )
+      errorTag
     )
 
 
