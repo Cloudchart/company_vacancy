@@ -8,6 +8,7 @@ module.exports =
       url:        "/companies/#{key}"
       type:       "GET"
       dataType:   "json"
+      cache:      false
     .done done
     .fail fail
   
