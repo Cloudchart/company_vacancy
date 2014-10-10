@@ -16,10 +16,6 @@ class Company < ActiveRecord::Base
 
   dragonfly_accessor :logotype
 
-  # deprecated
-  # has_one :logo, as: :owner, dependent: :destroy
-  # accepts_nested_attributes_for :logo, allow_destroy: true
-
   has_and_belongs_to_many :banned_users, class_name: 'User', join_table: 'companies_banned_users'
 
   has_many :vacancies, dependent: :destroy
@@ -33,13 +29,10 @@ class Company < ActiveRecord::Base
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :roles, as: :owner, dependent: :destroy
   has_many :users, through: :roles
-  # has_paper_trail
-  
-  
   has_many :pictures, through: :blocks, source: :picture
   has_many :paragraphs, through: :blocks, source: :paragraph
+  # has_paper_trail
   
-
   # validates :name, presence: true, on: :update
   validates :site_url, url: true, allow_blank: true
   validate  :publish_check, if: 'is_published && is_published_changed?'

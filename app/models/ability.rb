@@ -1,25 +1,7 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user)
-    # The first argument to `can` is the action you are giving the user 
-    # permission to do.
-    # If you pass :manage it will apply to every action. Other common actions
-    # here are :read, :create, :update and :destroy.
-    #
-    # The second argument is the resource the user can perform the action on. 
-    # If you pass :all it will apply to every resource. Otherwise pass a Ruby
-    # class of the resource.
-    #
-    # The third argument is an optional hash of conditions to further filter the
-    # objects.
-    # For example, here the user can only update published articles.
-    #
-    #   can :update, Article, :published => true
-    #
-    # See the wiki for details:
-    # https://github.com/ryanb/cancan/wiki/Defining-Abilities
-    
+  def initialize(user)    
     # Anyone
     # 
     can :read, :company_invite
@@ -50,17 +32,18 @@ class Ability
       # can :access, :rails_admin
       # can :dashboard
       can :manage, :all
+
     # User
     # 
     else
-      can :list, :companies
       can [:verify, :resend_verification], :cloud_profile_email
       can :manage, :cloud_profile_main
       can :update, :cloud_profile_user
       can [:accept, :destroy], :company_invite
+      can :list, :companies
 
-      can :create, CloudProfile::Email
       can [:create, :read, :search], Company
+      can :create, CloudProfile::Email
       can :vote, Feature
       can :manage, Subscription
       can [:preview, :read, :pull], CloudBlueprint::Chart
@@ -69,6 +52,7 @@ class Ability
       # User (conditional)
       #
       can :destroy, CloudProfile::Email, user_id: user.id
+      # can :manage, Comment, user_id: user.id
 
       can :manage, Company do |company|
         Role.find_by(user: user, owner: company).try(:value) =~ /owner|editor/
@@ -80,6 +64,10 @@ class Ability
 
       can :fully_read, Company do |company|
         Role.find_by(user: user, owner: company).try(:value) == 'trusted_reader'
+      end
+
+      can :follow, Company do |company|
+        !user.companies.include?(company)
       end
 
       [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart].each do |model|
@@ -120,10 +108,6 @@ class Ability
       # can [:read, :vote], VacancyResponse do |vacancy_response|
       #   (vacancy_response.vacancy.reviewers & user.people).any? &&
       #   vacancy_response.status == 'in_review'
-      # end
-
-      # can :manage, Comment do |comment|
-      #   comment.user == user
       # end
 
     end

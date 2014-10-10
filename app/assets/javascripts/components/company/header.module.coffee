@@ -47,6 +47,9 @@ Component = React.createClass
       @setState({ name: @props.name })
 
 
+  onFollowClick: ->
+    console.log 'onFollowClick'
+
   onFieldBlur: ->
     if @isValid() then @update() else @rollback()
 
@@ -156,6 +159,16 @@ Component = React.createClass
           readOnly:     @props.readOnly
         })
       ) if @state.description or !@props.readOnly
+
+      console.log @props.can_follow
+      (tag.label {},
+        (tag.button { 
+          className: 'orgpad'
+          onClick: @onFollowClick
+        },
+          'Follow'
+        )
+      ) if @props.readOnly and @props.can_follow
     
     )
 

@@ -38,6 +38,7 @@ module.exports = CloudFlux.createStore
     description:  ''
     logotype_url: null
     is_read_only: true
+    can_follow:   false
   
 
   getActions: ->

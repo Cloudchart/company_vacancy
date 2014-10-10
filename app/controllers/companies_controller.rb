@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file, :finance, :settings]
+  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file, :finance, :settings, :follow]
   before_action :set_collection, only: [:index, :search]
 
   # TODO: update
@@ -19,7 +19,6 @@ class CompaniesController < ApplicationController
     end
   end
 
-
   # GET /companies/1
   def show
     respond_to do |format|
@@ -27,7 +26,6 @@ class CompaniesController < ApplicationController
       format.json
     end
   end
-
 
   # GET /companies/new
   def new
@@ -39,23 +37,9 @@ class CompaniesController < ApplicationController
     redirect_to @company
   end
   
-  # deprecated
-  # POST /companies/1/logo
-  # def upload_logo
-  #   logo = Logo.new image: params[:image]
-  #   @company = Company.find(params[:id])
-  #   @company.logo = logo
-
-  #   respond_to do |format|
-  #     format.json { render nothing: true }
-  #     format.js
-  #   end
-  # end
-  
   # GET /companies/1/edit
   def edit
   end
-
 
   # PATCH/PUT /companies/1
   def update
@@ -76,11 +60,26 @@ class CompaniesController < ApplicationController
     end
   end
 
-
   # DELETE /companies/1
   def destroy
     @company.destroy
     redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
+  end
+
+  # POST /companies/1/follow
+  def follow
+    # TODO: validations
+    company.favorites.create!(user: current_user)
+
+    respond_to do |format|
+      format.json { render json: :ok }
+    end
+
+  rescue ActiveRecord::RecordInvalid
+
+    respond_to do |format|
+      format.json { render json: :fail }
+    end
   end
 
   def verify_site_url

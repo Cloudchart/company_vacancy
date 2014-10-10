@@ -28,14 +28,12 @@ Cloudchart::Application.routes.draw do
   #
   resources :companies, concerns: [:blockable] do
 
-    # deprecated
-    # post :logo, to: 'companies#upload_logo', on: :member
-    
     post :search, on: :collection
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
     get :finance, on: :member
     get :settings, on: :member
+    post :follow, on: :member
     
     resources :vacancies, except: :edit, shallow: true, concerns: [:blockable, :statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
