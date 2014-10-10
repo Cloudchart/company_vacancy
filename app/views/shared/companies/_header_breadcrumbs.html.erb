@@ -3,9 +3,9 @@
     <i class="fa fa-chevron-left"></i>
   <%- end -%>
 
-  <div class="company-name" data-react-class="components/company/name" data-react-props="<%= { key: @company.uuid, value: @company.name }.to_json %>">
+  <div class="company-name" data-react-class="components/company/name" data-react-props="<%= { key: @company.uuid, value: decorate(@company).name }.to_json %>">
     <span>
-      <%= @company.name %>
+      <%= decorate(@company).name %>
     </span>
   </div>
 </div>
