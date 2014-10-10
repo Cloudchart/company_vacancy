@@ -24,16 +24,20 @@ Cloudchart::Application.routes.draw do
     match 'change_status/:status', on: :member, action: :change_status, as: :change_status, via: [:put, :patch]
   end
 
+  concern :followable do
+    post :follow, on: :member
+    delete :unfollow, on: :member
+  end
+
   # Resources
   #
-  resources :companies, concerns: [:blockable] do
+  resources :companies, concerns: [:blockable, :followable] do
 
     post :search, on: :collection
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
     get :finance, on: :member
     get :settings, on: :member
-    post :follow, on: :member
     
     resources :vacancies, except: :edit, shallow: true, concerns: [:blockable, :statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
@@ -85,7 +89,6 @@ Cloudchart::Application.routes.draw do
 
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
-  resources :favorites, only: [:create, :destroy]
   resources :tags, only: [:index, :create]
 
   # Custom

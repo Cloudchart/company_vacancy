@@ -70,6 +70,7 @@ Component = React.createClass
           description:  @state.company.description
           readOnly:     @state.company.is_read_only
           can_follow:   @state.company.can_follow
+          is_followed:  @state.company.is_followed
         })
       
         @gatherBlocks()

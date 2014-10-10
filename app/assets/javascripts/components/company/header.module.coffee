@@ -5,7 +5,7 @@ tag = React.DOM
 
 CompanyActions  = require('actions/company')
 AutoSizingInput = require('components/form/autosizing_input')
-
+FollowComponent = require('components/company/follow')
 
 # Main
 #
@@ -46,9 +46,6 @@ Component = React.createClass
     if @state.name.length == 0
       @setState({ name: @props.name })
 
-
-  onFollowClick: ->
-    console.log 'onFollowClick'
 
   onFieldBlur: ->
     if @isValid() then @update() else @rollback()
@@ -143,6 +140,7 @@ Component = React.createClass
         },
           (tag.i { className: 'fa fa-share' })
         ) unless @props.readOnly
+        
       )
       
       # Description
@@ -160,16 +158,14 @@ Component = React.createClass
         })
       ) if @state.description or !@props.readOnly
 
-      console.log @props.can_follow
+      # temp place
       (tag.label {},
-        (tag.button { 
-          className: 'orgpad'
-          onClick: @onFollowClick
-        },
-          'Follow'
-        )
-      ) if @props.readOnly and @props.can_follow
-    
+        (FollowComponent { 
+          key: @props.key
+          is_followed: @props.is_followed 
+        })
+      ) if @props.can_follow
+
     )
 
 

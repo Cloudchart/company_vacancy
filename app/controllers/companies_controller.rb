@@ -1,5 +1,16 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file, :finance, :settings, :follow]
+  include FollowableController
+
+  before_action :set_company, only: [
+    :show,
+    :edit,
+    :update,
+    :destroy,
+    :verify_site_url,
+    :download_verification_file,
+    :finance,
+    :settings
+  ]
   before_action :set_collection, only: [:index, :search]
 
   # TODO: update
@@ -56,7 +67,7 @@ class CompaniesController < ApplicationController
   rescue ActiveRecord::RecordInvalid
 
     respond_to do |format|
-      format.json { render json: :nok, status: 412 }
+      format.json { render json: :fail, status: 412 }
     end
   end
 
@@ -64,22 +75,6 @@ class CompaniesController < ApplicationController
   def destroy
     @company.destroy
     redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
-  end
-
-  # POST /companies/1/follow
-  def follow
-    # TODO: validations
-    company.favorites.create!(user: current_user)
-
-    respond_to do |format|
-      format.json { render json: :ok }
-    end
-
-  rescue ActiveRecord::RecordInvalid
-
-    respond_to do |format|
-      format.json { render json: :fail }
-    end
   end
 
   def verify_site_url
@@ -140,7 +135,7 @@ private
     @companies = Company.search(params)
   end
 
-  # legacy
+  # outdated
   # def display_invite_notice
   #   if token = @company.invite_tokens.select { |token| token.data[:user_id] == current_user.id }.first
   #     flash.now[:notice] = "You are invited to join this company. <a href='#{company_invite_path(token)}'>Please confirm</a>.".html_safe

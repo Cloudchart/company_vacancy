@@ -42,7 +42,7 @@ class Ability
       can [:accept, :destroy], :company_invite
       can :list, :companies
 
-      can [:create, :read, :search], Company
+      can [:create, :read, :search, :unfollow], Company
       can :create, CloudProfile::Email
       can :vote, Feature
       can :manage, Subscription
@@ -66,8 +66,12 @@ class Ability
         Role.find_by(user: user, owner: company).try(:value) == 'trusted_reader'
       end
 
+      cannot :follow, Company do |company|
+        user.companies.pluck(:uuid).include?(company.id)
+      end
+
       can :follow, Company do |company|
-        !user.companies.include?(company)
+        !user.companies.pluck(:uuid).include?(company.id)
       end
 
       [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart].each do |model|

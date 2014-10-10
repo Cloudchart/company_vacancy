@@ -74,6 +74,24 @@ module.exports =
     .fail fail
 
 
+  follow: (key, done, fail) ->
+    $.ajax
+      url: "/companies/#{key}/follow"
+      type: 'POST'
+      dataType: 'json'
+    .done done
+    .fail fail
+
+
+  unfollow: (key, done, fail) ->
+    $.ajax
+      url: "/companies/#{key}/unfollow"
+      type: 'DELETE'
+      dataType: 'json'
+    .done done
+    .fail fail
+
+
   revokeRole: (key, role_key, done, fail) ->
     $.ajax
       url:        "/companies/#{key}/access_rights/#{role_key}"
