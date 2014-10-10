@@ -34,7 +34,7 @@ PersonComponent = (person) ->
     PersonAvatar({
       value:      person.full_name
       avatarURL:  person.avatar_url
-      onClick:    @onEditPersonClick.bind(@, person.uuid)
+      onClick:    @onEditPersonClick.bind(@, person.uuid) unless @props.readOnly
       readOnly:   true
     })
     
