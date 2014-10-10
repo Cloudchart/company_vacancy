@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  controllers/vacancy_responses#index
+###
+
 ##= require components/editor/BlockIdentityController
 ##= require components/editor/IdentitySelector
 ##= require stores/BlockIdentityStore
@@ -53,7 +59,7 @@ Component = React.createClass
 
   componentDidMount: ->
     BlockIdentityStore.on('change', @onBlockIdentityStoreChange)
-    
+
     unless @state.identitiesAreLoaded
       BlockIdentitySyncAPI.load(@props.url + '/identities')
   

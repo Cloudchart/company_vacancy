@@ -5,7 +5,7 @@ module.exports =
   
   fetch: (key, done, fail) ->
     $.ajax
-      url:        "/companies/#{key}"
+      url:        "/companies/#{key}?ajax=1"
       type:       "GET"
       dataType:   "json"
       cache:      false

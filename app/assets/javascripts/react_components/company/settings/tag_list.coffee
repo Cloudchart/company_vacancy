@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  react_components/company/settings
+###
+
 ##= require ../../../plugins/react_tokeninput/main
 ##= require ../../../plugins/react_tokeninput/option
 ##= require utils/uuid.module

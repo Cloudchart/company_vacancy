@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  react_components/modals/login_form
+###
+
 ##= require ./splash
 
 # Imports

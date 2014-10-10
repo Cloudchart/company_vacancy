@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  controllers/welcome#index
+  react_components/modals/invite_form
+###
+
 ##= require ./splash
 
 #

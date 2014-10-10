@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  controllers/companies#finance
+###
+
 ##= require components/Person
 
 # Imports

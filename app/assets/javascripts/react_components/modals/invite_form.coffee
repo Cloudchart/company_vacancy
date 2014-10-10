@@ -1,10 +1,16 @@
+###
+  Used in:
+
+  base
+  controllers/welcome
+  react_components/modals/login_form
+###
+
 ##= require ./splash
 
 #
 #
 tag = React.DOM
-
-# SplashComponent = cc.require('react/modals/invite-splash')
 
 invite_re = /^([a-zA-Z]{1,4}\s){11}[a-zA-Z]{1,4}$/
 

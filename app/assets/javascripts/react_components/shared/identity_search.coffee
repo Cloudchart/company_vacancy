@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  react_components/editor/blocks/identity_selector
+###
+
 # Expose
 #
 tag = React.DOM

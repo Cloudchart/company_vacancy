@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  react_components/company/settings
+###
+
 tag = React.DOM
 regex = /(.+)\.(.+)/
 

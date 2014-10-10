@@ -1,4 +1,8 @@
-# = require ./owners
+###
+  Used in:
+
+  controllers/companies#settings
+###
 
 ##= require module
 ##= require ./settings/slug
@@ -27,7 +31,6 @@ SlugComponent = cc.require('react/company/settings/slug')
 TagListComponent = cc.require('react/company/settings/tag_list')
 ProgressComponent = require('components/company/progress')
 DateInputComponent = require('cloud_blueprint/components/inputs/date_input')
-# CompanyOwnersComponent  = cc.require('react/company/owners')
 
 # Main Component
 #
@@ -158,10 +161,7 @@ MainComponent = React.createClass
           is_published: @state.is_published
           onChange: @handleProgressChange
         })
-      )
-  
-      # deprecated
-      # CompanyOwnersComponent({ owners: @props.owners, owner_invites: @props.owner_invites })
+      )  
     )
 
 # Exports

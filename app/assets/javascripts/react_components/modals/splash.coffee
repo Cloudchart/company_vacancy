@@ -1,3 +1,11 @@
+###
+  Used in:
+
+  react_components/modals/invite_splash
+  react_components/modals/register_form
+  react_components/modals/reset_splash
+###
+
 # Imports
 #
 tag = cc.require('react/dom')

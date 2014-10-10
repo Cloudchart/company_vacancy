@@ -1,3 +1,11 @@
+###
+  Used in:
+
+  cloud_blueprint/react/blueprint/chart
+  cloud_blueprint/react/blueprint/node
+  cloud_blueprint/react/chart_preview/nodes_container
+###
+
 ##= require module
 
 DraggableMixin = 

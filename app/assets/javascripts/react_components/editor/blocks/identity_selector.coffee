@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  react_components/editor/people
+###
+
 # Expose
 #
 tag = React.DOM

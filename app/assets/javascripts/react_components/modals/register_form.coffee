@@ -1,3 +1,11 @@
+###
+  Used in:
+
+  controllers/welcome#index
+  controllers/companies/invites#show
+  react_components/modals/invite_form
+###
+
 ##= require ./splash
 
 #

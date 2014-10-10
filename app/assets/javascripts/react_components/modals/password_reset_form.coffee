@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  controllers/welcome#index
+###
+
 # Imports
 #
 tag = cc.require('react/dom')

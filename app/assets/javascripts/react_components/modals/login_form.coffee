@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  base
+  controllers/companies/invites#show
+###
+
 ##= require ./input
 ##= require ./reset_splash
 #

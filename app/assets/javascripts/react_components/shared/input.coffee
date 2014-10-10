@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  cloud_blueprint/react/chart_title
+  cloud_profile/react/settings/personal
+###
+
 #
 #
 tag = React.DOM

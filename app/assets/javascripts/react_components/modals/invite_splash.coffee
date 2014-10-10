@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  react_components/modals/request_invite_form
+###
+
 ##= require ./splash
 
 # Imports

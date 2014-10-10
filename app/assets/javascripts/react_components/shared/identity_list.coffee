@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  react_components/editor/blocks/identity_selector
+###
+
 ##= require components/Person
 ##= require components/Vacancy
 
