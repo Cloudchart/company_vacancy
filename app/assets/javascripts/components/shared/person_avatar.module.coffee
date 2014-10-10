@@ -61,7 +61,7 @@ Component = React.createClass
           value:    ''
         })
 
-      ) unless @props.readOnly and @props.onClick
+      ) unless @props.readOnly or @props.onClick
 
       (tag.i {
         className:  'fa fa-times-circle-o'
