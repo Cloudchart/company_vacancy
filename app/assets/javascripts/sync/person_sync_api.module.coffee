@@ -2,12 +2,17 @@ module.exports =
   
   
   create: (key, attributes, done, fail) ->
+    data = _.reduce attributes, (memo, value, name) ->
+      memo.append("person[#{name}]", value) ; memo
+    , new FormData
+
     $.ajax
-      url:        "/companies/#{key}/people"
-      type:       "POST"
-      dataType:   "json"
-      data:
-        person:   attributes
+      url:          "/companies/#{key}/people"
+      type:         "POST"
+      dataType:     "json"
+      data:         data
+      processData:  false
+      contentType:  false
     .done done
     .fail fail
   
