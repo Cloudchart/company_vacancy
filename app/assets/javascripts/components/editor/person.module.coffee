@@ -81,6 +81,8 @@ Component = React.createClass
 
 
   onAddPersonClick: (event) ->
+    return if @props.readOnly
+
     ModalActions.show(PersonChooser({
       key:            @props.key
       onSelect:       @onSelectPerson
@@ -89,6 +91,8 @@ Component = React.createClass
   
   
   onCreatePersonClick: (event) ->
+    return if @props.readOnly
+
     newPersonKey = PersonStore.create({ company_id: @state.block.owner_id })
 
     ModalActions.show(PersonForm({
@@ -101,6 +105,8 @@ Component = React.createClass
   
   
   onEditPersonClick: (key) ->
+    return if @props.readOnly
+    
     ModalActions.show(PersonForm({
       attributes: PersonStore.get(key).toJSON()
       onSubmit:   @onPersonFormSubmit.bind(@, key)
