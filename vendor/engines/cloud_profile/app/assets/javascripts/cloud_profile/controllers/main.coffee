@@ -10,7 +10,6 @@
 #
 @['cloud_profile/main#companies'] = (data) ->
   $ -> 
-    # cc.companies_section_chevron_toggle()
     cc.init_chart_preview(true, 0.4)
 
 

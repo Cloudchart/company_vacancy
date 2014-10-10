@@ -86,23 +86,20 @@
 # 
 @['companies#index'] = (data) ->
   $ ->
-    # cc.companies_section_chevron_toggle()
     cc.init_chart_preview(true, 0.4)
 
+    # comanies search
+    #
+    $('header').on 'input propertychange', '.search input', ->
+      perform_search($(@))
 
-jQuery ->
-  # comanies search
-  #
-  $('header').on 'input propertychange', '.search input', ->
-    perform_search($(@))
+    search_timeout = null
 
-  search_timeout = null
+    search = ($element) ->
+      value = $element.val().replace(/^\s+|\s+$/g, '') 
+      return if value.length < 3 and value.length > 0
+      $element.closest('form').submit()
 
-  search = ($element) ->
-    value = $element.val().replace(/^\s+|\s+$/g, '') 
-    return if value.length < 3 and value.length > 0
-    $element.closest('form').submit()
-
-  perform_search = ($element) ->
-    clearTimeout(search_timeout)
-    search_timeout = setTimeout((-> search($element)), 700)
+    perform_search = ($element) ->
+      clearTimeout(search_timeout)
+      search_timeout = setTimeout((-> search($element)), 700)
