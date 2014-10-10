@@ -17,7 +17,14 @@ module.exports =
     REVOKE_ROLE_DONE:   'company:role:revoke:done'
     REVOKE_ROLE_FAIL:   'company:role:revoke:fail'
   
+    FOLLOW:        'company:follow'
+    FOLLOW_DONE:   'company:follow:done'
+    FOLLOW_FAIL:   'company:follow:fail'
   
+    UNFOLLOW:        'company:unfollow'
+    UNFOLLOW_DONE:   'company:unfollow:done'
+    UNFOLLOW_FAIL:   'company:unfollow:fail'
+
   Token:
     FETCH_DONE:   'token:fetch:done'
     FETCH_FAIL:   'token:fetch:fail'

@@ -4,7 +4,7 @@ class CompanyInviteValidator < ActiveModel::Validator
     record.errors[:email] = 'taken'   if user_already_exists?(record) || user_already_invited?(record)
   end
   
-  private
+private
   
   def user_already_invited?(record)
     emails = record.owner.invite_tokens.map { |record| record.data[:email] }

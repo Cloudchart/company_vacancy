@@ -2,15 +2,13 @@ class User < ActiveRecord::Base
   include Uuidable
   
   attr_accessor :current_password
+  attr_reader :invite
 
   before_destroy :mark_emails_for_destruction
 
-  has_secure_password
   dragonfly_accessor :avatar
 
-  # deprecated
-  # has_one   :avatar, as: :owner, dependent: :destroy
-  # accepts_nested_attributes_for :avatar, allow_destroy: true
+  has_secure_password
 
   has_and_belongs_to_many :friends
 
@@ -29,6 +27,7 @@ class User < ActiveRecord::Base
   has_many :people, dependent: :destroy
   
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
+  validates :invite, presence: true, if: :should_validate_invite?
 
   rails_admin do
 
@@ -47,14 +46,6 @@ class User < ActiveRecord::Base
 
     end
 
-  end
-  
-  def should_validate_name?
-    @should_validate_name
-  end
-  
-  def should_validate_name!
-    @should_validate_name = true
   end
 
   def has_already_voted_for?(object)
@@ -75,8 +66,6 @@ class User < ActiveRecord::Base
     @full_name_or_email ||= full_name.blank? ? emails.first.address : full_name
   end
   
-  # Emails
-  #
   def email
     emails.first.address
   end
@@ -89,13 +78,6 @@ class User < ActiveRecord::Base
     CloudProfile::Email.includes(:user).find_by(address: email).user rescue nil
   end
 
-  # Invite
-  #
-
-  validates :invite, presence: true, if: :should_validate_invite?
-
-  attr_reader :invite
-  
   def invite=(invite)
     @invite = Token.where(name: :invite).find(invite) rescue Token.where(name: :invite).find(Cloudchart::RFC1751::decode(invite)) rescue nil
   end
@@ -106,6 +88,14 @@ class User < ActiveRecord::Base
   
   def should_validate_invite!
     @should_validate_invite = true
+  end
+  
+  def should_validate_name?
+    @should_validate_name
+  end
+  
+  def should_validate_name!
+    @should_validate_name = true
   end
 
 private

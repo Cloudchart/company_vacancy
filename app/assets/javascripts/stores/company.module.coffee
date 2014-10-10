@@ -38,15 +38,24 @@ module.exports = CloudFlux.createStore
     description:  ''
     logotype_url: null
     is_read_only: true
+    can_follow:   false
+    is_followed:  false
   
 
   getActions: ->
     actions = {}
 
-
     actions[Constants.Company.UPDATE]       = @onUpdate
     actions[Constants.Company.UPDATE_DONE]  = @onUpdateDone
     actions[Constants.Company.UPDATE_FAIL]  = @onUpdateFail
+
+    actions[Constants.Company.FOLLOW]       = @onUpdate
+    actions[Constants.Company.FOLLOW_DONE]  = @onUpdateDone
+    actions[Constants.Company.FOLLOW_FAIL]  = @onUpdateFail
+
+    actions[Constants.Company.UNFOLLOW]       = @onUpdate
+    actions[Constants.Company.UNFOLLOW_DONE]  = @onUpdateDone
+    actions[Constants.Company.UNFOLLOW_FAIL]  = @onUpdateFail
 
     actions['company:access_rights:fetch:done'] = @onAccessRightsFetchDone
 

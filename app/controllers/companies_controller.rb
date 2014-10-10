@@ -1,5 +1,16 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:show, :edit, :update, :destroy, :verify_site_url, :download_verification_file, :finance, :settings]
+  include FollowableController
+
+  before_action :set_company, only: [
+    :show,
+    :edit,
+    :update,
+    :destroy,
+    :verify_site_url,
+    :download_verification_file,
+    :finance,
+    :settings
+  ]
   before_action :set_collection, only: [:index, :search]
 
   # TODO: update
@@ -19,7 +30,6 @@ class CompaniesController < ApplicationController
     end
   end
 
-
   # GET /companies/1
   def show
     respond_to do |format|
@@ -27,7 +37,6 @@ class CompaniesController < ApplicationController
       format.json
     end
   end
-
 
   # GET /companies/new
   def new
@@ -39,23 +48,9 @@ class CompaniesController < ApplicationController
     redirect_to @company
   end
   
-  # deprecated
-  # POST /companies/1/logo
-  # def upload_logo
-  #   logo = Logo.new image: params[:image]
-  #   @company = Company.find(params[:id])
-  #   @company.logo = logo
-
-  #   respond_to do |format|
-  #     format.json { render nothing: true }
-  #     format.js
-  #   end
-  # end
-  
   # GET /companies/1/edit
   def edit
   end
-
 
   # PATCH/PUT /companies/1
   def update
@@ -72,10 +67,9 @@ class CompaniesController < ApplicationController
   rescue ActiveRecord::RecordInvalid
 
     respond_to do |format|
-      format.json { render json: :nok, status: 412 }
+      format.json { render json: :fail, status: 412 }
     end
   end
-
 
   # DELETE /companies/1
   def destroy
@@ -141,7 +135,7 @@ private
     @companies = Company.search(params)
   end
 
-  # legacy
+  # outdated
   # def display_invite_notice
   #   if token = @company.invite_tokens.select { |token| token.data[:user_id] == current_user.id }.first
   #     flash.now[:notice] = "You are invited to join this company. <a href='#{company_invite_path(token)}'>Please confirm</a>.".html_safe

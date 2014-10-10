@@ -5,7 +5,7 @@ tag = React.DOM
 
 CompanyActions  = require('actions/company')
 AutoSizingInput = require('components/form/autosizing_input')
-
+FollowComponent = require('components/company/follow')
 
 # Main
 #
@@ -140,6 +140,7 @@ Component = React.createClass
         },
           (tag.i { className: 'fa fa-share' })
         ) unless @props.readOnly
+        
       )
       
       # Description
@@ -156,7 +157,15 @@ Component = React.createClass
           readOnly:     @props.readOnly
         })
       ) if @state.description or !@props.readOnly
-    
+
+      # temp place
+      (tag.label {},
+        (FollowComponent { 
+          key: @props.key
+          is_followed: @props.is_followed 
+        })
+      ) if @props.can_follow
+
     )
 
 

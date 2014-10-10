@@ -66,7 +66,6 @@ module.exports =
 
     SyncAPI.fetchAccessRights(key, done, fail)
   
-  
   #
   #
   fetchInviteTokens: (key, token) ->
@@ -85,6 +84,31 @@ module.exports =
         data: [key, xhr.responseJSON, xhr, token]
     
     SyncAPI.fetchInviteTokens(key, done, fail)
+
+  
+  # Follow and Unfollow
+  # 
+  follow: (key, token = 'follow') ->
+    handleClientStoreAction(Constants.Company.FOLLOW, key, null, token)
+    
+    done = (json) ->
+      handleServerStoreDoneAction(Constants.Company.FOLLOW_DONE, key, json, token)
+  
+    fail = (xhr) ->
+      handleServerStoreDoneAction(Constants.Company.FOLLOW_FAIL, key, xhr, token)
+    
+    SyncAPI.follow(key, done, fail)
+
+  unfollow: (key, token = 'unfollow') ->
+    handleClientStoreAction(Constants.Company.UNFOLLOW, key, null, token)
+    
+    done = (json) ->
+      handleServerStoreDoneAction(Constants.Company.UNFOLLOW_DONE, key, json, token)
+  
+    fail = (xhr) ->
+      handleServerStoreDoneAction(Constants.Company.UNFOLLOW_FAIL, key, xhr, token)
+    
+    SyncAPI.unfollow(key, done, fail)
 
 
   # Send invite
