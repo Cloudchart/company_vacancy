@@ -16,6 +16,52 @@ blockComponents =
   Vacancy:    require('components/editor/vacancy')
 
 
+
+identityTypes =
+  People:     'Person'
+  Vacancies:  'Vacancy'
+  Picture:    'Picture'
+  Paragraph:  'Paragraph'
+
+
+
+# Section Placeholder component
+#
+SectionPlaceholderComponent = (position) ->
+
+  (tag.section {
+    className:  'placeholder'
+  },
+    
+    if @state.position == position
+      (tag.ul null,
+      
+        _.map identityTypes, (identityType, key) =>
+          (tag.li {
+            key:      key
+            onClick:  @onChooseBlockTypeClick.bind(@, identityType)
+          },
+            key
+          )
+      
+        (tag.li {
+          className: 'cancel'
+        },
+          (tag.i {
+            className: 'fa fa-times-circle'
+            onClick:    @onCancelBlockCreateClick.bind(@, position)
+          })
+        )
+      )
+    else
+      (tag.figure {
+        onClick:    @onPlaceholderClick.bind(@, position)
+      },
+        (tag.i { className: 'fa fa-plus' })
+      )
+  )
+
+
 # Main
 #
 Component = React.createClass
@@ -32,6 +78,21 @@ Component = React.createClass
           readOnly:   @state.company.is_read_only
         }) if component
       .value()
+  
+  
+  onPlaceholderClick: (position) ->
+    @setState({ position: position })
+  
+  
+  onCancelBlockCreateClick: ->
+    @setState({ position: null })
+  
+  
+  onChooseBlockTypeClick: (type) ->
+    key = BlockStore.create({ owner_id: @props.key, owner_type: 'Company', identity_type: type, position: @state.position })
+    console.log BlockStore.get(key).toJSON()
+    @setState({ position: null })
+    BlockStore.emitChange()
 
 
   getStateFromStores: ->
@@ -54,13 +115,17 @@ Component = React.createClass
   
   
   getInitialState: ->
-    @getStateFromStores()
+    state           = @getStateFromStores()
+    state.position  = null
+    state
 
 
   render: ->
     if @state.company
+      blocks = @gatherBlocks()
+      
       (tag.article {
-        className: 'company-2_0'
+        className: 'editor company company-2_0'
       },
     
         (CompanyHeader {
@@ -73,7 +138,13 @@ Component = React.createClass
           is_followed:  @state.company.is_followed
         })
       
-        @gatherBlocks()
+        _.map blocks, (block, i) =>
+          [
+            SectionPlaceholderComponent.call(@, i)
+            block
+          ]
+
+        SectionPlaceholderComponent.call(@, blocks.length)
             
       )
     else

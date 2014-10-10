@@ -1,922 +1,231 @@
-$editor-max-width: 1200px;
-$editor-paragraph-max-width: 800px;
-$editor-paragraph-line-height: 140%;
+$editor-width: 800px;
+$editor-gutter: 20px;
 
-$editor-sidebar-item-background-color: hsl(0, 0%, 96%);
-$editor-sidebar-item-background-color-draggable: hsl(0, 0%, 100%);
-$editor-sidebar-item-color: hsl(60, 4%, 11%);
-$editor-sidebar-item-color-draggable: $editor-sidebar-item-background-color;
-$editor-sidebar-item-font-size: 12pt;
-$editor-sidebar-item-size: $base-unit * 2.5;
+$editor-placeholder-background-color: hsl(0, 0%, 95%);
+$editor-placeholder-color: hsl(0, 0%, 75%);
+$editor-placeholder-font-size: 50px;
 
-$editor-section-header-font-size: 22pt;
-$editor-section-header-input-font-size: 22pt;
-$editor-section-header-input-font-weight: 700;
+$editor-remove-button-color: hsl(0, 75%, 55%);
+$editor-remove-button-font-size: 20px;
 
-$editor-section-block-lock-color: hsl(0, 0%, 75%);
-$editor-section-block-lock-font-size: 15pt;
+$editor-person-name-font-size: 20px;
+$editor-person-occupation-font-size: 12px;
 
-$editor-identity-item-background-color: hsl(0, 0%, 96%);
-
-$editor-person-button-green: hsl(136, 52%, 51%);
-$editor-person-button-red: hsl(1, 76%, 54%);
+$editor-poaceholder-section-figure-size: 50px;
 
 
-$list-identity-item-height: $base-unit * 1.75;
-
-$list-identity-item-icon-font-size: $list-identity-item-height * .5;
-$list-identity-item-icon-font-weight: 300;
-
-$list-identity-item-name-font-size: 12pt;
-$list-identity-item-name-font-weight: 300;
-
-$list-identity-item-occupation-font-size: 7pt;
-$list-identity-item-occupation-font-weight: 100;
-
-
-
-$editor-identity-selector-search-input-border-width: 3pt;
-$editor-identity-selector-search-input-font-size: 12pt;
-$editor-identity-selector-search-input-padding: 4pt;
-
-
-
-// Editor sidebar
+// Editor
 //
-
-@mixin editor-sidebar-item {
-  cursor: move;
-  background-color: $editor-sidebar-item-background-color;
-  border: 1pt solid $editor-sidebar-item-background-color;
-  color: $editor-sidebar-item-color;
-  font-size: $editor-sidebar-item-font-size;
-  height: $editor-sidebar-item-size;
-  line-height: $editor-sidebar-item-size;
-  list-style: none;
-  text-align: center;
-  width: $editor-sidebar-item-size;
+article.editor {
   
-  &.draggable {
-    background-color: $editor-sidebar-item-background-color-draggable;
-    color: $editor-sidebar-item-color-draggable;
+  //background-color: #eee;
+  margin: 0 auto;
+  width: $editor-width;
+  
+  > section {
+    //background-color: #ccc;
+    margin: -10px -20px;
+    padding: 10px 20px;
+    
+    &:not(.placeholder):hover {
+      background-color: hsl(0, 0%, 98%);
+      cursor: move;
+    }
   }
+  
 }
 
 
-@mixin editor-sidebar {
-  @include position(fixed, 50% $base-unit * 2 0 0);
+// Placeholder section
+//
+article.editor > section.placeholder {
+  //background-color: #ccc;
+  height: 40px;
+  position: relative;
   
-  ul {
+  > ul,
+  > figure {
+    @include position(absolute, 50% 0 0 50%);
+    @include transform(translate(-50%, -50%));
+
+    background-color: $editor-placeholder-background-color;
+    border-radius: $editor-poaceholder-section-figure-size / 2;
+    color: $editor-placeholder-color;
+    height: $editor-poaceholder-section-figure-size;
+    text-align: center;
+    z-index: 100;
+  }
+  
+  > ul {
+    @include align-items(center);
+    @include display(flex);
+
     list-style: none;
     margin: 0;
-    padding: 0;
-    
-    li {
-      @include editor-sidebar-item;
-      margin: 2pt 0;
-    }
-  }
-}
+    padding: 0 25px;
 
+    > li {
+      cursor: pointer;
+      margin: 0 10px;
 
-.editor-sidebar-item {
-  @include editor-sidebar-item;
-}
+      &.cancel {
+        color: $editor-remove-button-color !important;
+      }
 
-
-
-// Image uploader
-@mixin editor-image-uploader {
-  background-position: center center;
-  background-repeat:  no-repeat;
-  background-size: contain;
-  
-  input[type="file"] {
-    height: 0;
-    overflow: hidden;
-    width: 0;
-  }
-  
-  button.create,
-  button.update,
-  button.delete
-   {
-    visibility: hidden;
-  }
-  
-  &:hover {
-    button.create,
-    button.update,
-    button.delete {
-      visibility: visible;
-    }
-  }
-  
-  button.create {
-    @include position(absolute, 0px 0px 0 0);
-    width: $base-unit * 1.1;
-  }
-  
-  button.update {
-    @include position(absolute, 0px 0 0 0px);
-  }
-
-  button.delete {
-    @include position(absolute, 0px 0px 0 0);
-  }
-}
-
-.editor-image-uploader {
-  @include editor-image-uploader;
-}
-
-
-// Vacancy flag
-//
-@mixin vacancy-flag($height, $width, $color) {
-  background-color: $color;
-  height: $height - $width;
-  width: $width;
-  
-  &::after {
-    border: $width / 2 solid $color;
-    border-bottom-color: transparent;
-    bottom: - $width;
-    content: '';
-    height: $width;
-    left: 0;
-    position: absolute;
-    width: $width;
-  }
-}
-
-
-// Editor section header input
-@mixin editor-section-header-input {
-  // @include placeholder {
-  //   font-style: italic;
-  // }
-  
-  border: none;
-  font-size: $editor-section-header-input-font-size;
-  font-weight: $editor-section-header-input-font-weight;
-  outline: none;
-  padding: 0;
-  
-  &:disabled {
-    @include placeholder {
-      color: hsl(0, 0%, 0%);
-      font-style: normal;
-      font-weight: 300;
-    }
-  }
-}
-
-
-// Editor paragraph block
-@mixin editor-paragraph-block {
-  font-size: 15pt;
-  margin: 0;
-  max-width: $editor-paragraph-max-width;
-  padding: 0;
-  position: relative;
-  line-height: $editor-paragraph-line-height;
-  
-  > div {
-    margin: 0;
-    outline: none;
-
-    &:empty:before {
-      content: attr(data-placeholder);
-      opacity: .25;
-    }
-  }
-}
-
-
-// Editor image block
-@mixin editor-image-block {
-  position: relative;
-  
-  > input[type="file"] {
-    @include position(absolute, 0px 0px 0px 0px);
-    opacity: 0;
-    width: 100%;
-  }
-  
-  > img {
-    width: 100%;
-  }
-  
-  > .placeholder {
-    @include display(flex);
-    @include flex-direction(column);
-    @include align-items(center);
-    @include justify-content(center);
-    
-    background-color: hsl(0, 0%, 75%);
-    border: 1pt solid hsl(0, 0%, 0%);
-    height: $base-unit * 20;
-    opacity: .3;
-    
-    header {
-      font-size: 15pt;
-      font-weight: 700;
-      position: relative;
-      width: $base-unit * 12;
-      
-      i {
-        margin-right: $base-unit / 2;
-        right: 100%;
-        position: absolute;
+      &:hover {
+        color: hsl(0, 0%, 25%);
       }
     }
-    
-    p {
-      font-size: 12pt;
-      margin: $base-unit / 2 0 0;
-      width: $base-unit * 12;
-    }
   }
-
-  > button.delete {
-    @include position(absolute, $base-unit $base-unit 0 0);
-    
-    visibility: hidden;
-  }
-
-  &:hover > button.delete {
-    visibility: visible;
-  }
-  
-}
-
-
-// Identity item
-//
-@mixin list-identity-item($padding: 0px) {
-  @include display(flex);
-  @include flex-direction(column);
-  @include justify-content(center);
-  
-  $n: length($padding);
-  
-  $padding-top:     0;
-  $padding-right:   0;
-  $padding-bottom:  0;
-  $padding-left:    0;
-
-  @if $n == 1 { $padding-top: nth($padding, 1); $padding-right: nth($padding, 1); $padding-bottom: nth($padding, 1); $padding-left: nth($padding, 1); }
-  @if $n == 2 { $padding-top: nth($padding, 1); $padding-right: nth($padding, 2); $padding-bottom: nth($padding, 1); $padding-left: nth($padding, 2); }
-  @if $n == 3 { $padding-top: nth($padding, 1); $padding-right: nth($padding, 2); $padding-bottom: nth($padding, 3); $padding-left: nth($padding, 2); }
-  @if $n == 4 { $padding-top: nth($padding, 1); $padding-right: nth($padding, 2); $padding-bottom: nth($padding, 3); $padding-left: nth($padding, 4); }
-  
-  padding: $padding-top $padding-right $padding-bottom $padding-left;
-  padding-left: $list-identity-item-height + $base-unit / 2 + $padding-left;
-  position: relative;
-  height: $list-identity-item-height + $padding-top + $padding-bottom;
-  
-  > * > figure {
-    @include position(absolute, $padding-top 0 0 $padding-left);
-    
-    border-radius: $list-identity-item-height / 2;
-    color: hsl(0, 0%, 100%);
-    font-size: $list-identity-item-icon-font-size;
-    font-weight: $list-identity-item-icon-font-weight;
-    line-height: $list-identity-item-height;
-    width: $list-identity-item-height;
-    height: $list-identity-item-height;
-    text-align: center;
-  }
-  
-  > * > header {
-    font-size: $list-identity-item-name-font-size;
-  }
-  
-  > * > footer {
-    font-size: $list-identity-item-occupation-font-size;
-  }
-    
-  &:hover {
-    background-color: hsla(0, 0%, 0%, .1);
-  }
-  
-}
-
-
-// Editor identity selector
-//
-@mixin editor-identity-selector {
-  
-  input.identity-search {
-    border: $editor-identity-selector-search-input-border-width solid $editor-identity-item-background-color;
-    border-bottom-width: 0;
-    font-size: $editor-identity-selector-search-input-font-size;
-    outline: none;
-    padding: $editor-identity-selector-search-input-padding;
-    position: relative;
-    width: 100%;
-  }
-  
-  ul.identity-list {
-    @include flex(1);
-
-    list-style: none;
-    margin: 0;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    padding: 0;
-    position: relative;
-    width: 100%;
-    
-    > li {
-      @include list-identity-item(3pt);
-
-      cursor: pointer;
-      
-    }
-  }
-}
-
-
-// Identity item
-@mixin editor-identity-item($count: 3) {
-  float: left;
-  height: 0;
-  padding-bottom: 100% / $count;
-  position: relative;
-  width: 100% / $count;
-  
-  > * {
-    @include display(flex);
-    @include flex-direction(column);
-    @include align-items(center);
-    @include position(absolute, $base-unit 0px 0px 0px);
-    
-    background-color: $editor-identity-item-background-color;
-    margin: 0 $base-unit / 2;
-  }
-  
-  &:nth-child(#{$count}n+1) > * {
-    margin-left: 0;
-  }
-  
-  &:nth-child(#{$count}n) > * {
-    margin-right: 0;
-  }
-}
-
-
-// Person button
-@mixin editor-person-button {
-  border: none;
-  color: hsl(0, 0%, 100%);
-  font-size: 8pt;
-  line-height: 2em;
-  padding: 0;
-  text-transform: uppercase;
-}
-
-
-// Identity item
-//
-@mixin editor-identity-block-item {
-  @include align-items(flex-start);
-  @include justify-content(flex-end);
-  
-  position: absolute;
-  
   
   > figure {
-    @include position(absolute, 0px 0px 0px 0px);
-  }
-  
-  > header,
-  > footer {
-    color: hsl(0, 100%, 100%);
-    padding: 10px;
-    width: 100%;
-  }
-  
-  &.with-avatar {
-    > header,
-    > footer {
-      background-color: hsla(0, 0%, 0%, .25);
-    }
-  }
-  
-  > header {
-    font-size: 20px;
-    padding-bottom: 0;
-  }
-  
-  > footer {
-    font-size: 10px;
-    padding-top: 0;
-  }
-  
-  
-  button {
-    @include editor-person-button;
-    @include transition(opacity 100ms ease-out);
-    
+    cursor: pointer;
     visibility: hidden;
-    opacity: 0;
+    width: $editor-poaceholder-section-figure-size;
+    
+    > i {
+      font-size: $editor-poaceholder-section-figure-size / 3;
+      line-height: $editor-poaceholder-section-figure-size;
+    }
   }
   
-  &:hover button {
+  &:hover > figure {
     visibility: visible;
-    opacity: 1;
   }
-  
-  button.delete {
-    @include position(absolute, $base-unit / 2 50% 0 $base-unit / 2);
+}
 
-    background-color: $editor-person-button-red;
-    margin-right: $base-unit / 4;
-  }
-  
-  button.change {
-    @include position(absolute, $base-unit / 2 $base-unit / 2 0 50%);
+
+// People
+//
+article.editor > section.people {
+
+  > ul {
+    @include display(flex);
+    @include flex-wrap(wrap);
     
-    background-color: $editor-person-button-green;
-    margin-left: $base-unit / 4;
-  }
-
-  p.title,
-  p.note {
-    background-color: hsla(0, 0%, 50%, .25);
-    color: hsl(0, 0%, 100%);
+    list-style: none;
     margin: 0;
-    padding: $base-unit / 2;
-    width: 100%;
-  }
-  
-  p.title {
-    font-size: 15pt;
-    overflow: hidden;
-    padding-bottom: 0;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  p.note {
-    font-size: 10pt;
-    padding-top: 0;
-    text-transform: uppercase;
-  }
-}
-
-
-@mixin aspect-ratio {
-  position: relative;
-  
-  &::before {
-    content: '';
-    display: block;
-    padding-top: 100%;
-  }
-  
-  > .content {
-    @include position(absolute, 0px 0px 0px 0px);
-  }
-}
-
-.aspect-ratio-1x1 {
-  @include aspect-ratio;
-}
-
-
-@mixin identity-button {
-  background-color: hsl(136, 52%, 51%);
-  border: none;
-  color: hsl(0, 100%, 100%);
-  font-size: 11px;
-  font-weight: 400;
-  height: 22px;
-  margin: 0;
-  padding: 0;
-  text-transform: uppercase;
-  
-  &.delete {
-    background-color: hsl(1, 76%, 54%);
-  }
-}
-
-
-@mixin identity-selector-button {
-  background-color: hsl(136, 52%, 51%);
-  border: none;
-  color: hsl(0, 100%, 100%);
-  font-size: 18px;
-  font-weight: 400;
-  height: 40px;
-  line-height: 40px;
-  margin: 0;
-  padding: 0 15px;
-  
-  > i.fa {
-    margin-left: 10px;
-  }
-}
-
-
-// Editor person block
-@mixin editor-people-block {
-  
-  @include display(flex);
-  @include flex-wrap(wrap);
-  
-  margin-right: -20px;
-  
-  > .controller,
-  > .identity-selector {
-    width: 25%;
-
-    > .content {
-      margin: 0 20px 20px 0;
-    }
-  }
-  
-  
-  > .identity-selector {
+    margin-left: -$editor-gutter;
+    padding: 0;
     
-    > .content {
-      @include align-items(center);
-      @include display(flex);
-      @include flex-direction(column);
-
-      background-color: hsl(0, 0%, 96%);
-      overflow: hidden;
-      padding: 5px;
+    > li {
+      @include flex(0 0 33.3333%);
       
-      > input {
-        border: none;
-        font-size: 16px;
-        font-weight: 400;
-        height: 35px;
-        margin: 0;
-        padding: 0 5px;
-        outline: none;
-        position: relative;
-        width: 100%;
-
-        &.error {
-          background-color: $baby-pink;
-        }
-      }
+      margin: 0;
+      margin-top: 20px;
+      padding: 0;
+      padding-left: $editor-gutter;
       
-      > button {
-        @include identity-selector-button;
-        margin: auto;
-      }
-
-      > header {
-        position: absolute;
-        bottom: 0;
-        font-size: 20px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        background-color: hsla(0, 0%, 0%, .5);
-        padding: 10px;
-        color: white;
-        width: 100%;
-      }
-      
-      > ul {
-        list-style: none;
-        margin: 5px -5px 0;
-        overflow: scroll;
-        padding: 0;
-        width: 100%;
-        
-        > li {
-          cursor: pointer;
-          padding: 5px;
-          margin: 0;
-          
-          &:hover {
-            background-color: #eee;
-          }
-          
-        }
+      &:nth-child(-n+3) {
+        margin-top: 0;
       }
     }
-  }
-  
 
-  > .controller {
-    
-    .buttons {
-      @include display(flex);
-      @include position(absolute, 10px 10px 0 10px);
-      
-      visibility: hidden;
-      
-      > button {
-        @include flex(1);
-        @include identity-button;
-        margin: 0 5px;
-        
-        &:first-child {
-          margin-left: 0;
-        }
+    > .placeholder .person > aside {
+      background-color: $editor-placeholder-background-color;
+      color: $editor-placeholder-color;
+    }
 
-        &:last-child {
-          margin-right: 0;
-        }
+    > .placeholder:not(:first-child) .person {
+      > aside {
+        margin: 25% auto 0;
+        padding-top: 50%;
+        width: 50%;
       }
-    }
-    
-    &:hover .buttons {
-      visibility: visible;
-    }
-    
-    .person {
-      @include display(flex);
-      @include flex-direction(column);
-      @include justify-content(flex-end);
-      
-      height: 100%;
-    }
 
-    .person > figure {
-      @include position(absolute, 0px 0px 0px 0px);
-      
-      > * {
+      figure > i.hint {
         display: none;
       }
     }
-    
-    .person.with-avatar {
-      > header,
-      > footer {
-        background-color: hsla(0, 0%, 0%, .5);
+  
+    > .placeholder:nth-child(3n+1) .person {
+      > aside {
+        margin-top: 0;
       }
-    }
-    
-    .person > header,
-    .person > footer {
-      color: hsl(0, 100%, 100%);
-      padding: 10px;
-    }
-    
-    .person > header {
-      font-size: 20px;
+      padding-top: 0;
       padding-bottom: 0;
     }
-    
-    .person > footer {
-      font-size: 10px;
-      padding-top: 0;
-    }
   }
-  
 }
 
 
-// Editor vacancies block
+// Person
 //
-@mixin editor-vacancies-block {
-  @include clearfix;
+article.editor > section.people div.person {
+  margin: 0;
+  padding: 0 20px;
+  position: relative;
   
-  margin-top: -$base-unit;
-  
-  > .container {
-    @include editor-identity-item(4);
+  > i.remove {
+    @include position(absolute, $editor-gutter / 2 $editor-gutter / 2 0 0);
     
-    > .vacancy {
-      @include editor-identity-block-item;
-
-      background-color: hsl(1, 76%, 54%);
+    color: $editor-remove-button-color;
+    cursor: pointer;
+    font-size: $editor-remove-button-font-size;
+    visibility: hidden;
+  }
+  
+  &.editable:hover > i.remove {
+    visibility: visible;
+  }
+  
+  &.editable > aside {
+    cursor: pointer;
+  }
+  
+  > footer {
+    padding: 0 20px;
+    
+    > p {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       
-      button.delete {
-        background-color: hsl(0, 0%, 100%);
-        color: $editor-person-button-red;
+      &.name {
+        font-size: $editor-person-name-font-size;
       }
-      
-      .flag {
-        @include vacancy-flag(30pt, 17pt, hsl(0, 0%, 100%));
-        @include position(absolute, 0px $base-unit / 2 0 0);
-      }
-    }
 
-    .identity-selector {
-      @include editor-identity-selector;
-      
-      .vacancy aside {
-        background-color: HSLA(1, 76%, 54%, 1);
-        font-size: 11pt !important;
+      &.occupation {
+        font-size: $editor-person-occupation-font-size;
+        font-weight: 300;
+        text-transform: uppercase;
       }
     }
   }
 }
 
 
-@mixin editor-media-breakpoint($counter) {
-  @media (max-width: 1200px + $base-unit * $counter) {
-    padding-right: $base-unit * ($counter - 1);
-    padding-left: $base-unit * ($counter - 1);
-  }
-}
-
-
-// Editor article
-article.editor {
-  margin: 0 auto;
-  max-width: $editor-max-width;
-  padding: $base-unit * 2 $base-unit * 6;
+.person > aside.avatar {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border-radius: 50%;
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  padding-top: 100%;
+  position: relative;
   
-  > aside.sidebar {
-    @include editor-sidebar;
-  }
-  
-  > section {
+  > figure {
+    @include position(absolute, 50% 0px 0 0px);
     
-    padding: 0 0 $base-unit * 2;
+    display: inline-block;
+    font-size: $editor-placeholder-font-size;
+    font-weight: 100;
+    line-height: 1em;
+    margin-top: -.5em;
+    text-align: center;
     
-    > header {
-      
-      font-size: $editor-section-header-font-size;
-      font-weight: 300;
-      
-      input {
-        @include editor-section-header-input;
-        width: 100%;
-      }
-      
+    i.hint {
+      @include position(absolute, 100% 0px 0 0px);
+
+      font-size: .25em;
+      font-style: normal;
+      line-height: 1em;
+      text-transform: uppercase;
     }
-
-    &.profile, &.progress {
-      font-size: 15pt;
-      padding-bottom: $base-unit * 2;
-      
-      select {
-        font-size: 15pt;
-        margin-right: $base-unit;
-        margin-left: $base-unit / 2;
-        width: 200pt;
-      }
-      
-      p {
-        margin: $base-unit 0;
-      }
-      
-      footer {
-        font-size: 15pt;
-
-        > button {
-          margin-left: 10pt;
-        }
-
-      }
-
-      > .section-block {
-        > div.profile-item {
-          @include display(flex);
-
-          &:not(:last-child) {
-            margin-bottom: $base-unit;
-          }
-
-          div.content {
-            width: 480px;
-            margin-right: $base-unit;
-
-            &.paragraph {
-              line-height: $editor-paragraph-line-height;
-            }
-
-            &.field {
-              @include display(inline-flex);
-              @include align-items(center);
-
-              > div.spacer {
-                @include flex(1)
-              }
-
-              > span.label {
-                width: 120px;
-              }
-
-              > i {
-                color: $ufo-green;
-              }
-
-              > a {
-                margin-right: $base-unit / 2;
-              }
-
-              > input {
-                padding: 4px;
-                width: 300px;
-                border: 3pt solid $white-smoke;
-                outline: none;
-                font-weight: 300;
-
-                &.error {
-                  border-color: $baby-pink;
-                }
-
-                &#slug {
-                  width: 120px;
-                }
-              }
-
-              > div.tags {
-                @include tag_list;
-              }
-
-            }
-
-          }
-
-          > div.actions {
-
-            > button {
-              margin-right: $base-unit / 2;
-            }
-
-          }
-
-        }
-      }
-
-    }
-
-    &.chart-preview-container {
-      height: 300px;
-      position: relative;
-      margin-bottom: $base-unit * 2;
-    }
-    
-    
-    > .section-block {
-      margin-left: -$base-unit * 2;
-      padding-top: $base-unit;
-      padding-left: $base-unit * 2;
-      position: relative;
-      
-      > .delete {
-        @include position(absolute, $base-unit 100% 0 0);
-        
-        color: $editor-section-block-lock-color;
-        cursor: pointer;
-        font-size: $editor-section-block-lock-font-size;
-        line-height: 1em;
-        margin-right: - $base-unit;
-
-        visibility: hidden;
-      }
-      
-      &:hover > .delete {
-        visibility: visible;
-      }
-      
-      > .lock {
-        @include position(absolute, 50% 100% 0 0);
-
-        color: $editor-section-block-lock-color;
-        font-size: $editor-section-block-lock-font-size;
-        margin-top: - $editor-section-block-lock-font-size / 2;
-        margin-right: $base-unit;
-      }
-      
-      > .default {
-        border: 1pt dashed hsl(0, 0%, 0%);
-        font-size: 15pt;
-        font-weight: 600;
-        opacity: .25;
-        padding: $base-unit;
-      }
-      
-      > .paragraph {
-        @include editor-paragraph-block;
-      }
-      
-      > .image {
-        @include editor-image-block;
-      }
-
-      > .people {
-        @include editor-people-block;
-      }
-
-      > .vacancies {
-        @include editor-vacancies-block;
-      }
-    }
-    
-    
-    > .new-block-placeholder {
-      border: 2px dashed #eee;
-      margin-top: $base-unit;
-      padding: $base-unit;
-    }
-    
   }
   
 }
-
-
