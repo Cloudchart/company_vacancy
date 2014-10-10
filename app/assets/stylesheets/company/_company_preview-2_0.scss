@@ -11,7 +11,8 @@
   margin-bottom: 17px;
   position: relative;
   width: 49%;
-  height: 400px;
+  height: 350px;
+  overflow: hidden;
 
   .company-preview-link {
     @include display(flex);
@@ -26,11 +27,14 @@
 }
 
 .company-preview-header {
+  @include display(flex);
+  @include align-items(center);  
   padding: 12px;
   height: 145px;
 }
 
 .company-preview-logo {
+
   img {
     width: 145px;
   }
@@ -59,7 +63,7 @@
   @include flex-wrap(wrap);
   @include justify-content(space-between);
 
-  font-size: 14px;
+  font-size: 12pt;
   padding: 12px;
 
   > * {
@@ -68,10 +72,10 @@
 }
 
 .company-preview-name {
-  font-size: 18px;
+  font-size: 16pt;
+  font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .company-preview-name,
@@ -79,6 +83,7 @@
   height: 26px;
   margin-right: 20px;
   width: 100%;
+  white-space: nowrap;
 }
 
 .company-preview-size,
@@ -98,7 +103,7 @@
 }
 
 .company-preview-burn-rate span {
-  font-size: 9px;
+  font-size: 9pt;
   font-weight: 300;
   margin-left: 5px;
   text-transform: uppercase;
@@ -107,8 +112,8 @@
 .company-preview-description {
   background-color: hsl(0, 0%, 96%);
   color: hsl(60, 1%, 34%);
-  font-size: 14px;
-  height: 170px;
+  font-size: 12pt;
+  height: 120px;
   padding: 12px;
 }
 

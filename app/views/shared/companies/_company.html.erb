@@ -1,13 +1,13 @@
 <% decorate(company) do |company| %>
 
-  <article id="<%= company.id %>" class="company-preview">
+  <div id="<%= company.id %>" class="company-preview">
     <%= link_to main_app.company_path(company), class: "company-preview-link" do %>
       <header class="company-preview-header">
         <div class="company-preview-logo">
           <%= company.logo %>
         </div>
       </header>
-      <section class="company-preview-info">
+      <div class="company-preview-info">
         <table class="company-preview-data">
           <tr>
             <td class="company-preview-name">
@@ -26,14 +26,14 @@
             </td>
           </tr>
         </table>
-        <section class="company-preview-description">
+        <div class="company-preview-description">
           <p>
             <%= company.tags %>
           </p>
-        </section>
-      </section>
+        </div>
+      </div>
     <% end %>
-  <!--   <section class="company-preview-buttons">
+  <!--   <div class="company-preview-buttons">
       <button class="cc">
         Decline
         <i class="fa fa-close"></i> 
@@ -42,7 +42,7 @@
         Accept
         <i class="fa fa-check"></i>
       </button>
-    </section> -->
-  </article>
+    </div> -->
+  </div>
 
 <% end %>
