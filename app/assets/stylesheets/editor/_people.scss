@@ -29,6 +29,11 @@
     padding-top: 100%;
     position: relative;
     
+    > label {
+      @include position(absolute, 0px 0px 0px 0px);
+      z-index: 1;
+    }
+    
     > figure {
       @include align-items(center);
       @include display(flex);

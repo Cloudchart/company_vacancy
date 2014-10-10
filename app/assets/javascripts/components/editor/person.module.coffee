@@ -13,57 +13,36 @@ PersonActions = require('actions/person_actions')
 BlockStore    = require('stores/block_store')
 PersonStore   = require('stores/person')
 
+PersonAvatar  = require('components/shared/person_avatar')
 PersonChooser = require('components/editor/person_chooser')
 PersonForm    = require('components/form/person_form')
-
-
-initials      = require('utils/initials')
-colors        = require('utils/colors')
 
 
 # Person component
 #
 PersonComponent = (person) ->
-  personInitials = initials(person.full_name)
-  
   (tag.div {
     key:        person.uuid
     className:  'editor-person'
   },
   
     (tag.i {
-      className:  'fa fa-times-circle-o'
+      className:  'fa fa-times-circle-o remove'
       onClick:    @onDeletePersonClick.bind(@, person.uuid)
     }) unless @props.readOnly
     
-    (tag.aside {
-      className:  if person.avatar_url then '' else 'no-avatar' 
+    PersonAvatar({
+      value:      person.full_name
+      avatarURL:  person.avatar_url
       onClick:    @onEditPersonClick.bind(@, person.uuid)
-      style:
-        backgroundColor:  if person.avatar_url then 'none' else colors.colors[colors.colorIndex(personInitials)]
-        backgroundImage:  if person.avatar_url then "url(#{person.avatar_url})" else "none"
-    },
-      (tag.figure null, personInitials) unless person.avatar_url
-    )
+      readOnly:   true
+    })
     
     (tag.footer null,
       (tag.p { className: 'name' }, person.full_name)
       (tag.p { className: 'occupation' }, person.occupation)
     )
     
-  )
-
-
-# New Person component
-#
-NewPersonComponent = ->
-  (tag.div {
-    className:  'editor-person add'
-    onClick:    @onAddPersonClick
-  },
-    (tag.aside null,
-      (tag.figure null, '+')
-    )
   )
 
 
@@ -122,7 +101,6 @@ Component = React.createClass
   
   
   onEditPersonClick: (key) ->
-    console.log key
     ModalActions.show(PersonForm({
       attributes: PersonStore.get(key).toJSON()
       onSubmit:   @onPersonFormSubmit.bind(@, key)

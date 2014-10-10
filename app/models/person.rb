@@ -3,6 +3,8 @@ class Person < ActiveRecord::Base
   include Tire::Model::Search
   include Tire::Model::Callbacks
 
+  dragonfly_accessor :avatar
+
   belongs_to :user
   belongs_to :company
 

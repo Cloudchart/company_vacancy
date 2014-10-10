@@ -3,6 +3,9 @@
 tag = React.DOM
 
 
+PersonAvatar = require('components/shared/person_avatar')
+
+
 Header = ->
   (tag.header {
   },
@@ -66,6 +69,18 @@ Component = React.createClass
 
   isValid: ->
     @state.attributes.get('full_name').length > 0
+  
+  
+  onAvatarChange: (file) ->
+    @setState
+      attributes: @state.attributes.withMutations (attributes) ->
+        attributes.remove('remove_avatar').set('avatar', file).set('avatar_url', URL.createObjectURL(file))
+  
+  
+  onAvatarRemove: ->
+    @setState
+      attributes: @state.attributes.withMutations (attributes) ->
+        attributes.remove('avatar').remove('avatar_url').set('remove_avatar', true)
 
 
   onFieldChange: (name, value) ->
@@ -102,8 +117,14 @@ Component = React.createClass
       
         # Avatar
         #
-        (tag.aside {
-          className: 'avatar'
+        #(tag.aside {
+        #  className: 'avatar'
+        #})
+        PersonAvatar({
+          avatarURL:  @state.attributes.get('avatar_url')
+          onChange:   @onAvatarChange
+          onRemove:   @onAvatarRemove
+          value:      @state.attributes.get('full_name')
         })
         
         # Fields

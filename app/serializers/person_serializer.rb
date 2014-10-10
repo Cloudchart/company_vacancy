@@ -9,7 +9,7 @@ class PersonSerializer < ActiveModel::Serializer
   attributes :avatar_url
   
   def avatar_url
-    object.user.avatar.url if object.user and object.user.avatar_stored?
+    object.avatar.url if object.avatar_stored?
   end
   
 end

@@ -95,7 +95,24 @@ private
   end
 
   def person_params
-    params.require(:person).permit([:first_name, :last_name, :full_name, :birthday, :email, :phone, :int_phone, :skype, :occupation, :hired_on, :fired_on, :salary, :stock_options, :bio])
+    params.require(:person).permit([
+      :first_name, 
+      :last_name, 
+      :full_name, 
+      :birthday, 
+      :email, 
+      :phone, 
+      :int_phone, 
+      :skype, 
+      :occupation, 
+      :hired_on, 
+      :fired_on, 
+      :salary, 
+      :stock_options, 
+      :bio,
+      :avatar,
+      :remove_avatar
+    ])
   end
 
 end

@@ -29,9 +29,39 @@
     
     > aside {
       background-color: hsl(0, 0%, 96%);
+      background-repeat: no-repeat;
+      background-size: contain;
       height: 150px;
       margin-right: 20px;
+      position: relative;
       width: 150px;
+      
+      > i.fa {
+        @include position(absolute, 5px 5px 0 0);
+        
+        color: hsl(0, 75%, 55%);
+        cursor: pointer;
+        font-size: 20px;
+        visibility: hidden;
+      }
+      
+      &:hover > i.fa {
+        visibility: visible;
+      }
+      
+      > label {
+        @include position(absolute, 0px 0px 0px 0px);
+        cursor: pointer;
+        
+        input {
+          height: 0;
+          overflow: hidden;
+          position: absolute;
+          visibility: hidden;
+          width: 0;
+        }
+      }
+      
     }
     
     > fieldset {
