@@ -11,8 +11,6 @@
   margin-bottom: 17px;
   position: relative;
   width: 49%;
-  height: 350px;
-  overflow: hidden;
 
   .company-preview-link {
     @include display(flex);
@@ -20,8 +18,6 @@
     @include justify-content(space-between);
 
     color: inherit;
-    display: block;
-    height: 100%;
     width: 100%;
   }
 }
@@ -29,8 +25,9 @@
 .company-preview-header {
   @include display(flex);
   @include align-items(center);  
+  
   padding: 12px;
-  height: 145px;
+  height: 170px;
 }
 
 .company-preview-logo {
