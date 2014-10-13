@@ -15,7 +15,7 @@ module.exports = CloudFlux.createStore
     @store.emitChange()
 
 
-  onCreateDone: (key, json, token) ->
+  onCreateDone: (key, attributes, json, token) ->
     @store.stop_sync(key, token)
     @store.reset(key)
 
@@ -25,7 +25,7 @@ module.exports = CloudFlux.createStore
     @store.emitChange()
 
 
-  onCreateFail: (key, json, xhr, token) ->
+  onCreateFail: (key, attributes, json, xhr, token) ->
     @store.stop_sync(key, token)
     @store.add_errors(key, json.person.errors) if json and json.person and json.person.errors
     @store.emitChange()
@@ -52,8 +52,8 @@ module.exports = CloudFlux.createStore
 
   getActions: ->
     'person:create-':       @onCreate
-    'person:create:done-':  @onCreateDone
-    'person:create:fail-':  @onCreateFail
+    'person:create-:done':  @onCreateDone
+    'person:create-:fail':  @onCreateFail
     
     'person:update-':       @onUpdate
     'person:update-:done':  @onUpdateDone

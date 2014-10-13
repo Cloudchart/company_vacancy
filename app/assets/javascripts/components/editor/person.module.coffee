@@ -63,7 +63,7 @@ Component = React.createClass
   
   
   getCloudFluxActions: ->
-    'person:create:done-': @onPersonCreateDone
+    'person:create-:done': @onPersonCreateDone
     'person:update-:done': @onPersonUpdateDone
 
 
