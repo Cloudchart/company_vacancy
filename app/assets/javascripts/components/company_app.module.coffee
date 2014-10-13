@@ -16,6 +16,8 @@ blockComponents =
   Vacancy:    require('components/editor/vacancy')
 
 
+FreshBlockComponent = require('components/editor/fresh')
+
 
 identityTypes =
   People:     'Person'
@@ -69,9 +71,9 @@ Component = React.createClass
 
   gatherBlocks: ->
     _.chain(@state.blocks)
-      .sortBy('position')
+      .sortBy(['position', 'uuid'])
       .map (block) =>
-        component = blockComponents[block.identity_type]
+        component = if block.uuid then blockComponents[block.identity_type] else FreshBlockComponent
         (component {
           key:        block.uuid
           block:      block
@@ -89,8 +91,10 @@ Component = React.createClass
   
   
   onChooseBlockTypeClick: (type) ->
+    _.chain(@state.blocks)
+      .filter (block) => block.position >= @state.position
+      .each (block) => BlockStore.update(block.uuid, { position: block.position + 1 })
     key = BlockStore.create({ owner_id: @props.key, owner_type: 'Company', identity_type: type, position: @state.position })
-    console.log BlockStore.get(key).toJSON()
     @setState({ position: null })
     BlockStore.emitChange()
 

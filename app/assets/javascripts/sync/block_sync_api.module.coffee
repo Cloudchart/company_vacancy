@@ -1,5 +1,6 @@
 module.exports =
-
+  
+  
   update: (key, attributes, done, fail) ->
     
     if attributes['identity_ids'] and attributes['identity_ids'].length == 0
