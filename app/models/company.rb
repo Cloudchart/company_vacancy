@@ -112,7 +112,7 @@ class Company < ActiveRecord::Base
     blocks.build(section: :main, position: 1, identity_type: 'Paragraph', is_locked: true)
     blocks.build(section: :main, position: 2, identity_type: 'Vacancy', is_locked: true)
     blocks.build(section: :main, position: 3, identity_type: 'Picture', is_locked: true)
-    charts.build(title: 'Default Chart')
+    charts.build(title: 'Main Chart')
   end
   
   def as_json_for_editor
