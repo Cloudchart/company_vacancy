@@ -8,7 +8,7 @@ class Tag < ActiveRecord::Base
   has_paper_trail
   has_many :taggings, dependent: :destroy
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
 
   rails_admin do
 

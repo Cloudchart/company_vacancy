@@ -4,12 +4,12 @@
 #
 tag = React.DOM
 
-
 CompanyActions  = require('actions/company')
 ModalActions    = require('actions/modal_actions')
 AutoSizingInput = require('components/form/autosizing_input')
 FollowComponent = require('components/company/follow')
 AccessRights    = require('components/company/access_rights')
+TagListComponent = require('components/company/tag_list')
 
 # Main
 #
@@ -72,6 +72,10 @@ Component = React.createClass
   
   onFieldKeyUp: (event) ->
     event.target.blur() if event.key == 'Enter'
+
+
+  onTagsChange: (event) ->
+    CompanyActions.update(@props.key, tag_list: event.target.value)
   
   
   componentWillReceiveProps: (nextProps) ->
@@ -147,6 +151,16 @@ Component = React.createClass
           (tag.i { className: 'fa fa-share' })
         ) unless @props.readOnly
         
+      )
+
+      # Tags
+      # 
+      (tag.label { className: 'tags' },
+        (TagListComponent {
+          all_tags: @props.all_tags
+          tag_list: @props.tag_list
+          onChange: @onTagsChange
+        })
       )
       
       # Description

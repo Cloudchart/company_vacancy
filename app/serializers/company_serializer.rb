@@ -1,7 +1,7 @@
 class CompanySerializer < ActiveModel::Serializer
 
   attributes  :uuid, :name, :established_on, :description
-  attributes  :logotype_url, :is_published, :site_url, :slug
+  attributes  :logotype_url, :is_published, :site_url, :slug, :tag_list
   attributes  :meta, :flags
   
   alias_method :current_user, :scope
