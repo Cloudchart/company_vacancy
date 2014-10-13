@@ -4,27 +4,68 @@ tag = React.DOM
 
 
 CompanyActions  = require('actions/company')
+BlockActions    = require('actions/block_actions')
 CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
 
 CompanyHeader   = require('components/company/header')
 
-blockComponents =
+BlockComponents =
   Picture:    require('components/editor/picture')
   Paragraph:  require('components/editor/paragraph')
   Person:     require('components/editor/person')
   Vacancy:    require('components/editor/vacancy')
 
 
-FreshBlockComponent = require('components/editor/fresh')
+SectionClassNames =
+  Picture:    'picture'
+  Paragraph:  'paragraph'
+  Person:     'people'
+  Vacancy:    'vacancy'
 
 
-identityTypes =
+IdentityTypes =
   People:     'Person'
   Vacancies:  'Vacancy'
   Picture:    'Picture'
   Paragraph:  'Paragraph'
 
+
+
+# Section Wrapper Component
+#
+SectionWrapperComponent = React.createClass
+
+
+  handleBlockRemove: ->
+    return if @props.readOnly
+    
+    BlockActions.destroy(@props.key) if confirm('Are you sure?')
+
+
+  render: ->
+    block           = BlockStore.get(@props.key)
+    BlockComponent  = BlockComponents[block.identity_type]
+
+    (tag.section {
+      key:        block.getKey()
+      className:  SectionClassNames[block.identity_type]
+    },
+    
+      # Remove
+      #
+      (tag.i {
+        className:  'fa fa-times-circle-o remove '
+        onClick:    @handleBlockRemove
+      }) unless @props.readOnly
+    
+      # Block
+      #
+      (BlockComponent {
+        key:      block.getKey()
+        readOnly: @props.readOnly
+      })
+    )
 
 
 # Section Placeholder component
@@ -38,7 +79,7 @@ SectionPlaceholderComponent = (position) ->
     if @state.position == position
       (tag.ul null,
       
-        _.map identityTypes, (identityType, key) =>
+        _.map IdentityTypes, (identityType, key) =>
           (tag.li {
             key:      key
             onClick:  @onChooseBlockTypeClick.bind(@, identityType)
@@ -71,14 +112,21 @@ Component = React.createClass
 
   gatherBlocks: ->
     _.chain(@state.blocks)
-      .sortBy(['position', 'uuid'])
+      .sortBy(['position'])
       .map (block) =>
-        component = if block.uuid then blockComponents[block.identity_type] else FreshBlockComponent
+        component = BlockComponents[block.identity_type]
+
         (component {
-          key:        block.uuid
+          key:        block.getKey()
           block:      block
           readOnly:   @state.company.is_read_only
-        }) if component
+        })
+
+        (SectionWrapperComponent {
+          key:      block.getKey()
+          readOnly: @state.company.is_read_only
+        })
+
       .value()
   
   
@@ -94,9 +142,14 @@ Component = React.createClass
     _.chain(@state.blocks)
       .filter (block) => block.position >= @state.position
       .each (block) => BlockStore.update(block.uuid, { position: block.position + 1 })
+
     key = BlockStore.create({ owner_id: @props.key, owner_type: 'Company', identity_type: type, position: @state.position })
+
+    CompanyActions.createBlock(key, BlockStore.get(key).toJSON())
+
     @setState({ position: null })
-    BlockStore.emitChange()
+
+
 
 
   getStateFromStores: ->

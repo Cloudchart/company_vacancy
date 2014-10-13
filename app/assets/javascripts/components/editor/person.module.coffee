@@ -99,7 +99,7 @@ Component = React.createClass
 
   
   onSelectPerson: (key) ->
-    identity_ids = @props.block.identity_ids[..] ; identity_ids.push(key)
+    identity_ids = @state.block.identity_ids[..] ; identity_ids.push(key)
     BlockActions.update(@props.key, { identity_ids: identity_ids })
     ModalActions.hide()
 
@@ -116,8 +116,8 @@ Component = React.createClass
   onDeletePersonClick: (key) ->
     return if @props.readOnly
 
-    identity_ids  = _.without(@props.block.identity_ids, key)
-    BlockActions.update(@props.block.uuid, { identity_ids: identity_ids })
+    identity_ids  = _.without(@state.block.identity_ids, key)
+    BlockActions.update(@props.key, { identity_ids: identity_ids })
   
   
   # Person Chooser
@@ -160,6 +160,7 @@ Component = React.createClass
   
   getStateFromStores: ->
     block = BlockStore.get(@props.key)
+    
     block:  block
     people: PersonStore.filter (person) -> _.contains(block.identity_ids, person.uuid)
   
@@ -187,21 +188,15 @@ Component = React.createClass
   render: ->
     people = @gatherPeople()
     
-    (tag.section {
-      className: 'people'
-    },
-      (tag.ul null,
+    (tag.ul null,
 
-        # People
-        #
-        _.map people, (person) -> (tag.li { key: person.props.key }, person)
-        
-        
-        # Placeholder
-        #
-        PersonPlaceholderComponent.apply(@) unless @props.readOnly
-
-      )
+      # People
+      #
+      _.map people, (person) -> (tag.li { key: person.props.key }, person)
+      
+      # Placeholder
+      #
+      PersonPlaceholderComponent.apply(@) unless @props.readOnly
 
     )
 

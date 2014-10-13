@@ -4,9 +4,9 @@ class Block < ActiveRecord::Base
   
   IdentitiesClasses = [Picture, Paragraph, BlockImage, Person, Vacancy, Company]
   
-  # before_create   :ensure_position
-  after_update    :destroy_previous_block_images, if: :should_destroy_previous_block_images?
-  before_destroy  :destroy_identities
+  before_create   :shift_siblings_down
+  after_destroy   :shift_siblings_up
+
   # after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
 
   belongs_to :owner, polymorphic: true
@@ -75,35 +75,46 @@ class Block < ActiveRecord::Base
   end
   
   def identity_ids
-    #public_send :"#{singular_identity_name}_ids"
     block_identities.map(&:identity_id)
   end
   
-  def identity_ids=(args)
-    public_send :"#{singular_identity_name}_ids=", args
 
+  def identity_ids=(args)
     ids = args.reject(&:blank?)
+
+    public_send :"#{singular_identity_name}_ids=", ids
 
     block_identities.each do |block_identity|
       block_identity.update_attribute :position, ids.index(block_identity.identity_id)
     end
   end
   
+
   def clear_identity_ids=(status)
     self.identity_ids = [] if status
   end
 
 
-  def should_destroy_previous_block_images!
-    @should_destroy_previous_block_images = true
-  end
+private
 
 
-  def should_destroy_previous_block_images?
-    !!@should_destroy_previous_block_images
+  def shift_siblings_down
+    Block.transaction do
+      owner.blocks.where('position >= ?', position).each_with_index do |block, index|
+        block.update_attribute(:position, position + index + 1)
+      end
+    end
   end
   
-private
+
+  def shift_siblings_up
+    Block.transaction do
+      owner.blocks.where('position >= ?', position).each_with_index do |block, index|
+        block.update_attribute(:position, position + index)
+      end
+    end
+  end
+
 
   # def ensure_position
   #   self.position = owner.blocks_by_section(section).length unless self.position
@@ -118,16 +129,4 @@ private
   #   end
   # end
   
-  def destroy_identities
-    block_identities.each(&:skip_reposition!).each(&:destroy!)
-  end
-
-  # temporary method for has_one block_image simulation
-  # related methods:
-  # should_destroy_previous_block_images!
-  # should_destroy_previous_block_images?
-  def destroy_previous_block_images
-    block_identities.destroy_all
-  end
-
 end

@@ -15,3 +15,12 @@ module.exports =
         block:      attributes
     .done done
     .fail fail
+  
+  
+  destroy: (key, done, fail) ->
+    $.ajax
+      url:      "/blocks/#{key}"
+      type:     "DELETE"
+      dataType: "json"
+    .done done
+    .fail fail

@@ -29,7 +29,7 @@ module.exports =
   
   createBlock: (key, attributes, done, fail) ->
     $.ajax
-      url:        "/companies/key/blocks"
+      url:        "/companies/#{key}/blocks"
       type:       "POST"
       dataType:   "json"
       data:
