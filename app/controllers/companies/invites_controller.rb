@@ -74,6 +74,7 @@ module Companies
     # 
     def accept
       current_user.roles.create!(value: @token.data[:role], owner: @token.owner)
+      current_user.favorites.find_by(favoritable_id: @token.owner_id).try(:delete)
       @token.destroy
 
       redirect_to cloud_profile.root_path
