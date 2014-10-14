@@ -41,12 +41,14 @@ module Companies
 
       token = Token.new params.require(:token).permit(data: [:email, :role] ).merge(name: 'invite', owner: @company)
       token.save!
-      
+
       respond_to do |format|
         format.json { render json: token, root: :token }
       end
+
+      email = CloudProfile::Email.find_by(address: token.data[:email]) || token.data[:email]
       
-      UserMailer.company_invite(token.data[:email], token).deliver
+      UserMailer.company_invite(email, token).deliver
 
     rescue ActiveRecord::RecordInvalid
       

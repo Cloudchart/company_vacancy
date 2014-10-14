@@ -24,6 +24,7 @@ class User < ActiveRecord::Base
   has_many :favorites, dependent: :destroy
   has_many :roles, dependent: :destroy
   has_many :companies, through: :roles, source: :owner, source_type: 'Company'
+  has_many :followed_companies, through: :favorites, source: :favoritable, source_type: 'Company'
   has_many :people, dependent: :destroy
   
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
@@ -80,6 +81,18 @@ class User < ActiveRecord::Base
 
   def invite=(invite)
     @invite = Token.where(name: :invite).find(invite) rescue Token.where(name: :invite).find(Cloudchart::RFC1751::decode(invite)) rescue nil
+  end
+
+  def invited_by_companies
+    company_ids = Token.where(name: 'invite', owner_type: 'Company').select do |token|
+      if token.data[:user_id].present?
+        token.data[:user_id] == id
+      else
+        emails.pluck(:address).include?(token.data[:email])
+      end
+    end.map(&:owner_id)
+    
+    Company.find(company_ids)
   end
   
   def should_validate_invite?
