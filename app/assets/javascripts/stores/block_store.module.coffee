@@ -12,11 +12,12 @@ module.exports = CloudFlux.createStore
     record    = @store.get(key)
 
     siblings  = @store.filter (sibling) ->
+      sibling.getKey()    !=  key                 and
       sibling.owner_id    ==  record.owner_id     and
       sibling.owner_type  ==  record.owner_type   and
-      sibling.position    >   record.position
-
-
+      sibling.position    >=  record.position
+  
+  
   onCreate: (key, attributes, token) ->
     @store.start_sync(key, token)
     @store.update(key, attributes)

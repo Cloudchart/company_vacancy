@@ -21,7 +21,7 @@ SectionClassNames =
   Picture:    'picture'
   Paragraph:  'paragraph'
   Person:     'people'
-  Vacancy:    'vacancy'
+  Vacancy:    'vacancies'
 
 
 IdentityTypes =
@@ -148,8 +148,6 @@ Component = React.createClass
     CompanyActions.createBlock(key, BlockStore.get(key).toJSON())
 
     @setState({ position: null })
-
-
 
 
   getStateFromStores: ->

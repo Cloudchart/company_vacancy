@@ -12,21 +12,46 @@ VacancyStore    = require('stores/vacancy')
 VacancyChooser  = require('components/editor/vacancy_chooser')
 
 
-# Add Vacancy component
+# Vacancy Placeholder component
 #
-AddVacancyComponent = ->
-  (tag.div {
-    key:        'add'
-    className:  'cell'
+VacancyPlaceholderComponent = ->
+  (tag.li {
+    className:  'placeholder'
     onClick:    @onAddVacancyClick
   },
-    (tag.div {
-      className: 'vacancy add'
+    (div {
+      className: 'vacancy'
     },
-      (tag.i { className: 'fa fa-plus' })
-      (tag.span null, 'Add vacancy')
+      (div {
+        className: 'content'
+      },
+        (tag.footer null, 'Add vacancy')
+      )
     )
   )
+
+
+# Vacancy component
+#
+VacancyComponent = (vacancy) ->
+  (tag.div {
+    className:  'vacancy'
+    onClick:    null # Edit vacancy
+  },
+    (tag.i { className: 'flag' })
+  
+    (tag.i {
+      className: 'fa fa-times-circle-o remove'
+      onClick:    @handleVacancyRemove.bind(@, vacancy.getKey())
+    })
+
+    (tag.div {
+      className: 'content'
+    },
+      (tag.footer null, vacancy.name)
+    )
+  )
+
 
 
 # Main
@@ -38,26 +63,10 @@ Component = React.createClass
     _.chain(@state.vacancies)
       .sortBy (vacancy) => _.indexOf(@state.block.identity_ids, vacancy.uuid)
       .map (vacancy) =>
-        (tag.div {
-          key:        vacancy.uuid
-          className:  'cell'
+        (tag.li {
+          key: vacancy.getKey()
         },
-        
-          (tag.div {
-            className: 'vacancy'
-          },
-          
-            (tag.figure { className: 'flag' })
-
-            vacancy.name
-
-            (tag.button {
-              onClick: @onDeleteButtonClick.bind(@, vacancy.uuid)
-            },
-              (tag.i { className: 'fa fa-times' })
-            ) unless @props.readOnly
-          
-          )
+          VacancyComponent.call(@, vacancy)
         )
       .value()
   
@@ -65,6 +74,10 @@ Component = React.createClass
   onDeleteButtonClick: (key) ->
     identity_ids  = _.without(@state.block.identity_ids, key)
     BlockActions.update(@state.block.uuid, { identity_ids: identity_ids })
+  
+  
+  handleVacancyRemove: (key) ->
+    BlockActions.update(@props.key, { identity_ids: _.without(@state.block.identity_ids, key) })
 
 
   onAddVacancyClick: ->
@@ -91,24 +104,19 @@ Component = React.createClass
     vacancies = @gatherVacancies()
 
     if @props.readOnly and vacancies.length == 0
+
       (tag.noscript null)
+
     else
 
-      (tag.section {
+      (tag.ul {
+        className: 'vacancies'
       },
+
+        @gatherVacancies()
+      
+        VacancyPlaceholderComponent.apply(@) unless @props.readOnly
     
-        (tag.header null, "Open Positions")
-      
-        (tag.div {
-          className: 'editor-vacancies'
-        },
-
-          @gatherVacancies()
-        
-          AddVacancyComponent.apply(@) unless @props.readOnly
-      
-        )
-
       )
 
 

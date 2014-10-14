@@ -49,6 +49,7 @@ sanitize = (node, rootNode = node) ->
       node.wholeText
   
   if node == rootNode
+    content = content.trim()
     content = '' if content == br_tag
 
     content = _.chain(content.split('\n'))

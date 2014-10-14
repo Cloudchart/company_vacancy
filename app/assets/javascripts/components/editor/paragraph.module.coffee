@@ -73,18 +73,12 @@ Component = React.createClass
 
 
   render: ->
-    (tag.section {
-      className: 'paragraph'
-    },
-    
-      (ContentEditableArea {
-        onChange:     @onChange
-        placeholder:  CompanyPlaceholder
-        readOnly:     @props.readOnly
-        value:        @state.paragraph.content
-      }) if @state.paragraph.content or !@props.readOnly
-      
-    )
+    (ContentEditableArea {
+      onChange:     @onChange
+      placeholder:  CompanyPlaceholder
+      readOnly:     @props.readOnly
+      value:        @state.paragraph.content
+    })
 
 
 # Exports
