@@ -128,7 +128,9 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    @company = Company.includes(blocks: :block_identities).find(params[:id])
+    # overriden find method will not work for ActiveRecord::Relation
+    # .includes(blocks: :block_identities)
+    @company = Company.find(params[:id])
   end
 
   def set_collection
