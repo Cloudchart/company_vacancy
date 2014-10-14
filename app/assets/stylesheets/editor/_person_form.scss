@@ -49,6 +49,14 @@
         visibility: visible;
       }
       
+      > figure {
+        font-size: 30px;
+        font-weight: 100;
+        line-height: 150px;
+        text-align: center;
+        width: 100%;
+      }
+      
       > label {
         @include position(absolute, 0px 0px 0px 0px);
         cursor: pointer;

@@ -22,6 +22,7 @@ $company-article-block-margin: 30px;
     height: $logo-height;
     margin: 0 auto 10px;
     position: relative;
+    text-align: center;
     width: $logo-width;
     
     > button {
@@ -217,21 +218,6 @@ $company-article-block-margin: 30px;
 }
 
 
-article.company-2_0 {
-  
-  margin: auto;
-  width: 800px;
-  
-}
-
 article.company-2_0 > header {
   @include company-article-header-2_0;
-}
-
-article.company-2_0 > section.picture {
-  @include company-article-picture-2_0;
-}
-
-article.company-2_0 > section.paragraph {
-  @include company-article-paragraph-2_0;
 }
