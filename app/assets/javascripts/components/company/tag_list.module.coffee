@@ -14,9 +14,9 @@ tag = React.DOM
 TokenInput      = cc.require('plugins/react_tokeninput/main')
 ComboboxOption  = cc.require('plugins/react_tokeninput/option')
 CloudFlux       = require('cloud_flux')
-TagActions      = -> require('actions/tag_actions')
-TagStore        = -> require('stores/tag_store')
-Constants       = -> require('constants')
+# TagActions      = -> require('actions/tag_actions')
+# TagStore        = -> require('stores/tag_store')
+# Constants       = -> require('constants')
 
 
 # Main Component
@@ -28,8 +28,9 @@ MainComponent = React.createClass
   
 
   syncTaggable: (tags) ->
-    console.log tags
-    tagNames = TagStore().filter((tag) -> tags.contains(tag.uuid)).map((tag) -> tag.name).join(',')
+    # console.log tags
+    # tagNames = TagStore().filter((tag) -> tags.contains(tag.uuid)).map((tag) -> tag.name).join(',')
+    tagNames = @props.all_tags.filter((tag) -> tags.contains(tag.uuid)).map((tag) -> tag.name).join(',')
     @props.onChange({ target: { value: tagNames }}) if _.isFunction(@props.onChange)
   
   
@@ -78,8 +79,9 @@ MainComponent = React.createClass
   
   
   createTag: (name) ->
-    TagActions().create(name)
-    @addTag(name)
+    console.log name
+    # TagActions().create(name)
+    # @addTag(name)
 
   gatherComboboxOptions: ->
     _.map @getAvailableTags(), (tag) =>
@@ -104,7 +106,7 @@ MainComponent = React.createClass
     _(@props.all_tags)
       .filter (tag) => @state.tags.contains(tag.uuid)
       .sortBy (tag) => @state.tags.indexOf(tag.uuid)
-      .map (tag) => { key: tag.uuid, id: tag.uuid, name: tag.name, sync: TagStore().is_in_sync(tag.uuid) }
+      .map (tag) => { key: tag.uuid, id: tag.uuid, name: tag.name }
       .value()
   
 
@@ -113,7 +115,7 @@ MainComponent = React.createClass
 
 
   onSelect: (value) ->
-    if TagStore().has(value) then @addTag(value) else @createTag(value)
+    if _.find(@props.all_tags, (tag) -> tag.uuid == value) then @addTag(value) else @createTag(value)
 
 
   onRemove: (value) ->
