@@ -1,6 +1,6 @@
 <% decorate(company) do |company| %>
 
-  <article id="<%= company.id %>" class="company-preview">
+  <div id="<%= company.id %>" class="company-preview">
     <%= link_to main_app.company_path(company), class: "company-preview-link" do %>
       <header class="company-preview-header">
         <div class="company-preview-logo">

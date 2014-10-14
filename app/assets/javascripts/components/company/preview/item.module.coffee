@@ -9,15 +9,18 @@ Logo = require('components/company/logo')
 
 MainComponent = React.createClass
 
-  render: ->  
+  getDefaultProps: ->
+    { renderButtons: false }
+
+  render: ->
     company = @props.company
 
     if company
-      tag.article { className: "company-preview" },
-        tag.a null,
+      tag.article { className: "company-preview-2" },
+        tag.a { href: company.meta.path },
           tag.header null,
             Logo {
-              avatarURL: company.logotype_url
+              logoUrl: company.logotype_url
               value: company.name
             }
           tag.section { className: "middle" },
@@ -33,6 +36,14 @@ MainComponent = React.createClass
                 tag.span { className: "units" }, "month"
           tag.section { className: "bottom" },
             tag.p null, company.meta.tags.join(', ')
+        if @props.renderButtons
+          tag.div { className: "buttons" },
+            tag.button { className: "cc decline" },
+              "Decline"
+              tag.i { className: "fa fa-close" }
+            tag.button { className: "cc" },
+              "Accept"
+              tag.i { className: "fa fa-check" }
           
     else
       (tag.noscript null)

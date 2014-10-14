@@ -25,6 +25,16 @@ class Token < ActiveRecord::Base
       find_by_rfc1751(args.first) || super
     end
 
+    def select_by_user(user_id, user_emails)
+      self.select do |token|
+        if token.data[:user_id].present?
+          token.data[:user_id] == user_id
+        else
+          user_emails.include?(token.data[:email])
+        end
+      end
+    end
+
   end
   
   def data=(data_attribute)

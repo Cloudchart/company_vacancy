@@ -11,12 +11,15 @@
 @['cloud_profile/main#companies'] = ->
   CompanySync = require('sync/company')
   CompanyStore = require('stores/company')
+  TokenStore = require('stores/token')
   CompanyPreviewList = require('components/company/preview/list')
 
   CompanySync.fetchAll().done((json) ->
-    _.each(json.companies, (company) ->
+    _.each json.companies, (company) ->
       CompanyStore.add(company.uuid, company)
-    )
+
+    _.each json.tokens, (token) ->
+      TokenStore.add(token.uuid, token)
 
     React.renderComponent(
       CompanyPreviewList()

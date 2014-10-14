@@ -41,6 +41,7 @@ module.exports = CloudFlux.createStore
     can_follow:   false
     is_followed:  false
     meta:         {}
+    flags:        {}
 
   getActions: ->
     actions = {}

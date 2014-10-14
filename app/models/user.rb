@@ -84,15 +84,11 @@ class User < ActiveRecord::Base
   end
 
   def invited_by_companies
-    company_ids = Token.where(name: 'invite', owner_type: 'Company').select do |token|
-      if token.data[:user_id].present?
-        token.data[:user_id] == id
-      else
-        emails.pluck(:address).include?(token.data[:email])
-      end
-    end.map(&:owner_id)
+    tokens = Token.includes(:owner)
+      .where(name: 'invite', owner_type: 'Company')
+      .select_by_user(id, emails.pluck(:address))
     
-    Company.find(company_ids)
+    companies = tokens.map(&:owner)
   end
   
   def should_validate_invite?

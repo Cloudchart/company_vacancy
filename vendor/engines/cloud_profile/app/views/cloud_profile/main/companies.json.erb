@@ -1,5 +1,6 @@
 <%= 
 {
-  companies: @companies.active_model_serializer.new(@companies)
+  companies: @companies.active_model_serializer.new(@companies, scope: current_user),
+  tokens: @tokens.active_model_serializer.new(@tokens)
 }.to_json.html_safe
 %>
