@@ -1,0 +1,5 @@
+<%= 
+{
+  companies: @companies.active_model_serializer.new(@companies)
+}.to_json.html_safe
+%>

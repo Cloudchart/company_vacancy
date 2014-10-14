@@ -1,3 +1,8 @@
+###
+  Used in:
+  components/company/preview/item
+###
+
 # Colors
 #
 Colors = [
@@ -26,9 +31,12 @@ VacancyColor = 'hsl(1, 76%, 54%)'
 ColorIndex = (value) ->
   value.split('').reduce(((memo, letter) -> memo += letter.charCodeAt(0)), 0) % Colors.length
 
+getColorByLetters = (letters) ->
+  Colors[ColorIndex(letters)]
 
 # Exports
 #
 cc.module('cc.utils.Colors').exports          = Colors
 cc.module('cc.utils.Colors.Index').exports    = ColorIndex
 cc.module('cc.utils.Colors.Vacancy').exports  = VacancyColor
+cc.module('cc.utils.Colors.getColorByLetters').exports = getColorByLetters

@@ -1,6 +1,6 @@
 <% decorate(company) do |company| %>
 
-  <div id="<%= company.id %>" class="company-preview">
+  <article id="<%= company.id %>" class="company-preview">
     <%= link_to main_app.company_path(company), class: "company-preview-link" do %>
       <header class="company-preview-header">
         <div class="company-preview-logo">
@@ -44,5 +44,4 @@
       </button>
     </div> -->
   </div>
-
 <% end %>

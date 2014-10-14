@@ -6,7 +6,7 @@ module CloudProfile
     before_action :create_default_company, only: :companies, unless: -> { current_user.companies.any? }
     
     def companies
-      @companies = current_user.companies.includes(:people, :vacancies, :charts).order(updated_at: :desc)
+      @companies = current_user.companies.includes(:people, :tags).order(updated_at: :desc)
     end
 
     def vacancies

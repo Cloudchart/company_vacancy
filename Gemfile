@@ -55,6 +55,8 @@ group :doc do
 end
 
 group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'pry' # An IRB alternative and runtime developer console
   gem 'awesome_print' # styled print for ruby objects in rails console
   gem 'quiet_assets' # mutes assets pipeline log messages
