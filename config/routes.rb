@@ -16,9 +16,6 @@ Cloudchart::Application.routes.draw do
 
   # Concerns
   #
-  concern :blockable do
-    resources :blocks, only: [:create]
-  end
 
   concern :statusable do
     match 'change_status/:status', on: :member, action: :change_status, as: :change_status, via: [:put, :patch]
@@ -31,7 +28,7 @@ Cloudchart::Application.routes.draw do
 
   # Resources
   #
-  resources :companies, concerns: [:blockable, :followable] do
+  resources :companies, concerns: [:followable] do
 
     post :search, on: :collection
     get :verify_site_url, on: :member
@@ -39,7 +36,11 @@ Cloudchart::Application.routes.draw do
     get :finance, on: :member
     get :settings, on: :member
     
-    resources :vacancies, except: :edit, shallow: true, concerns: [:blockable, :statusable] do
+    
+    resources :blocks, only: :create, type: :company
+    
+    
+    resources :vacancies, except: :edit, shallow: true, concerns: [:statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
     end
     
@@ -47,7 +48,7 @@ Cloudchart::Application.routes.draw do
       post :search, on: :collection
     end
 
-    resources :events, shallow: true, concerns: [:blockable] do
+    resources :events, shallow: true do
       post :verify, on: :member
     end
 

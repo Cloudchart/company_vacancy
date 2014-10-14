@@ -1,20 +1,20 @@
 class BlocksController < ApplicationController
   authorize_resource
 
+
   def create
-    %w(company event vacancy).each do |name|
-      @object = name.classify.constantize.find(params[:"#{name}_id"]) if params[:"#{name}_id"].present?
-    end
+    owner = find_owner
+    block = owner.blocks.create!(block_params_for_create)
 
-    @block = @object.blocks.create!(block_params_for_create)
-    Activity.track_activity(current_user, params[:action], @block, @block.owner)
-
+    Activity.track_activity(current_user, params[:action], block, owner)
+    
+    blocks = owner.blocks.includes(:block_identities)
+    
     respond_to do |format|
-      format.html { redirect_to @block.owner }
-      format.js
-      format.json { render json: @block.owner.blocks_by_section(@block.section), each_serializer: BlockEditorSerializer, root: false}
+      format.json { render json: { blocks: blocks.active_model_serializer.new(blocks) } }
     end
   end
+
 
   def update
     @block = Block.includes(:owner).find(params[:id])
@@ -30,16 +30,29 @@ class BlocksController < ApplicationController
     end
   end
 
+
   def destroy
-    block = Block.includes(:owner, { block_identities: :identity }).find(params[:id])
+    block = Block.includes(:owner).find(params[:id])
+    owner = block.owner
+
     authorize! :destroy, block
-    block.destroy
+    block.destroy!
+    
+    blocks = owner.blocks.includes(:block_identities)
     
     respond_to do |format|
-      format.html { redirect_to block.owner }
-      format.json { render json: block.owner.blocks_by_section(block.section), each_serializer: BlockEditorSerializer, root: false }
+      format.json { render json: { blocks: blocks.active_model_serializer.new(blocks) } }
     end
+    # block = Block.includes(:owner, { block_identities: :identity }).find(params[:id])
+    # authorize! :destroy, block
+    # block.destroy
+    #
+    # respond_to do |format|
+    #   format.html { redirect_to block.owner }
+    #   format.json { render json: block.owner.blocks_by_section(block.section), each_serializer: BlockEditorSerializer, root: false }
+    # end
   end
+
 
   def update_position
     # temporary created params[:blocks]. must be passed through ajax call.
@@ -54,22 +67,28 @@ class BlocksController < ApplicationController
     redirect_to :back
   end
 
-  def update_section
-    Block.find(params[:block_id]).update_attribute(:section, params[:section])
-  end
 
 private
+
+
+  def find_owner
+    case params[:type]
+    when :company
+      Company.find(params[:company_id])
+    end
+  end
+
 
   def block_params_for_create
     params.require(:block).permit(:section, :identity_type, :position)
   end
   
+
   def block_params_for_update
     params.require(:block).permit(
       :clear_identity_ids,
       identity_ids:             [],
       paragraphs_attributes:    [:id, :content],
-      block_images_attributes:  [:id, :image],
       pictures_attributes:      [:id, :image]
     )
   end

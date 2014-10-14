@@ -1,6 +1,7 @@
 # Imports
 #
 tag = React.DOM
+cx  = React.addons.classSet;
 
 
 CloudFlux     = require('cloud_flux')
@@ -18,12 +19,35 @@ PersonChooser = require('components/editor/person_chooser')
 PersonForm    = require('components/form/person_form')
 
 
+# Person Placeholder component
+#
+PersonPlaceholderComponent = ->
+  (tag.li {
+    className: 'placeholder'
+  },
+    (tag.div {
+      className: 'person editable'
+    },
+      (tag.aside {
+        className: 'avatar'
+      },
+        (tag.figure {
+          onClick: @onAddPersonClick
+        },
+          (tag.i { className: 'fa fa-plus' })
+          (tag.i { className: 'hint' }, 'Add person')
+        )
+      )
+    )
+  )
+
+
 # Person component
 #
 PersonComponent = (person) ->
   (tag.div {
     key:        person.uuid
-    className:  'editor-person'
+    className:  cx({ person: true, editable: !@props.readOnly })
   },
   
     (tag.i {
@@ -75,11 +99,29 @@ Component = React.createClass
 
   
   onSelectPerson: (key) ->
-    identity_ids = @props.block.identity_ids[..] ; identity_ids.push(key)
+    identity_ids = @state.block.identity_ids[..] ; identity_ids.push(key)
     BlockActions.update(@props.key, { identity_ids: identity_ids })
     ModalActions.hide()
 
 
+  onEditPersonClick: (key) ->
+    return if @props.readOnly
+    
+    ModalActions.show(PersonForm({
+      attributes: PersonStore.get(key).toJSON()
+      onSubmit:   @onPersonFormSubmit.bind(@, key)
+    }))
+  
+  
+  onDeletePersonClick: (key) ->
+    return if @props.readOnly
+
+    identity_ids  = _.without(@state.block.identity_ids, key)
+    BlockActions.update(@props.key, { identity_ids: identity_ids })
+  
+  
+  # Person Chooser
+  #
   onAddPersonClick: (event) ->
     return if @props.readOnly
 
@@ -90,7 +132,9 @@ Component = React.createClass
     }))
   
   
-  onCreatePersonClick: (event) ->
+  # Person Chooser
+  #
+  onCreatePersonClick: ->
     return if @props.readOnly
 
     newPersonKey = PersonStore.create({ company_id: @state.block.owner_id })
@@ -104,15 +148,8 @@ Component = React.createClass
     })
   
   
-  onEditPersonClick: (key) ->
-    return if @props.readOnly
-    
-    ModalActions.show(PersonForm({
-      attributes: PersonStore.get(key).toJSON()
-      onSubmit:   @onPersonFormSubmit.bind(@, key)
-    }))
-  
-  
+  # Person Form
+  #
   onPersonFormSubmit: (key, attributes) ->
     person = PersonStore.get(key)
     if person.uuid
@@ -121,13 +158,9 @@ Component = React.createClass
       PersonActions.create(key, attributes.toJSON())
   
   
-  onDeletePersonClick: (key) ->
-    identity_ids  = _.without(@props.block.identity_ids, key)
-    BlockActions.update(@props.block.uuid, { identity_ids: identity_ids })
-  
-  
   getStateFromStores: ->
     block = BlockStore.get(@props.key)
+    
     block:  block
     people: PersonStore.filter (person) -> _.contains(block.identity_ids, person.uuid)
   
@@ -155,42 +188,15 @@ Component = React.createClass
   render: ->
     people = @gatherPeople()
     
-    (tag.section {
-      className: 'editor-people'
-    },
-      (tag.ul {
-        className: 'grid _1x3 top'
-      },
-      
-        # People
-        #
-        _.map people, (person) ->
-          (tag.li {
-            key:        person.props.key
-            className:  'cell'
-          }, person)
-        
-        
-        # Add person
-        #
-        (tag.li {
-          className: 'cell add'
-        },
-          (tag.div {
-            className: 'editor-person'
-          },
-            (tag.aside {
-            },
-              (tag.figure {
-                onClick: @onAddPersonClick
-              },
-                if people.length == 0 then 'Add person' else '+'
-              )
-            )
-          )
-        ) unless @props.readOnly
+    (tag.ul null,
 
-      )
+      # People
+      #
+      _.map people, (person) -> (tag.li { key: person.props.key }, person)
+      
+      # Placeholder
+      #
+      PersonPlaceholderComponent.apply(@) unless @props.readOnly
 
     )
 

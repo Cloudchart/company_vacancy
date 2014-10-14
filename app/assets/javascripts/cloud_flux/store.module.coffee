@@ -23,10 +23,12 @@ Factory = (definition) ->
   schema = if _.isFunction(definition.getSchema) then definition.getSchema() else null
   throw new Error("Store #{definition.displayName}: getSchema should be defined.") unless schema
   
-
-  # Define schema
-  #
-  class __schm extends Immutable.Record(schema)
+  class __schm extends Immutable.Record(_.extend schema, { __key: null })
+    
+    constructor: (attributes = {}) ->
+      super(attributes)
+    
+    getKey: -> @uuid || @__key
   
   
   # Get Actions
@@ -72,7 +74,7 @@ Factory = (definition) ->
     
     
     add: (key, attributes = {}) ->
-      __data[key] = new __schm(attributes)
+      __data[key] = new __schm(_.extend {}, attributes, { __key: key })
     
     
     update: (key, attributes = {}) ->

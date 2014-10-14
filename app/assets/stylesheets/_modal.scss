@@ -121,6 +121,7 @@ body .modal-overlay {
   
   background-color: $modal-overlay-background-color;
   overflow: hidden;
+  z-index: 10000;
   
   > .modal-container {
     background-color: $modal-container-background-color;

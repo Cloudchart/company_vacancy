@@ -27,6 +27,17 @@ module.exports =
     .fail fail
   
   
+  createBlock: (key, attributes, done, fail) ->
+    $.ajax
+      url:        "/companies/#{key}/blocks"
+      type:       "POST"
+      dataType:   "json"
+      data:
+        block:    attributes
+    .done done
+    .fail fail
+  
+  
   fetchAccessRights: (key, done, fail) ->
     $.ajax
       url:        "/companies/#{key}/access_rights"

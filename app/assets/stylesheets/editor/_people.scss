@@ -1,70 +1,96 @@
-// Person
+// Editor -> People
 //
-.editor-person {
+article.editor > section.people {
+
+  > ul {
+    @include display(flex);
+    @include flex-wrap(wrap);
+    
+    list-style: none;
+    margin: 0;
+    margin-left: -$editor-gutter;
+    padding: 0;
+    
+    > li {
+      @include flex(0 0 33.3333%);
+      
+      margin: 0;
+      margin-top: 20px;
+      padding: 0;
+      padding-left: $editor-gutter;
+      
+      &:nth-child(-n+3) {
+        margin-top: 0;
+      }
+    }
+
+    > .placeholder .person > aside {
+      background-color: $editor-placeholder-background-color;
+      color: $editor-placeholder-color;
+    }
+
+    > .placeholder:not(:first-child) .person {
+      > aside {
+        margin: 25% auto 0;
+        padding-top: 50%;
+        width: 50%;
+      }
+
+      figure > i.hint {
+        display: none;
+      }
+    }
+  
+    > .placeholder:nth-child(3n+1) .person {
+      > aside {
+        margin-top: 0;
+      }
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+
+
+// Editor -> Person
+//
+article.editor > section.people div.person {
+  margin: 0;
   padding: 0 20px;
   position: relative;
   
-  > i.fa {
-    @include position(absolute, 10px 0 0 10px);
+  > i.remove {
+    @include position(absolute, $editor-gutter / 2 $editor-gutter / 2 0 0);
     
-    color: hsl(0, 75%, 55%);
+    color: $editor-remove-button-color;
     cursor: pointer;
-    font-size: 20px;
+    font-size: $editor-remove-button-font-size;
     visibility: hidden;
   }
   
-  &:hover > i.fa {
+  &.editable:hover > i.remove {
     visibility: visible;
   }
   
-  > aside {
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    border-radius: 50%;
-    height: 0;
-    margin: 0;
-    margin-bottom: 10px;
-    overflow: hidden;
-    padding-top: 100%;
-    position: relative;
-    
-    > label {
-      @include position(absolute, 0px 0px 0px 0px);
-      z-index: 1;
-    }
-    
-    > figure {
-      @include align-items(center);
-      @include display(flex);
-      @include justify-content(center);
-      @include position(absolute, 50% 0px 0px 50%);
-
-      border-radius: 50%;
-      font-size: 40px;
-      font-weight: 100;
-      margin-top: -50%;
-      margin-left: -50%;
-      width: 100%;
-    }
+  &.editable > aside {
+    cursor: pointer;
   }
   
   > footer {
-    padding: 0 20px 10px;
+    padding: 0 20px;
     
     > p {
       margin: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-
+      
       &.name {
-        font-size: 20px;
-        font-weight: 400;
+        font-size: $editor-person-name-font-size;
       }
 
       &.occupation {
-        font-size: 12px;
+        font-size: $editor-person-occupation-font-size;
         font-weight: 300;
         text-transform: uppercase;
       }
@@ -72,47 +98,39 @@
   }
 }
 
-// People
-//
-.editor-people {
-  margin: 20px 0;
-  
-  > .grid {
-    list-style: none;
-    margin: 0;
-    margin-left: -20px;
-    padding: 0;
-    
-    > .cell {
-      margin: 0;
-      margin-top: 20px;
-      padding-left: 20px;
-      
-      &:nth-child(-n+3) {
-        margin-top: 0;
-      }
-      
-      &.add {
-        figure {
-          background-color: #eee;
-          cursor: pointer;
-          font-size: 20px;
-          opacity: .25;
-        }
-      }
-      
-    }
 
-    > .cell ~ .cell.add {
-      figure {
-        font-size: 50px;
-        height: 50%;
-        margin-top: -25%;
-        margin-left: -25%;
-        width: 50%;
-      }
+// Person -> Avatar
+//
+.person > aside.avatar {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border-radius: 50%;
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  padding-top: 100%;
+  position: relative;
+  
+  > figure {
+    @include position(absolute, 50% 0px 0 0px);
+    
+    display: inline-block;
+    font-size: $editor-placeholder-font-size;
+    font-weight: 100;
+    line-height: 1em;
+    margin-top: -.5em;
+    text-align: center;
+    
+    i.hint {
+      @include position(absolute, 100% 0px 0 0px);
+
+      font-size: .25em;
+      font-style: normal;
+      line-height: 1em;
+      text-transform: uppercase;
     }
   }
-    
+  
 }
-

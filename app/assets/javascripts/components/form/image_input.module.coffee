@@ -41,14 +41,19 @@ Component = React.createClass
         @transferPropsTo((tag.img {})) if @props.src
 
       )
-
-      (tag.button {
-        className:  'delete'
+      
+      (tag.i {
+        className:  'fa fa-times-circle-o remove'
         onClick:    @props.onDelete
-        type:       'button'
-      },
-        (tag.i { className: 'fa fa-times' })
-      ) if @props.src unless @props.readOnly
+      }) if @props.src unless @props.readOnly
+
+      # (tag.button {
+      #   className:  'delete'
+      #   onClick:    @props.onDelete
+      #   type:       'button'
+      # },
+      #   (tag.i { className: 'fa fa-times' })
+      # ) if @props.src unless @props.readOnly
     )
 
 

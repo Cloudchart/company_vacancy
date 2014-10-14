@@ -1,3 +1,5 @@
+# @cjsx React.DOM
+
 # Imports
 #
 tag = React.DOM

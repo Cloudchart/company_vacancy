@@ -1,3 +1,6 @@
+# @cjsx React.DOM
+#
+
 # Imports
 #
 tag = React.DOM
@@ -14,21 +17,25 @@ Placeholder = (title) ->
   (tag.div {
     className: 'placeholder'
   },
-    (tag.header null,
-      (tag.i { className: 'fa fa-picture-o' })
-      "Product picture goes here"
-    )
+    (tag.div {
+      className: 'content'
+    },
+      (tag.header null,
+        (tag.i { className: 'fa fa-picture-o' })
+        "Product picture goes here"
+      )
     
-    (tag.p null,
-      "Use professional photography or graphics design."
-    )
+      (tag.p null,
+        "Use professional photography or graphics design."
+      )
     
-    (tag.p null,
-      "Use pictures at least 1500 px wide with a ratio of 4:3."
-    )
+      (tag.p null,
+        "Use pictures at least 1500 px wide with a ratio of 4:3."
+      )
     
-    (tag.p null,
-      "1600x1200 px is a good start."
+      (tag.p null,
+        "1600x1200 px is a good start."
+      )
     )
   )
 
@@ -74,20 +81,25 @@ Component = React.createClass
 
 
   render: ->
-    (tag.section {
-      className: 'picture'
-    },
+    if @props.readOnly
+      0 # render input and image
+    else
+      if @state.picture
+        1 #render image
+      else
+        2 # render nothing
 
+    if !@state.picture and @props.readOnly
+      (tag.noscript null)
+    else
       (ImageInput {
         src:          @state.picture.url if @state.picture
         onChange:     @onChange
         onDelete:     @onDelete
         onError:      @onError
-        placeholder:  (Placeholder {})
+        placeholder:  (Placeholder null)
         readOnly:     @props.readOnly
-      }) if @state.picture or !@props.readOnly
-      
-    )
+      })
 
 
 # Exports
