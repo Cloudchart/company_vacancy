@@ -66,8 +66,6 @@ article.editor > section.placeholder {
   
   > ul,
   > figure {
-    @include transform(scale(.5, .5));
-
     background-color: $editor-placeholder-background-color;
     border-radius: $editor-placeholder-section-figure-size / 2;
     color: $editor-placeholder-color;
@@ -101,6 +99,7 @@ article.editor > section.placeholder {
   }
   
   > figure {
+    @include transform(scale(.5, .5));
     @include transition(opacity 250ms ease-out, all 150ms ease-out, width 100ms ease-out 150ms);
 
     cursor: pointer;
