@@ -20,7 +20,7 @@ class CompanySerializer < ActiveModel::Serializer
   end
 
   def is_followed
-    company.favorites.pluck(:favoritable_id).include?(company.id)
+    current_user.favorites.pluck(:favoritable_id).include?(company.id)
   end
   
   def logotype_url
