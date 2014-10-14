@@ -12,6 +12,14 @@ module.exports =
     .done done
     .fail fail
   
+  fetchAll: (done, fail) ->
+    $.ajax
+      url:        "/profile/companies"
+      type:       "GET"
+      dataType:   "json"
+      cache:      false
+    .done done
+    .fail fail
   
   update: (key, data, done, fail) ->
     data = _.reduce data, ((memo, value, key) -> memo.append("company[#{key}]", value) ; memo), new FormData

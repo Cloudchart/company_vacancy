@@ -1,5 +1,8 @@
-# 
-#
+###
+  Used in:
+  components/company/preview/item
+###
+
 Letters = (value) ->
   value             = '' unless value
 

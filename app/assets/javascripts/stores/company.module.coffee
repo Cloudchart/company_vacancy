@@ -40,7 +40,7 @@ module.exports = CloudFlux.createStore
     is_read_only: true
     can_follow:   false
     is_followed:  false
-  
+    meta:         {}
 
   getActions: ->
     actions = {}

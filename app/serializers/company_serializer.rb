@@ -3,6 +3,7 @@ class CompanySerializer < ActiveModel::Serializer
   attributes  :uuid, :name, :description
   attributes  :is_trusted, :is_read_only, :can_follow, :is_followed
   attributes  :logotype_url
+  attributes  :meta
   
   alias_method :current_user, :scope
   alias_method :company, :object
@@ -26,5 +27,11 @@ class CompanySerializer < ActiveModel::Serializer
   def logotype_url
     company.logotype.url if company.logotype_stored?
   end
-    
+
+  def meta
+    {
+      people_count: object.people.count,
+      tags: object.tags.pluck(:name)
+    }
+  end
 end

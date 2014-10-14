@@ -8,9 +8,21 @@
 
 # Companies
 #
-@['cloud_profile/main#companies'] = (data) ->
-  $ -> 
-    cc.init_chart_preview(true, 0.4)
+@['cloud_profile/main#companies'] = ->
+  CompanySync = require('sync/company')
+  CompanyStore = require('stores/company')
+  CompanyPreviewList = require('components/company/preview/list')
+
+  CompanySync.fetchAll().done((json) ->
+    _.each(json.companies, (company) ->
+      CompanyStore.add(company.uuid, company)
+    )
+
+    React.renderComponent(
+      CompanyPreviewList()
+      document.querySelector('body > main')
+    )
+  )
 
 
 # Settings
