@@ -41,9 +41,14 @@ MainComponent = React.createClass
   
   
   createTag: (name) ->
-    new_tag = TagStore.add(uuid(), { name: name })
-    @state.tags.push(new_tag.key)
+    # uuid = uuid()
+    # new_tag = TagStore.add(uuid, { uuid: uuid, name: name })
     # TagStore.emitChange()
+    # console.log new_tag, new_tag.key, new_tag.uuid
+    # tags = @state.tags.push(new_tag.key)
+    # console.log tags
+    # @setState({ query: '', tags: tags })
+
     tag_names = @props.all_tags.filter((tag) => @state.tags.contains(tag.uuid)).map((tag) -> tag.name)
     tag_names.push(name)
     @props.onChange({ target: { value: tag_names }})
