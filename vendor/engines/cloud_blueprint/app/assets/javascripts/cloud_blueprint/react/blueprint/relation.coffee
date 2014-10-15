@@ -55,7 +55,7 @@ drawPath = (relation, coords) ->
 morph = (relation, prevState) ->
   path = calculatePath(relation.state.parent_left, relation.state.parent_top, relation.state.child_left, relation.state.child_top, relation.state.midpoint)
 
-  return drawPath(relation, path) unless prevState
+  return drawPath(relation, path) unless prevState.midpoint?
   
   prevPath = calculatePath(prevState.parent_left, prevState.parent_top, prevState.child_left, prevState.child_top, prevState.midpoint)
   
@@ -75,7 +75,7 @@ morph = (relation, prevState) ->
     values = _.reduce deltas, (memo, value, key) ->
       memo[key] = prevState[key] + deltas[key] * delta ; memo
     , {}
-
+    
     drawPath(relation, calculatePath(values.parent_left, values.parent_top, values.child_left, values.child_top, values.midpoint))
     
     if progress <= duration then requestAnimationFrame(tick) else drawPath(relation, path)
@@ -93,7 +93,7 @@ morph = (relation, prevState) ->
 Relation = React.createClass
 
 
-  getDefaultProps: ->
+  getInitialState: ->
     child_model:    cc.blueprint.models.Node.get(@props.key)
     parent_model:   cc.blueprint.models.Node.get(@props.parent_key)
   
@@ -126,7 +126,7 @@ Relation = React.createClass
 
   render: ->
     (tag.path {
-      stroke: @props.colors[@props.child_model.color_index]
+      stroke: @props.colors[@state.child_model.color_index]
       strokeWidth: 1.25
       fill: 'transparent'
     })

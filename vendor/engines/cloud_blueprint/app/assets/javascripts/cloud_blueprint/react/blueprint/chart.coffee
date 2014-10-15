@@ -26,7 +26,7 @@ calculate_parent = (refs, x, y) ->
   bounds = _.reduce refs, (memo, node) ->
     rect            = node.getDOMNode().getBoundingClientRect()
     rect.uuid       = node.props.key
-    rect.parent     = node.props.model.parent_id
+    rect.parent     = node.state.model.parent_id
     rect.midpoint   = rect.top + rect.height / 2
     rect.dx         = Math.min(Math.abs(rect.left - x), Math.abs(rect.right - x))
     rect.dy         = Math.abs(rect.midpoint - y)
@@ -73,10 +73,10 @@ calculate_parent = (refs, x, y) ->
 
 
 calculate_position = (refs, parent, x) ->
-  children  = _.filter(refs, (node) -> node.props.model.parent_id == parent)
+  children  = _.filter(refs, (node) -> node.state.model.parent_id == parent)
 
   bounds    = _.chain(refs)
-    .filter (node) -> node.props.model.parent_id == parent
+    .filter (node) -> node.state.model.parent_id == parent
     .map (node) ->
       rect      = node.getDOMNode().getBoundingClientRect()
       rect.dx   = Math.min(Math.abs(rect.left - x), Math.abs(rect.right - x))
@@ -176,7 +176,7 @@ Calculations =
       if relation = cc.blueprint.react.Blueprint.Relation.get(child.props.key)
         parent          = @refs[relation.props.parent_key]
         parent_layout   = @layout[parent.props.key]
-        child_index     = child.props.model.index
+        child_index     = child.state.model.index
         
         relation.setPosition
           parent_left:  parent_layout.x  + offset.x - parent.getWidth() / 2 + parent_layout.connections[child_index]

@@ -52,17 +52,18 @@ Lock = (model) ->
 #
 IdentityCommons =
 
-  getDefaultProps: ->
-    model: cc.blueprint.models[@props.className].get(@props.key)
-
 
   getInitialState: ->
-    @props.model.attributes
+    model       = cc.blueprint.models[@props.className].get(@props.key) 
+
+    state       = model.attributes
+    state.model = model
+    state
 
 
   onClick: (event) ->
-    return if @props.model.is_synchronizing()
-    identity_form = cc.blueprint.react.forms.Identity({ model: @props.model })
+    return if @state.model.is_synchronizing()
+    identity_form = cc.blueprint.react.forms.Identity({ model: @state.model })
     cc.blueprint.react.modal.show(identity_form, { key: 'identity', title: "Edit #{@props.model.constructor.className.toLowerCase()}" })
 
 

@@ -69,9 +69,9 @@ Events =
   #
   onClick: (event) ->
     event.stopPropagation()
-    return if @props.model.is_synchronizing()
+    return if @state.model.is_synchronizing()
     
-    node_form = cc.blueprint.react.forms.Node({ model: @props.model, colors: @props.colors })
+    node_form = cc.blueprint.react.forms.Node({ model: @state.model, colors: @props.colors })
     cc.blueprint.react.modal.show(node_form, { key: 'node', title: 'Edit node' })
   
   
@@ -88,14 +88,14 @@ Events =
     model   = cc.blueprint.models[data.className].get(data.uuid)
       
     identity = cc.blueprint.models.Identity.create
-      chart_id:       @props.model.chart_id
+      chart_id:       @state.model.chart_id
       node_id:        @props.key
       identity_id:    data.uuid
       identity_type:  data.className
     
     identity.save()
     
-    Arbiter.publish("#{@props.model.constructor.broadcast_topic()}/update")
+    Arbiter.publish("#{@state.model.constructor.broadcast_topic()}/update")
 
 
 #
@@ -121,9 +121,12 @@ Node = React.createClass
   
   
   getDefaultProps: ->
-    model:            cc.blueprint.models.Node.get(@props.key)
     children_density: 25
     can_be_edited:    false
+  
+  
+  getInitialState: ->
+    model: cc.blueprint.models.Node.get(@props.key)
   
   
   componentDidMount: ->
@@ -149,12 +152,12 @@ Node = React.createClass
   
   
   gatherPeople: ->
-    _.sortBy(@props.model.people(), ['last_name', 'first_name'])
+    _.sortBy(@state.model.people(), ['last_name', 'first_name'])
       .map (person) -> cc.blueprint.react.Blueprint.NodePerson { key: person.uuid, model: person }
 
 
   gatherVacancies: ->
-    _.sortBy(@props.model.vacancies(), ['name'])
+    _.sortBy(@state.model.vacancies(), ['name'])
       .map (vacancy) -> cc.blueprint.react.Blueprint.NodeVacancy { key: vacancy.uuid, model: vacancy }
 
 
@@ -171,11 +174,11 @@ Node = React.createClass
       onDragOver:               @onDragOver           if @props.can_be_edited
       onDrop:                   @onDrop               if @props.can_be_edited
       style:
-        backgroundColor: @props.colors[@props.model.color_index]
-        minWidth:         @props.children_density * @props.model.children.length
+        backgroundColor: @props.colors[@state.model.color_index]
+        minWidth:         @props.children_density * @state.model.children.length
     },
       (tag.div { className: 'flag' }) if vacancies.length > 0
-      (tag.h2 {}, @props.model.title)
+      (tag.h2 {}, @state.model.title)
       (tag.ul {}, people, vacancies)
     )
 

@@ -9,12 +9,12 @@ Model = cc.models.Vacancy
 MainComponent = React.createClass
 
 
-  getDefaultProps: ->
+  getInitialState: ->
     model: Model.get(@props.key)
   
   
   onClick: (event) ->
-    @props.onClick({ target: { value: @props.model.uuid }}) if @props.onClick instanceof Function
+    @props.onClick({ target: { value: @state.model.uuid }}) if @props.onClick instanceof Function
   
   
   render: ->
@@ -26,10 +26,10 @@ MainComponent = React.createClass
         (tag.i { className: 'fa fa-briefcase' })
       )
       (tag.div { className: 'title' },
-        @props.model.name
+        @state.model.name
       )
       (tag.div { className: 'note' },
-        @props.model.description
+        @state.model.description
       )
     )
 

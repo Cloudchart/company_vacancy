@@ -105,7 +105,8 @@ MainComponent = React.createClass
   
   
   onClick: (event) ->
-    window.location.href = @props.chart_url if @props.chart_url
+    chartURL = @getChartURL()
+    window.location.href = chartURL if chartURL
 
 
   componentWillMount: ->
@@ -121,9 +122,12 @@ MainComponent = React.createClass
     scale:                1
     horizontal_padding:   20
     vertical_padding:     20
-    chart_url: '/companies/' + @props.company_id + '/charts/' + (@props.slug || @props.id)
-      
+
+
+  getChartURL: ->
+    '/companies/' + @props.company_id + '/charts/' + (@props.slug || @props.id)
   
+
   getInitialState: ->
     loaded:   false
     loading:  false
