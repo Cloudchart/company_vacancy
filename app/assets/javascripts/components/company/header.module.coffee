@@ -161,7 +161,7 @@ Component = React.createClass
           tag_list: @props.tag_list
           onChange: @onTagsChange
         })
-      )
+      ) unless @props.readOnly
       
       # Description
       #

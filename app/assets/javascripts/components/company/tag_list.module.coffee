@@ -13,55 +13,17 @@ tag = React.DOM
 
 TokenInput      = cc.require('plugins/react_tokeninput/main')
 ComboboxOption  = cc.require('plugins/react_tokeninput/option')
-CloudFlux       = require('cloud_flux')
-# TagActions      = -> require('actions/tag_actions')
-# TagStore        = -> require('stores/tag_store')
-# Constants       = -> require('constants')
-
+TagStore        = require('stores/tag_store')
+uuid            = require('utils/uuid')
 
 # Main Component
 # 
 MainComponent = React.createClass
 
 
-  mixins: [CloudFlux.mixins.Actions]
-  
-
   syncTaggable: (tags) ->
-    # console.log tags
-    # tagNames = TagStore().filter((tag) -> tags.contains(tag.uuid)).map((tag) -> tag.name).join(',')
     tagNames = @props.all_tags.filter((tag) -> tags.contains(tag.uuid)).map((tag) -> tag.name).join(',')
     @props.onChange({ target: { value: tagNames }}) if _.isFunction(@props.onChange)
-  
-  
-  # onCreate: (key) ->
-  #   @addTag(key, false)
-  #   @setState({ keys_to_create: @state.keys_to_create.push(key) })
-  
-  
-  # onCreateDone: (key, json) ->
-  #   if @state.keys_to_create.contains(key)
-  #     @setState({ keys_to_create: @state.keys_to_create.remove(@state.keys_to_create.indexOf(key)) })
-
-  #   @removeTag(key, false)
-  #   @addTag(json.tag.uuid)
-  
-  
-  # onCreateFail: (key) ->
-  #   if @state.keys_to_create.contains(key)
-  #     @setState({ keys_to_create: @state.keys_to_create.remove(@state.keys_to_create.indexOf(key)) })
-    
-  #   @removeTag(key, false)
-  
-  
-  # getCloudFluxActions: ->
-  #   actions = {}
-
-  #   actions[Constants().Tag.CREATE]       = @onCreate
-  #   actions[Constants().Tag.CREATE_DONE]  = @onCreateDone
-  #   actions[Constants().Tag.CREATE_FAIL]  = @onCreateFail
-
-  #   actions
 
 
   addTag: (key, sync = true) ->
@@ -79,9 +41,13 @@ MainComponent = React.createClass
   
   
   createTag: (name) ->
-    console.log name
-    # TagActions().create(name)
-    # @addTag(name)
+    new_tag = TagStore.add(uuid(), { name: name })
+    @state.tags.push(new_tag.key)
+    # TagStore.emitChange()
+    tag_names = @props.all_tags.filter((tag) => @state.tags.contains(tag.uuid)).map((tag) -> tag.name)
+    tag_names.push(name)
+    @props.onChange({ target: { value: tag_names }})
+
 
   gatherComboboxOptions: ->
     _.map @getAvailableTags(), (tag) =>
