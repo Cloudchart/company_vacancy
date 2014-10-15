@@ -73,12 +73,13 @@ module Companies
     # Accept
     # 
     def accept
-      current_user.roles.create!(value: @token.data[:role], owner: @token.owner)
+      role = current_user.roles.create!(value: @token.data[:role], owner: @token.owner)
+      current_user.favorites.find_by(favoritable_id: @token.owner_id).try(:delete)
       @token.destroy
 
       respond_to do |format|
         format.html { redirect_to cloud_profile.root_path }
-        format.json { render json: { CompanySerializer.new(@token.owner, scope: current_user) } }
+        format.json { render json: role, root: :role }
       end
     end
     

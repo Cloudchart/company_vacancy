@@ -3,35 +3,40 @@
 CloudFlux         = require('cloud_flux')
 Constants         = require('constants')
 
-
 # Exports
 #
 module.exports = CloudFlux.createStore
 
+  onAccessRightsFetchDone: ->
+    @store.emitChange()
 
   onUpdate: (key, attributes, token) ->
     @store.start_sync(key, token)
     @store.update(key, attributes)
     @store.emitChange()
   
-  
   onUpdateDone: (key, json, token) ->
     @store.stop_sync(key, token)
     @store.update(key, json)
-    #@store.commit(key)
+    # @store.commit(key)
     @store.emitChange()
-  
   
   onUpdateFail: (key, json, xhr, token) ->
     @store.stop_sync(key, token)
-    #@store.undo(key)
-    @store.emitChange()
-
-
-  onAccessRightsFetchDone: ->
+    # @store.undo(key)
     @store.emitChange()
   
+  # onCompanyAcceptInvite: (key, sync_token) ->
+  #   @store.start_sync(key, sync_token)
+  #   @store.emitChange()
+  #   console.log 'onCompanyAcceptInvite'
+
+  # onCompanyAcceptInviteDone: ->
+  #   console.log 'onCompanyAcceptInviteDone'
   
+  # onCompanyAcceptInviteFail: ->
+  #   console.log 'onCompanyAcceptInviteFail'
+
   getSchema: ->
     uuid:         ''
     name:         ''
@@ -46,6 +51,8 @@ module.exports = CloudFlux.createStore
   getActions: ->
     actions = {}
 
+    actions['company:access_rights:fetch:done'] = @onAccessRightsFetchDone
+
     actions[Constants.Company.UPDATE]       = @onUpdate
     actions[Constants.Company.UPDATE_DONE]  = @onUpdateDone
     actions[Constants.Company.UPDATE_FAIL]  = @onUpdateFail
@@ -57,7 +64,5 @@ module.exports = CloudFlux.createStore
     actions[Constants.Company.UNFOLLOW]       = @onUpdate
     actions[Constants.Company.UNFOLLOW_DONE]  = @onUpdateDone
     actions[Constants.Company.UNFOLLOW_FAIL]  = @onUpdateFail
-
-    actions['company:access_rights:fetch:done'] = @onAccessRightsFetchDone
 
     actions

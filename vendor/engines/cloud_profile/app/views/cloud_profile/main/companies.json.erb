@@ -1,6 +1,8 @@
 <%= 
 {
   companies: @companies.active_model_serializer.new(@companies, scope: current_user),
-  tokens: @tokens.active_model_serializer.new(@tokens)
+  tokens: @tokens.active_model_serializer.new(@tokens),
+  roles: @roles.active_model_serializer.new(@roles),
+  favorites: @favorites.active_model_serializer.new(@favorites)
 }.to_json.html_safe
 %>

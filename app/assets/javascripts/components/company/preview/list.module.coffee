@@ -1,3 +1,5 @@
+# TODO: move to cloud_profile
+
 ###
   Used in:
   cloud_profile/controllers/main
@@ -7,6 +9,9 @@ tag = React.DOM
 
 CompanyStore = require('stores/company')
 TokenStore = require('stores/token')
+RolesStore = require('stores/roles')
+FavoriteStore = require('stores/favorite')
+
 CompanyPreviewItem = require('components/company/preview/item')
 
 MainComponent = React.createClass
@@ -16,60 +21,65 @@ MainComponent = React.createClass
 
   getStateFromStores: ->
     companies: CompanyStore.all()
+    tokens: TokenStore.all()
+    roles: RolesStore.all()
+    favorites: FavoriteStore.all()
 
   componentDidMount: ->
-    CompanyStore.on('change', @refreshStateFromStores)
+    CompanyStore.on('change', @refreshStateFromStore)
+    TokenStore.on('change', @refreshStateFromStore)
+    RolesStore.on('change', @refreshStateFromStore)
+    FavoriteStore.on('change', @refreshStateFromStore)
 
   componentWillUnmount: ->
-    CompanyStore.off('change', @refreshStateFromStores)
+    CompanyStore.off('change', @refreshStateFromStore)
+    TokenStore.off('change', @refreshStateFromStore)
+    RolesStore.off('change', @refreshStateFromStore)
+    FavoriteStore.off('change', @refreshStateFromStore)
 
   getInitialState: ->
     @getStateFromStores()
 
   getTokenByCompany: (company) ->
-    TokenStore.find (item) =>
-      item.owner_id == company.id
+    _.filter(@state.tokens, (token) -> token.owner_id == company.uuid)[0]
 
   getMyCompanyItems: ->
     @getItemsForCompanies(
-      (@state.companies.filter (company) ->
-        company.flags.is_in_company
+      (@state.companies.filter (company) =>
+        _.contains(_.pluck(@state.roles, 'owner_id'), company.uuid)
       ), "my"
     )
 
   getFollowedCompanyItems: ->
     @getItemsForCompanies(
-      (@state.companies.filter (company) ->
-        company.is_followed
+      (@state.companies.filter (company) =>
+        _.contains(_.pluck(@state.favorites, 'favoritable_id'), company.uuid)
       ), "followed"
     )
 
   getInvitedByCompanyItems: ->
     @getItemsForCompanies(
-      (@state.companies.filter (company) ->
-        company.flags.is_invited
+      (@state.companies.filter (company) =>
+        _.contains(_.pluck(@state.tokens, 'owner_id'), company.uuid)
       ), "invited", true
     )
 
   getItemsForCompanies: (companies, keyPrefix, renderButtons = false) ->
-    self = @
-
-    _.map(companies, (company) ->
-      if company.flags.is_invited
-        token = self.getTokenByCompany(company)
-
+    _.map(companies, (company) =>
+      
       CompanyPreviewItem {
         company: company
         key: "#{keyPrefix}-#{company.uuid}"
         renderButtons: renderButtons
-        token: token
+        token: @getTokenByCompany(company) if keyPrefix == "invited"
       }
     )
 
   render: ->
+
     myCompanyItems = @getMyCompanyItems()
-    followedCompanyItems = @getFollowedCompanyItems()
     invitedCompanyItems = @getInvitedByCompanyItems()
+    followedCompanyItems = @getFollowedCompanyItems()
 
     tag.section { className: "company-previews" },
       tag.section { className: "owned" },
@@ -77,8 +87,9 @@ MainComponent = React.createClass
         tag.div { className: "container" },
           myCompanyItems
           tag.div { className: "company-add" },
-            tag.a null,
+            tag.a { href: '/companies/new' },
               tag.i { className: "fa fa-plus" }
+              tag.span { className: 'hint' }, 'Create company'
 
 
       if invitedCompanyItems.length > 0

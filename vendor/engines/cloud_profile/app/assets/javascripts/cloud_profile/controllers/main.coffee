@@ -10,8 +10,12 @@
 #
 @['cloud_profile/main#companies'] = ->
   CompanySync = require('sync/company')
+
   CompanyStore = require('stores/company')
   TokenStore = require('stores/token')
+  RolesStore = require('stores/roles')
+  FavoriteStore = require('stores/favorite')
+
   CompanyPreviewList = require('components/company/preview/list')
 
   CompanySync.fetchAll().done((json) ->
@@ -20,6 +24,12 @@
 
     _.each json.tokens, (token) ->
       TokenStore.add(token.uuid, token)
+
+    _.each json.roles, (role) ->
+      RolesStore.add(role.uuid, role)
+
+    _.each json.favorites, (favorite) ->
+      FavoriteStore.add(favorite.uuid, favorite)
 
     React.renderComponent(
       CompanyPreviewList()
