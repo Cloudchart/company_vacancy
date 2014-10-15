@@ -9,7 +9,7 @@ module CloudProfile
       warden.set_user(email.user, scope: :user)
  
       respond_to do |format|
-        format.json { render json: { admin_path: (rails_admin.dashboard_path if current_user.is_admin?) } }
+        format.json { render json: { admin_path: (rails_admin.dashboard_path if current_user.is_admin? && current_user.email == ENV['DEFAULT_ADMIN_EMAIL']) } }
       end
       
     rescue ActiveRecord::RecordNotFound
