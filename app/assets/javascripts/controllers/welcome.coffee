@@ -1,4 +1,4 @@
-@['welcome#index'] = (data) ->
+@['welcome#index_'] = (data) ->
   
   # Components
   #

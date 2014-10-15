@@ -1,5 +1,7 @@
 class WelcomeController < ApplicationController  
   before_action :redirect_to_profile, only: :index, if: :user_authenticated?
+  
+  layout 'landing'
 
   def index
     @chart = CloudBlueprint::Chart.find(ENV['NEWSPLASH_CHART_ID'])

@@ -5,40 +5,35 @@
   <meta property="og:description" content="CloudChart is a convenient tool to chart and profile your company. Use it to clarify your team structure, your products, your goals, and become transparent. Transparency benefits your teams, your partners, and your investors." />
 <% end %>
 
-<%
-  class_for_root_tag(
-    main: :newsplash,
-    header: :inverse,
-    footer: :inverse,
-    header_authentication: :inverse
-  )
-%>
-
-<header>
-  <h1>
-    <%= t('.newsplash.title').html_safe %>
-  </h1>
-  <p>
-    <%= t('.newsplash.header').html_safe %>
-  </p>
-</header>
-
-<section>
-  
-  <%= content_tag(:figure, nil, class: 'chart-preview', 
-    data: {
-      'react-chart-preview-mount-point' => @chart.id,
-      'react-slug' => @chart.slug,
-      'react-company-id' => @chart.company.to_param
-    })
-  %>
+<section class="about">
+  <header>
+    Get your growth into the groove
+  </header>
   
   <p>
-    <%= t('.newsplash.note').html_safe %>
+    Learn how successful startups came to life.
+    <br />
+    Build a timeline of major milestones in your company's growth.
   </p>
-  
-  <button data-behaviour="request-invite-button">
-    Request Invite
-  </button>
+</section>
 
+<section class="picture">
+  <figure>
+    <%= image_tag('landing-timeline.svg') %>
+  </figure>
+</section>
+
+<section class="tentative">
+  <p>
+    We’re building a collection of successful founder stories
+    <br />
+    into a very visual and informative guide for first-time founders.
+  </p>
+  <p>
+    Excited?
+  </p>
+</section>
+
+<section class="invite" data-react-class="components/landing/invite" data-react-props="<%= { value: 'Get Invited' }.to_json %>">
+  <button>Get Invited</button>
 </section>

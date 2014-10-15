@@ -1,0 +1,21 @@
+<ul>
+  <li>
+    <%= link_to t('.about_us', default: 'About us'), main_app.company_path(ENV['ABOUT_US_COMPANY_ID']) %>
+  </li>
+
+  <li>
+    <%= mail_to ENV['DEFAULT_SUPPORT'], t('.support', default: 'Support') %>
+  </li>
+  
+  <li>
+    <%= mail_to ENV['DEFAULT_REPLY_TO'], t('.contacts', default: 'Contacts') %>
+  </li>
+
+  <li>
+    <%= link_to t('.legal', default: 'Legal'), main_app.page_path(:legal) %>
+  </li>
+
+  <li>
+    <%= link_to t('.privacy', default: 'Privacy'), main_app.page_path(:privacy) %>
+  </li>
+</ul>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CloudChart</title>
+    <%= favicon_link_tag %>
+    <%= stylesheet_link_tag 'landing', media: 'all' %>
+    <%= render 'shared/meta' %>
+  </head>
+
+  <body>
+    <header class="landing">
+      <%= render 'welcome/header' %>
+    </header>
+    
+    <main class="lading">
+      <%= yield %>
+    </main>
+
+    <footer class="landing">
+      <%= render 'welcome/footer' %>
+    </footer>
+
+    <div data-react-class="components/modal_window"></div>
+
+    <%= javascript_include_tag 'application', debug: true %>
+    <%= pagescript %>
+    <%= render 'shared/google_analytics' if Rails.env.production? %>
+  </body>
+
+</html>

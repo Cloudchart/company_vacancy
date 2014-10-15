@@ -38,7 +38,7 @@ if (InviteButton = document.querySelector('[data-behaviour~="invite-button"]')) 
 _.each document.querySelectorAll('[data-react-class]'), (node) ->
   try
     reactClass  = require(node.dataset.reactClass)
-    reactProps  = JSON.parse(node.dataset.reactProps)
+    reactProps  = JSON.parse(node.dataset.reactProps) if node.dataset.reactProps
     
     React.renderComponent(reactClass(reactProps), node)
     
