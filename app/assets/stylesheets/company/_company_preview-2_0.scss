@@ -66,10 +66,14 @@ $company-preview-height: $company-preview-header-height + $company-preview-middl
   }
 
   header {
+    @include display(flex);
+
     padding: $company-preview-padding;
     height: $company-preview-header-height;
 
     > figure {
+      margin: auto 0;
+
       &.image-absent {
         border-radius: 100%;
         font-size: 30px;
