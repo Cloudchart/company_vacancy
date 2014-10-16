@@ -22,7 +22,7 @@ class CompanySerializer < ActiveModel::Serializer
 
   # TODO: remove, use favorite store instead
   def is_followed
-    current_user.favorites.pluck(:favoritable_id).include?(company.id)
+    current_user.favorites.pluck(:favoritable_id).include?(company.id) if current_user
   end
   
   def logotype_url
