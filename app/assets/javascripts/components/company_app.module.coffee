@@ -102,7 +102,7 @@ Component = React.createClass
     _.chain(@state.blocks)
       .sortBy(['position'])
       .map (block) =>
-        <SectionWrapperComponent key={block.getKey()} readOnly={@state.company.is_read_only} />
+        <SectionWrapperComponent key={block.getKey()} readOnly={@state.company.flags.is_read_only} />
       .value()
   
   
@@ -162,11 +162,11 @@ Component = React.createClass
       <article className="editor company company-2_0">
         <CompanyHeader
           key           = {@props.key}
-          logotype_url  = {@state.company.logotype_url}
           name          = {@state.company.name}
           description   = {@state.company.description}
-          readOnly      = {@state.company.is_read_only}
-          can_follow    = {@state.company.can_follow}
+          logotype_url  = {@state.company.meta.logotype_url}
+          readOnly      = {@state.company.flags.is_read_only}
+          can_follow    = {@state.company.flags.can_follow}
           is_followed   = {@state.company.is_followed}
         />
         {blocks}
