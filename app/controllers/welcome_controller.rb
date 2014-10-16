@@ -14,7 +14,7 @@ class WelcomeController < ApplicationController
 private
   
   def redirect_to_profile
-    redirect_to cloud_profile.root_path
+    redirect_to cloud_profile.companies_path
   end
   
 end
