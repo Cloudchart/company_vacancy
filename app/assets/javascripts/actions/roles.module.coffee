@@ -15,19 +15,19 @@ module.exports =
   #
   revoke: (key, token = 'revoke') ->
     Dispatcher.handleClientAction
-      type: Constants.Company.REVOKE_ROLE
+      type: Constants.Role.DELETE
       data: [key, token]
     
     record = RolesStore.get(key)
 
     done = (json) ->
       Dispatcher.handleServerAction
-        type: Constants.Company.REVOKE_ROLE_DONE
+        type: Constants.Role.DELETE_DONE
         data: [key, json, token]
     
     fail = (xhr) ->
       Dispatcher.handleServerAction
-        type: Constants.Company.REVOKE_ROLE_FAIL
+        type: Constants.Role.DELETE_FAIL
         data: [key, xhr.responseJSON, xhr, token]
 
     CompanySync.revokeRole(record.owner_id, record.uuid, done, fail)

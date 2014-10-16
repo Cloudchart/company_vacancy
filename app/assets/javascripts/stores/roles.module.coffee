@@ -64,9 +64,9 @@ module.exports = CloudFlux.createStore
     
     actions['company:access_rights:fetch:done'] = @onAccessRightsFetchDone
     
-    actions[Constants.Company.REVOKE_ROLE]      = @onDelete
-    actions[Constants.Company.REVOKE_ROLE_DONE] = @onDeleteDone
-    actions[Constants.Company.REVOKE_ROLE_FAIL] = @onDeleteFail
+    actions[Constants.Role.DELETE]      = @onDelete
+    actions[Constants.Role.DELETE_DONE] = @onDeleteDone
+    actions[Constants.Role.DELETE_FAIL] = @onDeleteFail
 
     actions[Constants.Role.CREATE]       = @onCreate
     actions[Constants.Role.CREATE_DONE]  = @onCreateDone
