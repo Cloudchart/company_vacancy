@@ -26,17 +26,12 @@ module.exports = CloudFlux.createStore
     # @store.undo(key)
     @store.emitChange()
   
-  # onCompanyAcceptInvite: (key, sync_token) ->
-  #   @store.start_sync(key, sync_token)
-  #   @store.emitChange()
-  #   console.log 'onCompanyAcceptInvite'
 
-  # onCompanyAcceptInviteDone: ->
-  #   console.log 'onCompanyAcceptInviteDone'
+  onRoleCreateDone: (key, json, sync_token) ->
+    if sync_token == 'accept_invite' and json.company
+      @store.update(json.company.uuid, json.company)
+      @store.emitChange()
   
-  # onCompanyAcceptInviteFail: ->
-  #   console.log 'onCompanyAcceptInviteFail'
-
   getSchema: ->
     uuid:         ''
     name:         ''
@@ -64,5 +59,7 @@ module.exports = CloudFlux.createStore
     actions[Constants.Company.UNFOLLOW]       = @onUpdate
     actions[Constants.Company.UNFOLLOW_DONE]  = @onUpdateDone
     actions[Constants.Company.UNFOLLOW_FAIL]  = @onUpdateFail
+
+    actions[Constants.Role.CREATE_DONE]  = @onRoleCreateDone
 
     actions

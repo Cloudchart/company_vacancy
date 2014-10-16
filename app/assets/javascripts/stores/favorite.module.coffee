@@ -6,6 +6,12 @@ Constants   = require('constants')
 # Exports
 #
 module.exports = CloudFlux.createStore
+
+  onRoleCreateDone: (key, json, sync_token) ->
+    if sync_token == 'accept_invite' and json.favorite
+      @store.remove(json.favorite.uuid)
+      @store.emitChange()
+
   
   #
   # Actions
@@ -13,6 +19,9 @@ module.exports = CloudFlux.createStore
   
   getActions: ->
     actions = {}
+
+    actions[Constants.Role.CREATE_DONE]  = @onRoleCreateDone
+
     actions
 
   
