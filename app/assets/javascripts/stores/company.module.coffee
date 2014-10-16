@@ -36,7 +36,6 @@ module.exports = CloudFlux.createStore
     uuid:         ''
     name:         ''
     description:  ''
-    is_followed:  false # will be removed
     meta:         {}
     flags:        {}
 

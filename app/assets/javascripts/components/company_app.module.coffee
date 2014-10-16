@@ -167,7 +167,7 @@ Component = React.createClass
           logotype_url  = {@state.company.meta.logotype_url}
           readOnly      = {@state.company.flags.is_read_only}
           can_follow    = {@state.company.flags.can_follow}
-          is_followed   = {@state.company.is_followed}
+          is_followed   = {@state.company.flags.is_followed}
         />
         {blocks}
         {SectionPlaceholderComponent.call(@, blocks.length)}

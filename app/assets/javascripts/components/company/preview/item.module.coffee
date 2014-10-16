@@ -54,7 +54,7 @@ MainComponent = React.createClass
         tag.a { href: company.meta.company_url },
           tag.header null,
             Logo {
-              logoUrl: company.logotype_url
+              logoUrl: company.meta.logotype_url
               value: company.name || 'Unnamed'
             }
           tag.section { className: "middle" },
