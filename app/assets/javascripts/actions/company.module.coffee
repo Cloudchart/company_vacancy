@@ -163,6 +163,23 @@ module.exports =
     SyncAPI.resendInvite(record.owner_id, key, done, fail)
 
 
+  # Accept invite
+  #
+  acceptInvite: (key, sync_token = 'accept_invite') ->
+    handleClientStoreAction(Constants.Role.CREATE, key, sync_token)
+    handleClientStoreAction(Constants.Token.DELETE, key, sync_token)
+
+    done = (json) ->
+      handleServerStoreDoneAction(Constants.Role.CREATE_DONE, key, json, sync_token)
+      handleServerStoreDoneAction(Constants.Token.DELETE_DONE, key, json, sync_token)
+
+    fail = (xhr) ->
+      handleServerStoreFailAction(Constants.Role.CREATE_FAIL, key, xhr, sync_token)
+      handleServerStoreFailAction(Constants.Token.DELETE_FAIL, key, xhr, sync_token)
+    
+    SyncAPI.acceptInvite(TokenStore.get(key).owner_id, key, done, fail)
+
+
   # Cancel invite
   #
   cancelInvite: (key, token = 'cancel') ->
@@ -174,6 +191,6 @@ module.exports =
       handleServerStoreDoneAction(Constants.Token.DELETE_DONE, key, json, token)
 
     fail = (xhr) ->
-      handleServerStoreFailAction(Constants.Token.CREATE_FAIL, key, xhr, token)
+      handleServerStoreFailAction(Constants.Token.DELETE_FAIL, key, xhr, token)
     
     SyncAPI.cancelInvite(record.owner_id, key, done, fail)

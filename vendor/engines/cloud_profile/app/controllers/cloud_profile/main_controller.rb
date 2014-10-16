@@ -6,7 +6,19 @@ module CloudProfile
     before_action :create_default_company, only: :companies, unless: -> { current_user.companies.any? }
     
     def companies
-      @companies = current_user.companies.includes(:people, :vacancies, :charts).order(updated_at: :desc)
+      # TODO 
+      # rewrite n+1 query for invited_by_companies, change three merges
+      my_companies = current_user.companies.includes(:people, :tags).order(updated_at: :desc).all
+      followed_companies = current_user.followed_companies.includes(:people, :tags).order(updated_at: :desc).all
+      invited_by_companies = current_user.invited_by_companies
+
+      @companies = my_companies + followed_companies + invited_by_companies
+      company_ids = @companies.map(&:id)
+
+      @tokens = Token.where(owner_type: 'Company', owner_id: company_ids)
+        .select_by_user(current_user.id, current_user.emails.pluck(:address))
+      @roles = current_user.roles.where(owner_type: 'Company', owner_id: company_ids)
+      @favorites = current_user.favorites.where(favoritable_type: 'Company', favoritable_id: company_ids)
     end
 
     def vacancies

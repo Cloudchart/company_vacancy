@@ -1,6 +1,8 @@
 # Exports
 #
 module.exports =
+
+
   Company:
     COMPANY_FETCH_DONE:   'company:fetch:done'
     COMPANY_FETCH_FAIL:   'company:fetch:fail'
@@ -24,6 +26,7 @@ module.exports =
     UNFOLLOW:        'company:unfollow'
     UNFOLLOW_DONE:   'company:unfollow:done'
     UNFOLLOW_FAIL:   'company:unfollow:fail'
+
 
   Token:
     FETCH_DONE:   'token:fetch:done'
@@ -50,3 +53,9 @@ module.exports =
     CREATE:       'tag:create'
     CREATE_DONE:  'tag:create:done'
     CREATE_FAIL:  'tag:create:fail'
+
+
+  Role:
+    CREATE:       'role:create'
+    CREATE_DONE:  'role:create:done'
+    CREATE_FAIL:  'role:create:fail'

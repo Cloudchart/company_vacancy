@@ -12,6 +12,15 @@ module.exports =
     .done done
     .fail fail
   
+  # TODO: move to cloud_profile
+  fetchAll: (done, fail) ->
+    $.ajax
+      url:        "/profile/companies"
+      type:       "GET"
+      dataType:   "json"
+      cache:      false
+    .done done
+    .fail fail
   
   update: (key, data, done, fail) ->
     data = _.reduce data, ((memo, value, key) -> memo.append("company[#{key}]", value) ; memo), new FormData
@@ -80,6 +89,15 @@ module.exports =
     $.ajax
       url:        "/companies/#{key}/invites/#{token_key}"
       type:       "DELETE"
+      dataType:   "json"
+    .done done
+    .fail fail
+
+
+  acceptInvite: (key, token_key, done, fail) ->
+    $.ajax
+      url:        "/companies/#{key}/invites/#{token_key}/accept"
+      type:       "POST"
       dataType:   "json"
     .done done
     .fail fail

@@ -41,7 +41,7 @@ MainComponent = React.createClass
   render: ->
     (tag.button { 
       className: 'orgpad'
-      disabled: !!CompanyStore.getSync(@props.key)
+      disabled: /follow|unfollow/.test(CompanyStore.getSync(@props.key))
       onClick: @handleFollowClick
     },
       if @props.is_followed then 'Unfollow' else 'Follow'
