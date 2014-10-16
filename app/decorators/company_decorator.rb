@@ -15,10 +15,10 @@ class CompanyDecorator < ApplicationDecorator
   end
 
   def logo
-    if company.logotype
-      image_tag(company.logotype.url)
-    else
-      content_tag :figure, style: "background-color: #{color(self.name)};" do
+    content_tag :figure, class: ("image-absent" if !company.logotype), style: ("background-color: #{color(self.name)};" if !company.logotype) do
+      if company.logotype
+        image_tag(company.logotype.url)
+      else
         initials
       end
     end  

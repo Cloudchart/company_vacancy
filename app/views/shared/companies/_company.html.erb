@@ -2,46 +2,34 @@
 
   <div id="<%= company.id %>" class="company-preview">
     <%= link_to main_app.company_path(company), class: "company-preview-link" do %>
-      <header class="company-preview-header">
-        <div class="company-preview-logo">
-          <%= company.logo %>
-        </div>
+      <header>
+        <%= company.logo %>
       </header>
-      <div class="company-preview-info">
-        <table class="company-preview-data">
-          <tr>
-            <td class="company-preview-name">
-              <%= company.name %>
-            </td>
-            <td class="company-preview-size">
-              <%= company.people.count %><i class="fa fa-male"></i>
-            </td>
-          </tr>
-          <tr>
-            <td class="company-preview-motto">
-              <%= company.description %>
-            </td>
-            <td class="company-preview-burn-rate">
-              <!-- $300K<span>month</span> -->
-            </td>
-          </tr>
-        </table>
-        <div class="company-preview-description">
-          <p>
-            <%= company.tags %>
-          </p>
+      <section class="middle">
+        <div class="left">
+          <div class="name">
+            <%= company.name %>
+          </div>
+          <div class="description">
+            <%= company.description %>
+          </div>
         </div>
-      </div>
+        <div class="right">
+          <div class="size">
+            <span><%= company.people.size %></span>
+            <i class="fa fa-male"></i>
+          </div>
+          <!-- <div class="burn-rate">
+            <span>$300K</span>
+            <span class="units">month</span>
+          </div> -->
+        </div>
+      </section>
+      <section class="bottom">
+        <p>
+          <%= company.tags %>
+        </p>
+      </section>
     <% end %>
-  <!--   <div class="company-preview-buttons">
-      <button class="cc">
-        Decline
-        <i class="fa fa-close"></i> 
-      </button>
-      <button class="cc decline">
-        Accept
-        <i class="fa fa-check"></i>
-      </button>
-    </div> -->
   </div>
 <% end %>

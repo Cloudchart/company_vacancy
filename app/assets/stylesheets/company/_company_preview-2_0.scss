@@ -1,35 +1,39 @@
 $company-preview-padding: 20px;
+$company-preview-header-height: 170px;
+$company-preview-middle-height: 76px;
+$company-preview-bottom-height: 120px;
+$company-preview-height: $company-preview-header-height + $company-preview-middle-height + $company-preview-bottom-height;
 
-.company-previews {
+.cloud-profile-companies {
   @include display(flex);
   @include flex-direction(column);
 
   margin: 0 auto;
-  width: 800px;
+  width: 800px;  
+}
 
-  .container {
-    @include align-items(stretch);
-    @include display(flex);
-    @include flex-wrap(wrap);
-    @include justify-content(space-between);
+.companies-search > .result,
+.company-previews {
+  @include align-items(stretch);
+  @include display(flex);
+  @include flex-wrap(wrap);
+  @include justify-content(space-between);
 
-    margin-bottom: 30px;
-  }
+  margin-bottom: 30px;  
 }
 
 .company-add,
-.company-preview-2 {
+.company-preview {
   border: 2px solid hsl(0, 0%, 96%);
+  height: $company-preview-height;
   margin-bottom: 17px;
+  position: relative;
   width: 48%;
 }
 
 .company-add {
-  position: relative;
-  height: 368px;
-  width: 48%;
 
-  a {
+  > a {
     @include display(flex);
     @include flex-direction(column);
     @include justify-content(center);
@@ -45,18 +49,14 @@ $company-preview-padding: 20px;
 
     > span.hint {
       font-size: 13px;
-      // font-weight: 100;
       text-transform: uppercase;
     }
-
   }
 }
 
-.company-preview-2 {
-  border-bottom: none;
-  position: relative;
+.company-preview {
 
-  a {
+  > a {
     @include display(flex);
     @include flex-direction(column);
     @include justify-content(space-between);
@@ -67,9 +67,9 @@ $company-preview-padding: 20px;
 
   header {
     padding: $company-preview-padding;
-    height: 170px;
+    height: $company-preview-header-height;
 
-    figure {
+    > figure {
       &.image-absent {
         border-radius: 100%;
         font-size: 30px;
@@ -80,7 +80,7 @@ $company-preview-padding: 20px;
         width: 100px;
       }
 
-      img {
+      > img {
         width: 145px;
       }
     }
@@ -91,11 +91,12 @@ $company-preview-padding: 20px;
     @include display(flex);
 
     font-size: 15px;
+    height: $company-preview-middle-height;
     padding: $company-preview-padding;
     padding-top: 0;
 
-    .left,
-    .right {
+    > .left,
+    > .right {
       @include display(flex);
       @include flex-direction(column);
 
@@ -105,196 +106,65 @@ $company-preview-padding: 20px;
       }
     }
 
-    .left {
+    > .left {
       flex: 1;
-    }
 
-    .right {
-      width: auto;
-    }
+      > .name {
+        font-size: 20px;
+        font-weight: 600;
+      }
 
-    .name {
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    .name,
-    .description {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .size,
-    .burn-rate {
-      font-weight: 600;
-      white-space: nowrap;
-      width: auto;
-
-      i {
-        margin-left: 3px;
+      > .name,
+      > .description {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
 
-    .burn-rate {
-      @include display(flex);
-      @include align-items(center);
+    > .right {
+      width: auto;
 
-      .units {
-        font-size: 9px;
-        font-weight: 300;
-        margin-left: 5px;
-        text-transform: uppercase;
+      > .size,
+      > .burn-rate {
+        font-weight: 600;
+        white-space: nowrap;
+        width: auto;
+
+        > i {
+          margin-left: 3px;
+        }
+      }
+
+      > .burn-rate {
+        @include display(flex);
+        @include align-items(center);
+
+        > .units {
+          font-size: 9px;
+          font-weight: 300;
+          margin-left: 5px;
+          text-transform: uppercase;
+        }
       }
     }
   }
 
   .bottom {
+    @include display(flex);
+
     background-color: hsl(0, 0%, 96%);
     color: hsl(60, 1%, 34%);
     font-size: 15px;
-    height: 120px;
+    height: $company-preview-bottom-height;
     padding: $company-preview-padding;
 
     > .buttons {
       @include display(flex);
       @include justify-content(space-around);
 
-      margin-top: 20px;
+      margin: auto;
+      width: 100%;
     }
-
-  }
-}
-
-
-/* 
-  old dirty CSS, remove after changing company search to React
- */
-
-.companies,
-.companies-search > .result {
-  @include align-items(stretch);
-  @include display(flex);
-  @include flex-wrap(wrap);
-  @include justify-content(space-between);
-}
-
-.company-preview {
-  border: 2px solid hsl(0, 0%, 96%);
-  margin-bottom: 17px;
-  position: relative;
-  width: 49%;
-
-  .company-preview-link {
-    @include display(flex);
-    @include flex-direction(column);
-    @include justify-content(space-between);
-
-    color: inherit;
-    width: 100%;
-  }
-}
-
-.company-preview-header {
-  @include display(flex);
-  @include align-items(center);  
-  
-  padding: 12px;
-  height: 170px;
-}
-
-.company-preview-logo {
-
-  img {
-    width: 145px;
-  }
-
-  figure {
-    border-radius: 100%;
-    height: 100px;
-    font-size: 30px;
-    font-weight: 100;
-    line-height: 100px;
-    text-align: center;
-    width: 100px;
-  }
-}
-
-.company-preview-info {
-  @include display(flex);
-  @include flex-direction(column);
-  @include justify-content(flex-end);
-}
-
-.company-preview-data {
-  @include align-content(space-between);
-  @include align-items(center);
-  @include display(flex);
-  @include flex-wrap(wrap);
-  @include justify-content(space-between);
-
-  font-size: 12pt;
-  padding: 12px;
-
-  > * {
-    padding-bottom: 5px;
-  }
-}
-
-.company-preview-name {
-  font-size: 16pt;
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.company-preview-name,
-.company-preview-motto {
-  height: 26px;
-  margin-right: 20px;
-  width: 100%;
-  white-space: nowrap;
-}
-
-.company-preview-size,
-.company-preview-burn-rate {
-  font-weight: 600;
-  white-space: nowrap;
-  width: auto;
-
-  i {
-    margin-left: 3px;
-  }
-}
-
-.company-preview-burn-rate {
-  @include align-items(center);
-  @include display(flex);
-}
-
-.company-preview-burn-rate span {
-  font-size: 9pt;
-  font-weight: 300;
-  margin-left: 5px;
-  text-transform: uppercase;
-}
-
-.company-preview-description {
-  background-color: hsl(0, 0%, 96%);
-  color: hsl(60, 1%, 34%);
-  font-size: 12pt;
-  height: 120px;
-  padding: 12px;
-}
-
-.company-preview-buttons {
-  @include display(flex);
-  @include justify-content(space-around);
-  @include position(absolute, 0 0 0px 0);
-  
-  width: 100%;
-
-  button {
-    width: 30%;
   }
 }

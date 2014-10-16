@@ -81,10 +81,10 @@ MainComponent = React.createClass
     invitedCompanyItems = @getInvitedByCompanyItems()
     followedCompanyItems = @getFollowedCompanyItems()
 
-    tag.section { className: "company-previews" },
+    tag.section { className: "cloud-profile-companies" },
       tag.section { className: "owned" },
         tag.h2 null, "My Companies"
-        tag.div { className: "container" },
+        tag.div { className: "company-previews" },
           myCompanyItems
           tag.div { className: "company-add" },
             tag.a { href: '/companies/new' },
@@ -95,13 +95,13 @@ MainComponent = React.createClass
       if invitedCompanyItems.length > 0
         tag.section { className: "invited" },
           tag.h2 null, "Invited to"
-          tag.div { className: "container" },
+          tag.div { className: "company-previews" },
             invitedCompanyItems
 
       if followedCompanyItems.length > 0
         tag.section { className: "followed" },
           tag.h2 null, "Following"
-          tag.div { className: "container" },
+          tag.div { className: "company-previews" },
             followedCompanyItems
 
 

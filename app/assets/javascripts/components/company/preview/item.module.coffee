@@ -50,7 +50,7 @@ MainComponent = React.createClass
     company = @props.company
 
     if company
-      tag.article { className: "company-preview-2" },
+      tag.article { className: "company-preview" },
         tag.a { href: company.meta.company_url },
           tag.header null,
             Logo {
