@@ -129,15 +129,30 @@ $company-preview-height: $company-preview-header-height + $company-preview-middl
     > .right {
       width: auto;
 
+      > .size {
+        @include display(inline-flex);
+
+        > div {
+
+          &.vacancies {
+            color: $alizarin-crimson;
+          }
+
+          &:first-child {
+            margin-right: 30px;
+          }
+
+          > i {
+            margin-left: 3px;
+          }
+        }
+      }
+
       > .size,
       > .burn-rate {
         font-weight: 600;
         white-space: nowrap;
         width: auto;
-
-        > i {
-          margin-left: 3px;
-        }
       }
 
       > .burn-rate {

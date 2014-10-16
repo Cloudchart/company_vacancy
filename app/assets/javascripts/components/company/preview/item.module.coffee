@@ -63,8 +63,12 @@ MainComponent = React.createClass
               tag.div { className: "description" }, company.description
             tag.div { className: "right" },
               tag.div { className: "size" },
-                company.meta.people_size
-                tag.i { className: "fa fa-male" }
+                tag.div { className: 'vacancies' },
+                  company.meta.vacancies_size
+                  tag.i { className: "fa fa-briefcase" }
+                tag.div { className: 'people' },
+                  company.meta.people_size
+                  tag.i { className: "fa fa-male" }
               # tag.div { className: "burn-rate" },
               #   "$300K"
               #   tag.span { className: "units" }, "month"

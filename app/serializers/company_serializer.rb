@@ -32,6 +32,7 @@ class CompanySerializer < ActiveModel::Serializer
   def meta
     {
       people_size: company.people.size,
+      vacancies_size: company.vacancies.size,
       tags: company.tags.pluck(:name),
       company_url: company_path(company)
     }
