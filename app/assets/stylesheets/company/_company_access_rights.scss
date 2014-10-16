@@ -7,8 +7,12 @@
   width: 650px;
   margin: 0 auto;
 
+  .modal-container > & {
+    padding: 45px;
+  }
+
   header {
-    font-size: 24px;
+    font-size: 30px;
     margin-bottom: 25px;
     position: relative;
 
@@ -42,6 +46,29 @@
       padding: 0 15px;
       text-align: right;
       width: 30%;
+
+      .select-wrapper {
+        position: relative;
+      }
+  
+      select {
+        border: none;
+        cursor: pointer;
+        outline: none;
+        height: 100%;
+        padding-right: 25px;
+
+        -webkit-appearance: none;
+      }
+      
+      i {
+        @include position(absolute, 0px 0px 0 0);
+
+        cursor: pointer;
+        height: 100%;
+        margin-top: 1px; // TODO fix dirty center
+        pointer-events: none;
+      }
     }
 
     .token .name {

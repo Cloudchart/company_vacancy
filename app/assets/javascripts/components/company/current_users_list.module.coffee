@@ -15,20 +15,22 @@ TokenItem     = require('components/company/token_item')
 #
 Component = React.createClass
 
+  getDefaultProps: ->
+    invitable_roles: []
 
   onRevokeRoleButtonClick: (key) ->
     RolesActions.revoke(key, key)
 
 
   currentUsers: ->
-    _.map @props.roles, (role) ->
+    _.map @props.roles, (role) =>
       (RoleItem {
-        key:    role.uuid
-        role:   role.value
-        user:   UsersStore.get(role.user_id)
-        sync:   RolesStore.getSync(role.uuid)
+        key:             role.uuid
+        role:            role.value
+        user:            UsersStore.get(role.user_id)
+        sync:            RolesStore.getSync(role.uuid)
+        invitable_roles: @props.invitable_roles
       })
-      
   
   currentTokens: ->
     _.map @props.tokens, (token) ->

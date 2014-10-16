@@ -1,19 +1,31 @@
+# @cjsx React.DOM
+
 # Imports
 #
 tag = React.DOM
 
 Buttons = require('components/company/buttons')
 Actions = require('actions/roles')
-roleMaps = require('utils/role_maps')
+RoleMap = require('utils/role_map')
+
 
 # Main
 #
 Component = React.createClass
 
+  getDefaultProps: ->
+    invitable_roles: []
 
   onRevokeButtonClick: ->
-    Actions.revoke(@props.key)
+    Actions.delete(@props.key)
 
+  onSelectRoleChange: (e) ->
+    Actions.update(@props.key, {value: e.target.value })
+
+  getOptions: ->
+    _.map(@props.invitable_roles, (role) =>
+      <option value={role}>{RoleMap[role].name}</option>
+    )
 
   render: ->
     (tag.tr {
@@ -38,7 +50,15 @@ Component = React.createClass
       (tag.td {
         className: 'user-role'
       },
-        roleMaps.RoleNameMap[@props.role]
+        if @props.role == "owner"
+          RoleMap[@props.role].name
+        else
+          tag.div { className: "select-wrapper" }, # TODO fix naming
+            tag.select { 
+              value: @props.role
+              onChange: @onSelectRoleChange
+            }, @getOptions()
+            tag.i { className: "fa fa-chevron-down" }
       )
       
       (tag.td {

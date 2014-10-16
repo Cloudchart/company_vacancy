@@ -56,6 +56,10 @@ module.exports =
     CREATE_DONE:  'role:create:done'
     CREATE_FAIL:  'role:create:fail'
 
+    UPDATE:       'role:update'
+    UPDATE_DONE:  'role:update:done'
+    UPDATE_FAIL:  'role:update:fail'
+
     DELETE:       'role:delete'
     DELETE_DONE:  'role:delete:done'
     DELETE_FAIL:  'role:delete:fail'

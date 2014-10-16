@@ -119,12 +119,3 @@ module.exports =
       dataType: 'json'
     .done done
     .fail fail
-
-
-  revokeRole: (key, role_key, done, fail) ->
-    $.ajax
-      url:        "/roles/#{role_key}"
-      type:       "DELETE"
-      dataType:   "json"
-    .done done
-    .fail fail

@@ -1,11 +1,15 @@
+# @cjsx React.DOM
+
 # Imports
 #
 tag = React.DOM
 
 
 CompanyActions  = require('actions/company')
+ModalActions    = require('actions/modal_actions')
 AutoSizingInput = require('components/form/autosizing_input')
 FollowComponent = require('components/company/follow')
+AccessRights    = require('components/company/access_rights')
 
 # Main
 #
@@ -36,7 +40,10 @@ Component = React.createClass
 
   onShareLinkClick: (event) ->
     event.preventDefault()
-  
+
+    ModalActions.show(
+      <AccessRights key={@props.key} invitable_roles={@props.invitable_roles} />
+    )
   
   isValid: ->
     @state.name.length > 0
@@ -80,7 +87,6 @@ Component = React.createClass
 
   getInitialState: ->
     @getStateFromProps(@props)
-
 
   render: ->
     (tag.header {
