@@ -1,3 +1,5 @@
+# @cjsx React.DOM
+
 # Imports
 #
 tag = React.DOM
@@ -71,39 +73,25 @@ SectionWrapperComponent = React.createClass
 # Section Placeholder component
 #
 SectionPlaceholderComponent = (position) ->
-
-  (tag.section {
-    className:  'placeholder'
-  },
-    
+  cancel_item = =>
+    <li key="cancel" className="cancel">
+      <i className="fa fa-times-circle" onClick={@onCancelBlockCreateClick.bind(@, position)} />
+    </li>
+  
+  item = (type, key) =>
+    <li key={key} onClick={@onChooseBlockTypeClick.bind(@, type)}>{key}</li>
+  
+  content = unless @props.readOnly
     if @state.position == position
-      (tag.ul null,
-      
-        _.map IdentityTypes, (identityType, key) =>
-          (tag.li {
-            key:      key
-            onClick:  @onChooseBlockTypeClick.bind(@, identityType)
-          },
-            key
-          )
-      
-        (tag.li {
-          className: 'cancel'
-        },
-          (tag.i {
-            className: 'fa fa-times-circle'
-            onClick:    @onCancelBlockCreateClick.bind(@, position)
-          })
-        )
-      )
+      items = _.map(IdentityTypes, item) ; items.push(cancel_item())
+      <ul>{items}</ul>
     else
-      (tag.figure {
-        onClick:    @onPlaceholderClick.bind(@, position)
-      },
-        (tag.i { className: 'fa fa-plus' })
-      )
-  )
-
+      <figure onClick={@onPlaceholderClick.bind(@, position)}>
+        <i className="fa fa-plus" />
+      </figure>
+  
+  <section className="placeholder">{content}</section>
+    
 
 # Main
 #
@@ -114,19 +102,7 @@ Component = React.createClass
     _.chain(@state.blocks)
       .sortBy(['position'])
       .map (block) =>
-        component = BlockComponents[block.identity_type]
-
-        (component {
-          key:        block.getKey()
-          block:      block
-          readOnly:   @state.company.is_read_only
-        })
-
-        (SectionWrapperComponent {
-          key:      block.getKey()
-          readOnly: @state.company.is_read_only
-        })
-
+        <SectionWrapperComponent key={block.getKey()} readOnly={@state.company.is_read_only} />
       .value()
   
   
@@ -177,33 +153,28 @@ Component = React.createClass
 
   render: ->
     if @state.company
-      blocks = @gatherBlocks()
+      blocks = _.map @gatherBlocks(), (block, i) =>
+        [
+          SectionPlaceholderComponent.call(@, i)
+          block
+        ]
       
-      (tag.article {
-        className: 'editor company company-2_0'
-      },
-    
-        (CompanyHeader {
-          key:          @props.key
-          logotype_url: @state.company.logotype_url
-          name:         @state.company.name
-          description:  @state.company.description
-          readOnly:     @state.company.is_read_only
-          can_follow:   @state.company.can_follow
-          is_followed:  @state.company.is_followed
-        })
-      
-        _.map blocks, (block, i) =>
-          [
-            SectionPlaceholderComponent.call(@, i)
-            block
-          ]
+      <article className="editor company company-2_0">
+        <CompanyHeader
+          key           = {@props.key}
+          logotype_url  = {@state.company.logotype_url}
+          name          = {@state.company.name}
+          description   = {@state.company.description}
+          readOnly      = {@state.company.is_read_only}
+          can_follow    = {@state.company.can_follow}
+          is_followed   = {@state.company.is_followed}
+        />
+        {blocks}
+        {SectionPlaceholderComponent.call(@, blocks.length)}
+      </article>
 
-        SectionPlaceholderComponent.call(@, blocks.length)
-            
-      )
     else
-      (tag.noscript null)
+      null
 
 
 # Exports

@@ -14,30 +14,23 @@ ImageInput      = require('components/form/image_input')
 # Placeholder
 #
 Placeholder = (title) ->
-  (tag.div {
-    className: 'placeholder'
-  },
-    (tag.div {
-      className: 'content'
-    },
-      (tag.header null,
-        (tag.i { className: 'fa fa-picture-o' })
-        "Product picture goes here"
-      )
-    
-      (tag.p null,
-        "Use professional photography or graphics design."
-      )
-    
-      (tag.p null,
-        "Use pictures at least 1500 px wide with a ratio of 4:3."
-      )
-    
-      (tag.p null,
-        "1600x1200 px is a good start."
-      )
-    )
-  )
+  <div className="placeholder">
+    <div className="content">
+      <header>
+        <i className="fa fa-picture-o" />
+        Product picture goes here
+      </header>
+      <p>
+        Use professional photography or graphics design.
+      </p>
+      <p>
+        Use pictures at least 1500 px wide with a ratio of 4:3.
+      </p>
+      <p>
+        1600x1200 px is a good start.
+      </p>
+    </div>
+  </div>
 
 
 # Main
@@ -88,18 +81,18 @@ Component = React.createClass
         1 #render image
       else
         2 # render nothing
-
-    if !@state.picture and @props.readOnly
-      (tag.noscript null)
+        
+    if @state.picture or !@props.readOnly
+      <ImageInput
+        src={@state.picture.url if @state.picture}
+        onChange={@onChange}
+        onDelete={@onDelete}
+        onError={@onError}
+        readOnly={@props.readOnly} 
+        placeholder={<Placeholder />}
+      />
     else
-      (ImageInput {
-        src:          @state.picture.url if @state.picture
-        onChange:     @onChange
-        onDelete:     @onDelete
-        onError:      @onError
-        placeholder:  (Placeholder null)
-        readOnly:     @props.readOnly
-      })
+      null
 
 
 # Exports
