@@ -1,5 +1,5 @@
 @import 'bourbon';
-@import 'normialize';
+@import 'normalize';
 @import 'proxima-nova';
 @import 'font-awesome';
 @import 'variables';
@@ -8,15 +8,12 @@
 @import 'simple_form';
 @import 'editable_articles';
 @import 'block_identities';
-@import 'plugins';
 @import 'companies';
 @import 'cloud_blueprint/application';
 @import 'cloud_profile/application';
-@import 'welcome';
 @import 'errors';
 @import 'modal';
 @import 'editor';
-//@import 'person';
 @import 'vacancy';
 @import 'page';
 @import 'company_invite';

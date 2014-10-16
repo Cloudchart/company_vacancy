@@ -1,22 +1,3 @@
-main.cloud-profile section.login-or-register {
-  
-  form {
-    @include cloud-profile-form;
-    @include display(flex);
-
-    position: relative;
-    width: $base-unit * 20;
-    
-    button {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      padding: 0;
-      width: $base-unit * 3;
-    }
-  }
-  
-}
-
 main.cloud-profile section.login {
 
   form {
