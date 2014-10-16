@@ -111,7 +111,7 @@ $company-preview-height: $company-preview-header-height + $company-preview-middl
     }
 
     > .left {
-      flex: 1;
+      @include flex(1);
 
       > .name {
         font-size: 20px;
