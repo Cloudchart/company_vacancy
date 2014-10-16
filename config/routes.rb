@@ -62,9 +62,6 @@ Cloudchart::Application.routes.draw do
   end
 
   resources :blocks, only: [:update, :destroy] do
-    post :update_position,  on: :collection
-    post :update_section,   on: :collection
-
     resources :identities, shallow: true, controller: :block_identities, only: [:index, :create, :destroy]
 
     resource :picture,    type: :block, only: [:create, :update, :destroy]

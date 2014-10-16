@@ -76,6 +76,7 @@ class Ability
 
       [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart].each do |model|
         can :manage, model do |resource|
+          Rails.logger.info("\n #{'*'*25} #{} #{'*'*25} \n")
           Role.find_by(user: user, owner: resource.company).try(:value) =~ /owner|editor/
         end
       end
