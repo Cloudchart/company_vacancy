@@ -27,6 +27,5 @@ module Cloudchart
     # Handle exceptions
     #
     config.exceptions_app = self.routes
-
   end
 end

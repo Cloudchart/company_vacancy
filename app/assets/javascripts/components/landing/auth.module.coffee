@@ -1,8 +1,7 @@
+# @cjsx React.DOM
+
 # Imports
 #
-tag = React.DOM
-
-
 ModalActions  = require('actions/modal_actions')
 LoginForm     = cc.require('react/modals/login-form')
 
@@ -13,15 +12,11 @@ Component = React.createClass
 
 
   onClick: ->
-    ModalActions.show(LoginForm(null))
+    ModalActions.show(<LoginForm />)
 
 
   render: ->
-    (tag.span {
-      onClick: @onClick
-    },
-      "Log In"
-    )
+    <span onClick={@onClick}>Log In</span>
 
 
 # Exports

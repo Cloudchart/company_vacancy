@@ -1,8 +1,7 @@
+# @cjsx React.DOM
+
 # Imports
 #
-tag = React.DOM
-
-
 ModalActions  = require('actions/modal_actions')
 InviteForm    = cc.require('react/modals/invite-form')
 
@@ -13,15 +12,11 @@ Component = React.createClass
 
 
   onClick: ->
-    ModalActions.show(InviteForm(null))
+    ModalActions.show(<InviteForm />)
 
 
   render: ->
-    (tag.button {
-      onClick: @onClick
-    },
-      @props.value
-    )
+    <button onClick={@onClick}>{@props.value}</button>
 
 
 # Exports

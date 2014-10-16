@@ -29,6 +29,7 @@ gem 'active_model_serializers', '= 0.8.1'
 gem 'dragonfly', '~> 1.0.5'
 gem 'sprockets-commonjs', git: 'git@github.com:maccman/sprockets-commonjs.git'
 gem 'sprockets-coffee-react'
+gem 'redis-rails'
 
 # Deprecated
 # 
