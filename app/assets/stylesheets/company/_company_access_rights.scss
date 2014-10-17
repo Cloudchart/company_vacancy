@@ -1,4 +1,7 @@
-.company-access-rights {
+$access-rights-list-item-height: 40px;
+$access-rights-list-item-padding: 15px;
+
+.company-access-rights-container {
   padding: 30px;
 }
 
@@ -29,72 +32,72 @@
     font-size: 16px;
     width: 100%;
 
-    tr, td {
-      height: 40px;
-    }
+    tr {
+      height: $access-rights-list-item-height;
 
-    .name {
-      width: 30%;
-    }
+      > .name {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
-    .email {
-      font-size: 12px;
-    }
+        > .email {
+          font-size: 12px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
 
-    .user-role {
-      background-color: hsl(0, 0%, 98%);
-      padding: 0 15px;
-      text-align: right;
-      width: 30%;
+      &.token > .name {
+        color: hsl(0, 0%, 70%);
+      }
 
-      .select-wrapper {
+      > .user-role {
+        background-color: hsl(0, 0%, 98%);
+        padding: 0 $access-rights-list-item-padding;
         position: relative;
-      }
-  
-      select {
-        border: none;
-        cursor: pointer;
-        outline: none;
-        height: 100%;
-        padding-right: 25px;
+        text-align: right;
+        width: 30%;
+    
+        > select {
+          border: none;
+          cursor: pointer;
+          outline: none;
+          height: 100%;
+          padding-right: 25px;
 
-        -webkit-appearance: none;
+          -webkit-appearance: none;
+        }
+        
+        > i {
+          @include position(absolute, 0px $access-rights-list-item-padding 0 0);
+
+          cursor: pointer;
+          height: 100%;
+          line-height: $access-rights-list-item-height;
+          pointer-events: none;
+        }
       }
+
+      > .actions {
       
-      i {
-        @include position(absolute, 0px 0px 0 0);
-
-        cursor: pointer;
-        height: 100%;
-        margin-top: 1px; // TODO fix dirty center
-        pointer-events: none;
+        > button {
+          height: 100%;
+          margin-right: 5px;
+        }
       }
-    }
-
-    .token .name {
-      color: hsl(0, 0%, 70%);
-    }
-
-    .actions > * {
-      margin-right: 5px;
-    }
-
-    button {
-      font-size: 16px;
-      height: 100%;
     }
   }
 
   .invite-user {
     font-size: 16px;
 
-    fieldset {
+    > fieldset {
       border: none;
       padding: 0;
       margin: 0;
     }
 
-    .email {
+    > .email {
       @include display(flex);
 
       margin-bottom: 7px;
@@ -105,18 +108,22 @@
       }
     }
 
-    .roles {
+    > .roles {
       font-size: 20px;
       width: 320px;
       margin-bottom: 15px;
+
+      label {
+        @include display(flex);
+      }
 
       .hint {
         font-size: 14px;
       }
     }
 
-    .email,
-    footer {
+    > .email,
+    > footer {
       text-align: center;
     }
   }

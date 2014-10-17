@@ -53,12 +53,13 @@ Component = React.createClass
         if @props.role == "owner"
           RoleMap[@props.role].name
         else
-          tag.div { className: "select-wrapper" }, # TODO fix naming
+          [
             tag.select { 
               value: @props.role
               onChange: @onSelectRoleChange
             }, @getOptions()
             tag.i { className: "fa fa-chevron-down" }
+          ]
       )
       
       (tag.td {
