@@ -1,10 +1,13 @@
-<%= 
+<%=
 {
-  company:      @company.active_model_serializer.new(@company, scope: current_user),
-  blocks:       @company.blocks.active_model_serializer.new(@company.blocks),
-  vacancies:    @company.vacancies.active_model_serializer.new(@company.vacancies),
-  people:       @company.people.active_model_serializer.new(@company.people),
-  pictures:     @company.pictures.active_model_serializer.new(@company.pictures),
-  paragraphs:   @company.paragraphs.active_model_serializer.new(@company.paragraphs)
+  company:      am_to_json(@company, scope: current_user),
+  blocks:       am_to_json(@company.blocks),
+  vacancies:    am_to_json(@company.vacancies),
+  people:       am_to_json(@company.people),
+  pictures:     am_to_json(@company.pictures),
+  paragraphs:   am_to_json(@company.paragraphs),
+  users:        (am_to_json(@company.users.includes(:emails)) if can?(:manage_company_invites, @company)),
+  roles:        (am_to_json(@company.roles) if can?(:manage_company_invites, @company)),
+  tokens:       (am_to_json(@company.invite_tokens) if can?(:manage_company_invites, @company))
 }.to_json.html_safe
 %>

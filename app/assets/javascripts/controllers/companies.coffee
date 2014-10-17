@@ -12,16 +12,14 @@
       paragraphs: require('stores/paragraph_store')
       people:     require('stores/person')
       vacancies:  require('stores/vacancy') 
+      roles:      require('stores/roles')
+      tokens:     require('stores/token')
+      users:      require('stores/users')
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
-
-    promises = [
-      CompanyActions.fetchAccessRights(json.company.uuid)
-      CompanyActions.fetchInviteTokens(json.company.uuid)
-    ]
 
 # Finance
 # 
