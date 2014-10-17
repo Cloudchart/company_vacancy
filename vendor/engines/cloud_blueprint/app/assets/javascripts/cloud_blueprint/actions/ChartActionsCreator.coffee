@@ -1,3 +1,11 @@
+###
+  Used in:
+
+  cloud_blueprint/components/chart/ChartTitleComposer
+  cloud_blueprint/controllers/chart
+  cloud_blueprint/utils/ChartSyncAPI
+###
+
 # Imports
 #
 

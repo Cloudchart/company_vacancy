@@ -1,6 +1,10 @@
-#
-#
-#
+###
+  Used in:
+
+  cloud_blueprint/controllers/chart
+  cloud_blueprint/layouts/chart
+  cloud_blueprint/models/node
+###
 
 class Chart extends cc.blueprint.models.Element
   

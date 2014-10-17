@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  cloud_blueprint/controllers/chart
+###
+
 ##= require ../../stores/ChartStore
 ##= require ../../actions/ChartActionsCreator
 

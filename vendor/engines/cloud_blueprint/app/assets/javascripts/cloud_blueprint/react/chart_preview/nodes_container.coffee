@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  cloud_blueprint/react/chart_preview
+###
+
 ##= require ./node
 ##= require react_components/mixins/draggable
 

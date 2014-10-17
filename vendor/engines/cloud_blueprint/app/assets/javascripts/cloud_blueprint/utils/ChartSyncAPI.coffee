@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  cloud_blueprint/stores/ChartStore
+###
+
 ##= require ../actions/ChartActionsCreator
 
 # Imports

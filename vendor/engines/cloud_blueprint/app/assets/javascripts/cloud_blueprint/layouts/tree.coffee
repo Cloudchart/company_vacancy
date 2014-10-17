@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  cloud_blueprint/layouts/chart
+  cloud_blueprint/react/chart_preview/layout/chart
+###
 
 # Second walk
 second_walk = (v, m) ->

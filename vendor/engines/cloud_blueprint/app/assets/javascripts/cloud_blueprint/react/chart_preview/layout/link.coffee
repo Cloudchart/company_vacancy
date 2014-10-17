@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  cloud_blueprint/react/chart_preview/link
+###
+
 getSign = (n) -> 
   if n then (if n < 0 then -1 else 1) else 0
 

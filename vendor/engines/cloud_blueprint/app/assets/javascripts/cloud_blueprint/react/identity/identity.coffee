@@ -1,3 +1,11 @@
+###
+  Used in:
+
+  cloud_blueprint/react/forms/node_form
+  cloud_blueprint/react/forms/identity_form
+  cloud_blueprint/react/identity_filter/identity_list
+###
+
 ##= require cloud_blueprint/actions/modal_window_actions_creator.module
 ##= require cloud_blueprint/stores/node_identity_store.module
 

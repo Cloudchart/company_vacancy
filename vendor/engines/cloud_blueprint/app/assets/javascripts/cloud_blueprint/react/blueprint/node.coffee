@@ -1,3 +1,11 @@
+###
+  Used in:
+
+  cloud_blueprint/controllers/chart
+  cloud_blueprint/react/blueprint/chart
+  cloud_blueprint/ujs/node_draggable
+###
+
 # Shortcuts
 #
 tag = React.DOM

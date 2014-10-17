@@ -1,8 +1,11 @@
 namespace = 'http://cloudorgchart.com'
 
-#
-#
-#
+###
+  Used in:
+
+  cloud_blueprint/models/node
+  cloud_blueprint/models/chart
+###
 
 class Element extends cc.blueprint.models.Base
   

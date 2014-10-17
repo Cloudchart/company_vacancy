@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  cloud_blueprint/react/identity_filter
+###
+
 ##= require stores/PersonStore
 
 # Shortcuts

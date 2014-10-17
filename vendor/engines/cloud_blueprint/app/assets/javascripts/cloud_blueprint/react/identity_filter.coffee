@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  cloud_blueprint/controllers/chart
+###
+
 #= require ./identity_filter/identity_list.module
 #= require_self
 #= require_tree ./identity_filter

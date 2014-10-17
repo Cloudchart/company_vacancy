@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  cloud_blueprint/react/blueprint/chart
+  cloud_blueprint/react/blueprint/node
+###
+
 ##= require ./buttons
 
 # Shortcuts

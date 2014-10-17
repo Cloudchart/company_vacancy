@@ -1,3 +1,15 @@
+###
+  Used in:
+
+  cloud_blueprint/controllers/chart
+  cloud_blueprint/models/chart
+  cloud_blueprint/models/node
+  cloud_blueprint/react/identity_filter/buttons
+  cloud_blueprint/people/create
+  cloud_blueprint/people/destroy
+  cloud_blueprint/people/update
+###
+
 ##= require stores/PersonStore
 
 

@@ -1,8 +1,16 @@
 NodeIdentityStore = require('cloud_blueprint/stores/node_identity_store')
 
-#
-#
-#
+###
+  Used in:
+
+  cloud_blueprint/controllers/chart
+  cloud_blueprint/models/chart
+  cloud_blueprint/react/blueprint/chart
+  cloud_blueprint/react/blueprint/node
+  cloud_blueprint/react/blueprint/relation
+  cloud_blueprint/ujs/node_droppable
+  cloud_blueprint/ujs/node_form_droppable
+###
 
 
 class Node extends cc.blueprint.models.Element

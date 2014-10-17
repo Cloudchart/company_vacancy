@@ -1,3 +1,15 @@
+###
+  Used in:
+
+  cloud_blueprint/controllers/chart
+  cloud_blueprint/models/chart
+  cloud_blueprint/models/node
+  cloud_blueprint/react/identity_filter/buttons
+  cloud_blueprint/vacancies/create
+  cloud_blueprint/vacancies/destroy
+  cloud_blueprint/vacancies/update
+###
+
 VacancyStore = require('stores/vacancy_store')
 
 #

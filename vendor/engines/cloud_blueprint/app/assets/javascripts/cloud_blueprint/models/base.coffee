@@ -1,3 +1,12 @@
+###
+  Used in:
+
+  cloud_blueprint/models/element
+  cloud_blueprint/models/identity
+  cloud_blueprint/models/person
+  cloud_blueprint/models/vacancy
+###
+
 class Base
   
   @className: 'Base'

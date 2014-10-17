@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  cloud_blueprint/react/blueprint/chart
+###
+
 # Prepare descriptor
 #
 

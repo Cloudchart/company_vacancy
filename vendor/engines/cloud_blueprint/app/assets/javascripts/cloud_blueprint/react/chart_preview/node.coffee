@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  cloud_blueprint/react/chart_preview/nodes_container
+###
+
 ##= require colors
 ##= require ./person
 ##= require ./vacancy
