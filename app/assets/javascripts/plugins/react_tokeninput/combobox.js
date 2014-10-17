@@ -1,3 +1,9 @@
+/*
+  Used in:
+
+  plugins/react_tokeninput/main
+*/
+
 //= require ./add-class
 //= require ./option
 

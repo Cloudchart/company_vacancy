@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  draggable/drag_drop
+  shared/editable_articles
+###
+
 @cc      ?= {}
 @cc.ui   ?= {}
 

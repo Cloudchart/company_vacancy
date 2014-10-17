@@ -1,3 +1,10 @@
+/*
+  Used in:
+
+  plugins/react_tokeninput/combobox
+  plugins/react_tokeninput/option
+*/
+
 // module.exports = addClass;
 
 addClass = function addClass(existing, added) {

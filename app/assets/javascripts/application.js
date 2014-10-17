@@ -24,7 +24,6 @@
 //= require moment
 //= require numeral
 //= require ui
-//= require plugins
 //= require shared
 //= require ujs
 //= require utils

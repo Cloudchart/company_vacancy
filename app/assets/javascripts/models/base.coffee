@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  models/person
+  models/vacancy
+###
+
 # Base class
 #
 class Base

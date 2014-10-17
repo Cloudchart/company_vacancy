@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  controllers/companies#index
+  controllers/welcome#index_
+###
+
 @cc ?= {}
 
 @cc.init_chart_preview = (small=false, scale=1) ->

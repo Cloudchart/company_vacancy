@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  react_components/editor/blocks/people
+###
+
 # Person Class
 #
 class PersonModel extends @cc.models.Base

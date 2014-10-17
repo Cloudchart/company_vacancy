@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  controllers/people#index
+###
+
 @cc ?= {}
 @cc.ujs ?= {}
 

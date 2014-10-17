@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  cloud_profile/main#activities
+###
+
 @cc ?= {}
 @cc.ujs ?= {}
 

@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  controllers/vacancies#show
+  controllers/events#show
+###
+
 @cc ?= {}
 
 @cc.acts_as_editable_article = ->

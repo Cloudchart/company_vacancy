@@ -1,3 +1,17 @@
+###
+  Used in:
+
+  cloud_blueprint/react/spinner
+  cloud_blueprint/nodes/edit
+  cloud_blueprint/nodes/new
+  cloud_blueprint/people/create
+  cloud_blueprint/people/destroy
+  cloud_blueprint/people/update
+  cloud_blueprint/vacancies/create
+  cloud_blueprint/vacancies/destroy
+  cloud_blueprint/vacancies/update
+###
+
 @cc      ?= {}
 @cc.ui   ?= {}
 

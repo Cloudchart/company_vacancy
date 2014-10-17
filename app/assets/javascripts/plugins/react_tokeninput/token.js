@@ -1,3 +1,9 @@
+/*
+  Used in:
+
+  plugins/react_tokeninput/main
+*/
+
 // var React = require('react');
 var span = React.DOM.span;
 var li = React.DOM.li;

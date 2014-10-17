@@ -1,7 +1,14 @@
+###
+  Used in:
+
+  global call
+  need to come here later
+###
+
 $ = jQuery
 
 $ ->
-  
+
   $document = $(document)
   $window   = $(window)
   
@@ -78,18 +85,3 @@ $ ->
       else if response.redirect
         location.href = response.redirect
         
-
-
-  #
-  # NB: Explicit plugin
-  #
-  
-  $document.on 'click', '[data-behaviour="block-toggle"]', (event) ->
-    event.preventDefault()
-    event.stopPropagation()
-    
-    $($(@).data('toggle')).each ->
-      $el = $(@)
-      $el.trigger 'toggle::before'  + if $el.is(':hidden') then '::show' else '::hide'
-      $el.toggle()
-      $el.trigger 'toggle::after'   + if $el.is(':hidden') then '::hide' else '::show'

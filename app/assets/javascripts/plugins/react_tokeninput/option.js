@@ -1,3 +1,9 @@
+/*
+  Used in:
+
+  react_components/company/settings/tag_list
+*/
+
 //= require ./add-class
 
 var addClass = cc.require('plugins/react_tokeninput/add-class');

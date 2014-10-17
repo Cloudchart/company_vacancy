@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  actions/BlockIdentityActionsCreator
+  react_components/editor/blocks/people
+###
+
 ##= require promise
 ##= require actions/ServerActionsCreator
 
