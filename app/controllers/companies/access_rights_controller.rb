@@ -5,7 +5,7 @@ module Companies
     #
     def index
       @company = Company.find(params[:company_id])
-      authorize! :list_company_access_rights, @company
+      authorize! :manage_company_invites, @company
       
       respond_to do |format|
         format.html

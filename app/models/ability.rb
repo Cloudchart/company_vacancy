@@ -84,7 +84,7 @@ class Ability
         end
       end
 
-      can [:manage_company_invites, :list_company_access_rights], Company do |company|
+      can :manage_company_invites, Company do |company|
         Role.find_by(user: user, owner: company).try(:value) == :owner
       end
 
