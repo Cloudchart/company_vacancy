@@ -26,7 +26,22 @@ module.exports = CloudFlux.createStore
   onDeleteFail: (key, json, xhr, token = 'delete') ->
     @store.stop_sync(key, token)
     @store.emitChange()
+    
+  onUpdate: (key, attributes, token = 'delete') ->
+    @store.start_sync(key, token)
+    @store.update(key, attributes)
+    @store.emitChange()
   
+  onUpdateDone: (key, json, token = 'delete') ->
+    @store.stop_sync(key, token)
+    @store.update(key, json)
+    # @store.commit(key)
+    @store.emitChange()
+  
+  onUpdateFail: (key, json, xhr, token = 'delete') ->
+    @store.stop_sync(key, token)
+    # @store.undo(key)
+    @store.emitChange()
 
   onCreate: (key, attributes, sync_token = 'create') ->
     @store.start_sync(key, sync_token)
@@ -57,16 +72,20 @@ module.exports = CloudFlux.createStore
     owner_type: ''
     created_at: ''
     updated_at: ''
-  
+
 
   getActions: ->
     actions = {}
     
     actions['company:access_rights:fetch:done'] = @onAccessRightsFetchDone
     
-    actions[Constants.Company.REVOKE_ROLE]      = @onDelete
-    actions[Constants.Company.REVOKE_ROLE_DONE] = @onDeleteDone
-    actions[Constants.Company.REVOKE_ROLE_FAIL] = @onDeleteFail
+    actions[Constants.Role.DELETE]      = @onDelete
+    actions[Constants.Role.DELETE_DONE] = @onDeleteDone
+    actions[Constants.Role.DELETE_FAIL] = @onDeleteFail
+
+    actions[Constants.Role.UPDATE]      = @onUpdate
+    actions[Constants.Role.UPDATE_DONE] = @onUpdateDone
+    actions[Constants.Role.UPDATE_FAIL] = @onUpdateFail
 
     actions[Constants.Role.CREATE]       = @onCreate
     actions[Constants.Role.CREATE_DONE]  = @onCreateDone

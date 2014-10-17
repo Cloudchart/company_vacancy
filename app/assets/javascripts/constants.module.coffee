@@ -14,10 +14,6 @@ module.exports =
     FETCH_INVITE_TOKENS:        'company:invite_tokens:fetch'
     FETCH_INVITE_TOKENS_DONE:   'company:invite_tokens:fetch:done'
     FETCH_INVITE_TOKENS_FAIL:   'company:invite_tokens:fetch:fail'
-    
-    REVOKE_ROLE:        'company:role:revoke'
-    REVOKE_ROLE_DONE:   'company:role:revoke:done'
-    REVOKE_ROLE_FAIL:   'company:role:revoke:fail'
   
     FOLLOW:        'company:follow'
     FOLLOW_DONE:   'company:follow:done'
@@ -59,3 +55,11 @@ module.exports =
     CREATE:       'role:create'
     CREATE_DONE:  'role:create:done'
     CREATE_FAIL:  'role:create:fail'
+
+    UPDATE:       'role:update'
+    UPDATE_DONE:  'role:update:done'
+    UPDATE_FAIL:  'role:update:fail'
+
+    DELETE:       'role:delete'
+    DELETE_DONE:  'role:delete:done'
+    DELETE_FAIL:  'role:delete:fail'

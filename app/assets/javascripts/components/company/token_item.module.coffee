@@ -6,7 +6,7 @@ tag = React.DOM
 Actions     = require('actions/company')
 TokenStore  = require('stores/token')
 Buttons     = require('components/company/buttons')
-roleMaps    = require('utils/role_maps')
+RoleMap     = require('utils/role_map')
 
 syncIcon = ->
   (tag.i { className: 'fa fa-spinner fa-spin fa-fw' })
@@ -47,7 +47,7 @@ Component = React.createClass
       (tag.td {
         className: 'user-role'
       },
-        "Invited as #{roleMaps.RoleNameMap[@props.role]}"
+        "Invited as #{RoleMap[@props.role].name}"
       )
       
       

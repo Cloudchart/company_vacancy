@@ -4,6 +4,7 @@
 
   require('sync/company').fetch(data.id).done (json) ->
     CompanyStore = require('stores/company')
+    CompanyActions  = require('actions/company')
 
     _.each {
       blocks:     require('stores/block_store')
@@ -16,6 +17,11 @@
 
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
+
+    promises = [
+      CompanyActions.fetchAccessRights(json.company.uuid)
+      CompanyActions.fetchInviteTokens(json.company.uuid)
+    ]
 
 # Finance
 # 

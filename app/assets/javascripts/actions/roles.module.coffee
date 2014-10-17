@@ -3,31 +3,50 @@
 Dispatcher  = require('dispatcher/dispatcher')
 RolesStore  = require('stores/roles')
 Constants   = require('constants')
-CompanySync = require('sync/company')
+RoleSync    = require('sync/role')
 
 
 # Exports
 #
 module.exports =
+
+  update: (key, attributes, token = 'update') ->
+    Dispatcher.handleClientAction
+      type: Constants.Role.UPDATE
+      data: [key, attributes, token]
+    
+    record = RolesStore.get(key)
+
+    done = (json) ->
+      Dispatcher.handleServerAction
+        type: Constants.Role.UPDATE_DONE
+        data: [key, json, token]
+    
+    fail = (xhr) ->
+      Dispatcher.handleServerAction
+        type: Constants.Role.UPDATE_FAIL
+        data: [key, xhr.responseJSON, xhr, token]
+
+    RoleSync.update(record.uuid, attributes, done, fail)
   
 
-  # Revoke
+  # delete
   #
-  revoke: (key, token = 'revoke') ->
+  delete: (key, token = 'delete') ->
     Dispatcher.handleClientAction
-      type: Constants.Company.REVOKE_ROLE
+      type: Constants.Role.DELETE
       data: [key, token]
     
     record = RolesStore.get(key)
 
     done = (json) ->
       Dispatcher.handleServerAction
-        type: Constants.Company.REVOKE_ROLE_DONE
+        type: Constants.Role.DELETE_DONE
         data: [key, json, token]
     
     fail = (xhr) ->
       Dispatcher.handleServerAction
-        type: Constants.Company.REVOKE_ROLE_FAIL
+        type: Constants.Role.DELETE_FAIL
         data: [key, xhr.responseJSON, xhr, token]
 
-    CompanySync.revokeRole(record.owner_id, record.uuid, done, fail)
+    RoleSync.delete(record.uuid, done, fail)

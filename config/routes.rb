@@ -52,7 +52,7 @@ Cloudchart::Application.routes.draw do
       post :verify, on: :member
     end
 
-    resources :access_rights, controller: 'companies/access_rights'
+    resources :access_rights, controller: 'companies/access_rights', only: :index
 
     resources :invites, controller: 'companies/invites' do
       match :resend, on: :member, via: [:put, :patch]
@@ -88,6 +88,7 @@ Cloudchart::Application.routes.draw do
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :tags, only: [:index, :create]
+  resources :roles, only: [:update, :destroy]
 
   # Custom
   # 

@@ -58,6 +58,10 @@ class Ability
         Role.find_by(user: user, owner: company).try(:value) =~ /owner|editor/
       end
 
+      can [:update, :destroy], Role do |role|
+        role.owner.owner.id == user.id
+      end
+
       can :partly_read, Company do |company|
         Role.find_by(user: user, owner: company).try(:value) == 'public_reader'
       end
@@ -76,12 +80,11 @@ class Ability
 
       [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart].each do |model|
         can :manage, model do |resource|
-          Rails.logger.info("\n #{'*'*25} #{} #{'*'*25} \n")
           Role.find_by(user: user, owner: resource.company).try(:value) =~ /owner|editor/
         end
       end
 
-      can [:manage_company_invites, :manage_company_access_rights], Company do |company|
+      can [:manage_company_invites, :list_company_access_rights], Company do |company|
         Role.find_by(user: user, owner: company).try(:value) == :owner
       end
 

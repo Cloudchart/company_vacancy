@@ -5,14 +5,14 @@ tag = React.DOM
 
 Buttons     = require('components/company/buttons')
 Actions     = require('actions/company')
-roleMaps    = require('utils/role_maps')
+RoleMap     = require('utils/role_map')
 
 cx = React.addons.classSet
 
 # Get State from Props
 #
 getStateFromProps = (props) ->
-  role:   props.token.data.role   || props.roles[0]
+  role:   props.token.data.role   || props.invitable_roles[0]
   email:  props.token.data.email  || ''
 
 
@@ -29,7 +29,7 @@ Component = React.createClass
 
 
   rolesInputs: ->
-    _.map @props.roles, (role) =>
+    _.map @props.invitable_roles, (role) =>
       (tag.label {
         key:        role
         className:  'role form-field-radio-2'
@@ -42,11 +42,11 @@ Component = React.createClass
           onChange:   @onRoleChange
         })
         (tag.div {className: 'title'},
-          roleMaps.RoleDescriptionMap[role]
+          RoleMap[role].description
           (tag.div {
             className: 'hint'
           },
-            'Company HR managers or managing partners usually need access to editing'
+            RoleMap[role].hint
           )
         )
       )

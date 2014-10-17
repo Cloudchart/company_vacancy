@@ -2,7 +2,7 @@
 #
 tag = React.DOM
 
-CompanyStore              = require('stores/company_store')
+CompanyStore              = require('stores/company')
 UsersStore                = require('stores/users')
 RolesStore                = require('stores/roles')
 TokenStore                = require('stores/token')
@@ -75,6 +75,7 @@ Component = React.createClass
   
   
   getDefaultProps: ->
+    invitable_roles: []
     mode: Modes[0]
   
   
@@ -110,10 +111,11 @@ Component = React.createClass
             # Current Users List
             #
             (CurrentUsersList {
-              key:      'current-users-list'
-              company:  @state.company
-              tokens:   @state.tokens
-              roles:    @state.roles
+              key:             'current-users-list'
+              company:         @state.company
+              tokens:          @state.tokens
+              roles:           @state.roles
+              invitable_roles: @props.invitable_roles
             })
           ]
         
@@ -137,12 +139,12 @@ Component = React.createClass
             # Invite User Form
             #
             (InviteUserForm {
-              key:      @state.newTokenKey
-              company:  @state.company
-              roles:    @props.roles
-              token:    TokenStore.get(@state.newTokenKey)
-              errors:   TokenStore.errorsFor(@state.newTokenKey)
-              sync:     TokenStore.getSync(@state.newTokenKey)
+              key:              @state.newTokenKey
+              company:          @state.company
+              invitable_roles:  @props.invitable_roles
+              token:            TokenStore.get(@state.newTokenKey)
+              errors:           TokenStore.errorsFor(@state.newTokenKey)
+              sync:             TokenStore.getSync(@state.newTokenKey)
             })
           ]
 

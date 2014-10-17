@@ -4,7 +4,8 @@ class Role < ActiveRecord::Base
   belongs_to :user
   belongs_to :owner, polymorphic: true
 
-  validate :acceptance_of_company_invite
+  validates :value, inclusion: { in: Company::INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Company' }
+  validate :acceptance_of_company_invite, on: :create
 
 private
 
