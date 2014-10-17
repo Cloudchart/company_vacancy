@@ -15,7 +15,7 @@
 
 
 <%= content_for :react_class_for_main, 'components/company_app' %>
-<%= content_for :react_props_for_main, { key: @company.uuid, invitable_roles: Company::INVITABLE_ROLES }.to_json %>
+<%= content_for :react_props_for_main, { key: @company.uuid }.to_json %>
 
 
 <%- pagescript_params(id: @company.uuid) -%>

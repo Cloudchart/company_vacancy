@@ -38,7 +38,8 @@ module ApplicationHelper
     model.errors.full_messages_for(name).first
   end
 
-  def am_to_json(model, options={})
+  def ams(model, options = {})
     model.active_model_serializer.new(model, options)
   end
+  
 end

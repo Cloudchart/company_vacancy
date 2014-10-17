@@ -85,9 +85,6 @@ class CompaniesController < ApplicationController
   end
 
   def access_rights
-    # @company = Company.find(params[:company_id])
-    # authorize! :manage_company_invites, @company
-
     respond_to do |format|
       format.html
       format.json do

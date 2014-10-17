@@ -36,8 +36,8 @@ module.exports = CloudFlux.createStore
     uuid:         ''
     name:         ''
     description:  ''
-    meta:         {}
-    flags:        {}
+    meta: {}
+    flags: {}
 
   getActions: ->
     actions = {}
