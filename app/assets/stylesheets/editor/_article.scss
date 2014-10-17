@@ -31,8 +31,14 @@ article.editor {
     padding: 10px 20px;
     position: relative;
     
-    &:not(.placeholder):hover {
-      background-color: hsla(0, 0%, 98%, .5);
+    &:not(.placeholder):hover,
+    &.draggable {
+      background-color: hsla(0, 0%, 98%, .9);
+      z-index: 100;
+    }
+    
+    &.draggable i.remove {
+      visibility: hidden !important;
     }
     
     > i.remove {

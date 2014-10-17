@@ -10,6 +10,8 @@ BlockActions    = require('actions/block_actions')
 CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
 
+Draggable       = require('components/shared/draggable')
+
 CompanyHeader   = require('components/company/header')
 
 BlockComponents =
@@ -48,19 +50,20 @@ SectionWrapperComponent = React.createClass
   render: ->
     block           = BlockStore.get(@props.key)
     BlockComponent  = BlockComponents[block.identity_type]
+    blockClassName  = SectionClassNames[block.identity_type]
 
     (tag.section {
       key:        block.getKey()
-      className:  SectionClassNames[block.identity_type]
+      className:  blockClassName
     },
-    
+  
       # Remove
       #
       (tag.i {
         className:  'fa fa-times-circle-o remove '
         onClick:    @handleBlockRemove
       }) unless @props.readOnly
-    
+  
       # Block
       #
       (BlockComponent {
@@ -98,11 +101,26 @@ SectionPlaceholderComponent = (position) ->
 Component = React.createClass
 
 
+  handleDragMove: (key, origin) ->
+    delta = (top, bottom) -> Math.min(Math.abs(top - origin.y), Math.abs(bottom - origin.y))
+    
+    rectangles = _.reduce @refs, (memo, ref, key) ->
+      memo.push({ key: key, bounds: ref.getDOMNode().getBoundingClientRect() })
+      memo
+    , []
+    
+    
+    
+
+
   gatherBlocks: ->
     _.chain(@state.blocks)
       .sortBy(['position'])
       .map (block) =>
-        <SectionWrapperComponent key={block.getKey()} readOnly={@state.company.is_read_only} />
+        key = block.getKey()
+        <Draggable lock_x key={key} onDragMove={@handleDragMove.bind(@, key)}>
+          <SectionWrapperComponent ref={key} key={key} readOnly={@state.company.is_read_only} />
+        </Draggable>
       .value()
   
   
