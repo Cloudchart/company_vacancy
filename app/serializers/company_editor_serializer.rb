@@ -3,7 +3,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   # attributes :sections, :available_sections, :available_block_types
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :default_host, :settings, :established_on, :tag_list
-  attributes :is_editor, :is_public_reader, :is_trusted_reader, :is_chart_with_nodes_created
+  attributes :is_editor, :is_trusted_reader, :is_chart_with_nodes_created
 
   has_many :charts
   # has_many :burn_rate_charts, serializer: BurnRateChartSerializer
@@ -16,15 +16,11 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   alias_method :company, :object
   
   def is_editor
-    Ability.new(current_user).can?(:manage, company)
-  end
-
-  def is_public_reader
-    Ability.new(current_user).can?(:partly_read, company)
+    Ability.new(current_user).can?(:update, company)
   end
 
   def is_trusted_reader
-    Ability.new(current_user).can?(:fully_read, company)
+    Ability.new(current_user).can?(:finance, company)
   end
 
   # def include_burn_rate_charts?
@@ -38,7 +34,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   def attributes
     data = super
 
-    data.delete(:settings) unless is_editor && is_trusted_reader && is_public_reader
+    data.delete(:settings) unless is_editor
 
     data
   end

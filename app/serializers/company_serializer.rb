@@ -18,8 +18,8 @@ class CompanySerializer < ActiveModel::Serializer
 
   def flags
     {
-      is_read_only: Ability.new(current_user).cannot?(:manage, company),
-      is_trusted: Ability.new(current_user).can?(:fully_read, company),
+      is_read_only: Ability.new(current_user).cannot?(:update, company),
+      is_trusted: Ability.new(current_user).can?(:finance, company),
       can_follow: Ability.new(current_user).can?(:follow, company),
       is_followed: (current_user.favorites.pluck(:favoritable_id).include?(company.id) if current_user)
     }

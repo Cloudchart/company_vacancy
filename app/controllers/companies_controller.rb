@@ -9,7 +9,8 @@ class CompaniesController < ApplicationController
     :verify_site_url,
     :download_verification_file,
     :finance,
-    :settings
+    :settings,
+    :access_rights
   ]
   before_action :set_collection, only: [:index, :search]
 
@@ -75,6 +76,27 @@ class CompaniesController < ApplicationController
   def destroy
     @company.destroy
     redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
+  end
+
+  def finance
+  end
+
+  def settings
+  end
+
+  def access_rights
+    # @company = Company.find(params[:company_id])
+    # authorize! :manage_company_invites, @company
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          users:  ActiveModel::ArraySerializer.new(@company.users.includes(:emails)),
+          roles:  ActiveModel::ArraySerializer.new(@company.roles)
+        }
+      end
+    end
   end
 
   def verify_site_url

@@ -188,7 +188,7 @@ MainComponent = React.createClass
             })
           )
         )
-        (tag.nav  {}, @gatherSections()) if @props.is_editor or @props.is_public_reader or @props.is_trusted_reader
+        (tag.nav  {}, @gatherSections()) if @props.is_editor
       )
     )
 

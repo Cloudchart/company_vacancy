@@ -55,18 +55,14 @@ class Ability
       # can :manage, Comment, user_id: user.id
 
       can :manage, Company do |company|
-        Role.find_by(user: user, owner: company).try(:value) =~ /owner|editor/
+        Role.find_by(user: user, owner: company).try(:value) == 'owner'
       end
 
-      can [:update, :destroy], Role do |role|
-        role.owner.owner.id == user.id
+      can [:update, :finance, :settings, :verify_site_url, :download_verification_file], Company do |company|
+        Role.find_by(user: user, owner: company).try(:value) == 'editor'
       end
 
-      can :partly_read, Company do |company|
-        Role.find_by(user: user, owner: company).try(:value) == 'public_reader'
-      end
-
-      can :fully_read, Company do |company|
+      can [:finance], Company do |company|
         Role.find_by(user: user, owner: company).try(:value) == 'trusted_reader'
       end
 
@@ -85,7 +81,11 @@ class Ability
       end
 
       can :manage_company_invites, Company do |company|
-        Role.find_by(user: user, owner: company).try(:value) == :owner
+        Role.find_by(user: user, owner: company).try(:value) == 'owner'
+      end
+
+      can [:update, :destroy], Role do |role|
+        role.owner.owner.id == user.id
       end
 
       # can :read, Vacancy do |vacancy|
