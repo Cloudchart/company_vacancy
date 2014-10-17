@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  draggable/drag_drop
+  ui/draggable
+###
+
 @cc    ?= {}
 @cc.ui ?= {}
 

@@ -1,3 +1,12 @@
+###
+  Used in:
+
+  stores/BlockIdentityStore
+  stores/base
+  stores/PersonStore
+  stores/VacancyStore
+###
+
 # uuid
 #
 uuid = ->

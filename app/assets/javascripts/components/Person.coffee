@@ -1,3 +1,15 @@
+###
+  Used in:
+
+  components/editor/BlockIdentityController
+  components/editor/IdentitySelector
+  react_components/company/burn_rate
+  react_components/shared/identity_list
+  cloud_blueprint/components/person_form
+  cloud_blueprint/react/identity/identity
+  cloud_blueprint/react/identity_filter/buttons
+###
+
 ##= require components/Avatar
 ##= require actions/PersonActionsCreator
 ##= require stores/PersonStore

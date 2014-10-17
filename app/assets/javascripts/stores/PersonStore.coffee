@@ -1,3 +1,20 @@
+###
+  Used in:
+
+  actions/PersonActionsCreator
+  components/Person
+  components/company/progress
+  components/editor/IdentitySelector
+  stores/BlockIdentityStore
+  stores/person_store
+  stores/PersonStore
+  utils/person_sync_api
+  cloud_blueprint/components/person_form
+  cloud_blueprint/models/person
+  cloud_blueprint/react/identity/identity
+  cloud_blueprint/react/identity_filter/buttons
+###
+
 ##= require ./Base
 ##= require dispatcher/dispatcher.module
 

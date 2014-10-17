@@ -1,3 +1,11 @@
+###
+  Used in:
+
+  shared/editable_articles
+  ui/draggable
+  cloud_blueprint/plugins/mouse_draggable
+###
+
 #= require ./mouse_drag_drop
 
 @cc    ?= {}

@@ -1,3 +1,10 @@
+###
+  Used in:
+
+  ui/draggable
+  cloud_blueprint/plugins/mouse_draggable
+###
+
 @cc    ?= {}
 @cc.ui ?= {}
 
