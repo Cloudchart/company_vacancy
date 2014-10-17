@@ -30,6 +30,7 @@ gem 'dragonfly', '~> 1.0.5'
 gem 'sprockets-commonjs', git: 'git@github.com:maccman/sprockets-commonjs.git'
 gem 'sprockets-coffee-react'
 gem 'redis-rails'
+gem 'jbuilder'
 
 # Deprecated
 # 
