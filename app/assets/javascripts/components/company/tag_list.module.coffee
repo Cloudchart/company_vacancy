@@ -13,8 +13,8 @@ tag = React.DOM
 
 TokenInput      = cc.require('plugins/react_tokeninput/main')
 ComboboxOption  = cc.require('plugins/react_tokeninput/option')
-TagStore        = require('stores/tag_store')
-uuid            = require('utils/uuid')
+TagActions      = require('actions/tag_actions')
+CompanyActions  = require('actions/company')
 
 # Main Component
 # 
@@ -22,8 +22,8 @@ MainComponent = React.createClass
 
 
   syncTaggable: (tags) ->
-    tagNames = @props.all_tags.filter((tag) -> tags.contains(tag.uuid)).map((tag) -> tag.name).join(',')
-    @props.onChange({ target: { value: tagNames }}) if _.isFunction(@props.onChange)
+    tag_names = @props.all_tags.filter((tag) -> tags.contains(tag.uuid)).map((tag) -> tag.name).join(',')
+    CompanyActions.update(@props.key, tag_list: tag_names)
 
 
   addTag: (key, sync = true) ->
@@ -41,17 +41,13 @@ MainComponent = React.createClass
   
   
   createTag: (name) ->
-    # uuid = uuid()
-    # new_tag = TagStore.add(uuid, { uuid: uuid, name: name })
-    # TagStore.emitChange()
-    # console.log new_tag, new_tag.key, new_tag.uuid
-    # tags = @state.tags.push(new_tag.key)
-    # console.log tags
-    # @setState({ query: '', tags: tags })
+    # new_tag_key = TagActions.create(name)
+    # @addTag(new_tag_key, false)
 
+    # syncTaggable for create
     tag_names = @props.all_tags.filter((tag) => @state.tags.contains(tag.uuid)).map((tag) -> tag.name)
     tag_names.push(name)
-    @props.onChange({ target: { value: tag_names }})
+    CompanyActions.update(@props.key, tag_list: tag_names.join(','))
 
 
   gatherComboboxOptions: ->
@@ -93,10 +89,15 @@ MainComponent = React.createClass
     @removeTag(value.key) if value
 
 
+  componentWillReceiveProps: (nextProps) ->
+    console.log nextProps.tag_list
+    if typeof nextProps.tag_list == 'object'
+      @setState({ tags: new Immutable.Vector(nextProps.tag_list...) })
+
+
   getInitialState: ->
-    tags:           new Immutable.Vector(@props.tag_list...)
-    keys_to_create: new Immutable.Vector
-    query:          ''
+    # tags: new Immutable.Vector(@props.tag_list...)
+    query: ''
 
 
   render: ->

@@ -74,10 +74,6 @@ Component = React.createClass
     event.target.blur() if event.key == 'Enter'
 
 
-  onTagsChange: (event) ->
-    CompanyActions.update(@props.key, tag_list: event.target.value)
-  
-  
   componentWillReceiveProps: (nextProps) ->
     URL.revokeObjectURL(@state.logotype_url)
     @setState(@getStateFromProps(nextProps))
@@ -157,9 +153,9 @@ Component = React.createClass
       # 
       (tag.label { className: 'tags' },
         (TagListComponent {
+          key: @props.key
           all_tags: @props.all_tags
           tag_list: @props.tag_list
-          onChange: @onTagsChange
         })
       ) unless @props.readOnly
       
