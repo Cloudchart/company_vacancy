@@ -81,7 +81,7 @@ SectionPlaceholderComponent = (position) ->
   item = (type, key) =>
     <li key={key} onClick={@onChooseBlockTypeClick.bind(@, type)}>{key}</li>
   
-  content = unless @props.readOnly
+  content = unless @state.company.flags.is_read_only
     if @state.position == position
       items = _.map(IdentityTypes, item) ; items.push(cancel_item())
       <ul>{items}</ul>
@@ -91,7 +91,7 @@ SectionPlaceholderComponent = (position) ->
       </figure>
   
   <section className="placeholder">{content}</section>
-    
+
 
 # Main
 #
@@ -161,13 +161,14 @@ Component = React.createClass
       
       <article className="editor company company-2_0">
         <CompanyHeader
-          key           = {@props.key}
-          name          = {@state.company.name}
-          description   = {@state.company.description}
-          logotype_url  = {@state.company.meta.logotype_url}
-          readOnly      = {@state.company.flags.is_read_only}
-          can_follow    = {@state.company.flags.can_follow}
-          is_followed   = {@state.company.flags.is_followed}
+          key             = {@props.key}
+          name            = {@state.company.name}
+          description     = {@state.company.description}
+          logotype_url    = {@state.company.meta.logotype_url}
+          readOnly        = {@state.company.flags.is_read_only}
+          can_follow      = {@state.company.flags.can_follow}
+          is_owner        = {@state.company.flags.is_owner}
+          is_followed     = {@state.company.flags.is_followed}
           invitable_roles = {@state.company.meta.invitable_roles}
         />
         {blocks}

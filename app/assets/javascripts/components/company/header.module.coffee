@@ -121,7 +121,7 @@ Component = React.createClass
           onClick:    @removeLogotype
         },
           (tag.i { className: 'fa fa-times' })
-        ) unless @props.readOnly if @state.logotype_url
+        ) if @state.logotype_url and !@props.readOnly
 
       )
       
@@ -145,7 +145,7 @@ Component = React.createClass
           onClick:    @onShareLinkClick
         },
           (tag.i { className: 'fa fa-share' })
-        ) unless @props.readOnly
+        ) if @props.is_owner
         
       )
       
