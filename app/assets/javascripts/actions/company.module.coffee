@@ -3,6 +3,7 @@
 Dispatcher    = require('dispatcher/dispatcher')
 CompanyStore  = require('stores/company')
 TokenStore    = require('stores/token')
+TagStore      = require('stores/tag_store')
 SyncAPI       = require('sync/company')
 Constants     = require('constants')
 
@@ -40,6 +41,9 @@ module.exports =
   
     fail = (xhr) ->
       handleServerStoreDoneAction(Constants.Company.UPDATE_FAIL, key, xhr, token)
+    
+    if attributes.tag_list
+      attributes.tag_list = _.map(attributes.tag_list, (tagKey) -> TagStore.get(tagKey).name).join(',')
     
     SyncAPI.update(key, attributes, done, fail)
   
