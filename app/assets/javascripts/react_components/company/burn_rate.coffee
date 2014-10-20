@@ -106,7 +106,7 @@ MainComponent = React.createClass
 
   getInitialState: ->
     selected_time: moment()._d
-    selected_chart: @props.charts[0]
+    selected_chart: _.sortBy(@props.charts, 'created_at')[0]
 
   # getDefaultProps: ->
 
@@ -127,8 +127,6 @@ MainComponent = React.createClass
   # Helpers
   # 
   gatherPeople: ->
-    console.log @state.selected_chart.people
-
     people = _.chain(_.uniq(@state.selected_chart.people, 'uuid'))
       .sortBy (person) -> person.full_name
       .value()
