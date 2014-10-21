@@ -204,7 +204,8 @@ MainComponent = React.createClass({
     13: 'selectOnEnter',
     27: 'hideOnEscape',
     38: 'focusPrevious',
-    40: 'focusNext'
+    40: 'focusNext',
+    188: 'selectOnEnter'
   },
 
   optionKeydownMap: {

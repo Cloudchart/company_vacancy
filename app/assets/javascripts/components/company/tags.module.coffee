@@ -40,7 +40,10 @@ MainComponent = React.createClass
 
   
   formatName: (name) ->
-    name.trim().toLowerCase().replace(/[^a-z0-9\-_|\s]+/ig, '').replace(/\s{2,}/g, '-')
+    name = name.trim().toLowerCase()
+    name = name.replace(/[^a-z0-9\-_|\s]+/ig, '')
+    name = name.replace(/\s{2,}/g, ' ')
+    name = name.replace(/\s/g, '-')
 
 
   onInput: (query) ->
