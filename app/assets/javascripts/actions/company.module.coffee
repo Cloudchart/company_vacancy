@@ -3,7 +3,6 @@
 Dispatcher    = require('dispatcher/dispatcher')
 CompanyStore  = require('stores/company')
 TokenStore    = require('stores/token')
-TagStore      = require('stores/tag_store')
 SyncAPI       = require('sync/company')
 Constants     = require('constants')
 
