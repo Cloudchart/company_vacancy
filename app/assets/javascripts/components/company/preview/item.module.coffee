@@ -76,7 +76,7 @@ MainComponent = React.createClass
             if @props.renderButtons
               @gatherButtons()
             else
-              tag.p null, company.meta.tags.map((tag) -> "##{tag}").join(', ')
+              tag.p null, company.tag_names.map((tag) -> "##{tag}").join(', ')
     else
       (tag.noscript null)
 

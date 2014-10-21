@@ -7,7 +7,6 @@
   require('sync/company').fetch(data.id).done (json) ->
     CompanyStore = require('stores/company')
     CompanyActions  = require('actions/company')
-    TagActions   = require('actions/tag_actions')
 
     _.each {
       blocks:     require('stores/block_store')
@@ -18,13 +17,12 @@
       roles:      require('stores/roles')
       tokens:     require('stores/token')
       users:      require('stores/users')
+      tags:       require('stores/tag_store')
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
-
-    TagActions.fetch()
 
 # Finance
 # 

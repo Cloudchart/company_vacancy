@@ -1,7 +1,7 @@
 class CompanySerializer < ActiveModel::Serializer
 
   attributes  :uuid, :name, :established_on, :description
-  attributes  :logotype_url, :is_published, :site_url, :slug, :tag_list
+  attributes  :logotype_url, :is_published, :site_url, :slug, :tag_names
   attributes  :meta, :flags
   
   alias_method :current_user, :scope
@@ -15,7 +15,6 @@ class CompanySerializer < ActiveModel::Serializer
     {
       people_size: company.people.size,
       vacancies_size: company.vacancies.size,
-      tags: company.tags.pluck(:name),
       company_url: company_path(company),
       settings_url: settings_company_url(company, host: ENV['ACTION_MAILER_DEFAULT_HOST']),
       invitable_roles: Company::INVITABLE_ROLES,

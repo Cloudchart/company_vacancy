@@ -9,7 +9,6 @@ CompanyActions  = require('actions/company')
 BlockActions    = require('actions/block_actions')
 CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
-TagStore        = require('stores/tag_store')
 
 
 SortableList      = require('components/shared/sortable_list')
@@ -166,7 +165,6 @@ Component = React.createClass
   getStateFromStores: ->
     company:  CompanyStore.get(@props.key)
     blocks:   BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.key
-    all_tags: TagStore.all()
   
   
   refreshStateFromStores: ->
@@ -175,14 +173,11 @@ Component = React.createClass
   
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStores)
-    BlockStore.on('change', @refreshStateFromStores)
-    TagStore.on('change', @refreshStateFromStores)
-  
+    BlockStore.on('change', @refreshStateFromStores)  
 
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
     BlockStore.off('change', @refreshStateFromStores)
-    TagStore.off('change', @refreshStateFromStores)
   
   
   getInitialState: ->
@@ -216,8 +211,6 @@ Component = React.createClass
           can_follow      = {@state.company.flags.can_follow}
           is_followed     = {@state.company.flags.is_followed}
           invitable_roles = {@state.company.meta.invitable_roles}
-          tag_list        = {@state.company.tag_list}
-          all_tags        = {@state.all_tags}
         />
         {blocks}
         {SectionPlaceholderComponent.call(@, blocks.length)}

@@ -30,6 +30,8 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
+    @tags = Tag.order(:name).all
+
     respond_to do |format|
       format.html
       format.json
@@ -177,7 +179,7 @@ private
       :logotype, 
       :remove_logotype, 
       :slug,
-      :tag_list
+      :tag_names
     )
   end
 

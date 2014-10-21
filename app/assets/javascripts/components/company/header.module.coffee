@@ -9,7 +9,7 @@ ModalActions    = require('actions/modal_actions')
 AutoSizingInput = require('components/form/autosizing_input')
 FollowComponent = require('components/company/follow')
 AccessRights    = require('components/company/access_rights')
-TagListComponent = require('components/company/tag_list')
+TagsComponent   = require('components/company/tags')
 
 # Main
 #
@@ -152,11 +152,7 @@ Component = React.createClass
       # Tags
       # 
       (tag.label { className: 'tags' },
-        (TagListComponent {
-          key: @props.key
-          all_tags: @props.all_tags
-          tag_list: @props.tag_list
-        })
+        (TagsComponent { key: @props.key })
       ) unless @props.readOnly
       
       # Description
