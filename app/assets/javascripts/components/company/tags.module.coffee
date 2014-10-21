@@ -26,7 +26,7 @@ MainComponent = React.createClass
   
   
   gatherTagsForSelect: ->
-    query = @state.query.trim().toLowerCase()
+    query = @formatName(@state.query)
     
     _.chain(@state.tags)
       .reject (tag) => _.contains(@state.company_tags.map((tag) -> tag.name), tag.name) or !tag.is_acceptable
@@ -38,12 +38,18 @@ MainComponent = React.createClass
         }, tag.name)
       .value()
 
+  
+  formatName: (name) ->
+    name.trim().toLowerCase().replace(/[^a-z0-9\-_|\s]+/ig, '').replace(/\s{2,}/g, '-')
+
 
   onInput: (query) ->
     @setState(query: query)
 
 
   onSelect: (name) ->
+    name = @formatName(name)
+
     tag = _.find @state.tags, name: name
     unless tag
       key = TagStore.create({ name: name })
