@@ -3,7 +3,7 @@ Component = React.createClass
   displayName: 'Draggable'
   
   
-  revert: ->
+  revert: (callback) ->
     node      = @getDOMNode()
     style     = window.getComputedStyle(node)
 
@@ -24,11 +24,14 @@ Component = React.createClass
       x = dx * delta
       y = dy * delta
       
-      requestAnimationFrame(tick) if progress < duration
-      
       node.style.left = pageX + x + 'px'
       node.style.top  = pageY + y + 'px'
     
+      if progress < duration
+        requestAnimationFrame(tick) 
+      else
+        callback() if _.isFunction(callback)
+      
     requestAnimationFrame(tick)
         
       
@@ -37,20 +40,34 @@ Component = React.createClass
   handleMouseDown: (event) ->
     event.preventDefault()
     
-    node = @getDOMNode()
+    node        = @getDOMNode()
+    parentNode  = node.offsetParent
     
-    bounds  = node.getBoundingClientRect()
-    style   = window.getComputedStyle(node)
+    bounds        = node.getBoundingClientRect()
+    parentBounds  = parentNode.getBoundingClientRect()
+    style         = window.getComputedStyle(node)
     
-
+    clone                 = node.cloneNode(true)
+    clone.style.width     = style.width
+    clone.style.height    = style.height
+    clone.style.position  = 'absolute'
+    clone.style.left      = bounds.left - parentBounds.left - parseFloat(style.marginLeft) + 'px'
+    clone.style.top       = bounds.top - parentBounds.top - parseFloat(style.marginTop) + 'px'
+    
+    node.parentNode.appendChild(clone)
+    
     @setState
-      startX:       parseFloat(style.left)  || 0
-      startY:       parseFloat(style.top)   || 0
+      startX:       parseFloat(clone.style.left)  || 0
+      startY:       parseFloat(clone.style.top)   || 0
       offsetX:      event.pageX
       offsetY:      event.pageY
+      clone:        clone
     
 
-    node.classList.add('draggable')
+    clone.classList.add('draggable')
+    
+    
+    node.style.opacity = 0
 
 
     window.addEventListener('mousemove', @handleMouseMove)
@@ -60,13 +77,15 @@ Component = React.createClass
   handleMouseUp: (event) ->
     node = @getDOMNode()
 
+    @state.clone.classList.remove('draggable')
+    @state.clone.parentNode.removeChild(@state.clone)
+
+    node.style.opacity = 1
+
     @setState
       pageX:  null
       pageY:  null
-
-    node.classList.remove('draggable')
-      
-    @revert()
+      clone:  null
 
     window.removeEventListener('mousemove', @handleMouseMove)
     window.removeEventListener('mouseup', @handleMouseUp)
@@ -108,13 +127,13 @@ Component = React.createClass
   
   componentDidUpdate: (prevProps, prevState) ->
     if @state.pageX and @state.pageY
-      node = @getDOMNode()
-
+      node = @state.clone
+      
       unless @props.lock_x
-        node.style.left   = @state.pageX - @state.offsetX + @state.startX + 'px'
+        node.style.left = @state.startX + (@state.pageX - @state.offsetX) + 'px'
 
       unless @props.lock_y
-        node.style.top    = @state.pageY - @state.offsetY + @state.startY + 'px'
+        node.style.top = @state.startY + (@state.pageY - @state.offsetY) + 'px'
 
 
   render: ->

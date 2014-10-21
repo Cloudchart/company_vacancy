@@ -10,7 +10,7 @@ BlockActions    = require('actions/block_actions')
 CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
 
-Draggable       = require('components/shared/draggable')
+Sortable        = require('components/shared/sortable')
 
 CompanyHeader   = require('components/company/header')
 
@@ -108,19 +108,28 @@ Component = React.createClass
       memo.push({ key: key, bounds: ref.getDOMNode().getBoundingClientRect() })
       memo
     , []
+  
+  
+  
+  handleDragStart: (index) ->
     
+  
+  handleSortableChange: (data) ->
+    blocks = @state.blocks[..]
     
+    block = blocks.splice(data.from, 1)[0]
+    blocks.splice(data.to, 0, block)
     
+    @setState
+      blocks: blocks
 
 
   gatherBlocks: ->
     _.chain(@state.blocks)
-      .sortBy(['position'])
+      #.sortBy(['position'])
       .map (block) =>
         key = block.getKey()
-        <Draggable lock_x key={key} onDragMove={@handleDragMove.bind(@, key)}>
-          <SectionWrapperComponent ref={key} key={key} readOnly={@state.company.is_read_only} />
-        </Draggable>
+        <SectionWrapperComponent ref={key} key={key} readOnly={@state.company.is_read_only} />
       .value()
   
   
@@ -177,19 +186,21 @@ Component = React.createClass
           block
         ]
       
-      <article className="editor company company-2_0">
-        <CompanyHeader
-          key           = {@props.key}
-          logotype_url  = {@state.company.logotype_url}
-          name          = {@state.company.name}
-          description   = {@state.company.description}
-          readOnly      = {@state.company.is_read_only}
-          can_follow    = {@state.company.can_follow}
-          is_followed   = {@state.company.is_followed}
-        />
-        {blocks}
-        {SectionPlaceholderComponent.call(@, blocks.length)}
-      </article>
+      <Sortable selector="section:not(.placeholder)" onChange={@handleSortableChange} lockX>
+        <article className="editor company company-2_0">
+          <CompanyHeader
+            key           = {@props.key}
+            logotype_url  = {@state.company.logotype_url}
+            name          = {@state.company.name}
+            description   = {@state.company.description}
+            readOnly      = {@state.company.is_read_only}
+            can_follow    = {@state.company.can_follow}
+            is_followed   = {@state.company.is_followed}
+          />
+          {blocks}
+          {SectionPlaceholderComponent.call(@, blocks.length)}
+        </article>
+      </Sortable>
 
     else
       null

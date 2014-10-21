@@ -34,7 +34,16 @@ article.editor {
     &:not(.placeholder):hover,
     &.draggable {
       background-color: hsla(0, 0%, 98%, .9);
+      cursor: -webkit-grab;
       z-index: 100;
+    }
+    
+    &.hover {
+      background-color: #999;
+    }
+    
+    &.draggable {
+      cursor: -webkit-grabbing !important;
     }
     
     &.draggable i.remove {
