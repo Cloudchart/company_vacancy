@@ -107,6 +107,24 @@ class CompaniesController < ApplicationController
       redirect_to :back, alert: 'Error. We did not find this file.'
     end
   end
+  
+  
+  # Reposition blocks
+  #
+  def reposition_blocks
+    company = Company.includes(:blocks).find(params[:id])
+    
+    Block.transaction do
+      company.blocks.each do |block|
+        block.update! position: params[:ids].index(block.uuid)
+      end
+    end
+
+    respond_to do |format|
+      format.json { render json: { ok: 200 } }
+    end
+  end
+  
 
 private
 

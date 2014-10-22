@@ -10,9 +10,10 @@ BlockActions    = require('actions/block_actions')
 CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
 
-Sortable        = require('components/shared/sortable')
 
-CompanyHeader   = require('components/company/header')
+SortableList      = require('components/shared/sortable_list')
+SortableListItem  = require('components/shared/sortable_list_item')
+CompanyHeader     = require('components/company/header')
 
 BlockComponents =
   Picture:    require('components/editor/picture')
@@ -101,35 +102,43 @@ SectionPlaceholderComponent = (position) ->
 Component = React.createClass
 
 
-  handleDragMove: (key, origin) ->
-    delta = (top, bottom) -> Math.min(Math.abs(top - origin.y), Math.abs(bottom - origin.y))
+  handleSortableChange: (key, currIndex, nextIndex) ->
+    [blocks, offset] = if currIndex > nextIndex
+      [
+        _.filter @state.blocks, (block) -> block.position < currIndex and block.position >= nextIndex
+        +1
+      ]
+    else
+      [
+        _.filter @state.blocks, (block) -> block.position > currIndex and block.position <= nextIndex
+        -1
+      ]
     
-    rectangles = _.reduce @refs, (memo, ref, key) ->
-      memo.push({ key: key, bounds: ref.getDOMNode().getBoundingClientRect() })
-      memo
-    , []
+    _.each blocks, (block) ->
+      BlockStore.update(block.getKey(), { position: block.position + offset })
+    
+    BlockStore.update(key, { position: nextIndex })
+    
+    BlockStore.emitChange()
   
   
-  
-  handleDragStart: (index) ->
+  handleSortableUpdate: ->
+    ids = _.chain(@state.blocks)
+      .sortBy 'position'
+      .invoke 'getKey'
+      .value()
     
-  
-  handleSortableChange: (data) ->
-    blocks = @state.blocks[..]
-    
-    block = blocks.splice(data.from, 1)[0]
-    blocks.splice(data.to, 0, block)
-    
-    @setState
-      blocks: blocks
+    CompanyActions.repositionBlocks(@props.key, ids)
 
 
   gatherBlocks: ->
     _.chain(@state.blocks)
-      #.sortBy(['position'])
+      .sortBy(['position'])
       .map (block) =>
         key = block.getKey()
-        <SectionWrapperComponent ref={key} key={key} readOnly={@state.company.is_read_only} />
+        <SortableListItem key={key}>
+          <SectionWrapperComponent ref={key} key={key} readOnly={@state.company.is_read_only} />
+        </SortableListItem>
       .value()
   
   
@@ -186,21 +195,39 @@ Component = React.createClass
           block
         ]
       
-      <Sortable selector="section:not(.placeholder)" onChange={@handleSortableChange} lockX>
-        <article className="editor company company-2_0">
-          <CompanyHeader
-            key           = {@props.key}
-            logotype_url  = {@state.company.logotype_url}
-            name          = {@state.company.name}
-            description   = {@state.company.description}
-            readOnly      = {@state.company.is_read_only}
-            can_follow    = {@state.company.can_follow}
-            is_followed   = {@state.company.is_followed}
-          />
-          {blocks}
-          {SectionPlaceholderComponent.call(@, blocks.length)}
-        </article>
-      </Sortable>
+      <SortableList 
+        component={tag.article}
+        className="editor company company-2_0"
+        onChange={@handleSortableChange}
+        onUpdate={@handleSortableUpdate}
+        dragLockX
+      >
+        <CompanyHeader
+          key           = {@props.key}
+          logotype_url  = {@state.company.logotype_url}
+          name          = {@state.company.name}
+          description   = {@state.company.description}
+          readOnly      = {@state.company.is_read_only}
+          can_follow    = {@state.company.can_follow}
+          is_followed   = {@state.company.is_followed}
+        />
+        {blocks}
+        {SectionPlaceholderComponent.call(@, blocks.length)}
+      </SortableList>
+
+      # <article className="editor company company-2_0">
+      #   <CompanyHeader
+      #     key           = {@props.key}
+      #     logotype_url  = {@state.company.logotype_url}
+      #     name          = {@state.company.name}
+      #     description   = {@state.company.description}
+      #     readOnly      = {@state.company.is_read_only}
+      #     can_follow    = {@state.company.can_follow}
+      #     is_followed   = {@state.company.is_followed}
+      #   />
+      #   {blocks}
+      #   {SectionPlaceholderComponent.call(@, blocks.length)}
+      # </article>
 
     else
       null

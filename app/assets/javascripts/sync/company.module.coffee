@@ -47,6 +47,17 @@ module.exports =
     .fail fail
   
   
+  repositionBlocks: (key, ids, done, fail) ->
+    $.ajax
+      url:        "/companies/#{key}/reposition_blocks"
+      type:       "PUT"
+      dataType:   "json"
+      data:
+        ids:      ids
+    .done done
+    .fail fail
+  
+  
   fetchAccessRights: (key, done, fail) ->
     $.ajax
       url:        "/companies/#{key}/access_rights"
