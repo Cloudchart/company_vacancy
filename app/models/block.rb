@@ -2,7 +2,7 @@ class Block < ActiveRecord::Base
   include Uuidable
   include Trackable
   
-  IdentitiesClasses = [Picture, Paragraph, BlockImage, Person, Vacancy, Company]
+  IdentitiesClasses = [Picture, Paragraph, Person, Vacancy, Company]
   
   before_create   :shift_siblings_down
   after_destroy   :shift_siblings_up

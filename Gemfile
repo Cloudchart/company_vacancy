@@ -34,8 +34,6 @@ gem 'jbuilder'
 
 # Deprecated
 # 
-gem 'carrierwave'
-gem 'carrierwave-meta'
 gem 'simple_form'
 
 # Engines

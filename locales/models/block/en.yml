@@ -3,14 +3,14 @@ en:
 
     icons:
       Paragraph:    'fa-font'
-      BlockImage:   'fa-picture-o'
+      Picture:      'fa-picture-o'
       Person:       'fa-male'
       Vacancy:      'fa-briefcase'
 
     titles:
       Paragraph:    'Paragraph'
-      BlockImage:   'Picture'
+      Picture:      'Picture'
       Person:       'Person'
       Vacancy:      'Vacancy'
     
-    company: [Paragraph, BlockImage, Person, Vacancy]
+    company: [Paragraph, Picture, Person, Vacancy]

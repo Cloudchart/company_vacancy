@@ -34,6 +34,6 @@ class MigrateBlocksToNewStructure < ActiveRecord::Migration
   end
 
   def down
-    # this can not be undone
+    say 'this migration cannot be rolled back'
   end
 end
