@@ -82,6 +82,7 @@ end
 
 group :production do
   gem 'intercom-rails', '~> 0.2.24'
+  gem 'sentry-raven' # exceptions tracker
 end
 
 # Use debugger

@@ -296,6 +296,9 @@ GEM
     sdoc (0.4.0)
       json (~> 1.8)
       rdoc (~> 4.0, < 5.0)
+    sentry-raven (0.10.1)
+      faraday (>= 0.7.6)
+      uuidtools
     sidekiq (3.0.2)
       celluloid (>= 0.15.2)
       connection_pool (>= 2.0.0)
@@ -348,6 +351,7 @@ GEM
     uglifier (2.5.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    uuidtools (2.1.5)
     warden (1.2.3)
       rack (>= 1.0)
     xpath (2.0.0)
@@ -401,6 +405,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (~> 4.0.3)
   sdoc
+  sentry-raven
   sidekiq
   sprockets-coffee-react
   sprockets-commonjs!
