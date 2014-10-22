@@ -62,7 +62,7 @@ class CompaniesController < ApplicationController
     update_site_url_verification(@company) if company_params[:site_url]
     
     respond_to do |format|
-      format.json { render json: CompanyEditorSerializer.new(@company) }
+      format.json { render json: CompanyEditorSerializer.new(@company, scope: current_user) }
     end
 
   rescue ActiveRecord::RecordInvalid
@@ -123,7 +123,7 @@ class CompaniesController < ApplicationController
     if File.exists?(file_path)
       send_file(file_path)
     else
-      redirect_to :back, alert: 'Error. We did not find this file.'
+      redirect_to :back, alert: 'Error. No such file.'
     end
   end
   

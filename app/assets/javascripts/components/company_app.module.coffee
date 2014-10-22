@@ -209,7 +209,6 @@ Component = React.createClass
           logotype_url    = {@state.company.meta.logotype_url}
           readOnly        = {@state.company.flags.is_read_only}
           can_follow      = {@state.company.flags.can_follow}
-          is_owner        = {@state.company.flags.is_owner}
           is_followed     = {@state.company.flags.is_followed}
           invitable_roles = {@state.company.meta.invitable_roles}
         />

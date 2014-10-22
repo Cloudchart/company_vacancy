@@ -4,6 +4,7 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :blocks_url, :people_url, :vacancies_url, :logotype_url, :company_url
   attributes :default_host, :settings, :established_on, :tag_list
   attributes :is_editor, :is_trusted_reader, :is_chart_with_nodes_created
+  attributes :meta, :flags
 
   has_many :charts
   # has_many :burn_rate_charts, serializer: BurnRateChartSerializer
@@ -15,6 +16,23 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   alias_method :current_user, :scope
   alias_method :company, :object
   
+
+  def meta
+    {
+      logotype_url: company.logotype.try(:url),
+      invitable_roles: Company::INVITABLE_ROLES
+    }
+  end
+
+  def flags
+    {
+      is_read_only: Ability.new(current_user).cannot?(:update, company),
+      can_follow: Ability.new(current_user).can?(:follow, company),
+      is_followed: (current_user.favorites.pluck(:favoritable_id).include?(company.id) if current_user)
+    }
+  end
+
+
   def is_editor
     Ability.new(current_user).can?(:update, company)
   end

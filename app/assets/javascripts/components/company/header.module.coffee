@@ -145,7 +145,7 @@ Component = React.createClass
           onClick:    @onShareLinkClick
         },
           (tag.i { className: 'fa fa-share' })
-        ) if @props.is_owner
+        ) unless @props.readOnly
         
       )
       
