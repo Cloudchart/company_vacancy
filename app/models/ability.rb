@@ -55,15 +55,15 @@ class Ability
       # can :manage, Comment, user_id: user.id
 
       can :manage, Company do |company|
-        Role.find_by(user: user, owner: company).try(:value) == 'owner'
+        owner?(user, company)
       end
 
-      can [:update, :finance, :settings, :verify_site_url, :download_verification_file], Company do |company|
-        Role.find_by(user: user, owner: company).try(:value) == 'editor'
+      can [:update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file], Company do |company|
+        editor?(user, company)
       end
 
       can [:finance], Company do |company|
-        Role.find_by(user: user, owner: company).try(:value) == 'trusted_reader'
+        trusted_reader?(user, company)
       end
 
       cannot :follow, Company do |company|
@@ -76,16 +76,16 @@ class Ability
 
       [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart].each do |model|
         can :manage, model do |resource|
-          Role.find_by(user: user, owner: resource.company).try(:value) =~ /owner|editor/
+          owner_or_editor?(user, resource.company)
         end
       end
 
       can :manage_company_invites, Company do |company|
-        Role.find_by(user: user, owner: company).try(:value) == 'owner'
+        owner_or_editor?(user, company)
       end
 
       can [:update, :destroy], Role do |role|
-        role.owner.owner.id == user.id
+        owner_or_editor?(user, role.owner)
       end
 
       # can :read, Vacancy do |vacancy|
@@ -117,7 +117,25 @@ class Ability
       #   (vacancy_response.vacancy.reviewers & user.people).any? &&
       #   vacancy_response.status == 'in_review'
       # end
-
     end
   end
+
+private
+
+  def owner?(user, company)
+    Role.find_by(user: user, owner: company).try(:value) == 'owner'
+  end
+
+  def editor?(user, company)
+    Role.find_by(user: user, owner: company).try(:value) == 'editor'
+  end
+
+  def owner_or_editor?(user, company)
+    Role.find_by(user: user, owner: company).try(:value) =~ /owner|editor/
+  end
+
+  def trusted_reader?(user, company)
+    Role.find_by(user: user, owner: company).try(:value) == 'trusted_reader'
+  end
+
 end

@@ -123,7 +123,7 @@ class CompaniesController < ApplicationController
     if File.exists?(file_path)
       send_file(file_path)
     else
-      redirect_to :back, alert: 'Error. We did not find this file.'
+      redirect_to :back, alert: 'Error. No such file.'
     end
   end
 

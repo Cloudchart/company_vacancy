@@ -13,7 +13,7 @@
       </li>
     <% end %>
 
-    <% if can?(:access_rigths, @company) %>
+    <% if can?(:access_rights, @company) %>
       <li>
         <%= link_with_class_for_current('Users', main_app.access_rights_company_path(@company), 'base') %>
       </li>
