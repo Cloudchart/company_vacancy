@@ -3,6 +3,7 @@ article.editor > section.paragraph {
   line-height: $editor-paragraph-line-height;
 
   [contenteditable] {
+    cursor: text;
     outline: none;
 
     &:empty::before {

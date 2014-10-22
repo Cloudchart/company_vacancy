@@ -1,6 +1,7 @@
 article.editor > section.picture {
   
   .placeholder {
+    background-color: $editor-placeholder-background-color;
     cursor: pointer;
     height: 0;
     opacity: .25;

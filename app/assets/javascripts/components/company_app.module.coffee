@@ -10,7 +10,10 @@ BlockActions    = require('actions/block_actions')
 CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
 
-CompanyHeader   = require('components/company/header')
+
+SortableList      = require('components/shared/sortable_list')
+SortableListItem  = require('components/shared/sortable_list_item')
+CompanyHeader     = require('components/company/header')
 
 BlockComponents =
   Picture:    require('components/editor/picture')
@@ -48,19 +51,20 @@ SectionWrapperComponent = React.createClass
   render: ->
     block           = BlockStore.get(@props.key)
     BlockComponent  = BlockComponents[block.identity_type]
+    blockClassName  = SectionClassNames[block.identity_type]
 
     (tag.section {
       key:        block.getKey()
-      className:  SectionClassNames[block.identity_type]
+      className:  blockClassName
     },
-    
+  
       # Remove
       #
       (tag.i {
         className:  'fa fa-times-circle-o remove '
         onClick:    @handleBlockRemove
       }) unless @props.readOnly
-    
+  
       # Block
       #
       (BlockComponent {
@@ -98,11 +102,43 @@ SectionPlaceholderComponent = (position) ->
 Component = React.createClass
 
 
+  handleSortableChange: (key, currIndex, nextIndex) ->
+    [blocks, offset] = if currIndex > nextIndex
+      [
+        _.filter @state.blocks, (block) -> block.position < currIndex and block.position >= nextIndex
+        +1
+      ]
+    else
+      [
+        _.filter @state.blocks, (block) -> block.position > currIndex and block.position <= nextIndex
+        -1
+      ]
+    
+    _.each blocks, (block) ->
+      BlockStore.update(block.getKey(), { position: block.position + offset })
+    
+    BlockStore.update(key, { position: nextIndex })
+    
+    BlockStore.emitChange()
+  
+  
+  handleSortableUpdate: ->
+    ids = _.chain(@state.blocks)
+      .sortBy 'position'
+      .invoke 'getKey'
+      .value()
+    
+    CompanyActions.repositionBlocks(@props.key, ids)
+
+
   gatherBlocks: ->
     _.chain(@state.blocks)
       .sortBy(['position'])
       .map (block) =>
-        <SectionWrapperComponent key={block.getKey()} readOnly={@state.company.flags.is_read_only} />
+        key = block.getKey()
+        <SortableListItem key={key}>
+          <SectionWrapperComponent ref={key} key={key} readOnly={@state.company.flags.is_read_only} />
+        </SortableListItem>
       .value()
   
   
@@ -159,7 +195,13 @@ Component = React.createClass
           block
         ]
       
-      <article className="editor company company-2_0">
+      <SortableList 
+        component={tag.article}
+        className="editor company company-2_0"
+        onChange={@handleSortableChange}
+        onUpdate={@handleSortableUpdate}
+        dragLockX
+      >
         <CompanyHeader
           key             = {@props.key}
           name            = {@state.company.name}
@@ -173,7 +215,21 @@ Component = React.createClass
         />
         {blocks}
         {SectionPlaceholderComponent.call(@, blocks.length)}
-      </article>
+      </SortableList>
+
+      # <article className="editor company company-2_0">
+      #   <CompanyHeader
+      #     key           = {@props.key}
+      #     logotype_url  = {@state.company.logotype_url}
+      #     name          = {@state.company.name}
+      #     description   = {@state.company.description}
+      #     readOnly      = {@state.company.is_read_only}
+      #     can_follow    = {@state.company.can_follow}
+      #     is_followed   = {@state.company.is_followed}
+      #   />
+      #   {blocks}
+      #   {SectionPlaceholderComponent.call(@, blocks.length)}
+      # </article>
 
     else
       null

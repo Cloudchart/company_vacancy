@@ -80,7 +80,7 @@ Factory = (definition) ->
     update: (key, attributes = {}) ->
       prevRecord  = __data[key]
       __data[key] = __data[key].mergeDeep(attributes)
-
+      
       (__undo[key] ||= []).push(prevRecord) ; delete __redo[key]
 
       __data[key]
@@ -139,7 +139,7 @@ Factory = (definition) ->
     
     
     rollback: (key) ->
-      originalRecord = if __undo[key] and __undo[key].lenght > 0 then __undo[0]
+      originalRecord = if __undo[key] and __undo[key].length > 0 then __undo[key][0]
       if originalRecord
         __data[key] = originalRecord
       @commit(key)

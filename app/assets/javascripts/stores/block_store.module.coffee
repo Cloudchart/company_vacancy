@@ -65,6 +65,16 @@ module.exports = CloudFlux.createStore
   
   
   onDestroyFail: (key, json, xhr, token) ->
+  
+  
+  onRepositionDone: (key, ids) ->
+    _.each ids, (id) => @store.commit(id)
+    @store.emitChange()
+
+
+  onRepositionFail: (key, ids) ->
+    _.each ids, (id) => @store.rollback(id)
+    @store.emitChange()
     
 
 
@@ -82,6 +92,9 @@ module.exports = CloudFlux.createStore
     actions['block:destroy']      = @onDestroy
     actions['block:destroy:done'] = @onDestroyDone
     actions['block:destroy:fail'] = @onDestroyFail
+
+    actions['blocks:reposition:done'] = @onRepositionDone
+    actions['blocks:reposition:fail'] = @onRepositionFail
     
     actions
 

@@ -31,8 +31,37 @@ article.editor {
     padding: 10px 20px;
     position: relative;
     
-    &:not(.placeholder):hover {
-      background-color: hsla(0, 0%, 98%, .5);
+    &:not(.placeholder):hover,
+    &.draggable {
+      background-color: hsla(0, 0%, 98%, .9);
+      cursor: -webkit-grab;
+      z-index: 100;
+    }
+    
+    &.hover {
+      background-color: #999;
+    }
+    
+    &.draggable {
+      @include transform(scale(.5));
+      cursor: -webkit-grabbing !important;
+      opacity: .75;
+      z-index: 101;
+    }
+    
+    &.draggable i.remove {
+      visibility: hidden !important;
+    }
+    
+    &.draggable-source {
+      background-color: hsla(0, 0%, 98%, .9);
+
+      > * {
+        opacity: 0;
+      }
+      
+      max-height: 100px;
+      overflow: hidden;
     }
     
     > i.remove {

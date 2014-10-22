@@ -34,6 +34,7 @@ Cloudchart::Application.routes.draw do
     get :finance, on: :member
     get :settings, on: :member
     get :access_rights, on: :member
+    put :reposition_blocks, on: :member
     
     resources :blocks, only: :create, type: :company
     
