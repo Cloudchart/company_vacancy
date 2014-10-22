@@ -174,8 +174,7 @@ private
       :logotype, 
       :remove_logotype, 
       :slug,
-      :tag_list,
-      sections_attributes: [Company::Sections.map(&:downcase)]
+      :tag_list
     )
   end
 

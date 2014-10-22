@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141022094019) do
+ActiveRecord::Schema.define(version: 20141022112205) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -44,7 +44,6 @@ ActiveRecord::Schema.define(version: 20141022094019) do
   add_index "block_identities", ["identity_id", "identity_type"], name: "index_block_identities_on_identity_id_and_identity_type", using: :btree
 
   create_table "blocks", primary_key: "uuid", force: true do |t|
-    t.string   "section",                                  null: false
     t.integer  "position",                 default: 0
     t.string   "owner_id",      limit: 36,                 null: false
     t.string   "owner_type",                               null: false
@@ -127,7 +126,6 @@ ActiveRecord::Schema.define(version: 20141022094019) do
   create_table "companies", primary_key: "uuid", force: true do |t|
     t.string   "name"
     t.text     "description"
-    t.text     "sections"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "established_on"
@@ -150,7 +148,6 @@ ActiveRecord::Schema.define(version: 20141022094019) do
   create_table "events", primary_key: "uuid", force: true do |t|
     t.string   "name",                  null: false
     t.string   "url"
-    t.text     "sections"
     t.string   "location"
     t.datetime "start_at"
     t.datetime "end_at"
@@ -352,7 +349,6 @@ ActiveRecord::Schema.define(version: 20141022094019) do
     t.string   "salary"
     t.string   "location"
     t.text     "settings"
-    t.text     "sections"
     t.integer  "impressions_count",            default: 0
     t.string   "company_id",        limit: 36,             null: false
     t.datetime "created_at"

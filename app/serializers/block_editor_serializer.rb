@@ -1,5 +1,5 @@
 class BlockEditorSerializer < ActiveModel::Serializer
-  attributes :uuid, :section, :position, :identity_type, :block_type, :is_locked, :url
+  attributes :uuid, :position, :identity_type, :block_type, :is_locked, :url
 
   has_many :identities, serializer: BlockIdentityEditorSerializer
   

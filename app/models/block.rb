@@ -7,22 +7,12 @@ class Block < ActiveRecord::Base
   before_create   :shift_siblings_down
   after_destroy   :shift_siblings_up
 
-  # after_destroy   :reposition_siblings, unless: Proc.new { |block| block.owner.marked_for_destruction? }
-
   belongs_to :owner, polymorphic: true
 
-  has_many :block_identities, -> { order(:position) }, inverse_of: :block, dependent: :destroy
-  
-
-  # Picture
-  #
   has_one :picture, as: :owner, dependent: :destroy
-  
-
-  # Paragraph
-  #
   has_one :paragraph, as: :owner, dependent: :destroy
 
+  has_many :block_identities, -> { order(:position) }, inverse_of: :block, dependent: :destroy  
   
   IdentitiesClasses.each do |identity_class|
     plural_identity_name = identity_class.name.underscore.pluralize
@@ -97,7 +87,6 @@ class Block < ActiveRecord::Base
 
 private
 
-
   def shift_siblings_down
     Block.transaction do
       owner.blocks.where('position >= ?', position).each_with_index do |block, index|
@@ -105,7 +94,6 @@ private
       end
     end
   end
-  
 
   def shift_siblings_up
     Block.transaction do
@@ -114,19 +102,5 @@ private
       end
     end
   end
-
-
-  # def ensure_position
-  #   self.position = owner.blocks_by_section(section).length unless self.position
-  #   Block.where(owner_id: owner.to_param, owner_type: owner.class, section: section).where('position >= ?', position).update_all('position = (position + 1)')
-  # end
-  
-  # def reposition_siblings
-  #   Block.transaction do
-  #     owner.blocks_by_section(section).each_with_index do |sibling, index|
-  #       sibling.update_attribute :position, index
-  #     end
-  #   end
-  # end
   
 end

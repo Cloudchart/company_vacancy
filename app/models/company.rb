@@ -1,14 +1,11 @@
 class Company < ActiveRecord::Base
   include Uuidable
-  include Sectionable
+  include Blockable
   include Sluggable
   include Taggable
   include Tire::Model::Search
   include Tire::Model::Callbacks  
 
-  BlockTypes  = ['Paragraph', 'BlockImage', 'Person', 'Vacancy']
-  Sections    = ['About', 'Product', 'People', 'Vacancies']
-  
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
   ROLES           = ([:owner] + INVITABLE_ROLES).freeze
 
@@ -33,7 +30,6 @@ class Company < ActiveRecord::Base
   has_many :paragraphs, through: :blocks, source: :paragraph
   # has_paper_trail
   
-  # validates :name, presence: true, on: :update
   validates :site_url, url: true, allow_blank: true
   validate  :publish_check, if: 'is_published && is_published_changed?'
 
@@ -94,29 +90,17 @@ class Company < ActiveRecord::Base
   def chart
     charts.order(:created_at).first
   end
-  
-  #def pictures
-  #  blocks.select { |b| b.identity_type == 'Picture' }.map(&:picture).compact
-  #end
-  
-  #def paragraphs
-  #  blocks.select { |b| b.identity_type == 'Paragraph' }.map(&:paragraph).compact
-  #end
 
   def invite_tokens
     tokens.where(name: :invite)
   end
 
   def build_objects
-    blocks.build(section: :main, position: 0, identity_type: 'Person', is_locked: true)
-    blocks.build(section: :main, position: 1, identity_type: 'Paragraph', is_locked: true)
-    blocks.build(section: :main, position: 2, identity_type: 'Vacancy', is_locked: true)
-    blocks.build(section: :main, position: 3, identity_type: 'Picture', is_locked: true)
+    blocks.build(position: 0, identity_type: 'Person', is_locked: true)
+    blocks.build(position: 1, identity_type: 'Paragraph', is_locked: true)
+    blocks.build(position: 2, identity_type: 'Vacancy', is_locked: true)
+    blocks.build(position: 3, identity_type: 'Picture', is_locked: true)
     charts.build(title: 'Main Chart')
-  end
-  
-  def as_json_for_editor
-    as_json(only: [:uuid], methods: :sections_titles)
   end
 
 private

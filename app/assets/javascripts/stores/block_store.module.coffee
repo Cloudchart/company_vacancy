@@ -93,6 +93,5 @@ module.exports = CloudFlux.createStore
     owner_type:     ''
     owner_id:       ''
     title:          ''
-    section:        ''
     is_locked:      false
     position:       0

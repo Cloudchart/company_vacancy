@@ -1,4 +1,4 @@
-module Sectionable
+module Blockable
   extend ActiveSupport::Concern
 
   included do
@@ -6,12 +6,6 @@ module Sectionable
     before_destroy    :mark_for_destruction
 
     has_many :blocks, -> { order(:position) }, as: :owner, dependent: :destroy, inverse_of: :owner
-  end
-
-  # deprecated
-  def blocks_by_section(section)
-    section = section.to_s
-    blocks.select { |b| b.section == section }
   end
 
   def should_build_objects!
