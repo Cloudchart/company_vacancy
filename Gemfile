@@ -32,10 +32,6 @@ gem 'sprockets-coffee-react'
 gem 'redis-rails'
 gem 'jbuilder'
 
-# Deprecated
-# 
-gem 'simple_form'
-
 # Engines
 #
 gem 'cloud_profile', path: 'vendor/engines/cloud_profile'

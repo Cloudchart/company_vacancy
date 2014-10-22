@@ -1,9 +1,0 @@
-<%= link_to 'Verify event', verify_event_path(token_id: @event.token.id), method: :post if @event.token %> |
-<%= link_to 'Edit event', edit_event_path(@event) %> |
-<%= link_to 'Events', company_events_path(@event.company) %>
-
-<div class="editable-article-wrapper">
-  <%= render 'shared/companies/side_nav', company: @event.company, klass: Event %>
-  <%= render 'shared/editable_article', object: @event %>
-  <%= render 'shared/blocks_editor', collection: Event::BLOCK_TYPES if can?(:manage, Event) %>
-</div>

@@ -302,9 +302,6 @@ GEM
       json
       redis (>= 3.0.6)
       redis-namespace (>= 1.3.1)
-    simple_form (3.0.2)
-      actionpack (~> 4.0)
-      activemodel (~> 4.0)
     slop (3.6.0)
     sprockets (2.11.0)
       hike (~> 1.2)
@@ -405,7 +402,6 @@ DEPENDENCIES
   sass-rails (~> 4.0.3)
   sdoc
   sidekiq
-  simple_form
   sprockets-coffee-react
   sprockets-commonjs!
   therubyracer
