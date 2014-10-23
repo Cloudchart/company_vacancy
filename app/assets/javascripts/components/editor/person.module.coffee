@@ -1,3 +1,5 @@
+# @cjsx React.DOM
+
 # Imports
 #
 tag = React.DOM
@@ -17,6 +19,8 @@ PersonStore   = require('stores/person')
 PersonAvatar  = require('components/shared/person_avatar')
 PersonChooser = require('components/editor/person_chooser')
 PersonForm    = require('components/form/person_form')
+
+Draggable     = require('components/shared/draggable')
 
 
 # Person Placeholder component
@@ -186,19 +190,17 @@ Component = React.createClass
     
 
   render: ->
-    people = @gatherPeople()
+    people = _.map @gatherPeople(), (person) =>
+      <Draggable key={person.props.key}>
+        <li key={person.props.key}>
+          {person}
+        </li>
+      </Draggable>
     
-    (tag.ul null,
-
-      # People
-      #
-      _.map people, (person) -> (tag.li { key: person.props.key }, person)
-      
-      # Placeholder
-      #
-      PersonPlaceholderComponent.apply(@) unless @props.readOnly
-
-    )
+    <ul>
+      { people }
+      { PersonPlaceholderComponent.apply(@) unless @props.readOnly }
+    </ul>
 
 
 # Exports

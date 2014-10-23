@@ -38,6 +38,8 @@ module.exports = React.createClass
 
 
   handleMouseDown: (event) ->
+    return if @props.readOnly
+    
     node  = event.target
     nodes = _.reduce @refs, ((memo, child, key) -> memo[key] = child.getDOMNode() ; memo), {}
     

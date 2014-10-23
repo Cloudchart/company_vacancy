@@ -200,6 +200,7 @@ Component = React.createClass
         className="editor company company-2_0"
         onChange={@handleSortableChange}
         onUpdate={@handleSortableUpdate}
+        readOnly={@props.readOnly}
         dragLockX
       >
         <CompanyHeader
@@ -215,20 +216,6 @@ Component = React.createClass
         {blocks}
         {SectionPlaceholderComponent.call(@, blocks.length)}
       </SortableList>
-
-      # <article className="editor company company-2_0">
-      #   <CompanyHeader
-      #     key           = {@props.key}
-      #     logotype_url  = {@state.company.logotype_url}
-      #     name          = {@state.company.name}
-      #     description   = {@state.company.description}
-      #     readOnly      = {@state.company.is_read_only}
-      #     can_follow    = {@state.company.can_follow}
-      #     is_followed   = {@state.company.is_followed}
-      #   />
-      #   {blocks}
-      #   {SectionPlaceholderComponent.call(@, blocks.length)}
-      # </article>
 
     else
       null
