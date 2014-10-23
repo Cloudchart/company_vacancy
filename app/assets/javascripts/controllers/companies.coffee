@@ -1,3 +1,5 @@
+# @cjsx React.DOM
+
 # Show
 # 
 @['companies#show'] = (data) ->
@@ -44,7 +46,6 @@
 
 # Access rights
 # 
-# @cjsx React.DOM
 @['companies#access_rights'] = (data) ->
   
   CompanyStore  = require('stores/company')
@@ -65,7 +66,6 @@
   React.renderComponent(
     <AccessRights key=data.company.uuid invitable_roles=data.invitable_roles />,
     document.querySelector('[data-react-mount-point="access-rights"]'))
-
 
 # Search
 # 

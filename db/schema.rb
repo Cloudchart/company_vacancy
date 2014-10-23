@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141010161320) do
+ActiveRecord::Schema.define(version: 20141022112205) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -43,15 +43,7 @@ ActiveRecord::Schema.define(version: 20141010161320) do
   add_index "block_identities", ["block_id"], name: "index_block_identities_on_block_id", using: :btree
   add_index "block_identities", ["identity_id", "identity_type"], name: "index_block_identities_on_identity_id_and_identity_type", using: :btree
 
-  create_table "block_images", primary_key: "uuid", force: true do |t|
-    t.string   "image",      null: false
-    t.text     "meta"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "blocks", primary_key: "uuid", force: true do |t|
-    t.string   "section",                                  null: false
     t.integer  "position",                 default: 0
     t.string   "owner_id",      limit: 36,                 null: false
     t.string   "owner_type",                               null: false
@@ -134,7 +126,6 @@ ActiveRecord::Schema.define(version: 20141010161320) do
   create_table "companies", primary_key: "uuid", force: true do |t|
     t.string   "name"
     t.text     "description"
-    t.text     "sections"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "established_on"
@@ -157,7 +148,6 @@ ActiveRecord::Schema.define(version: 20141010161320) do
   create_table "events", primary_key: "uuid", force: true do |t|
     t.string   "name",                  null: false
     t.string   "url"
-    t.text     "sections"
     t.string   "location"
     t.datetime "start_at"
     t.datetime "end_at"
@@ -205,18 +195,6 @@ ActiveRecord::Schema.define(version: 20141010161320) do
   end
 
   add_index "friends_users", ["friend_id", "user_id"], name: "index_friends_users_on_friend_id_and_user_id", unique: true, using: :btree
-
-  create_table "images", primary_key: "uuid", force: true do |t|
-    t.string   "image",                 null: false
-    t.string   "owner_id",   limit: 36, null: false
-    t.string   "owner_type",            null: false
-    t.text     "meta"
-    t.string   "type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "images", ["owner_id", "owner_type"], name: "index_images_on_owner_id_and_owner_type", using: :btree
 
   create_table "impressions", force: true do |t|
     t.string   "impressionable_type"
@@ -371,7 +349,6 @@ ActiveRecord::Schema.define(version: 20141010161320) do
     t.string   "salary"
     t.string   "location"
     t.text     "settings"
-    t.text     "sections"
     t.integer  "impressions_count",            default: 0
     t.string   "company_id",        limit: 36,             null: false
     t.datetime "created_at"

@@ -38,8 +38,9 @@ module.exports = CloudFlux.createStore
     description:    ''
     is_published:   false
     established_on: ''
-    meta: {}
-    flags: {}
+    slug:           ''
+    meta:           {}
+    flags:          {}
 
   getActions: ->
     actions = {}

@@ -5,9 +5,9 @@ class CompanyEditorSerializer < ActiveModel::Serializer
   attributes :default_host, :settings, :established_on, :tag_list
   attributes :is_editor, :is_trusted_reader, :is_chart_with_nodes_created
 
-  has_many :charts
+  # has_many :charts
   # has_many :burn_rate_charts, serializer: BurnRateChartSerializer
-  has_many :blocks, serializer: BlockEditorSerializer
+  # has_many :blocks, serializer: BlockEditorSerializer
 
   # deprecated
   # has_one :logo, serializer: Editor::LogoSerializer

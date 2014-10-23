@@ -3,7 +3,6 @@
 # Imports
 #
 tag = React.DOM
-company_attributes  = ['is_published', 'established_on', 'tag_list']
 
 CompanyStore = require('stores/company')
 CompanyActions = require('actions/company')
@@ -62,6 +61,9 @@ Settings = React.createClass
                 />
               </div>
             </div>
+
+            <Slug key={@props.key} />
+
           </div>
         </section>
 
@@ -74,30 +76,6 @@ Settings = React.createClass
     else
       null
 
-                      
-
-          # (SlugComponent {
-          #   value: @props.slug
-          #   company_url: @props.company_url
-          #   company_uuid: @props.uuid
-          #   default_host: @props.default_host
-          # })
-
-          # (tag.div { className: 'profile-item' },
-          #   (tag.div { className: 'content field' },
-          #     (tag.label { htmlFor: 'established_on' }, 'Established on')
-
-          #     (tag.div { className: 'spacer' })
-
-          #     (DateInputComponent {
-          #       id: 'established_on'
-          #       name: 'established_on'
-          #       date: @state.established_on
-          #       placeholder: 'Jan 1, 2014'
-          #       onChange: @onEstablishedOnChange
-          #     })
-          #   )
-          # )
 
 # Exports
 #
