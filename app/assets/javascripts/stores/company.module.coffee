@@ -33,9 +33,11 @@ module.exports = CloudFlux.createStore
       @store.emitChange()
   
   getSchema: ->
-    uuid:         ''
-    name:         ''
-    description:  ''
+    uuid:           ''
+    name:           ''
+    description:    ''
+    is_published:   false
+    established_on: ''
     meta: {}
     flags: {}
 

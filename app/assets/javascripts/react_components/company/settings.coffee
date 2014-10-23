@@ -11,7 +11,6 @@
 ##= require cloud_flux.module
 ##= require utils/event_emitter.module
 ##= require stores/company_store.module
-##= require components/company/progress.module
 ##= require cloud_blueprint/components/inputs/date_input.module
 
 # Imports
@@ -25,7 +24,7 @@ TagStore = require('stores/tag_store')
 UrlComponent = cc.require('react/company/settings/site_url')
 SlugComponent = cc.require('react/company/settings/slug')
 TagListComponent = cc.require('react/company/settings/tag_list')
-ProgressComponent = require('components/company/progress')
+# ProgressComponent = require('components/company/progress')
 DateInputComponent = require('cloud_blueprint/components/inputs/date_input')
 # CompanyOwnersComponent  = cc.require('react/company/owners')
 
@@ -149,15 +148,15 @@ MainComponent = React.createClass
       (tag.section { className: 'progress' },
         (tag.header {}, 'Progress')
 
-        (ProgressComponent { 
-          name: @props.name
-          logotype: @props.logotype
-          tag_list: @props.tag_list
-          is_chart_with_nodes_created: @props.is_chart_with_nodes_created
-          people: @props.people
-          is_published: @state.is_published
-          onChange: @handleProgressChange
-        })
+        # (ProgressComponent { 
+        #   name: @props.name
+        #   logotype: @props.logotype
+        #   tag_list: @props.tag_list
+        #   is_chart_with_nodes_created: @props.is_chart_with_nodes_created
+        #   people: @props.people
+        #   is_published: @state.is_published
+        #   onChange: @handleProgressChange
+        # })
       )
   
       # deprecated
