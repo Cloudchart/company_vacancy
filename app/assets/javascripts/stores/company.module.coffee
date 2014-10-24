@@ -35,12 +35,12 @@ module.exports = CloudFlux.createStore
   onUpdateDone: (key, json, token) ->
     @store.stop_sync(key, token)
     @store.update(key, json)
-    # @store.commit(key)
+    @store.commit(key)
     @store.emitChange()
   
   onUpdateFail: (key, json, xhr, token) ->
     @store.stop_sync(key, token)
-    # @store.undo(key)
+    @store.rollback(key)
     @store.emitChange()
   
   onRoleCreateDone: (key, json, sync_token) ->

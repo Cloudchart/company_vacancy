@@ -101,6 +101,10 @@ Factory = (definition) ->
       delete __sync[key]
       delete __undo[key]
       delete __redo[key]
+
+
+    isDirty: (key) ->
+      __undo[key]?.length > 0
     
     
     add_errors: (key, errors) ->

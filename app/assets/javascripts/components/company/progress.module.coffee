@@ -55,10 +55,10 @@ Progress = React.createClass
 
   classForButtonIcon: ->
     if @state.sync
-      "fa fa-spinner fa-spin" 
+      "fa fa-spinner fa-spin"
     else if @state.company.is_published
       "fa fa-undo"
-    else 
+    else
       "fa fa-globe"
 
   getStateFromStores: ->
