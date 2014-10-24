@@ -10,7 +10,7 @@ module.exports = CloudFlux.createStore
   onAccessRightsFetchDone: ->
     @store.emitChange()
 
-  onVerifySiteUrl: (key, json, token) ->
+  onVerifySiteUrl: (key, token) ->
     @store.start_sync(key, token)
     @store.emitChange()
 
@@ -29,7 +29,9 @@ module.exports = CloudFlux.createStore
 
   onUpdate: (key, attributes, token) ->
     @store.start_sync(key, token)
-    @store.update(key, attributes)
+    if token != 'publish' && token != 'site_url'
+      @store.update(key, attributes)
+
     @store.emitChange()
   
   onUpdateDone: (key, json, token) ->
@@ -64,7 +66,9 @@ module.exports = CloudFlux.createStore
 
     actions['company:access_rights:fetch:done'] = @onAccessRightsFetchDone
 
+    actions[Constants.Company.VERIFY_SITE_URL]      = @onVerifySiteUrl
     actions[Constants.Company.VERIFY_SITE_URL_DONE] = @onVerifySiteUrlDone
+    actions[Constants.Company.VERIFY_SITE_URL_FAIL] = @onVerifySiteUrlFail
 
     actions[Constants.Company.UPDATE]       = @onUpdate
     actions[Constants.Company.UPDATE_DONE]  = @onUpdateDone

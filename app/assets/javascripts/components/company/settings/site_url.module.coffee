@@ -48,7 +48,7 @@ CancelVerificationComponent = React.createClass
     CompanyActions.update(@props.uuid, { site_url: "" }, "site_url")
 
   getStateFromStores: ->
-    sync: CompanyStore.getSync(@props.uuid) == "verify_site_url"
+    sync: CompanyStore.getSync(@props.uuid) == "site_url"
 
   # Lifecycle Methods
   # 
