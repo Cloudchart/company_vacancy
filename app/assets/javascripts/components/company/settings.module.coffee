@@ -55,7 +55,7 @@ Settings = React.createClass
           <div className="section-block">
 
             <SiteUrl uuid={@props.uuid} />
-            <Slug key={@props.uuid} />
+            <Slug uuid={@props.uuid} />
 
             <div className="profile-item">
               <div className="content field">
