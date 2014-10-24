@@ -49,7 +49,7 @@ Settings = React.createClass
   render: ->
     if @state.company
 
-      <article className="editor settings">
+      <article className="settings">
         <section className="profile">
           <header>Profile</header>
           <div className="section-block">

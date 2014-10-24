@@ -14,9 +14,6 @@ class CompaniesController < ApplicationController
   ]
   before_action :set_collection, only: [:index, :search]
 
-  # TODO: update
-  # before_action :display_invite_notice, only: :show
-
   authorize_resource
   
   # GET /companies
@@ -115,7 +112,6 @@ class CompaniesController < ApplicationController
         format.json { render json: :fail }
       end
     end
-
   end
 
   def download_verification_file
@@ -127,9 +123,6 @@ class CompaniesController < ApplicationController
     end
   end
   
-  
-  # Reposition blocks
-  #
   def reposition_blocks
     company = Company.includes(:blocks).find(params[:id])
     
@@ -143,7 +136,6 @@ class CompaniesController < ApplicationController
       format.json { render json: { ok: 200 } }
     end
   end
-  
 
 private
 
@@ -173,13 +165,6 @@ private
   def set_collection
     @companies = Company.search(params)
   end
-
-  # outdated
-  # def display_invite_notice
-  #   if token = @company.invite_tokens.select { |token| token.data[:user_id] == current_user.id }.first
-  #     flash.now[:notice] = "You are invited to join this company. <a href='#{company_invite_path(token)}'>Please confirm</a>.".html_safe
-  #   end
-  # end
 
   # Only allow a trusted parameter "white list" through.
   def company_params

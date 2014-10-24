@@ -152,8 +152,10 @@ article.editor > section.placeholder {
 
 // Settings
 // 
-article.editor.settings {
-  margin-top: 30px;
+article.settings {
+  margin: 30px auto;
+  width: $editor-width;
+  // margin-top: 30px;
 
   > section {
 
