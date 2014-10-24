@@ -62,8 +62,10 @@ Progress = React.createClass
       "fa fa-globe"
 
   getStateFromStores: ->
-    company: CompanyStore.get(@props.uuid)
-    sync: CompanyStore.getSync(@props.uuid) == "publish"
+    sync = CompanyStore.getSync(@props.uuid) == "publish"
+    state = { sync: sync }
+    state.company = CompanyStore.get(@props.uuid) unless sync
+    state
 
   # Handlers
   # 

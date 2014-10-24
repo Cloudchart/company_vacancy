@@ -162,7 +162,10 @@ UrlComponent = React.createClass
     <a href=formatted_site_url target="_blank">{site_url}</a>
 
   getStateFromStores: ->
-    company: CompanyStore.get(@props.uuid)
+    if CompanyStore.getSync(@props.uuid)
+      {}
+    else
+      company: CompanyStore.get(@props.uuid)
 
   # Handlers
   # 

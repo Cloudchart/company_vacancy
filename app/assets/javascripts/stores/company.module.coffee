@@ -30,7 +30,7 @@ module.exports = CloudFlux.createStore
   onUpdate: (key, attributes, token) ->
     @store.start_sync(key, token)
     @store.update(key, attributes)
-    @store.emitChange() unless token == 'publish' or token == 'site_url'
+    @store.emitChange()
   
   onUpdateDone: (key, json, token) ->
     @store.stop_sync(key, token)
