@@ -61,6 +61,7 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'pry' # An IRB alternative and runtime developer console
+  gem 'pry-remote' #pry extension for pow
   gem 'awesome_print' # styled print for ruby objects in rails console
   gem 'quiet_assets' # mutes assets pipeline log messages
   gem 'letter_opener' # preview mail in the browser instead of sending

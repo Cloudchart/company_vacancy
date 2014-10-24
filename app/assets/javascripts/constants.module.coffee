@@ -23,6 +23,10 @@ module.exports =
     UNFOLLOW_DONE:   'company:unfollow:done'
     UNFOLLOW_FAIL:   'company:unfollow:fail'
 
+    VERIFY_SITE_URL:       'company:verify_site_url'
+    VERIFY_SITE_URL_DONE:  'company:verify_site_url:done'
+    VERIFY_SITE_URL_FAIL:  'company:verify_site_url:fail'
+
 
   Token:
     FETCH_DONE:   'token:fetch:done'

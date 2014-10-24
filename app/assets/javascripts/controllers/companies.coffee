@@ -36,7 +36,7 @@
 # Settings
 # 
 @['companies#settings'] = (data) ->
-  require('sync/company').fetch(data.id).done (json) ->
+  require('sync/company').fetch(data.uuid).done (json) ->
 
     Settings      = require('components/company/settings')
     CompanyStore  = require('stores/company')

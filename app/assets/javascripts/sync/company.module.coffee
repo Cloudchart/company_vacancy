@@ -119,3 +119,12 @@ module.exports =
       dataType: 'json'
     .done done
     .fail fail
+
+
+  verifySiteUrl: (key, done, fail) ->
+    $.ajax
+      url:        "/companies/#{key}/verify_site_url"
+      type:       "GET"
+      dataType:   "json"
+    .done done
+    .fail fail

@@ -7,6 +7,6 @@
 <% end %>
 
 <%= content_for :react_class_for_main, 'components/company/settings' %>
-<%= content_for :react_props_for_main, { key: @company.uuid }.to_json %>
+<%= content_for :react_props_for_main, { uuid: @company.uuid }.to_json %>
 
-<% pagescript_params( id: @company.uuid ) %>
+<% pagescript_params( uuid: @company.uuid ) %>

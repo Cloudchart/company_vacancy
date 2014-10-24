@@ -4,39 +4,47 @@
 #
 tag = React.DOM
 
-CompanyStore = require('stores/company')
-CompanyActions = require('actions/company')
+CompanyStore   = require("stores/company")
+CompanyActions = require("actions/company")
 
-# UrlComponent = cc.require('components/company/settings/site_url')
-Slug = require('components/company/settings/slug')
-Progress = require('components/company/progress')
-DateInput = require('cloud_blueprint/components/inputs/date_input')
+DateInput = require("cloud_blueprint/components/inputs/date_input")
+Progress  = require("components/company/progress")
+SiteUrl   = require("components/company/settings/site_url")
+Slug      = require("components/company/settings/slug")
 
 # Main Component
 #
 Settings = React.createClass
 
+  # Helpers
+  # 
   getStateFromStores: ->
-    company: CompanyStore.get(@props.key)
+    company: CompanyStore.get(@props.uuid)
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores())
 
-  componentDidMount: ->
-    CompanyStore.on('change', @refreshStateFromStores)
-  
-  componentWillUnmount: ->
-    CompanyStore.off('change', @refreshStateFromStores)
-
-  getInitialState: ->
-    @getStateFromStores()
-
-  onEstablishedOnChange: (value) ->
-    CompanyActions.update(@props.key, { established_on: value }, 'established_on')
-
   # TODO looks hacky, need to figure out and rewrite DateInput
   formatDate: (date) ->
     if date instanceof Date then date else Date.parse(date)
+
+  # Handlers
+  # 
+  onEstablishedOnChange: (value) ->
+    CompanyActions.update(@props.uuid, { established_on: value }, "established_on")
+
+  # Lifecycle Methods
+  # 
+  componentDidMount: ->
+    CompanyStore.on("change", @refreshStateFromStores)
+  
+  componentWillUnmount: ->
+    CompanyStore.off("change", @refreshStateFromStores)
+
+  # Component specifications
+  #
+  getInitialState: ->
+    @getStateFromStores()
 
   render: ->
     if @state.company
@@ -46,6 +54,8 @@ Settings = React.createClass
           <header>Profile</header>
           <div className="section-block">
 
+            <SiteUrl uuid={@props.uuid} />
+
             <div className="profile-item">
               <div className="content field">
                 <label htmlFor="established_on">Established on</label>
@@ -53,23 +63,23 @@ Settings = React.createClass
                 <div className="spacer"></div>
 
                 <DateInput
-                  id="established_on"
-                  name="established_on"
-                  date=@formatDate(@state.company.established_on)
-                  placeholder="Jan 1, 2014"
-                  onChange=@onEstablishedOnChange
+                  id          = "established_on"
+                  name        = "established_on"
+                  date        = @formatDate(@state.company.established_on)
+                  placeholder = "Jan 1, 2014"
+                  onChange    = @onEstablishedOnChange
                 />
               </div>
             </div>
 
-            <Slug key={@props.key} />
+            <Slug key={@props.uuid} />
 
           </div>
         </section>
 
-        <section className='progress'>
+        <section className="progress">
           <header>Progress</header>
-          <Progress key={@props.key} />
+          <Progress uuid={@props.uuid} />
         </section>
       </article>
 

@@ -10,6 +10,23 @@ module.exports = CloudFlux.createStore
   onAccessRightsFetchDone: ->
     @store.emitChange()
 
+  onVerifySiteUrl: (key, json, token) ->
+    @store.start_sync(key, token)
+    @store.emitChange()
+
+  onVerifySiteUrlDone: (key, json, token) ->
+    @store.stop_sync(key, token)
+
+    if json == "ok"
+      flags = _.extend(@store.get(key).flags, { is_site_url_verified: true })
+      @store.update(key, { flags: flags })
+
+    @store.emitChange()
+
+  onVerifySiteUrlFail: (key, json, token) ->
+    @store.stop_sync(key, token)
+    @store.emitChange()
+
   onUpdate: (key, attributes, token) ->
     @store.start_sync(key, token)
     @store.update(key, attributes)
@@ -26,7 +43,6 @@ module.exports = CloudFlux.createStore
     # @store.undo(key)
     @store.emitChange()
   
-
   onRoleCreateDone: (key, json, sync_token) ->
     if sync_token == 'accept_invite' and json.company
       @store.update(json.company.uuid, json.company)
@@ -38,14 +54,17 @@ module.exports = CloudFlux.createStore
     description:    ''
     is_published:   false
     established_on: ''
+    site_url:       ''
     slug:           ''
-    meta:           {}
-    flags:          {}
+    meta: {}
+    flags: {}
 
   getActions: ->
     actions = {}
 
     actions['company:access_rights:fetch:done'] = @onAccessRightsFetchDone
+
+    actions[Constants.Company.VERIFY_SITE_URL_DONE] = @onVerifySiteUrlDone
 
     actions[Constants.Company.UPDATE]       = @onUpdate
     actions[Constants.Company.UPDATE_DONE]  = @onUpdateDone
