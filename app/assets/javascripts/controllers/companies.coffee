@@ -1,3 +1,5 @@
+# @cjsx React.DOM
+
 # Show
 # 
 @['companies#show'] = (data) ->
@@ -34,21 +36,16 @@
 # Settings
 # 
 @['companies#settings'] = (data) ->
-  Settings      = cc.require('react/company/settings')
-  TagActions    = require('actions/tag_actions')
-  CompanyStore  = require('stores/company_store')
+  require('sync/company').fetch(data.uuid).done (json) ->
 
-  CompanyStore.add(data.company)
-  TagActions.fetch()
+    Settings      = require('components/company/settings')
+    CompanyStore  = require('stores/company')
 
-  React.renderComponent(
-    Settings(_.extend({ people: data.people }, data.company))
-    document.querySelector('body > main')
-  )
+    CompanyStore.add(json.company.uuid, json.company)
+    CompanyStore.emitChange()
 
 # Access rights
 # 
-# @cjsx React.DOM
 @['companies#access_rights'] = (data) ->
   
   CompanyStore  = require('stores/company')
@@ -69,7 +66,6 @@
   React.renderComponent(
     <AccessRights key=data.company.uuid invitable_roles=data.invitable_roles />,
     document.querySelector('[data-react-mount-point="access-rights"]'))
-
 
 # Search
 # 

@@ -1,108 +1,107 @@
+# @cjsx React.DOM
+
 # Imports
-#
+# 
 tag = React.DOM
 
-
-# Actions
-#
+CompanyStore = require('stores/company')
 CompanyActions = require('actions/company')
 
-
-# Functions
-#
-redirectFromTo = (fromURL, toURL) ->
-  window.location.href = window.location.href.replace(fromURL, toURL) if fromURL isnt toURL
-
+CloudFluxMixins = require('cloud_flux/mixins')
+Constants = require('constants')
 
 # Main
-#
+# 
 Component = React.createClass
 
+  # Callbacks
+  # 
+  mixins: [CloudFluxMixins.Actions]
 
-  hasSlug: ->
-    hasSlugErrors = @props.errors and @props.errors['slug'].length > 0
-    not hasSlugErrors and @props.company.slug and @props.company.slug.length > 0
-  
+  getCloudFluxActions: ->
+    actions = {}
+    actions[Constants.Company.UPDATE_DONE] = @onUpdateDone
+    actions
 
-  isSlugValid: ->
-    @state.slug and @state.slug.length >= 3
-  
-  
+  onUpdateDone: (key, json, token) ->
+    window.location.href = json.meta.settings_url if token == 'slug'
+
+  # Helpers
+  #     
   update: (slug) ->
-    CompanyActions.update(@props.company.uuid, { slug: slug })
+    CompanyActions.update(@props.uuid, { slug: slug }, 'slug')
 
+  getStateFromStores: (props) ->
+    company = CompanyStore.get(props.uuid)
 
-  onSlugChange: (event) ->
-    @setState({ slug: event.target.value, errors: null })
-  
-  
-  onSaveClick: ->
-    @update(@state.slug)
-  
-  
-  onRemoveClick: ->
+    company: company
+    value: company.slug
+    sync: CompanyStore.getSync(props.uuid) == 'slug'
+
+  # Handlers
+  # 
+  handleRemoveClick: (event) ->
     @update('')
-  
-  
+
+  handleSlugOnChange: (event) ->
+    @setState({ value: event.target.value })
+
+  handleSlugKeyUp: (event) ->
+    switch event.key
+      when 'Enter'
+        @update(@state.value) if @state.value
+      when 'Escape'
+        @setState({ value: '' })
+
+  # Lifecycle Methods
+  # 
   componentWillReceiveProps: (nextProps) ->
-    @setState(@getStateFromProps(nextProps))
-  
-  
-  componentDidUpdate: (prevProps) ->
-    redirectFromTo(prevProps.company.url, @props.company.url)
-  
-  
-  getStateFromProps: (props) ->
-    slug:   props.company.slug || ''
-    errors: (props.errors || {})['slug']
+    @setState(@getStateFromStores(nextProps))
 
-
+  # Component Specifications
+  # 
   getInitialState: ->
-    @getStateFromProps(@props)
-
+    @getStateFromStores(@props)
 
   render: ->
-    (tag.dl null,
-      (tag.dt null, 'Short URL')
-      (tag.dd null,
-        (tag.span null,
-          @props.url.split('//').pop() + '/'
-        )
-        
+    if @state.company.slug
+      <div className="profile-item">
 
-        (tag.input {
-          className:  'error' if @state.errors
-          onChange:   @onSlugChange
-          readOnly:   @hasSlug()
-          value:      @state.slug
-        })
-        
+        <div className="content field">
+          <div className="content field">
+            <span className="label">Short URL</span>
+            <span>{window.location.hostname + '/companies/' + @state.company.slug}</span>
+          </div>
+        </div>
 
-        (tag.button {
-          className:  'cc'
-          disabled:   !@isSlugValid() or @props.sync
-          onClick:    @onSaveClick
-        },
-          'Save'
-          (tag.i { className: 'fa fa-save' }) unless @props.sync
-          (tag.i { className: 'fa fa-spin fa-spinner' }) if @props.sync
-        ) unless @hasSlug()
-        
+        <div className="actions">
+          <button className="orgpad alert" onClick={@handleRemoveClick} disabled={@state.sync}>
+            <span>Remove</span>
+            <i className={if @state.sync then "fa fa-spinner fa-spin" else "fa fa-eraser"}></i>
+          </button>
+        </div>
+      </div>
 
-        (tag.button {
-          className:  'cc alert'
-          disabled:   @props.sync
-          onClick:    @onRemoveClick
-        },
-          'Remove'
-          (tag.i { className: 'fa fa-eraser' }) unless @props.sync
-          (tag.i { className: 'fa fa-spin fa-spinner' }) if @props.sync
-        ) if @hasSlug()
+    else
+      <div className="profile-item">
         
-      )
-    )
+        <div className="content field">
+          <div className="content field">
+            <label htmlFor="slug">Short URL</label>
+            <div className="spacer"></div>
+            <span>{window.location.hostname + '/companies/'}</span>
+            <input id="slug" name="slug" value={@state.value} placeholder="shortname" onKeyUp={@handleSlugKeyUp} onChange={@handleSlugOnChange}></input>
+          </div>
+        </div>
 
+        <div className="actions">
+          <button className="orgpad" onClick={@handleSaveClick} disabled={@state.sync}>
+            <span>Save</span>
+            <i className={if @state.sync then "fa fa-spinner fa-spin" else "fa fa-save"}></i>
+          </button>
+        </div>
+      </div>
 
 # Exports
-#
+# 
 module.exports = Component

@@ -2,7 +2,7 @@
 //= require ./mixins
 //= require ./shared
 //= require ./editor
-//= require ./company
+//= require ./company/burn_rate
 //= require_tree ./modals
 
 this.cc       || ( this.cc        = {} )

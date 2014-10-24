@@ -6,9 +6,7 @@
   <%= render 'shared/companies/header_menu' %>
 <% end %>
 
-<% 
-  pagescript_params(
-    company: CompanyEditorSerializer.new(@company, scope: current_user),
-    people: @company.people.active_model_serializer.new(@company.people)
-  )
-%>
+<%= content_for :react_class_for_main, 'components/company/settings' %>
+<%= content_for :react_props_for_main, { uuid: @company.uuid }.to_json %>
+
+<% pagescript_params( uuid: @company.uuid ) %>
