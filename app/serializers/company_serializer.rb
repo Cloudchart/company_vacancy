@@ -11,7 +11,7 @@ class CompanySerializer < ActiveModel::Serializer
       people_size: company.people.size,
       vacancies_size: company.vacancies.size,
       tags: company.tags.pluck(:name),
-      company_url: company_url(company, host: ENV['ACTION_MAILER_DEFAULT_HOST']),
+      company_url: company_path(company),
       logotype_url: company.logotype.try(:url),
       invitable_roles: Company::INVITABLE_ROLES,
       verify_site_url: verify_site_url_company_path(company),
