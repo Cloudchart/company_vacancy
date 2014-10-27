@@ -4,18 +4,20 @@
       <figure></figure>
     </aside>
 
-    <h1>Founders Aboard!</h1>
+    <div class="content">
+      <h1>Founders Aboard!</h1>
 
-    <p>
-      Hi, <%= @interview.first_name %>!
-    </p>
+      <p>
+        Hi, <%= @interview.first_name %>!
+      </p>
 
-    <p>
-      I’m Anton, co-founder and editor-in-chief at <%= link_to 'CloudChart', root_path %>. We’re building a <strong>global platform for founder education</strong>. We’re on a mission to kickstart and help the global entrepreneurial community outside Silicon Valley. We believe it’s a noble goal, and <strong>we ask for your advice</strong>.
-    </p>
+      <p>
+        I’m Anton, co-founder and editor-in-chief at <%= link_to 'CloudChart', root_path %>. We’re building a <strong>global platform for founder education</strong>. We’re on a mission to kickstart and help the global entrepreneurial community outside Silicon Valley. We believe it’s a noble goal, and <strong>we ask for your advice</strong>.
+      </p>
+    </div>
   </header>
 
-  <section class="main-content">
+  <section>
     <p>
       You were referred by <%= mail_to @interview.ref_email, @interview.ref_name %><%= @interview.whosaid %>. I would like about <strong>30 minutes of your time</strong> to interview you about <%= @interview.company_name %>’s story, to integrate it into a <strong>study resource for founders</strong>.
     </p>
@@ -28,9 +30,11 @@
     <p>
       Here’s a sketch of our ‘Company Timeline’ tool that we’re building at CloudChart:
     </p>
+  </section>
 
-    <div class="timeline"></div>
+  <div class="timeline"></div>
 
+  <section>
     <p>
       We’d also like to share that we already have several other founder tools <strong>ready for our pre-launch</strong>:
     </p>
@@ -71,7 +75,7 @@
     <p>
       You can reach me personally at <%= mail_to 'anton@cloudchart.co' %> or <strong>+1 (917) 913-2937</strong>
     </p>
-    
+
     <button>Get Invited</button>
   </footer>
 </article>

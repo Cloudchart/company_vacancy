@@ -7,11 +7,6 @@ class InterviewDecorator < ApplicationDecorator
 
   def whosaid
     ", #{interview.whosaid}" if interview.whosaid.present?
-    # if interview.whosaid.present?
-    #   ", #{interview.whosaid}"
-    # else
-    #   ''
-    # end
   end
 
 end
