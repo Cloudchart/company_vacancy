@@ -12,7 +12,7 @@
       <%= render 'welcome/header' %>
     </header>
     
-    <main class="lading">
+    <main class="landing">
       <%= yield %>
     </main>
 
@@ -22,7 +22,7 @@
 
     <div data-react-class="components/modal_window"></div>
 
-    <%= javascript_include_tag 'application', debug: true %>
+    <%= javascript_include_tag 'application' %>
     <%= pagescript %>
     <%= render 'shared/google_analytics' if Rails.env.production? %>
   </body>

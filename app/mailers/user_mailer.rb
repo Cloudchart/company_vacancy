@@ -39,6 +39,11 @@ class UserMailer < ActionMailer::Base
     mail to: email
   end
 
+  def interview_acceptance(interview)
+    @interview = interview
+    mail to: 'anton@cloudchart.co'
+  end
+
 private
 
   def rfc1751(id)

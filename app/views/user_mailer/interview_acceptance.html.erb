@@ -1,0 +1,15 @@
+<p>
+  Dear Anton,
+</p>
+
+<p>
+  <%= mail_to @interview.email, @interview.name %> from <%= @interview.company_name %> (referred by <%= mail_to @interview.ref_email, @interview.ref_name %>) has just accepted the interview.
+</p>
+
+<p>
+  You may <%= link_to 'go to interviews list', rails_admin.index_url(:interview) %> in CloudChart admin.
+</p>
+
+<p>
+  Good luck!
+</p>

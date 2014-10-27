@@ -51,7 +51,7 @@ class Token < ActiveRecord::Base
       scopes { [:invites] }
 
       field :uuid do
-        formatted_value { Cloudchart::RFC1751.encode(value) }        
+        formatted_value { Cloudchart::RFC1751.encode(value) }
         column_width 500
         filterable false
       end

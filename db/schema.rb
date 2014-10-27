@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141022112205) do
+ActiveRecord::Schema.define(version: 20141027122850) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -220,6 +220,19 @@ ActiveRecord::Schema.define(version: 20141022112205) do
   add_index "impressions", ["impressionable_type", "impressionable_id", "session_hash"], name: "poly_session_index", using: :btree
   add_index "impressions", ["impressionable_type", "message", "impressionable_id"], name: "impressionable_type_message_index", length: {"impressionable_type"=>nil, "message"=>255, "impressionable_id"=>nil}, using: :btree
   add_index "impressions", ["user_id"], name: "index_impressions_on_user_id", using: :btree
+
+  create_table "interviews", primary_key: "uuid", force: true do |t|
+    t.string   "name",                         null: false
+    t.string   "email"
+    t.string   "company_name"
+    t.string   "ref_name"
+    t.string   "ref_email"
+    t.text     "whosaid"
+    t.boolean  "is_accepted",  default: false
+    t.string   "slug",                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "pages", primary_key: "uuid", force: true do |t|
     t.string   "title"

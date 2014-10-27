@@ -80,6 +80,10 @@ Cloudchart::Application.routes.draw do
     patch :accept, on: :member
   end
 
+  resources :interviews, only: [:show] do
+    patch :accept, on: :member
+  end
+
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :tags, only: [:index, :create]
