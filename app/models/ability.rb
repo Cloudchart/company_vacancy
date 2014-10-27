@@ -12,7 +12,7 @@ class Ability
     can :read, BlockIdentity
     can :read, Event
     can :read, Tag
-    can :read, Interview
+    can [:read, :accept], Interview
 
     # TODO: not all (maybe which only belongs to chart)
     can :read, Person

@@ -12,23 +12,18 @@
       </p>
 
       <p>
-        I’m Anton, co-founder and editor-in-chief at <%= link_to 'CloudChart', root_path %>. We’re building a <strong>global platform for founder education</strong>. We’re on a mission to kickstart and help the global entrepreneurial community outside Silicon Valley. We believe it’s a noble goal, and <strong>we ask for your advice</strong>.
+        I’m Anton, co-founder and editor-in-chief at <%= link_to 'CloudChart', root_path %>. We’re on a mission to build a <strong>growth platform for founder education</strong> to kickstart and help the global entrepreneurial community outside Silicon Valley. We believe <strong>your advice can be valuable</strong> for our goal.
       </p>
     </div>
   </header>
 
+  <section class="invite">
+    <%= button_to 'Get Invited', accept_interview_path, method: :patch %>
+  </section>
+
   <section>
     <p>
-      You were referred by <%= mail_to @interview.ref_email, @interview.ref_name %><%= @interview.whosaid %>. I would like about <strong>30 minutes of your time</strong> to interview you about <%= @interview.company_name %>’s story, to integrate it into a <strong>study resource for founders</strong>.
-    </p>
-
-    <p>
-      The material I am working on analyses how successful startups came to life, and <strong>highlights a timeline</strong> of major milestones in your company's growth. My goal is to build a <strong>collection of 'stories'</strong> and process it into a very visual and
-      informative guide for founders. Not a case study in a traditional sense, but a very personal look at how your company has come to life.
-    </p>
-
-    <p>
-      Here’s a sketch of our ‘Company Timeline’ tool that we’re building at CloudChart:
+      You were referred by <%= mail_to @interview.ref_email, @interview.ref_name %><%= @interview.whosaid %>. I would like about <strong>30 minutes of your time</strong> to interview you about <%= @interview.company_name %>’s story, to integrate it into a <strong>study resource for founders</strong>. This is an analysis of how successful startups came to life and grew, processed into a very <strong>visual and informative guide for founders</strong>. Not a case study, but a very personal look at how your company has come to life. Here’s a sketch of our ‘Company Timeline’ tool that we’re building at CloudChart:
     </p>
   </section>
 
@@ -44,7 +39,7 @@
         <figure></figure>
 
         <div class="description">
-          An orgcharting tool in the cloud, best in its class (it’s a promise). <%= link_to 'Want to try it out?', '#' %>
+          An orgcharting tool in the cloud, best in its class (it’s a promise). Want to try it out?
         </div>
       </div>
       <div class="burn-rate">
@@ -57,11 +52,7 @@
     </div>
 
     <p>
-      I’m from Russia; I’ve been involved in <strong>tech journalism</strong> and <strong>futures studies</strong> for over <strong>8 years</strong>. I contributed a bimonthly tech/futurology column to Prime Russian, one of Moscow’s leading art, culture and futures studies printed publications. I also co-ran Thalient, a product development and consulting company from Moscow that worked with Intel and other companies on in-car and hyperlocation-based user experiences.
-    </p>
-
-    <p>
-      I co-founded CloudChart and moved to SF Bay Area because I see a <strong>tremendous shortage</strong> of concise smart materials illustrating the growth of early-stage companies. I am working on a resource that will turn a short-lived story in an article into a <strong>solid resource for wantrepreneurs and other founders</strong>. With any luck, you will find it very useful, too.
+      I’m originally from Russia; I’ve been involved in <strong>tech journalism</strong> and <strong>futures studies</strong> for over 8 years. I also co-ran Thalient, a product development and consulting company from Moscow that worked with Intel and other companies on in-car and hyperlocation-based user experiences. I co-founded CloudChart because I see a <strong>tremendous shortage</strong> of concise smart materials illustrating the growth of early-stage companies. I am working on a resource that will turn a short-lived story in an article into a <strong>solid resource for wantrepreneurs and other founders</strong>.
     </p>
   </section>
 
@@ -69,13 +60,14 @@
     <h1>This Is How You Can Help</h1>
 
     <p>
-      <%= @interview.first_name %>, If you’re based somewhere in SF Bay Area, or visiting, I’d be delighted to meet you personally for a coffee or lunch — preferably at your office or a coworking space. Otherwise, a Skype call or a Hangout will work as well! I only ask for about 30 minutes of your time.
+      <%= @interview.first_name %>, If you’re based somewhere in SF Bay Area, or visiting, I’d be delighted to meet you personally for a coffee or lunch — preferably at your office or a coworking space. Otherwise, a Skype call or a Hangout will work as well. Thank you for taking your time and I'm looking forward to hearing from you.
     </p>
 
     <p>
       You can reach me personally at <%= mail_to 'anton@cloudchart.co' %> or <strong>+1 (917) 913-2937</strong>
     </p>
 
-    <button>Get Invited</button>
+    <%= button_to 'Get Invited', accept_interview_path, method: :patch %>
   </footer>
+
 </article>

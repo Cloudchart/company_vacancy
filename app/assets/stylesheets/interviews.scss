@@ -5,6 +5,17 @@
   border-radius: 50%;
 }
 
+@mixin invite-button {
+  background-color: hsl(136, 52%, 51%);
+  border: none;
+  color: hsl(0, 100%, 100%);
+  font-size: $base-unit * 1.5;
+  font-weight: 300;
+  height: 60px;
+  padding: 0 60px;
+  margin: 0 auto;
+}
+
 main.landing > article.interview {
   p {
     font-size: 30px;
@@ -58,6 +69,16 @@ main.landing > article.interview {
     p {
       font-size: 35px;
       line-height: 50px;
+    }
+
+    &.invite {
+      @include display(flex);
+      @include flex-direction(column);
+      @include align-items(center);
+
+      > form > div > input[type="submit"] {
+        @include invite-button;
+      }
     }
 
     > div.founder-tools {
@@ -117,15 +138,8 @@ main.landing > article.interview {
       text-align: center;
     }
 
-    > button {
-      background-color: hsl(136, 52%, 51%);
-      border: none;
-      color: hsl(0, 100%, 100%);
-      font-size: $base-unit * 1.5;
-      font-weight: 300;
-      height: 60px;
-      padding: 0 60px;
-      margin: 0 auto;
+    > form > div > input[type="submit"] {
+      @include invite-button;
     }
   }
 

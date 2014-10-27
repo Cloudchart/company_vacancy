@@ -1,10 +1,17 @@
 class InterviewsController < ApplicationController
-  before_action :set_itreview, only: :show
+  before_action :set_itreview
 
   layout 'landing'
 
   def show
     @interview = decorate(@interview)
+  end
+
+  def accept
+    unless @interview.is_accepted?
+      @interview.update(is_accepted: true)
+      UserMailer.interview_acceptance(@interview).deliver
+    end
   end
 
 private
