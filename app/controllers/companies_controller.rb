@@ -95,20 +95,20 @@ class CompaniesController < ApplicationController
 
   def verify_site_url
     uri = URI.parse(@company.formatted_site_url)
-    uri.path = "/#{@company.humanized_id}.txt"
-    response = Net::HTTP.get_response(uri)
+    file = "#{@company.humanized_id}.txt"
 
-    if response.is_a?(Net::HTTPSuccess)
+    http = Net::HTTP.new(uri.host, uri.port)
+    response = http.request_head("/#{file}")
+
+    if response.code == '200'
       @company.tokens.where(name: :site_url_verification).destroy_all
-      File.delete(File.join(Rails.root, 'tmp', 'verifications', "#{@company.humanized_id}.txt"))
+      File.delete(File.join(Rails.root, 'tmp', 'verifications', "#{file}"))
 
       respond_to do |format|
-        format.html { redirect_to @company, notice: 'Site URL verified' }
         format.json { render json: :ok }
       end
     else
       respond_to do |format|
-        format.html { redirect_to @company, alert: 'Site URL verification failed.' }
         format.json { render json: :fail }
       end
     end
