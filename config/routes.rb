@@ -84,6 +84,7 @@ Cloudchart::Application.routes.draw do
   resources :comments, only: [:create, :update, :destroy]
   resources :tags, only: [:index, :create]
   resources :roles, only: [:update, :destroy]
+  resources :interviews, only: [:show]
 
   # Custom
   # 
