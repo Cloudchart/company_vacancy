@@ -23,7 +23,7 @@ main.landing > article.interview {
     font-weight: 300;
   }
 
-  strong {
+  strong, a {
     font-weight: 600;
   }
 
@@ -33,15 +33,15 @@ main.landing > article.interview {
     font-weight: normal;
   }
 
-  a {
-    font-weight: 600;
-  }
-
   > header {
+    @include display(flex);
+    @include justify-content(center);
+
     padding: 70px;
 
     > aside {
-      float: left;
+      margin-right: 70px;
+      width: 300px;
 
       > figure {
         @include rounded-figure;
@@ -53,8 +53,8 @@ main.landing > article.interview {
     }
 
     > div.content {
-      margin-left: 370px;
-      max-width: 1200px;
+      @include flex(1);
+      max-width: 700px;
 
       > p:last-child {
         margin-bottom: 0;
@@ -64,7 +64,9 @@ main.landing > article.interview {
 
   > section {
     margin: 70px auto;
-    max-width: 850px;
+    padding: 0 70px;
+    min-width: 850px;
+    max-width: 1200px;
 
     p {
       font-size: 35px;
@@ -129,17 +131,24 @@ main.landing > article.interview {
 
   > footer {
     @include display(flex);
-    @include flex-direction(column);
-    @include align-items(center);
+    @include justify-content(center);
 
-    padding: 70px;
+    > div.wrapper {
+      @include display(flex);
+      @include flex-direction(column);
+      @include align-items(center);
 
-    > h1 {
-      text-align: center;
-    }
+      min-width: 850px;
+      max-width: 1200px;
+      padding: 70px;
 
-    > form > div > input[type="submit"] {
-      @include invite-button;
+      > h1 {
+        text-align: center;
+      }
+
+      > form > div > input[type="submit"] {
+        @include invite-button;
+      }
     }
   }
 

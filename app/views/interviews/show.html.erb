@@ -57,17 +57,19 @@
   </section>
 
   <footer>
-    <h1>This Is How You Can Help</h1>
+    <div class="wrapper">
+      <h1>This Is How You Can Help</h1>
 
-    <p>
-      <%= @interview.first_name %>, If you’re based somewhere in SF Bay Area, or visiting, I’d be delighted to meet you personally for a coffee or lunch — preferably at your office or a coworking space. Otherwise, a Skype call or a Hangout will work as well. Thank you for taking your time and I'm looking forward to hearing from you.
-    </p>
+      <p>
+        <%= @interview.first_name %>, If you’re based somewhere in SF Bay Area, or visiting, I’d be delighted to meet you personally for a coffee or lunch — preferably at your office or a coworking space. Otherwise, a Skype call or a Hangout will work as well. Thank you for taking your time and I'm looking forward to hearing from you.
+      </p>
 
-    <p>
-      You can reach me personally at <%= mail_to 'anton@cloudchart.co' %> or <strong>+1 (917) 913-2937</strong>
-    </p>
+      <p>
+        You can reach me personally at <%= mail_to 'anton@cloudchart.co' %> or <strong>+1 (917) 913-2937</strong>
+      </p>
 
-    <%= button_to 'Get Invited', accept_interview_path, method: :patch %>
+      <%= button_to 'Get Invited', accept_interview_path, method: :patch %>
+    </div>
   </footer>
 
 </article>
