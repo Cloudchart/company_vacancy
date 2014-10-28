@@ -1,22 +1,12 @@
-@mixin rounded-figure {
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-radius: 50%;
-}
+$interviews-base-unit: 70px;
 
-@mixin invite-button {
-  background-color: hsl(136, 52%, 51%);
-  border: none;
-  color: hsl(0, 100%, 100%);
-  font-size: $base-unit * 1.5;
-  font-weight: 300;
-  height: 60px;
-  padding: 0 60px;
-  margin: 0 auto;
+@mixin interviews-base-wrapper {
+  min-width: 850px;
+  max-width: 1200px;
 }
 
 main.landing > article.interview {
+
   p {
     font-size: 30px;
     line-height: 45px;
@@ -37,16 +27,16 @@ main.landing > article.interview {
     @include display(flex);
     @include justify-content(center);
 
-    padding: 70px;
+    padding: $interviews-base-unit;
 
     > aside {
-      margin-right: 70px;
+      margin-right: $interviews-base-unit;
       width: 300px;
 
       > figure {
         @include rounded-figure;
 
-        width: 300px;
+        width: inherit;
         height: 300px;
         background-image: image-url('interview/cc_anton_square.jpg');
       }
@@ -63,8 +53,8 @@ main.landing > article.interview {
   }
 
   > section {
-    margin: 70px auto;
-    padding: 0 70px;
+    margin: $interviews-base-unit auto;
+    padding: 0 $interviews-base-unit;
     min-width: 850px;
     max-width: 1200px;
 
@@ -87,7 +77,8 @@ main.landing > article.interview {
       @include display(flex);
       @include justify-content(center);
 
-      margin: 70px 0 70px;
+      margin-top: $interviews-base-unit;
+      margin-bottom: $interviews-base-unit;
 
       div.description {
         font-size: 25px;
@@ -98,22 +89,25 @@ main.landing > article.interview {
       }
 
       > div.orgcharting {
+        width: 400px;
         margin-right: 100px;
 
         > figure {
           @include rounded-figure;
 
-          width: 400px;
+          width: inherit;
           height: 400px;
           background-image: image-url('interview/chart.png');
         }
       }
 
       > div.burn-rate {
+        width: 400px;
+
         > figure {
           @include rounded-figure;
 
-          width: 400px;
+          width: inherit;
           height: 400px;
           background-image: image-url('interview/burn_rate.png')
         }
@@ -134,17 +128,12 @@ main.landing > article.interview {
     @include justify-content(center);
 
     > div.wrapper {
+      @include interviews-base-wrapper;
       @include display(flex);
       @include flex-direction(column);
       @include align-items(center);
 
-      min-width: 850px;
-      max-width: 1200px;
-      padding: 70px;
-
-      > h1 {
-        text-align: center;
-      }
+      padding: $interviews-base-unit;
 
       > form > div > input[type="submit"] {
         @include invite-button;

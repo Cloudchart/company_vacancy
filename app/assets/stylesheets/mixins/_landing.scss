@@ -1,0 +1,17 @@
+@mixin rounded-figure {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 50%;
+}
+
+@mixin invite-button {
+  background-color: hsl(136, 52%, 51%);
+  border: none;
+  color: hsl(0, 100%, 100%);
+  font-size: $base-unit * 1.5;
+  font-weight: 300;
+  height: 60px;
+  padding: 0 60px;
+  margin: 0 auto;
+}
