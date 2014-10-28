@@ -29,17 +29,13 @@ main.landing > article.interview {
 
     padding: $interviews-base-unit;
 
-    > aside {
-      margin-right: $interviews-base-unit;
+    > figure {
+      @include rounded-figure;
+
       width: 300px;
-
-      > figure {
-        @include rounded-figure;
-
-        width: inherit;
-        height: 300px;
-        background-image: image-url('interview/cc_anton_square.jpg');
-      }
+      height: 300px;
+      margin-right: $interviews-base-unit;
+      background-image: image-url('interview/cc_anton_square.jpg');
     }
 
     > div.content {
@@ -73,12 +69,11 @@ main.landing > article.interview {
       }
     }
 
-    > div.founder-tools {
+    &.founder-tools > div.wrapper {
       @include display(flex);
       @include justify-content(center);
 
       margin-top: $interviews-base-unit;
-      margin-bottom: $interviews-base-unit;
 
       div.description {
         font-size: 25px;
@@ -121,7 +116,7 @@ main.landing > article.interview {
     background-image: image-url('interview/timeline.svg');
     background-position: center;
     background-repeat: no-repeat;
-  }  
+  }
 
   > footer {
     @include display(flex);
