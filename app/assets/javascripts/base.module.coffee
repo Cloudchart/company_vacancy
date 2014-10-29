@@ -40,10 +40,11 @@ _.each document.querySelectorAll('[data-react-class]'), (node) ->
   # TODO figure out how to catch errors later
 
   # try
-    reactClass  = require(node.dataset.reactClass)
-    reactProps  = JSON.parse(node.dataset.reactProps) if node.dataset.reactProps
+    if !!node.dataset.reactClass
+      reactClass  = require(node.dataset.reactClass)
+      reactProps  = JSON.parse(node.dataset.reactProps) if node.dataset.reactProps
     
-    React.renderComponent(reactClass(reactProps), node)
+      React.renderComponent(reactClass(reactProps), node)
     
   # catch
   #   _.noop
