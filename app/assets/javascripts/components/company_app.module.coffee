@@ -14,6 +14,8 @@ BlockStore      = require('stores/block_store')
 SortableList      = require('components/shared/sortable_list')
 SortableListItem  = require('components/shared/sortable_list_item')
 CompanyHeader     = require('components/company/header')
+Posts             = require('components/post')
+
 
 BlockComponents =
   Picture:    require('components/editor/picture')
@@ -216,6 +218,8 @@ Component = React.createClass
         {blocks}
         {SectionPlaceholderComponent.call(@, blocks.length)}
       </SortableList>
+
+      # <Post company_uuid={@state.company.uuid}>
 
     else
       null

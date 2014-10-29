@@ -28,6 +28,7 @@ class Company < ActiveRecord::Base
   has_many :users, through: :roles
   has_many :pictures, through: :blocks, source: :picture
   has_many :paragraphs, through: :blocks, source: :paragraph
+  has_many :posts, as: :owner, dependent: :destroy
   # has_paper_trail
   
   validates :site_url, url: true, allow_blank: true

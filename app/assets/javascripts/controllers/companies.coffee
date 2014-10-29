@@ -17,6 +17,7 @@
       roles:      require('stores/roles')
       tokens:     require('stores/token')
       users:      require('stores/users')
+      posts:      require('stores/posts_store')
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 

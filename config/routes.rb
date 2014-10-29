@@ -36,8 +36,6 @@ Cloudchart::Application.routes.draw do
     get :access_rights, on: :member
     put :reposition_blocks, on: :member
     
-    resources :blocks, only: :create, type: :company
-    
     resources :vacancies, except: :edit, shallow: true, concerns: [:statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
     end
@@ -54,6 +52,9 @@ Cloudchart::Application.routes.draw do
       match :resend, on: :member, via: [:put, :patch]
       post :accept, on: :member
     end
+
+    resources :blocks, only: :create, type: :company
+    resources :posts, except: [:new, :edit], shallow: true
 
   end
 
