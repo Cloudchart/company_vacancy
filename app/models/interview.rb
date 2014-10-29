@@ -6,7 +6,7 @@ class Interview < ActiveRecord::Base
 
   has_paper_trail
 
-  validates :name, :company_name, :ref_name, :ref_email, presence: true
+  validates :name, :company_name, presence: true
 
   rails_admin do
     list do

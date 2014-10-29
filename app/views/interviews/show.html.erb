@@ -21,7 +21,13 @@
 
   <section>
     <p>
-      You were referred by <%= mail_to @interview.ref_email, @interview.ref_name %><%= @interview.whosaid %>. I would like about <strong>30 minutes of your time</strong> to interview you about <%= @interview.company_name %>’s story, to integrate it into a <strong>study resource for founders</strong>. This is an analysis of how successful startups came to life and grew, processed into a very <strong>visual and informative guide for founders</strong>. Not a case study, but a very personal look at how your company has come to life. Here’s a sketch of our ‘Company Timeline’ tool that we’re building at CloudChart:
+      <% if @interview.ref_name.present? && @interview.ref_email.present? %>
+        You were referred by <%= mail_to @interview.ref_email, @interview.ref_name %><%= @interview.whosaid %>.
+      <% else %>
+        <%= @interview.first_name %>,
+      <% end %>
+      
+      I would like about <strong>30 minutes of your time</strong> to interview you about <%= @interview.company_name %>’s story, to integrate it into a <strong>study resource for founders</strong>. This is an analysis of how successful startups came to life and grew, processed into a very <strong>visual and informative guide for founders</strong>. Not a case study, but a very personal look at how your company has come to life. Here’s a sketch of our ‘Company Timeline’ tool that we’re building at CloudChart:
     </p>
   </section>
 
