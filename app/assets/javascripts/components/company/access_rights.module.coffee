@@ -95,7 +95,7 @@ Component = React.createClass
         
         when 'view'
           [
-            (tag.header {},
+            (tag.header { key: "access-right-header" },
               (tag.strong {}, @state.company.name)
               " security settings"
             )
@@ -122,7 +122,7 @@ Component = React.createClass
         
         when 'edit'
           [
-            (tag.header null,
+            (tag.header { key: "access-right-header" },
               tag.a { 
                 href: ""
                 onClick:   @onCurrentUsersButtonClick

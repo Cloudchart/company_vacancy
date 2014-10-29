@@ -24,7 +24,7 @@ Component = React.createClass
 
   getOptions: ->
     _.map(@props.invitable_roles, (role) =>
-      <option value={role}>{RoleMap[role].name}</option>
+      <option value={role} key="option-#{role}" >{RoleMap[role].name}</option>
     )
 
   render: ->
@@ -39,8 +39,6 @@ Component = React.createClass
 
         (tag.span {
           className: 'email'
-          style:
-            display: 'block'
         },
           @props.user.email
         )
@@ -55,10 +53,11 @@ Component = React.createClass
         else
           [
             tag.select { 
+              key: 'select'
               value: @props.role
               onChange: @onSelectRoleChange
             }, @getOptions()
-            tag.i { className: "fa fa-chevron-down" }
+            tag.i { key: 'icon', className: "fa fa-chevron-down" }
           ]
       )
       
