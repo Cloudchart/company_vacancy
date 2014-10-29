@@ -56,8 +56,9 @@ module.exports = CloudFlux.createStore
     established_on: ''
     site_url:       ''
     slug:           ''
-    meta: {}
-    flags: {}
+    logotype_url:   null
+    meta:           {}
+    flags:          {}
 
   getActions: ->
     actions = {}

@@ -18,7 +18,7 @@ Progress = React.createClass
   progressItems: (company) ->
     [
       { message: "Give your company a name", passed: !!@state.company.name }
-      { message: "Upload logo", passed: !!@state.company.meta.logotype_url }
+      { message: "Upload logo", passed: !!@state.company.logotype_url }
       { message: "Create first chart", passed: @state.company.flags.has_charts }
       { message: "Add some people", passed: @state.company.meta.people_size > 0 }
       { message: "Assign keywords", passed: @state.company.meta.tags.length > 0 }

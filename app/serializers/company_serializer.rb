@@ -1,10 +1,15 @@
 class CompanySerializer < ActiveModel::Serializer
 
-  attributes  :uuid, :name, :established_on, :description, :is_published, :site_url, :slug
+  attributes  :uuid, :name, :established_on, :description
+  attributes  :logotype_url, :is_published, :site_url, :slug
   attributes  :meta, :flags
   
   alias_method :current_user, :scope
   alias_method :company, :object
+
+  def logotype_url
+    company.logotype.try(:url)
+  end
 
   def meta
     {
@@ -13,7 +18,6 @@ class CompanySerializer < ActiveModel::Serializer
       tags: company.tags.pluck(:name),
       company_url: company_path(company),
       settings_url: settings_company_url(company, host: ENV['ACTION_MAILER_DEFAULT_HOST']),
-      logotype_url: company.logotype.try(:url),
       invitable_roles: Company::INVITABLE_ROLES,
       verify_site_url: verify_site_url_company_path(company),
       download_verification_file_url: download_verification_file_company_path(company)
