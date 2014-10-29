@@ -86,7 +86,7 @@ module.exports = React.createClass
     
     return if currIndex == nextIndex
     
-    @props.onChange(@state.draggable, currIndex, nextIndex)
+    @props.onOrderChange(@state.draggable, currIndex, nextIndex)
     
     @refs[@state.draggable].getDOMNode().classList.add('draggable-source')
   
@@ -112,7 +112,7 @@ module.exports = React.createClass
     
     window.removeEventListener('mousemove', @handleMouseMove)
 
-    @props.onUpdate()
+    @props.onOrderUpdate()
   
   
   handleDragStart: (key, event) ->
@@ -151,10 +151,13 @@ module.exports = React.createClass
 
 
   getDefaultProps: ->
-    onChange:       _.noop
-    onUpdate:       _.noop
+    onOrderChange:  _.noop
+    onOrderUpdate:  _.noop
     component:      React.DOM.div
     draggableClass: 'draggable'
+
+  getInitialState: ->
+    {}
   
   
   render: ->

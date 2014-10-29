@@ -198,8 +198,8 @@ Component = React.createClass
       <SortableList 
         component={tag.article}
         className="editor company company-2_0"
-        onChange={@handleSortableChange}
-        onUpdate={@handleSortableUpdate}
+        onOrderChange={@handleSortableChange}
+        onOrderUpdate={@handleSortableUpdate}
         readOnly={@props.readOnly}
         dragLockX
       >
