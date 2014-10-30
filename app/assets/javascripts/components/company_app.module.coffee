@@ -14,7 +14,6 @@ BlockStore      = require('stores/block_store')
 SortableList      = require('components/shared/sortable_list')
 SortableListItem  = require('components/shared/sortable_list_item')
 CompanyHeader     = require('components/company/header')
-Post              = require('components/post')
 
 
 BlockComponents =
@@ -210,7 +209,6 @@ Component = React.createClass
         />
         
         <SortableList
-          key="main-editor"
           component={tag.article}
           className="editor company company-2_0"
           onOrderChange={@handleSortableChange}
@@ -224,7 +222,16 @@ Component = React.createClass
 
         <div className="separator"></div>
 
-        <Post company_uuid={@state.company.uuid} />
+        <SortableList
+          component={tag.article}
+          className="editor posts"
+          onOrderChange={@handleSortableChange}
+          onOrderUpdate={@handleSortableUpdate}
+          readOnly={@props.readOnly}
+          dragLockX
+        >
+          {SectionPlaceholderComponent.call(@, 0)}
+        </SortableList>
       </div>
 
     else
