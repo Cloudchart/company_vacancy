@@ -217,7 +217,6 @@ $company-article-block-margin: 30px;
 
 }
 
-
-article.company-2_0 > header {
+main.company > div.wrapper > header {
   @include company-article-header-2_0;
 }

@@ -34,7 +34,9 @@ Component = React.createClass
   # getInitialState: ->
 
   render: ->
-    
+    <article className="editor post">
+      
+    </article>
 
 # Exports
 # 

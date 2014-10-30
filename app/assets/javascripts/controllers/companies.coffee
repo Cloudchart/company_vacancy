@@ -24,6 +24,9 @@
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
 
+  Company = require('components/company_app')
+  React.renderComponent(Company({ key: data.id }), document.querySelector('body > main'))
+
 # Finance
 # 
 @['companies#finance'] = (data) ->
@@ -37,13 +40,15 @@
 # Settings
 # 
 @['companies#settings'] = (data) ->
-  require('sync/company').fetch(data.uuid).done (json) ->
+  require('sync/company').fetch(data.id).done (json) ->
 
-    Settings      = require('components/company/settings')
     CompanyStore  = require('stores/company')
 
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
+
+  Settings = require('components/company/settings')
+  React.renderComponent(Settings({ uuid: data.id }), document.querySelector('body > main'))
 
 # Access rights
 # 

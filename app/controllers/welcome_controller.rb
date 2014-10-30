@@ -4,8 +4,6 @@ class WelcomeController < ApplicationController
   layout 'landing'
 
   def index
-    @chart = CloudBlueprint::Chart.find(ENV['NEWSPLASH_CHART_ID'])
-
     pagescript_params(
       token: TokenSerializer.new(( Token.find(params[:token]) rescue Token.find_by_rfc1751(params[:token]) rescue nil )).as_json
     )

@@ -14,7 +14,7 @@ BlockStore      = require('stores/block_store')
 SortableList      = require('components/shared/sortable_list')
 SortableListItem  = require('components/shared/sortable_list_item')
 CompanyHeader     = require('components/company/header')
-Posts             = require('components/post')
+Post              = require('components/post')
 
 
 BlockComponents =
@@ -196,15 +196,8 @@ Component = React.createClass
           SectionPlaceholderComponent.call(@, i)
           block
         ]
-      
-      <SortableList 
-        component={tag.article}
-        className="editor company company-2_0"
-        onOrderChange={@handleSortableChange}
-        onOrderUpdate={@handleSortableUpdate}
-        readOnly={@props.readOnly}
-        dragLockX
-      >
+
+      <div className="wrapper">
         <CompanyHeader
           key             = {@props.key}
           name            = {@state.company.name}
@@ -215,11 +208,22 @@ Component = React.createClass
           is_followed     = {@state.company.flags.is_followed}
           invitable_roles = {@state.company.meta.invitable_roles}
         />
-        {blocks}
-        {SectionPlaceholderComponent.call(@, blocks.length)}
-      </SortableList>
+        
+        <SortableList
+          key="main-editor"
+          component={tag.article}
+          className="editor company company-2_0"
+          onOrderChange={@handleSortableChange}
+          onOrderUpdate={@handleSortableUpdate}
+          readOnly={@props.readOnly}
+          dragLockX
+        >
+          {blocks}
+          {SectionPlaceholderComponent.call(@, blocks.length)}
+        </SortableList>
 
-      # <Post company_uuid={@state.company.uuid}>
+        <Post company_uuid={@state.company.uuid} />
+      </div>
 
     else
       null

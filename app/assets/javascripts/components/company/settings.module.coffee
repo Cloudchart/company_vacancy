@@ -8,7 +8,7 @@ CompanyStore   = require("stores/company")
 CompanyActions = require("actions/company")
 
 DateInput = require("cloud_blueprint/components/inputs/date_input")
-Progress  = require("components/company/progress")
+Progress  = require("components/company/settings/progress")
 SiteUrl   = require("components/company/settings/site_url")
 Slug      = require("components/company/settings/slug")
 

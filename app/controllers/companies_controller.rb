@@ -30,6 +30,8 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
+    pagescript_params(id: @company.uuid)
+
     respond_to do |format|
       format.html
       format.json
@@ -79,6 +81,7 @@ class CompaniesController < ApplicationController
   end
 
   def settings
+    pagescript_params(id: @company.uuid)
   end
 
   def access_rights
