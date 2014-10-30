@@ -1,9 +1,11 @@
 // var React = require('react');
 var span = React.DOM.span;
 var li = React.DOM.li;
+var i = React.DOM.i;
 
 MainComponent = React.createClass({
-  handleClick: function() {
+  handleClick: function(event) {
+    event.preventDefault()
     this.props.onRemove(this.props.value)
   },
 
@@ -25,7 +27,7 @@ MainComponent = React.createClass({
           'aria-label': 'Remove \'' + this.props.name + '\'',
           className: "ic-token-delete-button",
           tabIndex: 0
-        }, "✕")
+        }, i({ className: 'fa fa-close' }))
       )
     )
   }

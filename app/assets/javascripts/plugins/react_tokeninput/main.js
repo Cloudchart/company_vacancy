@@ -59,14 +59,15 @@ MainComponent = React.createClass({
 
     return ul({className: 'ic-tokens flex', onClick: this.handleClick},
       tokens,
-      li({className: 'inline-flex', ref: 'combo-li'},
+      li({className: 'ic-combobox inline-flex', ref: 'combo-li'},
         Combobox({
           id: this.props.id,
           'aria-label': this.props['combobox-aria-label'],
           onInput: this.handleInput,
           onSelect: this.handleSelect,
           onRemoveLast: this.handleRemoveLast,
-          value: this.state.selectedToken
+          value: this.state.selectedToken,
+          placeholder: this.props.placeholder
         },
           this.props.menuContent
         )

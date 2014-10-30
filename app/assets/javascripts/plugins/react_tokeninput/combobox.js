@@ -8,6 +8,7 @@ var ComboboxOption = cc.require('plugins/react_tokeninput/option');
 var div = React.DOM.div;
 var span = React.DOM.span;
 var input = React.DOM.input;
+var ul = React.DOM.ul;
 
 MainComponent = React.createClass({
 
@@ -350,9 +351,25 @@ MainComponent = React.createClass({
       'Press the down arrow to navigate results. If you don\'t find an ' +
       'acceptable option, you can enter an alternative.'
 
-    return div({className: this.getClassName()},
-      this.props.value,
-      this.state.inputValue,
+    return div({
+        className: this.getClassName(),
+        style: {
+          display:  'inline-block',
+          maxWidth: '100%',
+          width:    'auto',
+        }
+      },
+      (div({
+          ref:          'sizer',
+          style: {
+            height:     0,
+            overflow:   'hidden',
+            visibility: 'hidden',
+            whiteSpace: 'pre'
+          }
+        },
+        this.props.value || this.props.placeholder
+      )),
       input({
         ref: 'input',
         autoComplete: 'off',
@@ -369,14 +386,11 @@ MainComponent = React.createClass({
         onBlur: this.handleInputBlur,
         onKeyDown: this.handleKeydown,
         onKeyUp: this.handleInputKeyUp,
-        role: 'combobox'
+        placeholder: this.props.placeholder,
+        role: 'combobox',
+        style: { width: '100%' }
       }),
-      span({
-        'aria-hidden': 'true',
-        className: 'ic-tokeninput-button',
-        onClick: this.handleButtonClick
-      }, '▾'),
-      div({
+      ul({
         id: this.state.listId,
         ref: 'list',
         className: 'ic-tokeninput-list',

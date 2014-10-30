@@ -148,12 +148,6 @@ Component = React.createClass
         ) unless @props.readOnly
         
       )
-
-      # Tags
-      # 
-      (tag.label { className: 'tags' },
-        (TagsComponent { key: @props.key })
-      ) unless @props.readOnly
       
       # Description
       #
@@ -169,6 +163,14 @@ Component = React.createClass
           readOnly:     @props.readOnly
         })
       ) if @state.description or !@props.readOnly
+
+      # Tags
+      # 
+      (tag.label { className: 'tags' },
+        (TagsComponent { 
+          uuid: @props.key
+          readOnly: @props.readOnly })
+      ) 
 
       # temp place
       (tag.label {},

@@ -117,7 +117,104 @@ $company-article-block-margin: 30px;
     font-size: 24px;
     font-weight: 300;
   }
-  
+
+  > label.tags {
+
+    > ul {
+      @include align-content(space-between);
+      @include display(flex);
+      @include flex-wrap(wrap);
+      @include justify-content(center);
+
+      font-size: 24px;
+      font-weight: 300;
+      color: hsl(136, 52%, 51%);
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+
+      > li + li {
+        margin-left: 10px;
+      }
+
+      &.ic-tokens {
+
+        > li.ic-token {
+          @include align-items(center);
+          @include display(flex);
+
+          background-color: hsl(0, 0%, 96%);
+          height: 40px;
+          padding: 0 12px;
+          margin-bottom: 15px;
+
+          .ic-token-label {
+            margin-right: 8px;
+          }
+
+          .ic-token-delete-button {
+            cursor: pointer;
+          }
+
+          i {
+            color: hsl(358, 77%, 57%);
+            line-height: 29px;
+          }
+        }
+
+        > li.ic-token + li.ic-token {
+          margin-left: 16px;
+        }
+
+        > li.ic-combobox {
+          @include display(flex);  
+          @include justify-content(center);        
+
+          width: 100%;
+
+          > .ic-tokeninput {
+            width: auto;
+            position: relative;
+
+            > input {
+              font-weight: 300;
+              width: auto;
+            }
+
+            &.ic-tokeninput-is-open > ul {
+              display: block;
+            }
+
+            > ul {
+              @include position(absolute, 40px 0 0 0px);
+
+              display: none;
+              list-style-type: none;
+              padding: 0;
+              width: 100%;
+              z-index: 100;
+
+              > li {
+                @include align-items(center);
+                @include display(flex);
+
+                background-color: hsl(0, 0%, 96%);
+                cursor: pointer;
+                color: hsl(60, 4%, 11%);
+                height: 40px;
+                padding: 0 12px;
+                outline: 0;
+
+                &:hover, &:focus {
+                  background-color: hsl(0, 0%, 93%);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 
