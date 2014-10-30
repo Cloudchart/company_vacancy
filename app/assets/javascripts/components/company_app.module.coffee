@@ -222,6 +222,8 @@ Component = React.createClass
           {SectionPlaceholderComponent.call(@, blocks.length)}
         </SortableList>
 
+        <div className="separator"></div>
+
         <Post company_uuid={@state.company.uuid} />
       </div>
 

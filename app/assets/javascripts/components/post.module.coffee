@@ -16,7 +16,8 @@ Component = React.createClass
 
   # Handlers
   # 
-  # handleThingClick: (event) ->
+  handlePlaceholderClick: (event) ->
+    console.log 'handlePlaceholderClick'
 
   # Lifecycle Methods
   # 
@@ -35,7 +36,11 @@ Component = React.createClass
 
   render: ->
     <article className="editor post">
-      
+      <section className="placeholder">
+        <figure onClick={@handlePlaceholderClick}>
+          <i className="fa fa-plus" />
+        </figure>
+      </section>
     </article>
 
 # Exports
