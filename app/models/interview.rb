@@ -23,7 +23,7 @@ class Interview < ActiveRecord::Base
     end
 
     edit do
-      exclude_fields :uuid, :is_accepted, :slug
+      exclude_fields :uuid, :slug
     end
   end
 
