@@ -59,7 +59,7 @@ class Ability
         owner?(user, company)
       end
 
-      can [:update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file], Company do |company|
+      can [:update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file, :reposition_blocks], Company do |company|
         editor?(user, company)
       end
 

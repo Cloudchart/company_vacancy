@@ -127,10 +127,10 @@ class CompaniesController < ApplicationController
   end
   
   def reposition_blocks
-    company = Company.includes(:blocks).find(params[:id])
+    @company = Company.includes(:blocks).find(params[:id])
     
     Block.transaction do
-      company.blocks.each do |block|
+      @company.blocks.each do |block|
         block.update! position: params[:ids].index(block.uuid)
       end
     end

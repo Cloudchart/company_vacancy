@@ -17,7 +17,7 @@
       roles:      require('stores/roles')
       tokens:     require('stores/token')
       users:      require('stores/users')
-      posts:      require('stores/posts_store')
+      posts:      require('stores/post_store')
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 
@@ -82,8 +82,6 @@
 # 
 @['companies#index'] = (data) ->
   $ ->
-    # cc.init_chart_preview(true, 0.4)
-
     # comanies search
     #
     $('header').on 'input propertychange', '.search input', ->

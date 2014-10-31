@@ -1,7 +1,7 @@
 # base
 # 
 json.company ams(@company, scope: current_user)
-json.blocks ams(@company.blocks)
+json.blocks ams(Block.where(owner_type: ['Company', 'Post']))
 json.vacancies ams(@company.vacancies)
 json.people ams(@company.people)
 json.pictures ams(@company.pictures)

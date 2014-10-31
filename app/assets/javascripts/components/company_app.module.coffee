@@ -9,11 +9,13 @@ CompanyActions  = require('actions/company')
 BlockActions    = require('actions/block_actions')
 CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
+PostStore       = require('stores/post_store')
 
 
 SortableList      = require('components/shared/sortable_list')
 SortableListItem  = require('components/shared/sortable_list_item')
 CompanyHeader     = require('components/company/header')
+Post              = require('components/post')
 
 
 BlockComponents =
@@ -164,8 +166,9 @@ Component = React.createClass
 
 
   getStateFromStores: ->
-    company:  CompanyStore.get(@props.key)
-    blocks:   BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.key
+    company: CompanyStore.get(@props.key)
+    blocks: BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.key
+    posts: PostStore.all()
   
   
   refreshStateFromStores: ->
@@ -175,11 +178,13 @@ Component = React.createClass
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStores)
     BlockStore.on('change', @refreshStateFromStores)
+    PostStore.on('change', @refreshStateFromStores)
   
 
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
     BlockStore.off('change', @refreshStateFromStores)
+    PostStore.off('change', @refreshStateFromStores)
   
   
   getInitialState: ->
@@ -189,12 +194,16 @@ Component = React.createClass
 
 
   render: ->
+
     if @state.company
       blocks = _.map @gatherBlocks(), (block, i) =>
         [
           SectionPlaceholderComponent.call(@, i)
           block
         ]
+
+      # TODO: gather posts
+      # _.each @state.posts, (post) ->
 
       <div className="wrapper">
         <CompanyHeader
@@ -213,7 +222,7 @@ Component = React.createClass
           className="editor company company-2_0"
           onOrderChange={@handleSortableChange}
           onOrderUpdate={@handleSortableUpdate}
-          readOnly={@props.readOnly}
+          readOnly={@state.company.flags.is_read_only}
           dragLockX
         >
           {blocks}
@@ -222,16 +231,7 @@ Component = React.createClass
 
         <div className="separator"></div>
 
-        <SortableList
-          component={tag.article}
-          className="editor posts"
-          onOrderChange={@handleSortableChange}
-          onOrderUpdate={@handleSortableUpdate}
-          readOnly={@props.readOnly}
-          dragLockX
-        >
-          {SectionPlaceholderComponent.call(@, 0)}
-        </SortableList>
+        <Post id={@state.posts[0].uuid}, company_id={@props.key} />
       </div>
 
     else
