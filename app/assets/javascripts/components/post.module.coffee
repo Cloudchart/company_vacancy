@@ -10,11 +10,10 @@ CompanyStore = require('stores/company')
 PostStore = require('stores/post_store')
 BlockStore = require('stores/block_store')
 
-BlockActions = require('actions/block_actions')
 PostActions = require('actions/post_actions')
+BlockableActions = require('actions/mixins/blockable_actions')
 
 SortableList = require('components/shared/sortable_list')
-SortableListItem  = require('components/shared/sortable_list_item')
 
 # Main
 # 
@@ -32,16 +31,7 @@ Component = React.createClass
 
   # Handlers
   # 
-  handleChooseBlockTypeClick: (type) ->
-    _.chain(@state.blocks)
-      .filter (block) => block.position >= @state.position
-      .each (block) => BlockStore.update(block.uuid, { position: block.position + 1 })
-
-    key = BlockStore.create({ owner_id: @props.id, owner_type: 'Post', identity_type: type, position: @state.position })
-
-    PostActions.createBlock(key, BlockStore.get(key).toJSON())
-
-    @setState({ position: null })
+  # gatherSomething: ->
 
   # Lifecycle Methods
   # 
@@ -67,20 +57,31 @@ Component = React.createClass
   getInitialState: ->
     state = @getStateFromStores()
     state.position = null
+    state.owner_type = 'Post'
     state
 
   render: ->
+    if @state.post
+      blocks = _.map @gatherBlocks(), (block, i) =>
+        [
+          @getSectionPlaceholder(i)
+          block
+        ]
 
-    <SortableList
-      component={tag.article}
-      className="editor post"
-      onOrderChange={@handleSortableChange}
-      onOrderUpdate={@handleSortableUpdate}
-      readOnly={@props.readOnly}
-      dragLockX
-    >
-      {@SectionPlaceholderComponent(0)}
-    </SortableList>
+      <SortableList
+        component={tag.article}
+        className="editor post"
+        onOrderChange={@handleSortableChange}
+        onOrderUpdate={@handleSortableUpdate}
+        readOnly={@state.company.flags.is_read_only}
+        dragLockX
+      >
+        {blocks}
+        {@getSectionPlaceholder(blocks.length)}
+      </SortableList>
+
+    else
+      null
 
 # Exports
 # 

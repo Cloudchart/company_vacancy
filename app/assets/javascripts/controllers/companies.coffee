@@ -25,7 +25,7 @@
     CompanyStore.emitChange()
 
   Company = require('components/company_app')
-  React.renderComponent(Company({ key: data.id }), document.querySelector('body > main'))
+  React.renderComponent(Company({ id: data.id }), document.querySelector('body > main'))
 
 # Finance
 # 

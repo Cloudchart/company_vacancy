@@ -3,7 +3,7 @@
 Dispatcher = require('dispatcher/dispatcher')
 # SyncAPI = require('sync/post')
 # Constants = require('constants')
-Blockable = require('actions/mixins/blockable')
+BlockableActions = require('actions/mixins/blockable_actions')
 
 # Exports
 #
@@ -29,4 +29,4 @@ Actions =
 
 # Exports
 # 
-module.exports = _.extend Actions, Blockable
+module.exports = _.extend Actions, BlockableActions

@@ -34,7 +34,7 @@ Cloudchart::Application.routes.draw do
     get :finance, on: :member
     get :settings, on: :member
     get :access_rights, on: :member
-    put :reposition_blocks, on: :member
+    # put :reposition_blocks, on: :member
     
     resources :vacancies, except: :edit, shallow: true, concerns: [:statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
@@ -53,19 +53,19 @@ Cloudchart::Application.routes.draw do
       post :accept, on: :member
     end
 
-    resources :blocks, only: :create, type: :company
     resources :posts, except: [:new, :edit], shallow: true
-
+    resources :blocks, only: :create, type: :company
   end
 
   resources :blocks, only: [:update, :destroy] do
     resources :identities, shallow: true, controller: :block_identities, only: [:index, :create, :destroy]
     resource :picture,    type: :block, only: [:create, :update, :destroy]
     resource :paragraph,  type: :block, only: [:update, :destroy]
+    match :reposition, on: :collection, via: [:put, :patch]
   end
 
-  resources :features do
-    post :vote, on: :member
+  scope 'posts/:post_id' do
+    resources :blocks, only: :create, type: :post, as: :post_blocks
   end
 
   scope 'vacancies/:vacancy_id' do
@@ -75,6 +75,10 @@ Cloudchart::Application.routes.draw do
   resources :vacancy_responses, only: [:show, :destroy], concerns: [:statusable] do
     post 'vote/:vote', on: :member, action: :vote, as: :vote
     post :ban_user, on: :member
+  end
+
+  resources :features do
+    post :vote, on: :member
   end
 
   resources :company_invites, only: [:show, :create, :destroy] do

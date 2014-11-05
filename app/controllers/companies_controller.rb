@@ -126,6 +126,7 @@ class CompaniesController < ApplicationController
     end
   end
   
+  # TODO: move to blocks controller
   def reposition_blocks
     @company = Company.includes(:blocks).find(params[:id])
     
@@ -160,7 +161,8 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    # overriden find method will not work for ActiveRecord::Relation
+    # TODO: update find method
+    # overriden version will not work for ActiveRecord::Relation
     # .includes(blocks: :block_identities)
     @company = Company.find(params[:id])
   end

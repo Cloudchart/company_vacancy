@@ -48,14 +48,29 @@ class BlocksController < ApplicationController
   end
 
 
+  def reposition
+    first_block = Block.find(params[:ids].first)
+    authorize! :reposition, first_block
+
+    blocks = params[:ids].map { |id| Block.find(id) }.reject { |block| block.owner_type != first_block.owner_type }
+
+    Block.transaction do
+      blocks.each do |block|
+        block.update! position: params[:ids].index(block.uuid)
+      end
+    end
+
+    respond_to do |format|
+      format.json { render json: { ok: 200 } }
+    end
+  end  
+
+
 private
 
 
   def find_owner
-    case params[:type]
-    when :company
-      Company.find(params[:company_id])
-    end
+    params[:type].to_s.classify.constantize.find(params[:"#{params[:type]}_id"])
   end
 
 

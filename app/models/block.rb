@@ -37,7 +37,7 @@ class Block < ActiveRecord::Base
   def company
     if owner_type == 'Company'
       owner
-    elsif owner_type =~ /Event|Vacancy/
+    elsif owner_type =~ /Event|Vacancy|Post/
       owner.company
     end
   end

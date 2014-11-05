@@ -20,6 +20,7 @@ Component = React.createClass
       @state.key
     else
       paragraph = ParagraphStore.find((item) => item.owner_id is @props.key and item.owner_type is 'Block')
+      console.log paragraph
       if paragraph and paragraph.uuid
         paragraph.uuid
       else
@@ -61,7 +62,7 @@ Component = React.createClass
   
   
   componentWillUnmount: ->
-    ParagraphStore.off('change', @refreshStateFromStore)
+    ParagraphStore.off('change', @refreshStateFromStores)
   
   
   componentWillReceiveProps: ->

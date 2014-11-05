@@ -1,6 +1,10 @@
+Dispatcher = require('dispatcher/dispatcher')
+SyncAPI = require('sync/mixins/blockable_sync_api')
+
+
 module.exports =
 
-  
+
   createBlock: (key, attributes, token = 'create') ->
     Dispatcher.handleClientAction
       type: 'block:create'
@@ -17,21 +21,3 @@ module.exports =
         data: [key, attributes, xhr.responseJSON, xhr, token]
     
     SyncAPI.createBlock(attributes.owner_id, attributes, done, fail)
-    
-  
-  repositionBlocks: (key, ids, token = 'reposition') ->
-    Dispatcher.handleClientAction
-      type: 'blocks:reposition'
-      data: [key, ids, token]
-    
-    done = (json) ->
-      Dispatcher.handleServerAction
-        type: 'blocks:reposition:done'
-        data: [key, ids, json, token]
-    
-    fail = (xhr) ->
-      Dispatcher.handleServerAction
-        type: 'blocks:reposition:fail'
-        data: [key, ids, xhr.responseJSON, xhr, token]
-      
-    SyncAPI.repositionBlocks(key, ids, done, fail)

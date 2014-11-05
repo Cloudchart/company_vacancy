@@ -24,3 +24,14 @@ module.exports =
       dataType: "json"
     .done done
     .fail fail
+
+
+  reposition: (key, ids, done, fail) ->
+    $.ajax
+      url:        "/blocks/reposition"
+      type:       "PATCH"
+      dataType:   "json"
+      data:
+        ids:      ids
+    .done done
+    .fail fail

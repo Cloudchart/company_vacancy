@@ -4,170 +4,39 @@
 #
 tag = React.DOM
 
+Blockable = require('components/mixins/blockable')
 
-CompanyActions  = require('actions/company')
-BlockActions    = require('actions/block_actions')
 CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
 PostStore       = require('stores/post_store')
 
-
 SortableList      = require('components/shared/sortable_list')
-SortableListItem  = require('components/shared/sortable_list_item')
 CompanyHeader     = require('components/company/header')
 Post              = require('components/post')
-
-
-BlockComponents =
-  Picture:    require('components/editor/picture')
-  Paragraph:  require('components/editor/paragraph')
-  Person:     require('components/editor/person')
-  Vacancy:    require('components/editor/vacancy')
-
-
-SectionClassNames =
-  Picture:    'picture'
-  Paragraph:  'paragraph'
-  Person:     'people'
-  Vacancy:    'vacancies'
-
-
-IdentityTypes =
-  People:     'Person'
-  Vacancies:  'Vacancy'
-  Picture:    'Picture'
-  Paragraph:  'Paragraph'
-
-
-
-# Section Wrapper Component
-#
-SectionWrapperComponent = React.createClass
-
-
-  handleBlockRemove: ->
-    return if @props.readOnly
-    
-    BlockActions.destroy(@props.key) if confirm('Are you sure?')
-
-
-  render: ->
-    block           = BlockStore.get(@props.key)
-    BlockComponent  = BlockComponents[block.identity_type]
-    blockClassName  = SectionClassNames[block.identity_type]
-
-    (tag.section {
-      key:        block.getKey()
-      className:  blockClassName
-    },
-  
-      # Remove
-      #
-      (tag.i {
-        className:  'fa fa-times-circle-o remove '
-        onClick:    @handleBlockRemove
-      }) unless @props.readOnly
-  
-      # Block
-      #
-      (BlockComponent {
-        key:      block.getKey()
-        readOnly: @props.readOnly
-      })
-    )
-
-
-# Section Placeholder component
-#
-SectionPlaceholderComponent = (position) ->
-  cancel_item = =>
-    <li key="cancel" className="cancel">
-      <i className="fa fa-times-circle" onClick={@onCancelBlockCreateClick.bind(@, position)} />
-    </li>
-  
-  item = (type, key) =>
-    <li key={key} onClick={@onChooseBlockTypeClick.bind(@, type)}>{key}</li>
-  
-  content = unless @state.company.flags.is_read_only
-    if @state.position == position
-      items = _.map(IdentityTypes, item) ; items.push(cancel_item())
-      <ul>{items}</ul>
-    else
-      <figure onClick={@onPlaceholderClick.bind(@, position)}>
-        <i className="fa fa-plus" />
-      </figure>
-  
-  <section className="placeholder">{content}</section>
-
 
 # Main
 #
 Component = React.createClass
 
+  mixins: [Blockable]
 
-  handleSortableChange: (key, currIndex, nextIndex) ->
-    [blocks, offset] = if currIndex > nextIndex
-      [
-        _.filter @state.blocks, (block) -> block.position < currIndex and block.position >= nextIndex
-        +1
-      ]
-    else
-      [
-        _.filter @state.blocks, (block) -> block.position > currIndex and block.position <= nextIndex
-        -1
-      ]
-    
-    _.each blocks, (block) ->
-      BlockStore.update(block.getKey(), { position: block.position + offset })
-    
-    BlockStore.update(key, { position: nextIndex })
-    
-    BlockStore.emitChange()
-  
-  
-  handleSortableUpdate: ->
-    ids = _.chain(@state.blocks)
-      .sortBy 'position'
-      .invoke 'getKey'
-      .value()
-    
-    CompanyActions.repositionBlocks(@props.key, ids)
+  # Helpers
+  # 
+  identityTypes: ->
+    People:     'Person'
+    Vacancies:  'Vacancy'
+    Picture:    'Picture'
+    Paragraph:  'Paragraph'
 
 
-  gatherBlocks: ->
-    _.chain(@state.blocks)
-      .sortBy(['position'])
-      .map (block) =>
-        key = block.getKey()
-        <SortableListItem key={key}>
-          <SectionWrapperComponent ref={key} key={key} readOnly={@state.company.flags.is_read_only} />
-        </SortableListItem>
-      .value()
-  
-  
-  onPlaceholderClick: (position) ->
-    @setState({ position: position })
-  
-  
-  onCancelBlockCreateClick: ->
-    @setState({ position: null })
-  
-  
-  onChooseBlockTypeClick: (type) ->
-    _.chain(@state.blocks)
-      .filter (block) => block.position >= @state.position
-      .each (block) => BlockStore.update(block.uuid, { position: block.position + 1 })
-
-    key = BlockStore.create({ owner_id: @props.key, owner_type: 'Company', identity_type: type, position: @state.position })
-
-    CompanyActions.createBlock(key, BlockStore.get(key).toJSON())
-
-    @setState({ position: null })
+  # Handlers
+  # 
+  # handleThingClick: (event) ->
 
 
   getStateFromStores: ->
-    company: CompanyStore.get(@props.key)
-    blocks: BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.key
+    company: CompanyStore.get(@props.id)
+    blocks: BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.id
     posts: PostStore.all()
   
   
@@ -188,8 +57,9 @@ Component = React.createClass
   
   
   getInitialState: ->
-    state           = @getStateFromStores()
-    state.position  = null
+    state            = @getStateFromStores()
+    state.position   = null
+    state.owner_type = 'Company'
     state
 
 
@@ -198,7 +68,7 @@ Component = React.createClass
     if @state.company
       blocks = _.map @gatherBlocks(), (block, i) =>
         [
-          SectionPlaceholderComponent.call(@, i)
+          @getSectionPlaceholder(i)
           block
         ]
 
@@ -207,7 +77,7 @@ Component = React.createClass
 
       <div className="wrapper">
         <CompanyHeader
-          key             = {@props.key}
+          key             = {@props.id}
           name            = {@state.company.name}
           description     = {@state.company.description}
           logotype_url    = {@state.company.logotype_url}
@@ -226,12 +96,12 @@ Component = React.createClass
           dragLockX
         >
           {blocks}
-          {SectionPlaceholderComponent.call(@, blocks.length)}
+          {@getSectionPlaceholder(blocks.length)}
         </SortableList>
 
         <div className="separator"></div>
 
-        <Post id={@state.posts[0].uuid}, company_id={@props.key} />
+        <Post id={@state.posts[0].uuid}, company_id={@props.id} />
       </div>
 
     else

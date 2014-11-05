@@ -46,6 +46,7 @@ module.exports =
   
   # Create Block
   #
+  # moved to mixins
   createBlock: (key, attributes, token = 'create') ->
     Dispatcher.handleClientAction
       type: 'block:create'
@@ -66,6 +67,7 @@ module.exports =
   
   # Reposition blocks
   #
+  # moved to mixins
   repositionBlocks: (key, ids, token = 'reposition') ->
     Dispatcher.handleClientAction
       type: 'blocks:reposition'
