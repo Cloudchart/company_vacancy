@@ -29,6 +29,12 @@ Component = React.createClass
     Paragraph:  'Paragraph'
 
 
+  gatherPosts: ->
+    if @state.posts.length > 0
+      _.map @state.posts, (post) =>
+        <Post key={post.uuid} id={post.uuid}, company_id={@props.id} />
+
+
   # Handlers
   # 
   # handleThingClick: (event) ->
@@ -72,11 +78,6 @@ Component = React.createClass
           block
         ]
 
-      # TODO: gather posts
-      # _.each @state.posts, (post) ->
-      if @state.posts.length > 0
-        post = <Post id={@state.posts[0].uuid}, company_id={@props.id} />
-
       <div className="wrapper">
         <CompanyHeader
           key             = {@props.id}
@@ -103,7 +104,7 @@ Component = React.createClass
 
         <div className="separator"></div>
 
-        {post}
+        {@gatherPosts()}
       </div>
 
     else
