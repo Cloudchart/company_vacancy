@@ -124,19 +124,23 @@ class Ability
 private
 
   def owner?(user, company)
-    Role.find_by(user: user, owner: company).try(:value) == 'owner'
+    role_value(user, company) == 'owner'
   end
 
   def editor?(user, company)
-    Role.find_by(user: user, owner: company).try(:value) == 'editor'
+    role_value(user, company) == 'editor'
   end
 
   def owner_or_editor?(user, company)
-    Role.find_by(user: user, owner: company).try(:value) =~ /owner|editor/
+    role_value(user, company) =~ /owner|editor/
   end
 
   def trusted_reader?(user, company)
-    Role.find_by(user: user, owner: company).try(:value) == 'trusted_reader'
+    role_value(user, company) == 'trusted_reader'
+  end
+
+  def role_value(user, company)
+    company.roles.select { |role| role.user_id == user.id }.first.try(:value)
   end
 
 end

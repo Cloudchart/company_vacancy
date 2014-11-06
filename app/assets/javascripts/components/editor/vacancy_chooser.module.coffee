@@ -79,7 +79,7 @@ Component = React.createClass
     block = BlockStore.get(@props.key)
 
     block:      block
-    vacancies:  VacancyStore.filter((vacancy) => vacancy.company_id == block.owner_id)
+    vacancies:  VacancyStore.filter((vacancy) => vacancy.company_id == @props.company_id)
 
 
   getInitialState: ->

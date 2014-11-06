@@ -82,7 +82,8 @@ Component = React.createClass
 
   onAddVacancyClick: ->
     ModalActions.show(VacancyChooser({
-      key:  @props.key
+      key: @props.key
+      company_id: @props.company_id
     }))
 
 

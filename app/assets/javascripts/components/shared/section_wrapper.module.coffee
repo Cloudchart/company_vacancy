@@ -69,8 +69,9 @@ Component = React.createClass
       # Block
       #
       (BlockComponent {
-        key:      block.getKey()
-        readOnly: @props.readOnly
+        key:        block.getKey()
+        company_id: @props.company_id
+        readOnly:   @props.readOnly
       })
     )
 

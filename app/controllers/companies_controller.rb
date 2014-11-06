@@ -125,21 +125,6 @@ class CompaniesController < ApplicationController
       redirect_to :back, alert: 'Error. No such file.'
     end
   end
-  
-  # TODO: move to blocks controller
-  def reposition_blocks
-    @company = Company.includes(:blocks).find(params[:id])
-    
-    Block.transaction do
-      @company.blocks.each do |block|
-        block.update! position: params[:ids].index(block.uuid)
-      end
-    end
-
-    respond_to do |format|
-      format.json { render json: { ok: 200 } }
-    end
-  end
 
 private
 
@@ -161,10 +146,19 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    # TODO: update find method
-    # overriden version will not work for ActiveRecord::Relation
-    # .includes(blocks: :block_identities)
-    @company = Company.find(params[:id])
+    relation = Company.includes(
+      :posts,
+      :people,
+      :vacancies,
+      :pictures,
+      :paragraphs,
+      :roles,
+      :tokens,
+      users: :emails,
+      blocks: :block_identities
+    )
+
+    @company = relation.find_by(slug: params[:id]) || relation.find(params[:id])
   end
 
   def set_collection

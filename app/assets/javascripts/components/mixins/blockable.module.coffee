@@ -86,6 +86,6 @@ module.exports =
       .map (block) =>
         key = block.getKey()
         <SortableListItem key={key}>
-          <SectionWrapper ref={key} key={key} readOnly={@state.company.flags.is_read_only} />
+          <SectionWrapper ref={key} key={key} company_id={@state.company.uuid} readOnly={@state.company.flags.is_read_only} />
         </SortableListItem>
       .value()

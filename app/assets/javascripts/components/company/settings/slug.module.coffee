@@ -53,6 +53,9 @@ Component = React.createClass
       when 'Escape'
         @setState({ value: '' })
 
+  handleSaveClick: (event) ->
+    @update(@state.value) if @state.value
+
   # Lifecycle Methods
   # 
   componentWillReceiveProps: (nextProps) ->

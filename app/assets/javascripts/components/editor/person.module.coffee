@@ -131,6 +131,7 @@ Component = React.createClass
 
     ModalActions.show(PersonChooser({
       key:            @props.key
+      company_id:     @props.company_id
       onSelect:       @onSelectPerson
       onCreateClick:  @onCreatePersonClick
     }))

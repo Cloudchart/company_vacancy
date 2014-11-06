@@ -74,6 +74,8 @@ Component = React.createClass
 
       # TODO: gather posts
       # _.each @state.posts, (post) ->
+      if @state.posts.length > 0
+        post = <Post id={@state.posts[0].uuid}, company_id={@props.id} />
 
       <div className="wrapper">
         <CompanyHeader
@@ -101,7 +103,7 @@ Component = React.createClass
 
         <div className="separator"></div>
 
-        <Post id={@state.posts[0].uuid}, company_id={@props.id} />
+        {post}
       </div>
 
     else

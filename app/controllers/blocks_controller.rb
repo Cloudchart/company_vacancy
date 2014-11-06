@@ -63,7 +63,7 @@ class BlocksController < ApplicationController
     respond_to do |format|
       format.json { render json: { ok: 200 } }
     end
-  end  
+  end
 
 
 private
