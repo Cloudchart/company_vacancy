@@ -10,9 +10,13 @@ CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
 PostStore       = require('stores/post_store')
 
-SortableList      = require('components/shared/sortable_list')
-CompanyHeader     = require('components/company/header')
-Post              = require('components/post')
+ModalActions    = require('actions/modal_actions')
+PostActions     = require('actions/post_actions')
+
+SortableList    = require('components/shared/sortable_list')
+CompanyHeader   = require('components/company/header')
+Post            = require('components/post')
+PostForm        = require('components/form/post_form')
 
 # Main
 #
@@ -37,7 +41,24 @@ Component = React.createClass
 
   # Handlers
   # 
-  # handleThingClick: (event) ->
+  handleNewPostClick: (event) ->
+    event.preventDefault()
+    newPostKey = PostStore.create({ owner_id: @props.id, owner_type: 'Company' })
+
+    ModalActions.show(PostForm({
+      attributes: PostStore.get(newPostKey).toJSON()
+      onSubmit:   @handlePostFormSubmit.bind(@, newPostKey)
+    }))
+
+
+  handlePostFormSubmit: (key, attributes) ->
+    post = PostStore.get(key)
+    if post.uuid
+      # to be implemented
+      # PostActions.update(key, attributes.toJSON())
+    else
+      PostActions.create(key, attributes.toJSON())
+      ModalActions.hide()
 
 
   getStateFromStores: ->
@@ -103,6 +124,8 @@ Component = React.createClass
         </SortableList>
 
         <div className="separator"></div>
+
+        <a href="" onClick={@handleNewPostClick}>New Post</a>
 
         {@gatherPosts()}
       </div>

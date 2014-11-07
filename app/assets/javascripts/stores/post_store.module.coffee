@@ -7,6 +7,22 @@ Constants         = require('constants')
 #
 module.exports = CloudFlux.createStore
 
+  onCreate: (key, attributes, token) ->
+    @store.start_sync(key, token)
+    @store.update(key, attributes)
+    @store.emitChange()
+
+  onCreateDone: (key, attributes, json, token) ->
+    @store.stop_sync(key, token)
+    @store.reset(key)
+    @store.add(json.uuid, json)
+    @store.emitChange()
+
+  onCreateFail: (key, attributes, json, xhr, token) ->
+    @store.stop_sync(key, token)
+    @store.add_errors(key, json.errors) if json and json.errors
+    @store.emitChange()
+
   # onUpdate: (key, attributes, token) ->
   #   @store.start_sync(key, token)
   #   @store.update(key, attributes)
@@ -28,12 +44,10 @@ module.exports = CloudFlux.createStore
     title: ''
     cover_uid: null
     published_at: null
+    owner_type: ''
+    owner_id: ''
 
   getActions: ->
-    actions = {}
-
-    # actions[Constants.Post.UPDATE]       = @onUpdate
-    # actions[Constants.Post.UPDATE_DONE]  = @onUpdateDone
-    # actions[Constants.Post.UPDATE_FAIL]  = @onUpdateFail
-
-    actions
+    'post:create': @onCreate
+    'post:create:done': @onCreateDone
+    'post:create:fail': @onCreateFail

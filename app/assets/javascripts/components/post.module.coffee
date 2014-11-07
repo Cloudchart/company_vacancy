@@ -76,6 +76,8 @@ Component = React.createClass
         readOnly={@state.company.flags.is_read_only}
         dragLockX
       >
+        <h1>{@state.post.title}</h1>
+        <span>{@state.post.published_at}</span>
         {blocks}
         {@getSectionPlaceholder(blocks.length)}
       </SortableList>

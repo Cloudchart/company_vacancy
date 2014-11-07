@@ -142,7 +142,7 @@ Component = React.createClass
   onCreatePersonClick: ->
     return if @props.readOnly
 
-    newPersonKey = PersonStore.create({ company_id: @state.block.owner_id })
+    newPersonKey = PersonStore.create({ company_id: @props.company_id })
 
     ModalActions.show(PersonForm({
       attributes: PersonStore.get(newPersonKey).toJSON()

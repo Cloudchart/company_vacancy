@@ -1,8 +1,7 @@
 # Imports
 #
 Dispatcher = require('dispatcher/dispatcher')
-# SyncAPI = require('sync/post')
-# Constants = require('constants')
+SyncAPI = require('sync/post_sync_api')
 BlockableActions = require('actions/mixins/blockable_actions')
 
 # Exports
@@ -24,7 +23,7 @@ Actions =
         type: 'post:create:fail'
         data: [key, attributes, xhr.responseJSON, xhr, sync_token]
     
-    # SyncAPI.create(attributes.owner_id, attributes, done, fail)
+    SyncAPI.create(attributes.owner_id, attributes, done, fail)
 
 
 # Exports

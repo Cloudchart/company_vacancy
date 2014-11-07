@@ -75,7 +75,7 @@ class Ability
         !user.companies.pluck(:uuid).include?(company.id)
       end
 
-      [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart].each do |model|
+      [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post].each do |model|
         can :manage, model do |resource|
           owner_or_editor?(user, resource.company)
         end
