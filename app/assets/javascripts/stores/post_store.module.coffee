@@ -7,6 +7,8 @@ Constants         = require('constants')
 #
 module.exports = CloudFlux.createStore
 
+  # TODO: write base CRUD, something like only: [:create, :update, :destroy]
+
   onCreate: (key, attributes, token) ->
     @store.start_sync(key, token)
     @store.update(key, attributes)
@@ -23,22 +25,38 @@ module.exports = CloudFlux.createStore
     @store.add_errors(key, json.errors) if json and json.errors
     @store.emitChange()
 
-  # onUpdate: (key, attributes, token) ->
-  #   @store.start_sync(key, token)
-  #   @store.update(key, attributes)
-  #   @store.emitChange()
+
+  onUpdate: (key, attributes, token) ->
+    @store.start_sync(key, token)
+    @store.update(key, attributes)
+    @store.emitChange()
   
-  # onUpdateDone: (key, json, token) ->
-  #   @store.stop_sync(key, token)
-  #   @store.update(key, json)
-  #   @store.commit(key)
-  #   @store.emitChange()
+  onUpdateDone: (key, json, token) ->
+    @store.stop_sync(key, token)
+    @store.update(key, json)
+    @store.commit(key)
+    @store.emitChange()
   
-  # onUpdateFail: (key, json, xhr, token) ->
-  #   @store.stop_sync(key, token)
-  #   @store.rollback(key)
-  #   @store.emitChange()
+  onUpdateFail: (key, json, xhr, token) ->
+    @store.stop_sync(key, token)
+    @store.rollback(key)
+    @store.emitChange()
+
+
+  onDestroy: (key, token) ->
+    @store.start_sync(key, token)
+    @store.emitChange()
   
+  onDestroyDone: (key, json, token) ->
+    @store.stop_sync(key, token)
+    @store.remove(key)
+    @store.emitChange()
+
+  onDestroyFail: (key, json, xhr, token) ->
+    @store.stop_sync(key, token)
+    @store.emitChange()
+  
+
   getSchema: ->
     uuid: ''
     title: ''
@@ -48,6 +66,13 @@ module.exports = CloudFlux.createStore
     owner_id: ''
 
   getActions: ->
-    'post:create': @onCreate
-    'post:create:done': @onCreateDone
-    'post:create:fail': @onCreateFail
+    'post:create':       @onCreate
+    'post:create:done':  @onCreateDone
+    'post:create:fail':  @onCreateFail
+    'post:update':       @onUpdate
+    'post:update:done':  @onUpdateDone
+    'post:update:fail':  @onUpdateFail
+    'post:destroy':      @onDestroy
+    'post:destroy:done': @onDestroyDone
+    'post:destroy:fail': @onDestroyFail
+

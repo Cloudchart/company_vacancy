@@ -34,9 +34,11 @@ Component = React.createClass
 
 
   gatherPosts: ->
-    if @state.posts.length > 0
-      _.map @state.posts, (post) =>
-        <Post key={post.uuid} id={post.uuid}, company_id={@props.id} />
+    _.chain @state.posts
+      .sortBy('published_at')
+      .reverse()
+      .map (post) => <Post key={post.uuid} id={post.uuid}, company_id={@props.id} />
+      .value()
 
 
   # Handlers
@@ -47,18 +49,13 @@ Component = React.createClass
 
     ModalActions.show(PostForm({
       attributes: PostStore.get(newPostKey).toJSON()
-      onSubmit:   @handlePostFormSubmit.bind(@, newPostKey)
+      onSubmit: @handlePostFormSubmit.bind(@, newPostKey)
     }))
 
 
   handlePostFormSubmit: (key, attributes) ->
-    post = PostStore.get(key)
-    if post.uuid
-      # to be implemented
-      # PostActions.update(key, attributes.toJSON())
-    else
-      PostActions.create(key, attributes.toJSON())
-      ModalActions.hide()
+    PostActions.create(key, attributes.toJSON())
+    ModalActions.hide()
 
 
   getStateFromStores: ->
@@ -124,9 +121,7 @@ Component = React.createClass
         </SortableList>
 
         <div className="separator"></div>
-
         <a href="" onClick={@handleNewPostClick}>New Post</a>
-
         {@gatherPosts()}
       </div>
 

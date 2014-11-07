@@ -12,8 +12,10 @@ BlockStore = require('stores/block_store')
 
 PostActions = require('actions/post_actions')
 BlockableActions = require('actions/mixins/blockable_actions')
+ModalActions = require('actions/modal_actions')
 
 SortableList = require('components/shared/sortable_list')
+PostForm = require('components/form/post_form')
 
 # Main
 # 
@@ -31,7 +33,21 @@ Component = React.createClass
 
   # Handlers
   # 
-  # gatherSomething: ->
+  handleEditClick: (event) ->    
+    event.preventDefault()
+
+    ModalActions.show(PostForm({
+      attributes: @state.post.toJSON()
+      onSubmit:   @handlePostFormSubmit
+    }))
+
+  handlePostFormSubmit: (attributes) ->
+    PostActions.update(@state.post.uuid, attributes.toJSON())
+    ModalActions.hide()
+
+  handleDestroyClick: (event) ->
+    event.preventDefault()
+    PostActions.destroy(@state.post.uuid) if confirm('Are you sure?')
 
   # Lifecycle Methods
   # 
@@ -78,6 +94,11 @@ Component = React.createClass
       >
         <h1>{@state.post.title}</h1>
         <span>{@state.post.published_at}</span>
+        <p>
+          <a href="" onClick={@handleEditClick}>Edit</a> | 
+          <a href="" onClick={@handleDestroyClick}>Destroy</a>
+        </p>
+
         {blocks}
         {@getSectionPlaceholder(blocks.length)}
       </SortableList>

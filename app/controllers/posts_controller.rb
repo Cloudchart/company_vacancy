@@ -1,6 +1,6 @@
 class PostsController < ApplicationController  
 
-  # before_action :set_post
+  before_action :set_post, only: [:update, :destroy]
   before_action :set_company, only: [:index, :create]
 
   authorize_resource
@@ -27,6 +27,26 @@ class PostsController < ApplicationController
     end
   end
 
+  def update
+    if @post.update(post_params)
+      respond_to do |format|
+        format.json { render json: @post }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: :fail, status: 422 }
+      end
+    end
+  end
+
+  def destroy
+    @post.destroy
+
+    respond_to do |format|
+      format.json { render json: :ok }
+    end
+  end
+
 private
 
   def post_params
@@ -34,6 +54,7 @@ private
   end
 
   def set_post
+    @post = Post.find(params[:id])
   end
 
   def set_company

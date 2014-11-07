@@ -16,10 +16,9 @@ Header = ->
   )
 
 Fieldset = ->
-  now = moment().format('ll')
   (tag.fieldset {
   },
-    Field.apply(@,  ['published_at', 'fa-calendar-o', moment().format('ll')])
+    Field.apply(@,  ['published_at', 'fa-calendar-o', moment().format('lll')])
   )
 
 Field = (name, icon, placeholder) ->

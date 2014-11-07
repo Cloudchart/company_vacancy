@@ -25,21 +25,20 @@ $company-article-block-margin: 30px;
     text-align: center;
     width: $logo-width;
     
-    > button {
+    > i.fa-times-circle-o {
       @include position(absolute, 0px 0px 0 0);
       
-      background-color: hsl(1, 76%, 54%);
-      border: none;
-      color: hsl(0, 100%, 100%);
-      font-size: 12px;
-      height: 20px;
+      color: hsl(0, 75%, 55%);
+      font-size: 30px;
+      height: 30px;
       margin: 0;
       padding: 0;
       visibility: hidden;
-      width: 20px;
+      width: 30px;
+      cursor: pointer;
     }
     
-    &:hover > button {
+    &:hover > i.fa-times-circle-o {
       visibility: visible;
     }
     
