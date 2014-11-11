@@ -2,14 +2,14 @@
 #
 SyncAPI = require('sync/post_sync_api')
 BlockableActions = require('actions/mixins/blockable_actions')
-FactoryActions = require('actions/mixins/factory_actions')
+ActionFactory = require('actions/factory')
 
 CustomActions = {}
 
-CrudActions = FactoryActions.create 'post',
+CrudActions = ActionFactory.create 'post',
   'create': (id, attributes) -> SyncAPI.create(attributes.owner_id, attributes)
-  'update': 'default'
-  'destroy': 'default'
+  'update': (id, attributes) -> SyncAPI.update(id, attributes)
+  'delete': (id) -> SyncAPI.delete(id)
 
 # Exports
 # 

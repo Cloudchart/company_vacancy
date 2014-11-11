@@ -19,6 +19,7 @@
 //= require react
 //= require flux.dispatcher
 //= require lodash
+//= require underscore.string
 //= require promise
 //= require date
 //= require moment

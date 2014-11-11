@@ -31,7 +31,7 @@ module.exports =
     .done done
     .fail fail
 
-  destroy: (key, attributes, done, fail) ->
+  delete: (key, done, fail) ->
     $.ajax
       url: "/posts/#{key}"
       type: "DELETE"
