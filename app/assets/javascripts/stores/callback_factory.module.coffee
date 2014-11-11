@@ -36,18 +36,18 @@ CrudCallbacks =
     @store.rollback(key)
     @store.emitChange()
 
-  # Delete
+  # Destroy
   # 
-  handleDelete: (key, token) ->
+  handleDestroy: (key, token) ->
     @store.start_sync(key, token)
     @store.emitChange()
   
-  handleDeleteDone: (key, json, token) ->
+  handleDestroyDone: (key, json, token) ->
     @store.stop_sync(key, token)
     @store.remove(key)
     @store.emitChange()
 
-  handleDeleteFail: (key, json, xhr, token) ->
+  handleDestroyFail: (key, json, xhr, token) ->
     @store.stop_sync(key, token)
     @store.emitChange()
 

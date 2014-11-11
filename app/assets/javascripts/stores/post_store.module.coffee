@@ -5,7 +5,7 @@ CloudFlux = require('cloud_flux')
 CallbackFactory = require('stores/callback_factory')
 
 
-CrudCallbacks = CallbackFactory.create 'post', ['create', 'update', 'delete']
+CrudCallbacks = CallbackFactory.create 'post', ['create', 'update', 'destroy']
 
 DefaultMethods = 
 

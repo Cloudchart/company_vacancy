@@ -9,7 +9,7 @@ CustomActions = {}
 CrudActions = ActionFactory.create 'post',
   'create': (id, attributes) -> SyncAPI.create(attributes.owner_id, attributes)
   'update': (id, attributes) -> SyncAPI.update(id, attributes)
-  'delete': (id) -> SyncAPI.delete(id)
+  'destroy': (id) -> SyncAPI.destroy(id)
 
 # Exports
 # 

@@ -1,8 +1,5 @@
 module.exports =
 
-  # TODO: write base CRUD, something like only: [:create, :update, :destroy]
-  # do we really need sync api? can we put it in actions for simplicity?
-
   fetchAll: (company_id, done, fail) ->
     $.ajax
       url:        "/companies/#{company_id}/posts"
@@ -31,7 +28,7 @@ module.exports =
     .done done
     .fail fail
 
-  delete: (key, done, fail) ->
+  destroy: (key, attributes, done, fail) ->
     $.ajax
       url: "/posts/#{key}"
       type: "DELETE"

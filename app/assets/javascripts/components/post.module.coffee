@@ -47,7 +47,7 @@ Component = React.createClass
 
   handleDestroyClick: (event) ->
     event.preventDefault()
-    PostActions.delete(@state.post.uuid) if confirm('Are you sure?')
+    PostActions.destroy(@state.post.uuid) if confirm('Are you sure?')
 
   # Lifecycle Methods
   # 
