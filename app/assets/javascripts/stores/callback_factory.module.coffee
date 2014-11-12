@@ -56,27 +56,11 @@ CrudCallbacks =
 #
 exports.create = (model_name, method_names) ->
 
-  getActions = ->
-    _.inject method_names, (result, method_name) =>
-      titleized_method_name = _.str.titleize(method_name)
-
-      result["#{model_name}:#{method_name}"] = @["handle#{titleized_method_name}"] 
-      result["#{model_name}:#{method_name}:done"] = @["handle#{titleized_method_name}Done"]
-      result["#{model_name}:#{method_name}:fail"] = @["handle#{titleized_method_name}Fail"]
-
-      result
-    , {}
-
-
-  result = {}
-
-  result['getActions'] = getActions
-
-  _.each method_names, (method_name) ->
+  _.inject method_names, (result, method_name) ->
     method_name = _.str.titleize(method_name)
 
     result["handle#{method_name}"] = CrudCallbacks["handle#{method_name}"]
     result["handle#{method_name}Done"] = CrudCallbacks["handle#{method_name}Done"]
     result["handle#{method_name}Fail"] = CrudCallbacks["handle#{method_name}Fail"]
-
-  result
+    result
+  , {}

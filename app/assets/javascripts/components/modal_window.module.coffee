@@ -4,6 +4,7 @@ tag = React.DOM
 
 CloudFlux = require('cloud_flux')
 
+Post = require('components/post')
 
 # Main
 #
@@ -26,8 +27,12 @@ Component = React.createClass
   _deprecated_close: ->
     console.warn "Deprecation: use ModalActions.close instead of Event triggering."
     @close()
-    
-    
+
+
+  showPost: (id, company_id) ->
+    @show(Post({key: id, id: id, company_id: company_id}), class_for_container: 'portrait')
+
+
   show: (component, options = {}) ->
     options.beforeShow() if _.isFunction(options.beforeShow)
     @setState({ components: @state.components.push(component), options: @state.options.push(options) })
@@ -37,8 +42,8 @@ Component = React.createClass
     options = @state.options.last()
     options.beforeHide() if options and _.isFunction(options.beforeHide)
     @setState({ components: @state.components.pop(), options: @state.options.pop() })
-  
-  
+
+
   close: ->
     @state.options.forEach (options) -> options.beforeHide() if _.isFunction(options.beforeHide)
     @setState(@getInitialState())
@@ -73,6 +78,7 @@ Component = React.createClass
     'modal:show':   @show
     'modal:hide':   @hide
     'modal:close':  @close
+    'modal:show:post': @showPost
   
   
   getDefaultProps: ->
@@ -88,6 +94,10 @@ Component = React.createClass
 
 
   render: ->
+    if @state.options.count() > 0
+      class_for_container = @state.options.last().class_for_container
+      class_for_container = '' unless class_for_container
+
     if @state.components.count() == 0
       (tag.noscript null)
     else
@@ -97,7 +107,7 @@ Component = React.createClass
         onClick:    @onOverlayClick
       },
         (tag.div {
-          className: 'modal-container'
+          className: "modal-container #{class_for_container}"
         },
           @state.components.last()
         )

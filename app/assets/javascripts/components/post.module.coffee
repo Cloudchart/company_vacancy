@@ -33,17 +33,17 @@ Component = React.createClass
 
   # Handlers
   # 
-  handleEditClick: (event) ->    
-    event.preventDefault()
+  # handleEditClick: (event) ->    
+  #   event.preventDefault()
 
-    ModalActions.show(PostForm({
-      attributes: @state.post.toJSON()
-      onSubmit:   @handlePostFormSubmit
-    }))
+  #   ModalActions.show(PostForm({
+  #     attributes: @state.post.toJSON()
+  #     onSubmit:   @handlePostFormSubmit
+  #   }))
 
-  handlePostFormSubmit: (attributes) ->
-    PostActions.update(@state.post.uuid, attributes.toJSON())
-    ModalActions.hide()
+  # handlePostFormSubmit: (attributes) ->
+  #   PostActions.update(@state.post.uuid, attributes.toJSON())
+  #   ModalActions.hide()
 
   handleDestroyClick: (event) ->
     event.preventDefault()
@@ -52,18 +52,24 @@ Component = React.createClass
   # Lifecycle Methods
   # 
   # componentWillMount: ->
-  # componentDidMount: ->
+  componentDidMount: ->
+    # PostStore.on('change', @refreshStateFromStores)
+    BlockStore.on('change', @refreshStateFromStores)
+
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores())
 
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
   # componentDidUpdate: (prevProps, prevState) ->
-  # componentWillUnmount: ->
+  componentWillUnmount: ->
+    # PostStore.off('change', @refreshStateFromStores)
+    BlockStore.on('change', @refreshStateFromStores)
 
   # Component Specifications
   # 
-  # getDefaultProps: ->
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores())
 
   getStateFromStores: ->
     company: CompanyStore.get(@props.company_id)
@@ -92,10 +98,10 @@ Component = React.createClass
         readOnly={@state.company.flags.is_read_only}
         dragLockX
       >
-        <h1>{@state.post.title}</h1>
-        <span>{@state.post.published_at}</span>
+        <input id="title" name="title" value={@state.post.title} placeholder="Tap to add title"></input>
+        <input id="published_at" name="published_at" value={@state.post.title} placeholder="Tap to add publish date"></input>
+
         <p>
-          <a href="" onClick={@handleEditClick}>Edit</a> | 
           <a href="" onClick={@handleDestroyClick}>Destroy</a>
         </p>
 

@@ -4,6 +4,7 @@
 #
 tag = React.DOM
 
+CloudFlux = require('cloud_flux')
 Blockable = require('components/mixins/blockable')
 
 CompanyStore    = require('stores/company')
@@ -22,7 +23,7 @@ PostForm        = require('components/form/post_form')
 #
 Component = React.createClass
 
-  mixins: [Blockable]
+  mixins: [CloudFlux.mixins.Actions, Blockable]
 
   # Helpers
   # 
@@ -43,19 +44,29 @@ Component = React.createClass
 
   # Handlers
   # 
-  handleNewPostClick: (event) ->
+  handleCreatePostClick: (event) ->
     event.preventDefault()
-    newPostKey = PostStore.create({ owner_id: @props.id, owner_type: 'Company' })
-
-    ModalActions.show(PostForm({
-      attributes: PostStore.get(newPostKey).toJSON()
-      onSubmit: @handlePostFormSubmit.bind(@, newPostKey)
-    }))
+    newPostKey = PostStore.create()
+    PostActions.create(newPostKey, { owner_id: @props.id, owner_type: 'Company' })
 
 
-  handlePostFormSubmit: (key, attributes) ->
-    PostActions.create(key, attributes.toJSON())
-    ModalActions.hide()
+  # handleModalShowPost: (id) ->
+    # ModalActions.show(Post({ key: id, id: id, company_id: @props.id }))
+    # console.log 'handleModalShowPost', id
+
+  # handlePostCreateDone: (id, attributes, json, sync_token) ->
+  #   ModalActions.show(
+  #     <Post id={id}, company_id={@props.id} />
+  #   )
+
+  # handlePostFormSubmit: (key, attributes) ->
+  #   PostActions.create(key, attributes.toJSON())
+  #   ModalActions.hide()
+
+
+  # getCloudFluxActions: ->
+    # 'post:create:done': @handlePostCreateDone
+    # 'modal:show:post': @handleModalShowPost
 
 
   getStateFromStores: ->
@@ -121,7 +132,7 @@ Component = React.createClass
         </SortableList>
 
         <div className="separator"></div>
-        <a href="" onClick={@handleNewPostClick}>New Post</a>
+        <a href="" onClick={@handleCreatePostClick}>Create Post</a>
         {@gatherPosts()}
       </div>
 

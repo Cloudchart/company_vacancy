@@ -290,6 +290,7 @@ ActiveRecord::Schema.define(version: 20141029143420) do
     t.string   "title"
     t.string   "cover_uid"
     t.datetime "published_at"
+    t.boolean  "is_published",            default: false
     t.string   "owner_id",     limit: 36
     t.string   "owner_type"
     t.datetime "created_at"

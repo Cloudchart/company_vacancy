@@ -126,6 +126,10 @@ body .modal-overlay {
   > .modal-container {
     background-color: $modal-container-background-color;
     margin: auto;
+
+    &.portrait {
+      margin: 0 auto;
+    }
   }
   
   &.blueprint > .modal-container {

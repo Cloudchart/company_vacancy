@@ -6,7 +6,7 @@ class Post < ActiveRecord::Base
 
   belongs_to :owner, polymorphic: true
 
-  validates :title, presence: true
+  # validates :title, presence: true
 
   def company
     owner if owner_type == 'Company'
