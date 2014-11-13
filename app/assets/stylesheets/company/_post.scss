@@ -1,3 +1,32 @@
 main.company > div.wrapper > article.editor.post {
   border-top: 1px dotted grey;
+
+  > header {
+    @include display(flex);
+    @include flex-direction(column);
+    
+    > label {
+      margin: 10px 0 0;
+      position: relative;
+      
+      input {
+        border: none;
+        margin: 0;
+        outline: none;
+        padding: 0;
+      }
+
+      &.title input {
+        font-size: 40px;
+        font-weight: 400;
+      }
+      
+      &.published-at input {
+        font-size: 24px;
+        font-weight: 300;
+      }
+
+    }    
+
+  }
 }

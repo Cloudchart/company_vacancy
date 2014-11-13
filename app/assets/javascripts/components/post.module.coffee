@@ -15,7 +15,8 @@ BlockableActions = require('actions/mixins/blockable_actions')
 ModalActions = require('actions/modal_actions')
 
 SortableList = require('components/shared/sortable_list')
-PostForm = require('components/form/post_form')
+# PostForm = require('components/form/post_form')
+AutoSizingInput = require('components/form/autosizing_input')
 
 # Main
 # 
@@ -33,6 +34,10 @@ Component = React.createClass
 
   # Handlers
   # 
+  handleFieldChange: ->
+  handleFieldBlur: ->
+  handleFieldKeyup: ->
+
   # handleEditClick: (event) ->    
   #   event.preventDefault()
 
@@ -64,7 +69,7 @@ Component = React.createClass
   # componentDidUpdate: (prevProps, prevState) ->
   componentWillUnmount: ->
     # PostStore.off('change', @refreshStateFromStores)
-    BlockStore.on('change', @refreshStateFromStores)
+    BlockStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
   # 
@@ -98,12 +103,34 @@ Component = React.createClass
         readOnly={@state.company.flags.is_read_only}
         dragLockX
       >
-        <input id="title" name="title" value={@state.post.title} placeholder="Tap to add title"></input>
-        <input id="published_at" name="published_at" value={@state.post.title} placeholder="Tap to add publish date"></input>
+        <header>
+          <label className="title">
+            <AutoSizingInput
+              value={@state.post.title}
+              placeholder={"Tap to add title"}
+              onChange={@handleFieldChange('title')}
+              onBlur={@handleFieldBlur}
+              onKeyUp={@handleFieldKeyup}
+              readOnly={@state.company.flags.is_read_only}
+            />
+          </label>
 
-        <p>
-          <a href="" onClick={@handleDestroyClick}>Destroy</a>
-        </p>
+          <label className="published-at">
+            <AutoSizingInput
+              value={@state.post.published_at}
+              placeholder={"Tap to add publish date"}
+              onChange={@handleFieldChange('published-at')}
+              onBlur={@handleFieldBlur}
+              onKeyUp={@handleFieldKeyup}
+              readOnly={@state.company.flags.is_read_only}
+            />
+          </label>
+
+          <p>
+            <a href="" onClick={@handleDestroyClick}>Destroy</a>
+          </p>
+        </header>
+
 
         {blocks}
         {@getSectionPlaceholder(blocks.length)}

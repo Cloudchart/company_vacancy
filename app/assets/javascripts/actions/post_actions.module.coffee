@@ -11,6 +11,7 @@ CrudActions = ActionFactory.create 'post',
   'destroy': (id) -> SyncAPI.destroy(id)
 
 CustomActions =
+
   create: (id, attributes, sync_token = 'create') ->
     Dispatcher.handleClientAction
       type: 'post:create'
@@ -35,7 +36,7 @@ CustomActions =
 
 # Exports
 # 
-Actions = _.merge CustomActions, CrudActions
-Actions = _.merge Actions, BlockableActions
+Actions = _.extend CustomActions, CrudActions
+Actions = _.extend Actions, BlockableActions
 
 module.exports = Actions

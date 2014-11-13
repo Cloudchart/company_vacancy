@@ -162,7 +162,8 @@ Component = React.createClass
         })
       ) if @state.description or !@props.readOnly
 
-      # temp place
+      # Follow
+      # 
       (tag.label {},
         (FollowComponent { 
           key: @props.key
