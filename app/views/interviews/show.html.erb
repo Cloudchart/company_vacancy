@@ -3,14 +3,14 @@
     <figure></figure>
 
     <div class="content">
-      <h1>Founders Aboard!</h1>
+      <h1>Share Your Founder Story</h1>
 
       <p>
         Hi, <%= @interview.first_name %>!
       </p>
 
       <p>
-        I’m Anton, co-founder and editor-in-chief at <%= link_to 'CloudChart', root_path %>. We’re on a mission to build a <strong>growth platform for founder education</strong> to kickstart and help the global entrepreneurial community outside Silicon Valley. We believe <strong>your advice can be valuable</strong> for our goal.
+        I’m Anton, co-founder and editor-in-chief at <%= link_to 'CloudChart', root_path %>. We’re on a mission to <strong>help global entrepreneurs</strong> beyond Silicon Valley learn what they need to <strong>build successful startups</strong>. We’re already collected valuable advice from over a dozen companies, and <strong>I would love to add your voice</strong>.
       </p>
     </div>
   </header>
@@ -22,12 +22,12 @@
   <section>
     <p>
       <% if @interview.ref_name.present? && @interview.ref_email.present? %>
-        You were referred by <%= mail_to @interview.ref_email, @interview.ref_name %><%= @interview.whosaid %>.
+        You were referred by <%= mail_to @interview.ref_email, @interview.ref_name %><%= @interview.whosaid %>. If
       <% else %>
-        <%= @interview.first_name %>,
+        <%= @interview.first_name %>, if
       <% end %>
       
-      I would like about <strong>30 minutes of your time</strong> to interview you about <%= @interview.company_name %>’s story, to integrate it into a <strong>study resource for founders</strong>. This is an analysis of how successful startups came to life and grew, processed into a very <strong>visual and informative guide for founders</strong>. Not a case study, but a very personal look at how your company has come to life. Here’s a sketch of our ‘Company Timeline’ tool that we’re building at CloudChart:
+      you can give me <strong>30 minutes of your time</strong> for an interview, I will create a <strong>founder resource</strong> about your experiences with <%= @interview.company_name %>. Your entrepreneurial story will become part of a visual and informative <strong>guide book for aspiring founders</strong> around the world. Here’s a sketch of our ‘Company Timeline’ tool that we’re building at CloudChart:
     </p>
   </section>
 
@@ -58,7 +58,7 @@
 
   <section>
     <p>
-      I’m originally from Russia; I’ve been involved in <strong>tech journalism</strong> and <strong>futures studies</strong> for over 8 years. I also co-ran Thalient, a product development and consulting company from Moscow that worked with Intel and other companies on in-car and hyperlocation-based user experiences. I co-founded CloudChart because I see a <strong>tremendous shortage</strong> of concise smart materials illustrating the growth of early-stage companies. I am working on a resource that will turn a short-lived story in an article into a <strong>solid resource for wantrepreneurs and other founders</strong>.
+      I’ve been involved in <strong>tech journalism</strong> and <strong>futures studies</strong> for over 8 years. I also co-ran Thalient, a product development and consulting company from Moscow that worked with Intel and other companies on in-car navigation systems. At CloudChart we see a <strong>tremendous shortage</strong> of concise and helpful resources illustrating the growth of early-stage companies. I am working on a resource that will turn a short-lived story in an article into a <strong>solid resource</strong> for wantrepreneurs and other founders.
     </p>
   </section>
 
@@ -67,7 +67,7 @@
       <h1>This Is How You Can Help</h1>
 
       <p>
-        <%= @interview.first_name %>, If you’re based somewhere in SF Bay Area, or visiting, I’d be delighted to meet you personally for a coffee or lunch — preferably at your office or a coworking space. Otherwise, a Skype call or a Hangout will work as well. Thank you for taking your time and I'm looking forward to hearing from you.
+        <%= @interview.first_name %>, If you’re based somewhere in SF Bay Area, or visiting, I’d be delighted to meet you personally for a coffee or lunch — preferably at your office or a coworking space. Otherwise, a Skype call or a Hangout also works. Thank you for taking your time to read this and I look forward to hearing from you.
       </p>
 
       <p>
