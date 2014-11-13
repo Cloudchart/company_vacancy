@@ -16,6 +16,8 @@ $company-article-block-margin: 30px;
   $logo-width: 220px;
 
   > aside {
+    @include editor-destroy-button;
+
     background-position: center center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -24,23 +26,6 @@ $company-article-block-margin: 30px;
     position: relative;
     text-align: center;
     width: $logo-width;
-    
-    > i.fa-times-circle-o {
-      @include position(absolute, 0px 0px 0 0);
-      
-      color: hsl(0, 75%, 55%);
-      font-size: 30px;
-      height: 30px;
-      margin: 0;
-      padding: 0;
-      visibility: hidden;
-      width: 30px;
-      cursor: pointer;
-    }
-    
-    &:hover > i.fa-times-circle-o {
-      visibility: visible;
-    }
     
     > label {
       @include align-items(center);

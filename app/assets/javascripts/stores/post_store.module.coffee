@@ -14,7 +14,7 @@ DefaultMethods =
     uuid: ''
     title: ''
     cover_uid: null
-    published_at: null
+    published_at: ''
     is_published: false
     owner_type: ''
     owner_id: ''
@@ -27,30 +27,10 @@ DefaultMethods =
       actions["post:#{action}:done"] = @["handle#{_.str.titleize(action)}Done"]
       actions["post:#{action}:fail"] = @["handle#{_.str.titleize(action)}Fail"]
 
-    # actions['post:create'] = @handleCreate
-    # actions['post:create:done'] = @handleCreateDone
-    # actions['post:create:fail'] = @handleCreateFail
+    # other actions goes here
 
     actions
-
-  # Create
-  # 
-  # handleCreate: (id, attributes, sync_token) ->
-  #   @store.start_sync(id, sync_token)
-  #   @store.update(id, attributes)
-  #   @store.emitChange()
-
-  # handleCreateDone: (id, attributes, json, sync_token) ->
-  #   @store.stop_sync(id, sync_token)
-  #   @store.reset(id)
-  #   @store.add(json.uuid, json)
-  #   @store.emitChange()
-
-  # handleCreateFail: (id, attributes, json, xhr, sync_token) ->
-  #   @store.stop_sync(id, sync_token)
-  #   @store.add_errors(id, json.errors) if json and json.errors
-  #   @store.emitChange()
-
+    
 
 # Exports
 #

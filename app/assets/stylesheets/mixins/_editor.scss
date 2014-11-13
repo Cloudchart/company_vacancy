@@ -1,0 +1,19 @@
+@mixin editor-destroy-button {
+  > i.fa-times-circle-o {
+    @include position(absolute, 0px 0px 0 0);
+    
+    color: hsl(0, 75%, 55%);
+    font-size: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    visibility: hidden;
+    width: 30px;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  &:hover > i.fa-times-circle-o {
+    visibility: visible;
+  }
+}

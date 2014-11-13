@@ -32,11 +32,27 @@ Component = React.createClass
     Picture:    'Picture'
     Paragraph:  'Paragraph'
 
+  update: (attributes) ->
+    PostActions.update(@state.post.uuid, attributes)
+
   # Handlers
   # 
-  handleFieldChange: ->
-  handleFieldBlur: ->
-  handleFieldKeyup: ->
+  handleFieldChange: (name, event) ->
+    state = {}
+    state[name] = event.target.value
+    @setState(state)
+
+  handleTitleBlur: ->
+    @update(title: @state.title)
+
+  handlePublishedAtBlur: ->
+    if moment(@state.published_at).isValid()
+      formatted_value = moment(@state.published_at).format('ll')
+      @setState({ published_at: formatted_value })
+      @update({ published_at: formatted_value })
+
+  handleFieldKeyup: (event) ->
+    event.target.blur() if event.key == 'Enter'
 
   # handleEditClick: (event) ->    
   #   event.preventDefault()
@@ -73,13 +89,29 @@ Component = React.createClass
 
   # Component Specifications
   # 
+  getTitle: (post) ->
+    if post then post.title else ''
+
+  getPublishedAt: (post) ->
+    if post 
+      if moment(post.published_at).isValid()
+        moment(post.published_at).format('ll') 
+      else
+        ''
+    else
+      ''
+
   refreshStateFromStores: ->
     @setState(@getStateFromStores())
 
   getStateFromStores: ->
+    post = PostStore.get(@props.id)
+
     company: CompanyStore.get(@props.company_id)
-    post: PostStore.get(@props.id)
+    post: post
     blocks: BlockStore.filter (block) => block.owner_type == 'Post' and block.owner_id == @props.id
+    title: @getTitle(post)
+    published_at: @getPublishedAt(post)
 
   getInitialState: ->
     state = @getStateFromStores()
@@ -104,12 +136,14 @@ Component = React.createClass
         dragLockX
       >
         <header>
+          <i className="fa fa-times-circle-o" onClick={@handleDestroyClick}></i>
+
           <label className="title">
             <AutoSizingInput
-              value={@state.post.title}
+              value={@state.title}
               placeholder={"Tap to add title"}
-              onChange={@handleFieldChange('title')}
-              onBlur={@handleFieldBlur}
+              onChange={@handleFieldChange.bind(@, 'title')}
+              onBlur={@handleTitleBlur}
               onKeyUp={@handleFieldKeyup}
               readOnly={@state.company.flags.is_read_only}
             />
@@ -117,18 +151,15 @@ Component = React.createClass
 
           <label className="published-at">
             <AutoSizingInput
-              value={@state.post.published_at}
-              placeholder={"Tap to add publish date"}
-              onChange={@handleFieldChange('published-at')}
-              onBlur={@handleFieldBlur}
+              value={@state.published_at}
+              placeholder={moment().format('ll')}
+              onChange={@handleFieldChange.bind(@, 'published_at')}
+              onBlur={@handlePublishedAtBlur}
               onKeyUp={@handleFieldKeyup}
               readOnly={@state.company.flags.is_read_only}
             />
           </label>
 
-          <p>
-            <a href="" onClick={@handleDestroyClick}>Destroy</a>
-          </p>
         </header>
 
 

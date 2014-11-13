@@ -1,9 +1,13 @@
-main.company > div.wrapper > article.editor.post {
+article.editor.post {
+
   border-top: 1px dotted grey;
 
   > header {
+    @include editor-destroy-button;
     @include display(flex);
     @include flex-direction(column);
+
+    position: relative;
     
     > label {
       margin: 10px 0 0;
