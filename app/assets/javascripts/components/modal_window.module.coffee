@@ -30,7 +30,8 @@ Component = React.createClass
 
 
   showPost: (id, company_id) ->
-    @show(Post({key: id, id: id, company_id: company_id}), class_for_container: 'portrait')
+    # TODO: should pass readOnly instead of company_id
+    @show(Post({id: id, company_id: company_id}), class_for_container: 'portrait')
 
 
   show: (component, options = {}) ->

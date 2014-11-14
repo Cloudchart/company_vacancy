@@ -6,7 +6,10 @@ class PostsController < ApplicationController
   authorize_resource
 
   def index
-    @posts = @company.posts.includes(blocks: :block_identities)
+    @posts = @company.posts.includes(:pictures, :paragraphs, blocks: :block_identities)
+      # .where(owner: @company)
+      # .order(published_at: :desc)
+      # .limit(5)
 
     respond_to do |format|
       format.json
@@ -50,7 +53,7 @@ class PostsController < ApplicationController
 private
 
   def post_params
-    params.require(:post).permit(:title, :cover, :published_at)
+    params.require(:post).permit(:title, :published_at)
   end
 
   def set_post

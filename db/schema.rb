@@ -288,7 +288,6 @@ ActiveRecord::Schema.define(version: 20141029143420) do
 
   create_table "posts", primary_key: "uuid", force: true do |t|
     t.string   "title"
-    t.string   "cover_uid"
     t.datetime "published_at"
     t.boolean  "is_published",            default: false
     t.string   "owner_id",     limit: 36

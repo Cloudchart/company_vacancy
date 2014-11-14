@@ -4,8 +4,6 @@
 # 
 tag = React.DOM
 
-Blockable = require('components/mixins/blockable')
-
 CompanyStore = require('stores/company')
 PostStore = require('stores/post_store')
 BlockStore = require('stores/block_store')
@@ -14,8 +12,8 @@ PostActions = require('actions/post_actions')
 BlockableActions = require('actions/mixins/blockable_actions')
 ModalActions = require('actions/modal_actions')
 
+Blockable = require('components/mixins/blockable')
 SortableList = require('components/shared/sortable_list')
-# PostForm = require('components/form/post_form')
 AutoSizingInput = require('components/form/autosizing_input')
 
 # Main
@@ -26,6 +24,12 @@ Component = React.createClass
 
   # Helpers
   # 
+  gatherControls: ->
+    if @state.company.flags.is_read_only
+      null
+    else
+      <i className="fa fa-times-circle-o" onClick={@handleDestroyClick}></i>
+
   identityTypes: ->
     People:     'Person'
     Vacancies:  'Vacancy'
@@ -54,18 +58,6 @@ Component = React.createClass
   handleFieldKeyup: (event) ->
     event.target.blur() if event.key == 'Enter'
 
-  # handleEditClick: (event) ->    
-  #   event.preventDefault()
-
-  #   ModalActions.show(PostForm({
-  #     attributes: @state.post.toJSON()
-  #     onSubmit:   @handlePostFormSubmit
-  #   }))
-
-  # handlePostFormSubmit: (attributes) ->
-  #   PostActions.update(@state.post.uuid, attributes.toJSON())
-  #   ModalActions.hide()
-
   handleDestroyClick: (event) ->
     event.preventDefault()
     PostActions.destroy(@state.post.uuid) if confirm('Are you sure?')
@@ -73,8 +65,8 @@ Component = React.createClass
   # Lifecycle Methods
   # 
   # componentWillMount: ->
+    
   componentDidMount: ->
-    # PostStore.on('change', @refreshStateFromStores)
     BlockStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
@@ -83,8 +75,8 @@ Component = React.createClass
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
   # componentDidUpdate: (prevProps, prevState) ->
+
   componentWillUnmount: ->
-    # PostStore.off('change', @refreshStateFromStores)
     BlockStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
@@ -136,7 +128,7 @@ Component = React.createClass
         dragLockX
       >
         <header>
-          <i className="fa fa-times-circle-o" onClick={@handleDestroyClick}></i>
+          {@gatherControls()}
 
           <label className="title">
             <AutoSizingInput
@@ -159,9 +151,7 @@ Component = React.createClass
               readOnly={@state.company.flags.is_read_only}
             />
           </label>
-
         </header>
-
 
         {blocks}
         {@getSectionPlaceholder(blocks.length)}

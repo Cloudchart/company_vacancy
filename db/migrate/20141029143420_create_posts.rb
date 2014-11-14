@@ -3,7 +3,6 @@ class CreatePosts < ActiveRecord::Migration
     create_table :posts, id: false do |t|
       t.string :uuid, limit: 36
       t.string :title
-      t.string :cover_uid
       t.datetime :published_at
       t.boolean :is_published, default: false
       t.string :owner_id, limit: 36

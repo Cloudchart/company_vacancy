@@ -13,7 +13,6 @@ DefaultMethods =
   getSchema: ->
     uuid: ''
     title: ''
-    cover_uid: null
     published_at: ''
     is_published: false
     owner_type: ''
