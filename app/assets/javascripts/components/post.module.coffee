@@ -31,15 +31,13 @@ Component = React.createClass
       <div className="controls">
         <button 
           className="cc alert"
-          onClick={@handleDestroyClick}
-          disabled={PostStore.getSync(@props.id) == "destroy"}>
-          Cancel
+          onClick={@handleDestroyClick}>
+          Delete
         </button>
 
         <button 
           className="cc"
-          onClick={@handleOkClick}
-          disabled={@state.sync}>
+          onClick={@handleOkClick}>
           OK
         </button>
       </div>
@@ -73,12 +71,13 @@ Component = React.createClass
     event.target.blur() if event.key == 'Enter'
 
   handleDestroyClick: (event) ->
-    PostActions.destroy(@state.post.uuid) if confirm('Are you sure?')
-    ModalActions.hide()
+    if confirm('Are you sure?')
+      ModalActions.hide()
+      PostActions.destroy(@state.post.uuid)
 
   handleOkClick: (event) ->
-    # TODO: show post in timeline
     ModalActions.hide()
+    # TODO: show post in timeline
 
   # Lifecycle Methods
   # 

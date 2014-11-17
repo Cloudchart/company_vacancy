@@ -1,3 +1,5 @@
+// Collection
+// 
 main.company > div.wrapper > div.posts {
   @include display(flex);
   @include flex-direction(column);
@@ -5,6 +7,26 @@ main.company > div.wrapper > div.posts {
 
   background-color: hsl(0, 0%, 98%);
   position: relative;
+
+  > figure.create {
+    @include display(flex);
+    @include align-items(center);
+    @include justify-content(center);
+
+    margin: 20px 0 20px 4px;
+    width: 90px;
+    height: 90px;
+    cursor: pointer;
+    background-color: white;
+    border-radius: 45px;
+    color: lightgrey;
+    position: relative;
+    z-index: 2;
+
+    > i.fa {
+      font-size: 40px;
+    }
+  }
 
   > article.post.preview {
     @include display(flex);
@@ -20,12 +42,12 @@ main.company > div.wrapper > div.posts {
     margin-bottom: 20px;
     z-index: 2;
 
-    &:first-child {
-      margin-top: 20px;
-    }
-
     &:hover > div.controls {
       visibility: visible;
+    }
+
+    &:first-child {
+      margin-top: 20px;
     }
 
     > h1 { font-weight: 600; }
@@ -65,6 +87,9 @@ main.company > div.wrapper > div.posts {
 
 }
 
+
+// Editor
+// 
 article.editor.post {
 
   > header {

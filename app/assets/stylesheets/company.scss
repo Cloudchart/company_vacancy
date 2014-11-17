@@ -2,12 +2,6 @@ main.company > div.wrapper {
   > div.separator {
     border-bottom: 4px solid lightgrey;
   }
-
-  > button.cc {
-    margin: 10px 0;
-    position: absolute;
-    z-index: 1;
-  }
 }
 
 @import 'company/search';

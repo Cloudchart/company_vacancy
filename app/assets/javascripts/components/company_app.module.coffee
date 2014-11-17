@@ -42,13 +42,23 @@ Component = React.createClass
     if @state.company.flags.is_read_only
       null
     else
-      <button className="cc" onClick={@handleCreatePostClick}>Create Post</button>
+      class_for_icon =
+        if PostStore.getSync(@state.new_post_key) == "create"
+          'fa fa-spin fa-spinner'
+        else
+          'fa fa-plus'
+
+      <figure className="create" onClick={@handleCreatePostClick}>
+        <i className={class_for_icon}></i>
+      </figure>
 
   # Handlers
   # 
   handleCreatePostClick: (event) ->
-    newPostKey = PostStore.create()
-    PostActions.create(newPostKey, { owner_id: @props.id, owner_type: 'Company' })
+    new_post_key = PostStore.create()
+    PostActions.create(new_post_key, { owner_id: @props.id, owner_type: 'Company' })
+
+    @setState({ new_post_key: new_post_key })
 
   # Component Specifications
   # 
@@ -74,6 +84,7 @@ Component = React.createClass
     state            = @getStateFromStores()
     state.position   = null
     state.owner_type = 'Company'
+    state.new_post_key = null
     state
 
   render: ->
@@ -109,9 +120,9 @@ Component = React.createClass
         </SortableList>
 
         <div className="separator"></div>
-        {@showCreatePostButton()}
         
         <div className="posts">
+          {@showCreatePostButton()}
           {@gatherPosts()}
           <div className="timeline"></div>
         </div>
