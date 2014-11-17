@@ -8,7 +8,7 @@ class BlocksController < ApplicationController
     
     block.save!
 
-    Activity.track_activity(current_user, params[:action], block, owner)
+    # Activity.track_activity(current_user, params[:action], block, owner)
     
     blocks = owner.blocks.includes(:block_identities)
     
@@ -24,7 +24,7 @@ class BlocksController < ApplicationController
 
     block.update!(block_params_for_update)
 
-    Activity.track_activity(current_user, params[:action], block, block.owner)
+    # Activity.track_activity(current_user, params[:action], block, block.owner)
 
     respond_to do |format|
       format.json { render json: { block: block.active_model_serializer.new(block), identities: block.identities.active_model_serializer.new(block.identities) } }

@@ -28,7 +28,21 @@ Component = React.createClass
     if @state.company.flags.is_read_only
       null
     else
-      <i className="fa fa-times-circle-o" onClick={@handleDestroyClick}></i>
+      <div className="controls">
+        <button 
+          className="cc alert"
+          onClick={@handleDestroyClick}
+          disabled={PostStore.getSync(@props.id) == "destroy"}>
+          Cancel
+        </button>
+
+        <button 
+          className="cc"
+          onClick={@handleOkClick}
+          disabled={@state.sync}>
+          OK
+        </button>
+      </div>
 
   identityTypes: ->
     People:     'Person'
@@ -59,13 +73,17 @@ Component = React.createClass
     event.target.blur() if event.key == 'Enter'
 
   handleDestroyClick: (event) ->
-    event.preventDefault()
     PostActions.destroy(@state.post.uuid) if confirm('Are you sure?')
+    ModalActions.hide()
+
+  handleOkClick: (event) ->
+    # TODO: show post in timeline
+    ModalActions.hide()
 
   # Lifecycle Methods
   # 
   # componentWillMount: ->
-    
+
   componentDidMount: ->
     BlockStore.on('change', @refreshStateFromStores)
 
@@ -128,8 +146,6 @@ Component = React.createClass
         dragLockX
       >
         <header>
-          {@gatherControls()}
-
           <label className="title">
             <AutoSizingInput
               value={@state.title}
@@ -155,6 +171,7 @@ Component = React.createClass
 
         {blocks}
         {@getSectionPlaceholder(blocks.length)}
+        {@gatherControls()}
       </SortableList>
 
     else

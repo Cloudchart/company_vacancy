@@ -127,8 +127,10 @@ body .modal-overlay {
     background-color: $modal-container-background-color;
     margin: auto;
 
-    &.portrait {
+    &.post {
       margin: 0 auto;
+      padding: 50px;
+      overflow: scroll;
     }
   }
   

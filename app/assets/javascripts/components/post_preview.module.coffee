@@ -7,7 +7,9 @@ tag = React.DOM
 PostStore = require('stores/post_store')
 
 PostActions = require('actions/post_actions')
-# ModalActions = require('actions/modal_actions')
+ModalActions = require('actions/modal_actions')
+
+Post = require('components/post')
 
 # Main
 # 
@@ -17,7 +19,7 @@ Component = React.createClass
   # 
   gatherControls: ->
     if @props.readOnly
-      # TODO: add show
+      # TODO: add show?
       null
     else
       <div className="controls">
@@ -33,7 +35,7 @@ Component = React.createClass
 
   handleEditClick: (event) ->
     event.preventDefault()
-    console.log 'handleEditClick'
+    ModalActions.show(Post({ id: @props.id, company_id: @props.company_id }), class_for_container: 'post')
 
   # Lifecycle Methods
   # 
@@ -62,7 +64,7 @@ Component = React.createClass
     <article className="post preview">
       {@gatherControls()}
       <h1>{@state.title}</h1>
-      <span>{@state.published_at}</span>
+      <span className="date">{if moment(@state.published_at).isValid() then moment(@state.published_at).format('ll') else ''}</span>
     </article>
 
 # Exports

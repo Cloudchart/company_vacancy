@@ -1,9 +1,73 @@
+main.company > div.wrapper > div.posts {
+  @include display(flex);
+  @include flex-direction(column);
+  @include align-items(center);
+
+  background-color: hsl(0, 0%, 98%);
+  position: relative;
+
+  > article.post.preview {
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
+
+    position: relative;
+    border: 1px solid lightgrey;
+    background-color: white;
+    width: 500px;
+    height: 150px;
+    padding: 20px;
+    margin-bottom: 20px;
+    z-index: 2;
+
+    &:first-child {
+      margin-top: 20px;
+    }
+
+    &:hover > div.controls {
+      visibility: visible;
+    }
+
+    > h1 { font-weight: 600; }
+    > span.date { color: grey; }
+
+    > div.controls {
+      @include position(absolute, 10px 10px 0 0);
+      
+      visibility: hidden;
+      height: 30px;
+
+      > i.fa {
+        z-index: 1;
+        font-size: 20px;
+        cursor: pointer;
+        
+        &.fa-edit {
+          margin-right: 5px;
+        }
+
+        &.fa-times-circle-o {
+          color: hsl(0, 75%, 55%);
+        }
+      }
+    }
+
+  }
+
+  > div.timeline {
+    border: 2px solid lightgrey;
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    left: 50%;
+    z-index: 1;
+  }
+
+}
+
 article.editor.post {
 
-  border-top: 1px dotted grey;
-
   > header {
-    @include editor-destroy-button;
     @include display(flex);
     @include flex-direction(column);
 
@@ -32,5 +96,16 @@ article.editor.post {
 
     }    
 
+  }
+
+  > div.controls {
+    @include display(flex);
+    @include justify-content(space-between);
+
+    margin-top: 50px;
+
+    > button {
+      width: 80px;
+    }
   }
 }

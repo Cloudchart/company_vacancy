@@ -1,6 +1,12 @@
 main.company > div.wrapper {
   > div.separator {
-    border-bottom: 1px dotted grey;
+    border-bottom: 4px solid lightgrey;
+  }
+
+  > button.cc {
+    margin: 10px 0;
+    position: absolute;
+    z-index: 1;
   }
 }
 

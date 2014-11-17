@@ -10,7 +10,6 @@ CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
 PostStore       = require('stores/post_store')
 
-ModalActions    = require('actions/modal_actions')
 PostActions     = require('actions/post_actions')
 
 SortableList    = require('components/shared/sortable_list')
@@ -36,7 +35,7 @@ Component = React.createClass
       .filter('uuid')
       .sortBy (post) -> new Date(post.published_at)
       .reverse()
-      .map (post) => <PostPreview key={post.uuid} id={post.uuid}, readOnly={@state.company.flags.is_read_only} />
+      .map (post) => <PostPreview key={post.uuid} id={post.uuid}, company_id={@state.company.uuid}, readOnly={@state.company.flags.is_read_only} />
       .value()
   
   showCreatePostButton: ->
@@ -50,10 +49,6 @@ Component = React.createClass
   handleCreatePostClick: (event) ->
     newPostKey = PostStore.create()
     PostActions.create(newPostKey, { owner_id: @props.id, owner_type: 'Company' })
-
-  # handleModalShowPost: (id) ->
-    # ModalActions.show(Post({ key: id, id: id, company_id: @props.id }))
-    # console.log 'handleModalShowPost', id
 
   # Component Specifications
   # 
@@ -115,7 +110,11 @@ Component = React.createClass
 
         <div className="separator"></div>
         {@showCreatePostButton()}
-        {@gatherPosts()}
+        
+        <div className="posts">
+          {@gatherPosts()}
+          <div className="timeline"></div>
+        </div>
       </div>
 
     else
