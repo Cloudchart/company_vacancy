@@ -1,4 +1,4 @@
-// Collection
+// Preview
 // 
 main.company > div.wrapper > div.posts {
   @include display(flex);
@@ -29,15 +29,10 @@ main.company > div.wrapper > div.posts {
   }
 
   > article.post.preview {
-    @include display(flex);
-    @include flex-direction(column);
-    @include align-items(center);
-
     position: relative;
     border: 1px solid lightgrey;
     background-color: white;
     width: 500px;
-    height: 150px;
     padding: 20px;
     margin-bottom: 20px;
     z-index: 2;
@@ -50,8 +45,41 @@ main.company > div.wrapper > div.posts {
       margin-top: 20px;
     }
 
-    > h1 { font-weight: 600; }
-    > span.date { color: grey; }
+    > header {
+      margin-bottom: 20px;
+      text-align: center;
+
+      > h1 { 
+        font-weight: 600;
+        margin: 0;
+      }
+
+      > span.date {
+        color: grey;
+      }
+    }
+
+    > div.paragraph {
+      margin-bottom: 20px;
+      font-size: 16px;
+      line-height: 22px;
+      word-wrap: break-word;
+    }
+
+    ul.pictures {
+      @include flex-ul;
+
+      > li {
+        width: 100px;
+        height: 100px;
+        overflow: hidden;
+        margin-right: 20px;
+
+        > img {
+          width: 200px;
+        }
+      }
+    }
 
     > div.controls {
       @include position(absolute, 10px 10px 0 0);
