@@ -18,7 +18,7 @@ main.company > div.wrapper > div.posts {
     height: 90px;
     cursor: pointer;
     background-color: white;
-    border-radius: 45px;
+    border-radius: 50%;
     color: lightgrey;
     position: relative;
     z-index: 2;
@@ -74,10 +74,9 @@ main.company > div.wrapper > div.posts {
         height: 100px;
         overflow: hidden;
         margin-right: 20px;
-
-        > img {
-          width: 200px;
-        }
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
       }
     }
 

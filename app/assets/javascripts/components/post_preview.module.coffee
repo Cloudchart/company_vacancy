@@ -44,7 +44,7 @@ Component = React.createClass
     block_ids = _.pluck @getBlocksByIdentity('Picture'), 'uuid'
     pictures = _.chain PictureStore.all()
       .filter (picture) -> _.contains block_ids, picture.owner_id
-      .map (picture) -> <li key={picture.uuid}><img src={picture.url}/></li>
+      .map (picture) -> <li key={picture.uuid} style={'background-image': "url(#{picture.url})"}></li>
       .value()
 
     <ul className="pictures">
