@@ -36,7 +36,10 @@ Component = React.createClass
     paragraph = if block then ParagraphStore.filter((paragraph) -> paragraph.owner_id == block.uuid)[0] else null
 
     if paragraph
-      <div className="paragraph" dangerouslySetInnerHTML={__html: paragraph.content}></div>
+      parts = paragraph.content.match(/<div>(.*?)<\/div>/i)
+      content = "<div>#{_.str.truncate(parts[1], 500)}</div>"
+
+      <div className="paragraph" dangerouslySetInnerHTML={__html: content}></div>
     else
       ''
 
