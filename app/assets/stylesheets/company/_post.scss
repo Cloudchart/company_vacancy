@@ -5,7 +5,7 @@ main.company > div.wrapper > div.posts {
   @include flex-direction(column);
   @include align-items(center);
 
-  background-color: hsl(0, 0%, 98%);
+  background-color: hsl(0, 0%, 96%);
   position: relative;
 
   > figure.create {
@@ -13,7 +13,7 @@ main.company > div.wrapper > div.posts {
     @include align-items(center);
     @include justify-content(center);
 
-    margin: 20px 0 20px 4px;
+    margin: 30px 0;
     width: 90px;
     height: 90px;
     cursor: pointer;
@@ -30,11 +30,11 @@ main.company > div.wrapper > div.posts {
 
   > article.post.preview {
     position: relative;
-    border: 1px solid lightgrey;
+    border: 2px solid hsl(139, 55%, 51%);
     background-color: white;
-    width: 500px;
+    width: 600px;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     z-index: 2;
 
     &:hover > div.controls {
@@ -42,7 +42,7 @@ main.company > div.wrapper > div.posts {
     }
 
     &:first-child {
-      margin-top: 20px;
+      margin-top: 30px;
     }
 
     > header {
@@ -60,7 +60,6 @@ main.company > div.wrapper > div.posts {
     }
 
     > div.paragraph {
-      margin-bottom: 20px;
       font-size: 16px;
       line-height: 22px;
       word-wrap: break-word;
@@ -69,6 +68,7 @@ main.company > div.wrapper > div.posts {
 
     ul.pictures {
       @include flex-ul;
+      margin-top: 20px;
 
       > li {
         width: 100px;
@@ -105,12 +105,13 @@ main.company > div.wrapper > div.posts {
   }
 
   > div.timeline {
-    border: 2px solid lightgrey;
+    border: 10px solid hsl(0, 0%, 89%);
     position: absolute;
-    top: 20px;
-    bottom: 20px;
+    top: 31px;
+    bottom: 30px;
     left: 50%;
     z-index: 1;
+    margin-left: -10px;
   }
 
 }

@@ -51,6 +51,10 @@ Component = React.createClass
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
 
+  buildParagraph: ->
+    new_block_key = BlockStore.create({ owner_id: @props.id, owner_type: 'Post', identity_type: 'Paragraph', position: 0 })
+    setTimeout => BlockableActions.createBlock(new_block_key, BlockStore.get(new_block_key).toJSON())
+
   # Handlers
   # 
   handleFieldChange: (name, event) ->
@@ -85,6 +89,7 @@ Component = React.createClass
 
   componentDidMount: ->
     BlockStore.on('change', @refreshStateFromStores)
+    @buildParagraph() unless @state.blocks.length > 0
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores())

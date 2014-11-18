@@ -33,11 +33,18 @@ Component = React.createClass
 
   getFirstParagraph: ->
     block = @getBlocksByIdentity('Paragraph')[0]
-    paragraph = if block then ParagraphStore.filter((paragraph) -> paragraph.owner_id == block.uuid)[0] else null
+    paragraph =
+      if block
+        _.chain @state.paragraphs
+          .filter (paragraph) -> paragraph.owner_id == block.uuid
+          .first()
+          .value()
+      else
+        null
 
-    if paragraph
+    if paragraph and paragraph.content
       parts = paragraph.content.match(/<div>(.*?)<\/div>/i)
-      content = "<div>#{_.str.truncate(parts[1], 500)}</div>"
+      content = "<div>#{_.str.truncate(parts[1], 600)}</div>"
 
       <div className="paragraph" dangerouslySetInnerHTML={__html: content}></div>
     else
@@ -45,7 +52,7 @@ Component = React.createClass
 
   gatherPictures: ->
     block_ids = _.pluck @getBlocksByIdentity('Picture'), 'uuid'
-    pictures = _.chain PictureStore.all()
+    pictures = _.chain @state.pictures
       .filter (picture) -> _.contains block_ids, picture.owner_id
       .map (picture) -> <li key={picture.uuid} style={'background-image': "url(#{picture.url})"}></li>
       .value()
@@ -64,7 +71,7 @@ Component = React.createClass
   # 
   handleDestroyClick: (event) ->
     event.preventDefault()
-    PostActions.destroy(@state.uuid) if confirm('Are you sure?')
+    PostActions.destroy(@state.post.uuid) if confirm('Are you sure?')
 
   handleEditClick: (event) ->
     event.preventDefault()
@@ -73,7 +80,10 @@ Component = React.createClass
   # Lifecycle Methods
   # 
   # componentWillMount: ->
-  # componentDidMount: ->
+
+  componentDidMount: ->
+    ParagraphStore.on('change', @refreshStateFromStores)
+    PictureStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores())
@@ -81,16 +91,22 @@ Component = React.createClass
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
   # componentDidUpdate: (prevProps, prevState) ->
-  # componentWillUnmount: ->
+
+  componentWillUnmount: ->
+    ParagraphStore.off('change', @refreshStateFromStores)
+    PictureStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
   # 
   # getDefaultProps: ->
 
-  # TODO: refresh state from picture and paragraph stores
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores())
 
   getStateFromStores: ->
-    PostStore.get(@props.id).toJSON()
+    post: PostStore.get(@props.id)
+    paragraphs: ParagraphStore.all()
+    pictures: PictureStore.all()
 
   getInitialState: ->
     @getStateFromStores()
@@ -100,8 +116,8 @@ Component = React.createClass
       {@gatherControls()}
 
       <header>
-        <h1>{@state.title}</h1>
-        <span className="date">{if moment(@state.published_at).isValid() then moment(@state.published_at).format('ll') else ''}</span>
+        <h1>{@state.post.title}</h1>
+        <span className="date">{if moment(@state.post.published_at).isValid() then moment(@state.post.published_at).format('ll') else ''}</span>
       </header>
 
       {@getFirstParagraph()}
