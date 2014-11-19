@@ -1,3 +1,5 @@
+$base-post-preview-margin: 80px;
+
 // Preview
 // 
 main.company > div.wrapper > div.posts {
@@ -13,7 +15,7 @@ main.company > div.wrapper > div.posts {
     @include align-items(center);
     @include justify-content(center);
 
-    margin: 30px 0;
+    margin: ($base-post-preview-margin / 2) 0;
     width: 90px;
     height: 90px;
     cursor: pointer;
@@ -30,11 +32,11 @@ main.company > div.wrapper > div.posts {
 
   > article.post.preview {
     position: relative;
-    border: 2px solid hsl(139, 55%, 51%);
+    border: 3px solid hsl(139, 55%, 51%);
     background-color: white;
     width: 600px;
     padding: 20px;
-    margin-bottom: 30px;
+    margin-bottom: $base-post-preview-margin;
     z-index: 2;
 
     &:hover > div.controls {
@@ -42,7 +44,7 @@ main.company > div.wrapper > div.posts {
     }
 
     &:first-child {
-      margin-top: 30px;
+      margin-top: $base-post-preview-margin;
     }
 
     > header {
@@ -107,8 +109,8 @@ main.company > div.wrapper > div.posts {
   > div.timeline {
     border: 10px solid hsl(0, 0%, 89%);
     position: absolute;
-    top: 31px;
-    bottom: 30px;
+    top: $base-post-preview-margin;
+    bottom: $base-post-preview-margin;
     left: 50%;
     z-index: 1;
     margin-left: -10px;
