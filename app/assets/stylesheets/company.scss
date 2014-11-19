@@ -1,9 +1,3 @@
-main.company > div.wrapper {
-  > div.separator {
-    border-bottom: 4px solid lightgrey;
-  }
-}
-
 @import 'company/search';
 @import 'company/company-2_0';
 @import 'company/preview-2_0';

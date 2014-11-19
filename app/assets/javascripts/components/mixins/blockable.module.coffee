@@ -68,7 +68,7 @@ module.exports =
     item = (type, key) =>
       <li key={key} onClick={@handleChooseBlockTypeClick.bind(@, type)}>{key}</li>
     
-    content = unless @state.company.flags.is_read_only
+    content = unless @state.readOnly
       if @state.position == position
         items = _.map(@identityTypes(), item) ; items.push(cancel_item())
         <ul>{items}</ul>
@@ -86,6 +86,6 @@ module.exports =
       .map (block) =>
         key = block.getKey()
         <SortableListItem key={key}>
-          <SectionWrapper ref={key} key={key} company_id={@state.company.uuid} readOnly={@state.company.flags.is_read_only} />
+          <SectionWrapper ref={key} key={key} company_id={@state.company.uuid} readOnly={@state.readOnly} />
         </SortableListItem>
       .value()

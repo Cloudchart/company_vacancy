@@ -4,8 +4,6 @@ tag = React.DOM
 
 CloudFlux = require('cloud_flux')
 
-Post = require('components/post')
-
 # Main
 #
 Component = React.createClass
@@ -27,11 +25,6 @@ Component = React.createClass
   _deprecated_close: ->
     console.warn "Deprecation: use ModalActions.close instead of Event triggering."
     @close()
-
-
-  showPost: (id, company_id) ->
-    # TODO: should pass readOnly instead of company_id
-    @show(Post({id: id, company_id: company_id}), class_for_container: 'post')
 
 
   show: (component, options = {}) ->
@@ -79,7 +72,6 @@ Component = React.createClass
     'modal:show':   @show
     'modal:hide':   @hide
     'modal:close':  @close
-    'modal:show:post': @showPost
   
   
   getDefaultProps: ->

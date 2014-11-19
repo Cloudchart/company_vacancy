@@ -9,6 +9,7 @@ main.company > div.wrapper > div.posts {
 
   background-color: hsl(0, 0%, 96%);
   position: relative;
+  border-top: 4px solid lightgrey;
 
   > figure.create {
     @include display(flex);

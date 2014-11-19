@@ -25,7 +25,7 @@ Component = React.createClass
   # Helpers
   # 
   gatherControls: ->
-    if @state.company.flags.is_read_only
+    if @props.readOnly
       null
     else
       <div className="controls">
@@ -146,7 +146,7 @@ Component = React.createClass
         className="editor post"
         onOrderChange={@handleSortableChange}
         onOrderUpdate={@handleSortableUpdate}
-        readOnly={@state.company.flags.is_read_only}
+        readOnly={@props.readOnly}
         dragLockX
       >
         <header>
@@ -157,7 +157,7 @@ Component = React.createClass
               onChange={@handleFieldChange.bind(@, 'title')}
               onBlur={@handleTitleBlur}
               onKeyUp={@handleFieldKeyup}
-              readOnly={@state.company.flags.is_read_only}
+              readOnly={@props.readOnly}
             />
           </label>
 
@@ -168,7 +168,7 @@ Component = React.createClass
               onChange={@handleFieldChange.bind(@, 'published_at')}
               onBlur={@handlePublishedAtBlur}
               onKeyUp={@handleFieldKeyup}
-              readOnly={@state.company.flags.is_read_only}
+              readOnly={@props.readOnly}
             />
           </label>
         </header>

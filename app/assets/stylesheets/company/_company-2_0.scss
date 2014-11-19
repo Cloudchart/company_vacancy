@@ -8,10 +8,18 @@ $company-article-block-margin: 30px;
   
   margin: 0 auto $company-article-block-margin;
   width: 750px;
+  position: relative;
+
+  // Controls
+  // 
+  > div.controls {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
   
   // Logo
   //
-  
   $logo-height: 110px;
   $logo-width: 220px;
 

@@ -4,6 +4,8 @@
 #
 tag = React.DOM
 
+CloudFlux = require('cloud_flux')
+
 Blockable = require('components/mixins/blockable')
 
 CompanyStore    = require('stores/company')
@@ -11,16 +13,18 @@ BlockStore      = require('stores/block_store')
 PostStore       = require('stores/post_store')
 
 PostActions     = require('actions/post_actions')
+ModalActions    = require('actions/modal_actions')
 
 SortableList    = require('components/shared/sortable_list')
 CompanyHeader   = require('components/company/header')
 PostPreview     = require('components/post_preview')
+Post            = require('components/post')
 
 # Main
 #
 Component = React.createClass
 
-  mixins: [Blockable]
+  mixins: [CloudFlux.mixins.Actions, Blockable]
 
   # Helpers
   # 
@@ -35,11 +39,11 @@ Component = React.createClass
       .filter('uuid')
       .sortBy (post) -> new Date(post.published_at)
       .reverse()
-      .map (post) => <PostPreview key={post.uuid} id={post.uuid}, company_id={@state.company.uuid}, readOnly={@state.company.flags.is_read_only} />
+      .map (post) => <PostPreview key={post.uuid} id={post.uuid}, company_id={@state.company.uuid}, readOnly={@state.readOnly} />
       .value()
   
   showCreatePostButton: ->
-    if @state.company.flags.is_read_only
+    if @state.readOnly
       null
     else
       class_for_icon =
@@ -52,6 +56,9 @@ Component = React.createClass
         <i className={class_for_icon}></i>
       </figure>
 
+  getCloudFluxActions: ->
+    'post:create:done': @handlePostCreateDone
+
   # Handlers
   # 
   handleCreatePostClick: (event) ->
@@ -60,13 +67,23 @@ Component = React.createClass
 
     @setState({ new_post_key: new_post_key })
 
+  handlePostCreateDone: (id, attributes, json, sync_token) ->
+    setTimeout => 
+      ModalActions.show(Post({id: json.uuid, company_id: @state.company.uuid, readOnly: @state.readOnly}), class_for_container: 'post')
+
+  handleViewModeChange: (data) ->
+    @setState({ readOnly: data.readOnly })
+
   # Component Specifications
   # 
   getStateFromStores: ->
-    company: CompanyStore.get(@props.id)
+    company = CompanyStore.get(@props.id)
+
     blocks: BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.id
     posts: PostStore.all()
-  
+    company: company
+    readOnly: if company then company.flags.is_read_only else true
+
   refreshStateFromStores: ->
     @setState(@getStateFromStores())
   
@@ -101,10 +118,12 @@ Component = React.createClass
           name            = {@state.company.name}
           description     = {@state.company.description}
           logotype_url    = {@state.company.logotype_url}
-          readOnly        = {@state.company.flags.is_read_only}
+          readOnly        = {@state.readOnly}
           can_follow      = {@state.company.flags.can_follow}
           is_followed     = {@state.company.flags.is_followed}
           invitable_roles = {@state.company.meta.invitable_roles}
+          onChange        = {@handleViewModeChange}
+          shouldDisplayViewMode = {if @state.company.flags.is_read_only then false else true}
         />
         
         <SortableList
@@ -112,15 +131,13 @@ Component = React.createClass
           className="editor company company-2_0"
           onOrderChange={@handleSortableChange}
           onOrderUpdate={@handleSortableUpdate}
-          readOnly={@state.company.flags.is_read_only}
+          readOnly={@state.readOnly}
           dragLockX
         >
           {blocks}
           {@getSectionPlaceholder(blocks.length)}
         </SortableList>
 
-        <div className="separator"></div>
-        
         <div className="posts">
           {@showCreatePostButton()}
           {@gatherPosts()}

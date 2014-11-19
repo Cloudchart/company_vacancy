@@ -75,7 +75,7 @@ Component = React.createClass
 
   handleEditClick: (event) ->
     event.preventDefault()
-    ModalActions.show(Post({ id: @props.id, company_id: @props.company_id }), class_for_container: 'post')
+    ModalActions.show(Post({ id: @props.id, readOnly: @props.readOnly }), class_for_container: 'post')
 
   # Lifecycle Methods
   # 
