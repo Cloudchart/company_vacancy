@@ -103,8 +103,8 @@ Component = React.createClass
       (tag.div { className: 'controls' },
         (tag.div { className: 'select cc view-mode'},
           (tag.select { value: @state.view_mode, onChange: @onViewModeChange },
-            (tag.option { value: 'editor' }, 'Editor')
-            (tag.option { value: 'public' }, 'Public')
+            (tag.option { value: 'editor' }, 'Edit')
+            (tag.option { value: 'public' }, 'View')
           )
           (tag.i { className: 'fa fa-chevron-down' })
         )
