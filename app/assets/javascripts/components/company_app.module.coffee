@@ -6,18 +6,19 @@ tag = React.DOM
 
 CloudFlux = require('cloud_flux')
 
-Blockable = require('components/mixins/blockable')
-
 CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
 PostStore       = require('stores/post_store')
+PersonStore     = require('stores/person')
 
 PostActions     = require('actions/post_actions')
 ModalActions    = require('actions/modal_actions')
 
+Blockable       = require('components/mixins/blockable')
 SortableList    = require('components/shared/sortable_list')
 CompanyHeader   = require('components/company/header')
-PostPreview     = require('components/post_preview')
+PostPreview     = require('components/company/timeline/post_preview')
+PersonPreview   = require('components/company/timeline/person_preview')
 Post            = require('components/post')
 
 # Main
@@ -35,12 +36,43 @@ Component = React.createClass
     Paragraph:  'Paragraph'
 
   gatherPosts: ->
-    _.chain @state.posts
-      .filter('uuid')
-      .sortBy (post) -> new Date(post.published_at)
+    result = []
+
+    # people
+    _.each ['hired_on', 'fired_on'], (attribute) =>
+      people = _.filter @state.people, (person) -> person.uuid and person[attribute]
+      _.each people, (person) -> result.push { date: person[attribute], type: 'Person', data: person.toJSON() }
+
+    # posts
+    posts = if @state.readOnly
+      _.filter @state.posts, (post) -> post.uuid and post.published_at
+    else
+      _.filter @state.posts, 'uuid'
+
+    _.each posts, (post) -> result.push { date: post.published_at, type: 'Post', data: post.toJSON() }
+    
+    # result
+    _.chain result
+      .sortBy (object) -> new Date(object.date)
       .reverse()
-      .map (post) => <PostPreview key={post.uuid} id={post.uuid}, company_id={@state.company.uuid}, readOnly={@state.readOnly} />
+      .map (object, index) =>
+        (eval("#{object.type}Preview") {
+          key: index
+          id: object.data.uuid
+          company_id: @state.company.uuid
+          readOnly: @state.readOnly
+        })
       .value()
+
+    # _.map result
+    # console.log result
+
+    # _.chain @state.posts
+    #   .filter('uuid')
+    #   .sortBy (post) -> new Date(post.published_at)
+    #   .reverse()
+    #   .map (post) => <PostPreview key={post.uuid} id={post.uuid}, company_id={@state.company.uuid}, readOnly={@state.readOnly} />
+    #   .value()
   
   showCreatePostButton: ->
     if @state.readOnly
@@ -81,6 +113,7 @@ Component = React.createClass
 
     blocks: BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.id
     posts: PostStore.all()
+    people: PersonStore.all()
     company: company
     readOnly: if company then company.flags.is_read_only else true
 
@@ -91,11 +124,13 @@ Component = React.createClass
     CompanyStore.on('change', @refreshStateFromStores)
     BlockStore.on('change', @refreshStateFromStores)
     PostStore.on('change', @refreshStateFromStores)
+    PersonStore.on('change', @refreshStateFromStores)
 
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
     BlockStore.off('change', @refreshStateFromStores)
     PostStore.off('change', @refreshStateFromStores)
+    PersonStore.off('change', @refreshStateFromStores)
   
   getInitialState: ->
     state            = @getStateFromStores()
