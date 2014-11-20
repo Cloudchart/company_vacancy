@@ -35,6 +35,7 @@ Component = React.createClass
     Picture:    'Picture'
     Paragraph:  'Paragraph'
 
+  # TODO: refactor using _.inject without eval
   gatherPosts: ->
     result = []
 
@@ -63,16 +64,6 @@ Component = React.createClass
           readOnly: @state.readOnly
         })
       .value()
-
-    # _.map result
-    # console.log result
-
-    # _.chain @state.posts
-    #   .filter('uuid')
-    #   .sortBy (post) -> new Date(post.published_at)
-    #   .reverse()
-    #   .map (post) => <PostPreview key={post.uuid} id={post.uuid}, company_id={@state.company.uuid}, readOnly={@state.readOnly} />
-    #   .value()
   
   showCreatePostButton: ->
     if @state.readOnly

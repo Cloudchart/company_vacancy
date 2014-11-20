@@ -1,6 +1,6 @@
 $base-post-preview-margin: 80px;
 
-// Preview
+// Main
 // 
 main.company > div.wrapper > div.posts {
   @include display(flex);
@@ -11,6 +11,8 @@ main.company > div.wrapper > div.posts {
   position: relative;
   border-top: 4px solid lightgrey;
 
+  // Create post
+  // 
   > figure.create {
     @include display(flex);
     @include align-items(center);
@@ -31,7 +33,13 @@ main.company > div.wrapper > div.posts {
     }
   }
 
-  > article.post.preview {
+  > article.preview:first-child {
+    margin-top: $base-post-preview-margin;
+  }
+
+  // Post preview
+  // 
+  > article.preview.post {
     position: relative;
     border: 3px solid hsl(139, 55%, 51%);
     background-color: white;
@@ -42,10 +50,6 @@ main.company > div.wrapper > div.posts {
 
     &:hover > div.controls {
       visibility: visible;
-    }
-
-    &:first-child {
-      margin-top: $base-post-preview-margin;
     }
 
     > header {
@@ -96,10 +100,10 @@ main.company > div.wrapper > div.posts {
         cursor: pointer;
         
         &.fa-edit {
-          margin-right: 5px;
+          margin-right: 10px;
         }
 
-        &.fa-times-circle-o {
+        &.fa-times {
           color: hsl(0, 75%, 55%);
         }
       }
@@ -107,11 +111,47 @@ main.company > div.wrapper > div.posts {
 
   }
 
+  // Person preview
+  // 
+  > article.preview.person {
+    margin-bottom: $base-post-preview-margin;
+    width: 215px;
+    z-index: 2;
+
+    > aside.avatar {
+      cursor: pointer;
+    }
+
+    > footer {
+      padding: 10px 20px 0 20px;
+
+      > p {
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        &.name { 
+          font-size: 20px;
+        }
+
+        &.occupation {
+          font-size: 12px;
+          font-weight: 300;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+
+
+  // Timeline
+  // 
   > div.timeline {
     border: 10px solid hsl(0, 0%, 89%);
     position: absolute;
     top: $base-post-preview-margin;
-    bottom: $base-post-preview-margin;
+    bottom: $base-post-preview-margin * 2;
     left: 50%;
     z-index: 1;
     margin-left: -10px;

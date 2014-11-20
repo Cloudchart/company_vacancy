@@ -28,7 +28,7 @@ Component = React.createClass
     else
       <div className="controls">
         <i className="fa fa-edit" onClick={@handleEditClick}></i>
-        <i className="fa fa-times-circle-o" onClick={@handleDestroyClick}></i>
+        <i className="fa fa-times" onClick={@handleDestroyClick}></i>
       </div>
 
   getFirstParagraph: ->
@@ -75,7 +75,11 @@ Component = React.createClass
 
   handleEditClick: (event) ->
     event.preventDefault()
-    ModalActions.show(Post({ id: @props.id, readOnly: @props.readOnly }), class_for_container: 'post')
+    ModalActions.show(Post({ 
+      id: @props.id
+      company_id: @props.company_id
+      readOnly: @props.readOnly 
+    }), class_for_container: 'post')
 
   # Lifecycle Methods
   # 
@@ -112,17 +116,20 @@ Component = React.createClass
     @getStateFromStores()
 
   render: ->
-    <article className="post preview">
-      {@gatherControls()}
+    if @state.post
+      <article className="preview post">
+        {@gatherControls()}
 
-      <header>
-        <h1>{@state.post.title}</h1>
-        <span className="date">{if moment(@state.post.published_at).isValid() then moment(@state.post.published_at).format('ll') else ''}</span>
-      </header>
+        <header>
+          <h1>{@state.post.title}</h1>
+          <span className="date">{if moment(@state.post.published_at).isValid() then moment(@state.post.published_at).format('ll') else ''}</span>
+        </header>
 
-      {@getFirstParagraph()}
-      {@gatherPictures()}
-    </article>
+        {@getFirstParagraph()}
+        {@gatherPictures()}
+      </article>
+    else
+      null
 
 # Exports
 # 

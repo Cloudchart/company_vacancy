@@ -45,20 +45,18 @@ Component = React.createClass
     @getStateFromStores()
 
   render: ->
-    <article className="person preview">
-      <div className="person avatar">
-        <PersonAvatar 
-          value={@state.person.full_name}
-          avatarURL={@state.person.avatar_url}
-          onClick={@handleAvatarClick}
-          readOnly={true}
-        />
-        <footer>
-          <p className="name">{@state.person.full_name}</p>
-          <p className="occupation">{@state.person.occupation}</p>
-        </footer>
-      </div>
+    <article className="preview person">
+      <PersonAvatar 
+        value={@state.person.full_name}
+        avatarURL={@state.person.avatar_url}
+        onClick={@handleAvatarClick}
+        readOnly={true}
+      />
       <aside className="event"></aside>
+      <footer>
+        <p className="name">{@state.person.full_name}</p>
+        <p className="occupation">{@state.person.occupation}</p>
+      </footer>
     </article>
 
 # Exports
