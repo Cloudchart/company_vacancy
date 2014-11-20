@@ -126,6 +126,7 @@ Component = React.createClass
     blocks: BlockStore.filter (block) => block.owner_type == 'Post' and block.owner_id == @props.id
     title: @getTitle(post)
     published_at: @getPublishedAt(post)
+    readOnly: @props.readOnly
 
   getInitialState: ->
     state = @getStateFromStores()

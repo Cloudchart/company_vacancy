@@ -23,6 +23,8 @@ Component = React.createClass
   # Handlers
   # 
   handleAvatarClick: (event) ->
+    return if @props.readOnly
+
     ModalActions.show(PersonForm({
       attributes: @state.person.toJSON()
       onSubmit:   @handlePersonFormSubmit.bind(@, @state.person.uuid)

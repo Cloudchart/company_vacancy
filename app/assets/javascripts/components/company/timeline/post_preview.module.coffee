@@ -27,7 +27,6 @@ Component = React.createClass
       null
     else
       <div className="controls">
-        <i className="fa fa-edit" onClick={@handleEditClick}></i>
         <i className="fa fa-times" onClick={@handleDestroyClick}></i>
       </div>
 
@@ -120,13 +119,15 @@ Component = React.createClass
       <article className="preview post">
         {@gatherControls()}
 
-        <header>
-          <h1>{@state.post.title}</h1>
-          <span className="date">{if moment(@state.post.published_at).isValid() then moment(@state.post.published_at).format('ll') else ''}</span>
-        </header>
+        <a href="" onClick={@handleEditClick}>
+          <header>
+            <h1>{@state.post.title}</h1>
+            <span className="date">{if moment(@state.post.published_at).isValid() then moment(@state.post.published_at).format('ll') else ''}</span>
+          </header>
 
-        {@getFirstParagraph()}
-        {@gatherPictures()}
+          {@getFirstParagraph()}
+          {@gatherPictures()}
+        </a>
       </article>
     else
       null

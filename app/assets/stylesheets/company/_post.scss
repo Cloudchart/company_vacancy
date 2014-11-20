@@ -44,48 +44,11 @@ main.company > div.wrapper > div.posts {
     border: 3px solid hsl(139, 55%, 51%);
     background-color: white;
     width: 600px;
-    padding: 20px;
     margin-bottom: $base-post-preview-margin;
     z-index: 2;
 
     &:hover > div.controls {
       visibility: visible;
-    }
-
-    > header {
-      margin-bottom: 20px;
-      text-align: center;
-
-      > h1 { 
-        font-weight: 600;
-        margin: 0;
-      }
-
-      > span.date {
-        color: grey;
-      }
-    }
-
-    > div.paragraph {
-      font-size: 16px;
-      line-height: 22px;
-      word-wrap: break-word;
-      max-height: 200px;
-    }
-
-    ul.pictures {
-      @include flex-ul;
-      margin-top: 20px;
-
-      > li {
-        width: 100px;
-        height: 100px;
-        overflow: hidden;
-        margin-right: 20px;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: cover;
-      }
     }
 
     > div.controls {
@@ -98,10 +61,6 @@ main.company > div.wrapper > div.posts {
         z-index: 1;
         font-size: 20px;
         cursor: pointer;
-        
-        &.fa-edit {
-          margin-right: 10px;
-        }
 
         &.fa-times {
           color: hsl(0, 75%, 55%);
@@ -109,6 +68,49 @@ main.company > div.wrapper > div.posts {
       }
     }
 
+    > a {
+      display: block;
+      padding: 20px;
+      text-decoration: inherit;
+      color: inherit;
+
+      > header {
+        margin-bottom: 20px;
+        text-align: center;
+
+        > h1 { 
+          font-weight: 600;
+          margin: 0;
+        }
+
+        > span.date {
+          color: grey;
+        }
+      }
+
+      > div.paragraph {
+        font-size: 16px;
+        line-height: 22px;
+        word-wrap: break-word;
+        max-height: 200px;
+      }
+
+      > ul.pictures {
+        @include flex-ul;
+        margin-top: 20px;
+
+        > li {
+          width: 100px;
+          height: 100px;
+          overflow: hidden;
+          margin-right: 20px;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
+        }
+      }
+
+    }
   }
 
   // Person preview
@@ -151,7 +153,7 @@ main.company > div.wrapper > div.posts {
     border: 10px solid hsl(0, 0%, 89%);
     position: absolute;
     top: $base-post-preview-margin;
-    bottom: $base-post-preview-margin * 2;
+    bottom: $base-post-preview-margin * 1.7;
     left: 50%;
     z-index: 1;
     margin-left: -10px;
