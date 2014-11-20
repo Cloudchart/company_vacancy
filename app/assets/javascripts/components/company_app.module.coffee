@@ -57,12 +57,19 @@ Component = React.createClass
       .sortBy (object) -> new Date(object.date)
       .reverse()
       .map (object, index) =>
-        (eval("#{object.type}Preview") {
-          key: index
-          id: object.data.uuid
-          company_id: @state.company.uuid
-          readOnly: @state.readOnly
-        })
+        switch object.type
+          when 'Post'
+            <PostPreview
+              key={index}
+              id={object.data.uuid}
+              company_id={@state.company.uuid}
+            />
+          when 'Person'
+            <PersonPreview
+              key={index}
+              id={object.data.uuid}
+              event_type={if object.date == object.data.hired_on then 'hired' else 'fired'}
+            />
       .value()
   
   showCreatePostButton: ->

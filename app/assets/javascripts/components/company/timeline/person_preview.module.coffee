@@ -18,7 +18,16 @@ Component = React.createClass
 
   # Helpers
   # 
-  # gatherSomething: ->
+  getEventMessage: ->
+    switch @props.event_type
+      when 'hired'
+        <i className="fa fa-plus">
+          {" Joined on #{moment(@state.person.hired_on).format('ll')}"}
+        </i>
+      when 'fired'
+        <i className="fa fa-long-arrow-right">
+          {" Left on #{moment(@state.person.fired_on).format('ll')}"}
+        </i>
 
   # Handlers
   # 
@@ -64,7 +73,7 @@ Component = React.createClass
         onClick={@handleAvatarClick}
         readOnly={true}
       />
-      <aside className="event"></aside>
+      <aside className="event">{@getEventMessage()}</aside>
       <footer>
         <p className="name">{@state.person.full_name}</p>
         <p className="occupation">{@state.person.occupation}</p>
