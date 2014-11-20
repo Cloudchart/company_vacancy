@@ -6,7 +6,11 @@ tag = React.DOM
 
 PersonStore = require('stores/person')
 
+PersonActions = require('actions/person_actions')
+ModalActions = require('actions/modal_actions')
+
 PersonAvatar = require('components/shared/person_avatar')
+PersonForm = require('components/form/person_form')
 
 # Main
 # 
@@ -19,7 +23,13 @@ Component = React.createClass
   # Handlers
   # 
   handleAvatarClick: (event) ->
-    console.log 'handleAvatarClick'
+    ModalActions.show(PersonForm({
+      attributes: @state.person.toJSON()
+      onSubmit:   @handlePersonFormSubmit.bind(@, @state.person.uuid)
+    }))
+
+  handlePersonFormSubmit: (id, attributes) ->
+    PersonActions.update(id, attributes.toJSON())
 
   # Lifecycle Methods
   # 
