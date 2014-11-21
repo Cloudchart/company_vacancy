@@ -73,6 +73,9 @@ Component = React.createClass
       errorTag
     )
 
+  formHeader: ->
+    RoleMap[@state.role].header
+
 
   onSubmit: (event) ->
     event.preventDefault()
@@ -96,50 +99,67 @@ Component = React.createClass
     state = getStateFromProps(@props)
     state
 
-
   render: ->
-    (tag.form {
-      className:  'invite-user'
-      onSubmit:   @onSubmit
-    },
-    
-      # Fieldset / Roles
-      #
-      (tag.fieldset {
-        className: 'roles'
+    (tag.div null,
+
+      (tag.header { key: "access-right-header" },
+        tag.a {
+          href: ""
+          onClick:   @props.onCurrentUsersButtonClick
+        },
+          tag.i {
+            className: "fa fa-angle-left"
+          }
+
+        "Share "
+        (tag.strong {}, @props.company.name)
+        @formHeader() 
+      )
+
+      (tag.form {
+        className:  'invite-user'
+        onSubmit:   @onSubmit
       },
       
-        # Roles inputs
+        # Fieldset / Roles
         #
-        @rolesInputs()
-      
-      )
-      
-      # Fieldset / Email
-      #
-      (tag.fieldset {
-        className: 'email'
-      },
-      
-        # Email input
+        (tag.fieldset {
+          className: 'roles'
+        },
+        
+          # Roles inputs
+          #
+          @rolesInputs()
+        
+        )
+        
+        # Fieldset / Email
         #
-        @emailInput()
+        (tag.fieldset {
+          className: 'email'
+        },
+        
+          # Email input
+          #
+          @emailInput()
+        
+        )
+      
+        # Footer / Button
+        #
+        (tag.footer null,
+          (Buttons.SyncButton {
+            className: 'cc-wide'
+            title:     'Invite'
+            icon:      'fa-ticket'
+            sync:      @props.sync == 'send-invite'
+            disabled:  @props.sync
+            onClick:   @onSubmit
+          })
+        )
       
       )
-    
-      # Footer / Button
-      #
-      (tag.footer null,
-        (Buttons.SyncButton {
-          className: 'cc-wide'
-          title:     'Invite'
-          icon:      'fa-ticket'
-          sync:      @props.sync == 'send-invite'
-          disabled:  @props.sync
-          onClick:   @onSubmit
-        })
-      )
-    
+
     )
 
 

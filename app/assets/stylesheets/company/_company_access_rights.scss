@@ -36,7 +36,7 @@ $access-rights-list-item-padding: 15px;
       height: $access-rights-list-item-height;
 
       > .name {
-        max-width: 200px;
+        max-width: 150px;
         overflow: hidden;
         text-overflow: ellipsis;
 
@@ -73,6 +73,7 @@ $access-rights-list-item-padding: 15px;
           @include position(absolute, 0px $access-rights-list-item-padding 0 0);
 
           cursor: pointer;
+          font-size: 10px;
           height: 100%;
           line-height: $access-rights-list-item-height;
           pointer-events: none;
@@ -84,6 +85,15 @@ $access-rights-list-item-padding: 15px;
         > button {
           height: 100%;
           margin-right: 5px;
+          padding: 0 20px;
+          position: relative;
+
+          > .fa {
+            font-size: 10px;
+            line-height: 18px;
+            position: relative;
+            top: -1px;
+          }
         }
       }
     }
@@ -96,6 +106,7 @@ $access-rights-list-item-padding: 15px;
       border: none;
       padding: 0;
       margin: 0;
+      margin-top: 5px;
     }
 
     > .email {
@@ -112,10 +123,10 @@ $access-rights-list-item-padding: 15px;
     > .roles {
       font-size: 20px;
       width: 320px;
-      margin-bottom: 15px;
 
       label {
         @include display(flex);
+        margin-bottom: 25px;
       }
 
       .hint {

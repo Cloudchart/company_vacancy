@@ -122,29 +122,16 @@ Component = React.createClass
         
         when 'edit'
           [
-            (tag.header { key: "access-right-header" },
-              tag.a { 
-                href: ""
-                onClick:   @onCurrentUsersButtonClick
-              },
-                tag.i {
-                  className: "fa fa-angle-left"
-                }
-
-              "Share "
-              (tag.strong {}, @state.company.name)
-              " company, chart and financials"
-            )
-            
             # Invite User Form
             #
             (InviteUserForm {
-              key:              @state.newTokenKey
-              company:          @state.company
-              invitable_roles:  @props.invitable_roles
-              token:            TokenStore.get(@state.newTokenKey)
-              errors:           TokenStore.errorsFor(@state.newTokenKey)
-              sync:             TokenStore.getSync(@state.newTokenKey)
+              onCurrentUsersButtonClick: @onCurrentUsersButtonClick
+              key:                       @state.newTokenKey
+              company:                   @state.company
+              invitable_roles:           @props.invitable_roles
+              token:                     TokenStore.get(@state.newTokenKey)
+              errors:                    TokenStore.errorsFor(@state.newTokenKey)
+              sync:                      TokenStore.getSync(@state.newTokenKey)
             })
           ]
 
