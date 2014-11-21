@@ -129,11 +129,14 @@ Component = React.createClass
     state
 
   render: ->
-    <div className="posts">
-      {@showCreatePostButton()}
-      {@gatherPosts()}
-      <div className="timeline"></div>
-    </div>    
+    if @gatherPosts().length == 0 and @props.readOnly
+      null
+    else
+      <div className="posts">
+        {@showCreatePostButton()}
+        {@gatherPosts()}
+        <div className="timeline"></div>
+      </div>
 
 # Exports
 # 
