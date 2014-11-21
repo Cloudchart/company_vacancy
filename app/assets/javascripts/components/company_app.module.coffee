@@ -63,12 +63,14 @@ Component = React.createClass
               key={index}
               id={object.data.uuid}
               company_id={@state.company.uuid}
+              readOnly={@state.readOnly}
             />
           when 'Person'
             <PersonPreview
               key={index}
               id={object.data.uuid}
               event_type={if object.date == object.data.hired_on then 'hired' else 'fired'}
+              readOnly={@state.readOnly}
             />
       .value()
   

@@ -105,7 +105,7 @@ Component = React.createClass
     PictureStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
-    @setState(@getStateFromStores())
+    @setState(@getStateFromStores(nextProps))
 
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
@@ -120,15 +120,15 @@ Component = React.createClass
   # getDefaultProps: ->
 
   refreshStateFromStores: ->
-    @setState(@getStateFromStores())
+    @setState(@getStateFromStores(@props))
 
-  getStateFromStores: ->
-    post: PostStore.get(@props.id)
+  getStateFromStores: (props) ->
+    post: PostStore.get(props.id)
     paragraphs: ParagraphStore.all()
     pictures: PictureStore.all()
 
   getInitialState: ->
-    @getStateFromStores()
+    @getStateFromStores(@props)
 
   render: ->
     if @state.post

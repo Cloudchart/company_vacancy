@@ -25,7 +25,7 @@ Component = React.createClass
   # Helpers
   # 
   gatherControls: ->
-    if @props.readOnly
+    if @state.readOnly
       null
     else
       <div className="controls">
@@ -92,7 +92,7 @@ Component = React.createClass
     @buildParagraph() unless @state.blocks.length > 0
 
   componentWillReceiveProps: (nextProps) ->
-    @setState(@getStateFromStores())
+    @setState(@getStateFromStores(nextProps))
 
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
@@ -116,20 +116,20 @@ Component = React.createClass
       ''
 
   refreshStateFromStores: ->
-    @setState(@getStateFromStores())
+    @setState(@getStateFromStores(@props))
 
-  getStateFromStores: ->
-    post = PostStore.get(@props.id)
+  getStateFromStores: (props) ->
+    post = PostStore.get(props.id)
 
-    company: CompanyStore.get(@props.company_id)
+    company: CompanyStore.get(props.company_id)
     post: post
-    blocks: BlockStore.filter (block) => block.owner_type == 'Post' and block.owner_id == @props.id
+    blocks: BlockStore.filter (block) => block.owner_type == 'Post' and block.owner_id == props.id
     title: @getTitle(post)
     published_at: @getPublishedAt(post)
-    readOnly: @props.readOnly
+    readOnly: props.readOnly
 
   getInitialState: ->
-    state = @getStateFromStores()
+    state = @getStateFromStores(@props)
     state.position = null
     state.owner_type = 'Post'
     state
@@ -147,7 +147,7 @@ Component = React.createClass
         className="editor post"
         onOrderChange={@handleSortableChange}
         onOrderUpdate={@handleSortableUpdate}
-        readOnly={@props.readOnly}
+        readOnly={@state.readOnly}
         dragLockX
       >
         <header>
@@ -158,7 +158,7 @@ Component = React.createClass
               onChange={@handleFieldChange.bind(@, 'title')}
               onBlur={@handleTitleBlur}
               onKeyUp={@handleFieldKeyup}
-              readOnly={@props.readOnly}
+              readOnly={@state.readOnly}
             />
           </label>
 
@@ -169,7 +169,7 @@ Component = React.createClass
               onChange={@handleFieldChange.bind(@, 'published_at')}
               onBlur={@handlePublishedAtBlur}
               onKeyUp={@handleFieldKeyup}
-              readOnly={@props.readOnly}
+              readOnly={@state.readOnly}
             />
           </label>
         </header>

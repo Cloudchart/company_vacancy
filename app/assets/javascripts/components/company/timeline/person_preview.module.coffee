@@ -19,8 +19,6 @@ Component = React.createClass
   # Helpers
   # 
   getEventMessage: ->
-    # console.log @props.event_type
-
     switch @props.event_type
       when 'hired'
         <i className="fa fa-plus">
@@ -50,7 +48,7 @@ Component = React.createClass
   # componentDidMount: ->
 
   componentWillReceiveProps: (nextProps) ->
-    @setState(@getStateFromStores())
+    @setState(@getStateFromStores(nextProps))
 
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
@@ -61,11 +59,11 @@ Component = React.createClass
   # 
   # getDefaultProps: ->
 
-  getStateFromStores: ->
-    person: PersonStore.get(@props.id)
+  getStateFromStores: (props) ->
+    person: PersonStore.get(props.id)
 
   getInitialState: ->
-    @getStateFromStores()
+    @getStateFromStores(@props)
 
   render: ->
     <article className="preview person">
