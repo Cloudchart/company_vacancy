@@ -178,7 +178,7 @@ Component = React.createClass
     PersonStore.on('change', @refreshStateFromStores)
   
   
-  componentWillUnount: ->
+  componentWillUnmount: ->
     PersonStore.off('change', @refreshStateFromStores)
   
   
