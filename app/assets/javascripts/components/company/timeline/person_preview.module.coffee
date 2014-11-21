@@ -19,6 +19,8 @@ Component = React.createClass
   # Helpers
   # 
   getEventMessage: ->
+    # console.log @props.event_type
+
     switch @props.event_type
       when 'hired'
         <i className="fa fa-plus">

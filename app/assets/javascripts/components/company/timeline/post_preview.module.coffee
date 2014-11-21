@@ -66,6 +66,22 @@ Component = React.createClass
       .sortBy('position')
       .value()
 
+  getHeader: ->
+    date = 
+      if moment(@state.post.published_at).isValid()
+        moment(@state.post.published_at).format('ll') 
+      else ''
+
+    if @state.post.title
+      <header>
+        <h1>{@state.post.title}</h1>
+        <span className="date">{date}</span>
+      </header>
+    else
+      <header>
+        <h1>{date}</h1>
+      </header>
+
   # Handlers
   # 
   handleDestroyClick: (event) ->
@@ -120,11 +136,7 @@ Component = React.createClass
         {@gatherControls()}
 
         <a href="" onClick={@handleEditClick}>
-          <header>
-            <h1>{@state.post.title}</h1>
-            <span className="date">{if moment(@state.post.published_at).isValid() then moment(@state.post.published_at).format('ll') else ''}</span>
-          </header>
-
+          {@getHeader()}
           {@getFirstParagraph()}
           {@gatherPictures()}
         </a>
