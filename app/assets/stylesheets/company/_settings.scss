@@ -1,0 +1,108 @@
+article.settings {
+  margin: 30px auto;
+  width: $editor-width;
+
+  > section {
+
+    > header {
+      font-size: 22pt;
+      font-weight: 300;
+      margin-bottom: $base-unit;
+    }
+
+    font-size: 15pt;
+    padding-bottom: $base-unit * 2;
+    
+    select {
+      font-size: 15pt;
+      margin-right: $base-unit;
+      margin-left: $base-unit / 2;
+      width: 200pt;
+    }
+    
+    p {
+      margin-bottom: $base-unit;
+    }
+    
+    footer {
+      font-size: 15pt;
+
+      > button {
+        margin-left: 10pt;
+      }
+
+    }
+
+    > .section-block {
+      > div.profile-item {
+        @include display(flex);
+
+        &:not(:last-child) {
+          margin-bottom: $base-unit;
+        }
+
+        div.content {
+          width: 480px;
+          margin-right: $base-unit;
+
+          &.paragraph {
+            line-height: $editor-paragraph-line-height;
+          }
+
+          &.field {
+            @include display(inline-flex);
+            @include align-items(center);
+
+            > div.spacer {
+              @include flex(1)
+            }
+
+            > span.label {
+              width: 120px;
+            }
+
+            > i {
+              color: $ufo-green;
+            }
+
+            > a {
+              margin-right: $base-unit / 2;
+            }
+
+            > input {
+              padding: 4px;
+              width: 300px;
+              border: 3pt solid $white-smoke;
+              outline: none;
+              font-weight: 300;
+
+              &.error {
+                border-color: $baby-pink;
+              }
+
+              &#slug {
+                width: 120px;
+              }
+            }
+
+            > div.tags {
+              @include tag_list;
+            }
+
+          }
+
+        }
+
+        > div.actions {
+
+          > button {
+            margin-right: $base-unit / 2;
+          }
+
+        }
+
+      }
+    }
+
+  }
+}

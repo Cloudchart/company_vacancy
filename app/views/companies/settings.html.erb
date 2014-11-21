@@ -5,8 +5,3 @@
 <% content_for :header_menu do %>
   <%= render 'shared/companies/header_menu' %>
 <% end %>
-
-<%= content_for :react_class_for_main, 'components/company/settings' %>
-<%= content_for :react_props_for_main, { uuid: @company.uuid }.to_json %>
-
-<% pagescript_params( uuid: @company.uuid ) %>

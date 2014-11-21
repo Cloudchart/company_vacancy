@@ -12,6 +12,7 @@ class Ability
     can :read, BlockIdentity
     can :read, Event
     can :read, Tag
+    can :read, Post
     can [:read, :accept], Interview
 
     # TODO: not all (maybe which only belongs to chart)
@@ -59,7 +60,7 @@ class Ability
         owner?(user, company)
       end
 
-      can [:update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file], Company do |company|
+      can [:update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file, :reposition_blocks], Company do |company|
         editor?(user, company)
       end
 
@@ -75,7 +76,7 @@ class Ability
         !user.companies.pluck(:uuid).include?(company.id)
       end
 
-      [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart].each do |model|
+      [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post].each do |model|
         can :manage, model do |resource|
           owner_or_editor?(user, resource.company)
         end
@@ -124,19 +125,23 @@ class Ability
 private
 
   def owner?(user, company)
-    Role.find_by(user: user, owner: company).try(:value) == 'owner'
+    role_value(user, company) == 'owner'
   end
 
   def editor?(user, company)
-    Role.find_by(user: user, owner: company).try(:value) == 'editor'
+    role_value(user, company) == 'editor'
   end
 
   def owner_or_editor?(user, company)
-    Role.find_by(user: user, owner: company).try(:value) =~ /owner|editor/
+    role_value(user, company) =~ /owner|editor/
   end
 
   def trusted_reader?(user, company)
-    Role.find_by(user: user, owner: company).try(:value) == 'trusted_reader'
+    role_value(user, company) == 'trusted_reader'
+  end
+
+  def role_value(user, company)
+    company.roles.select { |role| role.user_id == user.id }.first.try(:value)
   end
 
 end

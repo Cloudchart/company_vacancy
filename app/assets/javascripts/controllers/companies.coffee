@@ -4,24 +4,55 @@
 # 
 @['companies#show'] = (data) ->
 
+  CompanyStore = require('stores/company')
+  PostStore = require('stores/post_store')
+  BlockStore = require('stores/block_store')
+  PictureStore = require('stores/picture_store')
+  ParagraphStore = require('stores/paragraph_store')
+  PersonStore = require('stores/person')
+  VacancyStore = require('stores/vacancy') 
+  RolesStore = require('stores/roles')
+  TokenStore = require('stores/token')
+  UsersStore = require('stores/users')
+  
+  # Fetch company
+  # 
   require('sync/company').fetch(data.id).done (json) ->
-    CompanyStore = require('stores/company')
-    CompanyActions  = require('actions/company')
-
     _.each {
-      blocks:     require('stores/block_store')
-      pictures:   require('stores/picture_store')
-      paragraphs: require('stores/paragraph_store')
-      people:     require('stores/person')
-      vacancies:  require('stores/vacancy') 
-      roles:      require('stores/roles')
-      tokens:     require('stores/token')
-      users:      require('stores/users')
+      blocks:     BlockStore
+      pictures:   PictureStore
+      paragraphs: ParagraphStore
+      people:     PersonStore
+      vacancies:  VacancyStore
+      roles:      RolesStore
+      tokens:     TokenStore
+      users:      UsersStore
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
+
+  # Fetch all posts
+  # 
+  require('sync/post_sync_api').fetchAll(data.id).done (json) ->
+    _.each json, (object) ->
+
+      PostStore.add(object.post.uuid, object.post)
+
+      _.each {
+        blocks: BlockStore
+        pictures: PictureStore
+        paragraphs: ParagraphStore
+      }, (store, key) ->
+        _.each object[key], (item) -> store.add(item.uuid, item)
+
+    PostStore.emitChange()
+
+  # Mount company
+  # 
+  Company = require('components/company_app')
+  React.renderComponent(Company({ id: data.id }), document.querySelector('body > main'))
 
 # Finance
 # 
@@ -36,13 +67,15 @@
 # Settings
 # 
 @['companies#settings'] = (data) ->
-  require('sync/company').fetch(data.uuid).done (json) ->
+  require('sync/company').fetch(data.id).done (json) ->
 
-    Settings      = require('components/company/settings')
     CompanyStore  = require('stores/company')
 
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
+
+  Settings = require('components/company/settings')
+  React.renderComponent(Settings({ uuid: data.id }), document.querySelector('body > main'))
 
 # Access rights
 # 
@@ -76,8 +109,6 @@
 # 
 @['companies#index'] = (data) ->
   $ ->
-    # cc.init_chart_preview(true, 0.4)
-
     # comanies search
     #
     $('header').on 'input propertychange', '.search input', ->

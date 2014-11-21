@@ -61,7 +61,7 @@ Component = React.createClass
   
   
   componentWillUnmount: ->
-    ParagraphStore.off('change', @refreshStateFromStore)
+    ParagraphStore.off('change', @refreshStateFromStores)
   
   
   componentWillReceiveProps: ->

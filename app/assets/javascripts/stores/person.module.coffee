@@ -69,3 +69,5 @@ module.exports = CloudFlux.createStore
     email:        ''
     occupation:   ''
     avatar_url:   ''
+    hired_on:     ''
+    fired_on:     ''

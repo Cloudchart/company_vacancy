@@ -7,15 +7,25 @@ $company-article-block-margin: 30px;
   @include flex-direction(column);
   
   margin: 0 auto $company-article-block-margin;
-  width: 750px;
+  width: 800px;
+  position: relative;
+
+  // Controls
+  // 
+  > div.controls {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
   
   // Logo
   //
-  
   $logo-height: 110px;
   $logo-width: 220px;
 
   > aside {
+    @include editor-destroy-button;
+
     background-position: center center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -24,24 +34,6 @@ $company-article-block-margin: 30px;
     position: relative;
     text-align: center;
     width: $logo-width;
-    
-    > button {
-      @include position(absolute, 0px 0px 0 0);
-      
-      background-color: hsl(1, 76%, 54%);
-      border: none;
-      color: hsl(0, 100%, 100%);
-      font-size: 12px;
-      height: 20px;
-      margin: 0;
-      padding: 0;
-      visibility: hidden;
-      width: 20px;
-    }
-    
-    &:hover > button {
-      visibility: visible;
-    }
     
     > label {
       @include align-items(center);
@@ -217,7 +209,6 @@ $company-article-block-margin: 30px;
 
 }
 
-
-article.company-2_0 > header {
+main.company > div.wrapper > header {
   @include company-article-header-2_0;
 }

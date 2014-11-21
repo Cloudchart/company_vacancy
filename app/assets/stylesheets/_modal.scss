@@ -126,6 +126,12 @@ body .modal-overlay {
   > .modal-container {
     background-color: $modal-container-background-color;
     margin: auto;
+
+    &.post {
+      margin: 0 auto;
+      padding: 50px;
+      overflow: scroll;
+    }
   }
   
   &.blueprint > .modal-container {

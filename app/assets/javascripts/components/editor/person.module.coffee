@@ -131,6 +131,7 @@ Component = React.createClass
 
     ModalActions.show(PersonChooser({
       key:            @props.key
+      company_id:     @props.company_id
       onSelect:       @onSelectPerson
       onCreateClick:  @onCreatePersonClick
     }))
@@ -141,7 +142,7 @@ Component = React.createClass
   onCreatePersonClick: ->
     return if @props.readOnly
 
-    newPersonKey = PersonStore.create({ company_id: @state.block.owner_id })
+    newPersonKey = PersonStore.create({ company_id: @props.company_id })
 
     ModalActions.show(PersonForm({
       attributes: PersonStore.get(newPersonKey).toJSON()
@@ -177,7 +178,7 @@ Component = React.createClass
     PersonStore.on('change', @refreshStateFromStores)
   
   
-  componentWillUnount: ->
+  componentWillUnmount: ->
     PersonStore.off('change', @refreshStateFromStores)
   
   

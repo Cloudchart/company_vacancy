@@ -30,6 +30,8 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
+    pagescript_params(id: @company.uuid)
+
     respond_to do |format|
       format.html
       format.json
@@ -79,6 +81,7 @@ class CompaniesController < ApplicationController
   end
 
   def settings
+    pagescript_params(id: @company.uuid)
   end
 
   def access_rights
@@ -122,20 +125,6 @@ class CompaniesController < ApplicationController
       redirect_to :back, alert: 'Error. No such file.'
     end
   end
-  
-  def reposition_blocks
-    company = Company.includes(:blocks).find(params[:id])
-    
-    Block.transaction do
-      company.blocks.each do |block|
-        block.update! position: params[:ids].index(block.uuid)
-      end
-    end
-
-    respond_to do |format|
-      format.json { render json: { ok: 200 } }
-    end
-  end
 
 private
 
@@ -157,9 +146,18 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    # overriden find method will not work for ActiveRecord::Relation
-    # .includes(blocks: :block_identities)
-    @company = Company.find(params[:id])
+    relation = Company.includes(
+      :people,
+      :vacancies,
+      :pictures,
+      :paragraphs,
+      :roles,
+      :tokens,
+      users: :emails,
+      blocks: :block_identities
+    )
+
+    @company = relation.find_by(slug: params[:id]) || relation.find(params[:id])
   end
 
   def set_collection

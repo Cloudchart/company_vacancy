@@ -68,6 +68,12 @@ Component = React.createClass
     file = event.target.files[0]
     @setState({ logotype_url: URL.createObjectURL(file) })
     @updateLogotype(file)
+
+
+  onViewModeChange: (event) ->
+    readOnly = if event.target.value == 'editor' then false else true
+    @setState({ view_mode: event.target.value })
+    @props.onChange({ readOnly: readOnly })
   
   
   onFieldKeyUp: (event) ->
@@ -83,6 +89,7 @@ Component = React.createClass
     logotype_url:     props.logotype_url
     name:             props.name
     description:      props.description
+    view_mode:        if props.readOnly then 'public' else 'editor'
 
 
   getInitialState: ->
@@ -91,6 +98,17 @@ Component = React.createClass
   render: ->
     (tag.header {
     },
+      # Controls
+      # 
+      (tag.div { className: 'controls' },
+        (tag.div { className: 'select cc view-mode'},
+          (tag.select { value: @state.view_mode, onChange: @onViewModeChange },
+            (tag.option { value: 'editor' }, 'Edit')
+            (tag.option { value: 'public' }, 'View')
+          )
+          (tag.i { className: 'fa fa-chevron-down' })
+        )
+      ) if @props.shouldDisplayViewMode
     
       # Logo
       #
@@ -116,12 +134,10 @@ Component = React.createClass
           })
         ) unless @props.readOnly
 
-        (tag.button {
-          className:  'remove'
+        (tag.i {
+          className:  'fa fa-times-circle-o'
           onClick:    @removeLogotype
-        },
-          (tag.i { className: 'fa fa-times' })
-        ) if @state.logotype_url and !@props.readOnly
+        }) if @state.logotype_url and !@props.readOnly
 
       )
       
@@ -164,7 +180,8 @@ Component = React.createClass
         })
       ) if @state.description or !@props.readOnly
 
-      # temp place
+      # Follow
+      # 
       (tag.label {},
         (FollowComponent { 
           key: @props.key

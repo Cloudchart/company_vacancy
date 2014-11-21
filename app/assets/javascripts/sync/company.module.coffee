@@ -12,6 +12,7 @@ module.exports =
     .done done
     .fail fail
   
+
   # TODO: move to cloud_profile
   fetchAll: (done, fail) ->
     $.ajax
@@ -22,6 +23,7 @@ module.exports =
     .done done
     .fail fail
   
+
   update: (key, data, done, fail) ->
     data = _.reduce data, ((memo, value, key) -> memo.append("company[#{key}]", value) ; memo), new FormData
     
@@ -32,28 +34,6 @@ module.exports =
       data:         data
       contentType:  false
       processData:  false
-    .done done
-    .fail fail
-  
-  
-  createBlock: (key, attributes, done, fail) ->
-    $.ajax
-      url:        "/companies/#{key}/blocks"
-      type:       "POST"
-      dataType:   "json"
-      data:
-        block:    attributes
-    .done done
-    .fail fail
-  
-  
-  repositionBlocks: (key, ids, done, fail) ->
-    $.ajax
-      url:        "/companies/#{key}/reposition_blocks"
-      type:       "PUT"
-      dataType:   "json"
-      data:
-        ids:      ids
     .done done
     .fail fail
   

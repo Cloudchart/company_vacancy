@@ -8,7 +8,7 @@ class BlocksController < ApplicationController
     
     block.save!
 
-    Activity.track_activity(current_user, params[:action], block, owner)
+    # Activity.track_activity(current_user, params[:action], block, owner)
     
     blocks = owner.blocks.includes(:block_identities)
     
@@ -24,7 +24,7 @@ class BlocksController < ApplicationController
 
     block.update!(block_params_for_update)
 
-    Activity.track_activity(current_user, params[:action], block, block.owner)
+    # Activity.track_activity(current_user, params[:action], block, block.owner)
 
     respond_to do |format|
       format.json { render json: { block: block.active_model_serializer.new(block), identities: block.identities.active_model_serializer.new(block.identities) } }
@@ -48,14 +48,29 @@ class BlocksController < ApplicationController
   end
 
 
+  def reposition
+    first_block = Block.find(params[:ids].first)
+    authorize! :reposition, first_block
+
+    blocks = params[:ids].map { |id| Block.find(id) }.reject { |block| block.owner_type != first_block.owner_type }
+
+    Block.transaction do
+      blocks.each do |block|
+        block.update! position: params[:ids].index(block.uuid)
+      end
+    end
+
+    respond_to do |format|
+      format.json { render json: { ok: 200 } }
+    end
+  end
+
+
 private
 
 
   def find_owner
-    case params[:type]
-    when :company
-      Company.find(params[:company_id])
-    end
+    params[:type].to_s.classify.constantize.find(params[:"#{params[:type]}_id"])
   end
 
 

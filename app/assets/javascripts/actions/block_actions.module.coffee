@@ -25,26 +25,19 @@ module.exports = CloudFlux.createActions
     BlockSyncAPI.destroy(key, actions.serverDoneAction, actions.serverFailAction)
   
 
-  # Update
-  #
-  # update: (key, attributes, token = 'update') ->
-  #   Dispatcher.handleClientAction
-  #     type: 'block:update'
-  #     data: [key, attributes, token]
-  #
-  #   done = (json) ->
-  #     Dispatcher.handleServerAction
-  #       type: 'block:update:done'
-  #       data: [key, json, token]
-  #
-  #   fail = (xhr) ->
-  #     Dispatcher.handleServerAction
-  #       type: 'block:update:fail'
-  #       data: [key, xhr.responseJSON, xhr, token]
-  #
-  #   BlockSyncAPI.update(key, attributes, done, fail)
-  #
-  #
-  # # Destroy
-  # #
-  # destroy: (key, token = 'destroy') ->
+  reposition: (key, ids, token = 'reposition') ->
+    Dispatcher.handleClientAction
+      type: 'blocks:reposition'
+      data: [key, ids, token]
+    
+    done = (json) ->
+      Dispatcher.handleServerAction
+        type: 'blocks:reposition:done'
+        data: [key, ids, json, token]
+    
+    fail = (xhr) ->
+      Dispatcher.handleServerAction
+        type: 'blocks:reposition:fail'
+        data: [key, ids, xhr.responseJSON, xhr, token]
+      
+    BlockSyncAPI.reposition(key, ids, done, fail)

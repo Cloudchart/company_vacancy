@@ -19,16 +19,15 @@
 //= require react
 //= require flux.dispatcher
 //= require lodash
+//= require underscore.string
 //= require promise
 //= require date
 //= require moment
 //= require numeral
 //= require ui
 //= require plugins
-//= require shared
 //= require ujs
 //= require utils
-//= require block_identities
 //= require ./models
 //= require ./react_components
 //= require_tree .

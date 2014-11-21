@@ -7,8 +7,6 @@
 @import 'layout';
 @import 'editable_articles';
 @import 'block_identities';
-@import 'plugins';
-@import 'companies';
 @import 'cloud_blueprint/application';
 @import 'cloud_profile/application';
 @import 'welcome';
@@ -18,9 +16,4 @@
 // @import 'person';
 @import 'vacancy';
 @import 'page';
-@import 'company_invite';
-@import 'burn_rate';
-
-@import 'company/company-2_0';
-@import 'company/company_preview-2_0';
-@import 'company/company_access_rights';
+@import 'company';
