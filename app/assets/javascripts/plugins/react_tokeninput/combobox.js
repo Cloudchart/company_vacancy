@@ -9,6 +9,7 @@ var div = React.DOM.div;
 var span = React.DOM.span;
 var input = React.DOM.input;
 var ul = React.DOM.ul;
+var cx = React.addons.classSet;
 
 MainComponent = React.createClass({
 
@@ -54,6 +55,7 @@ MainComponent = React.createClass({
       inputValue: this.findInitialInputValue(),
       isOpen: false,
       focusedIndex: null,
+      focused: false,
       matchedAutocompleteOption: null,
       // this prevents crazy jumpiness since we focus options on mouseenter
       usingKeyboard: false,
@@ -146,11 +148,16 @@ MainComponent = React.createClass({
   },
 
   handleInputBlur: function() {
+    this.setState({ focused: false });
     var focusedAnOption = this.state.focusedIndex != null;
     if (focusedAnOption)
       return;
     this.maybeSelectAutocompletedOption();
     this.hideList();
+  },
+
+  handleInputFocus: function() {
+    this.setState({ focused: true });
   },
 
   handleOptionBlur: function() {
@@ -381,8 +388,9 @@ MainComponent = React.createClass({
         'aria-autocomplete': 'list',
         'aria-owns': this.state.listId,
         id: this.props.id,
-        className: 'ic-tokeninput-input',
+        className: cx({ 'ic-tokeninput-input': true, 'active': this.state.focused }),
         onChange: this.handleInputChange,
+        onFocus: this.handleInputFocus,
         onBlur: this.handleInputBlur,
         onKeyDown: this.handleKeydown,
         onKeyUp: this.handleInputKeyUp,

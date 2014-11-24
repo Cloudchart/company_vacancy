@@ -139,46 +139,57 @@ $company-article-block-margin: 30px;
 
       &.ic-tokens {
 
-        > li.ic-token {
-          @include align-items(center);
-          @include display(flex);
-
-          background-color: hsl(0, 0%, 96%);
+        > li {
           height: 40px;
-          padding: 0 12px;
           margin-bottom: 15px;
+         
+          &.ic-token {
+            @include align-items(center);
+            @include display(flex);
 
-          .ic-token-label {
-            margin-right: 8px;
-          }
+            background-color: hsl(0, 0%, 96%);
+            padding: 0 12px;
 
-          .ic-token-delete-button {
-            cursor: pointer;
-          }
+            .ic-token-label {
+              margin-right: 8px;
+            }
 
-          i {
-            color: hsl(358, 77%, 57%);
-            line-height: 29px;
+            .ic-token-delete-button {
+              cursor: pointer;
+              outline: 0;
+
+              > i {
+                color: hsl(358, 77%, 57%);
+                line-height: 29px;
+              }
+            }
           }
         }
 
-        > li.ic-token + li.ic-token {
+        > li + li {
           margin-left: 16px;
         }
 
         > li.ic-combobox {
-          @include display(flex);  
-          @include justify-content(center);        
-
-          width: 100%;
+          margin-right: 16px;
+          width: 150px;
 
           > .ic-tokeninput {
+            height: 100%;
             width: auto;
             position: relative;
 
             > input {
+              background-color: hsl(0, 0%, 96%);
               font-weight: 300;
+              height: 100%;
+              padding: 0 12px;
               width: auto;
+
+              &.active {
+                border: 2px solid hsl(136, 52%, 51%);
+                padding: 0 10px;
+              }
             }
 
             &.ic-tokeninput-is-open > ul {
@@ -191,22 +202,30 @@ $company-article-block-margin: 30px;
               display: none;
               list-style-type: none;
               padding: 0;
-              width: 100%;
+              width: auto;
               z-index: 100;
 
               > li {
                 @include align-items(center);
                 @include display(flex);
 
-                background-color: hsl(0, 0%, 96%);
                 cursor: pointer;
                 color: hsl(60, 4%, 11%);
                 height: 40px;
                 padding: 0 12px;
                 outline: 0;
 
-                &:hover, &:focus {
+                &:nth-child(2n) {
+                  background-color: hsl(0, 0%, 96%);
+                }
+
+                &:nth-child(2n+1) {
                   background-color: hsl(0, 0%, 93%);
+                }
+
+                &:hover, &:focus {
+                  background-color: hsl(136, 52%, 51%);
+                  color: hsl(0, 0%, 100%);
                 }
               }
             }

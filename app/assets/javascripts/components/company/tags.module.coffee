@@ -105,7 +105,7 @@ MainComponent = React.createClass
         onRemove:     @onRemove
         selected:     @gatherTags()
         menuContent:  @gatherTagsForSelect()
-        placeholder:  'Tap here to add comma-separated tags'
+        placeholder:  "#hashtag"
       })
 
 
