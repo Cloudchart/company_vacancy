@@ -85,12 +85,7 @@ article.settings {
               }
             }
 
-            > div.tags {
-              @include tag_list;
-            }
-
           }
-
         }
 
         > div.actions {

@@ -65,7 +65,7 @@ Component = React.createClass
       .value()
   
   getCreatePostButton: (type = '') ->
-    null if @props.readOnly
+    return null if @props.readOnly
       
     class_for_icon =
       if PostStore.getSync(@state.new_post_key) == "create"
