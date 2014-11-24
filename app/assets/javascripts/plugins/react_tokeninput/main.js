@@ -12,6 +12,7 @@ MainComponent = React.createClass({
     onSelect: React.PropTypes.func.isRequired,
     onRemove: React.PropTypes.func.isRequired,
     selected: React.PropTypes.array.isRequired,
+    onTagClick: React.PropTypes.func.isRequired,
     menuContent: React.PropTypes.any
   },
 
@@ -50,6 +51,7 @@ MainComponent = React.createClass({
     var tokens = this.props.selected.map(function(token) {
       return (
         Token({
+          onTokenClick: this.props.onTagClick,
           onRemove: this.handleRemove,
           value: token,
           name: token.name,

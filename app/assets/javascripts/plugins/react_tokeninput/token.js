@@ -2,11 +2,17 @@
 var span = React.DOM.span;
 var li = React.DOM.li;
 var i = React.DOM.i;
+var a = React.DOM.a;
 
 MainComponent = React.createClass({
   handleClick: function(event) {
     event.preventDefault()
     this.props.onRemove(this.props.value)
+  },
+
+  handleLinkClick: function(event) {
+    event.preventDefault();
+    this.props.onTokenClick(this.props.name);
   },
 
   handleKeyDown: function(key) {
@@ -19,7 +25,11 @@ MainComponent = React.createClass({
       li({
         className: "ic-token inline-flex"
       },
-        span({className: "ic-token-label"}, this.props.name),
+        span({ className: "ic-token-label" }, 
+          a({
+            href: "/companies/search",
+            onClick:   this.handleLinkClick
+          }, this.props.name)),
         span({
           role: 'button',
           onClick: this.handleClick,

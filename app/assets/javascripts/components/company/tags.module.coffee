@@ -3,7 +3,7 @@
 
 # Imports
 # 
-tag = React.DOM
+reactTag = React.DOM
 
 TokenInput      = cc.require('plugins/react_tokeninput/main')
 ComboboxOption  = cc.require('plugins/react_tokeninput/option')
@@ -24,11 +24,19 @@ MainComponent = React.createClass
   gatherTags: ->
     _.map @state.company_tags, (tag) -> { id: tag.uuid, name: "##{tag.name}" }
   
-
   gatherTagsForList: ->
-    _.map @state.company_tags, (company_tag) -> 
-      (tag.li { key: company_tag.uuid },
-        "##{company_tag.name}"
+    _.map @state.company_tags, (company_tag) => 
+      (reactTag.li { 
+        key: company_tag.uuid
+      },
+        reactTag.a {
+          href: "/companies/search"
+          onClick: (event) =>
+            event.preventDefault()
+            @onTagClick(company_tag.name)
+
+        },
+          "##{company_tag.name}"
       )
   
   gatherTagsForSelect: ->
@@ -72,6 +80,14 @@ MainComponent = React.createClass
     company_tags = _.reject @state.company_tags, (tag) -> tag.uuid == object.id
     @syncCompanyTagNames(company_tags)
 
+  onTagClick: (value) ->
+    csrfParam = document.querySelector('meta[name="csrf-param"]').getAttribute('content')
+    csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+
+    @refs.tagLinkFormCsrfToken.getDOMNode().name = csrfParam
+    @refs.tagLinkFormCsrfToken.getDOMNode().value = csrfToken
+    @refs.tagLinkFormInput.getDOMNode().value = value
+    @refs.tagLinkForm.getDOMNode().submit()
 
   getStateFromStores: (props) ->
     tags      = TagStore.all()
@@ -94,19 +110,39 @@ MainComponent = React.createClass
 
 
   render: ->
-    if @props.readOnly
-      (tag.ul null,
-        @gatherTagsForList()
+
+    (reactTag.div { className: "tags" },
+      (
+        if @props.readOnly
+          (reactTag.ul null,
+            @gatherTagsForList()
+          )
+        else
+          (TokenInput {
+            onInput:      @onInput
+            onSelect:     @onSelect
+            onRemove:     @onRemove
+            onTagClick:   @onTagClick
+            selected:     @gatherTags()
+            menuContent:  @gatherTagsForSelect()
+            placeholder:  "#hashtag"
+          })
       )
-    else
-      (TokenInput {
-        onInput:      @onInput
-        onSelect:     @onSelect
-        onRemove:     @onRemove
-        selected:     @gatherTags()
-        menuContent:  @gatherTagsForSelect()
-        placeholder:  "#hashtag"
-      })
+      (reactTag.form 
+        ref: "tagLinkForm"
+        action: "/companies/search"
+        method: "POST"
+        ,
+        reactTag.input
+          ref: "tagLinkFormCsrfToken"
+          type: "hidden"
+
+        reactTag.input 
+          ref: "tagLinkFormInput"
+          name: "query"
+          type: "hidden"
+      )
+    )
 
 
 # Exports

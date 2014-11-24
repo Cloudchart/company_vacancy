@@ -166,11 +166,9 @@ Component = React.createClass
 
       # Tags
       # 
-      (tag.label { className: 'tags' },
-        (TagsComponent { 
-          uuid: @props.key
-          readOnly: @props.readOnly })
-      ) 
+      (TagsComponent { 
+        uuid: @props.key
+        readOnly: @props.readOnly }) 
 
       # temp place
       (tag.label {},

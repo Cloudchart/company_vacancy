@@ -118,7 +118,12 @@ $company-article-block-margin: 30px;
     font-weight: 300;
   }
 
-  > label.tags {
+  > .tags {
+    margin: 10px 0 0;
+
+    > form {
+      display: none;
+    }
 
     > ul {
       @include align-content(space-between);
@@ -129,9 +134,15 @@ $company-article-block-margin: 30px;
       font-size: 24px;
       font-weight: 300;
       color: hsl(136, 52%, 51%);
+      cursor: pointer;
       list-style-type: none;
       margin: 0;
       padding: 0;
+
+      > li a {
+        color: hsl(136, 52%, 51%);
+        text-decoration: none;
+      }
 
       > li + li {
         margin-left: 10px;
@@ -181,8 +192,10 @@ $company-article-block-margin: 30px;
 
             > input {
               background-color: hsl(0, 0%, 96%);
+              border: none;
               font-weight: 300;
               height: 100%;
+              outline: none;
               padding: 0 12px;
               width: auto;
 
