@@ -43,7 +43,7 @@ Component = React.createClass
       )
       
       (tag.i {
-        className:  'fa fa-times-circle-o remove'
+        className:  'fa fa-times remove'
         onClick:    @props.onDelete
       }) if @props.src unless @props.readOnly
 

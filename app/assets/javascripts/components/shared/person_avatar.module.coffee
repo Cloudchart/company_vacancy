@@ -64,7 +64,7 @@ Component = React.createClass
       ) unless @props.readOnly or @props.onClick
 
       (tag.i {
-        className:  'fa fa-times-circle-o'
+        className:  'fa fa-times remove'
         onClick:    @onAvatarRemove
       }) if @props.avatarURL and !@props.readOnly
 

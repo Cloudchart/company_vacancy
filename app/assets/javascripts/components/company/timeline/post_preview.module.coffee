@@ -51,14 +51,19 @@ Component = React.createClass
 
   gatherPictures: ->
     block_ids = _.pluck @getBlocksByIdentity('Picture'), 'uuid'
-    pictures = _.chain @state.pictures
-      .filter (picture) -> _.contains block_ids, picture.owner_id
-      .map (picture) -> <li key={picture.uuid} style={'background-image': "url(#{picture.url})"}></li>
-      .value()
+    pictures = _.filter @state.pictures, (picture) -> _.contains block_ids, picture.owner_id
 
-    <ul className="pictures">
-      {pictures}
-    </ul>
+    if pictures.length == 1
+      <div className="cover" style={'background-image': "url(#{pictures[0].url})"}></div>
+    else if pictures.length > 1
+      <ul className="pictures">
+        {
+          _.map pictures, (picture) -> 
+            <li key={picture.uuid} style={'background-image': "url(#{picture.url})"}></li>
+        }
+      </ul>
+    else
+      null      
 
   getBlocksByIdentity: (identity_type) ->
     _.chain BlockStore.all()

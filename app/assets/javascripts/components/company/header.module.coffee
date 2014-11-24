@@ -135,7 +135,7 @@ Component = React.createClass
         ) unless @props.readOnly
 
         (tag.i {
-          className:  'fa fa-times-circle-o'
+          className:  'fa fa-times remove'
           onClick:    @removeLogotype
         }) if @state.logotype_url and !@props.readOnly
 

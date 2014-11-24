@@ -22,11 +22,11 @@ Component = React.createClass
     switch @props.event_type
       when 'hired'
         <i className="fa fa-plus">
-          {" Joined on #{moment(@state.person.hired_on).format('ll')}"}
+          {" joins on #{moment(@state.person.hired_on).format('ll')}"}
         </i>
       when 'fired'
         <i className="fa fa-long-arrow-right">
-          {" Left on #{moment(@state.person.fired_on).format('ll')}"}
+          {" leaves on #{moment(@state.person.fired_on).format('ll')}"}
         </i>
 
   # Handlers

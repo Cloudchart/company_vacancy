@@ -55,7 +55,7 @@ PersonComponent = (person) ->
   },
   
     (tag.i {
-      className:  'fa fa-times-circle-o remove'
+      className:  'fa fa-times remove'
       onClick:    @onDeletePersonClick.bind(@, person.uuid)
     }) unless @props.readOnly
     

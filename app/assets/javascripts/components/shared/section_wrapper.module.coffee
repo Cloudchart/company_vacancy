@@ -62,7 +62,7 @@ Component = React.createClass
       # Remove
       #
       (tag.i {
-        className:  'fa fa-times-circle-o remove '
+        className:  'fa fa-times remove '
         onClick:    @handleBlockRemove
       }) unless @props.readOnly
   

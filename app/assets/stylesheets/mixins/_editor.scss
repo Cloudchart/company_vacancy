@@ -1,5 +1,5 @@
 @mixin editor-destroy-button {
-  > i.fa-times-circle-o {
+  > i.fa.remove {
     @include position(absolute, 0px 0px 0 0);
     
     color: hsl(0, 75%, 55%);
@@ -13,7 +13,7 @@
     z-index: 1;
   }
 
-  &:hover > i.fa-times-circle-o {
+  &:hover > i.fa.remove {
     visibility: visible;
   }
 }

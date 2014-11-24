@@ -41,7 +41,7 @@ VacancyComponent = (vacancy) ->
     (tag.i { className: 'flag' })
   
     (tag.i {
-      className: 'fa fa-times-circle-o remove'
+      className: 'fa fa-times remove'
       onClick:    @handleVacancyRemove.bind(@, vacancy.getKey())
     }) unless @props.readOnly
 

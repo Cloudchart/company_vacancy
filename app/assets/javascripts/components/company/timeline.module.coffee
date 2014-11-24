@@ -64,19 +64,27 @@ Component = React.createClass
             />
       .value()
   
-  showCreatePostButton: ->
-    if @props.readOnly
-      null
-    else
-      class_for_icon =
-        if PostStore.getSync(@state.new_post_key) == "create"
-          'fa fa-spin fa-spinner'
-        else
-          'fa fa-plus'
+  getCreatePostButton: (type = '') ->
+    null if @props.readOnly
+      
+    class_for_icon =
+      if PostStore.getSync(@state.new_post_key) == "create"
+        'fa fa-spin fa-spinner'
+      else
+        'fa fa-plus'
 
+    if type == 'placeholder'
+      <div className="placeholder">
+        <figure className={type} onClick={@handleCreatePostClick}>
+          <i className={class_for_icon}></i>
+        </figure>
+      </div>
+    else
       <figure className="create" onClick={@handleCreatePostClick}>
         <i className={class_for_icon}></i>
       </figure>
+
+
 
   getCloudFluxActions: ->
     'post:create:done': @handlePostCreateDone
@@ -132,10 +140,17 @@ Component = React.createClass
     if @gatherPosts().length == 0 and @props.readOnly
       null
     else
+      posts = _.map @gatherPosts(), (post, index) =>
+        [
+          post
+          @getCreatePostButton('placeholder')
+        ]
+
       <div className="posts">
-        {@showCreatePostButton()}
-        {@gatherPosts()}
-        <div className="timeline"></div>
+        <div className="left-column"></div>
+        <div className="right-column"></div>
+        {@getCreatePostButton()}
+        {posts}
       </div>
 
 # Exports

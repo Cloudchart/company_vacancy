@@ -7,45 +7,98 @@ main.company > div.wrapper > div.posts {
   @include flex-direction(column);
   @include align-items(center);
 
-  background-color: hsl(0, 0%, 96%);
   position: relative;
-  border-top: 4px solid lightgrey;
+  margin-top: $base-post-preview-margin;
 
-  // Create post
+  // Timeline background
+  // 
+  > div.left-column {
+    background-color: hsl(0, 0%, 98%);
+  }
+
+  > div.right-column {
+    background-color: hsl(0, 0%, 94%);
+    right: 0;
+  }
+
+  > div.left-column, div.right-column {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  // Create post top button
   // 
   > figure.create {
     @include display(flex);
     @include align-items(center);
     @include justify-content(center);
 
-    margin: ($base-post-preview-margin / 2) 0;
+    margin-top: -45px;
+    margin-bottom: $base-post-preview-margin / 2;
     width: 90px;
     height: 90px;
     cursor: pointer;
-    background-color: white;
+    background-color: hsl(142, 48%, 59%);
     border-radius: 50%;
-    color: lightgrey;
+    color: white;
     position: relative;
-    z-index: 2;
 
     > i.fa {
       font-size: 40px;
     }
   }
 
-  > article.preview:first-child {
-    margin-top: $base-post-preview-margin;
+  // Create post placeholder
+  // 
+  div.placeholder {
+    @include display(flex);
+    @include justify-content(center);
+
+    width: 100%;
+
+    &:hover {
+      > figure {
+        visibility: visible;
+      }
+    }
+
+    > figure {
+      @include display(flex);
+      @include align-items(center);
+      @include justify-content(center);
+      @include transform(scale(.5, .5));
+      @include transition(opacity 250ms ease-out, all 150ms ease-out, width 100ms ease-out 150ms);
+
+      visibility: hidden;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      background-color: hsl(142, 48%, 59%);
+      border-radius: 50%;
+      color: white;
+      position: relative;
+
+      &:hover {
+        @include transform(scale(1, 1));
+      }
+      
+      > i.fa {
+        font-size: 16px;
+      }
+    }
   }
 
   // Post preview
   // 
   > article.preview.post {
     position: relative;
-    border: 3px solid hsl(139, 55%, 51%);
     background-color: white;
     width: 600px;
-    margin-bottom: $base-post-preview-margin;
-    z-index: 2;
+    margin: ($base-post-preview-margin / 2) 0;
 
     &:hover > div.controls {
       visibility: visible;
@@ -58,7 +111,6 @@ main.company > div.wrapper > div.posts {
       height: 30px;
 
       > i.fa {
-        z-index: 1;
         font-size: 20px;
         cursor: pointer;
 
@@ -110,15 +162,22 @@ main.company > div.wrapper > div.posts {
         }
       }
 
+      > div.cover {
+        height: 200px;
+        margin-top: 20px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
     }
   }
 
   // Person preview
   // 
   > article.preview.person {
-    margin-bottom: $base-post-preview-margin;
+    margin: ($base-post-preview-margin / 2) 0;
     width: 215px;
-    z-index: 2;
     position: relative;
 
     > aside.avatar {
@@ -127,8 +186,8 @@ main.company > div.wrapper > div.posts {
 
     > aside.event {
       position: absolute;
-      top: 100px;
-      left: 230px;
+      top: 36%;
+      left: 108%;
       width: 100%;
       font-size: 16px;
     }
@@ -153,19 +212,6 @@ main.company > div.wrapper > div.posts {
         }
       }
     }
-  }
-
-
-  // Timeline
-  // 
-  > div.timeline {
-    border: 10px solid hsl(0, 0%, 89%);
-    position: absolute;
-    top: $base-post-preview-margin;
-    bottom: $base-post-preview-margin * 1.7;
-    left: 50%;
-    z-index: 1;
-    margin-left: -10px;
   }
 
 }
