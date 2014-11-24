@@ -31,6 +31,7 @@ class CompaniesController < ApplicationController
   # GET /companies/1
   def show
     pagescript_params(id: @company.uuid)
+    @tags = Tag.order(:name).all
 
     respond_to do |format|
       format.html
@@ -175,7 +176,7 @@ private
       :logotype, 
       :remove_logotype, 
       :slug,
-      :tag_list
+      :tag_names
     )
   end
 

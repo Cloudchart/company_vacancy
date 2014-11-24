@@ -1,7 +1,7 @@
 //= require ./add-class
 
 var addClass = cc.require('plugins/react_tokeninput/add-class');
-var div = React.DOM.div;
+var li = React.DOM.li;
 
 MainComponent = React.createClass({
 
@@ -34,7 +34,7 @@ MainComponent = React.createClass({
       props.className = addClass(props.className, 'ic-tokeninput-selected');
       props.ariaSelected = true;
     }
-    return div(props);
+    return li(props);
   }
 
 });

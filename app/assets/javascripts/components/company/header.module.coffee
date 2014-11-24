@@ -4,12 +4,12 @@
 #
 tag = React.DOM
 
-
 CompanyActions  = require('actions/company')
 ModalActions    = require('actions/modal_actions')
 AutoSizingInput = require('components/form/autosizing_input')
 FollowComponent = require('components/company/follow')
 AccessRights    = require('components/company/access_rights')
+TagsComponent   = require('components/company/tags')
 
 # Main
 #
@@ -78,8 +78,8 @@ Component = React.createClass
   
   onFieldKeyUp: (event) ->
     event.target.blur() if event.key == 'Enter'
-  
-  
+
+
   componentWillReceiveProps: (nextProps) ->
     URL.revokeObjectURL(@state.logotype_url)
     @setState(@getStateFromProps(nextProps))
@@ -179,6 +179,12 @@ Component = React.createClass
           readOnly:     @props.readOnly
         })
       ) if @state.description or !@props.readOnly
+
+      # Tags
+      # 
+      (TagsComponent { 
+        uuid: @props.key
+        readOnly: @props.readOnly }) 
 
       # Follow
       # 

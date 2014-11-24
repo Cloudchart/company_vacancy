@@ -14,6 +14,7 @@
   RolesStore = require('stores/roles')
   TokenStore = require('stores/token')
   UsersStore = require('stores/users')
+  TagStore = require('stores/tag_store')
   
   # Fetch company
   # 
@@ -27,6 +28,7 @@
       roles:      RolesStore
       tokens:     TokenStore
       users:      UsersStore
+      tags:       TagStore
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 
