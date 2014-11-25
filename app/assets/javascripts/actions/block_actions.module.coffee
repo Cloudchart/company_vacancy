@@ -1,29 +1,14 @@
 # Imports
 #
-CloudFlux       = require('cloud_flux')
-Dispatcher      = require('dispatcher/dispatcher')
-BlockSyncAPI    = require('sync/block_sync_api')
+Dispatcher = require('dispatcher/dispatcher')
+SyncAPI = require('sync/block_sync_api')
+ActionFactory = require('actions/factory')
 
+CrudActions = ActionFactory.create 'block',
+  'update': (id, attributes) -> SyncAPI.update(id, attributes)
+  'destroy': (id) -> SyncAPI.destroy(id)
 
-# Exports
-#
-module.exports = CloudFlux.createActions
-  
-  update: (key, attributes, token = 'update') ->
-    actions = @createClientServerActions('block:update', arguments...)
-
-    actions.clientAction()
-
-    BlockSyncAPI.update(key, attributes, actions.serverDoneAction, actions.serverFailAction)
-  
-  
-  destroy: (key, token = 'destroy') ->
-    actions = @createClientServerActions('block:destroy', arguments...)
-
-    actions.clientAction()
-
-    BlockSyncAPI.destroy(key, actions.serverDoneAction, actions.serverFailAction)
-  
+CustomActions = {
 
   reposition: (key, ids, token = 'reposition') ->
     Dispatcher.handleClientAction
@@ -40,4 +25,10 @@ module.exports = CloudFlux.createActions
         type: 'blocks:reposition:fail'
         data: [key, ids, xhr.responseJSON, xhr, token]
       
-    BlockSyncAPI.reposition(key, ids, done, fail)
+    SyncAPI.reposition(key, ids, done, fail)
+
+}
+
+# Exports
+#
+module.exports = _.extend CustomActions, CrudActions

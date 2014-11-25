@@ -1,3 +1,6 @@
+# !!! Deprecated
+# 
+
 # Imports
 #
 Dispatcher = require('dispatcher/dispatcher')
@@ -12,7 +15,7 @@ Module = (definition = {}) ->
     createClientServerActions: (type, args...) ->
       initial = _.initial(args)
       last    = _.last(args)
-      
+
       clientAction: ->
         Dispatcher.handleClientAction
           type: type
