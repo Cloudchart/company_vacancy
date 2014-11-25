@@ -42,13 +42,13 @@ module.exports = CloudFlux.createStore
     @store.emitChange()
   
   
-  onUpdateDone: (key, json, token) ->
+  onUpdateDone: (key, attributes, json, token) ->
     @store.update(key, json)
     @store.commit(key)
     @store.emitChange()
 
 
-  onUpdateFail: (key, json, token) ->
+  onUpdateFail: (key, attributes, xhr, token) ->
     @store.rollback(key)
     @store.emitChange()
   
