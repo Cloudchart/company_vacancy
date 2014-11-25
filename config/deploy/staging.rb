@@ -1,11 +1,12 @@
 set :user, 'rails'
 
-set :deploy_to, '/home/rails/apps/cloudchart_dev'
+set :deploy_to, '/home/rails/apps/cloudchart_mvp'
 set :branch, 'develop'
 
 set :puma_conf, "#{shared_path}/config/puma.rb"
-set :rbenv_ruby, '2.1.1'
-# set :puma_bind, "unix://#{shared_path}/tmp/sockets/puma.sock"
+
+set :rbenv_ruby, '2.1.5'
+set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
 
 # set :rvm_ruby_version, '2.0.0-p247@mygemset'
 
