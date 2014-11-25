@@ -25,7 +25,7 @@ set :rbenv_ruby, '2.1.1'
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server '5.9.115.242', user: fetch(:user), roles: %w{web app db}#, my_property: :my_value
+server 'staging1.cochart.net', user: fetch(:user), roles: %w{web app db}#, my_property: :my_value
 
 
 # Custom SSH Options
