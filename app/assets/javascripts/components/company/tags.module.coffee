@@ -72,7 +72,10 @@ MainComponent = React.createClass
       key = TagStore.create({ name: name })
       tag = TagStore.get(key)
 
-    company_tags = @state.company_tags[..] ; company_tags.push tag
+    company_tags = @state.company_tags[..]
+    company_tags.push tag
+    company_tags = _.unique(company_tags)
+
     @syncCompanyTagNames(company_tags)
 
 
