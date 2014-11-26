@@ -22,7 +22,7 @@ MainComponent = React.createClass
 
 
   gatherTags: ->
-    _.map @state.company_tags, (tag) -> { id: tag.uuid, name: "##{tag.name}" }
+    _.map @state.company_tags, (tag) -> { id: tag.getKey(), name: "##{tag.name}" }
   
   gatherTagsForList: ->
     _.map @state.company_tags, (company_tag) => 
@@ -67,16 +67,17 @@ MainComponent = React.createClass
   onSelect: (name) ->
     name = @formatName(name)
 
-    tag = _.find @state.tags, name: name
-    unless tag
-      key = TagStore.create({ name: name })
-      tag = TagStore.get(key)
+    if name.length > 0
+      tag = _.find @state.tags, name: name
+      unless tag
+        key = TagStore.create({ name: name })
+        tag = TagStore.get(key)
 
-    company_tags = @state.company_tags[..]
-    company_tags.push tag
-    company_tags = _.unique(company_tags)
+      company_tags = @state.company_tags[..]
+      company_tags.push tag
+      company_tags = _.unique(company_tags)
 
-    @syncCompanyTagNames(company_tags)
+      @syncCompanyTagNames(company_tags)
 
 
   onRemove: (object) ->
