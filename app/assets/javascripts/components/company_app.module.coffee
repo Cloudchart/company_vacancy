@@ -31,18 +31,8 @@ Component = React.createClass
   handleViewModeChange: (data) ->
     @setState({ readOnly: data.readOnly })
 
-  # Component Specifications
-  # 
-  getStateFromStores: ->
-    company = CompanyStore.get(@props.id)
-
-    blocks: BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.id
-    company: company
-    readOnly: if company then company.flags.is_read_only else true
-
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores())
-  
+  # Lifecylce Methods
+  #   
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStores)
     BlockStore.on('change', @refreshStateFromStores)
@@ -50,6 +40,18 @@ Component = React.createClass
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
     BlockStore.off('change', @refreshStateFromStores)
+
+  # Component Specifications
+  # 
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores())
+
+  getStateFromStores: ->
+    company = CompanyStore.get(@props.id)
+
+    blocks: BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.id
+    company: company
+    readOnly: if company then company.flags.is_read_only else true
   
   getInitialState: ->
     state            = @getStateFromStores()
@@ -67,16 +69,10 @@ Component = React.createClass
 
       <div className="wrapper">
         <CompanyHeader
-          key             = {@props.id}
-          name            = {@state.company.name}
-          description     = {@state.company.description}
-          logotype_url    = {@state.company.logotype_url}
-          readOnly        = {@state.readOnly}
-          can_follow      = {@state.company.flags.can_follow}
-          is_followed     = {@state.company.flags.is_followed}
-          invitable_roles = {@state.company.meta.invitable_roles}
-          onChange        = {@handleViewModeChange}
+          id = {@props.id}
+          readOnly = {@state.readOnly}
           shouldDisplayViewMode = {if @state.company.flags.is_read_only then false else true}
+          onChange = {@handleViewModeChange}
         />
         
         <SortableList

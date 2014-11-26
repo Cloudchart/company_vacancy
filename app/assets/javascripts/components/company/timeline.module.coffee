@@ -6,7 +6,6 @@ tag = React.DOM
 
 CloudFlux = require('cloud_flux')
 
-# CompanyStore = require('stores/company')
 PostStore = require('stores/post_store')
 PersonStore = require('stores/person')
 
@@ -25,7 +24,7 @@ Component = React.createClass
 
   # Helpers
   # 
-  # TODO: refactor using _.inject without eval
+  # TODO: refactor using _.inject
   gatherPosts: ->
     result = []
 
@@ -83,8 +82,6 @@ Component = React.createClass
       <figure className="create" onClick={@handleCreatePostClick}>
         <i className={class_for_icon}></i>
       </figure>
-
-
 
   getCloudFluxActions: ->
     'post:create:done': @handlePostCreateDone

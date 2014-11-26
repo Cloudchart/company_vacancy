@@ -4,8 +4,11 @@
 #
 tag = React.DOM
 
+CompanyStore = require('stores/company')
+
 CompanyActions  = require('actions/company')
 ModalActions    = require('actions/modal_actions')
+
 AutoSizingInput = require('components/form/autosizing_input')
 FollowComponent = require('components/company/follow')
 AccessRights    = require('components/company/access_rights')
@@ -15,187 +18,174 @@ TagsComponent   = require('components/company/tags')
 #
 Component = React.createClass
 
+  # Helpers
+  # 
+  getViewModeSelect: ->
+    return null unless @props.shouldDisplayViewMode
 
-  update: ->
+    <div className="controls">
+      <div className="select cc view-mode">
+        <select value={@state.view_mode}, onChange={@handleViewModeChange}>
+          <option value={'editor'}>Edit</option>
+          <option value={'public'}>View</option>
+        </select>
+        <i className="fa fa-chevron-down"></i>
+      </div>
+    </div>
+
+  
+  getLogoBackgroundImage: ->
+    if @state.logotype_url then "url(#{@state.logotype_url})" else "none"
+  
+  getLogo: ->
+    return null if @props.readOnly and !@state.logotype_url
+
+    uploader = if @props.readOnly
+      null
+    else
+      placeholder = if @state.logotype_url
+        null
+      else
+        <div className="placeholder">
+          <i className="fa fa-picture-o"></i>
+          <span>Tap to add logo</span>
+        </div>
+
+      <label>
+        {placeholder}
+        <input type="file" name="" onChange={@handleLogotypeChange}></input>
+      </label>
+
+    remove_button = if @props.readOnly or !@state.logotype_url
+      null
+    else
+      <i className="fa fa-times remove" onClick={@handleRemoveLogotype}></i>
+
+    return(
+      <aside className="logo" style={backgroundImage: @getLogoBackgroundImage()}>
+        {uploader}
+        {remove_button}
+      </aside>
+    )
+
+
+  getShareLink: ->
+    return null if @props.readOnly
+
+    <a href="" className="share-link" onClick={@handleShareClick}>
+      <i className="fa fa-share"></i>
+    </a>
+
+  getFollowButoon: ->
+    return null unless @state.company.flags.can_follow
+
+    <label>
+      <FollowComponent key={@props.id}, is_followed={@state.company.flags.is_followed} />
+    </label>
+
+  update: (attr_name) ->
     return if @props.readOnly
 
-    attributes =
-      name:             @state.name
-      description:      @state.description
+    attributes = {}
+    attributes[attr_name] = @state[attr_name]
 
-    CompanyActions.update(@props.key, attributes)
-  
+    CompanyActions.update(@props.id, attributes)
+
   
   updateLogotype: (file) ->
     return if @props.readOnly
 
-    CompanyActions.update(@props.key, { logotype: file })
-  
-  
-  removeLogotype: ->
+    CompanyActions.update(@props.id, { logotype: file })
+
+
+  # Handlers
+  # 
+  handleRemoveLogotype: ->
     return if @props.readOnly
 
-    CompanyActions.update(@props.key, { logotype_url: null, remove_logotype: true })
+    CompanyActions.update(@props.id, { logotype_url: null, remove_logotype: true })
 
-
-  onShareLinkClick: (event) ->
+  handleShareClick: (event) ->
     event.preventDefault()
 
     ModalActions.show(
-      <AccessRights key={@props.key} invitable_roles={@props.invitable_roles} />
+      <AccessRights key={@props.id} invitable_roles={@state.company.meta.invitable_roles} />
     )
-  
-  isValid: ->
-    @state.name.length > 0
-  
-  
-  rollback: ->
-    if @state.name.length == 0
-      @setState({ name: @props.name })
 
+  handleFieldBlur: (attr_name, event) ->
+    @update(attr_name) unless @state[attr_name] == @state.company[attr_name]
 
-  onFieldBlur: ->
-    if @isValid() then @update() else @rollback()
-
-
-  onFieldChange: (name, event) ->
-    state       = {}
+  handleFieldChange: (name, event) ->
+    state = {}
     state[name] = event.target.value
     @setState(state)
   
-  
-  onLogotypeChange: (event) ->
+  handleLogotypeChange: (event) ->
     file = event.target.files[0]
     @setState({ logotype_url: URL.createObjectURL(file) })
     @updateLogotype(file)
 
-
-  onViewModeChange: (event) ->
+  handleViewModeChange: (event) ->
     readOnly = if event.target.value == 'editor' then false else true
     @setState({ view_mode: event.target.value })
     @props.onChange({ readOnly: readOnly })
   
-  
-  onFieldKeyUp: (event) ->
+  handleFieldKeyUp: (event) ->
     event.target.blur() if event.key == 'Enter'
 
-
+  # Lifecycle Methods
+  # 
   componentWillReceiveProps: (nextProps) ->
     URL.revokeObjectURL(@state.logotype_url)
-    @setState(@getStateFromProps(nextProps))
+    @setState(@getStateFromStores(nextProps))
 
+  # Component Specifications
+  # 
+  getStateFromStores: (props) ->
+    company = CompanyStore.get(props.id)
 
-  getStateFromProps: (props) ->
-    logotype_url:     props.logotype_url
-    name:             props.name
-    description:      props.description
-    view_mode:        if props.readOnly then 'public' else 'editor'
-
+    company: company
+    name: company.name
+    description: company.description
+    logotype_url: company.logotype_url
+    view_mode: if props.readOnly then 'public' else 'editor'
 
   getInitialState: ->
-    @getStateFromProps(@props)
+    @getStateFromStores(@props)
 
   render: ->
-    (tag.header {
-    },
-      # Controls
-      # 
-      (tag.div { className: 'controls' },
-        (tag.div { className: 'select cc view-mode'},
-          (tag.select { value: @state.view_mode, onChange: @onViewModeChange },
-            (tag.option { value: 'editor' }, 'Edit')
-            (tag.option { value: 'public' }, 'View')
-          )
-          (tag.i { className: 'fa fa-chevron-down' })
-        )
-      ) if @props.shouldDisplayViewMode
-    
-      # Logo
-      #
-      (tag.aside {
-        className: 'logo'
-        style:
-          backgroundImage: if @state.logotype_url then "url(#{@state.logotype_url})" else "none"
-      },
-      
-        (tag.label {
-        },
+    <header>
+      {@getViewModeSelect()}
+      {@getLogo()}
 
-          (tag.div {
-            className: 'placeholder'
-          },
-            (tag.i { className: 'fa fa-picture-o' })
-            (tag.span null, 'Tap to add logo')
-          ) unless @state.logotype_url
-          
-          (tag.input {
-            type:     'file'
-            onChange: @onLogotypeChange
-          })
-        ) unless @props.readOnly
+      <label className="name">
+        <AutoSizingInput
+          value={@state.name}
+          onBlur={@handleFieldBlur.bind(@, 'name')}
+          onChange={@handleFieldChange.bind(@, 'name')}
+          onKeyUp={@handleFieldKeyUp}
+          placeholder={'Company name'}
+          readOnly={@props.readOnly}
+        />
 
-        (tag.i {
-          className:  'fa fa-times remove'
-          onClick:    @removeLogotype
-        }) if @state.logotype_url and !@props.readOnly
+        {@getShareLink()}
+      </label>
 
-      )
-      
-      # Name
-      #
-      (tag.label {
-        className: 'name'
-      },
-        (AutoSizingInput {
-          value:        @state.name
-          onBlur:       @onFieldBlur
-          onChange:     @onFieldChange.bind(@, 'name')
-          onKeyUp:      @onFieldKeyUp
-          placeholder:  'Company name'
-          readOnly:     @props.readOnly
-        })
+      <label className="description">
+        <AutoSizingInput
+          value={@state.description}
+          onBlur={@handleFieldBlur.bind(@, 'description')}
+          onChange={@handleFieldChange.bind(@, 'description')}
+          onKeyUp={@handleFieldKeyUp}
+          placeholder={'Company short description'}
+          readOnly={@props.readOnly}
+        />
+      </label>
 
-        (tag.a {
-          className:  'share-link'
-          href:       ''
-          onClick:    @onShareLinkClick
-        },
-          (tag.i { className: 'fa fa-share' })
-        ) unless @props.readOnly
-        
-      )
-      
-      # Description
-      #
-      (tag.label {
-        className: 'description'
-      },
-        (AutoSizingInput {
-          value:        @state.description
-          onBlur:       @onFieldBlur
-          onChange:     @onFieldChange.bind(@, 'description')
-          onKeyUp:      @onFieldKeyUp
-          placeholder:  'Company description'
-          readOnly:     @props.readOnly
-        })
-      ) if @state.description or !@props.readOnly
+      <TagsComponent uuid={@props.id}, readOnly={@props.readOnly} />
 
-      # Tags
-      # 
-      (TagsComponent { 
-        uuid: @props.key
-        readOnly: @props.readOnly }) 
-
-      # Follow
-      # 
-      (tag.label {},
-        (FollowComponent { 
-          key: @props.key
-          is_followed: @props.is_followed 
-        })
-      ) if @props.can_follow
-
-    )
+      {@getFollowButoon()}
+    </header>
 
 
 # Exports
