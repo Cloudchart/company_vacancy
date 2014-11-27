@@ -103,8 +103,8 @@ Component = React.createClass
   
   getInitialState: ->
     errors:     []
-    email:      @props.email
-    full_name:  @props.full_name
+    email:      @props.email || ''
+    full_name:  @props.full_name || ''
     password:   ''
     sync: false
 

@@ -72,7 +72,7 @@ Component = React.createClass
   
   getInitialState: ->
     errors:     []
-    # invite:     @props.invite
+    invite:     @props.invite || ''
 
   render: ->
     (tag.form {
