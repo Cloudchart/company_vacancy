@@ -114,39 +114,41 @@ MainComponent = React.createClass
 
 
   render: ->
+    if @props.readOnly and @state.company_tags.length == 0
+      null
+    else
+      (reactTag.div { className: "tags" },
+        (
+          if @props.readOnly
+            (reactTag.ul null,
+              @gatherTagsForList()
+            )
+          else
+            (TokenInput {
+              onInput:      @onInput
+              onSelect:     @onSelect
+              onRemove:     @onRemove
+              onTagClick:   @onTagClick
+              selected:     @gatherTags()
+              menuContent:  @gatherTagsForSelect()
+              placeholder:  "#hashtag"
+            })
+        )
+        (reactTag.form 
+          ref: "tagLinkForm"
+          action: "/companies/search"
+          method: "POST"
+          ,
+          reactTag.input
+            ref: "tagLinkFormCsrfToken"
+            type: "hidden"
 
-    (reactTag.div { className: "tags" },
-      (
-        if @props.readOnly
-          (reactTag.ul null,
-            @gatherTagsForList()
-          )
-        else
-          (TokenInput {
-            onInput:      @onInput
-            onSelect:     @onSelect
-            onRemove:     @onRemove
-            onTagClick:   @onTagClick
-            selected:     @gatherTags()
-            menuContent:  @gatherTagsForSelect()
-            placeholder:  "#hashtag"
-          })
+          reactTag.input 
+            ref: "tagLinkFormInput"
+            name: "query"
+            type: "hidden"
+        )
       )
-      (reactTag.form 
-        ref: "tagLinkForm"
-        action: "/companies/search"
-        method: "POST"
-        ,
-        reactTag.input
-          ref: "tagLinkFormCsrfToken"
-          type: "hidden"
-
-        reactTag.input 
-          ref: "tagLinkFormInput"
-          name: "query"
-          type: "hidden"
-      )
-    )
 
 
 # Exports

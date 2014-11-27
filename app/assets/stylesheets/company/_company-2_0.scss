@@ -30,7 +30,6 @@ $company-article-block-margin: 30px;
     background-repeat: no-repeat;
     background-size: contain;
     height: $logo-height;
-    margin: 0 auto 10px;
     position: relative;
     text-align: center;
     width: $logo-width;
@@ -78,7 +77,7 @@ $company-article-block-margin: 30px;
   //
 
   > label {
-    margin: 10px 0 0;
+    margin-top: 20px;
     position: relative;
     
     input {
@@ -111,7 +110,7 @@ $company-article-block-margin: 30px;
   }
 
   > .tags {
-    margin: 10px 0 0;
+    margin-top: 20px;
 
     > form {
       display: none;
