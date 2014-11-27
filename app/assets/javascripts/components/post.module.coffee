@@ -15,6 +15,7 @@ ModalActions = require('actions/modal_actions')
 Blockable = require('components/mixins/blockable')
 SortableList = require('components/shared/sortable_list')
 AutoSizingInput = require('components/form/autosizing_input')
+TagsComponent = require('components/company/tags')
 
 # Main
 # 
@@ -52,7 +53,7 @@ Component = React.createClass
     PostActions.update(@state.post.uuid, attributes)
 
   buildParagraph: ->
-    new_block_key = BlockStore.create({ owner_id: @props.id, owner_type: 'Post', identity_type: 'Paragraph', position: 0 })
+    new_block_key = BlockStore.create({ owner_id: @state.post.uuid, owner_type: 'Post', identity_type: 'Paragraph', position: 0 })
     setTimeout => BlockableActions.createBlock(new_block_key, BlockStore.get(new_block_key).toJSON())
 
   # Handlers
@@ -88,6 +89,7 @@ Component = React.createClass
   # componentWillMount: ->
 
   componentDidMount: ->
+    PostStore.on('change', @refreshStateFromStores)
     BlockStore.on('change', @refreshStateFromStores)
     @buildParagraph() unless @state.blocks.length > 0
 
@@ -99,6 +101,7 @@ Component = React.createClass
   # componentDidUpdate: (prevProps, prevState) ->
 
   componentWillUnmount: ->
+    PostStore.off('change', @refreshStateFromStores)
     BlockStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
@@ -172,6 +175,8 @@ Component = React.createClass
               readOnly={@state.readOnly}
             />
           </label>
+
+          <TagsComponent taggable_id={@state.post.uuid} taggable_type="Post" readOnly={@state.readOnly} />
         </header>
 
         {blocks}

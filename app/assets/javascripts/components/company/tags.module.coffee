@@ -5,45 +5,57 @@
 # 
 reactTag = React.DOM
 
+TagStore        = require('stores/tag_store')
+CompanyStore    = require('stores/company')
+PostStore       = require('stores/post_store')
+
+CompanyActions  = require('actions/company')
+PostActions     = require('actions/post_actions')
+
 TokenInput      = cc.require('plugins/react_tokeninput/main')
 ComboboxOption  = cc.require('plugins/react_tokeninput/option')
-CompanyActions  = require('actions/company')
-CompanyStore    = require('stores/company')
-TagStore        = require('stores/tag_store')
 
-# Main Component
+IdentityStores =
+  Company: CompanyStore
+  Post: PostStore
+
+IdentityActions = 
+  Company: CompanyActions
+  Post: PostActions
+
+# Component
 # 
-MainComponent = React.createClass
+Component = React.createClass
 
-
-  syncCompanyTagNames: (company_tags) ->
-    tag_names = company_tags.map((tag) -> tag.name)
-    CompanyActions.update(@props.uuid, { tag_names: tag_names })
-
+  syncIdentityTagNames: (identity_tags) ->
+    tag_names = identity_tags.map((tag) -> tag.name)
+    IdentityActions[@props.taggable_type].update(@props.taggable_id, { tag_names: tag_names })
 
   gatherTags: ->
-    _.map @state.company_tags, (tag) -> { id: tag.getKey(), name: "##{tag.name}" }
+    console.log @state.identity_tags
+
+    _.map @state.identity_tags, (tag) -> { id: tag.getKey(), name: "##{tag.name}" }
   
   gatherTagsForList: ->
-    _.map @state.company_tags, (company_tag) => 
+    _.map @state.identity_tags, (identity_tag) => 
       (reactTag.li { 
-        key: company_tag.uuid
+        key: identity_tag.uuid
       },
         reactTag.a {
           href: "/companies/search"
           onClick: (event) =>
             event.preventDefault()
-            @onTagClick(company_tag.name)
+            @onTagClick(identity_tag.name)
 
         },
-          "##{company_tag.name}"
+          "##{identity_tag.name}"
       )
   
   gatherTagsForSelect: ->
     query = @formatName(@state.query)
     
     _.chain(@state.tags)
-      .reject (tag) => _.contains(@state.company_tags.map((tag) -> tag.name), tag.name) or !tag.is_acceptable
+      .reject (tag) => _.contains(@state.identity_tags.map((tag) -> tag.name), tag.name) or !tag.is_acceptable
       .filter (tag) => tag.name.toLowerCase().indexOf(query) >= 0
       .map (tag) ->
         (ComboboxOption {
@@ -73,16 +85,16 @@ MainComponent = React.createClass
         key = TagStore.create({ name: name })
         tag = TagStore.get(key)
 
-      company_tags = @state.company_tags[..]
-      company_tags.push tag
-      company_tags = _.unique(company_tags)
+      identity_tags = @state.identity_tags[..]
+      identity_tags.push tag
+      identity_tags = _.unique(identity_tags)
 
-      @syncCompanyTagNames(company_tags)
+      @syncIdentityTagNames(identity_tags)
 
 
   onRemove: (object) ->
-    company_tags = _.reject @state.company_tags, (tag) -> tag.uuid == object.id
-    @syncCompanyTagNames(company_tags)
+    identity_tags = _.reject @state.identity_tags, (tag) -> tag.uuid == object.id
+    @syncIdentityTagNames(identity_tags)
 
   onTagClick: (value) ->
     csrfParam = document.querySelector('meta[name="csrf-param"]').getAttribute('content')
@@ -94,27 +106,26 @@ MainComponent = React.createClass
     @refs.tagLinkForm.getDOMNode().submit()
 
   getStateFromStores: (props) ->
-    tags      = TagStore.all()
-    company   = CompanyStore.get(@props.uuid)
+    tags = TagStore.all()
+    identity = IdentityStores[props.taggable_type].get(props.taggable_id)
 
-    query:          ''
-    tags:           tags
-    company:        company
-    company_tags:   _.map(company.tag_names, (name) -> _.find(tags, { name: name }))
-
+    query: ''
+    tags: tags
+    identity: identity
+    identity_tags: _.map(identity.tag_names, (name) -> _.find(tags, { name: name }))
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
 
-  getDefaultProps: ->
-    readOnly: false
+  # getDefaultProps: ->
+  #   readOnly: false
 
   getInitialState: ->
     @getStateFromStores(@props)
 
 
   render: ->
-    if @props.readOnly and @state.company_tags.length == 0
+    if @props.readOnly and @state.identity_tags.length == 0
       null
     else
       (reactTag.div { className: "tags" },
@@ -153,4 +164,4 @@ MainComponent = React.createClass
 
 # Exports
 # 
-module.exports = MainComponent
+module.exports = Component

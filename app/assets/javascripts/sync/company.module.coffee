@@ -25,6 +25,7 @@ module.exports =
   
 
   update: (key, data, done, fail) ->
+    data.tag_names = data.tag_names.join(',') if data.tag_names
     data = _.reduce data, ((memo, value, key) -> memo.append("company[#{key}]", value) ; memo), new FormData
     
     $.ajax

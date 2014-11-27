@@ -182,8 +182,7 @@ Component = React.createClass
         />
       </label>
 
-      <TagsComponent uuid={@props.id}, readOnly={@props.readOnly} />
-
+      <TagsComponent taggable_id={@props.id} taggable_type="Company" readOnly={@props.readOnly} />
       {@getFollowButoon()}
     </header>
 
