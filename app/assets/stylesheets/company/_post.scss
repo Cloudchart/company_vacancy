@@ -180,7 +180,7 @@ main.company > div.wrapper > div.posts {
     width: 200px;
     position: relative;
 
-    &.first {
+    &:first-of-type {
       width: 285px;
     }
 
