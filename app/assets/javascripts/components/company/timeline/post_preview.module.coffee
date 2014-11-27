@@ -54,7 +54,7 @@ Component = React.createClass
     pictures = _.filter @state.pictures, (picture) -> _.contains block_ids, picture.owner_id
 
     if pictures.length == 1
-      <div className="cover" style={'background-image': "url(#{pictures[0].url})"}></div>
+      <img className="cover" src={pictures[0].url}/>
     else if pictures.length > 1
       <ul className="pictures">
         {
