@@ -66,7 +66,10 @@ Component = React.createClass
     @getStateFromStores(@props)
 
   render: ->
-    <article className="preview person">
+    classString = 'preview person'
+    classString += ' first' if @props.key == 0
+
+    <article className={classString}>
       <PersonAvatar 
         value={@state.person.full_name}
         avatarURL={@state.person.avatar_url}

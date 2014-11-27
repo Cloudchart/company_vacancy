@@ -1,4 +1,4 @@
-$base-post-preview-margin: 80px;
+$base-post-preview-margin: 60px;
 
 // Main
 // 
@@ -177,8 +177,12 @@ main.company > div.wrapper > div.posts {
   // 
   > article.preview.person {
     margin: ($base-post-preview-margin / 2) 0;
-    width: 215px;
+    width: 200px;
     position: relative;
+
+    &.first {
+      width: 285px;
+    }
 
     > aside.avatar {
       cursor: pointer;
