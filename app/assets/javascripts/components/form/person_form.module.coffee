@@ -28,8 +28,8 @@ Fieldset = ->
     #Field.apply(@,  ['int_phone',      'fa-phone',         'Office phone'])
     #Field.apply(@,  ['skype',          'fa-skype',         'Skype name'])
     #Field.apply(@,  ['birthday',       'fa-birthday-cake', now])
-    Field.apply(@,  ['hired_on',       'fa-sign-in',       now])
-    Field.apply(@,  ['fired_on',       'fa-sign-out',      now])
+    dateField.apply(@,  ['hired_on',       'fa-sign-in',       now])
+    dateField.apply(@,  ['fired_on',       'fa-sign-out',      now])
     #Field.apply(@,  ['salary',         'fa-money',         '0.0'])
     #Field.apply(@,  ['stock_options',  'fa-bar-chart',     '0.0'])
     #Text.apply(@,   ['bio',            'fa-file-text-o',   'Bio'])
@@ -44,6 +44,19 @@ Field = (name, icon, placeholder) ->
     (tag.input {
       value:        @state.attributes.get(name)
       onChange:     @onFieldChange.bind(@, name)
+      placeholder:  placeholder
+    })
+  )
+
+dateField = (name, icon, placeholder) ->
+  (tag.label {
+    className: name
+  },
+    (tag.i { className: "fa #{icon}" })
+    (tag.input {
+      value:        @state.attributes.get(name)
+      onChange:     @onFieldChange.bind(@, name)
+      onBlur:       @onDateBlur.bind(@, name)
       placeholder:  placeholder
     })
   )
@@ -69,6 +82,12 @@ Component = React.createClass
 
   isValid: ->
     @state.attributes.get('full_name').length > 0
+
+
+  onDateBlur: (name) ->
+    date = @state.attributes.get(name)
+    if moment(date).isValid()
+      @setState({ attributes: @state.attributes.set(name, moment(date).format('ll')) })
   
   
   onAvatarChange: (file) ->
@@ -90,14 +109,25 @@ Component = React.createClass
   onSubmit: (event) ->
     event.preventDefault()
     @props.onSubmit(@state.attributes) if _.isFunction(@props.onSubmit)
+
+
+  getAttributes: (props) ->
+    attributes = props.attributes
+
+    # date typecast
+    # TODO: move to base logic
+    _.each ['hired_on', 'fired_on'], (name) ->
+      attributes[name] = moment(attributes[name]).format('ll') if moment(attributes[name]).isValid()
+
+    attributes: Immutable.fromJS(attributes)
   
   
   componentWillReceiveProps: (nextProps) ->
-    @setState({ attributes: Immutable.fromJS(nextProps.attributes) }) if nextProps.attributes
+    @setState(@getAttributes(nextProps))
 
 
   getInitialState: ->
-    attributes: Immutable.fromJS(@props.attributes)
+    @getAttributes(@props)
 
 
   render: ->
