@@ -17,6 +17,7 @@ DefaultMethods =
     is_published: false
     owner_type: ''
     owner_id: ''
+    tag_names: []
 
   getActions: ->
     actions = {}

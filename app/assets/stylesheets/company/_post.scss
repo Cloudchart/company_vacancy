@@ -138,6 +138,11 @@ main.company > div.wrapper > div.posts {
         > span.date {
           color: grey;
         }
+
+        > div.cc-hashtag-list > ul > li {
+          margin-top: 5px;
+          font-size: 16px;
+        }
       }
 
       > div.paragraph {
@@ -217,7 +222,6 @@ main.company > div.wrapper > div.posts {
 
 }
 
-
 // Editor
 // 
 article.editor.post {
@@ -249,7 +253,11 @@ article.editor.post {
         font-weight: 300;
       }
 
-    }    
+    }
+
+    > div.cc-hashtag-list {
+      margin-top: 10px;
+    }
 
   }
 

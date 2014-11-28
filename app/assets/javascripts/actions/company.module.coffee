@@ -41,9 +41,6 @@ module.exports =
     fail = (xhr) ->
       handleServerStoreDoneAction(Constants.Company.UPDATE_FAIL, key, xhr, token)
     
-    # TODO: should pass an array here
-    attributes.tag_names = attributes.tag_names.join(',') if attributes.tag_names
-    
     SyncAPI.update(key, attributes, done, fail)
   
 

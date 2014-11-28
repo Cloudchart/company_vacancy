@@ -78,10 +78,7 @@ Component = React.createClass
 
   getFollowButoon: ->
     return null unless @state.company.flags.can_follow
-
-    <label>
-      <FollowComponent key={@props.id}, is_followed={@state.company.flags.is_followed} />
-    </label>
+    <FollowComponent key={@props.id}, is_followed={@state.company.flags.is_followed} />
 
   update: (attr_name) ->
     return if @props.readOnly
@@ -182,8 +179,7 @@ Component = React.createClass
         />
       </label>
 
-      <TagsComponent uuid={@props.id}, readOnly={@props.readOnly} />
-
+      <TagsComponent taggable_id={@props.id} taggable_type="Company" readOnly={@props.readOnly} />
       {@getFollowButoon()}
     </header>
 
