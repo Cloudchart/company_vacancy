@@ -14,6 +14,7 @@ ModalActions = require('actions/modal_actions')
 
 Post = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
+TagsComponent = require('components/company/tags')
 
 # Main
 # 
@@ -72,20 +73,24 @@ Component = React.createClass
       .value()
 
   getHeader: ->
-    date = 
-      if moment(@state.post.published_at).isValid()
-        moment(@state.post.published_at).format('ll') 
-      else ''
+    formatted_date = if moment(@state.post.published_at).isValid()
+      moment(@state.post.published_at).format('ll') 
+    else ''
 
-    if @state.post.title
-      <header>
-        <h1>{@state.post.title}</h1>
-        <span className="date">{date}</span>
-      </header>
+    title = if @state.post.title
+      <h1>{@state.post.title}</h1>
     else
-      <header>
-        <h1>{date}</h1>
-      </header>
+      <h1>{formatted_date}</h1>
+
+    date = if @state.post.title
+      <span className="date">{formatted_date}</span>
+    else null
+      
+    <header>
+      {title}
+      {date}
+      <TagsComponent taggable_id={@props.id} taggable_type='Post' readOnly={true} />
+    </header>
 
   # Handlers
   # 

@@ -39,13 +39,17 @@ Component = React.createClass
       (reactTag.li { 
         key: identity_tag.uuid
       },
-        reactTag.a {
-          href: "/companies/search"
-          onClick: (event) =>
-            event.preventDefault()
-            @onTagClick(identity_tag.name)
+        if @props.taggable_type == 'Company'
+          (reactTag.a {
+            href: "/companies/search"
+            onClick: (event) =>
+              event.preventDefault()
+              @onTagClick(identity_tag.name)
 
-        },
+          },
+            "##{identity_tag.name}"
+          )
+        else
           "##{identity_tag.name}"
       )
   
@@ -122,7 +126,7 @@ Component = React.createClass
     if @props.readOnly and @state.identity_tags.length == 0
       null
     else
-      (reactTag.div { className: "tags" },
+      (reactTag.div { className: "cc-hashtag-list" },
         (
           if @props.readOnly
             (reactTag.ul null,
@@ -133,12 +137,12 @@ Component = React.createClass
               onInput:      @onInput
               onSelect:     @onSelect
               onRemove:     @onRemove
-              onTagClick:   @onTagClick
               selected:     @gatherTags()
               menuContent:  @gatherTagsForSelect()
               placeholder:  "#hashtag"
             })
         )
+
         (reactTag.form 
           ref: "tagLinkForm"
           action: "/companies/search"
@@ -152,7 +156,7 @@ Component = React.createClass
             ref: "tagLinkFormInput"
             name: "query"
             type: "hidden"
-        )
+        ) if @props.taggable_type == 'Company'
       )
 
 

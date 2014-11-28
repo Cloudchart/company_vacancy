@@ -1,0 +1,125 @@
+@mixin cc-hashtag-list {
+
+  > form {
+    display: none;
+  }
+
+  > ul {
+    @include display(inline-flex);
+    @include flex-wrap(wrap);
+
+    font-size: 24px;
+    font-weight: 300;
+    color: hsl(136, 52%, 51%);
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    > li a {
+      color: hsl(136, 52%, 51%);
+      text-decoration: none;
+    }
+
+    > li {
+      margin-right: 16px;
+    }
+
+    &.ic-tokens {
+
+      > li {
+        height: 40px;
+        margin-bottom: 15px;
+       
+        &.ic-token {
+          @include align-items(center);
+          @include display(flex);
+
+          background-color: hsl(0, 0%, 96%);
+          padding: 0 12px;
+
+          .ic-token-label {
+            margin-right: 8px;
+            cursor: default;
+          }
+
+          .ic-token-delete-button {
+            cursor: pointer;
+            outline: 0;
+
+            > i {
+              color: hsl(358, 77%, 57%);
+              line-height: 29px;
+            }
+          }
+        }
+      }
+
+      > li.ic-combobox {
+        width: 150px;
+
+        > .ic-tokeninput {
+          height: 100%;
+          width: auto;
+          position: relative;
+
+          > input {
+            background-color: hsl(0, 0%, 96%);
+            border: none;
+            font-weight: 300;
+            height: 100%;
+            outline: none;
+            padding: 0 12px;
+            width: auto;
+
+            &.active {
+              border: 2px solid hsl(136, 52%, 51%);
+              padding: 0 10px;
+            }
+          }
+
+          &.ic-tokeninput-is-open > ul {
+            display: block;
+          }
+
+          > ul {
+            @include position(absolute, 40px 0 0 0px);
+
+            display: none;
+            list-style-type: none;
+            padding: 0;
+            width: auto;
+            z-index: 100;
+
+            > li {
+              @include align-items(center);
+              @include display(flex);
+
+              color: hsl(60, 4%, 11%);
+              height: 40px;
+              padding: 0 12px;
+              outline: 0;
+
+              &:nth-child(2n) {
+                background-color: hsl(0, 0%, 96%);
+              }
+
+              &:nth-child(2n+1) {
+                background-color: hsl(0, 0%, 93%);
+              }
+
+              &:hover, &:focus {
+                background-color: hsl(136, 52%, 51%);
+                color: hsl(0, 0%, 100%);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+}
+
+div.cc-hashtag-list {
+  @include cc-hashtag-list;
+}
