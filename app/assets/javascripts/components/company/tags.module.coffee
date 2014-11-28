@@ -32,8 +32,6 @@ Component = React.createClass
     IdentityActions[@props.taggable_type].update(@props.taggable_id, { tag_names: tag_names })
 
   gatherTags: ->
-    console.log @state.identity_tags
-
     _.map @state.identity_tags, (tag) -> { id: tag.getKey(), name: "##{tag.name}" }
   
   gatherTagsForList: ->
@@ -117,12 +115,8 @@ Component = React.createClass
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
 
-  # getDefaultProps: ->
-  #   readOnly: false
-
   getInitialState: ->
     @getStateFromStores(@props)
-
 
   render: ->
     if @props.readOnly and @state.identity_tags.length == 0

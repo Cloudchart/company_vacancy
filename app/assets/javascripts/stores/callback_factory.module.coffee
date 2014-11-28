@@ -25,13 +25,13 @@ CrudCallbacks =
     @store.update(key, attributes)
     @store.emitChange()
   
-  handleUpdateDone: (key, json, token) ->
+  handleUpdateDone: (key, attributes, json, token) ->
     @store.stop_sync(key, token)
     @store.update(key, json)
     @store.commit(key)
     @store.emitChange()
   
-  handleUpdateFail: (key, json, xhr, token) ->
+  handleUpdateFail: (key, attributes, json, xhr, token) ->
     @store.stop_sync(key, token)
     @store.rollback(key)
     @store.emitChange()
