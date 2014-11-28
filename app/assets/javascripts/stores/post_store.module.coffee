@@ -18,6 +18,8 @@ DefaultMethods =
     owner_type: ''
     owner_id: ''
     tag_names: []
+    created_at: ''
+    updated_at: ''
 
   getActions: ->
     actions = {}

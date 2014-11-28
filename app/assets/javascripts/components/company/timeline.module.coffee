@@ -34,11 +34,7 @@ Component = React.createClass
       _.each people, (person) -> result.push { date: person[attribute], type: 'Person', data: person.toJSON() }
 
     # posts
-    posts = if @props.readOnly
-      _.filter @state.posts, (post) -> post.uuid and post.published_at
-    else
-      _.filter @state.posts, 'uuid'
-
+    posts = _.filter @state.posts, (post) -> post.uuid and post.created_at != post.updated_at
     _.each posts, (post) -> result.push { date: post.published_at, type: 'Post', data: post.toJSON() }
     
     # result
@@ -86,17 +82,28 @@ Component = React.createClass
   getCloudFluxActions: ->
     'post:create:done': @handlePostCreateDone
 
+  showPostInModal: (id) ->
+    setTimeout => 
+      ModalActions.show(
+        <Post id={id} company_id={@props.company_id} readOnly={@props.readOnly} />,
+        class_for_container: 'post'
+      )
+
   # Handlers
   # 
   handleCreatePostClick: (event) ->
-    new_post_key = PostStore.create()
-    PostActions.create(new_post_key, { owner_id: @props.company_id, owner_type: 'Company' })
+    return if PostStore.getSync(@state.new_post_key) == "create"
 
-    @setState({ new_post_key: new_post_key })
+    if post = _.find(@state.posts, (post) -> post.uuid and post.created_at == post.updated_at)
+      @showPostInModal(post.uuid)
+    else
+      new_post_key = PostStore.create()
+      PostActions.create(new_post_key, { owner_id: @props.company_id, owner_type: 'Company' })
+
+      @setState({ new_post_key: new_post_key })
 
   handlePostCreateDone: (id, attributes, json, sync_token) ->
-    setTimeout => 
-      ModalActions.show(Post({id: json.uuid, company_id: @props.company_id, readOnly: @props.readOnly}), class_for_container: 'post')
+    @showPostInModal(json.uuid)
 
   # Lifecycle Methods
   # 
