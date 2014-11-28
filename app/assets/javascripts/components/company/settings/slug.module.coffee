@@ -71,10 +71,9 @@ Component = React.createClass
       <div className="profile-item">
 
         <div className="content field">
-          <div className="content field">
-            <span className="label">Short URL</span>
-            <span>{window.location.hostname + '/companies/' + @state.company.slug}</span>
-          </div>
+          <span className="label">Short URL</span>
+          <div className="spacer"></div>
+          <span>{window.location.hostname + '/companies/' + @state.company.slug}</span>
         </div>
 
         <div className="actions">
@@ -89,12 +88,10 @@ Component = React.createClass
       <div className="profile-item">
         
         <div className="content field">
-          <div className="content field">
-            <label htmlFor="slug">Short URL</label>
-            <div className="spacer"></div>
-            <span>{window.location.hostname + '/companies/'}</span>
-            <input id="slug" name="slug" value={@state.value} placeholder="shortname" onKeyUp={@handleSlugKeyUp} onChange={@handleSlugOnChange}></input>
-          </div>
+          <label htmlFor="slug">Short URL</label>
+          <div className="spacer"></div>
+          <span>{window.location.hostname + '/companies/'}</span>
+          <input id="slug" name="slug" value={@state.value} placeholder="shortname" onKeyUp={@handleSlugKeyUp} onChange={@handleSlugOnChange}></input>
         </div>
 
         <div className="actions">
