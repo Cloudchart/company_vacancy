@@ -76,7 +76,7 @@ Component = React.createClass
   
   getDefaultProps: ->
     invitable_roles: []
-    mode: 'edit'
+    mode: 'view'
     emails: []
   
   getInitialState: ->

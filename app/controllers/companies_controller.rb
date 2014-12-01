@@ -86,32 +86,30 @@ class CompaniesController < ApplicationController
   end
 
   def access_rights
-    companies = current_user.companies.includes(:users, :people, :roles)
+    # TODO: includes :emails to current_user
+    current_user_email = current_user.email
 
-    @emails = companies.reduce([]) do |memo, company|
-      if role_value(current_user, company) =~ /owner|editor|trusted_reader/
-        company.people.each do |person|
-          if person.email.present?
-            memo.push({
-              uuid: person.uuid,
-              email: person.email,
-              full_name: person.full_name
-            })
-          end
-        end
+    companies = current_user.companies
+      .includes(:people, users: :emails)
+      .where(roles: { value: ['owner', 'editor', 'trusted_reader'] })
 
-        company.users.each do |user|
-          memo.push({
-            uuid: user.uuid,
-            email: user.email,
-            full_name: user.full_name
-          })
+    invitable_contacts = companies.inject([]) do |memo, company|
+      %w[people users].each do |association|
+        company.send(association).each do |object|
+          memo.push({ uuid: object.uuid, full_name: object.full_name, email: object.email })
         end
       end
 
       memo
     end
 
+    @invitable_contacts = invitable_contacts
+      .reject { |contact| contact[:email].blank? || contact[:email] == current_user_email }
+      .uniq { |contact| contact[:email] }
+
+    Rails.logger.info("\n #{'*'*25} #{@invitable_contacts} #{'*'*25} \n")
+
+    # TODO: create jbuilder template
     respond_to do |format|
       format.html
       format.json do
@@ -154,10 +152,6 @@ class CompaniesController < ApplicationController
   end
 
 private
-
-  def role_value(user, company)
-    company.roles.select { |role| role.user_id == user.id }.first.try(:value)
-  end
 
   def update_site_url_verification(company)
     if company_params[:site_url] == ''
