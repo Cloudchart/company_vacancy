@@ -95,7 +95,7 @@ Component = React.createClass
 
 
   onRemove: (object) ->
-    identity_tags = _.reject @state.identity_tags, (tag) -> tag.uuid == object.id
+    identity_tags = _.reject @state.identity_tags, (tag) -> tag.__key == object.id
     @syncIdentityTagNames(identity_tags)
 
   onTagClick: (value) ->

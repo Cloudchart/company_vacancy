@@ -208,7 +208,7 @@ MainComponent = React.createClass({
   },
 
   inputKeydownMap: {
-    8: 'removeLastToken',
+    // 8: 'removeLastToken', // added manual handler (cmd + backspace)
     13: 'selectOnEnter',
     27: 'hideOnEscape',
     38: 'focusPrevious',
@@ -224,6 +224,12 @@ MainComponent = React.createClass({
   },
 
   handleKeydown: function(event) {
+    // removeLastToken on cmd + backspace
+    if ((event.metaKey || event.ctrlKey) && event.key == 'Backspace') {
+      this.setState({usingKeyboard: true});
+      return this.removeLastToken.call(this, event);
+    }
+
     var handlerName = this.inputKeydownMap[event.keyCode];
     if (!handlerName)
       return
