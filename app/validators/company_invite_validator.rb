@@ -1,6 +1,7 @@
 class CompanyInviteValidator < ActiveModel::Validator
   def validate(record)
     record.errors[:email] = 'missing' if record.data[:email].blank?
+    record.errors[:email] = 'invalid' if not /@/.match(record.data[:email])
     record.errors[:email] = 'taken'   if user_already_exists?(record) || user_already_invited?(record)
   end
   

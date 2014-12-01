@@ -7,6 +7,8 @@ UsersStore                = require('stores/users')
 RolesStore                = require('stores/roles')
 TokenStore                = require('stores/token')
 
+CloudFlux                 = require('cloud_flux')
+
 Buttons           = require('components/company/buttons')
 InviteUserForm    = require('components/company/invite_user_form')
 CurrentUsersList  = require('components/company/current_users_list')
@@ -40,10 +42,8 @@ getStateFromStores = (key) ->
 #
 Component = React.createClass
 
-
   hasNewToken: ->
     @state.newTokenKey and TokenStore.has(@state.newTokenKey)
-
 
   refreshStateFromStores: ->
     @setState getStateFromStores(@props.key)
@@ -76,12 +76,13 @@ Component = React.createClass
   
   getDefaultProps: ->
     invitable_roles: []
-    mode: Modes[0]
-  
+    mode: 'edit'
+    emails: []
   
   getInitialState: ->
     state = getStateFromStores(@props.key)
     state.mode = @props.mode
+    state.newTokenKey = TokenStore.create({ owner_id: @props.key, owner_type: 'Company' })
     state
 
 
@@ -128,6 +129,7 @@ Component = React.createClass
               onCurrentUsersButtonClick: @onCurrentUsersButtonClick
               key:                       @state.newTokenKey
               company:                   @state.company
+              emails:                    @props.emails
               invitable_roles:           @props.invitable_roles
               token:                     TokenStore.get(@state.newTokenKey)
               errors:                    TokenStore.errorsFor(@state.newTokenKey)

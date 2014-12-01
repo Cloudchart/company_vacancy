@@ -97,9 +97,11 @@
 
   CompanyStore.add(data.company.uuid, data.company)
   AccessRights = require('components/company/access_rights')
-  
+
   React.renderComponent(
-    <AccessRights key=data.company.uuid invitable_roles=data.invitable_roles />,
+    <AccessRights key=data.company.uuid
+                  emails=data.emails
+                  invitable_roles=data.invitable_roles />,
     document.querySelector('[data-react-mount-point="access-rights"]'))
 
 # Search

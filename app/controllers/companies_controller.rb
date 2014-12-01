@@ -86,12 +86,38 @@ class CompaniesController < ApplicationController
   end
 
   def access_rights
+    companies = current_user.companies.includes(:users, :people, :roles)
+
+    @emails = companies.reduce([]) do |memo, company|
+      if role_value(current_user, company) =~ /owner|editor|trusted_reader/
+        company.people.each do |person|
+          if person.email.present?
+            memo.push({
+              uuid: person.uuid,
+              email: person.email,
+              full_name: person.full_name
+            })
+          end
+        end
+
+        company.users.each do |user|
+          memo.push({
+            uuid: user.uuid,
+            email: user.email,
+            full_name: user.full_name
+          })
+        end
+      end
+
+      memo
+    end
+
     respond_to do |format|
       format.html
       format.json do
         render json: {
           users:  ActiveModel::ArraySerializer.new(@company.users.includes(:emails)),
-          roles:  ActiveModel::ArraySerializer.new(@company.roles)
+          roles:  ActiveModel::ArraySerializer.new(@company.roles),
         }
       end
     end
@@ -128,6 +154,10 @@ class CompaniesController < ApplicationController
   end
 
 private
+
+  def role_value(user, company)
+    company.roles.select { |role| role.user_id == user.id }.first.try(:value)
+  end
 
   def update_site_url_verification(company)
     if company_params[:site_url] == ''

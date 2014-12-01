@@ -112,11 +112,19 @@ $access-rights-list-item-padding: 15px;
     > .email {
       @include display(flex);
 
-      margin-bottom: 7px;
+      margin-bottom: 18px;
 
-      .form-field-2 {
+      > .typeahead {
         margin: auto;
         width: 250px;
+
+        .input {
+          height: 34px;
+        }
+
+        > ul {
+          @include position(absolute, 34px 0 0 0px);
+        }
       }
     }
 
