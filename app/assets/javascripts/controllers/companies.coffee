@@ -99,10 +99,9 @@
   AccessRights = require('components/company/access_rights')
 
   React.renderComponent(
-    <AccessRights key=data.company.uuid
-                  emails=data.emails
-                  invitable_roles=data.invitable_roles />,
-    document.querySelector('[data-react-mount-point="access-rights"]'))
+    <AccessRights key=data.company.uuid />,
+    document.querySelector('[data-react-mount-point="access-rights"]')
+  )
 
 # Search
 # 

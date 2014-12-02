@@ -75,9 +75,9 @@ Component = React.createClass
   
   
   getDefaultProps: ->
-    invitable_roles: []
+    # invitable_roles: []
     mode: 'view'
-    emails: []
+    # emails: []
   
   getInitialState: ->
     state = getStateFromStores(@props.key)
@@ -116,7 +116,7 @@ Component = React.createClass
               company:         @state.company
               tokens:          @state.tokens
               roles:           @state.roles
-              invitable_roles: @props.invitable_roles
+              # invitable_roles: @props.invitable_roles
             })
           ]
         
@@ -129,8 +129,8 @@ Component = React.createClass
               onCurrentUsersButtonClick: @onCurrentUsersButtonClick
               key:                       @state.newTokenKey
               company:                   @state.company
-              emails:                    @props.emails
-              invitable_roles:           @props.invitable_roles
+              # emails:                    @props.emails
+              # invitable_roles:           @props.invitable_roles
               token:                     TokenStore.get(@state.newTokenKey)
               errors:                    TokenStore.errorsFor(@state.newTokenKey)
               sync:                      TokenStore.getSync(@state.newTokenKey)

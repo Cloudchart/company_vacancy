@@ -86,38 +86,30 @@ class CompaniesController < ApplicationController
   end
 
   def access_rights
-    # TODO: includes :emails to current_user
-    current_user_email = current_user.email
+    pagescript_params(id: @company.uuid)
 
     companies = current_user.companies
       .includes(:people, users: :emails)
       .where(roles: { value: ['owner', 'editor', 'trusted_reader'] })
 
-    invitable_contacts = companies.inject([]) do |memo, company|
-      %w[people users].each do |association|
+    @invitable_contacts = companies.inject({}) do |memo, company|
+      %w[users people].each do |association|
         company.send(association).each do |object|
-          memo.push({ uuid: object.uuid, full_name: object.full_name, email: object.email })
+          unless object.email.blank?
+            memo[object.email] ||= []
+            unless memo[object.email].include?(object.full_name)
+              memo[object.email] = memo[object.email].push(object.full_name)
+            end
+          end
         end
       end
 
       memo
     end
 
-    @invitable_contacts = invitable_contacts
-      .reject { |contact| contact[:email].blank? || contact[:email] == current_user_email }
-      .uniq { |contact| contact[:email] }
-
-    Rails.logger.info("\n #{'*'*25} #{@invitable_contacts} #{'*'*25} \n")
-
-    # TODO: create jbuilder template
     respond_to do |format|
       format.html
-      format.json do
-        render json: {
-          users:  ActiveModel::ArraySerializer.new(@company.users.includes(:emails)),
-          roles:  ActiveModel::ArraySerializer.new(@company.roles),
-        }
-      end
+      format.json
     end
   end
 
