@@ -90,16 +90,20 @@
   
   CompanyActions  = require('actions/company')
 
-  promises = [
-    CompanyActions.fetchAccessRights(data.company.uuid)
-    CompanyActions.fetchInviteTokens(data.company.uuid)
-  ]
+  # promises = [
+  #   CompanyActions.fetchAccessRights(data.company.uuid)
+  #   CompanyActions.fetchInviteTokens(data.company.uuid)
+  # ]
 
-  CompanyStore.add(data.company.uuid, data.company)
+  # CompanyStore.add(data.company.uuid, data.company)
   AccessRights = require('components/company/access_rights')
 
   React.renderComponent(
-    <AccessRights key=data.company.uuid />,
+    <AccessRights 
+      uuid={data.id}
+      invitable_roles={data.invitable_roles}
+      invitable_contacts={data.invitable_contacts}
+    />,
     document.querySelector('[data-react-mount-point="access-rights"]')
   )
 

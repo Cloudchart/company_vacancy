@@ -2,15 +2,12 @@ class CompaniesController < ApplicationController
   include FollowableController
 
   before_action :set_company, only: [
-    :show,
-    :edit,
     :update,
     :destroy,
     :verify_site_url,
     :download_verification_file,
     :finance,
-    :settings,
-    :access_rights
+    :settings
   ]
   before_action :set_collection, only: [:index, :search]
 
@@ -30,12 +27,21 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
-    pagescript_params(id: @company.uuid)
-    @tags = Tag.order(:name).all
+    relation = Company.includes(
+      :people,
+      :vacancies,
+      :pictures,
+      :paragraphs,
+      :roles,
+      :tokens,
+      users: :emails,
+      blocks: :block_identities
+    )
+    @company = find_company(relation)
 
     respond_to do |format|
-      format.html
-      format.json
+      format.html { pagescript_params(id: @company.uuid) }
+      format.json { @tags = Tag.order(:name).all }
     end
   end
 
@@ -47,10 +53,6 @@ class CompaniesController < ApplicationController
     @company.save!
     
     redirect_to @company
-  end
-  
-  # GET /companies/1/edit
-  def edit
   end
 
   # PATCH/PUT /companies/1
@@ -86,29 +88,35 @@ class CompaniesController < ApplicationController
   end
 
   def access_rights
-    pagescript_params(id: @company.uuid)
-
-    companies = current_user.companies
-      .includes(:people, users: :emails)
-      .where(roles: { value: ['owner', 'editor', 'trusted_reader'] })
-
-    @invitable_contacts = companies.inject({}) do |memo, company|
-      %w[users people].each do |association|
-        company.send(association).each do |object|
-          unless object.email.blank?
-            memo[object.email] ||= []
-            unless memo[object.email].include?(object.full_name)
-              memo[object.email] = memo[object.email].push(object.full_name)
-            end
-          end
-        end
-      end
-
-      memo
-    end
+    @company = find_company(Company.includes(:roles, users: :emails))
 
     respond_to do |format|
-      format.html
+      format.html {
+        companies = current_user.companies
+          .includes(:people, users: :emails)
+          .where(roles: { value: ['owner', 'editor', 'trusted_reader'] })
+
+        invitable_contacts = companies.inject({}) do |memo, company|
+          %w[users people].each do |association|
+            company.send(association).each do |object|
+              unless object.email.blank?
+                memo[object.email] ||= []
+                unless memo[object.email].include?(object.full_name)
+                  memo[object.email] = memo[object.email].push(object.full_name)
+                end
+              end
+            end
+          end
+
+          memo
+        end
+
+        pagescript_params(
+          id: @company.uuid,
+          invitable_roles: Company::INVITABLE_ROLES,
+          invitable_contacts: invitable_contacts
+        )
+      }
       format.json
     end
   end
@@ -163,18 +171,11 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    relation = Company.includes(
-      :people,
-      :vacancies,
-      :pictures,
-      :paragraphs,
-      :roles,
-      :tokens,
-      users: :emails,
-      blocks: :block_identities
-    )
+    @company = Company.find(params[:id])
+  end
 
-    @company = relation.find_by(slug: params[:id]) || relation.find(params[:id])
+  def find_company(relation)
+    relation.find_by(slug: params[:id]) || relation.find(params[:id])
   end
 
   def set_collection
