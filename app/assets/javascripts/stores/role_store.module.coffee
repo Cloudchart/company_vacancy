@@ -6,13 +6,7 @@ Constants = require('constants')
 
 # Exports
 #
-module.exports = CloudFlux.createStore
-
-
-  onAccessRightsFetchDone: (key, json) ->
-    _.each (json.roles), (props) => @store.add_or_update(props.uuid, props)
-    @store.emitChange()
-  
+module.exports = CloudFlux.createStore  
   
   onDelete: (key, token = 'delete') ->
     @store.start_sync(key, token)
@@ -76,8 +70,6 @@ module.exports = CloudFlux.createStore
 
   getActions: ->
     actions = {}
-    
-    actions['company:access_rights:fetch:done'] = @onAccessRightsFetchDone
     
     actions[Constants.Role.DELETE]      = @onDelete
     actions[Constants.Role.DELETE_DONE] = @onDeleteDone

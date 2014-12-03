@@ -2,13 +2,12 @@
 #
 tag = React.DOM
 
+UserStore = require('stores/user_store')
+RoleStore = require('stores/role_store')
+TokenStore = require('stores/token_store')
 
-RolesStore    = require('stores/roles')
-TokenStore    = require('stores/token')
-UsersStore    = require('stores/users')
-
-RoleItem      = require('components/company/role_item')
-TokenItem     = require('components/company/token_item')
+RoleItem = require('components/company/role_item')
+TokenItem = require('components/company/token_item')
 
 
 # Main
@@ -27,8 +26,8 @@ Component = React.createClass
       (RoleItem {
         key:             role.uuid
         role:            role.value
-        user:            UsersStore.get(role.user_id)
-        sync:            RolesStore.getSync(role.uuid)
+        user:            UserStore.get(role.user_id)
+        sync:            RoleStore.getSync(role.uuid)
         invitable_roles: @props.invitable_roles
       })
   

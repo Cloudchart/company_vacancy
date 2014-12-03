@@ -7,7 +7,7 @@ tag = React.DOM
 
 Logo = require('components/company/logo')
 CompanyActions = require('actions/company')
-TokenStore = require('stores/token')
+TokenStore = require('stores/token_store')
 
 MainComponent = React.createClass
 

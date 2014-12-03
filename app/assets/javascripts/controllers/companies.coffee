@@ -1,5 +1,3 @@
-# @cjsx React.DOM
-
 # Show
 # 
 @['companies#show'] = (data) ->
@@ -11,9 +9,9 @@
   ParagraphStore = require('stores/paragraph_store')
   PersonStore = require('stores/person')
   VacancyStore = require('stores/vacancy') 
-  RolesStore = require('stores/roles')
-  TokenStore = require('stores/token')
-  UsersStore = require('stores/users')
+  RoleStore = require('stores/role_store')
+  TokenStore = require('stores/token_store')
+  UserStore = require('stores/user_store')
   TagStore = require('stores/tag_store')
   
   # Fetch company
@@ -25,9 +23,9 @@
       paragraphs: ParagraphStore
       people:     PersonStore
       vacancies:  VacancyStore
-      roles:      RolesStore
+      roles:      RoleStore
       tokens:     TokenStore
-      users:      UsersStore
+      users:      UserStore
       tags:       TagStore
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
@@ -83,27 +81,34 @@
 # 
 @['companies#access_rights'] = (data) ->
   
-  CompanyStore  = require('stores/company')
-  TokenStore    = require('stores/token')
-  UsersStore    = require('stores/users')
-  RolesStore    = require('stores/roles')
+  CompanyStore = require('stores/company')
+  UserStore = require('stores/user_store')
+  RoleStore = require('stores/role_store')
+  TokenStore = require('stores/token_store')
   
-  CompanyActions  = require('actions/company')
-
-  # promises = [
-  #   CompanyActions.fetchAccessRights(data.company.uuid)
-  #   CompanyActions.fetchInviteTokens(data.company.uuid)
-  # ]
-
-  # CompanyStore.add(data.company.uuid, data.company)
   AccessRights = require('components/company/access_rights')
 
+  # Fetch
+  # 
+  require('sync/company').fetchAccessRights(data.id).done (json) ->
+    _.each {
+      users:      UserStore
+      roles:      RoleStore
+      tokens:     TokenStore
+    }, (store, key) ->
+      _.each json[key], (item) -> store.add(item.uuid, item)
+
+    CompanyStore.add(json.company.uuid, json.company)
+    CompanyStore.emitChange()
+
+  # Mount
+  # 
   React.renderComponent(
-    <AccessRights 
-      uuid={data.id}
-      invitable_roles={data.invitable_roles}
-      invitable_contacts={data.invitable_contacts}
-    />,
+    (AccessRights 
+      uuid: data.id
+      invitable_roles: data.invitable_roles
+      invitable_contacts: data.invitable_contacts
+    ),
     document.querySelector('[data-react-mount-point="access-rights"]')
   )
 

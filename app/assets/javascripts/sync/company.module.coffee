@@ -46,15 +46,6 @@ module.exports =
       dataType:   "json"
     .done done
     .fail fail
-
-
-  fetchInviteTokens: (key, done, fail) ->
-    $.ajax
-      url:        "/companies/#{key}/invites"
-      type:       "GET"
-      dataType:   "json"
-    .done done
-    .fail fail
   
   
   sendInvite: (key, data, done, fail) ->

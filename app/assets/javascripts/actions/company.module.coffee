@@ -2,7 +2,7 @@
 #
 Dispatcher    = require('dispatcher/dispatcher')
 CompanyStore  = require('stores/company')
-TokenStore    = require('stores/token')
+TokenStore    = require('stores/token_store')
 SyncAPI       = require('sync/company')
 Constants     = require('constants')
 
@@ -42,29 +42,6 @@ module.exports =
       handleServerStoreDoneAction(Constants.Company.UPDATE_FAIL, key, xhr, token)
     
     SyncAPI.update(key, attributes, done, fail)
-  
-
-  #
-  #
-  fetchAccessRights: (key, token) ->
-    Dispatcher.handleClientAction
-      type: 'company:access_rights:fetch'
-      data: [key, token]
-    
-
-    done = (json) ->
-      Dispatcher.handleServerAction
-        type: 'company:access_rights:fetch:done'
-        data: [key, json, token]
-    
-
-    fail = (xhr) ->
-      Dispatcher.handleServerAction
-        type: 'company:access_rights:fetch:fail'
-        data: [key, xhr.responseJSON, xhr, token]
-    
-
-    SyncAPI.fetchAccessRights(key, done, fail)
 
 
   verifySiteUrl: (key, token = 'verify_site_url') ->

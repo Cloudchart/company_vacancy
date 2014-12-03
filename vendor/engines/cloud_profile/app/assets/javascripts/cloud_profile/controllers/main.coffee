@@ -12,8 +12,8 @@
   CompanySync = require('sync/company')
 
   CompanyStore = require('stores/company')
-  TokenStore = require('stores/token')
-  RolesStore = require('stores/roles')
+  TokenStore = require('stores/token_store')
+  RoleStore = require('stores/role_store')
   FavoriteStore = require('stores/favorite')
 
   CompanyPreviewList = require('components/company/preview/list')
@@ -26,7 +26,7 @@
       TokenStore.add(token.uuid, token)
 
     _.each json.roles, (role) ->
-      RolesStore.add(role.uuid, role)
+      RoleStore.add(role.uuid, role)
 
     _.each json.favorites, (favorite) ->
       FavoriteStore.add(favorite.uuid, favorite)

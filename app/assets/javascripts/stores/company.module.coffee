@@ -7,9 +7,6 @@ Constants         = require('constants')
 #
 module.exports = CloudFlux.createStore
 
-  onAccessRightsFetchDone: ->
-    @store.emitChange()
-
   onVerifySiteUrl: (key, token) ->
     @store.start_sync(key, token)
     @store.emitChange()
@@ -63,8 +60,6 @@ module.exports = CloudFlux.createStore
 
   getActions: ->
     actions = {}
-
-    actions['company:access_rights:fetch:done'] = @onAccessRightsFetchDone
 
     actions[Constants.Company.VERIFY_SITE_URL]      = @onVerifySiteUrl
     actions[Constants.Company.VERIFY_SITE_URL_DONE] = @onVerifySiteUrlDone

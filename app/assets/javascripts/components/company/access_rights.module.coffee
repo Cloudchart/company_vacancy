@@ -2,41 +2,18 @@
 #
 tag = React.DOM
 
-CompanyStore              = require('stores/company')
-UsersStore                = require('stores/users')
-RolesStore                = require('stores/roles')
-TokenStore                = require('stores/token')
+CloudFlux = require('cloud_flux')
 
-CloudFlux                 = require('cloud_flux')
+CompanyStore  = require('stores/company')
+UserStore = require('stores/user_store')
+RoleStore = require('stores/role_store')
+TokenStore = require('stores/token_store')
 
-Buttons           = require('components/company/buttons')
-InviteUserForm    = require('components/company/invite_user_form')
-CurrentUsersList  = require('components/company/current_users_list')
+Buttons = require('components/company/buttons')
+InviteUserForm = require('components/company/invite_user_form')
+CurrentUsersList = require('components/company/current_users_list')
 
-
-Modes             = ['view', 'edit']
-
-
-#
-#
-tokenFilter = (key, record) ->
-  record.owner_id == key and record.owner_type == 'Company' and record.name == 'invite'
-
-
-roleFilter = (key, record) ->
-  record.owner_id == key and record.owner_type == 'Company'
-
-
-# Get State From Stores
-#
-getStateFromStores = (key) ->
-  tokens        = TokenStore.filter(tokenFilter.bind(null, key))
-  roles         = RolesStore.filter(roleFilter.bind(null, key))
-  
-  company:  CompanyStore.get(key)
-  roles:    roles
-  tokens:   tokens
-
+Modes = ['view', 'edit']
 
 # Main
 #
@@ -44,10 +21,6 @@ Component = React.createClass
 
   hasNewToken: ->
     @state.newTokenKey and TokenStore.has(@state.newTokenKey)
-
-  refreshStateFromStores: ->
-    @setState getStateFromStores(@props.key)
-    @setState({ mode: 'view' }) unless @hasNewToken()
   
   
   onInviteUserButtonClick: (event) ->
@@ -63,81 +36,97 @@ Component = React.createClass
   
   
   componentDidMount: ->
+    CompanyStore.on('change', @refreshStateFromStores)
+    # UserStore.on('change', @refreshStateFromStores)
+    RoleStore.on('change', @refreshStateFromStores)
     TokenStore.on('change', @refreshStateFromStores)
-    UsersStore.on('change', @refreshStateFromStores)
-    RolesStore.on('change', @refreshStateFromStores)
   
   
   componentWillUnmount: ->
+    CompanyStore.off('change', @refreshStateFromStores)
+    # UserStore.off('change', @refreshStateFromStores)
+    RoleStore.off('change', @refreshStateFromStores)
     TokenStore.off('change', @refreshStateFromStores)
-    UsersStore.off('change', @refreshStateFromStores)
-    RolesStore.off('change', @refreshStateFromStores)
+
+
+  refreshStateFromStores: ->
+    @setState @getStateFromStores(@props)
+    @setState({ mode: 'view' }) unless @hasNewToken()
+
+
+  getStateFromStores: (props) ->
+    company: CompanyStore.get(props.uuid)
+    roles: RoleStore.all()
+    tokens: TokenStore.all()
   
   
   getDefaultProps: ->
-    # invitable_roles: []
     mode: 'view'
+    # invitable_roles: []
     # emails: []
   
   getInitialState: ->
-    state = getStateFromStores(@props.key)
+    state = @getStateFromStores(@props)
     state.mode = @props.mode
-    state.newTokenKey = TokenStore.create({ owner_id: @props.key, owner_type: 'Company' })
+    state.newTokenKey = TokenStore.create({ owner_id: @props.uuid, owner_type: 'Company' })
     state
 
 
   render: ->
-    (tag.div {
-      className: 'access-rights'
-    },
-    
+    if @state.company
+      (tag.div {
+        className: 'access-rights'
+      },
       
-      switch @state.mode
         
-        when 'view'
-          [
-            (tag.header { key: "access-right-header" },
-              (tag.strong {}, @state.company.name)
-              " security settings"
-            )
+        switch @state.mode
+          
+          when 'view'
+            [
+              (tag.header { key: "access-right-header" },
+                (tag.strong {}, @state.company.name)
+                " security settings"
+              )
 
-            # Invite User Button
-            #
-            (Buttons.InviteUserButton {
-              className: 'cc cc-wide'
-              key:       'invite-user-button'
-              onClick:   @onInviteUserButtonClick
-            })
-            
-            # Current Users List
-            #
-            (CurrentUsersList {
-              key:             'current-users-list'
-              company:         @state.company
-              tokens:          @state.tokens
-              roles:           @state.roles
-              # invitable_roles: @props.invitable_roles
-            })
-          ]
-        
-        
-        when 'edit'
-          [
-            # Invite User Form
-            #
-            (InviteUserForm {
-              onCurrentUsersButtonClick: @onCurrentUsersButtonClick
-              key:                       @state.newTokenKey
-              company:                   @state.company
-              # emails:                    @props.emails
-              # invitable_roles:           @props.invitable_roles
-              token:                     TokenStore.get(@state.newTokenKey)
-              errors:                    TokenStore.errorsFor(@state.newTokenKey)
-              sync:                      TokenStore.getSync(@state.newTokenKey)
-            })
-          ]
+              # Invite User Button
+              #
+              (Buttons.InviteUserButton {
+                className: 'cc cc-wide'
+                key:       'invite-user-button'
+                onClick:   @onInviteUserButtonClick
+              })
+              
+              # Current Users List
+              #
+              (CurrentUsersList {
+                key:             'current-users-list'
+                company:         @state.company
+                tokens:          @state.tokens
+                roles:           @state.roles
+                invitable_roles: @props.invitable_roles
+              })
+            ]
+          
+          
+          when 'edit'
+            [
+              # Invite User Form
+              #
+              (InviteUserForm {
+                onCurrentUsersButtonClick: @onCurrentUsersButtonClick
+                key:                       @state.newTokenKey
+                company:                   @state.company
+                # emails:                    @props.emails
+                invitable_roles:           @props.invitable_roles
+                token:                     TokenStore.get(@state.newTokenKey)
+                errors:                    TokenStore.errorsFor(@state.newTokenKey)
+                sync:                      TokenStore.getSync(@state.newTokenKey)
+              })
+            ]
 
-    )
+      )
+    else
+      null
 
 
 # Exports
