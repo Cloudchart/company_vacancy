@@ -58,6 +58,11 @@ VacancyComponent = (vacancy) ->
 #
 Component = React.createClass
 
+  statics:
+    isEmpty: (block_id) ->
+      block = BlockStore.get(block_id)
+      VacancyStore.filter((item) => _.contains(block.identity_ids, item.uuid)).length == 0
+
 
   gatherVacancies: ->
     _.chain(@state.vacancies)
@@ -102,23 +107,10 @@ Component = React.createClass
 
 
   render: ->
-    vacancies = @gatherVacancies()
-
-    if @props.readOnly and vacancies.length == 0
-
-      (tag.noscript null)
-
-    else
-
-      (tag.ul {
-        className: 'vacancies'
-      },
-
-        @gatherVacancies()
-      
-        VacancyPlaceholderComponent.apply(@) unless @props.readOnly
-    
-      )
+    (tag.ul { className: 'vacancies' },
+      @gatherVacancies()
+      VacancyPlaceholderComponent.apply(@) unless @props.readOnly
+    )
 
 
 # Exports

@@ -1,12 +1,25 @@
 # @cjsx React.DOM
 
-SortableListItem  = require('components/shared/sortable_list_item')
-SectionWrapper = require('components/shared/section_wrapper')
+tag = React.DOM
 
 BlockStore = require('stores/block_store')
 
 BlockActions = require('actions/block_actions')
 BlockableActions = require('actions/mixins/blockable_actions')
+
+SortableListItem  = require('components/shared/sortable_list_item')
+
+BlockComponents =
+  Picture:    require('components/editor/picture')
+  Paragraph:  require('components/editor/paragraph')
+  Person:     require('components/editor/person')
+  Vacancy:    require('components/editor/vacancy')
+
+SectionClassNames =
+  Picture:    'picture'
+  Paragraph:  'paragraph'
+  Person:     'people'
+  Vacancy:    'vacancies'
 
 module.exports =
 
@@ -59,6 +72,15 @@ module.exports =
     @setState({ position: null })
 
 
+  handleBlockDestroyClick: (uuid, event) ->
+    BlockActions.destroy(uuid) if confirm('Are you sure?')
+
+
+  getDestroyLink: (block_id) ->
+    return null if @state.readOnly
+    <i className="fa fa-times remove" onClick={@handleBlockDestroyClick.bind(@, block_id)}></i>
+
+
   getSectionPlaceholder: (position) ->
     cancel_item = =>
       <li key="cancel" className="cancel">
@@ -82,10 +104,21 @@ module.exports =
 
   gatherBlocks: ->
     _.chain(@state.blocks)
+      .reject (block) => @state.readOnly and BlockComponents[block.identity_type].isEmpty(block.getKey())
       .sortBy(['position'])
       .map (block) =>
-        key = block.getKey()
-        <SortableListItem key={key}>
-          <SectionWrapper ref={key} key={key} company_id={@state.company.uuid} readOnly={@state.readOnly} />
+        BlockComponent = BlockComponents[block.identity_type]
+        block_key = block.getKey()
+
+        <SortableListItem key={block_key}>
+          <section key={block_key} className={SectionClassNames[block.identity_type]}>
+            {@getDestroyLink(block.uuid)}
+            <BlockComponent
+              key={block_key}
+              company_id={@state.company.id}
+              readOnly={@state.readOnly}
+            />
+          </section>
         </SortableListItem>
+
       .value()

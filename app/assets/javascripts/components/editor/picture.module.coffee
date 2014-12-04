@@ -37,6 +37,9 @@ Placeholder = (title) ->
 #
 Component = React.createClass
 
+  statics:
+    isEmpty: (block_id) ->
+      !PictureStore.find (item) => item.uuid and item.owner_id == block_id and item.owner_type == 'Block'
 
   onChange: (file) ->
     if @state.picture
@@ -73,26 +76,15 @@ Component = React.createClass
     @getStateFromStores()
 
 
-  render: ->
-    if @props.readOnly
-      0 # render input and image
-    else
-      if @state.picture
-        1 #render image
-      else
-        2 # render nothing
-        
-    if @state.picture or !@props.readOnly
-      <ImageInput
-        src={@state.picture.url if @state.picture}
-        onChange={@onChange}
-        onDelete={@onDelete}
-        onError={@onError}
-        readOnly={@props.readOnly} 
-        placeholder={<Placeholder />}
-      />
-    else
-      null
+  render: ->        
+    <ImageInput
+      src={@state.picture.url if @state.picture}
+      onChange={@onChange}
+      onDelete={@onDelete}
+      onError={@onError}
+      readOnly={@props.readOnly} 
+      placeholder={<Placeholder />}
+    />
 
 
 # Exports

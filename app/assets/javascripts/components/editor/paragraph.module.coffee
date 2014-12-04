@@ -1,18 +1,24 @@
+# @cjsx React.DOM
+
 # Imports
 #
 tag = React.DOM
 
-ParagraphStore      = require('stores/paragraph_store')
-ParagraphActions    = require('actions/paragraph_actions')
+ParagraphStore = require('stores/paragraph_store')
+
+ParagraphActions = require('actions/paragraph_actions')
 
 ContentEditableArea = require('components/form/contenteditable_area')
 
 CompanyPlaceholder  = "Tell a short story about your company — what does your company do and why it’s important. Be brief, be clear, be straightforward. At about 70 words / 500 characters we’ll curb your enthusiasm."
 
-
 # Main
 #
 Component = React.createClass
+
+  statics:
+    isEmpty: (block_id) ->
+      !ParagraphStore.find (item) => item.uuid and item.owner_id is block_id and item.owner_type is 'Block'
 
 
   getKey: ->
@@ -73,12 +79,12 @@ Component = React.createClass
 
 
   render: ->
-    (ContentEditableArea {
-      onChange:     @onChange
-      placeholder:  CompanyPlaceholder
-      readOnly:     @props.readOnly
-      value:        @state.paragraph.content
-    })
+    <ContentEditableArea
+      onChange={@onChange}
+      placeholder={CompanyPlaceholder}
+      readOnly={@props.readOnly}
+      value={@state.paragraph.content}
+    />
 
 
 # Exports

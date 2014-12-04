@@ -80,8 +80,14 @@ Component = React.createClass
 
 
   mixins: [CloudFlux.mixins.Actions]
+
+
+  statics:
+    isEmpty: (block_id) ->
+      block = BlockStore.get(block_id)
+      PersonStore.filter((item) => _.contains(block.identity_ids, item.uuid)).length == 0
   
-  
+
   onPersonCreateDone: ->
     setTimeout ModalActions.hide
   
