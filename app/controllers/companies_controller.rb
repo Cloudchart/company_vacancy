@@ -92,11 +92,14 @@ class CompaniesController < ApplicationController
 
     respond_to do |format|
       format.html {
+        pagescript_params(id: @company.uuid)
+      }
+      format.json {
         companies = current_user.companies
           .includes(:people, users: :emails)
           .where(roles: { value: ['owner', 'editor', 'trusted_reader'] })
 
-        invitable_contacts = companies.inject({}) do |memo, company|
+        @invitable_contacts = companies.inject({}) do |memo, company|
           %w[users people].each do |association|
             company.send(association).each do |object|
               unless object.email.blank?
@@ -110,14 +113,7 @@ class CompaniesController < ApplicationController
 
           memo
         end
-
-        pagescript_params(
-          id: @company.uuid,
-          invitable_roles: Company::INVITABLE_ROLES,
-          invitable_contacts: invitable_contacts
-        )
       }
-      format.json
     end
   end
 

@@ -19,10 +19,11 @@ $access-rights-list-item-padding: 15px;
     margin-bottom: 25px;
     position: relative;
 
-    a {
+    button {
       @include position(absolute, 0px 0 0 -14px);
 
-      margin-right: 5px;      
+      color: hsl(138, 63%, 37%);
+      margin-right: 5px;
     }
   }
 
@@ -36,9 +37,9 @@ $access-rights-list-item-padding: 15px;
       height: $access-rights-list-item-height;
 
       > .name {
-        max-width: 150px;
         overflow: hidden;
         text-overflow: ellipsis;
+        width: 150px;
 
         > .email {
           display: block;

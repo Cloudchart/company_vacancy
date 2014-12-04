@@ -85,8 +85,9 @@
   UserStore = require('stores/user_store')
   RoleStore = require('stores/role_store')
   TokenStore = require('stores/token_store')
+  TempKVStore = require('utils/temp_kv_store')
   
-  AccessRights = require('components/company/access_rights')
+  CompanyAccessRights = require('components/company/access_rights')
 
   # Fetch
   # 
@@ -98,16 +99,17 @@
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 
+    TempKVStore.update("invitable_roles", json.invitable_roles)
+    TempKVStore.update("invitable_contacts", json.invitable_contacts)
+
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
 
   # Mount
   # 
   React.renderComponent(
-    (AccessRights 
+    (CompanyAccessRights 
       uuid: data.id
-      invitable_roles: data.invitable_roles
-      invitable_contacts: data.invitable_contacts
     ),
     document.querySelector('[data-react-mount-point="access-rights"]')
   )

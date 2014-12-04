@@ -2,14 +2,9 @@
 
 cx = React.addons.classSet
 
-TypeaheadSelector = require('components/form/typeahead/selector')
-
-KeyCodes          = require('utils/key_codes')
-
 Typeahead = React.createClass
   propTypes:
     options:           React.PropTypes.array
-    maxOptions:        React.PropTypes.number
     value:             React.PropTypes.string
 
     onBlur:            React.PropTypes.func
@@ -19,39 +14,61 @@ Typeahead = React.createClass
     input:             React.PropTypes.func
     inputProps:        React.PropTypes.object
 
-    getOptionValue:    React.PropTypes.func
-    filterOption:      React.PropTypes.func
-    renderOption:      React.PropTypes.func
+  renderOptions: ->
+    if @state.showList
+      results = @props.options.map (option, index) =>
+        <li 
+          key          = {index}
+          className    = {cx(hover: @state.selectionIndex == index)}
+          onClick      = {@onOptionSelect.bind(this, option.value)}
+          onMouseEnter = {@setSelectionIndex.bind(this, index)} >
+          { option.content }
+        </li>
+    else
+      results = []
 
-  getOptionsForValue: (value, options) ->
-    options = _.chain(options)
-      .filter((option) => @props.filterOption(option, value))
-      .value()
+    <ul className='typeahead-selector'
+        onMouseEnter={@onMouseEnter}
+        onMouseLeave={@onMouseLeave}>{ results }</ul>
 
-    if @props.maxOptions
-      options = options.slice(0, @props.maxOptions)
-
-    options
-
-  renderIncrementalSearchResults: ->
-    <TypeaheadSelector
-      ref="sel"
-      options          = {@state.visible}
-      onOptionSelected = {@onOptionSelected}
-      renderOption     = {@props.renderOption}
-      onMouseEnter     = {@onMouseEnter}
-      onMouseLeave     = {@onMouseLeave}
-      showList         = {@state.showList}
-    />
+  showList: ->
+    @setState
+      showList: true
 
   hideList: ->
     @setState
       showList: false
       listHovered: false
 
-  showList: ->
+  setSelectionIndex: (index) ->
     @setState
-      showList: true
+      selectionIndex: index
+
+  getSelectionForIndex: (index) ->
+    if index != null
+      @props.options[index].value
+    else
+      null
+
+  nav: (delta) ->
+    length = @props.options.length
+
+    if @state.selectionIndex == null
+      currentIndex = if delta > 0 then 0 else (length - 1)
+      delta = 0
+    else
+      currentIndex = @state.selectionIndex
+
+    newIndex = currentIndex + delta
+    newIndex = Math.abs((newIndex + length) % length)
+
+    @setSelectionIndex(newIndex)
+
+  navDown: ->
+    @nav(1)
+
+  navUp: ->
+    @nav(-1)
 
   onMouseEnter: ->
     @setState
@@ -61,58 +78,40 @@ Typeahead = React.createClass
     @setState
       listHovered: false
 
-  onOptionSelected: (option) ->
-    value = @props.getOptionValue(option)
+  onOptionSelect: (value) ->
+    @hideList()
     @props.onOptionSelect(value)
 
-    @setState
-      visible: @getOptionsForValue(value, @state.options)
-      selection: value
-      showList: false
-
-    @props.onOptionSelected(option)
-
-
   eventMap: (e) ->
-    events = {}
-
-    events[KeyCodes.UP] = @refs.sel.navUp
-    events[KeyCodes.DOWN] = @refs.sel.navDown
-    events[KeyCodes.RETURN] = events[KeyCodes.ENTER] = @onEnter
-    events[KeyCodes.ESCAPE] = @onEscape
-    events[KeyCodes.TAB] = @onTab
-
-    events
+    ArrowUp   : @navUp
+    ArrowDown : @navDown
+    Enter     : @onEnter
+    Escape    : @onEscape
+    Tab       : @onTab
 
   onChange: (event) ->
     value = event.target.value
     @props.onChange(value)
     @setState
-      visible: @getOptionsForValue(value, @state.options)
-      selection: null
-      value: value
-      showList: value.length > 0
+      selectionIndex: null
+      showList:       value.length > 0
     
     false
 
-  onEnter: (event) ->
-    if !@refs.sel.state.selection
-      return @props.onKeyDown(event)
-
-    @onOptionSelected(@refs.sel.state.selection)
+  onEnter: ->
+    if @state.selectionIndex != null
+      @onOptionSelect(@getSelectionForIndex(@state.selectionIndex))
 
   onEscape: ->
-    @refs.sel.setSelectionIndex(null)
+    @setSelectionIndex(null)
     @hideList()
 
   onKeyDown: (event) ->
-    handler = @eventMap()[event.keyCode]
+    handler = @eventMap()[event.key]
 
     if handler
       handler(event)
       false
-    else
-      @props.onKeyDown(event)
 
   onBlur: (event) ->
     if !@state.listHovered
@@ -125,23 +124,16 @@ Typeahead = React.createClass
 
   getDefaultProps: ->
     options: []
-    value: ""
-    placeholder: ""
-    onKeyDown: (event) -> return true
-    onOptionSelected: (option) ->
-    listHovered: false
+    value:   ""
 
-    getOptionValue: (option) -> option
-    filterOption: (option, query) -> 
-      option.toLowerCase().indexOf(query.toLowerCase) == 0
-
-    renderOption: (option) -> option
+    onBlur: (value) ->
+    onChange: (value) ->
+    onOptionSelect: (value) ->
 
   getInitialState: ->
-    options:   @props.options
-    visible:   @getOptionsForValue(@props.value, @props.options)
-    selection: null
-    showList:  false
+    options:        @props.options
+    selectionIndex: null
+    showList:       false
 
   render: ->
     Input = @props.input
@@ -155,9 +147,8 @@ Typeahead = React.createClass
         value        = {@props.value} 
 
         placeholder = {@props.inputProps.placeholder}
-        errors      = {@props.inputProps.errors}
-        type        = {@props.inputProps.type} />
-      { @renderIncrementalSearchResults() }
+        errors      = {@props.inputProps.errors} />
+      { @renderOptions() }
     </div>
 
 module.exports = Typeahead

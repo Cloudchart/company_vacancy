@@ -101,6 +101,18 @@ $cc-button-wide-padding: 40px;
   
 }
 
+@mixin transparent-button {
+  border: none;
+  background-color: transparent;
+  margin: 0;
+  outline: 0;
+  padding: 0;
+}
+
+button.transparent {
+  @include transparent-button();
+}
+
 button.cc {
   @include cc-button;
 
