@@ -20,35 +20,35 @@ CrudCallbacks =
 
   # Update
   # 
-  handleUpdate: (key, attributes, token) ->
-    @store.start_sync(key, token)
+  handleUpdate: (key, attributes, sync_token) ->
+    @store.start_sync(key, sync_token)
     @store.update(key, attributes)
     @store.emitChange()
   
-  handleUpdateDone: (key, attributes, json, token) ->
-    @store.stop_sync(key, token)
+  handleUpdateDone: (key, attributes, json, sync_token) ->
+    @store.stop_sync(key, sync_token)
     @store.update(key, json)
     @store.commit(key)
     @store.emitChange()
   
-  handleUpdateFail: (key, attributes, json, xhr, token) ->
-    @store.stop_sync(key, token)
+  handleUpdateFail: (key, attributes, json, xhr, sync_token) ->
+    @store.stop_sync(key, sync_token)
     @store.rollback(key)
     @store.emitChange()
 
   # Destroy
   # 
-  handleDestroy: (key, token) ->
-    @store.start_sync(key, token)
+  handleDestroy: (key, sync_token) ->
+    @store.start_sync(key, sync_token)
     @store.emitChange()
   
-  handleDestroyDone: (key, json, token) ->
-    @store.stop_sync(key, token)
+  handleDestroyDone: (key, json, sync_token) ->
+    @store.stop_sync(key, sync_token)
     @store.remove(key)
     @store.emitChange()
 
-  handleDestroyFail: (key, json, xhr, token) ->
-    @store.stop_sync(key, token)
+  handleDestroyFail: (key, json, xhr, sync_token) ->
+    @store.stop_sync(key, sync_token)
     @store.emitChange()
 
 

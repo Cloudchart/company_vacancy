@@ -1,59 +1,32 @@
 # Imports
 #
-CloudFlux         = require('cloud_flux')
-Constants         = require('constants')
+CloudFlux = require('cloud_flux')
+CallbackFactory = require('stores/callback_factory')
+
+CrudActions = ['create', 'update', 'destroy']
+CrudCallbacks = CallbackFactory.create 'paragraph', CrudActions
+
+DefaultMethods = 
+
+  getSchema: ->
+    uuid: ''
+    owner_type: ''
+    owner_id: ''
+    content: ''
+
+  getActions: ->
+    actions = {}
+
+    _.each CrudActions, (action) => 
+      actions["paragraph:#{action}"] = @["handle#{_.str.titleize(action)}"]
+      actions["paragraph:#{action}:done"] = @["handle#{_.str.titleize(action)}Done"]
+      actions["paragraph:#{action}:fail"] = @["handle#{_.str.titleize(action)}Fail"]
+
+    # other actions goes here
+
+    actions
+
 
 # Exports
 #
-module.exports = CloudFlux.createStore
-
-
-  onUpdate: (key, attributes, token) ->
-    @store.start_sync(key, token)
-    @store.update(key, attributes)
-    @store.emitChange()
-  
-  
-  onUpdateDone: (key, json, token) ->
-    @store.stop_sync(key, token)
-    @store.remove(key)
-    @store.add(json.paragraph.uuid, json.paragraph)
-    @store.emitChange()
-  
-  
-  onUpdateFail: (key, json, xhr, token) ->
-    @stop.stop_sync(key, token)
-    @store.emitChange()
-  
-  
-  onDelete: (key, token) ->
-    @store.start_sync(key, token)
-    @store.emitChange()
-
-
-  onDeleteDone: (key, json, token) ->
-    @store.stop_sync(key, token)
-    @store.remove(key)
-    @store.emitChange()
-
-
-  onDeleteFail: (key, json, xhr, token) ->
-    @store.stop_sync(key, token)
-    @store.emitChange()
-
-
-  getActions: ->
-    'paragraph:update':       @onUpdate
-    'paragraph:update:done':  @onUpdateDone
-    'paragraph:update:fail':  @onUpdateFail
-
-    'paragraph:delete':       @onDelete
-    'paragraph:delete:done':  @onDeleteDone
-    'paragraph:delete:fail':  @onDeleteFail
-
-
-  getSchema: ->
-    uuid:           ''
-    owner_type:     ''
-    owner_id:       ''
-    content:        ''
+module.exports = CloudFlux.createStore _.extend(DefaultMethods, CrudCallbacks)

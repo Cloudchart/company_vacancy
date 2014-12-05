@@ -7,9 +7,6 @@ class PostsController < ApplicationController
 
   def index
     @posts = @company.posts.includes(:pictures, :paragraphs, blocks: :block_identities)
-      # .where(owner: @company)
-      # .order(published_at: :desc)
-      # .limit(5)
 
     respond_to do |format|
       format.json

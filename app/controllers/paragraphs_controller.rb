@@ -1,31 +1,41 @@
 class ParagraphsController < ApplicationController
-
-
   before_action :find_owner
-  
 
-  def update
-    @owner.paragraph or @owner.build_paragraph
+  def create
+    @paragraph = @owner.build_paragraph(paragraph_params)
 
-    @owner.paragraph.update!(resource_params)
-    
-    respond_to do |format|
-      format.json { render json: @owner.paragraph, root: :paragraph }
+    if @paragraph.save
+      respond_to do |format|
+        format.json { render json: @paragraph }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: :fail, status: 422 }
+      end
     end
   end
-  
+
+  def update
+    if @owner.paragraph.update(paragraph_params)
+      respond_to do |format|
+        format.json { render json: @owner.paragraph }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: :fail, status: 422 }
+      end
+    end
+  end
   
   def destroy
     @owner.paragraph.destroy
     
     respond_to do |format|
-      format.json { render json: @owner.paragraph, root: :paragraph }
+      format.json { render json: @owner.paragraph }
     end
   end
 
-
-  private
-  
+private  
   
   def find_owner
     @owner = begin
@@ -36,10 +46,8 @@ class ParagraphsController < ApplicationController
     end
   end
   
-  
-  def resource_params
+  def paragraph_params
     params.require(:paragraph).permit(:content)
   end
-  
 
 end

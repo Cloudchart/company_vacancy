@@ -12,7 +12,7 @@ cloneNode = (node) ->
   
   clone = node.cloneNode(true)
   
-  delete clone.dataset.reactid
+  clone.dataset.reactid = null
   
   clone.style.width     = nodeStyle.width
   clone.style.height    = nodeStyle.height
