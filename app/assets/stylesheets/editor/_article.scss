@@ -18,7 +18,6 @@ $editor-paragraph-line-height: 22px;
 
 $editor-placeholder-section-figure-size: 50px;
 
-
 // Editor
 //
 article.editor {
@@ -30,39 +29,6 @@ article.editor {
     margin: -10px -20px;
     padding: 10px 20px;
     position: relative;
-    
-    &:not(.placeholder):hover,
-    &.draggable {
-      background-color: hsla(0, 0%, 98%, .9);
-      cursor: -webkit-grab;
-      z-index: 100;
-    }
-    
-    &.hover {
-      background-color: #999;
-    }
-    
-    &.draggable {
-      @include transform(scale(.5));
-      cursor: -webkit-grabbing !important;
-      opacity: .75;
-      z-index: 101;
-    }
-    
-    &.draggable i.remove {
-      visibility: hidden !important;
-    }
-    
-    &.draggable-source {
-      background-color: hsla(0, 0%, 98%, .9);
-
-      > * {
-        opacity: 0;
-      }
-      
-      max-height: 100px;
-      overflow: hidden;
-    }
     
     > i.remove {
       @include position(absolute, -15px -15px 0 0);
@@ -82,6 +48,42 @@ article.editor {
   
 }
 
+// Draggable
+// 
+article.editor.draggable > section {
+  &:not(.placeholder):hover,
+  &.draggable {
+    background-color: hsla(0, 0%, 98%, .9);
+    cursor: -webkit-grab;
+    z-index: 100;
+  }
+
+  &.hover {
+    background-color: #999;
+  }
+
+  &.draggable {
+    @include transform(scale(.5));
+    cursor: -webkit-grabbing !important;
+    opacity: .75;
+    z-index: 101;
+  }
+
+  &.draggable i.remove {
+    visibility: hidden !important;
+  }
+
+  &.draggable-source {
+    background-color: hsla(0, 0%, 98%, .9);
+
+    > * {
+      opacity: 0;
+    }
+    
+    max-height: 100px;
+    overflow: hidden;
+  }
+}
 
 // Placeholder section
 //

@@ -61,6 +61,10 @@ Component = React.createClass
 
   render: ->
     if @state.company
+      classes = React.addons.classSet
+        'editor company company-2_0': true
+        'draggable': !@state.readOnly
+
       blocks = _.map @gatherBlocks(), (block, i) =>
         [
           @getSectionPlaceholder(i)
@@ -77,7 +81,7 @@ Component = React.createClass
         
         <SortableList
           component={tag.article}
-          className="editor company company-2_0"
+          className={classes}
           onOrderChange={@handleSortableChange}
           onOrderUpdate={@handleSortableUpdate}
           readOnly={@state.readOnly}
