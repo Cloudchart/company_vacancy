@@ -24,13 +24,16 @@ Component = React.createClass
     return null unless @props.shouldDisplayViewMode
 
     <div className="controls">
-      <div className="select cc view-mode">
-        <select value={@state.view_mode}, onChange={@handleViewModeChange}>
-          <option value={'editor'}>Edit</option>
-          <option value={'public'}>View</option>
-        </select>
-        <i className="fa fa-chevron-down"></i>
-      </div>
+      <label className="cc-toggle view-mode">
+        <input type="checkbox" checked={not @props.readOnly} onChange={@handleViewModeChange} />
+        <span>
+          <span className="off">View</span>
+          <span className="on">
+            <i></i>
+            <span>Edit</span>
+          </span>
+        </span>
+      </label>
     </div>
 
   
@@ -123,8 +126,7 @@ Component = React.createClass
     @updateLogotype(file)
 
   handleViewModeChange: (event) ->
-    readOnly = if event.target.value == 'editor' then false else true
-    @setState({ view_mode: event.target.value })
+    readOnly = not event.target.checked
     @props.onChange({ readOnly: readOnly })
   
   handleFieldKeyUp: (event) ->
@@ -145,7 +147,6 @@ Component = React.createClass
     name: company.name
     description: company.description
     logotype_url: company.logotype_url
-    view_mode: if props.readOnly then 'public' else 'editor'
 
   getInitialState: ->
     @getStateFromStores(@props)

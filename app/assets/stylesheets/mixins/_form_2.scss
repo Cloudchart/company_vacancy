@@ -30,6 +30,84 @@
   }
 }
 
+@mixin cc-toggle {
+  cursor: pointer;
+  display: block;
+  font-size: 16px;
+  height: 36px;
+  overflow: hidden;
+  position: relative;
+  width: 85px;
+
+  input {
+    opacity: 0;
+    position: absolute;
+    z-index: 5;
+  }
+
+  > span {
+    display: block;
+    height: 100%;
+    position: relative;
+
+    > span {
+      @include align-items(center);
+      @include display(flex);
+
+      position: absolute;
+      height: 100%;
+      text-align: center;
+
+      &.off {
+        @include justify-content(center);
+
+        background-color: hsl(0, 0%, 98%);
+        color: hsl(0, 0%, 0%);
+        left: 0;
+        width: 76%;
+      }
+
+      &.on {
+        @include transition(left 0.2s ease-out);
+
+        background-color: hsl(136, 50%, 52%);
+        color: hsl(0, 0%, 98%);
+        height: 100%;
+        left: 76%;
+        width: 100%;
+
+        > * {
+          display: block;
+        }
+
+        > i {
+          @include transition(background-color 0.2s ease-out);
+
+          background-color: hsl(0, 0%, 94%);
+          height: 100%;
+          width: 24%;
+        }
+
+        > span {
+          width: 65px;
+          text-align: center;
+          width: 76%;
+        }
+      }
+    }
+  }
+
+  > input:checked + span {
+    > .on {
+      left: 0;
+
+      > i {
+        background-color: hsl(132, 44%, 50%);
+      }
+    }
+  }
+}
+
 @mixin form-field {
   @include align-items(center);
   @include display(flex);
@@ -190,6 +268,10 @@
 
 .form-field-2 {
   @include form-field;
+}
+
+.cc-toggle {
+  @include cc-toggle();
 }
 
 div.select.cc {
