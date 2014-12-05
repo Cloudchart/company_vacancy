@@ -24,7 +24,7 @@ Component = React.createClass
     return null unless @props.shouldDisplayViewMode
 
     <div className="controls">
-      <label className="cc-toggle view-mode">
+      <button className="cc-toggle view-mode">
         <input type="checkbox" checked={not @props.readOnly} onChange={@handleViewModeChange} />
         <span>
           <span className="off">View</span>
@@ -33,7 +33,7 @@ Component = React.createClass
             <span>Edit</span>
           </span>
         </span>
-      </label>
+      </button>
     </div>
 
   
