@@ -68,9 +68,7 @@ Component = React.createClass
 
   handlePublishedAtBlur: ->
     if moment(@state.published_at).isValid()
-      formatted_value = moment(@state.published_at).format('ll')
-      @setState({ published_at: formatted_value })
-      @update({ published_at: formatted_value })
+      @update({ published_at: moment(@state.published_at).format('ll') })
 
   handleFieldKeyup: (event) ->
     event.target.blur() if event.key == 'Enter'
@@ -112,7 +110,7 @@ Component = React.createClass
   getPublishedAt: (post) ->
     if post 
       if moment(post.published_at).isValid()
-        moment(post.published_at).format('ll') 
+        moment(post.published_at).format('ll')
       else
         ''
     else
