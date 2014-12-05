@@ -27,6 +27,10 @@ module.exports =
     VERIFY_SITE_URL_DONE:  'company:verify_site_url:done'
     VERIFY_SITE_URL_FAIL:  'company:verify_site_url:fail'
 
+    FETCH_ACCESS_RIGHTS:      'company:access_rights:fetch'
+    FETCH_ACCESS_RIGHTS_DONE: 'company:access_rights:fetch:done'
+    FETCH_ACCESS_RIGHTS_FAIL: 'company:access_rights:fetch:fail'
+
 
   Token:
     FETCH_DONE:   'token:fetch:done'

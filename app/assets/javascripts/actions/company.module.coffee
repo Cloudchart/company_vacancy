@@ -67,19 +67,19 @@ module.exports =
 
   fetchAccessRights: (key, token) ->
     Dispatcher.handleClientAction
-      type: 'company:access_rights:fetch'
+      type: Constants.Company.FETCH_ACCESS_RIGHTS
       data: [key, token]
     
 
     done = (json) ->
       Dispatcher.handleServerAction
-        type: 'company:access_rights:fetch:done'
+        type: Constants.Company.FETCH_ACCESS_RIGHTS_DONE
         data: [key, json, token]
     
 
     fail = (xhr) ->
       Dispatcher.handleServerAction
-        type: 'company:access_rights:fetch:fail'
+        type: Constants.Company.FETCH_ACCESS_RIGHTS_FAIL
         data: [key, xhr.responseJSON, xhr, token]
     
 

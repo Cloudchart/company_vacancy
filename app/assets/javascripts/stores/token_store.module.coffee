@@ -12,6 +12,9 @@ module.exports = CloudFlux.createStore
   # Fetch
   #
 
+  onFetchAccessRightsDone: (key, json) ->
+    _.each (json.tokens), (item) => @store.add_or_update(item.uuid, item)
+    @store.emitChange()
 
   onFetchInviteTokensDone: (key, json) ->
     _.each json.tokens, (item) => @store.add_or_update(item.uuid, item)
@@ -101,6 +104,7 @@ module.exports = CloudFlux.createStore
   getActions: ->
     actions = {}
     
+    actions[Constants.Company.FETCH_ACCESS_RIGHTS_DONE] = @onFetchAccessRightsDone
     actions[Constants.Company.FETCH_INVITE_TOKENS_DONE] = @onFetchInviteTokensDone
 
     actions[Constants.Token.CREATE]       = @onCreate

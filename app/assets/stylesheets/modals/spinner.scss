@@ -1,0 +1,16 @@
+.modal-container > .spinner {
+  @include display(flex);
+
+  font-size: 50px;
+  height: 500px;
+  width: 500px;
+
+  > .fa {
+    margin: auto;
+  }
+
+  &.access-rights {
+    height: 400px;
+    width: 700px;
+  }
+}

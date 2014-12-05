@@ -14,6 +14,9 @@ FollowComponent = require('components/company/follow')
 AccessRights    = require('components/company/access_rights')
 TagsComponent   = require('components/company/tags')
 
+Spinner         = require('components/shared/spinner')
+TempKVStore     = require('utils/temp_kv_store')
+
 # Main
 #
 Component = React.createClass
@@ -105,9 +108,16 @@ Component = React.createClass
   handleShareClick: (event) ->
     event.preventDefault()
 
-    ModalActions.show(
-      <AccessRights key={@props.id} invitable_roles={@state.company.meta.invitable_roles} />
-    )
+    if TempKVStore.get("invitable_contacts")
+      ModalActions.show(<AccessRights uuid={@props.id} />)
+    else
+      ModalActions.show(<Spinner className="access-rights" />)
+      CompanyActions.fetchAccessRights(@props.id)
+
+      TempKVStore.on "invitable_contacts_changed", =>
+        setTimeout =>
+          ModalActions.show(<AccessRights uuid={@props.id} />)
+          TempKVStore.off "invitable_contacts_changed"
 
   handleFieldBlur: (attr_name, event) ->
     @update(attr_name) unless @state[attr_name] == @state.company[attr_name]
