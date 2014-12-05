@@ -115,7 +115,7 @@ module.exports =
             {@getDestroyLink(block.uuid)}
             <BlockComponent
               key={block_key}
-              company_id={@state.company.id}
+              company_id={@state.company.uuid}
               readOnly={@state.readOnly}
             />
           </section>
