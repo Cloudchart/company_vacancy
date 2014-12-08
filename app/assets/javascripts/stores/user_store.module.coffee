@@ -1,24 +1,23 @@
 # Imports
 #
 CloudFlux = require('cloud_flux')
+Constants = require("constants")
 
 
 # Exports
 #
 module.exports = CloudFlux.createStore
 
-
-  displayName: 'UserStore'
-
-
-  onAccessRightsFetchDone: (key, json) ->
+  onFetchAccessRightsDone: (key, json) ->
     _.each json.users, (user) => @store.add_or_update(user.uuid, user)
     @store.emitChange()
-  
 
   getActions: ->
-    'company:access_rights:fetch:done': @onAccessRightsFetchDone
-  
+    actions = {}
+
+    actions[Constants.Company.FETCH_ACCESS_RIGHTS_DONE] = @onFetchAccessRightsDone
+
+    actions
   
   getSchema: ->
     uuid:       ''

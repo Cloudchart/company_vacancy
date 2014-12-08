@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   include Uuidable
+  include Fullnameable
   
   attr_accessor :current_password
   attr_reader :invite
@@ -51,16 +52,6 @@ class User < ActiveRecord::Base
 
   def has_already_voted_for?(object)
     votes.map(&:destination_id).include?(object.id)
-  end
-
-  def full_name
-    @full_name ||= [first_name, last_name].compact.join(' ')
-  end
-
-  def full_name=(full_name)
-    parts             = full_name.split(/\s+/).select { |part| part.present? }
-    self.first_name   = parts.first
-    self.last_name    = parts.drop(1).join(' ')
   end
 
   def full_name_or_email

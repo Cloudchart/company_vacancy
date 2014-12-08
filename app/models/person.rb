@@ -1,5 +1,6 @@
 class Person < ActiveRecord::Base
   include Uuidable
+  include Fullnameable
   include Tire::Model::Search
   include Tire::Model::Callbacks
 
@@ -52,16 +53,6 @@ class Person < ActiveRecord::Base
 
       filter :term, company_id: params[:company_id] if params[:company_id].present?
     end
-  end
-
-  def full_name
-    @full_name ||= [first_name, last_name].compact.join(' ')
-  end
-  
-  def full_name=(full_name)
-    parts             = full_name.split(/\s+/).select { |part| part.present? }
-    self.first_name   = parts.first
-    self.last_name    = parts.drop(1).join(' ')
   end
 
   def as_json_for_chart

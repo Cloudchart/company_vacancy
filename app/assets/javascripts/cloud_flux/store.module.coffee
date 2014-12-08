@@ -154,6 +154,7 @@ Factory = (definition) ->
     start_sync: (key, token) ->
       return @start_sync('base', key) if arguments.length < 2
       __sync[key] = token
+      delete __errs[key]
     
     
     stop_sync: (key) ->

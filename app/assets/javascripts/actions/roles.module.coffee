@@ -1,7 +1,7 @@
 # Imports
 #
 Dispatcher  = require('dispatcher/dispatcher')
-RolesStore  = require('stores/roles')
+RoleStore  = require('stores/role_store')
 Constants   = require('constants')
 RoleSync    = require('sync/role')
 
@@ -15,7 +15,7 @@ module.exports =
       type: Constants.Role.UPDATE
       data: [key, attributes, token]
     
-    record = RolesStore.get(key)
+    record = RoleStore.get(key)
 
     done = (json) ->
       Dispatcher.handleServerAction
@@ -37,7 +37,7 @@ module.exports =
       type: Constants.Role.DELETE
       data: [key, token]
     
-    record = RolesStore.get(key)
+    record = RoleStore.get(key)
 
     done = (json) ->
       Dispatcher.handleServerAction

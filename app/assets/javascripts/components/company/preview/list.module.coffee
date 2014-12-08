@@ -8,8 +8,8 @@
 tag = React.DOM
 
 CompanyStore = require('stores/company')
-TokenStore = require('stores/token')
-RolesStore = require('stores/roles')
+TokenStore = require('stores/token_store')
+RoleStore = require('stores/role_store')
 FavoriteStore = require('stores/favorite')
 
 CompanyPreviewItem = require('components/company/preview/item')
@@ -22,19 +22,19 @@ MainComponent = React.createClass
   getStateFromStores: ->
     companies: CompanyStore.all()
     tokens: TokenStore.all()
-    roles: RolesStore.all()
+    roles: RoleStore.all()
     favorites: FavoriteStore.all()
 
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStore)
     TokenStore.on('change', @refreshStateFromStore)
-    RolesStore.on('change', @refreshStateFromStore)
+    RoleStore.on('change', @refreshStateFromStore)
     FavoriteStore.on('change', @refreshStateFromStore)
 
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStore)
     TokenStore.off('change', @refreshStateFromStore)
-    RolesStore.off('change', @refreshStateFromStore)
+    RoleStore.off('change', @refreshStateFromStore)
     FavoriteStore.off('change', @refreshStateFromStore)
 
   getInitialState: ->

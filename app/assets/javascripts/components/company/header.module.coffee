@@ -14,6 +14,8 @@ FollowComponent = require('components/company/follow')
 AccessRights    = require('components/company/access_rights')
 TagsComponent   = require('components/company/tags')
 
+TempKVStore     = require('utils/temp_kv_store')
+
 # Main
 #
 Component = React.createClass
@@ -76,7 +78,12 @@ Component = React.createClass
     return null if @props.readOnly
 
     <a href="" className="share-link" onClick={@handleShareClick}>
-      <i className="fa fa-share"></i>
+      {
+        if !@state.shareLoading
+          <i className="fa fa-share"></i>
+        else
+          <i className="fa fa-spinner fa-spin"></i>
+      }
     </a>
 
   getFollowButoon: ->
@@ -108,9 +115,17 @@ Component = React.createClass
   handleShareClick: (event) ->
     event.preventDefault()
 
-    ModalActions.show(
-      <AccessRights key={@props.id} invitable_roles={@state.company.meta.invitable_roles} />
-    )
+    if TempKVStore.get("invitable_contacts")
+      ModalActions.show(<AccessRights uuid={@props.id} />)
+    else
+      @setState(shareLoading: true)
+      CompanyActions.fetchAccessRights(@props.id)
+
+      TempKVStore.on "invitable_contacts_changed", =>
+        setTimeout =>
+          @setState(shareLoading: false)
+          ModalActions.show(<AccessRights uuid={@props.id} />)
+          TempKVStore.off "invitable_contacts_changed"
 
   handleFieldBlur: (attr_name, event) ->
     @update(attr_name) unless @state[attr_name] == @state.company[attr_name]
@@ -149,7 +164,8 @@ Component = React.createClass
     logotype_url: company.logotype_url
 
   getInitialState: ->
-    @getStateFromStores(@props)
+    _.extend @getStateFromStores(@props),
+      shareLoading: false
 
   render: ->
     <header>

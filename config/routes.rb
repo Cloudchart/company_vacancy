@@ -27,7 +27,7 @@ Cloudchart::Application.routes.draw do
 
   # Resources
   #
-  resources :companies, concerns: [:followable] do
+  resources :companies, except: [:edit], concerns: [:followable] do
     post :search, on: :collection
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
@@ -47,7 +47,7 @@ Cloudchart::Application.routes.draw do
       post :verify, on: :member
     end
 
-    resources :invites, controller: 'companies/invites' do
+    resources :invites, only: [:show, :create, :destroy], controller: 'companies/invites' do
       match :resend, on: :member, via: [:put, :patch]
       post :accept, on: :member
     end

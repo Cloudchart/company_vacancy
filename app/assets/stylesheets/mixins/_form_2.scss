@@ -122,7 +122,6 @@
   @include justify-content(flex-end);
 
   font-size: 16px;
-  padding-bottom: 12px;
 
   .title {
     font-weight: 300;
@@ -148,6 +147,7 @@
     @include display(flex);
     
     background-color: hsl(0, 0%, 96%);
+    height: 100%;
     padding: 5px 10px;
     
     input {
@@ -156,6 +156,7 @@
       background-color: transparent;
       border: none;
       color: inherit;
+      height: 100%;
       outline: none;
       
       @include placeholder {
@@ -200,7 +201,15 @@
     .input {
       border: 2px solid hsl(137, 51%, 51%);
       color: hsl(137, 51%, 51%);
+      padding: 3px 8px;
     }
+  }
+
+  &.active {
+    .input {
+      border: 2px solid hsl(137, 51%, 51%);
+      padding: 3px 8px;
+    }    
   }
 
   &.invalid {
@@ -211,6 +220,45 @@
 
   &.locked {
     color: hsl(0, 0%, 50%);
+  }
+}
+
+@mixin form-typeahead {
+  position: relative;
+
+  > ul {
+    @include position(absolute, 40px 0 0 0px);
+
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    z-index: 100;
+
+    > li {
+      @include align-items(center);
+      @include display(flex);
+
+      cursor: pointer;
+      color: hsl(60, 4%, 11%);
+      height: 40px;
+      padding: 0 12px;
+      outline: 0;
+      white-space: nowrap;
+
+      &:nth-child(2n) {
+        background-color: hsl(0, 0%, 96%);
+      }
+
+      &:nth-child(2n+1) {
+        background-color: hsl(0, 0%, 93%);
+      }
+
+      &.hover {
+        background-color: hsl(136, 52%, 51%);
+        color: hsl(0, 0%, 100%);
+      }
+    }
   }
 }
 
@@ -279,6 +327,10 @@
 
 .cc-toggle {
   @include cc-toggle();
+}
+
+.typeahead {
+  @include form-typeahead;
 }
 
 div.select.cc {
