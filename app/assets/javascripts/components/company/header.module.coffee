@@ -14,7 +14,6 @@ FollowComponent = require('components/company/follow')
 AccessRights    = require('components/company/access_rights')
 TagsComponent   = require('components/company/tags')
 
-Spinner         = require('components/shared/spinner')
 TempKVStore     = require('utils/temp_kv_store')
 
 # Main
