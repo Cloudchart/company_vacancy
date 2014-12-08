@@ -19,8 +19,8 @@ Component = React.createClass
 
   getStateFromStores: ->
     company: CompanyStore.get(@props.uuid)
-    roles:   RoleStore.all()
-    tokens:  TokenStore.all()
+    roles:   RoleStore.filter (role) => role.owner_id == @props.uuid && role.owner_type == "Company"
+    tokens:  TokenStore.filter (token) => token.owner_id == @props.uuid && token.owner_type == "Company"
 
   currentUsers: ->
     _.map @state.roles, (role) =>

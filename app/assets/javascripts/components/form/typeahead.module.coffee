@@ -39,6 +39,7 @@ Typeahead = React.createClass
     @setState
       showList: false
       listHovered: false
+      selectionIndex: null
 
   setSelectionIndex: (index) ->
     @setState
@@ -66,9 +67,11 @@ Typeahead = React.createClass
 
   navDown: ->
     @nav(1)
+    false
 
   navUp: ->
     @nav(-1)
+    false
 
   onMouseEnter: ->
     @setState
@@ -101,17 +104,23 @@ Typeahead = React.createClass
   onEnter: ->
     if @state.selectionIndex != null
       @onOptionSelect(@getSelectionForIndex(@state.selectionIndex))
+      false
+
+  onTab: ->
+    if @props.options.length > 0 && @state.showList
+      @onOptionSelect(@getSelectionForIndex(0))
+      false
 
   onEscape: ->
     @setSelectionIndex(null)
     @hideList()
+    false
 
   onKeyDown: (event) ->
     handler = @eventMap()[event.key]
 
     if handler
       handler(event)
-      false
 
   onBlur: (event) ->
     if !@state.listHovered

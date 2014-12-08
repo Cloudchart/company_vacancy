@@ -33,6 +33,7 @@ Component = React.createClass
     users:             UserStore.all()
     errors:            Immutable.Map(TokenStore.errorsFor(@props.tokenKey) || {})
     sync:              TokenStore.getSync(@props.tokenKey)
+    tokens:            TokenStore.filter (token) => token.owner_id == @props.uuid && token.owner_type == "Company"
     invitableRoles:    TempKVStore.get("invitable_roles") || []
     invitableContacts: TempKVStore.get("invitable_contacts") || {}
 
@@ -80,23 +81,29 @@ Component = React.createClass
   filterContacts: (query) ->
     _.chain(@state.invitableContacts)
       .pick((names, email) =>
-        not _.find(@state.users, (user) -> user.email == email)
+        not _.find(@state.users, (user) -> user.email == email) &&
+        not _.find(@state.tokens, (token) -> token.data.email == email)
       )
       .map((names, email) ->
-        contacts = "#{email}|#{names.join("|")}"
+        re = new RegExp("(^|\\s)#{query}\\.*", "i")
+        matchedBy = null
 
-        if match = contacts.match(new RegExp("(?:^|\\|)(#{query}[\\w@\\.]+)", "i"))
-          matchedByEmail    = match[1].toLowerCase() == email.toLowerCase()
-          matchedByUsername = match[1].toLowerCase() == names[0].toLowerCase()
+        if email.match(re)
+          filteredName = names[0]
+          matchedBy = "email"
+        else
+          _.each names, (name, index) ->
+            if name.match(re)
+              filteredName = name
+              matchedBy = if (index == 0) then "username" else "name"
 
-          name = if matchedByEmail then names[0] else match[1]
-
-          value:   "#{name} <#{email}>"
-          content: "#{name} <#{email}>"
+        if matchedBy
+          value:   "#{filteredName} <#{email}>"
+          content: "#{filteredName} <#{email}>"
           matchedValue:
-            if matchedByEmail
+            if matchedBy == "email"
               0
-            else if matchedByUsername
+            else if matchedBy == "username"
               1
             else
               2

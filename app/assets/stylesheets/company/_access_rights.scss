@@ -37,6 +37,7 @@ $access-rights-list-item-padding: 15px;
       height: $access-rights-list-item-height;
 
       > .name {
+        max-width: 150px;
         overflow: hidden;
         text-overflow: ellipsis;
         width: 150px;
