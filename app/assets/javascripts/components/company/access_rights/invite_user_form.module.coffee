@@ -62,8 +62,6 @@ Component = React.createClass
     email
 
   onEmailChange: (query) ->
-    query = @formatEmail(query)
-
     @setState
       email:  query
       errors: @state.errors.set("email", [])
@@ -93,7 +91,7 @@ Component = React.createClass
 
           name = if matchedByEmail then names[0] else match[1]
 
-          value:   email
+          value:   "#{name} <#{email}>"
           content: "#{name} <#{email}>"
           matchedValue:
             if matchedByEmail
@@ -133,10 +131,12 @@ Component = React.createClass
   onSubmit: (event) ->
     event.preventDefault()
 
+    email = @formatEmail(@state.email)
+
     if !@state.errors || @state.errors.get("email").length == 0
       CompanyActions.sendInvite @props.tokenKey,
                         data:
-                          email:  @state.email
+                          email:  email
                           role:   @state.role
   
   onRoleChange: (event) ->
