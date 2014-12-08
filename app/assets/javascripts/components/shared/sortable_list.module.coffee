@@ -43,18 +43,20 @@ module.exports = React.createClass
     node  = event.target
     nodes = _.reduce @refs, ((memo, child, key) -> memo[key] = child.getDOMNode() ; memo), {}
     
-    node = node.parentNode while node isnt document and not node.matches('[contenteditable]') and not _.findKey(nodes, node)
+    node = node.parentNode while node isnt document and not node.matches('[contenteditable]') and not _.contains(nodes, node)
     
-    return unless _.findKey(nodes, node)
+    key = _.findKey(nodes, (item) -> item == node)
     
+    return unless key
+
     event.preventDefault()
-    
+
     window.addEventListener('mouseup', @handleMouseUp)
 
     timer = setTimeout =>
-      @handleDragStart(_.findKey(nodes, node), event)
+      @handleDragStart(key, event)
     , 250
-    
+
     @setState
       dragTimer: timer
   

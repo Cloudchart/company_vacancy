@@ -43,7 +43,7 @@ module.exports = CloudFlux.createStore
   
   
   onUpdateDone: (key, attributes, json, token) ->
-    @store.update(key, json)
+    @store.update(key, json.block)
     @store.commit(key)
     @store.emitChange()
 
