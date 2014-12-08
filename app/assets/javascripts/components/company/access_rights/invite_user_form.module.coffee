@@ -35,7 +35,6 @@ Component = React.createClass
     sync:              TokenStore.getSync(@props.tokenKey)
     invitableRoles:    TempKVStore.get("invitable_roles") || []
     invitableContacts: TempKVStore.get("invitable_contacts") || {}
-    role:              TempKVStore.get("invitable_roles")[0] || null
 
   rolesInputs: ->
     _.map @state.invitableRoles, (role) =>
@@ -169,6 +168,7 @@ Component = React.createClass
   getInitialState: ->
     _.extend @getStateFromStores(),
       email: ""
+      role:  TempKVStore.get("invitable_roles")[0] || null
 
   render: ->
     if @state.company

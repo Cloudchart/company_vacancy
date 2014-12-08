@@ -76,7 +76,12 @@ Component = React.createClass
     return null if @props.readOnly
 
     <a href="" className="share-link" onClick={@handleShareClick}>
-      <i className="fa fa-share"></i>
+      {
+        if !@state.shareLoading
+          <i className="fa fa-share"></i>
+        else
+          <i className="fa fa-spinner fa-spin"></i>
+      }
     </a>
 
   getFollowButoon: ->
@@ -111,11 +116,12 @@ Component = React.createClass
     if TempKVStore.get("invitable_contacts")
       ModalActions.show(<AccessRights uuid={@props.id} />)
     else
-      ModalActions.show(<Spinner className="access-rights" />)
+      @setState(shareLoading: true)
       CompanyActions.fetchAccessRights(@props.id)
 
       TempKVStore.on "invitable_contacts_changed", =>
         setTimeout =>
+          @setState(shareLoading: false)
           ModalActions.show(<AccessRights uuid={@props.id} />)
           TempKVStore.off "invitable_contacts_changed"
 
@@ -158,7 +164,8 @@ Component = React.createClass
     view_mode: if props.readOnly then 'public' else 'editor'
 
   getInitialState: ->
-    @getStateFromStores(@props)
+    _.extend @getStateFromStores(@props),
+      shareLoading: false
 
   render: ->
     <header>
