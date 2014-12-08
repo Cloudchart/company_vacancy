@@ -23,13 +23,20 @@ Component = React.createClass
   # Helpers
   # 
   gatherControls: ->
-    if @props.readOnly
-      # TODO: add show?
-      null
-    else
-      <div className="controls">
+    return null if @props.readOnly
+
+    <ul className="controls">
+      <li className="visibility">
+        <select value={@state.visibility}, onChange={@handleVisibilityChange}>
+          <option value={'public'}>Public</option>
+          <option value={'trusted'}>Trusted</option>
+          <option value={'only_me'}>Only me</option>
+        </select>
+      </li>
+      <li>
         <i className="fa fa-times" onClick={@handleDestroyClick}></i>
-      </div>
+      </li>
+    </ul>
 
   getFirstParagraph: ->
     block = @getBlocksByIdentity('Paragraph')[0]
@@ -106,6 +113,9 @@ Component = React.createClass
       readOnly: @props.readOnly 
     }), class_for_container: 'post')
 
+  handleVisibilityChange: (event) ->
+    @setState({ visibility: event.target.value })
+
   # Lifecycle Methods
   # 
   # componentWillMount: ->
@@ -138,7 +148,9 @@ Component = React.createClass
     pictures: PictureStore.all()
 
   getInitialState: ->
-    @getStateFromStores(@props)
+    state = @getStateFromStores(@props)
+    state.visibility = 'public'
+    state
 
   render: ->
     if @state.post

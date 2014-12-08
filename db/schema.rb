@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141029143420) do
+ActiveRecord::Schema.define(version: 20141208125243) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -416,6 +416,17 @@ ActiveRecord::Schema.define(version: 20141029143420) do
   end
 
   add_index "versions", ["item_id", "item_type"], name: "index_versions_on_item_id_and_item_type", using: :btree
+
+  create_table "visibilities", primary_key: "uuid", force: true do |t|
+    t.string   "value",                 null: false
+    t.string   "event_name"
+    t.string   "owner_id",   limit: 36, null: false
+    t.string   "owner_type",            null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "visibilities", ["owner_id", "owner_type"], name: "index_visibilities_on_owner_id_and_owner_type", using: :btree
 
   create_table "votes", primary_key: "uuid", force: true do |t|
     t.string   "source_id",        limit: 36,             null: false
