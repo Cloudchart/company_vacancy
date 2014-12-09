@@ -69,7 +69,7 @@ State =
   mixin:
     
 
-    componendDidMount: ->
+    componentDidMount: ->
       if typeof @onGlobalStateChange == 'function'
         if @props.cursor.__CURSOR_INSTANCE__
           addListener(@props.cursor.path, @onGlobalStateChange)
