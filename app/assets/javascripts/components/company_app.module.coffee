@@ -51,7 +51,7 @@ Component = React.createClass
 
   getStateFromStores: ->
     company = CompanyStore.get(@props.id)
-
+    
     blocks:   BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.id
     company:  company
     readOnly: if company then company.flags.is_read_only else true

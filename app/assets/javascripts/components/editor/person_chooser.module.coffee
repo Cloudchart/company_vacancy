@@ -29,7 +29,7 @@ Component = React.createClass
     
     _.chain(@state.people)
       .sortBy(['last_name', 'first_name'])
-      .reject (person) => _.contains(@state.block.identity_ids, person.uuid)
+      .reject (person) => @state.block.identity_ids.contains(person.uuid) #_.contains(@state.block.identity_ids, person.uuid)
       .filter (person) -> _.all queries, (query) -> person.full_name.toLowerCase().indexOf(query) >= 0
       .map (person) =>
         (tag.div {

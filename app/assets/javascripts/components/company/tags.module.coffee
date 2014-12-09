@@ -108,13 +108,13 @@ Component = React.createClass
     @refs.tagLinkForm.getDOMNode().submit()
 
   getStateFromStores: (props) ->
-    tags = TagStore.all()
-    identity = IdentityStores[props.taggable_type].get(props.taggable_id)
-
+    tags      = TagStore.all()
+    identity  = IdentityStores[props.taggable_type].get(props.taggable_id)
+    
     query: ''
     tags: tags
     identity: identity
-    identity_tags: _.map(identity.tag_names, (name) -> _.find(tags, { name: name }))
+    identity_tags: Immutable.Seq(tags).filter((tag) -> identity.tag_names.contains(tag.name)).toArray()
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))

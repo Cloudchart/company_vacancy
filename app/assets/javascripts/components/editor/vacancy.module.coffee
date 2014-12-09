@@ -66,7 +66,7 @@ Component = React.createClass
 
   gatherVacancies: ->
     _.chain(@state.vacancies)
-      .sortBy (vacancy) => _.indexOf(@state.block.identity_ids, vacancy.uuid)
+      .sortBy (vacancy) => @state.block.identity_ids.indexOf(vacancy.uuid)#_.indexOf(@state.block.identity_ids, vacancy.uuid)
       .map (vacancy) =>
         (tag.li {
           key: vacancy.getKey()
@@ -95,7 +95,7 @@ Component = React.createClass
   getStateFromStores: ->
     block = BlockStore.get(@props.key)
     block:      block
-    vacancies:  VacancyStore.filter (item) => _.contains(block.identity_ids, item.uuid)
+    vacancies:  VacancyStore.filter (item) => block.identity_ids.contains(item.uuid)#_.contains(block.identity_ids, item.uuid)
   
   
   componentWillReceiveProps: ->

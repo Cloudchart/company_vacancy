@@ -103,14 +103,13 @@ Component = React.createClass
 
   gatherPeople: ->
     _.chain(@state.people)
-      .sortBy (person) => _.indexOf(@state.block.identity_ids, person.uuid)
+      .sortBy (person) => @state.block.identity_ids.indexOf(person.uuid)
       .map (person) => PersonComponent.call(@, person)
       .value()
 
   
   onSelectPerson: (key) ->
-    identity_ids = @state.block.identity_ids[..] ; identity_ids.push(key)
-    BlockActions.update(@props.key, { identity_ids: identity_ids })
+    BlockActions.update(@props.key, { identity_ids: @state.block.identity_ids.push(key).toJS() })
     ModalActions.hide()
 
 
@@ -126,8 +125,9 @@ Component = React.createClass
   onDeletePersonClick: (key) ->
     return if @props.readOnly
 
-    identity_ids  = _.without(@state.block.identity_ids, key)
-    BlockActions.update(@props.key, { identity_ids: identity_ids })
+    identity_ids  = @state.block.identity_ids.remove(@state.block.identity_ids.indexOf(key))
+
+    BlockActions.update(@props.key, { identity_ids: identity_ids.toJS() })
   
   
   # Person Chooser
@@ -173,7 +173,7 @@ Component = React.createClass
     block = BlockStore.get(@props.key)
     
     block:  block
-    people: PersonStore.filter (person) -> _.contains(block.identity_ids, person.uuid)
+    people: PersonStore.filter (person) -> block.identity_ids.contains(person.uuid)
   
   
   refreshStateFromStores: ->
