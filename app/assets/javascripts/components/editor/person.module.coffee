@@ -85,7 +85,7 @@ Component = React.createClass
   statics:
     isEmpty: (block_id) ->
       block = BlockStore.get(block_id)
-      PersonStore.filter((item) => _.contains(block.identity_ids, item.uuid)).length == 0
+      PersonStore.filter((item) => block.identity_ids.contains(item.uuid)).length == 0 #_.contains(block.identity_ids, item.uuid)).length == 0
   
 
   onPersonCreateDone: ->

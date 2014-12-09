@@ -81,6 +81,7 @@ Component = React.createClass
   onSelect: (name) ->
     name = @formatName(name)
 
+
     if name.length > 0
       tag = _.find @state.tags, name: name
       unless tag
@@ -115,6 +116,11 @@ Component = React.createClass
     tags: tags
     identity: identity
     identity_tags: Immutable.Seq(tags).filter((tag) -> identity.tag_names.contains(tag.name)).toArray()
+    
+    ###
+      tags.filter((tag) -> identity.tag_names.contains(tag.name))
+      identity.tag_names.map((tag_name) -> tags.find((tag) -> tag.name == tag_name ))
+    ###
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
