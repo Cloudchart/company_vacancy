@@ -13,6 +13,7 @@
   TokenStore = require('stores/token_store')
   UserStore = require('stores/user_store')
   TagStore = require('stores/tag_store')
+  VisibilityStore = require('stores/visibility_store')
   
   # Fetch company
   # 
@@ -34,11 +35,13 @@
     CompanyStore.emitChange()
 
   # Fetch all posts
+  # TODO: rewrite to flat structure with one iteration (e.g. posts, visibilities, blocks)
   # 
   require('sync/post_sync_api').fetchAll(data.id).done (json) ->
     _.each json, (object) ->
 
       PostStore.add(object.post.uuid, object.post)
+      VisibilityStore.add(object.visibility.uuid, object.visibility) if object.visibility
 
       _.each {
         blocks: BlockStore

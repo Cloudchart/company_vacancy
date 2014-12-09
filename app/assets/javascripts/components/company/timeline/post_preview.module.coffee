@@ -8,6 +8,7 @@ PostStore = require('stores/post_store')
 BlockStore = require('stores/block_store')
 ParagraphStore = require('stores/paragraph_store')
 PictureStore = require('stores/picture_store')
+VisibilityStore = require('stores/visibility_store')
 
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
@@ -27,7 +28,7 @@ Component = React.createClass
 
     <ul className="controls">
       <li className="visibility">
-        <select value={@state.visibility}, onChange={@handleVisibilityChange}>
+        <select value={@state.visibility_value}, onChange={@handleVisibilityChange}>
           <option value={'public'}>Public</option>
           <option value={'trusted'}>Trusted</option>
           <option value={'only_me'}>Only me</option>
@@ -114,7 +115,15 @@ Component = React.createClass
     }), class_for_container: 'post')
 
   handleVisibilityChange: (event) ->
-    @setState({ visibility: event.target.value })
+    # @setState({ visibility: event.target.value })
+    switch event.target.value
+      when 'only_me' or 'trusted'
+        if @state.visibility.value
+          # VisibilityActions.update
+        else
+          # VisibilityActions.create
+      else
+        # VisibilityActions.destroy
 
   # Lifecycle Methods
   # 
@@ -123,6 +132,7 @@ Component = React.createClass
   componentDidMount: ->
     ParagraphStore.on('change', @refreshStateFromStores)
     PictureStore.on('change', @refreshStateFromStores)
+    VisibilityStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -134,6 +144,7 @@ Component = React.createClass
   componentWillUnmount: ->
     ParagraphStore.off('change', @refreshStateFromStores)
     PictureStore.off('change', @refreshStateFromStores)
+    VisibilityStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
   # 
@@ -143,14 +154,16 @@ Component = React.createClass
     @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
+    visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.id and item.owner_type is 'Post'
+
     post: PostStore.get(props.id)
     paragraphs: ParagraphStore.all()
     pictures: PictureStore.all()
+    visibility: visibility
+    visibility_value: if visibility then visibility.value else null
 
   getInitialState: ->
-    state = @getStateFromStores(@props)
-    state.visibility = 'public'
-    state
+    @getStateFromStores(@props)
 
   render: ->
     if @state.post
