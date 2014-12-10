@@ -12,6 +12,7 @@ VisibilityStore = require('stores/visibility_store')
 
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
+VisibilityActions = require('actions/visibility_actions')
 
 Post = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
@@ -115,15 +116,17 @@ Component = React.createClass
     }), class_for_container: 'post')
 
   handleVisibilityChange: (event) ->
-    # @setState({ visibility: event.target.value })
-    switch event.target.value
-      when 'only_me' or 'trusted'
-        if @state.visibility.value
-          # VisibilityActions.update
-        else
-          # VisibilityActions.create
+    value = event.target.value
+
+    if value is 'only_me' or value is 'trusted'
+      if @state.visibility and @state.visibility.value isnt value
+        VisibilityActions.update(@state.visibility.uuid, { value: value })
       else
-        # VisibilityActions.destroy
+        VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: value })
+        
+    else if value is 'public' and @state.visibility.value
+      @setState({ visibility: value })
+      VisibilityActions.destroy(@state.visibility.uuid)
 
   # Lifecycle Methods
   # 
@@ -160,7 +163,7 @@ Component = React.createClass
     paragraphs: ParagraphStore.all()
     pictures: PictureStore.all()
     visibility: visibility
-    visibility_value: if visibility then visibility.value else null
+    visibility_value: if visibility then visibility.value else 'public'
 
   getInitialState: ->
     @getStateFromStores(@props)

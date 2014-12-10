@@ -65,6 +65,7 @@ Cloudchart::Application.routes.draw do
 
   scope 'posts/:post_id' do
     resources :blocks, only: :create, type: :post, as: :post_blocks
+    resources :visibilities, only: :create, type: :post, as: :visibility_blocks
   end
 
   scope 'vacancies/:vacancy_id' do
@@ -88,6 +89,7 @@ Cloudchart::Application.routes.draw do
     patch :accept, on: :member
   end
 
+  resources :visibilities, only: [:update, :destroy]
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :roles, only: [:update, :destroy]

@@ -418,10 +418,10 @@ ActiveRecord::Schema.define(version: 20141208125243) do
   add_index "versions", ["item_id", "item_type"], name: "index_versions_on_item_id_and_item_type", using: :btree
 
   create_table "visibilities", primary_key: "uuid", force: true do |t|
-    t.string   "value",                 null: false
-    t.string   "event_name"
-    t.string   "owner_id",   limit: 36, null: false
-    t.string   "owner_type",            null: false
+    t.string   "value",                     null: false
+    t.string   "attribute_name"
+    t.string   "owner_id",       limit: 36, null: false
+    t.string   "owner_type",                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

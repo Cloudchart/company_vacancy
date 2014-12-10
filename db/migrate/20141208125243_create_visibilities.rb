@@ -3,7 +3,7 @@ class CreateVisibilities < ActiveRecord::Migration
     create_table :visibilities, id: false do |t|
       t.string :uuid, limit: 36
       t.string :value, null: false
-      t.string :event_name
+      t.string :attribute_name
       t.string :owner_id, limit: 36, null: false
       t.string :owner_type, null: false
 

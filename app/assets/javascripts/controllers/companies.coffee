@@ -41,12 +41,12 @@
     _.each json, (object) ->
 
       PostStore.add(object.post.uuid, object.post)
-      VisibilityStore.add(object.visibility.uuid, object.visibility) if object.visibility
 
       _.each {
         blocks: BlockStore
         pictures: PictureStore
         paragraphs: ParagraphStore
+        visibilities: VisibilityStore
       }, (store, key) ->
         _.each object[key], (item) -> store.add(item.uuid, item)
 

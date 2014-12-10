@@ -14,7 +14,7 @@ DefaultMethods =
   getSchema: ->
     uuid: ''
     value: ''
-    event_name: ''
+    attribute_name: ''
     owner_id: ''
     owner_type: ''
     created_at: ''

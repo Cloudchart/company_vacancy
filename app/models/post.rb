@@ -5,10 +5,14 @@ class Post < ActiveRecord::Base
 
   belongs_to :owner, polymorphic: true
 
-  has_one :visibility, as: :owner, dependent: :destroy
+  has_many :visibilities, as: :owner, dependent: :destroy
 
   def company
     owner if owner_type == 'Company'
+  end
+
+  def visibility
+    visibilities.first
   end
 
 end

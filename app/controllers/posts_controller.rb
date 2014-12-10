@@ -6,7 +6,7 @@ class PostsController < ApplicationController
   authorize_resource
 
   def index
-    posts = @company.posts.includes(:visibility, :pictures, :paragraphs, blocks: :block_identities)
+    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, blocks: :block_identities)
 
     @posts = if can?(:manage, @company)
       posts
