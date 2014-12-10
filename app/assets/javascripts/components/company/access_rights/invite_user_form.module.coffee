@@ -2,12 +2,15 @@
 
 # Imports
 #
-SyncButton        = require('components/company/buttons').SyncButton
 CompanyActions    = require('actions/company')
 RoleMap           = require('utils/role_map')
 Typeahead         = require('components/form/typeahead')
 Field             = require('components/form/field')
 TempKVStore       = require('utils/temp_kv_store')
+
+Buttons           = require('components/form/buttons') 
+StandardButton    = Buttons.StandardButton
+SyncButton        = Buttons.SyncButton
 
 CompanyStore      = require("stores/company")
 TokenStore        = require("stores/token_store")
@@ -36,6 +39,16 @@ Component = React.createClass
     tokens:            TokenStore.filter (token) => token.owner_id == @props.uuid && token.owner_type == "Company"
     invitableRoles:    TempKVStore.get("invitable_roles") || []
     invitableContacts: TempKVStore.get("invitable_contacts") || {}
+
+  validateEmail: (email) ->
+    errors = []
+
+    if email == ""
+      errors.push("missing")
+    else if !/@/.test(email)
+      errors.push("invalid")
+
+    errors
 
   rolesInputs: ->
     _.map @state.invitableRoles, (role) =>
@@ -68,15 +81,8 @@ Component = React.createClass
       errors: @state.errors.set("email", [])
 
   onEmailBlur: ->
-    errors = []
-
-    if @state.email == ""
-      errors.push("missing")
-    else if !/@/.test(@state.email)
-      errors.push("invalid")
-
     @setState
-      errors: @state.errors.set("email", errors)
+      errors: @state.errors.set("email", @validateEmail(@state.email))
 
   filterContacts: (query) ->
     _.chain(@state.invitableContacts)
@@ -122,6 +128,7 @@ Component = React.createClass
     options = @filterContacts(@state.email)
 
     <Typeahead
+      className      = "email"
       value          = @state.email
       options        = options
 
@@ -140,11 +147,16 @@ Component = React.createClass
 
     email = @formatEmail(@state.email)
 
-    if !@state.errors || @state.errors.get("email").length == 0
+    errors = @state.errors.get("email") || @validateEmail(email)
+
+    if errors.length == 0
       CompanyActions.sendInvite @props.tokenKey,
                         data:
                           email:  email
                           role:   @state.role
+    else if !@state.errors.get("email")
+      @setState
+        errors: @state.errors.set("email", errors)
   
   onRoleChange: (event) ->
     @setState 
@@ -181,34 +193,28 @@ Component = React.createClass
     if @state.company
       <div>
         <header>
-          <button className="transparent" onClick=@props.onCurrentUsersButtonClick>
-            <i className="fa fa-angle-left"></i>
-          </button>
-
-          Share <strong>{@state.company.name}</strong> {RoleMap[@state.role].header} 
+          <StandardButton 
+            className="transparent"
+            iconClass="fa-angle-left"
+            onClick=@props.onCurrentUsersButtonClick />
+          Share <strong>{@state.company.name}</strong> {RoleMap[@state.role].header}
         </header>
 
-        <form className = 'invite-user'
+        <form className = "invite-user content"
               onSubmit  = @onSubmit >
         
-          <fieldset className='roles'>
+          <fieldset className="roles">
             { @rolesInputs() }
           </fieldset>
-          
-          <fieldset className='email'>
-            { @emailInput() }
-          </fieldset>
-        
+
           <footer>
-            {
-              SyncButton
-                className : "cc-wide"
-                title     : "Invite"
-                icon      : "fa-ticket"
-                sync      : @state.sync == "send"
-                disabled  : @state.sync
-                onClick   : @onSubmit
-            }
+            { @emailInput() }
+
+            <SyncButton 
+              className = "cc cc-wide"
+              text      = "Invite"
+              sync      = {@state.sync == "send"}
+              onClick   = @onSubmit />
           </footer>
         </form>
       </div>

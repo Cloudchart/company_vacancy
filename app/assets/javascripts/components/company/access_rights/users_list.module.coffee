@@ -8,7 +8,7 @@ TokenStore   = require("stores/token_store")
 
 TokenItem        = require("components/company/access_rights/token_item")
 RoleItem         = require("components/company/access_rights/role_item")
-InviteUserButton = require('components/company/buttons').InviteUserButton
+StandardButton   = require('components/form/buttons').StandardButton
 
 # Main
 #
@@ -63,21 +63,23 @@ Component = React.createClass
           <strong>{@state.company.name}</strong> security settings
         </header>
 
-        <InviteUserButton
-          className = 'cc cc-wide'
-          key       = 'invite-user-button'
-          onClick   = @props.onInviteUserButtonClick />
+        <section className="users-list content">
+          <table>
+            <tbody>
+              {
+                [
+                  @currentUsers()
+                  @currentTokens()
+                ]
+              } 
+            </tbody>
+          </table>
 
-        <table className='current-users-list'>
-          <tbody>
-            {
-              [
-                @currentUsers()
-                @currentTokens()
-              ]
-            } 
-          </tbody>
-        </table>
+          <StandardButton
+            className = "cc cc-wide"
+            text      = "Invite"
+            onClick   = @props.onInviteUserButtonClick />
+        </section>
       </div>
 
     else

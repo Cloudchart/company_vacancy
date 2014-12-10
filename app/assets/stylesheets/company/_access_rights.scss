@@ -1,5 +1,6 @@
-$access-rights-list-item-height: 40px;
+$access-rights-list-item-height: 50px;
 $access-rights-list-item-padding: 15px;
+$access-rights-user-list-action-column-width: 65px;
 
 .company-access-rights-container {
   padding: 30px;
@@ -7,95 +8,118 @@ $access-rights-list-item-padding: 15px;
 
 .access-rights {
   font-size: 15px;
-  width: 700px;
   margin: 0 auto;
+  width: 700px;
 
   .modal-container > & {
-    padding: 45px;
+    header {
+      background-color: hsl(60, 11%, 98%);
+
+      padding: 25px 95px;
+    }
   }
 
   header {
     font-size: 30px;
-    margin-bottom: 25px;
+    padding: 0 95px;
     position: relative;
 
-    button {
-      @include position(absolute, 0px 0 0 -14px);
+    > button {
+      @include position(absolute, 50% 0 0 0px);
 
-      color: hsl(138, 63%, 37%);
-      margin-right: 5px;
+      color: hsl(136, 52%, 51%);
+      font-size: 60px;
+      margin-top: -38px;
     }
   }
 
-  .current-users-list {
-    border-collapse: separate;
-    border-spacing: 5px;
-    font-size: 16px;
-    width: 100%;
+  .content {
+    padding: 30px 95px 50px;
+  }
 
-    tr {
-      height: $access-rights-list-item-height;
+  .users-list {
+    > table {
+      border-collapse: separate;
+      font-size: 16px;
+      left: -$access-rights-user-list-action-column-width;
+      margin-bottom: 10px;
+      position: relative;
 
-      > .name {
-        max-width: 150px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: 150px;
+      tr {
+        height: $access-rights-list-item-height;
 
-        > .email {
-          display: block;
-          font-size: 12px;
+        > .actions {
+          text-align: center;
+          vertical-align: middle;
+          width: $access-rights-user-list-action-column-width;
+
+          > button {
+            height: 25px;
+            text-align: center;
+            width: 25px;
+
+            &.cancel {
+              color: hsl(355, 87%, 47%);
+
+              &:disabled {
+                color: $cloud-button-background-color-disabled;
+              }
+            }
+
+            > .cc-icon {
+              font-size: 24px;
+            }
+
+            > .fa {
+              position: relative;
+              top: 1px;
+            }
+          }
+        }
+
+        > .name {
           overflow: hidden;
+          max-width: 260px;
           text-overflow: ellipsis;
+          width: 260px;
+
+          > .email {
+            color: hsl(60, 1%, 61%);
+            display: block;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
         }
-      }
 
-      &.token > .name {
-        color: hsl(0, 0%, 70%);
-      }
-
-      > .user-role {
-        background-color: hsl(0, 0%, 98%);
-        padding: 0 $access-rights-list-item-padding;
-        position: relative;
-        text-align: right;
-        width: 30%;
-    
-        > select {
-          background-color: hsl(0, 0%, 98%);
-          border: none;
-          cursor: pointer;
-          outline: none;
-          height: 100%;
-          padding-right: 25px;
-
-          -webkit-appearance: none;
-        }
-        
-        > i {
-          @include position(absolute, 0px $access-rights-list-item-padding 0 0);
-
-          cursor: pointer;
-          font-size: 10px;
-          height: 100%;
-          line-height: $access-rights-list-item-height;
-          pointer-events: none;
-        }
-      }
-
-      > .actions {
-      
-        > button {
-          height: 100%;
-          margin-right: 5px;
-          padding: 0 20px;
+        > .user-role {
           position: relative;
+          text-align: left;
 
-          > .fa {
-            font-size: 10px;
-            line-height: 18px;
+          > label {
+            cursor: pointer;
+            margin-right: 10px;
             position: relative;
-            top: -1px;
+
+            > input {
+              left: -9999px;
+              opacity: 0;
+              position: absolute;
+            }
+
+            > span {
+              color: hsl(30, 3%, 87%);
+            }
+
+            > input:checked + span,
+            > span:hover {
+              color: hsl(60, 4%, 11%);
+            }
+          }
+
+          > button {
+            font-size: 12px;
+            margin-left: 10px;
           }
         }
       }
@@ -112,14 +136,28 @@ $access-rights-list-item-padding: 15px;
       margin-top: 5px;
     }
 
-    > .email {
+    > .roles {
+      font-size: 20px;
+      margin-bottom: 15px;
+      width: 320px;
+
+      label {
+        @include display(flex);
+        margin-bottom: 25px;
+      }
+
+      .hint {
+        color: hsl(60, 1%, 61%);
+        font-size: 14px;
+      }
+    }
+
+    > footer {
       @include display(flex);
+      @include justify-content(space-between);
 
-      margin-bottom: 18px;
-
-      > .typeahead {
-        margin: auto;
-        width: 250px;
+      > .email {
+        width: 320px;
 
         .input {
           height: 34px;
@@ -129,25 +167,6 @@ $access-rights-list-item-padding: 15px;
           @include position(absolute, 34px 0 0 0px);
         }
       }
-    }
-
-    > .roles {
-      font-size: 20px;
-      width: 320px;
-
-      label {
-        @include display(flex);
-        margin-bottom: 25px;
-      }
-
-      .hint {
-        font-size: 14px;
-      }
-    }
-
-    > .email,
-    > footer {
-      text-align: center;
     }
   }
 }

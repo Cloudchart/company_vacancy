@@ -66,7 +66,7 @@ Component = React.createClass
       if PostStore.getSync(@state.new_post_key) == "create"
         'fa fa-spin fa-spinner'
       else
-        'fa fa-plus'
+        'cc-icon cc-plus'
 
     if type == 'placeholder'
       <div className="placeholder">

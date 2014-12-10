@@ -7,11 +7,8 @@
   }
 
   input[type="radio"] + .title {
-    margin-top: 5px;
-    margin-left: 50px;
-
     &:before {
-      @include position(absolute, 0px 0 0 0px);
+      @include position(absolute, 0px 0 0 -65px);
 
       background-color: hsl(0, 100%, 100%);
       border: 3px solid hsl(137, 51%, 51%);

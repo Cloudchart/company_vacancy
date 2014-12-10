@@ -4,9 +4,9 @@
 #
 CompanyActions            = require('actions/company')
 TokenStore                = require('stores/token_store')
-Buttons                   = require('components/company/buttons')
-ResendCompanyInviteButton = Buttons.ResendCompanyInviteButton
-CancelCompanyInviteButton = Buttons.CancelCompanyInviteButton
+Buttons                   = require('components/form/buttons')
+SyncButton                = Buttons.SyncButton
+CancelButton              = Buttons.CancelButton
 RoleMap                   = require('utils/role_map')
 
 # Main
@@ -41,17 +41,23 @@ Component = React.createClass
   render: ->
     if @state.token
       <tr className="token">
+        <td className="actions">
+          <CancelButton
+            sync      = {@state.sync == "delete"}
+            onClick   = @onCancelButtonClick />
+        </td>
+
         <td className="name">
           { @state.token.data.email }
         </td>
         
         <td className='user-role'>
           Invited as {RoleMap[@state.token.data.role].name}
-        </td>
-        
-        <td className='actions'>
-          { ResendCompanyInviteButton({className: 'cc-table'}, @state, @onResendButtonClick) }
-          { CancelCompanyInviteButton({className: 'cc-table'}, @state, @onCancelButtonClick) }
+          <SyncButton
+            className    = "transparent"
+            sync         = {@state.sync == "update"}
+            iconClass    = "fa-send-o"
+            onClick      = @onResendButtonClick />
         </td>
       </tr>
 

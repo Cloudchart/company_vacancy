@@ -15,7 +15,7 @@ main > article.company > div.wrapper {
   > div.content {
     margin: 0 auto;
     padding: $base-unit * 2 0;
-    background-color: $white-smoke;
+    background-color: hsl(0, 0%, 98%);
 
     > div.burn-rate {
       max-width: 1200px;
@@ -43,9 +43,10 @@ main > article.company > div.wrapper {
 
           > tr > th {
             font-weight: 300;
+            vertical-align: middle;
 
             &.current-month {
-              color: $ufo-green;
+              color: hsl(139, 72%, 35%);
             }
 
             &:first-child {
@@ -53,23 +54,19 @@ main > article.company > div.wrapper {
             }
           }
 
-          a.chevron-left {
+          a.angle-left {
             float: left;
-            margin-top: 2px;
           }
 
-          a.chevron-right {
+          a.angle-right {
             float: right;
-            margin-top: 2px;
           }
 
-          a.chevron-left, a.chevron-right {
-            color: $gray-chateau;
-            font-size: 12pt;
-
-            > i {
-              position: relative;
-            }
+          a.angle-left, a.angle-right {
+            bottom: 2pt;
+            color: hsl(60, 0%, 55%);
+            font-size: 18pt;
+            position: relative;
           }
 
         }
@@ -90,9 +87,8 @@ main > article.company > div.wrapper {
               }
 
               > div.occupation {
-                text-transform: uppercase;
                 font-size: 10pt;
-                color: $gray-chateau;
+                color: hsl(0, 0%, 70%);
               }
 
             }

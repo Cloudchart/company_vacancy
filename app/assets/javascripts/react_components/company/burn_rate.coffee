@@ -50,10 +50,10 @@ MainComponent = React.createClass
 
                     (tag.a { 
                       href: ''
-                      className: 'chevron-left'
+                      className: 'angle-left'
                       onClick: @onChevronLeftClick 
                     },
-                      (tag.i { className: 'fa fa-chevron-left' })
+                      (tag.i { className: 'fa fa-angle-left' })
                     ) unless @monthSubtractedMoment(3).startOf('month') <= moment(@props.established_on)
 
                     @monthSubtractedMoment(3).format('MMM YY')
@@ -77,10 +77,10 @@ MainComponent = React.createClass
                     moment(@state.selected_time).format('MMM YY')
                     (tag.a { 
                       href: '#'
-                      className: 'chevron-right'
+                      className: 'angle-right'
                       onClick: @onChevronRightClick
                     },
-                      (tag.i { className: 'fa fa-chevron-right' })
+                      (tag.i { className: 'fa fa-angle-right' })
                     )
                   )
                 )

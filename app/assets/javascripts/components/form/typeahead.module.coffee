@@ -3,16 +3,6 @@
 cx = React.addons.classSet
 
 Typeahead = React.createClass
-  propTypes:
-    options:           React.PropTypes.array
-    value:             React.PropTypes.string
-
-    onBlur:            React.PropTypes.func
-    onChange:          React.PropTypes.func
-    onOptionSelect:    React.PropTypes.func
-
-    input:             React.PropTypes.func
-    inputProps:        React.PropTypes.object
 
   renderOptions: ->
     if @state.showList
@@ -131,9 +121,22 @@ Typeahead = React.createClass
     if @props.value.length > 0
       @showList()
 
+  propTypes:
+    className:         React.PropTypes.string
+    options:           React.PropTypes.array
+    value:             React.PropTypes.string
+
+    onBlur:            React.PropTypes.func
+    onChange:          React.PropTypes.func
+    onOptionSelect:    React.PropTypes.func
+
+    input:             React.PropTypes.func
+    inputProps:        React.PropTypes.object
+
   getDefaultProps: ->
-    options: []
-    value:   ""
+    className: ""
+    options:   []
+    value:     ""
 
     onBlur: (value) ->
     onChange: (value) ->
@@ -145,9 +148,10 @@ Typeahead = React.createClass
     showList:       false
 
   render: ->
-    Input = @props.input
+    Input     = @props.input
+    className = (@props.className + " typeahead").trim()
 
-    <div className="typeahead">
+    <div className={className}>
       <Input
         onFocus      = {@onFocus}
         onBlur       = {@onBlur}

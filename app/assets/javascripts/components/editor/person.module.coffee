@@ -38,7 +38,7 @@ PersonPlaceholderComponent = ->
         (tag.figure {
           onClick: @onAddPersonClick
         },
-          (tag.i { className: 'fa fa-plus' })
+          (tag.i { className: 'cc-icon cc-plus' })
           (tag.i { className: 'hint' }, 'Add person')
         )
       )

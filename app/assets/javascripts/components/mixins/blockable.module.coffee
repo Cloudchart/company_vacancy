@@ -96,7 +96,7 @@ module.exports =
         <ul>{items}</ul>
       else
         <figure onClick={@handlePlaceholderClick.bind(@, position)}>
-          <i className="fa fa-plus" />
+          <i className="cc-icon cc-plus" />
         </figure>
     
     <section className="placeholder">{content}</section>

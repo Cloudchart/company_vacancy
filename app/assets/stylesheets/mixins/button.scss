@@ -76,7 +76,7 @@ $cc-button-table-color: hsl(0, 0%, 0%);
 $cc-button-font-size: 15px;
 $cc-button-height: 34px;
 $cc-button-padding: 10px;
-$cc-button-wide-padding: 40px;
+$cc-button-wide-padding: 55px;
 
 
 @mixin cc-button {
@@ -122,11 +122,6 @@ button.cc {
     > i.fa {
       margin-left: 7px;
     }
-  }
-  
-  &.cc-table {
-    background-color: $cc-button-table-background-color;
-    color: $cc-button-table-color;
   }
 
   &.cancel,

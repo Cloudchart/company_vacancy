@@ -1,0 +1,24 @@
+i.cc-icon {
+  display: inline-block;
+  font: normal normal normal 14px/1 $base-font-family;
+  font-size: inherit;
+  font-weight: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; 
+
+  &.cc-fw {
+    width: 1.28571429em;
+    text-align: center;
+  }
+
+  &.cc-plus:before {
+    content: "+";
+    font-size: 2em;
+    font-weight: 100;
+  }
+
+  &.cc-times:before {
+    content: "×";
+  }
+}

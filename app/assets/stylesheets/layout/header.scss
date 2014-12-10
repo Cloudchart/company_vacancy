@@ -217,11 +217,19 @@ body > header {
       width: $header-button-height;
     }
   }
-  
+
   .auth {
     margin-left: $header-padding;
   }
-  
+
+  .profile {
+    color: hsl(139, 52%, 36%);
+  }
+
+  .sign-out {
+    color: hsl(136, 47%, 53%);
+    font-size: 18px;
+  }
 }
 
 // Inverse header style

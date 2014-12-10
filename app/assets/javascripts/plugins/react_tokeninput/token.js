@@ -28,7 +28,7 @@ MainComponent = React.createClass({
           'aria-label': 'Remove \'' + this.props.name + '\'',
           className: "ic-token-delete-button",
           tabIndex: 0
-        }, "×")
+        }, i({className: "cc-icon cc-times"}))
       )
     )
   }

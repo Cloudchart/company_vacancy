@@ -2,7 +2,7 @@
 
 # Imports
 #
-SyncButton      = require('components/company/buttons').SyncButton
+CancelButton    = require('components/form/buttons').CancelButton
 RoleActions     = require('actions/roles')
 RoleStore       = require('stores/role_store')
 UserStore       = require('stores/user_store')
@@ -24,15 +24,23 @@ Component = React.createClass
     sync: RoleStore.getSync(@props.uuid)
     invitableRoles: TempKVStore.get("invitable_roles") || []
 
-  getOptions: ->
+  getRoleInput: ->
     _.map(@state.invitableRoles, (role) =>
-      <option value={role} key="option-#{role}">{RoleMap[role].name}</option>
+        <label key="option-#{role}">
+          <input 
+            checked={role == @state.role.value}
+            type="radio"
+            name="role-#{@props.uuid}"
+            value={role}
+            onChange=@onRoleChange />
+          <span>{RoleMap[role].name}</span>
+        </label>
     )
 
   onRevokeButtonClick: ->
     RoleActions.delete(@props.key)
 
-  onSelectRoleChange: (e) ->
+  onRoleChange: (e) ->
     RoleActions.update(@props.key, { value: e.target.value })
 
   componentDidMount: ->
@@ -56,6 +64,15 @@ Component = React.createClass
       role = @state.role.value
 
       <tr className="role">
+        <td className='actions'>
+          {
+            if role != 'owner'
+              <CancelButton
+                sync      = {@state.sync == "delete"}
+                onClick   = @onRevokeButtonClick />
+          }
+        </td>
+
         <td className="name">
           {@state.user.full_name}
           <span className="email">
@@ -68,27 +85,7 @@ Component = React.createClass
             if @state.role.value == "owner"
               RoleMap[role].name
             else
-              [
-                <select
-                  key       = "select"
-                  value     = role
-                  onChange  = @onSelectRoleChange>
-                  { @getOptions() }
-                </select>
-                <i key="icon" className="fa fa-chevron-down"></i>
-              ]
-          }
-        </td>
-        
-        <td className='actions'>
-          {
-            if role != 'owner'
-              SyncButton
-                className : 'cc-table revoke'
-                title     : 'Revoke'
-                sync      : @state.sync == 'revoke'
-                disabled  : @state.sync
-                onClick   : @onRevokeButtonClick
+              @getRoleInput()
           }
         </td>
       </tr>

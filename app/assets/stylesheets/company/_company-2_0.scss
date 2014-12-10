@@ -91,19 +91,29 @@ $company-article-block-margin: 30px;
     }
   }
   
-  > label.name i.fa {
-    @include position(absolute, 50% 0 0 100%);
-
-    color: hsl(137, 50%, 59%);
-    font-size: 15px;
-    height: 1em;
-    margin-top: -.5em;
-    margin-left: 20px;
-  }
+  > label.name {
+    input {
+      font-size: 40px;
+      font-weight: 400;
+    }
   
-  > label.name input {
-    font-size: 40px;
-    font-weight: 400;
+    a {
+      @include display(flex);
+      @include position(absolute, 50% 0 0 100%);
+
+      background-color: hsl(136, 47%, 53%);
+      font-size: 15px;
+      height: 26px;
+      margin-left: 10px;
+      margin-top: -13px;
+      text-decoration: none;
+      width: 36px;
+
+      i.fa {
+        color: hsl(0, 0%, 100%);
+        margin: auto;
+      }
+    } 
   }
   
   > label.description input {

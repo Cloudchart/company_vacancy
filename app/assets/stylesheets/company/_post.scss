@@ -47,7 +47,8 @@ main.company > div.wrapper > div.posts {
     color: white;
     position: relative;
 
-    > i.fa {
+    > i.fa,
+    > i.cc-icon {
       font-size: 40px;
     }
   }
