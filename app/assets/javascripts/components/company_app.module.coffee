@@ -3,6 +3,7 @@
 # Imports
 #
 tag = React.DOM
+cx = React.addons.classSet
 
 CompanyStore    = require('stores/company')
 BlockStore      = require('stores/block_store')
@@ -60,42 +61,40 @@ Component = React.createClass
     state
 
   render: ->
-    if @state.company
-      classes = React.addons.classSet
-        'editor company company-2_0': true
-        'draggable': !@state.readOnly
+    return null unless @state.company
 
-      blocks = _.map @gatherBlocks(), (block, i) =>
-        [
-          @getSectionPlaceholder(i)
-          block
-        ]
+    classes = cx
+      'editor company company-2_0': true
+      'draggable': !@state.readOnly
 
-      <div className="wrapper">
-        <CompanyHeader
-          id = {@props.id}
-          readOnly = {@state.readOnly}
-          shouldDisplayViewMode = {if @state.company.flags.is_read_only then false else true}
-          onChange = {@handleViewModeChange}
-        />
-        
-        <SortableList
-          component={tag.article}
-          className={classes}
-          onOrderChange={@handleSortableChange}
-          onOrderUpdate={@handleSortableUpdate}
-          readOnly={@state.readOnly}
-          dragLockX
-        >
-          {blocks}
-          {@getSectionPlaceholder(blocks.length)}
-        </SortableList>
+    blocks = _.map @gatherBlocks(), (block, i) =>
+      [
+        @getSectionPlaceholder(i)
+        block
+      ]
 
-        <Timeline company_id={@state.company.uuid}, readOnly={@state.readOnly} />
-      </div>
+    <div className="wrapper">
+      <CompanyHeader
+        id = {@props.id}
+        readOnly = {@state.readOnly}
+        shouldDisplayViewMode = {if @state.company.flags.is_read_only then false else true}
+        onChange = {@handleViewModeChange}
+      />
+      
+      <SortableList
+        component={tag.article}
+        className={classes}
+        onOrderChange={@handleSortableChange}
+        onOrderUpdate={@handleSortableUpdate}
+        readOnly={@state.readOnly}
+        dragLockX
+      >
+        {blocks}
+        {@getSectionPlaceholder(blocks.length)}
+      </SortableList>
 
-    else
-      null
+      <Timeline company_id={@state.company.uuid}, readOnly={@state.readOnly} />
+    </div>
 
 # Exports
 #

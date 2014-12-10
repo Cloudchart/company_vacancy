@@ -26,22 +26,21 @@ Component = React.createClass
   # Helpers
   # 
   gatherControls: ->
-    if @state.readOnly
-      null
-    else
-      <div className="controls">
-        <button 
-          className="cc alert"
-          onClick={@handleDestroyClick}>
-          Delete
-        </button>
+    return null if @state.readOnly
 
-        <button 
-          className="cc"
-          onClick={@handleOkClick}>
-          OK
-        </button>
-      </div>
+    <div className="controls">
+      <button 
+        className="cc alert"
+        onClick={@handleDestroyClick}>
+        Delete
+      </button>
+
+      <button 
+        className="cc"
+        onClick={@handleOkClick}>
+        OK
+      </button>
+    </div>
 
   identityTypes: ->
     People:     'Person'
@@ -136,54 +135,52 @@ Component = React.createClass
     state
 
   render: ->
-    if @state.post
-      blocks = _.map @gatherBlocks(), (block, i) =>
-        [
-          @getSectionPlaceholder(i)
-          block
-        ]
+    return null unless @state.post
 
-      <SortableList
-        component={tag.article}
-        className="editor post"
-        onOrderChange={@handleSortableChange}
-        onOrderUpdate={@handleSortableUpdate}
-        readOnly={@state.readOnly}
-        dragLockX
-      >
-        <header>
-          <label className="title">
-            <AutoSizingInput
-              value={@state.title}
-              placeholder={"Tap to add title"}
-              onChange={@handleFieldChange.bind(@, 'title')}
-              onBlur={@handleTitleBlur}
-              onKeyUp={@handleFieldKeyup}
-              readOnly={@state.readOnly}
-            />
-          </label>
+    blocks = _.map @gatherBlocks(), (block, i) =>
+      [
+        @getSectionPlaceholder(i)
+        block
+      ]
 
-          <label className="published-at">
-            <AutoSizingInput
-              value={@state.published_at}
-              placeholder={moment().format('ll')}
-              onChange={@handleFieldChange.bind(@, 'published_at')}
-              onBlur={@handlePublishedAtBlur}
-              onKeyUp={@handleFieldKeyup}
-              readOnly={@state.readOnly}
-            />
-          </label>
+    <SortableList
+      component={tag.article}
+      className="editor post"
+      onOrderChange={@handleSortableChange}
+      onOrderUpdate={@handleSortableUpdate}
+      readOnly={@state.readOnly}
+      dragLockX
+    >
+      <header>
+        <label className="title">
+          <AutoSizingInput
+            value={@state.title}
+            placeholder={"Tap to add title"}
+            onChange={@handleFieldChange.bind(@, 'title')}
+            onBlur={@handleTitleBlur}
+            onKeyUp={@handleFieldKeyup}
+            readOnly={@state.readOnly}
+          />
+        </label>
 
-          <TagsComponent taggable_id={@state.post.uuid} taggable_type="Post" readOnly={@state.readOnly} />
-        </header>
+        <label className="published-at">
+          <AutoSizingInput
+            value={@state.published_at}
+            placeholder={moment().format('ll')}
+            onChange={@handleFieldChange.bind(@, 'published_at')}
+            onBlur={@handlePublishedAtBlur}
+            onKeyUp={@handleFieldKeyup}
+            readOnly={@state.readOnly}
+          />
+        </label>
 
-        {blocks}
-        {@getSectionPlaceholder(blocks.length)}
-        {@gatherControls()}
-      </SortableList>
+        <TagsComponent taggable_id={@state.post.uuid} taggable_type="Post" readOnly={@state.readOnly} />
+      </header>
 
-    else
-      null
+      {blocks}
+      {@getSectionPlaceholder(blocks.length)}
+      {@gatherControls()}
+    </SortableList>
 
 # Exports
 # 

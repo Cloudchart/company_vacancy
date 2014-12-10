@@ -6,7 +6,34 @@ class PostsController < ApplicationController
   authorize_resource
 
   def index
-    @posts = @company.posts.includes(:pictures, :paragraphs, blocks: :block_identities)
+    # get posts
+    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, blocks: :block_identities)
+
+    # reject based on visibility rules
+    @posts = if can?(:manage, @company)
+      posts
+    elsif can?(:update, @company) || can?(:finance, @company)
+      posts.reject { |post| post.visibility.try(:value) == 'only_me' }
+    else
+      posts.reject { |post| post.visibility.try(:value) =~ /only_me|trusted/ }
+    end
+
+    # get dependent collections
+    dependent_associations = [:visibilities, :pictures, :paragraphs, :blocks]
+
+    dependent_collections = @posts.inject({}) do |memo, post|
+      dependent_associations.each do |association|
+        memo[association] ||= []
+        memo[association] += post.send(association)
+      end
+
+      memo
+    end
+
+    # instantiate associations
+    dependent_associations.each do |association|
+      instance_variable_set("@#{association}", dependent_collections[association])
+    end
 
     respond_to do |format|
       format.json
@@ -58,7 +85,11 @@ private
   end
 
   def set_company
-    @company = Company.find(params[:company_id])
+    @company = find_company(Company.includes(:roles))
+  end
+
+  def find_company(relation)
+    relation.find_by(slug: params[:company_id]) || relation.find(params[:company_id])
   end
   
 end

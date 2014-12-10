@@ -18,6 +18,7 @@ class CompaniesController < ApplicationController
     authorize! :list, :companies
   end
 
+  # POST /companies/search
   def search
     respond_to do |format|
       format.html { render :index }
@@ -80,13 +81,16 @@ class CompaniesController < ApplicationController
     redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
+  # GET /companies/1/finance
   def finance
   end
 
+  # GET /companies/1/settings
   def settings
     pagescript_params(id: @company.uuid)
   end
 
+  # GET /companies/1/access_rights
   def access_rights
     @company = find_company(Company.includes(:roles, users: :emails))
 
@@ -117,6 +121,7 @@ class CompaniesController < ApplicationController
     end
   end
 
+  # GET /companies/1/verify_site_url
   def verify_site_url
     uri = URI.parse(@company.formatted_site_url)
     file = "#{@company.humanized_id}.txt"
@@ -138,6 +143,7 @@ class CompaniesController < ApplicationController
     end
   end
 
+  # GET /companies/1/download_verification_file
   def download_verification_file
     file_path = File.join(Rails.root, 'tmp', 'verifications', "#{@company.humanized_id}.txt")
     if File.exists?(file_path)
@@ -167,7 +173,7 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    @company = Company.find(params[:id])
+    @company = find_company(Company.includes(:roles))
   end
 
   def find_company(relation)

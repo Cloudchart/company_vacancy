@@ -8,9 +8,11 @@ PostStore = require('stores/post_store')
 BlockStore = require('stores/block_store')
 ParagraphStore = require('stores/paragraph_store')
 PictureStore = require('stores/picture_store')
+VisibilityStore = require('stores/visibility_store')
 
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
+VisibilityActions = require('actions/visibility_actions')
 
 Post = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
@@ -23,13 +25,20 @@ Component = React.createClass
   # Helpers
   # 
   gatherControls: ->
-    if @props.readOnly
-      # TODO: add show?
-      null
-    else
-      <div className="controls">
+    return null if @props.readOnly
+
+    <ul className="controls">
+      <li className="visibility">
+        <select value={@state.visibility_value}, onChange={@handleVisibilityChange}>
+          <option value={'public'}>Public</option>
+          <option value={'trusted'}>Trusted</option>
+          <option value={'only_me'}>Only me</option>
+        </select>
+      </li>
+      <li>
         <i className="fa fa-times" onClick={@handleDestroyClick}></i>
-      </div>
+      </li>
+    </ul>
 
   getFirstParagraph: ->
     block = @getBlocksByIdentity('Paragraph')[0]
@@ -106,6 +115,14 @@ Component = React.createClass
       readOnly: @props.readOnly 
     }), class_for_container: 'post')
 
+  handleVisibilityChange: (event) ->
+    value = event.target.value
+
+    if @state.visibility and @state.visibility.value isnt value
+      VisibilityActions.update(@state.visibility.uuid, { value: value })
+    else
+      VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: value })
+
   # Lifecycle Methods
   # 
   # componentWillMount: ->
@@ -113,6 +130,7 @@ Component = React.createClass
   componentDidMount: ->
     ParagraphStore.on('change', @refreshStateFromStores)
     PictureStore.on('change', @refreshStateFromStores)
+    VisibilityStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -124,6 +142,7 @@ Component = React.createClass
   componentWillUnmount: ->
     ParagraphStore.off('change', @refreshStateFromStores)
     PictureStore.off('change', @refreshStateFromStores)
+    VisibilityStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
   # 
@@ -133,26 +152,29 @@ Component = React.createClass
     @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
+    visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.id and item.owner_type is 'Post'
+
     post: PostStore.get(props.id)
     paragraphs: ParagraphStore.all()
     pictures: PictureStore.all()
+    visibility: visibility
+    visibility_value: if visibility then visibility.value else 'public'
 
   getInitialState: ->
     @getStateFromStores(@props)
 
   render: ->
-    if @state.post
-      <article className="preview post">
-        {@gatherControls()}
+    return null unless @state.post
 
-        <a href="" onClick={@handleEditClick}>
-          {@getHeader()}
-          {@getFirstParagraph()}
-          {@gatherPictures()}
-        </a>
-      </article>
-    else
-      null
+    <article className="preview post">
+      {@gatherControls()}
+
+      <a href="" onClick={@handleEditClick}>
+        {@getHeader()}
+        {@getFirstParagraph()}
+        {@gatherPictures()}
+      </a>
+    </article>
 
 # Exports
 # 

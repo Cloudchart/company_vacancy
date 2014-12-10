@@ -27,7 +27,7 @@ Cloudchart::Application.routes.draw do
 
   # Resources
   #
-  resources :companies, except: [:edit], concerns: [:followable] do
+  resources :companies, except: [:create, :edit], concerns: [:followable] do
     post :search, on: :collection
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
@@ -65,6 +65,7 @@ Cloudchart::Application.routes.draw do
 
   scope 'posts/:post_id' do
     resources :blocks, only: :create, type: :post, as: :post_blocks
+    resources :visibilities, only: :create, type: :post, as: :visibility_blocks
   end
 
   scope 'vacancies/:vacancy_id' do
@@ -88,6 +89,7 @@ Cloudchart::Application.routes.draw do
     patch :accept, on: :member
   end
 
+  resources :visibilities, only: :update
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :roles, only: [:update, :destroy]

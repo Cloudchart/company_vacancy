@@ -38,8 +38,8 @@ module ApplicationHelper
     model.errors.full_messages_for(name).first
   end
 
-  def ams(model, options = {})
-    model.active_model_serializer.new(model, options)
+  def ams(collection, options = {})
+    collection.active_model_serializer.new(collection, options) if collection
   end
   
 end

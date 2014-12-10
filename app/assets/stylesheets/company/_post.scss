@@ -100,21 +100,33 @@ main.company > div.wrapper > div.posts {
     width: 600px;
     margin: ($base-post-preview-margin / 2) 0;
 
-    &:hover > div.controls {
+    &:hover > ul.controls {
       visibility: visible;
     }
 
-    > div.controls {
+    > ul.controls {
       @include position(absolute, 10px 10px 0 0);
+      @include flex-ul;
       
       visibility: hidden;
       height: 30px;
 
-      > i.fa {
+      > li {
         font-size: 20px;
         cursor: pointer;
+        padding-right: 10px;
 
-        &.fa-times {
+        &:last-child {
+          padding-right: 0;
+        }
+
+        &.visibility {
+          > i.fa-globe {
+            margin-right: 2.5px;
+          }
+        }
+
+        > .fa-times {
           color: hsl(0, 75%, 55%);
         }
       }

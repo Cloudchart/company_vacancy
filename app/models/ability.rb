@@ -90,6 +90,10 @@ class Ability
         owner_or_editor?(user, role.owner)
       end
 
+      can :manage, Visibility do |visibility|
+        owner?(user, visibility.owner.try(:owner))
+      end
+
       # can :read, Vacancy do |vacancy|
       #   user.vacancy_ids.include?(vacancy.id) ||
       #   vacancy.settings.accessible_to =~ /company|company_plus_one_share/ && user.company_ids.include?(vacancy.company_id) ||
