@@ -84,8 +84,8 @@ Component = React.createClass
 
   statics:
     isEmpty: (block_id) ->
-      block = BlockStore.get(block_id)
-      PersonStore.filter((item) => block.identity_ids.contains(item.uuid)).length == 0 #_.contains(block.identity_ids, item.uuid)).length == 0
+      BlockStore.get(block_id).identity_ids.size == 0
+      
   
 
   onPersonCreateDone: ->
@@ -102,14 +102,18 @@ Component = React.createClass
 
 
   gatherPeople: ->
-    _.chain(@state.people)
-      .sortBy (person) => @state.block.identity_ids.indexOf(person.uuid)
-      .map (person) => PersonComponent.call(@, person)
-      .value()
-
+    @state.peopleSeq
+      .sortBy((person) => @state.identityIdsSeq.indexOf(person.uuid))
+      .map((person) => PersonComponent.call(@, person))
+      
   
   onSelectPerson: (key) ->
-    BlockActions.update(@props.key, { identity_ids: @state.block.identity_ids.push(key).toJS() })
+    return if @props.readOnly
+
+    identity_ids = @state.identityIdsSeq.toList().push(key)
+
+    BlockActions.update(@props.key, { identity_ids: identity_ids.toArray() })
+
     ModalActions.hide()
 
 
@@ -125,9 +129,9 @@ Component = React.createClass
   onDeletePersonClick: (key) ->
     return if @props.readOnly
 
-    identity_ids  = @state.block.identity_ids.remove(@state.block.identity_ids.indexOf(key))
+    identity_ids = @state.identityIdsSeq.toList().remove(@state.identityIdsSeq.indexOf(key))
 
-    BlockActions.update(@props.key, { identity_ids: identity_ids.toJS() })
+    BlockActions.update(@props.key, { identity_ids: identity_ids.toArray() })
   
   
   # Person Chooser
@@ -170,10 +174,11 @@ Component = React.createClass
   
   
   getStateFromStores: ->
-    block = BlockStore.get(@props.key)
+    identityIdsSeq  = Immutable.Seq(BlockStore.get(@props.key).identity_ids)
+    peopleSeq       = Immutable.Seq(PersonStore.filter((person) -> identityIdsSeq.contains(person.uuid)))
     
-    block:  block
-    people: PersonStore.filter (person) -> block.identity_ids.contains(person.uuid)
+    peopleSeq:        peopleSeq
+    identityIdsSeq:   identityIdsSeq
   
   
   refreshStateFromStores: ->
@@ -197,15 +202,11 @@ Component = React.createClass
     
 
   render: ->
-    people = _.map @gatherPeople(), (person) =>
-      <Draggable key={person.props.key}>
-        <li key={person.props.key}>
-          {person}
-        </li>
-      </Draggable>
+    people = @gatherPeople().map (person) ->
+      <li key={person.props.key}>{person}</li>
     
     <ul>
-      { people }
+      { people.toArray() }
       { PersonPlaceholderComponent.apply(@) unless @props.readOnly }
     </ul>
 
