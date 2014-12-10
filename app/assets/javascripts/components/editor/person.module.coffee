@@ -26,52 +26,40 @@ Draggable     = require('components/shared/draggable')
 # Person Placeholder component
 #
 PersonPlaceholderComponent = ->
-  (tag.li {
-    className: 'placeholder'
-  },
-    (tag.div {
-      className: 'person editable'
-    },
-      (tag.aside {
-        className: 'avatar'
-      },
-        (tag.figure {
-          onClick: @onAddPersonClick
-        },
-          (tag.i { className: 'fa fa-plus' })
-          (tag.i { className: 'hint' }, 'Add person')
-        )
-      )
-    )
-  )
+  <li className="placeholder">
+    <div className="person editable">
+      <aside className="avatar">
+        <figure onClick={@onAddPersonClick}>
+          <i className="fa fa-plus" />
+          <i className="hint">Add person</i>
+        </figure>
+      </aside>
+    </div>
+  </li>
 
 
 # Person component
 #
 PersonComponent = (person) ->
-  (tag.div {
-    key:        person.uuid
-    className:  cx({ person: true, editable: !@props.readOnly })
-  },
+  removeButton = =>
+    onClick = @onDeletePersonClick.bind(@, person.uuid)
+    <i className="fa fa-times remove" onClick={onClick} />
   
-    (tag.i {
-      className:  'fa fa-times remove'
-      onClick:    @onDeletePersonClick.bind(@, person.uuid)
-    }) unless @props.readOnly
+  <div key={person.uuid} className={cx({ person: true, editable: !@props.readOnly })}>
+    {removeButton() unless @props.readOnly}
     
-    PersonAvatar({
-      value:      person.full_name
-      avatarURL:  person.avatar_url
-      onClick:    @onEditPersonClick.bind(@, person.uuid)
-      readOnly:   true
-    })
+    <PersonAvatar
+      value     = {person.full_name}
+      avatarURL = {person.avatar_url}
+      onClick   = {@onEditPersonClick.bind(@, person.uuid)}
+      readOnly  = {true}
+    />
     
-    (tag.footer null,
-      (tag.p { className: 'name' }, person.full_name)
-      (tag.p { className: 'occupation' }, person.occupation)
-    )
-    
-  )
+    <footer>
+      <p className="name">{person.full_name}</p>
+      <p className="occupation">{person.occupation}</p>
+    </footer>
+  </div>
 
 
 # Main
