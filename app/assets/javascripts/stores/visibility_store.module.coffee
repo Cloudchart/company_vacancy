@@ -4,7 +4,7 @@ CloudFlux = require('cloud_flux')
 CallbackFactory = require('stores/callback_factory')
 
 model_name = 'visibility'
-CrudActions = ['create', 'update', 'destroy']
+CrudActions = ['create', 'update']
 
 CrudCallbacks = CallbackFactory.create model_name, CrudActions
 

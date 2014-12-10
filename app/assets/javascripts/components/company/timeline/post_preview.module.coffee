@@ -118,15 +118,10 @@ Component = React.createClass
   handleVisibilityChange: (event) ->
     value = event.target.value
 
-    if value is 'only_me' or value is 'trusted'
-      if @state.visibility and @state.visibility.value isnt value
-        VisibilityActions.update(@state.visibility.uuid, { value: value })
-      else
-        VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: value })
-        
-    else if value is 'public' and @state.visibility.value
-      @setState({ visibility: value })
-      VisibilityActions.destroy(@state.visibility.uuid)
+    if @state.visibility and @state.visibility.value isnt value
+      VisibilityActions.update(@state.visibility.uuid, { value: value })
+    else
+      VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: value })
 
   # Lifecycle Methods
   # 

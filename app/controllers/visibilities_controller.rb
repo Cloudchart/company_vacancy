@@ -1,7 +1,7 @@
 class VisibilitiesController < ApplicationController  
 
-  before_action :set_visibility, only: [:update, :destroy]
-  before_action :set_owner, only: [:create]
+  before_action :set_visibility, only: :update
+  before_action :set_owner, only: :create
 
   authorize_resource
 
@@ -28,14 +28,6 @@ class VisibilitiesController < ApplicationController
       respond_to do |format|
         format.json { render json: :fail, status: 422 }
       end
-    end
-  end
-
-  def destroy
-    @visibility.destroy
-
-    respond_to do |format|
-      format.json { render json: :ok }
     end
   end
 

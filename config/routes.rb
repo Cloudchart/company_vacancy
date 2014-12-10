@@ -89,7 +89,7 @@ Cloudchart::Application.routes.draw do
     patch :accept, on: :member
   end
 
-  resources :visibilities, only: [:update, :destroy]
+  resources :visibilities, only: :update
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :roles, only: [:update, :destroy]

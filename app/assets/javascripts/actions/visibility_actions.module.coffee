@@ -7,7 +7,6 @@ ActionFactory = require('actions/factory')
 CrudActions = ActionFactory.create 'visibility',
   'create': (id, attributes) -> SyncAPI.create(attributes.owner_id, attributes)
   'update': (id, attributes) -> SyncAPI.update(id, attributes)
-  'destroy': (id) -> SyncAPI.destroy(id)
 
 CustomActions = {}
 

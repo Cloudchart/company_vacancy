@@ -19,11 +19,3 @@ module.exports =
         visibility: attributes
     .done done
     .fail fail
-
-  destroy: (id, attributes, done, fail) ->
-    $.ajax
-      url: "/visibilities/#{id}"
-      type: "DELETE"
-      dataType: "json"
-    .done done
-    .fail fail
