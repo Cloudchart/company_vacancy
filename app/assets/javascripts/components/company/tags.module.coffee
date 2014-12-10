@@ -3,7 +3,7 @@
 # Imports
 # 
 
-TagStore        = require('stores/tag_store')
+GlobalState     = require('global_state/state')
 
 TokenInput      = cc.require('plugins/react_tokeninput/main')
 ComboboxOption  = cc.require('plugins/react_tokeninput/option')
@@ -19,6 +19,9 @@ IdentityActions =
 
 # Utils
 #
+uuid = require('utils/uuid')
+
+
 formatName = (name) ->
   name = name.trim().toLowerCase()
   name = name.replace(/[^a-z0-9\-_|\s]+/ig, '')
@@ -71,10 +74,10 @@ Component = React.createClass
     query = formatName(@state.query)
       
     @state.tagSeq
-      .filter (tag) -> tag.is_acceptable
-      .filter (tag) => not @state.identityTagNameSeq.contains(tag.name)
-      .filter (tag) -> tag.name.indexOf(query) >= 0
-      .map    (tag) -> <ComboboxOption key={tag.name} value={tag.name}>{'#' + tag.name}</ComboboxOption>
+      .filter (tag) -> tag.get('is_acceptable')
+      .filter (tag) => not @state.identityTagNameSeq.contains(tag.get('name'))
+      .filter (tag) -> tag.get('name').indexOf(query) >= 0
+      .map    (tag) -> <ComboboxOption key={tag.get('name')} value={tag.get('name')}>{'#' + tag.get("name")}</ComboboxOption>
   
   
   getComponentChild: ->
@@ -101,7 +104,7 @@ Component = React.createClass
     name = formatName(name) ; return if name.length == 0
 
     unless @state.tagNameSeq.contains(name)
-      TagStore.create({ name: name })
+      @props.cursor.set(uuid(), { name: name })
 
     tag_names = @state.identityTagNameSeq.toSet().add(name)
 
@@ -116,20 +119,24 @@ Component = React.createClass
   onTagClick: (tag, event) ->
     event.preventDefault()
     performCompanySearchByTag(tag)
-    
-
+  
+  
   getStateFromProps: (props) ->
-    tagSeq              = Immutable.Seq(TagStore.all())
+    tagSeq              = Immutable.Seq(@props.cursor.deref({}))
     identityTagNameSeq  = Immutable.Seq(IdentityStores[props.taggable_type].get(props.taggable_id).tag_names)
     
     query:              ''
     tagSeq:             tagSeq
-    tagNameSeq:         tagSeq.map((tag) -> tag.name)
+    tagNameSeq:         tagSeq.map((tag) -> tag.get('name'))
     identityTagNameSeq: identityTagNameSeq
 
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromProps(nextProps))
+  
+  
+  getDefaultProps: ->
+    cursor: GlobalState.cursor(['stores', 'tags', 'items'])
 
 
   getInitialState: ->

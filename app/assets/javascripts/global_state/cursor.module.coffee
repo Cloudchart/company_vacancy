@@ -48,13 +48,13 @@ CursorFactory = (data, callback) ->
     
     
     deref: (notSetValue) ->
-      @getIn(@path, notSetValue)
+      @getIn([], notSetValue)
     
     get: (key, notSetValue) ->
       @getIn([key.toString()], notSetValue)
     
     getIn: (path, notSetValue) ->
-      CurrData.getIn(@path.concat(path), Immutable.fromJS(notSetValue))
+      CurrData.getIn(@path.concat(path), notSetValue)
     
     
     set: (key, value) ->
