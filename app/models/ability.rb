@@ -91,7 +91,7 @@ class Ability
       end
 
       can :manage, Visibility do |visibility|
-        owner?(user, visibility.owner.owner)
+        owner?(user, visibility.owner.try(:owner))
       end
 
       # can :read, Vacancy do |vacancy|

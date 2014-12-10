@@ -15,7 +15,7 @@
   TagStore = require('stores/tag_store')
   VisibilityStore = require('stores/visibility_store')
   
-  # Fetch company
+  # Fetch company with dependencies
   # 
   require('sync/company').fetch(data.id).done (json) ->
     _.each {
@@ -34,21 +34,17 @@
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
 
-  # Fetch all posts
-  # TODO: rewrite to flat structure with one iteration (e.g. posts, visibilities, blocks)
+  # Fetch all posts with dependencies
   # 
   require('sync/post_sync_api').fetchAll(data.id).done (json) ->
-    _.each json, (object) ->
-
-      PostStore.add(object.post.uuid, object.post)
-
-      _.each {
-        blocks: BlockStore
-        pictures: PictureStore
-        paragraphs: ParagraphStore
-        visibilities: VisibilityStore
-      }, (store, key) ->
-        _.each object[key], (item) -> store.add(item.uuid, item)
+    _.each {
+      posts: PostStore
+      blocks: BlockStore
+      pictures: PictureStore
+      paragraphs: ParagraphStore
+      visibilities: VisibilityStore
+    }, (store, key) ->
+      _.each json[key], (item) -> store.add(item.uuid, item)
 
     PostStore.emitChange()
 

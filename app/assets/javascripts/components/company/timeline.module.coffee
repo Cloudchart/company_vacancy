@@ -141,21 +141,20 @@ Component = React.createClass
     state
 
   render: ->
-    if @gatherPosts().length == 0 and @props.readOnly
-      null
-    else
-      posts = _.map @gatherPosts(), (post, index) =>
-        [
-          post
-          @getCreatePostButton('placeholder')
-        ]
+    return null if @gatherPosts().length == 0 and @props.readOnly
+    
+    posts = _.map @gatherPosts(), (post, index) =>
+      [
+        post
+        @getCreatePostButton('placeholder')
+      ]
 
-      <div className="posts">
-        <div className="left-column"></div>
-        <div className="right-column"></div>
-        {@getCreatePostButton()}
-        {posts}
-      </div>
+    <div className="posts">
+      <div className="left-column"></div>
+      <div className="right-column"></div>
+      {@getCreatePostButton()}
+      {posts}
+    </div>
 
 # Exports
 # 

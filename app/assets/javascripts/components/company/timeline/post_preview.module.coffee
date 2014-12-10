@@ -164,18 +164,17 @@ Component = React.createClass
     @getStateFromStores(@props)
 
   render: ->
-    if @state.post
-      <article className="preview post">
-        {@gatherControls()}
+    return null unless @state.post
 
-        <a href="" onClick={@handleEditClick}>
-          {@getHeader()}
-          {@getFirstParagraph()}
-          {@gatherPictures()}
-        </a>
-      </article>
-    else
-      null
+    <article className="preview post">
+      {@gatherControls()}
+
+      <a href="" onClick={@handleEditClick}>
+        {@getHeader()}
+        {@getFirstParagraph()}
+        {@gatherPictures()}
+      </a>
+    </article>
 
 # Exports
 # 
