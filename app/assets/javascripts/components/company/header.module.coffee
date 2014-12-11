@@ -87,8 +87,8 @@ Component = React.createClass
     </a>
 
   getFollowButoon: ->
-    return null unless @state.company.flags.can_follow
-    <FollowComponent key={@props.id}, is_followed={@state.company.flags.is_followed} />
+    return null unless @state.company.flags.get('can_follow')
+    <FollowComponent key={@props.id}, is_followed={@state.company.flags.get('is_followed')} />
 
   update: (attr_name) ->
     return if @props.readOnly

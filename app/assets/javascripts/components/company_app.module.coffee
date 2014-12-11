@@ -55,7 +55,7 @@ Component = React.createClass
 
     blocks:   BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.id
     company:  company
-    readOnly: if company then company.flags.is_read_only else true
+    readOnly: if company then company.flags.get('is_read_only') else true
   
   
   onGlobalStateChange: ->
@@ -90,23 +90,23 @@ Component = React.createClass
       <CompanyHeader
         id = {@props.id}
         readOnly = {@state.readOnly}
-        shouldDisplayViewMode = {if @state.company.flags.is_read_only then false else true}
+        shouldDisplayViewMode = {if @state.company.flags.get('is_read_only') then false else true}
         onChange = {@handleViewModeChange}
       />
       
       <SortableList
-        component={tag.article}
-        className={classes}
-        onOrderChange={@handleSortableChange}
-        onOrderUpdate={@handleSortableUpdate}
-        readOnly={@state.readOnly}
+        component = {tag.article}
+        className = {classes}
+        onOrderChange = {@handleSortableChange}
+        onOrderUpdate = {@handleSortableUpdate}
+        readOnly = {@state.readOnly}
         dragLockX
       >
         {blocks}
         {@getSectionPlaceholder(blocks.length)}
       </SortableList>
 
-      <Timeline company_id={@state.company.uuid}, readOnly={@state.readOnly} />
+      <Timeline company_id={@state.company.uuid} readOnly={@state.readOnly} />
     </div>
 
 # Exports

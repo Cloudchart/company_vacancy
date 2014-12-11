@@ -188,49 +188,46 @@ UrlComponent = React.createClass
     @getStateFromStores()
 
   render: ->
-    company = @state.company
+    return null unless @state.company
 
-    if company
-      if company.flags.is_site_url_verified
-        <div className="profile-item">
-          <div className="content field">
-            <span className="label">Site URL</span>
-            {@formatSiteUrl(company.site_url)}
-            <i className="fa fa-check-circle"></i>
-          </div>
-          <div className="actions">
-            <CancelVerificationComponent
-              uuid = @props.uuid
-              name = "Remove"
-              icon = "fa fa-eraser"
-            />
-          </div>
+    if @state.company.flags.get('is_site_url_verified')
+      <div className="profile-item">
+        <div className="content field">
+          <span className="label">Site URL</span>
+          {@formatSiteUrl(@state.company.site_url)}
+          <i className="fa fa-check-circle"></i>
         </div>
-      else if company.site_url
-        <div className="profile-item">
-          <div className="content paragraph">
-            {<strong>File not found. </strong> if @state.site_url_verification_failed}
-            <a href={company.meta.download_verification_file_url}>Download this file</a>
-            <span> and make it accessible from the root directory of your domain </span>
-            {@formatSiteUrl(company.site_url)}
-          </div>
+        <div className="actions">
+          <CancelVerificationComponent
+            uuid = {@props.uuid}
+            name = "Remove"
+            icon = "fa fa-eraser"
+          />
+        </div>
+      </div>
+    else if @state.company.site_url
+      <div className="profile-item">
+        <div className="content paragraph">
+          {<strong>File not found. </strong> if @state.site_url_verification_failed}
+          <a href={@state.company.meta.get('download_verification_file_url')}>Download this file</a>
+          <span> and make it accessible from the root directory of your domain </span>
+          {@formatSiteUrl(@state.company.site_url)}
+        </div>
 
-          <div className="actions">
-            <CheckFileComponent uuid=@props.uuid />
-            <CancelVerificationComponent
-              uuid = @props.uuid
-              name = "Cancel"
-              icon = "fa fa-undo"
-            />          
-          </div>
-        </div>      
-      else 
-        <UpdateSiteUrlComponent 
-          uuid    = @props.uuid
-          siteUrl = company.site_url
-        />
-    else
-      null
+        <div className="actions">
+          <CheckFileComponent uuid=@props.uuid />
+          <CancelVerificationComponent
+            uuid = {@props.uuid}
+            name = "Cancel"
+            icon = "fa fa-undo"
+          />          
+        </div>
+      </div>      
+    else 
+      <UpdateSiteUrlComponent 
+        uuid    = {@props.uuid}
+        siteUrl = {@state.company.site_url}
+      />
 
 # Exports
 #

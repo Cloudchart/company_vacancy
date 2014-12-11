@@ -19,8 +19,8 @@ Progress = React.createClass
     [
       { message: "Give your company a name", passed: !!@state.company.name }
       { message: "Upload logo", passed: !!@state.company.logotype_url }
-      { message: "Create first chart", passed: @state.company.flags.has_charts }
-      { message: "Add some people", passed: @state.company.meta.people_size > 0 }
+      { message: "Create first chart", passed: @state.company.flags.get('has_charts') }
+      { message: "Add some people", passed: @state.company.meta.get('people_size') > 0 }
       { message: "Assign keywords", passed: @state.company.tag_names.size > 0 }
     ]
 
