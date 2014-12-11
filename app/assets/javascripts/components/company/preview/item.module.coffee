@@ -51,7 +51,7 @@ MainComponent = React.createClass
 
     if company
       tag.article { className: "company-preview" },
-        tag.a { href: company.meta.company_url },
+        tag.a { href: company.meta.get('company_url') },
           tag.header null,
             Logo {
               logoUrl: company.logotype_url
@@ -64,10 +64,10 @@ MainComponent = React.createClass
             tag.div { className: "right" },
               tag.div { className: "size" },
                 tag.div { className: 'vacancies' },
-                  company.meta.vacancies_size
+                  company.meta.get('vacancies_size')
                   tag.i { className: "fa fa-briefcase" }
                 tag.div { className: 'people' },
-                  company.meta.people_size
+                  company.meta.get('people_size')
                   tag.i { className: "fa fa-male" }
               # tag.div { className: "burn-rate" },
               #   "$300K"
