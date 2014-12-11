@@ -21,7 +21,7 @@ Component = React.createClass
     queries = _.compact(@state.query.toLowerCase().split(/\s+/))
     
     _.chain (@state.vacancies)
-      .reject (vacancy) => _.contains(@state.block.identity_ids, vacancy.uuid)
+      .reject (vacancy) => @state.block.identity_ids.contains(vacancy.uuid) #_.contains(@state.block.identity_ids, vacancy.uuid)
       .filter (vacancy) -> _.all queries, (query) -> vacancy.name.toLowerCase().indexOf(query) >= 0
       .sortBy (vacancy) -> vacancy.name
       .map (vacancy) =>
@@ -54,8 +54,9 @@ Component = React.createClass
   
   
   onVacancyClick: (key) ->
-    identity_ids = @state.block.identity_ids[..] ; identity_ids.push(key)
-    BlockActions.update(@props.key, { identity_ids: identity_ids })
+    #identity_ids = @state.block.identity_ids[..] ; identity_ids.push(key)
+    identity_ids = @state.block.identity_ids.push(key)
+    BlockActions.update(@props.key, { identity_ids: identity_ids.toJS() })
     ModalActions.hide()
 
   

@@ -82,8 +82,8 @@ Component = React.createClass
 
 
   getInitialState: ->
-    components:       new Immutable.Vector
-    options:          new Immutable.Vector
+    components:       Immutable.List()
+    options:          Immutable.List()
 
 
   render: ->

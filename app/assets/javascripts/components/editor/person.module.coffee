@@ -26,52 +26,40 @@ Draggable     = require('components/shared/draggable')
 # Person Placeholder component
 #
 PersonPlaceholderComponent = ->
-  (tag.li {
-    className: 'placeholder'
-  },
-    (tag.div {
-      className: 'person editable'
-    },
-      (tag.aside {
-        className: 'avatar'
-      },
-        (tag.figure {
-          onClick: @onAddPersonClick
-        },
-          (tag.i { className: 'cc-icon cc-plus' })
-          (tag.i { className: 'hint' }, 'Add person')
-        )
-      )
-    )
-  )
+  <li className="placeholder">
+    <div className="person editable">
+      <aside className="avatar">
+        <figure onClick={@onAddPersonClick}>
+          <i className="fa fa-plus" />
+          <i className="hint">Add person</i>
+        </figure>
+      </aside>
+    </div>
+  </li>
 
 
 # Person component
 #
 PersonComponent = (person) ->
-  (tag.div {
-    key:        person.uuid
-    className:  cx({ person: true, editable: !@props.readOnly })
-  },
+  removeButton = =>
+    onClick = @onDeletePersonClick.bind(@, person.uuid)
+    <i className="fa fa-times remove" onClick={onClick} />
   
-    (tag.i {
-      className:  'fa fa-times remove'
-      onClick:    @onDeletePersonClick.bind(@, person.uuid)
-    }) unless @props.readOnly
+  <div key={person.uuid} className={cx({ person: true, editable: !@props.readOnly })}>
+    {removeButton() unless @props.readOnly}
     
-    PersonAvatar({
-      value:      person.full_name
-      avatarURL:  person.avatar_url
-      onClick:    @onEditPersonClick.bind(@, person.uuid)
-      readOnly:   true
-    })
+    <PersonAvatar
+      value     = {person.full_name}
+      avatarURL = {person.avatar_url}
+      onClick   = {@onEditPersonClick.bind(@, person.uuid)}
+      readOnly  = {true}
+    />
     
-    (tag.footer null,
-      (tag.p { className: 'name' }, person.full_name)
-      (tag.p { className: 'occupation' }, person.occupation)
-    )
-    
-  )
+    <footer>
+      <p className="name">{person.full_name}</p>
+      <p className="occupation">{person.occupation}</p>
+    </footer>
+  </div>
 
 
 # Main
@@ -84,8 +72,8 @@ Component = React.createClass
 
   statics:
     isEmpty: (block_id) ->
-      block = BlockStore.get(block_id)
-      PersonStore.filter((item) => _.contains(block.identity_ids, item.uuid)).length == 0
+      BlockStore.get(block_id).identity_ids.size == 0
+      
   
 
   onPersonCreateDone: ->
@@ -102,15 +90,18 @@ Component = React.createClass
 
 
   gatherPeople: ->
-    _.chain(@state.people)
-      .sortBy (person) => _.indexOf(@state.block.identity_ids, person.uuid)
-      .map (person) => PersonComponent.call(@, person)
-      .value()
-
+    @state.peopleSeq
+      .sortBy((person) => @state.identityIdsSeq.indexOf(person.uuid))
+      .map((person) => PersonComponent.call(@, person))
+      
   
   onSelectPerson: (key) ->
-    identity_ids = @state.block.identity_ids[..] ; identity_ids.push(key)
-    BlockActions.update(@props.key, { identity_ids: identity_ids })
+    return if @props.readOnly
+
+    identity_ids = @state.identityIdsSeq.toList().push(key)
+
+    BlockActions.update(@props.key, { identity_ids: identity_ids.toArray() })
+
     ModalActions.hide()
 
 
@@ -126,8 +117,9 @@ Component = React.createClass
   onDeletePersonClick: (key) ->
     return if @props.readOnly
 
-    identity_ids  = _.without(@state.block.identity_ids, key)
-    BlockActions.update(@props.key, { identity_ids: identity_ids })
+    identity_ids = @state.identityIdsSeq.toList().remove(@state.identityIdsSeq.indexOf(key))
+
+    BlockActions.update(@props.key, { identity_ids: identity_ids.toArray() })
   
   
   # Person Chooser
@@ -170,10 +162,11 @@ Component = React.createClass
   
   
   getStateFromStores: ->
-    block = BlockStore.get(@props.key)
+    identityIdsSeq  = Immutable.Seq(BlockStore.get(@props.key).identity_ids)
+    peopleSeq       = Immutable.Seq(PersonStore.filter((person) -> identityIdsSeq.contains(person.uuid)))
     
-    block:  block
-    people: PersonStore.filter (person) -> _.contains(block.identity_ids, person.uuid)
+    peopleSeq:        peopleSeq
+    identityIdsSeq:   identityIdsSeq
   
   
   refreshStateFromStores: ->
@@ -197,15 +190,11 @@ Component = React.createClass
     
 
   render: ->
-    people = _.map @gatherPeople(), (person) =>
-      <Draggable key={person.props.key}>
-        <li key={person.props.key}>
-          {person}
-        </li>
-      </Draggable>
+    people = @gatherPeople().map (person) ->
+      <li key={person.props.key}>{person}</li>
     
     <ul>
-      { people }
+      { people.toArray() }
       { PersonPlaceholderComponent.apply(@) unless @props.readOnly }
     </ul>
 

@@ -85,7 +85,7 @@ Component = React.createClass
 
 
   onDateBlur: (name) ->
-    date = @state.attributes.get(name)
+    date = Date.parse(@state.attributes.get(name))
     if moment(date).isValid()
       @setState({ attributes: @state.attributes.set(name, moment(date).format('ll')) })
   
@@ -103,7 +103,8 @@ Component = React.createClass
 
 
   onFieldChange: (name, value) ->
-    @setState({ attributes: @state.attributes.set(name, event.target.value) })
+    value = event.target.value
+    @setState({ attributes: @state.attributes.set(name, value) })
   
   
   onSubmit: (event) ->
@@ -117,7 +118,8 @@ Component = React.createClass
     # date typecast
     # TODO: move to base logic
     _.each ['hired_on', 'fired_on'], (name) ->
-      attributes[name] = moment(attributes[name]).format('ll') if moment(attributes[name]).isValid()
+      now = moment(Date.parse(attributes[name]))
+      attributes[name] = now.format('ll') if now.isValid()
 
     attributes: Immutable.fromJS(attributes)
   

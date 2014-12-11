@@ -61,12 +61,12 @@ Component = React.createClass
   statics:
     isEmpty: (block_id) ->
       block = BlockStore.get(block_id)
-      VacancyStore.filter((item) => _.contains(block.identity_ids, item.uuid)).length == 0
+      VacancyStore.filter((item) => block.identity_ids.contains(item.uuid)).length == 0 #_.contains(block.identity_ids, item.uuid)).length == 0
 
 
   gatherVacancies: ->
     _.chain(@state.vacancies)
-      .sortBy (vacancy) => _.indexOf(@state.block.identity_ids, vacancy.uuid)
+      .sortBy (vacancy) => @state.block.identity_ids.indexOf(vacancy.uuid)#_.indexOf(@state.block.identity_ids, vacancy.uuid)
       .map (vacancy) =>
         (tag.li {
           key: vacancy.getKey()
@@ -76,13 +76,9 @@ Component = React.createClass
       .value()
   
   
-  onDeleteButtonClick: (key) ->
-    identity_ids  = _.without(@state.block.identity_ids, key)
-    BlockActions.update(@state.block.uuid, { identity_ids: identity_ids })
-  
-  
   handleVacancyRemove: (key) ->
-    BlockActions.update(@props.key, { identity_ids: _.without(@state.block.identity_ids, key) })
+    identity_ids  = @state.block.identity_ids.remove(@state.block.identity_ids.indexOf(key))
+    BlockActions.update(@props.key, { identity_ids: identity_ids.toJS() })
 
 
   onAddVacancyClick: ->
@@ -95,7 +91,7 @@ Component = React.createClass
   getStateFromStores: ->
     block = BlockStore.get(@props.key)
     block:      block
-    vacancies:  VacancyStore.filter (item) => _.contains(block.identity_ids, item.uuid)
+    vacancies:  VacancyStore.filter (item) => block.identity_ids.contains(item.uuid)
   
   
   componentWillReceiveProps: ->

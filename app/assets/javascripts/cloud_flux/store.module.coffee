@@ -22,6 +22,10 @@ Factory = (definition) ->
   #
   schema = if _.isFunction(definition.getSchema) then definition.getSchema() else null
   throw new Error("Store #{definition.displayName}: getSchema should be defined.") unless schema
+  schemaSeq = Immutable.Seq(schema)
+  
+  filterAttributes = (attributes) ->
+    Immutable.Seq(attributes).filter((value, name) -> schemaSeq.has(name)).toJS()
   
   class __schm extends Immutable.Record(_.extend schema, { __key: null })
     
@@ -53,12 +57,13 @@ Factory = (definition) ->
     
 
     all: ->
-      _.values(__data)
+      result = _.values(__data)
+      result
     
 
     get: (key) ->
-      record = __data[key]
-      record
+      result = __data[key]
+      result
     
 
     has: (key) ->
@@ -66,20 +71,25 @@ Factory = (definition) ->
     
     
     find: (predicate) ->
-      _.find __data, predicate.bind(definition)
+      result = _.find __data, predicate.bind(definition)
+      result
     
     
     filter: (predicate) ->
-      _.filter __data, predicate.bind(definition)
+      result = _.filter __data, predicate.bind(definition)
+      result
     
     
     add: (key, attributes = {}) ->
-      __data[key] = new __schm(_.extend {}, attributes, { __key: key })
+      attributes  = filterAttributes(attributes)
+      record      = new __schm({ __key: key })
+      __data[key] = record.merge(attributes)#new __schm(_.extend {}, attributes, { __key: key })
     
     
     update: (key, attributes = {}) ->
+      attributes = filterAttributes(attributes)
       prevRecord  = __data[key]
-      __data[key] = __data[key].mergeDeep(attributes)
+      __data[key] = __data[key].merge(attributes)
       
       (__undo[key] ||= []).push(prevRecord) ; delete __redo[key]
 

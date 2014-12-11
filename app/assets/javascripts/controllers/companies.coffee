@@ -2,22 +2,27 @@
 # 
 @['companies#show'] = (data) ->
 
-  CompanyStore = require('stores/company')
-  PostStore = require('stores/post_store')
-  BlockStore = require('stores/block_store')
-  PictureStore = require('stores/picture_store')
-  ParagraphStore = require('stores/paragraph_store')
-  PersonStore = require('stores/person')
-  VacancyStore = require('stores/vacancy') 
-  RoleStore = require('stores/role_store')
-  TokenStore = require('stores/token_store')
-  UserStore = require('stores/user_store')
-  TagStore = require('stores/tag_store')
+  Dispatcher      = require('dispatcher/dispatcher')
+  CompanyStore    = require('stores/company')
+  PostStore       = require('stores/post_store')
+  BlockStore      = require('stores/block_store')
+  PictureStore    = require('stores/picture_store')
+  ParagraphStore  = require('stores/paragraph_store')
+  PersonStore     = require('stores/person')
+  VacancyStore    = require('stores/vacancy') 
+  RoleStore       = require('stores/role_store')
+  TokenStore      = require('stores/token_store')
+  UserStore       = require('stores/user_store')
+  TagStore        = require('stores/tag_store')
   VisibilityStore = require('stores/visibility_store')
   
   # Fetch company with dependencies
   # 
   require('sync/company').fetch(data.id).done (json) ->
+    Dispatcher.handleServerAction
+      type: 'company:fetch:done'
+      data: [data.id, json]
+    
     _.each {
       blocks:     BlockStore
       pictures:   PictureStore
@@ -27,7 +32,9 @@
       roles:      RoleStore
       tokens:     TokenStore
       users:      UserStore
-      tags:       TagStore
+      # Updated by dispatcher
+      #
+      #tags:       TagStore
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 
