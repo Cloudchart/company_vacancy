@@ -39,14 +39,15 @@ Component = React.createClass
     @getStateFromStores(@props)
 
   render: ->
+    
     if @state.token
       <tr className="token">
         <td className="name">
-          { @state.token.data.email }
+          { @state.token.data.get('email') }
         </td>
         
         <td className='user-role'>
-          Invited as {RoleMap[@state.token.data.role].name}
+          Invited as {RoleMap[@state.token.data.get('role')].name}
         </td>
         
         <td className='actions'>
