@@ -7,6 +7,10 @@ CursorFactory = (data, callback) ->
   # Cursor cache
   #
   CursorCache = Immutable.Map({})
+  
+  # Transaction State
+  #
+  TransactionState = false
 
   
   # Fetch existing Cursor or create a new one
@@ -29,7 +33,7 @@ CursorFactory = (data, callback) ->
       when 'unset'
         CurrData.removeIn(path)
     
-    callback(CurrData)
+    callback(CurrData) unless TransactionState
         
 
 
@@ -45,6 +49,15 @@ CursorFactory = (data, callback) ->
 
     cursor: (path) ->
       fetch(@path.concat(path))
+    
+    
+    transaction: ->
+      TransactionState = true
+    
+
+    commit: ->
+      TransactionState = false
+      callback(CurrData)
     
     
     deref: (notSetValue) ->

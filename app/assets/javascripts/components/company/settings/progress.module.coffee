@@ -6,8 +6,9 @@ tag = React.DOM
 
 cx = React.addons.classSet
 
-CompanyStore = require("stores/company")
-CompanyActions = require("actions/company")
+CompanyStore    = require("stores/company")
+CompanyActions  = require("actions/company")
+GlobalState     = require('global_state/state')
 
 # Main Component
 # 
@@ -19,8 +20,8 @@ Progress = React.createClass
     [
       { message: "Give your company a name", passed: !!@state.company.name }
       { message: "Upload logo", passed: !!@state.company.logotype_url }
-      { message: "Create first chart", passed: @state.company.flags.get('has_charts') }
-      { message: "Add some people", passed: @state.company.meta.get('people_size') > 0 }
+      { message: "Create first chart", passed: @state.cursor.flags.get('has_charts') }
+      { message: "Add some people", passed: @state.cursor.meta.get('people_size') > 0 }
       { message: "Assign keywords", passed: @state.company.tag_names.size > 0 }
     ]
 
@@ -80,7 +81,14 @@ Progress = React.createClass
   # Component specifications
   #
   getInitialState: ->
-    @getStateFromStores()
+    state = @getStateFromStores()
+    
+    state.cursor =
+      meta:   GlobalState.cursor(['stores', 'companies', 'meta', @props.uuid])
+      flags:  GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
+    
+    state
+
 
   render: ->
     company = @state.company

@@ -5,6 +5,7 @@ tag = React.DOM
 CompanyStore    = require("stores/company")
 CompanyActions  = require("actions/company")
 CloudFluxMixins = require("cloud_flux/mixins")
+GlobalState     = require('global_state/state')
 Constants       = require("constants")
 
 # CheckFileComponent
@@ -185,12 +186,18 @@ UrlComponent = React.createClass
   # Component specifications
   #
   getInitialState: ->
-    @getStateFromStores()
+    state = @getStateFromStores()
+    
+    state.cursor =
+      meta:   GlobalState.cursor(['stores', 'companies', 'meta',  @props.uuid])
+      flags:  GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
+    
+    state
 
   render: ->
     return null unless @state.company
 
-    if @state.company.flags.get('is_site_url_verified')
+    if @state.cursor.flags.get('is_site_url_verified')
       <div className="profile-item">
         <div className="content field">
           <span className="label">Site URL</span>
@@ -209,7 +216,7 @@ UrlComponent = React.createClass
       <div className="profile-item">
         <div className="content paragraph">
           {<strong>File not found. </strong> if @state.site_url_verification_failed}
-          <a href={@state.company.meta.get('download_verification_file_url')}>Download this file</a>
+          <a href={@state.cursor.meta.get('download_verification_file_url')}>Download this file</a>
           <span> and make it accessible from the root directory of your domain </span>
           {@formatSiteUrl(@state.company.site_url)}
         </div>

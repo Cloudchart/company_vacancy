@@ -15,10 +15,16 @@
   TokenStore = require('stores/token_store')
   RoleStore = require('stores/role_store')
   FavoriteStore = require('stores/favorite')
+  Dispatcher = require('dispatcher/dispatcher')
 
   CompanyPreviewList = require('components/company/preview/list')
 
   CompanySync.fetchAll().done((json) ->
+    
+    Dispatcher.handleServerAction
+      type: 'company:fetch:many:done'
+      data: [json]
+
     _.each json.companies, (company) ->
       CompanyStore.add(company.uuid, company)
 

@@ -55,7 +55,7 @@ Component = React.createClass
 
     blocks:   BlockStore.filter (block) => block.owner_type == 'Company' and block.owner_id == @props.id
     company:  company
-    readOnly: if company then company.flags.get('is_read_only') else true
+    #readOnly: if company then company.flags.get('is_read_only') else true
   
   
   onGlobalStateChange: ->
@@ -68,17 +68,22 @@ Component = React.createClass
   
 
   getInitialState: ->
-    state            = @getStateFromStores()
-    state.position   = null
-    state.owner_type = 'Company'
+    state             = @getStateFromStores()
+    state.position    = null
+    state.owner_type  = 'Company'
+    state.cursor      =
+      meta:   GlobalState.cursor(['stores', 'companies', 'meta', @props.id])
+      flags:  GlobalState.cursor(['stores', 'companies', 'flags', @props.id])
     state
 
   render: ->
     return null unless @state.company
+    
+    isReadOnly = @state.cursor.flags.get('is_read_only')
 
     classes = cx
       'editor company company-2_0': true
-      'draggable': !@state.readOnly
+      'draggable': !isReadOnly
 
     blocks = _.map @gatherBlocks(), (block, i) =>
       [
@@ -90,7 +95,7 @@ Component = React.createClass
       <CompanyHeader
         id = {@props.id}
         readOnly = {@state.readOnly}
-        shouldDisplayViewMode = {if @state.company.flags.get('is_read_only') then false else true}
+        shouldDisplayViewMode = {!isReadOnly}
         onChange = {@handleViewModeChange}
       />
       
@@ -99,14 +104,14 @@ Component = React.createClass
         className = {classes}
         onOrderChange = {@handleSortableChange}
         onOrderUpdate = {@handleSortableUpdate}
-        readOnly = {@state.readOnly}
+        readOnly = {isReadOnly}
         dragLockX
       >
         {blocks}
         {@getSectionPlaceholder(blocks.length)}
       </SortableList>
 
-      <Timeline company_id={@state.company.uuid} readOnly={@state.readOnly} />
+      <Timeline company_id={@state.company.uuid} readOnly={isReadOnly} />
     </div>
 
 # Exports

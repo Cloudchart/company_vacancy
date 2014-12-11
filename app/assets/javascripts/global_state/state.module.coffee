@@ -5,8 +5,8 @@ Cursor = require('global_state/cursor')
 
 # Data
 #
-CurrRootData = Immutable.Map({})
-PrevRootData = Immutable.Map({})
+CurrRootData = Immutable.fromJS({ meta: {}, stores: {} })
+PrevRootData = CurrRootData
 
 
 # Cursor

@@ -2,6 +2,57 @@
 #
 CloudFlux         = require('cloud_flux')
 Constants         = require('constants')
+Dispatcher        = require('dispatcher/dispatcher')
+GlobalState       = require('global_state/state')
+
+
+# Cursor Meta Store
+#
+
+EmptyData           = Immutable.Map()
+
+CompanyCursor       = GlobalState.cursor(['stores', 'companies'])
+CompanyMetaCursor   = GlobalState.cursor(['stores', 'companies', 'meta'])
+CompanyFlagsCursor  = GlobalState.cursor(['stores', 'companies', 'flags'])
+
+Dispatcher.register (payload) ->
+
+  switch payload.action.type
+
+
+    when 'company:fetch:done'
+      [companyId, json] = payload.action.data
+      
+      GlobalState.cursor().transaction()
+      
+      CompanyMetaCursor.set(companyId, json.company.meta)
+      CompanyFlagsCursor.set(companyId, json.company.flags)
+
+      GlobalState.cursor().commit()
+    
+
+    when 'company:fetch:many:done'
+      [{companies}] = payload.action.data
+
+      GlobalState.cursor().transaction()
+      
+      Immutable.Seq(companies).forEach (company) ->
+        CompanyMetaCursor.set(company.uuid, company.meta)
+        CompanyFlagsCursor.set(company.uuid, company.flags)
+      
+      GlobalState.cursor().commit()
+      
+
+    when Constants.Company.VERIFY_SITE_URL_DONE, Constants.Company.UPDATE_DONE, Constants.Company.FOLLOW_DONE, Constants.Company.UNFOLLOW_DONE
+      [companyId, json] = payload.action.data
+
+      GlobalState.cursor().transaction()
+
+      CompanyMetaCursor.set(companyId, Immutable.fromJS(json.meta))
+      CompanyFlagsCursor.set(companyId, Immutable.fromJS(json.flags))
+
+      GlobalState.cursor().commit()
+
 
 # Exports
 #
@@ -55,8 +106,8 @@ module.exports = CloudFlux.createStore
     slug:           ''
     logotype_url:   null
     tag_names:      []
-    meta:           {}
-    flags:          {}
+    #meta:           {}
+    #flags:          {}
 
   getActions: ->
     actions = {}

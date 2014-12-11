@@ -4,7 +4,8 @@
 #
 tag = React.DOM
 
-CompanyStore = require('stores/company')
+GlobalState   = require('global_state/state')
+CompanyStore  = require('stores/company')
 
 CompanyActions  = require('actions/company')
 ModalActions    = require('actions/modal_actions')
@@ -87,8 +88,8 @@ Component = React.createClass
     </a>
 
   getFollowButoon: ->
-    return null unless @state.company.flags.get('can_follow')
-    <FollowComponent key={@props.id}, is_followed={@state.company.flags.get('is_followed')} />
+    return null unless @state.cursor.flags.get('can_follow')
+    <FollowComponent key={@props.id}, is_followed={@state.cursor.flags.get('is_followed')} />
 
   update: (attr_name) ->
     return if @props.readOnly
@@ -166,6 +167,8 @@ Component = React.createClass
   getInitialState: ->
     _.extend @getStateFromStores(@props),
       shareLoading: false
+      cursor:
+        flags: GlobalState.cursor(['stores', 'companies', 'flags', @props.id])
 
   render: ->
     <header>

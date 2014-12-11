@@ -1,8 +1,9 @@
+Dispatcher      = require('dispatcher/dispatcher')
+
 # Show
 # 
 @['companies#show'] = (data) ->
 
-  Dispatcher      = require('dispatcher/dispatcher')
   CompanyStore    = require('stores/company')
   PostStore       = require('stores/post_store')
   BlockStore      = require('stores/block_store')
@@ -77,6 +78,10 @@
 
     CompanyStore  = require('stores/company')
 
+    Dispatcher.handleServerAction
+      type: 'company:fetch:done'
+      data: [data.id, json]
+
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
 
@@ -98,6 +103,11 @@
   # Fetch
   # 
   require('sync/company').fetchAccessRights(data.id).done (json) ->
+
+    Dispatcher.handleServerAction
+      type: 'company:fetch:done'
+      data: [data.id, json]
+
     _.each {
       users:      UserStore
       roles:      RoleStore
