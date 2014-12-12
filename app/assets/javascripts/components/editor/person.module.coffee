@@ -228,11 +228,11 @@ Component = React.createClass
     people = @gatherPeople()
     indexes = @getHelperPeopleIndexes(people)
 
-    people = people.map (person, index) ->
+    people = people.map (person, index) =>
       classes = []
       if _.has(indexes, "hangingIndex") && index == indexes.hangingIndex
         classes.push "hanging"
-      if _.has(indexes, "shiftIndex") && index == indexes.shiftIndex
+      if !@props.readOnly && _.has(indexes, "shiftIndex") && index == indexes.shiftIndex
         classes.push "shifting"
       className = classes.join(' ')
 
