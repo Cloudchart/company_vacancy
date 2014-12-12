@@ -108,7 +108,7 @@ article.editor > section.people div.person {
   > i.remove {
     @include position(absolute, $editor-gutter / 2 $editor-gutter / 2 0 0);
     @include transform(translate(-100%, 100%));
-    @include transition(transform 150ms ease-out);
+    @include transition(all 150ms ease-out);
 
     color: $editor-remove-button-color;
     cursor: pointer;
