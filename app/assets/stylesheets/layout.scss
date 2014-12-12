@@ -1,35 +1,39 @@
 *,
 *::before,
 *::after {
-    @include box-sizing(border-box);
+  @include box-sizing(border-box);
 }
 
 html {
-    height: 100%;
-    -webkit-font-smoothing: antialiased;
+  height: 100%;
 }
 
 body {
-    @include display(flex);
-    @include flex-direction(column);
-    
-    font-family: $base-font-family;
-    font-size: $body-font-size;
-    min-height: 100%;
-    min-width: $min-page-width;
-    
-    > main {
-        @include flex(1);
-        padding: 0 $base-unit;
-        position: relative;
-    }
+  @include display(flex);
+  @include flex-direction(column);
+  
+  min-width: $min-page-width;
+  min-height: 100%;
+  font-family: $base-font-family;
+  font-size: $body-font-size;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizelegibility;
+  
+  > main {
+    @include flex(1);
+    padding: 0 $base-unit;
+    position: relative;
+  }
 
-    p {
-        margin-top: 0;
-    }
+  p {
+    margin-top: 0;
+  }
+
+  input {
+    text-rendering: inherit;
+  }
     
 }
-
 
 .shield {
   background-color: hsla(0, 0, 25%, .75);
@@ -40,10 +44,10 @@ body {
 }
 
 .ajax-loader {
-    background: image-url('ajax-loader.gif');
-    width: 16px;
-    height: 16px;
-    display: none;
+  background: image-url('ajax-loader.gif');
+  width: 16px;
+  height: 16px;
+  display: none;
 }
 
 @import 'layout/header';
