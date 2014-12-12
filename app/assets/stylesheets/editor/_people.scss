@@ -1,10 +1,12 @@
 // Editor -> People
 //
+
 article.editor > section.people {
 
   > ul {
     @include display(flex);
     @include flex-wrap(wrap);
+    @include justify-content(center);
     
     list-style: none;
     margin: 0;
@@ -12,15 +14,34 @@ article.editor > section.people {
     padding: 0;
     
     > li {
-      @include flex(0 0 33.3333%);
-      
+      @include flex(0 0 27%);
+
       margin: 0;
       margin-top: 20px;
       padding: 0;
       padding-left: $editor-gutter;
-      
+
       &:nth-child(-n+3) {
         margin-top: 0;
+      }
+
+      &.hanging {
+        @include calc(padding-left, 23% + #{$editor-gutter});
+        @include flex-basis(50%);
+      }
+
+      &.hanging + li {
+        @include flex-basis(50%);
+
+        padding-right: 23%;
+      }
+
+      &.hanging + li + li {
+        margin-top: 20px;
+      }
+
+      &.shifting, &.shifting ~ li:not(.placeholder) {
+        @include transition(transform 150ms ease-out);
       }
     }
 
@@ -33,9 +54,24 @@ article.editor > section.people {
       }
     }
 
-    > .placeholder:not(:first-child) .person {
-      figure > i.hint {
-        display: none;
+    > .placeholder:not(:first-child) {
+      @include flex-basis(0);
+
+      padding: 0;
+      position: relative;
+
+      > .person {
+        @include position(absolute, 50px 0 0 -20px);
+        @include transform(scale(0.5, 0.5));
+        @include transition(all 150ms ease-out);
+        
+        height: 100px;
+        opacity: 0;
+        width: 100px;
+
+        figure > i.hint {
+          display: none;
+        }
       }
     }
   
@@ -47,6 +83,20 @@ article.editor > section.people {
       padding-bottom: 0;
     }
   }
+
+  &:hover > ul,
+  ul.hovered {
+    > .shifting, .shifting ~ li:not(.placeholder) {
+      @include transform(translateX(-40px));
+    }
+
+    > .placeholder:not(:first-child) {
+      > .person {
+        @include transform(scale(1, 1));
+        opacity: 1;
+      }
+    }
+  }
 }
 
 
@@ -54,16 +104,23 @@ article.editor > section.people {
 //
 article.editor > section.people div.person {
   margin: 0;
-  padding: 0 20px;
   position: relative;
   
   > i.remove {
     @include position(absolute, $editor-gutter / 2 $editor-gutter / 2 0 0);
-    
+    @include transform(translate(-100%, 100%));
+    @include transition(transform 150ms ease-out);
+
     color: $editor-remove-button-color;
     cursor: pointer;
     font-size: $editor-remove-button-font-size;
     visibility: hidden;
+  }
+
+  &:hover {
+    > i.remove {
+      @include transform(translate(0, 0));
+    }
   }
   
   &.editable:hover > i.remove {
@@ -106,7 +163,6 @@ article.editor > section.people div.person {
   border-radius: 50%;
   height: 0;
   margin: 0;
-  overflow: hidden;
   padding: 0;
   padding-top: 100%;
   position: relative;
@@ -120,7 +176,6 @@ article.editor > section.people div.person {
     font-weight: 100;
     line-height: 1em;
     text-align: center;
-    transform: translate(0,-50%);
     
     i.hint {
       @include position(absolute, 85% 0px 0 0px);

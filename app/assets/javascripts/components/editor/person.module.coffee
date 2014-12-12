@@ -30,7 +30,7 @@ PersonPlaceholderComponent = ->
     <div className="person editable">
       <aside className="avatar">
         <figure onClick={@onAddPersonClick}>
-          <i className="fa fa-plus" />
+          <i className="cc-icon cc-plus" />
           <i className="hint">Add person</i>
         </figure>
       </aside>
@@ -93,7 +93,22 @@ Component = React.createClass
     @state.peopleSeq
       .sortBy((person) => @state.identityIdsSeq.indexOf(person.uuid))
       .map((person) => PersonComponent.call(@, person))
-      
+
+  getHelperPeopleIndexes: (people) ->
+    peopleLength = people.size
+    indexes = {}
+
+    if peopleLength > 1 && peopleLength % 3 == 1
+      indexes.hangingIndex = peopleLength - 4
+
+    if peopleLength == 1
+      indexes.shiftIndex = 0
+    else if peopleLength % 3 == 0
+      indexes.shiftIndex = peopleLength - 3
+    else
+      indexes.shiftIndex = peopleLength - 2
+
+    indexes
   
   onSelectPerson: (key) ->
     return if @props.readOnly
@@ -132,7 +147,15 @@ Component = React.createClass
       company_id:     @props.company_id
       onSelect:       @onSelectPerson
       onCreateClick:  @onCreatePersonClick
-    }))
+    }), {
+      beforeShow: =>
+        @setState
+          popupOpened: true
+
+      beforeHide: =>
+        @setState
+          popupOpened: false
+    })
   
   
   # Person Chooser
@@ -146,7 +169,9 @@ Component = React.createClass
       attributes: PersonStore.get(newPersonKey).toJSON()
       onSubmit:   @onPersonFormSubmit.bind(@, newPersonKey)
     }), {
-      beforeHide: ->
+      beforeHide: =>
+        @setState
+          popupOpened: false
         PersonStore.remove(newPersonKey)
     })
   
@@ -186,14 +211,34 @@ Component = React.createClass
   
   
   getInitialState: ->
-    @getStateFromStores()
-    
+    _.extend @getStateFromStores(),
+      hovered: false
+      popupOpened: false
+
+  onMouseEnter: ->
+    @setState
+      hovered: true
+
+  onMouseLeave: ->
+    if !@state.popupOpened
+      @setState
+        hovered: false
 
   render: ->
-    people = @gatherPeople().map (person) ->
-      <li key={person.props.key}>{person}</li>
+    people = @gatherPeople()
+    indexes = @getHelperPeopleIndexes(people)
+
+    people = people.map (person, index) ->
+      classes = []
+      if _.has(indexes, "hangingIndex") && index == indexes.hangingIndex
+        classes.push "hanging"
+      if _.has(indexes, "shiftIndex") && index == indexes.shiftIndex
+        classes.push "shifting"
+      className = classes.join(' ')
+
+      <li key={person.props.key} className={className}>{person}</li>
     
-    <ul>
+    <ul className={cx(hovered: @state.hovered)} onMouseLeave={@onMouseLeave} onMouseEnter={@onMouseEnter}>
       { people.toArray() }
       { PersonPlaceholderComponent.apply(@) unless @props.readOnly }
     </ul>
