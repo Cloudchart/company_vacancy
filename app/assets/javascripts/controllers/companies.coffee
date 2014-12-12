@@ -59,7 +59,7 @@ Dispatcher      = require('dispatcher/dispatcher')
   # Mount company
   # 
   Company = require('components/company_app')
-  React.renderComponent(Company({ id: data.id }), document.querySelector('body > main'))
+  React.renderComponent(Company({ uuid: data.id }), document.querySelector('body > main'))
 
 # Finance
 # 
