@@ -147,15 +147,7 @@ Component = React.createClass
       company_id:     @props.company_id
       onSelect:       @onSelectPerson
       onCreateClick:  @onCreatePersonClick
-    }), {
-      beforeShow: =>
-        @setState
-          popupOpened: true
-
-      beforeHide: =>
-        @setState
-          popupOpened: false
-    })
+    }))
   
   
   # Person Chooser
@@ -169,9 +161,7 @@ Component = React.createClass
       attributes: PersonStore.get(newPersonKey).toJSON()
       onSubmit:   @onPersonFormSubmit.bind(@, newPersonKey)
     }), {
-      beforeHide: =>
-        @setState
-          popupOpened: false
+      beforeHide: ->
         PersonStore.remove(newPersonKey)
     })
   
@@ -211,18 +201,7 @@ Component = React.createClass
   
   
   getInitialState: ->
-    _.extend @getStateFromStores(),
-      hovered: false
-      popupOpened: false
-
-  onMouseEnter: ->
-    @setState
-      hovered: true
-
-  onMouseLeave: ->
-    if !@state.popupOpened
-      @setState
-        hovered: false
+    @getStateFromStores()
 
   render: ->
     people = @gatherPeople()
@@ -238,7 +217,7 @@ Component = React.createClass
 
       <li key={person.props.key} className={className}>{person}</li>
     
-    <ul className={cx(hovered: @state.hovered)} onMouseLeave={@onMouseLeave} onMouseEnter={@onMouseEnter}>
+    <ul>
       { people.toArray() }
       { PersonPlaceholderComponent.apply(@) unless @props.readOnly }
     </ul>

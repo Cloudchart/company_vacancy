@@ -84,8 +84,7 @@ article.editor > section.people {
     }
   }
 
-  &:hover > ul,
-  ul.hovered {
+  &:hover > ul {
     > .shifting, .shifting ~ li:not(.placeholder) {
       @include transform(translateX(-40px));
     }
