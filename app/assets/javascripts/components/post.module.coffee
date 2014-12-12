@@ -4,29 +4,25 @@
 # 
 tag = React.DOM
 
-CompanyStore = require('stores/company')
 PostStore = require('stores/post_store')
-BlockStore = require('stores/block_store')
 
 PostActions = require('actions/post_actions')
-BlockableActions = require('actions/mixins/blockable_actions')
 ModalActions = require('actions/modal_actions')
 
-Blockable = require('components/mixins/blockable')
-SortableList = require('components/shared/sortable_list')
 AutoSizingInput = require('components/form/autosizing_input')
 TagsComponent = require('components/company/tags')
+BlockEditor = require('components/editor/block_editor')
 
 # Main
 # 
 Component = React.createClass
 
-  mixins: [Blockable]
+  # mixins: []
 
   # Helpers
   # 
   gatherControls: ->
-    return null if @state.readOnly
+    return null if @props.readOnly
 
     <div className="controls">
       <button 
@@ -42,18 +38,9 @@ Component = React.createClass
       </button>
     </div>
 
-  identityTypes: ->
-    People:     'Person'
-    Vacancies:  'Vacancy'
-    Picture:    'Picture'
-    Paragraph:  'Paragraph'
 
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
-
-  buildParagraph: ->
-    new_block_key = BlockStore.create({ owner_id: @state.post.uuid, owner_type: 'Post', identity_type: 'Paragraph', position: 0 })
-    setTimeout => BlockableActions.createBlock(new_block_key, BlockStore.get(new_block_key).toJSON())
 
   # Handlers
   # 
@@ -83,23 +70,14 @@ Component = React.createClass
 
   # Lifecycle Methods
   # 
-  # componentWillMount: ->
-
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
-    BlockStore.on('change', @refreshStateFromStores)
-    @buildParagraph() unless @state.blocks.length > 0
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
 
-  # shouldComponentUpdate: (nextProps, nextState) ->
-  # componentWillUpdate: (nextProps, nextState) ->
-  # componentDidUpdate: (prevProps, prevState) ->
-
   componentWillUnmount: ->
     PostStore.off('change', @refreshStateFromStores)
-    BlockStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
   # 
@@ -121,36 +99,18 @@ Component = React.createClass
   getStateFromStores: (props) ->
     post = PostStore.get(props.id)
 
-    company: CompanyStore.get(props.company_id)
     post: post
-    blocks: BlockStore.filter (block) => block.owner_type == 'Post' and block.owner_id == props.id
     title: @getTitle(post)
     published_at: @getPublishedAt(post)
-    readOnly: props.readOnly
 
   getInitialState: ->
     state = @getStateFromStores(@props)
-    state.position = null
-    state.owner_type = 'Post'
     state
 
   render: ->
     return null unless @state.post
 
-    blocks = _.map @gatherBlocks(), (block, i) =>
-      [
-        @getSectionPlaceholder(i)
-        block
-      ]
-
-    <SortableList
-      component={tag.article}
-      className="editor post"
-      onOrderChange={@handleSortableChange}
-      onOrderUpdate={@handleSortableUpdate}
-      readOnly={@state.readOnly}
-      dragLockX
-    >
+    <div className="post-container">
       <header>
         <label className="title">
           <AutoSizingInput
@@ -159,7 +119,7 @@ Component = React.createClass
             onChange={@handleFieldChange.bind(@, 'title')}
             onBlur={@handleTitleBlur}
             onKeyUp={@handleFieldKeyup}
-            readOnly={@state.readOnly}
+            readOnly={@props.readOnly}
           />
         </label>
 
@@ -170,17 +130,27 @@ Component = React.createClass
             onChange={@handleFieldChange.bind(@, 'published_at')}
             onBlur={@handlePublishedAtBlur}
             onKeyUp={@handleFieldKeyup}
-            readOnly={@state.readOnly}
+            readOnly={@props.readOnly}
           />
         </label>
 
-        <TagsComponent taggable_id={@state.post.uuid} taggable_type="Post" readOnly={@state.readOnly} />
+        <TagsComponent taggable_id={@state.post.uuid} taggable_type="Post" readOnly={@props.readOnly} />
       </header>
 
-      {blocks}
-      {@getSectionPlaceholder(blocks.length)}
-      {@gatherControls()}
-    </SortableList>
+      <BlockEditor
+        company_id = {@props.company_id}
+        owner_id = {@state.post.uuid}
+        owner_type = "Post"
+        editorIdentityTypes = {['Person', 'Vacancy', 'Picture', 'Paragraph']}
+        classForArticle = "editor post"
+        buildParagraph = {true}
+        readOnly = {@props.readOnly}
+      />
+
+      <footer>
+        {@gatherControls()}
+      </footer>
+    </div>
 
 # Exports
 # 

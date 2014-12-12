@@ -69,13 +69,13 @@ Component = React.createClass
 
   render: ->
     return null unless @state.company
-    isReadOnly = @state.cursor.flags.get('is_read_only')
+    isInViewMode = @state.cursor.flags.get('is_read_only') or @state.readOnly
 
     <div className="wrapper">
       <CompanyHeader
         id = {@props.uuid}
-        readOnly = {isReadOnly}
-        shouldDisplayViewMode = {!isReadOnly}
+        readOnly = {isInViewMode}
+        shouldDisplayViewMode = {!@state.cursor.flags.get('is_read_only')}
         onChange = {@handleViewModeChange}
       />
 
@@ -85,12 +85,12 @@ Component = React.createClass
         owner_type = "Company"
         editorIdentityTypes = {['Person', 'Vacancy', 'Picture', 'Paragraph']}
         classForArticle = "editor company company-2_0"
-        readOnly = {isReadOnly}
+        readOnly = {isInViewMode}
       />
 
       <Timeline 
         company_id = {@state.company.uuid}
-        readOnly = {isReadOnly} 
+        readOnly = {isInViewMode} 
       />
     </div>
 

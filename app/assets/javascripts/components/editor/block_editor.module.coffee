@@ -90,6 +90,10 @@ MainComponent = React.createClass
   getIdentityTypes: ->
     _.pick SectionPlaceholderItemNames, (name, key) => _.contains(@props.editorIdentityTypes, key)
 
+  buildParagraph: ->
+    new_block_key = BlockStore.create({ owner_id: @props.owner_id, owner_type: @props.owner_type, identity_type: 'Paragraph', position: 0 })
+    setTimeout => BlockableActions.createBlock(new_block_key, BlockStore.get(new_block_key).toJSON())
+
 
   # Handlers
   # 
@@ -137,10 +141,8 @@ MainComponent = React.createClass
   handlePlaceholderClick: (position) ->
     @setState({ position: position })
 
-
   handleCancelBlockCreateClick: ->
     @setState({ position: null })
-
 
   handleBlockDestroyClick: (uuid, event) ->
     BlockActions.destroy(uuid) if confirm('Are you sure?')
@@ -150,6 +152,7 @@ MainComponent = React.createClass
   # 
   componentDidMount: ->
     BlockStore.on('change', @refreshStateFromStores)
+    @buildParagraph() if @props.buildParagraph and @state.blocks.length == 0
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -159,7 +162,8 @@ MainComponent = React.createClass
 
   # Component Specifications
   # 
-  # getDefaultProps: ->
+  getDefaultProps: ->
+    buildParagraph: false
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
