@@ -53,8 +53,10 @@ Component = React.createClass
     @update(title: @state.title)
 
   handlePublishedAtBlur: ->
-    if moment(@state.published_at).isValid()
-      @update({ published_at: moment(@state.published_at).format('ll') })
+    published_at = Date.parse @state.published_at
+
+    if moment(published_at).isValid()
+      @update({ published_at: moment(published_at).format('ll') })
 
   handleFieldKeyup: (event) ->
     event.target.blur() if event.key == 'Enter'
