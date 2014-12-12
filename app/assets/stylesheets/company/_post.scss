@@ -218,6 +218,7 @@ main.company > div.wrapper > div.posts {
         margin: 0;
         overflow: hidden;
         text-overflow: ellipsis;
+        text-align: center;
         white-space: nowrap;
 
         &.name { 
@@ -225,9 +226,8 @@ main.company > div.wrapper > div.posts {
         }
 
         &.occupation {
+          color: hsl(0, 0%, 50%);
           font-size: 12px;
-          font-weight: 300;
-          text-transform: uppercase;
         }
       }
     }
