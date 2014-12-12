@@ -50,64 +50,51 @@
   }
 
   > span {
-    display: block;
+    @include display(flex);
+    @include position(absolute, 0 0 0 0%);
+    @include transition(transform 0.2s ease-out);
+
     height: 100%;
-    position: relative;
+    width: 200%;
+
+    > i, span {
+      display: block;
+      float: left;
+      height: 100%;
+    }
+
+    > i {
+      @include transition(background-color 0.2s ease-out);
+
+      background-color: hsl(0, 0%, 94%);
+      width: 25%;
+    }
 
     > span {
       @include align-items(center);
       @include display(flex);
+      @include justify-content(center);
 
-      position: absolute;
-      height: 100%;
-      text-align: center;
+      margin: auto;
+      width: 37.5%;
 
       &.off {
-        @include justify-content(center);
-
         background-color: hsl(0, 0%, 98%);
         color: hsl(0, 0%, 0%);
-        left: 0;
-        width: 76%;
       }
 
       &.on {
-        @include transition(left 0.2s ease-out);
-
         background-color: hsl(136, 50%, 52%);
         color: hsl(0, 0%, 98%);
-        height: 100%;
-        left: 76%;
-        width: 100%;
-
-        > * {
-          display: block;
-        }
-
-        > i {
-          @include transition(background-color 0.2s ease-out);
-
-          background-color: hsl(0, 0%, 94%);
-          height: 100%;
-          width: 24%;
-        }
-
-        > span {
-          width: 65px;
-          text-align: center;
-          width: 76%;
-        }
       }
     }
   }
 
-  > input:checked + span {
-    > .on {
-      left: 0;
+  > input:checked ~ span {
+    @include transform(translateX(-50%));
 
-      > i {
-        background-color: hsl(132, 44%, 50%);
-      }
+    > i {
+      background-color: hsl(132, 44%, 50%);
     }
   }
 }
