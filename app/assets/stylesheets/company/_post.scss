@@ -237,7 +237,7 @@ main.company > div.wrapper > div.posts {
 
 // Editor
 // 
-article.editor.post {
+div.post-container {
 
   > header {
     @include display(flex);
@@ -274,14 +274,17 @@ article.editor.post {
 
   }
 
-  > div.controls {
-    @include display(flex);
-    @include justify-content(space-between);
+  > footer {
+    > div.controls {
+      @include display(flex);
+      @include justify-content(space-between);
 
-    margin-top: 50px;
+      margin-top: 50px;
 
-    > button {
-      width: 80px;
+      > button {
+        width: 80px;
+      }
     }
+    
   }
 }
