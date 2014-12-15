@@ -3,96 +3,89 @@
 
 article.editor > section.people {
 
-  > ul {
+  > .list {
     @include display(flex);
     @include flex-wrap(wrap);
-    @include justify-content(center);
     
-    list-style: none;
-    margin: 0;
-    margin-left: -$editor-gutter;
-    padding: 0;
-    
-    > li {
-      @include flex(0 0 27%);
+    > .row {
+      width: 100%;
 
-      margin: 0;
-      margin-top: 20px;
-      padding: 0;
-      padding-left: $editor-gutter;
+      @include display(flex);
+      @include justify-content(center);
 
-      &:nth-child(-n+3) {
-        margin-top: 0;
-      }
+      margin-left: -$editor-gutter;
 
-      &.hanging {
-        @include calc(padding-left, 23% + #{$editor-gutter});
-        @include flex-basis(50%);
-      }
+      > .item {
+        @include flex(0 0 27%);
 
-      &.hanging + li {
-        @include flex-basis(50%);
-
-        padding-right: 23%;
-      }
-
-      &.hanging + li + li {
+        margin: 0;
         margin-top: 20px;
+        padding: 0;
+        padding-left: $editor-gutter;
+
+        &.placeholder .person > aside {
+          background-color: $editor-placeholder-background-color;
+          color: $editor-placeholder-color;
+
+          span {
+            font-size: 100px;
+          }
+        }
+
+        &.placeholder:not(:first-child) {
+          @include flex-basis(0);
+
+          padding: 0;
+          position: relative;
+
+          > .person {
+            @include position(absolute, 50px 0 0 -20px);
+            @include transform(scale(0.5, 0.5));
+            @include transition(all 150ms ease-out);
+            
+            height: 100px;
+            opacity: 0;
+            width: 100px;
+
+            figure > i.hint {
+              display: none;
+            }
+          }
+        }
       }
 
-      &.shifting, &.shifting ~ li:not(.placeholder) {
-        @include transition(transform 150ms ease-out);
+      &:first-child {
+        > .item {
+          margin-top: 0;
+        }
       }
-    }
 
-    > .placeholder .person > aside {
-      background-color: $editor-placeholder-background-color;
-      color: $editor-placeholder-color;
-
-      span {
-        font-size: 100px;
-      }
-    }
-
-    > .placeholder:not(:first-child) {
-      @include flex-basis(0);
-
-      padding: 0;
-      position: relative;
-
-      > .person {
-        @include position(absolute, 50px 0 0 -20px);
-        @include transform(scale(0.5, 0.5));
-        @include transition(all 150ms ease-out);
-        
-        height: 100px;
-        opacity: 0;
-        width: 100px;
-
-        figure > i.hint {
-          display: none;
+      &:last-child {
+        > .item:not(.placeholder) {
+          @include transition(none);
         }
       }
     }
-  
-    > .placeholder:nth-child(3n+1) .person {
-      > aside {
-        margin-top: 0;
-      }
-      padding-top: 0;
-      padding-bottom: 0;
-    }
   }
 
-  &:hover > ul {
-    > .shifting, .shifting ~ li:not(.placeholder) {
-      @include transform(translateX(-40px));
+  .list.animated > .row:last-child {
+    > .item:not(.placeholder) {
+      @include transition(transform 150ms ease-out);
     }
+  } 
 
-    > .placeholder:not(:first-child) {
-      > .person {
-        @include transform(scale(1, 1));
-        opacity: 1;
+  &:hover > .list,
+  > .list.hovered {
+    > .row:last-child {
+      > .item:not(.placeholder) {
+        @include transform(translateX(-40px));
+      }
+
+      > .placeholder:not(:first-child) {
+        > .person {
+          @include transform(scale(1, 1));
+          opacity: 1;
+        }
       }
     }
   }

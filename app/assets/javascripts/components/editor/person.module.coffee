@@ -26,7 +26,7 @@ Draggable     = require('components/shared/draggable')
 # Person Placeholder component
 #
 PersonPlaceholderComponent = ->
-  <li className="placeholder">
+  <div key="placeholder" className="item placeholder">
     <div className="person editable">
       <aside className="avatar">
         <figure onClick={@onAddPersonClick}>
@@ -35,7 +35,7 @@ PersonPlaceholderComponent = ->
         </figure>
       </aside>
     </div>
-  </li>
+  </div>
 
 
 # Person component
@@ -74,7 +74,15 @@ Component = React.createClass
     isEmpty: (block_id) ->
       BlockStore.get(block_id).identity_ids.size == 0
       
-  
+  modalBeforeOpen: ->
+    if @isMounted()
+      @setState
+        hovered: true
+
+  modalBeforeHide: (event) ->
+    if @isMounted()
+      @setState
+        hovered: false
 
   onPersonCreateDone: ->
     setTimeout ModalActions.hide
@@ -90,26 +98,42 @@ Component = React.createClass
 
 
   gatherPeople: ->
-    @state.peopleSeq
-      .sortBy((person) => @state.identityIdsSeq.indexOf(person.uuid))
-      .map((person) => PersonComponent.call(@, person))
+    @getPeopleHtml(
+      @state.peopleSeq
+        .sortBy((person) => @state.identityIdsSeq.indexOf(person.uuid))
+        .map((person) => PersonComponent.call(@, person))
+        .reduce((memo, person, index, people) ->
+          # form rows in groups of three
+          if (lastRow = memo.slice(-1)[0]) && (lastRow.length < 3) && !(people.size % 3 == 1 && index == people.size - 2) # if the array has one element in the last group, add a previous one
+            lastRow.push person
+          else
+            memo.push [person]
 
-  getHelperPeopleIndexes: (people) ->
-    peopleLength = people.size
-    indexes = {}
+          memo
+        , [])
+    )
 
-    if peopleLength > 1 && peopleLength % 3 == 1
-      indexes.hangingIndex = peopleLength - 4
+  getPeopleHtml: (people) ->
+    if people.length > 0
+      people.map (rows, index) =>
+        <div key={index} className="row">
+          {
+            items = rows.map (person) ->
+              <div className="item" key={person.props.key}>{person}</div>
 
-    if peopleLength == 1
-      indexes.shiftIndex = 0
-    else if peopleLength % 3 == 0
-      indexes.shiftIndex = peopleLength - 3
+            if !@props.readOnly && index == people.length - 1
+              items.push PersonPlaceholderComponent.apply(@)
+
+            items
+          }
+        </div>
     else
-      indexes.shiftIndex = peopleLength - 2
+      <div className="row">
+        {PersonPlaceholderComponent.apply(@)}
+      </div>
 
-    indexes
-  
+
+
   onSelectPerson: (key) ->
     return if @props.readOnly
 
@@ -126,7 +150,10 @@ Component = React.createClass
     ModalActions.show(PersonForm({
       attributes: PersonStore.get(key).toJSON()
       onSubmit:   @onPersonFormSubmit.bind(@, key)
-    }))
+    }), {
+      beforeShow: @modalBeforeOpen
+      beforeHide: @modalBeforeHide
+    })
   
   
   onDeletePersonClick: (key) ->
@@ -147,8 +174,10 @@ Component = React.createClass
       company_id:     @props.company_id
       onSelect:       @onSelectPerson
       onCreateClick:  @onCreatePersonClick
-    }))
-  
+    }), {
+      beforeShow: @modalBeforeOpen
+      beforeHide: @modalBeforeHide
+    })
   
   # Person Chooser
   #
@@ -161,7 +190,11 @@ Component = React.createClass
       attributes: PersonStore.get(newPersonKey).toJSON()
       onSubmit:   @onPersonFormSubmit.bind(@, newPersonKey)
     }), {
-      beforeHide: ->
+      beforeShow: @modalBeforeOpen
+
+      beforeHide: =>
+        @modalBeforeHide()
+
         PersonStore.remove(newPersonKey)
     })
   
@@ -175,52 +208,46 @@ Component = React.createClass
     else
       PersonActions.create(key, attributes.toJSON())
   
-  
   getStateFromStores: ->
+    setTimeout =>
+      @setState
+        animated: true
+    , 400
+
     identityIdsSeq  = Immutable.Seq(BlockStore.get(@props.key).identity_ids)
     peopleSeq       = Immutable.Seq(PersonStore.filter((person) -> identityIdsSeq.contains(person.uuid)))
     
     peopleSeq:        peopleSeq
     identityIdsSeq:   identityIdsSeq
-  
+    animated:         false
   
   refreshStateFromStores: ->
     @setState(@getStateFromStores())
   
-  
   componentDidMount: ->
     PersonStore.on('change', @refreshStateFromStores)
-  
   
   componentWillUnmount: ->
     PersonStore.off('change', @refreshStateFromStores)
   
-  
   componentWillReceiveProps: ->
     @refreshStateFromStores()
   
-  
   getInitialState: ->
-    @getStateFromStores()
+    _.extend @getStateFromStores(),
+      animated: true
+      hovered: false
 
   render: ->
-    people = @gatherPeople()
-    indexes = @getHelperPeopleIndexes(people)
+    classes = cx(
+      list: true
+      hovered: @state.hovered
+      animated: @state.animated
+    )
 
-    people = people.map (person, index) =>
-      classes = []
-      if _.has(indexes, "hangingIndex") && index == indexes.hangingIndex
-        classes.push "hanging"
-      if !@props.readOnly && _.has(indexes, "shiftIndex") && index == indexes.shiftIndex
-        classes.push "shifting"
-      className = classes.join(' ')
-
-      <li key={person.props.key} className={className}>{person}</li>
-    
-    <ul>
-      { people.toArray() }
-      { PersonPlaceholderComponent.apply(@) unless @props.readOnly }
-    </ul>
+    <div className = {classes}>
+      {@gatherPeople()}
+    </div>
 
 
 # Exports
