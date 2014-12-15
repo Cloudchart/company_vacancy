@@ -74,16 +74,16 @@ State =
         if @props.cursor.__CURSOR_INSTANCE__
           addListener(@props.cursor.path, @onGlobalStateChange)
         else
-          Immutable.Sequence(@props.cursor).forEach (cursor, key) =>
+          Immutable.Seq(@props.cursor).forEach (cursor, key) =>
             addListener(cursor.path, @onGlobalStateChange)
-    
+
 
     componentWillUnmount: ->
       if typeof @onGlobalStateChange == 'function'
         if @props.cursor.__CURSOR_INSTANCE__
           removeListener(@props.cursor.path, @onGlobalStateChange)
         else
-          Immutable.Sequence(@props.cursor).forEach (cursor, key) =>
+          Immutable.Seq(@props.cursor).forEach (cursor, key) =>
             removeListener(cursor.path, @onGlobalStateChange)
 
 

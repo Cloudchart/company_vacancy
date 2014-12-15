@@ -31,7 +31,7 @@ Component = React.createClass
 
 
   # Lifecylce Methods
-  #   
+  # 
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStores)
 

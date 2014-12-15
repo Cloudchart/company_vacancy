@@ -6,7 +6,7 @@ CompanyActions    = require('actions/company')
 RoleMap           = require('utils/role_map')
 Typeahead         = require('components/form/typeahead')
 Field             = require('components/form/field')
-TempKVStore       = require('utils/temp_kv_store')
+# TempKVStore       = require('utils/temp_kv_store')
 
 Buttons           = require('components/form/buttons') 
 StandardButton    = Buttons.StandardButton
@@ -28,18 +28,6 @@ Errors =
 #
 Component = React.createClass
 
-  refreshStateFromStores: ->
-    @setState @getStateFromStores()
-
-  getStateFromStores: ->
-    company:           CompanyStore.get(@props.uuid)
-    users:             UserStore.all()
-    errors:            Immutable.Map(TokenStore.errorsFor(@props.tokenKey) || {})
-    sync:              TokenStore.getSync(@props.tokenKey)
-    tokens:            TokenStore.filter (token) => token.owner_id == @props.uuid && token.owner_type == "Company"
-    invitableRoles:    TempKVStore.get("invitable_roles") || []
-    invitableContacts: TempKVStore.get("invitable_contacts") || {}
-
   validateEmail: (email) ->
     errors = []
 
@@ -53,14 +41,15 @@ Component = React.createClass
   rolesInputs: ->
     _.map @state.invitableRoles, (role) =>
       <label
-        key       = role
+        key       = {role}
         className = "role form-field-radio-2" >
         <input
-          checked  =  { role == @state.role }
+          checked  =  {role == @state.role}
           name     =  "role"
           type     =  "radio"
-          value    =  role
-          onChange =  @onRoleChange />
+          value    =  {role}
+          onChange =  {@onRoleChange}
+        />
         <div className="title">
           { RoleMap[role].description }
           <div className="hint">
@@ -129,18 +118,19 @@ Component = React.createClass
 
     <Typeahead
       className      = "email"
-      value          = @state.email
-      options        = options
+      value          = {@state.email}
+      options        = {options}
 
-      onBlur         = @onEmailBlur
-      onChange       = @onEmailChange
-      onOptionSelect = @onEmailChange
+      onBlur         = {@onEmailBlur}
+      onChange       = {@onEmailChange}
+      onOptionSelect = {@onEmailChange}
 
       input          = { Field }
       inputProps = {
         errors:         errors
         placeholder:    "user@example.com"
-      } />
+      } 
+    />
 
   onSubmit: (event) ->
     event.preventDefault()
@@ -166,20 +156,32 @@ Component = React.createClass
     CompanyStore.on("change", @refreshStateFromStores)
     TokenStore.on("change", @refreshStateFromStores)
     UserStore.on("change", @refreshStateFromStores)
-    TempKVStore.on("invitable_roles_changed", @refreshStateFromStores)
-    TempKVStore.on("invitable_contacts_changed", @refreshStateFromStores)
+    # TempKVStore.on("invitable_roles_changed", @refreshStateFromStores)
+    # TempKVStore.on("invitable_contacts_changed", @refreshStateFromStores)
 
   componentWillUnmount: ->
     CompanyStore.off("change", @refreshStateFromStores)
     TokenStore.off("change", @refreshStateFromStores)
     UserStore.off("change", @refreshStateFromStores)
-    TempKVStore.off("invitable_roles_changed", @refreshStateFromStores)
-    TempKVStore.off("invitable_contacts_changed", @refreshStateFromStores)
+    # TempKVStore.off("invitable_roles_changed", @refreshStateFromStores)
+    # TempKVStore.off("invitable_contacts_changed", @refreshStateFromStores)
 
   propTypes:
     uuid:                      React.PropTypes.any.isRequired
     tokenKey:                  React.PropTypes.any.isRequired
     onCurrentUsersButtonClick: React.PropTypes.func
+
+  refreshStateFromStores: ->
+    @setState @getStateFromStores()
+
+  getStateFromStores: ->
+    company:           CompanyStore.get(@props.uuid)
+    users:             UserStore.all()
+    errors:            Immutable.Map(TokenStore.errorsFor(@props.tokenKey) || {})
+    sync:              TokenStore.getSync(@props.tokenKey)
+    tokens:            TokenStore.filter (token) => token.owner_id == @props.uuid && token.owner_type == "Company"
+    # invitableRoles:    TempKVStore.get("invitable_roles") || []
+    # invitableContacts: TempKVStore.get("invitable_contacts") || {}
 
   getDefaultProps: ->
     onCurrentUsersButtonClick: ->
@@ -187,39 +189,39 @@ Component = React.createClass
   getInitialState: ->
     _.extend @getStateFromStores(),
       email: ""
-      role:  TempKVStore.get("invitable_roles")[0] || null
+      # role:  TempKVStore.get("invitable_roles")[0] || null
 
   render: ->
-    if @state.company
-      <div>
-        <header>
-          <StandardButton 
-            className="transparent"
-            iconClass="fa-angle-left"
-            onClick=@props.onCurrentUsersButtonClick />
-          Share <strong>{@state.company.name}</strong> {RoleMap[@state.role].header}
-        </header>
+    return null unless @state.company
 
-        <form className = "invite-user content"
-              onSubmit  = @onSubmit >
-        
-          <fieldset className="roles">
-            { @rolesInputs() }
-          </fieldset>
+    <div>
+      <header>
+        <StandardButton 
+          className = "transparent"
+          iconClass = "fa-angle-left"
+          onClick = {@props.onCurrentUsersButtonClick}
+        />
+        Share <strong>{@state.company.name}</strong> {RoleMap[@state.role].header}
+      </header>
 
-          <footer>
-            { @emailInput() }
+      <form className="invite-user content" onSubmit={@onSubmit} >
+        <fieldset className="roles">
+          { @rolesInputs() }
+        </fieldset>
 
-            <SyncButton 
-              className = "cc cc-wide"
-              text      = "Invite"
-              sync      = {@state.sync == "send"}
-              onClick   = @onSubmit />
-          </footer>
-        </form>
-      </div>
-    else
-      null
+        <footer>
+          { @emailInput() }
+
+          <SyncButton 
+            className = "cc cc-wide"
+            text      = "Invite"
+            sync      = {@state.sync == "send"}
+            onClick   = {@onSubmit} 
+          />
+        </footer>
+
+      </form>
+    </div>
 
 
 # Exports

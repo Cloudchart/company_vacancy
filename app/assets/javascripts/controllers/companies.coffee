@@ -1,4 +1,4 @@
-Dispatcher      = require('dispatcher/dispatcher')
+Dispatcher = require('dispatcher/dispatcher')
 
 # Show
 # 
@@ -33,9 +33,7 @@ Dispatcher      = require('dispatcher/dispatcher')
       roles:      RoleStore
       tokens:     TokenStore
       users:      UserStore
-      # Updated by dispatcher
-      #
-      #tags:       TagStore
+      # tags:       TagStore # Updated by dispatcher
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 
@@ -96,16 +94,15 @@ Dispatcher      = require('dispatcher/dispatcher')
   UserStore = require('stores/user_store')
   RoleStore = require('stores/role_store')
   TokenStore = require('stores/token_store')
-  TempKVStore = require('utils/temp_kv_store')
   
   CompanyAccessRights = require('components/company/access_rights')
 
   # Fetch
   # 
   require('sync/company').fetchAccessRights(data.id).done (json) ->
-
+    
     Dispatcher.handleServerAction
-      type: 'company:fetch:done'
+      type: 'company:fetch:access_rights:done'
       data: [data.id, json]
 
     _.each {
@@ -115,18 +112,13 @@ Dispatcher      = require('dispatcher/dispatcher')
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 
-    TempKVStore.update("invitable_roles", json.invitable_roles)
-    TempKVStore.update("invitable_contacts", json.invitable_contacts)
-
     CompanyStore.add(json.company.uuid, json.company)
     CompanyStore.emitChange()
 
   # Mount
   # 
   React.renderComponent(
-    (CompanyAccessRights 
-      uuid: data.id
-    ),
+    CompanyAccessRights({ uuid: data.id }),
     document.querySelector('[data-react-mount-point="access-rights"]')
   )
 
