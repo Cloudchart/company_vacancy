@@ -1,5 +1,5 @@
 SortableListItem = require('components/shared/sortable_list_item')
-
+cloneWithoutIds  = require('utils/clone_without_ids')
 
 cloneNode = (node) ->
   nodeStyle           = window.getComputedStyle(node)
@@ -10,9 +10,7 @@ cloneNode = (node) ->
   marginTop   = parseFloat(nodeStyle.marginTop)   || 0
   marginLeft  = parseFloat(nodeStyle.marginLeft)  || 0
   
-  clone = node.cloneNode(true)
-  
-  clone.dataset.reactid = null
+  clone = cloneWithoutIds(node)
   
   clone.style.width     = nodeStyle.width
   clone.style.height    = nodeStyle.height
