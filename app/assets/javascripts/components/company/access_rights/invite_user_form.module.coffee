@@ -85,10 +85,7 @@ Component = React.createClass
     queryRe     = new RegExp("(^|\\s)#{query}\\.*", 'i')
     matches     = ["email", "username", "name"]
 
-    console.log @props.cursor.constants.get('invitable_contacts').toJS()
-    console.log @state.users
-    
-    result = @props.cursor.constants.get('invitable_contacts')
+    @props.cursor.constants.get('invitable_contacts')
       
       .filterNot (names, email) ->
         userSeq.filter((user) -> user.get('email') is email).first() or 

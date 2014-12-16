@@ -4,8 +4,10 @@
 #
 tag = React.DOM
 
-GlobalState   = require('global_state/state')
-CompanyStore  = require('stores/company')
+CloudFlux       = require('cloud_flux')
+GlobalState     = require('global_state/state')
+
+CompanyStore    = require('stores/company')
 
 CompanyActions  = require('actions/company')
 ModalActions    = require('actions/modal_actions')
@@ -15,11 +17,11 @@ FollowComponent = require('components/company/follow')
 AccessRights    = require('components/company/access_rights')
 TagsComponent   = require('components/company/tags')
 
-# TempKVStore     = require('utils/temp_kv_store')
-
 # Main
 #
 Component = React.createClass
+
+  mixins: [CloudFlux.mixins.Actions]
 
   # Helpers
   # 
@@ -85,6 +87,7 @@ Component = React.createClass
       }
     </a>
 
+
   getFollowButoon: ->
     return null unless @state.cursor.flags.get('can_follow')
     <FollowComponent key={@props.uuid}, is_followed={@state.cursor.flags.get('is_followed')} />
@@ -100,31 +103,34 @@ Component = React.createClass
   
   updateLogotype: (file) ->
     return if @props.readOnly
-
     CompanyActions.update(@props.uuid, { logotype: file })
 
 
+  getCloudFluxActions: ->
+    'company:access_rights:fetch:done': @handleAccessRightsDone
+
   # Handlers
   # 
+  handleAccessRightsDone: -> 
+    setTimeout =>
+      @setState(shareLoading: false)
+      ModalActions.show(<AccessRights uuid={@props.uuid} />)
+    
+
   handleRemoveLogotype: ->
     return if @props.readOnly
-
     CompanyActions.update(@props.uuid, { logotype_url: null, remove_logotype: true })
+
 
   handleShareClick: (event) ->
     event.preventDefault()
 
-    if TempKVStore.get("invitable_contacts")
+    if GlobalState.cursor(['flags', 'companies']).get('isAccessRightsLoaded')
       ModalActions.show(<AccessRights uuid={@props.uuid} />)
     else
       @setState(shareLoading: true)
       CompanyActions.fetchAccessRights(@props.uuid)
 
-      TempKVStore.on "invitable_contacts_changed", =>
-        setTimeout =>
-          @setState(shareLoading: false)
-          ModalActions.show(<AccessRights uuid={@props.uuid} />)
-          TempKVStore.off "invitable_contacts_changed"
 
   handleFieldBlur: (attr_name, event) ->
     @update(attr_name) unless @state[attr_name] == @state.company[attr_name]
@@ -155,7 +161,7 @@ Component = React.createClass
   # Component Specifications
   # 
   getStateFromStores: (props) ->
-    company = CompanyStore.get(props.id)
+    company = CompanyStore.get(props.uuid)
 
     company: company
     name: company.name

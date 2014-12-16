@@ -30,9 +30,6 @@ Dispatcher = require('dispatcher/dispatcher')
       paragraphs: ParagraphStore
       people:     PersonStore
       vacancies:  VacancyStore
-      roles:      RoleStore
-      tokens:     TokenStore
-      users:      UserStore
       # tags:       TagStore # Updated by dispatcher
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
@@ -100,9 +97,9 @@ Dispatcher = require('dispatcher/dispatcher')
   # Fetch
   # 
   require('sync/company').fetchAccessRights(data.id).done (json) ->
-    
+
     Dispatcher.handleServerAction
-      type: 'company:fetch:access_rights:done'
+      type: 'company:access_rights:fetch:done'
       data: [data.id, json]
 
     _.each {

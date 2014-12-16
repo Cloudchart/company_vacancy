@@ -52,13 +52,14 @@ Dispatcher.register (payload) ->
       GlobalState.cursor().commit()
 
 
-    when 'company:fetch:access_rights:done'
+    when 'company:access_rights:fetch:done'
       [company_id, json] = payload.action.data
 
       GlobalState.cursor().transaction()
 
       GlobalState.cursor().setIn(['constants', 'companies', 'invitable_roles'], json.invitable_roles)
       GlobalState.cursor().setIn(['constants', 'companies', 'invitable_contacts'], json.invitable_contacts)
+      GlobalState.cursor().setIn(['flags', 'companies', 'isAccessRightsLoaded'], true)
 
       GlobalState.cursor().commit()
 

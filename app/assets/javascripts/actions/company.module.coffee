@@ -65,21 +65,21 @@ module.exports =
     SyncAPI.verifySiteUrl(key, done, fail)  
 
 
-  fetchAccessRights: (key, token) ->
+  fetchAccessRights: (key, token = 'fetch_access_rights') ->
     Dispatcher.handleClientAction
-      type: Constants.Company.FETCH_ACCESS_RIGHTS
+      type: 'company:access_rights:fetch'
       data: [key, token]
     
 
     done = (json) ->
       Dispatcher.handleServerAction
-        type: Constants.Company.FETCH_ACCESS_RIGHTS_DONE
+        type: 'company:access_rights:fetch:done'
         data: [key, json, token]
     
 
     fail = (xhr) ->
       Dispatcher.handleServerAction
-        type: Constants.Company.FETCH_ACCESS_RIGHTS_FAIL
+        type: 'company:access_rights:fetch:fail'
         data: [key, xhr.responseJSON, xhr, token]
     
 
