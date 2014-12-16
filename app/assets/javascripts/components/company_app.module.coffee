@@ -31,7 +31,7 @@ Component = React.createClass
 
 
   # Lifecylce Methods
-  #   
+  # 
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStores)
 
@@ -56,9 +56,8 @@ Component = React.createClass
   
 
   getDefaultProps: ->
-    # company meta data created at the client side (not connected with stores)
     cursor: GlobalState.cursor(['meta', 'company'])
-  
+
 
   getInitialState: ->
     state             = @getStateFromStores()
@@ -69,11 +68,12 @@ Component = React.createClass
 
   render: ->
     return null unless @state.company
+
     isInViewMode = @state.cursor.flags.get('is_read_only') or @state.readOnly
 
     <div className="wrapper">
       <CompanyHeader
-        id = {@props.uuid}
+        uuid = {@props.uuid}
         readOnly = {isInViewMode}
         shouldDisplayViewMode = {!@state.cursor.flags.get('is_read_only')}
         onChange = {@handleViewModeChange}

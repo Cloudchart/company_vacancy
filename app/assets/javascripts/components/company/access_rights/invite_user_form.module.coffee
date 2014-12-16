@@ -6,7 +6,6 @@ CompanyActions    = require('actions/company')
 RoleMap           = require('utils/role_map')
 Typeahead         = require('components/form/typeahead')
 Field             = require('components/form/field')
-TempKVStore       = require('utils/temp_kv_store')
 
 Buttons           = require('components/form/buttons') 
 StandardButton    = Buttons.StandardButton
@@ -14,6 +13,7 @@ SyncButton        = Buttons.SyncButton
 
 CompanyStore      = require("stores/company")
 TokenStore        = require("stores/token_store")
+RoleStore         = require("stores/role_store")
 UserStore         = require("stores/user_store")
 
 # Errors
@@ -28,17 +28,10 @@ Errors =
 #
 Component = React.createClass
 
-  refreshStateFromStores: ->
-    @setState @getStateFromStores()
-
-  getStateFromStores: ->
-    company:           CompanyStore.get(@props.uuid)
-    users:             UserStore.all()
-    errors:            Immutable.Map(TokenStore.errorsFor(@props.tokenKey) || {})
-    sync:              TokenStore.getSync(@props.tokenKey)
-    tokens:            TokenStore.filter (token) => token.owner_id == @props.uuid && token.owner_type == "Company"
-    invitableRoles:    TempKVStore.get("invitable_roles") || []
-    invitableContacts: TempKVStore.get("invitable_contacts") || {}
+  propTypes:
+    uuid:                      React.PropTypes.any.isRequired
+    tokenKey:                  React.PropTypes.any.isRequired
+    onCurrentUsersButtonClick: React.PropTypes.func
 
   validateEmail: (email) ->
     errors = []
@@ -51,16 +44,17 @@ Component = React.createClass
     errors
 
   rolesInputs: ->
-    _.map @state.invitableRoles, (role) =>
+    @props.cursor.constants.get('invitable_roles').map (role) =>
       <label
-        key       = role
+        key       = {role}
         className = "role form-field-radio-2" >
         <input
-          checked  =  { role == @state.role }
+          checked  =  {role is @state.role}
           name     =  "role"
           type     =  "radio"
-          value    =  role
-          onChange =  @onRoleChange />
+          value    =  {role}
+          onChange =  {@onRoleChange}
+        />
         <div className="title">
           { RoleMap[role].description }
           <div className="hint">
@@ -84,42 +78,43 @@ Component = React.createClass
     @setState
       errors: @state.errors.set("email", @validateEmail(@state.email))
 
+  # TODO: refactor
   filterContacts: (query) ->
-    _.chain(@state.invitableContacts)
-      .pick((names, email) =>
-        not _.find(@state.users, (user) -> user.email == email) &&
-        not _.find(@state.tokens, (token) -> token.data.email == email)
-      )
-      .map((names, email) ->
-        re = new RegExp("(^|\\s)#{query}\\.*", "i")
-        matchedBy = null
+    userSeq     = Immutable.Seq(@state.users)
+    tokenSeq    = Immutable.Seq(@state.tokens)
+    queryRe     = new RegExp("(^|\\s)#{query}\\.*", 'i')
+    matches     = ["email", "username", "name"]
 
-        if email.match(re)
-          filteredName = names[0]
-          matchedBy = "email"
+    @props.cursor.constants.get('invitable_contacts')
+      
+      .filterNot (names, email) ->
+        userSeq.filter((user) -> user.get('email') is email).first() or 
+        tokenSeq.filter((token) -> token.getIn(['data', 'email']) is email).first()
+      
+      .map (names, email) ->
+        [matchedBy, filteredName] = if email.match(queryRe)
+          ["email", names.first()]
         else
-          _.each names, (name, index) ->
-            if name.match(re)
-              filteredName = name
-              matchedBy = if (index == 0) then "username" else "name"
+          filteredName = names.filter((name) -> name.match(queryRe)).first()
+
+          if filteredName
+            [(if names.indexOf(filteredName) is 0 then "username" else "name"), filteredName]
+          else
+            []
 
         if matchedBy
-          value:   "#{filteredName} <#{email}>"
-          content: "#{filteredName} <#{email}>"
-          matchedValue:
-            if matchedBy == "email"
-              0
-            else if matchedBy == "username"
-              1
-            else
-              2
+          value:        "#{filteredName} <#{email}>"
+          content:      "#{filteredName} <#{email}>"
+          matchedValue: matches.indexOf(matchedBy)
         else
           null
-      )
-      .compact()
-      .sortBy("matchedValue")
-      .first(7)
-      .value()
+
+      .valueSeq()
+      .filter (item) -> item
+      .sortBy (item) -> item.matchedValue
+      .take(7)
+      .toArray()
+
 
   emailInput: ->
     if @state.errors
@@ -129,27 +124,27 @@ Component = React.createClass
 
     <Typeahead
       className      = "email"
-      value          = @state.email
-      options        = options
+      value          = {@state.email}
+      options        = {options}
 
-      onBlur         = @onEmailBlur
-      onChange       = @onEmailChange
-      onOptionSelect = @onEmailChange
+      onBlur         = {@onEmailBlur}
+      onChange       = {@onEmailChange}
+      onOptionSelect = {@onEmailChange}
 
       input          = { Field }
       inputProps = {
         errors:         errors
         placeholder:    "user@example.com"
-      } />
+      } 
+    />
 
   onSubmit: (event) ->
     event.preventDefault()
 
     email = @formatEmail(@state.email)
-
     errors = @state.errors.get("email") || @validateEmail(email)
 
-    if errors.length == 0
+    if errors.length is 0
       CompanyActions.sendInvite @props.tokenKey,
                         data:
                           email:  email
@@ -162,64 +157,58 @@ Component = React.createClass
     @setState 
       role: event.target.value
 
-  componentDidMount: ->
-    CompanyStore.on("change", @refreshStateFromStores)
-    TokenStore.on("change", @refreshStateFromStores)
-    UserStore.on("change", @refreshStateFromStores)
-    TempKVStore.on("invitable_roles_changed", @refreshStateFromStores)
-    TempKVStore.on("invitable_contacts_changed", @refreshStateFromStores)
+  componentWillReceiveProps: (nextProps) ->
+    @setState(@getStateFromStores(nextProps))
 
-  componentWillUnmount: ->
-    CompanyStore.off("change", @refreshStateFromStores)
-    TokenStore.off("change", @refreshStateFromStores)
-    UserStore.off("change", @refreshStateFromStores)
-    TempKVStore.off("invitable_roles_changed", @refreshStateFromStores)
-    TempKVStore.off("invitable_contacts_changed", @refreshStateFromStores)
+  getStateFromStores: (props) ->
+    roles = RoleStore.filter (role) -> role.owner_id is props.uuid and role.owner_type is 'Company'
+    user_ids = _.pluck roles, 'user_id'
 
-  propTypes:
-    uuid:                      React.PropTypes.any.isRequired
-    tokenKey:                  React.PropTypes.any.isRequired
-    onCurrentUsersButtonClick: React.PropTypes.func
+    company: CompanyStore.get(props.uuid)
+    users: UserStore.filter (user) -> _.contains user_ids, user.uuid
+    errors: Immutable.Map(TokenStore.errorsFor(props.tokenKey) or {})
+    sync: TokenStore.getSync(props.tokenKey)
+    tokens: TokenStore.filter (token) -> token.owner_id is props.uuid and token.owner_type is 'Company'
 
   getDefaultProps: ->
     onCurrentUsersButtonClick: ->
   
   getInitialState: ->
-    _.extend @getStateFromStores(),
+    _.extend @getStateFromStores(@props),
       email: ""
-      role:  TempKVStore.get("invitable_roles")[0] || null
+      role: @props.cursor.constants.getIn(['invitable_roles', 0])
 
   render: ->
-    if @state.company
-      <div>
-        <header>
-          <StandardButton 
-            className="transparent"
-            iconClass="fa-angle-left"
-            onClick=@props.onCurrentUsersButtonClick />
-          Share <strong>{@state.company.name}</strong> {RoleMap[@state.role].header}
-        </header>
+    return null unless @state.company
 
-        <form className = "invite-user content"
-              onSubmit  = @onSubmit >
-        
-          <fieldset className="roles">
-            { @rolesInputs() }
-          </fieldset>
+    <div>
+      <header>
+        <StandardButton 
+          className = "transparent"
+          iconClass = "fa-angle-left"
+          onClick = {@props.onCurrentUsersButtonClick}
+        />
+        Share <strong>{@state.company.name}</strong> {RoleMap[@state.role].header}
+      </header>
 
-          <footer>
-            { @emailInput() }
+      <form className="invite-user content" onSubmit={@onSubmit} >
+        <fieldset className="roles">
+          { @rolesInputs().toArray() }
+        </fieldset>
 
-            <SyncButton 
-              className = "cc cc-wide"
-              text      = "Invite"
-              sync      = {@state.sync == "send"}
-              onClick   = @onSubmit />
-          </footer>
-        </form>
-      </div>
-    else
-      null
+        <footer>
+          { @emailInput() }
+
+          <SyncButton 
+            className = "cc cc-wide"
+            text      = "Invite"
+            sync      = {@state.sync == "send"}
+            onClick   = {@onSubmit} 
+          />
+        </footer>
+
+      </form>
+    </div>
 
 
 # Exports

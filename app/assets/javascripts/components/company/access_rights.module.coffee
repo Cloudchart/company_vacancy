@@ -2,30 +2,42 @@
 
 # Imports
 #
-CompanyInviteUserForm   = require("components/company/access_rights/invite_user_form")
-CompanyUsersList        = require("components/company/access_rights/users_list")
+CloudFlux = require('cloud_flux')
+GlobalState = require('global_state/state')
 
-TokenStore              = require("stores/token_store")
+CompanyStore = require('stores/company')
+RoleStore  = require('stores/role_store')
+UserStore = require('stores/user_store')
+TokenStore = require('stores/token_store')
+
+CompanyInviteUserForm = require('components/company/access_rights/invite_user_form')
+CompanyUsersList = require('components/company/access_rights/users_list')
 
 Modes = 
-  VIEW:   "view"
-  INVITE: "invite"
+  VIEW:   'view'
+  INVITE: 'invite'
 
 # Main
 #
 Component = React.createClass
 
-  refreshStateFromStores: ->
-    @setState @getStateFromStores()
+  mixins: [CloudFlux.mixins.Actions]
 
-  getStateFromStores: ->
-    mode: if @hasNewToken() then Modes.INVITE else Modes.VIEW
+  propTypes:
+    uuid: React.PropTypes.any.isRequired
 
-  hasNewToken: ->
-    @state.newTokenKey and TokenStore.has(@state.newTokenKey)
-
+  # Helpers
+  # 
   createNewToken: ->
     TokenStore.create({ owner_id: @props.uuid, owner_type: 'Company' })
+
+  getCloudFluxActions: ->
+    'token:create:done': @handleTokenCreateDone
+
+  # Handlers
+  # 
+  handleTokenCreateDone: ->
+    @setState({ mode: Modes.VIEW })
 
   onInviteUserButtonClick: (event) ->
     @setState
@@ -34,36 +46,58 @@ Component = React.createClass
   
   onCurrentUsersButtonClick: (event) ->
     TokenStore.remove(@state.newTokenKey) if @hasNewToken()
-
     @setState({ mode: Modes.VIEW })
 
+  # Lifecylce Methods
+  # 
   componentDidMount: ->
+    CompanyStore.on('change', @refreshStateFromStores)
+    RoleStore.on('change', @refreshStateFromStores)
+    UserStore.on('change', @refreshStateFromStores)
     TokenStore.on("change", @refreshStateFromStores)
   
   componentWillUnmount: ->
+    CompanyStore.off('change', @refreshStateFromStores)
+    RoleStore.off('change', @refreshStateFromStores)
+    UserStore.off('change', @refreshStateFromStores)
     TokenStore.off("change", @refreshStateFromStores)
 
-  propTypes:
-    uuid: React.PropTypes.any.isRequired
-  
+  # Component Specifications
+  # 
+  refreshStateFromStores: ->
+    @setState @getStateFromStores()
+
+  getStateFromStores: ->
+    company: CompanyStore.get(@props.uuid)
+
   getInitialState: ->
-    mode: Modes.VIEW
+    state = @getStateFromStores()
+    state.newTokenKey = null
+    state.mode = Modes.VIEW
+    state.cursor = 
+      constants: GlobalState.cursor(['constants', 'companies'])
+    state
 
   render: ->
+    return null unless @state.company
+
     <div className="access-rights">
       {
         switch @state.mode
         
           when Modes.VIEW
             <CompanyUsersList
-              uuid                    = @props.uuid
-              onInviteUserButtonClick = @onInviteUserButtonClick />
+              uuid = {@props.uuid}
+              cursor = {@state.cursor}
+              onInviteUserButtonClick = {@onInviteUserButtonClick}
+            />
 
           when Modes.INVITE
             <CompanyInviteUserForm
-              uuid                      = @props.uuid
-              tokenKey                  = @state.newTokenKey
-              onCurrentUsersButtonClick = @onCurrentUsersButtonClick
+              uuid = {@props.uuid}
+              cursor = {@state.cursor}
+              tokenKey = {@state.newTokenKey}
+              onCurrentUsersButtonClick = {@onCurrentUsersButtonClick}
             />
       }
     </div>

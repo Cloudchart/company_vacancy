@@ -75,7 +75,7 @@ module.exports = CloudFlux.createStore
   getActions: ->
     actions = {}
 
-    actions[Constants.Company.FETCH_ACCESS_RIGHTS_DONE] = @onFetchAccessRightsDone
+    actions['company:access_rights:fetch:done'] = @onFetchAccessRightsDone
     
     actions[Constants.Role.DELETE]      = @onDelete
     actions[Constants.Role.DELETE_DONE] = @onDeleteDone

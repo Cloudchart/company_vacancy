@@ -13,12 +13,8 @@ RoleMap                   = require('utils/role_map')
 #
 Component = React.createClass
 
-  refreshStateFromStores: ->
-    @setState @getStateFromStores(@props)
-
-  getStateFromStores: (props) ->
-    token: TokenStore.get(props.uuid)
-    sync:  TokenStore.getSync(@props.uuid)
+  propTypes:
+    uuid: React.PropTypes.any.isRequired
 
   onCancelButtonClick: ->
     CompanyActions.cancelInvite(@props.uuid, 'delete')
@@ -26,44 +22,41 @@ Component = React.createClass
   onResendButtonClick: ->
     CompanyActions.resendInvite(@props.uuid, 'update')
 
-  componentDidMount: ->
-    TokenStore.on('change', @refreshStateFromStores)
+  componentWillReceiveProps: (nextProps) ->
+    @setState(@getStateFromStores(nextProps))
 
-  componentWillUnmount: ->
-    TokenStore.off('change', @refreshStateFromStores)
-
-  propTypes:
-    uuid: React.PropTypes.any.isRequired
+  getStateFromStores: (props) ->
+    token: TokenStore.get(props.uuid)
+    sync:  TokenStore.getSync(props.uuid)
   
   getInitialState: ->
     @getStateFromStores(@props)
 
   render: ->
+    return null unless @state.token
     
-    if @state.token
-      <tr className="token">
-        <td className="actions">
-          <CancelButton
-            sync      = {@state.sync == "delete"}
-            onClick   = @onCancelButtonClick />
-        </td>
+    <tr className="token">
+      <td className="actions">
+        <CancelButton
+          sync      = {@state.sync == "delete"}
+          onClick   = {@onCancelButtonClick}
+        />
+      </td>
 
-        <td className="name">
-          { @state.token.data.get('email') }
-        </td>
-        
-        <td className='user-role'>
-          Invited as {RoleMap[@state.token.data.get('role')].name}
-          <SyncButton
-            className    = "transparent"
-            sync         = {@state.sync == "update"}
-            iconClass    = "fa-send-o"
-            onClick      = @onResendButtonClick />
-        </td>
-      </tr>
-
-    else
-      null
+      <td className="name">
+        { @state.token.data.get('email') }
+      </td>
+      
+      <td className='user-role'>
+        Invited as {RoleMap[@state.token.data.get('role')].name}
+        <SyncButton
+          className    = "transparent"
+          sync         = {@state.sync == "update"}
+          iconClass    = "fa-send-o"
+          onClick      = {@onResendButtonClick}
+        />
+      </td>
+    </tr>
 
 
 # Exports

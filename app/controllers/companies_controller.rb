@@ -103,15 +103,15 @@ class CompaniesController < ApplicationController
           .includes(:people, users: :emails)
           .where(roles: { value: ['owner', 'editor', 'trusted_reader'] })
 
-        @invitable_contacts = companies.inject({}) do |memo, company|
-          %w[users people].each do |association|
+        @invitable_contacts = %w[users people].inject({}) do |memo, association|
+          companies.each do |company|
             company.send(association).each do |object|
               unless object.email.blank?
                 memo[object.email] ||= []
                 unless memo[object.email].include?(object.full_name)
-                  memo[object.email] = memo[object.email].push(object.full_name)
+                  memo[object.email].push(object.full_name)
                 end
-              end
+              end              
             end
           end
 

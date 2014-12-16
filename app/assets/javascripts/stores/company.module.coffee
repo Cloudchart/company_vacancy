@@ -5,15 +5,13 @@ Constants         = require('constants')
 Dispatcher        = require('dispatcher/dispatcher')
 GlobalState       = require('global_state/state')
 
-
 # Cursor Meta Store
 #
+EmptyData                 = Immutable.Map()
 
-EmptyData           = Immutable.Map()
-
-CompanyCursor       = GlobalState.cursor(['stores', 'companies'])
-CompanyMetaCursor   = GlobalState.cursor(['stores', 'companies', 'meta'])
-CompanyFlagsCursor  = GlobalState.cursor(['stores', 'companies', 'flags'])
+CompanyCursor             = GlobalState.cursor(['stores', 'companies'])
+CompanyMetaCursor         = GlobalState.cursor(['stores', 'companies', 'meta'])
+CompanyFlagsCursor        = GlobalState.cursor(['stores', 'companies', 'flags'])
 
 Dispatcher.register (payload) ->
 
@@ -21,12 +19,12 @@ Dispatcher.register (payload) ->
 
 
     when 'company:fetch:done'
-      [companyId, json] = payload.action.data
+      [company_id, json] = payload.action.data
       
       GlobalState.cursor().transaction()
       
-      CompanyMetaCursor.set(companyId, json.company.meta)
-      CompanyFlagsCursor.set(companyId, json.company.flags)
+      CompanyMetaCursor.set(company_id, json.company.meta)
+      CompanyFlagsCursor.set(company_id, json.company.flags)
 
       GlobalState.cursor().commit()
     
@@ -44,12 +42,24 @@ Dispatcher.register (payload) ->
       
 
     when Constants.Company.VERIFY_SITE_URL_DONE, Constants.Company.UPDATE_DONE, Constants.Company.FOLLOW_DONE, Constants.Company.UNFOLLOW_DONE
-      [companyId, json] = payload.action.data
+      [company_id, json] = payload.action.data
 
       GlobalState.cursor().transaction()
 
-      CompanyMetaCursor.set(companyId, Immutable.fromJS(json.meta))
-      CompanyFlagsCursor.set(companyId, Immutable.fromJS(json.flags))
+      CompanyMetaCursor.set(company_id, Immutable.fromJS(json.meta))
+      CompanyFlagsCursor.set(company_id, Immutable.fromJS(json.flags))
+
+      GlobalState.cursor().commit()
+
+
+    when 'company:access_rights:fetch:done'
+      [company_id, json] = payload.action.data
+
+      GlobalState.cursor().transaction()
+
+      GlobalState.cursor().setIn(['constants', 'companies', 'invitable_roles'], json.invitable_roles)
+      GlobalState.cursor().setIn(['constants', 'companies', 'invitable_contacts'], json.invitable_contacts)
+      GlobalState.cursor().setIn(['flags', 'companies', 'isAccessRightsLoaded'], true)
 
       GlobalState.cursor().commit()
 
