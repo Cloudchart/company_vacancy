@@ -210,8 +210,9 @@ Component = React.createClass
   
   getStateFromStores: ->
     setTimeout =>
-      @setState
-        animated: true
+      if @isMounted()
+        @setState
+          animated: true
     , 400
 
     identityIdsSeq  = Immutable.Seq(BlockStore.get(@props.key).identity_ids)
