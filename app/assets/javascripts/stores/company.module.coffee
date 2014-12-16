@@ -12,8 +12,6 @@ EmptyData                 = Immutable.Map()
 CompanyCursor             = GlobalState.cursor(['stores', 'companies'])
 CompanyMetaCursor         = GlobalState.cursor(['stores', 'companies', 'meta'])
 CompanyFlagsCursor        = GlobalState.cursor(['stores', 'companies', 'flags'])
-# InvitableRolesCursor      = GlobalState.cursor(['constants', 'companies', 'invitable_roles'])
-# InvitableContactsCursor   = GlobalState.cursor(['constants', 'companies', 'invitable_contacts'])
 
 Dispatcher.register (payload) ->
 
@@ -59,14 +57,8 @@ Dispatcher.register (payload) ->
 
       GlobalState.cursor().transaction()
 
-      # InvitableRolesCursor.set(company_id, Immutable.fromJS(json.invitable_roles))
-      # InvitableContactsCursor.set(company_id, Immutable.fromJS(json.invitable_contacts))
-
-      # InvitableRolesCursor.setIn(Immutable.fromJS(json.invitable_roles))
       GlobalState.cursor().setIn(['constants', 'companies', 'invitable_roles'], json.invitable_roles)
       GlobalState.cursor().setIn(['constants', 'companies', 'invitable_contacts'], json.invitable_contacts)
-
-      # console.log GlobalState.cursor(['constants', 'companies', 'invitable_roles'])
 
       GlobalState.cursor().commit()
 

@@ -3,6 +3,10 @@
 # Imports
 #
 GlobalState = require('global_state/state')
+
+CompanyStore = require("stores/company")
+RoleStore  = require("stores/role_store")
+UserStore = require("stores/user_store")
 TokenStore = require("stores/token_store")
 
 CompanyInviteUserForm = require("components/company/access_rights/invite_user_form")
@@ -44,9 +48,15 @@ Component = React.createClass
   # Lifecylce Methods
   # 
   componentDidMount: ->
+    CompanyStore.on('change', @refreshStateFromStores)
+    RoleStore.on('change', @refreshStateFromStores)
+    UserStore.on('change', @refreshStateFromStores)
     TokenStore.on("change", @refreshStateFromStores)
   
   componentWillUnmount: ->
+    CompanyStore.off('change', @refreshStateFromStores)
+    RoleStore.off('change', @refreshStateFromStores)
+    UserStore.off('change', @refreshStateFromStores)
     TokenStore.off("change", @refreshStateFromStores)
 
   onGlobalStateChange: ->
@@ -85,6 +95,7 @@ Component = React.createClass
           when Modes.INVITE
             <CompanyInviteUserForm
               uuid                      = {@props.uuid}
+              cursor                    = {@props.cursor}
               tokenKey                  = {@state.newTokenKey}
               onCurrentUsersButtonClick = {@onCurrentUsersButtonClick}
             />

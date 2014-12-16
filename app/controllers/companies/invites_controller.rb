@@ -67,7 +67,7 @@ module Companies
       @token.destroy
 
       respond_to do |format|
-        format.html { redirect_to cloud_profile.root_path }
+        format.html { redirect_to cloud_profile.companies_path }
         format.json { 
           render json: { 
             role: role,

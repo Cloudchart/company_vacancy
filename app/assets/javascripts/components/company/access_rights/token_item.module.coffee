@@ -22,14 +22,8 @@ Component = React.createClass
   onResendButtonClick: ->
     CompanyActions.resendInvite(@props.uuid, 'update')
 
-  componentDidMount: ->
-    TokenStore.on('change', @refreshStateFromStores)
-
-  componentWillUnmount: ->
-    TokenStore.off('change', @refreshStateFromStores)
-
-  refreshStateFromStores: ->
-    @setState @getStateFromStores(@props)
+  componentWillReceiveProps: (nextProps) ->
+    @setState(@getStateFromStores(nextProps))
 
   getStateFromStores: (props) ->
     token: TokenStore.get(props.uuid)

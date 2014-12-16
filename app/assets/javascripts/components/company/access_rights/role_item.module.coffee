@@ -11,7 +11,6 @@ RoleStore       = require('stores/role_store')
 UserStore       = require('stores/user_store')
 
 CancelButton    = require('components/form/buttons').CancelButton
-# TempKVStore     = require('utils/temp_kv_store')
 
 # Main
 #
@@ -21,9 +20,7 @@ Component = React.createClass
     uuid: React.PropTypes.any.isRequired
 
   getRoleInput: ->
-    # _.map(@state.invitableRoles, (role) =>
-    # TODO: use immutable list here
-    @props.cursor.constants.get(['invitable_roles']).map (role) =>
+    @props.cursor.constants.get('invitable_roles').map (role) =>
       <label key="option-#{role}">
         <input 
           checked = {role is @state.role.value}
@@ -34,7 +31,6 @@ Component = React.createClass
         />
         <span>{RoleMap[role].name}</span>
       </label>
-    # )
 
   onRevokeButtonClick: ->
     RoleActions.delete(@props.uuid)
@@ -42,20 +38,8 @@ Component = React.createClass
   onRoleChange: (event) ->
     RoleActions.update(@props.uuid, { value: event.target.value })
 
-  # TODO: remove unnecessary stores
-  componentDidMount: ->
-    RoleStore.on("change", @refreshStateFromStores)
-    UserStore.on("change", @refreshStateFromStores)
-    # TempKVStore.on("invitable_roles_changed", @refreshStateFromStores)
-
-  # TODO: remove unnecessary stores
-  componentWillUnmount: ->
-    RoleStore.off("change", @refreshStateFromStores)
-    UserStore.off("change", @refreshStateFromStores)
-    # TempKVStore.off("invitable_roles_changed", @refreshStateFromStores)
-
-  refreshStateFromStores: ->
-    @setState @getStateFromStores(@props)
+  componentWillReceiveProps: (nextProps) ->
+    @setState(@getStateFromStores(nextProps))
 
   getStateFromStores: (props) ->
     role = RoleStore.get(props.uuid)
@@ -63,7 +47,6 @@ Component = React.createClass
     role: role
     user: if role then UserStore.get(role.user_id) else null
     sync: RoleStore.getSync(props.uuid)
-    # invitableRoles: TempKVStore.get("invitable_roles") || []
   
   getInitialState: ->
     @getStateFromStores(@props)
@@ -71,14 +54,12 @@ Component = React.createClass
   render: ->
     return null unless @state.role or @state.user
 
-    # console.log @props.cursor.constants.get(['invitable_roles'])
-
     <tr className="role">
       <td className='actions'>
         {
           if @state.role.value isnt 'owner'
             <CancelButton
-              sync      = {@state.sync == "delete"}
+              sync      = {@state.sync is "delete"}
               onClick   = {@onRevokeButtonClick} 
             />
         }
@@ -96,7 +77,7 @@ Component = React.createClass
           if @state.role.value is "owner"
             RoleMap[@state.role.value].name
           else
-            @getRoleInput()
+            @getRoleInput().toArray()
         }
       </td>
     </tr>

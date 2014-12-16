@@ -15,7 +15,7 @@ FollowComponent = require('components/company/follow')
 AccessRights    = require('components/company/access_rights')
 TagsComponent   = require('components/company/tags')
 
-TempKVStore     = require('utils/temp_kv_store')
+# TempKVStore     = require('utils/temp_kv_store')
 
 # Main
 #
@@ -87,7 +87,7 @@ Component = React.createClass
 
   getFollowButoon: ->
     return null unless @state.cursor.flags.get('can_follow')
-    <FollowComponent key={@props.id}, is_followed={@state.cursor.flags.get('is_followed')} />
+    <FollowComponent key={@props.uuid}, is_followed={@state.cursor.flags.get('is_followed')} />
 
   update: (attr_name) ->
     return if @props.readOnly
@@ -95,13 +95,13 @@ Component = React.createClass
     attributes = {}
     attributes[attr_name] = @state[attr_name]
 
-    CompanyActions.update(@props.id, attributes)
+    CompanyActions.update(@props.uuid, attributes)
 
   
   updateLogotype: (file) ->
     return if @props.readOnly
 
-    CompanyActions.update(@props.id, { logotype: file })
+    CompanyActions.update(@props.uuid, { logotype: file })
 
 
   # Handlers
@@ -109,21 +109,21 @@ Component = React.createClass
   handleRemoveLogotype: ->
     return if @props.readOnly
 
-    CompanyActions.update(@props.id, { logotype_url: null, remove_logotype: true })
+    CompanyActions.update(@props.uuid, { logotype_url: null, remove_logotype: true })
 
   handleShareClick: (event) ->
     event.preventDefault()
 
     if TempKVStore.get("invitable_contacts")
-      ModalActions.show(<AccessRights uuid={@props.id} />)
+      ModalActions.show(<AccessRights uuid={@props.uuid} />)
     else
       @setState(shareLoading: true)
-      CompanyActions.fetchAccessRights(@props.id)
+      CompanyActions.fetchAccessRights(@props.uuid)
 
       TempKVStore.on "invitable_contacts_changed", =>
         setTimeout =>
           @setState(shareLoading: false)
-          ModalActions.show(<AccessRights uuid={@props.id} />)
+          ModalActions.show(<AccessRights uuid={@props.uuid} />)
           TempKVStore.off "invitable_contacts_changed"
 
   handleFieldBlur: (attr_name, event) ->
@@ -166,7 +166,7 @@ Component = React.createClass
     _.extend @getStateFromStores(@props),
       shareLoading: false
       cursor:
-        flags: GlobalState.cursor(['stores', 'companies', 'flags', @props.id])
+        flags: GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
 
   render: ->
     <header>
@@ -197,7 +197,7 @@ Component = React.createClass
         />
       </label>
 
-      <TagsComponent taggable_id={@props.id} taggable_type="Company" readOnly={@props.readOnly} />
+      <TagsComponent taggable_id={@props.uuid} taggable_type="Company" readOnly={@props.readOnly} />
       {@getFollowButoon()}
     </header>
 

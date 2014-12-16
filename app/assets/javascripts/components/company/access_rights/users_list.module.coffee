@@ -19,13 +19,15 @@ Component = React.createClass
     onInviteUserButtonClick: React.PropTypes.func
 
   currentUsers: ->
-    _.map @state.roles, (role, index) =>
-      <RoleItem
-        key = {index}
-        uuid = {role.uuid}
-        cursor = {@props.cursor}
-      />
-  
+    _.chain @state.roles
+      .sortBy ('created_at')
+      .map (role, index) =>
+        <RoleItem
+          key = {index}
+          uuid = {role.uuid}
+          cursor = {@props.cursor}
+        />
+
   currentTokens: ->
     _.map @state.tokens, (token, index) ->
       <TokenItem 
@@ -33,31 +35,19 @@ Component = React.createClass
         uuid = {token.uuid}
       />
 
-  componentDidMount: ->
-    CompanyStore.on('change', @refreshStateFromStores)
+  componentWillReceiveProps: (nextProps) ->
+    @setState(@getStateFromStores(nextProps))
 
-    RoleStore.on('change', @refreshStateFromStores)
-    TokenStore.on('change', @refreshStateFromStores)
-  
-  componentWillUnmount: ->
-    CompanyStore.off('change', @refreshStateFromStores)
-
-    RoleStore.off('change', @refreshStateFromStores)
-    TokenStore.off('change', @refreshStateFromStores)
-
-  refreshStateFromStores: ->
-    @setState @getStateFromStores()
-
-  getStateFromStores: ->
-    company: CompanyStore.get(@props.uuid)
-    roles:   RoleStore.filter (role) => role.owner_id is @props.uuid and role.owner_type is "Company"
-    tokens:  TokenStore.filter (token) => token.owner_id is @props.uuid and token.owner_type is "Company"
+  getStateFromStores: (props) ->
+    company: CompanyStore.get(props.uuid)
+    roles:   RoleStore.filter (role) -> role.owner_id is props.uuid and role.owner_type is 'Company'
+    tokens:  TokenStore.filter (token) -> token.owner_id is props.uuid and token.owner_type is 'Company'
 
   getDefaultProps: ->
     onInviteUserButtonClick: -> 
 
   getInitialState: ->
-    @getStateFromStores()
+    @getStateFromStores(@props)
   
   render: ->
     return null unless @state.company

@@ -73,7 +73,7 @@ Component = React.createClass
 
     <div className="wrapper">
       <CompanyHeader
-        id = {@props.uuid}
+        uuid = {@props.uuid}
         readOnly = {isInViewMode}
         shouldDisplayViewMode = {!@state.cursor.flags.get('is_read_only')}
         onChange = {@handleViewModeChange}
