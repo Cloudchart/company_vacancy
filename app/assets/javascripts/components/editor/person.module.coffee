@@ -75,12 +75,12 @@ Component = React.createClass
       BlockStore.get(block_id).identity_ids.size == 0
       
   modalBeforeOpen: ->
-    if @isMounted()
+    if @isMounted() && !@props.readOnly
       @setState
         hovered: true
 
   modalBeforeHide: (event) ->
-    if @isMounted()
+    if @isMounted() && !@props.readOnly
       @setState
         hovered: false
 
@@ -242,8 +242,9 @@ Component = React.createClass
   render: ->
     classes = cx(
       list: true
-      hovered: @state.hovered
-      animated: @state.animated
+      hovered:   @state.hovered
+      frozen:    @props.readOnly
+      animated:  @state.animated
     )
 
     <div className = {classes}>

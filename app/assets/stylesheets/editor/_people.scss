@@ -74,7 +74,7 @@ article.editor > section.people {
     }
   } 
 
-  &:hover > .list,
+  &:hover > .list:not(.frozen),
   > .list.hovered {
     > .row:last-child {
       > .item:not(.placeholder) {
