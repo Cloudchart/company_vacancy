@@ -54,6 +54,7 @@ Cloudchart::Application.routes.draw do
 
     resources :posts, except: [:new, :edit], shallow: true
     resources :blocks, only: :create, type: :company
+    resources :stories, only: [:index, :show, :create]
   end
 
   resources :blocks, only: [:update, :destroy] do
