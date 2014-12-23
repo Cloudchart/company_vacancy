@@ -363,6 +363,22 @@ ActiveRecord::Schema.define(version: 20141223111238) do
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
+  create_table "timeline_entities", primary_key: "uuid", force: true do |t|
+    t.string   "owner_id",       limit: 36,             null: false
+    t.string   "owner_type",                            null: false
+    t.string   "identity_id",    limit: 36,             null: false
+    t.string   "identity_type",                         null: false
+    t.date     "effective_from"
+    t.date     "effective_till"
+    t.integer  "position",                  default: 0
+    t.text     "descriptor"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "timeline_entities", ["identity_id", "identity_type"], name: "index_timeline_entities_on_identity_id_and_identity_type", using: :btree
+  add_index "timeline_entities", ["owner_id", "owner_type"], name: "index_timeline_entities_on_owner_id_and_owner_type", using: :btree
+
   create_table "tokens", primary_key: "uuid", force: true do |t|
     t.string   "name",                  null: false
     t.text     "data"

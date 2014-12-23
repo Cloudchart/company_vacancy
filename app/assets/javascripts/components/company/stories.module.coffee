@@ -3,16 +3,48 @@
 # Imports
 # 
 tag = React.DOM
-cx = React.addons.classSet
+cx  = React.addons.classSet
 
-GlobalState = require('global_state/state')
+GlobalState   = require('global_state/state')
 
-EmptyStories = Immutable.Seq()
+EmptyStories  = Immutable.Seq()
 
-PostStore = require('stores/post_store')
+PostStore       = require('stores/post_store')
 
-TokenInput = cc.require('plugins/react_tokeninput/main')
-ComboboxOption = cc.require('plugins/react_tokeninput/option')
+TokenInput      = cc.require('plugins/react_tokeninput/main')
+ComboboxOption  = cc.require('plugins/react_tokeninput/option')
+
+
+# Create/Update/Delete
+#
+createStory = (company_id, post_id, name) ->
+  GlobalState
+    .cursor(['stores', 'stories', 'create'])
+    .update ->
+      name:       name
+      post_id:    post_id
+      company_id: company_id
+
+
+updateStory = ->
+  console.log 'Not implemented'
+
+
+deleteStory = (uuid) ->
+  GlobalState
+    .cursor(['stores', 'stories', 'delete'])
+    .update ->
+      uuid: uuid
+
+
+filterCreatedStories = (cursor, post_id) ->
+  cursor.deref(EmptyStories)
+    .filter (story) -> story.has('post_id') and story.get('post_id') == post_id
+    .map    (story, key) ->
+      id:   key
+      name: '#' + story.get('name')
+      
+
 
 # Main
 # 
@@ -46,29 +78,42 @@ MainComponent = React.createClass
       </li>
 
   gatherStories: ->
-    @state.selectedStoriesSeq.map (story, key) ->
-      id: key
-      name: '#' + story.get('name')
+    @state.selectedStoriesSeq.valueSeq()
+      .map (story) ->
+        id:   story.get('uuid')
+        name: '#' + story.get('name')
+      .concat @state.createdStories
+      
+
 
   gatherStoriesForSelect: ->
     # TODO: format story name and query for search
 
     @state.storiesSeq
-      .filter (story, key) => story.get('company_id') is @props.company_id or story.get('company_id') is null
-      .filter (story, key) => not @state.selectedStoriesSeq.has(key)
-      .filter (story, key) => story.get('name').toLowerCase().indexOf(@state.query.toLowerCase()) >= 0
-      .map (story, key) -> <ComboboxOption key={key} value={key}>{'#' + story.get('name')}</ComboboxOption>
+      .filter     (story, key) => story.get('company_id') is @props.company_id or story.get('company_id') is null
+      .filterNot  (story, key) => @state.selectedStoriesSeq.has(key)
+      .filter     (story, key) => story.get('name').toLowerCase().indexOf(@state.query.toLowerCase()) >= 0
+      .map        (story, key) => <ComboboxOption key={key} value={key}>{'#' + story.get('name')}</ComboboxOption>
+  
+  
+
 
   # Handlers
   # 
   handleInput: (query) ->
     @setState(query: query)
 
+
   handleSelect: (name) ->
-    console.log name
+    if arguments.length == 1
+      createStory(@props.company_id, @props.post_id, name)
+    else
+      updateStory()
+
 
   handleRemove: (object) ->
-    console.log object
+    deleteStory(object.id)
+
 
   # Lifecycle Methods
   # 
@@ -80,29 +125,40 @@ MainComponent = React.createClass
   # componentDidUpdate: (prevProps, prevState) ->
   # componentWillUnmount: ->
 
+
   # Component Specifications
   # 
   onGlobalStateChange: ->
-    console.log 'onGlobalStateChange'
+    @setState
+      createdStories: filterCreatedStories(@props.cursor, @props.post_id)
+
+    
+    
+
 
   getDefaultProps: ->
     cursor: GlobalState.cursor(['stores', 'stories', 'items'])
+
 
   # refreshStateFromStores: ->
   # getStateFromStores: ->
 
   getInitialState: ->
-    storiesSeq = Immutable.Seq(@props.cursor.deref({}))
-    storyIdsSeq = Immutable.Seq(PostStore.get(@props.post_id).story_ids)
-    selectedStoriesSeq = storiesSeq.filter (story, key) -> storyIdsSeq.contains(key)
-
-    query: ''
-    storiesSeq: storiesSeq
+    storiesSeq            = Immutable.Seq(@props.cursor.deref({}))
+    storyIdsSeq           = Immutable.Seq(PostStore.get(@props.post_id).story_ids)
+    selectedStoriesSeq    = storiesSeq.filter (story, key) -> storyIdsSeq.contains(key)
+    
+    query:              ''
+    storiesSeq:         storiesSeq
     selectedStoriesSeq: selectedStoriesSeq
+    createdStories:     Immutable.Seq()
+
 
   render: ->
-    # return null if
-    <div className="cc-hashtag-list">{@getComponentChild()}</div>
+    <div className="cc-hashtag-list">
+      { @getComponentChild() }
+    </div>
+
 
 # Exports
 # 
