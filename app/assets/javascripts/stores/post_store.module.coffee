@@ -17,7 +17,7 @@ DefaultMethods =
     is_published: false
     owner_type: ''
     owner_id: ''
-    tag_names: []
+    story_ids: []
     created_at: ''
     updated_at: ''
 

@@ -10,8 +10,8 @@ PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
 AutoSizingInput = require('components/form/autosizing_input')
-TagsComponent = require('components/company/tags')
 BlockEditor = require('components/editor/block_editor')
+StoriesComponent = require('components/company/stories')
 
 # Main
 # 
@@ -136,7 +136,11 @@ Component = React.createClass
           />
         </label>
 
-        <TagsComponent taggable_id={@state.post.uuid} taggable_type="Post" readOnly={@props.readOnly} />
+        <StoriesComponent
+          post_id = {@state.post.uuid}
+          company_id = {@props.company_id}
+          readOnly = {@props.readOnly}
+        />
       </header>
 
       <BlockEditor

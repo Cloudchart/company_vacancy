@@ -1,6 +1,6 @@
 class PostSerializer < ActiveModel::Serializer
 
-  attributes :uuid, :title, :published_at, :is_published, :owner_id, :owner_type, :tag_names
+  attributes :uuid, :title, :published_at, :is_published, :owner_id, :owner_type, :story_ids
   attributes :created_at, :updated_at
 
   def published_at

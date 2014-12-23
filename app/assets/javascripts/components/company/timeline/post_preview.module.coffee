@@ -16,7 +16,6 @@ VisibilityActions = require('actions/visibility_actions')
 
 Post = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
-TagsComponent = require('components/company/tags')
 
 # Main
 # 
@@ -98,7 +97,6 @@ Component = React.createClass
     <header>
       {title}
       {date}
-      <TagsComponent taggable_id={@props.id} taggable_type='Post' readOnly={true} />
     </header>
 
   # Handlers
@@ -112,7 +110,7 @@ Component = React.createClass
     ModalActions.show(Post({ 
       id: @props.id
       company_id: @props.company_id
-      readOnly: @props.readOnly 
+      readOnly: @props.readOnly
     }), class_for_container: 'post')
 
   handleVisibilityChange: (event) ->

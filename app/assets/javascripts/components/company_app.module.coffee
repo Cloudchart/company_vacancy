@@ -68,8 +68,7 @@ Component = React.createClass
 
   render: ->
     return null unless @state.company
-
-    isInViewMode = @state.cursor.flags.get('is_read_only') or @state.readOnly
+    isInViewMode = @state.readOnly or @state.cursor.flags.get('is_read_only')
 
     <div className="wrapper">
       <CompanyHeader
