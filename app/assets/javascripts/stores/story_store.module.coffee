@@ -37,19 +37,59 @@ handleCreate = ->
   # Cursor transaction
   # 
   GlobalState.cursor().transaction()
-
-  itemUUID = UUID()
-  data = CreateCursor.deref()
   
-  ItemsCursor.set(itemUUID, data)
+  
+  CreateCursor.deref().forEach (item) ->
+    beforeCreate  = item.getIn(['callbacks', 'beforeCreate'], ->)
+    item          = item.remove('callbacks')
+    itemUUID      = UUID()
+    
+    ItemsCursor.set(itemUUID, item)
+    
+    beforeCreate(itemUUID)
+    
+    # SyncAPI.create(item.get('company_id'), item.toJSON())
+    #
+    #   .done (newItemId) ->
+    #
+    #     SyncAPI.fetch(newItemId)
+    #
+    #       .done (json) ->
+    #         ItemCursor.transaction()
+    #         ItemCursor.remove(itemUUID)
+    #         ItemCursor.set(json.story.uuid, json.story)
+    #         ItemCursor.commit()
+    #         callback(json.story.uuid) if typeof callback == 'function'
+    #
+    #       .fail (xhr) ->
+    #         ItemCursor.remove(itemUUID)
+    #
+    #   .fail (xhr) ->
+    #     ItemCursor.remove(itemUUID)
+  
 
+  # Clear cursor
+  #
   CreateCursor.clear()
+  
 
+  # Cursor commit
+  #
   GlobalState.cursor().commit()
 
-  # Server action
-  # 
-  SyncAPI.create(data.get('company_id'), data.toJSON())
+  # itemUUID = UUID()
+  #
+  # data = CreateCursor.deref()
+  #
+  # ItemsCursor.set(itemUUID, data)
+  #
+  # CreateCursor.clear()
+  #
+  # GlobalState.cursor().commit()
+  #
+  # # Server action
+  # #
+  # SyncAPI.create(data.get('company_id'), data.toJSON())
   
 
 GlobalState.addListener CreateCursor.path, handleCreate
@@ -78,3 +118,20 @@ Dispatcher.register (payload) ->
   
   if payload.action.type == 'company:fetch:done'
     fetchMany.apply(null, payload.action.data)
+
+
+# Exports
+#
+module.exports =
+
+  create: (attributes, callback = ->) ->
+    SyncAPI.create(attributes.company_id, attributes)
+      .done (json) ->
+        SyncAPI.fetch(json.uuid)
+          .done (json) ->
+            ItemsCursor.set(json.story.uuid, json.story)
+            setTimeout -> callback(json.story.uuid)
+          .fail (xhr) ->
+            callback()
+      .fail (xhr) ->
+        callback()

@@ -7,9 +7,10 @@ cx  = React.addons.classSet
 
 GlobalState   = require('global_state/state')
 
-EmptyStories  = Immutable.Seq()
+EmptyStories  = Immutable.List()
 
 PostStore       = require('stores/post_store')
+StoryStore      = require('stores/story_store')
 
 TokenInput      = cc.require('plugins/react_tokeninput/main')
 ComboboxOption  = cc.require('plugins/react_tokeninput/option')
@@ -17,12 +18,14 @@ ComboboxOption  = cc.require('plugins/react_tokeninput/option')
 
 # Create/Update/Delete
 #
-createStory = (company_id, name) ->
+createStory = (company_id, name, callbacks = {}) ->
   GlobalState
     .cursor(['stores', 'stories', 'create'])
-    .update ->
-      company_id: company_id
-      name:       name
+    .update (stories = EmptyStories) ->
+      stories.push Immutable.fromJS
+        name:         name
+        company_id:   company_id
+        callbacks:    callbacks
 
 
 updateSelectedStories = (story) ->
@@ -83,17 +86,21 @@ MainComponent = React.createClass
         <span key={key}>{'#' + story.get('name')}</span>
       </li>
 
+
+  filterSelectedStories: ->
+    @state.stories().filter((story, key) => @state.storyIdSeq.contains(key))
+
   
   gatherStories: ->
-    @state.selectedStoriesSeq.valueSeq()
+    @filterSelectedStories()
       .map (story) ->
         id:   story.get('uuid')
         name: '#' + story.get('name')
-      .concat @state.createdStories
+      .concat @state.createdStories.map((name) -> { id: name, name: '#' + name })
       
 
   gatherStoriesForSelect: ->
-    @state.storiesSeq
+    @state.stories()
       .filter     (story, key) => story.get('company_id') is @props.company_id or story.get('company_id') is null
       .filterNot  (story, key) => @state.selectedStoriesSeq.has(key)
       .filter     (story, key) => story.get('name').toLowerCase().indexOf(@state.query.toLowerCase()) >= 0
@@ -104,14 +111,46 @@ MainComponent = React.createClass
   # 
   handleInput: (query) ->
     @setState(query: query)
+  
+  
+  handleBeforeCreate: (storyId) ->
+    console.log 'Before create', storyId
 
 
   handleSelect: (name_or_uuid) ->
-    if story = @state.storiesSeq.valueSeq().find((story) -> story.get('uuid') is name_or_uuid or story.get('name') is name_or_uuid)
-      updateSelectedStories(story)
+    formattedName = formatName(name_or_uuid) ; return unless formattedName
+    existingStory = @state.stories().get(name_or_uuid, @state.stories().find((story) -> story.get('name') is formattedName))
+    createdStory  = @state.createdStories.find((story) -> story.name == formattedName)
+    
+    return if createdStory
+    
+    
+    if existingStory
+
+      #updateSelectedStories(existingStory)
+      @setState
+        storyIdSeq: @state.storyIdSeq.concat(existingStory.get('uuid'))
+
     else
-      name = formatName(name_or_uuid) ; return unless name
-      createStory(@props.company_id, name)
+      @setState
+        createdStories: @state.createdStories.concat(formattedName).toSet()
+      
+      StoryStore.create
+        company_id: @props.company_id
+        name:       formattedName
+      , (id) =>
+        return unless id
+        
+        storyIdSeq = @state.storyIdSeq.concat(id)
+        
+        @setState
+          createdStories:     @state.createdStories.remove(@state.createdStories.indexOf(formattedName))
+          storyIdSeq:         storyIdSeq
+          selectedStoriesSeq: @state.stories().filter((story, key) -> storyIdSeq.contains(key))
+        
+
+      # createStory @props.company_id, formattedName,
+      #   beforeCreate: @handleBeforeCreate
 
 
   handleRemove: (object) ->
@@ -136,6 +175,12 @@ MainComponent = React.createClass
     # TODO: add new story
     # @setState
     #   createdStories: filterCreatedStories(@props.cursor, @props.post_id)
+  
+  
+  componentDidUpdate: (prevProps, prevState) ->
+    unless Immutable.is(prevState.storyIdSeq, @state.storyIdSeq)
+      console.log 'Should update Post with ids: ', @state.storyIdSeq.toArray()
+
 
   getDefaultProps: ->
     cursor: GlobalState.cursor(['stores', 'stories', 'items'])
@@ -149,9 +194,11 @@ MainComponent = React.createClass
     selectedStoriesSeq  = storiesSeq.filter (story, key) -> storyIdsSeq.contains(key)
     
     query:              ''
+    stories:            => @props.cursor.deref(EmptyStories)
     storiesSeq:         storiesSeq
+    storyIdSeq:         storyIdsSeq.toSet()
     selectedStoriesSeq: selectedStoriesSeq
-    createdStories:     Immutable.Seq()
+    createdStories:     Immutable.List()
 
   render: ->
     <div className="cc-hashtag-list">
