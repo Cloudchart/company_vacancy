@@ -1,6 +1,6 @@
 class StoriesController < ApplicationController
 
-  before_action :set_company
+  before_action :set_company, only: [:index, :create]
 
   authorize_resource
 
@@ -9,7 +9,7 @@ class StoriesController < ApplicationController
   end
 
   def show
-    @story = @company.stories.find(params[:name])
+    @story = Story.find(params[:id])
   end
 
   def create
