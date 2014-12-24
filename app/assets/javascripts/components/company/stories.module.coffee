@@ -17,33 +17,38 @@ ComboboxOption  = cc.require('plugins/react_tokeninput/option')
 
 # Create/Update/Delete
 #
-createStory = (company_id, post_id, name) ->
+createStory = (company_id, name) ->
   GlobalState
     .cursor(['stores', 'stories', 'create'])
     .update ->
-      name:       name
-      post_id:    post_id
       company_id: company_id
+      name:       name
 
 
-updateStory = ->
-  console.log 'Not implemented'
+updateSelectedStories = (story) ->
+  console.log 'Not implemented', story
 
 
-deleteStory = (uuid) ->
-  GlobalState
-    .cursor(['stores', 'stories', 'delete'])
-    .update ->
-      uuid: uuid
+# deleteStory = (uuid) ->
+#   GlobalState
+#     .cursor(['stores', 'stories', 'delete'])
+#     .update ->
+#       uuid: uuid
 
 
-filterCreatedStories = (cursor, post_id) ->
-  cursor.deref(EmptyStories)
-    .filter (story) -> story.has('post_id') and story.get('post_id') == post_id
-    .map    (story, key) ->
-      id:   key
-      name: '#' + story.get('name')
-      
+# filterCreatedStories = (cursor, post_id) ->
+#   cursor.deref(EmptyStories)
+#     .filter (story) -> story.has('post_id') and story.get('post_id') == post_id
+#     .map    (story, key) ->
+#       id:   key
+#       name: '#' + story.get('name')
+
+
+formatName = (name) ->
+  name = name.trim()
+  name = name.replace(/[^A-Za-z0-9\-_|\s]+/ig, '')
+  name = name.replace(/\s{2,}/g, ' ')
+  name = name.replace(/\s/g, '_')
 
 
 # Main
@@ -71,12 +76,14 @@ MainComponent = React.createClass
         placeholder = "#Story name"
       />
 
+  
   gatherStoriesForList: ->
     @state.selectedStoriesSeq.map (story, key) ->
       <li key={key}>
         <span key={key}>{'#' + story.get('name')}</span>
       </li>
 
+  
   gatherStories: ->
     @state.selectedStoriesSeq.valueSeq()
       .map (story) ->
@@ -85,18 +92,13 @@ MainComponent = React.createClass
       .concat @state.createdStories
       
 
-
   gatherStoriesForSelect: ->
-    # TODO: format story name and query for search
-
     @state.storiesSeq
       .filter     (story, key) => story.get('company_id') is @props.company_id or story.get('company_id') is null
       .filterNot  (story, key) => @state.selectedStoriesSeq.has(key)
       .filter     (story, key) => story.get('name').toLowerCase().indexOf(@state.query.toLowerCase()) >= 0
       .map        (story, key) => <ComboboxOption key={key} value={key}>{'#' + story.get('name')}</ComboboxOption>
   
-  
-
 
   # Handlers
   # 
@@ -104,15 +106,17 @@ MainComponent = React.createClass
     @setState(query: query)
 
 
-  handleSelect: (name) ->
-    if arguments.length == 1
-      createStory(@props.company_id, @props.post_id, name)
+  handleSelect: (name_or_uuid) ->
+    if story = @state.storiesSeq.valueSeq().find((story) -> story.get('uuid') is name_or_uuid or story.get('name') is name_or_uuid)
+      updateSelectedStories(story)
     else
-      updateStory()
+      name = formatName(name_or_uuid) ; return unless name
+      createStory(@props.company_id, name)
 
 
   handleRemove: (object) ->
-    deleteStory(object.id)
+    console.log 'handleRemove'
+    # deleteStory(object.id)
 
 
   # Lifecycle Methods
@@ -129,30 +133,25 @@ MainComponent = React.createClass
   # Component Specifications
   # 
   onGlobalStateChange: ->
-    @setState
-      createdStories: filterCreatedStories(@props.cursor, @props.post_id)
-
-    
-    
-
+    # TODO: add new story
+    # @setState
+    #   createdStories: filterCreatedStories(@props.cursor, @props.post_id)
 
   getDefaultProps: ->
     cursor: GlobalState.cursor(['stores', 'stories', 'items'])
-
 
   # refreshStateFromStores: ->
   # getStateFromStores: ->
 
   getInitialState: ->
-    storiesSeq            = Immutable.Seq(@props.cursor.deref({}))
-    storyIdsSeq           = Immutable.Seq(PostStore.get(@props.post_id).story_ids)
-    selectedStoriesSeq    = storiesSeq.filter (story, key) -> storyIdsSeq.contains(key)
+    storiesSeq          = Immutable.Seq(@props.cursor.deref({}))
+    storyIdsSeq         = Immutable.Seq(PostStore.get(@props.post_id).story_ids)
+    selectedStoriesSeq  = storiesSeq.filter (story, key) -> storyIdsSeq.contains(key)
     
     query:              ''
     storiesSeq:         storiesSeq
     selectedStoriesSeq: selectedStoriesSeq
     createdStories:     Immutable.Seq()
-
 
   render: ->
     <div className="cc-hashtag-list">

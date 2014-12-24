@@ -35,6 +35,9 @@ class Ability
       # can :dashboard
       can :manage, :all
 
+      # TODO: add rules for admin
+      cannot [:create, :update, :destroy], Company
+
     # User
     # 
     else

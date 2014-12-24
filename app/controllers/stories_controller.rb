@@ -29,7 +29,7 @@ class StoriesController < ApplicationController
 private
 
   def set_company
-    @company = Comapny.find(params[:company_id])
+    @company = Company.find(params[:company_id])
   end
 
   def story_params

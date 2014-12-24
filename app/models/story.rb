@@ -3,6 +3,7 @@ class Story < ActiveRecord::Base
 
   before_save do
     self.name = name.gsub(/[^A-Za-z0-9\-_|\s]+/i, '').squish.gsub(/\s/, '_')
+    self.company_id = nil if company_id.blank?
   end
 
   belongs_to :company
@@ -26,7 +27,7 @@ class Story < ActiveRecord::Base
     end
 
     edit do
-      fields :name
+      fields :name, :company
 
       field :name do
         html_attributes do

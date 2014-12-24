@@ -9,6 +9,8 @@ DeleteCursor  = GlobalState.cursor(['stores', 'stories', 'delete'])
 
 EmptyStories  = Immutable.Map()
 
+SyncAPI       = require('sync/story_sync_api')
+
 
 # Utils
 #
@@ -32,15 +34,22 @@ fetchMany = (company_id, json) ->
 handleCreate = ->
   return if CreateCursor.deref(EmptyStories).size == 0
   
+  # Cursor transaction
+  # 
   GlobalState.cursor().transaction()
 
   itemUUID = UUID()
+  data = CreateCursor.deref()
   
-  ItemsCursor.set(itemUUID, CreateCursor.deref())
+  ItemsCursor.set(itemUUID, data)
 
   CreateCursor.clear()
 
   GlobalState.cursor().commit()
+
+  # Server action
+  # 
+  SyncAPI.create(data.get('company_id'), data.toJSON())
   
 
 GlobalState.addListener CreateCursor.path, handleCreate
