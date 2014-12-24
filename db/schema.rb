@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141208125243) do
+ActiveRecord::Schema.define(version: 20141224165638) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -288,12 +288,13 @@ ActiveRecord::Schema.define(version: 20141208125243) do
 
   create_table "posts", primary_key: "uuid", force: true do |t|
     t.string   "title"
-    t.datetime "published_at"
-    t.boolean  "is_published",            default: false
-    t.string   "owner_id",     limit: 36
+    t.string   "owner_id",       limit: 36
     t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "effective_from"
+    t.date     "effective_till"
+    t.integer  "position",                  default: 0
   end
 
   add_index "posts", ["owner_id", "owner_type"], name: "index_posts_on_owner_id_and_owner_type", using: :btree
