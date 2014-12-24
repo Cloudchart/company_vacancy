@@ -36,7 +36,7 @@ class Ability
       can :manage, :all
 
       # TODO: add rules for admin
-      cannot [:create, :update, :destroy], Company
+      # cannot [:create, :update, :destroy], Company
 
     # User
     # 
