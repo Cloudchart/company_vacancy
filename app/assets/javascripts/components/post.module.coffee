@@ -70,6 +70,9 @@ Component = React.createClass
     ModalActions.hide()
     # TODO: show post in timeline
 
+  handleStoriesChange: (story_ids) ->
+    PostActions.update(@state.post.uuid, { story_ids: story_ids })
+
   # Lifecycle Methods
   # 
   componentDidMount: ->
@@ -139,6 +142,7 @@ Component = React.createClass
         <StoriesComponent
           post_id = {@state.post.uuid}
           company_id = {@props.company_id}
+          onChange = {@handleStoriesChange}
           readOnly = {@props.readOnly}
         />
       </header>

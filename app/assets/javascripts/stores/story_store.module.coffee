@@ -5,7 +5,6 @@ GlobalState = require('global_state/state')
 
 ItemsCursor   = GlobalState.cursor(['stores', 'stories', 'items'])
 CreateCursor  = GlobalState.cursor(['stores', 'stories', 'create'])
-DeleteCursor  = GlobalState.cursor(['stores', 'stories', 'delete'])
 
 EmptyStories  = Immutable.Map()
 
@@ -47,25 +46,6 @@ handleCreate = ->
     ItemsCursor.set(itemUUID, item)
     
     beforeCreate(itemUUID)
-    
-    # SyncAPI.create(item.get('company_id'), item.toJSON())
-    #
-    #   .done (newItemId) ->
-    #
-    #     SyncAPI.fetch(newItemId)
-    #
-    #       .done (json) ->
-    #         ItemCursor.transaction()
-    #         ItemCursor.remove(itemUUID)
-    #         ItemCursor.set(json.story.uuid, json.story)
-    #         ItemCursor.commit()
-    #         callback(json.story.uuid) if typeof callback == 'function'
-    #
-    #       .fail (xhr) ->
-    #         ItemCursor.remove(itemUUID)
-    #
-    #   .fail (xhr) ->
-    #     ItemCursor.remove(itemUUID)
   
 
   # Clear cursor
@@ -76,40 +56,9 @@ handleCreate = ->
   # Cursor commit
   #
   GlobalState.cursor().commit()
-
-  # itemUUID = UUID()
-  #
-  # data = CreateCursor.deref()
-  #
-  # ItemsCursor.set(itemUUID, data)
-  #
-  # CreateCursor.clear()
-  #
-  # GlobalState.cursor().commit()
-  #
-  # # Server action
-  # #
-  # SyncAPI.create(data.get('company_id'), data.toJSON())
   
 
 GlobalState.addListener CreateCursor.path, handleCreate
-
-
-# Handle Delete
-#
-handleDelete = ->
-  return if DeleteCursor.deref(EmptyStories).size == 0
-  
-  GlobalState.cursor().transaction()
-
-  ItemsCursor.remove(DeleteCursor.get('uuid'))
-
-  DeleteCursor.clear()
-
-  GlobalState.cursor().commit()
-
-
-GlobalState.addListener DeleteCursor.path, handleDelete
 
 
 # Dispatcher

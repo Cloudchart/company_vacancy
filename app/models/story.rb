@@ -19,7 +19,7 @@ class Story < ActiveRecord::Base
 
     list do
       sort_by :posts_stories_count
-      fields :name, :posts_stories_count, :created_at
+      fields :name, :company, :posts_stories_count, :created_at
 
       field :posts_stories_count do
         sort_reverse true
