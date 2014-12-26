@@ -18,7 +18,7 @@ DefaultMethods =
     owner_type:     ''
     owner_id:       ''
     tag_names:      []
-    position:       ''
+    position:       null
     created_at:     ''
     updated_at:     ''
 

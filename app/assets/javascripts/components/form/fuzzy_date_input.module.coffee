@@ -22,12 +22,12 @@ module.exports = React.createClass
   
   
   handleUpdate: ->
-    return @props.onUpdate('', '') if @state.value is ''
-    
     parts = Immutable.Seq(@state.value.split(/[^0-9a-z]/gi)).filter((v) -> !!v)
     date  = moment(Date.parse(@state.value))
     
     [from, till] = switch parts.count()
+      when 1
+        [date.clone().startOf('year'), date.clone().endOf('year')]
       when 2
         [date.clone().startOf('month'), date.clone().endOf('month')]
       when 3

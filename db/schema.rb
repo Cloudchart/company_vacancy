@@ -294,7 +294,7 @@ ActiveRecord::Schema.define(version: 20141224165638) do
     t.datetime "updated_at"
     t.date     "effective_from"
     t.date     "effective_till"
-    t.integer  "position",                  default: 0
+    t.integer  "position"
   end
 
   add_index "posts", ["owner_id", "owner_type"], name: "index_posts_on_owner_id_and_owner_type", using: :btree

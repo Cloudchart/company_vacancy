@@ -5,9 +5,8 @@ module.exports =
     till = moment(till)
     
     if from.isValid()
-      if from.isSame(till)
-        from.format('MMM DD, YYYY')
-      else
-        from.format('MMM, YYYY')
-    else
-      notSetValue
+      return from.format('MMM DD, YYYY')  if from.isSame(till, 'day')
+      return from.format('MMM, YYYY')     if from.isSame(till, 'month')
+      return from.format('YYYY')          if from.isSame(till, 'year')
+    
+    notSetValue
