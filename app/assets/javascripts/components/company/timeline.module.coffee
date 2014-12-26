@@ -42,7 +42,7 @@ Component = React.createClass
   gatherPosts: ->
     @state.postSeq
       .filter postVisibilityPredicate
-      .sortBy (post) -> post.position
+      .sortBy (post) -> post.effective_from
       .map    postPreviewMapper(@props)
       .reverse()
   

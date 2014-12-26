@@ -59,14 +59,16 @@ Component = React.createClass
     state[name] = event.target.value
     @setState(state)
 
+
   handleTitleBlur: ->
     @update(title: @state.title)
 
-  handlePublishedAtBlur: ->
-    published_at = Date.parse @state.published_at
 
-    if moment(published_at).isValid()
-      @update({ published_at: moment(published_at).format('ll') })
+  # handlePublishedAtBlur: ->
+  #   published_at = Date.parse @state.published_at
+  #
+  #   if moment(published_at).isValid()
+  #     @update({ published_at: moment(published_at).format('ll') })
   
   
   handleEffectiveDateUpdate: (from, till) ->
