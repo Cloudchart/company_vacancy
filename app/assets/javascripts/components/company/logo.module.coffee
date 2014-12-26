@@ -18,9 +18,9 @@ Component = React.createClass
       className:
         cx({ "image-absent": !@props.logoUrl })
       style:
-        backgroundColor: @props.backgroundColor || getColorByLetters(letters) unless @props.logoUrl
+        backgroundColor: if @props.logoUrl then "none" else (@props.backgroundColor || getColorByLetters(letters))
+        backgroundImage: if @props.logoUrl then "url('#{@props.logoUrl}')" else "none"
     },
-      tag.img { src: @props.logoUrl } if @props.logoUrl
       letters unless @props.logoUrl
     )
 

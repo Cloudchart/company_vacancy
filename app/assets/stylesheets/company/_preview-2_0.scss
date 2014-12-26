@@ -73,6 +73,11 @@ $company-preview-height: $company-preview-header-height + $company-preview-middl
 
     > figure {
       margin: auto 0;
+      width: 145px;
+      height: 100%;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position-y: center;
 
       &.image-absent {
         border-radius: 100%;
@@ -82,10 +87,6 @@ $company-preview-height: $company-preview-header-height + $company-preview-middl
         line-height: 100px;
         text-align: center;
         width: 100px;
-      }
-
-      > img {
-        width: 145px;
       }
     }
   }

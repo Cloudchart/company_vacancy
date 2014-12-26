@@ -15,13 +15,13 @@ class CompanyDecorator < ApplicationDecorator
   end
 
   def logo
-    content_tag :figure, class: ("image-absent" if !company.logotype), style: ("background-color: #{color(self.name)};" if !company.logotype) do
-      if company.logotype
-        image_tag(company.logotype.url)
-      else
+    if company.logotype
+      content_tag :figure, nil, style: "background-image: url('#{company.logotype.url}');"
+    else
+      content_tag :figure, class: 'image-absent', style: "background-color: #{color(company.name)};" do
         initials
       end
-    end  
+    end
   end
 
 
@@ -29,7 +29,7 @@ private
 
   # TODO get rid of dublicity
   def initials
-    name = self.name
+    name = company.name
 
     uppercasedLetters = name.split('').select do |letter, i|
       letter != ' ' and letter == letter.upcase
