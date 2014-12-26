@@ -10,8 +10,14 @@ PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
 AutoSizingInput = require('components/form/autosizing_input')
+<<<<<<< HEAD
 BlockEditor = require('components/editor/block_editor')
 StoriesComponent = require('components/company/stories')
+=======
+TagsComponent   = require('components/company/tags')
+BlockEditor     = require('components/editor/block_editor')
+FuzzyDateInput  = require('components/form/fuzzy_date_input')
+>>>>>>> feature/new_posts
 
 # Main
 # 
@@ -39,6 +45,15 @@ Component = React.createClass
     </div>
 
 
+
+  effectiveDate: ->
+    <FuzzyDateInput
+      from      = { @state.post.effective_from }
+      till      = { @state.post.effective_till }
+      onUpdate  = { @handleEffectiveDateUpdate }
+    />
+
+
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
 
@@ -49,14 +64,26 @@ Component = React.createClass
     state[name] = event.target.value
     @setState(state)
 
+
   handleTitleBlur: ->
     @update(title: @state.title) unless @state.title is @state.post.title
 
-  handlePublishedAtBlur: ->
-    published_at = Date.parse @state.published_at
 
+<<<<<<< HEAD
     if moment(published_at).isValid() and moment(published_at).format('YYYY-MM-DD') isnt @state.post.published_at
       @update({ published_at: moment(published_at).format('ll') })
+=======
+  # handlePublishedAtBlur: ->
+  #   published_at = Date.parse @state.published_at
+  #
+  #   if moment(published_at).isValid()
+  #     @update({ published_at: moment(published_at).format('ll') })
+  
+  
+  handleEffectiveDateUpdate: (from, till) ->
+    @update({ effective_from: moment(from).format('YYYY-MM-DD'), effective_till: moment(till).format('YYYY-MM-DD') })
+  
+>>>>>>> feature/new_posts
 
   handleFieldKeyup: (event) ->
     event.target.blur() if event.key == 'Enter'
@@ -129,14 +156,7 @@ Component = React.createClass
         </label>
 
         <label className="published-at">
-          <AutoSizingInput
-            value={@state.published_at}
-            placeholder={moment().format('ll')}
-            onChange={@handleFieldChange.bind(@, 'published_at')}
-            onBlur={@handlePublishedAtBlur}
-            onKeyUp={@handleFieldKeyup}
-            readOnly={@props.readOnly}
-          />
+          { @effectiveDate() }
         </label>
 
         <StoriesComponent

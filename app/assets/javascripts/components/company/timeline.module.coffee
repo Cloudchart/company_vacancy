@@ -7,14 +7,30 @@ tag = React.DOM
 CloudFlux = require('cloud_flux')
 
 PostStore = require('stores/post_store')
-PersonStore = require('stores/person')
 
 PostActions  = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
 PostPreview = require('components/company/timeline/post_preview')
-PersonPreview = require('components/company/timeline/person_preview')
-Post = require('components/post')
+Post        = require('components/post')
+
+
+# Utils
+#
+
+postPreviewMapper = (props) ->
+  (post) ->
+    <PostPreview
+      key         = { post.uuid }
+      id          = { post.uuid }
+      company_id  = { props.company_id }
+      readOnly    = { props.read_only }
+    />
+
+
+postVisibilityPredicate = (post) ->
+  post.uuid and post.created_at != post.updated_at
+
 
 # Main
 # 
@@ -22,43 +38,15 @@ Component = React.createClass
 
   mixins: [CloudFlux.mixins.Actions]
 
-  # Helpers
-  # 
-  # TODO: refactor using _.inject
+
   gatherPosts: ->
-    result = []
-
-    # people
-    _.each ['hired_on', 'fired_on'], (attribute) =>
-      people = _.filter @state.people, (person) -> person.uuid and person[attribute]
-      _.each people, (person) -> result.push { date: person[attribute], type: 'Person', data: person.toJSON() }
-
-    # posts
-    posts = _.filter @state.posts, (post) -> post.uuid and post.created_at != post.updated_at
-    _.each posts, (post) -> result.push { date: post.published_at, type: 'Post', data: post.toJSON() }
-    
-    # result
-    _.chain result
-      .sortBy (object) -> new Date(object.date)
+    @state.postSeq
+      .filter postVisibilityPredicate
+      .sortBy (post) -> post.effective_from
+      .map    postPreviewMapper(@props)
       .reverse()
-      .map (object, index) =>
-        switch object.type
-          when 'Post'
-            <PostPreview
-              key={index}
-              id={object.data.uuid}
-              company_id={@props.company_id}
-              readOnly={@props.readOnly}
-            />
-          when 'Person'
-            <PersonPreview
-              key={index}
-              id={object.data.uuid}
-              event_type={if object.date == object.data.hired_on then 'hired' else 'fired'}
-              readOnly={@props.readOnly}
-            />
-      .value()
   
+
   getCreatePostButton: (type = '') ->
     return null if @props.readOnly
       
@@ -102,27 +90,26 @@ Component = React.createClass
 
       @setState({ new_post_key: new_post_key })
 
+
   handlePostCreateDone: (id, attributes, json, sync_token) ->
     @showPostInModal(json.uuid)
+
 
   # Lifecycle Methods
   # 
   # componentWillMount: ->
 
+
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
-    PersonStore.on('change', @refreshStateFromStores)
+
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
 
-  # shouldComponentUpdate: (nextProps, nextState) ->
-  # componentWillUpdate: (nextProps, nextState) ->
-  # componentDidUpdate: (prevProps, prevState) ->
 
   componentWillUnmount: ->
     PostStore.off('change', @refreshStateFromStores)
-    PersonStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
   # 
@@ -132,28 +119,28 @@ Component = React.createClass
     @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
-    posts: PostStore.all()
-    people: PersonStore.all()
+    posts:      PostStore.all()
+    postSeq:    Immutable.Seq(PostStore.all())
 
   getInitialState: ->
-    state = @getStateFromStores(@props)
-    state.new_post_key = null
+    state               = @getStateFromStores(@props)
+    state.new_post_key  = null
     state
 
   render: ->
-    return null if @gatherPosts().length == 0 and @props.readOnly
+    posts = @gatherPosts()
     
-    posts = _.map @gatherPosts(), (post, index) =>
+    return null if posts.count() == 0 and @props.readOnly
+    
+    posts = posts.map (post, index) =>
       [
         post
         @getCreatePostButton('placeholder')
       ]
 
     <div className="posts">
-      <div className="left-column"></div>
-      <div className="right-column"></div>
-      {@getCreatePostButton()}
-      {posts}
+      { @getCreatePostButton() }
+      { posts.toArray() }
     </div>
 
 # Exports

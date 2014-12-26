@@ -19,6 +19,10 @@ VisibilityActions = require('actions/visibility_actions')
 Post = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
 
+
+FuzzyDate = require('utils/fuzzy_date')
+
+
 # Main
 # 
 Component = React.createClass
@@ -110,10 +114,12 @@ Component = React.createClass
     </div>
 
   getHeader: ->
-    formatted_date = if moment(@state.post.published_at).isValid()
-      moment(@state.post.published_at).format('ll') 
-    else ''
-
+    # formatted_date = if moment(@state.post.published_at || null).isValid()
+    #   moment(@state.post.published_at).format('ll')
+    # else ''
+    
+    formatted_date = FuzzyDate.format(@state.post.effective_from, @state.post.effective_till)
+      
     title = if @state.post.title
       <h1>{@state.post.title}</h1>
     else

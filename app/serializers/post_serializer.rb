@@ -1,10 +1,15 @@
 class PostSerializer < ActiveModel::Serializer
 
-  attributes :uuid, :title, :published_at, :is_published, :owner_id, :owner_type, :story_ids
-  attributes :created_at, :updated_at
+  attributes  :uuid, :title, :owner_id, :owner_type, :story_ids
+  attributes  :created_at, :updated_at
+  attributes  :effective_from, :effective_till, :position
 
-  def published_at
-    object.published_at.try(:to_date)
+  def effective_from
+    object.effective_from.try(:to_date)
+  end
+
+  def effective_till
+    object.effective_till.try(:to_date)
   end
 
 end
