@@ -35,6 +35,9 @@ class Ability
       # can :dashboard
       can :manage, :all
 
+      # TODO: add rules for admin
+      # cannot [:create, :update, :destroy], Company
+
     # User
     # 
     else
@@ -76,7 +79,7 @@ class Ability
         !user.companies.pluck(:uuid).include?(company.id)
       end
 
-      [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post].each do |model|
+      [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post, Story].each do |model|
         can :manage, model do |resource|
           owner_or_editor?(user, resource.company)
         end

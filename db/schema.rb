@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141208125243) do
+ActiveRecord::Schema.define(version: 20141223111238) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -288,15 +288,23 @@ ActiveRecord::Schema.define(version: 20141208125243) do
 
   create_table "posts", primary_key: "uuid", force: true do |t|
     t.string   "title"
-    t.datetime "published_at"
-    t.boolean  "is_published",            default: false
     t.string   "owner_id",     limit: 36
     t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_published",            default: false
+    t.datetime "published_at"
   end
 
   add_index "posts", ["owner_id", "owner_type"], name: "index_posts_on_owner_id_and_owner_type", using: :btree
+
+  create_table "posts_stories", primary_key: "uuid", force: true do |t|
+    t.string  "post_id",  limit: 36,             null: false
+    t.string  "story_id", limit: 36,             null: false
+    t.integer "position",            default: 0
+  end
+
+  add_index "posts_stories", ["post_id", "story_id"], name: "index_posts_stories_on_post_id_and_story_id", unique: true, using: :btree
 
   create_table "roles", primary_key: "uuid", force: true do |t|
     t.string   "value",                 null: false
@@ -311,6 +319,16 @@ ActiveRecord::Schema.define(version: 20141208125243) do
   add_index "roles", ["user_id", "owner_id"], name: "index_roles_on_user_id_and_owner_id", unique: true, using: :btree
   add_index "roles", ["user_id"], name: "index_roles_on_user_id", using: :btree
   add_index "roles", ["value"], name: "index_roles_on_value", using: :btree
+
+  create_table "stories", primary_key: "uuid", force: true do |t|
+    t.string   "name"
+    t.string   "company_id",          limit: 36
+    t.integer  "posts_stories_count",            default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "stories", ["company_id"], name: "index_stories_on_company_id", using: :btree
 
   create_table "subscriptions", primary_key: "uuid", force: true do |t|
     t.string   "user_id",           limit: 36, null: false

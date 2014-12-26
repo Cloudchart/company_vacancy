@@ -16,6 +16,7 @@ Dispatcher = require('dispatcher/dispatcher')
   UserStore       = require('stores/user_store')
   TagStore        = require('stores/tag_store')
   VisibilityStore = require('stores/visibility_store')
+  StoryStore      = require('stores/story_store')
   
   # Fetch company with dependencies
   # 

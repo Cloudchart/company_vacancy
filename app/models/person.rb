@@ -11,31 +11,12 @@ class Person < ActiveRecord::Base
 
   has_one :block_identity, as: :identity, inverse_of: :identity, dependent: :destroy
   has_and_belongs_to_many :vacancy_reviews, class_name: 'Vacancy', join_table: 'vacancy_reviewers'
-  # has_paper_trail
   
   has_many :node_identities, as: :identity, dependent: :destroy, class_name: CloudBlueprint::Identity
 
-  # validates :first_name, :last_name, presence: true
   validates :full_name, presence: true
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
-
-  rails_admin do
-    object_label_method :full_name
-
-    list do
-      exclude_fields :uuid, :phone, :email
-
-      field :user do
-        pretty_value { bindings[:view].mail_to value.email, value.full_name if value }
-      end
-
-      field :company do
-        pretty_value { bindings[:view].link_to(value.name, bindings[:view].main_app.company_path(value)) }
-      end
-    end
-
-  end
 
   settings ElasticSearchNGramSettings do
     mapping do
@@ -57,6 +38,23 @@ class Person < ActiveRecord::Base
 
   def as_json_for_chart
     as_json(only: [:uuid, :full_name, :first_name, :last_name, :email, :occupation, :salary])
+  end
+
+  rails_admin do
+    object_label_method :full_name
+
+    list do
+      exclude_fields :uuid, :phone, :email
+
+      field :user do
+        pretty_value { bindings[:view].mail_to value.email, value.full_name if value }
+      end
+
+      field :company do
+        pretty_value { bindings[:view].link_to(value.name, bindings[:view].main_app.company_path(value)) }
+      end
+    end
+
   end
 
 end

@@ -4,6 +4,8 @@
 # 
 tag = React.DOM
 
+GlobalState = require('global_state/state')
+
 PostStore = require('stores/post_store')
 BlockStore = require('stores/block_store')
 ParagraphStore = require('stores/paragraph_store')
@@ -16,7 +18,6 @@ VisibilityActions = require('actions/visibility_actions')
 
 Post = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
-TagsComponent = require('components/company/tags')
 
 # Main
 # 
@@ -81,6 +82,33 @@ Component = React.createClass
       .sortBy('position')
       .value()
 
+
+  postStoryMapper: (story, key) ->
+    <li key={key}>
+      { '#' + story.get('name') }
+    </li>
+
+
+  gatherStories: ->
+    Stories   = GlobalState.cursor(['stores', 'stories', 'items']).deref()
+
+    return null unless Stories
+    
+    postStoryIds  = Immutable.Seq(@state.post.story_ids)
+
+    stories = Stories
+      .filter (item, key) -> postStoryIds.contains(key)
+      .sortBy (item, key) -> postStoryIds.indexOf(key)
+      .map    @postStoryMapper
+
+    return null if stories.count() == 0
+
+    <div className="cc-hashtag-list">
+      <ul>
+        {stories.toArray()}
+      </ul>
+    </div>
+
   getHeader: ->
     formatted_date = if moment(@state.post.published_at).isValid()
       moment(@state.post.published_at).format('ll') 
@@ -98,7 +126,7 @@ Component = React.createClass
     <header>
       {title}
       {date}
-      <TagsComponent taggable_id={@props.id} taggable_type='Post' readOnly={true} />
+      {@gatherStories()}
     </header>
 
   # Handlers
@@ -112,7 +140,7 @@ Component = React.createClass
     ModalActions.show(Post({ 
       id: @props.id
       company_id: @props.company_id
-      readOnly: @props.readOnly 
+      readOnly: @props.readOnly
     }), class_for_container: 'post')
 
   handleVisibilityChange: (event) ->

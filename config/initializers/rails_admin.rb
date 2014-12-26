@@ -1,6 +1,16 @@
 RailsAdmin.config do |config|
   config.main_app_name = ['CloudChart', 'Admin']
-  config.included_models = ['Company', 'Feature', 'User', 'Token', 'Page', 'Person', 'Tag', 'Interview']
+  config.included_models = [
+    'Company',
+    'Feature',
+    'User',
+    'Token',
+    'Page',
+    'Person',
+    'Tag',
+    'Interview',
+    'Story'
+  ]
 
   config.authenticate_with do
     authenticate_user
@@ -30,7 +40,7 @@ RailsAdmin.config do |config|
       controller do
         proc do
           Tag.find(params[:bulk_ids]).each { |tag| tag.update(is_acceptable: true) }
-          redirect_to index_path(:tag), notice: 'All selected tags have become acceptable'
+          redirect_to index_path(:tag), notice: 'All selected tags are accepted'
         end
       end
     end
@@ -104,7 +114,7 @@ RailsAdmin.config do |config|
     end
     bulk_delete
     show do
-      except ['User', 'Token', 'Person', 'Tag', 'Interview']
+      except ['User', 'Token', 'Person', 'Tag', 'Interview', 'Story']
     end
     edit do
       except ['User', 'Token']
@@ -113,7 +123,7 @@ RailsAdmin.config do |config|
       except ['Person']
     end
     show_in_app do
-      except ['User', 'Token', 'Person', 'Tag']
+      except ['User', 'Token', 'Person', 'Tag', 'Story']
     end
     history_index do
       except ['User', 'Token', 'Person']

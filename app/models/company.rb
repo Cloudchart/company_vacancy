@@ -27,7 +27,7 @@ class Company < ActiveRecord::Base
   has_many :roles, as: :owner, dependent: :destroy
   has_many :users, through: :roles
   has_many :posts, as: :owner, dependent: :destroy
-  # has_paper_trail
+  has_many :stories, dependent: :destroy
   
   validates :site_url, url: true, allow_blank: true
   validate  :publish_check, if: 'is_published && is_published_changed?'

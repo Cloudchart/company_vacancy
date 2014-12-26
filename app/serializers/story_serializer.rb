@@ -1,0 +1,5 @@
+class StorySerializer < ActiveModel::Serializer
+
+  attributes :uuid, :name, :company_id, :created_at, :updated_at
+
+end

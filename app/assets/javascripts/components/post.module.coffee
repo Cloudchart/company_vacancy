@@ -10,8 +10,8 @@ PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
 AutoSizingInput = require('components/form/autosizing_input')
-TagsComponent = require('components/company/tags')
 BlockEditor = require('components/editor/block_editor')
+StoriesComponent = require('components/company/stories')
 
 # Main
 # 
@@ -50,12 +50,12 @@ Component = React.createClass
     @setState(state)
 
   handleTitleBlur: ->
-    @update(title: @state.title)
+    @update(title: @state.title) unless @state.title is @state.post.title
 
   handlePublishedAtBlur: ->
     published_at = Date.parse @state.published_at
 
-    if moment(published_at).isValid()
+    if moment(published_at).isValid() and moment(published_at).format('YYYY-MM-DD') isnt @state.post.published_at
       @update({ published_at: moment(published_at).format('ll') })
 
   handleFieldKeyup: (event) ->
@@ -69,6 +69,9 @@ Component = React.createClass
   handleOkClick: (event) ->
     ModalActions.hide()
     # TODO: show post in timeline
+
+  handleStoriesChange: (story_ids) ->
+    PostActions.update(@state.post.uuid, { story_ids: story_ids })
 
   # Lifecycle Methods
   # 
@@ -136,7 +139,12 @@ Component = React.createClass
           />
         </label>
 
-        <TagsComponent taggable_id={@state.post.uuid} taggable_type="Post" readOnly={@props.readOnly} />
+        <StoriesComponent
+          post_id = {@state.post.uuid}
+          company_id = {@props.company_id}
+          onChange = {@handleStoriesChange}
+          readOnly = {@props.readOnly}
+        />
       </header>
 
       <BlockEditor
