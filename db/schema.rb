@@ -298,9 +298,10 @@ ActiveRecord::Schema.define(version: 20141223111238) do
 
   add_index "posts", ["owner_id", "owner_type"], name: "index_posts_on_owner_id_and_owner_type", using: :btree
 
-  create_table "posts_stories", id: false, force: true do |t|
-    t.string "post_id",  limit: 36, null: false
-    t.string "story_id", limit: 36, null: false
+  create_table "posts_stories", primary_key: "uuid", force: true do |t|
+    t.string  "post_id",  limit: 36,             null: false
+    t.string  "story_id", limit: 36,             null: false
+    t.integer "position",            default: 0
   end
 
   add_index "posts_stories", ["post_id", "story_id"], name: "index_posts_stories_on_post_id_and_story_id", unique: true, using: :btree

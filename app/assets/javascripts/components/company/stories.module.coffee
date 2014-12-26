@@ -52,18 +52,18 @@ MainComponent = React.createClass
 
   
   gatherStoriesForList: ->
-    @filterSelectedStories().map (story, key) ->
-      <li key={key}>
-        <span key={key}>{'#' + story.get('name')}</span>
+    @filterSelectedStories().map (story) ->
+      <li key={story.get('uuid')}>
+        <span>{'#' + story.get('name')}</span>
       </li>
 
 
   filterSelectedStories: ->
-    @state.stories().filter((story, key) => @state.storyIdSeq.contains(key))
+    @state.storyIdSeq.map (id) => @state.stories().get(id)
 
   
   gatherStories: ->
-    @filterSelectedStories().valueSeq()
+    @filterSelectedStories()
       .map (story) ->
         id:   story.get('uuid')
         name: '#' + story.get('name')
@@ -73,7 +73,7 @@ MainComponent = React.createClass
   gatherStoriesForSelect: ->
     @state.stories()
       .filter     (story, key) => story.get('company_id') is @props.company_id or story.get('company_id') is null
-      .filterNot  (story, key) => @filterSelectedStories().has(key)
+      .filterNot  (story, key) => @state.storyIdSeq.contains(key)
       .filter     (story, key) => story.get('name').toLowerCase().indexOf(@state.query.toLowerCase()) >= 0
       .map        (story, key) => <ComboboxOption key={key} value={key}>{'#' + story.get('name')}</ComboboxOption>
 
