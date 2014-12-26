@@ -9,15 +9,10 @@ PostStore = require('stores/post_store')
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
-AutoSizingInput = require('components/form/autosizing_input')
-<<<<<<< HEAD
-BlockEditor = require('components/editor/block_editor')
-StoriesComponent = require('components/company/stories')
-=======
-TagsComponent   = require('components/company/tags')
-BlockEditor     = require('components/editor/block_editor')
-FuzzyDateInput  = require('components/form/fuzzy_date_input')
->>>>>>> feature/new_posts
+AutoSizingInput   = require('components/form/autosizing_input')
+StoriesComponent  = require('components/company/stories')
+BlockEditor       = require('components/editor/block_editor')
+FuzzyDateInput    = require('components/form/fuzzy_date_input')
 
 # Main
 # 
@@ -68,22 +63,11 @@ Component = React.createClass
   handleTitleBlur: ->
     @update(title: @state.title) unless @state.title is @state.post.title
 
-
-<<<<<<< HEAD
-    if moment(published_at).isValid() and moment(published_at).format('YYYY-MM-DD') isnt @state.post.published_at
-      @update({ published_at: moment(published_at).format('ll') })
-=======
-  # handlePublishedAtBlur: ->
-  #   published_at = Date.parse @state.published_at
-  #
-  #   if moment(published_at).isValid()
-  #     @update({ published_at: moment(published_at).format('ll') })
   
   
   handleEffectiveDateUpdate: (from, till) ->
     @update({ effective_from: moment(from).format('YYYY-MM-DD'), effective_till: moment(till).format('YYYY-MM-DD') })
   
->>>>>>> feature/new_posts
 
   handleFieldKeyup: (event) ->
     event.target.blur() if event.key == 'Enter'
