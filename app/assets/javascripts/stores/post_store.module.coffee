@@ -11,15 +11,16 @@ CrudCallbacks = CallbackFactory.create 'post', CrudActions
 DefaultMethods = 
 
   getSchema: ->
-    uuid: ''
-    title: ''
-    published_at: ''
-    is_published: false
-    owner_type: ''
-    owner_id: ''
-    tag_names: []
-    created_at: ''
-    updated_at: ''
+    uuid:           ''
+    title:          ''
+    effective_from: ''
+    effective_till: ''
+    owner_type:     ''
+    owner_id:       ''
+    tag_names:      []
+    position:       ''
+    created_at:     ''
+    updated_at:     ''
 
   getActions: ->
     actions = {}

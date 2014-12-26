@@ -12,23 +12,24 @@ main.company > div.wrapper > div.posts {
 
   // Timeline background
   // 
-  > div.left-column {
-    background-color: hsl(0, 0%, 98%);
-  }
-
-  > div.right-column {
-    background-color: hsl(0, 0%, 94%);
-    right: 0;
-  }
-
-  > div.left-column, div.right-column {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 50%;
-    pointer-events: none;
+  
+  &::before,
+  &::after {
+    @include position(absolute, 0px 0px 0px 0px);
+    content: '';
     z-index: -1;
   }
+  
+  &::before {
+    background-color: hsl(0, 0%, 98%);
+    right: 50%;
+  }
+  
+  &::after {
+    background-color: hsl(0, 0%, 94%);
+    left: 50%;
+  }
+  
 
   // Create post top button
   // 
