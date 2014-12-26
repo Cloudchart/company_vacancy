@@ -35,6 +35,7 @@ class CompaniesController < ApplicationController
       :paragraphs,
       :roles,
       :tokens,
+      :stories,
       users: :emails,
       blocks: :block_identities
     )

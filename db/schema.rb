@@ -288,12 +288,12 @@ ActiveRecord::Schema.define(version: 20141223111238) do
 
   create_table "posts", primary_key: "uuid", force: true do |t|
     t.string   "title"
-    t.datetime "published_at"
-    t.boolean  "is_published",            default: false
     t.string   "owner_id",     limit: 36
     t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_published",            default: false
+    t.datetime "published_at"
   end
 
   add_index "posts", ["owner_id", "owner_type"], name: "index_posts_on_owner_id_and_owner_type", using: :btree

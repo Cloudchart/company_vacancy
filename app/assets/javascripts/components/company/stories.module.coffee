@@ -21,7 +21,6 @@ formatName = (name) ->
   name = name.trim()
   name = name.replace(/[^A-Za-z0-9\-_|\s]+/ig, '')
   name = name.replace(/\s{2,}/g, ' ')
-  name = name.replace(/\s/g, '_')
 
 
 # Main

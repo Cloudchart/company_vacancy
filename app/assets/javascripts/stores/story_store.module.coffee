@@ -3,12 +3,20 @@
 Dispatcher  = require('dispatcher/dispatcher')
 GlobalState = require('global_state/state')
 
+SyncAPI       = require('sync/story_sync_api')
+
 ItemsCursor   = GlobalState.cursor(['stores', 'stories', 'items'])
 CreateCursor  = GlobalState.cursor(['stores', 'stories', 'create'])
 
 EmptyStories  = Immutable.Map()
 
-SyncAPI       = require('sync/story_sync_api')
+
+# Dispatcher
+# 
+Dispatcher.register (payload) ->
+  
+  if payload.action.type == 'company:fetch:done'
+    fetchMany.apply(null, payload.action.data)
 
 
 # Utils
@@ -16,57 +24,48 @@ SyncAPI       = require('sync/story_sync_api')
 UUID = require('utils/uuid')
 
 
+# Helpers
+# 
+setStoryItem = (uuid, story) ->
+  story.name = story.name.replace(/_/g, ' ')
+  ItemsCursor.set(uuid, story)
+
+
+# Handlers
+# 
 fetchMany = (company_id, json) ->
   ItemsCursor.transaction()
 
   ItemsCursor.clear()
 
-  Immutable.Seq(json.stories).forEach (story) ->
-    ItemsCursor.set(story.uuid, story)
+  Immutable.Seq(json.stories).forEach (story) -> setStoryItem(story.uuid, story)
 
   ItemsCursor.commit()
 
 
-# Handle Create
-#
-
 handleCreate = ->
   return if CreateCursor.deref(EmptyStories).size == 0
   
-  # Cursor transaction
-  # 
+  # transaction
   GlobalState.cursor().transaction()
-  
-  
+    
   CreateCursor.deref().forEach (item) ->
     beforeCreate  = item.getIn(['callbacks', 'beforeCreate'], ->)
     item          = item.remove('callbacks')
     itemUUID      = UUID()
     
-    ItemsCursor.set(itemUUID, item)
+    setStoryItem(itemUUID, item)
     
     beforeCreate(itemUUID)
   
+  # clear cursor
+  CreateCursor.clear()  
 
-  # Clear cursor
-  #
-  CreateCursor.clear()
-  
-
-  # Cursor commit
-  #
+  # commit cursor
   GlobalState.cursor().commit()
   
 
 GlobalState.addListener CreateCursor.path, handleCreate
-
-
-# Dispatcher
-#
-Dispatcher.register (payload) ->
-  
-  if payload.action.type == 'company:fetch:done'
-    fetchMany.apply(null, payload.action.data)
 
 
 # Exports
@@ -78,7 +77,7 @@ module.exports =
       .done (json) ->
         SyncAPI.fetch(json.uuid)
           .done (json) ->
-            ItemsCursor.set(json.story.uuid, json.story)
+            setStoryItem(json.story.uuid, json.story)
             setTimeout -> callback(json.story.uuid)
           .fail (xhr) ->
             callback()

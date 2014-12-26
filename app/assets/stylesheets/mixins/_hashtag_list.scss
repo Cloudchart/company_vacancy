@@ -56,7 +56,7 @@
       }
 
       > li.ic-combobox {
-        width: 150px;
+        width: 160px;
 
         > .ic-tokeninput {
           height: 100%;
@@ -90,6 +90,7 @@
             padding: 0;
             width: auto;
             z-index: 100;
+            white-space: nowrap;
 
             > li {
               @include align-items(center);

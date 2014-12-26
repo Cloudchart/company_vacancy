@@ -50,12 +50,12 @@ Component = React.createClass
     @setState(state)
 
   handleTitleBlur: ->
-    @update(title: @state.title)
+    @update(title: @state.title) unless @state.title is @state.post.title
 
   handlePublishedAtBlur: ->
     published_at = Date.parse @state.published_at
 
-    if moment(published_at).isValid()
+    if moment(published_at).isValid() and moment(published_at).format('YYYY-MM-DD') isnt @state.post.published_at
       @update({ published_at: moment(published_at).format('ll') })
 
   handleFieldKeyup: (event) ->
