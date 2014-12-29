@@ -52,9 +52,10 @@ MainComponent = React.createClass
 
   
   gatherStoriesForList: ->
+    # <span>{'#' + story.get('name')}</span>
     @filterSelectedStories().map (story) ->
       <li key={story.get('uuid')}>
-        <span>{'#' + story.get('name')}</span>
+        <a href='#'>{'#' + story.get('name')}</a>
       </li>
 
 

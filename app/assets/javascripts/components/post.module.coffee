@@ -7,13 +7,14 @@ PostStore = require('stores/post_store')
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
-StoriesComponent    = require('components/company/stories')
-BlockEditor         = require('components/editor/block_editor')
-FuzzyDateInput      = require('components/form/fuzzy_date_input')
+StoriesListComponent = require('components/company/stories_list')
+BlockEditor = require('components/editor/block_editor')
+FuzzyDateInput = require('components/form/fuzzy_date_input')
 ContentEditableArea = require('components/form/contenteditable_area')
 
 Hintable            = require('components/shared/hintable')
 Hints               = require('utils/hints')
+
 
 # Main
 # 
@@ -141,7 +142,7 @@ Component = React.createClass
           </label>
         </Hintable>
 
-        <StoriesComponent
+        <StoriesListComponent
           post_id = {@state.post.uuid}
           company_id = {@props.company_id}
           onChange = {@handleStoriesChange}
