@@ -1,5 +1,13 @@
 class StorySerializer < ActiveModel::Serializer
 
   attributes :uuid, :name, :company_id, :created_at, :updated_at
+  attributes :company_story_url
+
+  alias_method :company, :scope
+  alias_method :story, :object
+
+  def company_story_url
+    company_story_path(company.to_param, story.name)
+  end
 
 end

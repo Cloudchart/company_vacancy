@@ -4,5 +4,5 @@ json.vacancies ams(@company.vacancies)
 json.people ams(@company.people)
 json.pictures ams(@company.pictures)
 json.paragraphs ams(@company.paragraphs)
+json.stories ams(@stories, scope: @company)
 json.tags @tags
-json.stories ams(@stories)

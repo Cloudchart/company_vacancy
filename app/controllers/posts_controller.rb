@@ -35,7 +35,15 @@ class PostsController < ApplicationController
       instance_variable_set("@#{association}", dependent_collections[association])
     end
 
+    # add stories
+    @stories = Story.cc_plus_company(@company.id)
+
     respond_to do |format|
+      format.html { 
+        pagescript_params(
+          story_id: @company.stories.find_by(params[:story_name]).try(:id)
+        )
+      }
       format.json
     end
   end
@@ -95,7 +103,7 @@ private
   end
 
   def set_company
-    @company = find_company(Company.includes(:roles))
+    @company = find_company(Company.includes(:roles, :stories))
   end
 
   def find_company(relation)

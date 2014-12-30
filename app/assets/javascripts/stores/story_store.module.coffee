@@ -15,6 +15,7 @@ EmptyStories  = Immutable.Map()
 # 
 Dispatcher.register (payload) ->
   
+  # TODO: fetch stories from 'post:fetch:many:done'
   if payload.action.type == 'company:fetch:done'
     fetchMany.apply(null, payload.action.data)
 

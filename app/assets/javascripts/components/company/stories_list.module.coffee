@@ -53,9 +53,11 @@ MainComponent = React.createClass
   
   gatherStoriesForList: ->
     # <span>{'#' + story.get('name')}</span>
-    @filterSelectedStories().map (story) ->
+    @filterSelectedStories().map (story) =>
+      company_story_url = @props.cursor.get(story.get('uuid')).get('company_story_url')
+      
       <li key={story.get('uuid')}>
-        <a href='#'>{'#' + story.get('name')}</a>
+        <a href={company_story_url}>{'#' + story.get('name')}</a>
       </li>
 
 
