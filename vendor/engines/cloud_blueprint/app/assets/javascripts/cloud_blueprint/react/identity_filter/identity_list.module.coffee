@@ -2,7 +2,7 @@
 #
 tag = React.DOM
 
-PersonStore       = require('stores/person_store')
+PersonStore       = require('stores/person_store_old')
 VacancyStore      = require('stores/vacancy_store')
 
 PersonComponent   = require('components/person')
