@@ -21,7 +21,6 @@ $editor-placeholder-section-figure-size: 50px;
 // Editor
 //
 article.editor {
-  
   margin: 0 auto;
   width: $editor-width;
   
@@ -46,6 +45,20 @@ article.editor {
     }
   }
   
+}
+
+// Post editor
+// 
+article.editor.post {
+  > section {
+    padding: 30px 20px;
+
+    &.placeholder {
+      > figure {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 // Draggable
@@ -159,3 +172,5 @@ article.editor > section.placeholder {
 @import 'vacancy_chooser';
 @import 'person_form';
 @import 'vacancy_form';
+@import 'quote';
+@import 'kpi';

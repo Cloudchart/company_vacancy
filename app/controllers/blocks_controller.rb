@@ -77,7 +77,7 @@ private
 
 
   def block_params_for_create
-    params.require(:block).permit(:section, :identity_type, :position)
+    params.require(:block).permit(:section, :identity_type, :position, :kind)
   end
   
 

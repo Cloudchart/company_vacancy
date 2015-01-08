@@ -24,12 +24,17 @@ SectionClassNames =
   Paragraph:  'paragraph'
   Person:     'people'
   Vacancy:    'vacancies'
+  Quote:      'quote'
+  KPI:        'kpi'
 
 SectionPlaceholderItemNames = 
   Person:     'People'
   Vacancy:    'Vacancies'
   Picture:    'Picture'
-  Paragraph:  'Paragraph'
+  Paragraph:  'Text'
+  Quote:      'Quote'
+  KPI:        'KPI'
+
 
 # Main
 # 
@@ -48,12 +53,13 @@ MainComponent = React.createClass
         block_key = block.getKey()
 
         <SortableListItem key={block_key}>
-          <section key={block_key} className={SectionClassNames[block.identity_type]}>
+          <section key={block_key} className={SectionClassNames[block.kind || block.identity_type]}>
             {@getDestroyLink(block.uuid)}
             <BlockComponent
               key={block_key}
               company_id={@props.company_id}
               readOnly={@props.readOnly}
+              blockKind={block.kind || block.identity_type}
             />
           </section>
         </SortableListItem>
@@ -98,11 +104,24 @@ MainComponent = React.createClass
   # Handlers
   # 
   handleChooseBlockTypeClick: (identity_type) ->
+    # -- temporary solution for quotes and kpi's
+    kind = null
+    if identity_type.match(/Quote|KPI/)
+      kind = identity_type
+      identity_type = 'Paragraph'
+    # --
+
     _.chain(@state.blocks)
       .filter (block) => block.position >= @state.position
       .each (block) => BlockStore.update(block.uuid, { position: block.position + 1 })
 
-    key = BlockStore.create({ owner_id: @props.owner_id, owner_type: @props.owner_type, identity_type: identity_type, position: @state.position })
+    key = BlockStore.create(
+      owner_id: @props.owner_id 
+      owner_type: @props.owner_type
+      identity_type: identity_type
+      position: @state.position
+      kind: kind
+    )
 
     BlockableActions.createBlock(key, BlockStore.get(key).toJSON())
 

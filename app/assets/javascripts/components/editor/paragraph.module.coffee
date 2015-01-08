@@ -10,7 +10,10 @@ ParagraphActions = require('actions/paragraph_actions')
 
 ContentEditableArea = require('components/form/contenteditable_area')
 
-CompanyPlaceholder  = "Tell a short story about your company — what does your company do and why it’s important. Be brief, be clear, be straightforward. At about 70 words / 500 characters we’ll curb your enthusiasm."
+CompanyPlaceholder = 
+  Paragraph: "Tell a short story about your company — what does your company do and why it’s important. Be brief, be clear, be straightforward. At about 70 words / 500 characters we’ll curb your enthusiasm."
+  Quote: "Add a quote here. Short and concise."
+  KPI: "How the key performance indicators changed and why."
 
 findParagraph = (block_id) ->
   ParagraphStore.find (item) => item.uuid and item.owner_id is block_id and item.owner_type is 'Block'
@@ -73,7 +76,7 @@ Component = React.createClass
   render: ->
     <ContentEditableArea
       onChange={@onChange}
-      placeholder={CompanyPlaceholder}
+      placeholder={CompanyPlaceholder[@props.blockKind]}
       readOnly={@props.readOnly}
       value={@getValue()}
     />

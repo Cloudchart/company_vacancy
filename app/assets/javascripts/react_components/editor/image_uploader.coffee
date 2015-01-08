@@ -31,7 +31,7 @@ MainComponent = React.createClass
   
   
   componentWillReceiveProps: (nextProps) ->
-    console.log nextProps
+    # console.log nextProps
     @setState
       image:  null
       url:    nextProps.url

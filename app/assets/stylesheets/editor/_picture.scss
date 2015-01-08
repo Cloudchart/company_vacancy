@@ -35,21 +35,22 @@ article.editor > section.picture {
     position: relative;
   }
   
-  .image-input i.remove {
-    @include position(absolute, 10px 10px 0 0);
+  // .image-input i.remove {
+  //   @include position(absolute, 10px 10px 0 0);
     
-    color: $editor-remove-button-color;
-    cursor: pointer;
-    font-size: 20px;
-    visibility: hidden;
-  }
+  //   color: $editor-remove-button-color;
+  //   cursor: pointer;
+  //   font-size: 20px;
+  //   visibility: hidden;
+  // }
   
-  .image-input:hover i.remove {
-    visibility: visible;
-  }
+  // .image-input:hover i.remove {
+  //   visibility: visible;
+  // }
   
   img {
     width: 100%;
+    cursor: pointer;
   }
   
   input[type="file"] {

@@ -108,3 +108,4 @@ module.exports = CloudFlux.createStore
     title:          ''
     is_locked:      false
     position:       0
+    kind:           ''

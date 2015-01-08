@@ -1,0 +1,17 @@
+article.editor > section.kpi {
+  font-size: $editor-paragraph-font-size;
+  line-height: $editor-paragraph-line-height;
+  font-weight: bold;
+
+  [contenteditable] {
+    cursor: text;
+    outline: none;
+
+    &:empty::before {
+      content: attr(data-placeholder);
+      opacity: .25;
+      outline: none;
+    }
+  }
+
+}
