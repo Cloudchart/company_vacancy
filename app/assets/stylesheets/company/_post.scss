@@ -8,7 +8,7 @@ main.company > div.wrapper > div.posts {
   @include align-items(center);
 
   position: relative;
-  margin-top: $base-post-preview-margin;
+  margin: $base-post-preview-margin -20px 0 -20px;
 
   // Timeline background
   // 
