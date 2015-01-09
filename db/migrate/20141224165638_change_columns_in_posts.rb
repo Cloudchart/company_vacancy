@@ -2,7 +2,7 @@ class ChangeColumnsInPosts < ActiveRecord::Migration
   def up
     add_column :posts, :effective_from, :date
     add_column :posts, :effective_till, :date
-    add_column :posts, :position,       :integer, default: nil
+    add_column :posts, :position, :integer
 
     Company.includes(:posts).each do |company|
       say "Starting to update posts for #{company.name}" if company.posts.any?
