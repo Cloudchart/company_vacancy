@@ -40,7 +40,6 @@ Component = React.createClass
     </div>
 
 
-
   effectiveDate: ->
     <FuzzyDateInput
       from      = { @state.post.effective_from }
@@ -52,6 +51,7 @@ Component = React.createClass
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
 
+
   # Handlers
   # 
   handleFieldChange: (name, event) ->
@@ -61,12 +61,16 @@ Component = React.createClass
 
 
   handleTitleBlur: ->
-    @update(title: @state.title) unless @state.title is @state.post.title
+    return if @state.title is @state.post.title
+    @update(title: @state.title)
 
-  
-  
+
   handleEffectiveDateUpdate: (from, till) ->
-    @update({ effective_from: moment(from).format('YYYY-MM-DD'), effective_till: moment(till).format('YYYY-MM-DD') })
+    effective_from = moment(from).format('YYYY-MM-DD')
+    effective_till = moment(till).format('YYYY-MM-DD')
+    return if @state.post.effective_from is effective_from and @state.post.effective_till is effective_till
+
+    @update({ effective_from: effective_from, effective_till: effective_till })
   
 
   handleFieldKeyup: (event) ->

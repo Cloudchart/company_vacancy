@@ -1,6 +1,6 @@
 module.exports =
   
-  format: (from, till, notSetValue) ->
+  format: (from, till, notSetValue='') ->
     from = moment(from)
     till = moment(till)
     
