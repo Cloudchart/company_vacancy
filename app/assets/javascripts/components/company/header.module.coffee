@@ -109,6 +109,7 @@ Component = React.createClass
   getCloudFluxActions: ->
     'company:access_rights:fetch:done': @handleAccessRightsDone
 
+
   # Handlers
   # 
   handleAccessRightsDone: -> 
@@ -158,6 +159,9 @@ Component = React.createClass
     URL.revokeObjectURL(@state.logotype_url)
     @setState(@getStateFromStores(nextProps))
 
+  componentDidMount: ->
+    $('textarea').autosize() # @seanchas: please don't kill me for this
+
   # Component Specifications
   # 
   getStateFromStores: (props) ->
@@ -181,29 +185,34 @@ Component = React.createClass
 
       <label className="name">
         <AutoSizingInput
-          value={@state.name}
-          onBlur={@handleFieldBlur.bind(@, 'name')}
-          onChange={@handleFieldChange.bind(@, 'name')}
-          onKeyUp={@handleFieldKeyUp}
-          placeholder={'Company name'}
-          readOnly={@props.readOnly}
+          value = {@state.name}
+          onBlur = {@handleFieldBlur.bind(@, 'name')}
+          onChange = {@handleFieldChange.bind(@, 'name')}
+          onKeyUp = {@handleFieldKeyUp}
+          placeholder = {'Company name'}
+          readOnly = {@props.readOnly}
         />
 
         {@getShareLink()}
       </label>
 
       <label className="description">
-        <AutoSizingInput
-          value={@state.description}
-          onBlur={@handleFieldBlur.bind(@, 'description')}
-          onChange={@handleFieldChange.bind(@, 'description')}
-          onKeyUp={@handleFieldKeyUp}
-          placeholder={'Company short description'}
-          readOnly={@props.readOnly}
+        <textarea
+          value = {@state.description}
+          onBlur = {@handleFieldBlur.bind(@, 'description')}
+          onChange = {@handleFieldChange.bind(@, 'description')}
+          onKeyUp = {@handleFieldKeyUp}
+          placeholder = {'Company short description'}
+          readOnly = {@props.readOnly}
         />
       </label>
 
-      <TagsComponent taggable_id={@props.uuid} taggable_type="Company" readOnly={@props.readOnly} />
+      <TagsComponent 
+        taggable_id = {@props.uuid}
+        taggable_type = "Company"
+        readOnly = {@props.readOnly}
+      />
+      
       {@getFollowButoon()}
     </header>
 

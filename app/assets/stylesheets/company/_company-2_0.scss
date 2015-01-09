@@ -116,7 +116,13 @@ $company-article-block-margin: 30px;
     } 
   }
   
-  > label.description input {
+  > label.description textarea {
+    width: 600px;
+    padding: 0;
+    resize: none;
+    outline: none;
+    border: none;
+    text-align: center;
     font-size: 24px;
     font-weight: 300;
   }
