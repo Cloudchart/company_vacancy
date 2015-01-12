@@ -64,25 +64,28 @@ Component = React.createClass
     else
       ''
 
+  # left only cover for now
   gatherPictures: ->
     block_ids = _.pluck @getBlocksByIdentity('Picture'), 'uuid'
-    pictures = _.filter @state.pictures, (picture) -> _.contains block_ids, picture.owner_id
+    # pictures = _.filter @state.pictures, (picture) -> _.contains block_ids, picture.owner_id
+    pictures = _.filter @state.pictures, (picture) -> picture.owner_id is block_ids[0]
 
-    if pictures.length == 1
+    # if pictures.length is 1
+    if pictures.length > 0
       <img className="cover" src={pictures[0].url}/>
-    else if pictures.length > 1
-      <ul className="pictures">
-        {
-          _.map pictures, (picture) -> 
-            <li key={picture.uuid} style={'background-image': "url(#{picture.url})"}></li>
-        }
-      </ul>
+    # else if pictures.length > 1
+    #   <ul className="pictures">
+    #     {
+    #       _.map pictures, (picture) -> 
+    #         <li key={picture.uuid} style={'background-image': "url(#{picture.url})"}></li>
+    #     }
+    #   </ul>
     else
       null      
 
   getBlocksByIdentity: (identity_type) ->
     _.chain BlockStore.all()
-      .filter (block) => block.owner_id == @props.id and block.identity_type == identity_type
+      .filter (block) => block.owner_id is @props.id and block.identity_type is identity_type
       .sortBy('position')
       .value()
 
