@@ -71,10 +71,16 @@ Component = React.createClass
     'post:create:done': @handlePostCreateDone
 
   showPostInModal: (id) ->
+    return unless @state.postSeq.map((post) -> post.uuid).contains(id)
+    
     setTimeout => 
       ModalActions.show(
         <Post id={id} company_id={@props.company_id} readOnly={@props.readOnly} />,
         class_for_container: 'post'
+        beforeHide: ->
+          scrollTop = document.body.scrollTop
+          window.location.hash = ''
+          document.body.scrollTop = scrollTop
       )
 
   # Handlers
@@ -93,6 +99,11 @@ Component = React.createClass
 
   handlePostCreateDone: (id, attributes, json, sync_token) ->
     @showPostInModal(json.uuid)
+  
+  
+  handleWindowHashChange: (event) ->
+    @showPostInModal(window.location.hash.split('#').pop())
+
 
 
   # Lifecycle Methods
@@ -102,6 +113,8 @@ Component = React.createClass
 
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
+    window.addEventListener('hashchange', @handleWindowHashChange)
+    @handleWindowHashChange()
 
 
   componentWillReceiveProps: (nextProps) ->
@@ -110,6 +123,8 @@ Component = React.createClass
 
   componentWillUnmount: ->
     PostStore.off('change', @refreshStateFromStores)
+    window.removeEventListener('hashchange', @handleWindowHashChange)
+
 
   # Component Specifications
   # 
