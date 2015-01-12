@@ -7,7 +7,7 @@ initials      = require('utils/initials')
 colors        = require('utils/colors')
 
 acceptableFileTypes = ['image/svg+xml', 'image/jpeg', 'image/png']
-acceptableFileSize  = 1024 * 500
+acceptableFileSize  = 1024 * 1024 * 3
 
 
 # Main
