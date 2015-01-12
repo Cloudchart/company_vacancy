@@ -4,6 +4,6 @@ class PictureSerializer < ActiveModel::Serializer
   attributes  :created_at, :updated_at
   
   def url
-    object.image.url if object.image_stored?
+    object.image.thumb('1600x>').url if object.image_stored?
   end
 end
