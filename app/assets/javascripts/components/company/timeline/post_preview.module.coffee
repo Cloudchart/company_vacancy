@@ -146,11 +146,14 @@ Component = React.createClass
 
   handleEditClick: (event) ->
     event.preventDefault()
-    ModalActions.show(Post({ 
-      id: @props.id
-      company_id: @props.company_id
-      readOnly: @props.readOnly
-    }), class_for_container: 'post')
+    # ModalActions.show(Post({
+    #   id: @props.id
+    #   company_id: @props.company_id
+    #   readOnly: @props.readOnly
+    # }), class_for_container: 'post')
+    scrollTop = document.body.scrollTop
+    window.location.hash = @props.id
+    document.body.scrollTop = scrollTop
 
   handleVisibilityChange: (event) ->
     value = event.target.value
