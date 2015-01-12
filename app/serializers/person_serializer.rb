@@ -9,7 +9,7 @@ class PersonSerializer < ActiveModel::Serializer
   attributes :avatar_url
   
   def avatar_url
-    object.avatar.url if object.avatar_stored?
+    object.avatar.thumb('512x512>').url if object.avatar_stored?
   end
   
 end
