@@ -47,7 +47,7 @@ MainComponent = React.createClass
         onRemove    = {@handleRemove}
         selected    = {@gatherStories().toArray()}
         menuContent = {@gatherStoriesForSelect().toArray()}
-        placeholder = "#Story name"
+        placeholder = "#Event tag"
       />
 
   

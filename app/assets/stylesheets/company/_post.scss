@@ -12,7 +12,6 @@ main.company > div.wrapper > div.posts {
 
   // Timeline background
   // 
-  
   &::before,
   &::after {
     @include position(absolute, 0px 0px 0px 0px);
@@ -257,7 +256,10 @@ div.post-container {
         padding: 0;
       }
 
-      &.title input {
+      &.title div[contenteditable] {
+        @include editor-contenteditable-area;
+        
+        max-width: 800px;
         font-size: 40px;
         font-weight: 400;
       }

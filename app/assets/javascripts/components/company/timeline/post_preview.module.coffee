@@ -81,7 +81,7 @@ Component = React.createClass
     #     }
     #   </ul>
     else
-      null      
+      null
 
   getBlocksByIdentity: (identity_type) ->
     _.chain BlockStore.all()
@@ -124,7 +124,7 @@ Component = React.createClass
     formatted_date = FuzzyDate.format(@state.post.effective_from, @state.post.effective_till)
       
     title = if @state.post.title
-      <h1>{@state.post.title}</h1>
+      <h1 dangerouslySetInnerHTML = { __html: @state.post.title } />
     else
       <h1>{formatted_date}</h1>
 

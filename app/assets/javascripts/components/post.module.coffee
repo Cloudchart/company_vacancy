@@ -9,10 +9,10 @@ PostStore = require('stores/post_store')
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
-AutoSizingInput   = require('components/form/autosizing_input')
-StoriesComponent  = require('components/company/stories')
-BlockEditor       = require('components/editor/block_editor')
-FuzzyDateInput    = require('components/form/fuzzy_date_input')
+StoriesComponent    = require('components/company/stories')
+BlockEditor         = require('components/editor/block_editor')
+FuzzyDateInput      = require('components/form/fuzzy_date_input')
+ContentEditableArea = require('components/form/contenteditable_area')
 
 # Main
 # 
@@ -54,17 +54,6 @@ Component = React.createClass
 
   # Handlers
   # 
-  handleFieldChange: (name, event) ->
-    state = {}
-    state[name] = event.target.value
-    @setState(state)
-
-
-  handleTitleBlur: ->
-    return if @state.title is @state.post.title
-    @update(title: @state.title)
-
-
   handleEffectiveDateUpdate: (from, till) ->
     effective_from = moment(from).format('YYYY-MM-DD')
     effective_till = moment(till).format('YYYY-MM-DD')
@@ -73,8 +62,10 @@ Component = React.createClass
     @update({ effective_from: effective_from, effective_till: effective_till })
   
 
-  handleFieldKeyup: (event) ->
-    event.target.blur() if event.key == 'Enter'
+  handleTitleChange: (content) ->
+    return if content is @state.post.title
+    @update(title: content)
+
 
   handleDestroyClick: (event) ->
     if confirm('Are you sure?')
@@ -101,9 +92,6 @@ Component = React.createClass
 
   # Component Specifications
   # 
-  getTitle: (post) ->
-    if post then post.title else ''
-
   getPublishedAt: (post) ->
     if post 
       if moment(post.published_at).isValid()
@@ -120,12 +108,10 @@ Component = React.createClass
     post = PostStore.get(props.id)
 
     post: post
-    title: @getTitle(post)
     published_at: @getPublishedAt(post)
 
   getInitialState: ->
-    state = @getStateFromStores(@props)
-    state
+    @getStateFromStores(@props)
 
   render: ->
     return null unless @state.post
@@ -133,13 +119,11 @@ Component = React.createClass
     <div className="post-container">
       <header>
         <label className="title">
-          <AutoSizingInput
-            value={@state.title}
-            placeholder={"Tap to add title"}
-            onChange={@handleFieldChange.bind(@, 'title')}
-            onBlur={@handleTitleBlur}
-            onKeyUp={@handleFieldKeyup}
-            readOnly={@props.readOnly}
+          <ContentEditableArea
+            onChange = { @handleTitleChange }
+            placeholder = 'Tap to add title'
+            readOnly = { @props.readOnly }
+            value = { @state.post.title }
           />
         </label>
 

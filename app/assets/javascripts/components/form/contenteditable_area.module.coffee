@@ -1,3 +1,5 @@
+# @cjsx React.DOM
+
 # Imports
 #
 tag = React.DOM
@@ -10,27 +12,30 @@ sanitize = require('utils/contenteditable_sanitizer')
 Component = React.createClass
 
 
-  onBlur: (event) ->
+  handleBlur: (event) ->    
     @props.onChange(sanitize(event.target)) if @props.onChange instanceof Function
   
   
-  onInput: (event) ->
+  handleInput: (event) ->
     content = sanitize(event.target)
     @getDOMNode().innerHTML = '' if content.length == 0
-  
-  
-  getInitialState: ->
-    value:    @props.value
+
+
+  handleKeyDown: (event) ->
+    event.preventDefault() if event.key == 'Enter' and @getDOMNode().innerHTML == ''
 
 
   render: ->
-    (tag.div {
-      contentEditable:          !@props.readOnly
-      dangerouslySetInnerHTML:  { __html: @props.value }
-      'data-placeholder':       @props.placeholder
-      onBlur:                   @onBlur
-      onInput:                  @onInput
-    })
+    return null if @props.readOnly and !@props.value
+
+    <div
+      contentEditable = { !@props.readOnly }
+      dangerouslySetInnerHTML = { __html: @props.value }
+      data-placeholder = { @props.placeholder }
+      onBlur = { @handleBlur }
+      onInput = { @handleInput }
+      onKeyDown = { @handleKeyDown }
+    />
 
 
 # Exports

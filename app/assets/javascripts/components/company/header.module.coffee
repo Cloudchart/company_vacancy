@@ -4,18 +4,19 @@
 #
 tag = React.DOM
 
-CloudFlux       = require('cloud_flux')
-GlobalState     = require('global_state/state')
+CloudFlux = require('cloud_flux')
+GlobalState = require('global_state/state')
 
-CompanyStore    = require('stores/company')
+CompanyStore = require('stores/company')
 
-CompanyActions  = require('actions/company')
-ModalActions    = require('actions/modal_actions')
+CompanyActions = require('actions/company')
+ModalActions = require('actions/modal_actions')
 
 AutoSizingInput = require('components/form/autosizing_input')
 FollowComponent = require('components/company/follow')
-AccessRights    = require('components/company/access_rights')
-TagsComponent   = require('components/company/tags')
+AccessRights = require('components/company/access_rights')
+TagsComponent = require('components/company/tags')
+ContentEditableArea = require('components/form/contenteditable_area')
 
 # Main
 #
@@ -153,14 +154,17 @@ Component = React.createClass
   handleFieldKeyUp: (event) ->
     event.target.blur() if event.key == 'Enter'
 
+  handleDescriptionChange: (content) ->
+    return if @state.company.description is content or @props.readOnly
+    CompanyActions.update(@props.uuid, { description: content })
+
+
   # Lifecycle Methods
   # 
   componentWillReceiveProps: (nextProps) ->
     URL.revokeObjectURL(@state.logotype_url)
     @setState(@getStateFromStores(nextProps))
 
-  componentDidMount: ->
-    $('textarea').autosize() # @seanchas: please don't kill me for this
 
   # Component Specifications
   # 
@@ -169,7 +173,6 @@ Component = React.createClass
 
     company: company
     name: company.name
-    description: company.description
     logotype_url: company.logotype_url
 
   getInitialState: ->
@@ -180,40 +183,38 @@ Component = React.createClass
 
   render: ->
     <header>
-      {@getViewModeSelect()}
-      {@getLogo()}
+      { @getViewModeSelect() }
+      { @getLogo() }
 
       <label className="name">
         <AutoSizingInput
-          value = {@state.name}
-          onBlur = {@handleFieldBlur.bind(@, 'name')}
-          onChange = {@handleFieldChange.bind(@, 'name')}
-          onKeyUp = {@handleFieldKeyUp}
-          placeholder = {'Company name'}
-          readOnly = {@props.readOnly}
+          value = { @state.name }
+          onBlur = { @handleFieldBlur.bind(@, 'name') }
+          onChange = { @handleFieldChange.bind(@, 'name') }
+          onKeyUp = { @handleFieldKeyUp }
+          placeholder = 'Company name'
+          readOnly = { @props.readOnly }
         />
 
-        {@getShareLink()}
+        { @getShareLink() }
       </label>
 
       <label className="description">
-        <textarea
-          value = {@state.description}
-          onBlur = {@handleFieldBlur.bind(@, 'description')}
-          onChange = {@handleFieldChange.bind(@, 'description')}
-          onKeyUp = {@handleFieldKeyUp}
-          placeholder = {'Company short description'}
-          readOnly = {@props.readOnly}
+        <ContentEditableArea
+          onChange = { @handleDescriptionChange }
+          placeholder = 'Company short description'
+          readOnly = { @props.readOnly }
+          value = { @state.company.description }
         />
       </label>
 
       <TagsComponent 
-        taggable_id = {@props.uuid}
-        taggable_type = "Company"
-        readOnly = {@props.readOnly}
+        taggable_id = { @props.uuid }
+        taggable_type = 'Company'
+        readOnly = { @props.readOnly }
       />
       
-      {@getFollowButoon()}
+      { @getFollowButoon() }
     </header>
 
 
