@@ -13,15 +13,18 @@ article.editor > section.people {
       @include display(flex);
       @include justify-content(center);
 
-      margin-left: -$editor-gutter;
-
       > .item {
-        @include flex(0 0 27%);
+        @include flex(0 0 24.5%);
 
         margin: 0;
+        margin-left: $editor-gutter;
         margin-top: 20px;
         padding: 0;
-        padding-left: $editor-gutter;
+
+        &.placeholder,
+        &:first-child {
+          margin-left: 0;
+        }
 
         &.placeholder .person > aside {
           background-color: $editor-placeholder-background-color;
@@ -39,7 +42,7 @@ article.editor > section.people {
           position: relative;
 
           > .person {
-            @include position(absolute, 50px 0 0 -20px);
+            @include position(absolute, 50px 0 0 -2 * $editor-gutter);
             @include transform(scale(0.5, 0.5));
             @include transition(all 150ms ease-out);
             
@@ -78,7 +81,7 @@ article.editor > section.people {
   > .list.hovered {
     > .row:last-child {
       > .item:not(.placeholder) {
-        @include transform(translateX(-40px));
+        @include transform(translateX(-3 * $editor-gutter));
       }
 
       > .placeholder:not(:first-child) {
