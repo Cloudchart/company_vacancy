@@ -135,7 +135,6 @@ Component = React.createClass
     <header>
       {title}
       {date}
-      {@gatherStories()}
     </header>
 
   # Handlers
@@ -213,6 +212,7 @@ Component = React.createClass
         {@getHeader()}
         {@getFirstParagraph()}
         {@gatherPictures()}
+        {@gatherStories()}
       </a>
     </article>
 
