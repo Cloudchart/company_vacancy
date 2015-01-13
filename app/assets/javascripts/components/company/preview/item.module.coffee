@@ -68,7 +68,7 @@ MainComponent = React.createClass
           tag.section { className: "middle" },
             tag.div { className: "left" },
               tag.div { className: "name" }, company.name || 'Unnamed'
-              tag.div { className: "description" }, company.description
+              tag.div { className: "description", dangerouslySetInnerHTML: {__html: company.description} }
             tag.div { className: "right" },
               tag.div { className: "size" },
                 tag.div { className: 'vacancies' },
