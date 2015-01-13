@@ -5,13 +5,14 @@
     <%= @author.full_name %> invited you to join this company:
   </div>
 
-  <div class="company">
-    <%= link_to company_path(@company) do %>
-      <% if @company.logotype %>
-        <%= image_tag(@company.logotype.url) %> <br>
-      <% end %>
-      <strong><%= @company.name %></strong>
-    <% end %>
+  <% if @company.logotype.present? %>
+    <div class="company-logo">
+      <%= link_to image_tag(@company.logotype.url), company_path(@company) %>
+    </div>
+  <% end %>
+
+  <div class="company-name">
+    <%= link_to @company.name, company_path(@company) %>
   </div>
 
   <% if current_user %>
