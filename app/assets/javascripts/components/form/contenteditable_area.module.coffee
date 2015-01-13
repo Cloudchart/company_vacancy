@@ -12,8 +12,12 @@ sanitize = require('utils/contenteditable_sanitizer')
 Component = React.createClass
 
 
-  handleBlur: (event) ->    
-    @props.onChange(sanitize(event.target)) if @props.onChange instanceof Function
+  handleBlur: (event) ->
+    content = sanitize(event.target)
+    @props.onChange(content) if @props.onChange instanceof Function
+    
+    @setState
+      content: content
   
   
   handleInput: (event) ->
@@ -23,6 +27,15 @@ Component = React.createClass
 
   handleKeyDown: (event) ->
     event.preventDefault() if event.key == 'Enter' and @getDOMNode().innerHTML == ''
+  
+  
+  componentWillReceiveProps: (nextProps) ->
+    @setState
+      content: nextProps.value
+  
+
+  getInitialState: ->
+    content: @props.value
 
 
   render: ->
@@ -30,7 +43,7 @@ Component = React.createClass
 
     <div
       contentEditable = { !@props.readOnly }
-      dangerouslySetInnerHTML = { __html: @props.value }
+      dangerouslySetInnerHTML = { __html: @state.content }
       data-placeholder = { @props.placeholder }
       onBlur = { @handleBlur }
       onInput = { @handleInput }
