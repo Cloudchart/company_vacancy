@@ -151,11 +151,6 @@ main.company > div.wrapper > div.posts {
         > span.date {
           color: grey;
         }
-
-        > div.cc-hashtag-list > ul > li {
-          margin-top: 5px;
-          font-size: 16px;
-        }
       }
 
       > div.paragraph {
@@ -185,53 +180,62 @@ main.company > div.wrapper > div.posts {
         margin-top: 20px;
       }
 
+      > div.cc-hashtag-list {
+        margin-top: 20px;
+        text-align: center;
+
+        > ul > li {
+          font-size: 16px;
+        }
+      }
+
     }
   }
 
   // Person preview
   // 
-  > article.preview.person {
-    margin: ($base-post-preview-margin / 2) 0;
-    width: 200px;
-    position: relative;
+  // > article.preview.person {
+  //   margin: ($base-post-preview-margin / 2) 0;
+  //   width: 200px;
+  //   position: relative;
 
-    &:first-of-type {
-      width: 285px;
-    }
+  //   &:first-of-type {
+  //     width: 285px;
+  //   }
 
-    > aside.avatar {
-      cursor: pointer;
-    }
+  //   > aside.avatar {
+  //     cursor: pointer;
+  //   }
 
-    > aside.event {
-      position: absolute;
-      top: 36%;
-      left: 108%;
-      width: 100%;
-      font-size: 16px;
-    }
+  //   > aside.event {
+  //     position: absolute;
+  //     top: 36%;
+  //     left: 108%;
+  //     width: 100%;
+  //     font-size: 16px;
+  //   }
 
-    > footer {
-      padding: 10px 20px 0 20px;
+  //   > footer {
+  //     padding: 10px 20px 0 20px;
 
-      > p {
-        margin: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        text-align: center;
-        white-space: nowrap;
+  //     > p {
+  //       margin: 0;
+  //       overflow: hidden;
+  //       text-overflow: ellipsis;
+  //       text-align: center;
+  //       white-space: nowrap;
 
-        &.name { 
-          font-size: 20px;
-        }
+  //       &.name { 
+  //         font-size: 20px;
+  //       }
 
-        &.occupation {
-          color: hsl(0, 0%, 50%);
-          font-size: 12px;
-        }
-      }
-    }
-  }
+  //       &.occupation {
+  //         color: hsl(0, 0%, 50%);
+  //         font-size: 12px;
+  //       }
+  //     }
+  //   }
+  // }
 
 }
 
