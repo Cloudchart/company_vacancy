@@ -19,7 +19,7 @@ IdentityActions =
 
 # Utils
 #
-uuid = require('utils/uuid')
+UUID = require('utils/uuid')
 
 
 formatName = (name) ->
@@ -104,7 +104,7 @@ Component = React.createClass
     name = formatName(name) ; return if name.length == 0
 
     unless @state.tagNameSeq.contains(name)
-      @props.cursor.set(uuid(), { name: name })
+      @props.cursor.set(UUID(), { name: name })
 
     tag_names = @state.identityTagNameSeq.toSet().add(name)
 

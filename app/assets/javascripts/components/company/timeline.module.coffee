@@ -8,16 +8,16 @@ CloudFlux = require('cloud_flux')
 
 PostStore = require('stores/post_store')
 
-PostActions  = require('actions/post_actions')
+PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
 PostPreview = require('components/company/timeline/post_preview')
-Post        = require('components/post')
+Post = require('components/post')
 
+UUID = require('utils/uuid')
 
 # Utils
 #
-
 postPreviewMapper = (props) ->
   (post) ->
     <PostPreview
@@ -102,15 +102,13 @@ Component = React.createClass
   
   
   handleWindowHashChange: (event) ->
-    @showPostInModal(window.location.hash.split('#').pop())
+    postId = window.location.hash.split('#').pop()
+    @showPostInModal(postId) if UUID.isUUID(postId)
 
 
 
   # Lifecycle Methods
   # 
-  # componentWillMount: ->
-
-
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
     window.addEventListener('hashchange', @handleWindowHashChange)
