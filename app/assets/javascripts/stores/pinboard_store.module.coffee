@@ -51,7 +51,7 @@ fetchAllFail = (xhr) ->
 
 
 fetchOne = (id, force = false) ->
-  PinboardSyncAPI.fetchOne(id, force).then(fetchOneDone, fetchOneFail(json.id))
+  PinboardSyncAPI.fetchOne(id, force).then(fetchOneDone, fetchOneFail(id))
   
 
 fetchOneDone = (json) ->
