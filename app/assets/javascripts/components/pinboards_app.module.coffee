@@ -45,14 +45,14 @@ module.exports = React.createClass
 
   handleCreatePinboardClick: (event) ->
     event.preventDefault()
-    title = prompt('Pick a name') ; return unless title
-    PinboardStore.create(title)
+    title = prompt('Pick a name') ; return unless title and title.trim().length > 0
+    PinboardStore.create(title.trim())
   
 
   handleUpdatePinboardClick: (id, title, event) ->
     event.preventDefault()
-    title = prompt('Pick a title', title) ; return unless title
-    PinboardStore.update(id, title)
+    title = prompt('Pick a title', title) ; return unless title and title.trim().length > 0
+    PinboardStore.update(id, title.trim())
   
   
   handleDestroyPinboardClick: (id, event) ->
@@ -70,7 +70,7 @@ module.exports = React.createClass
   
   
   getDefaultProps: ->
-    cursor: GlobalState.cursor(['stores', 'pinboards', 'items'])
+    cursor: PinboardStore.cursor.items
 
 
   render: ->
