@@ -183,9 +183,10 @@ Component = React.createClass
     </div>
 
   isEpochType: ->
-    @state.blocks.length is 0 or 
-      (@state.blocks.length is 1 and @state.blocks[0].identity_type is 'Paragraph' and
-        !ParagraphStore.find (paragraph) => paragraph.owner_id is @state.blocks[0].uuid)
+    @state.post.title and @state.post.effective_from and @state.post.effective_till and 
+      (@state.blocks.length is 0 or 
+        (@state.blocks.length is 1 and @state.blocks[0].identity_type is 'Paragraph' and
+          !ParagraphStore.find (paragraph) => paragraph.owner_id is @state.blocks[0].uuid))
 
 
   # Handlers
