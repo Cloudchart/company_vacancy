@@ -29,21 +29,6 @@ formatName = (name) ->
   name = name.replace(/\s/g, '-')
 
 
-performCompanySearchByTag = (tag) ->
-  csrfToken = $('meta[name=csrf-token]').attr('content')
-  csrfParam = $('meta[name=csrf-param]').attr('content')
-  
-  $form   = $('<form method="post" action="/companies/search"></form>')
-  meta    = '<input type="hidden" name="' + csrfParam + '" value="' + csrfToken + '" />'
-  query   = '<input type="hidden" name="query" value="' + tag + '" />'
-  
-  $form.append(meta)
-  $form.append(query)
-
-  $form.hide().appendTo('body')
-  $form.submit()
-
-
 # Component
 # 
 Component = React.createClass
@@ -61,7 +46,7 @@ Component = React.createClass
   
   getTagForList: (tag) ->
     if @props.taggable_type is 'Company'
-      <a href="/companies/search?query=#{tag}" onClick={@onTagClick.bind(@, tag)}>{'#' + tag}</a>
+      <a href="/companies/search?query=#{tag}">{'#' + tag}</a>
     else
       <span>{'#' + tag}</span>
   
@@ -114,11 +99,6 @@ Component = React.createClass
   onRemove: (object) ->
     tag_names = @state.identityTagNameSeq.toSet().remove(object.id)
     @syncIdentityTagNames(tag_names.toArray())
-
-
-  onTagClick: (tag, event) ->
-    event.preventDefault()
-    performCompanySearchByTag(tag)
   
   
   getStateFromProps: (props) ->

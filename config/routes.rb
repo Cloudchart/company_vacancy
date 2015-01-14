@@ -28,7 +28,7 @@ Cloudchart::Application.routes.draw do
   # Resources
   #
   resources :companies, except: [:create, :edit], concerns: [:followable] do
-    post :search, on: :collection
+    match :search, on: :collection, via: [:get, :post]
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
     get :finance, on: :member
