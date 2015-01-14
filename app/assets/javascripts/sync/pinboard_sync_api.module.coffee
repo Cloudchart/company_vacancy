@@ -17,7 +17,7 @@ module.exports =
   
   
   fetchOne: (id, force = false) ->
-    delete pendingPromises['fetchOne' + id] if force = true
+    delete pendingPromises['fetchOne' + id] if force == true
 
     pendingPromises['fetchOne' + id] ||= Promise.resolve $.ajax
       url:      '/pinboards/' + id
