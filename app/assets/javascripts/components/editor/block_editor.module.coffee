@@ -28,12 +28,12 @@ SectionClassNames =
   KPI:        'kpi'
 
 SectionPlaceholderItemNames = 
-  Person:     'People'
-  Vacancy:    'Vacancies'
   Picture:    'Picture'
   Paragraph:  'Text'
   Quote:      'Quote'
   KPI:        'KPI'
+  Person:     'People'
+  Vacancy:    'Vacancies'
 
 
 # Main

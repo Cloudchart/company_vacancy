@@ -22,7 +22,7 @@ postPreviewMapper = (props) ->
   (post) ->
     <PostPreview
       key         = { post.uuid }
-      id          = { post.uuid }
+      uuid        = { post.uuid }
       company_id  = { props.company_id }
       readOnly    = { props.readOnly }
     />

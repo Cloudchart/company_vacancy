@@ -98,11 +98,27 @@ main.company > div.wrapper > div.posts {
   > article.preview.post {
     position: relative;
     background-color: white;
-    width: 600px;
+    width: 800px;
     margin: ($base-post-preview-margin / 2) 0;
 
     &:hover > ul.controls {
       visibility: visible;
+    }
+
+    &.epoch {
+      background: none;
+
+      > a > header {
+        > h1 {
+          font-size: 55px;
+          font-weight: 500;
+        }
+
+        > span.date {
+          font-size: 20px;
+          color: black;
+        }
+      }
     }
 
     > ul.controls {
@@ -153,39 +169,76 @@ main.company > div.wrapper > div.posts {
         }
       }
 
-      > div.paragraph {
-        font-size: 16px;
-        line-height: 22px;
-        word-wrap: break-word;
-        max-height: 200px;
-      }
+      > div.content {
+        > div.paragraph {
+          font-size: 16px;
+          line-height: 22px;
+          word-wrap: break-word;
+          max-height: 200px;
 
-      > ul.pictures {
-        @include flex-ul;
-        margin-top: 20px;
+          &.quote {
+            font-size: 28px;
+            font-weight: 300;
+            line-height: 130%;
+            font-style: italic;
+          }
+        }
 
-        > li {
-          width: 100px;
-          height: 100px;
-          overflow: hidden;
-          margin-right: 20px;
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: cover;
+        > div.person {
+          width: 200px;
+          text-align: center;
+          margin: 20px auto 0 auto;
+
+          > footer {
+            > p {
+              margin: 0;
+              overflow: hidden;
+              text-align: center;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+
+              &.name {
+                font-size: 20px;
+              }
+
+              &.occupation {
+                font-size: 12px;
+                color: gray;
+              }
+            }
+
+          }
+        }
+
+        > ul.pictures {
+          @include flex-ul;
+          margin-top: 20px;
+
+          > li {
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            margin-right: 20px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+          }
+        }
+
+        > img.cover {
+          width: 100%;
+          margin-top: 20px;
         }
       }
 
-      > img.cover {
-        width: 100%;
-        margin-top: 20px;
-      }
-
-      > div.cc-hashtag-list {
+      > footer {
         margin-top: 20px;
         text-align: center;
 
-        > ul > li {
-          font-size: 16px;
+        > div.cc-hashtag-list {
+          > ul > li {
+            font-size: 16px;
+          }
         }
       }
 
@@ -260,7 +313,7 @@ div.post-container {
         padding: 0;
       }
 
-      &.title div[contenteditable] {
+      &.title > div[contenteditable] {
         @include editor-contenteditable-area;
         
         max-width: 800px;
@@ -268,7 +321,7 @@ div.post-container {
         font-weight: 400;
       }
       
-      &.published-at input {
+      &.published-at > input {
         font-size: 24px;
         font-weight: 300;
       }
@@ -276,6 +329,7 @@ div.post-container {
     }
 
     > div.cc-hashtag-list {
+      max-width: 800px;
       margin-top: 10px;
     }
 
