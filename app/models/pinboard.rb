@@ -4,5 +4,7 @@ class Pinboard < ActiveRecord::Base
   validates_uniqueness_of :title, scope: :user_id, case_sensitive: false
   
   belongs_to :user
+  
+  has_many :pins
 
 end

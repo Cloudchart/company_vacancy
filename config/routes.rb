@@ -97,6 +97,7 @@ Cloudchart::Application.routes.draw do
   
   
   resources :pinboards
+  resources :pins
 
 
   # Custom

@@ -27,7 +27,9 @@ class User < ActiveRecord::Base
   has_many :companies, through: :roles, source: :owner, source_type: 'Company'
   has_many :followed_companies, through: :favorites, source: :favoritable, source_type: 'Company'
   has_many :people, dependent: :destroy
+
   has_many :pinboards, dependent: :destroy
+  has_many :pins, dependent: :destroy
   
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
