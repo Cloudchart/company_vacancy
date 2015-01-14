@@ -17,7 +17,7 @@ EmptyPinboards = Immutable.Seq({})
 
 Dispatcher.register (payload) ->
   
-  if payload.action.type == 'pinboards:fetch:done'
+  if payload.action.type == 'pinboard:fetch-all:done'
     [json] = payload.action.data
     
     ItemsCursor.transaction()
@@ -28,7 +28,7 @@ Dispatcher.register (payload) ->
     ItemsCursor.commit()
 
 
-  if payload.action.type == 'pinboard:fetch:done'
+  if payload.action.type == 'pinboard:fetch-one:done'
     [json] = payload.action.data
     
     ItemsCursor.set(json.pinboard.uuid, json.pinboard)
@@ -36,30 +36,39 @@ Dispatcher.register (payload) ->
 
 # Fetch
 #
+fetchAll = (force = false) ->
+  PinboardSyncAPI.fetchAll(force).then(fetchAllDone, fetchAllFail)
+
+
 fetchAllDone = (json) ->
   Dispatcher.handleServerAction
-    type: 'pinboards:fetch:done'
+    type: 'pinboard:fetch-all:done'
     data: [json]
 
 
 fetchAllFail = (xhr) ->
   alert 'Error loading pinboards. Please, refresh the page.'
+
+
+fetchOne = (id, force = false) ->
+  PinboardSyncAPI.fetchOne(id, force).then(fetchOneDone, fetchOneFail(json.id))
   
 
 fetchOneDone = (json) ->
   Dispatcher.handleServerAction
-    type: 'pinboard:fetch:done'
+    type: 'pinboard:fetch-one:done'
     data: [json]
 
 
 fetchOneFail = (id) ->
   (xhr) ->
-    console.warn 'PinboardStore: error fetching pinboard with id "' + id + '"'
+    'Error loading pinboard with id "' + id + '". Please, try again later.'
+
 
 # Create
 #
 createDone = (json) ->
-  PinboardSyncAPI.fetchOne(json.id).then(fetchOneDone, fetchOneFail(json.id))
+  fetchOne(json.id, true)
 
 
 createFail = (xhr) ->
@@ -69,7 +78,7 @@ createFail = (xhr) ->
 # Update
 #
 updateDone = (json) ->
-  PinboardSyncAPI.fetchOne(json.id).then(fetchOneDone, fetchOneFail(json.id))
+  fetchOne(json.id, true)
 
 
 updateFail = (xhr) ->
@@ -91,13 +100,16 @@ destroyFail = (xhr) ->
 module.exports =
   
   empty: EmptyPinboards
-
-  fetchAll: ->
-    PinboardSyncAPI.fetchAll().then(fetchAllDone, fetchAllFail)
   
 
-  fetchOne: (id) ->
-    PinboardSyncAPI.fetchOne(id).then(fetchOneDone, fetchOneFail(json.id))
+  cursor:
+    items: ItemsCursor
+
+
+  fetchAll: fetchAll
+  
+
+  fetchOne: fetchOne
   
 
   create: (title) ->
