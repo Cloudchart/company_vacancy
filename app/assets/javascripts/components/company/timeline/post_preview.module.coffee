@@ -17,9 +17,13 @@ PersonStore = require('stores/person')
 PostActions = require('actions/post_actions')
 VisibilityActions = require('actions/visibility_actions')
 
+ModalActions = require('actions/modal_actions')
+
 Post = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
 PersonAvatar = require('components/shared/person_avatar')
+
+PinFormComponent = require('components/form/pin_form')
 
 FuzzyDate = require('utils/fuzzy_date')
 
@@ -30,7 +34,7 @@ Component = React.createClass
 
   # Helpers
   # 
-  gatherControls: ->
+  __gatherControls: ->
     return null if @props.readOnly
 
     <ul className="controls">
@@ -43,6 +47,14 @@ Component = React.createClass
       </li>
       <li>
         <i className="fa fa-times" onClick={@handleDestroyClick}></i>
+      </li>
+    </ul>
+  
+  
+  gatherControls: ->
+    <ul className="buttons">
+      <li onClick={ @handlePinClick }>
+        <i className="fa fa-thumb-tack" />
       </li>
     </ul>
 
@@ -189,7 +201,14 @@ Component = React.createClass
 
 
   # Handlers
-  # 
+  #
+  
+  handlePinClick: (event) ->
+    ModalActions.show(
+      <PinFormComponent />
+    )
+    
+  
   handleDestroyClick: (event) ->
     event.preventDefault()
     PostActions.destroy(@state.post.uuid) if confirm('Are you sure?')
