@@ -121,8 +121,6 @@ MainComponent = React.createClass
 
     BlockableActions.createBlock(key, BlockStore.get(key).toJSON())
 
-    @setState({ position: null })
-
 
   handleSortableChange: (key, currIndex, nextIndex) ->
     [blocks, offset] = if currIndex > nextIndex
