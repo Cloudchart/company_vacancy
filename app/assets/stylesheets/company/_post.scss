@@ -156,7 +156,6 @@ main.company > div.wrapper > div.posts {
       color: inherit;
 
       > header {
-        margin-bottom: 20px;
         text-align: center;
 
         > h1 { 
@@ -171,6 +170,7 @@ main.company > div.wrapper > div.posts {
 
       > div.content {
         > div.paragraph {
+          margin-top: 20px;
           font-size: 16px;
           line-height: 22px;
           word-wrap: break-word;
@@ -209,21 +209,6 @@ main.company > div.wrapper > div.posts {
               }
             }
 
-          }
-        }
-
-        > ul.pictures {
-          @include flex-ul;
-          margin-top: 20px;
-
-          > li {
-            width: 100px;
-            height: 100px;
-            overflow: hidden;
-            margin-right: 20px;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
           }
         }
 

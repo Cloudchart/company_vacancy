@@ -89,11 +89,28 @@ Component = React.createClass
 
 
   getContent: ->
+    first_block = @state.blocks[0]
+    return null unless first_block
+
+    first_content_item = @identityContentSwitcher(first_block)
+
+    second_block = @state.blocks[1]
+    second_content_item = if second_block and second_block.identity_type isnt first_block.identity_type
+      @identityContentSwitcher(second_block)
+    else
+      null
+
     <div className="content">
-      { @getFirstParagraph() }
-      { @getFirstPerson() }
-      { @gatherPictures() }
+      { first_content_item }
+      { second_content_item }
     </div>
+
+
+  identityContentSwitcher: (block) ->
+    switch block.identity_type
+      when 'Paragraph' then @getParagraph(block)
+      when 'Picture' then @getPicture(block)
+      when 'Person' then @getPerson(block)
 
 
   postStoryMapper: (story, key) ->
@@ -102,17 +119,8 @@ Component = React.createClass
     </li>
 
 
-  getFirstParagraph: ->
-    block = _.chain @state.blocks
-      .filter (block) -> block.identity_type is 'Paragraph'
-      .sortBy('position')
-      .first()
-      .value()
-
-    return null unless block
-    
+  getParagraph: (block) ->    
     paragraph = ParagraphStore.find (paragraph) -> paragraph.owner_id is block.uuid
-
     return null unless paragraph
 
     parts = paragraph.content.match(/<div>(.*?)<\/div>/i)
@@ -124,49 +132,15 @@ Component = React.createClass
     <div className={classes} dangerouslySetInnerHTML={__html: content}></div>
 
 
-  gatherPictures: ->
-    pictures = _.chain @state.blocks
-      .filter (block) -> block.identity_type is 'Picture'
-      .sortBy('position')
-      .map (block) -> PictureStore.find (picture) -> picture.owner_id is block.uuid
-      .compact()
-      .value()
+  getPicture: (block) ->
+    picture = PictureStore.find (picture) -> picture.owner_id is block.uuid
+    return null unless picture
 
-    return null unless pictures.length > 0
-
-    # left only cover for now
-    <img className="cover" src={pictures[0].url}/>
-
-    # if pictures.length is 1
-    #   <img className="cover" src={pictures[0].url}/>
-    # else
-    #   <ul className="pictures">
-    #     {
-    #       _.map pictures, (picture) -> 
-    #         <li key={picture.uuid} style={'background-image': "url(#{picture.url})"}></li>
-    #     }
-    #   </ul>
+    <img className="cover" src={picture.url}/>
 
 
-  getFirstPerson: ->
-    first_paragraph_block = _.chain @state.blocks
-      .filter (block) -> block.identity_type is 'Paragraph'
-      .sortBy('position')
-      .first()
-      .value()
-
-    return null unless first_paragraph_block and first_paragraph_block.kind is 'Quote'
-
-    firt_person_block = _.chain @state.blocks
-      .filter (block) -> block.identity_type is 'Person'
-      .sortBy('position')
-      .first()
-      .value()
-
-    return null unless firt_person_block
-
-    person = PersonStore.get(firt_person_block.identity_ids.toJS()[0])
-
+  getPerson: (block) ->
+    person = PersonStore.get(block.identity_ids.toJS()[0])
     return null unless person
 
     <div className="person">
@@ -182,11 +156,9 @@ Component = React.createClass
       </footer>
     </div>
 
+
   isEpochType: ->
-    @state.post.title and @state.post.effective_from and @state.post.effective_till and 
-      (@state.blocks.length is 0 or 
-        (@state.blocks.length is 1 and @state.blocks[0].identity_type is 'Paragraph' and
-          !ParagraphStore.find (paragraph) => paragraph.owner_id is @state.blocks[0].uuid))
+    @state.post.title and @state.post.effective_from and @state.post.effective_till and @state.blocks.length is 0
 
 
   # Handlers
@@ -236,9 +208,13 @@ Component = React.createClass
 
   getStateFromStores: (props) ->
     visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.uuid and item.owner_type is 'Post'
+    blocks = _.chain BlockStore.all()
+      .filter (block) -> block.owner_id is props.uuid
+      .sortBy('position')
+      .value()
 
     post: PostStore.get(props.uuid)
-    blocks: BlockStore.filter (block) => block.owner_id is @props.uuid
+    blocks: blocks
     visibility: visibility
     visibility_value: if visibility then visibility.value else 'public'
 
