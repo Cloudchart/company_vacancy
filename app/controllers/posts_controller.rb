@@ -41,7 +41,8 @@ class PostsController < ApplicationController
     respond_to do |format|
       format.html { 
         pagescript_params(
-          story_id: @company.stories.find_by(params[:story_name]).try(:id)
+          company_id: @company.id,
+          story_id: @company.stories.find_by(name: params[:story_name]).try(:id)
         )
       }
       format.json

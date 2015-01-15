@@ -17,6 +17,7 @@ ComboboxOption  = cc.require('plugins/react_tokeninput/option')
 
 
 # Module helpers
+# 
 formatName = (name) ->
   name = name.trim()
   name = name.replace(/[^A-Za-z0-9\-_|\s]+/ig, '')
@@ -32,6 +33,7 @@ MainComponent = React.createClass
     onChange: React.PropTypes.func
 
   displayName: 'Stories'
+
 
   # Helpers
   # 
