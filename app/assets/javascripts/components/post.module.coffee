@@ -145,7 +145,6 @@ Component = React.createClass
         owner_type = "Post"
         editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI', 'Person']}
         classForArticle = "editor post"
-        buildParagraph = {true}
         readOnly = {@props.readOnly}
       />
 

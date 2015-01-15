@@ -96,10 +96,6 @@ MainComponent = React.createClass
   getIdentityTypes: ->
     _.pick SectionPlaceholderItemNames, (name, key) => _.contains(@props.editorIdentityTypes, key)
 
-  buildParagraph: ->
-    new_block_key = BlockStore.create({ owner_id: @props.owner_id, owner_type: @props.owner_type, identity_type: 'Paragraph', position: 0 })
-    setTimeout => BlockableActions.createBlock(new_block_key, BlockStore.get(new_block_key).toJSON())
-
 
   # Handlers
   # 
@@ -171,7 +167,6 @@ MainComponent = React.createClass
   # 
   componentDidMount: ->
     BlockStore.on('change', @refreshStateFromStores)
-    @buildParagraph() if @props.buildParagraph and @state.blocks.length == 0
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -179,21 +174,21 @@ MainComponent = React.createClass
   componentWillUnmount: ->
     BlockStore.off('change', @refreshStateFromStores)
 
+
   # Component Specifications
   # 
-  getDefaultProps: ->
-    buildParagraph: false
-
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
-    blocks: BlockStore.filter (block) => block.owner_id == props.owner_id
+    blocks = BlockStore.filter (block) -> block.owner_id == props.owner_id
+    position = if blocks.length is 0 and @props.owner_type is 'Post'then 0 else null
+
+    blocks: blocks
+    position: position
 
   getInitialState: ->
-    state = @getStateFromStores(@props)
-    state.position = null
-    state
+    @getStateFromStores(@props)
 
   render: ->
     return null unless @state.blocks
