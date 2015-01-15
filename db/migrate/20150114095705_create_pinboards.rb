@@ -3,7 +3,7 @@ class CreatePinboards < ActiveRecord::Migration
     create_table :pinboards, id: false do |t|
       t.string  :uuid,      limit: 36,  null: false
       t.string  :title,                 null: false
-      t.string  :user_id,   limit: 36,  null: false
+      t.string  :user_id,   limit: 36
       t.integer :position,              default: 0
       t.timestamps
     end

@@ -289,7 +289,7 @@ ActiveRecord::Schema.define(version: 20150114130412) do
 
   create_table "pinboards", primary_key: "uuid", force: true do |t|
     t.string   "title",                             null: false
-    t.string   "user_id",    limit: 36,             null: false
+    t.string   "user_id",    limit: 36
     t.integer  "position",              default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
