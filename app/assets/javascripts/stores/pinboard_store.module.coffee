@@ -9,7 +9,7 @@ GlobalState     = require('global_state/state')
 ItemsCursor = GlobalState.cursor(['stores', 'pinboards', 'items'])
 
 
-EmptyPinboards = Immutable.Seq({})
+EmptyPinboards = Immutable.Map({})
 
 
 # Dispatcher
@@ -21,6 +21,8 @@ Dispatcher.register (payload) ->
     [json] = payload.action.data
     
     ItemsCursor.transaction()
+    
+    ItemsCursor.update(-> EmptyPinboards)
     
     Immutable.Seq(json.pinboards).forEach (pinboard) ->
       ItemsCursor.set(pinboard.uuid, pinboard)
