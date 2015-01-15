@@ -105,7 +105,7 @@ class Company < ActiveRecord::Base
 private
 
   def publish_check
-    unless name.present? && logotype.present? && people.any? && tags.any? && charts.first.try(:nodes).try(:any?)
+    unless name.present? && logotype.present? && people.any? && tags.any? #&& charts.first.try(:nodes).try(:any?)
       errors.add(:is_published, I18n.t('errors.messages.company_can_not_become_published'))
     end
   end
