@@ -68,6 +68,12 @@ Progress = React.createClass
     state.company = CompanyStore.get(@props.uuid) unless sync
     state
 
+  shouldDisablePublishButton: ->
+    if @state.company.is_published
+      false
+    else
+      @progressItemsLeft() > 0 or @state.sync
+
   # Handlers
   # 
   handlePublishClick: ->
@@ -104,7 +110,7 @@ Progress = React.createClass
         }
         <button className="orgpad"
                 onClick={@handlePublishClick}
-                disabled={@progressItemsLeft() > 0 or @state.sync}>
+                disabled={@shouldDisablePublishButton()}>
           <span>{if company.is_published then "Unpublish" else "Publish"}</span>
           <i className={@classForButtonIcon()}></i>
         </button>

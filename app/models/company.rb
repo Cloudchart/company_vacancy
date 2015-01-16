@@ -4,7 +4,7 @@ class Company < ActiveRecord::Base
   include Sluggable
   include Taggable
   include Tire::Model::Search
-  include Tire::Model::Callbacks  
+  include Tire::Model::Callbacks
 
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
   ROLES           = ([:owner] + INVITABLE_ROLES).freeze
@@ -30,7 +30,7 @@ class Company < ActiveRecord::Base
   has_many :stories, dependent: :destroy
   
   validates :site_url, url: true, allow_blank: true
-  validate  :publish_check, if: 'is_published && is_published_changed?'
+  validate  :publish_check, if: 'is_published? && is_published_changed?'
 
   settings ElasticSearchNGramSettings do
     mapping do
