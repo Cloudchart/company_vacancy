@@ -44,6 +44,7 @@ Component = React.createClass
     <FuzzyDateInput
       from      = { @state.post.effective_from }
       till      = { @state.post.effective_till }
+      readOnly  = { @props.readOnly }
       onUpdate  = { @handleEffectiveDateUpdate }
     />
 

@@ -59,11 +59,14 @@ module.exports = React.createClass
 
 
   render: ->
-    <input
-      onBlur      = { @handleUpdate }
-      onChange    = { @handleChange }
-      onKeyUp     = { @handleKeyUp  }
-      placeholder = { moment().format('ll') }
-      type        = "text"
-      value       = { @state.value }
-    />
+    if @props.readOnly
+      <span>{@state.value}</span>
+    else
+      <input
+        onBlur      = { @handleUpdate }
+        onChange    = { @handleChange }
+        onKeyUp     = { @handleKeyUp  }
+        placeholder = { moment().format('ll') }
+        type        = "text"
+        value       = { @state.value }
+      />
