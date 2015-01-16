@@ -1,6 +1,4 @@
 $modal-overlay-background-color: hsla(0, 0%, 50%, .5);
-$modal-overlay-z-index: 10000;
-
 $modal-container-background-color: hsl(0, 100%, 100%);
 
 // Modal form
@@ -121,7 +119,7 @@ body .modal-overlay {
   
   background-color: $modal-overlay-background-color;
   overflow: hidden;
-  z-index: 10000;
+  z-index: $zindex-modal;
   
   > .modal-container {
     background-color: $modal-container-background-color;
