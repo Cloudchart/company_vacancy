@@ -10,8 +10,11 @@ BlockStore = require('stores/block_store')
 BlockActions = require('actions/block_actions')
 BlockableActions = require('actions/mixins/blockable_actions')
 
-SortableList = require('components/shared/sortable_list')
-SortableListItem  = require('components/shared/sortable_list_item')
+SortableList     = require('components/shared/sortable_list')
+SortableListItem = require('components/shared/sortable_list_item')
+
+Hintable         = require('components/shared/hintable')
+Hints            = require('utils/hints')
 
 BlockComponents =
   Picture:    require('components/editor/picture')
@@ -35,6 +38,8 @@ SectionPlaceholderItemNames =
   Person:     'People'
   Vacancy:    'Vacancies'
 
+Hints =
+  Quote: Hints.quote
 
 # Main
 # 
@@ -55,18 +60,19 @@ MainComponent = React.createClass
         <SortableListItem key={block_key}>
           <section key={block_key} className={SectionClassNames[block.kind || block.identity_type]}>
             {@getDestroyLink(block.uuid)}
-            <BlockComponent
-              key={block_key}
-              company_id={@props.company_id}
-              readOnly={@props.readOnly}
-              blockKind={block.kind || block.identity_type}
-            />
+            <Hintable text={Hints[block.kind]} isHintable={!@props.readOnly && Hints[block.kind]}>
+              <BlockComponent
+                key={block_key}
+                company_id={@props.company_id}
+                readOnly={@props.readOnly}
+                blockKind={block.kind || block.identity_type} />
+            </Hintable>
           </section>
         </SortableListItem>
 
       .value()
 
-
+  
   getDestroyLink: (block_id) ->
     return null if @props.readOnly
     <i className="fa fa-times remove" onClick={@handleBlockDestroyClick.bind(@, block_id)}></i>
