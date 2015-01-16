@@ -9,7 +9,6 @@ GlobalState       = require('global_state/state')
 #
 EmptyData                 = Immutable.Map()
 
-CompanyCursor             = GlobalState.cursor(['stores', 'companies'])
 CompanyMetaCursor         = GlobalState.cursor(['stores', 'companies', 'meta'])
 CompanyFlagsCursor        = GlobalState.cursor(['stores', 'companies', 'flags'])
 

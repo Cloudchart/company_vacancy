@@ -215,8 +215,9 @@ Component = React.createClass
   # 
   componentDidMount: ->
     BlockStore.on('change', @refreshStateFromStores)
-    ParagraphStore.on('change', @refreshStateFromStores)
+    PersonStore.on('change', @refreshStateFromStores)
     PictureStore.on('change', @refreshStateFromStores)
+    ParagraphStore.on('change', @refreshStateFromStores)
     VisibilityStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
@@ -224,8 +225,9 @@ Component = React.createClass
 
   componentWillUnmount: ->
     BlockStore.off('change', @refreshStateFromStores)
-    ParagraphStore.off('change', @refreshStateFromStores)
+    PersonStore.off('change', @refreshStateFromStores)
     PictureStore.off('change', @refreshStateFromStores)
+    ParagraphStore.off('change', @refreshStateFromStores)
     VisibilityStore.off('change', @refreshStateFromStores)
 
 

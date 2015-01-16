@@ -15,8 +15,7 @@ EmptyStories  = Immutable.Map()
 # 
 Dispatcher.register (payload) ->
   
-  # TODO: fetch stories from 'post:fetch:many:done'
-  if payload.action.type == 'company:fetch:done'
+  if payload.action.type == 'post:fetch-all:done'
     fetchMany.apply(null, payload.action.data)
 
 
@@ -34,7 +33,7 @@ setStoryItem = (uuid, story) ->
 
 # Handlers
 # 
-fetchMany = (company_id, json) ->
+fetchMany = (json) ->
   ItemsCursor.transaction()
 
   ItemsCursor.clear()
