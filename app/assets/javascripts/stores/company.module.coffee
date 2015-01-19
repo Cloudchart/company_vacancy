@@ -16,6 +16,15 @@ CompanyFlagsCursor        = GlobalState.cursor(['stores', 'companies', 'flags'])
 Dispatcher.register (payload) ->
 
   switch payload.action.type
+    
+    
+    when 'post:fetch-one:done'
+      [post_id, json] = payload.action.data
+      if json.post.owner_type == 'Company' and json.owner
+        CompanyCursor.transaction()
+        CompanyMetaCursor.set(json.owner.uuid, json.owner.meta)
+        CompanyFlagsCursor.set(json.owner.uuid, json.owner.flags)
+        CompanyCursor.commit()
 
 
     when 'company:fetch:done'
@@ -67,6 +76,13 @@ Dispatcher.register (payload) ->
 # Exports
 #
 module.exports = CloudFlux.createStore
+
+
+  onPostFetchOneDone: (post_id, json) ->
+    if json.post.owner_type == 'Company' and json.owner
+      @store.add_or_update(json.owner.uuid, json.owner)
+      @store.emitChange()
+
 
   onVerifySiteUrl: (key, token) ->
     @store.start_sync(key, token)
@@ -121,6 +137,8 @@ module.exports = CloudFlux.createStore
 
   getActions: ->
     actions = {}
+    
+    actions['post:fetch-one:done'] = @onPostFetchOneDone
 
     actions[Constants.Company.VERIFY_SITE_URL]      = @onVerifySiteUrl
     actions[Constants.Company.VERIFY_SITE_URL_DONE] = @onVerifySiteUrlDone
@@ -139,5 +157,5 @@ module.exports = CloudFlux.createStore
     actions[Constants.Company.UNFOLLOW_FAIL]  = @onUpdateFail
 
     actions[Constants.Role.CREATE_DONE]  = @onRoleCreateDone
-
+    
     actions

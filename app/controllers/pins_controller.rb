@@ -5,7 +5,7 @@ class PinsController < ApplicationController
     @pins = current_user.pins
     
     respond_to do |format|
-      format.json { render json: @pins }
+      format.json
     end
   end
   

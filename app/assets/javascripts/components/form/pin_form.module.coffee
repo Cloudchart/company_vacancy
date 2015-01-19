@@ -113,7 +113,7 @@ module.exports = React.createClass
         <span>
           Pin It
         </span>
-        <span className="title">{ @props.title }</span>
+        <span className="title" dangerouslySetInnerHTML={ __html: @props.title } />
       </header>
       
       <fieldset>

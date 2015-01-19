@@ -36,12 +36,12 @@ Dispatcher.register (payload) ->
 # Fetch
 #
 
-fetchAll = (force = false) ->
-  PinSyncAPI.fetchAll(force).then(fetchAllDone, fetchAllFail)
+fetchAll = (options = {}) ->
+  PinSyncAPI.fetchAll(options).then(fetchAllDone, fetchAllFail)
 
 
-fetchOne = (id, force = false) ->
-  PinSyncAPI.fetchOne(id, force).then(fetchOneDone, fetchOneFail)
+fetchOne = (id, options = {}) ->
+  PinSyncAPI.fetchOne(id, options).then(fetchOneDone, fetchOneFail)
 
 
 fetchAllDone = (json) ->
@@ -71,7 +71,7 @@ fetchOneFail = (xhr) ->
 # Create
 #
 createDone = (json) ->
-  fetchOne(json.id, true)
+  fetchOne(json.id, { force: true })
 
 
 createFail = (xhr) ->
@@ -99,6 +99,9 @@ module.exports =
   
   
   fetchAll: fetchAll
+  
+
+  fetchOne: fetchOne
   
   
   create: (attributes = {}) ->

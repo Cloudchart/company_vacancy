@@ -8,8 +8,14 @@ CrudActions = ['create', 'update', 'destroy']
 CrudCallbacks = CallbackFactory.create 'post', CrudActions
 
 
-DefaultMethods = 
-
+DefaultMethods =
+  
+  
+  handleFetchOneDone: (id, json) ->
+    @store.add_or_update(json.post.uuid, json.post)
+    @store.emitChange()
+  
+  
   getSchema: ->
     uuid:           ''
     title:          ''
@@ -31,9 +37,10 @@ DefaultMethods =
       actions["post:#{action}:fail"] = @["handle#{_.str.titleize(action)}Fail"]
 
     # other actions goes here
+    actions['post:fetch-one:done'] = @handleFetchOneDone
 
     actions
-    
+  
 
 # Exports
 #
