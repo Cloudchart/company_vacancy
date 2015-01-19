@@ -26,13 +26,14 @@ lastPinForPinboard = (pinboard, pins) ->
     .last()
 
 
-pinMapper = (item) ->
+pinMapper = (item, pinboard) ->
   <div className="pin-preview">
     { PinnableComponents[item.get('pinnable_type')]({
       uuid:             item.get('pinnable_id')
       content:          item.get('content') 
       onPinButtonClick: -> PinStore.destroy(item.get('uuid')) if confirm('Are you sure?')
     }) }
+    <button className="dive" onClick={ -> location.href = pinboard.get('url') }><i className="fa fa-angle-right" /></button>
   </div>
 
 
@@ -40,7 +41,7 @@ pinboardsMapper = (item) ->
   pinboard_pins = @props.cursor.pins.deref(PinStore.empty).filter((pin) -> pin.get('pinboard_id') == item.get('uuid'))
   
   last_pin    = pinboard_pins.sortBy((pin) -> pin.get('created_at')).last()
-  last_pin    = pinMapper(last_pin) if last_pin
+  last_pin    = pinMapper(last_pin, item) if last_pin
   
   <li key={item.get('uuid')}>
     <header>
@@ -68,6 +69,28 @@ module.exports = React.createClass
     @props.cursor.pinboards.deref(PinboardStore.empty)
       .sortBy pinboardsSorter
       .map    pinboardsMapper.bind(@)
+  
+  
+  getPinboard: ->
+    pinboard = @props.cursor.pinboards.get(@props.uuid)
+  
+  
+  gatherPins: ->
+    pinboard = @props.cursor.pinboards.get(@props.uuid)
+    
+    @props.cursor.pins.deref(PinStore.empty)
+      .valueSeq()
+      .filter((pin) => pin.get('pinboard_id') == @props.uuid)
+      .sortBy((pin) => pin.get('created_at'))
+      .reverse()
+      .map (pin) ->
+        <li key={ pin.get('uuid') } className="pin-preview">
+          { PinnableComponents[pin.get('pinnable_type')]({
+            uuid:             pin.get('pinnable_id')
+            content:          pin.get('content') 
+            onPinButtonClick: -> PinStore.destroy(pin.get('uuid')) if confirm('Are you sure?')
+          }) }
+        </li>
 
 
   onGlobalStateChange: ->
@@ -77,7 +100,7 @@ module.exports = React.createClass
 
   componentDidMount: ->
     PinboardStore.fetchAll()
-    PinStore.fetchAll({ complete: true })
+    PinStore.fetchAll()
   
   
   getDefaultProps: ->
@@ -87,8 +110,30 @@ module.exports = React.createClass
 
 
   render: ->
-    pinboards = @gatherPinboards()
+    if @props.uuid
+      pinboard  = @getPinboard()
+      pins      = @gatherPins()
+      
+      return null unless pinboard
+      
+      <article className="pinboard">
+        <header>
+          <span className="title">{ pinboard.get('title') }</span>
+        </header>
+        
+        <section className="pins">
+          <ul className="left">
+            { pins.filter((pin, i) -> i % 2 == 0).toArray() }
+          </ul>
+          <ul className="right">
+            { pins.filter((pin, i) -> i % 2 == 1).toArray() }
+          </ul>
+        </section>
+      </article>
+      
+    else
+      pinboards = @gatherPinboards()
 
-    <ul className="pinboards">
-      { pinboards.toArray() }
-    </ul>
+      <ul className="pinboards">
+        { pinboards.toArray() }
+      </ul>

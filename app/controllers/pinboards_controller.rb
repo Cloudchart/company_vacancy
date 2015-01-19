@@ -12,7 +12,7 @@ class PinboardsController < ApplicationController
   
 
   def show
-    @pinboard = effective_user.pinboards.find(params[:id])
+    @pinboard = effective_user.pinboards.find(params[:id]) rescue Pinboard.where(user_id: nil).find(params[:id])
     
     respond_to do |format|
       format.html

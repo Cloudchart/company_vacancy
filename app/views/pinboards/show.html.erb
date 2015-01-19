@@ -1,0 +1,9 @@
+<article class="pinboards-list" data-react-class="components/pinboards_app" data-react-props="<%= { uuid: params[:id] }.to_json %>">
+</article>
+
+
+<% content_for :header_menu do %>
+  <%= render 'shared/header_menu' %>
+<% end %>
+
+<%= content_for :class_for_main, 'pinboards' %>

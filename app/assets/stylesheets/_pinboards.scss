@@ -38,6 +38,8 @@
 
 @mixin post-pin-preview {
   
+  position: relative;
+  
   > header.company {
     @include align-items(center);
     @include display(flex);
@@ -75,6 +77,7 @@
     }
     
   }
+  
 }
 
 
@@ -82,16 +85,66 @@
   background-color: hsl(0, 100%, 100%);
   margin-top: 10px;
   padding: 20px;
+  position: relative;
   width: 600px;
   
   > .post {
     @include post-pin-preview;
+  }
+
+  > button.dive {
+    @include position(absolute, 50% null null 100%);
+    
+    background-color: transparent;
+    border: none;
+    color: hsl(141, 55%, 54%);
+    font-size: 40px;
+    height: 40px;
+    margin-top: -20px;
+    margin-left: 40px;
+    padding: 0;
   }
 }
 
 
 main.pinboards {
   background-color: hsl(0, 0%, 98%);
+}
+
+
+article.pinboard {
+  
+  margin-top: 20px;
+  
+  > header {
+    @include list-pinboard-header;
+  }
+  
+  > section.pins {
+    @include display(flex);
+
+    > ul {
+      @include flex(1);
+    
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    
+      .pin-preview {
+        @include pin-preview;
+      
+        margin: 20px 0;
+        width: 100%;
+      }
+    
+    }
+  
+    > ul ~ ul {
+      margin-left: 20px;
+    }
+  }
+  
+  
 }
 
 
