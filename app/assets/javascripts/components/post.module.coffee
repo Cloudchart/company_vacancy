@@ -2,8 +2,6 @@
 
 # Imports
 # 
-tag = React.DOM
-
 PostStore = require('stores/post_store')
 
 PostActions = require('actions/post_actions')
@@ -13,6 +11,9 @@ StoriesComponent    = require('components/company/stories')
 BlockEditor         = require('components/editor/block_editor')
 FuzzyDateInput      = require('components/form/fuzzy_date_input')
 ContentEditableArea = require('components/form/contenteditable_area')
+
+Hintable            = require('components/shared/hintable')
+Hints               = require('utils/hints')
 
 # Main
 # 
@@ -119,18 +120,26 @@ Component = React.createClass
 
     <div className="post-container">
       <header>
-        <label className="title">
-          <ContentEditableArea
-            onChange = { @handleTitleChange }
-            placeholder = 'Tap to add title'
-            readOnly = { @props.readOnly }
-            value = { @state.post.title }
-          />
-        </label>
+        <Hintable 
+          text={Hints.title}
+          isHintable = { !@props.readOnly }>
+          <label className="title">
+            <ContentEditableArea
+              onChange = { @handleTitleChange }
+              placeholder = 'Tap to add title'
+              readOnly = { @props.readOnly }
+              value = { @state.post.title }
+            />
+          </label>
+        </Hintable>
 
-        <label className="published-at">
-          { @effectiveDate() }
-        </label>
+        <Hintable 
+          text={Hints.date}
+          isHintable={ !@props.readOnly }>
+          <label className="published-at">
+            { @effectiveDate() }
+          </label>
+        </Hintable>
 
         <StoriesComponent
           post_id = {@state.post.uuid}
