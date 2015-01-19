@@ -96,7 +96,7 @@ module.exports = React.createClass
     board = if pinboards
       if pinboards.size > 0
         <label>
-          <span>Choose a Board</span>
+          <span>Pick a Cathegory</span>
           { PinboardsSelect(@, pinboards) }
         </label>
       else
@@ -108,9 +108,12 @@ module.exports = React.createClass
       null
 
     
-    <form onSubmit={ @handleSubmit }>
+    <form onSubmit={ @handleSubmit } className="pin">
       <header>
-        Pin It
+        <span>
+          Pin It
+        </span>
+        <span className="title">{ @props.title }</span>
       </header>
       
       <fieldset>
@@ -127,7 +130,7 @@ module.exports = React.createClass
       </fieldset>
       
       <footer>
-        <button type="button" onClick={ @handleCancelButtonClick }>Cancel</button>
-        <button type="submit">Pin It</button>
+        <button className="cc cancel" type="button" onClick={ @handleCancelButtonClick }>Cancel</button>
+        <button className="cc" type="submit">Pin It</button>
       </footer>
     </form>

@@ -187,7 +187,7 @@ Component = React.createClass
       PinStore.destroy(pin.get('uuid')) if confirm('Are you sure?')
     else
       ModalActions.show(
-        <PinFormComponent pinnable_id={@props.uuid} pinnable_type="Post" />
+        <PinFormComponent pinnable_id={@props.uuid} pinnable_type="Post" title={ @state.post.title } />
       )
     
   
