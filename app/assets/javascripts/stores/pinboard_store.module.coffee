@@ -15,7 +15,7 @@ EmptyPinboards = Immutable.Map({})
 # Dispatcher
 #
 
-Dispatcher.register (payload) ->
+dispatchToken = Dispatcher.register (payload) ->
   
   if payload.action.type == 'pinboard:fetch-all:done'
     [json] = payload.action.data
@@ -106,6 +106,9 @@ module.exports =
 
   cursor:
     items: ItemsCursor
+  
+  
+  dispatchToken: dispatchToken
 
 
   fetchAll: fetchAll

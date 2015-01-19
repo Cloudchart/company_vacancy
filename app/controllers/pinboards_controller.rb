@@ -2,7 +2,7 @@ class PinboardsController < ApplicationController
   
   
   def index
-    @pinboards = effective_user.pinboards
+    @pinboards = effective_user.pinboards + Pinboard.where(user_id: nil)
     
     respond_to do |format|
       format.html
