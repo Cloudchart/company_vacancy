@@ -8,7 +8,7 @@ cx = React.addons.classSet
 
 GlobalState = require('global_state/state')
 
-# PostStore = require('stores/post_store')
+PostStore = require('stores/post_store')
 CompanyStore = require('stores/company')
 
 Timeline = require('components/company/timeline')
@@ -37,6 +37,7 @@ MainComponent = React.createClass
   # 
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStores)
+    PostStore.on('change', @refreshStateFromStores)
 
   # componentWillReceiveProps: (nextProps) ->
   # shouldComponentUpdate: (nextProps, nextState) ->
@@ -45,6 +46,7 @@ MainComponent = React.createClass
 
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
+    PostStore.off('change', @refreshStateFromStores)
 
 
   # Component Specifications

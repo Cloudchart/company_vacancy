@@ -48,7 +48,10 @@ Component = React.createClass
         </select>
       </li>
       <li>
-        <i className="fa fa-times" onClick={@handleDestroyClick}></i>
+        { @getStoryRelationControls() }
+      </li>
+      <li>
+        <i className="fa fa-times" onClick={@handleDestroyClick} />
       </li>
     </ul>
   
@@ -63,6 +66,13 @@ Component = React.createClass
         <i className="fa fa-thumb-tack" />
       </li>
     </ul>
+
+
+  getStoryRelationControls: ->
+    if @isRelatedToStory()
+      <i className="fa fa-unlink" onClick={@handleUnlinkStoryClick} />
+    else
+      <i className="fa fa-link" onClick={@handleLinkStoryClick} />
 
 
   getHeader: ->
@@ -137,7 +147,7 @@ Component = React.createClass
     </li>
 
 
-  getParagraph: (block) ->    
+  getParagraph: (block) ->
     paragraph = ParagraphStore.find (paragraph) -> paragraph.owner_id is block.uuid
     return null unless paragraph
 
@@ -178,8 +188,8 @@ Component = React.createClass
   isEpochType: ->
     @state.post.title and @state.post.effective_from and @state.post.effective_till and @state.blocks.length is 0
 
-  isNotInStoryScope: ->
-    not @state.post.story_ids.contains @props.story.get('uuid')
+  isRelatedToStory: ->
+    @state.post.story_ids.contains @props.story.get('uuid')
 
 
   # Handlers
@@ -212,6 +222,14 @@ Component = React.createClass
       VisibilityActions.update(@state.visibility.uuid, { value: value })
     else
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.uuid, value: value })
+
+  handleLinkStoryClick: (event) ->
+    story_ids = @state.post.story_ids.concat(@props.story.get('uuid')).toArray()
+    PostActions.update(@state.post.uuid, { story_ids: story_ids })
+
+  handleUnlinkStoryClick: (event) ->
+    story_ids = @state.post.story_ids.filterNot((id) => id is @props.story.get('uuid')).toArray()
+    PostActions.update(@state.post.uuid, { story_ids: story_ids })
 
 
   # Lifecycle Methods
@@ -270,7 +288,7 @@ Component = React.createClass
       'preview': true
       'post': true
       'epoch': @isEpochType()
-      'dimmed': @isNotInStoryScope()
+      'dimmed': not @isRelatedToStory()
 
     <article className={article_classes}>
       { @gatherControls() }
