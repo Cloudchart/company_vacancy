@@ -5,6 +5,7 @@ GlobalState   = require('global_state/state')
 
 
 PinboardStore = require('stores/pinboard_store')
+PinStore      = require('stores/pin_store')
 
 
 ModalActions  = require('actions/modal_actions')
@@ -12,12 +13,14 @@ ModalActions  = require('actions/modal_actions')
 
 
 PinboardsSelect = (self, items) ->
-  options = items.map (item) ->
-    <option key={ item.get('uuid') } value={ item.get('uuid') }>
-      { item.get('title') }
-    </option>
-
-  <select>
+  options = items
+    .sortBy (item) -> item.get('title')
+    .map (item) ->
+      <option key={ item.get('uuid') } value={ item.get('uuid') }>
+        { item.get('title') }
+      </option>
+  
+  <select onChange={self.handleChange.bind(null, 'pinboard_id')} value={self.state.pinboard_id}>
     { options.toArray() }
   </select>
 
@@ -29,22 +32,47 @@ module.exports = React.createClass
 
 
   mixins: [GlobalState.mixin]
+  
+  
+  handleCreateDone: ->
+    @handleCancelButtonClick()
+  
+
+  handleCreateFail: ->
+    alert 'FAIL!!!'
 
 
   handleSubmit: (event) ->
     event.preventDefault()
+
+    PinStore.create({
+      pinnable_id:    @props.pinnable_id
+      pinnable_type:  @props.pinnable_type
+      pinboard_id:    @state.pinboard_id
+      content:        @state.content
+    }).then(@handleCreateDone, @handleCreateFail)
+    
   
   
   handleCancelButtonClick: ->
     ModalActions.hide()
   
   
+  handleChange: (name, event) ->
+    nextState       = {}
+    nextState[name] = event.target.value
+    @setState nextState
+  
+  
+  getStateFromCursor: ->
+    pinboard_id: (@state and @state.pinboard_id) || if pinboards = @props.cursor.pinboards.deref() then pinboards.sortBy((item) -> item.get('title')).first().get('uuid') else ''
+  
+  
   onGlobalStateChange: ->
     clearTimeout @__global_state_change_timeout
 
     @__global_state_change_timeout = setTimeout =>
-      @setState
-        globalStateChangedAt: + new Date
+      @setState @getStateFromCursor()
   
   
   componentDidMount: ->
@@ -54,6 +82,12 @@ module.exports = React.createClass
   getDefaultProps: ->
     cursor:
       pinboards: PinboardStore.cursor.items
+  
+
+  getInitialState: ->
+    state           = @getStateFromCursor()
+    state.content   = ''
+    state
   
   
   render: ->
@@ -87,7 +121,7 @@ module.exports = React.createClass
         
         <label>
           <span>Add Comments</span>
-          <textarea></textarea>
+          <textarea value={@state.content} onChange={@handleChange.bind(null, 'content')} />
         </label>
       
       </fieldset>

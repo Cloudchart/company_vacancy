@@ -5,8 +5,10 @@
 tag = React.DOM
 
 CloudFlux = require('cloud_flux')
+GlobalState = require('global_state/state')
 
 PostStore = require('stores/post_store')
+PinStore  = require('stores/pin_store')
 
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
@@ -25,6 +27,7 @@ postPreviewMapper = (props) ->
       uuid        = { post.uuid }
       company_id  = { props.company_id }
       readOnly    = { props.readOnly }
+      pins        = { props.cursor.pins.deref(PinStore.empty).filter((item) -> item.get('pinnable_type') == 'Post' and item.get('pinnable_id') == post.uuid ) }
     />
 
 
@@ -36,7 +39,7 @@ postVisibilityPredicate = (post) ->
 # 
 Component = React.createClass
 
-  mixins: [CloudFlux.mixins.Actions]
+  mixins: [CloudFlux.mixins.Actions, GlobalState.mixin]
 
 
   gatherPosts: ->
@@ -109,6 +112,13 @@ Component = React.createClass
 
   # Lifecycle Methods
   # 
+  
+  
+  onGlobalStateChange: ->
+    @setState
+      refreshed_at: + new Date
+
+
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
     window.addEventListener('hashchange', @handleWindowHashChange)
@@ -126,7 +136,11 @@ Component = React.createClass
 
   # Component Specifications
   # 
-  # getDefaultProps: ->
+  
+  getDefaultProps: ->
+    cursor:
+      pins: PinStore.cursor.items
+
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))

@@ -13,6 +13,7 @@ ParagraphStore = require('stores/paragraph_store')
 PictureStore = require('stores/picture_store')
 VisibilityStore = require('stores/visibility_store')
 PersonStore = require('stores/person')
+PinStore    = require('stores/pin_store')
 
 PostActions = require('actions/post_actions')
 VisibilityActions = require('actions/visibility_actions')
@@ -32,6 +33,7 @@ FuzzyDate = require('utils/fuzzy_date')
 # 
 Component = React.createClass
 
+  
   # Helpers
   # 
   __gatherControls: ->
@@ -52,8 +54,10 @@ Component = React.createClass
   
   
   gatherControls: ->
+    current_user_pin = @props.pins.find (pin) => pin.get('user_id') == @props.current_user_id
+
     <ul className="buttons">
-      <li onClick={ @handlePinClick }>
+      <li onClick={ @handlePinClick.bind(null, current_user_pin) }>
         <i className="fa fa-thumb-tack" />
       </li>
     </ul>
@@ -203,10 +207,13 @@ Component = React.createClass
   # Handlers
   #
   
-  handlePinClick: (event) ->
-    ModalActions.show(
-      <PinFormComponent />
-    )
+  handlePinClick: (pin, event) ->
+    if pin
+      PinStore.destroy(pin.get('uuid')) if confirm('Are you sure?')
+    else
+      ModalActions.show(
+        <PinFormComponent pinnable_id={@props.uuid} pinnable_type="Post" />
+      )
     
   
   handleDestroyClick: (event) ->
@@ -249,8 +256,15 @@ Component = React.createClass
 
   # Component Specifications
   # 
+  
+  
+  getDefaultProps: ->
+    current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
+  
+  
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
+
 
   getStateFromStores: (props) ->
     visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.uuid and item.owner_type is 'Post'
@@ -260,8 +274,10 @@ Component = React.createClass
     visibility: visibility
     visibility_value: if visibility then visibility.value else 'public'
 
+
   getInitialState: ->
     @getStateFromStores(@props)
+
 
   render: ->
     return null unless @state.post

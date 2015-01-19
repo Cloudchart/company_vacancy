@@ -17,6 +17,7 @@ Dispatcher = require('dispatcher/dispatcher')
   TagStore        = require('stores/tag_store')
   VisibilityStore = require('stores/visibility_store')
   StoryStore      = require('stores/story_store')
+  PinStore        = require('stores/pin_store')
   
   # Fetch company with dependencies
   # 
@@ -41,6 +42,10 @@ Dispatcher = require('dispatcher/dispatcher')
   # Fetch all posts with dependencies
   # 
   require('sync/post_sync_api').fetchAll(data.id).done (json) ->
+    Dispatcher.handleServerAction
+      type: 'post:fetch-all:done'
+      data: [json]
+    
     _.each {
       posts: PostStore
       blocks: BlockStore
