@@ -13,13 +13,18 @@ ParagraphStore = require('stores/paragraph_store')
 PictureStore = require('stores/picture_store')
 VisibilityStore = require('stores/visibility_store')
 PersonStore = require('stores/person')
+PinStore    = require('stores/pin_store')
 
 PostActions = require('actions/post_actions')
 VisibilityActions = require('actions/visibility_actions')
 
+ModalActions = require('actions/modal_actions')
+
 Post = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
 PersonAvatar = require('components/shared/person_avatar')
+
+PinFormComponent = require('components/form/pin_form')
 
 FuzzyDate = require('utils/fuzzy_date')
 
@@ -28,9 +33,10 @@ FuzzyDate = require('utils/fuzzy_date')
 # 
 Component = React.createClass
 
+  
   # Helpers
   # 
-  gatherControls: ->
+  __gatherControls: ->
     return null if @props.readOnly
 
     <ul className="controls">
@@ -43,6 +49,18 @@ Component = React.createClass
       </li>
       <li>
         <i className="fa fa-times" onClick={@handleDestroyClick}></i>
+      </li>
+    </ul>
+  
+  
+  gatherControls: ->
+    current_user_pin = @props.pins.find (pin) => pin.get('user_id') == @props.current_user_id
+
+    pinClass = cx({ pinned: !!current_user_pin })
+
+    <ul className="buttons">
+      <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={pinClass}>
+        <i className="fa fa-thumb-tack" />
       </li>
     </ul>
 
@@ -162,7 +180,17 @@ Component = React.createClass
 
 
   # Handlers
-  # 
+  #
+  
+  handlePinClick: (pin, event) ->
+    if pin
+      PinStore.destroy(pin.get('uuid')) if confirm('Are you sure?')
+    else
+      ModalActions.show(
+        <PinFormComponent pinnable_id={@props.uuid} pinnable_type="Post" title={ @state.post.title } />
+      )
+    
+  
   handleDestroyClick: (event) ->
     event.preventDefault()
     PostActions.destroy(@state.post.uuid) if confirm('Are you sure?')
@@ -203,8 +231,15 @@ Component = React.createClass
 
   # Component Specifications
   # 
+  
+  
+  getDefaultProps: ->
+    current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
+  
+  
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
+
 
   getStateFromStores: (props) ->
     visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.uuid and item.owner_type is 'Post'
@@ -218,8 +253,10 @@ Component = React.createClass
     visibility: visibility
     visibility_value: if visibility then visibility.value else 'public'
 
+
   getInitialState: ->
     @getStateFromStores(@props)
+
 
   render: ->
     return null unless @state.post

@@ -7,7 +7,7 @@ class PostsController < ApplicationController
 
   def index
     # get posts
-    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, blocks: :block_identities)
+    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :pins, blocks: :block_identities)
 
     # reject based on visibility rules
     @posts = if can?(:manage, @company)
@@ -19,7 +19,7 @@ class PostsController < ApplicationController
     end
 
     # get dependent collections
-    dependent_associations = [:visibilities, :pictures, :paragraphs, :blocks]
+    dependent_associations = [:visibilities, :pictures, :paragraphs, :blocks, :pins]
 
     dependent_collections = @posts.inject({}) do |memo, post|
       dependent_associations.each do |association|
@@ -39,6 +39,16 @@ class PostsController < ApplicationController
       format.json
     end
   end
+  
+  
+  def show
+    @post = Post.includes(:owner).find(params[:id])
+    
+    respond_to do |format|
+      format.json
+    end
+  end
+  
 
   def create
     @post = @company.posts.build(post_params)

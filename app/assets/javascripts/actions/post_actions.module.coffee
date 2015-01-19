@@ -13,7 +13,20 @@ CrudActions = ActionFactory.create 'post',
   'update': (id, attributes) -> SyncAPI.update(id, attributes)
   'destroy': (id) -> SyncAPI.destroy(id)
 
-CustomActions = {}
+CustomActions =
+  
+  fetchOne: (id, options = {}) ->
+    
+    done = (json) ->
+      Dispatcher.handleServerAction
+        type: 'post:fetch-one:done'
+        data: [id, json]
+    
+    fail = (xhr) ->
+      console.log 'fail'
+    
+    SyncAPI.fetchOne(id, options).then(done, fail)
+
 
 # Exports
 # 

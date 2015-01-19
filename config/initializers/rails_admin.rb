@@ -9,7 +9,8 @@ RailsAdmin.config do |config|
     'Person',
     'Tag',
     'Interview',
-    'Story'
+    'Story',
+    'Pinboard'
   ]
 
   config.authenticate_with do
@@ -114,7 +115,7 @@ RailsAdmin.config do |config|
     end
     bulk_delete
     show do
-      except ['User', 'Token', 'Person', 'Tag', 'Interview', 'Story']
+      except ['User', 'Token', 'Person', 'Tag', 'Interview', 'Story', 'Pinboard']
     end
     edit do
       except ['User', 'Token']
@@ -123,13 +124,13 @@ RailsAdmin.config do |config|
       except ['Person']
     end
     show_in_app do
-      except ['User', 'Token', 'Person', 'Tag', 'Story']
+      except ['User', 'Token', 'Person', 'Tag', 'Story', 'Pinboard']
     end
     history_index do
-      except ['User', 'Token', 'Person']
+      except ['User', 'Token', 'Person', 'Pinboard']
     end
     history_show do
-      except ['User', 'Token', 'Person']
+      except ['User', 'Token', 'Person', 'Pinboard']
     end
   end
   

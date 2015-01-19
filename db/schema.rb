@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150108110046) do
+ActiveRecord::Schema.define(version: 20150114130412) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -286,6 +286,32 @@ ActiveRecord::Schema.define(version: 20150108110046) do
   end
 
   add_index "pictures", ["owner_id", "owner_type"], name: "index_pictures_on_owner_id_and_owner_type", using: :btree
+
+  create_table "pinboards", primary_key: "uuid", force: true do |t|
+    t.string   "title",                             null: false
+    t.string   "user_id",    limit: 36
+    t.integer  "position",              default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "pinboards", ["user_id"], name: "index_pinboards_on_user_id", using: :btree
+
+  create_table "pins", primary_key: "uuid", force: true do |t|
+    t.string   "user_id",       limit: 36, null: false
+    t.string   "parent_id",     limit: 36
+    t.string   "pinboard_id",   limit: 36
+    t.string   "pinnable_id",   limit: 36
+    t.string   "pinnable_type"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "pins", ["parent_id"], name: "index_pins_on_parent_id", using: :btree
+  add_index "pins", ["pinboard_id"], name: "index_pins_on_pinboard_id", using: :btree
+  add_index "pins", ["pinnable_id", "pinnable_type"], name: "index_pins_on_pinnable_id_and_pinnable_type", using: :btree
+  add_index "pins", ["user_id"], name: "index_pins_on_user_id", using: :btree
 
   create_table "posts", primary_key: "uuid", force: true do |t|
     t.string   "title"
