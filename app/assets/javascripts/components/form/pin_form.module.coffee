@@ -99,28 +99,21 @@ module.exports = React.createClass
           <span>Pick a Cathegory</span>
           { PinboardsSelect(@, pinboards) }
         </label>
-      else
-        <label>
-          <span>Name a Board</span>
-          <input autoFocus="true" />
-        </label>
     else
       null
 
     
     <form onSubmit={ @handleSubmit } className="pin">
       <header>
-        <span>
+        <div>
           Pin It
-        </span>
-        <span className="title" dangerouslySetInnerHTML={ __html: @props.title } />
+        </div>
+        <div className="title" dangerouslySetInnerHTML={ __html: @props.title } />
       </header>
       
       <fieldset>
 
         { board }
-        
-        <br />
         
         <label>
           <span>Add Comments</span>
