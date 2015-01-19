@@ -26,6 +26,7 @@ postPreviewMapper = (props) ->
       key         = { post.uuid }
       uuid        = { post.uuid }
       company_id  = { props.company_id }
+      story       = { props.story }
       readOnly    = { props.readOnly }
       pins        = { props.cursor.pins.deref(PinStore.empty).filter((item) -> item.get('pinnable_type') == 'Post' and item.get('pinnable_id') == post.uuid ) }
     />

@@ -10,6 +10,8 @@
   ParagraphStore = require('stores/paragraph_store')
   VisibilityStore = require('stores/visibility_store')
 
+  StoryCursor = GlobalState.cursor(['stores', 'stories', 'items', data.story_id])
+
   # Fetch company with dependencies
   # 
   require('sync/company').fetch(data.company_id).done (json) ->
@@ -45,4 +47,4 @@
   # Mount posts
   # 
   Posts = require('components/posts_app')
-  React.renderComponent(Posts({ company_id: data.company_id, story_id: data.story_id }), document.querySelector('body > main'))
+  React.renderComponent(Posts({ company_id: data.company_id, story: StoryCursor }), document.querySelector('body > main'))

@@ -178,6 +178,9 @@ Component = React.createClass
   isEpochType: ->
     @state.post.title and @state.post.effective_from and @state.post.effective_till and @state.blocks.length is 0
 
+  isNotInStoryScope: ->
+    not @state.post.story_ids.contains @props.story.get('uuid')
+
 
   # Handlers
   #
@@ -267,6 +270,7 @@ Component = React.createClass
       'preview': true
       'post': true
       'epoch': @isEpochType()
+      'dimmed': @isNotInStoryScope()
 
     <article className={article_classes}>
       { @gatherControls() }

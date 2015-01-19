@@ -9,7 +9,7 @@ cx = React.addons.classSet
 GlobalState = require('global_state/state')
 
 # PostStore = require('stores/post_store')
-# StoryStore = require('stores/story_store')
+CompanyStore = require('stores/company')
 
 Timeline = require('components/company/timeline')
 
@@ -35,12 +35,16 @@ MainComponent = React.createClass
 
   # Lifecycle Methods
   # 
-  # componentDidMount: ->
+  componentDidMount: ->
+    CompanyStore.on('change', @refreshStateFromStores)
+
   # componentWillReceiveProps: (nextProps) ->
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
   # componentDidUpdate: (prevProps, prevState) ->
-  # componentWillUnmount: ->
+
+  componentWillUnmount: ->
+    CompanyStore.off('change', @refreshStateFromStores)
 
 
   # Component Specifications
@@ -48,20 +52,31 @@ MainComponent = React.createClass
   getDefaultProps: ->
     cursor:
       company_flags: GlobalState.cursor(['stores', 'companies', 'flags'])
+      story: GlobalState.cursor(['stores', 'stories', 'items'])
 
-  # getStateFromProps: (props) ->
+  refreshStateFromStores: ->
+    @setState @getStateFromProps(@props)
+
+  getStateFromProps: (props) ->
+    company: CompanyStore.get(props.company_id)
 
   onGlobalStateChange: ->
     @setState
       readOnly: @props.cursor.company_flags.cursor([@props.company_id]).get('is_read_only')
 
   getInitialState: ->
-    readOnly: true
+    _.extend @getStateFromProps(@props),
+      readOnly: true
 
   render: ->
     <div className="wrapper">
+      <div className="story">
+        { @props.story.get('name') }
+      </div>
+
       <Timeline 
         company_id = { @props.company_id }
+        story = { @props.story }
         readOnly = { @state.readOnly }
       />
     </div>

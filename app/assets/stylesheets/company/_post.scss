@@ -150,6 +150,11 @@ main.company > div.wrapper > div.posts {
       }
     }
 
+    &.dimmed {
+      opacity: 0.5;
+      width: 50%;
+    }
+
     > ul.controls {
       @include position(absolute, 10px 10px 0 0);
       @include flex-ul;
