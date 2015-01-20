@@ -37,6 +37,7 @@ class PostsController < ApplicationController
 
     # add stories
     @stories = Story.cc_plus_company(@company.id)
+    @posts_stories = PostsStory.where(post_id: posts.map(&:id))
 
     respond_to do |format|
       format.html { 

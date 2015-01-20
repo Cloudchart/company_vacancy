@@ -143,7 +143,7 @@ main.company > div.wrapper > div.posts {
           margin-right: 0;
         }
         
-        &.pinned {
+        &.active {
           background-color: hsl(136, 52%, 51%);
         }
         
@@ -159,33 +159,33 @@ main.company > div.wrapper > div.posts {
       opacity: 0.5;
     }
 
-    > ul.controls {
-      @include position(absolute, 10px 10px 0 0);
-      @include flex-ul;
+    // > ul.controls {
+    //   @include position(absolute, 10px 10px 0 0);
+    //   @include flex-ul;
       
-      visibility: hidden;
-      height: 30px;
+    //   visibility: hidden;
+    //   height: 30px;
 
-      > li {
-        font-size: 20px;
-        cursor: pointer;
-        padding-right: 10px;
+    //   > li {
+    //     font-size: 20px;
+    //     cursor: pointer;
+    //     padding-right: 10px;
 
-        &:last-child {
-          padding-right: 0;
-        }
+    //     &:last-child {
+    //       padding-right: 0;
+    //     }
 
-        &.visibility {
-          > i.fa-globe {
-            margin-right: 2.5px;
-          }
-        }
+    //     &.visibility {
+    //       > i.fa-globe {
+    //         margin-right: 2.5px;
+    //       }
+    //     }
 
-        > .fa-times {
-          color: hsl(0, 75%, 55%);
-        }
-      }
-    }
+    //     > .fa-times {
+    //       color: hsl(0, 75%, 55%);
+    //     }
+    //   }
+    // }
 
     > a {
       display: block;

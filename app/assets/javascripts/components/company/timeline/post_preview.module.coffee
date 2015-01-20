@@ -36,10 +36,13 @@ Component = React.createClass
   
   # Helpers
   # 
-  # gatherControls: ->
-  #   return null if @props.readOnly
+  gatherControls: ->
+    <ul className="buttons">
+      { @getLinkPostWithStoryItem() }
+      { @getStarPostForStoryItem() }
+      { @getPinPostItem() }
+    </ul>
 
-  #   <ul className="controls">
   #     <li className="visibility">
   #       <select value={@state.visibility_value}, onChange={@handleVisibilityChange}>
   #         <option value={'public'}>Public</option>
@@ -47,40 +50,36 @@ Component = React.createClass
   #         <option value={'only_me'}>Only me</option>
   #       </select>
   #     </li>
-  #     <li>
-  #       { @getStoryRelationControls() }
-  #     </li>
+
   #     <li>
   #       <i className="fa fa-times" onClick={@handleDestroyClick} />
   #     </li>
-  #   </ul>
-  
-  
-  gatherControls: ->
+
+  getPinPostItem: ->
     current_user_pin = @props.pins.find (pin) => pin.get('user_id') == @props.current_user_id
+    classes = cx({ active: !!current_user_pin })
 
-    pinClass = cx({ pinned: !!current_user_pin })
+    <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={classes}>
+      <i className="fa fa-thumb-tack" />
+    </li>
 
-    <ul className="buttons">
-      { @getStoryRelationControls() }
-
-      <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={pinClass}>
-        <i className="fa fa-thumb-tack" />
-      </li>
-    </ul>
-
-
-  getStoryRelationControls: ->
+  getLinkPostWithStoryItem: ->
     return null unless @props.story
 
-    if @isRelatedToStory()
-      <li onClick={@handleUnlinkStoryClick}>
-        <i className="fa fa-unlink" />
-      </li>
-    else
-      <li onClick={@handleLinkStoryClick}>
-        <i className="fa fa-link" />
-      </li>
+    classes = cx
+      active: @isRelatedToStory()
+
+    <li onClick={@handleLinkStoryClick} className={classes} >
+      <i className="fa fa-link" />
+    </li>
+
+
+  getStarPostForStoryItem: ->
+    return null unless @props.story
+
+    <li onClick={@handleStarClick}>
+      <i className="fa fa-star"></i>
+    </li>
 
 
   getHeader: ->
@@ -232,13 +231,18 @@ Component = React.createClass
     else
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.uuid, value: value })
 
+
   handleLinkStoryClick: (event) ->
-    story_ids = @state.post.story_ids.concat(@props.story.get('uuid')).toArray()
+    story_ids = if @isRelatedToStory()
+      @state.post.story_ids.filterNot((id) => id is @props.story.get('uuid')).toArray()
+    else
+      @state.post.story_ids.concat(@props.story.get('uuid')).toArray()
+
     PostActions.update(@state.post.uuid, { story_ids: story_ids })
 
-  handleUnlinkStoryClick: (event) ->
-    story_ids = @state.post.story_ids.filterNot((id) => id is @props.story.get('uuid')).toArray()
-    PostActions.update(@state.post.uuid, { story_ids: story_ids })
+
+  handleStarClick: (event) ->
+    console.log 'handleStarClick'
 
 
   # Lifecycle Methods

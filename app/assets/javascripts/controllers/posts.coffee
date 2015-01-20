@@ -24,6 +24,7 @@
 
     CompanyStore.add(json.company.uuid, json.company)
     # CompanyStore.emitChange()
+    PersonStore.emitChange()
 
   # Fetch all posts with dependencies
   # 

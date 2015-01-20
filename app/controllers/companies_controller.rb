@@ -44,7 +44,6 @@ class CompaniesController < ApplicationController
       format.html { pagescript_params(id: @company.uuid) }
       format.json { 
         @tags = Tag.order(:name).all
-        @stories = Story.cc_plus_company(@company.id)
       }
     end
   end
