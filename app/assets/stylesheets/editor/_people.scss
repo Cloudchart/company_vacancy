@@ -3,7 +3,7 @@
 
 article.editor > section.people {
 
-  > .list {
+  .list {
     @include display(flex);
     @include flex-wrap(wrap);
     

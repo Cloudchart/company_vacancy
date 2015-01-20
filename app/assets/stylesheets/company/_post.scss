@@ -161,6 +161,11 @@ main.company > div.wrapper > div.posts {
         > h1 { 
           font-weight: 600;
           margin: 0;
+
+          > div {
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
         }
 
         > span.date {
@@ -307,10 +312,18 @@ div.post-container {
         font-size: 40px;
         font-weight: 400;
       }
+
+      &.title + aside {
+        height: 47px;
+      }
       
       &.published-at > input {
         font-size: 24px;
         font-weight: 300;
+      }
+
+      &.published-at + aside {
+        height: 29px;
       }
 
     }
