@@ -2,7 +2,8 @@
 
 # Imports
 # 
-PostStore = require('stores/post_store')
+PostStore   = require('stores/post_store')
+GlobalState = require('global_state/state')
 
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
@@ -125,7 +126,12 @@ Component = React.createClass
     published_at: @getPublishedAt(post)
 
   getInitialState: ->
-    @getStateFromStores(@props)
+    state = @getStateFromStores(@props)
+
+    state.cursor      =
+      is_admin: GlobalState.cursor(['flags', 'is_admin']).deref()
+      flags:    GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
+    state
 
   render: ->
     return null unless @state.post
@@ -153,12 +159,15 @@ Component = React.createClass
           </label>
         </Hintable>
 
-        <StoriesComponent
-          post_id = {@state.post.uuid}
-          company_id = {@props.company_id}
-          onChange = {@handleStoriesChange}
-          readOnly = {@props.readOnly}
-        />
+        {
+          if @state.cursor.is_admin
+            <StoriesComponent
+              post_id = {@state.post.uuid}
+              company_id = {@props.company_id}
+              onChange = {@handleStoriesChange}
+              readOnly = {@props.readOnly}
+            />
+        }
       </header>
 
       <BlockEditor

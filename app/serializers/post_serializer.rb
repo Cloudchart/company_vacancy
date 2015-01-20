@@ -4,12 +4,19 @@ class PostSerializer < ActiveModel::Serializer
   attributes  :created_at, :updated_at
   attributes  :effective_from, :effective_till, :position
 
+  alias_method :current_user, :scope
+  alias_method :post, :object
+
+  def story_ids
+    post.story_ids if current_user.is_admin?
+  end
+
   def effective_from
-    object.effective_from.try(:to_date)
+    post.effective_from.try(:to_date)
   end
 
   def effective_till
-    object.effective_till.try(:to_date)
+    post.effective_till.try(:to_date)
   end
 
 end

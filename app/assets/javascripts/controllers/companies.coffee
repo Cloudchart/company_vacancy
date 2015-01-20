@@ -18,6 +18,10 @@ Dispatcher = require('dispatcher/dispatcher')
   VisibilityStore = require('stores/visibility_store')
   StoryStore      = require('stores/story_store')
   PinStore        = require('stores/pin_store')
+
+  GlobalState     = require('global_state/state')
+  
+  GlobalState.cursor().setIn(['flags', 'is_admin'], data.is_admin)
   
   # Fetch company with dependencies
   # 

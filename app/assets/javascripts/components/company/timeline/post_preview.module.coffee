@@ -84,26 +84,27 @@ Component = React.createClass
 
 
   getFooter: ->
-    Stories   = GlobalState.cursor(['stores', 'stories', 'items']).deref()
+    if GlobalState.cursor(['flags', 'is_admin']).deref()
+      Stories   = GlobalState.cursor(['stores', 'stories', 'items']).deref()
 
-    return null unless Stories
-    
-    postStoryIds  = Immutable.Seq(@state.post.story_ids)
+      return null unless Stories
+      
+      postStoryIds  = Immutable.Seq(@state.post.story_ids)
 
-    stories = Stories
-      .filter (item, key) -> postStoryIds.contains(key)
-      .sortBy (item, key) -> postStoryIds.indexOf(key)
-      .map    @postStoryMapper
+      stories = Stories
+        .filter (item, key) -> postStoryIds.contains(key)
+        .sortBy (item, key) -> postStoryIds.indexOf(key)
+        .map    @postStoryMapper
 
-    return null if stories.count() == 0
+      return null if stories.count() == 0
 
-    <footer>
-      <div className="cc-hashtag-list">
-        <ul>
-          {stories.toArray()}
-        </ul>
-      </div>
-    </footer>
+      <footer>
+        <div className="cc-hashtag-list">
+          <ul>
+            {stories.toArray()}
+          </ul>
+        </div>
+      </footer>
 
 
   getContent: ->

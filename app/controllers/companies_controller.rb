@@ -42,7 +42,7 @@ class CompaniesController < ApplicationController
     @company = find_company(relation)
 
     respond_to do |format|
-      format.html { pagescript_params(id: @company.uuid) }
+      format.html { pagescript_params(id: @company.uuid, is_admin: current_user.is_admin?) }
       format.json { 
         @tags = Tag.order(:name).all
         @stories = @company.stories + Story.where(company: nil)
