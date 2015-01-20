@@ -78,18 +78,28 @@ Component = React.createClass
     ModalActions.hide()
     # TODO: show post in timeline
 
+  handleKeydown: (event) ->
+    if event.keyCode == 27
+      ModalActions.hide()
+
+    if event.metaKey && event.keyCode == 13
+      @handleOkClick()
+
+
   handleStoriesChange: (story_ids) ->
     PostActions.update(@state.post.uuid, { story_ids: story_ids })
 
   # Lifecycle Methods
   # 
   componentDidMount: ->
+    $(document).on 'keydown', @handleKeydown.bind(@)
     PostStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
 
   componentWillUnmount: ->
+    $(document).off 'keydown', @handleKeydown.bind(@)
     PostStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
