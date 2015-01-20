@@ -18,6 +18,8 @@ $editor-paragraph-line-height: 22px;
 
 $editor-placeholder-section-figure-size: 50px;
 
+$editor-hint-width: 20px;
+
 // Editor
 //
 article.editor {
@@ -174,4 +176,5 @@ article.editor > section.placeholder {
 @import 'vacancy_form';
 @import 'quote';
 @import 'kpi';
-@import 'hintable';
+@import 'wrapper';
+

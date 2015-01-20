@@ -11,32 +11,56 @@ sanitize = require('utils/contenteditable_sanitizer')
 #
 Component = React.createClass
 
+  displayName: "ContenteditableArea"
 
-  handleBlur: (event) ->
-    content = sanitize(event.target)
-    @props.onChange(content) if @props.onChange instanceof Function
-    
-    @setState
-      content: content
-  
-  
-  handleInput: (event) ->
-    content = sanitize(event.target)
-    @getDOMNode().innerHTML = '' if content.length == 0
+  # Component Specifications
+  # 
+  propTypes:
+    onChange:     React.PropTypes.func
+    onBlur:       React.PropTypes.func
+    onInput:      React.PropTypes.func
+    onFocus:      React.PropTypes.func
+    placeholder:  React.PropTypes.string
+    readOnly:     React.PropTypes.bool
+    value:        React.PropTypes.string
 
-
-  handleKeyDown: (event) ->
-    event.preventDefault() if event.key == 'Enter' and @getDOMNode().innerHTML == ''
-  
-  
-  componentWillReceiveProps: (nextProps) ->
-    @setState
-      content: nextProps.value
-  
+  getDefaultProps: ->
+    onBlur: ->
+    onChange: ->
+    onFocus: ->
+    onInput: ->
 
   getInitialState: ->
     content: @props.value
 
+  # Handlers
+  #
+  handleBlur: (event) ->
+    content = sanitize(event.target)
+    @props.onChange(content)
+    @props.onBlur(content)
+    
+    @setState
+      content: content
+
+  handleFocus: (event) ->
+    content = sanitize(event.target)
+    @props.onFocus(content)
+  
+  handleInput: (event) ->
+    content = sanitize(event.target)
+    @props.onInput(content)
+    @getDOMNode().innerHTML = '' if content.length == 0
+
+  handleKeyDown: (event) ->
+    event.preventDefault() if event.key == 'Enter' and @getDOMNode().innerHTML == ''
+
+  
+  # Lifecycle Methods
+  # 
+  componentWillReceiveProps: (nextProps) ->
+    @setState
+      content: nextProps.value
 
   render: ->
     return null if @props.readOnly and !@props.value
@@ -46,6 +70,7 @@ Component = React.createClass
       dangerouslySetInnerHTML = { __html: @state.content }
       data-placeholder = { @props.placeholder }
       onBlur = { @handleBlur }
+      onFocus = { @handleFocus }
       onInput = { @handleInput }
       onKeyDown = { @handleKeyDown }
     />

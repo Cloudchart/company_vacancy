@@ -13,4 +13,7 @@ article.editor > section.quote {
     }
   }
 
+  [contenteditable] + aside {
+    height: 35px;
+  }
 }

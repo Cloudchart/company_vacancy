@@ -1,19 +1,18 @@
 $arrow-size: 15px;
-$hint-button-size: 20px;
+$hint-button-size: $editor-hint-width;
 $hint-color: hsl(144, 90%, 75%);
 
-.hintable {
+.editor-field-wrapper {
   position: relative;
 
-  > .hint-wrapper {
-    @include display(flex);
-    @include position(absolute, 0 0 0 -2 * $hint-button-size);
+  > aside {
     @include align-items(center);
+    @include display(flex);
+    @include position(absolute, 0px 0 0 -2 * $editor-hint-width);
 
-    height: 100%;
     z-index: 1000;
 
-    > button {
+    > .hint-button {
       color: hsl(0, 0%, 95%);
       font-size: 18px;
       line-height: $hint-button-size;
@@ -32,7 +31,7 @@ $hint-color: hsl(144, 90%, 75%);
       margin-left: $arrow-size;
       width: 250px;
 
-      &.visible {
+      &.opened {
         display: block;
       }
 
@@ -46,6 +45,19 @@ $hint-color: hsl(144, 90%, 75%);
         height: 0;
         margin-top: -$arrow-size*0.8;  
         width: 0;
+      }
+    }
+
+    &.counter {
+      @include justify-content(center);
+
+      color: hsl(150, 47%, 53%);
+      font-size: 12px;
+      text-align: center;
+      width: $editor-hint-width;
+
+      &.negative {
+        color: hsl(0, 75%, 55%);
       }
     }
   }

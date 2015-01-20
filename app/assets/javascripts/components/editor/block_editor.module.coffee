@@ -13,8 +13,9 @@ BlockableActions = require('actions/mixins/blockable_actions')
 SortableList     = require('components/shared/sortable_list')
 SortableListItem = require('components/shared/sortable_list_item')
 
-Hintable         = require('components/shared/hintable')
-Hints            = require('utils/hints')
+FieldWrapper     = require('components/editor/field_wrapper')
+Hint             = require('components/shared/hint')
+HintTexts        = require('utils/hint_texts')
 
 BlockComponents =
   Picture:    require('components/editor/picture')
@@ -39,7 +40,7 @@ SectionPlaceholderItemNames =
   Vacancy:    'Vacancies'
 
 Hints =
-  Quote: Hints.quote
+  Quote: HintTexts.quote
 
 # Main
 # 
@@ -60,13 +61,17 @@ MainComponent = React.createClass
         <SortableListItem key={block_key}>
           <section key={block_key} className={SectionClassNames[block.kind || block.identity_type]}>
             {@getDestroyLink(block.uuid)}
-            <Hintable text={Hints[block.kind]} isHintable={!@props.readOnly && Hints[block.kind]}>
+            <FieldWrapper>
               <BlockComponent
                 key={block_key}
                 company_id={@props.company_id}
                 readOnly={@props.readOnly}
                 blockKind={block.kind || block.identity_type} />
-            </Hintable>
+              {
+                if !@props.readOnly && Hints[block.kind]
+                  <Hint text={Hints[block.kind]} />
+              }
+            </FieldWrapper>
           </section>
         </SortableListItem>
 
