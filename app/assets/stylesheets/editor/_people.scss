@@ -131,10 +131,8 @@ article.editor > section.people div.person {
     
     > p {
       margin: 0;
-      overflow: hidden;
       text-align: center;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: wrap;
       
       &.name {
         font-size: $editor-person-name-font-size;

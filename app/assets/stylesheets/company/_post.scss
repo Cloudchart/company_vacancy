@@ -223,10 +223,8 @@ main.company > div.wrapper > div.posts {
 
             > p {
               margin: 0;
-              overflow: hidden;
               text-align: center;
-              text-overflow: ellipsis;
-              white-space: nowrap;
+              white-space: wrap;
 
               &.name {
                 font-size: 20px;
@@ -237,7 +235,6 @@ main.company > div.wrapper > div.posts {
                 color: gray;
               }
             }
-
           }
         }
 
