@@ -19,28 +19,30 @@ end
 
 # Pinnables: Post
 #
-@pins.group_by(&:pinnable_type).each do |pinnable_type, pins|
+json.pinnables do
+  @pins.group_by(&:pinnable_type).each do |pinnable_type, pins|
   
-  case pinnable_type
-  when 'Post'
-    next unless should_include?(:posts)
+    case pinnable_type
+    when 'Post'
+      next unless should_include?(:pinnables)
     
-    pinnable_relations = {
-      owner:        :owners,
-      pictures:     nil,
-      paragraphs:   nil,
-      blocks:       nil
-    }.select  { |name, map| should_include?(map || name) }
+      pinnable_relations = {
+        owner:        :owners,
+        pictures:     nil,
+        paragraphs:   nil,
+        blocks:       nil
+      }.select  { |name, map| should_include?(map || name) }
     
-    pinnables = Post.includes(pinnable_relations.keys).find(pins.map(&:pinnable_id)).each do |pinnable|
-      pinnable_relations.each do |name, map|
-        ensure_relation(map || name) << pinnable.public_send(name)
+      pinnables = Post.includes(pinnable_relations.keys).find(pins.map(&:pinnable_id)).each do |pinnable|
+        pinnable_relations.each do |name, map|
+          ensure_relation(map || name) << pinnable.public_send(name)
+        end
       end
-    end
 
-    json.posts pinnables
-  end
+      json.posts pinnables
+    end
   
+  end
 end
 
 
