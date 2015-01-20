@@ -8,7 +8,7 @@ class PostSerializer < ActiveModel::Serializer
   alias_method :post, :object
 
   def story_ids
-    post.story_ids if current_user.is_admin?
+    post.story_ids if current_user.present? && current_user.is_admin?
   end
 
   def effective_from
