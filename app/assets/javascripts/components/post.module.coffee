@@ -16,8 +16,10 @@ FuzzyDateInput      = require('components/form/fuzzy_date_input')
 ContentEditableArea = require('components/form/contenteditable_area')
 
 Dropdown            = require('components/form/dropdown')
-Hintable            = require('components/shared/hintable')
-Hints               = require('utils/hints')
+FieldWrapper        = require('components/editor/field_wrapper')
+Counter             = require('components/shared/counter')
+Hint                = require('components/shared/hint')
+HintTexts           = require('utils/hint_texts')
 
 
 # Main
@@ -58,6 +60,16 @@ Component = React.createClass
       onUpdate  = { @handleEffectiveDateUpdate }
     />
 
+  stripHTML: (content) ->
+    tmp = document.createElement("DIV")
+    tmp.innerHTML = content
+    tmp.textContent || tmp.innerText || ""
+
+  getTitleLength: (title) ->
+    @stripHTML(title).length
+
+  getTitleLimit: (length) ->
+    140 - length
 
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
@@ -77,6 +89,14 @@ Component = React.createClass
     return if content is @state.post.title
     @update(title: content)
 
+  handleTitleBlur: ->
+    @setState(titleFocused: false)
+
+  handleTitleFocus: ->
+    @setState(titleFocused: true)
+
+  handleTitleInput: (content) ->
+    @setState(titleLength: @getTitleLength(content))
 
   handleDestroyClick: (event) ->
     if confirm('Are you sure?')
@@ -138,14 +158,18 @@ Component = React.createClass
     visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.id and item.owner_type is 'Post'
     post = PostStore.get(props.id)
 
+    titleLength = if (title = post.title) then @getTitleLength(title) else 0
+
     post: post
+    titleLength:  titleLength
     published_at: @getPublishedAt(post)
     visibility: visibility
     visibility_value: if visibility then visibility.value else 'public'
 
 
   getInitialState: ->
-    @getStateFromStores(@props)
+    _.extend @getStateFromStores(@props),
+      titleFocused: false
 
   render: ->
     return null unless @state.post
@@ -159,26 +183,37 @@ Component = React.createClass
       </aside>
 
       <header>
-        <Hintable 
-          text={Hints.title}
-          isHintable = { !@props.readOnly }>
+        <FieldWrapper>
           <label className="title">
             <ContentEditableArea
+              onBlur = { @handleTitleBlur }
               onChange = { @handleTitleChange }
+              onFocus = { @handleTitleFocus }
+              onInput = { @handleTitleInput }
               placeholder = 'Tap to add title'
               readOnly = { @props.readOnly }
               value = { @state.post.title }
             />
           </label>
-        </Hintable>
+          {
+            if (!@props.readOnly && @state.titleFocused)
+              <Counter count={ @getTitleLimit(@state.titleLength) } />
+          }
+          {
+            if (!@props.readOnly && !@state.titleFocused)
+              <Hint text={HintTexts.title} />
+          }
+        </FieldWrapper>
 
-        <Hintable 
-          text={Hints.date}
-          isHintable={ !@props.readOnly }>
+        <FieldWrapper>
           <label className="published-at">
             { @effectiveDate() }
           </label>
-        </Hintable>
+          {
+            if !@props.readOnly
+              <Hint text={HintTexts.date} />
+          }
+        </FieldWrapper>
 
         <PostsStories
           post_id = {@state.post.uuid}
