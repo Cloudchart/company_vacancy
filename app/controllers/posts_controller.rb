@@ -87,7 +87,10 @@ class PostsController < ApplicationController
 private
 
   def post_params
-    params.require(:post).permit(:title, :effective_from, :effective_till, :position, story_ids: [])
+    list_params_allowed = [:title, :effective_from, :effective_till, :position]
+    list_params_allowed << { story_ids: [] } if current_user.is_admin?
+
+    params.require(:post).permit(list_params_allowed)
   end
 
   def set_post
