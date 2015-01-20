@@ -137,6 +137,11 @@ main.company > div.wrapper > div.posts {
         display: inline-block;
         height: 30px;
         width: 30px;
+        margin-right: 5px;
+
+        &:last-child {
+          margin-right: 0;
+        }
         
         &.pinned {
           background-color: hsl(136, 52%, 51%);

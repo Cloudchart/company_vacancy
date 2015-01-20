@@ -36,24 +36,24 @@ Component = React.createClass
   
   # Helpers
   # 
-  __gatherControls: ->
-    return null if @props.readOnly
+  # gatherControls: ->
+  #   return null if @props.readOnly
 
-    <ul className="controls">
-      <li className="visibility">
-        <select value={@state.visibility_value}, onChange={@handleVisibilityChange}>
-          <option value={'public'}>Public</option>
-          <option value={'trusted'}>Trusted</option>
-          <option value={'only_me'}>Only me</option>
-        </select>
-      </li>
-      <li>
-        { @getStoryRelationControls() }
-      </li>
-      <li>
-        <i className="fa fa-times" onClick={@handleDestroyClick} />
-      </li>
-    </ul>
+  #   <ul className="controls">
+  #     <li className="visibility">
+  #       <select value={@state.visibility_value}, onChange={@handleVisibilityChange}>
+  #         <option value={'public'}>Public</option>
+  #         <option value={'trusted'}>Trusted</option>
+  #         <option value={'only_me'}>Only me</option>
+  #       </select>
+  #     </li>
+  #     <li>
+  #       { @getStoryRelationControls() }
+  #     </li>
+  #     <li>
+  #       <i className="fa fa-times" onClick={@handleDestroyClick} />
+  #     </li>
+  #   </ul>
   
   
   gatherControls: ->
@@ -62,6 +62,8 @@ Component = React.createClass
     pinClass = cx({ pinned: !!current_user_pin })
 
     <ul className="buttons">
+      { @getStoryRelationControls() }
+
       <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={pinClass}>
         <i className="fa fa-thumb-tack" />
       </li>
@@ -69,10 +71,16 @@ Component = React.createClass
 
 
   getStoryRelationControls: ->
+    return null unless @props.story
+
     if @isRelatedToStory()
-      <i className="fa fa-unlink" onClick={@handleUnlinkStoryClick} />
+      <li onClick={@handleUnlinkStoryClick}>
+        <i className="fa fa-unlink" />
+      </li>
     else
-      <i className="fa fa-link" onClick={@handleLinkStoryClick} />
+      <li onClick={@handleLinkStoryClick}>
+        <i className="fa fa-link" />
+      </li>
 
 
   getHeader: ->
@@ -189,6 +197,7 @@ Component = React.createClass
     @state.post.title and @state.post.effective_from and @state.post.effective_till and @state.blocks.length is 0
 
   isRelatedToStory: ->
+    return true unless @props.story
     @state.post.story_ids.contains @props.story.get('uuid')
 
 
