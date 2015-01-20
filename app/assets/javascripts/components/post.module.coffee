@@ -80,9 +80,11 @@ Component = React.createClass
 
   handleKeydown: (event) ->
     if event.keyCode == 27
+      event.preventDefault()
       ModalActions.hide()
 
     if event.metaKey && event.keyCode == 13
+      event.preventDefault()
       @handleOkClick()
 
 
@@ -92,14 +94,14 @@ Component = React.createClass
   # Lifecycle Methods
   # 
   componentDidMount: ->
-    $(document).on 'keydown', @handleKeydown.bind(@)
+    $(document).on 'keydown', @handleKeydown
     PostStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
 
   componentWillUnmount: ->
-    $(document).off 'keydown', @handleKeydown.bind(@)
+    $(document).off 'keydown', @handleKeydown
     PostStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
