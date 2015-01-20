@@ -17,7 +17,8 @@ class Person < ActiveRecord::Base
   validates :full_name, presence: true
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
-
+  
+  
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :first_name, type: 'string', analyzer: 'ngram_analyzer'

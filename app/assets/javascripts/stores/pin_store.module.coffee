@@ -37,11 +37,15 @@ Dispatcher.register (payload) ->
 #
 
 fetchAll = (options = {}) ->
-  PinSyncAPI.fetchAll(options).then(fetchAllDone, fetchAllFail)
+  promise = PinSyncAPI.fetchAll(options)
+  promise.then(fetchAllDone, fetchAllFail)
+  promise
 
 
 fetchOne = (id, options = {}) ->
-  PinSyncAPI.fetchOne(id, options).then(fetchOneDone, fetchOneFail)
+  promise = PinSyncAPI.fetchOne(id, options)
+  promise.then(fetchOneDone, fetchOneFail)
+  promise
 
 
 fetchAllDone = (json) ->

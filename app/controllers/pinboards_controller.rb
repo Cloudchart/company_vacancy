@@ -2,7 +2,7 @@ class PinboardsController < ApplicationController
   
   
   def index
-    @pinboards = effective_user.pinboards + Pinboard.where(user_id: nil)
+    @pinboards = (effective_user.pinboards + Pinboard.where(user_id: nil)).sort { |a, b| a.title <=> b.title }
     
     respond_to do |format|
       format.html
