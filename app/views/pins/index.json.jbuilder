@@ -10,36 +10,23 @@ def ensure_relation(name)
 end
 
 
+# Pins
+#
 ensure_relation(:pins).concat(@pins)
 
 
-# Find pinnables
+# Pinnables
 #
 json.pinnables do
   @pins.group_by(&:pinnable_type).each do |pinnable_type, pins|
   
     case pinnable_type
     when 'Post'
-    
-      pinnable_relations = [:owner, :pictures, :paragraphs, blocks: { block_identities: :identity }]
-    
-      pinnables = Post.includes(pinnable_relations).find(pins.map(&:pinnable_id)).each do |pinnable|
-        block_identities  = pinnable.blocks.map(&:block_identities).flatten
-        identities        = block_identities.map(&:identity)
-
-        ensure_relation(pinnable.owner.class.name.downcase.to_sym) << pinnable.owner
-
-        ensure_relation(:pictures).concat           pinnable.pictures
-        ensure_relation(:paragraphs).concat         pinnable.paragraphs
-        ensure_relation(:blocks).concat             pinnable.blocks
-        ensure_relation(:block_identities).concat   block_identities
-
-        identities.each do |identity|
-          ensure_relation(identity.class.name.downcase.to_sym) << identity
-        end
-      end
       
-      ensure_relation(:posts).concat pinnables
+      load_pinnable_posts(pins.map(&:pinnable_id), true).each do |key, values|
+        ensure_relation(key).concat(values)
+      end
+    
     end
 
   end
