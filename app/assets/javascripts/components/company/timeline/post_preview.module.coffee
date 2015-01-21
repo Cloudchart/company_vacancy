@@ -56,7 +56,9 @@ Component = React.createClass
   #     </li>
 
   getPinPostItem: ->
-    current_user_pin = @props.pins.find (pin) => pin.get('user_id') == @props.current_user_id
+    pins = PinStore.cursor.items.deref(PinStore.empty).filter((item) => item.get('pinnable_type') == 'Post' and item.get('pinnable_id') == @state.post.uuid )
+
+    current_user_pin = pins.find (pin) => pin.get('user_id') == @props.current_user_id
     classes = cx({ active: !!current_user_pin })
 
     <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={classes}>
@@ -64,7 +66,7 @@ Component = React.createClass
     </li>
 
   getLinkPostWithStoryItem: ->
-    return null unless @props.story
+    return null unless @props.story_id
 
     classes = cx
       active: @isRelatedToStory()
@@ -75,7 +77,7 @@ Component = React.createClass
 
 
   getStarPostForStoryItem: ->
-    return null unless @props.story
+    return null unless @props.story_id
 
     <li onClick={@handleStarClick}>
       <i className="fa fa-star"></i>
@@ -196,8 +198,8 @@ Component = React.createClass
     @state.post.title and @state.post.effective_from and @state.post.effective_till and @state.blocks.length is 0
 
   isRelatedToStory: ->
-    return true unless @props.story
-    @state.post.story_ids.contains @props.story.get('uuid')
+    return true unless @props.story_id
+    @state.post.story_ids.contains @props.story_id
 
 
   # Handlers
@@ -234,9 +236,9 @@ Component = React.createClass
 
   handleLinkStoryClick: (event) ->
     story_ids = if @isRelatedToStory()
-      @state.post.story_ids.filterNot((id) => id is @props.story.get('uuid')).toArray()
+      @state.post.story_ids.filterNot((id) => id is @props.story_id).toArray()
     else
-      @state.post.story_ids.concat(@props.story.get('uuid')).toArray()
+      @state.post.story_ids.concat(@props.story_id).toArray()
 
     PostActions.update(@state.post.uuid, { story_ids: story_ids })
 

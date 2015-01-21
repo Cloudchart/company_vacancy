@@ -72,6 +72,10 @@ GlobalState.addListener CreateCursor.path, handleCreate
 #
 module.exports =
 
+  cursor:
+    empty: EmptyStories
+    items: ItemsCursor
+
   create: (attributes, callback = ->) ->
     SyncAPI.create(attributes.company_id, attributes)
       .done (json) ->

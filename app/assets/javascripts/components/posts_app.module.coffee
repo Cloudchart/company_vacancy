@@ -10,6 +10,7 @@ GlobalState = require('global_state/state')
 
 PostStore = require('stores/post_store')
 CompanyStore = require('stores/company')
+PostsStoryStore = require('stores/posts_story_store')
 
 Timeline = require('components/company/timeline')
 
@@ -37,7 +38,6 @@ MainComponent = React.createClass
   # 
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStores)
-    PostStore.on('change', @refreshStateFromStores)
 
   # componentWillReceiveProps: (nextProps) ->
   # shouldComponentUpdate: (nextProps, nextState) ->
@@ -46,7 +46,6 @@ MainComponent = React.createClass
 
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
-    PostStore.off('change', @refreshStateFromStores)
 
 
   # Component Specifications
@@ -55,6 +54,7 @@ MainComponent = React.createClass
     cursor:
       company_flags: GlobalState.cursor(['stores', 'companies', 'flags'])
       story: GlobalState.cursor(['stores', 'stories', 'items'])
+      posts_story: PostsStoryStore.cursor.items
 
   refreshStateFromStores: ->
     @setState @getStateFromProps(@props)
@@ -64,6 +64,7 @@ MainComponent = React.createClass
 
   onGlobalStateChange: ->
     @setState
+      refreshed_at: + new Date
       readOnly: @props.cursor.company_flags.cursor([@props.company_id]).get('is_read_only')
 
   getInitialState: ->
@@ -71,14 +72,15 @@ MainComponent = React.createClass
       readOnly: true
 
   render: ->
+    story = @props.cursor.story.cursor(@props.story_id)
+    return null unless story.deref(Immutable.Map()).size > 0
+
     <div className="wrapper">
-      <div className="story">
-        { @props.story.get('name') }
-      </div>
+      <h1>{story.get('name')}</h1>
 
       <Timeline 
         company_id = { @props.company_id }
-        story = { @props.story }
+        story_id = { @props.story_id }
         readOnly = { @state.readOnly }
       />
     </div>
