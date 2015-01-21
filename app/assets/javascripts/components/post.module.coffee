@@ -3,6 +3,7 @@
 # Imports
 # 
 PostStore = require('stores/post_store')
+PostsStoryStore = require('stores/posts_story_store')
 
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
@@ -80,7 +81,11 @@ Component = React.createClass
     # TODO: show post in timeline
 
   handleStoriesChange: (story_ids) ->
-    PostActions.update(@state.post.uuid, { story_ids: story_ids })
+    # PostActions.update(@state.post.uuid, { story_ids: story_ids })
+    story_ids.forEach (id, index) -> 
+      console.log id, index
+    # PostsStoryStore.update()
+
 
   # Lifecycle Methods
   # 

@@ -9,8 +9,8 @@ EmptyStories    = Immutable.List()
 
 GlobalState     = require('global_state/state')
 
-PostStore       = require('stores/post_store')
 StoryStore      = require('stores/story_store')
+PostsStoryStore = require('stores/posts_story_store')
 
 TokenInput      = cc.require('plugins/react_tokeninput/main')
 ComboboxOption  = cc.require('plugins/react_tokeninput/option')
@@ -29,8 +29,8 @@ formatName = (name) ->
 MainComponent = React.createClass
 
   # mixins: []
-  propTypes:
-    onChange: React.PropTypes.func
+  # propTypes:
+  #   onChange: React.PropTypes.func
 
   displayName: 'Stories'
 
@@ -117,7 +117,9 @@ MainComponent = React.createClass
         
 
   handleRemove: (object) ->
-    @updateStoryIds(@state.storyIdSeq.filterNot((id) -> id is object.id))
+    console.log object
+    # PostsStoryStore.destory
+    # @updateStoryIds(@state.storyIdSeq.filterNot((id) -> id is object.id))
 
 
   # Lifecycle Methods
@@ -140,7 +142,14 @@ MainComponent = React.createClass
     cursor: GlobalState.cursor(['stores', 'stories', 'items'])
 
   getStateFromProps: (props) ->
-    storyIdSeq: Immutable.Seq(PostStore.get(props.post_id).story_ids).toSet()
+    storyIdSeq = PostsStoryStore.cursor.items.deref(Immutable.Map())
+      .valueSeq()
+      .filter (posts_story) -> posts_story.get('post_id') is props.post_id
+      .sortBy (posts_story) -> posts_story.get('position')
+      .map (posts_story) -> posts_story.get('story_id')
+      .toSet()
+
+    storyIdSeq: storyIdSeq
     createdStories: Immutable.List()
 
   getInitialState: ->

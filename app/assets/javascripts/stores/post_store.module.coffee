@@ -23,7 +23,6 @@ DefaultMethods =
     effective_till: ''
     owner_type:     ''
     owner_id:       ''
-    story_ids:      []
     position:       null
     created_at:     ''
     updated_at:     ''

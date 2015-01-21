@@ -14,6 +14,7 @@ PictureStore = require('stores/picture_store')
 VisibilityStore = require('stores/visibility_store')
 PersonStore = require('stores/person')
 PinStore    = require('stores/pin_store')
+PostsStoryStore = require('stores/posts_story_store')
 
 PostActions = require('actions/post_actions')
 VisibilityActions = require('actions/visibility_actions')
@@ -103,15 +104,11 @@ Component = React.createClass
 
 
   getFooter: ->
-    Stories   = GlobalState.cursor(['stores', 'stories', 'items']).deref()
+    story_ids = @getStoryIds()
 
-    return null unless Stories
-    
-    postStoryIds  = Immutable.Seq(@state.post.story_ids)
-
-    stories = Stories
-      .filter (item, key) -> postStoryIds.contains(key)
-      .sortBy (item, key) -> postStoryIds.indexOf(key)
+    stories = GlobalState.cursor(['stores', 'stories', 'items']).deref(Immutable.Map())
+      .filter (item, key) -> story_ids.contains(key)
+      .sortBy (item, key) -> story_ids.indexOf(key)
       .map    @postStoryMapper
 
     return null if stories.count() == 0
@@ -199,7 +196,14 @@ Component = React.createClass
 
   isRelatedToStory: ->
     return true unless @props.story_id
-    @state.post.story_ids.contains @props.story_id
+    @getStoryIds().contains @props.story_id
+
+  getStoryIds: ->
+    PostsStoryStore.cursor.items.deref(Immutable.Map())
+      .valueSeq()
+      .filter (posts_story) => posts_story.get('post_id') is @state.post.uuid
+      .sortBy (posts_story) -> posts_story.get('position')
+      .map (posts_story) -> posts_story.get('story_id')
 
 
   # Handlers
@@ -235,12 +239,13 @@ Component = React.createClass
 
 
   handleLinkStoryClick: (event) ->
-    story_ids = if @isRelatedToStory()
-      @state.post.story_ids.filterNot((id) => id is @props.story_id).toArray()
-    else
-      @state.post.story_ids.concat(@props.story_id).toArray()
+    console.log 'handleLinkStoryClick'
+    # story_ids = if @isRelatedToStory()
+    #   @state.post.story_ids.filterNot((id) => id is @props.story_id).toArray()
+    # else
+    #   @state.post.story_ids.concat(@props.story_id).toArray()
 
-    PostActions.update(@state.post.uuid, { story_ids: story_ids })
+    # PostActions.update(@state.post.uuid, { story_ids: story_ids })
 
 
   handleStarClick: (event) ->

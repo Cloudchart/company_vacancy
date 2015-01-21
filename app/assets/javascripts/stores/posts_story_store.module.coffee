@@ -5,22 +5,35 @@ GlobalState = require('global_state/state')
 
 ItemsCursor = GlobalState.cursor(['stores', 'posts_story', 'items'])
 
-EmptyCursor = Immutable.Map()
 
 # Dispatcher
 # 
 Dispatcher.register (payload) ->
 
   if payload.action.type is 'post:fetch-all:done'
+    [json] = payload.action.data
+
     ItemsCursor.transaction()
-    ItemsCursor.clear()
-
-    Immutable.Seq(payload.action.data[0].posts_stories).forEach (posts_story) -> ItemsCursor.set(posts_story.uuid, posts_story)
-
+    Immutable.Seq(json.posts_stories).forEach (posts_story) -> ItemsCursor.set(posts_story.uuid, posts_story)
     ItemsCursor.commit()    
 
+
+# Destroy
+#
+destroyDone = (json) ->
+  ItemsCursor.remove(json.id)
+
+# destroyFail = (xhr) ->
+
+
+# Exports
+# 
 module.exports = 
   
   cursor:
-    empty: EmptyCursor
     items: ItemsCursor
+
+  destroy: (id) ->
+    promise = PostsStorySyncAPI.destroy(id)
+    promise.then(destroyDone, destroyFail)
+    promise
