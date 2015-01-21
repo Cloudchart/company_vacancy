@@ -20,9 +20,10 @@ VisibilityActions = require('actions/visibility_actions')
 
 ModalActions = require('actions/modal_actions')
 
-Post = require('components/post')
+Post                = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
-PersonAvatar = require('components/shared/person_avatar')
+PersonAvatar        = require('components/shared/person_avatar')
+Tags                = require('components/company/tags')
 
 PinFormComponent = require('components/form/pin_form')
 
@@ -84,6 +85,12 @@ Component = React.createClass
 
 
   getFooter: ->
+    <footer>
+      { @getTags() }
+      Stories: { @getStories() }
+    </footer>
+
+  getStories: ->
     if GlobalState.cursor(['flags', 'is_admin']).deref()
       Stories   = GlobalState.cursor(['stores', 'stories', 'items']).deref()
 
@@ -98,13 +105,18 @@ Component = React.createClass
 
       return null if stories.count() == 0
 
-      <footer>
-        <div className="cc-hashtag-list">
-          <ul>
-            {stories.toArray()}
-          </ul>
-        </div>
-      </footer>
+      <div className="cc-hashtag-list">
+        <ul>
+          {stories.toArray()}
+        </ul>
+      </div>
+    
+
+  getTags: ->
+    <Tags
+      taggable_id={@state.post.uuid}
+      taggable_type="Post"
+      readOnly={true} />
 
 
   getContent: ->

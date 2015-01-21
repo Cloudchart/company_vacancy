@@ -9,6 +9,7 @@ PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
 StoriesComponent    = require('components/company/stories')
+Tags                = require('components/company/tags')
 BlockEditor         = require('components/editor/block_editor')
 FuzzyDateInput      = require('components/form/fuzzy_date_input')
 ContentEditableArea = require('components/form/contenteditable_area')
@@ -168,6 +169,11 @@ Component = React.createClass
               readOnly = {@props.readOnly}
             />
         }
+
+        <Tags
+          taggable_id={@state.post.uuid}
+          taggable_type="Post"
+          readOnly={@props.readOnly} />
       </header>
 
       <BlockEditor

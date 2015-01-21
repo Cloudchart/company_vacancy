@@ -341,9 +341,13 @@ div.post-container {
 
     }
 
-    > div.cc-hashtag-list {
+    > .cc-hashtag-list {
       max-width: 800px;
       margin-top: 10px;
+
+      &:last-child {
+        margin-bottom: 10px;
+      }
     }
 
   }

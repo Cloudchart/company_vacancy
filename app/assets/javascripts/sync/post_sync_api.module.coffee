@@ -37,6 +37,7 @@ module.exports =
 
 
   update: (key, attributes, done, fail) ->
+    attributes.tag_names = attributes.tag_names.join(',') if attributes.tag_names
     attributes.story_ids = [''] if attributes.story_ids and attributes.story_ids.length is 0
 
     $.ajax

@@ -59,9 +59,9 @@ Component = React.createClass
     query = formatName(@state.query)
       
     @state.tagSeq
-      .filter (tag) -> tag.get('is_acceptable')
       .filter (tag) => not @state.identityTagNameSeq.contains(tag.get('name'))
-      .filter (tag) -> tag.get('name').indexOf(query) >= 0
+      .filter (tag) -> tag.get('name').indexOf(query) == 0
+      .sort   (tagA, tagB) -> tagA.get('name').localeCompare(tagB.get('name'))
       .map    (tag) -> <ComboboxOption key={tag.get('name')} value={tag.get('name')}>{'#' + tag.get("name")}</ComboboxOption>
   
   

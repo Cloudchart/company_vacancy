@@ -44,7 +44,7 @@ class CompaniesController < ApplicationController
     respond_to do |format|
       format.html { pagescript_params(id: @company.uuid, is_admin: current_user.present? && current_user.is_admin?) }
       format.json { 
-        @tags = Tag.order(:name).all
+        @tags = Tag.for_company(@company.uuid)
         @stories = @company.stories + Story.where(company: nil)
       }
     end

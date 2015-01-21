@@ -1,6 +1,7 @@
 class Post < ActiveRecord::Base
   include Uuidable
   include Blockable
+  include Taggable
 
   VISIBILITY_WHITELIST = [:public, :trusted, :only_me].freeze
 
