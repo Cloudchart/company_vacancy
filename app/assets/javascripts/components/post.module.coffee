@@ -159,21 +159,6 @@ Component = React.createClass
             { @effectiveDate() }
           </label>
         </Hintable>
-
-        {
-          if @state.cursor.is_admin
-            <StoriesComponent
-              post_id = {@state.post.uuid}
-              company_id = {@props.company_id}
-              onChange = {@handleStoriesChange}
-              readOnly = {@props.readOnly}
-            />
-        }
-
-        <Tags
-          taggable_id={@state.post.uuid}
-          taggable_type="Post"
-          readOnly={@props.readOnly} />
       </header>
 
       <BlockEditor
@@ -184,6 +169,21 @@ Component = React.createClass
         classForArticle = "editor post"
         readOnly = {@props.readOnly}
       />
+
+      {
+        if @state.cursor.is_admin
+          <StoriesComponent
+            post_id = {@state.post.uuid}
+            company_id = {@props.company_id}
+            onChange = {@handleStoriesChange}
+            readOnly = {@props.readOnly}
+          />
+      }
+
+      <Tags
+        taggable_id={@state.post.uuid}
+        taggable_type="Post"
+        readOnly={@props.readOnly} />
 
       <footer>
         {@gatherControls()}
