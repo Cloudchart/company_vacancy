@@ -56,9 +56,9 @@ Component = React.createClass
   gatherControls: ->
     current_user_pin = @props.pins.find (pin) => pin.get('user_id') == @props.current_user_id
 
-    pinClass = cx({ pinned: !!current_user_pin })
+    pinClass = cx({ active: !!current_user_pin })
 
-    <ul className="buttons">
+    <ul className="buttons round-buttons">
       <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={pinClass}>
         <i className="fa fa-thumb-tack" />
       </li>

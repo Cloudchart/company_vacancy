@@ -1,0 +1,113 @@
+@mixin pinnable-post-preview-header {
+
+  font-size: 1.25em;
+  font-weight: 600;
+  margin-bottom: 20px;
+  
+}
+
+@mixin pinnable-post-preview-paragraph {
+
+  line-height: 1.25em;
+  margin-top: 20px;
+
+  &.quote {
+    font-style: italic;
+  }
+  
+  &.kpi {
+    font-weight: 700;
+  }
+}
+
+
+.pinnable-post-preview {
+  background-color: hsl(0, 100%, 100%);
+  margin: 20px 0;
+  padding: 20px;
+  width: 600px;
+}
+
+
+.pinnable-post-preview > header.company {
+  @include align-items(center);
+  @include display(flex);
+  
+  background-color: hsl(0, 100%, 100%);
+  min-height: 50px;
+  
+  > .logo-and-name {
+    @include align-items(center);
+    @include display(flex);
+    @include flex(1);
+    
+    font-size: 25px;
+    font-weight: 300;
+    
+    > .logo {
+      background-position: right center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      height: 40px;
+      margin-right: 10px;
+      width: 40px;
+    }
+    
+    &.no-name > .logo {
+      background-position: left center;
+      width: 100%;
+    }
+  }
+  
+  > .date {
+    color: hsl(0, 0%, 50%);
+    margin: 0 10px;
+    white-space: nowrap;
+  }
+  
+  > .buttons {
+    @include display(flex);
+    @include flex(1);
+    @include justify-content(flex-end);
+  }
+}
+
+
+.pinnable-post-preview > section.pin-content {
+  background-color: hsl(0, 100%, 100%);
+  border-bottom: 1px solid HSL(0, 0%, 95%);
+  color: hsl(140, 55%, 55%);
+  font-size: 1.25em;
+  margin: 10px 0 20px;
+  padding: 0 0 20px;
+  white-space: pre;
+}
+
+
+.pinnable-post-preview .preview {
+  
+  background-color: hsl(0, 100%, 100%);
+  margin: 10px 0 0;
+  
+  > header {
+    @include pinnable-post-preview-header;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  > .paragraph,
+  > .quote,
+  > .kpi {
+    @include pinnable-post-preview-paragraph;
+  }
+  
+  > .picture > img {
+    background-color: #000;
+    display: block;
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+}

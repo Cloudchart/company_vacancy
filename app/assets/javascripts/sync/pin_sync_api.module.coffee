@@ -7,24 +7,26 @@ pendingPromises = {}
 #
 module.exports =
   
-  fetchAll: (options = {}) ->
-    delete pendingPromises['fetchAll'] if options.force == true
+  fetchAll: (options = {}, force = false) ->
+    signature = '/pins' + JSON.stringify(Immutable.Seq(options).sortBy((v, k) -> k))
     
-    pendingPromises['fetchAll'] ||= Promise.resolve $.ajax
+    delete pendingPromises[signature] if force == true
+    
+    pendingPromises[signature] ||= Promise.resolve $.ajax
       url:      '/pins'
       dataType: 'json'
-      cache:    false
-      data:
-        complete: options.complete
+      data:     options
   
   
-  fetchOne: (id, options = {}) ->
-    delete pendingPromises['fetchOne' + id] if options.force == true
+  fetchOne: (id, options = {}, force = false) ->
+    signature = '/pins/' + id + JSON.stringify(Immutable.Seq(options).sortBy((v, k) -> k))
+    
+    delete pendingPromises[signature] if force == true
 
-    pendingPromises['fetchOne' + id] ||= Promise.resolve $.ajax
+    pendingPromises[signature] ||= Promise.resolve $.ajax
       url:      '/pins/' + id
       dataType: 'json'
-      cache:    false
+      data:     options
   
   
   create: (attributes) ->

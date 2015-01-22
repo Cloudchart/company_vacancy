@@ -1,6 +1,5 @@
 # @cjsx React.DOM
 
-Dispatcher      = require('dispatcher/dispatcher')
 GlobalState     = require('global_state/state')
 
 # Stores
@@ -8,50 +7,87 @@ GlobalState     = require('global_state/state')
 PinboardStore   = require('stores/pinboard_store')
 PinStore        = require('stores/pin_store')
 
+
 # Components
 #
-PinnableComponents =
-  Post: require('components/pinnable/post')
+PinboardComponent = require('components/pinboards/pinboard')
+
+PinComponent  = require('components/pinnable/pin')
 
 
-# Utils
-#
-pinboardsSorter = (item) -> item.get('title')
+PinboardListItemComponent = React.createClass
 
 
-lastPinForPinboard = (pinboard, pins) ->
-  pins
-    .filter((pin) -> pin.get('pinboard_id') == pinboard.get('uuid'))
-    .sortBy((pin) -> pin.get('created_at'))
-    .last()
-
-
-pinMapper = (item, pinboard) ->
-  <div className="pin-preview">
-    { PinnableComponents[item.get('pinnable_type')]({
-      uuid:             item.get('pinnable_id')
-      content:          item.get('content') 
-      onPinButtonClick: -> PinStore.destroy(item.get('uuid')) if confirm('Are you sure?')
-    }) }
-    <button className="dive" onClick={ -> location.href = pinboard.get('url') }><i className="fa fa-angle-right" /></button>
-  </div>
-
-
-pinboardsMapper = (item) ->
-  pinboard_pins = @props.cursor.pins.deref(PinStore.empty).filter((pin) -> pin.get('pinboard_id') == item.get('uuid'))
+  displayName: 'PinboardListItem'
   
-  last_pin    = pinboard_pins.sortBy((pin) -> pin.get('created_at')).last()
-  last_pin    = pinMapper(last_pin, item) if last_pin
   
-  <li key={item.get('uuid')}>
+  mixins: [GlobalState.mixin]
+  
+  
+  getHeader: ->
     <header>
-      <span className="title">{ item.get('title') }</span>
-      <span className="count">{ pinboard_pins.size } { if pinboard_pins.size == 1 then 'pin' else 'pins' }</span>
+      <span className="title">{ @state.pinboard.get('title') }</span>
+      <span className="count">{ @state.pins.size } { if @state.pins.size == 1 then 'pin' else 'pins' }</span>
     </header>
+  
+  
+  gatherPins: ->
+    Immutable.Seq(@state.pins)
+      .map (pin) =>
+        uuid = pin.get('uuid')
+        PinComponent({ key: uuid, uuid: uuid, cursor: @props.cursor.pins.cursor(uuid), skipBlocks: true })
+  
+  
+  getPinPreviews: ->
+    return null if @state.pins.size == 0
     
-    { last_pin }
+    <ul className="pins">
+      <li className="link">
+        <i className="fa fa-angle-right" onClick={ @props.handleLinkClick } />
+      </li>
+      { @gatherPins().take(1).toArray() }
+    </ul>
+  
+  
+  preloadTransparentPins: (count) ->
+    transparent_pins_ids = @state.pins.take(count).filter((pin) -> pin.get('transparent') == true).keySeq()
 
-  </li>
+    return if transparent_pins_ids.size == 0
+    
+    PinStore.fetchAll({ ids: transparent_pins_ids.toArray(), relations: 'all' })
+  
+  
+  getStateFromStores: ->
+    pinboard:   @props.cursor.pinboards.get(@props.uuid)
+    pins:       PinStore.filterByPinboardId(@props.uuid)
+  
+  
+  onGlobalStateChange: ->
+    @setState @getStateFromStores()
+    @preloadTransparentPins(1)
+  
+  
+  componentDidMount: ->
+    @preloadTransparentPins(1)
+  
+
+  getDefaultProps: ->
+    cursor:
+      pinboards:  PinboardStore.cursor.items
+      pins:       PinStore.cursor.items
+  
+
+  getInitialState: ->
+    @getStateFromStores()
+  
+
+  render: ->
+    return null unless @state.pinboard
+    
+    <li className="pinboard">
+      { @getHeader() }
+      { @getPinPreviews() }
+    </li>
 
 
 # Exports
@@ -67,32 +103,37 @@ module.exports = React.createClass
 
   gatherPinboards: ->
     @props.cursor.pinboards.deref(PinboardStore.empty)
-      .sortBy pinboardsSorter
-      .map    pinboardsMapper.bind(@)
-  
-  
-  getPinboard: ->
-    pinboard = @props.cursor.pinboards.get(@props.uuid)
-  
-  
-  gatherPins: ->
-    pinboard = @props.cursor.pinboards.get(@props.uuid)
-    
-    @props.cursor.pins.deref(PinStore.empty)
-      .valueSeq()
-      .filter((pin) => pin.get('pinboard_id') == @props.uuid)
-      .sortBy((pin) => pin.get('created_at'))
-      .reverse()
-      .map (pin) ->
-        <li key={ pin.get('uuid') } className="pin-preview">
-          { PinnableComponents[pin.get('pinnable_type')]({
-            uuid:             pin.get('pinnable_id')
-            content:          pin.get('content') 
-            onPinButtonClick: -> PinStore.destroy(pin.get('uuid')) if confirm('Are you sure?')
-          }) }
-        </li>
 
+      .sortBy (pinboard) ->
+        pinboard.get('title')
 
+      .map    (pinboard) =>
+        uuid = pinboard.get('uuid')
+        PinboardListItemComponent({ key: uuid, uuid: uuid, handleLinkClick: @handleForwardClick.bind(null, uuid) })
+  
+
+  handleForwardClick: (id, event) ->
+    event.preventDefault()
+
+    url = @props.cursor.pinboards.getIn([id, 'url'])
+
+    if history.pushState
+      @setState({ uuid: id })
+      history.pushState(null, null, url)
+    else
+      location.href = url
+  
+  
+  handleBackClick: (event) ->
+    event.preventDefault()
+
+    if history.length > 2
+      @setState({ uuid: null })
+      history.back()
+    else
+      location.href = '/pinboards'
+  
+  
   onGlobalStateChange: ->
     @setState
       refreshed_at: + new Date
@@ -100,40 +141,20 @@ module.exports = React.createClass
 
   componentDidMount: ->
     PinboardStore.fetchAll()
-    PinStore.fetchAll()
   
   
   getDefaultProps: ->
     cursor:
       pinboards:  PinboardStore.cursor.items
-      pins:       PinStore.cursor.items
+  
+  getInitialState: ->
+    uuid: @props.uuid
 
 
   render: ->
-    if @props.uuid
-      pinboard  = @getPinboard()
-      pins      = @gatherPins()
-      
-      return null unless pinboard
-      
-      <article className="pinboard">
-        <header>
-          <span className="title">{ pinboard.get('title') }</span>
-        </header>
-        
-        <section className="pins">
-          <ul className="left">
-            { pins.filter((pin, i) -> i % 2 == 0).toArray() }
-          </ul>
-          <ul className="right">
-            { pins.filter((pin, i) -> i % 2 == 1).toArray() }
-          </ul>
-        </section>
-      </article>
-      
+    if @state.uuid
+      PinboardComponent({ cursor: PinboardComponent.getCursor(@state.uuid), uuid: @state.uuid, onClick: @handleBackClick })
     else
-      pinboards = @gatherPinboards()
-
       <ul className="pinboards">
-        { pinboards.toArray() }
+        { @gatherPinboards().toArray() }
       </ul>

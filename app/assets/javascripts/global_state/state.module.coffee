@@ -1,24 +1,34 @@
 # Imports
 #
-Cursor = require('global_state/cursor')
+Cursor  = require('global_state/cursor')
+uuid    = require('utils/uuid')
 
 
 # Data
 #
-CurrRootData = Immutable.fromJS({ meta: {}, stores: {} })
-PrevRootData = CurrRootData
+CurrRootData  = Immutable.fromJS({ meta: {}, stores: {} })
+PrevRootData  = CurrRootData
 
+LastUpdateId      = null
+UpdateInProgress  = false
 
 # Cursor
 #
 RootCursor = Cursor CurrRootData, (NextRootData, options = {}) ->
+  
   PrevRootData = CurrRootData
   CurrRootData = NextRootData
   
-  Callbacks.forEach (callback, pathAsString) ->
-    path = pathAsString.split('/')
-    applyCallbacksForPath(path) if State.hasChanged(path)
-
+  changedPaths = Callbacks
+    .filter (callbacks, pathAsString) -> State.hasChanged(pathAsString.split('/'))
+    .keySeq()
+  
+  setTimeout ->
+    LastUpdateId      = uuid()
+    UpdateInProgress  = true
+    changedPaths.forEach (pathAsString) -> applyCallbacksForPath(pathAsString.split('/'))
+    UpdateInProgress = false
+  
 
 # Callbacks
 #
@@ -38,7 +48,7 @@ samePathCallbacks = (pathAsString) ->
   Callbacks.get(pathAsString, Immutable.Set())
 
 
-addListener = (path, callback) ->
+addListener = (path, callback, uuid) ->
   pathAsString  = [].concat(path).join('/')
   Callbacks     = Callbacks.set(pathAsString, samePathCallbacks(pathAsString).add(callback))
 
@@ -67,6 +77,20 @@ State =
   
   
   mixin:
+    
+    
+    componentDidUpdate: ->
+      @__globalStateLastUpdateId = LastUpdateId
+    
+    
+    shouldComponentUpdateWithGlobalStateCheck: (nextProps, nextState) ->
+      return false if @__globalStateLastUpdateId == LastUpdateId and UpdateInProgress
+      @shouldComponentUpdateWithoutGlobalStateCheck(nextProps, nextState)
+    
+    
+    componentWillMount: ->
+      @shouldComponentUpdateWithoutGlobalStateCheck = @shouldComponentUpdate || -> true
+      @shouldComponentUpdate = @shouldComponentUpdateWithGlobalStateCheck
     
 
     componentDidMount: ->

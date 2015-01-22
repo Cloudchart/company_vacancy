@@ -12,40 +12,28 @@ ItemsCursor = GlobalState.cursor(['stores', 'pinboards', 'items'])
 EmptyPinboards = Immutable.Map({})
 
 
+# Set Data from JSON
+#
+setDataFromJSON = (json) ->
+  Immutable.Seq(json.pinboards || [json.pinboard]).forEach (item) -> ItemsCursor.set(item.uuid, item)
+
+
 # Dispatcher
 #
 
 dispatchToken = Dispatcher.register (payload) ->
   
-  if payload.action.type == 'pinboard:fetch-all:done'
+  if payload.action.type == 'fetch:done'
     [json] = payload.action.data
-    
-    ItemsCursor.transaction()
-    
-    ItemsCursor.update(-> EmptyPinboards)
-    
-    Immutable.Seq(json.pinboards).forEach (pinboard) ->
-      ItemsCursor.set(pinboard.uuid, pinboard)
-    
-    ItemsCursor.commit()
-
-
-  if payload.action.type == 'pinboard:fetch-one:done'
-    [json] = payload.action.data
-    
-    ItemsCursor.set(json.pinboard.uuid, json.pinboard)
-
+    setDataFromJSON(json) if json.pinboards or json.pinboard
+  
 
 # Fetch
 #
 fetchAll = (force = false) ->
-  PinboardSyncAPI.fetchAll(force).then(fetchAllDone, fetchAllFail)
-
-
-fetchAllDone = (json) ->
-  Dispatcher.handleServerAction
-    type: 'pinboard:fetch-all:done'
-    data: [json]
+  promise = PinboardSyncAPI.fetchAll(force)
+  promise.then(fetchDone, fetchAllFail)
+  promise
 
 
 fetchAllFail = (xhr) ->
@@ -53,13 +41,17 @@ fetchAllFail = (xhr) ->
 
 
 fetchOne = (id, force = false) ->
-  PinboardSyncAPI.fetchOne(id, force).then(fetchOneDone, fetchOneFail(id))
+  PinboardSyncAPI.fetchOne(id, force).then(fetchDone, fetchOneFail(id))
   
 
-fetchOneDone = (json) ->
+fetchDone = (json) ->
+  ItemsCursor.transaction()
+
   Dispatcher.handleServerAction
-    type: 'pinboard:fetch-one:done'
+    type: 'fetch:done'
     data: [json]
+  
+  ItemsCursor.commit()
 
 
 fetchOneFail = (id) ->

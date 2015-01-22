@@ -1,3 +1,39 @@
+@mixin pin {
+  background-color: hsl(0, 100%, 100%);
+  border: 2px solid hsl(0, 0%, 95%);
+}
+
+
+@mixin transparent-pin {
+  @include align-items(center);
+  @include display(flex);
+  @include justify-content(center);
+  
+  background-color: hsl(0, 100%, 100%);
+  border: 2px solid hsl(0, 0%, 95%);
+  height: 50px;
+  
+  > i {
+    color: hsl(0, 0%, 85%);
+    font-size: 30px;
+    height: 30px;
+    line-height: 30px;
+  }
+}
+
+
+@mixin pinboard-forward-link {
+  @include position(absolute, 50% 0 0 100%);
+  @include transform(translateY(-50%));
+
+  color: hsl(141, 55%, 54%);
+  cursor: pointer;
+  font-size: 40px;
+  line-height: 40px;
+  margin-left: 40px;
+}
+
+
 @mixin list-pinboard-header {
   font-size: 30px;
   font-weight: 300;
@@ -155,15 +191,35 @@ article.pinboards-list {
     margin: 0;
     padding: 0;
     
-    > li {
-      margin: 30px 0;
+    > li.pinboard {
+      margin: 20px 0;
       
       > header {
         @include list-pinboard-header;
       }
       
-      > .pin-preview {
-        @include pin-preview;
+      > ul.pins {
+        list-style: none;
+        margin: 10px 0 0;
+        padding: 0;
+        position: relative;
+        width: 600px;
+        
+        > li.link {
+          @include pinboard-forward-link;
+        }
+      }
+      
+      .pin {
+        margin: 0;
+      }
+      
+      .pin ~ .pin {
+        margin-top: 20px;
+      }
+      
+      .pin.transparent {
+        @include transparent-pin;
       }
     }
   }

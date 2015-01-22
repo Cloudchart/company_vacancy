@@ -12,6 +12,12 @@ ItemsCursor = GlobalState.cursor(['stores', 'pins', 'items'])
 EmptyPins   = Immutable.Map({})
 
 
+# Set Data from JSON
+#
+setDataFromJSON = (json) ->
+  Immutable.Seq(json.pins || [json.pin]).forEach (item) -> ItemsCursor.set(item.uuid, item)
+
+
 # Dispatcher
 #
 Dispatcher.register (payload) ->
@@ -19,39 +25,34 @@ Dispatcher.register (payload) ->
   type = payload.action.type
   
   switch type
-    when 'pin:fetch-all:done', 'post:fetch-all:done'
+    when 'fetch:done', 'post:fetch-all:done'
       [json] = payload.action.data
-
-      ItemsCursor.transaction()
-      Immutable.Seq(json.pins).forEach (pin) -> ItemsCursor.set(pin.uuid, pin)
-      ItemsCursor.commit()
+      setDataFromJSON(json) if json.pins or json.pin
       
     
-    when 'pin:fetch-one:done'
-      [json] = payload.action.data
-      
-      ItemsCursor.set(json.pin.uuid, json.pin)
-
-
 # Fetch
 #
 
-fetchAll = (options = {}) ->
-  promise = PinSyncAPI.fetchAll(options)
-  promise.then(fetchAllDone, fetchAllFail)
+fetchAll = (options = {}, force = false) ->
+  promise = PinSyncAPI.fetchAll(options, force)
+  promise.then(fetchDone, fetchAllFail)
   promise
 
 
-fetchOne = (id, options = {}) ->
-  promise = PinSyncAPI.fetchOne(id, options)
-  promise.then(fetchOneDone, fetchOneFail)
+fetchOne = (id, options = {}, force = false) ->
+  promise = PinSyncAPI.fetchOne(id, options, force)
+  promise.then(fetchDone, fetchOneFail)
   promise
 
 
-fetchAllDone = (json) ->
+fetchDone = (json) ->
+  ItemsCursor.transaction()
+
   Dispatcher.handleServerAction
-    type: 'pin:fetch-all:done'
+    type: 'fetch:done'
     data: [json]
+
+  ItemsCursor.commit()
 
 
 fetchAllFail = (xhr) ->
@@ -59,12 +60,6 @@ fetchAllFail = (xhr) ->
     type: 'pin:fetch-all:fail'
     data: [xhr, xhr.responseJSON]
   
-
-fetchOneDone = (json) ->
-  Dispatcher.handleServerAction
-    type: 'pin:fetch-one:done'
-    data: [json]
-
 
 fetchOneFail = (xhr) ->
   Dispatcher.handleServerAction
@@ -75,7 +70,7 @@ fetchOneFail = (xhr) ->
 # Create
 #
 createDone = (json) ->
-  fetchOne(json.id, { force: true })
+  fetchOne(json.id)
 
 
 createFail = (xhr) ->
@@ -84,7 +79,9 @@ createFail = (xhr) ->
 # Destroy
 #
 destroyDone = (json) ->
+  ItemsCursor.transaction()
   ItemsCursor.remove(json.id)
+  ItemsCursor.commit()
 
 
 destroyFail = (xhr) ->
@@ -106,6 +103,13 @@ module.exports =
   
 
   fetchOne: fetchOne
+  
+  
+  filterByPinboardId: (pinboard_id) ->
+    ItemsCursor.deref(EmptyPins)
+      .filter (pin) -> pin.get('pinboard_id') == pinboard_id
+      .sortBy (pin) -> pin.get('created_at')
+      .reverse()
   
   
   create: (attributes = {}) ->

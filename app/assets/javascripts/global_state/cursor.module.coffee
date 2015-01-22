@@ -11,6 +11,10 @@ CursorFactory = (data, callback) ->
   # Transaction State
   #
   TransactionState = false
+  
+  # Empty Sequence
+  #
+  EmptySeq = Immutable.Seq()
 
   
   # Fetch existing Cursor or create a new one
@@ -58,6 +62,13 @@ CursorFactory = (data, callback) ->
     commit: ->
       TransactionState = false
       callback(CurrData)
+    
+    
+    filter: ->
+      (seq = @deref(EmptySeq)).filter.apply(seq, arguments)
+    
+    forEach: ->
+      (seq = @deref(EmptySeq)).forEach.apply(seq, arguments)
     
     
     deref: (notSetValue) ->
