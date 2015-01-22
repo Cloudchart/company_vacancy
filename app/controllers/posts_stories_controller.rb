@@ -21,9 +21,9 @@ class PostsStoriesController < ApplicationController
   end
 
   def update
-    if @posts_story.update(post_params)
+    if @posts_story.update(posts_story_params)
       respond_to do |format|
-        format.json { render json: @posts_story }
+        format.json { render json: @posts_story, root: :posts_story }
       end
     else
       respond_to do |format|

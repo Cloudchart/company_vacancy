@@ -28,6 +28,14 @@ createDone = (json) ->
 createFail = (xhr) ->
   console.warn 'PostsStory createFail'
 
+# Update
+# 
+updateDone = (json) ->
+  ItemsCursor.set(json.posts_story.uuid, json.posts_story)
+
+updateFail = (prevItem, xhr) ->
+  ItemsCursor.set(prevItem.get('uuid'), prevItem)
+  console.warn 'PostsStory updateFail'
 
 # Destroy
 #
@@ -56,6 +64,22 @@ module.exports =
     promise.then(createDone, createFail)
     promise
 
+  update: (id, attributes = {}, options = {}) ->
+    prevItem    = ItemsCursor.get(id)
+
+    return if prevItem.get('--sync--')
+
+    nextItem    = prevItem.set('--sync--', 'update')
+
+    if options.optimistic == true
+      nextItem = nextItem.withMutations (item) ->
+        Immutable.Seq(attributes).forEach (v, k) -> item.set(k, v)
+
+    ItemsCursor.set(id, nextItem)
+
+    promise = PostsStorySyncAPI.update(id, attributes)
+    promise.then(updateDone, updateFail.bind(null, prevItem))
+    promise
 
   destroy: (id) ->
     promise = PostsStorySyncAPI.destroy(id)

@@ -59,7 +59,7 @@ MainComponent = React.createClass
   
   gatherStoriesForList: ->
     @filterSelectedStories()
-      .sortBy(story) -> story.get('name')
+      .sortBy (story) -> story.get('name')
       .map (story) =>
         company_story_url = @props.cursor.stories.get(story.get('uuid')).get('company_story_url')
         

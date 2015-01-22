@@ -79,9 +79,19 @@ Component = React.createClass
 
   getStarPostForStoryItem: ->
     return null unless @props.story_id
+    posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id)
+    return null unless posts_story
 
-    <li onClick={@handleStarClick}>
-      <i className="fa fa-star"></i>
+    classes = cx
+      active: posts_story.get('is_highlighted')
+
+    iconClassList = cx
+      fa: true
+      'fa-star': !posts_story.get('--sync--')
+      'fa-spin fa-spinner': posts_story.get('--sync--')
+
+    <li onClick={@handleStarClick.bind(@, posts_story)} className={classes} >
+      <i className={iconClassList}></i>
     </li>
 
 
@@ -244,8 +254,9 @@ Component = React.createClass
       PostsStoryStore.create(@props.uuid, { story_id: @props.story_id })
 
 
-  handleStarClick: (event) ->
-    console.log 'handleStarClick'
+  handleStarClick: (posts_story, event) ->
+    is_highlighted = if posts_story.get('is_highlighted') then false else true
+    PostsStoryStore.update(posts_story.get('uuid'), { is_highlighted: is_highlighted }, { optimistic: false })
 
 
   # Lifecycle Methods
