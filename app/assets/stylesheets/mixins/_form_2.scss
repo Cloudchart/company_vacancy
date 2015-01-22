@@ -349,18 +349,7 @@
 .checkbox.cc {
   cursor: pointer;
 
-  &.with-icon {
-    input {
-      display: none;
-    }
-  }
-
-  i {
-    color: hsl(0, 0%, 66%);
-    font-size: 16px;
-  }
-
-  input:checked + i {
-    color: hsl(0, 0%, 0%);
+  i + input {
+    display: none;
   }
 }

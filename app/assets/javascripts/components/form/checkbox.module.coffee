@@ -9,10 +9,11 @@ MainComponent = React.createClass
   # Component Specifications
   # 
   propTypes:
-    checked:     React.PropTypes.bool
-    customClass: React.PropTypes.string
-    onChange:    React.PropTypes.func
-    iconClass:   React.PropTypes.string
+    checked:          React.PropTypes.bool
+    customClass:      React.PropTypes.string
+    onChange:         React.PropTypes.func
+    iconClass:        React.PropTypes.string
+    iconCheckedClass: React.PropTypes.string
 
 
   getDefaultProps: ->
@@ -22,6 +23,17 @@ MainComponent = React.createClass
 
   getInitialState: ->
     checked: @props.checked
+
+  getCustomClass: ->
+    customClass = "checkbox cc #{@props.customClass}".trim()
+
+    if @state.checked
+      customClass += " checked"
+
+    customClass
+
+  getIconClass: ->
+    if @state.checked then @props.iconCheckedClass else @props.iconClass
 
   # Handlers
   # 
@@ -34,16 +46,11 @@ MainComponent = React.createClass
     @setState(checked: nextProps.checked)
 
   render: ->
-    customClass = "checkbox cc #{@props.customClass}".trim()
-
-    if @props.iconClass
-      customClass += " with-icon"
-
-    <label className={ customClass }>
-      <input type="checkbox" checked={ @state.checked } onChange={ @onChange } />
+    <label className={ @getCustomClass() }>
       {
-        <i className={ "fa #{@props.iconClass}" }></i> if @props.iconClass != ''
+        <i className={ "fa #{@getIconClass()}" }></i> if @props.iconClass != ''
       }
+      <input type="checkbox" checked={ @state.checked } onChange={ @onChange } />
     </label>
     
 

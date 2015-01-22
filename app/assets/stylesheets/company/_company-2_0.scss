@@ -94,6 +94,14 @@ $company-article-block-margin: 30px;
       input {
         font-size: 40px;
         font-weight: 400;
+
+        &:disabled {
+          color: hsl(0, 0%, 50%);
+
+          @include placeholder {
+            color: hsl(0, 0%, 90%);
+          }
+        }
       }
     
       a {
@@ -124,9 +132,22 @@ $company-article-block-margin: 30px;
       font-weight: 300;
       line-height: 135%;
     }
+  }
 
-    &.is-name-in-logo + .name {
+  .is-name-in-logo {
+    @include transition(margin .1s ease-out);
+  }
+
+  .is-name-in-logo + .name {
+    margin-top: 0;
+  }
+
+  .is-name-in-logo {
+    margin-bottom: 8px;
+
+    &.checked {
       margin-top: 10px;
+      margin-bottom: -2px;
     }
   }
 

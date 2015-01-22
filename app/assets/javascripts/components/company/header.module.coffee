@@ -190,12 +190,13 @@ Component = React.createClass
       { @getLogo() }
 
       {
-        if @state.company.logotype_url
+        if @state.company.logotype_url && !@props.readOnly
           <Checkbox 
-            customClass = "is-name-in-logo"
-            checked     = { @state.company.is_name_in_logo }
-            iconClass   = "fa-link"
-            onChange    = { @onIsNameInLogoChange }
+            customClass      = "is-name-in-logo"
+            checked          = { @state.company.is_name_in_logo }
+            iconClass        = "fa-chain-broken"
+            iconCheckedClass = "fa-link"
+            onChange         = { @onIsNameInLogoChange }
           />
       }
 
