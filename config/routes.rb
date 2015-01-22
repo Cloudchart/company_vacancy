@@ -67,7 +67,8 @@ Cloudchart::Application.routes.draw do
 
   scope 'posts/:post_id' do
     resources :blocks, only: :create, type: :post, as: :post_blocks
-    resources :visibilities, only: :create, type: :post, as: :visibility_blocks
+    resources :visibilities, only: :create, type: :post, as: :post_visibilities
+    resources :posts_stories, only: :create, as: :post_posts_stories
   end
 
   scope 'vacancies/:vacancy_id' do
@@ -97,7 +98,7 @@ Cloudchart::Application.routes.draw do
   resources :roles, only: [:update, :destroy]
   resources :pinboards
   resources :pins
-  resources :posts_stories, only: [:create, :update, :destroy]
+  resources :posts_stories, only: [:update, :destroy]
 
   # Custom
   # 

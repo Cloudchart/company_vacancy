@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150120135836) do
+ActiveRecord::Schema.define(version: 20150122155254) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -329,7 +329,6 @@ ActiveRecord::Schema.define(version: 20150120135836) do
   create_table "posts_stories", primary_key: "uuid", force: true do |t|
     t.string  "post_id",        limit: 36,                 null: false
     t.string  "story_id",       limit: 36,                 null: false
-    t.integer "position",                  default: 0
     t.boolean "is_highlighted",            default: false
   end
 

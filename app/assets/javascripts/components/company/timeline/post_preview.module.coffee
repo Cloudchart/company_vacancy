@@ -108,7 +108,7 @@ Component = React.createClass
 
     stories = GlobalState.cursor(['stores', 'stories', 'items']).deref(Immutable.Map())
       .filter (item, key) -> story_ids.contains(key)
-      .sortBy (item, key) -> story_ids.indexOf(key)
+      .sortBy (item, key) -> item.get('name')
       .map    @postStoryMapper
 
     return null if stories.count() == 0
@@ -202,13 +202,11 @@ Component = React.createClass
     PostsStoryStore.cursor.items.deref(Immutable.Map())
       .valueSeq()
       .filter (posts_story) => posts_story.get('post_id') is @state.post.uuid
-      .sortBy (posts_story) -> posts_story.get('position')
       .map (posts_story) -> posts_story.get('story_id')
 
 
   # Handlers
   #
-  
   handlePinClick: (pin, event) ->
     if pin
       PinStore.destroy(pin.get('uuid')) if confirm('Are you sure?')
@@ -239,13 +237,11 @@ Component = React.createClass
 
 
   handleLinkStoryClick: (event) ->
-    console.log 'handleLinkStoryClick'
-    # story_ids = if @isRelatedToStory()
-    #   @state.post.story_ids.filterNot((id) => id is @props.story_id).toArray()
-    # else
-    #   @state.post.story_ids.concat(@props.story_id).toArray()
-
-    # PostActions.update(@state.post.uuid, { story_ids: story_ids })
+    if @isRelatedToStory()
+      id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id).get('uuid')
+      PostsStoryStore.destroy(id)
+    else
+      PostsStoryStore.create(@props.uuid, { story_id: @props.story_id })
 
 
   handleStarClick: (event) ->

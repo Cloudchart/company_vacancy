@@ -3,6 +3,8 @@
 Dispatcher = require('dispatcher/dispatcher')
 GlobalState = require('global_state/state')
 
+PostsStorySyncAPI = require('sync/posts_story_sync_api')
+
 ItemsCursor = GlobalState.cursor(['stores', 'posts_story', 'items'])
 
 
@@ -18,12 +20,22 @@ Dispatcher.register (payload) ->
     ItemsCursor.commit()    
 
 
+# Create
+#
+createDone = (json) ->
+  ItemsCursor.set(json.posts_story.uuid, json.posts_story)
+
+createFail = (xhr) ->
+  console.warn 'PostsStory createFail'
+
+
 # Destroy
 #
 destroyDone = (json) ->
   ItemsCursor.remove(json.id)
 
-# destroyFail = (xhr) ->
+destroyFail = (xhr) ->
+  console.warn 'PostsStory destroyFail'
 
 
 # Exports
@@ -32,6 +44,18 @@ module.exports =
   
   cursor:
     items: ItemsCursor
+
+  findByPostAndStoryIds: (post_id, story_id) ->
+    ItemsCursor.deref(Immutable.Map()).find (posts_story, key) =>
+      posts_story.get('post_id') is post_id and posts_story.get('story_id') is story_id
+
+  # CRUD
+  # 
+  create: (post_id, attributes = {}) ->
+    promise = PostsStorySyncAPI.create(post_id, attributes)
+    promise.then(createDone, createFail)
+    promise
+
 
   destroy: (id) ->
     promise = PostsStorySyncAPI.destroy(id)

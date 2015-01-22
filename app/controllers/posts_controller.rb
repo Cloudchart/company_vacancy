@@ -7,7 +7,7 @@ class PostsController < ApplicationController
 
   def index
     # get posts
-    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :pins, blocks: :block_identities)
+    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :pins, :posts_stories, blocks: :block_identities)
 
     # reject based on visibility rules
     @posts = if can?(:manage, @company)
@@ -37,13 +37,13 @@ class PostsController < ApplicationController
 
     # add stories
     @stories = Story.cc_plus_company(@company.id)
-    @posts_stories = PostsStory.where(post_id: posts.map(&:id))
+    @posts_stories = posts.map(&:posts_stories).flatten
 
     respond_to do |format|
       format.html { 
         pagescript_params(
           company_id: @company.id,
-          story_id: @company.stories.find_by(name: params[:story_name]).try(:id)
+          story_id: @stories.find_by(name: params[:story_name]).try(:id)
         )
       }
       format.json

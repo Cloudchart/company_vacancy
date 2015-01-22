@@ -8,7 +8,7 @@ PostsStoryStore = require('stores/posts_story_store')
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
-StoriesListComponent = require('components/company/stories_list')
+PostsStoriesComponent = require('components/posts_stories')
 BlockEditor = require('components/editor/block_editor')
 FuzzyDateInput = require('components/form/fuzzy_date_input')
 ContentEditableArea = require('components/form/contenteditable_area')
@@ -80,12 +80,6 @@ Component = React.createClass
     ModalActions.hide()
     # TODO: show post in timeline
 
-  handleStoriesChange: (story_ids) ->
-    # PostActions.update(@state.post.uuid, { story_ids: story_ids })
-    story_ids.forEach (id, index) -> 
-      console.log id, index
-    # PostsStoryStore.update()
-
 
   # Lifecycle Methods
   # 
@@ -147,10 +141,9 @@ Component = React.createClass
           </label>
         </Hintable>
 
-        <StoriesListComponent
+        <PostsStoriesComponent
           post_id = {@state.post.uuid}
           company_id = {@props.company_id}
-          onChange = {@handleStoriesChange}
           readOnly = {@props.readOnly}
         />
       </header>

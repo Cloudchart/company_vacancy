@@ -20,13 +20,4 @@ class Post < ActiveRecord::Base
     visibilities.first
   end
 
-  # def story_ids=(ids)
-  #   super
-  #   posts_stories.each { |item| item.update(position: ids.index(item.story_id)) }
-  # end
-
-  # def story_ids
-  #   posts_stories.order(:position).pluck(:story_id)
-  # end
-
 end

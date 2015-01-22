@@ -1,61 +1,57 @@
 class PostsStoriesController < ApplicationController  
 
-  # before_action :set_post, only: [:update, :destroy]
-  # before_action :set_company, only: [:index, :create]
+  before_action :set_posts_story, only: [:update, :destroy]
+  before_action :set_post, only: [:create]
 
+  # TODO:
   # authorize_resource
 
-  # def create
-  #   @post = @company.posts.build(post_params)
+  def create
+    @posts_story = @post.posts_stories.build(posts_story_params)
 
-  #   if @post.save
-  #     respond_to do |format|
-  #       format.json { render json: @post }
-  #     end
-  #   else
-  #     respond_to do |format|
-  #       format.json { render json: :fail, status: 422 }
-  #     end
-  #   end
-  # end
+    if @posts_story.save
+      respond_to do |format|
+        format.json { render json: @posts_story, root: :posts_story }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: :fail, status: 422 }
+      end
+    end
+  end
 
-  # def update
-  #   if @post.update(post_params)
-  #     respond_to do |format|
-  #       format.json { render json: @post }
-  #     end
-  #   else
-  #     respond_to do |format|
-  #       format.json { render json: :fail, status: 422 }
-  #     end
-  #   end
-  # end
+  def update
+    if @posts_story.update(post_params)
+      respond_to do |format|
+        format.json { render json: @posts_story }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: :fail, status: 422 }
+      end
+    end
+  end
 
   def destroy
-    posts_story = PostsStory.find_by!(post_id: params[:post_id], story_id: params[:story_id])
-    posts_story.destroy
+    @posts_story.destroy
 
     respond_to do |format|
-      format.json { render json: :ok }
+      format.json { render json: { id: @posts_story.id } }
     end
   end
 
 private
 
   def posts_story_params
-    params.require(:posts_story).permit(:is_highlighted)
+    params.require(:posts_story).permit(:story_id, :is_highlighted)
   end
 
-  # def set_post
-  #   @post = Post.find(params[:id])
-  # end
+  def set_posts_story
+    @posts_story = PostsStory.find(params[:id])
+  end
 
-  # def set_company
-  #   @company = find_company(Company.includes(:roles, :stories))
-  # end
-
-  # def find_company(relation)
-  #   relation.find_by(slug: params[:company_id]) || relation.find(params[:company_id])
-  # end
+  def set_post
+    @post = Post.find(params[:post_id])
+  end
   
 end
