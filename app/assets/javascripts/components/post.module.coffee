@@ -42,6 +42,7 @@ Component = React.createClass
       </button>
 
       <button 
+        ref="okButton"
         className="cc"
         onClick={@handleOkClick}>
         OK
@@ -105,6 +106,7 @@ Component = React.createClass
       PostActions.destroy(@state.post.uuid)
 
   handleOkClick: (event) ->
+    this.refs.okButton.getDOMNode().focus();
     ModalActions.hide()
     # TODO: show post in timeline
 
