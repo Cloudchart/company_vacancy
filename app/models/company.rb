@@ -63,7 +63,7 @@ class Company < ActiveRecord::Base
 
         sort { by :name } if params[:query].blank?
         filter :term, is_published: true
-
+        size 50
       end
     end
     
