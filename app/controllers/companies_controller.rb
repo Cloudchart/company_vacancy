@@ -41,9 +41,9 @@ class CompaniesController < ApplicationController
     @company = find_company(relation)
 
     respond_to do |format|
-      format.html { pagescript_params(id: @company.uuid) }
+      format.html { pagescript_params(id: @company.id) }
       format.json { 
-        @tags = Tag.for_company(@company.uuid)
+        @tags = Tag.where(is_acceptable: true).all
       }
     end
   end

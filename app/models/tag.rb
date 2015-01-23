@@ -10,8 +10,6 @@ class Tag < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
-  scope :for_company, -> (id) { joins(:taggings).where("is_acceptable = true || (taggings.taggable_type = 'Company' && taggings.taggable_id = ?)", id) }
-
   rails_admin do
 
     list do
