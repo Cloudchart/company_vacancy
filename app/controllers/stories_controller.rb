@@ -4,8 +4,7 @@ class StoriesController < ApplicationController
 
   authorize_resource
 
-  def index
-    
+  def index    
   end
 
   def show
@@ -15,7 +14,6 @@ class StoriesController < ApplicationController
       format.json { render json: @story, root: :story }
     end
   end
-
 
   def create
     @story = @company.stories.build(story_params)

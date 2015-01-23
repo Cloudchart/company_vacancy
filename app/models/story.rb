@@ -15,6 +15,8 @@ class Story < ActiveRecord::Base
   validates :name, presence: true
   validates :name, uniqueness: { scope: :company_id, case_sensitive: false }
 
+  scope :cc_plus_company, -> company_id { where(arel_table[:company_id].eq(nil).or(arel_table[:company_id].eq(company_id))) }
+
   rails_admin do
 
     list do

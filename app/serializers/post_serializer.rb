@@ -1,6 +1,6 @@
 class PostSerializer < ActiveModel::Serializer
 
-  attributes  :uuid, :title, :owner_id, :owner_type, :story_ids
+  attributes  :uuid, :title, :owner_id, :owner_type
   attributes  :created_at, :updated_at
   attributes  :effective_from, :effective_till, :position
   

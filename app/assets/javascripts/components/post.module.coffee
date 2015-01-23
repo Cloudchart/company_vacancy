@@ -3,17 +3,19 @@
 # Imports
 # 
 PostStore = require('stores/post_store')
+PostsStoryStore = require('stores/posts_story_store')
 
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
 
-StoriesComponent    = require('components/company/stories')
-BlockEditor         = require('components/editor/block_editor')
-FuzzyDateInput      = require('components/form/fuzzy_date_input')
+PostsStoriesComponent = require('components/posts_stories')
+BlockEditor = require('components/editor/block_editor')
+FuzzyDateInput = require('components/form/fuzzy_date_input')
 ContentEditableArea = require('components/form/contenteditable_area')
 
 Hintable            = require('components/shared/hintable')
 Hints               = require('utils/hints')
+
 
 # Main
 # 
@@ -88,9 +90,6 @@ Component = React.createClass
       @handleOkClick()
 
 
-  handleStoriesChange: (story_ids) ->
-    PostActions.update(@state.post.uuid, { story_ids: story_ids })
-
   # Lifecycle Methods
   # 
   componentDidMount: ->
@@ -153,10 +152,9 @@ Component = React.createClass
           </label>
         </Hintable>
 
-        <StoriesComponent
+        <PostsStoriesComponent
           post_id = {@state.post.uuid}
           company_id = {@props.company_id}
-          onChange = {@handleStoriesChange}
           readOnly = {@props.readOnly}
         />
       </header>

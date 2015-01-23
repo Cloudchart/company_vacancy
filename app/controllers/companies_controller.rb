@@ -35,7 +35,6 @@ class CompaniesController < ApplicationController
       :paragraphs,
       :roles,
       :tokens,
-      :stories,
       users: :emails,
       blocks: :block_identities
     )
@@ -45,7 +44,6 @@ class CompaniesController < ApplicationController
       format.html { pagescript_params(id: @company.uuid) }
       format.json { 
         @tags = Tag.order(:name).all
-        @stories = @company.stories + Story.where(company: nil)
       }
     end
   end

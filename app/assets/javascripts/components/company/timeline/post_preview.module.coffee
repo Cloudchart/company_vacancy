@@ -14,6 +14,7 @@ PictureStore = require('stores/picture_store')
 VisibilityStore = require('stores/visibility_store')
 PersonStore = require('stores/person')
 PinStore    = require('stores/pin_store')
+PostsStoryStore = require('stores/posts_story_store')
 
 PostActions = require('actions/post_actions')
 VisibilityActions = require('actions/visibility_actions')
@@ -33,36 +34,65 @@ FuzzyDate = require('utils/fuzzy_date')
 # 
 Component = React.createClass
 
-  
   # Helpers
   # 
-  __gatherControls: ->
-    return null if @props.readOnly
-
-    <ul className="controls">
-      <li className="visibility">
-        <select value={@state.visibility_value}, onChange={@handleVisibilityChange}>
-          <option value={'public'}>Public</option>
-          <option value={'trusted'}>Trusted</option>
-          <option value={'only_me'}>Only me</option>
-        </select>
-      </li>
-      <li>
-        <i className="fa fa-times" onClick={@handleDestroyClick}></i>
-      </li>
-    </ul>
-  
-  
   gatherControls: ->
-    current_user_pin = @props.pins.find (pin) => pin.get('user_id') == @props.current_user_id
-
-    pinClass = cx({ active: !!current_user_pin })
-
-    <ul className="buttons round-buttons">
-      <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={pinClass}>
-        <i className="fa fa-thumb-tack" />
-      </li>
+    # TODO: use round-buttons class
+    <ul className="buttons">
+      { @getLinkPostWithStoryItem() }
+      { @getStarPostForStoryItem() }
+      { @getPinPostItem() }
     </ul>
+
+    # <li className="visibility">
+    #   <select value={@state.visibility_value}, onChange={@handleVisibilityChange}>
+    #     <option value={'public'}>Public</option>
+    #     <option value={'trusted'}>Trusted</option>
+    #     <option value={'only_me'}>Only me</option>
+    #   </select>
+    # </li>
+
+    # <li>
+    #   <i className="fa fa-times" onClick={@handleDestroyClick} />
+    # </li>
+
+  getPinPostItem: ->
+    pins = PinStore.cursor.items.deref(PinStore.empty).filter((item) => item.get('pinnable_type') == 'Post' and item.get('pinnable_id') == @state.post.uuid )
+
+    current_user_pin = pins.find (pin) => pin.get('user_id') == @props.current_user_id
+    classes = cx({ active: !!current_user_pin })
+
+    <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={classes}>
+      <i className="fa fa-thumb-tack" />
+    </li>
+
+  getLinkPostWithStoryItem: ->
+    return null unless @props.story_id
+
+    classes = cx
+      active: @isRelatedToStory()
+
+    <li onClick={@handleLinkStoryClick} className={classes} >
+      <i className="fa fa-link" />
+    </li>
+
+
+  getStarPostForStoryItem: ->
+    return null unless @props.story_id
+    posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id)
+    return null unless posts_story
+
+    classes = cx
+      active: posts_story.get('is_highlighted')
+
+    iconClassList = cx
+      fa: true
+      'fa-star': !posts_story.get('--sync--')
+      'fa-spin fa-spinner': posts_story.get('--sync--')
+
+    <li onClick={@handleStarClick.bind(@, posts_story)} className={classes} >
+      <i className={iconClassList}></i>
+    </li>
 
 
   getHeader: ->
@@ -84,15 +114,11 @@ Component = React.createClass
 
 
   getFooter: ->
-    Stories   = GlobalState.cursor(['stores', 'stories', 'items']).deref()
+    story_ids = @getStoryIds()
 
-    return null unless Stories
-    
-    postStoryIds  = Immutable.Seq(@state.post.story_ids)
-
-    stories = Stories
-      .filter (item, key) -> postStoryIds.contains(key)
-      .sortBy (item, key) -> postStoryIds.indexOf(key)
+    stories = GlobalState.cursor(['stores', 'stories', 'items']).deref(Immutable.Map())
+      .filter (item, key) -> story_ids.contains(key)
+      .sortBy (item, key) -> item.get('name')
       .map    @postStoryMapper
 
     return null if stories.count() == 0
@@ -137,7 +163,7 @@ Component = React.createClass
     </li>
 
 
-  getParagraph: (block) ->    
+  getParagraph: (block) ->
     paragraph = ParagraphStore.find (paragraph) -> paragraph.owner_id is block.uuid
     return null unless paragraph
 
@@ -178,10 +204,19 @@ Component = React.createClass
   isEpochType: ->
     @state.post.title and @state.post.effective_from and @state.post.effective_till and @state.blocks.length is 0
 
+  isRelatedToStory: ->
+    return true unless @props.story_id
+    @getStoryIds().contains @props.story_id
+
+  getStoryIds: ->
+    PostsStoryStore.cursor.items.deref(Immutable.Map())
+      .valueSeq()
+      .filter (posts_story) => posts_story.get('post_id') is @state.post.uuid
+      .map (posts_story) -> posts_story.get('story_id')
+
 
   # Handlers
   #
-  
   handlePinClick: (pin, event) ->
     if pin
       PinStore.destroy(pin.get('uuid')) if confirm('Are you sure?')
@@ -211,12 +246,26 @@ Component = React.createClass
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.uuid, value: value })
 
 
+  handleLinkStoryClick: (event) ->
+    if @isRelatedToStory()
+      id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id).get('uuid')
+      PostsStoryStore.destroy(id)
+    else
+      PostsStoryStore.create(@props.uuid, { story_id: @props.story_id })
+
+
+  handleStarClick: (posts_story, event) ->
+    is_highlighted = if posts_story.get('is_highlighted') then false else true
+    PostsStoryStore.update(posts_story.get('uuid'), { is_highlighted: is_highlighted }, { optimistic: false })
+
+
   # Lifecycle Methods
   # 
   componentDidMount: ->
     BlockStore.on('change', @refreshStateFromStores)
-    ParagraphStore.on('change', @refreshStateFromStores)
+    PersonStore.on('change', @refreshStateFromStores)
     PictureStore.on('change', @refreshStateFromStores)
+    ParagraphStore.on('change', @refreshStateFromStores)
     VisibilityStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
@@ -224,22 +273,19 @@ Component = React.createClass
 
   componentWillUnmount: ->
     BlockStore.off('change', @refreshStateFromStores)
-    ParagraphStore.off('change', @refreshStateFromStores)
+    PersonStore.off('change', @refreshStateFromStores)
     PictureStore.off('change', @refreshStateFromStores)
+    ParagraphStore.off('change', @refreshStateFromStores)
     VisibilityStore.off('change', @refreshStateFromStores)
 
 
   # Component Specifications
   # 
-  
-  
   getDefaultProps: ->
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
   
-  
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
-
 
   getStateFromStores: (props) ->
     visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.uuid and item.owner_type is 'Post'
@@ -265,6 +311,7 @@ Component = React.createClass
       'preview': true
       'post': true
       'epoch': @isEpochType()
+      'dimmed': not @isRelatedToStory()
 
     <article className={article_classes}>
       { @gatherControls() }

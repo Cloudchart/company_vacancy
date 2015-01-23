@@ -18,6 +18,8 @@ BlockEditor     = require('components/editor/block_editor')
 Component = React.createClass
 
   mixins: [GlobalState.mixin]
+  # propTypes: {}
+  displayName: 'Company app'
 
   # Helpers
   # 

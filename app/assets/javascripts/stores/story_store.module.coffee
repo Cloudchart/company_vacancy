@@ -15,7 +15,7 @@ EmptyStories  = Immutable.Map()
 # 
 Dispatcher.register (payload) ->
   
-  if payload.action.type == 'company:fetch:done'
+  if payload.action.type == 'post:fetch-all:done'
     fetchMany.apply(null, payload.action.data)
 
 
@@ -33,7 +33,7 @@ setStoryItem = (uuid, story) ->
 
 # Handlers
 # 
-fetchMany = (company_id, json) ->
+fetchMany = (json) ->
   ItemsCursor.transaction()
 
   ItemsCursor.clear()
@@ -71,6 +71,10 @@ GlobalState.addListener CreateCursor.path, handleCreate
 # Exports
 #
 module.exports =
+
+  cursor:
+    empty: EmptyStories
+    items: ItemsCursor
 
   create: (attributes, callback = ->) ->
     SyncAPI.create(attributes.company_id, attributes)

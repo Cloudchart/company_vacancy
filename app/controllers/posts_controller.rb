@@ -7,7 +7,7 @@ class PostsController < ApplicationController
 
   def index
     # get posts
-    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :pins, blocks: :block_identities)
+    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :pins, :posts_stories, blocks: :block_identities)
 
     # reject based on visibility rules
     @posts = if can?(:manage, @company)
@@ -35,7 +35,17 @@ class PostsController < ApplicationController
       instance_variable_set("@#{association}", dependent_collections[association])
     end
 
+    # add stories
+    @stories = Story.cc_plus_company(@company.id)
+    @posts_stories = posts.map(&:posts_stories).flatten
+
     respond_to do |format|
+      format.html { 
+        pagescript_params(
+          company_id: @company.id,
+          story_id: @stories.find_by(name: params[:story_name]).try(:id)
+        )
+      }
       format.json
     end
   end
@@ -87,7 +97,7 @@ class PostsController < ApplicationController
 private
 
   def post_params
-    params.require(:post).permit(:title, :effective_from, :effective_till, :position, story_ids: [])
+    params.require(:post).permit(:title, :effective_from, :effective_till, :position)
   end
 
   def set_post
@@ -95,7 +105,7 @@ private
   end
 
   def set_company
-    @company = find_company(Company.includes(:roles))
+    @company = find_company(Company.includes(:roles, :stories))
   end
 
   def find_company(relation)
