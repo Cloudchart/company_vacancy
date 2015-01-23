@@ -17,14 +17,16 @@
 
 .pinnable-post-preview .people {
   @include display(flex);
-  @include justify-content(space-around);
+  @include flex-wrap(wrap);
+  @include justify-content(center);
   
   list-style: none;
-  margin: 20px 0 0;
+  margin: 0;
   padding: 0;
   
   > li.person {
     padding: 0 10px;
+    margin: 20px 10px 0;
     width: 25%;
     
     > figure {
