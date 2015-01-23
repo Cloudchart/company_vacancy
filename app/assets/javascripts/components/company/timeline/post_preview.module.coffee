@@ -229,7 +229,6 @@ Component = React.createClass
     <header>
       {title}
       {date}
-      { @renderStories() }
     </header>
 
   renderStories: ->
@@ -267,10 +266,7 @@ Component = React.createClass
 
   renderFooter: ->
     <footer>
-      <Tags 
-        taggable_id   = {@state.post.uuid}
-        taggable_type = "Post"
-        readOnly      = {true} />
+      { @renderStories() }
     </footer>
 
   render: ->

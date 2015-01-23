@@ -14,12 +14,12 @@ Hints =
   stories:
     render: ->
       <div>
-        Pick one category:
+        Pick one or more categories:
         <ul>
-          <li>Leadership: key people coming/leaving the company;</li>
-          <li>Product: everything product-related, including pivots;</li>
-          <li>Growth: quantitative growth/churn, new hires/layoffs, company acquisitions/sales, branches opening/closing etc;</li>
-          <li>Traction: quantitative evidence of market demand;</li>
+          <li>Leadership: key people coming/leaving the company</li>
+          <li>Product: everything product-related, including pivots</li>
+          <li>Growth: quantitative growth/churn, new hires/layoffs, company acquisitions/sales, branches opening/closing etc</li>
+          <li>Traction: quantitative evidence of market demand</li>
           <li>Funding: company value, series A/B/C etc investment rounds, etc.</li>
         </ul>
       </div>

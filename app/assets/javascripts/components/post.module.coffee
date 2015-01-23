@@ -217,7 +217,7 @@ Component = React.createClass
             post_id     = { @state.post.uuid }
             company_id  = { @props.company_id }
             readOnly    = { @props.readOnly }
-            placeholder = "Category" />
+            placeholder = "#Category" />
           <Hint 
             content = { renderHint("stories") }
             visible = { !@props.readOnly } />
