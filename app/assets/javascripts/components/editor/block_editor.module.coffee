@@ -15,7 +15,7 @@ SortableListItem = require('components/shared/sortable_list_item')
 
 FieldWrapper     = require('components/editor/field_wrapper')
 Hint             = require('components/shared/hint')
-HintTexts        = require('utils/hint_texts')
+renderHint       = require('utils/render_hint')
 
 BlockComponents =
   Picture:    require('components/editor/picture')
@@ -40,7 +40,7 @@ SectionPlaceholderItemNames =
   Vacancy:    'Vacancies'
 
 Hints =
-  Quote: HintTexts.quote
+  Quote: renderHint("quote")
 
 # Main
 # 
@@ -67,10 +67,9 @@ MainComponent = React.createClass
                 company_id={@props.company_id}
                 readOnly={@props.readOnly}
                 blockKind={block.kind || block.identity_type} />
-              {
-                if !@props.readOnly && Hints[block.kind]
-                  <Hint text={Hints[block.kind]} />
-              }
+              <Hint 
+                content = { Hints[block.kind] }
+                visible = { !@props.readOnly && !!Hints[block.kind] } />
             </FieldWrapper>
           </section>
         </SortableListItem>

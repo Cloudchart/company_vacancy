@@ -2,30 +2,29 @@
 
 # Imports
 # 
-tag = React.DOM
 cx = React.addons.classSet
 
-GlobalState = require('global_state/state')
+GlobalState         = require('global_state/state')
 
-PostStore = require('stores/post_store')
-BlockStore = require('stores/block_store')
-ParagraphStore = require('stores/paragraph_store')
-PictureStore = require('stores/picture_store')
-PersonStore = require('stores/person')
-PinStore    = require('stores/pin_store')
-PostsStoryStore = require('stores/posts_story_store')
+PostStore           = require('stores/post_store')
+BlockStore          = require('stores/block_store')
+ParagraphStore      = require('stores/paragraph_store')
+PictureStore        = require('stores/picture_store')
+PersonStore         = require('stores/person')
+PinStore            = require('stores/pin_store')
+PostsStoryStore     = require('stores/posts_story_store')
 
-PostActions = require('actions/post_actions')
+PostActions         = require('actions/post_actions')
+ModalActions        = require('actions/modal_actions')
 
-ModalActions = require('actions/modal_actions')
-
-Post = require('components/post')
+Post                = require('components/post')
+Tags                = require('components/company/tags')
 ContentEditableArea = require('components/form/contenteditable_area')
-PersonAvatar = require('components/shared/person_avatar')
+PersonAvatar        = require('components/shared/person_avatar')
 
-PinFormComponent = require('components/form/pin_form')
+PinFormComponent    = require('components/form/pin_form')
 
-FuzzyDate = require('utils/fuzzy_date')
+FuzzyDate           = require('utils/fuzzy_date')
 
 
 # Main
@@ -34,107 +33,6 @@ Component = React.createClass
 
   # Helpers
   # 
-  gatherControls: ->
-    <ul className="buttons round-buttons">
-      { @getLinkPostWithStoryItem() }
-      { @getStarPostForStoryItem() }
-      { @getPinPostItem() }
-    </ul>
-
-  getPinPostItem: ->
-    pins = PinStore.cursor.items.deref(PinStore.empty).filter((item) => item.get('pinnable_type') == 'Post' and item.get('pinnable_id') == @state.post.uuid )
-
-    current_user_pin = pins.find (pin) => pin.get('user_id') == @props.current_user_id
-    classes = cx({ active: !!current_user_pin })
-
-    <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={classes}>
-      <i className="fa fa-thumb-tack" />
-    </li>
-
-  getLinkPostWithStoryItem: ->
-    return null unless @props.story_id
-
-    classes = cx
-      active: @isRelatedToStory()
-
-    <li onClick={@handleLinkStoryClick} className={classes} >
-      <i className="fa fa-link" />
-    </li>
-
-
-  getStarPostForStoryItem: ->
-    return null unless @props.story_id
-    posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id)
-    return null unless posts_story
-
-    classes = cx
-      active: posts_story.get('is_highlighted')
-
-    iconClassList = cx
-      fa: true
-      'fa-star': !posts_story.get('--sync--')
-      'fa-spin fa-spinner': posts_story.get('--sync--')
-
-    <li onClick={@handleStarClick.bind(@, posts_story)} className={classes} >
-      <i className={iconClassList}></i>
-    </li>
-
-
-  getHeader: ->
-    formatted_date = FuzzyDate.format(@state.post.effective_from, @state.post.effective_till)
-      
-    title = if @state.post.title
-      <h1 dangerouslySetInnerHTML = { __html: @state.post.title } />
-    else
-      <h1>{formatted_date}</h1>
-
-    date = if @state.post.title
-      <span className="date">{formatted_date}</span>
-    else null
-      
-    <header>
-      {title}
-      {date}
-    </header>
-
-
-  getFooter: ->
-    story_ids = @getStoryIds()
-
-    stories = GlobalState.cursor(['stores', 'stories', 'items']).deref(Immutable.Map())
-      .filter (item, key) -> story_ids.contains(key)
-      .sortBy (item, key) -> item.get('name')
-      .map    @postStoryMapper
-
-    return null if stories.count() == 0
-
-    <footer>
-      <div className="cc-hashtag-list">
-        <ul>
-          {stories.toArray()}
-        </ul>
-      </div>
-    </footer>
-
-
-  getContent: ->
-    first_block = @state.blocks[0]
-    return null unless first_block
-
-    first_content_item = @identityContentSwitcher(first_block)
-
-    second_block = @state.blocks[1]
-    second_content_item = if second_block and second_block.identity_type isnt first_block.identity_type
-      @identityContentSwitcher(second_block)
-    else
-      null
-
-    <div className="content">
-      { first_content_item }
-      { second_content_item }
-    </div>
-
-
   identityContentSwitcher: (block) ->
     switch block.identity_type
       when 'Paragraph' then @getParagraph(block)
@@ -269,6 +167,112 @@ Component = React.createClass
     @getStateFromStores(@props)
 
 
+  # Renderers
+  #
+  renderControls: ->
+    <ul className="buttons round-buttons">
+      { @renderLinkPostWithStoryItem() }
+      { @renderStarPostForStoryItem() }
+      { @renderPinPostItem() }
+    </ul>
+
+  renderPinPostItem: ->
+    pins = PinStore.cursor.items.deref(PinStore.empty).filter((item) => item.get('pinnable_type') == 'Post' and item.get('pinnable_id') == @state.post.uuid )
+
+    current_user_pin = pins.find (pin) => pin.get('user_id') == @props.current_user_id
+    classes = cx({ active: !!current_user_pin })
+
+    <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={classes}>
+      <i className="fa fa-thumb-tack" />
+    </li>
+
+  renderLinkPostWithStoryItem: ->
+    return null unless @props.story_id
+
+    classes = cx
+      active: @isRelatedToStory()
+
+    <li onClick={@handleLinkStoryClick} className={classes} >
+      <i className="fa fa-link" />
+    </li>
+
+
+  renderStarPostForStoryItem: ->
+    return null unless @props.story_id
+    posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id)
+    return null unless posts_story
+
+    classes = cx
+      active: posts_story.get('is_highlighted')
+
+    iconClassList = cx
+      fa: true
+      'fa-star': !posts_story.get('--sync--')
+      'fa-spin fa-spinner': posts_story.get('--sync--')
+
+    <li onClick={@handleStarClick.bind(@, posts_story)} className={classes} >
+      <i className={iconClassList}></i>
+    </li>
+
+  renderHeader: ->
+    formatted_date = FuzzyDate.format(@state.post.effective_from, @state.post.effective_till)
+      
+    title = if @state.post.title
+      <h1 dangerouslySetInnerHTML = { __html: @state.post.title } />
+    else
+      <h1>{formatted_date}</h1>
+
+    date = if @state.post.title
+      <span className="date">{formatted_date}</span>
+    else null
+      
+    <header>
+      {title}
+      {date}
+      { @renderStories() }
+    </header>
+
+  renderStories: ->
+    story_ids = @getStoryIds()
+
+    stories = GlobalState.cursor(['stores', 'stories', 'items']).deref(Immutable.Map())
+      .filter (item, key) -> story_ids.contains(key)
+      .sortBy (item, key) -> item.get('name')
+      .map    @postStoryMapper
+
+    return null if stories.count() == 0
+
+    <div className="cc-hashtag-list">
+      <ul>
+        {stories.toArray()}
+      </ul>
+    </div>
+
+  renderContent: ->
+    first_block = @state.blocks[0]
+    return null unless first_block
+
+    first_content_item = @identityContentSwitcher(first_block)
+
+    second_block = @state.blocks[1]
+    second_content_item = if second_block and second_block.identity_type isnt first_block.identity_type
+      @identityContentSwitcher(second_block)
+    else
+      null
+
+    <div className="content">
+      { first_content_item }
+      { second_content_item }
+    </div>
+
+  renderFooter: ->
+    <footer>
+      <Tags 
+        taggable_id   = {@state.post.uuid}
+        taggable_type = "Post"
+        readOnly      = {true} />
+    </footer>
+
   render: ->
     return null unless @state.post
 
@@ -279,12 +283,12 @@ Component = React.createClass
       'dimmed': not @isRelatedToStory()
 
     <article className={article_classes}>
-      { @gatherControls() }
+      { @renderControls() }
 
       <a href="" onClick={@handleEditClick}>
-        { @getHeader() }
-        { @getContent() }
-        { @getFooter() }
+        { @renderHeader() }
+        { @renderContent() }
+        { @renderFooter() }
       </a>
     </article>
 

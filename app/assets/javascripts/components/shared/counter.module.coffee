@@ -11,8 +11,15 @@ module.exports = React.createClass
   # 
   propTypes:
     count:       React.PropTypes.number
+    visible:     React.PropTypes.bool
+
+  getInitialState: ->
+    visible: true
 
   render: ->
-    <aside className={cx(counter: true, negative: @props.count < 0)}>
-      { @props.count }
-    </aside>
+    if @props.visible
+      <aside className={cx(counter: true, negative: @props.count < 0)}>
+        { @props.count }
+      </aside>
+    else
+      null

@@ -43,7 +43,7 @@ class CompaniesController < ApplicationController
     respond_to do |format|
       format.html { pagescript_params(id: @company.uuid) }
       format.json { 
-        @tags = Tag.order(:name).all
+        @tags = Tag.for_company(@company.uuid)
       }
     end
   end

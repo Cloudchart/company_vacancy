@@ -10,45 +10,66 @@ module.exports = React.createClass
   # Component Specifications
   # 
   propTypes:
-    text:       React.PropTypes.string
-    opened:     React.PropTypes.bool
+    content:  React.PropTypes.object
+    opened:   React.PropTypes.bool
+    visible:  React.PropTypes.bool
 
   getInitialState: ->
-    opened: false
+    opened:  false
+    visible: true
+
+
+  # Helpers
+  #
+  hideHint: ->
+    @setState(opened: false)
+
+  showHint: ->
+    @setState(opened: true)
+
 
   # Handlers
   # 
-  onDocumentClick: (e) ->
-    hintNode = @refs.hint.getDOMNode()
+  handleDocumentClick: (e) ->
+    hintRef = @refs.hint
 
-    if $(e.target).closest(hintNode).length == 0
-      @setState opened: false
+    if hintRef && $(e.target).closest(hintRef.getDOMNode()).length == 0
+      @hideHint()
 
-  onClick: (props) ->
-    @setState
-      opened: !@state.opened
+  handleClick: ->
+    @setState(opened: !@state.opened)
+
 
   # Lifecycle Methods
   #   
   componentWillMount: ->
-    $(document).on "click", @onDocumentClick
+    if @props.visible
+      $(document).on "click", @handleDocumentClick
 
-    @setState
-      opened: @props.opened
+      @setState
+        opened: @props.opened
 
   componentWillReceiveProps: (nextProps) ->
     @setState 
       opened: nextProps.opened
 
   componentWillUnmount: ->
-    $(document).off "click", @onDocumentClick
+    if @props.visible
+      $(document).off "click", @handleDocumentClick
 
   render: ->
-    <aside ref="hint">
-      <button className="hint-button transparent" onClick={@onClick}>
-        <i className="fa fa-question-circle"></i>
-      </button>
-      <div className={cx(hint: true, opened: @state.opened)}>
-        { @props.text }
-      </div>
-    </aside>
+    if @props.visible
+      <aside ref="hint">
+        <button 
+          className    = "hint-button transparent"
+          onClick      = {@handleClick}
+          onMouseEnter = {@showHint}
+          onMouseLeave = {@hideHint} >
+          <i className="fa fa-question-circle"></i>
+        </button>
+        <div className={cx(hint: true, opened: @state.opened)}>
+          { @props.content }
+        </div>
+      </aside>
+    else
+      null

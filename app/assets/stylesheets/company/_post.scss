@@ -315,6 +315,18 @@ div.post-container {
     @include flex-direction(column);
 
     position: relative;
+
+    .title div[contenteditable] {
+      @include editor-contenteditable-area;
+      
+      max-width: 650px;
+      font-size: 40px;
+      font-weight: 400;
+    }
+
+    .title > aside {
+      height: 47px;
+    }
     
     label {
       margin: 10px 0 0;
@@ -326,18 +338,6 @@ div.post-container {
         outline: none;
         padding: 0;
       }
-
-      &.title > div[contenteditable] {
-        @include editor-contenteditable-area;
-        
-        max-width: 650px;
-        font-size: 40px;
-        font-weight: 400;
-      }
-
-      &.title + aside {
-        height: 47px;
-      }
       
       &.published-at > * {
         font-size: 24px;
@@ -347,14 +347,33 @@ div.post-container {
       &.published-at + aside {
         height: 29px;
       }
-
     }
 
-    > div.cc-hashtag-list {
+    .categories {
       max-width: 800px;
-      margin-top: 10px;
+      margin-top: 15px; 
+      margin-bottom: 15px;     
     }
 
+    .categories > aside {
+      height: 40px;
+
+      .hint {
+        width: 450px;
+      }
+    }
+  }
+
+  .tags {
+    margin-top: 15px;
+  }
+
+  .tags > aside {
+    height: 40px;
+
+    .hint {
+      width: 400px;
+    }
   }
 
   > footer {

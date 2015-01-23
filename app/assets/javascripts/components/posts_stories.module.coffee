@@ -53,7 +53,7 @@ MainComponent = React.createClass
         onRemove    = {@handleRemove}
         selected    = {@gatherStories().toArray()}
         menuContent = {@gatherStoriesForSelect().toArray()}
-        placeholder = "#Event tag"
+        placeholder = {@props.placeholder}
       />
 
   
@@ -155,6 +155,8 @@ MainComponent = React.createClass
       storyIdSeq: @getStoryIdSeq()
 
   getDefaultProps: ->
+    placeholder: "#Event tag"
+
     cursor: 
       stories: StoryStore.cursor.items
       posts_stories: PostsStoryStore.cursor.items

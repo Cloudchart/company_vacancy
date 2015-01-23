@@ -5,7 +5,17 @@ module.exports = React.createClass
   
   displayName: "FieldWrapper"
 
+  # Component Specifications
+  # 
+  propTypes:
+    className: React.PropTypes.string
+
+  getDefaultProps: ->
+    className: ""
+
   render: ->
-    <div className="editor-field-wrapper">
+    className = "editor-field-wrapper #{@props.className}".trim()
+
+    <div className={ className }>
       { @props.children }
     </div>

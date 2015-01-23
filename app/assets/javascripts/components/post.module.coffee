@@ -11,6 +11,7 @@ VisibilityActions   = require('actions/visibility_actions')
 ModalActions        = require('actions/modal_actions')
 
 PostsStories        = require('components/posts_stories')
+Tags                = require('components/company/tags')
 BlockEditor         = require('components/editor/block_editor')
 FuzzyDateInput      = require('components/form/fuzzy_date_input')
 ContentEditableArea = require('components/form/contenteditable_area')
@@ -19,7 +20,7 @@ Dropdown            = require('components/form/dropdown')
 FieldWrapper        = require('components/editor/field_wrapper')
 Counter             = require('components/shared/counter')
 Hint                = require('components/shared/hint')
-HintTexts           = require('utils/hint_texts')
+renderHint          = require('utils/render_hint')
 
 
 # Main
@@ -182,8 +183,8 @@ Component = React.createClass
       </aside>
 
       <header>
-        <FieldWrapper>
-          <label className="title">
+        <FieldWrapper className="title">
+          <label>
             <ContentEditableArea
               onBlur = { @handleTitleBlur }
               onChange = { @handleTitleChange }
@@ -194,41 +195,54 @@ Component = React.createClass
               value = { @state.post.title }
             />
           </label>
-          {
-            if (!@props.readOnly && @state.titleFocused)
-              <Counter count={ @getTitleLimit(@state.titleLength) } />
-          }
-          {
-            if (!@props.readOnly && !@state.titleFocused)
-              <Hint text={HintTexts.title} />
-          }
+          <Counter 
+            count   = { @getTitleLimit(@state.titleLength) }
+            visible = { !@props.readOnly && @state.titleFocused } />
+          <Hint
+            content = renderHint("title")
+            visible = { !@props.readOnly && !@state.titleFocused } />
         </FieldWrapper>
 
         <FieldWrapper>
           <label className="published-at">
             { @effectiveDate() }
           </label>
-          {
-            if !@props.readOnly
-              <Hint text={HintTexts.date} />
-          }
+          <Hint 
+            content = { renderHint("date") }
+            visible = { !@props.readOnly } />
         </FieldWrapper>
 
-        <PostsStories
-          post_id = {@state.post.uuid}
-          company_id = {@props.company_id}
-          readOnly = {@props.readOnly}
-        />
+        <FieldWrapper className="categories">
+          <PostsStories
+            post_id     = { @state.post.uuid }
+            company_id  = { @props.company_id }
+            readOnly    = { @props.readOnly }
+            placeholder = "Category" />
+          <Hint 
+            content = { renderHint("stories") }
+            visible = { !@props.readOnly } />
+        </FieldWrapper>
       </header>
 
       <BlockEditor
-        company_id = {@props.company_id}
-        owner_id = {@state.post.uuid}
-        owner_type = "Post"
+        company_id          = {@props.company_id}
+        owner_id            = {@state.post.uuid}
+        owner_type          = "Post"
         editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI', 'Person']}
-        classForArticle = "editor post"
-        readOnly = {@props.readOnly}
+        classForArticle     = "editor post"
+        readOnly            = {@props.readOnly}
       />
+
+      <FieldWrapper className="tags">
+        <Tags
+          placeholder   = "#storytag"
+          taggable_id   = {@state.post.uuid}
+          taggable_type = "Post"
+          readOnly      = {@props.readOnly} />
+        <Hint 
+          content = { renderHint("tags") }
+          visible = { !@props.readOnly } />
+      </FieldWrapper>
 
       <footer>
         {@gatherControls()}
