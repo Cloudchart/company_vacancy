@@ -77,8 +77,8 @@ article.editor > section.people {
     }
   } 
 
-  &:hover > .list:not(.frozen),
-  > .list.hovered {
+  &:hover .list:not(.frozen),
+  .list.hovered {
     > .row:last-child {
       > .item:not(.placeholder) {
         @include transform(translateX(-3 * $editor-gutter));
