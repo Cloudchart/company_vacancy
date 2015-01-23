@@ -48,15 +48,16 @@ class BaseStore
     ensure(@instanceName)
       .fail =>
         throw new Error("#{@displayName}: instanceName is undefined.")
-
+      
     @cursor =
       items: GlobalState().cursor(['stores', @collectionName, 'items'])
     
     @empty  = EmptySequence
-  
+    
 
   populate: (json) ->
-    Immutable.Seq(json[@collectionName] || [json[@instanceName]]).forEach (item) => @cursor.items.set(item.uuid, item)
+    (Immutable.Seq(json[@collectionName], [json[@instanceName]])).forEach (item) =>
+      @cursor.items.set(item.uuid, item)
   
   
   # Fetch
@@ -83,10 +84,11 @@ class BaseStore
   
   
   fetchDone: (json) ->
-    @cursor.items.transaction ->
-      Dispatcher.handleServerAction
-        type: 'fetch:done'
-        data: [json]
+    @cursor.items.transaction()
+    Dispatcher.handleServerAction
+      type: 'fetch:done'
+      data: [json]
+    @cursor.items.commit()
   
 
   fetchFail: ->
@@ -121,34 +123,36 @@ class BaseStore
   
   
   destroyDone: (json) ->
-    @cursor.items.transaction =>
-      @cursor.items.remove(json.id)
+    @cursor.items.remove(json.id)
 
 
 # Register dispatcher
 #
 registerDispatcher = (store, descriptor) ->
 
-  mappings =
+  mappings = Immutable.Seq
     'fetch:done': store.populate
 
-
-  mappings = if descriptor.serverActions instanceof Function
-    Immutable.Seq(mappings).concat(descriptor.serverActions.apply(store))
+  if descriptor.serverActions instanceof Function
+    mappings = mappings.concat(descriptor.serverActions.apply(store))
       
-
   store.dispatchToken = Dispatcher.register (payload) ->
     type  = payload.action.type
     data  = payload.action.data
     
     if mappings.has(type)
       mappings.get(type).apply(store, data)
-    
+
+
+classes = {}
+
 
 # Create
 #
 create = (descriptor = {}) ->
-  class Store extends BaseStore
+  
+  Store = class extends BaseStore
+  
 
   StoreDefaults.forEach (value, name) ->
     Store.prototype[name] = descriptor[name] ? StoreDefaults[name]
@@ -158,12 +162,11 @@ create = (descriptor = {}) ->
   Immutable.Seq(descriptor).forEach (value, name) ->
     Store.prototype[name] = value if value instanceof Function
   
-
   store = new Store
   
-  Immutable.Seq(BaseStore.prototype).concat(Store.prototype).forEach (value, key) ->
-    store[key] = value.bind(store) if value instanceof Function
-  
+  Immutable.Seq(BaseStore.prototype).concat(Store.prototype).keySeq().toSet().forEach (name) ->
+    store[name] = store[name].bind(store) if store[name] instanceof Function
+
   registerDispatcher(store, descriptor)
   
   store

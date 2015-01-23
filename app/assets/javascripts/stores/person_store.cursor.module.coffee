@@ -7,7 +7,7 @@ GlobalState = require('global_state/state')
 #
 module.exports = GlobalState.createStore
 
-  displayName:    'PictureStore'
-
-  collectionName: 'pictures'
-  instanceName:   'picture'
+  displayName: 'PersonStore'
+  
+  collectionName: 'people'
+  instanceName:   'person'

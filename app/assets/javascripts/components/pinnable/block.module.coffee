@@ -4,6 +4,7 @@
 BlockComponents = 
   Paragraph:  require('components/pinnable/block/paragraph')
   Picture:    require('components/pinnable/block/picture')
+  Person:     require('components/pinnable/block/person')
 
 
 # Exports

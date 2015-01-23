@@ -54,6 +54,7 @@ module.exports = React.createClass
         uuid = pin.get('uuid')
         PinComponent({ key: uuid, uuid: uuid, cursor: @props.cursor.pins.cursor(uuid) })
       .valueSeq()
+    
   
   
   preloadTransparentPins: ->
