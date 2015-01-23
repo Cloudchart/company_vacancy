@@ -38,7 +38,7 @@ Component = React.createClass
   # 
   gatherControls: ->
     # TODO: use round-buttons class
-    <ul className="buttons">
+    <ul className="buttons round-buttons">
       { @getLinkPostWithStoryItem() }
       { @getStarPostForStoryItem() }
       { @getPinPostItem() }
