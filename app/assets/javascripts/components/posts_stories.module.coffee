@@ -61,12 +61,12 @@ MainComponent = React.createClass
     @filterSelectedStories()
       .sortBy (story) -> story.get('name')
       .map (story) =>
-        company_story_url = @props.cursor.stories.get(story.get('uuid')).get('company_story_url')
+        # company_story_url = @props.cursor.stories.get(story.get('uuid')).get('company_story_url')
         
         <li key={story.get('uuid')}>
-          <a href={company_story_url}>{'#' + story.get('name')}</a>
+          <span>{'#' + story.get('name')}</span>
         </li>
-        # <span>{'#' + story.get('name')}</span>
+        # <a href={company_story_url}>{'#' + story.get('name')}</a>
 
 
   filterSelectedStories: ->

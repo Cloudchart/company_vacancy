@@ -35,7 +35,6 @@ Component = React.createClass
   # Helpers
   # 
   gatherControls: ->
-    # TODO: use round-buttons class
     <ul className="buttons round-buttons">
       { @getLinkPostWithStoryItem() }
       { @getStarPostForStoryItem() }
