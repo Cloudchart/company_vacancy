@@ -121,8 +121,12 @@ main.company > div.wrapper > div.posts {
       }
     }
     
-    > ul.buttons {
+    > .buttons {
       @include position(absolute, 15px 15px null null);
+
+      ~ a h1 {
+        width: 90%;
+      }
     }
 
     &.dimmed {
