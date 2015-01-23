@@ -4,18 +4,19 @@
 #
 tag = React.DOM
 
-CloudFlux = require('cloud_flux')
-GlobalState = require('global_state/state')
+CloudFlux           = require('cloud_flux')
+GlobalState         = require('global_state/state')
 
-CompanyStore = require('stores/company')
+CompanyStore        = require('stores/company')
 
-CompanyActions = require('actions/company')
-ModalActions = require('actions/modal_actions')
+CompanyActions      = require('actions/company')
+ModalActions        = require('actions/modal_actions')
 
-AutoSizingInput = require('components/form/autosizing_input')
-FollowComponent = require('components/company/follow')
-AccessRights = require('components/company/access_rights')
-TagsComponent = require('components/company/tags')
+AutoSizingInput     = require('components/form/autosizing_input')
+FollowComponent     = require('components/company/follow')
+Checkbox            = require('components/form/checkbox')
+AccessRights        = require('components/company/access_rights')
+TagsComponent       = require('components/company/tags')
 ContentEditableArea = require('components/form/contenteditable_area')
 
 # Main
@@ -158,6 +159,8 @@ Component = React.createClass
     return if @state.company.description is content or @props.readOnly
     CompanyActions.update(@props.uuid, { description: content })
 
+  onIsNameInLogoChange: (value) ->
+    CompanyActions.update(@props.uuid, { is_name_in_logo: value })
 
   # Lifecycle Methods
   # 
@@ -186,18 +189,33 @@ Component = React.createClass
       { @getViewModeSelect() }
       { @getLogo() }
 
-      <label className="name">
-        <AutoSizingInput
-          value = { @state.name }
-          onBlur = { @handleFieldBlur.bind(@, 'name') }
-          onChange = { @handleFieldChange.bind(@, 'name') }
-          onKeyUp = { @handleFieldKeyUp }
-          placeholder = 'Company name'
-          readOnly = { @props.readOnly }
-        />
+      {
+        if @state.company.logotype_url && !@props.readOnly
+          <Checkbox 
+            customClass      = "is-name-in-logo"
+            checked          = { @state.company.is_name_in_logo }
+            iconClass        = "fa-chain-broken"
+            iconCheckedClass = "fa-link"
+            onChange         = { @onIsNameInLogoChange }
+          />
+      }
 
-        { @getShareLink() }
-      </label>
+      {
+        if !@state.company.is_name_in_logo || !@props.readOnly
+          <label className="name">
+              <AutoSizingInput
+                disabled = { @state.company.is_name_in_logo }
+                value = { @state.name }
+                onBlur = { @handleFieldBlur.bind(@, 'name') }
+                onChange = { @handleFieldChange.bind(@, 'name') }
+                onKeyUp = { @handleFieldKeyUp }
+                placeholder = 'Company name'
+                readOnly = { @props.readOnly }
+              />
+
+            { @getShareLink() }
+          </label>
+      }
 
       <label className="description">
         <ContentEditableArea

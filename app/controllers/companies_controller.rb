@@ -195,7 +195,8 @@ private
       :established_on,
       :is_published,
       :logotype, 
-      :remove_logotype, 
+      :remove_logotype,
+      :is_name_in_logo, 
       :slug,
       :tag_names
     )
