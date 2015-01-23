@@ -237,7 +237,7 @@ Component = React.createClass
 
       <FieldWrapper className="tags">
         <Tags
-          placeholder   = "#storytag"
+          placeholder   = "#tag"
           taggable_id   = {@state.post.uuid}
           taggable_type = "Post"
           readOnly      = {@props.readOnly} />
