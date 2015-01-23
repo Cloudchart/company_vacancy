@@ -59,7 +59,7 @@ module.exports = React.createClass
   
   preloadTransparentPins: ->
     unloaded_pins_ids = @gatherPins()
-      .filter (pin) -> pin.get('transparent') == true
+      .filter (pin) -> pin.get('--part--') == true
       .keySeq()
     
     return if unloaded_pins_ids.count() == 0

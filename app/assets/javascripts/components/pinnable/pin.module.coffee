@@ -16,10 +16,10 @@ PinnablePreviewComponents =
   Post: require('components/pinnable/post_preview')
 
 
-TransparentPinComponent = React.createClass
+PartialPinComponent = React.createClass
 
   render: ->
-    <li className="pin transparent">
+    <li className="pin partial">
       <i className="fa fa-spinner fa-spin" />
     </li>
 
@@ -58,8 +58,8 @@ module.exports = React.createClass
   render: ->
     return null unless @props.cursor.deref()
     
-    if @props.cursor.get('transparent') == true
-      <TransparentPinComponent />
+    if @props.cursor.get('--part--') == true
+      <PartialPinComponent />
     else
       <li className="pin">
         { @renderPinPreview() }

@@ -50,11 +50,11 @@ PinboardListItemComponent = React.createClass
   
   
   preloadTransparentPins: (count) ->
-    transparent_pins_ids = @state.pins.take(count).filter((pin) -> pin.get('transparent') == true).keySeq()
+    partial_pins_ids = @state.pins.take(count).filter((pin) -> pin.get('--part--') == true).keySeq()
 
-    return if transparent_pins_ids.size == 0
+    return if partial_pins_ids.size == 0
     
-    PinStore.fetchAll({ ids: transparent_pins_ids.toArray(), relations: 'all' })
+    PinStore.fetchAll({ ids: partial_pins_ids.toArray(), relations: 'all' })
   
   
   getStateFromStores: ->

@@ -2,7 +2,7 @@ pins = current_user.pins.where(pinboard_id: @pinboards.map(&:uuid)).order(:creat
 
 json.pins pins do |pin|
   json.(pin, :uuid, :pinboard_id, :created_at)
-  json.transparent true
+  json.set! '--part--', true
 end
 
 json.pinboards @pinboards do |pinboard|

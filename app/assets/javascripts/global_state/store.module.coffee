@@ -56,9 +56,21 @@ class BaseStore
     
 
   populate: (json) ->
-    (Immutable.Seq(json[@collectionName], [json[@instanceName]])).forEach (item) =>
-      @cursor.items.set(item.uuid, item)
-  
+    return unless json[@collectionName] or json[@instanceName]
+
+    Immutable.Seq(json[@collectionName] || [json[@instanceName]]).forEach (item) =>
+      currItem = @cursor.items.get(item.uuid)
+      
+      unless item['--part--'] is true
+        return @cursor.items.set(item.uuid, item)
+      
+      unless currItem
+        return @cursor.items.set(item.uuid, item)
+      
+      if currItem.get('--part--') is true
+        return @cursor.items.set(item.uuid, item)
+      
+      
   
   # Fetch
   #
