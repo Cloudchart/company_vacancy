@@ -54,7 +54,7 @@ Cloudchart::Application.routes.draw do
 
     resources :posts, except: [:new, :edit], shallow: true
     resources :blocks, only: :create, type: :company
-    resources :stories, only: [:index, :create, :update], shallow: true
+    resources :stories, only: [:show, :index, :create, :update], shallow: true
     get 'stories/:story_name', to: 'posts#index', as: :story
   end
 

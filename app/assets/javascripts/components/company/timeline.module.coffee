@@ -9,6 +9,8 @@ GlobalState = require('global_state/state')
 
 PostStore = require('stores/post_store')
 PinStore  = require('stores/pin_store')
+StoryStore = require('stores/story_store')
+PostsStoryStore = require('stores/posts_story_store')
 
 PostActions = require('actions/post_actions')
 ModalActions = require('actions/modal_actions')
@@ -136,10 +138,11 @@ Component = React.createClass
 
   # Component Specifications
   # 
-  
   getDefaultProps: ->
     cursor:
       pins: PinStore.cursor.items
+      stories: StoryStore.cursor.items
+      posts_stories: PostsStoryStore.cursor.items
 
 
   refreshStateFromStores: ->

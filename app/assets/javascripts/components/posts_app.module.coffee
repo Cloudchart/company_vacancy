@@ -11,7 +11,6 @@ GlobalState = require('global_state/state')
 PostStore = require('stores/post_store')
 CompanyStore = require('stores/company')
 StoryStore = require('stores/story_store')
-PostsStoryStore = require('stores/posts_story_store')
 
 Timeline = require('components/company/timeline')
 ContentEditableArea = require('components/form/contenteditable_area')
@@ -56,8 +55,7 @@ MainComponent = React.createClass
   getDefaultProps: ->
     cursor:
       company_flags: GlobalState.cursor(['stores', 'companies', 'flags'])
-      story: GlobalState.cursor(['stores', 'stories', 'items'])
-      posts_story: PostsStoryStore.cursor.items
+      stories: StoryStore.cursor.items
 
   refreshStateFromStores: ->
     @setState @getStateFromProps(@props)
@@ -75,7 +73,7 @@ MainComponent = React.createClass
       readOnly: true
 
   render: ->
-    story = @props.cursor.story.cursor(@props.story_id)
+    story = @props.cursor.stories.cursor(@props.story_id)
     return null unless story.deref(Immutable.Map()).size > 0
 
     <div className="wrapper">

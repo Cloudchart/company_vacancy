@@ -1,9 +1,15 @@
 class StoriesController < ApplicationController
 
   before_action :set_company, only: [:index, :create]
-  before_action :set_story, only: [:update]
+  before_action :set_story, only: [:show, :update]
 
   authorize_resource
+
+  def show    
+    respond_to do |format|
+      format.json { render json: @story, root: :story }
+    end
+  end
 
   def index    
   end
