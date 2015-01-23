@@ -3,6 +3,7 @@
 # Imports
 #
 tag = React.DOM
+cx  = React.addons.classSet
 
 CloudFlux           = require('cloud_flux')
 GlobalState         = require('global_state/state')
@@ -76,6 +77,8 @@ Component = React.createClass
       </aside>
     )
 
+  getNameClass: ->
+    cx(name: true, inactive: @state.company.is_name_in_logo)
 
   getShareLink: ->
     return null if @props.readOnly
@@ -202,9 +205,8 @@ Component = React.createClass
 
       {
         if !@state.company.is_name_in_logo || !@props.readOnly
-          <label className="name">
+          <label className={ @getNameClass() }>
               <AutoSizingInput
-                disabled = { @state.company.is_name_in_logo }
                 value = { @state.name }
                 onBlur = { @handleFieldBlur.bind(@, 'name') }
                 onChange = { @handleFieldChange.bind(@, 'name') }

@@ -94,14 +94,6 @@ $company-article-block-margin: 30px;
       input {
         font-size: 40px;
         font-weight: 400;
-
-        &:disabled {
-          color: hsl(0, 0%, 50%);
-
-          @include placeholder {
-            color: hsl(0, 0%, 90%);
-          }
-        }
       }
     
       a {
@@ -119,6 +111,14 @@ $company-article-block-margin: 30px;
         i.fa {
           color: hsl(0, 0%, 100%);
           margin: auto;
+        }
+      }
+
+      &.inactive input {
+        color: hsl(0, 0%, 50%);
+
+        @include placeholder {
+          color: hsl(0, 0%, 90%);
         }
       }
     }
