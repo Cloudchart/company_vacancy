@@ -320,8 +320,8 @@
 
 .select.cc {
   background-color: hsl(0, 0%, 98%);
-  width: 120px;
   height: 40px;
+  position: relative;
 
   > select {
     border: none;

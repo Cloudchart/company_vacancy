@@ -2,17 +2,20 @@
 
 # Imports
 # 
-PostStore = require('stores/post_store')
-PostsStoryStore = require('stores/posts_story_store')
+PostStore           = require('stores/post_store')
+PostsStoryStore     = require('stores/posts_story_store')
+VisibilityStore     = require('stores/visibility_store')
 
-PostActions = require('actions/post_actions')
-ModalActions = require('actions/modal_actions')
+PostActions         = require('actions/post_actions')
+VisibilityActions   = require('actions/visibility_actions')
+ModalActions        = require('actions/modal_actions')
 
-PostsStoriesComponent = require('components/posts_stories')
-BlockEditor = require('components/editor/block_editor')
-FuzzyDateInput = require('components/form/fuzzy_date_input')
+PostsStories        = require('components/posts_stories')
+BlockEditor         = require('components/editor/block_editor')
+FuzzyDateInput      = require('components/form/fuzzy_date_input')
 ContentEditableArea = require('components/form/contenteditable_area')
 
+Dropdown            = require('components/form/dropdown')
 Hintable            = require('components/shared/hintable')
 Hints               = require('utils/hints')
 
@@ -42,6 +45,10 @@ Component = React.createClass
       </button>
     </div>
 
+  getVisibilityOptions: ->
+    public:  'Public'
+    trusted: 'Trusted'
+    only_me: 'Only me'
 
   effectiveDate: ->
     <FuzzyDateInput
@@ -89,12 +96,21 @@ Component = React.createClass
       event.preventDefault()
       @handleOkClick()
 
+  handleVisibilityChange: (value) ->
+
+    if @state.visibility and @state.visibility.value isnt value
+      VisibilityActions.update(@state.visibility.uuid, { value: value })
+    else
+      VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: value })
+
 
   # Lifecycle Methods
   # 
   componentDidMount: ->
     $(document).on 'keydown', @handleKeydown
     PostStore.on('change', @refreshStateFromStores)
+    VisibilityStore.on('change', @refreshStateFromStores)
+
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -102,6 +118,7 @@ Component = React.createClass
   componentWillUnmount: ->
     $(document).off 'keydown', @handleKeydown
     PostStore.off('change', @refreshStateFromStores)
+    VisibilityStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
   # 
@@ -118,10 +135,14 @@ Component = React.createClass
     @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
+    visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.id and item.owner_type is 'Post'
     post = PostStore.get(props.id)
 
     post: post
     published_at: @getPublishedAt(post)
+    visibility: visibility
+    visibility_value: if visibility then visibility.value else 'public'
+
 
   getInitialState: ->
     @getStateFromStores(@props)
@@ -130,6 +151,13 @@ Component = React.createClass
     return null unless @state.post
 
     <div className="post-container">
+      <aside>
+        <Dropdown 
+          options  = { @getVisibilityOptions() }
+          value    = { @state.visibility_value }
+          onChange = { @handleVisibilityChange } />
+      </aside>
+
       <header>
         <Hintable 
           text={Hints.title}
@@ -152,7 +180,7 @@ Component = React.createClass
           </label>
         </Hintable>
 
-        <PostsStoriesComponent
+        <PostsStories
           post_id = {@state.post.uuid}
           company_id = {@props.company_id}
           readOnly = {@props.readOnly}

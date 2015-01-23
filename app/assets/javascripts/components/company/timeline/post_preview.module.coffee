@@ -11,13 +11,11 @@ PostStore = require('stores/post_store')
 BlockStore = require('stores/block_store')
 ParagraphStore = require('stores/paragraph_store')
 PictureStore = require('stores/picture_store')
-VisibilityStore = require('stores/visibility_store')
 PersonStore = require('stores/person')
 PinStore    = require('stores/pin_store')
 PostsStoryStore = require('stores/posts_story_store')
 
 PostActions = require('actions/post_actions')
-VisibilityActions = require('actions/visibility_actions')
 
 ModalActions = require('actions/modal_actions')
 
@@ -43,18 +41,6 @@ Component = React.createClass
       { @getStarPostForStoryItem() }
       { @getPinPostItem() }
     </ul>
-
-    # <li className="visibility">
-    #   <select value={@state.visibility_value}, onChange={@handleVisibilityChange}>
-    #     <option value={'public'}>Public</option>
-    #     <option value={'trusted'}>Trusted</option>
-    #     <option value={'only_me'}>Only me</option>
-    #   </select>
-    # </li>
-
-    # <li>
-    #   <i className="fa fa-times" onClick={@handleDestroyClick} />
-    # </li>
 
   getPinPostItem: ->
     pins = PinStore.cursor.items.deref(PinStore.empty).filter((item) => item.get('pinnable_type') == 'Post' and item.get('pinnable_id') == @state.post.uuid )
@@ -225,26 +211,12 @@ Component = React.createClass
         <PinFormComponent pinnable_id={@props.uuid} pinnable_type="Post" title={ @state.post.title } />
       )
     
-  
-  handleDestroyClick: (event) ->
-    event.preventDefault()
-    PostActions.destroy(@state.post.uuid) if confirm('Are you sure?')
-
   handleEditClick: (event) ->
     event.preventDefault()
 
     scrollTop = document.body.scrollTop
     window.location.hash = @props.uuid
     document.body.scrollTop = scrollTop
-
-  handleVisibilityChange: (event) ->
-    value = event.target.value
-
-    if @state.visibility and @state.visibility.value isnt value
-      VisibilityActions.update(@state.visibility.uuid, { value: value })
-    else
-      VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.uuid, value: value })
-
 
   handleLinkStoryClick: (event) ->
     if @isRelatedToStory()
@@ -266,7 +238,6 @@ Component = React.createClass
     PersonStore.on('change', @refreshStateFromStores)
     PictureStore.on('change', @refreshStateFromStores)
     ParagraphStore.on('change', @refreshStateFromStores)
-    VisibilityStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -276,7 +247,6 @@ Component = React.createClass
     PersonStore.off('change', @refreshStateFromStores)
     PictureStore.off('change', @refreshStateFromStores)
     ParagraphStore.off('change', @refreshStateFromStores)
-    VisibilityStore.off('change', @refreshStateFromStores)
 
 
   # Component Specifications
@@ -288,7 +258,6 @@ Component = React.createClass
     @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
-    visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.uuid and item.owner_type is 'Post'
     blocks = _.chain BlockStore.all()
       .filter (block) -> block.owner_id is props.uuid
       .sortBy('position')
@@ -296,9 +265,6 @@ Component = React.createClass
 
     post: PostStore.get(props.uuid)
     blocks: blocks
-    visibility: visibility
-    visibility_value: if visibility then visibility.value else 'public'
-
 
   getInitialState: ->
     @getStateFromStores(@props)

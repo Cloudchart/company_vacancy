@@ -288,6 +288,17 @@ main.company > div.wrapper > div.posts {
 // Editor
 // 
 div.post-container {
+  position: relative;
+
+  > aside {
+    @include position(absolute, 0px 0px 0 0);
+
+    z-index: 1;
+
+    > .select {
+      width: 120px;
+    }
+  }
 
   > header {
     @include display(flex);
@@ -309,7 +320,7 @@ div.post-container {
       &.title > div[contenteditable] {
         @include editor-contenteditable-area;
         
-        max-width: 800px;
+        max-width: 650px;
         font-size: 40px;
         font-weight: 400;
       }
