@@ -202,7 +202,7 @@ MainComponent = React.createClass
 
     blocks = _.map @gatherBlocks(), (block, i) =>
       [
-        @getSectionPlaceholder(i)
+        @getSectionPlaceholder(i) if !@props.readOnly
         block
       ]
 
@@ -215,7 +215,8 @@ MainComponent = React.createClass
       dragLockX
     >
       {blocks}
-      {@getSectionPlaceholder(blocks.length)}
+
+      {@getSectionPlaceholder(blocks.length) if !@props.readOnly}
     </SortableList>
 
 # Exports
