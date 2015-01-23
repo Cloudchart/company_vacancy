@@ -18,9 +18,13 @@ module.exports = React.createClass
   
 
   renderLogoAndName: ->
-    <div className="logo-and-name">
+    classList = cx
+      'logo-and-name':    true
+      'has-name-in-logo': @props.company.get('is_name_in_logo')
+    
+    <div className={ classList }>
       { @renderLogo() }
-      { @props.company.get('name') }
+      { @props.company.get('name') unless @props.company.get('is_name_in_logo') }
     </div>
   
   
