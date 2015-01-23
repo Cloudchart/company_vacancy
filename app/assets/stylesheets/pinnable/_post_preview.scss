@@ -21,6 +21,35 @@
 }
 
 
+
+@mixin pinnable-post-preview-person {
+  font-size: 15px;
+  margin: 20px 0 0;
+  padding: 0 10px;
+  text-align: center;
+  width: 25%;
+  
+  figure {
+    background-size: cover;
+    border-radius: 50%;
+    height: 0;
+    margin-bottom: 5px;
+    padding-top: 100%;
+    position: relative;
+    
+    > i {
+      @include position(absolute, 50% null null 50%);
+      @include transform(translateY(-50%) translateX(-50%));
+      
+      color: hsl(0, 100%, 100%);
+      font-size: 40px;
+      font-weight: 100;
+      font-style: normal;
+    }
+  }
+}
+
+
 .pinnable-post-preview {
   background-color: hsl(0, 100%, 100%);
   margin: 20px 0;
@@ -110,4 +139,11 @@
     width: 100%;
   }
   
+  > .person {
+    @include pinnable-post-preview-person;
+  }
+  
 }
+
+
+@import 'pinnable/people_block';

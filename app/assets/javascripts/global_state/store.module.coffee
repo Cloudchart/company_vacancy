@@ -69,7 +69,16 @@ class BaseStore
       
       if currItem.get('--part--') is true
         return @cursor.items.set(item.uuid, item)
-      
+  
+  
+  #
+  #
+  
+  get: (id) ->
+    @cursor.items.get(id)
+  
+  filter: (predicate) ->
+    @cursor.items.filter(predicate)
       
   
   # Fetch

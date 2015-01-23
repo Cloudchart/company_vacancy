@@ -7,7 +7,7 @@ GlobalState = require('global_state/state')
 #
 module.exports = GlobalState.createStore
   
-  displayName:    'BlockStore'
+  displayName:    'BlockIdentityStore'
 
-  collectionName: 'blocks'
-  instanceName:   'block'
+  collectionName: 'block_identities'
+  instanceName:   'block_identity'
