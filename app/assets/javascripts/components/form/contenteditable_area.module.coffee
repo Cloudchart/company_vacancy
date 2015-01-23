@@ -37,7 +37,7 @@ Component = React.createClass
   #
   handleBlur: (event) ->
     content = sanitize(event.target)
-    @props.onChange(content)
+    @props.onChange(content) unless content is @props.value
     @props.onBlur(content)
     
     @setState

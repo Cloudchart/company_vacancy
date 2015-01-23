@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150122155254) do
+ActiveRecord::Schema.define(version: 20150123145257) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -355,6 +355,7 @@ ActiveRecord::Schema.define(version: 20150122155254) do
     t.integer  "posts_stories_count",            default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "description"
   end
 
   add_index "stories", ["company_id"], name: "index_stories_on_company_id", using: :btree

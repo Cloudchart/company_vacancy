@@ -371,8 +371,29 @@ div.post-container {
   }
 }
 
-main.company.timeline > div.wrapper > h1 {
-  font-size: 55px;
-  font-weight: 200;
-  text-align: center;
+// Story header
+// 
+main.company.timeline > div.wrapper > header {
+  // @include align-items(center);
+  // @include display(flex);
+  // @include flex-direction(column);
+
+  > h1 {
+    font-size: 55px;
+    font-weight: 200;
+    margin: 0;
+    // text-align: center;
+  }
+
+  // > label.story-description {
+  //   > div[contenteditable] {
+  //     @include editor-contenteditable-area;
+
+  //     max-width: 800px;
+  //     // text-align: center;
+  //     font-size: 24px;
+  //     font-weight: 300;
+  //     line-height: 135%;
+  //   }
+  // }
 }

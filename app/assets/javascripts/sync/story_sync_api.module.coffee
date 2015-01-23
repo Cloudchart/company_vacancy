@@ -19,3 +19,12 @@ module.exports =
         story: attributes
     .done done
     .fail fail
+
+
+  update: (id, attributes) ->
+    Promise.resolve $.ajax
+      url:      "/stories/#{id}"
+      type:     'PATCH'
+      dataType: 'json'    
+      data:
+        story: attributes

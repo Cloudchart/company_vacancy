@@ -10,9 +10,11 @@ GlobalState = require('global_state/state')
 
 PostStore = require('stores/post_store')
 CompanyStore = require('stores/company')
+StoryStore = require('stores/story_store')
 PostsStoryStore = require('stores/posts_story_store')
 
 Timeline = require('components/company/timeline')
+ContentEditableArea = require('components/form/contenteditable_area')
 
 
 # Main
@@ -31,7 +33,8 @@ MainComponent = React.createClass
 
   # Handlers
   # 
-  # handleThingClick: (event) ->
+  handleStoryDescriptionChange: (value) ->
+    StoryStore.update(@props.story_id, { description: value })
 
 
   # Lifecycle Methods
@@ -76,7 +79,18 @@ MainComponent = React.createClass
     return null unless story.deref(Immutable.Map()).size > 0
 
     <div className="wrapper">
-      <h1>{story.get('name')}</h1>
+      <header>
+        <h1>{story.get('name')}</h1>
+
+        <label className="description">
+          <ContentEditableArea
+            onChange = { @handleStoryDescriptionChange }
+            placeholder = 'Tap to add description'
+            readOnly = { @state.readOnly }
+            value = { story.get('description') }
+          />
+        </label>
+      </header>
 
       <Timeline 
         company_id = { @props.company_id }

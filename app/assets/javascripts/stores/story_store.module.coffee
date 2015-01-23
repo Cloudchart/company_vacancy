@@ -63,6 +63,15 @@ handleCreate = ->
 
   # commit cursor
   GlobalState.cursor().commit()
+
+
+# Update
+# 
+updateDone = (json) ->
+  setStoryItem(json.story.uuid, json.story)
+
+updateFail = (prevItem, xhr) ->
+  console.warn 'Story updateFail'
   
 
 GlobalState.addListener CreateCursor.path, handleCreate
@@ -87,3 +96,8 @@ module.exports =
             callback()
       .fail (xhr) ->
         callback()
+
+  update: (id, attributes = {}) ->
+    promise = SyncAPI.update(id, attributes)
+    promise.then(updateDone, updateFail)
+    promise

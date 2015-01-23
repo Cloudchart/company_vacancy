@@ -117,7 +117,6 @@ Component = React.createClass
       @handleOkClick()
 
   handleVisibilityChange: (value) ->
-
     if @state.visibility and @state.visibility.value isnt value
       VisibilityActions.update(@state.visibility.uuid, { value: value })
     else
