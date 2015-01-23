@@ -55,8 +55,14 @@ CursorFactory = (data, callback) ->
       fetch(@path.concat(path))
     
     
-    transaction: ->
-      TransactionState = true
+    transaction: (callback) ->
+      if callback instanceof Function
+        do =>
+          @transaction()
+          callback()
+          @commit()
+      else
+        TransactionState = true
     
 
     commit: ->

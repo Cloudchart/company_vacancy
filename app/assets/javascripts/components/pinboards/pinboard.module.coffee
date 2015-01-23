@@ -32,7 +32,10 @@ module.exports = React.createClass
   
   
   gatherPins: ->
-    PinStore.filterByPinboardId(@props.uuid)
+    PinStore
+      .filterByPinboardId(@props.uuid)
+      .sortBy (pin) -> pin.get('created_at')
+      .reverse()
   
   
   renderHeader: (pins) ->
@@ -58,7 +61,7 @@ module.exports = React.createClass
       .filter (pin) -> pin.get('transparent') == true
       .keySeq()
     
-    return if unloaded_pins_ids.size == 0
+    return if unloaded_pins_ids.count() == 0
     
     PinStore.fetchAll({ ids: unloaded_pins_ids.toArray(), relations: 'all' })
   

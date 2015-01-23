@@ -7,29 +7,29 @@ pendingPromises = {}
 #
 module.exports =
   
-  fetchAll: (options = {}, force = false) ->
-    signature = '/pins' + JSON.stringify(Immutable.Seq(options).sortBy((v, k) -> k))
+  fetchAll: (params = {}, options = {}) ->
+    signature = '/pins' + JSON.stringify(Immutable.Seq(params).sortBy((v, k) -> k))
     
-    delete pendingPromises[signature] if force == true
+    delete pendingPromises[signature] if options.force == true
     
     pendingPromises[signature] ||= Promise.resolve $.ajax
       url:      '/pins'
       dataType: 'json'
-      data:     options
+      data:     params
   
   
-  fetchOne: (id, options = {}, force = false) ->
-    signature = '/pins/' + id + JSON.stringify(Immutable.Seq(options).sortBy((v, k) -> k))
+  fetchOne: (id, params = {}, options = {}) ->
+    signature = '/pins/' + id + JSON.stringify(Immutable.Seq(params).sortBy((v, k) -> k))
     
-    delete pendingPromises[signature] if force == true
+    delete pendingPromises[signature] if options.force == true
 
     pendingPromises[signature] ||= Promise.resolve $.ajax
       url:      '/pins/' + id
       dataType: 'json'
-      data:     options
+      data:     params
   
   
-  create: (attributes) ->
+  create: (attributes = {}, options = {}) ->
     Promise.resolve $.ajax
       url:      '/pins'
       type:     'POST'
@@ -41,8 +41,8 @@ module.exports =
   update: ->
   
   
-  destroy: (id) ->
+  destroy: (item) ->
     Promise.resolve $.ajax
-      url:      '/pins/' + id
+      url:      '/pins/' + item.get('uuid')
       type:     'DELETE'
       dataType: 'json'

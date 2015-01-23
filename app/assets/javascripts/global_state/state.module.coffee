@@ -1,6 +1,7 @@
 # Imports
 #
 Cursor  = require('global_state/cursor')
+Store   = require('global_state/store')
 uuid    = require('utils/uuid')
 
 
@@ -61,6 +62,9 @@ removeListener = (path, callback) ->
 # State
 #
 State =
+  
+  
+  createStore: Store.create
   
   
   cursor: (path = []) ->
