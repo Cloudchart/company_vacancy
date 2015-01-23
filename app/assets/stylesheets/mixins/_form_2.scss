@@ -218,7 +218,7 @@
     margin: 0;
     padding: 0;
     width: auto;
-    z-index: 100;
+    z-index: $zindex-dropdown;
 
     > li {
       @include align-items(center);
