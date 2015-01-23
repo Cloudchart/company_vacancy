@@ -125,6 +125,7 @@ main.company > div.wrapper > div.posts {
       @include position(absolute, 15px 15px null null);
 
       ~ a h1 {
+        margin: 0 auto;
         width: 90%;
       }
     }
