@@ -125,7 +125,7 @@ main.company > div.wrapper > div.posts {
       @include position(absolute, 15px 15px null null);
 
       ~ a h1 {
-        margin: 0 30px;
+        margin: 0 10%;
       }
     }
 
@@ -365,6 +365,7 @@ div.post-container {
 
   .tags {
     margin-top: 15px;
+    max-width: 800px;
   }
 
   .tags > aside {
