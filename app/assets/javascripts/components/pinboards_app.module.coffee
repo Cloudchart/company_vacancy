@@ -27,7 +27,7 @@ PinboardListItemComponent = React.createClass
   getHeader: ->
     <header>
       <span className="title">{ @state.pinboard.get('title') }</span>
-      <span className="count">{ @state.pins.size } { if @state.pins.size == 1 then 'pin' else 'pins' }</span>
+      <span className="count">{ @state.pins.count() } { if @state.pins.size == 1 then 'pin' else 'pins' }</span>
     </header>
   
   
