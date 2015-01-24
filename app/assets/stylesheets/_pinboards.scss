@@ -35,8 +35,15 @@
 
 
 @mixin list-pinboard-header {
+  @include align-items(center);
+  @include display(flex);
+  
   font-size: 30px;
   font-weight: 300;
+  
+  > a.back {
+    margin-right: 10px;
+  }
   
   > span {
     display: inline-block;
@@ -45,6 +52,13 @@
       color: hsl(141, 55%, 54%);
       margin-left: 20px;
     }
+  }
+  
+  > i.settings {
+    color: hsl(0, 0%, 75%);
+    cursor: pointer;
+    font-size: .75em;
+    margin-left: 20px;
   }
 }
 

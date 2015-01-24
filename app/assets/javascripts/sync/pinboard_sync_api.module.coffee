@@ -34,9 +34,9 @@ module.exports =
         pinboard: attributes
   
   
-  update: (id, attributes) ->
+  update: (item, attributes = {}, options = {}) ->
     Promise.resolve $.ajax
-      url:      '/pinboards/' + id
+      url:      '/pinboards/' + item.get('uuid')
       type:     'PUT'
       dataType: 'json'
       data:

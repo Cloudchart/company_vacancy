@@ -75,8 +75,8 @@ updateDone = (json) ->
   fetchOne(json.id, true)
 
 
-updateFail = (xhr) ->
-  alert 'Error updating pinboard. Please, try again later.'
+updateFail = (id, xhr) ->
+  ItemsCursor.removeIn([id, '--sync--'])
 
 
 # Destroy
@@ -113,8 +113,14 @@ module.exports =
     PinboardSyncAPI.create({ title: title }).then(createDone, createFail)
   
   
-  update: (id, title) ->
-    PinboardSyncAPI.update(id, { title: title }).then(updateDone, updateFail)
+  update: (id, attributes = {}, options = {}) ->
+    currItem = ItemsCursor.get(id)
+    
+    ItemsCursor.set(currItem.get('uuid'), currItem.set('--sync--', true))
+
+    promise = PinboardSyncAPI.update(currItem, attributes, options)
+    promise.then(updateDone, updateFail.bind(null, id))
+    promise
   
 
   destroy: (id) ->
