@@ -7,6 +7,13 @@ class Pinboard < ActiveRecord::Base
   belongs_to :user
   
   has_many :pins
+  
+  
+  scope :general, -> { where(user_id: nil) }
+  
+
+  ACCESS_RIGHTS = [:piblic, :protected, :private]
+
 
   rails_admin do
 

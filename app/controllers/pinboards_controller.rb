@@ -4,17 +4,17 @@ class PinboardsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { @pinboards = (effective_user.pinboards + Pinboard.where(user_id: nil)) }
+      format.json { @pinboards = (effective_user.pinboards + Pinboard.general) }
     end
   end
   
 
   def show
-    @pinboard = effective_user.pinboards.find(params[:id]) rescue Pinboard.where(user_id: nil).find(params[:id])
+    @pinboard = effective_user.pinboards.find(params[:id]) rescue Pinboard.general.find(params[:id])
     
     respond_to do |format|
       format.html
-      format.json { render json: @pinboard, root: :pinboard }
+      format.json
     end
   end
   
@@ -71,7 +71,7 @@ class PinboardsController < ApplicationController
   
 
   def params_for_create
-    params.require(:pinboard).permit(:title)
+    params.require(:pinboard).permit(:title, :access_rights)
   end
 
   
