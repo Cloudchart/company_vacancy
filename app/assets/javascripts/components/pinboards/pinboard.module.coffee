@@ -44,13 +44,18 @@ module.exports = React.createClass
       .reverse()
   
   
+  renderSettingsButton: ->
+    if @props.cursor.pinboard.get('user_id') == @props.currentUserId
+      <i className="fa fa-cog settings" onClick={ @handleSettingsLinkClick } />
+  
+  
   renderHeader: (pins) ->
     <header>
       <a href="/pinboards" className="back" onClick={ @props.onClick }>
         <i className="fa fa-angle-left" />
       </a>
       <span className="title">{ @props.cursor.pinboard.get('title') }</span>
-      <i className="fa fa-cog settings" onClick={ @handleSettingsLinkClick } />
+      { @renderSettingsButton() }
       <span className="count">{ pins.size } { if pins.size == 1 then 'pin' else 'pins' }</span>
     </header>
   
@@ -91,6 +96,10 @@ module.exports = React.createClass
   onGlobalStateChange: ->
     @setState
       refreshed_at: + new Date
+  
+  
+  getDefaultProps: ->
+    currentUserId: if node = document.querySelector('meta[name="user-id"]') then node.getAttribute('content')
   
   
   render: ->
