@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150123145257) do
+ActiveRecord::Schema.define(version: 20150124194045) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -289,13 +289,15 @@ ActiveRecord::Schema.define(version: 20150123145257) do
   add_index "pictures", ["owner_id", "owner_type"], name: "index_pictures_on_owner_id_and_owner_type", using: :btree
 
   create_table "pinboards", primary_key: "uuid", force: true do |t|
-    t.string   "title",                             null: false
-    t.string   "user_id",    limit: 36
-    t.integer  "position",              default: 0
+    t.string   "title",                                       null: false
+    t.string   "user_id",       limit: 36
+    t.integer  "position",                 default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "access_rights",            default: "public"
   end
 
+  add_index "pinboards", ["access_rights"], name: "index_pinboards_on_access_rights", using: :btree
   add_index "pinboards", ["user_id"], name: "index_pinboards_on_user_id", using: :btree
 
   create_table "pins", primary_key: "uuid", force: true do |t|
