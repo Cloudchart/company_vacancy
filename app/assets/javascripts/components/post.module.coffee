@@ -36,16 +36,11 @@ Component = React.createClass
     trusted: 'Trusted'
     only_me: 'Only me'
 
-  stripHTML: (content) ->
-    tmp = document.createElement("DIV")
-    tmp.innerHTML = content
-    tmp.textContent || tmp.innerText || ""
-
-  getTitleLength: (title) ->
-    @stripHTML(title).length
-
   getTitleLimit: (length) ->
     140 - length
+
+  getStrippedTitle: (title) ->
+    title.replace(/<div>|<\/div>/ig, '')
 
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
@@ -62,8 +57,7 @@ Component = React.createClass
   
 
   handleTitleChange: (content) ->
-    return if content is @state.post.title
-    @update(title: content)
+    @update(title: @getStrippedTitle(content))
 
   handleTitleBlur: ->
     @setState(titleFocused: false)
@@ -72,7 +66,7 @@ Component = React.createClass
     @setState(titleFocused: true)
 
   handleTitleInput: (content) ->
-    @setState(titleLength: @getTitleLength(content))
+    @setState(titleLength: @getStrippedTitle(content).length)
 
   handleDestroyClick: (event) ->
     if confirm('Are you sure?')
@@ -134,10 +128,10 @@ Component = React.createClass
     visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.id and item.owner_type is 'Post'
     post = PostStore.get(props.id)
 
-    titleLength = if (title = post.title) then @getTitleLength(title) else 0
+    titleLength = if (title = post.title) then title.length else 0
 
     post: post
-    titleLength:  titleLength
+    titleLength: titleLength
     published_at: @getPublishedAt(post)
     visibility: visibility
     visibility_value: if visibility then visibility.value else 'public'
