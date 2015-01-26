@@ -177,12 +177,12 @@ Component = React.createClass
     return null unless @state.post
 
     <div className="post-container">
-      <aside>
-        <Dropdown 
-          options  = { @getVisibilityOptions() }
-          value    = { @state.visibility_value }
-          onChange = { @handleVisibilityChange } />
-      </aside>
+      <Dropdown 
+        options  = { @getVisibilityOptions() }
+        value    = { @state.visibility_value }
+        readOnly = { @props.readOnly }
+        onChange = { @handleVisibilityChange } 
+      />
 
       <header>
         <FieldWrapper className="title">

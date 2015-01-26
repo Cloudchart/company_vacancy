@@ -299,14 +299,11 @@ main.company > div.wrapper > div.posts {
 div.post-container {
   position: relative;
 
-  > aside {
+  > div.select.cc {
     @include position(absolute, 0px 0px 0 0);
 
     z-index: 1;
-
-    > .select {
-      width: 120px;
-    }
+    width: 120px;
   }
 
   > header {
