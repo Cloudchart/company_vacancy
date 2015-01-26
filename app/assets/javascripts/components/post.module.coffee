@@ -31,36 +31,10 @@ Component = React.createClass
 
   # Helpers
   # 
-  gatherControls: ->
-    return null if @props.readOnly
-
-    <div className="controls">
-      <button 
-        className="cc alert"
-        onClick={@handleDestroyClick}>
-        Delete
-      </button>
-
-      <button 
-        ref="okButton"
-        className="cc"
-        onClick={@handleOkClick}>
-        OK
-      </button>
-    </div>
-
   getVisibilityOptions: ->
     public:  'Public'
     trusted: 'Trusted'
     only_me: 'Only me'
-
-  effectiveDate: ->
-    <FuzzyDateInput
-      from      = { @state.post.effective_from }
-      till      = { @state.post.effective_till }
-      readOnly  = { @props.readOnly }
-      onUpdate  = { @handleEffectiveDateUpdate }
-    />
 
   stripHTML: (content) ->
     tmp = document.createElement("DIV")
@@ -173,9 +147,10 @@ Component = React.createClass
     _.extend @getStateFromStores(@props),
       titleFocused: false
 
+
   # Renderers
   # 
-  renderVisibilityOptions: ->
+  renderVisibilityDropdown: ->
     return null if @props.readOnly
 
     <aside>
@@ -186,13 +161,42 @@ Component = React.createClass
       />
     </aside>
 
+
+  renderButtons: ->
+    return null if @props.readOnly
+
+    <div className="controls">
+      <button 
+        className="cc alert"
+        onClick={@handleDestroyClick}>
+        Delete
+      </button>
+
+      <button 
+        ref="okButton"
+        className="cc"
+        onClick={@handleOkClick}>
+        OK
+      </button>
+    </div>
+
+  
+  renderEffectiveDate: ->
+    <FuzzyDateInput
+      from      = { @state.post.effective_from }
+      till      = { @state.post.effective_till }
+      readOnly  = { @props.readOnly }
+      onUpdate  = { @handleEffectiveDateUpdate }
+    />
+
+
   # Main render
   # 
   render: ->
     return null unless @state.post
 
     <div className="post-container">
-      { @renderVisibilityOptions() }
+      { @renderVisibilityDropdown() }
 
       <header>
         <FieldWrapper className="title">
@@ -217,7 +221,7 @@ Component = React.createClass
 
         <FieldWrapper>
           <label className="published-at">
-            { @effectiveDate() }
+            { @renderEffectiveDate() }
           </label>
           <Hint 
             content = { renderHint("date") }
@@ -257,7 +261,7 @@ Component = React.createClass
       </FieldWrapper>
 
       <footer>
-        {@gatherControls()}
+        { @renderButtons() }
       </footer>
     </div>
 
