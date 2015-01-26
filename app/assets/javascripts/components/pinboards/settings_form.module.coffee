@@ -86,7 +86,7 @@ module.exports = React.createClass
   
   renderHeader: ->
     <header className="form-header">
-      Settings:
+      Pinboard
       <div className="title">{ @props.cursor.get('title') }</div>
     </header>
   
