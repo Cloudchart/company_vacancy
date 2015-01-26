@@ -1,19 +1,18 @@
 class Pinboard < ActiveRecord::Base
   include Uuidable
 
-  validates :title, presence: true
-  validates_uniqueness_of :title, scope: :user_id, case_sensitive: false
+  ACCESS_RIGHTS = [:piblic, :protected, :private]
+
+  validates                 :title, presence: true
+  validates_uniqueness_of   :title, scope: :user_id, case_sensitive: false
+  validates_uniqueness_of   :title, conditions: -> { where(user_id: nil) }, case_sensitive: false
   
-  belongs_to :user
-  
-  has_many :pins
+  belongs_to  :user
+  has_many    :pins
   
   
   scope :general, -> { where(user_id: nil) }
   
-
-  ACCESS_RIGHTS = [:piblic, :protected, :private]
-
 
   rails_admin do
 

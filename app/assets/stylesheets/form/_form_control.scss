@@ -1,0 +1,48 @@
+$form-control-unit: 20px; 
+
+$form-control-background-color: hsl(0, 0%, 95%);
+$form-control-font-size: 20px;
+$form-control-font-size-textarea: 20px;
+$form-control-height: 40px;
+$form-control-padding: 0 $form-control-unit;
+
+$form-control-select-control-color: hsl(145, 60%, 60%);
+
+@mixin form-control {
+  background-color: hsl(0, 0%, 95%);
+  border: none;
+  font-size: $form-control-font-size;
+  height: $form-control-height;
+  outline: none;
+  padding: $form-control-padding;
+  width: 100%;
+}
+
+.form-control,
+.form-control,
+.form-control {
+  @include form-control;
+}
+
+
+.form-control-wrapper {
+  position: relative;
+}
+
+
+// Textarea
+//
+textarea.form-control {
+  font-size: $form-control-font-size-textarea;
+}
+
+
+// Select
+//
+select.form-control ~ i.control {
+  @include position(absolute, 50% 0px null null);
+  @include transform(translateY(-50%));
+  
+  color: $form-control-select-control-color;
+  margin-right: $form-control-unit;
+}

@@ -10,6 +10,10 @@ PinStore      = require('stores/pin_store')
 
 ModalActions  = require('actions/modal_actions')
 
+# Constants
+#
+ContentMaxLength = 120
+
 
 # Utils
 #
@@ -34,15 +38,42 @@ module.exports = React.createClass
   
   handleSubmit: (event) ->
     event.preventDefault()
-    PinStore.create(@state.attributes.toJSON()).then(@props.onDone, @handleSaveFail)
+    
+    if (@state.attributes.get('pinboard_id') == 'new')
+      PinboardStore.create({ title: @state.attributes.get('pinboard_title') }).then(@handlePinboardSave, @handleSaveFail)
+    else
+      attributes = @state.attributes.remove('pinboard_name').toJSON()
+      @createPin(attributes)
+  
+
+  createPin: (attributes) ->
+      PinStore.create(attributes).then(@props.onDone, @handlePinSaveFail)
+  
+  
+  handlePinboardSave: (json) ->
+    attributes = @state.attributes
+      .remove('pinboard_name')
+      .set('pinboard_id', json.id)
+      .toJSON()
+
+    @createPin(attributes)
   
   
   handleSaveFail: ->
-  
+    snabbt(@getDOMNode().parentNode, 'attention', {
+      position: [50, 0, 0]
+      springConstant: 3
+      springDeacceleration: .9
+    })
   
   handleChange: (name, event) ->
+    value = event.target.value
+
+    if name == 'content' and value.length > ContentMaxLength
+      value = value.substring(0, ContentMaxLength)
+    
     @setState
-      attributes: @state.attributes.set(name, event.target.value)
+      attributes: @state.attributes.set(name, value)
   
   
   onGlobalStateChange: ->
@@ -65,10 +96,11 @@ module.exports = React.createClass
   
   getInitialState: ->
     attributes: Immutable.Map
-      pinboard_id:    @props.pinboard_id    || getDefaultPinboardId()
+      pinboard_id:    @props.pinboard_id    || getDefaultPinboardId() || ''
       pinnable_id:    @props.pinnable_id
       pinnable_type:  @props.pinnable_type
-      content:        @props.content
+      content:        @props.content        || ''
+      pinboard_title: ''
   
   
   renderHeader: ->
@@ -79,13 +111,20 @@ module.exports = React.createClass
 
 
   renderPinboardsOptions: ->
-    @props.cursor
+    options = @props.cursor
       .sortBy (pinboard) -> pinboard.get('title')
       .map (pinboard, uuid) ->
         <option key={ uuid } value={ uuid }>{ pinboard.get('title') }</option>
+      .toList()
+    
+    options = options.push(<option key="new" value="new">Create Category</option>)
+    
+    options
   
   
   renderPinboardSelect: ->
+    
+    
     <label className="pinboard">
       <span className="title">Pick a Category</span>
       <div className="select-wrapper">
@@ -100,6 +139,23 @@ module.exports = React.createClass
     </label>
   
   
+  renderPinboardInput: ->
+    return null unless @state.attributes.get('pinboard_id') == 'new'
+    
+    <label className="pinboard">
+      <span className="title" />
+      <div className="input-wrapper">
+        <input
+          className   = "form-control"
+          autoFocus   = "true"
+          value       = { @state.attributes.get('pinboard_title') }
+          onChange    = { @handleChange.bind(@, 'pinboard_title') }
+          placeholder = "Pick a name"
+        />
+      </div>
+    </label>
+  
+  
   renderPinComment: ->
     <label className="comment">
       <span className="title">Add Comments</span>
@@ -108,6 +164,7 @@ module.exports = React.createClass
         onChange  = { @handleChange.bind(@, 'content') }
         value     = { @state.attributes.get('content', '') }
       />
+      <span className="counter">{ ContentMaxLength - @state.attributes.get('content').length }</span>
     </label>
 
 
@@ -124,6 +181,7 @@ module.exports = React.createClass
 
       <fieldset>
         { @renderPinboardSelect() }
+        { @renderPinboardInput() }
         { @renderPinComment() }
       </fieldset>
 
