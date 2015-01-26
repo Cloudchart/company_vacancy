@@ -2,7 +2,7 @@ CloudProfile::Engine.routes.draw do
 
   # Login/Logout
   #
-  #get   'login',  to: 'authentications#new'
+  get   'login',  to: 'authentications#new'
   post  'login',  to: 'authentications#create'
   get   'logout', to: 'authentications#destroy'
   

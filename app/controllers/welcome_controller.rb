@@ -8,9 +8,6 @@ class WelcomeController < ApplicationController
       token: TokenSerializer.new(( Token.find(params[:token]) rescue Token.find_by_rfc1751(params[:token]) rescue nil )).as_json
     )
   end
-
-  def login
-  end
   
 private
   

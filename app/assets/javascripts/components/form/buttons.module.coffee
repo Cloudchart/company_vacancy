@@ -32,17 +32,18 @@ BaseButton = React.createClass
       { @props.children }
     </button>
 
-
 # TODO rewrite when added new props syntax from React 0.12
 StandardButton = React.createClass
  
   propTypes:
-    text:      React.PropTypes.string
     iconClass: React.PropTypes.string
+    text:      React.PropTypes.string
+    type:      React.PropTypes.string
 
   getDefaultProps: ->
-    text:      null
     iconClass: ""
+    text:      null
+    type:      "button"
 
   render: ->
     children = []

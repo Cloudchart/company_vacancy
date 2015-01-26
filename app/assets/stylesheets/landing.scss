@@ -87,8 +87,8 @@ body > header {
     }
   }
   
-  > .auth span {
-    cursor: pointer;
+  > .auth a {
+    color: hsl(0, 0%, 100%);
     font-size: $base-unit * .9;
     font-weight: 600;
   }

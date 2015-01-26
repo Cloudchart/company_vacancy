@@ -3,6 +3,9 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class AuthenticationsController < ApplicationController
 
+    def new
+    end
+
     def create
       email = Email.includes(:user).find_by(address: params[:email])
       raise ActiveRecord::RecordNotFound unless email.present? && email.user.present? && email.user.authenticate(params[:password])

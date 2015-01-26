@@ -4,234 +4,94 @@ tag = React.DOM
 
 InputComponent = cc.require('react/modals/input')
 
-email_re = /.+@.+\..+/i
+Field   = require("components/form/field")
+Buttons = require("components/form/buttons")
 
-Field = require("components/form/field")
-
-# Login mixin
-#
-LoginMixin =
-  
-  
-  onLoginRequestDone: (json) ->
-    if json.admin_path
-      location.href = json.admin_path
-    else
-      location.reload()
-  
-  
-  onLoginRequestFail: (xhr) ->
-    @setState
-      errors:
-        password: 'invalid'
-      reset: true
-  
-  
-  loginRequest: ->
-    $.ajax
-      url:        '/login'
-      type:       'POST'
-      dataType:   'json'
-      data:
-        email:      @state.email
-        password:   @state.password
-    .done @onLoginRequestDone
-    .fail @onLoginRequestFail
+StandardButton = Buttons.StandardButton
 
 
-# Reset password mixin
-#
-ResetPasswordMixin =
-  
-
-  onResetPasswordRequestDone: ->
-    component = cc.require('react/modals/reset-splash')
-
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: (component {})
-    
-    dispatchEvent(event)
-  
-
-  resetPasswordRequest: ->
-    $.ajax
-      url:      '/profile/password/forgot'
-      type:     'POST'
-      dataType: 'json'
-      data:
-        email:  @state.email
-    .done @onResetPasswordRequestDone
-
-
-# Register mixin
-#
-RegisterMixin =
-  
-  onInviteButtonClick: (event) ->
-    event.preventDefault()
-    
-    component = cc.require("react/modals/invite-form")
-    
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: (component {
-          invite: @state.invite
-          full_name: @state.full_name
-          email: @state.email
-        })
-    
-    dispatchEvent(event)
-
-
-# Login button
-#
-LoginButton = (is_disabled, callback) ->
-  (tag.button {
-    type:       'submit'
-    className:  'login cc'
-    disabled:   is_disabled
-    onClick:    callback
-  },
-    'Login'
-    (tag.i { className: 'fa fa-check' })
-  )
-
-
-# Reset Button
-#
-ResetButton = (is_disabled, callback) ->
-  (tag.button {
-    type:       'button'
-    className:  'reset cc'
-    disabled:   is_disabled
-    onClick:    callback
-  },
-    'Reset'
-    (tag.i { className: 'fa fa-repeat' })
-  )
-
-
-# Register button
-#
-InviteButton = (is_disabled, callback) ->
-  (tag.a {
-    href: ''
-    className:  'invite cc'
-    disabled:   is_disabled
-    onClick:    callback
-  },
-    'invited?'
-  )
-
-
-#
-#
 LoginForm = React.createClass
 
+  # Component specifications
+  #
+  propTypes:
+    attributes:   React.PropTypes.object
+    errors:       React.PropTypes.object
+    isResetShown: React.PropTypes.bool
+    onChange:     React.PropTypes.func
+    onInvite:     React.PropTypes.func
+    onSubmit:     React.PropTypes.func
 
-  mixins: [
-    LoginMixin
-    ResetPasswordMixin
-    RegisterMixin
-  ]
+  getDefaultProps: ->
+    attributes:   {}
+    errors:       {}
+    isResetShown: false
+    onChange:     ->
+    onInvite:     ->
+    onSubmit:     ->
 
+  getChangeHandler: (name) ->
+    (event) => @props.onChange(name, event.target.value)
 
-  isLoginButtonDisabled: ->
-    #!email_re.test(@state.email) or @state.password.length == 0
-    false
-  
-  
-  isResetButtonDisabled: ->
-    #!email_re.test(@state.email)
-    false
-
-  
-  isInviteButtonDisabled: ->
-    #!email_re.test(@state.email)
-    false
-
-  
-  onLoginButtonClick: (event) ->
-    event.preventDefault()
-    
-    @loginRequest()
-  
-  
-  onResetButtonClick: (event) ->
-    event.preventDefault()
-    
-    @resetPasswordRequest()
-  
-  
-  onSubmit: (event) ->
+  handleSubmit: (event) ->
     event.preventDefault()
 
-
-  handleEmailChange: (event) ->
-    delete @state.errors.email
-    @setState(email: event.target.value)
-
-  handlePasswordChange: (event) ->
-    delete @state.errors.password
-    @setState(password: event.target.value)
-
-  
-  getInitialState: ->
-    email:    @props.email || ''
-    password: ''
-    errors:   {}
-    reset:    false
-    invite: @props.invite || ''
-    full_name: @props.full_name || ''
-
-  
   render: ->
     <form 
-      ref       = 'form'
-      className = 'login form-2'
-      onSubmit  = {@onSubmit} >
+      ref       = "form"
+      className = "login form-2"
+      onSubmit  = { @handleSubmit } >
     
       <header>Log In</header>
 
       <fieldset>
-
         <Field
           autoFocus    = { true }
-          defaultValue = { @state.email }
-          errors       = { @state.errors.email }
+          defaultValue = { @props.attributes.email }
+          errors       = { @props.errors.email }
           name         = "email"
-          onChange     = { @handleEmailChange }
+          onChange     = { @getChangeHandler("email") }
           title        = "Email"
           type         = "email"
-          value        = { @state.email } />
+          value        = { @props.attributes.email } />
 
         <Field
-          defaultValue = { @state.password }
-          errors       = { @state.errors.password }
+          defaultValue = { @props.attributes.password }
+          errors       = { @props.errors.password }
           name         = "password"
-          onChange     = { @handlePasswordChange } 
+          onChange     = { @getChangeHandler("password") } 
           title        = "Password"
           type         = "password"
-          value        = { @state.password } />
+          value        = { @props.attributes.password } />
       </fieldset>
       
       <footer>
 
         {
-          if @state.invite
-            <div className='spacer'></div>
+          if false
+            <div className="spacer"></div>
           else
-            (InviteButton @isInviteButtonDisabled(), @onInviteButtonClick)
+            <StandardButton
+              className = "transparent"
+              onClick   = { @props.onInvite }
+              text      = "invited?" />
         }
 
         {
-          (ResetButton @isResetButtonDisabled(), @onResetButtonClick) if @state.reset and @state.email
+          if @props.isResetShown && @props.attributes.email
+            <StandardButton
+              className = "cc"
+              iconClass = "fa-repeat"
+              onClick   = { @handleResetButtonClick }
+              text      = "Reset" />
         }
 
-        {
-          (LoginButton @isLoginButtonDisabled(), @onLoginButtonClick)
-        }
+        <StandardButton
+          className = "cc"
+          iconClass = "fa-check"
+          onClick   = { @props.onSubmit }
+          text      = "Login"
+          type      = "submit" />
       </footer>
     </form>
 
