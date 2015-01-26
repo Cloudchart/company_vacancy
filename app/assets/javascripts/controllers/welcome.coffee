@@ -10,3 +10,11 @@
       params['email'] = data.token.data.email
 
     ModalActions.show RegisterForm(params)
+
+
+@['welcome#login'] = (data) ->
+  LoginForm = require('components/auth/login_form')
+
+  React.renderComponent(
+    LoginForm(), document.querySelector('body > main')
+  )
