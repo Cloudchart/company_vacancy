@@ -7,7 +7,7 @@ class PostsController < ApplicationController
 
   def index
     # get posts
-    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :pins, :posts_stories, blocks: :block_identities)
+    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :pins, :posts_stories, :tags, blocks: :block_identities)
 
     # reject based on visibility rules
     @posts = if can?(:manage, @company)
