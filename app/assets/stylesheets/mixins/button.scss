@@ -124,7 +124,11 @@ button.cc {
     }
   }
 
-  &.cancel,
+  &.cancel {
+    background-color: hsl(0, 0%, 95%);
+    color: hsl(0, 0%, 0%);
+  }
+
   &.revoke {
     i.fa {
       color: hsl(355, 87%, 47%);

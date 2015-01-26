@@ -76,6 +76,12 @@ CursorFactory = (data, callback) ->
     forEach: ->
       (seq = @deref(EmptySeq)).forEach.apply(seq, arguments)
     
+    map: ->
+      (seq = @deref(EmptySeq)).map.apply(seq, arguments)
+
+    sortBy: ->
+      (seq = @deref(EmptySeq)).sortBy.apply(seq, arguments)
+    
     
     deref: (notSetValue) ->
       @getIn([], notSetValue)

@@ -66,7 +66,7 @@ createDone = (json) ->
 
 
 createFail = (xhr) ->
-  alert 'Error creating pinboard. Please, try again later.'
+  
 
 
 # Update
@@ -109,8 +109,10 @@ module.exports =
   fetchOne: fetchOne
   
 
-  create: (title) ->
-    PinboardSyncAPI.create({ title: title }).then(createDone, createFail)
+  create: (attributes = {}, options ={}) ->
+    promise = PinboardSyncAPI.create(attributes, options)
+    promise.then(createDone, createFail)
+    promise
   
   
   update: (id, attributes = {}, options = {}) ->

@@ -7,12 +7,16 @@ GlobalState     = require('global_state/state')
 PinboardStore   = require('stores/pinboard_store')
 PinStore        = require('stores/pin_store')
 
+# Actions
+#
+ModalActions  = require('actions/modal_actions')
+
 
 # Components
 #
-PinboardComponent = require('components/pinboards/pinboard')
-
-PinComponent  = require('components/pinnable/pin')
+PinboardComponent     = require('components/pinboards/pinboard')
+SettingsFormComponent = require('components/pinboards/settings_form')
+PinComponent          = require('components/pinnable/pin')
 
 
 PinboardListItemComponent = React.createClass
@@ -103,7 +107,7 @@ module.exports = React.createClass
 
   gatherPinboards: ->
     @props.cursor.pinboards.deref(PinboardStore.empty)
-
+    
       .sortBy (pinboard) ->
         pinboard.get('title')
 
@@ -134,6 +138,13 @@ module.exports = React.createClass
       location.href = '/pinboards'
   
   
+  handleCreatePinboardClick: (event) ->
+    event.preventDefault()
+    ModalActions.show(<SettingsFormComponent cursor={ @props.cursor.pinboards.cursor('new') } onCancel={ ModalActions.hide } />)
+    
+    
+  
+  
   onGlobalStateChange: ->
     @setState
       refreshed_at: + new Date
@@ -144,6 +155,7 @@ module.exports = React.createClass
   
   
   getDefaultProps: ->
+    currentUserId:  if meta = document.querySelector('meta[name="user-id"]') then meta.getAttribute('content')
     cursor:
       pinboards:  PinboardStore.cursor.items
   
@@ -156,5 +168,9 @@ module.exports = React.createClass
       PinboardComponent({ cursor: PinboardComponent.getCursor(@state.uuid), uuid: @state.uuid, onClick: @handleBackClick })
     else
       <ul className="pinboards">
+        <li className="new" onClick={ @handleCreatePinboardClick }>
+          <i className="fa fa-plus" />
+          <span className="hint">Create a Pinboard</span>
+        </li>
         { @gatherPinboards().toArray() }
       </ul>

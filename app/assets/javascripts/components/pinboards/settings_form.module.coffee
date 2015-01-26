@@ -24,14 +24,17 @@ module.exports = React.createClass
     
     return if @props.cursor.get('--sync--') == true
     
-    PinboardStore.update(@props.cursor.get('uuid'), @state.attributes.toJSON()).then(@handleUpdateDone, @handleUpdateFail)
+    if uuid = @props.cursor.get('uuid')
+      PinboardStore.update(uuid, @state.attributes.toJSON()).then(@handleSaveDone, @handleSaveFail)
+    else
+      PinboardStore.create(@state.attributes.toJSON()).then(@handleSaveDone, @handleSaveFail)
   
   
-  handleUpdateDone: (json) ->
+  handleSaveDone: (json) ->
     @props.onCancel()
   
   
-  handleUpdateFail: (xhr) ->
+  handleSaveFail: (xhr) ->
     snabbt(@getDOMNode().parentNode, 'attention', {
       position: [50, 0, 0]
       springConstant: 3
@@ -64,7 +67,18 @@ module.exports = React.createClass
   
   getInitialState: ->
     attributes: Immutable.Map
-      access_rights: @props.cursor.get('access_rights', 'public')
+      title:          @props.cursor.get('title', '')
+      access_rights:  @props.cursor.get('access_rights', 'public')
+  
+  
+  renderTitle: ->
+    <input
+      autoFocus   = { !@props.cursor.get('uuid') }
+      type        = "text"
+      placeholder = "Name a pinboard"
+      value       = { @state.attributes.get('title') }
+      onChange    = { @handleChange.bind(@, 'title') }
+    />
   
   
   renderAccessRights: ->
@@ -86,6 +100,12 @@ module.exports = React.createClass
   renderInputs: ->
     <dl>
       <dt>
+        Pinboard Name
+      </dt>
+      <dd>
+        { @renderTitle() }
+      </dd>
+      <dt>
         Access Rights
       </dt>
       <dd>
@@ -100,7 +120,7 @@ module.exports = React.createClass
         Cancel
       </button>
       <button type="submit">
-        Update
+        { if @props.cursor.get('uuid') then 'Update' else 'Create' }
       </button>
     </footer>
 

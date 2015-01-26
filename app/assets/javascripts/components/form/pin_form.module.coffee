@@ -11,19 +11,17 @@ PinStore      = require('stores/pin_store')
 ModalActions  = require('actions/modal_actions')
 
 
+# Utils
+#
+titleRE = /^(?:<div>)?([^<]+)(?:<\/div>)?$/
 
-PinboardsSelect = (self, items) ->
-  options = items
-    .sortBy (item) -> item.get('title')
-    .map (item) ->
-      <option key={ item.get('uuid') } value={ item.get('uuid') }>
-        { item.get('title') }
-      </option>
-  
-  <select onChange={self.handleChange.bind(null, 'pinboard_id')} value={self.state.pinboard_id}>
-    { options.toArray() }
-  </select>
+unwrapTitle = (title) ->
+  (titleRE.exec(title) || [title, ''])[1]
 
+
+getDefaultPinboardId = ->
+  if pinboard = PinboardStore.cursor.items.sortBy((pinboard) -> pinboard.get('title')).first()
+    pinboard.get('uuid')
 
 
 # Exports
@@ -34,96 +32,100 @@ module.exports = React.createClass
   mixins: [GlobalState.mixin]
   
   
-  handleCreateDone: ->
-    @handleCancelButtonClick()
-  
-
-  handleCreateFail: ->
-    alert 'FAIL!!!'
-
-
   handleSubmit: (event) ->
     event.preventDefault()
-
-    PinStore.create({
-      pinnable_id:    @props.pinnable_id
-      pinnable_type:  @props.pinnable_type
-      pinboard_id:    @state.pinboard_id
-      content:        @state.content
-    }).then(@handleCreateDone, @handleCreateFail)
-    
+    PinStore.create(@state.attributes.toJSON()).then(@props.onDone, @handleSaveFail)
   
   
-  handleCancelButtonClick: ->
-    ModalActions.hide()
+  handleSaveFail: ->
   
   
   handleChange: (name, event) ->
-    nextState       = {}
-    nextState[name] = event.target.value
-    @setState nextState
-  
-  
-  getStateFromCursor: ->
-    pinboard_id: (@state and @state.pinboard_id) || if pinboards = @props.cursor.pinboards.deref() then pinboards.sortBy((item) -> item.get('title')).first().get('uuid') else ''
+    @setState
+      attributes: @state.attributes.set(name, event.target.value)
   
   
   onGlobalStateChange: ->
-    clearTimeout @__global_state_change_timeout
+    @setState
+      globalStateChangedAt: + new Date
+    
+    unless @state.attributes.get('pinboard_id')
+      @setState
+        attributes: @state.attributes.set('pinboard_id', getDefaultPinboardId())
 
-    @__global_state_change_timeout = setTimeout =>
-      @setState @getStateFromCursor()
-  
-  
+
   componentDidMount: ->
-    PinboardStore.fetchAll() unless @props.cursor.pinboards.deref()
-  
-  
+    PinboardStore.fetchAll() unless @props.cursor.deref()
+
+
   getDefaultProps: ->
-    cursor:
-      pinboards: PinboardStore.cursor.items
+    cursor:       PinboardStore.cursor.items
+    title:        ''
   
-
+  
   getInitialState: ->
-    state           = @getStateFromCursor()
-    state.content   = ''
-    state
+    attributes: Immutable.Map
+      pinboard_id:    @props.pinboard_id    || getDefaultPinboardId()
+      pinnable_id:    @props.pinnable_id
+      pinnable_type:  @props.pinnable_type
+      content:        @props.content
   
   
+  renderHeader: ->
+    <header>
+      <div>Pin It</div>
+      <div className="title">{ unwrapTitle(@props.title) }</div>
+    </header>
+
+
+  renderPinboardsOptions: ->
+    @props.cursor
+      .sortBy (pinboard) -> pinboard.get('title')
+      .map (pinboard, uuid) ->
+        <option key={ uuid } value={ uuid }>{ pinboard.get('title') }</option>
+  
+  
+  renderPinboardSelect: ->
+    <label className="pinboard">
+      <span className="title">Pick a Category</span>
+      <div className="select-wrapper">
+        <select
+          value     ={ @state.attributes.get('pinboard_id') }
+          onChange  ={ @handleChange.bind(@, 'pinboard_id') }
+        >
+          { @renderPinboardsOptions().toArray() }
+        </select>
+        <i className="fa fa-angle-down select-icon" />
+      </div>
+    </label>
+  
+  
+  renderPinComment: ->
+    <label className="comment">
+      <span className="title">Add Comments</span>
+      <textarea
+        rows      = 5
+        onChange  = { @handleChange.bind(@, 'content') }
+        value     = { @state.attributes.get('content', '') }
+      />
+    </label>
+
+
+  renderFooter: ->
+    <footer>
+      <button key="cancel" type="button" className="cc cancel" onClick={ @props.onCancel }>Cancel</button>
+      <button key="submit" type="submit" className="cc">Pin It</button>
+    </footer>
+
+
   render: ->
-    pinboards = @props.cursor.pinboards.deref()
-    
-    board = if pinboards
-      if pinboards.size > 0
-        <label>
-          <span>Pick a Cathegory</span>
-          { PinboardsSelect(@, pinboards) }
-        </label>
-    else
-      null
+    <form className="pin" onSubmit={ @handleSubmit }>
+      { @renderHeader() }
 
-    
-    <form onSubmit={ @handleSubmit } className="pin">
-      <header>
-        <div>
-          Pin It
-        </div>
-        <div className="title" dangerouslySetInnerHTML={ __html: @props.title } />
-      </header>
-      
       <fieldset>
-
-        { board }
-        
-        <label>
-          <span>Add Comments</span>
-          <textarea value={@state.content} onChange={@handleChange.bind(null, 'content')} />
-        </label>
-      
+        { @renderPinboardSelect() }
+        { @renderPinComment() }
       </fieldset>
-      
-      <footer>
-        <button className="cc cancel" type="button" onClick={ @handleCancelButtonClick }>Cancel</button>
-        <button className="cc" type="submit">Pin It</button>
-      </footer>
+
+      { @renderFooter() }
     </form>

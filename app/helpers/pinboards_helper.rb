@@ -3,7 +3,7 @@ module PinboardsHelper
   
   def load_pinnable_posts(ids, deep = false)
     result    = {}
-    includes  = deep ? [:owner, :pictures, :paragraphs, blocks: { block_identities: :identity }] : [:owner]
+    includes  = deep ? [:owner, :pictures, :paragraphs, blocks: { block_identities: :identity }, taggings: :tag] : [:owner]
     
     posts = Post.includes(includes).find(ids).each do |post|
       (result[post.owner.class.name.downcase.pluralize.to_sym] ||= []) << post.owner
@@ -17,6 +17,14 @@ module PinboardsHelper
 
         identities.each do |identity|
           (result[identity.class.name.downcase.pluralize.to_sym] ||= []) << identity
+        end
+      end
+      
+      if post.taggings.loaded?
+        (result[:taggings] ||= []).concat(post.taggings)
+        
+        post.taggings.each do |tagging|
+          (result[:tags] ||= []) << tagging.tag
         end
       end
       

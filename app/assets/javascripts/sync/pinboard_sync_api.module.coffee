@@ -25,7 +25,7 @@ module.exports =
       cache:    false
   
 
-  create: (attributes) ->
+  create: (attributes = {}, options = {}) ->
     Promise.resolve $.ajax
       url:      '/pinboards'
       type:     'POST'

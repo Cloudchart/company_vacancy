@@ -205,6 +205,51 @@ article.pinboards-list {
     margin: 0;
     padding: 0;
     
+    > li.new {
+      @include position(fixed, 90px 20px null null);
+      
+      border: 1px solid hsl(0, 0%, 75%);
+      border-radius: 50%;
+      color: hsl(0, 0%, 50%);
+      cursor: pointer;
+      height: 30px;
+      text-align: center;
+      width: 30px;
+      
+      > i {
+        line-height: 30px;
+      }
+      
+      > .hint {
+        @include position(absolute, 50% 100% null null);
+        @include transform(translateY(-50%));
+        
+        background-color: hsl(0, 0%, 90%);
+        color: hsl(0, 0%, 0%);
+        font-weight: 600;
+        margin-right: 15px;
+        opacity: 0;
+        padding: 10px 20px;
+        white-space: nowrap;
+        
+        &::after {
+          @include position(absolute, 50% null null 100%);
+          @include transform(translateY(-50%));
+
+          border: 10px solid transparent;
+          border-left-color: hsl(0, 0%, 90%);
+          content: '';
+          display: block;
+        }
+      }
+      
+      &:hover > .hint {
+        @include transition(opacity .25s ease-in .75s);
+
+        opacity: 1;
+      }
+    }
+    
     > li.pinboard {
       margin: 20px 0;
       
