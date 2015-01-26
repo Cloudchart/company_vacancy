@@ -6,6 +6,19 @@
 PinboardStore = require('stores/pinboard_store')
 
 
+# Components
+#
+FormControlComponent = React.createClass
+
+  render: ->
+    <section className="form-section">
+      <span className="title">{ @props.title }</span>
+      <div className="form-control-wrapper">
+        { @props.children }
+      </div>
+    </section>
+
+
 # Constants
 #
 AccessRights = Immutable.Seq
@@ -71,55 +84,59 @@ module.exports = React.createClass
       access_rights:  @props.cursor.get('access_rights', 'public')
   
   
+  renderHeader: ->
+    <header className="form-header">
+      Settings:
+      <div className="title">{ @props.cursor.get('title') }</div>
+    </header>
+  
+  
   renderTitle: ->
-    <input
-      autoFocus   = { !@props.cursor.get('uuid') }
-      type        = "text"
-      placeholder = "Name a pinboard"
-      value       = { @state.attributes.get('title') }
-      onChange    = { @handleChange.bind(@, 'title') }
-    />
+    <FormControlComponent title="Name">
+      <input
+        className   = "form-control"
+        autoFocus   = { !@props.cursor.get('uuid') }
+        type        = "text"
+        placeholder = "Pick a name"
+        value       = { @state.attributes.get('title') }
+        onChange    = { @handleChange.bind(@, 'title') }
+      />
+    </FormControlComponent>
   
   
-  renderAccessRights: ->
-    handleChange = @handleChange.bind(@, 'access_rights')
-
-    AccessRights.map (name, value) =>
-      <label key={ value }>
-        <input
-          name      = "access_rights"
-          type      = "radio"
-          value     = { value }
-          checked   = { @state.attributes.get('access_rights') == value }
-          onChange  = { handleChange }
-        />
-        { name }
-      </label>
+  renderAccessRightsOptions: ->
+    AccessRights
+      .map (name, value) ->
+        <option key={ value } value={ value }>{ name }</option>
+  
+  
+  renderAccessRightsSelect: ->
+    <FormControlComponent title="Access Rights">
+      <select
+        className = "form-control"
+        value     = { @state.attributes.get('access_rights') }
+        onChange  = { @handleChange.bind(@, 'access_rights') }
+      >
+        { @renderAccessRightsOptions().toArray() }
+      </select>
+      <i className="fa fa-angle-down control" />
+    </FormControlComponent>
   
   
   renderInputs: ->
-    <dl>
-      <dt>
-        Pinboard Name
-      </dt>
-      <dd>
-        { @renderTitle() }
-      </dd>
-      <dt>
-        Access Rights
-      </dt>
-      <dd>
-        { @renderAccessRights().toArray() }
-      </dd>
-    </dl>
-  
-  
+    
+    <fieldset className="form-fieldset">
+      { @renderTitle() }
+      { @renderAccessRightsSelect() }
+    </fieldset>
+    
+
   renderFormButtons: ->
-    <footer>
-      <button type="button" onClick={ @props.onCancel }>
+    <footer className="form-footer">
+      <button type="button" className="cc cancel" onClick={ @props.onCancel }>
         Cancel
       </button>
-      <button type="submit">
+      <button type="submit" className="cc">
         { if @props.cursor.get('uuid') then 'Update' else 'Create' }
       </button>
     </footer>
@@ -127,6 +144,7 @@ module.exports = React.createClass
 
   render: ->
     <form className="pinboard-settings" onSubmit={ @handleFormSubmit }>
+      { @renderHeader() }
       { @renderInputs() }
       { @renderFormButtons() }
     </form>
