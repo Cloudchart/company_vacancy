@@ -173,16 +173,26 @@ Component = React.createClass
     _.extend @getStateFromStores(@props),
       titleFocused: false
 
+  # Renderers
+  # 
+  renderVisibilityOptions: ->
+    return null if @props.readOnly
+
+    <aside>
+      <Dropdown 
+        options  = { @getVisibilityOptions() }
+        value    = { @state.visibility_value }
+        onChange = { @handleVisibilityChange } 
+      />
+    </aside>
+
+  # Main render
+  # 
   render: ->
     return null unless @state.post
 
     <div className="post-container">
-      <Dropdown 
-        options  = { @getVisibilityOptions() }
-        value    = { @state.visibility_value }
-        readOnly = { @props.readOnly }
-        onChange = { @handleVisibilityChange } 
-      />
+      { @renderVisibilityOptions() }
 
       <header>
         <FieldWrapper className="title">

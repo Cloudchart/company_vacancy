@@ -49,8 +49,6 @@ Dropdown = React.createClass
     @setState(value: nextProps.value)
 
   render: ->
-    return null if @props.readOnly
-
     <div className="select cc">
       <select className={ @props.customClass }
               onChange={ @onChange }
