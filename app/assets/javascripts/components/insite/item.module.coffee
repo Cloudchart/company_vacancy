@@ -1,6 +1,9 @@
 # @cjsx React.DOM
 
 
+GlobalState = require('global_state/state')
+
+
 # Stores
 #
 PinStore    = require('stores/pin_store')
@@ -28,6 +31,8 @@ cx = React.addons.classSet
 module.exports = React.createClass
 
   displayName: 'InsiteItem'
+  
+  mixins: [GlobalState.mixin]
   
   statics:
     getCursor: (id) ->
@@ -75,13 +80,25 @@ module.exports = React.createClass
       )
   
   
+  getStateFromStores: ->
+    user:         @props.cursor.users.cursor(@props.cursor.pin.get('user_id'))
+    currentUser:  @props.cursor.users.cursor(@props.currentUserId)
+  
+  
+  onGlobalStateChange: ->
+    @setState @getStateFromStores()
+  
+  
+  componentDidMount: ->
+    UserStore.fetchOne(@props.currentUserId) if @props.currentUserId unless @state.currentUser.deref()
+  
+  
   getDefaultProps: ->
     currentUserId: if (element = document.querySelector('meta[name="user-id"]')) then element.getAttribute('content')
   
   
   getInitialState: ->
-    user:         @props.cursor.users.cursor(@props.cursor.pin.get('user_id'))
-    currentUser:  @props.cursor.users.cursor(@props.currentUserId)
+    @getStateFromStores()
   
   
   renderAvatar: ->
