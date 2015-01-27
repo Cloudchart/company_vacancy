@@ -1,0 +1,17 @@
+main.stories > div.wrapper {
+  margin: 0 auto;
+  max-width: 800px;
+
+  ul.stories-list {
+    @include flex-ul;
+
+    > li {
+      max-width: 400px;
+      min-width: 200px;
+      background-color: hsl(0, 0%, 96%);
+      margin-right: 20px;
+      padding: 20px;
+      cursor: pointer;
+    }
+  }
+}

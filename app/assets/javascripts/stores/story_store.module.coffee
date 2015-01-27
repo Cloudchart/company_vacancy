@@ -14,9 +14,10 @@ EmptyStories  = Immutable.Map()
 # Dispatcher
 # 
 Dispatcher.register (payload) ->
-  
-  if payload.action.type == 'post:fetch-all:done'
-    fetchMany.apply(null, payload.action.data)
+
+  switch payload.action.type
+    when 'post:fetch-all:done', 'stories:fetch-all:done'
+      populate.apply(null, payload.action.data)
 
 
 # Utils
@@ -31,9 +32,9 @@ setStoryItem = (uuid, story) ->
   ItemsCursor.set(uuid, story)
 
 
-# Handlers
+# Populate
 # 
-fetchMany = (json) ->
+populate = (json) ->
   ItemsCursor.transaction()
 
   ItemsCursor.clear()
@@ -43,6 +44,8 @@ fetchMany = (json) ->
   ItemsCursor.commit()
 
 
+# Create
+# 
 handleCreate = ->
   return if CreateCursor.deref(EmptyStories).size == 0
   
@@ -64,6 +67,7 @@ handleCreate = ->
   # commit cursor
   GlobalState.cursor().commit()
 
+GlobalState.addListener CreateCursor.path, handleCreate
 
 # Update
 # 
@@ -74,7 +78,15 @@ updateFail = (prevItem, xhr) ->
   console.warn 'Story updateFail'
   
 
-GlobalState.addListener CreateCursor.path, handleCreate
+# Fetch
+# 
+fetchDone = (json) -> 
+  Dispatcher.handleServerAction
+    type: 'stories:fetch-all:done'
+    data: [json]
+
+fetchFail = (xhr) ->
+  console.warn('Stories fetchFail')
 
 
 # Exports
@@ -84,6 +96,11 @@ module.exports =
   cursor:
     empty: EmptyStories
     items: ItemsCursor
+
+  fetchAll: (company_id) ->
+    promise = SyncAPI.fetchAll(company_id)
+    promise.then(fetchDone, fetchFail)
+    promise
 
   create: (attributes, callback = ->) ->
     SyncAPI.create(attributes.company_id, attributes)

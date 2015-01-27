@@ -12,8 +12,14 @@ class StoriesController < ApplicationController
 
   def index
     respond_to do |format|
-      format.html { @company = Company.find(params[:company_id]) }
-      format.json { @company = find_company(Company.includes(posts: [:stories, :pins])) }
+      format.html { 
+        @company = Company.find(params[:company_id])
+        pagescript_params(company_id: @company.id)
+      }
+      
+      format.json { 
+        @company = find_company(Company.includes(posts: [:stories, :pins])) 
+      }
     end
   end
 
@@ -26,7 +32,7 @@ class StoriesController < ApplicationController
       end
     else
       respond_to do |format|
-        format.json { render json: :fail }
+        format.json { render json: :fail, status: 422 }
       end
     end
   end

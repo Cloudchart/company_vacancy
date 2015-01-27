@@ -1,10 +1,17 @@
 module.exports =
   
+
+  fetchAll: (company_id) ->
+    Promise.resolve $.ajax
+      url: "/companies/#{company_id}/stories"
+      type: 'GET'
+      dataType: 'JSON'
+
   
-  fetch:  (id, done, fail) ->
+  fetch: (id, done, fail) ->
     $.ajax
-      url:      "/stories/#{id}"
-      type:     "GET"
+      url: "/stories/#{id}"
+      type: "GET"
       dataType: "JSON"
     .done done
     .fail fail
@@ -23,8 +30,8 @@ module.exports =
 
   update: (id, attributes) ->
     Promise.resolve $.ajax
-      url:      "/stories/#{id}"
-      type:     'PATCH'
-      dataType: 'json'    
+      url: "/stories/#{id}"
+      type: 'PATCH'
+      dataType: 'json'
       data:
         story: attributes

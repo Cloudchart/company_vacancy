@@ -17,6 +17,7 @@ module.exports = GlobalState.createStore
   
   serverActions: ->
     'post:fetch-all:done': @populate
+    'stories:fetch-all:done': @populate
 
 
   filterByPinboardId: (pinboard_id) ->
