@@ -16,6 +16,7 @@ LoginForm = React.createClass
     isResetShown: React.PropTypes.bool
     onChange:     React.PropTypes.func
     onInvite:     React.PropTypes.func
+    onReset:      React.PropTypes.func
     onSubmit:     React.PropTypes.func
 
   getDefaultProps: ->
@@ -24,6 +25,7 @@ LoginForm = React.createClass
     isResetShown: false
     onChange:     ->
     onInvite:     ->
+    onReset:      ->
     onSubmit:     ->
 
 
@@ -82,11 +84,11 @@ LoginForm = React.createClass
         }
 
         {
-          if @props.isResetShown && @props.attributes.email
+          if @props.isResetShown
             <StandardButton
               className = "cc"
               iconClass = "fa-repeat"
-              onClick   = { @handleResetButtonClick }
+              onClick   = { @props.onReset }
               text      = "Reset" />
         }
 

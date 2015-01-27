@@ -17,9 +17,16 @@ module CloudProfile
       end
       
     rescue ActiveRecord::RecordNotFound
-      
-      respond_to do |format|
-        format.json { render json: 'nok', status: 412 }
+      errors = validate_login(email, params[:password])
+
+      if errors.values.size > 0
+        respond_to do |format|
+          format.json { render json: { errors: errors } }
+        end
+      else
+        respond_to do |format|
+          format.json { render json: 'nok', status: 412 }
+        end
       end
     end
     
@@ -35,7 +42,21 @@ module CloudProfile
         rails_admin.dashboard_path
       else
         session[:previous_path]
-      end 
+      end
+    end
+
+    def validate_login(email, password)
+      errors = {}
+
+      if !params[:email].present?
+        errors[:email] = ['missing']
+      elsif !email.present? || !email.user.present?
+        errors[:email] = ['invalid']
+      elsif !email.user.authenticate(params[:password])
+        errors[:password] = ['invalid']
+      end
+
+      errors
     end
   end
 end

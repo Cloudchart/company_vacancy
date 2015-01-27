@@ -3,6 +3,22 @@
 LoginForm = require('components/auth/login_form')
 
 
+Errors =
+  email:
+    missing:  "Enter email, please"
+    invalid:  "There are no users with such an email"
+  password:
+    invalid:  "The password is wrong"
+
+getErrorMessages = (errorsLists) ->
+  errors = _.mapValues errorsLists, (errors, attributeName) ->
+    _.map errors, (errorName) ->
+      Errors[attributeName][errorName]
+
+  errors
+
+
+
 LoginController = React.createClass
 
   # Component Specifications
@@ -26,13 +42,18 @@ LoginController = React.createClass
     .fail @handleLoginRequestFail
 
   handleLoginRequestDone: (json) ->
-    location.href = json.previous_path
+    if !json.errors
+      location.href = json.previous_path
+    else
+      @setState
+        errors: json.errors
+        isResetShown: json.errors.password
   
   handleLoginRequestFail: (xhr) ->
     @setState
       errors:
-        password: 'invalid'
-      isResetShown: true
+        password: ['invalid']
+
 
   resetPasswordRequest: ->
     $.ajax
@@ -40,17 +61,21 @@ LoginController = React.createClass
       type:     'POST'
       dataType: 'json'
       data:
-        email:  @state.email
+        email:  @state.attributes.email
     .done @handleResetPasswordRequestDone
 
-  handleResetPasswordRequestDone: ->
-    component = cc.require('react/modals/reset-splash')
+  handleResetPasswordRequestDone: (json) ->
+    if !json.errors
+      component = cc.require('react/modals/reset-splash')
 
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: (component {})
-    
-    dispatchEvent(event)
+      event = new CustomEvent 'modal:push',
+        detail:
+          component: (component {})
+      
+      dispatchEvent(event)
+    else
+      @setState
+        resetErrors: json.errors
 
 
   # Handlers
@@ -83,10 +108,11 @@ LoginController = React.createClass
   render: ->
     <LoginForm
       attributes   = { @state.attributes }
-      errors       = { @state.errors }
+      errors       = { getErrorMessages(@state.errors) }
       isResetShown = { @state.isResetShown }
       onChange     = { @handleInputChange }
       onInvite     = { @handleInviteButtonClick }
+      onReset      = { @resetPasswordRequest }
       onSubmit     = { @handleSubmit } />
 
 module.exports = LoginController
