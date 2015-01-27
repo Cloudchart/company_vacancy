@@ -2,7 +2,7 @@ class PinsController < ApplicationController
   
   
   def index
-    query = current_user.pins
+    query = current_user.pins.includes(:parent)
     
     query = query.find(params[:ids]) if params[:ids]
     
@@ -15,7 +15,7 @@ class PinsController < ApplicationController
   
   
   def show
-    @pin = current_user.pins.find(params[:id])
+    @pin = current_user.pins.includes(:parent).find(params[:id])
     
     respond_to do |format|
       format.json

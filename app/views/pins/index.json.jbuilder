@@ -13,11 +13,17 @@ end
 # Pins
 #
 ensure_relation(:pins).concat(@pins)
+ensure_relation(:pins).concat(@pins.map(&:parent).compact)
+
+
+# Users
+#
+ensure_relation(:users).concat(User.includes(:emails).find(ensure_relation(:pins).map(&:user_id).compact.uniq))
 
 
 # Pinnables
 #
-json.pinnables do
+if should_include?(:pinnables)
   @pins.group_by(&:pinnable_type).each do |pinnable_type, pins|
   
     case pinnable_type
@@ -30,7 +36,7 @@ json.pinnables do
     end
 
   end
-end if should_include?(:pinnables)
+end
 
 
 # Render
