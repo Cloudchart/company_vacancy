@@ -9,157 +9,79 @@ Buttons = require("components/form/buttons")
 
 StandardButton = Buttons.StandardButton
 
-email_re = /.+@.+\..+/i
 
+RegisterForm = React.createClass
 
-Component = React.createClass
+  # Component specifications
+  #
+  propTypes:
+    attributes:   React.PropTypes.object
+    errors:       React.PropTypes.object
+    isDisabled:   React.PropTypes.bool
+    onChange:     React.PropTypes.func
+    onSubmit:     React.PropTypes.func
 
-
-  isEmailAndNameValid: ->
-    email_re.test(@state.email) and @state.full_name.length > 0
-  
-  
-  isValidForRegister: ->
-    @isEmailAndNameValid() and @state.password.length > 0 and @props.invite.length > 0
-  
-  
-  onEmailChange: (event) ->
-    @setState({ email: event.target.value })
-
-
-  onFullNameChange: (event) ->
-    @setState({ full_name: event.target.value })
-
-
-  onPasswordChange: (event) ->
-    @setState({ password: event.target.value })
-
-  onInputFocus: (event) ->
-    errors = @state.errors[0..]
-    errors.splice(errors.indexOf(event.target.name), 1)
-    @setState
-      errors: errors
-  
-  
-  onRegisterDone: (json) ->
-    @setState({ sync: false })
-
-    if json.state == 'login'
-      window.location.reload()
-    
-    if json.state == 'activation'
-      event = new CustomEvent 'modal:push',
-        detail:
-          component: SplashComponent({
-            header: 'Activation'
-            note: 'We have sent an activation email.'
-          })
-      
-      window.dispatchEvent(event)
-  
-  
-  
-  onRegisterFail: (xhr) ->
-    @setState({ sync: false })
-
-    errors = xhr.responseJSON.errors
-    errors.splice(errors.indexOf('emails'), 1, 'email') if errors.indexOf('emails') > - 1
-    @setState
-      errors: errors
-  
-  onRegisterButtonClick: (event) ->
-    @setState({ sync: true })
-
-    $.ajax
-      url:      '/register'
-      type:     'POST'
-      dataType: 'json'
-      data:
-        user:
-          email:                  @state.email
-          full_name:              @state.full_name
-          password:               @state.password
-          password_confirmation:  @state.password
-          invite:                 @props.invite
-    .done @onRegisterDone
-    .fail @onRegisterFail
-
-
-  onBackLinkClick: (event) ->
-    event.preventDefault()
-    
-    event = new CustomEvent('modal:pop')
-
-    window.dispatchEvent(event)
-  
-  
-  onSubmit: (event) ->
-    event.preventDefault()
-    @onRegisterButtonClick()
-  
-  
   getDefaultProps: ->
-    email:      ''
-    full_name:  ''
-  
-  getInitialState: ->
-    errors:     []
-    email:      @props.email || ''
-    full_name:  @props.full_name || ''
-    password:   ''
-    sync: false
+    attributes:   {}
+    errors:       {}
+    isDisabled:   false
+    onChange:     ->
+    onSubmit:     ->
 
+  # Helpers
+  #
+  getChangeHandler: (name) ->
+    (event) => @props.onChange(name, event.target.value)
+
+  handleSubmit: (event) ->
+    event.preventDefault()
+    @props.onSubmit()
 
 
   render: ->
     <form
-      className = 'register form-2'
-      onSubmit  = { @onSubmit } >
+      className = "register form-2"
+      onSubmit  = { @handleSubmit } >
       
       <header>Sign Up</header>
       
       <fieldset>
         <Field
           autoFocus    = { true }
-          autoComplete = "off"
-          errors       = { @state.errors.full_name }
+          errors       = { @props.errors.full_name }
           name         = "name"
-          onChange     = { @onFullNameChange }
-          onFocus      = { @onInputFocus }
+          onChange     = { @getChangeHandler("full_name") }
           title        = "Name"
-          value        = { @state.full_name } />
+          value        = { @props.attributes.full_name } />
       
         <Field
-          errors       = { @state.errors.email }
+          errors       = { @props.errors.email }
           name         = "email"
-          onChange     = { @onEmailChange }
-          onFocus      = { @onInputFocus }
+          onChange     = { @getChangeHandler("email") }
           title        = "Email"
           type         = "email"
-          value        = { @state.email } />
+          value        = { @props.attributes.email } />
 
         <Field
-          errors       = { @state.errors.password }
+          errors       = { @props.errors.password }
           name         = "password"
-          onChange     = { @onPasswordChange } 
-          onFocus      = { @onInputFocus }
+          onChange     = { @getChangeHandler("password") } 
           title        = "Password"
           type         = "password"
-          value        = { @state.password } />
+          value        = { @props.attributes.password } />
       </fieldset>
       
       <footer>
         <div className="spacer"></div>
-
         <StandardButton
           className = "cc"
-          disabled  = { !@isValidForRegister() || @state.sync }
+          disabled  = { @props.isDisabled }
           iconClass = "fa-pencil-square-o"
-          onClick   = { @onRegisterButtonClick }
+          onClick   = { @handleSubmit }
           text      = "Sign Up"
           type      = "submit" />
       </footer>
     </form>
 
 
-module.exports = Component
+module.exports = RegisterForm

@@ -111,6 +111,11 @@ $cc-button-wide-padding: 55px;
 
 button.transparent {
   @include transparent-button();
+
+  &.text {
+    color: hsl(138, 63%, 37%);
+    font-size: 15px;
+  }
 }
 
 button.cc {

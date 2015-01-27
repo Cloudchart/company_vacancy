@@ -78,7 +78,7 @@ LoginForm = React.createClass
             <div className="spacer"></div>
           else
             <StandardButton
-              className = "transparent"
+              className = "transparent text"
               onClick   = { @props.onInvite }
               text      = "invited?" />
         }

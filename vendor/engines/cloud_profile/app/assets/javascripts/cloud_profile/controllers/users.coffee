@@ -1,6 +1,6 @@
 @["cloud_profile/users#new"] = (data) ->
-  RegisterForm = require("components/auth/register_form")
+  RegisterController = require("components/auth/register_controller")
 
   React.renderComponent(
-    RegisterForm({invite: data.invite}), document.querySelector("body > main")
+    RegisterController({invite: data.invite}), document.querySelector("body > main")
   )
