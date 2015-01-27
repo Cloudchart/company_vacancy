@@ -39,7 +39,7 @@ module ApplicationHelper
   end
 
   def ams(collection, options = {})
-    collection.active_model_serializer.new(collection, options) if collection
+    collection.active_model_serializer.new(collection, options)
   end
   
 end

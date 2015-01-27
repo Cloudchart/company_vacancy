@@ -10,7 +10,6 @@ class Post < ActiveRecord::Base
   has_many :posts_stories, dependent: :delete_all
   has_many :stories, through: :posts_stories
   has_many :visibilities, as: :owner, dependent: :destroy
-  
   has_many :pins, as: :pinnable, dependent: :destroy
 
   def company

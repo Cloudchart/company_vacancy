@@ -1,6 +1,5 @@
 class StoriesController < ApplicationController
 
-  before_action :set_company, only: [:index, :create]
   before_action :set_story, only: [:show, :update]
 
   authorize_resource
@@ -11,11 +10,15 @@ class StoriesController < ApplicationController
     end
   end
 
-  def index    
+  def index
+    respond_to do |format|
+      format.html { @company = Company.find(params[:company_id]) }
+      format.json { @company = find_company(Company.includes(posts: [:stories, :pins])) }
+    end
   end
 
   def create
-    @story = @company.stories.build(story_params)
+    @story = Company.find(params[:company_id]).stories.build(story_params)
 
     if @story.save
       respond_to do |format|
@@ -42,16 +45,16 @@ class StoriesController < ApplicationController
 
 private
 
+  def story_params
+    params.require(:story).permit(:name, :description)
+  end
+
   def set_story
     @story = Story.find(params[:id])
   end
 
-  def set_company
-    @company = Company.find(params[:company_id])
-  end
-
-  def story_params
-    params.require(:story).permit(:name, :description)
+  def find_company(relation)
+    relation.find_by(slug: params[:company_id]) || relation.find(params[:company_id])
   end
 
 end
