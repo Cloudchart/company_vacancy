@@ -100,8 +100,6 @@ Cloudchart::Application.routes.draw do
   resources :pins
   resources :posts_stories, only: [:update, :destroy]
   
-  resources :users, only: :show
-
   # Custom
   # 
   get ':id', to: 'pages#show', as: :page

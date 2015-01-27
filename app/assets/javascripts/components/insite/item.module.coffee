@@ -90,7 +90,7 @@ module.exports = React.createClass
   
   
   componentDidMount: ->
-    UserStore.fetchOne(@props.currentUserId) if @props.currentUserId unless @state.currentUser.deref()
+    UserStore.fetchCurrentUser() if @props.currentUserId unless @state.currentUser.deref()
   
   
   getDefaultProps: ->

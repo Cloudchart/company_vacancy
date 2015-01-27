@@ -19,3 +19,7 @@ module.exports = GlobalState.createStore
 
   serverActions: ->
     'post:fetch-all:done': @populate
+  
+  
+  fetchCurrentUser: (options = {}) ->
+    @syncAPI.fetchCurrentUser(options).then(@fetchDone, @fetchFail)

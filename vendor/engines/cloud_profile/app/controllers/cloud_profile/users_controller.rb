@@ -3,6 +3,18 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class UsersController < ApplicationController    
     authorize_resource class: :cloud_profile_user, only: :update
+    
+    
+    # show
+    #
+    def show
+      @user = current_user
+      
+      respond_to do |format|
+        format.json
+      end
+    end
+
 
     # Request invite
     #
