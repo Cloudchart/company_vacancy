@@ -13,6 +13,9 @@ module.exports = GlobalState.createStore
   collectionName: 'users'
   instanceName:   'user'
   
+  
+  syncAPI: require('sync/user_sync_api')
+  
 
   serverActions: ->
     'post:fetch-all:done': @populate
