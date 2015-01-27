@@ -1,9 +1,5 @@
 # @cjsx React.DOM
 
-tag = React.DOM
-
-InputComponent = cc.require('react/modals/input')
-
 Field   = require("components/form/field")
 Buttons = require("components/form/buttons")
 
@@ -30,11 +26,19 @@ LoginForm = React.createClass
     onInvite:     ->
     onSubmit:     ->
 
+
+  # Helpers
+  #
   getChangeHandler: (name) ->
     (event) => @props.onChange(name, event.target.value)
 
+
+  # Handlers
+  #
   handleSubmit: (event) ->
     event.preventDefault()
+    @props.onSubmit(event)
+
 
   render: ->
     <form 
@@ -89,7 +93,7 @@ LoginForm = React.createClass
         <StandardButton
           className = "cc"
           iconClass = "fa-check"
-          onClick   = { @props.onSubmit }
+          onClick   = { @props.handleSubmit }
           text      = "Login"
           type      = "submit" />
       </footer>

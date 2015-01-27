@@ -2,9 +2,15 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
+
+  before_filter :store_location
   
   rescue_from CanCan::AccessDenied do |exception|
-    redirect_to main_app.root_path, alert: exception.message
+    if current_user
+      redirect_to main_app.root_path, alert: exception.message
+    else
+      redirect_to cloud_profile.login_path
+    end
   end
   
   def authenticate(options = {})
@@ -21,4 +27,14 @@ class ApplicationController < ActionController::Base
     decorator = klass.new(object)
   end
   
+private
+
+  def store_location
+    return unless request.get? && !current_user.present?
+
+    if !request.xhr? && 
+        request.path != cloud_profile.login_path  
+      session[:previous_path] = request.fullpath 
+    end
+  end
 end

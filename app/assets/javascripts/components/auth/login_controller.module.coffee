@@ -26,10 +26,7 @@ LoginController = React.createClass
     .fail @handleLoginRequestFail
 
   handleLoginRequestDone: (json) ->
-    if json.admin_path
-      location.href = json.admin_path
-    else
-      location.reload()
+    location.href = json.previous_path
   
   handleLoginRequestFail: (xhr) ->
     @setState
