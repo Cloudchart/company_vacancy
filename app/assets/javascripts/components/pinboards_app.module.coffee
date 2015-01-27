@@ -63,7 +63,7 @@ PinboardListItemComponent = React.createClass
   
   getStateFromStores: ->
     pinboard:   @props.cursor.pinboards.get(@props.uuid)
-    pins:       PinStore.filterByPinboardId(@props.uuid)
+    pins:       PinStore.filterByPinboardId(@props.uuid).sortBy((item) -> item.get('created_at')).reverse()
   
   
   onGlobalStateChange: ->
