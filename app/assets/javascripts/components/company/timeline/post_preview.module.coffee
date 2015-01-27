@@ -13,6 +13,7 @@ PictureStore        = require('stores/picture_store')
 PersonStore         = require('stores/person')
 PinStore            = require('stores/pin_store')
 PostsStoryStore     = require('stores/posts_story_store')
+UserStore           = require('stores/user_store.cursor')
 
 PostActions         = require('actions/post_actions')
 ModalActions        = require('actions/modal_actions')
@@ -21,6 +22,9 @@ Post                = require('components/post')
 Tags                = require('components/company/tags')
 ContentEditableArea = require('components/form/contenteditable_area')
 PersonAvatar        = require('components/shared/person_avatar')
+Avatar              = require('components/avatar')
+
+InsiteListComponent = require('components/insite/list')
 
 PinFormComponent    = require('components/form/pin_form')
 
@@ -175,6 +179,11 @@ Component = React.createClass
       { @renderStarPostForStoryItem() }
       { @renderPinPostItem() }
     </ul>
+  
+  
+  renderInsites: ->
+    <InsiteListComponent pinnable_id={ @props.uuid } pinnable_type="Post" />
+  
 
   renderPinPostItem: ->
     pins = PinStore.cursor.items.deref(PinStore.empty).filter((item) => item.get('pinnable_type') == 'Post' and item.get('pinnable_id') == @state.post.uuid )
@@ -280,6 +289,7 @@ Component = React.createClass
 
     <article className={article_classes}>
       { @renderControls() }
+      { @renderInsites() }
 
       <a href="" onClick={@handleEditClick}>
         { @renderHeader() }

@@ -47,7 +47,7 @@ module.exports = React.createClass
   
 
   createPin: (attributes) ->
-      PinStore.create(attributes).then(@props.onDone, @handlePinSaveFail)
+    PinStore.create(attributes).then(@props.onDone, @handlePinSaveFail)
   
   
   handlePinboardSave: (json) ->
@@ -66,6 +66,7 @@ module.exports = React.createClass
       springDeacceleration: .9
     })
   
+
   handleChange: (name, event) ->
     value = event.target.value
 
@@ -96,6 +97,7 @@ module.exports = React.createClass
   
   getInitialState: ->
     attributes: Immutable.Map
+      parent_id:      @props.parent_id
       pinboard_id:    @props.pinboard_id    || getDefaultPinboardId() || ''
       pinnable_id:    @props.pinnable_id
       pinnable_type:  @props.pinnable_type

@@ -73,6 +73,9 @@ CursorFactory = (data, callback) ->
     filter: ->
       (seq = @deref(EmptySeq)).filter.apply(seq, arguments)
     
+    find: ->
+      (seq = @deref(EmptySeq)).find.apply(seq, arguments)
+    
     forEach: ->
       (seq = @deref(EmptySeq)).forEach.apply(seq, arguments)
     
