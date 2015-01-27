@@ -46,9 +46,13 @@ module CloudProfile
     # Registration form
     #
     def new
+      redirect_to root_path if !params[:invite]
+
       store_return_path if params[:return_to].present? || !return_path_stored?
       @email = Email.new address: params[:email]
       @user  = User.new
+
+      pagescript_params(invite: params[:invite])
     end
     
 

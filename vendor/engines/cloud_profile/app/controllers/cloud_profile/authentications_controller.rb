@@ -4,7 +4,7 @@ module CloudProfile
   class AuthenticationsController < ApplicationController
 
     def new
-      redirect_to root_path if current_user.present? 
+      redirect_to main_app.root_path if current_user.present? 
     end
 
     def create

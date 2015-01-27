@@ -26,15 +26,7 @@ Component = React.createClass
   
   onContinueDone: (json) ->
     if json.state == 'register'
-      component = cc.require('react/modals/register-form')
-      
-      event = new CustomEvent 'modal:push',
-        detail:
-          component: (component { 
-            invite: @state.invite
-          })
-      
-      dispatchEvent(event)      
+      location.href = "/register?invite=#{@state.invite}"     
   
   onContinueFail: (xhr) ->
     @setState({ errors: xhr.responseJSON.errors })
