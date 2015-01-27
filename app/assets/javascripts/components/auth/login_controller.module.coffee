@@ -54,7 +54,6 @@ LoginController = React.createClass
       errors:
         password: ['invalid']
 
-
   resetPasswordRequest: ->
     $.ajax
       url:      '/profile/password/forgot'
@@ -65,17 +64,13 @@ LoginController = React.createClass
     .done @handleResetPasswordRequestDone
 
   handleResetPasswordRequestDone: (json) ->
-    if !json.errors
-      component = cc.require('react/modals/reset-splash')
+    component = cc.require('react/modals/reset-splash')
 
-      event = new CustomEvent 'modal:push',
-        detail:
-          component: (component {})
-      
-      dispatchEvent(event)
-    else
-      @setState
-        resetErrors: json.errors
+    event = new CustomEvent 'modal:push',
+      detail:
+        component: (component {})
+    
+    dispatchEvent(event)
 
 
   # Handlers
@@ -99,7 +94,9 @@ LoginController = React.createClass
     attributes = @state.attributes
     attributes[name] = value
 
-    @setState(attributes: attributes)
+    @setState
+      isResetShown: false
+      attributes: attributes
 
   handleSubmit: ->
     @loginRequest()
