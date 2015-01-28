@@ -98,6 +98,7 @@ LoginForm = React.createClass
 
         <SyncButton
           className = "cc"
+          disabled  = { @props.isDisabled }
           iconClass = "fa-check"
           sync      = { @props.isSyncing }
           onClick   = { @props.handleSubmit }

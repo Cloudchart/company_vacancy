@@ -46,26 +46,27 @@ LoginController = React.createClass
 
   # Helpers
   #
-  isPasswordInvalid: (errors={}) ->
-    !!errors.password && errors.password.indexOf('invalid') != -1
+  isValid: (errors) ->
+    _.all(_.values(errors), (error) -> error.length == 0)
 
   requestLogin: ->
-    errors = validate(@state.attributes)
+    if @isValid(@state.errors)
+      errors = validate(@state.attributes)
 
-    if _.all(_.values(errors), (error) -> error.length == 0)
-      @setState(isSyncing: true)
+      if @isValid(errors)
+        @setState(isSyncing: true)
 
-      $.ajax
-        url:        '/login'
-        type:       'POST'
-        dataType:   'json'
-        data:
-          email:      @state.attributes.email
-          password:   @state.attributes.password
-      .done @handleRequestLoginDone
-      .fail @handleRequestLoginFail
-    else
-      @setState(errors: errors)
+        $.ajax
+          url:        '/login'
+          type:       'POST'
+          dataType:   'json'
+          data:
+            email:      @state.attributes.email
+            password:   @state.attributes.password
+        .done @handleRequestLoginDone
+        .fail @handleRequestLoginFail
+      else
+        @setState(errors: errors)
 
   requestReset: ->
     $.ajax
