@@ -4,6 +4,7 @@ Field   = require("components/form/field")
 Buttons = require("components/form/buttons")
 
 StandardButton = Buttons.StandardButton
+SyncButton     = Buttons.SyncButton
 
 
 LoginForm = React.createClass
@@ -13,7 +14,9 @@ LoginForm = React.createClass
   propTypes:
     attributes:   React.PropTypes.object
     errors:       React.PropTypes.object
+    isDisabled:   React.PropTypes.bool
     isResetShown: React.PropTypes.bool
+    isSyncing:    React.PropTypes.bool
     onChange:     React.PropTypes.func
     onInvite:     React.PropTypes.func
     onReset:      React.PropTypes.func
@@ -22,6 +25,7 @@ LoginForm = React.createClass
   getDefaultProps: ->
     attributes:   {}
     errors:       {}
+    isDisabled:   false
     isResetShown: false
     onChange:     ->
     onInvite:     ->
@@ -92,9 +96,10 @@ LoginForm = React.createClass
               text      = "Reset" />
         }
 
-        <StandardButton
+        <SyncButton
           className = "cc"
           iconClass = "fa-check"
+          sync      = { @props.isSyncing }
           onClick   = { @props.handleSubmit }
           text      = "Login"
           type      = "submit" />

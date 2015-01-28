@@ -41,6 +41,7 @@ LoginController = React.createClass
   getInitialState: ->
     attributes: {}
     errors:     {}
+    isSyncing:       false
 
 
   # Helpers
@@ -52,6 +53,8 @@ LoginController = React.createClass
     errors = validate(@state.attributes)
 
     if _.all(_.values(errors), (error) -> error.length == 0)
+      @setState(isSyncing: true)
+
       $.ajax
         url:        '/login'
         type:       'POST'
@@ -92,6 +95,8 @@ LoginController = React.createClass
   # Handlers
   #
   handleRequestLoginDone: (json) ->
+    @setState(isSyncing: false)
+
     if !json.errors
       location.href = json.previous_path
     else
@@ -100,6 +105,8 @@ LoginController = React.createClass
         isResetShown: @isPasswordInvalid(json.errors)
   
   handleRequestLoginFail: (xhr) ->
+    @setState(isSyncing: false)
+
     @setState
       errors:
         password: ['invalid']
@@ -129,6 +136,7 @@ LoginController = React.createClass
       attributes   = { @state.attributes }
       errors       = { getErrorMessages(@state.errors) }
       isResetShown = { @state.isResetShown }
+      isSyncing    = { @state.isSyncing }
       onChange     = { @handleFormChange }
       onInvite     = { @showInviteModal }
       onReset      = { @requestReset }
