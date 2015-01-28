@@ -1,10 +1,13 @@
 # @cjsx React.DOM
 
+GlobalState = require('global_state/state')
+
 # Imports
 # 
 PostStore           = require('stores/post_store')
 PostsStoryStore     = require('stores/posts_story_store')
 VisibilityStore     = require('stores/visibility_store')
+PinStore            = require('stores/pin_store')
 
 PostActions         = require('actions/post_actions')
 VisibilityActions   = require('actions/visibility_actions')
@@ -21,13 +24,14 @@ FieldWrapper        = require('components/editor/field_wrapper')
 Counter             = require('components/shared/counter')
 Hint                = require('components/shared/hint')
 renderHint          = require('utils/render_hint')
+InsiteList          = require('components/insite/list')
 
 
 # Main
 # 
 Component = React.createClass
 
-  # mixins: []
+  mixins: [GlobalState.mixin]
 
   # Helpers
   # 
@@ -135,6 +139,11 @@ Component = React.createClass
     published_at: @getPublishedAt(post)
     visibility: visibility
     visibility_value: if visibility then visibility.value else 'public'
+  
+  
+  getDefaultProps: ->
+    cursor:
+      pins: PinStore.cursor.items
 
 
   getInitialState: ->
@@ -154,6 +163,14 @@ Component = React.createClass
         onChange = { @handleVisibilityChange } 
       />
     </aside>
+  
+  
+  renderPins: ->
+    return null if PinStore.filterInsitesForPost(@props.id).size == 0
+
+    <div className="post-pins">
+      <InsiteList pinnable_id={ @props.id } pinnable_type="Post" />
+    </div>
 
 
   renderButtons: ->
@@ -191,6 +208,7 @@ Component = React.createClass
 
     <div className="post-container">
       { @renderVisibilityDropdown() }
+      { @renderPins() }
 
       <header>
         <FieldWrapper className="title">
