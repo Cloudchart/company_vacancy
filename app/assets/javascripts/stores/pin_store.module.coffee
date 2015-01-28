@@ -21,4 +21,12 @@ module.exports = GlobalState.createStore
 
   filterByPinboardId: (pinboard_id) ->
     @cursor.items.deref(@empty).filter (item) -> item.get('pinboard_id') == pinboard_id
-
+  
+  
+  filterInsitesForPost: (post_id) ->
+    @cursor.items
+      .filter (item) ->
+        item.get('pinnable_id')     is post_id  and
+        item.get('pinnable_type')   is 'Post'   and
+        not item.get('parent_id')               and
+        item.get('content')
