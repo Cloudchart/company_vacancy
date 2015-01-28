@@ -33,7 +33,8 @@ private
     return unless request.get? && !current_user.present?
 
     if !request.xhr? && 
-        request.path != cloud_profile.login_path  
+        request.path != cloud_profile.login_path &&
+        request.path != cloud_profile.register_path
       session[:previous_path] = request.fullpath 
     end
   end
