@@ -18,13 +18,8 @@ module.exports = React.createClass
   
   
   gatherIds: ->
-    @props.cursor
-
-      .filter (item) =>
-        item.get('pinnable_id')     is @props.pinnable_id     and
-        item.get('pinnable_type')   is @props.pinnable_type   and
-        not item.get('parent_id')                             and
-        item.get('content')
+    PinStore
+      .filterInsitesForPost(@props.pinnable_id)
 
       .sortBy (item) => item.get('created_at')
       
