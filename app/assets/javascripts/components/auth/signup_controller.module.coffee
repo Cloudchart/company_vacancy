@@ -1,22 +1,22 @@
 # @cjsx React.DOM
 
-RegisterForm = require('components/auth/register_form')
+SignupForm = require('components/auth/signup_form')
 
 email_re = /.+@.+\..+/i
 
 Errors =
   email:
-    missing: "Enter email, please"
-    invalid: "There are no users with such an email"
+    missing:  "Enter email, please"
+    invalid:  "The email is entered in a wrong format"
   full_name:
-    missing: "Enter full name, please"
+    missing:  "Enter full name, please"
   password:
-    missing: "Enter password, please"
+    missing:  "Enter password, please"
 
 getErrorMessages = (errorsLists) ->
   errors = _.mapValues errorsLists, (errors, attributeName) ->
     _.map errors, (errorName) ->
-      Errors[attributeName][errorName]
+      Errors[attributeName][errorName] || errorName
 
   errors
 
@@ -46,28 +46,59 @@ RegisterController = React.createClass
   # 
   propTypes:
     attributes: React.PropTypes.object
+    email:      React.PropTypes.string
     invite:     React.PropTypes.string
 
   getDefaultProps: ->
     attributes: {}
+    email:      ''
     invite:     ''
 
   getInitialState: ->
-    attributes: @props.attributes || {}
+    attributes = @props.attributes || {}
+
+    if @props.email != ''
+      attributes.email = @props.email
+
+    attributes: attributes
     errors:     {}
     invite:     @props.invite || ''
-    sync:       false
+    isSyncing:  false
+
 
   # Helpers
   #
-  isEmailAndNameValid: ->
-    email_re.test(@state.email) and @state.full_name.length > 0
-  
-  isValidForRegister: ->
-    @isEmailAndNameValid() and @state.password.length > 0 and @props.invite.length > 0
+  isValid: (errors) ->
+    _.all(_.values(errors), (error) -> error.length == 0)
 
-  onRegisterDone: (json) ->
-    @setState({ sync: false })
+  requestSignup: (event) ->
+    if @isValid(@state.errors)
+      errors = validate(@state.attributes)
+
+      if @isValid(errors)
+        @setState(isSyncing: true)
+
+        $.ajax
+          url:      '/signup'
+          type:     'POST'
+          dataType: 'json'
+          data:
+            user:
+              email:                  @state.attributes.email
+              full_name:              @state.attributes.full_name
+              password:               @state.attributes.password
+              password_confirmation:  @state.attributes.password
+              invite:                 @props.invite
+        .done @handleSignupDone
+        .fail @handleSignupFail
+      else
+        @setState(errors: errors)
+
+
+  # Handlers
+  #
+  handleSignupDone: (json) ->
+    @setState(isSyncing: false)
 
     if json.state == 'login'
       window.location.reload()
@@ -82,36 +113,11 @@ RegisterController = React.createClass
       
       window.dispatchEvent(event)
   
-  onRegisterFail: (xhr) ->
-    @setState({ sync: false })
+  handleSignupFail: (xhr) ->
+    @setState(isSyncing: false)
 
-    errors = xhr.responseJSON.errors
-    errors.splice(errors.indexOf('emails'), 1, 'email') if errors.indexOf('emails') > - 1
     @setState
-      errors: errors
-  
-  onRegisterButtonClick: (event) ->
-    errors = validate(@state.attributes)
-
-    if _.all(_.values(errors), (error) -> error.length == 0)
-      @setState({ sync: true })
-
-      $.ajax
-        url:      '/register'
-        type:     'POST'
-        dataType: 'json'
-        data:
-          user:
-            email:                  @state.attributes.email
-            full_name:              @state.attributes.full_name
-            password:               @state.attributes.password
-            password_confirmation:  @state.attributes.password
-            invite:                 @props.attributes.invite
-      .done @onRegisterDone
-      .fail @onRegisterFail
-    else
-      @setState(errors: errors)
-
+      errors: xhr.responseJSON.errors
 
   handleInputChange: (name, value) ->
     attributes = @state.attributes
@@ -123,12 +129,13 @@ RegisterController = React.createClass
       attributes: attributes
       errrors:    errors
 
+
   render: ->
-    <RegisterForm
+    <SignupForm
       attributes   = { @state.attributes }
       errors       = { getErrorMessages(@state.errors) }
+      isSyncing    = { @state.isSyncing }
       onChange     = { @handleInputChange }
-      onSubmit     = { @onRegisterButtonClick }
-      isDisabled   = { @state.sync } />
+      onSubmit     = { @requestSignup } />
 
 module.exports = RegisterController

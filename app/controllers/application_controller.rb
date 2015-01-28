@@ -34,7 +34,7 @@ private
 
     if !request.xhr? && 
         request.path != cloud_profile.login_path &&
-        request.path != cloud_profile.register_path
+        request.path != cloud_profile.signup_path
       session[:previous_path] = request.fullpath 
     end
   end

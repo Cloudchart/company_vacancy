@@ -8,6 +8,7 @@ Field   = require("components/form/field")
 Buttons = require("components/form/buttons")
 
 StandardButton = Buttons.StandardButton
+SyncButton     = Buttons.SyncButton
 
 
 RegisterForm = React.createClass
@@ -18,6 +19,7 @@ RegisterForm = React.createClass
     attributes:   React.PropTypes.object
     errors:       React.PropTypes.object
     isDisabled:   React.PropTypes.bool
+    isSyncing:    React.PropTypes.bool
     onChange:     React.PropTypes.func
     onSubmit:     React.PropTypes.func
 
@@ -25,8 +27,10 @@ RegisterForm = React.createClass
     attributes:   {}
     errors:       {}
     isDisabled:   false
+    isSyncing:    false
     onChange:     ->
     onSubmit:     ->
+
 
   # Helpers
   #
@@ -73,9 +77,11 @@ RegisterForm = React.createClass
       
       <footer>
         <div className="spacer"></div>
-        <StandardButton
+
+        <SyncButton
           className = "cc"
           disabled  = { @props.isDisabled }
+          sync      = { @props.isSyncing }
           iconClass = "fa-pencil-square-o"
           onClick   = { @handleSubmit }
           text      = "Sign Up"

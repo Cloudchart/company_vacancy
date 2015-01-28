@@ -44,19 +44,5 @@ module CloudProfile
         session[:previous_path]
       end
     end
-
-    def validate_login(email, password)
-      errors = {}
-
-      if !params[:email].present?
-        errors[:email] = ['missing']
-      elsif !email.present? || !email.user.present?
-        errors[:email] = ['invalid']
-      elsif !email.user.authenticate(params[:password])
-        errors[:password] = ['invalid']
-      end
-
-      errors
-    end
   end
 end

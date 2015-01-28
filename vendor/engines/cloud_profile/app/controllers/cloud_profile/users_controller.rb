@@ -46,13 +46,19 @@ module CloudProfile
     # Registration form
     #
     def new
-      redirect_to root_path if !params[:invite]
+      if (params[:invite] && !current_user.present?)
+        store_return_path if params[:return_to].present? || !return_path_stored?
 
-      store_return_path if params[:return_to].present? || !return_path_stored?
-      @email = Email.new address: params[:email]
-      @user  = User.new
+        user = User.new(full_name: "some", invite: params[:invite])
 
-      pagescript_params(invite: params[:invite])
+        if user.invite.present? && user.invite.data[:email]
+          pagescript_params(invite: params[:invite], email: user.invite.data[:email])
+        else
+          redirect_to main_app.root_path
+        end
+      else
+        redirect_to main_app.root_path
+      end
     end
     
 
@@ -104,7 +110,7 @@ module CloudProfile
         
       else
         respond_to do |format|
-          format.json { render json: { errors: user.errors.keys }, status: 403 }
+          format.json { render json: { errors: { email: user.emails[0].errors[:address], password: user.errors[:password], full_name: user.errors[:full_name] } }, status: 403 }
         end
       end
       
@@ -180,27 +186,20 @@ module CloudProfile
 
     end
     
-    
-    # deprecated
-    # def activation_
-    #   @token = Token.find(params[:token])
-    #   @email = Email.new(address: @token.data[:address])
-      
-    #   raise ActiveRecord::RecordNotFound if @email.invalid?
+  private
 
-    #   if request.post?
-    #     @user = User.new(password_digest: @token.data[:password_digest])
-    #     if @user.authenticate(params[:password])
-    #       @user.emails << @email
-    #       @user.save!
-    #       @token.destroy
-    #       warden.set_user(@user, scope: :user)
-    #       redirect_to :root
-    #     else
-    #       @password_invalid = true
-    #     end
-    #   end
-    # end
-    
+    def validate_user(user)
+      errors = {}
+
+      if !params[:email].present?
+        errors[:email] = ['missing']
+      elsif !email.present? || !email.user.present?
+        errors[:email] = ['invalid']
+      elsif !email.user.authenticate(params[:password])
+        errors[:password] = ['invalid']
+      end
+
+      errors
+    end
   end
 end

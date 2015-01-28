@@ -1,6 +1,6 @@
 @["cloud_profile/users#new"] = (data) ->
-  RegisterController = require("components/auth/register_controller")
+  SignupController = require("components/auth/signup_controller")
 
   React.renderComponent(
-    RegisterController({invite: data.invite}), document.querySelector("body > main")
+    SignupController({invite: data.invite, email: data.email}), document.querySelector("body > main")
   )
