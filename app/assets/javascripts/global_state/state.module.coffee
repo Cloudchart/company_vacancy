@@ -84,17 +84,28 @@ State =
     
     
     componentDidUpdate: ->
-      @__globalStateLastUpdateId = LastUpdateId
+      @__componentDidUpdateTransactionId = LastUpdateId
     
     
     shouldComponentUpdateWithGlobalStateCheck: (nextProps, nextState) ->
-      return false if @__globalStateLastUpdateId == LastUpdateId and UpdateInProgress
+      return false if @__componentDidUpdateTransactionId == LastUpdateId and UpdateInProgress
       @shouldComponentUpdateWithoutGlobalStateCheck(nextProps, nextState)
     
     
+    onGlobalStateChangeWithGlobalStateCheck: ->
+      return false if @__globalStateChangeTransactionId == LastUpdateId and UpdateInProgress
+
+      @__globalStateChangeTransactionId = LastUpdateId
+
+      @onGlobalStateChangeWithoutGlobalStateCheck()
+    
+
     componentWillMount: ->
-      @shouldComponentUpdateWithoutGlobalStateCheck = @shouldComponentUpdate || -> true
+      @shouldComponentUpdateWithoutGlobalStateCheck = @shouldComponentUpdate || => true
       @shouldComponentUpdate = @shouldComponentUpdateWithGlobalStateCheck
+
+      @onGlobalStateChangeWithoutGlobalStateCheck = @onGlobalStateChange || => @setState({})
+      @onGlobalStateChange = @onGlobalStateChangeWithGlobalStateCheck
     
 
     componentDidMount: ->
