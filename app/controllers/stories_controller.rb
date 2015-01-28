@@ -4,12 +4,6 @@ class StoriesController < ApplicationController
 
   authorize_resource
 
-  def show    
-    respond_to do |format|
-      format.json { render json: @story, root: :story }
-    end
-  end
-
   def index
     respond_to do |format|
       format.html { 
@@ -22,6 +16,14 @@ class StoriesController < ApplicationController
       }
     end
   end
+
+
+  def show    
+    respond_to do |format|
+      format.json { render json: @story, root: :story }
+    end
+  end
+
 
   def create
     @story = Company.find(params[:company_id]).stories.build(story_params)

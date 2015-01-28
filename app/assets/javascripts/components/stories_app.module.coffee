@@ -2,47 +2,58 @@
 
 # Imports
 # 
-tag = React.DOM
-cx = React.addons.classSet
-
 GlobalState = require('global_state/state')
 
-StoryStore = require('stores/story_store')
-PostStore = require('stores/post_store')
-PostsStoryStore = require('stores/posts_story_store')
-PinStore = require('stores/pin_store')
+
+# Stores
+#
+StoryStore      = require('stores/story_store')
+PostStore       = require('stores/post_store.cursor')
+PostsStoryStore = require('stores/posts_story_store.cursor')
+PinStore        = require('stores/pin_store')
 
 
+# Utils
+#
+cx = React.addons.classSet
+  
+  
 # Main component
 # 
 MainComponent = React.createClass
 
+  displayName: 'StoriesApp'
+
+
   mixins: [GlobalState.mixin]
-  # propTypes: {}
-  # displayName: 'Meaningful name'
 
 
   # Helpers
   # 
-  storiesDeref: ->
-    @props.cursor.stories.deref(Immutable.Map())
+  
+  getPostIds: (story) ->
+    @props.cursor.posts_stories
+      .filter (posts_story) => posts_story.get('story_id') is story.get('uuid')
+      .map    (posts_story) -> posts_story.get('post_id')
+      .valueSeq()
 
-  pinsDeref: ->
-    @props.cursor.pins.deref(Immutable.Map())
 
   getPostsSizeForStory: (story) ->
+    @getPostIds(story).size
 
 
   getPinsSizeForStory: (story) ->
-    size = @pinsDeref()
-      # .filter (pin) -> pin.get('pinnable_id')
+    postIds = @getPostIds(story)
+
+    @props.cursor.pins
+      .filter (pin) -> postIds.contains(pin.get('pinnable_id'))
       .size
 
 
   # Handlers
   # 
-  handleStoryClick: (event) ->
-    console.log 'handleStoryClick'
+  handleStoryClick: (url, event) ->
+    location.href = url
 
 
   # Lifecycle Methods
@@ -50,49 +61,52 @@ MainComponent = React.createClass
   # componentWillMount: ->
 
   componentDidMount: ->
-    return if StoryStore.cursor.items.deref(Immutable.Map()).size > 0
-    StoryStore.fetchAll(@props.company_id)
-
-  # componentWillReceiveProps: (nextProps) ->
-  # shouldComponentUpdate: (nextProps, nextState) ->
-  # componentWillUpdate: (nextProps, nextState) ->
-  # componentDidUpdate: (prevProps, prevState) ->
-  # componentWillUnmount: ->
+    StoryStore.fetchAllByCompany(@props.company_id) unless StoryStore.cursor.items.deref()
 
 
   # Component Specifications
   # 
   onGlobalStateChange: ->
-    @setState
-      refreshed_at: + new Date
+    @setState @getStateFromStores()
+  
+  
+  getStateFromStores: ->
+    {}
+
 
   getDefaultProps: ->
     cursor:
-      stories: StoryStore.cursor.items
-      pins: PinStore.cursor.items
-
-  # getInitialState: ->
-
-
+      posts_stories:  PostsStoryStore.cursor.items
+      stories:        StoryStore.cursor.items
+      posts:          PostStore.cursor.items
+      pins:           PinStore.cursor.items
+  
+  
   # Renderers
   # 
   renderStories: ->
-    stories = @storiesDeref()
+    stories = @props.cursor.stories
       .sortBy (story) -> story.get('name')
-      .map (story) => @storyItemMapper(story)
+      .map @storyItemMapper
 
     <ul className="stories-list">
       { stories.toArray() }
     </ul>
 
-  storyItemMapper: (story) ->
-    <li key={story.get('uuid')} onClick={@handleStoryClick} >
-      <h3>{ story.get('name') }</h3>
+
+  storyItemMapper: (story, uuid) ->
+    <li key={ uuid } onClick={ @handleStoryClick.bind(@, story.get('company_story_url')) } >
+
+      <h3>{ story.get('formatted_name', story.get('name')) }</h3>
+
       <div className="description" dangerouslySetInnerHTML={__html: story.get('description')} />
+
       <br />
+
       <div className="posts-counter">
         Posts: { @getPostsSizeForStory(story) }
       </div>
+
       <div className="pins-counter">
         Pins: { @getPinsSizeForStory(story) }
       </div>
@@ -102,10 +116,7 @@ MainComponent = React.createClass
   # Main render
   # 
   render: ->
-    return null if @storiesDeref().size is 0
-    # TODO: figure out about extra render
-
-    # console.log PostStore.all()
+    return null unless @props.cursor.stories.deref()
 
     <div className="wrapper">
       <h1>Stories</h1>

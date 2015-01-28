@@ -1,20 +1,33 @@
+# Cache
+#
+cachedPromises = {}
+
+
+# Exports
+#
 module.exports =
   
 
-  fetchAll: (company_id) ->
-    Promise.resolve $.ajax
-      url: "/companies/#{company_id}/stories"
+  fetchAllByCompany: (company_id, options = {}) ->
+    url = '/companies/' + company_id + '/stories'
+
+    delete cachedPromises[url] if options.force == true
+    
+    cachedPromises[url] ||= Promise.resolve $.ajax
+      url: url
       type: 'GET'
       dataType: 'JSON'
-
   
-  fetch: (id, done, fail) ->
-    $.ajax
-      url: "/stories/#{id}"
+  
+  fetch: (id, options = {}) ->
+    url = '/stores/' + id
+    
+    delete cachedPromises[url] if options.force == true
+
+    cachedPromises[url] ||= Promise.resolve $.ajax
+      url: url
       type: "GET"
       dataType: "JSON"
-    .done done
-    .fail fail
     
 
   create: (company_id, attributes, done, fail) ->
