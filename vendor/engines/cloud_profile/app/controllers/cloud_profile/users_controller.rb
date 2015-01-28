@@ -51,7 +51,7 @@ module CloudProfile
 
         user = User.new(full_name: "some", invite: params[:invite])
 
-        if user.invite.present? && user.invite.data[:email]
+        if user.invite.present?
           pagescript_params(invite: params[:invite], email: user.invite.data[:email])
         else
           redirect_to main_app.root_path
@@ -128,7 +128,6 @@ module CloudProfile
     rescue ActiveRecord::RecordInvalid
       render json: current_user.errors, status: 422
     end
-
 
     def check_invite
       token = Token.find_by_rfc1751(params[:invite])
