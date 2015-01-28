@@ -12,11 +12,6 @@ DefaultMethods =
   handleFetchOneDone: (id, json) ->
     @store.add_or_update(json.post.uuid, json.post)
     @store.emitChange()
-
-  handleFetchAllDone: (json) ->
-    if json.posts
-      json.posts.forEach (post) => @store.add(post.uuid, post)
-      @store.emitChange()
   
   getSchema: ->
     uuid:           ''
@@ -40,7 +35,6 @@ DefaultMethods =
 
     # other actions goes here
     actions['post:fetch-one:done'] = @handleFetchOneDone
-    actions['stories:fetch-all:done'] = @handleFetchAllDone
 
     actions
   

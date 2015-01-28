@@ -9,7 +9,6 @@ json.posts_stories ams(@posts_stories)
 
 # Pins
 #
-
 json.pins @pins do |pin|
   json.partial! 'pin', pin: pin
 end

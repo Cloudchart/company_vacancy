@@ -46,7 +46,7 @@ Component = React.createClass
 
   postStoryMapper: (story, key) ->
     <li key={key}>
-      { '#' + story.get('name') }
+      { '#' + story.get('formatted_name') }
     </li>
 
 

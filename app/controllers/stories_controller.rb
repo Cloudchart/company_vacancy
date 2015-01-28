@@ -17,20 +17,18 @@ class StoriesController < ApplicationController
     end
   end
 
-
   def show    
     respond_to do |format|
       format.json { render json: @story, root: :story }
     end
   end
 
-
   def create
     @story = Company.find(params[:company_id]).stories.build(story_params)
 
     if @story.save
       respond_to do |format|
-        format.json { render json: { uuid: @story.id } }
+        format.json { render json: { id: @story.id } }
       end
     else
       respond_to do |format|

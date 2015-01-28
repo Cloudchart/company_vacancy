@@ -4,9 +4,6 @@
 # 
 GlobalState = require('global_state/state')
 
-
-# Stores
-#
 StoryStore      = require('stores/story_store')
 PostStore       = require('stores/post_store.cursor')
 PostsStoryStore = require('stores/posts_story_store.cursor')
@@ -16,21 +13,18 @@ PinStore        = require('stores/pin_store')
 # Utils
 #
 cx = React.addons.classSet
-  
+
   
 # Main component
 # 
 MainComponent = React.createClass
 
   displayName: 'StoriesApp'
-
-
   mixins: [GlobalState.mixin]
 
 
   # Helpers
   # 
-  
   getPostIds: (story) ->
     @props.cursor.posts_stories
       .filter (posts_story) => posts_story.get('story_id') is story.get('uuid')
@@ -66,19 +60,11 @@ MainComponent = React.createClass
 
   # Component Specifications
   # 
-  onGlobalStateChange: ->
-    @setState @getStateFromStores()
-  
-  
-  getStateFromStores: ->
-    {}
-
-
   getDefaultProps: ->
     cursor:
-      posts_stories:  PostsStoryStore.cursor.items
       stories:        StoryStore.cursor.items
       posts:          PostStore.cursor.items
+      posts_stories:  PostsStoryStore.cursor.items
       pins:           PinStore.cursor.items
   
   
@@ -96,20 +82,24 @@ MainComponent = React.createClass
 
   storyItemMapper: (story, uuid) ->
     <li key={ uuid } onClick={ @handleStoryClick.bind(@, story.get('company_story_url')) } >
+      <header>
+        <h3>{ story.get('formatted_name') }</h3>
 
-      <h3>{ story.get('formatted_name', story.get('name')) }</h3>
+        <div className="spacer"></div>
 
-      <div className="description" dangerouslySetInnerHTML={__html: story.get('description')} />
+        <ul className="counters">
+          <li className="posts">
+            <span>{ @getPostsSizeForStory(story) }</span>
+            <i className="fa fa-list-alt" />
+          </li>
+          <li className="pins">
+            <span>{ @getPinsSizeForStory(story) }</span>
+            <i className="fa fa-thumb-tack" />
+          </li>
+        </ul>
+      </header>
 
-      <br />
-
-      <div className="posts-counter">
-        Posts: { @getPostsSizeForStory(story) }
-      </div>
-
-      <div className="pins-counter">
-        Pins: { @getPinsSizeForStory(story) }
-      </div>
+      <div className="content" dangerouslySetInnerHTML={__html: story.get('description')} />
     </li>
 
 
@@ -119,7 +109,7 @@ MainComponent = React.createClass
     return null unless @props.cursor.stories.deref()
 
     <div className="wrapper">
-      <h1>Stories</h1>
+      <h2>Stories</h2>
       { @renderStories() }
     </div>
 

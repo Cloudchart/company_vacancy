@@ -16,29 +16,38 @@ module.exports =
     cachedPromises[url] ||= Promise.resolve $.ajax
       url: url
       type: 'GET'
-      dataType: 'JSON'
+      dataType: 'json'
   
   
-  fetch: (id, options = {}) ->
-    url = '/stores/' + id
+  fetchOne: (id, params = {}, options = {}) ->
+    url = '/stories/' + id
     
     delete cachedPromises[url] if options.force == true
 
     cachedPromises[url] ||= Promise.resolve $.ajax
       url: url
       type: "GET"
-      dataType: "JSON"
+      dataType: "json"
+      data: params
     
 
-  create: (company_id, attributes, done, fail) ->
-    $.ajax
+  createByCompany: (company_id, attributes = {}, options = {}) ->
+    Promise.resolve $.ajax
       url: "/companies/#{company_id}/stories"
-      type: "POST"
-      dataType: "json"
+      type: 'POST'
+      dataType: 'json'
       data:
         story: attributes
-    .done done
-    .fail fail
+
+  # create: (company_id, attributes, done, fail) ->
+  #   $.ajax
+  #     url: "/companies/#{company_id}/stories"
+  #     type: "POST"
+  #     dataType: "json"
+  #     data:
+  #       story: attributes
+  #   .done done
+  #   .fail fail
 
 
   update: (id, attributes) ->
