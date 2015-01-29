@@ -23,6 +23,7 @@
 /public/system
 .rbenv-gemsets
 .gemfiles
+.gems
 *.sock
 /config/database.yml
 /config/secrets.yml
