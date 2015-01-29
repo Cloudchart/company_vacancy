@@ -36,13 +36,11 @@
     </p>
     
     <p>
-      <%= link_to "Log In", '', data: { behaviour: "invite-login-button" } %>
+      <%= link_to "Log In", cloud_profile.login_path %>
 
       or
-
-      <button class="orgpad" data-behaviour="signup-button">
-        Sign Up
-      </button>
+      
+      <%= link_to "Sign Up", cloud_profile.signup_path(invite: @token.to_param), class: "orgpad-button" %>
     </p>
     
   <% end %>
