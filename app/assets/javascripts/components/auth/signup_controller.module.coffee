@@ -98,12 +98,12 @@ RegisterController = React.createClass
   # Handlers
   #
   handleSignupDone: (json) ->
-    @setState(isSyncing: false)
-
     if json.state == 'login'
       window.location.reload()
     
     if json.state == 'activation'
+      @setState(isSyncing: false)
+
       event = new CustomEvent 'modal:push',
         detail:
           component: SplashComponent({

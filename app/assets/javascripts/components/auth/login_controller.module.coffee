@@ -41,7 +41,7 @@ LoginController = React.createClass
   getInitialState: ->
     attributes: {}
     errors:     {}
-    isSyncing:       false
+    isSyncing:  false
 
 
   # Helpers
@@ -96,11 +96,11 @@ LoginController = React.createClass
   # Handlers
   #
   handleRequestLoginDone: (json) ->
-    @setState(isSyncing: false)
-
     if !json.errors
       location.href = json.previous_path
     else
+      @setState(isSyncing: false)
+
       @setState
         errors: json.errors
         isResetShown: @isPasswordInvalid(json.errors)
