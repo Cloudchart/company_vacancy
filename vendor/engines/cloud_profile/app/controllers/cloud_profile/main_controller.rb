@@ -38,12 +38,6 @@ module CloudProfile
       @social_networks = current_user.social_networks
     end
 
-    def setup
-      pagescript_params(
-        currentUserId: current_user.id
-      )
-    end
-
     def subscriptions
       @subscriptions = current_user.subscriptions.order(created_at: :desc)
     end

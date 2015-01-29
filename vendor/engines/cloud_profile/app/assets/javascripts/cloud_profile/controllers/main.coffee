@@ -71,11 +71,3 @@
       })
       accountMountPoint
     )
-
-@["cloud_profile/main#setup"] = (data) ->
-
-  Setup = require("components/user/setup")
-
-  React.renderComponent(
-    Setup(currentUserId: data.currentUserId), document.querySelector("body > main")
-  )

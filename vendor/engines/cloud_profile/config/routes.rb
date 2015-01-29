@@ -18,6 +18,7 @@ CloudProfile::Engine.routes.draw do
   get   'signup',         to: 'users#new'
   post  'signup',         to: 'users#create'
   
+
   # Social Networks / OAuth2
   #
   get 'oauth/callback',   to: 'social_networks#oauth_callback', as: 'oauth_callback'
@@ -37,7 +38,6 @@ CloudProfile::Engine.routes.draw do
     get 'settings', to: 'main#settings', as: :settings
     get 'subscriptions', to: 'main#subscriptions', as: :subscriptions
     get 'vacancies', to: 'main#vacancies', as: :vacancies
-    get 'setup', to: 'main#setup', as: :setup
 
     # Activation
     #
