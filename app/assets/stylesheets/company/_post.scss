@@ -249,34 +249,6 @@ main.company > div.wrapper > div.posts {
       opacity: 0.5;
     }
 
-    // > ul.controls {
-    //   @include position(absolute, 10px 10px 0 0);
-    //   @include flex-ul;
-      
-    //   visibility: hidden;
-    //   height: 30px;
-
-    //   > li {
-    //     font-size: 20px;
-    //     cursor: pointer;
-    //     padding-right: 10px;
-
-    //     &:last-child {
-    //       padding-right: 0;
-    //     }
-
-    //     &.visibility {
-    //       > i.fa-globe {
-    //         margin-right: 2.5px;
-    //       }
-    //     }
-
-    //     > .fa-times {
-    //       color: hsl(0, 75%, 55%);
-    //     }
-    //   }
-    // }
-
     > a {
       display: block;
       padding: 20px;
@@ -308,7 +280,6 @@ main.company > div.wrapper > div.posts {
           font-size: 16px;
           line-height: 22px;
           word-wrap: break-word;
-          max-height: 200px;
 
           &.quote {
             font-size: 28px;
@@ -362,51 +333,6 @@ main.company > div.wrapper > div.posts {
 
     }
   }
-
-  // Person preview
-  // 
-  // > article.preview.person {
-  //   margin: ($base-post-preview-margin / 2) 0;
-  //   width: 200px;
-  //   position: relative;
-
-  //   &:first-of-type {
-  //     width: 285px;
-  //   }
-
-  //   > aside.avatar {
-  //     cursor: pointer;
-  //   }
-
-  //   > aside.event {
-  //     position: absolute;
-  //     top: 36%;
-  //     left: 108%;
-  //     width: 100%;
-  //     font-size: 16px;
-  //   }
-
-  //   > footer {
-  //     padding: 10px 20px 0 20px;
-
-  //     > p {
-  //       margin: 0;
-  //       overflow: hidden;
-  //       text-overflow: ellipsis;
-  //       text-align: center;
-  //       white-space: nowrap;
-
-  //       &.name { 
-  //         font-size: 20px;
-  //       }
-
-  //       &.occupation {
-  //         color: hsl(0, 0%, 50%);
-  //         font-size: 12px;
-  //       }
-  //     }
-  //   }
-  // }
 
 }
 
@@ -511,26 +437,11 @@ div.post-container {
 // Story header
 // 
 main.company.timeline > div.wrapper > header {
-  // @include align-items(center);
-  // @include display(flex);
-  // @include flex-direction(column);
 
   > h1 {
     font-size: 55px;
     font-weight: 200;
     margin: 0;
-    // text-align: center;
   }
 
-  // > label.story-description {
-  //   > div[contenteditable] {
-  //     @include editor-contenteditable-area;
-
-  //     max-width: 800px;
-  //     // text-align: center;
-  //     font-size: 24px;
-  //     font-weight: 300;
-  //     line-height: 135%;
-  //   }
-  // }
 }
