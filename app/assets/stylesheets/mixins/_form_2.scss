@@ -307,8 +307,7 @@
   @include form-2;
 
   &.login,
-  &.register,
-  &.setup {
+  &.register {
     margin: 0 auto;
     margin-top: 100px;
     position: relative;

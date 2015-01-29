@@ -21,11 +21,3 @@ module.exports =
       type:       'GET'
       dataType:   'json'
     
-    
-  update: (attributes = {}, options = {}) ->
-    Promise.resolve $.ajax
-      url:      '/profile/user'
-      type:     'PUT'
-      dataType: 'json'
-      data:
-        user: attributes

@@ -66,7 +66,7 @@ module CloudProfile
     # params: email, full_name, password, password_confirmation, invite
     #
     def create
-      user = User.new params.require(:user).permit(:email, :full_name, :invite)
+      user = User.new params.require(:user).permit(:email, :full_name, :password, :password_confirmation, :invite)
       
       user.should_validate_invite!
       
@@ -86,7 +86,7 @@ module CloudProfile
           warden.set_user(user, scope: :user)
 
           respond_to do |format|
-            format.json { render json: { state: :setup }}
+            format.json { render json: { state: :login }}
           end
         else
           # Create activation token and send email
@@ -110,7 +110,7 @@ module CloudProfile
         
       else
         respond_to do |format|
-          format.json { render json: { errors: { email: user.emails[0].errors[:address], full_name: user.errors[:full_name] } }, status: 403 }
+          format.json { render json: { errors: { email: user.emails[0].errors[:address], password: user.errors[:password], full_name: user.errors[:full_name] } }, status: 403 }
         end
       end
       
@@ -119,7 +119,7 @@ module CloudProfile
     
     def update
       current_user.should_validate_name!
-      current_user.update! params.require(:user).permit([:full_name, :avatar, :remove_avatar, :password, :password_confirmation])
+      current_user.update! params.require(:user).permit([:full_name, :avatar, :remove_avatar])
 
       respond_to do |format|
         format.json { render json: current_user, only: [:full_name, :avatar_url], serializer: PersonalSerializer, root: false }

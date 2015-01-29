@@ -38,9 +38,6 @@ class Ability
       # TODO: add rules for admin
       # cannot [:create, :update, :destroy], Company
 
-    elsif !passed_setup?(user)
-      can :setup, :cloud_profile_main
-
     # User
     # 
     else
@@ -133,10 +130,6 @@ class Ability
   end
 
 private
-
-  def passed_setup?(user)
-    user.password.present?
-  end
 
   def owner?(user, company)
     role_value(user, company) == 'owner'

@@ -74,8 +74,8 @@
 
 @["cloud_profile/main#setup"] = (data) ->
 
-  SetupController = require("components/profile/setup_controller")
+  Setup = require("components/user/setup")
 
   React.renderComponent(
-    SetupController(currentUserId: data.currentUserId), document.querySelector("body > main")
+    Setup(currentUserId: data.currentUserId), document.querySelector("body > main")
   )
