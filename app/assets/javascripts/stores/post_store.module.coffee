@@ -3,18 +3,15 @@
 CloudFlux = require('cloud_flux')
 CallbackFactory = require('stores/callback_factory')
 
-
 CrudActions = ['create', 'update', 'destroy']
 CrudCallbacks = CallbackFactory.create 'post', CrudActions
 
 
 DefaultMethods =
   
-  
   handleFetchOneDone: (id, json) ->
     @store.add_or_update(json.post.uuid, json.post)
     @store.emitChange()
-  
   
   getSchema: ->
     uuid:           ''

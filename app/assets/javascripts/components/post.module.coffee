@@ -244,8 +244,7 @@ Component = React.createClass
           <PostsStories
             post_id     = { @state.post.uuid }
             company_id  = { @props.company_id }
-            readOnly    = { @props.readOnly }
-            placeholder = "#Category" />
+            readOnly    = { @props.readOnly } />
           <Hint 
             content = { renderHint("stories") }
             visible = { !@props.readOnly } />
@@ -263,7 +262,7 @@ Component = React.createClass
 
       <FieldWrapper className="tags">
         <Tags
-          placeholder   = "#tag"
+          placeholder   = "#event-tag"
           taggable_id   = {@state.post.uuid}
           taggable_type = "Post"
           readOnly      = {@props.readOnly} />

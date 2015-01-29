@@ -78,7 +78,7 @@ MainComponent = React.createClass
 
     <div className="wrapper">
       <header>
-        <h1>{story.get('name')}</h1>
+        <h1>{story.get('formatted_name')}</h1>
 
         <label className="description">
           <ContentEditableArea

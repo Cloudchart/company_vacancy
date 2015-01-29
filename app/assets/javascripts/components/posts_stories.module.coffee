@@ -35,9 +35,6 @@ MainComponent = React.createClass
 
   # Helpers
   # 
-  storiesDeref: ->
-    @props.cursor.stories.deref(Immutable.List())
-
   postsStoriesDeref: ->
     @props.cursor.posts_stories.deref(Immutable.Map())
 
@@ -64,31 +61,30 @@ MainComponent = React.createClass
         # company_story_url = @props.cursor.stories.get(story.get('uuid')).get('company_story_url')
         
         <li key={story.get('uuid')}>
-          <span>{'#' + story.get('name')}</span>
+          <span>{'#' + story.get('formatted_name')}</span>
         </li>
         # <a href={company_story_url}>{'#' + story.get('name')}</a>
 
 
   filterSelectedStories: ->
-    @state.storyIdSeq.map (id) => @storiesDeref().get(id)
+    @props.cursor.stories.filter (story) => @state.storyIdSeq.contains(story.get('uuid'))
 
   
   gatherStories: ->
     @filterSelectedStories()
       .map (story) ->
         id:   story.get('uuid')
-        name: '#' + story.get('name')
-      .concat @state.createdStories.map((name) -> { id: name, name: '#' + name })
+        name: '#' + story.get('formatted_name')
       .sortBy (object) -> object.name
 
 
   gatherStoriesForSelect: ->
-    @storiesDeref()
+    @props.cursor.stories
       .filter     (story, key) => story.get('company_id') is @props.company_id or story.get('company_id') is null
       .filterNot  (story, key) => @state.storyIdSeq.contains(key)
-      .filter     (story, key) => story.get('name').toLowerCase().indexOf(@state.query.toLowerCase()) >= 0
+      .filter     (story, key) => story.get('formatted_name').toLowerCase().indexOf(@state.query.toLowerCase()) >= 0
       .sortBy     (story, key) => story.get('name')
-      .map        (story, key) => <ComboboxOption key={key} value={key}>{'#' + story.get('name')}</ComboboxOption>
+      .map        (story, key) => <ComboboxOption key={key} value={key}>{'#' + story.get('formatted_name')}</ComboboxOption>
 
 
   getStoryIdSeq: ->
@@ -98,9 +94,8 @@ MainComponent = React.createClass
       .map (posts_story) -> posts_story.get('story_id')
       .toSet()
 
-  createPostsStroy: (story_id) ->
-    @setState storyIdSeq: @state.storyIdSeq.concat(story_id)
-    PostsStoryStore.create(@props.post_id, { story_id: story_id })
+  createPostsStory: (story_id) ->
+    PostsStoryStore.create(@props.post_id, story_id: story_id)
 
   destroyPostsStory: (story_id) ->
     @setState storyIdSeq: @state.storyIdSeq.filterNot((id) -> id is story_id)
@@ -115,25 +110,20 @@ MainComponent = React.createClass
 
   handleSelect: (name_or_uuid) ->
     formattedName = formatName(name_or_uuid) ; return unless formattedName
-    existingStory = @storiesDeref().get(name_or_uuid, @storiesDeref().find((story) -> story.get('name') is formattedName))
+    existingStory = @props.cursor.stories.get(name_or_uuid, @props.cursor.stories.find((story) -> story.get('formatted_name') is formattedName))
     
     if existingStory
-      @createPostsStroy(existingStory.get('uuid'))
+      @createPostsStory(existingStory.get('uuid'))
 
     else
-      @setState createdStories: @state.createdStories.concat(formattedName).toSet()
-      
-      StoryStore.create
-        company_id: @props.company_id
-        name:       formattedName
-      , (id) =>
-        return unless id
-        @setState createdStories: Immutable.List()
-        @createPostsStroy(id)
+      StoryStore.createByCompany(@props.company_id, name: formattedName).then(@handleStoryCreateDone)
         
 
   handleRemove: (object) ->
     @destroyPostsStory(object.id)
+
+  handleStoryCreateDone: (json) ->
+    @createPostsStory(json.id)
 
 
   # Lifecycle Methods
@@ -155,7 +145,7 @@ MainComponent = React.createClass
       storyIdSeq: @getStoryIdSeq()
 
   getDefaultProps: ->
-    placeholder: "#Event tag"
+    placeholder: '#Category'
 
     cursor: 
       stories: StoryStore.cursor.items
@@ -164,7 +154,6 @@ MainComponent = React.createClass
   getInitialState: ->
     query: ''
     storyIdSeq: @getStoryIdSeq()
-    createdStories: Immutable.List()
 
   render: ->
     <div className="cc-hashtag-list">
