@@ -25,6 +25,14 @@ module CloudProfile
     def session_store_key
       :cloud_profile_return_to
     end
-    
+
+    def previous_path
+      if current_user.is_admin? && current_user.email == ENV['DEFAULT_ADMIN_EMAIL']
+        rails_admin.dashboard_path
+      else
+        session[:previous_path]
+      end
+    end
+
   end
 end

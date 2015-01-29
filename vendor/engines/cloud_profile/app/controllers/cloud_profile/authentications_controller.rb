@@ -37,14 +37,6 @@ module CloudProfile
 
   private
 
-    def previous_path
-      if current_user.is_admin? && current_user.email == ENV['DEFAULT_ADMIN_EMAIL']
-        rails_admin.dashboard_path
-      else
-        session[:previous_path]
-      end
-    end
-
     def validate_login(email)
       errors = {}
 

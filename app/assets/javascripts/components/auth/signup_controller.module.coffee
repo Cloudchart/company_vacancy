@@ -99,7 +99,7 @@ RegisterController = React.createClass
   #
   handleSignupDone: (json) ->
     if json.state == 'login'
-      window.location.reload()
+      window.location.href = json.previous_path
     
     if json.state == 'activation'
       @setState(isSyncing: false)

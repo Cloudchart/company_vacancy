@@ -86,7 +86,7 @@ module CloudProfile
           warden.set_user(user, scope: :user)
 
           respond_to do |format|
-            format.json { render json: { state: :login }}
+            format.json { render json: { state: :login, previous_path: previous_path }}
           end
         else
           # Create activation token and send email
