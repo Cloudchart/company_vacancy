@@ -17,7 +17,7 @@ module CloudProfile
       end
       
     rescue ActiveRecord::RecordNotFound
-      errors = validate_login(email, params[:password])
+      errors = validate_login(email)
 
       if errors.values.size > 0
         respond_to do |format|
@@ -43,6 +43,20 @@ module CloudProfile
       else
         session[:previous_path]
       end
+    end
+
+    def validate_login(email)
+      errors = {}
+
+      if !params[:email].present?
+        errors[:email] = ['missing']
+      elsif !email.present? || !email.user.present?
+        errors[:email] = ['invalid']
+      elsif !email.user.authenticate(params[:password])
+        errors[:password] = ['invalid']
+      end
+
+      errors
     end
   end
 end

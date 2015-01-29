@@ -184,21 +184,5 @@ module CloudProfile
       end
 
     end
-    
-  private
-
-    def validate_user(user)
-      errors = {}
-
-      if !params[:email].present?
-        errors[:email] = ['missing']
-      elsif !email.present? || !email.user.present?
-        errors[:email] = ['invalid']
-      elsif !email.user.authenticate(params[:password])
-        errors[:password] = ['invalid']
-      end
-
-      errors
-    end
   end
 end

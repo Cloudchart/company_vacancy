@@ -46,6 +46,9 @@ LoginController = React.createClass
 
   # Helpers
   #
+  isPasswordInvalid: (errors) ->
+    errors.password && errors.password.length > 0
+
   isValid: (errors) ->
     _.all(_.values(errors), (error) -> error.length == 0)
 
