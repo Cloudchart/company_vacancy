@@ -84,9 +84,11 @@ MainComponent = React.createClass
     <li key={ uuid } onClick={ @handleStoryClick.bind(@, story.get('company_story_url')) } >
       <header>
         <h3>{ story.get('formatted_name') }</h3>
+      </header>
 
-        <div className="spacer"></div>
+      <div className="content" dangerouslySetInnerHTML={__html: story.get('description')} />
 
+      <footer>
         <ul className="counters">
           <li className="posts">
             <span>{ @getPostsSizeForStory(story) }</span>
@@ -96,10 +98,8 @@ MainComponent = React.createClass
             <span>{ @getPinsSizeForStory(story) }</span>
             <i className="fa fa-thumb-tack" />
           </li>
-        </ul>
-      </header>
-
-      <div className="content" dangerouslySetInnerHTML={__html: story.get('description')} />
+        </ul>        
+      </footer>
     </li>
 
 
