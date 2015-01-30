@@ -43,7 +43,9 @@ MainComponent = React.createClass
     active: false
 
   render: ->
-    errors = _.map @props.errors, (error, index) ->
+    errors = if _.isArray(@props.errors) then @props.errors else [@props.errors]
+
+    errors = _.map errors, (error, index) ->
       <span className="error" key={index}>{error}</span>
 
     customClass = {}
@@ -59,20 +61,22 @@ MainComponent = React.createClass
       }, customClass))}>
 
       {
-        <span className="title">@props.title</span> if @props.title
+        <span className="title">{@props.title}</span> if @props.title
       }
       
       <span className="input">
 
         <Input
-          name         = {@props.valueName}
-          onChange     = {@onChange}
-          onBlur       = {@onBlur}
-          onFocus      = {@onFocus}
-          onKeyDown    = {@onKeyDown}
-          placeholder  = {@props.placeholder}
-          type         = {@props.type}
-          value        = {@props.value} />
+          autoFocus    = { @props.autoFocus }
+          defaultValue = { @props.defaultValue }
+          name         = { @props.valueName }
+          onChange     = { @onChange }
+          onBlur       = { @onBlur }
+          onFocus      = { @onFocus }
+          onKeyDown    = { @onKeyDown }
+          placeholder  = { @props.placeholder }
+          type         = { @props.type }
+          value        = { @props.value } />
         
         {
           <span className="fa fa-check"></span> if @props.checked

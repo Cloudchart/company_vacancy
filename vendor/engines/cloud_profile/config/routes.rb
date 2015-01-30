@@ -2,7 +2,7 @@ CloudProfile::Engine.routes.draw do
 
   # Login/Logout
   #
-  #get   'login',  to: 'authentications#new'
+  get   'login',  to: 'authentications#new'
   post  'login',  to: 'authentications#create'
   get   'logout', to: 'authentications#destroy'
   
@@ -15,9 +15,8 @@ CloudProfile::Engine.routes.draw do
   
   # Registration
   #
-  get   'register',           to: 'users#new',              as: :register
-  post  'register',           to: 'users#create'
-  get   'register/complete',  to: 'users#create_complete',  as: :register_complete
+  get   'signup',         to: 'users#new'
+  post  'signup',         to: 'users#create'
   
 
   # Social Networks / OAuth2

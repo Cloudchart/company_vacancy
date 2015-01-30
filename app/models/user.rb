@@ -33,6 +33,7 @@ class User < ActiveRecord::Base
   
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
+  validate :validate_email, on: :create
 
   rails_admin do
 
@@ -99,6 +100,10 @@ class User < ActiveRecord::Base
   
   def should_validate_name!
     @should_validate_name = true
+  end
+
+  def validate_email
+    errors[:email] = emails.first.errors[:address] unless emails.first.valid?
   end
 
 private

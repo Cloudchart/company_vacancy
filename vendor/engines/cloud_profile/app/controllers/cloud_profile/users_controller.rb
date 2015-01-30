@@ -46,9 +46,19 @@ module CloudProfile
     # Registration form
     #
     def new
-      store_return_path if params[:return_to].present? || !return_path_stored?
-      @email = Email.new address: params[:email]
-      @user  = User.new
+      if (params[:invite] && !current_user.present?)
+        store_return_path if params[:return_to].present? || !return_path_stored?
+
+        user = User.new(full_name: "some", invite: params[:invite])
+
+        if user.invite.present?
+          pagescript_params(invite: params[:invite], email: user.invite.data[:email])
+        else
+          redirect_to main_app.root_path
+        end
+      else
+        redirect_to main_app.root_path
+      end
     end
     
 
@@ -76,7 +86,7 @@ module CloudProfile
           warden.set_user(user, scope: :user)
 
           respond_to do |format|
-            format.json { render json: { state: :login }}
+            format.json { render json: { state: :login, previous_path: previous_path }}
           end
         else
           # Create activation token and send email
@@ -100,7 +110,7 @@ module CloudProfile
         
       else
         respond_to do |format|
-          format.json { render json: { errors: user.errors.keys }, status: 403 }
+          format.json { render json: { errors: user.errors }, status: 403 }
         end
       end
       
@@ -118,7 +128,6 @@ module CloudProfile
     rescue ActiveRecord::RecordInvalid
       render json: current_user.errors, status: 422
     end
-
 
     def check_invite
       token = Token.find_by_rfc1751(params[:invite])
@@ -175,28 +184,5 @@ module CloudProfile
       end
 
     end
-    
-    
-    # deprecated
-    # def activation_
-    #   @token = Token.find(params[:token])
-    #   @email = Email.new(address: @token.data[:address])
-      
-    #   raise ActiveRecord::RecordNotFound if @email.invalid?
-
-    #   if request.post?
-    #     @user = User.new(password_digest: @token.data[:password_digest])
-    #     if @user.authenticate(params[:password])
-    #       @user.emails << @email
-    #       @user.save!
-    #       @token.destroy
-    #       warden.set_user(@user, scope: :user)
-    #       redirect_to :root
-    #     else
-    #       @password_invalid = true
-    #     end
-    #   end
-    # end
-    
   end
 end

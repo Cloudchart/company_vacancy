@@ -5,6 +5,8 @@
 @import 'variables';
 @import 'modal';
 @import 'mixins/landing';
+@import 'mixins/form_2';
+@import 'mixins/button';
 
 $base-unit: 20px;
 $base-font-size: 15px;
@@ -85,8 +87,8 @@ body > header {
     }
   }
   
-  > .auth span {
-    cursor: pointer;
+  > .auth a {
+    color: hsl(0, 0%, 100%);
     font-size: $base-unit * .9;
     font-weight: 600;
   }
