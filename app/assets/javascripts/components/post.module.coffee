@@ -83,13 +83,10 @@ Component = React.createClass
     # TODO: show post in timeline
 
   handleKeydown: (event) ->
-    if event.keyCode == 27
-      event.preventDefault()
-      ModalActions.hide()
-
-    if event.metaKey && event.keyCode == 13
-      event.preventDefault()
-      @handleOkClick()
+    if $(@refs.container.getDOMNode()).find(':focus').length > 0
+      if event.metaKey && event.keyCode == 13
+        event.preventDefault()
+        @handleOkClick()
 
   handleVisibilityChange: (value) ->
     if @state.visibility and @state.visibility.value isnt value
@@ -206,7 +203,7 @@ Component = React.createClass
   render: ->
     return null unless @state.post
 
-    <div className="post-container">
+    <div ref="container" className="post-container">
       { @renderVisibilityDropdown() }
       { @renderPins() }
 
