@@ -103,7 +103,7 @@ class User < ActiveRecord::Base
   end
 
   def validate_email
-    errors[:email] = emails[0].errors[:address] unless emails[0].valid?
+    errors[:email] = emails.first.errors[:address] unless emails.first.valid?
   end
 
 private

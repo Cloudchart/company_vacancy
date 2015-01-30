@@ -21,9 +21,9 @@ private
 
   def must_authenticate
     if user.blank?
-      errors[:email] << I18n.t('errors.authentication.email_doesnt_exist')
+      errors.add(:email, I18n.t('errors.authentication.email_doesnt_exist'))
     else
-      errors[:password] << I18n.t('errors.authentication.password_doesnt_match') unless user.authenticate(password)
+      errors.add(:password, I18n.t('errors.authentication.password_doesnt_match')) unless user.authenticate(password)
     end
   end
 end
