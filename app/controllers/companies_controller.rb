@@ -2,6 +2,7 @@ class CompaniesController < ApplicationController
   include FollowableController
 
   before_action :set_company, only: [
+    :show,
     :update,
     :destroy,
     :verify_site_url,
@@ -11,7 +12,7 @@ class CompaniesController < ApplicationController
   ]
   before_action :set_collection, only: [:index, :search]
 
-  authorize_resource
+  load_and_authorize_resource
   
   # GET /companies
   def index
@@ -28,22 +29,22 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   def show
-    relation = Company.includes(
-      :people,
-      :vacancies,
-      :pictures,
-      :paragraphs,
-      :roles,
-      :tokens,
-      users: :emails,
-      blocks: :block_identities
-    )
-    @company = find_company(relation)
-
     respond_to do |format|
       format.html { pagescript_params(id: @company.id) }
       format.json { 
-        @tags = Tag.where(is_acceptable: true).all
+        # TODO: move to jbuilder
+        @company = find_company(
+          Company.includes(
+            :people,
+            :vacancies,
+            :pictures,
+            :paragraphs,
+            :roles,
+            :tokens,
+            users: :emails,
+            blocks: :block_identities
+          )
+        )
       }
     end
   end
@@ -175,7 +176,7 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    @company = find_company(Company.includes(:roles))
+    @company = Company.find(params[:id])
   end
 
   def find_company(relation)

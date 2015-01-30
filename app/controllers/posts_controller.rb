@@ -1,55 +1,25 @@
 class PostsController < ApplicationController  
 
   before_action :set_post, only: [:update, :destroy]
-  before_action :set_company, only: [:index, :create]
 
   authorize_resource
 
   def index
-    # get posts
-    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :posts_stories, :tags, blocks: :block_identities, pins: [ :user, parent: :user ])
-
-    # reject based on visibility rules
-    @posts = if can?(:manage, @company)
-      posts
-    elsif can?(:update, @company) || can?(:finance, @company)
-      posts.reject { |post| post.visibility.try(:value) == 'only_me' }
-    else
-      posts.reject { |post| post.visibility.try(:value) =~ /only_me|trusted/ }
-    end
-
-    # get dependent collections
-    dependent_associations = [:visibilities, :pictures, :paragraphs, :blocks, :pins]
-
-    dependent_collections = @posts.inject({}) do |memo, post|
-      dependent_associations.each do |association|
-        memo[association] ||= []
-        memo[association] += post.send(association)
-      end
-
-      memo
-    end
-
-    # instantiate associations
-    dependent_associations.each do |association|
-      instance_variable_set("@#{association}", dependent_collections[association])
-    end
-
-    # add stories
-    @stories = Story.cc_plus_company(@company.id)
-    @posts_stories = posts.map(&:posts_stories).flatten
-
     respond_to do |format|
-      format.html { 
+      format.html {
+        @company = Company.find(params[:company_id])
+
         pagescript_params(
           company_id: @company.id,
           story_id: @stories.find_by(name: params[:story_name]).try(:id)
         )
       }
-      format.json
+
+      format.json {
+        @company = find_company(Company.includes(:roles, :stories))
+      }
     end
   end
-  
   
   def show
     @post = Post.includes(:owner).find(params[:id])
@@ -58,7 +28,6 @@ class PostsController < ApplicationController
       format.json
     end
   end
-  
 
   def create
     @post = @company.posts.build(post_params)
@@ -102,10 +71,6 @@ private
 
   def set_post
     @post = Post.find(params[:id])
-  end
-
-  def set_company
-    @company = find_company(Company.includes(:roles, :stories))
   end
 
   def find_company(relation)

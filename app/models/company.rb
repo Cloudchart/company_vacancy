@@ -103,7 +103,7 @@ class Company < ActiveRecord::Base
   def build_objects
     blocks.build(position: 0, identity_type: 'Person', is_locked: true)
     blocks.build(position: 1, identity_type: 'Paragraph', is_locked: true)
-    blocks.build(position: 2, identity_type: 'Vacancy', is_locked: true)
+    # blocks.build(position: 2, identity_type: 'Vacancy', is_locked: true)
     blocks.build(position: 3, identity_type: 'Picture', is_locked: true)
     charts.build(title: 'Main Chart')
   end

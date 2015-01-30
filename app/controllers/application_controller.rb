@@ -30,12 +30,10 @@ class ApplicationController < ActionController::Base
 private
 
   def store_location
-    return unless request.get? && !current_user.present?
+    return if current_user || !request.get? || request.xhr? ||
+      request.path == cloud_profile.login_path || request.path == cloud_profile.signup_path
 
-    if !request.xhr? && 
-        request.path != cloud_profile.login_path &&
-        request.path != cloud_profile.signup_path
-      session[:previous_path] = request.fullpath 
-    end
+    session[:previous_path] = request.fullpath
   end
+  
 end
