@@ -108,6 +108,11 @@ module.exports = React.createClass
   gatherPinboards: ->
     @props.cursor.pinboards.deref(PinboardStore.empty)
 
+      .filter (pinboard) =>
+        pins = PinStore.cursor.items.filter (pin) => pin.get('user_id') == @props.currentUserId and pin.get('pinboard_id') == pinboard.get('uuid')
+
+        pinboard.get('user_id') == @props.currentUserId or pins.count() > 0
+
       .sortBy (pinboard) ->
         pinboard.get('title')
 
