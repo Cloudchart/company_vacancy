@@ -126,6 +126,8 @@ body ul.modal-stack {
     @include justify-content(center);
     @include position(fixed, 0px 0px 0px 0px);
 
+    overflow: scroll;
+
     &:last-child {
       background-color: $modal-overlay-background-color;
     }
@@ -136,7 +138,6 @@ body ul.modal-stack {
       &.post-container {
         margin: 0 auto;
         padding: 50px;
-        overflow: scroll;
       }
     }
   }

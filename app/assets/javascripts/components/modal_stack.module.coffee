@@ -43,7 +43,6 @@ ModalStackItem = React.createClass
     @props.beforeHide()
 
 
-
   getDefaultProps: ->
     beforeShow:   EmptyFunction
     afterShow:    EmptyFunction
@@ -97,6 +96,10 @@ ModalStack = React.createClass
 
   componentWillUnmount: ->
     window.removeEventListener('keydown', @handleEscape)
+
+
+  componentDidUpdate: ->
+    document.body.style.overflow = if @props.cursor.count() == 0 then 'scroll' else 'hidden'
 
 
   getDefaultProps: ->
