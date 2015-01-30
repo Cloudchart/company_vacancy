@@ -1,4 +1,4 @@
-$modal-overlay-background-color: hsla(0, 0%, 50%, .5);
+$modal-overlay-background-color: hsla(0, 0%, 75%, .25);
 $modal-container-background-color: hsl(0, 100%, 100%);
 
 // Modal form
@@ -128,15 +128,13 @@ body ul.modal-stack {
 
     overflow: scroll;
 
-    &:last-child {
-      background-color: $modal-overlay-background-color;
-    }
+    background-color: $modal-overlay-background-color;
 
     > * {
       background-color: hsl(0, 100%, 100%);
 
       &.post-container {
-        margin: 0 auto;
+        @include align-self(flex-start);
         padding: 50px;
       }
     }
