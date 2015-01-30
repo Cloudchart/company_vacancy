@@ -24,63 +24,65 @@ Avatar = require('components/avatar')
 
 
 # Exports
-# 
+#
 module.exports = React.createClass
 
   displayName: 'PinnablePostPreview'
-  
-  
+
+
   mixins: [GlobalState.mixin]
-  
-  
+
+
   statics:
     getCursor: (pin) ->
       companies:  CompanyStore.cursor.items
       post:       PostStore.cursor.items.cursor([pin.get('pinnable_id')])
       blocks:     BlockStore.cursor.items
-  
-  
+      users:      UserStore.cursor.items
+      pins:       PinStore.cursor.items
+
+
   renderPinContent: ->
     if content = @props.pin.get('content')
       <section className="pin-content" dangerouslySetInnerHTML={ __html: content } />
-  
-  
-  
+
+
+
   renderPostTitle: ->
     if title = @props.cursor.post.get('title')
       <header dangerouslySetInnerHTML={ __html: title } />
-  
-  
+
+
   renderBlocks: ->
     if @state.blocks.size > 0
-      
+
       components = @state.blocks.toSeq().map (block) ->
         uuid = block.get('uuid')
         BlockComponent({ key: uuid, uuid: uuid, cursor: BlockStore.cursor.items.cursor(uuid) })
-      
+
       components.take(2).toArray()
-  
-  
+
+
   renderPreview: ->
     <div className="preview">
       { @renderPostTitle() }
       { @renderBlocks() unless @props.skipBlocks }
     </div>
-  
-  
+
+
   onGlobalStateChange: ->
     @setState @getStateFromStores()
-  
-  
+
+
   getStateFromStores: ->
     company:    @props.cursor.companies.get(@props.cursor.post.get('owner_id'))
     blocks:     @props.cursor.blocks.filter((block) => block.get('owner_id') == @props.uuid ).sortBy((block) -> block.get('position'))
     parentPin:  PinStore.cursor.items.cursor(@props.pin.get('parent_id'))
-  
-  
+
+
   getInitialState: ->
     @getStateFromStores()
-  
+
 
   renderCompany: ->
     if @state.company
@@ -88,11 +90,11 @@ module.exports = React.createClass
         pin:          @props.pin
         company:      @state.company
         onUnpinClick: @props.onUnpinClick
-  
-  
+
+
   renderParentPinUser: ->
     user = UserStore.cursor.items.cursor(@state.parentPin.get('user_id'))
-    
+
     return unless user.deref()
 
     <div className="user">
@@ -104,23 +106,23 @@ module.exports = React.createClass
         <p className="occupation">{ user.get('occupation') }</p>
       </section>
     </div>
-  
-  
+
+
   renderParentPin: ->
     return unless @state.parentPin.deref()
-    
+
     <div className="parent">
       <p>{ @state.parentPin.get('content') }</p>
       { @renderParentPinUser() }
     </div>
-  
-  
+
+
   render: ->
     return null unless @props.cursor.post.deref()
 
     <div className="pinnable-post-preview">
       { @renderCompany() }
-      { @renderParentPin() }
       { @renderPinContent() }
+      { @renderParentPin() }
       { @renderPreview() }
     </div>
