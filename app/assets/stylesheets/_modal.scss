@@ -135,6 +135,8 @@ body ul.modal-stack {
 
       &.post-container {
         @include align-self(flex-start);
+
+        min-height: 100%;
         padding: 50px;
       }
     }
