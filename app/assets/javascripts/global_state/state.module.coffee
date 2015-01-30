@@ -16,20 +16,20 @@ UpdateInProgress  = false
 # Cursor
 #
 RootCursor = Cursor CurrRootData, (NextRootData, options = {}) ->
-  
+
   PrevRootData = CurrRootData
   CurrRootData = NextRootData
-  
+
   changedPaths = Callbacks
     .filter (callbacks, pathAsString) -> State.hasChanged(pathAsString.split('/'))
     .keySeq()
-  
+
   setTimeout ->
     LastUpdateId      = uuid()
     UpdateInProgress  = true
     changedPaths.forEach (pathAsString) -> applyCallbacksForPath(pathAsString.split('/'))
     UpdateInProgress = false
-  
+
 
 # Callbacks
 #
@@ -40,7 +40,7 @@ applyCallbacksForPath = (path) ->
   pathAsString  = [].concat(path).join('/')
   currData      = CurrRootData.getIn(path)
   prevData      = PrevRootData.getIn(path)
-  
+
   samePathCallbacks(pathAsString).forEach (callback) ->
     callback(currData, prevData)
 
@@ -62,43 +62,44 @@ removeListener = (path, callback) ->
 # State
 #
 State =
-  
-  
+
+
   createStore: Store.create
-  
-  
+
+
   cursor: (path = []) ->
     RootCursor.cursor(path)
-  
-  
+
+
   addListener: (path, callback) ->
     addListener(path, callback)
-  
+
 
   hasChanged: (path) ->
     not Immutable.is(CurrRootData.getIn(path), PrevRootData.getIn(path))
-    
-  
-  
+
+
+
   mixin:
-    
-    
+
+
     componentDidUpdate: ->
       @__componentDidUpdateTransactionId = LastUpdateId
-    
-    
+
+
     shouldComponentUpdateWithGlobalStateCheck: (nextProps, nextState) ->
-      return false if @__componentDidUpdateTransactionId == LastUpdateId and UpdateInProgress
+      return false if @__globalStateChangeTransactionId == LastUpdateId and @__componentDidUpdateTransactionId == LastUpdateId and UpdateInProgress
+
       @shouldComponentUpdateWithoutGlobalStateCheck(nextProps, nextState)
-    
-    
+
+
     onGlobalStateChangeWithGlobalStateCheck: ->
       return false if @__globalStateChangeTransactionId == LastUpdateId and UpdateInProgress
 
+      @onGlobalStateChangeWithoutGlobalStateCheck()
+
       @__globalStateChangeTransactionId = LastUpdateId
 
-      @onGlobalStateChangeWithoutGlobalStateCheck()
-    
 
     componentWillMount: ->
       @shouldComponentUpdateWithoutGlobalStateCheck = @shouldComponentUpdate || => true
@@ -106,10 +107,10 @@ State =
 
       @onGlobalStateChangeWithoutGlobalStateCheck = @onGlobalStateChange || => @setState({})
       @onGlobalStateChange = @onGlobalStateChangeWithGlobalStateCheck
-    
+
 
     componentDidMount: ->
-      if typeof @onGlobalStateChange == 'function'
+      if typeof @onGlobalStateChange == 'function' and @props.cursor
         if @props.cursor.__CURSOR_INSTANCE__
           addListener(@props.cursor.path, @onGlobalStateChange)
         else
@@ -118,7 +119,7 @@ State =
 
 
     componentWillUnmount: ->
-      if typeof @onGlobalStateChange == 'function'
+      if typeof @onGlobalStateChange == 'function' and @props.cursor
         if @props.cursor.__CURSOR_INSTANCE__
           removeListener(@props.cursor.path, @onGlobalStateChange)
         else

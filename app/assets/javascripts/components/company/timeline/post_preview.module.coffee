@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
 # Imports
-# 
+#
 cx = React.addons.classSet
 
 GlobalState         = require('global_state/state')
@@ -11,12 +11,10 @@ BlockStore          = require('stores/block_store')
 ParagraphStore      = require('stores/paragraph_store')
 PictureStore        = require('stores/picture_store')
 PersonStore         = require('stores/person')
-PinStore            = require('stores/pin_store')
 PostsStoryStore     = require('stores/posts_story_store')
 UserStore           = require('stores/user_store.cursor')
 
 PostActions         = require('actions/post_actions')
-ModalActions        = require('actions/modal_actions')
 
 Post                = require('components/post')
 Tags                = require('components/company/tags')
@@ -26,17 +24,17 @@ Avatar              = require('components/avatar')
 
 InsiteListComponent = require('components/insite/list')
 
-PinFormComponent    = require('components/form/pin_form')
+PinButton           = require('components/pinnable/pin_button')
 
 FuzzyDate           = require('utils/fuzzy_date')
 
 
 # Main
-# 
+#
 Component = React.createClass
 
   # Helpers
-  # 
+  #
   identityContentSwitcher: (block) ->
     switch block.identity_type
       when 'Paragraph' then @getParagraph(block)
@@ -80,7 +78,7 @@ Component = React.createClass
         avatarURL = {person.avatar_url}
         readOnly  = {true}
       />
-      
+
       <footer>
         <p className="name">{person.full_name}</p>
         <p className="occupation">{person.occupation}</p>
@@ -104,14 +102,6 @@ Component = React.createClass
 
   # Handlers
   #
-  handlePinClick: (pin, event) ->
-    if pin
-      PinStore.destroy(pin.get('uuid')) if confirm('Are you sure?')
-    else
-      ModalActions.show(
-        <PinFormComponent pinnable_id={@props.uuid} pinnable_type="Post" title={ @state.post.title } onDone={ ModalActions.hide } onCancel={ ModalActions.hide } />
-      )
-    
   handleEditClick: (event) ->
     event.preventDefault()
 
@@ -133,7 +123,7 @@ Component = React.createClass
 
 
   # Lifecycle Methods
-  # 
+  #
   componentDidMount: ->
     BlockStore.on('change', @refreshStateFromStores)
     PersonStore.on('change', @refreshStateFromStores)
@@ -151,10 +141,10 @@ Component = React.createClass
 
 
   # Component Specifications
-  # 
+  #
   getDefaultProps: ->
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
-  
+
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
 
@@ -173,27 +163,21 @@ Component = React.createClass
 
   # Renderers
   #
+  renderInsites: ->
+    <InsiteListComponent pinnable_id={ @props.uuid } pinnable_type="Post" />
+
+
+  renderPinPostItem: ->
+    <PinButton pinnable_type='Post' pinnable_id={ @state.post.uuid } title={ @state.post.title } />
+
+
   renderControls: ->
     <ul className="buttons round-buttons">
       { @renderLinkPostWithStoryItem() }
       { @renderStarPostForStoryItem() }
       { @renderPinPostItem() }
     </ul>
-  
-  
-  renderInsites: ->
-    <InsiteListComponent pinnable_id={ @props.uuid } pinnable_type="Post" />
-  
 
-  renderPinPostItem: ->
-    pins = PinStore.cursor.items.deref(PinStore.empty).filter((item) => item.get('pinnable_type') == 'Post' and item.get('pinnable_id') == @state.post.uuid )
-
-    current_user_pin = pins.find (pin) => pin.get('user_id') == @props.current_user_id
-    classes = cx({ active: !!current_user_pin })
-
-    <li onClick={ @handlePinClick.bind(null, current_user_pin) } className={classes}>
-      <i className="fa fa-thumb-tack" />
-    </li>
 
   renderLinkPostWithStoryItem: ->
     return null unless @props.story_id
@@ -225,7 +209,7 @@ Component = React.createClass
 
   renderHeader: ->
     formatted_date = FuzzyDate.format(@state.post.effective_from, @state.post.effective_till)
-      
+
     title = if @state.post.title
       <h1 dangerouslySetInnerHTML = { __html: @state.post.title } />
     else
@@ -234,7 +218,7 @@ Component = React.createClass
     date = if @state.post.title
       <span className="date">{formatted_date}</span>
     else null
-      
+
     <header>
       {title}
       {date}
@@ -300,5 +284,5 @@ Component = React.createClass
 
 
 # Exports
-# 
+#
 module.exports = Component

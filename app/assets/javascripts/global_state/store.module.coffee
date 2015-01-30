@@ -7,7 +7,7 @@ Dispatcher = require('dispatcher/dispatcher')
 #
 ensure = (something) ->
   success = !!something
-  result  = 
+  result  =
     done: (callback) ->
       callback() if success
       result
@@ -38,8 +38,8 @@ StoreDefaults = Immutable.Seq
 # Store
 #
 class BaseStore
-  
-  
+
+
   constructor: ->
     ensure(@collectionName)
       .fail =>
@@ -48,42 +48,42 @@ class BaseStore
     ensure(@instanceName)
       .fail =>
         throw new Error("#{@displayName}: instanceName is undefined.")
-      
+
     @cursor =
       items: GlobalState().cursor(['stores', @collectionName, 'items'])
-    
+
     @empty  = EmptySequence
-    
+
 
   populate: (json) ->
     return unless json[@collectionName] or json[@instanceName]
 
     Immutable.Seq(json[@collectionName] || [json[@instanceName]]).forEach (item) =>
       currItem = @cursor.items.get(item.uuid)
-      
+
       unless item['--part--'] is true
         return @cursor.items.set(item.uuid, item)
-      
+
       unless currItem
         return @cursor.items.set(item.uuid, item)
-      
+
       if currItem.get('--part--') is true
         return @cursor.items.set(item.uuid, item)
-  
-  
+
+
   #
   #
-  
+
   get: (id) ->
     @cursor.items.get(id)
-  
+
   filter: (predicate) ->
     @cursor.items.filter(predicate)
-      
-  
+
+
   # Fetch
   #
-  
+
   fetchAll: (params = {}, options = {}) ->
     ensure(@syncAPI)
       .fail =>
@@ -92,8 +92,8 @@ class BaseStore
     promise = @syncAPI.fetchAll(params, options)
     promise.then(@fetchDone, @fetchFail)
     promise
-  
-  
+
+
   fetchOne: (id, params = {}, options = {}) ->
     ensure(@syncAPI)
       .fail =>
@@ -102,19 +102,18 @@ class BaseStore
     promise = @syncAPI.fetchOne(id, params, options)
     promise.then(@fetchDone, @fetchFail)
     promise
-  
-  
+
+
   fetchDone: (json) ->
-    @cursor.items.transaction()
-    Dispatcher.handleServerAction
-      type: 'fetch:done'
-      data: [json]
-    @cursor.items.commit()
-  
+    @cursor.items.transaction ->
+      Dispatcher.handleServerAction
+        type: 'fetch:done'
+        data: [json]
+
 
   fetchFail: ->
-  
-  
+
+
   # Create
   #
 
@@ -122,16 +121,16 @@ class BaseStore
     promise = @syncAPI.create(params, options)
     promise.then(@createDone, @createFail)
     promise
-  
-  
+
+
   createDone: (json) ->
     @fetchOne(json.id)
-  
-  
+
+
   # Update
   #
-  
-  
+
+
   # Destroy
   #
 
@@ -141,8 +140,8 @@ class BaseStore
     promise = @syncAPI.destroy(currItem, params, options)
     promise.then(@destroyDone, @destroyFail)
     promise
-  
-  
+
+
   destroyDone: (json) ->
     @cursor.items.remove(json.id)
 
@@ -156,11 +155,11 @@ registerDispatcher = (store, descriptor) ->
 
   if descriptor.serverActions instanceof Function
     mappings = mappings.concat(descriptor.serverActions.apply(store))
-      
+
   store.dispatchToken = Dispatcher.register (payload) ->
     type  = payload.action.type
     data  = payload.action.data
-    
+
     if mappings.has(type)
       mappings.get(type).apply(store, data)
 
@@ -171,25 +170,25 @@ classes = {}
 # Create
 #
 create = (descriptor = {}) ->
-  
+
   Store = class extends BaseStore
-  
+
 
   StoreDefaults.forEach (value, name) ->
     Store.prototype[name] = descriptor[name] ? StoreDefaults[name]
     delete descriptor[name]
-  
+
 
   Immutable.Seq(descriptor).forEach (value, name) ->
     Store.prototype[name] = value if value instanceof Function
-  
+
   store = new Store
-  
+
   Immutable.Seq(BaseStore.prototype).concat(Store.prototype).keySeq().toSet().forEach (name) ->
     store[name] = store[name].bind(store) if store[name] instanceof Function
 
   registerDispatcher(store, descriptor)
-  
+
   store
 
 
