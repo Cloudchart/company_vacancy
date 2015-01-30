@@ -305,14 +305,6 @@
 
 .form-2 {
   @include form-2;
-
-  &.login,
-  &.register {
-    margin: 0 auto;
-    margin-top: 100px;
-    position: relative;
-    width: 400px;
-  }
 }
 
 .form-field-radio-2 {
