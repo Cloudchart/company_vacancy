@@ -11,12 +11,13 @@ Errors =
   full_name:
     missing:  "Enter full name, please"
   password:
-    missing:  "Enter password, please"
+    missing:   "Enter password, please"
 
 getErrorMessages = (errorsLists) ->
   errors = _.mapValues errorsLists, (errors, attributeName) ->
     _.map errors, (errorName) ->
-      Errors[attributeName][errorName] || errorName
+      if Errors[attributeName]
+        Errors[attributeName][errorName] || errorName
 
   errors
 
@@ -117,7 +118,7 @@ RegisterController = React.createClass
     @setState(isSyncing: false)
 
     @setState
-      errors: xhr.responseJSON.errors
+      errors: _.pick(xhr.responseJSON.errors, ["email", "full_name", "password"])
 
   handleInputChange: (name, value) ->
     attributes = @state.attributes

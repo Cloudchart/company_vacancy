@@ -110,7 +110,7 @@ module CloudProfile
         
       else
         respond_to do |format|
-          format.json { render json: { errors: { email: user.emails[0].errors[:address], password: user.errors[:password], full_name: user.errors[:full_name] } }, status: 403 }
+          format.json { render json: { errors: user.errors }, status: 403 }
         end
       end
       
