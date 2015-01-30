@@ -6,16 +6,14 @@ email_re = /.+@.+\..+/i
 
 Errors =
   email:
-    missing:  "Enter email, please"
-    invalid:  "There are no users with such an email"
+    missing:  "Enter email for login, please"
   password:
-    missing:  "Enter password, please"
-    invalid:  "The password is wrong"
+    missing:  "Enter password for login, please"
 
 getErrorMessages = (errorsLists) ->
   errors = _.mapValues errorsLists, (errors, attributeName) ->
     _.map errors, (errorName) ->
-      Errors[attributeName][errorName]
+      Errors[attributeName][errorName] || errorName
 
   errors
 
@@ -99,21 +97,15 @@ LoginController = React.createClass
   # Handlers
   #
   handleRequestLoginDone: (json) ->
-    if !json.errors
-      location.href = json.previous_path
-    else
-      @setState(isSyncing: false)
-
-      @setState
-        errors: json.errors
-        isResetShown: @isPasswordInvalid(json.errors)
+    location.href = json.previous_path    
   
   handleRequestLoginFail: (xhr) ->
     @setState(isSyncing: false)
+    errors = xhr.responseJSON.errors
 
     @setState
-      errors:
-        password: ['invalid']
+      errors: errors
+      isResetShown: @isPasswordInvalid(errors)
 
   handleRequestResetDone: (json) ->
     component = cc.require('react/modals/reset-splash')
@@ -127,12 +119,12 @@ LoginController = React.createClass
   handleFormChange: (name, value) ->
     attributes = @state.attributes
     attributes[name] = value
-    errors = @state.errors
-    errors[name] = []
+    errors = {}
 
     @setState
       isResetShown: false
-      attributes: attributes
+      attributes:   attributes
+      errors:       errors
 
 
   render: ->
