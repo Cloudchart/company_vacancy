@@ -201,14 +201,29 @@ MainComponent = React.createClass({
   },
 
   hideOnEscape: function(event) {
-    this.hideList();
-    this.focusInput();
-    // there is react proxy constructor here instead of event
-    // event.preventDefault();
+    if (this.state.isOpen) {
+      this.hideList();
+      this.focusInput();
+    } else {
+      this.blurInput();
+    }
+
+    // check if the first argument is actually a child
+    // for hacky component hacky fixes
+    if (typeof event.preventDefault != 'function') {
+      event = arguments[1]
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
   },
 
   focusInput: function() {
     this.refs.input.getDOMNode().focus();
+  },
+
+  blurInput: function() {
+    this.refs.input.getDOMNode().blur();
   },
 
   selectInput: function() {
@@ -255,7 +270,7 @@ MainComponent = React.createClass({
     }
     event.preventDefault();
     this.setState({usingKeyboard: true});
-    this[handlerName].call(this, child);
+    this[handlerName].call(this, child, event);
   },
 
   handleOptionMouseEnter: function(index) {
