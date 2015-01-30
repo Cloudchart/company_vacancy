@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>CloudChart</title>
-  
+
     <%= favicon_link_tag "favicon_#{Rails.env}.ico" %>
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= render 'shared/meta' %>
@@ -23,7 +23,7 @@
       <%= render 'shared/footer' %>
     </footer>
 
-    <div data-modal-mount-point></div>
+    <div data-react-class="components/modal_stack"></div>
 
     <%= javascript_include_tag 'application' %>
     <%= pagescript %>
