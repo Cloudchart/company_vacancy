@@ -75,6 +75,7 @@ MainComponent = React.createClass
           onFocus      = { @onFocus }
           onKeyDown    = { @onKeyDown }
           placeholder  = { @props.placeholder }
+          ref          = "input"
           type         = { @props.type }
           value        = { @props.value } />
         

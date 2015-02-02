@@ -57,21 +57,21 @@ LoginForm = React.createClass
       <fieldset>
         <Field
           autoFocus    = { true }
-          defaultValue = { @props.attributes.email }
           errors       = { @props.errors.email }
           name         = "email"
           onChange     = { @getChangeHandler("email") }
           placeholder  = "Email"
+          ref          = "email"
           title        = "Email"
           type         = "email"
           value        = { @props.attributes.email } />
 
         <Field
-          defaultValue = { @props.attributes.password }
           errors       = { @props.errors.password }
           name         = "password"
           onChange     = { @getChangeHandler("password") } 
           placeholder  = "Password"
+          ref          = "password"
           title        = "Password"
           type         = "password"
           value        = { @props.attributes.password } />

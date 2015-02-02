@@ -56,6 +56,10 @@ LoginController = React.createClass
     _.all(_.values(errors), (error) -> error.length == 0)
 
   requestLogin: ->
+    loginForm = this.refs.loginForm
+    emailValue = loginForm.refs.email.refs.input.getDOMNode().value
+    passwordValue = loginForm.refs.password.refs.input.getDOMNode().value
+
     if @isValid(@state.errors)
       errors = validate(@state.attributes)
 
@@ -67,8 +71,8 @@ LoginController = React.createClass
           type:       'POST'
           dataType:   'json'
           data:
-            email:      @state.attributes.email
-            password:   @state.attributes.password
+            email:      emailValue
+            password:   passwordValue
         .done @handleRequestLoginDone
         .fail @handleRequestLoginFail
       else
@@ -130,6 +134,7 @@ LoginController = React.createClass
       onChange     = { @handleFormChange }
       onInvite     = { @showInviteModal }
       onReset      = { @requestReset }
-      onSubmit     = { @requestLogin } />
+      onSubmit     = { @requestLogin }
+      ref          = { "loginForm" } />
 
 module.exports = LoginController

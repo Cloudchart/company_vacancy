@@ -53,7 +53,6 @@ RegisterForm = React.createClass
         <Field
           autoFocus    = { true }
           errors       = { @props.errors.full_name }
-          name         = "name"
           onChange     = { @getChangeHandler("full_name") }
           placeholder  = "Name"
           title        = "Name"
@@ -61,7 +60,6 @@ RegisterForm = React.createClass
       
         <Field
           errors       = { @props.errors.email }
-          name         = "email"
           onChange     = { @getChangeHandler("email") }
           placeholder  = "Email"
           title        = "Email"
