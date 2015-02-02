@@ -10,7 +10,7 @@ class CompaniesController < ApplicationController
     :finance,
     :settings
   ]
-  before_action :set_collection, only: [:index, :search]
+  before_action :set_companies, only: [:index, :search]
 
   load_and_authorize_resource
   
@@ -176,14 +176,14 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    @company = Company.find(params[:id])
+    @company = find_company(Company.includes(:roles))
   end
 
   def find_company(relation)
     relation.find_by(slug: params[:id]) || relation.find(params[:id])
   end
 
-  def set_collection
+  def set_companies
     @companies = Company.search(params)
   end
 
