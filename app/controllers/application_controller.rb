@@ -31,8 +31,7 @@ private
 
   def store_location
     return if current_user || !request.get? || request.xhr? ||
-      request.path == cloud_profile.login_path || request.path == cloud_profile.signup_path ||
-      (controller_name == "passwords" && action_name == "reset")
+      "#{controller_name}##{action_name}" =~ /authentications#new|users#new|passwords#reset/
 
     session[:previous_path] = request.fullpath
   end
