@@ -70,7 +70,6 @@ RegisterForm = React.createClass
 
         <Field
           errors       = { @props.errors.password }
-          name         = "password"
           onChange     = { @getChangeHandler("password") } 
           placeholder  = "Password"
           title        = "Password"

@@ -52,7 +52,7 @@ module CloudProfile
         user = User.new(full_name: "some", invite: params[:invite])
 
         if user.invite.present?
-          pagescript_params(invite: params[:invite], email: user.invite.data[:email])
+          pagescript_params(invite: params[:invite], email: user.invite.data.try(:[], :email), full_name: user.invite.data.try(:[], :full_name))
         else
           redirect_to main_app.root_path
         end

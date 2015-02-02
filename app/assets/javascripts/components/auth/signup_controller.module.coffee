@@ -51,11 +51,13 @@ RegisterController = React.createClass
   propTypes:
     attributes: React.PropTypes.object
     email:      React.PropTypes.string
+    full_name:  React.PropTypes.string
     invite:     React.PropTypes.string
 
   getDefaultProps: ->
     attributes: {}
     email:      ''
+    full_name:  ''
     invite:     ''
 
   getInitialState: ->
@@ -63,6 +65,9 @@ RegisterController = React.createClass
 
     if @props.email != ''
       attributes.email = @props.email
+
+    if @props.full_name != ''
+      attributes.full_name = @props.full_name
 
     attributes: attributes
     errors:     {}
