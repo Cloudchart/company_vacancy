@@ -26,7 +26,7 @@ gem 'impressionist' # tracks page views
 gem 'dotenv-rails' # loads environment variables from .env
 gem 'sidekiq' # background processing using redis
 gem 'active_model_serializers', '= 0.8.1'
-gem 'dragonfly', '~> 1.0.5'
+gem 'dragonfly', '~> 1.0'
 gem 'sprockets-commonjs', git: 'git@github.com:maccman/sprockets-commonjs.git'
 gem 'sprockets-coffee-react'
 gem 'redis-rails'
@@ -38,7 +38,7 @@ gem 'cloud_profile', path: 'vendor/engines/cloud_profile'
 gem 'cloud_blueprint', path: 'vendor/engines/cloud_blueprint'
 
 # Cloudchart Gems
-# 
+#
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 gem 'bootstrap-wysihtml5-rails', git: 'git@github.com:Cloudchart/bootstrap-wysihtml5-rails.git'
 

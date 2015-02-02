@@ -4,11 +4,11 @@ require 'dragonfly'
 Dragonfly.app.configure do
   plugin :imagemagick
 
-  protect_from_dos_attacks true
+  verify_urls true
   secret "e3abcde82d70489133c44e2d5f4d20f26a61de6256fc0ad51358ae5671142819"
 
   url_format "/media/:job/:name"
-  
+
   if Rails.env.production?
     url_host '//i.cloudchart.co'
   end

@@ -126,7 +126,8 @@ GEM
     dotenv (0.10.0)
     dotenv-rails (0.10.0)
       dotenv (= 0.10.0)
-    dragonfly (1.0.5)
+    dragonfly (1.0.7)
+      addressable (~> 2.3)
       multi_json (~> 1.0)
       rack
     erubis (2.7.0)
@@ -380,7 +381,7 @@ DEPENDENCIES
   cloud_profile!
   coffee-rails (~> 4.0.1)
   dotenv-rails
-  dragonfly (~> 1.0.5)
+  dragonfly (~> 1.0)
   factory_girl_rails
   font-awesome-rails
   impressionist
