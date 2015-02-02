@@ -12,7 +12,6 @@ LoginForm = React.createClass
   # Component specifications
   #
   propTypes:
-    attributes:   React.PropTypes.object
     errors:       React.PropTypes.object
     isDisabled:   React.PropTypes.bool
     isResetShown: React.PropTypes.bool
@@ -23,7 +22,6 @@ LoginForm = React.createClass
     onSubmit:     React.PropTypes.func
 
   getDefaultProps: ->
-    attributes:   {}
     errors:       {}
     isDisabled:   false
     isResetShown: false
@@ -63,8 +61,7 @@ LoginForm = React.createClass
           placeholder  = "Email"
           ref          = "email"
           title        = "Email"
-          type         = "email"
-          value        = { @props.attributes.email } />
+          type         = "email" />
 
         <Field
           errors       = { @props.errors.password }
@@ -73,8 +70,7 @@ LoginForm = React.createClass
           placeholder  = "Password"
           ref          = "password"
           title        = "Password"
-          type         = "password"
-          value        = { @props.attributes.password } />
+          type         = "password" />
       </fieldset>
       
       <footer>

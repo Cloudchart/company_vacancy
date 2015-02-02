@@ -42,7 +42,6 @@ LoginController = React.createClass
   # Component Specifications
   # 
   getInitialState: ->
-    attributes: {}
     errors:     {}
     isSyncing:  false
 
@@ -123,19 +122,15 @@ LoginController = React.createClass
     ModalStack.show(<ResetSplash />)
 
   handleFormChange: (name, value) ->
-    attributes = @state.attributes
-    attributes[name] = value
     errors = {}
 
     @setState
       isResetShown: false
-      attributes:   attributes
       errors:       errors
 
 
   render: ->
     <LoginForm
-      attributes   = { @state.attributes }
       errors       = { getErrorMessages(@state.errors) }
       isResetShown = { @state.isResetShown }
       isSyncing    = { @state.isSyncing }

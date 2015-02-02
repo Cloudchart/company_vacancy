@@ -201,6 +201,10 @@
   &.invalid {
     .input {
       background-color: hsl(358, 77%, 78%);
+
+      input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 50px hsl(358, 77%, 78%) inset;
+      }
     }
   }
 
