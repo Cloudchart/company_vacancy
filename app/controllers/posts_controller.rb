@@ -11,7 +11,7 @@ class PostsController < ApplicationController
 
         pagescript_params(
           company_id: @company.id,
-          story_id: Story.find_by(name: params[:story_name]).try(:id)
+          story_id: Story.cc_plus_company(@company.id).find_by(name: params[:story_name]).try(:id)
         )
       }
 
@@ -30,7 +30,7 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = @company.posts.build(post_params)
+    @post = find_company(Company.includes(:roles)).posts.build(post_params)
 
     if @post.save
       respond_to do |format|
