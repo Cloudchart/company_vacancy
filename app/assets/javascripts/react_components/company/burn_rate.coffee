@@ -1,10 +1,6 @@
-##= require components/Person
-
 # Imports
 # 
 tag = React.DOM
-
-PersonComponent = cc.require('cc.components.Person')
 
 # Main Component
 # 

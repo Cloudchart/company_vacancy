@@ -1,7 +1,6 @@
 //= require_self
 //= require ./mixins
 //= require ./shared
-//= require ./editor
 //= require ./company/burn_rate
 
 this.cc       || ( this.cc        = {} )
