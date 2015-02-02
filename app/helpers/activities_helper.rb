@@ -53,7 +53,6 @@ private
   def source_name(activity)
     if activity.trackable_type =~ /Block|Event|Person|Vacancy/
       source_name = ' on '
-      Rails.logger.info("\n #{'*'*25} #{activity} #{'*'*25} \n")
       source_name += activity.subscriber_id ? 'it' : activity.source.try(:name) || activity.source.try(:title)
       source_name += "'s page"
 

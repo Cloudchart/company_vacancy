@@ -148,7 +148,7 @@ private
   end
 
   def role_value(user, company)
-    company.roles.select { |role| role.user_id == user.id }.first.try(:value)
+    user.roles.select { |role| role.owner_id == company.id }.first.try(:value)
   end
 
 end

@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
   rails_admin do
 
     list do
-      include_fields :first_name, :is_admin, :companies, :created_at
+      include_fields :first_name, :companies, :created_at
       sort_by :created_at
 
       field :first_name do
@@ -52,6 +52,10 @@ class User < ActiveRecord::Base
 
     end
 
+  end
+
+  def is_admin?
+    !!roles.select { |role| role.owner_id == nil && role.owner_type == nil && role.value == 'admin' }.first
   end
 
   def has_already_voted_for?(object)
