@@ -1,3 +1,11 @@
+###
+  Used in:
+
+  components/editor/BlockIdentityController
+  components/editor/IdentitySelector
+  react_components/shared/identity_list
+###
+
 ##= require utils/Colors
 ##= require components/Avatar
 ##= require stores/VacancyStore

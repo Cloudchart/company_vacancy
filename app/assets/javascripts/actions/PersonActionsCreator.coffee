@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  components/Person
+###
+
 ##= require dispatcher/Dispatcher
 ##= require stores/PersonStore
 

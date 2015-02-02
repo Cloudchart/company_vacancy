@@ -1,3 +1,9 @@
+###
+  Used in:
+
+  components/editor/IdentitySelector
+###
+
 # Imports
 #
 tag = React.DOM

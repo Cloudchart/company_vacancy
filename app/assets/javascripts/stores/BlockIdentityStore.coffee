@@ -1,3 +1,11 @@
+###
+  Used in:
+  
+  actions/BlockIdentityActionsCreator
+  editor/BlockIdentityController
+  react_components/editor/blocks/people
+###
+
 ##= require dispatcher/Dispatcher
 ##= require stores/Base
 ##= require stores/PersonStore

@@ -1,3 +1,8 @@
+###
+  Used in:
+  react_components/editor/blocks/people
+###
+
 ##= require actions/BlockIdentityActionsCreator
 ##= require components/Person
 ##= require components/Vacancy

@@ -1,3 +1,11 @@
+###
+  Used in:
+
+  components/Person
+  components/Vacancy
+  controllers/companies/invites#show
+###
+
 ##= require utils/Colors
 ##= require utils/Letters
 
