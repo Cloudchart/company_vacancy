@@ -53,7 +53,16 @@ Component = React.createClass
 
   onQueryChange: (event) ->
     @setState({ query: event.target.value })
+
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores())
+
+  componentDidMount: ->
+    PersonStore.on('change', @refreshStateFromStores)
   
+  componentWillUnmount: ->
+    PersonStore.off('change', @refreshStateFromStores)
+
   
   getStateFromStores: ->
     block = BlockStore.get(@props.key)
