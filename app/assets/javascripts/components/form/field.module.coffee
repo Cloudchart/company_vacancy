@@ -69,7 +69,7 @@ MainComponent = React.createClass
         <Input
           autoFocus    = { @props.autoFocus }
           defaultValue = { @props.defaultValue }
-          name         = { @props.valueName }
+          name         = { @props.name }
           onChange     = { @onChange }
           onBlur       = { @onBlur }
           onFocus      = { @onFocus }
