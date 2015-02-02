@@ -1,62 +1,25 @@
-relations = begin
-  eval(params[:relations])
-rescue SyntaxError, TypeError
-  []
+relations   = parse_relations_query(params[:relations])
+
+data        = {}
+
+
+# Fetch
+#
+data[:posts] = Post.includes(build_relations_includes(relations)).find(params[:ids])
+
+
+# Traverse
+#
+data[:posts].each do |post|
+  traverse_relations(post, relations, data)
 end
 
 
-@__data = {}
-
-
-def __ensure(key)
-  @__data[key] ||= []
-end
-
-
-def traverse(object, relations = [])
-  assocs = object.class.reflect_on_all_associations
-
-  case relations
-  when Symbol
-    assoc = assocs.find { |a| a.name == relations }
-    data  = object.public_send(relations)
-    data  = [data] unless assoc.collection?
-    data  = data.to_a.compact
-    __ensure(data.first.class.name.pluralize.underscore.to_sym).concat(data)
-    data
-
-  when Hash
-    relations.each do |relation, values|
-      assoc = assocs.find { |a| a.name == relation }
-      data  = object.public_send(relation)
-      data  = [data] unless assoc.collection?
-      data  = data.to_a.compact
-      __ensure(data.first.class.name.pluralize.underscore.to_sym).concat(data)
-      data
-
-      data.each do |item|
-        traverse(item, values)
-      end
-    end
-  when Array
-    relations.each do |relation|
-      traverse(object, relation)
-    end
-  end
-end
-
-
-posts = Post.includes(relations).find(params[:ids])
-
-posts.each do |post|
-  __ensure(:posts) << post
-  traverse(post, relations)
-end
-
-
-@__data.each do |k, vs|
-  name = k.to_s.singularize
-  json.set! k, vs.flatten.compact.uniq do |v|
-    json.partial! name, :"#{name}" => v
+# Render
+#
+data.each do |key,values|
+  name = key.to_s.singularize
+  json.set! key, values.flatten.compact.uniq do |value|
+    json.partial! name, :"#{name}" => value
   end
 end

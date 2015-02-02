@@ -20,6 +20,10 @@ PinComponent          = require('components/pinnable/pin')
 SettingsFormComponent = require('components/pinboards/settings_form')
 
 
+# Utils
+#
+query = require('utils/query')
+
 # Exports
 #
 module.exports = React.createClass
@@ -32,8 +36,18 @@ module.exports = React.createClass
 
 
   statics:
-    getQuery: ->
-      relations: '[pins: [:user, { parent: :user }]]'
+    query: """
+
+      Pinboard {
+        pins {
+          user,
+          parent {
+            user
+          }
+        }
+      }
+
+    """
 
     getCursor: (uuid) ->
       pinboard: PinboardStore.cursor.items.cursor(uuid)
@@ -92,8 +106,8 @@ module.exports = React.createClass
 
 
   componentDidMount: ->
-    PinboardStore.fetchAll(@constructor.getQuery()) unless @props.cursor.pinboard.deref()
-    @preloadTransparentPins()
+    { relations } = query.get(@constructor.query)
+    PinboardStore.fetchAll(relations: relations) unless @props.cursor.pinboard.deref()
 
 
   onGlobalStateChange: ->

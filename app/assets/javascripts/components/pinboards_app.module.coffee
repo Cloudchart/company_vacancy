@@ -12,15 +12,16 @@ PinStore        = require('stores/pin_store')
 ModalActions  = require('actions/modal_actions')
 
 
+# Utils
+#
+query = require('utils/query')
+
+
 # Components
 #
 PinboardComponent     = require('components/pinboards/pinboard')
 SettingsFormComponent = require('components/pinboards/settings_form')
 PinComponent          = require('components/pinnable/pin')
-
-
-fetchParams =
-  relations: '[pins: [:user, { parent: :user }]]'
 
 
 PinboardListItemComponent = React.createClass
@@ -142,7 +143,8 @@ module.exports = React.createClass
 
 
   componentDidMount: ->
-    PinboardStore.fetchAll(fetchParams)
+    { relations } = query.get(PinboardComponent.query)
+    PinboardStore.fetchAll(relations: relations)
 
 
   getDefaultProps: ->

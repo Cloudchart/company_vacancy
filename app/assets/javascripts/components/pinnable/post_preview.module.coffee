@@ -23,6 +23,11 @@ BlockComponent = require('components/pinnable/block')
 Avatar = require('components/avatar')
 
 
+# Utila
+#
+query = require('utils/query')
+
+
 # Exports
 #
 module.exports = React.createClass
@@ -43,10 +48,29 @@ module.exports = React.createClass
       pin:        PinStore.get(pin.get('uuid'))
 
     queries:
-      full:
-        relations: '[:owner, blocks: [:paragraph, :picture, block_identities: :identity]]'
-      preview:
-        relations: '[:owner]'
+      full: """
+
+        Post {
+          owner,
+          blocks {
+            paragraph,
+            picture,
+            block_identities {
+              identity
+            }
+          }
+        }
+
+      """
+
+      preview: """
+
+        Post {
+          owner
+        }
+
+      """
+
 
 
   renderPinContent: ->
@@ -88,7 +112,12 @@ module.exports = React.createClass
 
 
   componentDidMount: ->
-    PostStore.fetchOne(@props.uuid, if @props.skipBlocks then @constructor.queries.preview else @constructor.queries.full)
+    { relations } = query.get if @props.skipBlocks
+      @constructor.queries.preview
+    else
+      @constructor.queries.full
+
+    PostStore.fetchOne(@props.uuid, relations: relations)
 
 
 
