@@ -1,12 +1,9 @@
-##= require ./splash
-
-#
-#
 tag = React.DOM
 
-# SplashComponent = cc.require('react/modals/invite-splash')
-
 invite_re = /^([a-zA-Z]{1,4}\s){11}[a-zA-Z]{1,4}$/
+
+RequestInviteForm = require("react_components/modals/request_invite_form")
+ModalStack        = require("components/modal_stack")
 
 #
 #
@@ -44,20 +41,13 @@ Component = React.createClass
   onBackLinkClick: (event) ->
     event.preventDefault()
     
-    event = new CustomEvent('modal:pop')
-
-    window.dispatchEvent(event)
+    ModalStack.hide()
  
   onInviteButtonClick: (event) ->
     event.preventDefault()
 
-    component = cc.require('react/modals/request-invite-form')
-    
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: (component {})
-    
-    dispatchEvent(event)    
+    ModalStack.hide()
+    ModalStack.show(RequestInviteForm({}))
 
   onSubmit: (event) ->
     event.preventDefault()
@@ -125,4 +115,4 @@ Component = React.createClass
 
 #
 #
-cc.module('react/modals/invite-form').exports = Component
+module.exports = Component

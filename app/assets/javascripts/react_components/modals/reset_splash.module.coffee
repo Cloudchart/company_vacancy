@@ -1,10 +1,8 @@
-##= require ./splash
-
 # Imports
 #
 tag = cc.require('react/dom')
 
-SplashComponent = cc.require('react/modals/splash')
+SplashComponent = require('react_components/modals/splash')
 
 
 # Main Component
@@ -21,4 +19,4 @@ Component = React.createClass
 
 # Exports
 #
-cc.module('react/modals/reset-splash').exports = Component
+module.exports = Component

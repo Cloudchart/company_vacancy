@@ -1,6 +1,11 @@
 # @cjsx React.DOM
 
-LoginForm = require('components/auth/login_form')
+LoginForm   = require("components/auth/login_form")
+
+ModalStack  = require("components/modal_stack")
+
+ResetSplash = require("react_components/modals/reset_splash")
+InviteForm  = require("react_components/modals/invite_form")
 
 email_re = /.+@.+\..+/i
 
@@ -80,18 +85,13 @@ LoginController = React.createClass
 
   showInviteModal: (event) ->
     event.preventDefault()
-    
-    component = cc.require("react/modals/invite-form")
-    
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: (component {
-          invite: @state.invite
-          full_name: @state.full_name
-          email: @state.email
-        })
-    
-    dispatchEvent(event)
+
+    ModalStack.show(
+      <InviteForm 
+        invite    = { @state.invite }
+        full_name = { @state.full_name }
+        email     = { @state.email } />
+    )
 
 
   # Handlers
@@ -107,14 +107,8 @@ LoginController = React.createClass
       errors: errors
       isResetShown: @isPasswordInvalid(errors)
 
-  handleRequestResetDone: (json) ->
-    component = cc.require('react/modals/reset-splash')
-
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: (component {})
-    
-    dispatchEvent(event)
+  handleResetPasswordRequestDone: (json) ->
+    ModalStack.show(<ResetSplash />)
 
   handleFormChange: (name, value) ->
     attributes = @state.attributes

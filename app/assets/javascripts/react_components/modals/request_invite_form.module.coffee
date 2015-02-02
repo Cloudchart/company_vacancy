@@ -1,13 +1,10 @@
-##= require ./splash
-
-#
-#
 tag = cc.require('react/dom')
 
-SplashComponent = cc.require('react/modals/invite-splash')
+SplashComponent = require('react_components/modals/invite_splash')
 
 email_re = /.+@.+\..+/i
 
+ModalStack  = require("components/modal_stack")
 
 #
 #
@@ -31,11 +28,8 @@ Component = React.createClass
   
   
   onInviteDone: (json) ->
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: SplashComponent({})
-    
-    window.dispatchEvent(event)
+    ModalStack.hide()
+    ModalStack.show(SplashComponent({}))
   
   
   onInviteFail: (xhr) ->
@@ -63,9 +57,7 @@ Component = React.createClass
   onBackLinkClick: (event) ->
     event.preventDefault()
     
-    event = new CustomEvent('modal:pop')
-
-    window.dispatchEvent(event)
+    ModalStack.hide()
   
   
   onSubmit: (event) ->
@@ -150,4 +142,4 @@ Component = React.createClass
 
 #
 #
-cc.module('react/modals/request-invite-form').exports = Component
+module.exports = Component

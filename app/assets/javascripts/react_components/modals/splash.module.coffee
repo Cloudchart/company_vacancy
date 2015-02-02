@@ -2,6 +2,8 @@
 #
 tag = cc.require('react/dom')
 
+ModalStack = require('components/modal_stack')
+
 
 # Main Component
 #
@@ -9,8 +11,7 @@ Component = React.createClass
 
 
   onClick: (event) ->
-    event = new CustomEvent 'modal:close'
-    window.dispatchEvent(event)
+    ModalStack.hide()
 
 
   render: ->
@@ -34,4 +35,4 @@ Component = React.createClass
 
 # Exports
 #
-cc.module('react/modals/splash').exports = Component
+module.exports = Component

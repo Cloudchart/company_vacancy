@@ -1,6 +1,9 @@
 # @cjsx React.DOM
 
-SignupForm = require('components/auth/signup_form')
+SignupForm  = require('components/auth/signup_form')
+
+ModalStack  = require('components/modal_stack')
+Splash      = require('react_components/modals/splash')
 
 email_re = /.+@.+\..+/i
 
@@ -105,14 +108,11 @@ RegisterController = React.createClass
     if json.state == 'activation'
       @setState(isSyncing: false)
 
-      event = new CustomEvent 'modal:push',
-        detail:
-          component: SplashComponent({
-            header: 'Activation'
-            note: 'We have sent an activation email.'
-          })
-      
-      window.dispatchEvent(event)
+      ModalStack.show(
+        <Splash
+            header = 'Activation'
+            note   = 'We have sent an activation email.' />
+      )
   
   handleSignupFail: (xhr) ->
     @setState(isSyncing: false)

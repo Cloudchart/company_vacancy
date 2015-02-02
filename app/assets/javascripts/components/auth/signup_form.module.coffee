@@ -2,7 +2,7 @@
 
 tag = cc.require('react/dom')
 
-SplashComponent = cc.require('react/modals/splash')
+SplashComponent = require('react_components/modals/splash')
 
 Field   = require("components/form/field")
 Buttons = require("components/form/buttons")

@@ -1,32 +1,14 @@
-# Login form
-#
-if (LoginButton = document.querySelector('[data-behaviour~="login-button"]')) and (LoginForm = cc.require('react/modals/login-form'))
-  LoginButton.addEventListener 'click', (event) ->
-    event.preventDefault()
-
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: LoginForm({})
-
-    window.dispatchEvent(event)
-
-  LoginButton.click() if window.location.hash == '#login'
-
-
 # Invite form
 #
-if (InviteButton = document.querySelector('[data-behaviour~="invite-button"]')) and (InviteForm = cc.require('react/modals/invite-form'))
+if (InviteButton = document.querySelector('[data-behaviour~="invite-button"]')) and (InviteForm = require('react_components/modals/invite_form'))
+  ModalStack = require('components/modal_stack')
+
   InviteButton.addEventListener 'click', (event) ->
     event.preventDefault()
 
-    event = new CustomEvent 'modal:push',
-      detail:
-        component: InviteForm({})
-
-    window.dispatchEvent(event)
+    ModalStack.show(InviteForm({}))
 
   InviteButton.click() if window.location.hash == '#invite'
-
 
 #
 #
