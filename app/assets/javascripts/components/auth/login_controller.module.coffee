@@ -55,13 +55,20 @@ LoginController = React.createClass
   isValid: (errors) ->
     _.all(_.values(errors), (error) -> error.length == 0)
 
-  requestLogin: ->
+  getDOMAttributes: ->
     loginForm = this.refs.loginForm
     emailValue = loginForm.refs.email.refs.input.getDOMNode().value
     passwordValue = loginForm.refs.password.refs.input.getDOMNode().value
 
+    attributes =
+      email: emailValue
+      password: passwordValue    
+
+  requestLogin: ->
+    attributes = @getDOMAttributes()
+
     if @isValid(@state.errors)
-      errors = validate(@state.attributes)
+      errors = validate(attributes)
 
       if @isValid(errors)
         @setState(isSyncing: true)
@@ -71,12 +78,12 @@ LoginController = React.createClass
           type:       'POST'
           dataType:   'json'
           data:
-            email:      emailValue
-            password:   passwordValue
+            email:      attributes.email
+            password:   attributes.password
         .done @handleRequestLoginDone
         .fail @handleRequestLoginFail
       else
-        @setState(errors: errors)
+        @setState(attributes: attributes, errors: errors)
 
   requestReset: ->
     $.ajax
@@ -108,6 +115,7 @@ LoginController = React.createClass
     errors = xhr.responseJSON.errors
 
     @setState
+      attributes: @getDOMAttributes()
       errors: errors
       isResetShown: @isPasswordInvalid(errors)
 
