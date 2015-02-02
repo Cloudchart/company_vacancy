@@ -11,7 +11,7 @@ class PostsController < ApplicationController
 
         pagescript_params(
           company_id: @company.id,
-          story_id: @stories.find_by(name: params[:story_name]).try(:id)
+          story_id: Story.find_by(name: params[:story_name]).try(:id)
         )
       }
 
