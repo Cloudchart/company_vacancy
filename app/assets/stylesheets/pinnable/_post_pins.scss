@@ -1,6 +1,6 @@
 .post-pins {
   @include position(fixed, 0px 0px 0px null);
-  
+
   margin: 10px 0;
   overflow: scroll;
   padding: 0 10px;
@@ -8,10 +8,10 @@
   padding-right: 30px;
   pointer-events: none;
   width: 270px;
-  
-  > ul.insite-list {
+
+  > ul.insight-list {
     pointer-events: auto;
     width: 100%;
   }
-  
+
 }

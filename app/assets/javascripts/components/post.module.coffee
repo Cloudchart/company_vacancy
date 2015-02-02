@@ -3,7 +3,7 @@
 GlobalState = require('global_state/state')
 
 # Imports
-# 
+#
 PostStore           = require('stores/post_store')
 PostsStoryStore     = require('stores/posts_story_store')
 VisibilityStore     = require('stores/visibility_store')
@@ -24,17 +24,17 @@ FieldWrapper        = require('components/editor/field_wrapper')
 Counter             = require('components/shared/counter')
 Hint                = require('components/shared/hint')
 renderHint          = require('utils/render_hint')
-InsiteList          = require('components/insite/list')
+InsightList          = require('components/insight/list')
 
 
 # Main
-# 
+#
 Component = React.createClass
 
   mixins: [GlobalState.mixin]
 
   # Helpers
-  # 
+  #
   getVisibilityOptions: ->
     public:  'Public'
     trusted: 'Trusted'
@@ -51,14 +51,14 @@ Component = React.createClass
 
 
   # Handlers
-  # 
+  #
   handleEffectiveDateUpdate: (from, till) ->
     effective_from = moment(from).format('YYYY-MM-DD')
     effective_till = moment(till).format('YYYY-MM-DD')
     return if @state.post.effective_from is effective_from and @state.post.effective_till is effective_till
 
     @update({ effective_from: effective_from, effective_till: effective_till })
-  
+
 
   handleTitleChange: (content) ->
     @update(title: @getStrippedTitle(content))
@@ -96,7 +96,7 @@ Component = React.createClass
 
 
   # Lifecycle Methods
-  # 
+  #
   componentDidMount: ->
     $(document).on 'keydown', @handleKeydown
     PostStore.on('change', @refreshStateFromStores)
@@ -112,9 +112,9 @@ Component = React.createClass
     VisibilityStore.off('change', @refreshStateFromStores)
 
   # Component Specifications
-  # 
+  #
   getPublishedAt: (post) ->
-    if post 
+    if post
       if moment(post.published_at).isValid()
         moment(post.published_at).format('ll')
       else
@@ -136,8 +136,8 @@ Component = React.createClass
     published_at: @getPublishedAt(post)
     visibility: visibility
     visibility_value: if visibility then visibility.value else 'public'
-  
-  
+
+
   getDefaultProps: ->
     cursor:
       pins: PinStore.cursor.items
@@ -149,24 +149,24 @@ Component = React.createClass
 
 
   # Renderers
-  # 
+  #
   renderVisibilityDropdown: ->
     return null if @props.readOnly
 
     <aside>
-      <Dropdown 
+      <Dropdown
         options  = { @getVisibilityOptions() }
         value    = { @state.visibility_value }
-        onChange = { @handleVisibilityChange } 
+        onChange = { @handleVisibilityChange }
       />
     </aside>
-  
-  
+
+
   renderPins: ->
-    return null if PinStore.filterInsitesForPost(@props.id).size == 0
+    return null if PinStore.filterInsightsForPost(@props.id).size == 0
 
     <div className="post-pins">
-      <InsiteList pinnable_id={ @props.id } pinnable_type="Post" />
+      <InsightList pinnable_id={ @props.id } pinnable_type="Post" />
     </div>
 
 
@@ -174,13 +174,13 @@ Component = React.createClass
     return null if @props.readOnly
 
     <div className="controls">
-      <button 
+      <button
         className="cc alert"
         onClick={@handleDestroyClick}>
         Delete
       </button>
 
-      <button 
+      <button
         ref="okButton"
         className="cc"
         onClick={@handleOkClick}>
@@ -188,7 +188,7 @@ Component = React.createClass
       </button>
     </div>
 
-  
+
   renderEffectiveDate: ->
     <FuzzyDateInput
       from      = { @state.post.effective_from }
@@ -199,7 +199,7 @@ Component = React.createClass
 
 
   # Main render
-  # 
+  #
   render: ->
     return null unless @state.post
 
@@ -220,7 +220,7 @@ Component = React.createClass
               value = { @state.post.title }
             />
           </label>
-          <Counter 
+          <Counter
             count   = { @getTitleLimit(@state.titleLength) }
             visible = { !@props.readOnly && @state.titleFocused } />
           <Hint
@@ -232,7 +232,7 @@ Component = React.createClass
           <label className="published-at">
             { @renderEffectiveDate() }
           </label>
-          <Hint 
+          <Hint
             content = { renderHint("date") }
             visible = { !@props.readOnly } />
         </FieldWrapper>
@@ -242,7 +242,7 @@ Component = React.createClass
             post_id     = { @state.post.uuid }
             company_id  = { @props.company_id }
             readOnly    = { @props.readOnly } />
-          <Hint 
+          <Hint
             content = { renderHint("stories") }
             visible = { !@props.readOnly } />
         </FieldWrapper>
@@ -263,7 +263,7 @@ Component = React.createClass
           taggable_id   = {@state.post.uuid}
           taggable_type = "Post"
           readOnly      = {@props.readOnly} />
-        <Hint 
+        <Hint
           content = { renderHint("tags") }
           visible = { !@props.readOnly } />
       </FieldWrapper>
@@ -274,5 +274,5 @@ Component = React.createClass
     </div>
 
 # Exports
-# 
+#
 module.exports = Component

@@ -22,7 +22,7 @@ ContentEditableArea = require('components/form/contenteditable_area')
 PersonAvatar        = require('components/shared/person_avatar')
 Avatar              = require('components/avatar')
 
-InsiteListComponent = require('components/insite/list')
+InsightListComponent = require('components/insight/list')
 
 PinButton           = require('components/pinnable/pin_button')
 
@@ -163,8 +163,8 @@ Component = React.createClass
 
   # Renderers
   #
-  renderInsites: ->
-    <InsiteListComponent pinnable_id={ @props.uuid } pinnable_type="Post" />
+  renderInsights: ->
+    <InsightListComponent pinnable_id={ @props.uuid } pinnable_type="Post" />
 
 
   renderPinPostItem: ->
@@ -273,7 +273,7 @@ Component = React.createClass
 
     <article className={article_classes}>
       { @renderControls() }
-      { @renderInsites() }
+      { @renderInsights() }
 
       <a href="" onClick={@handleEditClick}>
         { @renderHeader() }

@@ -25,7 +25,7 @@ cx = React.addons.classSet
 #
 module.exports = React.createClass
 
-  displayName: 'InsiteItem'
+  displayName: 'InsightItem'
 
   mixins: [GlobalState.mixin]
 
@@ -87,7 +87,7 @@ module.exports = React.createClass
     return null unless @props.cursor.pin.deref()
     return null unless @state.user.deref()
 
-    <li className="insite">
+    <li className="insight">
       { @renderAvatar() }
       { @renderUser() }
       { @renderButtons() }
