@@ -19,6 +19,10 @@ SettingsFormComponent = require('components/pinboards/settings_form')
 PinComponent          = require('components/pinnable/pin')
 
 
+fetchParams =
+  relations: '[pins: [:user, { parent: :user }]]'
+
+
 PinboardListItemComponent = React.createClass
 
 
@@ -106,7 +110,7 @@ module.exports = React.createClass
 
 
   gatherPinboards: ->
-    @props.cursor.pinboards.deref(PinboardStore.empty)
+    @props.cursor.pinboards
 
       .filter (pinboard) =>
         pins = PinStore.cursor.items.filter (pin) => pin.get('user_id') == @props.currentUserId and pin.get('pinboard_id') == pinboard.get('uuid')
@@ -137,14 +141,8 @@ module.exports = React.createClass
 
 
 
-
-  onGlobalStateChange: ->
-    @setState
-      refreshed_at: + new Date
-
-
   componentDidMount: ->
-    PinboardStore.fetchAll()
+    PinboardStore.fetchAll(fetchParams)
 
 
   getDefaultProps: ->

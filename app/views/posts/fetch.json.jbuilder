@@ -1,6 +1,3 @@
-# json.post   ams(@post)
-# json.owner  ams(@post.owner)
-
 relations = begin
   eval(params[:relations])
 rescue SyntaxError, TypeError
@@ -49,10 +46,12 @@ def traverse(object, relations = [])
 end
 
 
-post = Post.includes(relations).find(params[:id])
+posts = Post.includes(relations).find(params[:ids])
 
-__ensure(:posts) << post
-traverse(post, relations)
+posts.each do |post|
+  __ensure(:posts) << post
+  traverse(post, relations)
+end
 
 
 @__data.each do |k, vs|

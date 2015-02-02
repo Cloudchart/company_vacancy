@@ -29,21 +29,21 @@ PartialPinComponent = React.createClass
 module.exports = React.createClass
 
   displayName: 'Pin'
-  
+
 
   mixins: [GlobalState.mixin]
-  
-  
+
+
   handleUnpinClick: ->
     if confirm('Are you sure?')
       PinStore.destroy(@props.uuid)
-  
-  
+
+
   onGlobalStateChange: ->
     @setState
       refreshed_at: + new Date
-  
-  
+
+
   renderPinPreview: ->
     pin       = @props.cursor.deref()
     component = PinnablePreviewComponents[pin.get('pinnable_type')]
@@ -53,11 +53,11 @@ module.exports = React.createClass
       cursor:       component.getCursor(pin)
       onUnpinClick: @handleUnpinClick
       skipBlocks:   @props.skipBlocks
-  
-  
+
+
   render: ->
     return null unless @props.cursor.deref()
-    
+
     if @props.cursor.get('--part--') == true
       <PartialPinComponent />
     else

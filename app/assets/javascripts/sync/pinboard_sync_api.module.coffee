@@ -6,24 +6,27 @@ pendingPromises = {}
 # Exports
 #
 module.exports =
-  
-  fetchAll: (force = false) ->
-    delete pendingPromises['fetchAll'] if force == true
+
+
+  fetchAll: (params = {}, options = {}) ->
+    delete pendingPromises['fetchAll'] if options.force == true
 
     pendingPromises['fetchAll'] ||= Promise.resolve $.ajax
       url:      '/pinboards'
       dataType: 'json'
       cache:    false
-  
-  
-  fetchOne: (id, force = false) ->
-    delete pendingPromises['fetchOne' + id] if force == true
+      data:     params
+
+
+  fetchOne: (id, params = {}, options = {}) ->
+    delete pendingPromises['fetchOne' + id] if options.force == true
 
     pendingPromises['fetchOne' + id] ||= Promise.resolve $.ajax
-      url:      '/pinboards/' + id
-      dataType: 'json'
-      cache:    false
-  
+      url:        '/pinboards/' + id
+      dataType:   'json'
+      cache:      false
+      data:       params
+
 
   create: (attributes = {}, options = {}) ->
     Promise.resolve $.ajax
@@ -32,8 +35,8 @@ module.exports =
       dataType: 'json'
       data:
         pinboard: attributes
-  
-  
+
+
   update: (item, attributes = {}, options = {}) ->
     Promise.resolve $.ajax
       url:      '/pinboards/' + item.get('uuid')
@@ -41,8 +44,8 @@ module.exports =
       dataType: 'json'
       data:
         pinboard: attributes
-  
-  
+
+
   destroy: (id) ->
     Promise.resolve $.ajax
       url:      '/pinboards/' + id

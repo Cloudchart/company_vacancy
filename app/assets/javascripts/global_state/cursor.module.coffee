@@ -93,14 +93,14 @@ CursorFactory = (data, callback) ->
       @getIn([], notSetValue)
 
     get: (key, notSetValue) ->
-      @getIn([key.toString()], notSetValue)
+      @getIn([key?.toString()], notSetValue)
 
     getIn: (path, notSetValue) ->
       CurrData.getIn(@path.concat(path), notSetValue)
 
 
     set: (key, value) ->
-      @setIn([key.toString()], value)
+      @setIn([key?.toString()], value)
 
     setIn: (path, value) ->
       update('set', @path.concat(path), value)
@@ -115,7 +115,7 @@ CursorFactory = (data, callback) ->
 
 
     remove: (key) ->
-      @removeIn([key.toString()])
+      @removeIn([key?.toString()])
 
     removeIn: (path) ->
       update('unset', @path.concat(path))

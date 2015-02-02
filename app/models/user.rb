@@ -12,6 +12,8 @@ class User < ActiveRecord::Base
   has_secure_password
 
   has_and_belongs_to_many :friends
+  
+  default_scope -> { includes(:emails) }
 
   has_many :emails, -> { order(:address) }, class_name: 'CloudProfile::Email', dependent: :destroy
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy

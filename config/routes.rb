@@ -2,7 +2,7 @@ Cloudchart::Application.routes.draw do
   # Root
   #
   root to: 'welcome#index'
-  
+
   # Errors
   #
   match '/404', to: 'errors#not_found', via: [:get, :post]
@@ -25,6 +25,11 @@ Cloudchart::Application.routes.draw do
     delete :unfollow, on: :member
   end
 
+  resources :posts, only: [:fetch] do
+    get :fetch, on: :collection#, controller: :posts, action: :fetch
+  end
+
+
   # Resources
   #
   resources :companies, except: [:create, :edit], concerns: [:followable] do
@@ -34,11 +39,11 @@ Cloudchart::Application.routes.draw do
     get :finance, on: :member
     get :settings, on: :member
     get :access_rights, on: :member
-    
+
     resources :vacancies, except: :edit, shallow: true, concerns: [:statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
     end
-    
+
     resources :people, shallow: true do
       post :search, on: :collection
     end
@@ -53,10 +58,12 @@ Cloudchart::Application.routes.draw do
     end
 
     resources :posts, except: [:new, :edit], shallow: true
+
     resources :blocks, only: :create, type: :company
     resources :stories, only: [:show, :index, :create, :update], shallow: true
     get 'stories/:story_name', to: 'posts#index', as: :story
   end
+
 
   resources :blocks, only: [:update, :destroy] do
     resources :identities, shallow: true, controller: :block_identities, only: [:index, :create, :destroy]
@@ -101,7 +108,7 @@ Cloudchart::Application.routes.draw do
   resources :posts_stories, only: [:update, :destroy]
 
   # Custom
-  # 
+  #
   get ':id', to: 'pages#show', as: :page
 
 end

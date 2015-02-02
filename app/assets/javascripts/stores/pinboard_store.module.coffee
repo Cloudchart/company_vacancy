@@ -22,16 +22,16 @@ setDataFromJSON = (json) ->
 #
 
 dispatchToken = Dispatcher.register (payload) ->
-  
+
   if payload.action.type == 'fetch:done'
     [json] = payload.action.data
     setDataFromJSON(json) if json.pinboards or json.pinboard
-  
+
 
 # Fetch
 #
-fetchAll = (force = false) ->
-  promise = PinboardSyncAPI.fetchAll(force)
+fetchAll = (params = {}, options = {}) ->
+  promise = PinboardSyncAPI.fetchAll(params, options)
   promise.then(fetchDone, fetchAllFail)
   promise
 
@@ -42,7 +42,7 @@ fetchAllFail = (xhr) ->
 
 fetchOne = (id, force = false) ->
   PinboardSyncAPI.fetchOne(id, force).then(fetchDone, fetchOneFail(id))
-  
+
 
 fetchDone = (json) ->
   ItemsCursor.transaction()
@@ -50,7 +50,7 @@ fetchDone = (json) ->
   Dispatcher.handleServerAction
     type: 'fetch:done'
     data: [json]
-  
+
   ItemsCursor.commit()
 
 
@@ -66,7 +66,7 @@ createDone = (json) ->
 
 
 createFail = (xhr) ->
-  
+
 
 
 # Update
@@ -92,38 +92,38 @@ destroyFail = (xhr) ->
 # Exports
 #
 module.exports =
-  
+
   empty: EmptyPinboards
-  
+
 
   cursor:
     items: ItemsCursor
-  
-  
+
+
   dispatchToken: dispatchToken
 
 
   fetchAll: fetchAll
-  
+
 
   fetchOne: fetchOne
-  
+
 
   create: (attributes = {}, options ={}) ->
     promise = PinboardSyncAPI.create(attributes, options)
     promise.then(createDone, createFail)
     promise
-  
-  
+
+
   update: (id, attributes = {}, options = {}) ->
     currItem = ItemsCursor.get(id)
-    
+
     ItemsCursor.set(currItem.get('uuid'), currItem.set('--sync--', true))
 
     promise = PinboardSyncAPI.update(currItem, attributes, options)
     promise.then(updateDone, updateFail.bind(null, id))
     promise
-  
+
 
   destroy: (id) ->
     PinboardSyncAPI.destroy(id).then(destroyDone, destroyFail)

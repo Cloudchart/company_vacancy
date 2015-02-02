@@ -11,3 +11,5 @@ module.exports = GlobalState.createStore
 
   collectionName: 'posts'
   instanceName:   'post'
+
+  syncAPI:        require('sync/post_sync_api')

@@ -40,6 +40,13 @@ module.exports = React.createClass
       blocks:     BlockStore.cursor.items
       users:      UserStore.cursor.items
       pins:       PinStore.cursor.items
+      pin:        PinStore.get(pin.get('uuid'))
+
+    queries:
+      full:
+        relations: '[:owner, blocks: [:paragraph, :picture, block_identities: :identity]]'
+      preview:
+        relations: '[:owner]'
 
 
   renderPinContent: ->
@@ -75,9 +82,14 @@ module.exports = React.createClass
 
 
   getStateFromStores: ->
-    company:    @props.cursor.companies.get(@props.cursor.post.get('owner_id'))
     blocks:     @props.cursor.blocks.filter((block) => block.get('owner_id') == @props.uuid ).sortBy((block) -> block.get('position'))
     parentPin:  PinStore.cursor.items.cursor(@props.pin.get('parent_id'))
+
+
+
+  componentDidMount: ->
+    PostStore.fetchOne(@props.uuid, if @props.skipBlocks then @constructor.queries.preview else @constructor.queries.full)
+
 
 
   getInitialState: ->
@@ -85,11 +97,11 @@ module.exports = React.createClass
 
 
   renderCompany: ->
-    if @state.company
+    company = @props.cursor.companies.get(@props.cursor.post.get('owner_id'))
+    if company
       PostPreviewCompanyHeaderComponent
-        pin:          @props.pin
-        company:      @state.company
-        onUnpinClick: @props.onUnpinClick
+        company:      company
+        pin:          @props.cursor.pin
 
 
   renderParentPinUser: ->

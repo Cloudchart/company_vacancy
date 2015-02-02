@@ -1,4 +1,4 @@
-class PostsController < ApplicationController  
+class PostsController < ApplicationController
 
   before_action :set_post, only: [:update, :destroy]
 
@@ -20,10 +20,18 @@ class PostsController < ApplicationController
       }
     end
   end
-  
+
+
+  def fetch
+    respond_to do |format|
+      format.json
+    end
+  end
+
+
   def show
     @post = Post.includes(:owner).find(params[:id])
-    
+
     respond_to do |format|
       format.json
     end
@@ -76,5 +84,5 @@ private
   def find_company(relation)
     relation.find_by(slug: params[:company_id]) || relation.find(params[:company_id])
   end
-  
+
 end

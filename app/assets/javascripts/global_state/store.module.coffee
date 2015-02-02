@@ -35,6 +35,11 @@ StoreDefaults = Immutable.Seq
   syncAPI:          null
 
 
+# Pending queries
+#
+pendingQueries = {}
+
+
 # Store
 #
 class BaseStore
@@ -99,9 +104,35 @@ class BaseStore
       .fail =>
         throw new Error("#{@displayName}: syncAPI is undefined.")
 
-    promise = @syncAPI.fetchOne(id, params, options)
-    promise.then(@fetchDone, @fetchFail)
-    promise
+    if @syncAPI.fetchSome
+
+      query = @displayName + '?' + JSON.stringify(Immutable.Seq(params).concat(options).sortBy((v, k) -> k))
+
+      if pendingQueries[query]
+        clearTimeout pendingQueries[query].timeout
+
+      (pendingQueries[query] ||= { timeout: null, ids: [] }).ids.push(id)
+
+      pendingQueries[query].timeout = setTimeout =>
+
+        ids     = Immutable.Set(pendingQueries[query].ids)
+
+        delete pendingQueries[query]
+
+        promise = @syncAPI.fetchSome(ids.toArray(), params, options)
+        promise.then(@fetchDone, @fetchFail)
+        promise
+
+      , 10
+
+      null
+
+
+    else
+
+      promise = @syncAPI.fetchOne(id, params, options)
+      promise.then(@fetchDone, @fetchFail)
+      promise
 
 
   fetchDone: (json) ->
