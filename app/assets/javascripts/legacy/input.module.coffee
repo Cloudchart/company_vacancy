@@ -107,4 +107,4 @@ Component = React.createClass
 
 #
 #
-cc.module('react/shared/input').exports = Component
+module.exports = Component

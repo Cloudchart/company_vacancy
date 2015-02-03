@@ -1,0 +1,13 @@
+//= require_tree ./actions
+//= require_tree ./cloud_flux
+//= require_tree ./components
+//= require_tree ./controllers
+//= require_tree ./dispatcher
+//= require_tree ./draggable
+//= require_tree ./global_state
+//= require_tree ./legacy
+//= require_tree ./plugins
+//= require_tree ./stores
+//= require_tree ./sync
+//= require_tree ./ui
+//= require_tree ./utils

@@ -3,7 +3,7 @@
 tag = React.DOM
 
 LetterAvatarComponent = cc.require('react/shared/letter-avatar')
-InputComponent        = cc.require('react/shared/input')
+InputComponent        = require('legacy/input')
 
 
 # Component
