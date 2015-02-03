@@ -107,7 +107,19 @@ module.exports = React.createClass
   displayName: 'PinboardsApp'
 
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+
+  statics:
+
+    queries:
+      pinboards: ->
+        """
+          Viewer {
+            #{PinboardComponent.getQuery('preview')}
+          }
+
+        """
 
 
   gatherPinboards: ->
@@ -143,14 +155,15 @@ module.exports = React.createClass
 
 
   componentDidMount: ->
-    { relations } = query.get(PinboardComponent.query)
-    PinboardStore.fetchAll(relations: relations)
+    query = @getQuery('pinboards')
+    PinboardStore.fetchAll(relations: query.toString())
 
 
   getDefaultProps: ->
     currentUserId:  if meta = document.querySelector('meta[name="user-id"]') then meta.getAttribute('content')
     cursor:
       pinboards:  PinboardStore.cursor.items
+
 
   getInitialState: ->
     uuid: @props.uuid

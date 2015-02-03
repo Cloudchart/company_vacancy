@@ -31,7 +31,22 @@ module.exports = React.createClass
   displayName: 'Pin'
 
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+
+  statics:
+
+    queries:
+
+      preview: ->
+        """
+          Pin {
+            user,
+            parent {
+              user
+            }
+          }
+        """
 
 
   handleUnpinClick: ->

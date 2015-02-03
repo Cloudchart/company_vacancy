@@ -117,7 +117,7 @@ module.exports = React.createClass
     else
       @constructor.queries.full
 
-    PostStore.fetchOne(@props.uuid, relations: relations)
+    PostStore.fetchOne(@props.uuid, relations: relations.replace(/\s+/g, ''))
 
 
 

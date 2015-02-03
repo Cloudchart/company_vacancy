@@ -20,10 +20,6 @@ PinComponent          = require('components/pinnable/pin')
 SettingsFormComponent = require('components/pinboards/settings_form')
 
 
-# Utils
-#
-query = require('utils/query')
-
 # Exports
 #
 module.exports = React.createClass
@@ -32,22 +28,22 @@ module.exports = React.createClass
   displayName: 'Pinboard'
 
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
 
   statics:
-    query: """
 
-      Pinboard {
-        pins {
-          user,
-          parent {
-            user
+    queries:
+
+      preview: ->
+        """
+          Pinboard {
+            pins {
+              #{PinComponent.getQuery('preview')}
+            }
           }
-        }
-      }
+        """
 
-    """
 
     getCursor: (uuid) ->
       pinboard: PinboardStore.cursor.items.cursor(uuid)
@@ -106,8 +102,8 @@ module.exports = React.createClass
 
 
   componentDidMount: ->
-    { relations } = query.get(@constructor.query)
-    PinboardStore.fetchAll(relations: relations) unless @props.cursor.pinboard.deref()
+    query = @getQuery('preview')
+    PinboardStore.fetchAll(relations: query.toString()) unless @props.cursor.pinboard.deref()
 
 
   onGlobalStateChange: ->
