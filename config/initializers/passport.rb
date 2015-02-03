@@ -67,7 +67,14 @@ class Warden::SessionSerializer
   
   def deserialize(params)
     class_name, id = params
-    class_name.to_s.classify.constantize.find(id) rescue nil
+    class_name = class_name.to_s.classify
+
+    case class_name
+    when 'User'
+      class_name.constantize.includes(:roles).find(id)
+    else
+      class_name.constantize.find(id)
+    end rescue nil
   end
   
 end

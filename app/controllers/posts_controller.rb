@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
 
+  before_action :set_company, only: [:index, :create]
   before_action :set_post, only: [:update, :destroy]
 
   authorize_resource
@@ -7,17 +8,13 @@ class PostsController < ApplicationController
   def index
     respond_to do |format|
       format.html {
-        @company = Company.find(params[:company_id])
-
         pagescript_params(
           company_id: @company.id,
           story_id: Story.cc_plus_company(@company.id).find_by(name: params[:story_name]).try(:id)
         )
       }
 
-      format.json {
-        @company = find_company(Company.includes(:roles, :stories))
-      }
+      format.json
     end
   end
 
@@ -38,7 +35,7 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = find_company(Company.includes(:roles)).posts.build(post_params)
+    @post = @company.posts.build(post_params)
 
     if @post.save
       respond_to do |format|
@@ -79,6 +76,10 @@ private
 
   def set_post
     @post = Post.find(params[:id])
+  end
+
+  def set_company
+    @company = Company.find(params[:company_id])
   end
 
   def find_company(relation)

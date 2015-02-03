@@ -39,9 +39,6 @@ class CompaniesController < ApplicationController
             :vacancies,
             :pictures,
             :paragraphs,
-            :roles,
-            :tokens,
-            users: :emails,
             blocks: :block_identities
           )
         )
@@ -90,16 +87,16 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1/settings
   def settings
-    pagescript_params(id: @company.uuid)
+    pagescript_params(id: @company.id)
   end
 
   # GET /companies/1/access_rights
   def access_rights
-    @company = find_company(Company.includes(:roles, users: :emails))
+    @company = find_company(Company.includes(:roles, :tokens, users: :emails))
 
     respond_to do |format|
       format.html {
-        pagescript_params(id: @company.uuid)
+        pagescript_params(id: @company.id)
       }
       format.json {
         companies = current_user.companies
@@ -176,7 +173,7 @@ private
   
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    @company = find_company(Company.includes(:roles))
+    @company = Company.find(params[:id])
   end
 
   def find_company(relation)

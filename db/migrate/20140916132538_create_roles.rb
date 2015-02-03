@@ -5,7 +5,7 @@ class CreateRoles < ActiveRecord::Migration
       t.string :value, null: false
       t.string :user_id, limit: 36, null: false
       t.string :owner_id, limit: 36, null: false
-      t.string :owner_type, limit: 36, null: false
+      t.string :owner_type, null: false
 
       t.timestamps
     end

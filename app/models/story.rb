@@ -29,7 +29,7 @@ class Story < ActiveRecord::Base
     end
 
     edit do
-      fields :name, :company
+      fields :name
 
       field :name do
         html_attributes do

@@ -10,7 +10,8 @@ RailsAdmin.config do |config|
     'Tag',
     'Interview',
     'Story',
-    'Pinboard'
+    'Pinboard',
+    'Role'
   ]
 
   config.authenticate_with do
@@ -18,12 +19,17 @@ RailsAdmin.config do |config|
   end
   config.current_user_method(&:current_user)
 
-  config.authorize_with :cancan
+  config.authorize_with :cancan, AdminAbility
   config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail >= 3.0.0
 
   config.model 'Company' do
     visible false
-  end  
+  end
+
+  config.model 'Role' do
+    visible false
+    object_label_method :value
+  end
 
   # https://github.com/sferik/rails_admin/wiki/Actions
   config.actions do
@@ -118,7 +124,7 @@ RailsAdmin.config do |config|
       except ['User', 'Token', 'Person', 'Tag', 'Interview', 'Story', 'Pinboard']
     end
     edit do
-      except ['User', 'Token']
+      except ['Token', 'Person']
     end
     delete do
       except ['Person']
@@ -127,10 +133,10 @@ RailsAdmin.config do |config|
       except ['User', 'Token', 'Person', 'Tag', 'Story', 'Pinboard']
     end
     history_index do
-      except ['User', 'Token', 'Person', 'Pinboard']
+      except ['User', 'Token', 'Person', 'Story', 'Pinboard']
     end
     history_show do
-      except ['User', 'Token', 'Person', 'Pinboard']
+      except ['User', 'Token', 'Person', 'Story', 'Pinboard']
     end
   end
   
