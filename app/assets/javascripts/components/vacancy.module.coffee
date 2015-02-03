@@ -3,7 +3,7 @@
 tag = React.DOM
 
 AvatarComponent   = require('components/avatar')
-vacancyColor      = cc.require('cc.utils.Colors.Vacancy')
+vacancyColor      = require('utils/colors').vacancy
 
 
 # Main

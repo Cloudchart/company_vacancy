@@ -1,10 +1,9 @@
 ##= require module
-##= require colors
 
 # Imports
 #
 tag     = cc.require('react/dom')
-colours = cc.require('colours')
+colours = require('utils/colors').colors
 
 
 # 2 Letters from String

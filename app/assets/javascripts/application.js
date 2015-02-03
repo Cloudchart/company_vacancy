@@ -25,8 +25,6 @@
 //= require moment
 //= require numeral
 //= require ui
-//= require ujs
-//= require utils
 //= require ./legacy
 //= require_tree .
 //= require_tree ./controllers

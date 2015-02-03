@@ -26,7 +26,7 @@ NodeIdentityActions         = require('cloud_blueprint/actions/node_identity_act
 
 # Validations
 #
-validatePercentage          = require('validators/percentage')
+validatePercentage          = require('cloud_blueprint/validators/percentage')
 
 
 # Known Attributes

@@ -1,7 +1,3 @@
-###
-  Used in:
-  components/company/preview/item
-###
 
 Letters = (value) ->
   value             = '' unless value
@@ -18,4 +14,4 @@ Letters = (value) ->
 
 # Exports
 #
-cc.module('cc.utils.Letters').exports = Letters
+module.exports = Letters
