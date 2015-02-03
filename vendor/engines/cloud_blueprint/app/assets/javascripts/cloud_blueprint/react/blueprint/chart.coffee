@@ -5,7 +5,7 @@
 tag = React.DOM
 
 NodeIdentityStore = require('cloud_blueprint/stores/node_identity_store')
-
+DraggableMixin  = cc.require('react/mixins/draggable')
 
 # Default colors
 #
@@ -193,7 +193,7 @@ Chart = React.createClass
 
   mixins: [
     Calculations
-    cc.react.mixins.Draggable
+    DraggableMixin
   ]
   
   

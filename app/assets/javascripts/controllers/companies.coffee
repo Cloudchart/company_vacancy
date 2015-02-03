@@ -66,7 +66,7 @@ Dispatcher = require('dispatcher/dispatcher')
 # Finance
 # 
 @['companies#finance'] = (data) ->
-  BurnRate = cc.require('react/company/burn_rate')
+  BurnRate = require('components/company/burn_rate')
 
   React.renderComponent(
     BurnRate(data.company)

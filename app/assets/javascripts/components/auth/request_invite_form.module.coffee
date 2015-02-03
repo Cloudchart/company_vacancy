@@ -1,6 +1,6 @@
 tag = cc.require('react/dom')
 
-SplashComponent = require('react_components/modals/invite_splash')
+SplashComponent = require('components/auth/invite_splash')
 
 email_re = /.+@.+\..+/i
 

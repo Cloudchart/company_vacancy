@@ -24,6 +24,4 @@ DraggableMixin =
 #
 #
 
-@cc.react.mixins.Draggable = DraggableMixin
-
 cc.module('react/mixins/draggable').exports = DraggableMixin

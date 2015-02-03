@@ -2,7 +2,7 @@ tag = React.DOM
 
 invite_re = /^([a-zA-Z]{1,4}\s){11}[a-zA-Z]{1,4}$/
 
-RequestInviteForm = require("react_components/modals/request_invite_form")
+RequestInviteForm = require("components/auth/request_invite_form")
 ModalStack        = require("components/modal_stack")
 
 #

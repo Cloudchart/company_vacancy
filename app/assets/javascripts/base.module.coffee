@@ -1,6 +1,6 @@
 # Invite form
 #
-if (InviteButton = document.querySelector('[data-behaviour~="invite-button"]')) and (InviteForm = require('react_components/modals/invite_form'))
+if (InviteButton = document.querySelector('[data-behaviour~="invite-button"]')) and (InviteForm = require('components/auth/invite_form'))
   ModalStack = require('components/modal_stack')
 
   InviteButton.addEventListener 'click', (event) ->

@@ -2,6 +2,7 @@
 # 
 tag = React.DOM
 
+
 # Main Component
 # 
 MainComponent = React.createClass
@@ -193,4 +194,4 @@ MainComponent = React.createClass
 
 # Exports
 # 
-cc.module('react/company/burn_rate').exports = MainComponent
+module.exports = MainComponent

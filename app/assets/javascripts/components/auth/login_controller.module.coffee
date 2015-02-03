@@ -4,8 +4,8 @@ LoginForm   = require("components/auth/login_form")
 
 ModalStack  = require("components/modal_stack")
 
-ResetSplash = require("react_components/modals/reset_splash")
-InviteForm  = require("react_components/modals/invite_form")
+ResetSplash = require("components/auth/reset_splash")
+InviteForm  = require("components/auth/invite_form")
 
 email_re = /.+@.+\..+/i
 

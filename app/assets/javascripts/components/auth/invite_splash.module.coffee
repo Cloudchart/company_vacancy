@@ -2,7 +2,7 @@
 #
 tag = cc.require('react/dom')
 
-SplashComponent = require('react_components/modals/splash')
+SplashComponent = require('components/auth/splash')
 
 
 # Main Component

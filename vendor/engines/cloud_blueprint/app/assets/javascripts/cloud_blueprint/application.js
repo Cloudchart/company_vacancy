@@ -6,6 +6,7 @@
 //= require_tree ./utils
 //= require ./plugins
 //= require ./models
+//= require ./mixins
 //= require ./layouts
 //= require ./react
 //= require ./ujs
