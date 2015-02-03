@@ -4,8 +4,7 @@ data        = {}
 
 # Fetch
 #
-data[:pinboards] = current_user.pinboards.includes(build_relations_includes(relations))
-data[:pinboards].concat(Pinboard.includes(build_relations_includes(relations)).where(user_id: nil))
+data[:pinboards] = current_user.available_pinboards.includes(build_relations_includes(relations))
 
 
 # Traverse

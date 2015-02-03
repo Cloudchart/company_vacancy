@@ -155,8 +155,7 @@ module.exports = React.createClass
 
 
   componentDidMount: ->
-    query = @getQuery('pinboards')
-    PinboardStore.fetchAll(relations: query.toString())
+    PinboardStore.fetchAll(relations: @getQuery('pinboards').toString())
 
 
   getDefaultProps: ->

@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   include Uuidable
   include Fullnameable
-  
+
   attr_accessor :current_password
   attr_reader :invite
 
@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   has_secure_password
 
   has_and_belongs_to_many :friends
-  
+
   default_scope -> { includes(:emails) }
 
   has_many :emails, -> { order(:address) }, class_name: 'CloudProfile::Email', dependent: :destroy
@@ -32,10 +32,17 @@ class User < ActiveRecord::Base
 
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
-  
+
+
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
   validate :validate_email, on: :create
+
+
+  def available_pinboards
+    Pinboard.available(self)
+  end
+
 
   rails_admin do
 
@@ -63,15 +70,15 @@ class User < ActiveRecord::Base
   def full_name_or_email
     @full_name_or_email ||= full_name.blank? ? emails.first.address : full_name
   end
-  
+
   def email
     emails.first.address
   end
-  
+
   def email=(email)
     self.emails = [CloudProfile::Email.new(address: email)]
   end
-  
+
   def self.find_by_email(email)
     CloudProfile::Email.includes(:user).find_by(address: email).user rescue nil
   end
@@ -84,22 +91,22 @@ class User < ActiveRecord::Base
     tokens = Token.includes(:owner)
       .where(name: 'invite', owner_type: 'Company')
       .select_by_user(id, emails.pluck(:address))
-    
+
     companies = tokens.map(&:owner)
   end
-  
+
   def should_validate_invite?
     @should_validate_invite
   end
-  
+
   def should_validate_invite!
     @should_validate_invite = true
   end
-  
+
   def should_validate_name?
     @should_validate_name
   end
-  
+
   def should_validate_name!
     @should_validate_name = true
   end

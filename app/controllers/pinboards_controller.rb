@@ -10,7 +10,7 @@ class PinboardsController < ApplicationController
 
 
   def show
-    @pinboard = effective_user.pinboards.find(params[:id]) rescue Pinboard.general.find(params[:id])
+    @pinboard = effective_user.available_pinboards.find(params[:id])
 
     respond_to do |format|
       format.html
