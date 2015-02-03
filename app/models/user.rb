@@ -40,6 +40,9 @@ class User < ActiveRecord::Base
   validate :validate_email, on: :create
 
 
+  scope :unicorns, -> { includes(:system_roles).where(roles: { value: 'unicorn'}) }
+
+
   def available_pinboards
     Pinboard.available(self)
   end

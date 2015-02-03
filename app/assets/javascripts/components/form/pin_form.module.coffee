@@ -33,23 +33,52 @@ getDefaultPinboardId = ->
 module.exports = React.createClass
 
 
-  mixins: [GlobalState.mixin]
-  
-  
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+
+  statics:
+
+    queries:
+      pinboards: ->
+        """
+          Viewer {
+            available_pinboards,
+            system_roles
+          }
+
+        """
+
+      unicorns: ->
+        """
+          User {
+            unicorns {
+              system_roles
+            }
+          }
+
+        """
+
+      pin: ->
+        """
+          Pin {}
+
+        """
+
+
   handleSubmit: (event) ->
     event.preventDefault()
-    
+
     if (@state.attributes.get('pinboard_id') == 'new')
       PinboardStore.create({ title: @state.attributes.get('pinboard_title') }).then(@handlePinboardSave, @handleSaveFail)
     else
       attributes = @state.attributes.remove('pinboard_name').toJSON()
       @createPin(attributes)
-  
+
 
   createPin: (attributes) ->
     PinStore.create(attributes).then(@props.onDone, @handlePinSaveFail)
-  
-  
+
+
   handlePinboardSave: (json) ->
     attributes = @state.attributes
       .remove('pinboard_name')
@@ -57,30 +86,30 @@ module.exports = React.createClass
       .toJSON()
 
     @createPin(attributes)
-  
-  
+
+
   handleSaveFail: ->
     snabbt(@getDOMNode().parentNode, 'attention', {
       position: [50, 0, 0]
       springConstant: 3
       springDeacceleration: .9
     })
-  
+
 
   handleChange: (name, event) ->
     value = event.target.value
 
     if name == 'content' and value.length > ContentMaxLength
       value = value.substring(0, ContentMaxLength)
-    
+
     @setState
       attributes: @state.attributes.set(name, value)
-  
-  
+
+
   onGlobalStateChange: ->
     @setState
       globalStateChangedAt: + new Date
-    
+
     unless @state.attributes.get('pinboard_id')
       @setState
         attributes: @state.attributes.set('pinboard_id', getDefaultPinboardId())
@@ -93,8 +122,8 @@ module.exports = React.createClass
   getDefaultProps: ->
     cursor:       PinboardStore.cursor.items
     title:        ''
-  
-  
+
+
   getInitialState: ->
     attributes: Immutable.Map
       parent_id:      @props.parent_id
@@ -103,8 +132,8 @@ module.exports = React.createClass
       pinnable_type:  @props.pinnable_type
       content:        @props.content        || ''
       pinboard_title: ''
-  
-  
+
+
   renderHeader: ->
     <header>
       <div>Pin It</div>
@@ -118,15 +147,15 @@ module.exports = React.createClass
       .map (pinboard, uuid) ->
         <option key={ uuid } value={ uuid }>{ pinboard.get('title') }</option>
       .toList()
-    
+
     options = options.push(<option key="new" value="new">Create Category</option>)
-    
+
     options
-  
-  
+
+
   renderPinboardSelect: ->
-    
-    
+
+
     <label className="pinboard">
       <span className="title">Pick a Category</span>
       <div className="select-wrapper">
@@ -139,11 +168,11 @@ module.exports = React.createClass
         <i className="fa fa-angle-down select-icon" />
       </div>
     </label>
-  
-  
+
+
   renderPinboardInput: ->
     return null unless @state.attributes.get('pinboard_id') == 'new'
-    
+
     <label className="pinboard">
       <span className="title" />
       <div className="input-wrapper">
@@ -156,8 +185,8 @@ module.exports = React.createClass
         />
       </div>
     </label>
-  
-  
+
+
   renderPinComment: ->
     <label className="comment">
       <span className="title">Add Comments</span>
