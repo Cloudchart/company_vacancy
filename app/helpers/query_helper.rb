@@ -75,4 +75,13 @@ module QueryHelper
   end
 
 
+  def render_jbuilder_objects(json, data)
+    data.each do |key,values|
+      name = key.to_s.singularize
+      json.set! key, values.flatten.compact.uniq do |value|
+        json.partial! name, :"#{name}" => value
+      end
+    end
+  end
+
 end
