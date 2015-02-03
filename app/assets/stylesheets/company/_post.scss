@@ -219,6 +219,15 @@ main.company > div.wrapper > div.posts {
 
     > ul.insight-list {
       @include position(absolute, 0px null 0px 100%);
+
+      &::before {
+        @include linear-gradient(to bottom, hsla(0, 0%, 94%, 0), hsla(0, 0%, 94%, 1));
+        @include position(absolute, 75% 0px 0px 0px);
+
+        content: '';
+        display: block;
+        z-index: 1;
+      }
     }
 
     &.epoch {
