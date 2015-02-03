@@ -24,6 +24,7 @@ class User < ActiveRecord::Base
   has_many :vacancy_responses
   has_many :favorites, dependent: :destroy
   has_many :roles, dependent: :destroy
+  has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :companies, through: :roles, source: :owner, source_type: 'Company'
   has_many :followed_companies, through: :favorites, source: :favoritable, source_type: 'Company'
   has_many :people, dependent: :destroy
@@ -36,9 +37,10 @@ class User < ActiveRecord::Base
   validate :validate_email, on: :create
 
   rails_admin do
+    object_label_method :full_name
 
     list do
-      include_fields :first_name, :companies, :created_at
+      include_fields :first_name, :system_roles, :companies, :created_at
       sort_by :created_at
 
       field :first_name do
@@ -52,10 +54,24 @@ class User < ActiveRecord::Base
 
     end
 
+    edit do
+      include_fields :system_roles
+
+      field :system_roles do
+        partial :system_roles
+      end
+    end
+
   end
 
   def is_admin?
     !!roles.select { |role| role.owner_id == nil && role.owner_type == nil && role.value == 'admin' }.first
+  end
+
+  def system_role_ids=(args)
+    roles = args.select(&:present?)
+    roles = roles.map { |value| Role.new(value: value) } if roles.any?
+    self.system_roles = roles
   end
 
   def has_already_voted_for?(object)

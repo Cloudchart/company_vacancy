@@ -103,5 +103,6 @@ Cloudchart::Application.routes.draw do
   # Custom
   # 
   get ':id', to: 'pages#show', as: :page
+  delete 'logout', to: 'cloud_profile/authentications#destroy', as: 'logout'
 
 end
