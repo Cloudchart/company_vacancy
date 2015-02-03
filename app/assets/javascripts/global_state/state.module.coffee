@@ -2,6 +2,7 @@
 #
 Cursor  = require('global_state/cursor')
 Store   = require('global_state/store')
+Query   = require('global_state/query')
 uuid    = require('utils/uuid')
 
 
@@ -69,6 +70,9 @@ State =
 
   cursor: (path = []) ->
     RootCursor.cursor(path)
+
+
+  query: Query
 
 
   addListener: (path, callback) ->

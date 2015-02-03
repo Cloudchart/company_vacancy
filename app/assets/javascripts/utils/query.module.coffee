@@ -1,4 +1,4 @@
-queryRE = /^([^{]+)\{(.*)\}$/
+queryRE = /^\s*([^\s]+)\s*\{([\s\S]*)\}\s*$/
 
 
 # Exports
@@ -6,7 +6,7 @@ queryRE = /^([^{]+)\{(.*)\}$/
 module.exports =
 
   get: (string) ->
-    [_, model, relations] = string.replace(/\s+/g, '').match(queryRE)
+    [dummy, model, relations] = string.match(queryRE)
 
     model:      model
     relations:  relations
