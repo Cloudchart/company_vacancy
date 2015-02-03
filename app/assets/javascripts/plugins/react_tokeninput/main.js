@@ -39,7 +39,7 @@ MainComponent = React.createClass({
 
   handleRemove: function(value) {
     this.props.onRemove(value);
-    this.refs['combo-li'].getDOMNode().querySelector('input').focus();
+    // this.refs['combo-li'].getDOMNode().querySelector('input').focus();
   },
 
   handleRemoveLast: function() {

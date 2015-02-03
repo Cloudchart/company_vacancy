@@ -82,7 +82,7 @@ MainComponent = React.createClass
     @props.cursor.stories
       .filter     (story, key) => story.get('company_id') is @props.company_id or story.get('company_id') is null
       .filterNot  (story, key) => @state.storyIdSeq.contains(key)
-      .filter     (story, key) => story.get('formatted_name').toLowerCase().indexOf(@state.query.toLowerCase()) >= 0
+      .filter     (story, key) => (@state.query.length > 0 && story.get('formatted_name').toLowerCase().indexOf(@state.query.toLowerCase()) == 0) || (@state.query.length == 0 && story.get('company_id') is null)
       .sortBy     (story, key) => story.get('name')
       .map        (story, key) => <ComboboxOption key={key} value={key}>{'#' + story.get('formatted_name')}</ComboboxOption>
 
@@ -117,6 +117,8 @@ MainComponent = React.createClass
 
     else
       StoryStore.createByCompany(@props.company_id, name: formattedName).then(@handleStoryCreateDone)
+
+    @setState(query: "")
         
 
   handleRemove: (object) ->

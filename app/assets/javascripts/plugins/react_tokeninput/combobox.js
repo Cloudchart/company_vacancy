@@ -157,12 +157,12 @@ MainComponent = React.createClass({
   },
 
   handleInputFocus: function() {
-    this.setState({ focused: true });
+    this.setState({ focused: true, isOpen: true });
   },
 
   handleOptionBlur: function() {
     // don't want to hide the list if we focused another option
-    this.blurTimer = setTimeout(this.hideList, 0);
+    // this.blurTimer = setTimeout(this.hideList, 0);
   },
 
   handleOptionFocus: function() {
