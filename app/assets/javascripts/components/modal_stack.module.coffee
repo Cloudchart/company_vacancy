@@ -28,8 +28,14 @@ ModalStackItem = React.createClass
 
   handleClick: (event) ->
     return unless event.target == @getDOMNode()
+    return unless @state.isMouseDownOnOverlay
     @props.onClick()
 
+    @setState(isMouseDownOnOverlay: false)
+
+  handleMouseDown: (event) ->
+    if event.target == @getDOMNode()
+      @setState(isMouseDownOnOverlay: true)
 
   componentWillMount: ->
     @props.beforeShow()
@@ -49,9 +55,11 @@ ModalStackItem = React.createClass
     beforeHide:   EmptyFunction
     onClick:      EmptyFunction
 
+  getInitialState: ->
+    isMouseDownOnOverlay: false
 
   render: ->
-    <li className="modal-stack-item modal-container" onClick={ @handleClick } style={ zIndex: @props.index }>
+    <li className="modal-stack-item modal-container" onMouseDown={ @handleMouseDown } onClick={ @handleClick } style={ zIndex: @props.index }>
       { @props.children }
     </li>
 
