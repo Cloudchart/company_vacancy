@@ -5,7 +5,7 @@ class MoveAdminsToRoles < ActiveRecord::Migration
 
     say 'Moving admins to roles...'
     User.where(is_admin: true).each do |admin|
-      admin.roles.create! value: :admin
+      Role.new(user: admin, value: :admin).save(validate: false)
       say "Admin role for #{admin.first_name} created", true
     end
 
@@ -16,12 +16,11 @@ class MoveAdminsToRoles < ActiveRecord::Migration
     add_column :users, :is_admin, :boolean, default: false
 
     say 'Returning admin roless to users...'
-    admin_roles = Role.where(value: :admin, owner: nil)
-    admin_roles.each do |role|
+    Role.where(value: :admin, owner: nil).each do |role|
       role.user.update(is_admin: true)
       say "User #{role.user.first_name} updated", true
     end
-    admin_roles.delete_all
+    Role.where(owner: nil).delete_all
 
     change_column :roles, :owner_id, :string, limit: 36, null: false
     change_column :roles, :owner_type, :string, null: false
