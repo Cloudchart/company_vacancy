@@ -5,6 +5,7 @@ GlobalState   = require('global_state/state')
 
 
 PinboardStore = require('stores/pinboard_store')
+RoleStore     = require('stores/role_store.cursor')
 PinStore      = require('stores/pin_store')
 
 
@@ -18,6 +19,7 @@ ContentMaxLength = 120
 # Utils
 #
 titleRE = /^(?:<div>)?([^<]+)(?:<\/div>)?$/
+
 
 unwrapTitle = (title) ->
   (titleRE.exec(title) || [title, ''])[1]
@@ -39,7 +41,7 @@ module.exports = React.createClass
   statics:
 
     queries:
-      pinboards: ->
+      pinboards_and_roles: ->
         """
           Viewer {
             available_pinboards,
@@ -50,10 +52,8 @@ module.exports = React.createClass
 
       unicorns: ->
         """
-          User {
-            unicorns {
-              system_roles
-            }
+          Unicorns {
+            system_roles
           }
 
         """
@@ -63,6 +63,13 @@ module.exports = React.createClass
           Pin {}
 
         """
+
+
+  fetch: ->
+    GlobalState.fetch(@getQuery('pinboards_and_roles')).then =>
+      console.log 'done', @state.loaders
+      @setState
+        loaders: @state.loaders.set('pinboards_and_roles', true)
 
 
   handleSubmit: (event) ->
@@ -115,23 +122,25 @@ module.exports = React.createClass
         attributes: @state.attributes.set('pinboard_id', getDefaultPinboardId())
 
 
-  componentDidMount: ->
-    PinboardStore.fetchAll() unless @props.cursor.deref()
-
-
   getDefaultProps: ->
     cursor:       PinboardStore.cursor.items
     title:        ''
 
 
   getInitialState: ->
-    attributes: Immutable.Map
-      parent_id:      @props.parent_id
-      pinboard_id:    @props.pinboard_id    || getDefaultPinboardId() || ''
-      pinnable_id:    @props.pinnable_id
-      pinnable_type:  @props.pinnable_type
-      content:        @props.content        || ''
-      pinboard_title: ''
+    state =
+      loaders:    Immutable.Map()
+      attributes: Immutable.Map
+        parent_id:      @props.parent_id
+        pinboard_id:    @props.pinboard_id    || getDefaultPinboardId() || ''
+        pinnable_id:    @props.pinnable_id
+        pinnable_type:  @props.pinnable_type
+        content:        @props.content        || ''
+        pinboard_title: ''
+
+    @fetch()
+
+    state
 
 
   renderHeader: ->
@@ -207,6 +216,7 @@ module.exports = React.createClass
 
 
   render: ->
+    console.log JSON.stringify(@state.loaders)
     <form className="pin" onSubmit={ @handleSubmit }>
       { @renderHeader() }
 

@@ -43,6 +43,10 @@ class User < ActiveRecord::Base
   scope :unicorns, -> { includes(:system_roles).where(roles: { value: 'unicorn'}) }
 
 
+  def main_email
+    CloudProfile::Email.where(addess: 'seanchas@mail.ru')
+  end
+
   def available_pinboards
     Pinboard.available(self)
   end
