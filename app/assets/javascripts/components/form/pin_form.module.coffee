@@ -12,7 +12,7 @@ ModalActions  = require('actions/modal_actions')
 
 # Constants
 #
-ContentMaxLength = 120
+ContentMaxLength = 500
 
 
 # Utils
