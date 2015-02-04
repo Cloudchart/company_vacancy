@@ -5,9 +5,9 @@
 tag = React.DOM
 cx = React.addons.classSet
 
-BlockStore = require('stores/block_store')
+BlockStore       = require('stores/block_store')
 
-BlockActions = require('actions/block_actions')
+BlockActions     = require('actions/block_actions')
 BlockableActions = require('actions/mixins/blockable_actions')
 
 SortableList     = require('components/shared/sortable_list')
@@ -63,7 +63,7 @@ MainComponent = React.createClass
             {@getDestroyLink(block.uuid)}
             <FieldWrapper>
               <BlockComponent
-                key={block_key}
+                uuid={block_key}
                 company_id={@props.company_id}
                 readOnly={@props.readOnly}
                 blockKind={block.kind || block.identity_type} />

@@ -66,6 +66,21 @@ PersonComponent = (person) ->
 #
 Component = React.createClass
 
+  # Component specifications
+  #
+  propTypes:
+    company_id: React.PropTypes.string.isRequired
+    readOnly:   React.PropTypes.bool
+    uuid:        React.PropTypes.string.isRequired
+
+  getDefaultProps: ->
+    readOnly: false
+  
+  getInitialState: ->
+    _.extend @getStateFromStores(),
+      animated: true
+      hovered: false
+
 
   mixins: [CloudFlux.mixins.Actions]
 
@@ -119,7 +134,7 @@ Component = React.createClass
         <div key={index} className="row">
           {
             items = rows.map (person) ->
-              <div className="item" key={person.props.key}>{person}</div>
+              <div className="item" key={person.props.uuid}>{person}</div>
 
             if !@props.readOnly && index == people.length - 1
               items.push PersonPlaceholderComponent.apply(@)
@@ -139,7 +154,7 @@ Component = React.createClass
 
     identity_ids = @state.identityIdsSeq.toList().push(key)
 
-    BlockActions.update(@props.key, { identity_ids: identity_ids.toArray() })
+    BlockActions.update(@props.uuid, { identity_ids: identity_ids.toArray() })
 
     ModalActions.hide()
 
@@ -161,7 +176,7 @@ Component = React.createClass
 
     identity_ids = @state.identityIdsSeq.toList().remove(@state.identityIdsSeq.indexOf(key))
 
-    BlockActions.update(@props.key, { identity_ids: identity_ids.toArray() })
+    BlockActions.update(@props.uuid, { identity_ids: identity_ids.toArray() })
   
   
   # Person Chooser
@@ -170,7 +185,7 @@ Component = React.createClass
     return if @props.readOnly
 
     ModalActions.show(PersonChooser({
-      key:            @props.key
+      uuid:           @props.uuid
       company_id:     @props.company_id
       onSelect:       @onSelectPerson
       onCreateClick:  @onCreatePersonClick
@@ -215,7 +230,7 @@ Component = React.createClass
           animated: true
     , 400
 
-    identityIdsSeq  = Immutable.Seq(BlockStore.get(@props.key).identity_ids)
+    identityIdsSeq  = Immutable.Seq(BlockStore.get(@props.uuid).identity_ids)
     peopleSeq       = Immutable.Seq(PersonStore.filter((person) -> identityIdsSeq.contains(person.uuid)))
     
     peopleSeq:        peopleSeq
@@ -230,14 +245,10 @@ Component = React.createClass
   
   componentWillUnmount: ->
     PersonStore.off('change', @refreshStateFromStores)
-  
+
   componentWillReceiveProps: ->
     @refreshStateFromStores()
-  
-  getInitialState: ->
-    _.extend @getStateFromStores(),
-      animated: true
-      hovered: false
+
 
   render: ->
     classes = cx(

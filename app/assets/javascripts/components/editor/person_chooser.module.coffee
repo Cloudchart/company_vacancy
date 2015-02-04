@@ -23,6 +23,22 @@ NewPersonComponent = ->
 #
 Component = React.createClass
 
+  # Component specifications
+  #
+  propTypes:
+    company_id:     React.PropTypes.string.isRequired
+    onCreateClick:  React.PropTypes.func
+    onSelect:       React.PropTypes.func
+    uuid:           React.PropTypes.string.isRequired
+
+  getDefaultProps: ->
+    onCreateClick: ->
+    onSelect:      ->
+
+  getInitialState: ->
+    state         = @getStateFromStores()
+    state.query   = ''
+    state
 
   gatherPeople: ->
     queries = _.compact(@state.query.toLowerCase().split(/\s+/))
@@ -65,16 +81,10 @@ Component = React.createClass
 
   
   getStateFromStores: ->
-    block = BlockStore.get(@props.key)
+    block = BlockStore.get(@props.uuid)
     
     block:  block
     people: PersonStore.filter (person) => person.company_id == @props.company_id
-
-
-  getInitialState: ->
-    state         = @getStateFromStores()
-    state.query   = ''
-    state
 
 
   render: ->

@@ -39,13 +39,13 @@ Component = React.createClass
     if @state.paragraph and @state.paragraph.uuid
       # destroy
       if content.length == 0
-        ParagraphActions.destroy(@state.paragraph.uuid, @props.key)
+        ParagraphActions.destroy(@state.paragraph.uuid, @props.uuid)
       # update
       else if @state.paragraph.content isnt content
-        ParagraphActions.update(@state.paragraph.uuid, @props.key, { content: content })
+        ParagraphActions.update(@state.paragraph.uuid, @props.uuid, { content: content })
     # create
     else if content
-      key = ParagraphStore.create({ owner_id: @props.key, owner_type: 'Block', content: content })
+      key = ParagraphStore.create({ owner_id: @props.uuid, owner_type: 'Block', content: content })
       ParagraphActions.create(key, ParagraphStore.get(key).toJSON())
   
   
@@ -66,7 +66,7 @@ Component = React.createClass
   
   
   getStateFromStores: ->
-    paragraph: findParagraph(@props.key)
+    paragraph: findParagraph(@props.uuid)
     
   
   getInitialState: ->
