@@ -39,9 +39,11 @@ Component = React.createClass
 
 
   gatherTags: ->
-    @state.identityTagNameSeq.map (tag) ->
-      id:   tag
-      name: '#' + tag
+    @state.identityTagNameSeq
+      .sort (tagA, tagB) -> tagA.localeCompare(tagB)
+      .map (tag) ->
+        id:   tag
+        name: '#' + tag
   
   
   getTagForList: (tag) ->
