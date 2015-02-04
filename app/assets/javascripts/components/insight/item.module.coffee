@@ -14,6 +14,8 @@ UserStore   = require('stores/user_store.cursor')
 #
 Avatar      = require('components/avatar')
 PinButton   = require('components/pinnable/pin_button')
+PinForm     = require('components/form/pin_form')
+ModalStack  = require('components/modal_stack')
 
 
 # Utils
@@ -41,8 +43,12 @@ module.exports = React.createClass
     pinnable_type:  @props.cursor.pin.get('pinnable_type')
 
 
+  handleEditClick: (event) ->
+    ModalStack.show(<PinForm uuid={ @props.uuid } onCancel={ ModalStack.hide } onDone={ ModalStack.hide } />)
+
+
   getStateFromStores: ->
-    user:         @props.cursor.users.cursor(@props.cursor.pin.get('user_id'))
+    user: @props.cursor.users.cursor(@props.cursor.pin.get('user_id'))
 
 
   onGlobalStateChange: ->
@@ -77,8 +83,15 @@ module.exports = React.createClass
     </section>
 
 
+  renderEditButton: ->
+    <li onClick = { @handleEditClick }>
+      <i className="fa fa-pencil" />
+    </li>
+
+
   renderButtons: ->
     <ul className="round-buttons">
+      { @renderEditButton() }
       <PinButton {...@gatherAttributes()} title={ @props.cursor.pin.get('content') } />
     </ul>
 

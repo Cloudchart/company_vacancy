@@ -17,6 +17,9 @@ ModalActions  = require('actions/modal_actions')
 ContentMaxLength = 120
 
 
+KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title'])
+
+
 # Utils
 #
 titleRE = /^(?:<div>)?([^<]+)(?:<\/div>)?$/
@@ -24,11 +27,6 @@ titleRE = /^(?:<div>)?([^<]+)(?:<\/div>)?$/
 
 unwrapTitle = (title) ->
   (titleRE.exec(title) || [title, ''])[1]
-
-
-getDefaultPinboardId = ->
-  if pinboard = PinboardStore.cursor.items.sortBy((pinboard) -> pinboard.get('title')).first()
-    pinboard.get('uuid')
 
 
 # Exports
@@ -69,16 +67,19 @@ module.exports = React.createClass
   fetch: ->
     GlobalState.fetch(@getQuery('pinboards_and_roles')).then =>
       @setState
-        loaders: @state.loaders.set('pinboards_and_roles', true)
+        attributes:   @setAttributes()
+        loaders:      @state.loaders.set('pinboards_and_roles', true)
 
     GlobalState.fetch(@getQuery('unicorns')).then =>
       @setState
-        loaders: @state.loaders.set('unicorns', true)
+        attributes:   @setAttributes()
+        loaders:      @state.loaders.set('unicorns', true)
 
     if @props.uuid
       GlobalState.fetch(@getQuery('pin'), { id: @props.uuid }).then =>
         @setState
-          loaders: @state.loaders.set('unicorns', true)
+          attributes:   @setAttributes()
+          loaders:      @state.loaders.set('pin', true)
     else
       @setState
         loaders: @state.loaders.set('pin', true)
@@ -97,11 +98,14 @@ module.exports = React.createClass
       PinboardStore.create({ title: @state.attributes.get('pinboard_title') }).then(@handlePinboardSave, @handleSaveFail)
     else
       attributes = @state.attributes.remove('pinboard_title').toJSON()
-      @createPin(attributes)
+      @savePin(attributes)
 
 
-  createPin: (attributes) ->
-    PinStore.create(attributes).then(@props.onDone, @handlePinSaveFail)
+  savePin: (attributes) ->
+    if @props.uuid
+      PinStore.update(@props.uuid, attributes).then(@props.onDone, @handleSaveFail)
+    else
+      PinStore.create(attributes).then(@props.onDone, @handleSaveFail)
 
 
   handlePinboardSave: (json) ->
@@ -110,7 +114,7 @@ module.exports = React.createClass
       .set('pinboard_id', json.id)
       .toJSON()
 
-    @createPin(attributes)
+    @savePin(attributes)
 
 
   handleSaveFail: ->
@@ -122,30 +126,52 @@ module.exports = React.createClass
 
 
   handleChange: (name, event) ->
-    value = event.target.value
+    value       = event.target.value
+    attributes  = @state.attributes
 
     if name == 'content' and value.length > ContentMaxLength
       value = value.substring(0, ContentMaxLength)
 
+    if name == 'user_id'
+      attributes = attributes.set('pinboard_id', @getDefaultPinboardIdFor(value))
+
     @setState
-      attributes: @state.attributes.set(name, value)
-
-
-  onGlobalStateChange: ->
-    @setState
-      globalStateChangedAt: + new Date
-
-    unless @state.attributes.get('pinboard_id')
-      @setState
-        attributes: @state.attributes.set('pinboard_id', getDefaultPinboardId())
-
-    unless @state.attributes.get('user_id')
-      @setState
-        attributes: @state.attributes.set('user_id', @getDefaultUserId())
+      attributes: attributes.set(name, value)
 
 
   getDefaultUserId: ->
-    @props.cursor.currentUser.get('uuid', '')
+    if @props.uuid then @props.cursor.pins.items.getIn([@props.uuid, 'user_id']) else @props.cursor.currentUser.get('uuid', '')
+
+
+  getDefaultPinboardIdFor: (user_id) ->
+    defaultPinboard = @props.cursor.pinboards
+      .filter (pinboard) =>
+        pinboard.get('user_id') == user_id or
+        pinboard.get('user_id') == null
+
+      .sortBy (pinboard) -> pinboard.get('title')
+      .first()
+
+    if defaultPinboard then defaultPinboard.get('uuid') else 'new'
+
+
+  setAttributes: ->
+    attributes  = Immutable.Map({})
+    pin         = @props.cursor.pins.cursor(@props.uuid)
+
+    attributes  = attributes.withMutations (attributes) =>
+      KnownAttributes.forEach (name) =>
+        attributes.set(name, pin.get(name, @props[name] || ''))
+
+      unless attributes.get('pinboard_id')
+        attributes.set('pinboard_id', @getDefaultPinboardIdFor(@getDefaultUserId()))
+
+      unless attributes.get('user_id')
+        attributes.set('user_id', @getDefaultUserId())
+
+      attributes
+
+    attributes
 
 
   # Lifecycle
@@ -161,20 +187,13 @@ module.exports = React.createClass
       pinboards:    PinboardStore.cursor.items
       users:        UserStore.cursor.items
       roles:        RoleStore.cursor.items
-      pin:          PinStore.cursor.items
+      pins:         PinStore.cursor.items
       currentUser:  UserStore.currentUserCursor()
 
 
   getInitialState: ->
     loaders:    Immutable.Map()
-    attributes: Immutable.Map
-      user_id:        @props.user_id        || @getDefaultUserId()
-      parent_id:      @props.parent_id
-      pinboard_id:    @props.pinboard_id    || getDefaultPinboardId() || ''
-      pinnable_id:    @props.pinnable_id
-      pinnable_type:  @props.pinnable_type
-      content:        @props.content        || ''
-      pinboard_title: ''
+    attributes: @setAttributes()
 
 
   # Render
@@ -207,12 +226,15 @@ module.exports = React.createClass
   renderUserSelect: ->
     return null unless @currentUserIsEditor()
 
+    disabled = !!@props.uuid and @props.cursor.currentUser.get('uuid') isnt @state.attributes.get('user_id')
+
     <label className="user">
       <span className="title">Choose an author</span>
       <div className="select-wrapper">
         <select
           value     = { @state.attributes.get('user_id') }
           onChange  = { @handleChange.bind(@, 'user_id') }
+          disabled  = { disabled }
         >
           { @renderUserSelectOptions().toArray() }
         </select>

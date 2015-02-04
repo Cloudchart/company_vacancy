@@ -9,4 +9,7 @@ CloudApi::Engine.routes.draw do
   get :unicorns, controller: :users, action: :unicorns
 
 
+  get '/pins/:id', controller: :pins, action: :show
+
+
 end
