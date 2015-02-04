@@ -11,5 +11,12 @@ module CloudApi
       end
     end
 
+
+    def unicorns
+      respond_to do |format|
+        format.json
+      end
+    end
+
   end
 end

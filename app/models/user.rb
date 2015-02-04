@@ -84,6 +84,10 @@ class User < ActiveRecord::Base
     !!roles.select { |role| role.owner_id == nil && role.owner_type == nil && role.value == 'admin' }.first
   end
 
+  def is_editor?
+    !!roles.find { |role| role.owner_id == nil && role.owner_type == nil && role.value == 'editor' }
+  end
+
   def system_role_ids=(args)
     roles = args.select(&:present?)
     roles = roles.map { |value| Role.new(value: value) } if roles.any?

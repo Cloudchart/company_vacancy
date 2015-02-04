@@ -1,13 +1,19 @@
 data = {
-  pinboards:      [],
-  system_roles:   []
+  users:      [],
+  pinboards:  [],
+  roles:      []
 }
+
+
+# User
+#
+data[:users] << @user
 
 
 # System Roles
 #
 @user.system_roles.flatten.uniq.each do |role|
-  data[:system_roles] << role
+  data[:roles] << role
 end
 
 
@@ -21,5 +27,8 @@ end
 # Render
 #
 data.each do |key, values|
-  json.set! key, values
+  name = key.to_s.singularize
+  json.set! key, values do |value|
+    json.partial! name, :"#{name}" => value
+  end
 end

@@ -7,6 +7,7 @@ GlobalState   = require('global_state/state')
 PinboardStore = require('stores/pinboard_store')
 RoleStore     = require('stores/role_store.cursor')
 PinStore      = require('stores/pin_store')
+UserStore     = require('stores/user_store.cursor')
 
 
 ModalActions  = require('actions/modal_actions')
@@ -67,9 +68,26 @@ module.exports = React.createClass
 
   fetch: ->
     GlobalState.fetch(@getQuery('pinboards_and_roles')).then =>
-      console.log 'done', @state.loaders
       @setState
         loaders: @state.loaders.set('pinboards_and_roles', true)
+
+    GlobalState.fetch(@getQuery('unicorns')).then =>
+      @setState
+        loaders: @state.loaders.set('unicorns', true)
+
+    if @props.uuid
+      GlobalState.fetch(@getQuery('pin'), { id: @props.uuid }).then =>
+        @setState
+          loaders: @state.loaders.set('unicorns', true)
+    else
+      @setState
+        loaders: @state.loaders.set('pin', true)
+
+
+  fetchDone: ->
+    @state.loaders.get('pinboards_and_roles') and
+    @state.loaders.get('unicorns') and
+    @state.loaders.get('pin')
 
 
   handleSubmit: (event) ->
@@ -78,7 +96,7 @@ module.exports = React.createClass
     if (@state.attributes.get('pinboard_id') == 'new')
       PinboardStore.create({ title: @state.attributes.get('pinboard_title') }).then(@handlePinboardSave, @handleSaveFail)
     else
-      attributes = @state.attributes.remove('pinboard_name').toJSON()
+      attributes = @state.attributes.remove('pinboard_title').toJSON()
       @createPin(attributes)
 
 
@@ -88,7 +106,7 @@ module.exports = React.createClass
 
   handlePinboardSave: (json) ->
     attributes = @state.attributes
-      .remove('pinboard_name')
+      .remove('pinboard_title')
       .set('pinboard_id', json.id)
       .toJSON()
 
@@ -121,27 +139,46 @@ module.exports = React.createClass
       @setState
         attributes: @state.attributes.set('pinboard_id', getDefaultPinboardId())
 
+    unless @state.attributes.get('user_id')
+      @setState
+        attributes: @state.attributes.set('user_id', @getDefaultUserId())
+
+
+  getDefaultUserId: ->
+    @props.cursor.currentUser.get('uuid', '')
+
+
+  # Lifecycle
+  #
+
+  componentDidMount: ->
+    @fetch()
+
 
   getDefaultProps: ->
-    cursor:       PinboardStore.cursor.items
     title:        ''
+    cursor:
+      pinboards:    PinboardStore.cursor.items
+      users:        UserStore.cursor.items
+      roles:        RoleStore.cursor.items
+      pin:          PinStore.cursor.items
+      currentUser:  UserStore.currentUserCursor()
 
 
   getInitialState: ->
-    state =
-      loaders:    Immutable.Map()
-      attributes: Immutable.Map
-        parent_id:      @props.parent_id
-        pinboard_id:    @props.pinboard_id    || getDefaultPinboardId() || ''
-        pinnable_id:    @props.pinnable_id
-        pinnable_type:  @props.pinnable_type
-        content:        @props.content        || ''
-        pinboard_title: ''
+    loaders:    Immutable.Map()
+    attributes: Immutable.Map
+      user_id:        @props.user_id        || @getDefaultUserId()
+      parent_id:      @props.parent_id
+      pinboard_id:    @props.pinboard_id    || getDefaultPinboardId() || ''
+      pinnable_id:    @props.pinnable_id
+      pinnable_type:  @props.pinnable_type
+      content:        @props.content        || ''
+      pinboard_title: ''
 
-    @fetch()
 
-    state
-
+  # Render
+  #
 
   renderHeader: ->
     <header>
@@ -150,11 +187,51 @@ module.exports = React.createClass
     </header>
 
 
-  renderPinboardsOptions: ->
-    options = @props.cursor
+  renderUserSelectOptions: ->
+    unicorns = @props.cursor.users
+      .filter (user) =>
+        @props.cursor.roles.find (role) -> role.get('user_id') == user.get('uuid') and role.get('value') == 'unicorn'
+      .toList()
+
+    unicorns.unshift(@props.cursor.currentUser.deref())
+      .map (user) =>
+        uuid = user.get('uuid')
+        <option key={ uuid } value={ uuid }>{ user.get('first_name') + ' ' + user.get('last_name') }</option>
+
+
+  currentUserIsEditor: ->
+    @props.cursor.roles
+      .find (role) => role.get('user_id') == @props.cursor.currentUser.get('uuid') and role.get('value') == 'editor'
+
+
+  renderUserSelect: ->
+    return null unless @currentUserIsEditor()
+
+    <label className="user">
+      <span className="title">Choose an author</span>
+      <div className="select-wrapper">
+        <select
+          value     = { @state.attributes.get('user_id') }
+          onChange  = { @handleChange.bind(@, 'user_id') }
+        >
+          { @renderUserSelectOptions().toArray() }
+        </select>
+        <i className="fa fa-angle-down select-icon" />
+      </div>
+    </label>
+
+
+  renderPinboardSelectOptions: ->
+    options = @props.cursor.pinboards
+      .filter (pinboard) =>
+        pinboard.get('user_id') == @state.attributes.get('user_id') or
+        pinboard.get('user_id') == null
+
       .sortBy (pinboard) -> pinboard.get('title')
+
       .map (pinboard, uuid) ->
         <option key={ uuid } value={ uuid }>{ pinboard.get('title') }</option>
+
       .toList()
 
     options = options.push(<option key="new" value="new">Create Category</option>)
@@ -163,8 +240,6 @@ module.exports = React.createClass
 
 
   renderPinboardSelect: ->
-
-
     <label className="pinboard">
       <span className="title">Pick a Category</span>
       <div className="select-wrapper">
@@ -172,7 +247,7 @@ module.exports = React.createClass
           value     ={ @state.attributes.get('pinboard_id') }
           onChange  ={ @handleChange.bind(@, 'pinboard_id') }
         >
-          { @renderPinboardsOptions().toArray() }
+          { @renderPinboardSelectOptions().toArray() }
         </select>
         <i className="fa fa-angle-down select-icon" />
       </div>
@@ -216,11 +291,13 @@ module.exports = React.createClass
 
 
   render: ->
-    console.log JSON.stringify(@state.loaders)
+    return null unless @fetchDone()
+
     <form className="pin" onSubmit={ @handleSubmit }>
       { @renderHeader() }
 
       <fieldset>
+        { @renderUserSelect() }
         { @renderPinboardSelect() }
         { @renderPinboardInput() }
         { @renderPinComment() }
