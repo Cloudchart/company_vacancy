@@ -2,7 +2,7 @@ class Block < ActiveRecord::Base
   include Uuidable
   include Trackable
   
-  IdentitiesClasses = [Picture, Paragraph, Person, Vacancy, Company]
+  IdentitiesClasses = [Picture, Paragraph, Person, Vacancy, Company, Quote]
   
   before_create   :shift_siblings_down
   after_destroy   :shift_siblings_up
@@ -11,6 +11,7 @@ class Block < ActiveRecord::Base
 
   has_one :picture, as: :owner, dependent: :destroy
   has_one :paragraph, as: :owner, dependent: :destroy
+  has_one :quote, as: :owner, dependent: :destroy
 
   has_many :block_identities, -> { order(:position) }, inverse_of: :block, dependent: :destroy  
   
