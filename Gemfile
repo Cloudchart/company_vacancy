@@ -36,6 +36,7 @@ gem 'jbuilder'
 #
 gem 'cloud_profile', path: 'vendor/engines/cloud_profile'
 gem 'cloud_blueprint', path: 'vendor/engines/cloud_blueprint'
+gem 'cloud_api', path: 'vendor/engines/cloud_api'
 
 # Cloudchart Gems
 #

@@ -38,12 +38,17 @@ class User < ActiveRecord::Base
   default_scope -> { includes(:emails) }
   scope :unicorns, -> { includes(:system_roles).where(roles: { value: 'unicorn'}) }
 
+
   def available_pinboards
     Pinboard.available(self)
   end
 
   def is_admin?
     !!roles.select { |role| role.owner_id == nil && role.value == 'admin' }.first
+  end
+
+  def is_editor?
+    !!roles.find { |role| role.owner_id == nil && role.owner_type == nil && role.value == 'editor' }
   end
 
   def system_role_ids=(args)

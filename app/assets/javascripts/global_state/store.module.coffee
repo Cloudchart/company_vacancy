@@ -160,6 +160,14 @@ class BaseStore
 
   # Update
   #
+  update: (id, params = {}, options = {}) ->
+    promise = @syncAPI.update(@cursor.items.get(id), params, options)
+    promise.then(@updateDone, @updateFail)
+    promise
+
+
+  updateDone: (json) ->
+    @fetchOne(json.id)
 
 
   # Destroy

@@ -20,6 +20,11 @@ GIT
       sprockets (~> 2.1)
 
 PATH
+  remote: vendor/engines/cloud_api
+  specs:
+    cloud_api (0.0.1)
+
+PATH
   remote: vendor/engines/cloud_blueprint
   specs:
     cloud_blueprint (0.0.1)
@@ -371,6 +376,7 @@ DEPENDENCIES
   capistrano-sidekiq
   capistrano3-puma
   capybara
+  cloud_api!
   cloud_blueprint!
   cloud_oauth!
   cloud_profile!

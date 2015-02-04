@@ -3,6 +3,7 @@
 Cursor  = require('global_state/cursor')
 Store   = require('global_state/store')
 Query   = require('global_state/query')
+Fetcher = require('global_state/fetcher')
 uuid    = require('utils/uuid')
 
 
@@ -81,6 +82,9 @@ State =
 
   hasChanged: (path) ->
     not Immutable.is(CurrRootData.getIn(path), PrevRootData.getIn(path))
+
+
+  fetch: Fetcher.fetch
 
 
 
