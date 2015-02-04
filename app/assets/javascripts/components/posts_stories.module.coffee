@@ -45,6 +45,7 @@ MainComponent = React.createClass
       </ul>
     else
       <TokenInput
+        isDropdown  = true
         onInput     = {@handleInput}
         onSelect    = {@handleSelect}
         onRemove    = {@handleRemove}
@@ -158,7 +159,7 @@ MainComponent = React.createClass
     storyIdSeq: @getStoryIdSeq()
 
   render: ->
-    <div className="cc-hashtag-list">
+    <div className="cc-hashtag-list stories">
       { @getComponentChild() }
     </div>
 

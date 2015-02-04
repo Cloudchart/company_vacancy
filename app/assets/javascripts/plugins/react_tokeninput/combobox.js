@@ -9,6 +9,7 @@ var div = React.DOM.div;
 var span = React.DOM.span;
 var input = React.DOM.input;
 var ul = React.DOM.ul;
+var i = React.DOM.i;
 var cx = React.addons.classSet;
 
 MainComponent = React.createClass({
@@ -36,12 +37,15 @@ MainComponent = React.createClass({
      * function(selectedValue){}
      * ```
     */
-    onSelect: React.PropTypes.func
+    onSelect: React.PropTypes.func,
+
+    isDropdown: React.PropTypes.bool
   },
 
   getDefaultProps: function() {
     return {
       autocomplete: 'both',
+      isDropdown: false,
       onInput: k,
       onSelect: k,
       value: null
@@ -147,6 +151,10 @@ MainComponent = React.createClass({
     }.bind(this));
   },
 
+  handleClick: function() {
+    this.showList();
+  },
+
   handleInputBlur: function() {
     this.setState({ focused: false });
     var focusedAnOption = this.state.focusedIndex != null;
@@ -157,12 +165,12 @@ MainComponent = React.createClass({
   },
 
   handleInputFocus: function() {
-    this.setState({ focused: true, isOpen: true });
+    this.setState({ focused: true });
   },
 
   handleOptionBlur: function() {
     // don't want to hide the list if we focused another option
-    // this.blurTimer = setTimeout(this.hideList, 0);
+    this.blurTimer = setTimeout(this.hideList, 0);
   },
 
   handleOptionFocus: function() {
@@ -383,6 +391,7 @@ MainComponent = React.createClass({
         },
         this.props.value || this.props.placeholder
       )),
+      (this.props.isDropdown ? i({className: 'fa fa-angle-down'}) : null),
       input({
         ref: 'input',
         autoComplete: 'off',
@@ -396,6 +405,7 @@ MainComponent = React.createClass({
         id: this.props.id,
         className: cx({ 'ic-tokeninput-input': true, 'active': this.state.focused }),
         onChange: this.handleInputChange,
+        onClick: this.handleClick,
         onFocus: this.handleInputFocus,
         onBlur: this.handleInputBlur,
         onKeyDown: this.handleKeydown,
