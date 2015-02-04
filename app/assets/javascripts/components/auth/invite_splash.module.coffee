@@ -1,6 +1,6 @@
 # Imports
 #
-tag = cc.require('react/dom')
+tag = React.DOM
 
 SplashComponent = require('components/auth/splash')
 

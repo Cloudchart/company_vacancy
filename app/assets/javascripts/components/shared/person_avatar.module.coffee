@@ -2,7 +2,6 @@
 #
 tag = React.DOM
 
-
 initials      = require('utils/initials')
 colors        = require('utils/colors')
 

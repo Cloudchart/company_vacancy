@@ -27,13 +27,13 @@
 //= require numeral
 //= require object_assign
 
-//= require folders
-
-//= require cloud_profile/application
-//= require cloud_blueprint/application
-
 //= require constants.module
 //= require cloud_flux.module
 //= require base.module
+
+//= require_tree .
+
+//= require cloud_profile/application
+//= require cloud_blueprint/application
 
 require('base')

@@ -2,7 +2,7 @@
 
 # Imports
 #
-tag     = cc.require('react/dom')
+tag     = React.DOM
 colours = require('utils/colors').colors
 
 
