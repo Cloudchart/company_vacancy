@@ -5,7 +5,7 @@ class Role < ActiveRecord::Base
   belongs_to :owner, polymorphic: true
 
   validates :value, inclusion: { in: Company::INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Company' }
-  validates :value, inclusion: { in: Cloudchart::EDITABLE_ROLES.map(&:to_s) }, on: :create, if: -> { owner.nil? }
+  validates :value, inclusion: { in: Cloudchart::EDITABLE_ROLES.map(&:to_s) }, on: :create, if: -> { owner_type.blank? }
   validate :acceptance_of_company_invite, on: :create
 
 private
