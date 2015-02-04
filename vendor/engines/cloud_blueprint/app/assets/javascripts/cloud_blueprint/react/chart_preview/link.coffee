@@ -1,10 +1,9 @@
-##= require colors
 
 # Imports
 #
 tag               = React.DOM
 defaultNodeColor  = 'hsl(0, 0%, 73%)'
-colors            = cc.require('colors') ; colors.unshift(defaultNodeColor)
+colors            = require('utils/colors').colors ; colors.unshift(defaultNodeColor)
 
 Layout            = cc.require('blueprint/react/chart-preview/layout/link')
 

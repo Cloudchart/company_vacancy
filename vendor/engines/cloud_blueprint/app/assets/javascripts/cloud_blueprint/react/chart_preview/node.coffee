@@ -1,4 +1,3 @@
-##= require colors
 ##= require ./person
 ##= require ./vacancy
 
@@ -6,7 +5,7 @@
 #
 tag               = React.DOM
 defaultNodeColor  = 'hsl(0, 0%, 73%)'
-colors            = cc.require('colors') ; colors.unshift(defaultNodeColor)
+colors            = require('utils/colors').colors ; colors.unshift(defaultNodeColor)
 PersonComponent   = cc.require('blueprint/react/chart-preview/person')
 VacancyComponent  = cc.require('blueprint/react/chart-preview/vacancy')
 

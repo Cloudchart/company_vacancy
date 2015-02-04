@@ -3,7 +3,7 @@
 SignupForm  = require('components/auth/signup_form')
 
 ModalStack  = require('components/modal_stack')
-Splash      = require('react_components/modals/splash')
+Splash      = require('components/auth/splash')
 
 email_re = /.+@.+\..+/i
 

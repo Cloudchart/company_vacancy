@@ -3,7 +3,7 @@
 tag = React.DOM
 
 LetterAvatarComponent = cc.require('react/shared/letter-avatar')
-InputComponent        = cc.require('react/shared/input')
+InputComponent        = require('legacy/input')
 
 
 # Component
@@ -147,7 +147,7 @@ Component = React.createClass
         (tag.p { className: 'overlay' }) if @state.src
       )
       
-      (InputComponent {
+      (tag.input {
         type:           'text'
         autoComplete:   'off'
         plaeholder:     'Name Surname'

@@ -1,11 +1,5 @@
 ##= require cloud_blueprint/react/chart_preview
 
-# Activities
-#
-@['cloud_profile/main#activities'] = (data) ->
-  $ -> cc.ujs.scrollable_pagination()
-
-
 # Companies
 #
 @['cloud_profile/main#companies'] = ->

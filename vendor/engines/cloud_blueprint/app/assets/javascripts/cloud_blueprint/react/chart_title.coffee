@@ -2,7 +2,7 @@
 #
 tag = React.DOM
 
-InputComponent = cc.require('react/shared/input')
+InputComponent = require('legacy/input')
 
 
 # Main Component

@@ -13,13 +13,18 @@ Colors = [
   'hsl(206, 57%, 76%)'
 ]
 
+VacancyColor = 'hsl(1, 76%, 54%)'
 
 # Color Inidex
 #
 ColorIndex = (value) ->
   value.split('').reduce(((memo, letter) -> memo += letter.charCodeAt(0)), 0) % Colors.length
 
+getColorByLetters = (letters) ->
+  Colors[ColorIndex(letters)]
 
 module.exports =
-  colors:     Colors
-  colorIndex: ColorIndex
+  colors:            Colors
+  colorIndex:        ColorIndex
+  vacancy:           VacancyColor
+  getColorByLetters: getColorByLetters

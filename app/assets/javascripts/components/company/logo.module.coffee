@@ -1,13 +1,9 @@
-###
-  Used in:
-  components/company/preview/item
-###
 
 tag = React.DOM
 cx = React.addons.classSet
 
-getColorByLetters = cc.require('cc.utils.Colors.getColorByLetters')
-Letters           = cc.require('cc.utils.Letters')
+getColorByLetters = require('utils/colors').getColorByLetters
+Letters           = require('utils/letters')
 
 Component = React.createClass
 

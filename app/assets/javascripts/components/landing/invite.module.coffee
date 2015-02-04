@@ -3,7 +3,7 @@
 # Imports
 #
 ModalActions  = require('components/modal_stack')
-InviteForm    = require('react_components/modals/invite_form')
+InviteForm    = require('components/auth/invite_form')
 
 
 # Main

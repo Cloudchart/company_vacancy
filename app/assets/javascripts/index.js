@@ -1,0 +1,15 @@
+//= require jquery
+//= require jquery_ujs
+//= require arbiter
+//= require module
+//= require placeholder
+//= require immutable
+//= require react
+//= require flux.dispatcher
+//= require lodash
+//= require underscore.string
+//= require promise
+//= require date
+//= require moment
+//= require numeral
+//= require ui

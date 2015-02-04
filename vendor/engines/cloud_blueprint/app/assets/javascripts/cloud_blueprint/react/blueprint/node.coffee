@@ -2,7 +2,7 @@
 #
 tag = React.DOM
 
-
+DraggableMixin  = cc.require('react/mixins/draggable')
 
 
 # Instances pool
@@ -108,7 +108,7 @@ Node = React.createClass
   mixins: [
     DOM
     Events
-    cc.react.mixins.Draggable
+    DraggableMixin
   ]
   
   

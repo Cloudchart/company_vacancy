@@ -1,8 +1,6 @@
 # @cjsx React.DOM
 
-tag = cc.require('react/dom')
-
-SplashComponent = require('react_components/modals/splash')
+SplashComponent = require('components/auth/splash')
 
 Field   = require("components/form/field")
 Buttons = require("components/form/buttons")
