@@ -185,6 +185,12 @@ Component = React.createClass
       { @renderPinPostItem() }
     </ul>
 
+  renderOnlyMeOverlay: ->
+    return null unless @isOnlyMeVisibility()
+
+    <div className="only-me-overlay" onClick={@handleEditClick}>
+      <i className="fa fa-lock"></i>
+    </div>
 
   renderLinkPostWithStoryItem: ->
     return null unless @props.story_id
@@ -283,12 +289,7 @@ Component = React.createClass
       { @renderControls() }
       { @renderInsights() }
 
-      {
-        if @isOnlyMeVisibility()
-          <div className="only-me-overlay" onClick={@handleEditClick}>
-            <i className="fa fa-lock"></i>
-          </div>
-      }
+      { @renderOnlyMeOverlay() }
 
       <a href="" onClick={@handleEditClick}>
         { @renderHeader() }
