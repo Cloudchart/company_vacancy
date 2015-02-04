@@ -8,13 +8,6 @@ class Page < ActiveRecord::Base
 
   validates :title, presence: true, uniqueness: true
 
-  rails_admin do
-    field :title
-    field :body, :wysihtml5 do
-      config_options html: true
-    end
-  end
-
 private
 
   def generate_slug

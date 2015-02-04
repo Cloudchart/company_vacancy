@@ -17,26 +17,4 @@ class Story < ActiveRecord::Base
 
   scope :cc_plus_company, -> company_id { where(arel_table[:company_id].eq(nil).or(arel_table[:company_id].eq(company_id))) }
 
-  rails_admin do
-
-    list do
-      sort_by :posts_stories_count
-      fields :name, :company, :posts_stories_count, :created_at
-
-      field :posts_stories_count do
-        sort_reverse true
-      end
-    end
-
-    edit do
-      fields :name
-
-      field :name do
-        html_attributes do
-          { autofocus: true }
-        end
-      end
-    end
-
-  end
 end

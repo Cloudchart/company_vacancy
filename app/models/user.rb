@@ -13,8 +13,6 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :friends
 
-  default_scope -> { includes(:emails) }
-
   has_many :emails, -> { order(:address) }, class_name: 'CloudProfile::Email', dependent: :destroy
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
@@ -30,54 +28,22 @@ class User < ActiveRecord::Base
   has_many :companies, through: :roles, source: :owner, source_type: 'Company'
   has_many :followed_companies, through: :favorites, source: :favoritable, source_type: 'Company'
   has_many :people, dependent: :destroy
-
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
-
 
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
   validate :validate_email, on: :create
 
-
+  default_scope -> { includes(:emails) }
   scope :unicorns, -> { includes(:system_roles).where(roles: { value: 'unicorn'}) }
-
 
   def available_pinboards
     Pinboard.available(self)
   end
 
-
-  rails_admin do
-    object_label_method :full_name
-
-    list do
-      include_fields :first_name, :system_roles, :companies, :created_at
-      sort_by :created_at
-
-      field :first_name do
-        label 'Full name'
-        formatted_value { bindings[:view].mail_to bindings[:object].email, bindings[:object].full_name }
-      end
-
-      field :companies do
-        pretty_value { value.map { |company| bindings[:view].link_to(company.name, bindings[:view].main_app.company_path(company)) }.join(', ').html_safe }
-      end
-
-    end
-
-    edit do
-      include_fields :system_roles
-
-      field :system_roles do
-        partial :system_roles
-      end
-    end
-
-  end
-
   def is_admin?
-    !!roles.select { |role| role.owner_id == nil && role.owner_type == nil && role.value == 'admin' }.first
+    !!roles.select { |role| role.owner_id == nil && role.value == 'admin' }.first
   end
 
   def system_role_ids=(args)

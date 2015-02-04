@@ -18,7 +18,6 @@ class Person < ActiveRecord::Base
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
   
-  
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :first_name, type: 'string', analyzer: 'ngram_analyzer'
@@ -39,23 +38,6 @@ class Person < ActiveRecord::Base
 
   def as_json_for_chart
     as_json(only: [:uuid, :full_name, :first_name, :last_name, :email, :occupation, :salary])
-  end
-
-  rails_admin do
-    object_label_method :full_name
-
-    list do
-      exclude_fields :uuid, :phone, :email
-
-      field :user do
-        pretty_value { bindings[:view].mail_to value.email, value.full_name if value }
-      end
-
-      field :company do
-        pretty_value { bindings[:view].link_to(value.name, bindings[:view].main_app.company_path(value)) }
-      end
-    end
-
   end
 
 end
