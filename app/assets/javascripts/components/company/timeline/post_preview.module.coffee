@@ -13,6 +13,7 @@ PictureStore        = require('stores/picture_store')
 PersonStore         = require('stores/person')
 PostsStoryStore     = require('stores/posts_story_store')
 UserStore           = require('stores/user_store.cursor')
+VisibilityStore     = require('stores/visibility_store')
 
 PostActions         = require('actions/post_actions')
 
@@ -89,6 +90,9 @@ Component = React.createClass
   isEpochType: ->
     @state.post.title and @state.post.effective_from and @state.post.effective_till and @state.blocks.length is 0
 
+  isOnlyMeVisibility: ->
+    @state.visibility && @state.visibility.value == "only_me"
+
   isRelatedToStory: ->
     return true unless @props.story_id
     @getStoryIds().contains @props.story_id
@@ -129,6 +133,7 @@ Component = React.createClass
     PersonStore.on('change', @refreshStateFromStores)
     PictureStore.on('change', @refreshStateFromStores)
     ParagraphStore.on('change', @refreshStateFromStores)
+    VisibilityStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -138,6 +143,7 @@ Component = React.createClass
     PersonStore.off('change', @refreshStateFromStores)
     PictureStore.off('change', @refreshStateFromStores)
     ParagraphStore.off('change', @refreshStateFromStores)
+    VisibilityStore.off('change', @refreshStateFromStores)
 
 
   # Component Specifications
@@ -156,6 +162,7 @@ Component = React.createClass
 
     post: PostStore.get(props.uuid)
     blocks: blocks
+    visibility: VisibilityStore.find (item) -> item.uuid && item.owner_id is props.uuid && item.owner_type is 'Post'
 
   getInitialState: ->
     @getStateFromStores(@props)
@@ -269,17 +276,26 @@ Component = React.createClass
       'preview': true
       'post': true
       'epoch': @isEpochType()
+      'only-me': @isOnlyMeVisibility()
       'dimmed': not @isRelatedToStory()
 
     <article className={article_classes}>
       { @renderControls() }
       { @renderInsights() }
 
+      {
+        if @isOnlyMeVisibility()
+          <div className="only-me-overlay" onClick={@handleEditClick}>
+            <i className="fa fa-lock"></i>
+          </div>
+      }
+
       <a href="" onClick={@handleEditClick}>
         { @renderHeader() }
         { @renderContent() }
         { @renderFooter() }
       </a>
+
     </article>
 
 
