@@ -102,6 +102,9 @@ module.exports = React.createClass
 
 
   savePin: (attributes) ->
+    delete attributes['pinboard_title']
+    delete attributes['parent_id'] unless attributes['parent_id']
+
     if @props.uuid
       PinStore.update(@props.uuid, attributes).then(@props.onDone, @handleSaveFail)
     else
