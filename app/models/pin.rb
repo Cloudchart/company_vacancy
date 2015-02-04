@@ -13,7 +13,7 @@ class Pin < ActiveRecord::Base
     Pin.transaction do
       update(pinboard_id: nil, pinnable_id: nil, pinnable_type: nil)
       super if children.size == 0
-      parent.destroy if parent.present?
+      parent.destroy if parent.present? and parent.pinnable.blank?
     end
   end
 

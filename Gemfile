@@ -53,6 +53,7 @@ group :doc do
 end
 
 group :development do
+  gem 'unicorn'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'pry' # An IRB alternative and runtime developer console

@@ -14,7 +14,9 @@ Modal       = require('components/modal_stack')
 cx = React.addons.classSet
 
 
-findPinForUser = (pinnable_id, pinnable_type, user_id) ->
+findPinForUser = (parent_id, pinnable_id, pinnable_type, user_id) ->
+  return null if parent_id
+
   PinStore.cursor.items.find (pin) ->
     pin.get('parent_id', null)  is null           and
     pin.get('pinnable_id')      is pinnable_id    and
@@ -23,6 +25,8 @@ findPinForUser = (pinnable_id, pinnable_type, user_id) ->
 
 
 findRepinForUser = (parent_id, user_id) ->
+  return null unless parent_id
+
   PinStore.cursor.items.find (pin) ->
     pin.get('parent_id')  is parent_id  and
     pin.get('user_id')    is user_id
@@ -52,7 +56,7 @@ module.exports = React.createClass
 
 
   getStateFromStores: ->
-    currentUserPin:     findPinForUser(@props.pinnable_id, @props.pinnable_type, @props.cursor.user.get('uuid'))
+    currentUserPin:     findPinForUser(@props.parent_id, @props.pinnable_id, @props.pinnable_type, @props.cursor.user.get('uuid'))
     currentUserRepin:   findRepinForUser(@props.parent_id, @props.cursor.user.get('uuid'))
 
 

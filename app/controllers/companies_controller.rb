@@ -13,7 +13,7 @@ class CompaniesController < ApplicationController
   before_action :set_companies, only: [:index, :search]
 
   load_and_authorize_resource
-  
+
   # GET /companies
   def index
     authorize! :list, :companies
@@ -31,7 +31,7 @@ class CompaniesController < ApplicationController
   def show
     respond_to do |format|
       format.html { pagescript_params(id: @company.id) }
-      format.json { 
+      format.json {
         # TODO: move to jbuilder
         @company = find_company(
           Company.includes(
@@ -52,18 +52,18 @@ class CompaniesController < ApplicationController
     @company.roles.build(user: current_user, value: :owner)
     @company.should_build_objects!
     @company.save!
-    
+
     redirect_to @company
   end
 
   # PATCH/PUT /companies/1
   def update
     @company.update!(company_params)
-    
+
     Activity.track_activity(current_user, params[:action], @company)
-    
+
     update_site_url_verification(@company) if company_params[:site_url]
-    
+
     respond_to do |format|
       format.json { render json: CompanySerializer.new(@company, scope: current_user) }
     end
@@ -111,7 +111,7 @@ class CompaniesController < ApplicationController
                 unless memo[object.email].include?(object.full_name)
                   memo[object.email].push(object.full_name)
                 end
-              end              
+              end
             end
           end
 
@@ -170,7 +170,7 @@ private
       UserMailer.company_url_verification(token).deliver
     end
   end
-  
+
   # Use callbacks to share common setup or constraints between actions.
   def set_company
     @company = Company.find(params[:id])
@@ -189,12 +189,12 @@ private
     params.require(:company).permit(
       :name,
       :site_url,
-      :description, 
+      :description,
       :established_on,
       :is_published,
-      :logotype, 
+      :logotype,
       :remove_logotype,
-      :is_name_in_logo, 
+      :is_name_in_logo,
       :slug,
       :tag_names
     )

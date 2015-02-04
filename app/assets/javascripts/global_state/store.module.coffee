@@ -167,7 +167,7 @@ class BaseStore
 
 
   updateDone: (json) ->
-    @fetchOne(json.id)
+    @fetchOne(json.id, null, { force: true })
 
 
   # Destroy
