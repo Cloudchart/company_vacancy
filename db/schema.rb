@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150202120604) do
+ActiveRecord::Schema.define(version: 20150204142955) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -330,9 +330,11 @@ ActiveRecord::Schema.define(version: 20150202120604) do
   add_index "posts", ["owner_id", "owner_type"], name: "index_posts_on_owner_id_and_owner_type", using: :btree
 
   create_table "posts_stories", primary_key: "uuid", force: true do |t|
-    t.string  "post_id",        limit: 36,                 null: false
-    t.string  "story_id",       limit: 36,                 null: false
-    t.boolean "is_highlighted",            default: false
+    t.string   "post_id",        limit: 36,                 null: false
+    t.string   "story_id",       limit: 36,                 null: false
+    t.boolean  "is_highlighted",            default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "posts_stories", ["post_id", "story_id"], name: "index_posts_stories_on_post_id_and_story_id", unique: true, using: :btree
