@@ -1,6 +1,6 @@
 <%= hidden_field_tag "user[system_role_ids][]", nil %>
 
-<% Cloudchart::EDITABLE_ROLES.map(&:to_s).each do |value| %>
+<% Cloudchart::ROLES.map(&:to_s).each do |value| %>
   <%= check_box_tag "user[system_role_ids][]", value, @object.system_roles.map(&:value).include?(value), id: value %>
   <%= label_tag value, value.humanize %><br>
 <% end %>
