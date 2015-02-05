@@ -57,7 +57,7 @@ fetch = (query, options = {}) ->
 
 
   relations = query.relations.replace(/\s*/g, '')
-  url       = endpoint.get('url') + if endpoint.get('handle_id') then '/' + options.id else ''
+  url       = endpoint.get('url') + if endpoint.get('handle_id') and options.id then '/' + options.id else ''
   cacheKey  = url + '?' + relations
 
 
