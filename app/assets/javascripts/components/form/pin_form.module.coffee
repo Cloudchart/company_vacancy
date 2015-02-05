@@ -208,6 +208,8 @@ module.exports = React.createClass
     unicorns = @props.cursor.users
       .filter (user) =>
         @props.cursor.roles.find (role) -> role.get('user_id') == user.get('uuid') and role.get('value') == 'unicorn'
+      .filterNot (user) =>
+        false
       .toList()
 
     unicorns.unshift(@props.cursor.currentUser.deref())
@@ -255,7 +257,8 @@ module.exports = React.createClass
 
       .toList()
 
-    options = options.push(<option key="new" value="new">Create Category</option>)
+    if @state.attributes.get('user_id') == @props.cursor.currentUser.get('uuid')
+      options = options.push(<option key="new" value="new">Create Category</option>)
 
     options
 
