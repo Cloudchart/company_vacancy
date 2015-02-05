@@ -21,6 +21,7 @@ Endpoints = Immutable.fromJS
   'Pin':
     url:        '/api/pins'
     handle_id:  true
+    require_id: true
     store:      -> require('stores/pin_store')
 
 
@@ -47,9 +48,13 @@ fetchFail = (response) ->
 #
 fetch = (query, options = {}) ->
   unless Endpoints.has(query.model)
-    throw new Error("GlobalState/Fetcher: no url specified for #{query.model} endpoint")
+    throw new Error("GlobalState/Fetcher: no endpoint specified for #{query.model}")
 
   endpoint = Endpoints.get(query.model)
+
+  if endpoint.get('require_id') and not options.id
+    throw new Error("GlobalState/Fetcher: no id provided for #{query.model} endpoint")
+
 
   relations = query.relations.replace(/\s*/g, '')
   url       = endpoint.get('url') + if endpoint.get('handle_id') then '/' + options.id else ''
