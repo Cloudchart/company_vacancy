@@ -1,9 +1,9 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user)    
+  def initialize(user)
     # Anyone
-    # 
+    #
     can :read, :company_invite
 
     can :read, Page
@@ -23,7 +23,7 @@ class Ability
     return unless user
 
     # User
-    # 
+    #
     can [:verify, :resend_verification], :cloud_profile_email
     can :manage, :cloud_profile_main
     can :update, :cloud_profile_user
@@ -74,6 +74,7 @@ class Ability
     can :manage, Visibility do |visibility|
       owner?(user, visibility.owner.try(:owner))
     end
+
 
   end
 

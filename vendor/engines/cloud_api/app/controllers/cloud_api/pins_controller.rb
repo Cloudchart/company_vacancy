@@ -14,7 +14,7 @@ module CloudApi
     private
 
     def pin_source
-      if current_user.is_editor?
+      if current_user.editor?
         Pin
       else
         current_user.pins

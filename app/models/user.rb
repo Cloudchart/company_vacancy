@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
     !!roles.select { |role| role.owner_id == nil && role.value == 'admin' }.first
   end
 
-  def is_editor?
+  def editor?
     !!roles.find { |role| role.owner_id == nil && role.owner_type == nil && role.value == 'editor' }
   end
 

@@ -76,7 +76,7 @@ class PinsController < ApplicationController
 
 
   def pin_source
-    current_user.is_editor? ? Pin : current_user.pins
+    current_user.editor? ? Pin : current_user.pins
   end
 
   def params_for_create
