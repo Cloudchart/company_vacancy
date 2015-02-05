@@ -9,6 +9,19 @@ class Pin < ActiveRecord::Base
   has_many    :children,  class_name: Pin.name, foreign_key: :parent_id
 
 
+  validates_presence_of :content, if: :should_validate_content_presence?
+
+
+  def should_validate_content_presence?
+    @update_by.present? && user_id != @update_by.uuid
+  end
+
+
+  def update_by!(update_by)
+    @update_by = update_by
+  end
+
+
   def destroy
     Pin.transaction do
       update(pinboard_id: nil, pinnable_id: nil, pinnable_type: nil)

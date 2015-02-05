@@ -24,7 +24,13 @@ class PinsController < ApplicationController
 
 
   def create
-    pin = pin_source.create!(params_for_create)
+    pin = pin_source.new(params_for_create)
+
+    pin.update_by! current_user
+
+    #raise ActiveRecord::RecordInvalid.new(pin) if pin.content.blank? and pin.user_id != current_user.uuid
+
+    pin.save!
 
     respond_to do |format|
       format.json { render json: { id: pin.uuid } }
@@ -41,6 +47,8 @@ class PinsController < ApplicationController
   def update
     pin = pin_source.find(params[:id])
 
+    pin.update_by! current_user
+
     pin.update!(params_for_update)
 
     respond_to do |format|
@@ -56,7 +64,7 @@ class PinsController < ApplicationController
 
 
   def destroy
-    pin = pin_source.find(params[:id])
+    pin = current_user.pins.find(params[:id])
 
     pin.destroy
 
@@ -86,7 +94,7 @@ class PinsController < ApplicationController
   end
 
   def fields_for_update
-    fields_for_create
+    fields_for_create - [:user_id]
   end
 
 

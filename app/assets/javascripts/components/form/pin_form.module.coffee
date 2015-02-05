@@ -121,11 +121,6 @@ module.exports = React.createClass
 
 
   handleSaveFail: ->
-    snabbt(@getDOMNode().parentNode, 'attention', {
-      position: [50, 0, 0]
-      springConstant: 3
-      springDeacceleration: .9
-    })
 
 
   handleChange: (name, event) ->
