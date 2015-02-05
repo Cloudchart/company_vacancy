@@ -4,17 +4,19 @@ module CloudApi
   class UsersController < CloudApi::ApplicationController
 
     def me
-      @user = current_user
+      @source = current_user
 
       respond_to do |format|
-        format.json { render :show }
+        format.json { render '/main' }
       end
     end
 
 
     def unicorns
+      @source = User.unicorns
+
       respond_to do |format|
-        format.json
+        format.json { render '/main' }
       end
     end
 

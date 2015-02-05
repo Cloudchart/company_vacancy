@@ -9,10 +9,13 @@ Endpoints = Immutable.fromJS
   'Viewer':
     url:        '/api/me'
     handle_id:  false
+    store:      -> require('stores/user_store')
+
 
   'Unicorns':
     url:        '/api/unicorns'
     handle_id:  false
+    store:      -> require('stores/user_store')
 
 
   'Pin':
@@ -46,21 +49,27 @@ fetch = (query, options = {}) ->
   unless Endpoints.has(query.model)
     throw new Error("GlobalState/Fetcher: no url specified for #{query.model} endpoint")
 
+  endpoint = Endpoints.get(query.model)
+
   relations = query.relations.replace(/\s*/g, '')
-  url       = Endpoints.getIn([query.model, 'url']) + if Endpoints.getIn([query.model, 'handle_id']) then '/' + options.id else ''
+  url       = endpoint.get('url') + if endpoint.get('handle_id') then '/' + options.id else ''
+  cacheKey  = url + '?' + relations
 
-  delete cachedPromises[url + '?' + relations] if options.force == true
 
-  if Endpoints.getIn([query.model, 'handle_id'])
-    delete cachedPromises[url + '?' + relations] unless Endpoints.getIn([query.model, 'store'])().cursor.items.get('uuid')
+  delete cachedPromises[cacheKey] if options.force == true
 
-  promise = cachedPromises[url + '?' + relations] ||= Promise.resolve $.ajax
+
+  if endpoint.get('handle_id') and options.id
+    delete cachedPromises[cacheKey] unless endpoint.get('store')().has(options.id)
+
+
+  promise = cachedPromises[cacheKey] ||= Promise.resolve $.ajax
     url:          url
     dataType:     'json'
     data:
       relations:  relations
 
-  promise.then(fetchDone, fetchFail)
+  promise.then(fetchDone, (xhr) -> delete cachedPromises[cacheKey] ; fetchFail(xhr))
 
   promise
 

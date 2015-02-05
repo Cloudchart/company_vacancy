@@ -44,5 +44,22 @@ module CloudApi
     end
 
 
+    def populate_data_for_jbuilder(memo, source, query)
+      return if source.nil?
+
+      if source.respond_to?(:each)
+        source.each do |child|
+          populate_data_for_jbuilder(memo, child, query)
+        end
+      else
+        (memo[source.class.name.pluralize.underscore.to_sym] ||= []) << source
+
+        query.each do |child, child_query|
+          populate_data_for_jbuilder(memo, source.public_send(child), child_query)
+        end unless query.nil?
+      end
+    end
+
+
   end
 end

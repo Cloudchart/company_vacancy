@@ -82,6 +82,9 @@ CursorFactory = (data, callback) ->
     forEach: ->
       (seq = @deref(EmptySeq)).forEach.apply(seq, arguments)
 
+    has: ->
+      (seq = @deref(EmptySeq)).has.apply(seq, arguments)
+
     map: ->
       (seq = @deref(EmptySeq)).map.apply(seq, arguments)
 

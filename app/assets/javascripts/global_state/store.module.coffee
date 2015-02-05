@@ -79,6 +79,9 @@ class BaseStore
   #
   #
 
+  has: (id) ->
+    @cursor.items.has(id)
+
   get: (id) ->
     @cursor.items.get(id)
 

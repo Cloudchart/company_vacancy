@@ -4,10 +4,10 @@ module CloudApi
   class PinsController < CloudApi::ApplicationController
 
     def show
-      @pin = pin_source.includes(:user, parent: :user).find(params[:id])
+      @source = pin_source.find(params[:id])
 
       respond_to do |format|
-        format.json
+        format.json { render '/main' }
       end
     end
 
