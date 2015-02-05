@@ -228,6 +228,7 @@ module.exports = React.createClass
 
   renderUserSelect: ->
     return null unless @currentUserIsEditor()
+    return null if @props.parent_id
 
     disabled = !!@props.uuid and @props.cursor.currentUser.get('uuid') isnt @state.attributes.get('user_id')
 
