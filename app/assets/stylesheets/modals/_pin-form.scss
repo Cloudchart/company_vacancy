@@ -135,7 +135,11 @@
     @include pin-form-footer;
 
     button {
-      width: 75px;
+      width: 85px;
+    }
+
+    button ~ button {
+      margin-left: 20px;
     }
   }
 

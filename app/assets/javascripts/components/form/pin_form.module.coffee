@@ -101,6 +101,14 @@ module.exports = React.createClass
       @savePin(attributes)
 
 
+  handleDelete: (event) ->
+    event.preventDefault()
+
+    if confirm('Are you sure?')
+      if confirm('Are you really sure?')
+        PinStore.destroy(@props.uuid).then(@props.onDone, @handleSaveFail)
+
+
   savePin: (attributes) ->
     delete attributes['pinboard_title']
     delete attributes['parent_id'] unless attributes['parent_id']
@@ -313,11 +321,22 @@ module.exports = React.createClass
     </label>
 
 
+
+  renderDeleteButton: ->
+    return null unless @props.uuid
+    return null unless @currentUserIsEditor()
+
+    <button key="delete" type="button" className="cc alert" onClick={ @handleDelete }>Delete</button>
+
+
   renderFooter: ->
     submitButtonTitle = if @props.uuid then 'Update' else 'Pin It'
 
     <footer>
-      <button key="cancel" type="button" className="cc cancel" onClick={ @props.onCancel }>Cancel</button>
+      <div>
+        <button key="cancel" type="button" className="cc cancel" onClick={ @props.onCancel }>Cancel</button>
+        { @renderDeleteButton() }
+      </div>
       <button key="submit" type="submit" className="cc">{ submitButtonTitle }</button>
     </footer>
 

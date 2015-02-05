@@ -28,8 +28,6 @@ class PinsController < ApplicationController
 
     pin.update_by! current_user
 
-    #raise ActiveRecord::RecordInvalid.new(pin) if pin.content.blank? and pin.user_id != current_user.uuid
-
     pin.save!
 
     respond_to do |format|
@@ -64,7 +62,7 @@ class PinsController < ApplicationController
 
 
   def destroy
-    pin = current_user.pins.find(params[:id])
+    pin = pin_source.find(params[:id])
 
     pin.destroy
 

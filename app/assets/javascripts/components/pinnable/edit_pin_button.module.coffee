@@ -61,6 +61,9 @@ module.exports = React.createClass
         role.get('user_id')           is @state.user.get('uuid')
 
 
+  isUnicornPin: ->
+    true
+
 
   getInitialState: ->
     loaders:  Immutable.Map()
@@ -74,6 +77,7 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
     return null unless @isEditor()
+    return null unless @isUnicornPin()
 
     <li onClick={ @handleClick }>
       <i className="fa fa-pencil" />
