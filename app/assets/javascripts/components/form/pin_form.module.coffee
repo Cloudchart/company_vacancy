@@ -40,7 +40,7 @@ module.exports = React.createClass
   statics:
 
     queries:
-      pinboards_and_roles: ->
+      viewer: ->
         """
           Viewer {
             available_pinboards,
@@ -64,29 +64,40 @@ module.exports = React.createClass
         """
 
 
-  fetch: ->
-    GlobalState.fetch(@getQuery('pinboards_and_roles')).then =>
-      @setState
-        attributes:   @setAttributes()
-        loaders:      @state.loaders.set('pinboards_and_roles', true)
-
-    GlobalState.fetch(@getQuery('unicorns')).then =>
-      @setState
-        attributes:   @setAttributes()
-        loaders:      @state.loaders.set('unicorns', true)
-
-    if @props.uuid
-      GlobalState.fetch(@getQuery('pin'), { id: @props.uuid }).then =>
+  fetchViewer: ->
+    GlobalState.fetch(@getQuery('viewer')).then =>
+      if @currentUserIsSystemEditor()
+        @fetchUnicorns()
         @setState
-          attributes:   @setAttributes()
-          loaders:      @state.loaders.set('pin', true)
+          loaders: @state.loaders.set('viewer', true)
+      else
+        @setState
+          loaders: @state.loaders.set('viewer', true).set('unicorns', true)
+
+
+  fetchPin: ->
+    if @props.uuid
+      GlobalState.fetch(@getQuery('pin'), id: @props.uuid).then =>
+        @setState
+          loaders: @state.loaders.set('pin', true)
     else
       @setState
         loaders: @state.loaders.set('pin', true)
 
 
+  fetchUnicorns: ->
+    GlobalState.fetch(@getQuery('unicorns')).then =>
+      @setState
+        loaders: @state.loaders.set('unicorns', true)
+
+
+  fetch: ->
+    @fetchViewer()
+    @fetchPin()
+
+
   fetchDone: ->
-    @state.loaders.get('pinboards_and_roles') and
+    @state.loaders.get('viewer') and
     @state.loaders.get('unicorns') and
     @state.loaders.get('pin')
 
@@ -213,33 +224,35 @@ module.exports = React.createClass
 
 
   renderUserSelectOptions: ->
-    unicorns = @props.cursor.users
-      .filter (user) =>
-        @props.cursor.roles.find (role) -> role.get('user_id') == user.get('uuid') and role.get('value') == 'unicorn'
+    UserStore
+
+      .unicorns()
+
+      .concat([UserStore.me()])
 
       .filterNot (user) =>
         @props.cursor.pins
           .find (pin) =>
-            pin.get('pinnable_type')  == @props.pinnable_type and
-            pin.get('pinnable_id')    == @props.pinnable_id   and
-            pin.get('user_id')        == user.get('uuid')
+            pin.get('pinnable_type')  is @props.pinnable_type and
+            pin.get('pinnable_id')    is @props.pinnable_id   and
+            pin.get('user_id')        is user.get('uuid')
 
-      .toList()
-
-    unicorns.unshift(@props.cursor.currentUser.deref())
       .map (user) =>
         uuid = user.get('uuid')
         <option key={ uuid } value={ uuid }>{ user.get('first_name') + ' ' + user.get('last_name') }</option>
 
 
-  currentUserIsEditor: ->
-    @props.cursor.roles
-      .find (role) => role.get('user_id') == @props.cursor.currentUser.get('uuid') and role.get('value') == 'editor'
+  currentUserIsSystemEditor: ->
+    RoleStore.rolesFor(UserStore.me('uuid'))
+      .find (role) =>
+        role.get('owner_id',    null)   is null     and
+        role.get('owner_type',  null)   is null     and
+        role.get('value')               is 'editor'
 
 
   renderUserSelect: ->
-    return null unless @currentUserIsEditor()
-    return null if @props.parent_id
+    return null unless  @currentUserIsSystemEditor()
+    return null if      @props.parent_id
 
     disabled = !!@props.uuid and @props.cursor.currentUser.get('uuid') isnt @state.attributes.get('user_id')
 
@@ -324,7 +337,7 @@ module.exports = React.createClass
 
   renderDeleteButton: ->
     return null unless @props.uuid
-    return null unless @currentUserIsEditor()
+    return null unless @currentUserIsSystemEditor()
 
     <button key="delete" type="button" className="cc alert" onClick={ @handleDelete }>Delete</button>
 

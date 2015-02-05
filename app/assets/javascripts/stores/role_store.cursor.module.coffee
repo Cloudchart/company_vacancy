@@ -11,3 +11,9 @@ module.exports = GlobalState.createStore
 
   collectionName: 'roles'
   instanceName:   'role'
+
+
+  rolesFor: (id) ->
+    roles = require('stores/role_store.cursor').cursor.items
+
+    roles.filter (role) -> role.get('user_id') is id
