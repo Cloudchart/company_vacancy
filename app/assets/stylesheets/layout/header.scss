@@ -7,8 +7,14 @@ $header-height: auto;
 $header-padding: 10px;
 
 
-$header-logo-background-image: image-url('cloudchart-logo.svg');
-$header-logo-background-image-inverse: image-url('cloudchart-logo-neg.svg');
+$header-logo-background-image-development: image-url('development/cloudchart-logo.svg');
+$header-logo-background-image-inverse-development: image-url('development/cloudchart-logo-neg.svg');
+$header-logo-background-image-staging: image-url('staging/cloudchart-logo.svg');
+$header-logo-background-image-inverse-staging: image-url('staging/cloudchart-logo-neg.svg');
+$header-logo-background-image-production: image-url('production/cloudchart-logo.svg');
+$header-logo-background-image-inverse-production: image-url('production/cloudchart-logo-neg.svg');
+
+
 $header-logo-height: 32px;
 $header-logo-margins: -3px 0 0;
 $header-logo-width: 48px;
@@ -36,8 +42,7 @@ $header-button-height: 50px - $header-padding * 2;
 // Header logo
 //
 @mixin header-logo {
-  //background-color: #000;
-  background-image: $header-logo-background-image;
+  // background-color: #000;
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
@@ -153,7 +158,7 @@ body > header {
     }
     
     > .company-name {
-      color: HSL(139, 72%, 35%);
+      color: hsl(139, 72%, 35%);
       font-size: 25px;
       font-weight: 300;
       margin-left: 15px;
@@ -194,10 +199,30 @@ body > header {
   
   .logo {
     @include header-logo;
+
+    &.development {
+      background-image: $header-logo-background-image-development;
+    }
+
+    &.staging {
+      background-image: $header-logo-background-image-staging;
+    }
+
+    &.production {
+      background-image: $header-logo-background-image-production;
+    }
   }
   
   .title {
     @include header-title;
+
+    &.staging {
+      color: hsl(359, 73%, 55%);
+
+      > small {
+        color: hsl(356, 82%, 65%);
+      }
+    }
   }
   
   .search {
@@ -243,7 +268,18 @@ body > header.inverse {
   }
   
   .logo {
-    background-image: $header-logo-background-image-inverse;
+    
+    &.development {
+      background-image: $header-logo-background-image-inverse-development;
+    }
+
+    &.staging {
+      background-image: $header-logo-background-image-inverse-staging;
+    }
+
+    &.production {
+      background-image: $header-logo-background-image-inverse-production;
+    }
   }
   
 }

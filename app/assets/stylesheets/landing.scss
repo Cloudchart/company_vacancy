@@ -74,13 +74,24 @@ body > header {
   padding: 0 $base-unit * 2;
   
   > figure {
-    background: image-url('cloudchart-logo-neg.svg') no-repeat left center;
     
     font-size: $base-unit * 1.25;
     font-weight: 300;
     height: $base-unit * 2.25;
     line-height: $base-unit * 2.25;
     padding-left: $base-unit * 4.25;
+
+    &.development {
+      background: image-url('development/cloudchart-logo-neg.svg') no-repeat left center;
+    }
+
+    &.staging {
+      background: image-url('staging/cloudchart-logo-neg.svg') no-repeat left center;
+    }
+
+    &.production {
+      background: image-url('production/cloudchart-logo-neg.svg') no-repeat left center;
+    }
     
     > strong {
       font-weight: 600;
