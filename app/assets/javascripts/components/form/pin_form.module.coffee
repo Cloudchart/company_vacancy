@@ -208,8 +208,14 @@ module.exports = React.createClass
     unicorns = @props.cursor.users
       .filter (user) =>
         @props.cursor.roles.find (role) -> role.get('user_id') == user.get('uuid') and role.get('value') == 'unicorn'
+
       .filterNot (user) =>
-        false
+        @props.cursor.pins
+          .find (pin) =>
+            pin.get('pinnable_type')  == @props.pinnable_type and
+            pin.get('pinnable_id')    == @props.pinnable_id   and
+            pin.get('user_id')        == user.get('uuid')
+
       .toList()
 
     unicorns.unshift(@props.cursor.currentUser.deref())
