@@ -309,9 +309,11 @@ module.exports = React.createClass
 
 
   renderFooter: ->
+    submitButtonTitle = if @props.uuid then 'Update' else 'Pin It'
+
     <footer>
       <button key="cancel" type="button" className="cc cancel" onClick={ @props.onCancel }>Cancel</button>
-      <button key="submit" type="submit" className="cc">Pin It</button>
+      <button key="submit" type="submit" className="cc">{ submitButtonTitle }</button>
     </footer>
 
 
