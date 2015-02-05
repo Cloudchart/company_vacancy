@@ -25,7 +25,7 @@ end
 # Pinboards
 #
 users.map(&:pinboards).flatten.compact.uniq.each do |pinboard|
-  data[:pinboard] << pinboard
+  data[:pinboards] << pinboard
 end
 
 
