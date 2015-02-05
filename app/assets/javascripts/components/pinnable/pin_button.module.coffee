@@ -14,24 +14,6 @@ Modal       = require('components/modal_stack')
 cx = React.addons.classSet
 
 
-findPinForUser = (parent_id, pinnable_id, pinnable_type, user_id) ->
-  return null if parent_id
-
-  PinStore.cursor.items.find (pin) ->
-    pin.get('parent_id', null)  is null           and
-    pin.get('pinnable_id')      is pinnable_id    and
-    pin.get('pinnable_type')    is pinnable_type  and
-    pin.get('user_id')          is user_id
-
-
-findRepinForUser = (parent_id, user_id) ->
-  return null unless parent_id
-
-  PinStore.cursor.items.find (pin) ->
-    pin.get('parent_id')  is parent_id  and
-    pin.get('user_id')    is user_id
-
-
 # Exports
 #
 module.exports = React.createClass
@@ -43,12 +25,36 @@ module.exports = React.createClass
 
 
   handleClick: (event) ->
-    if !!@state.currentUserPin
+    if @state.currentUserPin
       PinStore.destroy(@state.currentUserPin.get('uuid')) if confirm('Are you sure?')
-    else if !!@state.currentUserRepin
+    else if @state.currentUserRepin
       PinStore.destroy(@state.currentUserRepin.get('uuid')) if confirm('Are you sure?')
     else
       Modal.show(@renderPinForm())
+
+
+  currentUserPin: ->
+    if @props.uuid
+      @props.cursor.pins
+        .find (pin) =>
+          pin.get('uuid')     == @props.uuid                    and
+          pin.get('user_id')  == @props.cursor.user.get('uuid')
+    else
+      @props.cursor.pins
+        .find (pin) =>
+          pin.get('pinnable_id')      == @props.pinnable_id             and
+          pin.get('pinnable_type')    == @props.pinnable_type           and
+          pin.get('parent_id', null)  == null                           and
+          pin.get('user_id')          == @props.cursor.user.get('uuid')
+
+
+  currentUserRepin: ->
+    return null unless @props.uuid
+
+    @props.cursor.pins
+      .find (pin) =>
+        pin.get('parent_id')  == @props.uuid                    and
+        pin.get('user_id')    == @props.cursor.user.get('uuid')
 
 
   onGlobalStateChange: ->
@@ -56,8 +62,8 @@ module.exports = React.createClass
 
 
   getStateFromStores: ->
-    currentUserPin:     findPinForUser(@props.parent_id, @props.pinnable_id, @props.pinnable_type, @props.cursor.user.get('uuid'))
-    currentUserRepin:   findRepinForUser(@props.parent_id, @props.cursor.user.get('uuid'))
+    currentUserPin:     @currentUserPin()
+    currentUserRepin:   @currentUserRepin()
 
 
   getDefaultProps: ->
@@ -73,7 +79,7 @@ module.exports = React.createClass
   renderPinForm: ->
     <PinForm
       title         = { @props.title }
-      parent_id     = { @props.parent_id }
+      parent_id     = { @props.uuid }
       pinnable_id   = { @props.pinnable_id }
       pinnable_type = { @props.pinnable_type }
       onDone        = { Modal.hide }
