@@ -2,20 +2,16 @@ class QuotesController < ApplicationController
   before_action :find_owner, only: [:create, :update]
 
   def show
-    begin
-      @quote = Quote.find(params[:id])
+    @quote = Quote.find(params[:id])
 
-      respond_to do |format|
-        format.json { render json: { quote: @quote } }
-      end
-
-    rescue ActiveRecord::RecordNotFound
-      format.json { render json: :fail, status: 422 }
+    respond_to do |format|
+      format.json { render json: { quote: @quote } }
     end
   end
 
   def create
     @quote = @owner.build_quote(quote_params)
+    authorize!(params[:action], @quote)
 
     if @quote.save
       respond_to do |format|
@@ -29,9 +25,12 @@ class QuotesController < ApplicationController
   end
 
   def update
-    if @owner.quote.update(quote_params)
+    @quote = @owner.quote
+    authorize!(params[:action], @quote)
+
+    if @quote.update(quote_params)
       respond_to do |format|
-        format.json { render json: { id: @owner.quote.uuid } }
+        format.json { render json: { id: @quote.uuid } }
       end
     else
       respond_to do |format|
@@ -40,7 +39,7 @@ class QuotesController < ApplicationController
     end
   end
 
-private  
+private
   
   def find_owner
     @owner = begin

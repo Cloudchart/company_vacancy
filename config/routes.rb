@@ -70,7 +70,7 @@ Cloudchart::Application.routes.draw do
     resources :identities, shallow: true, controller: :block_identities, only: [:index, :create, :destroy]
     resource :picture, type: :block, only: [:create, :update, :destroy]
     resource :paragraph, type: :block, only: [:create, :update, :destroy]
-    resource :quote, type: :block, only: [:create, :update, :destroy]
+    resource :quote, type: :block, only: [:create, :update]
     match :reposition, on: :collection, via: [:put, :patch]
   end
 

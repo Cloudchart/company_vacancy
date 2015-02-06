@@ -18,6 +18,7 @@ class Ability
     can :read, Vacancy
 
     can :read, Company, is_public: true
+    can :read, Quote
     can [:preview, :read, :pull], CloudBlueprint::Chart, is_public: true
 
     return unless user
@@ -59,7 +60,7 @@ class Ability
       !user.companies.map(&:id).include?(company.id)
     end
 
-    can :manage, [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post, Story] do |resource|
+    can :manage, [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post, Story, Quote] do |resource|
       owner_or_editor?(user, resource.company)
     end
 
@@ -73,6 +74,10 @@ class Ability
 
     can :manage, Visibility do |visibility|
       owner?(user, visibility.owner.try(:owner))
+    end
+
+    cannot [:create, :update], Quote do |quote|
+      quote.company && !quote.company.people.include?(quote.person)
     end
 
   end
