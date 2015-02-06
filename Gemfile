@@ -31,6 +31,7 @@ gem 'sprockets-commonjs', git: 'git@github.com:maccman/sprockets-commonjs.git'
 gem 'sprockets-coffee-react'
 gem 'redis-rails'
 gem 'jbuilder'
+gem 'squeel'
 
 # Engines
 #
