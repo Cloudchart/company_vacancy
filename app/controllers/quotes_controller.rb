@@ -51,7 +51,7 @@ private
   end
   
   def quote_params
-    params.require(:quote).permit(:content, :person_id)
+    params.require(:quote).permit(:text, :person_id)
   end
 
 end
