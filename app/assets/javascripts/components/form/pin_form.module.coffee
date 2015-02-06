@@ -43,8 +43,8 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
-            available_pinboards,
-            system_roles
+            roles,
+            available_pinboards
           }
 
         """
@@ -52,7 +52,8 @@ module.exports = React.createClass
       unicorns: ->
         """
           Unicorns {
-            system_roles
+            roles,
+            available_pinboards
           }
 
         """
