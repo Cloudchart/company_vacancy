@@ -46,13 +46,37 @@ CursorFactory = (data, callback) ->
   class Cursor
 
 
-    constructor: (path) ->
+    constructor: (path, @predicate, @type) ->
       @path                 = [].concat(path)
       @__CURSOR_INSTANCE__  = true
 
 
     cursor: (path) ->
       fetch(@path.concat(path))
+
+
+
+    findCursor: (predicate) ->
+      unless predicate instanceof Function
+        throw new Error("GlobalState/Cursor: findCursor should receive a function.")
+
+      new Cursor(@path, predicate, 'find')
+
+
+    filterCursor: (predicate) ->
+      unless predicate instanceof Function
+        throw new Error("GlobalState/Cursor: filterCursor should receive a function.")
+
+      new Cursor(@path, predicate, 'filter')
+
+
+    applyPredicate: (data, path, notSetValue) ->
+      value = data.getIn(path)
+
+      if Immutable.Iterable.isIterable(value)
+        value[@type].call(value, @predicate)
+      else
+        notSetValue
 
 
     transaction: (callback) ->
@@ -99,7 +123,10 @@ CursorFactory = (data, callback) ->
       @getIn([key?.toString()], notSetValue)
 
     getIn: (path, notSetValue) ->
-      CurrData.getIn(@path.concat(path), notSetValue)
+      if @predicate
+        @applyPredicate(CurrData, @path.concat(path), notSetValue)
+      else
+        CurrData.getIn(@path.concat(path), notSetValue)
 
 
     set: (key, value) ->
