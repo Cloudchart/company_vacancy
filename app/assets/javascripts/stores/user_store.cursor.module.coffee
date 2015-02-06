@@ -30,7 +30,6 @@ module.exports = GlobalState.createStore
     me
 
 
-
   unicorns: ->
     roles = require('stores/role_store.cursor').cursor.items
 
@@ -39,6 +38,6 @@ module.exports = GlobalState.createStore
       .filterCursor (user) ->
         roles.find (role) ->
           role.get('owner_type', null)  is null       and
-          role.get('owner_id', null)    is null       and
+          role.get('owner_id',   null)  is null       and
           role.get('value')             is 'unicorn'  and
           role.get('user_id')           is user.get('uuid')
