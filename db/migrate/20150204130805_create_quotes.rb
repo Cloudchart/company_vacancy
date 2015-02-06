@@ -5,7 +5,7 @@ class CreateQuotes < ActiveRecord::Migration
       t.string  :owner_id, limit: 36
       t.string  :owner_type
 
-      t.text :text, null: false
+      t.text :text
       t.string :person_id, limit: 36
 
       t.timestamps

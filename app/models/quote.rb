@@ -4,8 +4,6 @@ class Quote < ActiveRecord::Base
   belongs_to :person
   belongs_to :owner, polymorphic: true
 
-  validates :text, presence: true
-
   def company
     if owner_type == "Block" 
       owner.company

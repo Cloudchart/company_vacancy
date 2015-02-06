@@ -342,7 +342,7 @@ ActiveRecord::Schema.define(version: 20150204142955) do
   create_table "quotes", primary_key: "uuid", force: true do |t|
     t.string   "owner_id",   limit: 36
     t.string   "owner_type"
-    t.text     "text",                  null: false
+    t.text     "text"
     t.string   "person_id",  limit: 36
     t.datetime "created_at"
     t.datetime "updated_at"
