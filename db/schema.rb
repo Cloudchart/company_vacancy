@@ -297,6 +297,7 @@ ActiveRecord::Schema.define(version: 20150206093102) do
     t.string   "access_rights",            default: "public"
     t.text     "description"
     t.text     "welcome"
+    t.boolean  "is_featured"
   end
 
   add_index "pinboards", ["access_rights"], name: "index_pinboards_on_access_rights", using: :btree
