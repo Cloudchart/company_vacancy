@@ -1,7 +1,9 @@
 data  = {}
 query = parse_relations_query(params[:relations])
 
-populate_data_for_jbuilder(data, @source, query)
+json.query do
+  populate_data_for_jbuilder(json, data, @source, query)
+end
 
 data.each do |key, values|
   name = key.to_s.singularize
