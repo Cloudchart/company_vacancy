@@ -69,7 +69,7 @@ module.exports = React.createClass
   getDefaultProps: ->
     cursor:
       pins:   PinStore.cursor.items
-      user:   UserStore.currentUserCursor()
+      user:   UserStore.me()
 
 
   getInitialState: ->

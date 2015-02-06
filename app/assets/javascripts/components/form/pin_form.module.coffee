@@ -158,7 +158,7 @@ module.exports = React.createClass
 
 
   getDefaultUserId: ->
-    if @props.uuid then @props.cursor.pins.items.getIn([@props.uuid, 'user_id']) else @props.cursor.currentUser.get('uuid', '')
+    if @props.uuid then @props.cursor.pins.items.getIn([@props.uuid, 'user_id']) else @props.cursor.me.get('uuid', '')
 
 
   getDefaultPinboardIdFor: (user_id) ->
@@ -206,7 +206,7 @@ module.exports = React.createClass
       users:        UserStore.cursor.items
       roles:        RoleStore.cursor.items
       pins:         PinStore.cursor.items
-      currentUser:  UserStore.currentUserCursor()
+      me:           UserStore.me()
 
 
   getInitialState: ->
@@ -229,6 +229,8 @@ module.exports = React.createClass
 
       .unicorns()
 
+      .valueSeq()
+
       .concat([UserStore.me()])
 
       .filterNot (user) =>
@@ -244,7 +246,7 @@ module.exports = React.createClass
 
 
   currentUserIsSystemEditor: ->
-    RoleStore.rolesFor(UserStore.me('uuid'))
+    RoleStore.rolesFor(UserStore.me().get('uuid'))
       .find (role) =>
         role.get('owner_id',    null)   is null     and
         role.get('owner_type',  null)   is null     and
@@ -255,7 +257,7 @@ module.exports = React.createClass
     return null unless  @currentUserIsSystemEditor()
     return null if      @props.parent_id
 
-    disabled = !!@props.uuid and @props.cursor.currentUser.get('uuid') isnt @state.attributes.get('user_id')
+    disabled = !!@props.uuid and @props.cursor.me.get('uuid') isnt @state.attributes.get('user_id')
 
     <label className="user">
       <span className="title">Choose an author</span>
@@ -285,7 +287,7 @@ module.exports = React.createClass
 
       .toList()
 
-    if @state.attributes.get('user_id') == @props.cursor.currentUser.get('uuid')
+    if @state.attributes.get('user_id') == @props.cursor.me.get('uuid')
       options = options.push(<option key="new" value="new">Create Category</option>)
 
     options

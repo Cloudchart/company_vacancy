@@ -67,7 +67,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     loaders:  Immutable.Map()
-    user:     UserStore.currentUserCursor()
+    user:     UserStore.me()
 
 
   renderPinForm: ->

@@ -26,9 +26,8 @@ module.exports = GlobalState.createStore
     'post:fetch-all:done': @populate
 
 
-  me: (attribute) ->
-    me = @cursor.items.get(CurrentUserId)
-    if attribute then me.get(attribute) else me
+  me: ->
+    @cursor.items.cursor(CurrentUserId)
 
 
   unicorns: ->
@@ -36,26 +35,9 @@ module.exports = GlobalState.createStore
 
     @cursor.items
 
-      .filter (user) ->
+      .filterCursor (user) ->
         roles.find (role) ->
           role.get('owner_type', null)  is null       and
           role.get('owner_id', null)    is null       and
           role.get('value')             is 'unicorn'  and
           role.get('user_id')           is user.get('uuid')
-
-      .valueSeq()
-
-
-  currentUserCursor: ->
-    currentUserCursor = @cursor.items.cursor([CurrentUserId])
-
-    if CurrentUserId and !currentUserCursor.get('uuid')
-      @fetchCurrentUser()
-
-    currentUserCursor
-
-
-  fetchCurrentUser: (options = {}) ->
-    promise = @syncAPI.fetchCurrentUser(options)
-    promise.then(@fetchDone, @fetchFail)
-    promise
