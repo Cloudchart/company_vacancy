@@ -3,7 +3,7 @@ module Companies
     before_action :set_company, only: [:index, :create, :resend]
     before_action :set_token, only: [:show, :accept, :destroy]
 
-    authorize_resource class: :company_invite, except: [:index, :create, :resend]  
+    authorize_resource class: :company_invite, except: [:index, :create, :resend]
 
     # Show
     #

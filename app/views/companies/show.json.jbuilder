@@ -1,4 +1,4 @@
-tags = Tag.where(is_acceptable: true).all
+tags = Tag.available_for_user(current_user)
 
 json.company ams(@company, scope: current_user)
 json.blocks ams(@company.blocks)
