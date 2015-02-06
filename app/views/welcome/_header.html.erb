@@ -1,6 +1,6 @@
-<%= content_tag :figure, nil, class: "logo #{Rails.env}" do %>
-  Cloud<strong>Chart</strong>
-<% end %>
+<figure>
+  <%= app_name_for_header %>
+</figure>
 
 <div class="auth">
   <%= link_to "Log In", cloud_profile.login_path %>

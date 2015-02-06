@@ -80,18 +80,6 @@ body > header {
     height: $base-unit * 2.25;
     line-height: $base-unit * 2.25;
     padding-left: $base-unit * 4.25;
-
-    &.development {
-      background: image-url('development/cloudchart-logo-neg.svg') no-repeat left center;
-    }
-
-    &.staging {
-      background: image-url('staging/cloudchart-logo-neg.svg') no-repeat left center;
-    }
-
-    &.production {
-      background: image-url('production/cloudchart-logo-neg.svg') no-repeat left center;
-    }
     
     > strong {
       font-weight: 600;
@@ -189,5 +177,23 @@ body > footer > ul {
     text-decoration: none;
   }
 }
+
+// Env dependent
+// 
+@each $env, $color in (development, hsl(136, 52%, 51%)), 
+                      (staging, hsl(356, 82%, 65%)),
+                      (production, hsl(136, 52%, 51%)) {
+  body.#{$env} {
+    > header {
+      background-color: $color;
+
+      > figure {
+        background: image-url('#{$env}/cloudchart-logo-neg.svg') no-repeat left center;
+      }
+
+    }
+  }
+}
+
 
 @import 'interviews';

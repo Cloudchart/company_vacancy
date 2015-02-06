@@ -1,10 +1,10 @@
 <% if content_for(:header_breadcrumbs).present? %>
   <%= yield :header_breadcrumbs %>
 <% else %>
-  <%= link_to "", main_app.root_path, class: "logo #{Rails.env}" %>
+  <%= link_to "", main_app.root_path, class: 'logo' %>
   <div data-header-react-mount-point>
-    <%= link_to main_app.root_path, class: "title #{Rails.env}" do %>
-      <small>Cloud</small>Chart
+    <%= link_to main_app.root_path, class: 'title' do %>
+      <%= app_name_for_header %>
     <% end %>
   </div>
 <% end %>
