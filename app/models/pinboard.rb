@@ -8,15 +8,27 @@ class Pinboard < ActiveRecord::Base
 
   belongs_to  :user
   has_many    :pins
-
-
-
-  scope :belongs_to_user, -> (user) { arel_table[:user_id].eq user.uuid }
-  scope :public_availability, -> (user) { arel_table[:user_id].eq(nil).or(arel_table[:user_id].not_eq(user.uuid)).and(arel_table[:access_rights].eq(:public)) }
+  has_many    :roles, as: :owner
 
 
   scope :available, -> (user) do
-    where arel_table.grouping(public_availability(user)).or(belongs_to_user(user))
+    joins {
+
+      roles.outer
+
+    }.where {
+
+      # user own
+      (user_id.eq user.id) |
+
+      # public
+      ((access_rights.eq 'public') & ((user_id.not_eq user.uuid) | (user_id.eq nil))) |
+
+      # available through roles
+      ((roles.user_id == user.id) & (roles.value.in ['editor', 'reader']))
+
+    }
   end
+
 
 end
