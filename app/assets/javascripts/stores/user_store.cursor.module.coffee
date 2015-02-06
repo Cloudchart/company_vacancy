@@ -3,9 +3,9 @@
 GlobalState   = require('global_state/state')
 
 
-# Current User Id
+# me
 #
-CurrentUserId = try document.querySelector('meta[name="user-id"]').getAttribute('content') catch
+me = try document.querySelector('meta[name="user-id"]').getAttribute('content') catch
 
 
 # Exports
@@ -27,7 +27,7 @@ module.exports = GlobalState.createStore
 
 
   me: ->
-    @cursor.items.cursor(CurrentUserId)
+    @cursor.items.cursor(me)
 
 
   unicorns: ->
@@ -38,6 +38,6 @@ module.exports = GlobalState.createStore
       .filterCursor (user) ->
         roles.find (role) ->
           role.get('owner_type', null)  is null       and
-          role.get('owner_id', null)    is null       and
+          role.get('owner_id',   null)  is null       and
           role.get('value')             is 'unicorn'  and
           role.get('user_id')           is user.get('uuid')

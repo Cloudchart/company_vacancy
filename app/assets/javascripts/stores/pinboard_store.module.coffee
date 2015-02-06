@@ -6,6 +6,9 @@ PinboardSyncAPI = require('sync/pinboard_sync_api')
 GlobalState     = require('global_state/state')
 
 
+RoleStore       = require('stores/role_store.cursor')
+
+
 ItemsCursor = GlobalState.cursor(['stores', 'pinboards', 'items'])
 
 
@@ -89,6 +92,21 @@ destroyFail = (xhr) ->
   alert 'Error deleting pinboard. Please, try again later.'
 
 
+# Predicates
+#
+
+readablePinboardsFilter = (user) ->
+  (item) ->
+    roles = RoleStore.roles_on_owner_for_user(item, 'Pinboard', user)
+      .map (role) -> role.get('value')
+
+    item.get('access_rights') == 'public'           or
+    item.get('user_id')       == user.get('uuid')   or
+    roles.contains('editor')                        or
+    roles.contains('reader')
+
+
+
 # Exports
 #
 module.exports =
@@ -107,6 +125,11 @@ module.exports =
 
 
   fetchOne: fetchOne
+
+
+  readable_pinboards: (user) ->
+    ItemsCursor.filterCursor readablePinboardsFilter(user)
+
 
 
   create: (attributes = {}, options ={}) ->
