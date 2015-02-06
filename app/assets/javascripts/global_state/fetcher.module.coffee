@@ -7,22 +7,36 @@ Dispatcher = require('dispatcher/dispatcher')
 #
 Endpoints = Immutable.fromJS
   'Viewer':
-    url:        '/api/me'
-    handle_id:  false
-    store:      -> require('stores/user_store')
+    url:          '/api/me'
+    handle_id:    false
+    store:        -> require('stores/user_store')
+
+
+  'User':
+    url:          '/api/users'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/user_store')
 
 
   'Unicorns':
-    url:        '/api/unicorns'
-    handle_id:  false
-    store:      -> require('stores/user_store')
+    url:          '/api/unicorns'
+    handle_id:    false
+    store:        -> require('stores/user_store')
+
+
+  'Pinboard':
+    url:          '/api/pinboards'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/pinboard_store')
 
 
   'Pin':
-    url:        '/api/pins'
-    handle_id:  true
-    require_id: true
-    store:      -> require('stores/pin_store')
+    url:          '/api/pins'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/pin_store')
 
 
 # Cached promises
@@ -32,7 +46,7 @@ cachedPromises = {}
 
 # Fetch done
 #
-fetchDone = (response) ->
+fetchDone = (response, query, options) ->
   require('global_state/state').cursor().transaction ->
     Dispatcher.handleServerAction
       type: 'fetch:done'
@@ -42,6 +56,12 @@ fetchDone = (response) ->
 # Fetch fail
 #
 fetchFail = (response) ->
+
+
+# Build URL
+#
+buildURL = (endpoint, options = {}) ->
+  endpoint.get('url') + if endpoint.get('handle_id') and options.id then '/' + options.id else ''
 
 
 # Fetch
@@ -56,8 +76,8 @@ fetch = (query, options = {}) ->
     throw new Error("GlobalState/Fetcher: no id provided for #{query.model} endpoint")
 
 
+  url       = buildURL(endpoint, options)
   relations = query.relations.replace(/\s*/g, '')
-  url       = endpoint.get('url') + if endpoint.get('handle_id') and options.id then '/' + options.id else ''
   cacheKey  = url + '?' + relations
 
 
@@ -74,7 +94,14 @@ fetch = (query, options = {}) ->
     data:
       relations:  relations
 
-  promise.then(fetchDone, (xhr) -> delete cachedPromises[cacheKey] ; fetchFail(xhr))
+  promise.then(
+    (json) ->
+      fetchDone(json, query, options)
+    ,
+    (xhr) ->
+      delete cachedPromises[cacheKey]
+      fetchFail(xhr, query, options)
+  )
 
   promise
 
