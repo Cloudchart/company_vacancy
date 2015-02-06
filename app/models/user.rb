@@ -39,9 +39,15 @@ class User < ActiveRecord::Base
   scope :unicorns, -> { includes(:system_roles).where(roles: { value: 'unicorn'}) }
 
 
-  def available_pinboards
-    Pinboard.available(self)
+  def readable_pinboards
+    Pinboard.readable(self)
   end
+
+
+  def writable_pinboards
+    Pinboard.writable(self)
+  end
+
 
   def is_admin?
     !!roles.select { |role| role.owner_id == nil && role.value == 'admin' }.first

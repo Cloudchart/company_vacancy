@@ -44,7 +44,7 @@ module.exports = React.createClass
         """
           Viewer {
             roles,
-            available_pinboards
+            writable_pinboards
           }
 
         """
@@ -53,7 +53,7 @@ module.exports = React.createClass
         """
           Unicorns {
             roles,
-            available_pinboards
+            writable_pinboards
           }
 
         """

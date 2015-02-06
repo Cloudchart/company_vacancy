@@ -11,23 +11,47 @@ class Pinboard < ActiveRecord::Base
   has_many    :roles, as: :owner
 
 
-  scope :available, -> (user) do
+  sifter :user_own do |user|
+    user_id.eq user.id
+  end
+
+  sifter :public do
+    access_rights.eq 'public'
+  end
+
+  sifter :available_through_roles do |user, values|
+    access_rights.not_eq('public') &
+    roles.user_id.eq(user.id) &
+    roles.value.in(values)
+  end
+
+
+  scope :writable, -> (user) do
     joins {
 
       roles.outer
 
     }.where {
 
-      # user own
-      (user_id.eq user.id) |
+      sift(:user_own, user) |
+      sift(:available_through_roles, user, ['editor'])
 
-      # public
-      ((access_rights.eq 'public') & ((user_id.not_eq user.uuid) | (user_id.eq nil))) |
+    }.distinct
+  end
 
-      # available through roles
-      ((roles.user_id == user.id) & (roles.value.in ['editor', 'reader']))
 
-    }
+  scope :readable, -> (user) do
+    joins {
+
+      roles.outer
+
+    }.where {
+
+      sift(:public) |
+      sift(:user_own, user) |
+      sift(:available_through_roles, user, ['editor', 'reader'])
+
+    }.distinct
   end
 
 
