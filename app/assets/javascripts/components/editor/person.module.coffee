@@ -2,14 +2,12 @@
 
 # Imports
 #
-tag = React.DOM
 cx  = React.addons.classSet;
 
 
 CloudFlux     = require('cloud_flux')
 
 
-BlockActions  = require('actions/block_actions')
 ModalActions  = require('actions/modal_actions')
 PersonActions = require('actions/person_actions')
 
@@ -19,8 +17,6 @@ PersonStore   = require('stores/person')
 PersonAvatar  = require('components/shared/person_avatar')
 PersonChooser = require('components/editor/person_chooser')
 PersonForm    = require('components/form/person_form')
-
-Draggable     = require('components/shared/draggable')
 
 
 # Person Placeholder component
@@ -69,26 +65,41 @@ Component = React.createClass
   # Component specifications
   #
   propTypes:
-    company_id: React.PropTypes.string.isRequired
-    readOnly:   React.PropTypes.bool
-    uuid:        React.PropTypes.string.isRequired
+    company_id:  React.PropTypes.string.isRequired
+    isSingle:    React.PropTypes.bool
+    onAdd:       React.PropTypes.func.isRequired
+    onDelete:    React.PropTypes.func.isRequired
+    readOnly:    React.PropTypes.bool
+    selected:    React.PropTypes.instanceOf(Immutable.Seq)
 
   getDefaultProps: ->
+    isSingle: false
     readOnly: false
+    selected: Immutable.Seq()
   
   getInitialState: ->
-    _.extend @getStateFromStores(),
+    _.extend @getStateFromStores(@props),
       animated: true
       hovered: false
+
+  getStateFromStores: (props) ->
+    setTimeout =>
+      if @isMounted()
+        @setState
+          animated: true
+    , 400
+
+    peopleSeq = Immutable.Seq(PersonStore.filter((person) => props.selected.contains(person.uuid)))
+    
+    peopleSeq: peopleSeq
+    animated:  false
+  
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores(@props))
 
 
   mixins: [CloudFlux.mixins.Actions]
 
-
-  statics:
-    isEmpty: (block_id) ->
-      BlockStore.get(block_id).identity_ids.size == 0
-      
   modalBeforeOpen: ->
     if @isMounted() && !@props.readOnly
       @setState
@@ -102,7 +113,6 @@ Component = React.createClass
   onPersonCreateDone: ->
     setTimeout ModalActions.hide
   
-  
   onPersonUpdateDone: ->
     setTimeout ModalActions.hide
   
@@ -115,7 +125,7 @@ Component = React.createClass
   gatherPeople: ->
     @getPeopleHtml(
       @state.peopleSeq
-        .sortBy((person) => @state.identityIdsSeq.indexOf(person.uuid))
+        .sortBy((person) => @props.selected.indexOf(person.uuid))
         .map((person) => PersonComponent.call(@, person))
         .reduce((memo, person, index, people) ->
           # form rows in groups of three
@@ -136,25 +146,25 @@ Component = React.createClass
             items = rows.map (person) ->
               <div className="item" key={person.props.uuid}>{person}</div>
 
-            if !@props.readOnly && index == people.length - 1
+            if !@props.readOnly && !@props.isSingle && index == people.length - 1
               items.push PersonPlaceholderComponent.apply(@)
 
             items
           }
         </div>
-    else
+    else if !@props.readOnly
       <div className="row">
         {PersonPlaceholderComponent.apply(@)}
       </div>
+    else
+      null
 
 
 
-  onSelectPerson: (key) ->
+  onSelectPerson: (uuid) ->
     return if @props.readOnly
 
-    identity_ids = @state.identityIdsSeq.toList().push(key)
-
-    BlockActions.update(@props.uuid, { identity_ids: identity_ids.toArray() })
+    @props.onAdd(uuid)
 
     ModalActions.hide()
 
@@ -171,13 +181,10 @@ Component = React.createClass
     })
   
   
-  onDeletePersonClick: (key) ->
+  onDeletePersonClick: (uuid) ->
     return if @props.readOnly
 
-    identity_ids = @state.identityIdsSeq.toList().remove(@state.identityIdsSeq.indexOf(key))
-
-    BlockActions.update(@props.uuid, { identity_ids: identity_ids.toArray() })
-  
+    @props.onDelete(uuid)
   
   # Person Chooser
   #
@@ -185,10 +192,10 @@ Component = React.createClass
     return if @props.readOnly
 
     ModalActions.show(PersonChooser({
-      uuid:           @props.uuid
       company_id:     @props.company_id
       onSelect:       @onSelectPerson
       onCreateClick:  @onCreatePersonClick
+      selected:       @props.selected
     }), {
       beforeShow: @modalBeforeOpen
       beforeHide: @modalBeforeHide
@@ -212,10 +219,8 @@ Component = React.createClass
 
         PersonStore.remove(newPersonKey)
     })
+
   
-  
-  # Person Form
-  #
   onPersonFormSubmit: (key, attributes) ->
     person = PersonStore.get(key)
     if person.uuid
@@ -223,39 +228,23 @@ Component = React.createClass
     else
       PersonActions.create(key, attributes.toJSON())
   
-  getStateFromStores: ->
-    setTimeout =>
-      if @isMounted()
-        @setState
-          animated: true
-    , 400
 
-    identityIdsSeq  = Immutable.Seq(BlockStore.get(@props.uuid).identity_ids)
-    peopleSeq       = Immutable.Seq(PersonStore.filter((person) -> identityIdsSeq.contains(person.uuid)))
-    
-    peopleSeq:        peopleSeq
-    identityIdsSeq:   identityIdsSeq
-    animated:         false
-  
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores())
-  
   componentDidMount: ->
     PersonStore.on('change', @refreshStateFromStores)
   
   componentWillUnmount: ->
     PersonStore.off('change', @refreshStateFromStores)
 
-  componentWillReceiveProps: ->
-    @refreshStateFromStores()
+  componentWillReceiveProps: (nextProps) ->
+    @setState(@getStateFromStores(nextProps))
 
 
   render: ->
     classes = cx(
-      list: true
-      hovered:   @state.hovered
-      frozen:    @props.readOnly
-      animated:  @state.animated
+      "people-list": true
+      hovered:       @state.hovered
+      frozen:        @props.readOnly || @props.isSingle
+      animated:      @state.animated
     )
 
     <div className = {classes}>

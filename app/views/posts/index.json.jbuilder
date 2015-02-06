@@ -14,6 +14,7 @@ end
 blocks = posts.map(&:blocks).flatten
 pictures = posts.map(&:pictures).flatten
 paragraphs = posts.map(&:paragraphs).flatten
+quotes = posts.map(&:quotes).flatten
 visibilities = posts.map(&:visibilities).flatten
 pins = posts.map(&:pins).flatten
 stories = Story.cc_plus_company(@company.id)
@@ -25,6 +26,7 @@ json.posts ams(posts, scope: current_user)
 json.blocks ams(blocks)
 json.pictures ams(pictures)
 json.paragraphs ams(paragraphs)
+json.quotes ams(quotes)
 json.visibilities ams(visibilities)
 json.stories ams(stories, scope: @company)
 json.posts_stories ams(posts_stories)

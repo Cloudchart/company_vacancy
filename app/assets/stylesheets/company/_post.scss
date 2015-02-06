@@ -313,16 +313,16 @@ main.company > div.wrapper > div.posts {
           font-size: 16px;
           line-height: 22px;
           word-wrap: break-word;
-
-          &.quote {
-            font-size: 28px;
-            font-weight: 300;
-            line-height: 130%;
-            font-style: italic;
-          }
         }
 
-        > div.person {
+        .quote {
+          font-size: 28px;
+          font-weight: 300;
+          line-height: 130%;
+          font-style: italic;
+        }
+
+        .person {
           width: 150px;
           text-align: center;
           margin: 20px auto 0 auto;

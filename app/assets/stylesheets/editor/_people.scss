@@ -1,94 +1,90 @@
 // Editor -> People
 //
+.people-list {
+  @include display(flex);
+  @include flex-wrap(wrap);
+  
+  > .row {
+    width: 100%;
 
-article.editor > section.people {
-
-  .list {
     @include display(flex);
-    @include flex-wrap(wrap);
-    
-    > .row {
-      width: 100%;
+    @include justify-content(center);
 
-      @include display(flex);
-      @include justify-content(center);
+    > .item {
+      @include flex(0 0 24.5%);
 
-      > .item {
-        @include flex(0 0 24.5%);
+      margin: 0;
+      margin-left: $editor-gutter;
+      margin-top: 20px;
+      padding: 0;
 
-        margin: 0;
-        margin-left: $editor-gutter;
-        margin-top: 20px;
-        padding: 0;
-
-        &.placeholder,
-        &:first-child {
-          margin-left: 0;
-        }
-
-        &.placeholder .person > aside {
-          background-color: $editor-placeholder-background-color;
-          color: $editor-placeholder-color;
-
-          span {
-            font-size: 100px;
-          }
-        }
-
-        &.placeholder:not(:first-child) {
-          @include flex-basis(0);
-
-          padding: 0;
-          position: relative;
-
-          > .person {
-            @include position(absolute, 50px 0 0 -2 * $editor-gutter);
-            @include transform(scale(0.5, 0.5));
-            @include transition(all 150ms ease-out);
-            
-            height: 100px;
-            opacity: 0;
-            width: 100px;
-
-            figure > i.hint {
-              display: none;
-            }
-          }
-        }
-      }
-
+      &.placeholder,
       &:first-child {
-        > .item {
-          margin-top: 0;
+        margin-left: 0;
+      }
+
+      &.placeholder .person > aside {
+        background-color: $editor-placeholder-background-color;
+        color: $editor-placeholder-color;
+
+        span {
+          font-size: 100px;
         }
       }
 
-      &:last-child {
-        > .item:not(.placeholder) {
-          @include transition(none);
+      &.placeholder:not(:first-child) {
+        @include flex-basis(0);
+
+        padding: 0;
+        position: relative;
+
+        > .person {
+          @include position(absolute, 50px 0 0 -2 * $editor-gutter);
+          @include transform(scale(0.5, 0.5));
+          @include transition(all 150ms ease-out);
+          
+          height: 100px;
+          opacity: 0;
+          width: 100px;
+
+          figure > i.hint {
+            display: none;
+          }
         }
+      }
+    }
+
+    &:first-child {
+      > .item {
+        margin-top: 0;
+      }
+    }
+
+    &:last-child {
+      > .item:not(.placeholder) {
+        @include transition(none);
       }
     }
   }
+}
 
-  .list.animated > .row:last-child {
+.people-list.animated > .row:last-child {
+  > .item:not(.placeholder) {
+    @include transition(transform 150ms ease-out);
+  }
+} 
+
+.editor-field-wrapper:hover .people-list:not(.frozen),
+.people-list.hovered {
+  > .row:last-child {
     > .item:not(.placeholder) {
-      @include transition(transform 150ms ease-out);
+      @include transform(translateX(-3 * $editor-gutter));
     }
-  } 
 
-  &:hover .list:not(.frozen),
-  .list.hovered {
-    > .row:last-child {
-      > .item:not(.placeholder) {
-        @include transform(translateX(-3 * $editor-gutter));
-      }
-
-      > .placeholder:not(:first-child) {
-        > .person {
-          @include transform(scale(1, 1));
-          opacity: 1;
-        }
+    > .placeholder:not(:first-child) {
+      > .person {
+        @include transform(scale(1, 1));
+        opacity: 1;
       }
     }
   }
@@ -97,7 +93,7 @@ article.editor > section.people {
 
 // Editor -> Person
 //
-article.editor > section.people div.person {
+.people-list .person {
   margin: 0;
   position: relative;
   

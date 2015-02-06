@@ -11,7 +11,8 @@ class Person < ActiveRecord::Base
 
   has_one :block_identity, as: :identity, inverse_of: :identity, dependent: :destroy
   has_and_belongs_to_many :vacancy_reviews, class_name: 'Vacancy', join_table: 'vacancy_reviewers'
-  
+  has_many :quotes
+
   has_many :node_identities, as: :identity, dependent: :destroy, class_name: CloudBlueprint::Identity
 
   validates :full_name, presence: true

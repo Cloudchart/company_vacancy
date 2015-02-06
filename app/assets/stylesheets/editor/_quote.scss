@@ -13,6 +13,18 @@ article.editor > section.quote {
     }
   }
 
+  .editor-field-wrapper > aside {
+    height: 40px;
+
+    .hint {
+      width: 250px;
+    }
+  }
+
+  .people-list {
+    margin-top: 20px;
+  }
+
   [contenteditable] + aside {
     height: 35px;
   }

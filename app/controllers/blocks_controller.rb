@@ -86,7 +86,8 @@ private
       :clear_identity_ids,
       identity_ids:             [],
       paragraphs_attributes:    [:id, :content],
-      pictures_attributes:      [:id, :image]
+      pictures_attributes:      [:id, :image],
+      quotes_attributes:        [:id, :text, :person_id]
     )
   end
 

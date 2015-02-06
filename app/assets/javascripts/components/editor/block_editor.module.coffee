@@ -20,7 +20,8 @@ renderHint       = require('utils/render_hint')
 BlockComponents =
   Picture:    require('components/editor/picture')
   Paragraph:  require('components/editor/paragraph')
-  Person:     require('components/editor/person')
+  Person:     require('components/editor/block_person')
+  Quote:      require('components/editor/quote')
   Vacancy:    require('components/editor/vacancy')
 
 SectionClassNames =
@@ -68,8 +69,8 @@ MainComponent = React.createClass
                 readOnly={@props.readOnly}
                 blockKind={block.kind || block.identity_type} />
               <Hint 
-                content = { Hints[block.kind] }
-                visible = { !@props.readOnly && !!Hints[block.kind] } />
+                content = { Hints[block.kind || block.identity_type] }
+                visible = { !@props.readOnly && !!Hints[block.kind || block.identity_type] } />
             </FieldWrapper>
           </section>
         </SortableListItem>
@@ -112,7 +113,7 @@ MainComponent = React.createClass
   handleChooseBlockTypeClick: (identity_type) ->
     # -- temporary solution for quotes and kpi's
     kind = null
-    if identity_type.match(/Quote|KPI/)
+    if identity_type.match(/KPI/)
       kind = identity_type
       identity_type = 'Paragraph'
     # --

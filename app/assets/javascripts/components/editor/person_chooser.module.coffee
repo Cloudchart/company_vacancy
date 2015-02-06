@@ -3,7 +3,6 @@
 tag = React.DOM
 
 
-BlockStore  = require('stores/block_store')
 PersonStore = require('stores/person')
 
 
@@ -29,7 +28,7 @@ Component = React.createClass
     company_id:     React.PropTypes.string.isRequired
     onCreateClick:  React.PropTypes.func
     onSelect:       React.PropTypes.func
-    uuid:           React.PropTypes.string.isRequired
+    selected:       React.PropTypes.instanceOf(Immutable.Seq)
 
   getDefaultProps: ->
     onCreateClick: ->
@@ -45,7 +44,7 @@ Component = React.createClass
     
     _.chain(@state.people)
       .sortBy(['last_name', 'first_name'])
-      .reject (person) => @state.block.identity_ids.contains(person.uuid) #_.contains(@state.block.identity_ids, person.uuid)
+      .reject (person) => @props.selected.contains(person.uuid)
       .filter (person) -> _.all queries, (query) -> person.full_name.toLowerCase().indexOf(query) >= 0
       .map (person) =>
         (tag.div {
@@ -81,9 +80,6 @@ Component = React.createClass
 
   
   getStateFromStores: ->
-    block = BlockStore.get(@props.uuid)
-    
-    block:  block
     people: PersonStore.filter (person) => person.company_id == @props.company_id
 
 
