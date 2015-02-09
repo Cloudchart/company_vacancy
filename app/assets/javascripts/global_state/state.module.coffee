@@ -118,22 +118,40 @@ State =
 
 
     componentDidMount: ->
-      if typeof @onGlobalStateChange == 'function' and @props.cursor
+      if @props.cursor
         if @props.cursor.__CURSOR_INSTANCE__
           addListener(@props.cursor.path, @onGlobalStateChange)
         else
           Immutable.Seq(@props.cursor).forEach (cursor, key) =>
             addListener(cursor.path, @onGlobalStateChange)
 
+      # Same for @cursor
+      #
+      if @cursor
+        if @cursor.__CURSOR_INSTANCE__
+          addListener(@cursor.path, @onGlobalStateChange)
+        else
+          Immutable.Seq(@cursor).forEach (cursor) =>
+            addListener(cursor.path, @onGlobalStateChange)
+
+
 
     componentWillUnmount: ->
-      if typeof @onGlobalStateChange == 'function' and @props.cursor
+      if @props.cursor
         if @props.cursor.__CURSOR_INSTANCE__
           removeListener(@props.cursor.path, @onGlobalStateChange)
         else
           Immutable.Seq(@props.cursor).forEach (cursor, key) =>
             removeListener(cursor.path, @onGlobalStateChange)
 
+      # Same for @cursor
+      #
+      if @cursor
+        if @cursor.__CURSOR_INSTANCE__
+          removeListener(@cursor.path, @onGlobalStateChange)
+        else
+          Immutable.Seq(@cursor).forEach (cursor) =>
+            removeListener(cursor.path, @onGlobalStateChange)
 
 # Exports
 #

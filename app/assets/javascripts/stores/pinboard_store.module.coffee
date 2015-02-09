@@ -118,6 +118,10 @@ module.exports =
     items: ItemsCursor
 
 
+  has: (id) ->
+    ItemsCursor.has(id)
+
+
   dispatchToken: dispatchToken
 
 
