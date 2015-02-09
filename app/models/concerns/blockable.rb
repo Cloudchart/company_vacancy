@@ -8,6 +8,7 @@ module Blockable
     has_many :blocks, -> { order(:position) }, as: :owner, dependent: :destroy, inverse_of: :owner
     has_many :pictures, through: :blocks, source: :picture
     has_many :paragraphs, through: :blocks, source: :paragraph
+    has_many :quotes, through: :blocks, source: :quote
   end
 
   def should_build_objects!

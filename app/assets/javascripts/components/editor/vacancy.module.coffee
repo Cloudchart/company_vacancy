@@ -78,18 +78,18 @@ Component = React.createClass
   
   handleVacancyRemove: (key) ->
     identity_ids  = @state.block.identity_ids.remove(@state.block.identity_ids.indexOf(key))
-    BlockActions.update(@props.key, { identity_ids: identity_ids.toJS() })
+    BlockActions.update(@props.uuid, { identity_ids: identity_ids.toJS() })
 
 
   onAddVacancyClick: ->
     ModalActions.show(VacancyChooser({
-      key: @props.key
+      uuid: @props.uuid
       company_id: @props.company_id
     }))
 
 
   getStateFromStores: ->
-    block = BlockStore.get(@props.key)
+    block = BlockStore.get(@props.uuid)
     block:      block
     vacancies:  VacancyStore.filter (item) => block.identity_ids.contains(item.uuid)
   

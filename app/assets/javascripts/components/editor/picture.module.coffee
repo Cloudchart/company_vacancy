@@ -45,7 +45,7 @@ Component = React.createClass
     if @state.picture
       PictureActions.update(@state.picture.uuid, { image: file })
     else
-      PictureActions.create(@props.key, { image: file })
+      PictureActions.create(@props.uuid, { image: file })
 
 
   onDelete: ->
@@ -57,7 +57,7 @@ Component = React.createClass
   
     
   getStateFromStores: ->
-    picture: PictureStore.find (item) => item.owner_id == @props.key and item.owner_type == 'Block'
+    picture: PictureStore.find (item) => item.owner_id == @props.uuid and item.owner_type == 'Block'
   
   
   refreshStateFromStores: ->

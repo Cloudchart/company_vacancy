@@ -2,9 +2,11 @@
 #
 tag = React.DOM
 
+ModalStack  = require('components/modal_stack')
 
-BlockStore  = require('stores/block_store')
 PersonStore = require('stores/person')
+
+PersonForm  = require('components/form/person_form')
 
 
 # New Person component
@@ -23,17 +25,40 @@ NewPersonComponent = ->
 #
 Component = React.createClass
 
+  # Component specifications
+  #
+  propTypes:
+    company_id:     React.PropTypes.string.isRequired
+    onSelect:       React.PropTypes.func
+    selected:       React.PropTypes.instanceOf(Immutable.Seq).isRequired
 
+  getDefaultProps: ->
+    onSelect:      ->
+
+  getInitialState: ->
+    state         = @getStateFromStores()
+    state.query   = ''
+    state
+
+  getStateFromStores: ->
+    people: PersonStore.filter (person) => person.company_id == @props.company_id
+
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores())
+
+
+  # Helpers
+  #
   gatherPeople: ->
     queries = _.compact(@state.query.toLowerCase().split(/\s+/))
     
     _.chain(@state.people)
       .sortBy(['last_name', 'first_name'])
-      .reject (person) => @state.block.identity_ids.contains(person.uuid) #_.contains(@state.block.identity_ids, person.uuid)
+      .reject (person) => @props.selected.contains(person.uuid)
       .filter (person) -> _.all queries, (query) -> person.full_name.toLowerCase().indexOf(query) >= 0
       .map (person) =>
         (tag.div {
-          key:        person.uuid
+          key:        person.uuid || 'new'
           className:  'person'
           onClick:    @onPersonClick.bind(@, person.uuid)
         },
@@ -41,40 +66,37 @@ Component = React.createClass
           person.full_name
         )
       .value()
-  
-  
+
+  # Handlers
+  #
   onPersonClick: (key, event) ->
-    @props.onSelect(key) if _.isFunction(@props.onSelect)
-  
+    @props.onSelect(key)
   
   onNewPersonClick: (event) ->
-    @props.onCreateClick() if _.isFunction(@props.onCreateClick)
+    return if @props.readOnly
 
+    newPersonKey = PersonStore.create({ company_id: @props.company_id })
+
+    ModalStack.show(PersonForm({
+      attributes: PersonStore.get(newPersonKey).toJSON()
+      onSubmit:   -> ModalStack.hide()
+      uuid:       newPersonKey
+    }), {
+      beforeHide: =>
+        PersonStore.remove(newPersonKey)
+    })
 
   onQueryChange: (event) ->
     @setState({ query: event.target.value })
 
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores())
 
+  # Lifecycle methods
+  #
   componentDidMount: ->
     PersonStore.on('change', @refreshStateFromStores)
   
   componentWillUnmount: ->
     PersonStore.off('change', @refreshStateFromStores)
-
-  
-  getStateFromStores: ->
-    block = BlockStore.get(@props.key)
-    
-    block:  block
-    people: PersonStore.filter (person) => person.company_id == @props.company_id
-
-
-  getInitialState: ->
-    state         = @getStateFromStores()
-    state.query   = ''
-    state
 
 
   render: ->

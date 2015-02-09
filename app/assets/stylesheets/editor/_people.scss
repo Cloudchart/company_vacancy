@@ -1,94 +1,85 @@
 // Editor -> People
 //
+.person-list {
+  @include display(flex);
+  @include flex-wrap(wrap);
+  
+  > .row {
+    width: 100%;
 
-article.editor > section.people {
-
-  .list {
     @include display(flex);
-    @include flex-wrap(wrap);
-    
-    > .row {
-      width: 100%;
+    @include justify-content(center);
 
-      @include display(flex);
-      @include justify-content(center);
+    > .item {
+      @include flex(0 0 24.5%);
 
-      > .item {
-        @include flex(0 0 24.5%);
-
-        margin: 0;
-        margin-left: $editor-gutter;
-        margin-top: 20px;
-        padding: 0;
-
-        &.placeholder,
-        &:first-child {
-          margin-left: 0;
-        }
-
-        &.placeholder .person > aside {
-          background-color: $editor-placeholder-background-color;
-          color: $editor-placeholder-color;
-
-          span {
-            font-size: 100px;
-          }
-        }
-
-        &.placeholder:not(:first-child) {
-          @include flex-basis(0);
-
-          padding: 0;
-          position: relative;
-
-          > .person {
-            @include position(absolute, 50px 0 0 -2 * $editor-gutter);
-            @include transform(scale(0.5, 0.5));
-            @include transition(all 150ms ease-out);
-            
-            height: 100px;
-            opacity: 0;
-            width: 100px;
-
-            figure > i.hint {
-              display: none;
-            }
-          }
-        }
+      &.single {
+        @include flex(1);
       }
 
+      margin: 0;
+      margin-left: $editor-gutter;
+      margin-top: 20px;
+      padding: 0;
+
+      &.placeholder,
       &:first-child {
-        > .item {
-          margin-top: 0;
-        }
+        margin-left: 0;
       }
 
-      &:last-child {
-        > .item:not(.placeholder) {
-          @include transition(none);
+      &.placeholder:not(:first-child) {
+        @include flex-basis(0);
+
+        padding: 0;
+        position: relative;
+
+        > .person {
+          @include position(absolute, 50px 0 0 -2 * $editor-gutter);
+          @include transform(scale(0.5, 0.5));
+          @include transition(all 150ms ease-out);
+          
+          height: 100px;
+          opacity: 0;
+          width: 100px;
+
+          figure > i.hint {
+            display: none;
+          }
         }
+      }
+    }
+
+    &:first-child {
+      > .item {
+        margin-top: 0;
+      }
+    }
+
+    &:last-child {
+      > .item:not(.placeholder) {
+        @include transition(none);
       }
     }
   }
+}
 
-  .list.animated > .row:last-child {
+.person-list.animated > .row:last-child {
+  > .item:not(.placeholder) {
+    @include transition(transform 150ms ease-out);
+  }
+} 
+
+.editor-field-wrapper:hover .person-list:not(.frozen),
+.person-list.hovered {
+  > .row:last-child {
     > .item:not(.placeholder) {
-      @include transition(transform 150ms ease-out);
+      @include transform(translateX(-3 * $editor-gutter));
     }
-  } 
 
-  &:hover .list:not(.frozen),
-  .list.hovered {
-    > .row:last-child {
-      > .item:not(.placeholder) {
-        @include transform(translateX(-3 * $editor-gutter));
-      }
-
-      > .placeholder:not(:first-child) {
-        > .person {
-          @include transform(scale(1, 1));
-          opacity: 1;
-        }
+    > .placeholder:not(:first-child) {
+      > .person {
+        @include transform(scale(1, 1));
+        opacity: 1;
       }
     }
   }
@@ -97,9 +88,18 @@ article.editor > section.people {
 
 // Editor -> Person
 //
-article.editor > section.people div.person {
+.person {
   margin: 0;
   position: relative;
+
+  &.placeholder-wrapper > aside {
+    background-color: $editor-placeholder-background-color;
+    color: $editor-placeholder-color;
+
+    span {
+      font-size: 100px;
+    }
+  }
   
   > i.remove {
     @include position(absolute, $editor-gutter / 2 $editor-gutter / 2 0 0);
@@ -109,17 +109,12 @@ article.editor > section.people div.person {
     color: $editor-remove-button-color;
     cursor: pointer;
     font-size: $editor-remove-button-font-size;
-    visibility: hidden;
   }
 
   &:hover {
     > i.remove {
       @include transform(translate(0, 0));
     }
-  }
-  
-  &.editable:hover > i.remove {
-    visibility: visible;
   }
   
   &.editable > aside {
@@ -144,40 +139,36 @@ article.editor > section.people div.person {
       }
     }
   }
-}
 
-
-// Person -> Avatar
-//
-.person > aside.avatar {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  border-radius: 50%;
-  height: 0;
-  margin: 0;
-  padding: 0;
-  padding-top: 100%;
-  position: relative;
-  
-  > figure {
-    @include position(absolute, 50% 0px 0 0px);
-    @include transform(translateY(-50%));
+  > aside.avatar {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    border-radius: 50%;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    padding-top: 100%;
+    position: relative;
     
-    display: inline-block;
-    font-size: $editor-placeholder-font-size;
-    font-weight: 100;
-    line-height: 1em;
-    text-align: center;
-    
-    i.hint {
-      @include position(absolute, 85% 0px 0 0px);
-
-      font-size: .25em;
-      font-style: normal;
+    > figure {
+      @include position(absolute, 50% 0px 0 0px);
+      @include transform(translateY(-50%));
+      
+      display: inline-block;
+      font-size: $editor-placeholder-font-size;
+      font-weight: 100;
       line-height: 1em;
-      text-transform: uppercase;
+      text-align: center;
+      
+      i.hint {
+        @include position(absolute, 85% 0px 0 0px);
+
+        font-size: .25em;
+        font-style: normal;
+        line-height: 1em;
+        text-transform: uppercase;
+      }
     }
   }
-  
 }

@@ -15,6 +15,8 @@ PostsStoryStore     = require('stores/posts_story_store')
 UserStore           = require('stores/user_store.cursor')
 VisibilityStore     = require('stores/visibility_store')
 
+QuoteStore          = require('stores/quote_store')
+
 PostActions         = require('actions/post_actions')
 
 Post                = require('components/post')
@@ -34,13 +36,16 @@ FuzzyDate           = require('utils/fuzzy_date')
 #
 Component = React.createClass
 
+  mixins: [GlobalState.mixin]
+
   # Helpers
   #
   identityContentSwitcher: (block) ->
     switch block.identity_type
       when 'Paragraph' then @getParagraph(block)
       when 'Picture' then @getPicture(block)
-      when 'Person' then @getPerson(block)
+      when 'Person' then @getBlockPerson(block)
+      when 'Quote' then @getQuote(block)
 
 
   postStoryMapper: (story, key) ->
@@ -68,16 +73,21 @@ Component = React.createClass
 
     <img className="cover" src={picture.url}/>
 
+  getBlockPerson: (block) ->
+    person_id = block.identity_ids.toJS()[0]
+    return null unless person_id
 
-  getPerson: (block) ->
-    person = PersonStore.get(block.identity_ids.toJS()[0])
-    return null unless person
+    @getPerson(person_id)
+
+  getPerson: (person_id) ->
+    return null unless person_id
+    person = PersonStore.get(person_id)
 
     <div className="person">
       <PersonAvatar
-        value     = {person.full_name}
-        avatarURL = {person.avatar_url}
-        readOnly  = {true}
+        value     = { person.full_name }
+        avatarURL = { person.avatar_url }
+        readOnly  = { true }
       />
 
       <footer>
@@ -86,6 +96,15 @@ Component = React.createClass
       </footer>
     </div>
 
+  getQuote: (block) ->
+    quote = QuoteStore.findByBlock(block.get("uuid"))
+    return null unless quote
+
+    <div className="quote">
+      { @getPerson(quote.get("person_id")) }
+      
+      <div dangerouslySetInnerHTML={__html: quote.get("text")}></div>
+    </div>
 
   isEpochType: ->
     @state.post.title and @state.post.effective_from and @state.post.effective_till and @state.blocks.length is 0
@@ -149,6 +168,8 @@ Component = React.createClass
   # Component Specifications
   #
   getDefaultProps: ->
+    cursor:
+      quotes: QuoteStore.cursor.items
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
 
   refreshStateFromStores: ->
@@ -167,6 +188,8 @@ Component = React.createClass
   getInitialState: ->
     @getStateFromStores(@props)
 
+  onGlobalStateChange: ->
+    @setState @getStateFromStores(@props)
 
   # Renderers
   #

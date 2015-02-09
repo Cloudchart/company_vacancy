@@ -2,9 +2,9 @@
 #
 tag = React.DOM
 
-
-PersonAvatar = require('components/shared/person_avatar')
-
+PersonActions = require('actions/person_actions')
+PersonStore   = require('stores/person')
+PersonAvatar  = require('components/shared/person_avatar')
 
 Header = ->
   (tag.header {
@@ -106,11 +106,18 @@ Component = React.createClass
     value = event.target.value
     @setState({ attributes: @state.attributes.set(name, value) })
   
-  
+  # need to put it into separate controller later
   onSubmit: (event) ->
     event.preventDefault()
-    @props.onSubmit(@state.attributes) if _.isFunction(@props.onSubmit)
 
+    person = PersonStore.get(@props.uuid)
+    
+    if person.uuid
+      PersonActions.update(@props.uuid, @state.attributes.toJSON())
+    else
+      PersonActions.create(@props.uuid, @state.attributes.toJSON())
+
+    @props.onSubmit()
 
   getAttributes: (props) ->
     attributes = props.attributes
@@ -127,6 +134,8 @@ Component = React.createClass
   componentWillReceiveProps: (nextProps) ->
     @setState(@getAttributes(nextProps))
 
+  getDefaultProps: ->
+    onSubmit: ->
 
   getInitialState: ->
     @getAttributes(@props)

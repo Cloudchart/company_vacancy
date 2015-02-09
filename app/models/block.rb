@@ -2,7 +2,7 @@ class Block < ActiveRecord::Base
   include Uuidable
   include Trackable
   
-  IdentitiesClasses = [Picture, Paragraph, Person, Vacancy, Company]
+  IdentitiesClasses = [Picture, Paragraph, Person, Vacancy, Company, Quote]
   
   before_create   :shift_siblings_down
   after_destroy   :shift_siblings_up
@@ -11,6 +11,7 @@ class Block < ActiveRecord::Base
 
   has_one :picture, as: :owner, dependent: :destroy
   has_one :paragraph, as: :owner, dependent: :destroy
+  has_one :quote, as: :owner, dependent: :destroy
 
   has_many :block_identities, -> { order(:position) }, inverse_of: :block, dependent: :destroy  
   
@@ -84,6 +85,13 @@ class Block < ActiveRecord::Base
     self.identity_ids = [] if status
   end
 
+  def self.reposition(block_ids)
+    Block.transaction do
+      block_ids.each do |block_id|
+        Block.update block_id, position: block_ids.index(block_id)
+      end
+    end
+  end
 
 private
 
