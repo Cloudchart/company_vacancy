@@ -51,9 +51,6 @@ class BlocksController < ApplicationController
 
 
   def reposition
-    first_block = Block.find(params[:ids].first)
-    authorize! :reposition, first_block
-
     Block.reposition(params[:ids])
 
     respond_to do |format|
