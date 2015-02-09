@@ -9,6 +9,12 @@ GlobalState = require('global_state/state')
 PinStore = require('stores/pin_store')
 
 
+# Components
+#
+Pinnables =
+  'Post': require('components/pinnable/post')
+
+
 # Exports
 #
 module.exports = React.createClass
@@ -53,11 +59,22 @@ module.exports = React.createClass
     cursor: {}
 
 
+  renderHeader: ->
+    <header>
+      { @cursor.pin.get('pinnable_type') }
+      { " :: " }
+      { @cursor.pin.get('content') }
+    </header>
+
+
+  renderPinnable: ->
+    Pinnables[@cursor.pin.get('pinnable_type')](uuid: @cursor.pin.get('pinnable_id'), pin: @cursor.pin)
+
+
   render: ->
     return null unless @isLoaded()
 
     <section>
-      { @cursor.pin.get('pinnable_type') }
-      { " :: " }
-      { @cursor.pin.get('content') }
+      { @renderHeader() }
+      { @renderPinnable() }
     </section>
