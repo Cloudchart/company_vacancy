@@ -1,5 +1,5 @@
 # set posts
-posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :posts_stories, :tags, blocks: :block_identities, pins: [ :user, parent: :user ])
+posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :posts_stories, :quotes, :tags, blocks: :block_identities, pins: [ :user, parent: :user ])
 
 # reject posts based on visibility rules
 posts = if can?(:manage, @company)
@@ -26,7 +26,11 @@ json.posts ams(posts, scope: current_user)
 json.blocks ams(blocks)
 json.pictures ams(pictures)
 json.paragraphs ams(paragraphs)
-json.quotes ams(quotes)
+
+json.quotes quotes do |quote|
+  json.partial! 'quote', quote: quote
+end
+
 json.visibilities ams(visibilities)
 json.stories ams(stories, scope: @company)
 json.posts_stories ams(posts_stories)
