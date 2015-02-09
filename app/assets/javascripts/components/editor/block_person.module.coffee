@@ -61,12 +61,6 @@ Component = React.createClass
 
   # Lifecycle methods
   #
-  componentDidMount: ->
-    BlockStore.on('change', @refreshStateFromStores)
-  
-  componentWillUnmount: ->
-    BlockStore.off('change', @refreshStateFromStores)
-
   componentWillReceiveProps: (nextProps) ->
     @setState @getStateFromStores(nextProps)
 

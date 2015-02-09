@@ -17,6 +17,15 @@ getPersonId = (quote) ->
 
 Quote = React.createClass
 
+  mixins: [GlobalState.mixin]
+
+  statics:
+    isEmpty: (block_id) ->
+      quote = QuoteStore.findByBlock(block_id)
+
+      !getText(quote) && !getPersonId(quote)
+
+
   # Component specifications
   #
   propTypes:
@@ -35,15 +44,6 @@ Quote = React.createClass
 
   getStateFromStores: ->
     quote: QuoteStore.findByBlock(@props.uuid)
-
-
-  mixins: [GlobalState.mixin]
-
-  statics:
-    isEmpty: (block_id) ->
-      quote = QuoteStore.findByBlock(block_id)
-
-      !getText(quote) && !getPersonId(quote)
 
 
   # Helpers
@@ -101,7 +101,7 @@ Quote = React.createClass
       { @renderPerson() }
       <ContentEditableArea
         onChange    = { @handleTextChange }
-        placeholder = "Add a quote here. Short, -style."
+        placeholder = "Add a quote here. Short, twitter-style."
         readOnly    = { @props.readOnly }
         value       = { getText(@state.quote) }
       />
