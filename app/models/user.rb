@@ -54,7 +54,7 @@ class User < ActiveRecord::Base
   end
 
   def editor?
-    !!roles.find { |role| role.owner_id == nil && role.owner_type == nil && role.value == 'editor' }
+    !!roles.find { |role| role.owner_id == nil && role.value == 'editor' }
   end
 
   def system_role_ids=(args)
