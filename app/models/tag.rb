@@ -19,20 +19,16 @@ class Tag < ActiveRecord::Base
   scope :acceptable, -> { where{ sift :acceptable } }
 
   scope :available_for_user, -> user do
-    user_companies = user
-      .companies
-      .includes(:roles, :posts).where{ roles.value.in ['owner', 'editor'] }
-      .references(:all)
+    company_ids = user.companies.select(:uuid).joins(:roles).where{ roles.value.in ['owner', 'editor'] }
+    post_ids = Post.select(:uuid).where{ owner_id.in company_ids }
 
-    company_ids = user_companies.map(&:id)
-    post_ids = user_companies.map { |company| company.posts.map(&:id) }.flatten
-
-    includes(:companies, :posts)
+    joins { companies.outer }
+    .joins { posts.outer }
     .where{ 
       sift(:acceptable) |
       companies.uuid.in(company_ids) |
       posts.uuid.in(post_ids)
-    }.references(:all)
+    }.distinct
   end
 
 end
