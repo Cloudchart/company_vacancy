@@ -6,6 +6,7 @@ QuoteStore          = require('stores/quote_store')
 
 ContentEditableArea = require('components/form/contenteditable_area')
 Person              = require('components/editor/person')
+PersonPlaceholder   = require('components/editor/person_placeholder')
 
 getText = (quote) ->
   (quote && quote.get("text")) || ''
@@ -13,8 +14,7 @@ getText = (quote) ->
 getPersonId = (quote) ->
   (quote && quote.get("person_id")) || null
 
-# Main
-#
+
 Quote = React.createClass
 
   # Component specifications
@@ -45,6 +45,7 @@ Quote = React.createClass
 
       !getText(quote) && !getPersonId(quote)
 
+
   # Helpers
   #
   updateOrCreateQuote: (params) ->
@@ -64,7 +65,7 @@ Quote = React.createClass
 
     @updateOrCreateQuote(text: text)
 
-  handlePersonAdd: (person_id) ->
+  handlePersonSelect: (person_id) ->
     return if @props.readOnly
 
     @updateOrCreateQuote(person_id: person_id)
@@ -75,23 +76,34 @@ Quote = React.createClass
     @updateOrCreateQuote(person_id: null)
 
 
+  # Renderers
+  #
+  renderPerson: ->
+    if getPersonId(@state.quote)
+      <Person
+        company_id  = { @props.company_id }
+        onDelete    = { @handlePersonDelete }
+        uuid        = { getPersonId(@state.quote) }
+        readOnly    = { @props.readOnly }
+      />
+    else
+      <PersonPlaceholder 
+        company_id  = { @props.company_id }
+        onSelect    = { @handlePersonSelect }
+        selected    = { @getSeq(getPersonId(@state.quote)) }
+      />
+
+
   render: ->
     # TODO need to get rid of excessive block classes
 
     <div className="quote-wrapper">
+      { @renderPerson() }
       <ContentEditableArea
         onChange    = { @handleTextChange }
-        placeholder = "Add a quote here. Short and concise."
+        placeholder = "Add a quote here. Short, -style."
         readOnly    = { @props.readOnly }
         value       = { getText(@state.quote) }
-      />
-      <Person
-        company_id  = { @props.company_id }
-        onAdd       = { @handlePersonAdd }
-        onDelete    = { @handlePersonDelete }
-        isSingle    = { true }
-        selected    = { @getSeq(getPersonId(@state.quote)) }
-        readOnly    = { @props.readOnly }
       />
     </div>
 

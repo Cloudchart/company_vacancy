@@ -9,7 +9,7 @@ BlockActions  = require('actions/block_actions')
 
 BlockStore    = require('stores/block_store')
 
-Person        = require('components/editor/person')
+PersonList    = require('components/editor/person_list')
 
 
 # Main
@@ -27,13 +27,13 @@ Component = React.createClass
     readOnly: false
   
   getInitialState: ->
-    @getStateFromStores()
+    @getStateFromStores(@props)
 
-  getStateFromStores: ->
-    identityIdsSeq: Immutable.Seq(BlockStore.get(@props.uuid).identity_ids)
+  getStateFromStores: (props) ->
+    identityIdsSeq: Immutable.Seq(BlockStore.get(props.uuid).identity_ids)
   
   refreshStateFromStores: ->
-    @setState(@getStateFromStores())
+    @setState(@getStateFromStores(@props))
 
 
   mixins: [CloudFlux.mixins.Actions]
@@ -44,10 +44,10 @@ Component = React.createClass
 
   # Handlers
   #
-  handleAdd: (key) ->
+  handleAdd: (uuid) ->
     return if @props.readOnly
 
-    identity_ids = @state.identityIdsSeq.toList().push(key)
+    identity_ids = @state.identityIdsSeq.toList().push(uuid)
 
     BlockActions.update(@props.uuid, { identity_ids: identity_ids.toArray() })
 
@@ -67,12 +67,12 @@ Component = React.createClass
   componentWillUnmount: ->
     BlockStore.off('change', @refreshStateFromStores)
 
-  componentWillReceiveProps: ->
-    @refreshStateFromStores()
+  componentWillReceiveProps: (nextProps) ->
+    @setState @getStateFromStores(nextProps)
 
 
   render: ->
-    <Person 
+    <PersonList 
       company_id  = { @props.company_id }
       onAdd       = { @handleAdd }
       onDelete    = { @handleDelete }

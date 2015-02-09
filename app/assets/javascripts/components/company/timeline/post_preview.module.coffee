@@ -101,9 +101,9 @@ Component = React.createClass
     return null unless quote
 
     <div className="quote">
-      <div dangerouslySetInnerHTML={__html: quote.get("text")}></div>
-
       { @getPerson(quote.get("person_id")) }
+      
+      <div dangerouslySetInnerHTML={__html: quote.get("text")}></div>
     </div>
 
   isEpochType: ->
