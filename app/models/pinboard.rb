@@ -10,7 +10,6 @@ class Pinboard < ActiveRecord::Base
   has_many    :pins
   has_many    :roles, as: :owner
 
-
   sifter :user_own do |user|
     user_id.eq user.id
   end

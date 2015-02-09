@@ -1,6 +1,7 @@
 # @cjsx React.DOM
 
 GlobalState = require('global_state/state')
+cx          = React.addons.classSet
 
 
 # Stores
@@ -9,15 +10,9 @@ PinboardStore = require('stores/pinboard_store')
 PinStore      = require('stores/pin_store')
 
 
-# Actions
-#
-ModalActions  = require('actions/modal_actions')
-
-
 # Components
 #
-PinComponent          = require('components/pinnable/pin')
-SettingsFormComponent = require('components/pinboards/settings_form')
+PinComponent = require('components/pinboards/pin')
 
 
 # Exports
@@ -35,95 +30,84 @@ module.exports = React.createClass
 
     queries:
 
-      preview: ->
+      pinboard: ->
         """
           Pinboard {
             pins {
-              #{PinComponent.getQuery('preview')}
+              #{PinComponent.getQuery('pin')}
             }
           }
         """
 
 
-    getCursor: (uuid) ->
-      pinboard: PinboardStore.cursor.items.cursor(uuid)
-      pins:     PinStore.cursor.items
+  fetch: ->
+    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid })
+
+
+  isLoaded: ->
+    @cursor.pinboard.deref(false)
 
 
   gatherPins: ->
-    PinStore
-      .filterByPinboardId(@props.uuid)
+    pins = @cursor.pins
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
 
+    pins = pins.take(@props.pin_count) if @props.mode == 'list'
 
-  renderSettingsButton: ->
-    if @props.cursor.pinboard.get('user_id') == @props.currentUserId
-      <i className="fa fa-cog settings" onClick={ @handleSettingsLinkClick } />
-
-
-  renderHeader: (pins) ->
-    <header>
-      <a href="/pinboards" className="back" onClick={ @props.onClick }>
-        <i className="fa fa-angle-left" />
-      </a>
-      <span className="title">{ @props.cursor.pinboard.get('title') }</span>
-      { @renderSettingsButton() }
-      <span className="count">{ pins.size } { if pins.size == 1 then 'pin' else 'pins' }</span>
-    </header>
-
-
-  renderPins: (pins) ->
     pins
-      .map (pin) =>
-        uuid = pin.get('uuid')
-        PinComponent({ key: uuid, uuid: uuid, cursor: @props.cursor.pins.cursor(uuid) })
-      .valueSeq()
 
 
+  handleClick: (event) ->
+    return unless @props.mode == 'list'
 
-  preloadTransparentPins: ->
-    unloaded_pins_ids = @gatherPins()
-      .filter (pin) -> pin.get('--part--') == true
-      .keySeq()
-
-    return if unloaded_pins_ids.count() == 0
-
-    PinStore.fetchAll({ ids: unloaded_pins_ids.toArray(), relations: 'all' })
-
-
-  handleSettingsLinkClick: (event) ->
     event.preventDefault()
-    ModalActions.show(<SettingsFormComponent cursor={ @props.cursor.pinboard } onCancel={ ModalActions.hide } />)
+    location.href = @cursor.pinboard.get('url')
 
 
-  componentDidUpdate: ->
-    @preloadTransparentPins()
 
+  componentWillMount: ->
+    @cursor =
+      pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
+      pins:     PinStore.cursor.items.filterCursor (pin) => pin.get('pinboard_id') == @props.uuid
 
-  componentDidMount: ->
-    query = @getQuery('preview')
-    PinboardStore.fetchAll(relations: query.toString()) unless @props.cursor.pinboard.deref()
-
-
-  onGlobalStateChange: ->
-    @setState
-      refreshed_at: + new Date
+    @fetch() unless @isLoaded()
 
 
   getDefaultProps: ->
-    currentUserId: if node = document.querySelector('meta[name="user-id"]') then node.getAttribute('content')
+    pin_count:  1
+    cursor:     {}
+
+
+  renderPin: (pin) ->
+    <li key={ pin.get('uuid') } uuid={ pin.get('uuid') }>
+      <PinComponent uuid={ pin.get('uuid') } />
+    </li>
+
+
+  renderPins: ->
+    @gatherPins().map(@renderPin)
+
+
+  renderHeader: ->
+    return null unless @props.mode == 'list'
+
+    <header>
+      { @cursor.pinboard.get('title') }
+      { " :: "}
+      { @cursor.pins.count() + " " + if @cursor.pins.count() == 1 then "pin" else "pins" }
+    </header>
 
 
   render: ->
-    return null unless @props.cursor.pinboard.deref()
+    return null unless @isLoaded()
 
-    pins = @gatherPins()
+    classList = cx
+      linked: @props.mode == 'list'
 
-    <article className="pinboard">
-      { @renderHeader(pins) }
-
-      <ul className="pins">
-        { @renderPins(pins).toArray() }
+    <section className={ classList } onClick={ @handleClick }>
+      { @renderHeader() }
+      <ul>
+        { @renderPins().toArray() }
       </ul>
-    </article>
+    </section>
