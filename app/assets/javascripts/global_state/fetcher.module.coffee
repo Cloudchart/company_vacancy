@@ -39,6 +39,13 @@ Endpoints = Immutable.fromJS
     store:        -> require('stores/pin_store')
 
 
+  'Post':
+    url:          '/api/posts'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/post_store.cursor')
+
+
 # Cached promises
 #
 cachedPromises = {}
