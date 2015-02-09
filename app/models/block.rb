@@ -85,6 +85,17 @@ class Block < ActiveRecord::Base
     self.identity_ids = [] if status
   end
 
+  def self.reposition(block_ids)
+    first_block = Block.find(block_ids.first)
+
+    blocks = block_ids.map { |id| Block.find(id) }.reject { |block| block.owner_type != first_block.owner_type }
+
+    Block.transaction do
+      blocks.each do |block|
+        block.update! position: block_ids.index(block.uuid)
+      end
+    end
+  end
 
 private
 

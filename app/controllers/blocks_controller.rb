@@ -54,13 +54,7 @@ class BlocksController < ApplicationController
     first_block = Block.find(params[:ids].first)
     authorize! :reposition, first_block
 
-    blocks = params[:ids].map { |id| Block.find(id) }.reject { |block| block.owner_type != first_block.owner_type }
-
-    Block.transaction do
-      blocks.each do |block|
-        block.update! position: params[:ids].index(block.uuid)
-      end
-    end
+    Block.reposition(params[:ids])
 
     respond_to do |format|
       format.json { render json: { ok: 200 } }

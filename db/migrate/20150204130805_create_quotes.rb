@@ -16,6 +16,7 @@ class CreateQuotes < ActiveRecord::Migration
   end
 
   def down
+    remove_index :quotes, column: [:owner_id, :owner_type]
     drop_table :quotes
   end
 end
