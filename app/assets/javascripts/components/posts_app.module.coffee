@@ -21,33 +21,8 @@ ContentEditableArea = require('components/form/contenteditable_area')
 MainComponent = React.createClass
 
   mixins: [GlobalState.mixin]
-  # propTypes: {}
+
   displayName: 'Posts app'
-
-
-  # Helpers
-  # 
-  # gatherSomething: ->
-
-
-  # Handlers
-  # 
-  handleStoryDescriptionChange: (value) ->
-    StoryStore.update(@props.story_id, { description: value })
-
-
-  # Lifecycle Methods
-  # 
-  componentDidMount: ->
-    CompanyStore.on('change', @refreshStateFromStores)
-
-  # componentWillReceiveProps: (nextProps) ->
-  # shouldComponentUpdate: (nextProps, nextState) ->
-  # componentWillUpdate: (nextProps, nextState) ->
-  # componentDidUpdate: (prevProps, prevState) ->
-
-  componentWillUnmount: ->
-    CompanyStore.off('change', @refreshStateFromStores)
 
 
   # Component Specifications
@@ -70,10 +45,44 @@ MainComponent = React.createClass
 
   getInitialState: ->
     _.extend @getStateFromProps(@props),
+      story_id: @props.story_id
       readOnly: true
 
+
+  # Handlers
+  # 
+  handleStoryDescriptionChange: (value) ->
+    StoryStore.update(@state.story_id, { description: value })
+
+  handleStoryClick: (story) ->
+    if @state.story_id != story.get("uuid")
+      history.pushState({ story_id: story.get("uuid"), }, null, story.get("company_story_url"))
+      @setState(story_id: story.get("uuid"))
+
+  handleChangeState: (event) ->
+    if event.state && (story_id = event.state.story_id)
+      @setState(story_id: story_id)
+
+  # Lifecycle Methods
+  # 
+  componentDidMount: ->
+    CompanyStore.on('change', @refreshStateFromStores)
+    history.replaceState({ story_id: @props.story_id }, null, location.path)
+    window.addEventListener('popstate', @handleChangeState)
+    window.addEventListener('pushstate', @handleChangeState)
+
+  # componentWillReceiveProps: (nextProps) ->
+  # shouldComponentUpdate: (nextProps, nextState) ->
+  # componentWillUpdate: (nextProps, nextState) ->
+  # componentDidUpdate: (prevProps, prevState) ->
+
+  componentWillUnmount: ->
+    CompanyStore.off('change', @refreshStateFromStores)
+    window.removeAddListener('popstate', @handleChangeState)
+    window.removeAddListener('pushstate', @handleChangeState)
+
   render: ->
-    story = @props.cursor.stories.cursor(@props.story_id)
+    story = @props.cursor.stories.cursor(@state.story_id)
     return null unless story.deref(Immutable.Map()).size > 0
 
     <div className="wrapper">
@@ -91,9 +100,10 @@ MainComponent = React.createClass
       </header>
 
       <Timeline 
-        company_id = { @props.company_id }
-        story_id = { @props.story_id }
-        readOnly = { @state.readOnly }
+        company_id   = { @props.company_id }
+        onStoryClick = { @handleStoryClick }
+        story_id     = { @state.story_id }
+        readOnly     = { @state.readOnly }
       />
     </div>
 

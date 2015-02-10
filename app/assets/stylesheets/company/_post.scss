@@ -388,6 +388,10 @@ main.company > div.wrapper > div.posts {
         > .cc-hashtag-list {
           > ul > li {
             font-size: 16px;
+
+            &.current {
+              font-weight: bold;
+            }
           }
         }
       }

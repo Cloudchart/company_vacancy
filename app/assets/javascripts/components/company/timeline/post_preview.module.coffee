@@ -38,6 +38,39 @@ Component = React.createClass
 
   mixins: [GlobalState.mixin]
 
+  # Component Specifications
+  #
+  propTypes:
+    onStoryClick: React.PropTypes.func
+    story_id:     React.PropTypes.string
+    uuid:         React.PropTypes.string.isRequired
+
+  getDefaultProps: ->
+    cursor:
+      quotes: QuoteStore.cursor.items
+    current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
+    onStoryClick: ->
+
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores(@props))
+
+  getStateFromStores: (props) ->
+    blocks = _.chain BlockStore.all()
+      .filter (block) -> block.owner_id is props.uuid
+      .sortBy('position')
+      .value()
+
+    post: PostStore.get(props.uuid)
+    blocks: blocks
+    visibility: VisibilityStore.find (item) -> item.uuid && item.owner_id is props.uuid && item.owner_type is 'Post'
+
+  getInitialState: ->
+    @getStateFromStores(@props)
+
+  onGlobalStateChange: ->
+    @setState @getStateFromStores(@props)
+
+
   # Helpers
   #
   identityContentSwitcher: (block) ->
@@ -49,7 +82,14 @@ Component = React.createClass
 
 
   postStoryMapper: (story, key) ->
-    <li key={key}>
+    onStoryClick = (event) => 
+      event.preventDefault()
+      event.stopPropagation()
+      @props.onStoryClick(story)
+
+    isCurrent = story.get('uuid') == @props.story_id
+
+    <li key={key} className={ cx(current: isCurrent) } onClick={ onStoryClick }>
       { '#' + story.get('formatted_name') }
     </li>
 
@@ -164,32 +204,6 @@ Component = React.createClass
     ParagraphStore.off('change', @refreshStateFromStores)
     VisibilityStore.off('change', @refreshStateFromStores)
 
-
-  # Component Specifications
-  #
-  getDefaultProps: ->
-    cursor:
-      quotes: QuoteStore.cursor.items
-    current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
-
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores(@props))
-
-  getStateFromStores: (props) ->
-    blocks = _.chain BlockStore.all()
-      .filter (block) -> block.owner_id is props.uuid
-      .sortBy('position')
-      .value()
-
-    post: PostStore.get(props.uuid)
-    blocks: blocks
-    visibility: VisibilityStore.find (item) -> item.uuid && item.owner_id is props.uuid && item.owner_type is 'Post'
-
-  getInitialState: ->
-    @getStateFromStores(@props)
-
-  onGlobalStateChange: ->
-    @setState @getStateFromStores(@props)
 
   # Renderers
   #

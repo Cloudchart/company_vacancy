@@ -22,17 +22,6 @@ UUID = require('utils/uuid')
 
 # Utils
 #
-postPreviewMapper = (props) ->
-  (post) ->
-    <PostPreview
-      key         = { post.uuid }
-      uuid        = { post.uuid }
-      company_id  = { props.company_id }
-      story_id    = { props.story_id }
-      readOnly    = { props.readOnly }
-    />
-
-
 postVisibilityPredicate = (post) ->
   post.uuid and post.created_at != post.updated_at
 
@@ -43,15 +32,36 @@ Component = React.createClass
 
   mixins: [CloudFlux.mixins.Actions, GlobalState.mixin]
 
+  # Component Specifications
+  # 
+  propTypes:
+    company_id:   React.PropTypes.string.isRequired
+    onStoryClick: React.PropTypes.func
+    readOnly:     React.PropTypes.bool
 
-  gatherPosts: ->
-    @state.postSeq
-      .filter postVisibilityPredicate
-      .sortBy (post) -> post.effective_from
-      .map    postPreviewMapper(@props)
-      .reverse()
-  
+  getDefaultProps: ->
+    cursor:
+      pins: PinStore.cursor.items
+      stories: StoryStore.cursor.items
+      posts_stories: PostsStoryStore.cursor.items
+    onStoryClick: ->
+    readOnly: true
 
+  getInitialState: ->
+    state               = @getStateFromStores(@props)
+    state.new_post_key  = null
+    state
+
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores(@props))
+
+  getStateFromStores: (props) ->
+    posts:      PostStore.all()
+    postSeq:    Immutable.Seq(PostStore.all())
+
+
+  # Helpers
+  #
   getCreatePostButton: (type = '') ->
     return null if @props.readOnly
       
@@ -136,29 +146,29 @@ Component = React.createClass
     window.removeEventListener('hashchange', @handleWindowHashChange)
 
 
-  # Component Specifications
-  # 
-  getDefaultProps: ->
-    cursor:
-      pins: PinStore.cursor.items
-      stories: StoryStore.cursor.items
-      posts_stories: PostsStoryStore.cursor.items
+  # Renderers
+  #
+  renderPosts: ->
+    @state.postSeq
+      .filter postVisibilityPredicate
+      .sortBy (post) -> post.effective_from
+      .map    @renderPost(@props)
+      .reverse()
 
+  renderPost: (props) ->
+    (post) =>
+      <PostPreview
+        key          = { post.uuid }
+        uuid         = { post.uuid }
+        company_id   = { props.company_id }
+        onStoryClick = { @props.onStoryClick }
+        story_id     = { props.story_id }
+        readOnly     = { props.readOnly }
+      />
 
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores(@props))
-
-  getStateFromStores: (props) ->
-    posts:      PostStore.all()
-    postSeq:    Immutable.Seq(PostStore.all())
-
-  getInitialState: ->
-    state               = @getStateFromStores(@props)
-    state.new_post_key  = null
-    state
 
   render: ->
-    posts = @gatherPosts()
+    posts = @renderPosts()
     
     return null if posts.count() == 0 and @props.readOnly
     
