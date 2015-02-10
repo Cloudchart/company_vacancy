@@ -32,7 +32,8 @@ module.exports = React.createClass
       post: ->
         """
           Post {
-            owner
+            owner,
+            blocks
           }
         """
 
@@ -42,7 +43,12 @@ module.exports = React.createClass
 
 
   isLoaded: ->
-    @cursor.post.deref(false) #and @cursor.blocks.count() > 0
+    @cursor.post.deref(false) and @cursor.blocks.count() > 0
+
+
+  gatherBlocks: ->
+    @cursor.blocks
+      .sortBy (block) -> block.get('position')
 
 
   componentWillMount: ->
@@ -71,10 +77,19 @@ module.exports = React.createClass
     </section>
 
 
+  renderBlock: (block) ->
+    <span key={ block.get('uuid') }>{ block.get('identity_type') }</span>
+
+
+  renderBlocks: ->
+    @gatherBlocks().map(@renderBlock).toArray()
+
+
   render: ->
     return null unless @isLoaded()
 
     <article>
       { @renderOwner() }
       { @renderPinContent() }
+      { @renderBlocks() }
     </article>
