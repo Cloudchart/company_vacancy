@@ -18,3 +18,7 @@ module.exports = GlobalState.createStore
 
   findByBlock: (block_id) ->
     @cursor.items.find (quote) -> quote.get("owner_id") == block_id && quote.get("owner_type") == "Block"
+
+
+  findByPerson: (person_id) ->
+    @cursor.items.find (quote) -> quote.get("person_id") == person_id

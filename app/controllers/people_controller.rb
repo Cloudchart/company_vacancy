@@ -79,9 +79,15 @@ class PeopleController < ApplicationController
 
   # DELETE /people/1
   def destroy
-    company = @person.company
-    @person.destroy
-    redirect_to company_people_url(company), notice: t('messages.destroyed', name: t('lexicon.person'))
+    if @person.destroy
+      respond_to do |format|
+        format.json { render json: :ok, root: false }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: :fail, root: false, status: 422 }
+      end
+    end
   end
 
 private
