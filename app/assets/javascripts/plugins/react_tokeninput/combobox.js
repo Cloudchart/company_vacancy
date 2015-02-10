@@ -406,7 +406,7 @@ MainComponent = React.createClass({
         },
         this.props.value || this.props.placeholder
       )),
-      (this.props.isDropdown ? i({className: 'fa fa-angle-down'}) : null),
+      (this.props.isDropdown ? i({className: 'fa fa-angle-down', onClick: this.handleClick}) : null),
       input({
         ref: 'input',
         autoComplete: 'off',
