@@ -155,6 +155,8 @@ GEM
     impressionist (1.5.1)
       httpclient (~> 2.2)
       nokogiri (~> 1.5)
+    intercom (2.4.4)
+      json (~> 1.8)
     intercom-rails (0.2.24)
       activesupport (> 3.0)
     jbuilder (2.2.6)
@@ -399,6 +401,7 @@ DEPENDENCIES
   factory_girl_rails
   font-awesome-rails
   impressionist
+  intercom (~> 2.4.4)
   intercom-rails (~> 0.2.24)
   jbuilder
   jquery-rails

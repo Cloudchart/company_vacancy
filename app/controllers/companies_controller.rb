@@ -14,6 +14,8 @@ class CompaniesController < ApplicationController
 
   load_and_authorize_resource
 
+  after_action :create_intercom_event, only: :new, if: -> { %(staging production).include?(Rails.env) }
+
   # GET /companies
   def index
     authorize! :list, :companies
@@ -198,6 +200,10 @@ private
       :slug,
       :tag_names
     )
+  end
+
+  def create_intercom_event
+    IntercomEventWorker.perform_async('created-company', current_user.id, @company.id)
   end
 
 end

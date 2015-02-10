@@ -1,5 +1,11 @@
-if Rails.env.production?
+if ['staging', 'production'].include?(Rails.env)
+  # Intercom API config
+  # 
+  Intercom.app_id = ENV['INTERCOM_APP_ID']
+  Intercom.app_api_key = ENV['INTERCOM_API_KEY']
   
+  # Intercom Rails config
+  # 
   IntercomRails.config do |config|
     # == Intercom app_id
     # 
@@ -15,12 +21,12 @@ if Rails.env.production?
     # This is required for some Intercom rake tasks like importing your users;
     # you can generate one at https://www.intercom.io/apps/api_keys.
     #
-    # config.api_key = "..."
+    # config.api_key = ENV['INTERCOM_API_KEY']
 
     # == Enabled Environments
     # Which environments is auto inclusion of the Javascript enabled for
     #
-    config.enabled_environments = ['production']
+    config.enabled_environments = ['staging', 'production']
 
     # == Current user method/variable
     # The method/variable that contains the logged in user in your controllers.

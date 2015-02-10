@@ -19,7 +19,9 @@ Cloudchart::Application.configure do
 
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.default_url_options = { host: ENV['ACTION_MAILER_DEFAULT_HOST'] }
+  config.action_mailer.default_url_options = { host: ENV['APP_HOST'] }
+
+  routes.default_url_options = { host: ENV['APP_HOST'] }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

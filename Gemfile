@@ -58,7 +58,7 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'pry' # An IRB alternative and runtime developer console
-  gem 'pry-remote' #pry extension for pow
+  gem 'pry-remote' # pry extension for pow
   gem 'awesome_print' # styled print for ruby objects in rails console
   gem 'quiet_assets' # mutes assets pipeline log messages
   gem 'letter_opener' # preview mail in the browser instead of sending
@@ -82,10 +82,8 @@ group :production, :staging do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :ruby
   gem 'postmark-rails'
-end
-
-group :production do
   gem 'intercom-rails', '~> 0.2.24'
+  gem 'intercom', '~> 2.4.4'
 end
 
 # Use debugger
