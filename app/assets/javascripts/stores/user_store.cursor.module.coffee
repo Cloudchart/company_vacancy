@@ -3,11 +3,6 @@
 GlobalState   = require('global_state/state')
 
 
-# Current User Id
-#
-CurrentUserId = try document.querySelector('meta[name="user-id"]').getAttribute('content') catch
-
-
 # Exports
 #
 module.exports = GlobalState.createStore
@@ -27,7 +22,13 @@ module.exports = GlobalState.createStore
 
 
   me: ->
-    @cursor.items.cursor(CurrentUserId)
+    me = @cursor.items.cursor('me')
+
+    GlobalState.fetch({ model: 'Viewer', relations: '' }).then (json) =>
+      @cursor.items.set('me', json.users[0]) unless me.deref()
+
+    me
+
 
 
   unicorns: ->
