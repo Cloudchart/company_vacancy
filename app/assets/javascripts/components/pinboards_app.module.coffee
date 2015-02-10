@@ -2,8 +2,8 @@
 
 # Components
 #
-Pinboard  = require('components/pinboards/pinboard')
-Pinboards = require('components/pinboards/pinboards')
+PinsComponent       = require('components/pinboards/pins')
+PinboardsComponent  = require('components/pinboards/pinboards')
 
 # Exports
 #
@@ -11,8 +11,13 @@ module.exports = React.createClass
 
   displayName: 'PinboardsApp'
 
+
+  getInitialState: ->
+    uuid: @props.uuid
+
+
   render: ->
-    if @props.uuid
-      <Pinboard uuid={ @props.uuid } mode="show" />
+    if @state.uuid
+      <PinsComponent uuid={ @state.uuid } />
     else
-      <Pinboards />
+      <PinboardsComponent />

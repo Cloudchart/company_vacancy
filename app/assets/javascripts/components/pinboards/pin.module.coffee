@@ -6,13 +6,18 @@ GlobalState = require('global_state/state')
 
 # Stores
 #
-PinStore = require('stores/pin_store')
+PinStore  = require('stores/pin_store')
+UserStore = require('stores/user_store.cursor')
 
 
 # Components
 #
-Pinnables =
-  'Post': require('components/pinnable/post')
+UserComponent = require('components/pinboards/user')
+
+
+# Utils
+#
+cx = React.addons.classSet
 
 
 # Exports
@@ -31,7 +36,6 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
-            pinnable,
             user,
             parent {
               user
@@ -45,36 +49,40 @@ module.exports = React.createClass
 
 
   isLoaded: ->
-    @cursor.pin.deref(false)
+    @cursor.pin.deref(false) and @cursor.me.deref(false)
 
 
   componentWillMount: ->
     @cursor =
-      pin: PinStore.cursor.items.cursor(@props.uuid)
+      pin:          PinStore.cursor.items.cursor(@props.uuid)
+      me:           UserStore.me()
 
     @fetch() unless @isLoaded()
 
 
-  getDefaultProps: ->
-    cursor: {}
+  renderInsightAuthor: (author_id) ->
+    <UserComponent uuid={ author_id } />
 
 
-  renderHeader: ->
-    <header>
-      { @cursor.pin.get('pinnable_type') }
-      { " :: " }
-      { @cursor.pin.get('content') }
-    </header>
+  renderInsight: (pin) ->
+    return null unless pin.deref(false) or pin.get('content')
 
+    isMine = pin.get('user_id') == @cursor.me.get('uuid')
 
-  renderPinnable: ->
-    Pinnables[@cursor.pin.get('pinnable_type')](uuid: @cursor.pin.get('pinnable_id'), pin: @cursor.pin)
+    classList = cx
+      insight:  'true'
+      mine:     isMine
+
+    <div className={ classList }>
+      <p dangerouslySetInnerHTML={ __html: pin.get('content') } />
+      { @renderInsightAuthor(pin.get('user_id')) unless isMine }
+    </div>
 
 
   render: ->
     return null unless @isLoaded()
 
-    <section>
-      { @renderHeader() }
-      { @renderPinnable() }
+    <section className="pin">
+      { @renderInsight(@cursor.pin) }
+      { @renderInsight(PinStore.cursor.items.cursor(@cursor.pin.get('parent_id')) ) }
     </section>

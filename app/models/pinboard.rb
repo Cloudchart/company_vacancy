@@ -7,8 +7,10 @@ class Pinboard < ActiveRecord::Base
   validates_uniqueness_of   :title, scope: :user_id, case_sensitive: false
 
   belongs_to  :user
-  has_many    :pins
   has_many    :roles, as: :owner
+
+  has_many    :pins
+  has_many    :posts, through: :pins, source: :pinnable, source_type: Post
 
   sifter :user_own do |user|
     user_id.eq user.id
