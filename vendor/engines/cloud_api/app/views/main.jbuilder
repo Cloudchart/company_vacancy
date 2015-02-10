@@ -5,13 +5,13 @@ query = parse_relations_query(params[:relations])
 @source = User
 
 def gather_includes(source, query)
-  return [] unless query.present? && source.respond_to?(:reflect_on_association)
+  return {} unless query.present? && source.respond_to?(:reflect_on_association)
 
-  includes = []
+  includes = {}
 
   query.each do |key, value|
     if association = source.reflect_on_association(key)
-      includes << { :"#{key}" => gather_includes(association.klass, value) }
+      includes[key.to_sym] = gather_includes(association.klass, value)
     end
   end
 
@@ -20,7 +20,7 @@ def gather_includes(source, query)
 end
 
 
-# def prefetch(source, query)
+# def prefetch(source, query, includes = {})
 #
 #   result    = {
 #     source:     source,
