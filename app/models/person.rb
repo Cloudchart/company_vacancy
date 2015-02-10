@@ -9,7 +9,7 @@ class Person < ActiveRecord::Base
   belongs_to :user
   belongs_to :company
 
-  has_one :block_identity, as: :identity, inverse_of: :identity, dependent: :destroy
+  has_many :block_identities, as: :identity, inverse_of: :identity
   has_and_belongs_to_many :vacancy_reviews, class_name: 'Vacancy', join_table: 'vacancy_reviewers'
   has_many :quotes
 
