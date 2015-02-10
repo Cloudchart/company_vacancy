@@ -77,7 +77,7 @@ fetch = (query, options = {}) ->
 
 
   url       = buildURL(endpoint, options)
-  relations = query.relations.replace(/\s*/g, '')
+  relations = query.relations.replace(/\s*/g, '') if query.relations
   cacheKey  = url + '?' + relations
 
 
