@@ -11,7 +11,6 @@ module.exports = React.createClass
 
   displayName: 'PinboardsApp'
 
-
   getInitialState: ->
     uuid: @props.uuid
 

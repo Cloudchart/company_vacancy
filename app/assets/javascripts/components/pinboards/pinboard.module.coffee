@@ -1,6 +1,7 @@
 # @cjsx React.DOM
 
 GlobalState = require('global_state/state')
+cx          = React.addons.classSet
 
 
 # Stores
