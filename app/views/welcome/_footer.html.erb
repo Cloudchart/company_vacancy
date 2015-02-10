@@ -4,11 +4,11 @@
   </li>
 
   <li>
-    <%= mail_to ENV['DEFAULT_SUPPORT'], t('.support', default: 'Support') %>
+    <%= mail_to ENV['SUPPORT_EMAIL'], t('.support', default: 'Support') %>
   </li>
   
   <li>
-    <%= mail_to ENV['DEFAULT_REPLY_TO'], t('.contacts', default: 'Contacts') %>
+    <%= mail_to ENV['REPLY_TO_EMAIL'], t('.contacts', default: 'Contacts') %>
   </li>
 
   <li>

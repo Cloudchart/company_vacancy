@@ -67,9 +67,6 @@ group :development do
   gem 'capistrano-rbenv'
   gem 'capistrano3-puma'
   gem 'capistrano-sidekiq'
-
-  # TODO: move to production group
-  gem 'intercom', '~> 2.4.4'
 end
 
 group :development, :test do
@@ -85,10 +82,8 @@ group :production, :staging do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :ruby
   gem 'postmark-rails'
-end
-
-group :production do
   gem 'intercom-rails', '~> 0.2.24'
+  gem 'intercom', '~> 2.4.4'
 end
 
 # Use debugger

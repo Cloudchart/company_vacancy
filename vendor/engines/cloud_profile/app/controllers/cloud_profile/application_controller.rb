@@ -27,7 +27,7 @@ module CloudProfile
     end
 
     def previous_path
-      if current_user.try(:is_admin?) && current_user.email == ENV['DEFAULT_ADMIN_EMAIL']
+      if current_user.try(:is_admin?) && current_user.email == ENV['SUPERADMIN_EMAIL']
         rails_admin.dashboard_path
       else
         session[:previous_path] || main_app.root_path

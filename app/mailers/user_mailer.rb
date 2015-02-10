@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default from: ENV['DEFAULT_FROM']
+  default from: ENV['FROM_EMAIL']
 
   def company_invite(email, token)
     @company = token.owner
