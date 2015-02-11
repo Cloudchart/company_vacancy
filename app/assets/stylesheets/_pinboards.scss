@@ -1,143 +1,123 @@
-@mixin pinboard-header {
-  font-size: 36px;
-  font-weight: 100;
-  height: 36px;
-  line-height: 1;
-
-  span + span {
-    margin-left: 20px;
-  }
-
-  span.counter {
-    color: hsl(137, 54%, 50%);
-  }
-}
-
-
 main.pinboards {
   background-color: hsl(0, 0%, 98%);
-}
-
-
-main.pinboards {
   margin: 0;
   padding: 0;
-
-  > article.pinboards,
-  > article.pinboard {
-    > section {
-      @include display(flex);
-      @include justify-content(center);
-
-      > ul {
-        list-style: none;
-        margin: 0 12px;
-        padding: 0;
-        width: 476px;
-
-        > li {
-          margin: 24px 0;
-
-          &.link {
-            cursor: pointer;
-          }
-        }
-      }
-    }
-  }
-
 }
 
 
-main.pinboards section.pinboard {
+section.cloud-columns {
+  $block-width: 500px;
+  $block-gutter: 24px;
+  $basic-space: 20px;
 
-  background-color: hsl(0, 0%, 100%);
-  padding: 20px;
+  @for $i from 2 through 5 {
+    $width: $block-width * $i + $block-gutter;
+
+    @media (min-width: $width) {
+      width: $width;
+    }
+  }
+
+  margin: 0 auto;
+  padding: 0;
+
+  > ul {
+    @include display(flex);
+    @include flex-wrap(wrap);
+
+    list-style: none;
+    margin: 0;
+    padding: $block-gutter / 2;
+
+    > li {
+      background-color: #fff;
+      margin: $block-gutter / 2;
+      padding: $basic-space;
+      width: $block-width - $block-gutter;
+    }
+  }
+
+  .bottom-line {
+    border-bottom: 1px solid whitesmoke;
+    padding-bottom: $basic-space;
+  }
+
+  .top-line {
+    border-top: 1px solid whitesmoke;
+    padding-top: $basic-space;
+  }
+}
+
+
+section.pinboard {
 
   > header {
-    @include pinboard-header;
-  }
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(space-between);
 
-}
-
-
-main.pinboards section.pin {
-  background-color: hsl(0, 0%, 100%);
-  padding: 20px;
-
-  .insight {
     font-size: 20px;
-    font-weight: 100;
-    line-height: 26px;
+    font-weight: 600;
+    line-height: 1em;
 
-    &.mine {
-      color: hsl(137, 54%, 50%);
+    > .pinboard-access-rights {
+      color: hsl(0, 0%, 93%);
+      font-size: 15px;
     }
   }
-}
 
-
-main.pinboards .insight {
-
-  border-bottom: 1px solid whitesmoke;
-  padding-bottom: 20px;
-
-  > p {
-    font-size: 20px;
-    line-height: 26px;
+  > section {
     margin: 0;
-    white-space: pre-wrap;
+    margin-top: 20px;
   }
-}
 
-main.pinboards .insight ~ .insight {
-  margin-top: 20px;
-}
+  > .description {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 23px;
+  }
 
-main.pinboards .insight .user {
-  @include align-items(center);
-  @include display(flex);
+  > footer {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(space-between);
 
-  margin-top: 10px;
+    margin-top: 20px;
 
-  > aside {
-    margin-right: 10px;
-    width: 50px;
+    &.having-owner {
+      padding-top: 15px !important;
+    }
 
-    figure {
-      background-size: contain;
-      border-radius: 50%;
-      height: 0;
-      padding-top: 100%;
-      position: relative;
+    > ul {
+      line-height: 24px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
 
-      figcaption {
-        @include position(absolute, 50% 0px 0px 0px);
+      > li {
+        @include align-items(center);
+        @include display(inline-flex);
 
+        color: hsl(0, 0%, 93%);
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      > li > i {
+        background-color: hsl(0, 0%, 93%);
+        border-radius: 50%;
         color: hsl(0, 0%, 100%);
-        font-size: 25px;
-        line-height: 1em;
-        margin-top: -.5em;
+        height: 24px;
+        line-height: 24px;
+        margin-left: 5px;
         text-align: center;
+        width: 24px;
+      }
+
+      > li + li {
+        margin-left: 10px;
       }
     }
   }
 
-  > section p {
-    color: hsl(0, 0%, 0%);
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 1em;
-    margin: 0;
-
-    &:empty {
-      display: none;
-    }
-
-    &.occupation {
-      color: hsl(0, 0%, 53%);
-      font-size: 12px;
-      margin-top: 5px;
-    }
-  }
 }
