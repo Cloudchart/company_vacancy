@@ -52,15 +52,49 @@ module.exports = React.createClass
     loaders: Immutable.Map()
 
 
+  renderAccessRightsIcon: ->
+    classList = cx
+      'fa':       true
+      'fa-lock':  @cursor.pinboard.get('access_rights') is 'private'
+      'fa-users': @cursor.pinboard.get('access_rights') is 'protected'
+
+    <i className={ classList } />
+
+
   renderHeader: ->
     <header>
-      <span>
+      <span className="title">
         { @cursor.pinboard.get('title') }
       </span>
-      <span className="counter">
-        { (count = @cursor.pinboard.get('pins_count')) + ' ' + if count == 1 then 'pin' else 'pins' }
+      <span className="pinboard-access-rights">
+        { @renderAccessRightsIcon() }
       </span>
     </header>
+
+
+  renderDescription: ->
+    <section className="description">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </section>
+
+
+  renderFooter: ->
+    classList = cx
+      'top-line':       true
+      'having-owner':   @cursor.pinboard.get('user_id', false)
+
+    <footer className={ classList }>
+      <ul>
+        <li>
+          { 24 }
+          <i className="fa fa-user" />
+        </li>
+        <li>
+          { 42 }
+          <i className="fa fa-thumb-tack" />
+        </li>
+      </ul>
+    </footer>
 
 
   render: ->
@@ -68,4 +102,6 @@ module.exports = React.createClass
 
     <section className="pinboard">
       { @renderHeader() }
+      { @renderDescription() }
+      { @renderFooter() }
     </section>

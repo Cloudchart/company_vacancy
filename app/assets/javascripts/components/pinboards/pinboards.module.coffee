@@ -52,7 +52,6 @@ module.exports = React.createClass
     @cursor.pinboards
       .sortBy (item) -> item.get('title')
       .valueSeq()
-      .groupBy (item, i) => i % @props.columns
 
 
   handleClick: (pinboard, event) ->
@@ -67,33 +66,25 @@ module.exports = React.createClass
     @fetch() unless @isLoaded()
 
 
-  getDefaultProps: ->
-    columns: 2
-
-
   getInitialState: ->
     loaders: Immutable.Map()
 
 
   renderPinboard: (pinboard) ->
     <li key={ pinboard.get('uuid') } className="link" onClick={ @handleClick.bind(null, pinboard) }>
-      <PinboardComponent key={ pinboard.get('uuid') } uuid={ pinboard.get('uuid') } />
+      <PinboardComponent uuid={ pinboard.get('uuid') } />
     </li>
 
 
-  renderPinboardsGroup: (pinboards, index) ->
-    <ul key={ index }>
-      { pinboards.map(@renderPinboard).toArray() }
-    </ul>
-
-
   renderPinboards: ->
-    @gatherPinboards().map(@renderPinboardsGroup)
+    <ul>
+      { @gatherPinboards().map(@renderPinboard).toArray() }
+    </ul>
 
 
   render: ->
     return null unless @isLoaded()
 
-    <section className="list">
-      { @renderPinboards().toArray() }
+    <section className="cloud-columns">
+      { @renderPinboards() }
     </section>
