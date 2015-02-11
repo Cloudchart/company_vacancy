@@ -33,6 +33,12 @@ module.exports = React.createClass
 
     queries:
 
+
+      me: ->
+        """
+          Viewer
+        """
+
       pin: ->
         """
           Pin {
@@ -45,7 +51,8 @@ module.exports = React.createClass
 
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
+    GlobalState.fetch(@getQuery('pin'), { id: @props.uuid }) unless @cursor.pin.deref(false)
+    GlobalState.fetch(@getQuery('me')) unless @cursor.me.deref(false)
 
 
   isLoaded: ->

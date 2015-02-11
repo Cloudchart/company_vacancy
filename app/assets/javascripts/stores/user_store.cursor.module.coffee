@@ -1,7 +1,8 @@
 # Imports
 #
-GlobalState   = require('global_state/state')
 
+GlobalState   = require('global_state/state')
+ViewerQuery   = new GlobalState.query.Query("Viewer")
 
 # Exports
 #
@@ -24,8 +25,8 @@ module.exports = GlobalState.createStore
   me: ->
     me = @cursor.items.cursor('me')
 
-    GlobalState.fetch({ model: 'Viewer', relations: '' }).then (json) =>
-      @cursor.items.set('me', json.users[0]) unless me.deref()
+    GlobalState.fetch(ViewerQuery).then (data) =>
+      @cursor.items.set('me', data) unless me.deref()
 
     me
 

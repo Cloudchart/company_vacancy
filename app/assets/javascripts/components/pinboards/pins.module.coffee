@@ -45,7 +45,7 @@ module.exports = React.createClass
 
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid })
+    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }).then =>
 
 
   isLoaded: ->
