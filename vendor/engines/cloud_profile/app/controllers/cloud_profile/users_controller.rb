@@ -102,6 +102,7 @@ module CloudProfile
           )
 
           ProfileMailer.activation_email(token).deliver
+          IntercomEventWorker.perform_async('started-to-signup', user.full_name, user.email)
 
           respond_to do |format|
             format.json { render json: { state: :activation }}
@@ -184,5 +185,6 @@ module CloudProfile
       end
 
     end
+
   end
 end

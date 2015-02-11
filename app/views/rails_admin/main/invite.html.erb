@@ -1,20 +1,20 @@
-<%= form_tag invite_path, html: { multipart: true, class: 'form-horizontal denser', data: { title: @page_name } } do |f| %>
-  
+<%= form_tag invite_path, multipart: true, class: 'form-horizontal denser', data: { title: @page_name } do |f| %>
+
   <fieldset>
-    <div class="control-group">
-      <%= label_tag :full_name, 'Full name', class: 'control-label' %>
-      <div class="controls">
-        <%= text_field_tag :full_name %>
+    <div class="form-group control-group string_type full_name_field">
+      <%= label_tag :full_name, 'Full name', class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10 controls">
+        <%= text_field_tag :full_name, nil, class: 'form-control' %>
       </div>
     </div>
 
-    <div class="control-group">
-      <%= label_tag :email, 'Email', class: 'control-label' %>
-      <div class="controls">
-        <%= email_field_tag :email %>
+    <div class="form-group control-group email_type email_field">
+      <%= label_tag :email, 'Email', class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10 controls">
+        <%= email_field_tag :email, nil, class: 'form-control' %>
       </div>
     </div>
-  </fieldset>  
+  </fieldset>
 
   <%= render 'submit_buttons' %>
 
