@@ -22,7 +22,7 @@ Component = React.createClass
 
       (tag.header null, @props['full_name'])
       (tag.footer null, @props['occupation'])
-      
+
     )
 
 

@@ -13,11 +13,11 @@ module.exports = React.createClass
   render: ->
     letters         = initials(@props.value)
     backgroundColor = colors.colors[colors.colorIndex(letters)]
-    
+
     style =
       backgroundColor:  if @props.avatarURL then @props.backgroundColor || backgroundColor else backgroundColor
       backgroundImage:  if @props.avatarURL then "url(#{@props.avatarURL})" else "none"
-    
+
     <figure className="avatar" style={ style }>
       <figcaption>
         { letters unless @props.avatarURL }

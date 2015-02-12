@@ -113,7 +113,7 @@ State =
       @shouldComponentUpdateWithoutGlobalStateCheck = @shouldComponentUpdate || => true
       @shouldComponentUpdate = @shouldComponentUpdateWithGlobalStateCheck
 
-      @onGlobalStateChangeWithoutGlobalStateCheck = @onGlobalStateChange || => @setState({}) if @isMounted()
+      @onGlobalStateChangeWithoutGlobalStateCheck = @onGlobalStateChange || => @setState({}) # if @isMounted()
       @onGlobalStateChange = @onGlobalStateChangeWithGlobalStateCheck
 
 

@@ -48,6 +48,7 @@ Endpoints = Immutable.fromJS
     relations:
       'pins':     'Pin'
       'posts':    'Post'
+      'user':     'User'
 
 
   'Pin':

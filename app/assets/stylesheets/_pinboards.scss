@@ -5,6 +5,7 @@ main.pinboards {
 }
 
 
+
 section.cloud-columns {
   $block-width: 500px;
   $block-gutter: 24px;
@@ -34,7 +35,15 @@ section.cloud-columns {
       margin: $block-gutter / 2;
       padding: $basic-space;
       width: $block-width - $block-gutter;
+
+      &.link {
+        cursor: pointer;
+      }
     }
+  }
+
+  .spacer {
+    @include flex(1);
   }
 
   .bottom-line {
@@ -84,8 +93,46 @@ section.pinboard {
 
     margin-top: 20px;
 
-    &.having-owner {
-      padding-top: 15px !important;
+    .human {
+      @include align-items(center);
+      @include display(flex);
+
+      font-weight: 300;
+
+      figure {
+        background-size: contain;
+        border-radius: 50%;
+        margin-right: 10px;
+        text-align: center;
+        width: 50px;
+
+        figcaption {
+          color: hsl(0, 0%, 100%);
+          font-size: 25px;
+          height: 50px;
+          line-height: 50px;
+        }
+      }
+
+      .crepentials {
+        @include flex(1);
+      }
+
+      p {
+        line-height: 1em;
+        margin: 0;
+
+        &.name {
+          font-size: 16px;
+        }
+
+        &.occupation {
+          color: hsl(0, 0%, 53%);
+          font-size: 12px;
+          margin-top: 3px;
+        }
+      }
+
     }
 
     > ul {

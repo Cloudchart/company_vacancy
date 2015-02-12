@@ -7,6 +7,12 @@ cx          = React.addons.classSet
 # Stores
 #
 PinboardStore   = require('stores/pinboard_store')
+UserStore       = require('stores/user_store.cursor')
+
+
+# Components
+#
+Human = require('components/human')
 
 
 # Exports
@@ -27,6 +33,7 @@ module.exports = React.createClass
       pinboard: ->
         """
           Pinboard {
+            user
           }
         """
 
@@ -78,19 +85,25 @@ module.exports = React.createClass
     </section>
 
 
-  renderFooter: ->
-    classList = cx
-      'top-line':       true
-      'having-owner':   @cursor.pinboard.get('user_id', false)
+  renderOwner: ->
+    <Human type="user" uuid={ @cursor.pinboard.get('user_id') } />
 
-    <footer className={ classList }>
+
+
+  renderFooter: ->
+    <footer className="top-line">
+
+      { @renderOwner() }
+
+      <div className="spacer" />
+
       <ul>
         <li>
           { 24 }
           <i className="fa fa-user" />
         </li>
         <li>
-          { 42 }
+          { @cursor.pinboard.get('pins_count') }
           <i className="fa fa-thumb-tack" />
         </li>
       </ul>
