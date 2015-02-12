@@ -10,6 +10,9 @@ Hints =
   
   date: 
     text: "If there's no exact date, keep the month and year only."
+
+  paragraph:
+    text: "Tell a short single-minded fact-checked story."
   
   stories:
     render: ->

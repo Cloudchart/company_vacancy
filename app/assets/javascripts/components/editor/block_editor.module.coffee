@@ -42,6 +42,7 @@ SectionPlaceholderItemNames =
 
 Hints =
   Quote: renderHint("quote")
+  Paragraph: renderHint("paragraph")
 
 # Main
 # 
