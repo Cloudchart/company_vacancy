@@ -102,7 +102,12 @@ module CloudProfile
           )
 
           ProfileMailer.activation_email(token).deliver
-          IntercomEventWorker.perform_async('started-to-signup', user.full_name, user.email)
+
+          if %(development staging production).include?(Rails.env)
+            SlackWebhooksWorker.perform_async(
+              text: t('user.activities.started_to_sign_up', name: user.full_name, email: user.email)
+            )
+          end
 
           respond_to do |format|
             format.json { render json: { state: :activation }}

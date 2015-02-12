@@ -203,15 +203,7 @@ private
   end
 
   def create_intercom_event
-    IntercomEventWorker.perform_async(
-      'created-company',
-      current_user.full_name,
-      current_user.email,
-      {
-        user_id: current_user.id,
-        company_id: @company.id
-      }
-    )
+    IntercomEventsWorker.perform_async('created-company', current_user.id, company_id: @company.id)
   end
 
 end

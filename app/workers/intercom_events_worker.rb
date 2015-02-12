@@ -1,11 +1,15 @@
-class IntercomEventWorker < ApplicationWorker
+class IntercomEventsWorker < ApplicationWorker
   include Rails.application.routes.url_helpers
 
-  def perform(event_name, user_name, user_email, options={})
+  def perform(event_name, user_id, options={})
     options.symbolize_keys!
+    options[:should_post_to_slack] ||= true
 
-    # instantiate possible options
-    %w(Company User).each do |model_name|
+    # find user
+    user = User.find(user_id)
+
+    # instantiate ids inside options
+    %w(Company).each do |model_name|
       model_id = options[:"#{model_name.underscore}_id"]
       options[:"#{model_name.underscore}"] = model_name.constantize.find(model_id) if model_id
     end
@@ -14,20 +18,20 @@ class IntercomEventWorker < ApplicationWorker
     Intercom::Event.create(
       event_name: event_name,
       created_at: Time.now.to_i,
-      email: user_email,
-      metadata: get_intercom_metadata(event_name, user_name, user_email, options)
-    ) if options[:user]
+      email: user.email,
+      metadata: get_intercom_metadata(event_name, user, options)
+    )
 
     # post to slack channel
     Net::HTTP.post_form(
       URI(ENV['SLACK_INTERCOM_WEBHOOK_URL']), 
-      payload: get_slack_payload(event_name, user_name, user_email, options)
-    )
+      payload: get_slack_payload(event_name, user, options)
+    ) if options[:should_post_to_slack]
   end
 
 private
 
-  def get_intercom_metadata(event_name, user_name, user_email, options={})
+  def get_intercom_metadata(event_name, user, options)
     result = {}
 
     case event_name
@@ -38,15 +42,17 @@ private
     result
   end
 
-  def get_slack_payload(event_name, user_name, user_email, options={})
+  def get_slack_payload(event_name, user, options)
     result = {}
 
     # TODO: move text to I18n
     case event_name
-    when 'started-to-signup'
-      result[:text] = "#{user_name} <#{user_email}> started to sign up"
     when 'created-company'
-      result[:text] = "#{user_name} <#{user_email}> created <#{company_url(options[:company])}|company>"
+      result[:text] = I18n.t('user.activities.created_company',
+        name: user.full_name,
+        email: user.email,
+        url: company_url(options[:company])
+      )
     end
 
     result.to_json

@@ -1,0 +1,5 @@
+en:
+  user:
+    activities:
+      started_to_sign_up: "%{name} <%{email}> started to sign up"
+      created_company: "%{name} <%{email}> created <%{url}|company>"
