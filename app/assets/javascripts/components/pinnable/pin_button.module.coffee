@@ -23,6 +23,11 @@ module.exports = React.createClass
 
   mixins: [GlobalState.mixin]
 
+  statics:
+    getCursor: (id) ->
+      pin:    PinStore.cursor.items.cursor(id)
+      user:   UserStore.me()
+
 
   handleClick: (event) ->
     if @state.currentUserPin
@@ -35,12 +40,12 @@ module.exports = React.createClass
 
   currentUserPin: ->
     if @props.uuid
-      @props.cursor.pins
+      PinStore.cursor.items
         .find (pin) =>
           pin.get('uuid')     == @props.uuid                    and
           pin.get('user_id')  == @props.cursor.user.get('uuid')
     else
-      @props.cursor.pins
+      PinStore.cursor.items
         .find (pin) =>
           pin.get('pinnable_id')      == @props.pinnable_id             and
           pin.get('pinnable_type')    == @props.pinnable_type           and
@@ -51,7 +56,7 @@ module.exports = React.createClass
   currentUserRepin: ->
     return null unless @props.uuid
 
-    @props.cursor.pins
+    PinStore.cursor.items
       .find (pin) =>
         pin.get('parent_id')  == @props.uuid                    and
         pin.get('user_id')    == @props.cursor.user.get('uuid')
@@ -70,7 +75,6 @@ module.exports = React.createClass
     cursor:
       pins:   PinStore.cursor.items
       user:   UserStore.me()
-
 
   getInitialState: ->
     @getStateFromStores()
