@@ -406,14 +406,18 @@ main.company > div.wrapper > div.posts {
 //
 div.post-container {
   position: relative;
+  padding: 25px 50px;
 
   > aside {
-    @include position(absolute, 0px 0px 0 0);
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+    @include position(absolute, 28px 5px 0 0);
 
     z-index: 1;
 
-    > .view-mode {
-      margin-bottom: 15px;
+    > * {
+      margin-right: 15px;
     }
 
     > .select {
@@ -430,7 +434,7 @@ div.post-container {
     .title div[contenteditable] {
       @include editor-contenteditable-area;
 
-      max-width: 650px;
+      max-width: 550px;
       font-size: 40px;
       font-weight: 400;
     }
@@ -521,14 +525,14 @@ main.company.timeline > div.wrapper > header {
 }
 
 main.post {
-  margin: auto;
-  padding-top:    50px;
-  padding-bottom: 50px;
-  width: 800px;
+  background-color: $modal-overlay-background-color;
+  padding-top:    24px;
+  padding-bottom: 24px;
+  position: relative;
 
-  header {
-    .categories {
-      max-width: 600px;
-    }
-  } 
+  .post-container {
+    background-color: white;
+    margin: auto;
+    width: 900px;
+  }
 }

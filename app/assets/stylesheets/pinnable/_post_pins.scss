@@ -15,3 +15,9 @@
   }
 
 }
+
+main.post {
+  .post-pins {
+    @include position(absolute, 0px -270px 0 0);
+  }
+}

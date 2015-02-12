@@ -26,6 +26,7 @@ Hint                = require('components/shared/hint')
 renderHint          = require('utils/render_hint')
 InsightList         = require('components/insight/list')
 Toggle              = require('components/form/toggle')
+PinButton           = require('components/pinnable/pin_button')
 
 
 # Main
@@ -165,17 +166,8 @@ Post = React.createClass
 
   # Renderers
   #
-  renderVisibilityDropdown: ->
-    return null if @state.readOnly && !@props.shouldDisplayViewMode
-
+  renderAside: ->
     <aside>
-      <Toggle
-        checked     = { not @state.readOnly }
-        customClass = "cc-toggle view-mode"
-        onText      = "Edit"
-        offText     = "View"
-        onChange    = {@handleViewModeChange}
-      />
       {
         if !@state.readOnly
           <Dropdown
@@ -184,6 +176,22 @@ Post = React.createClass
             onChange = { @handleVisibilityChange }
           />
       }
+      {
+        if @props.shouldDisplayViewMode
+          <Toggle
+            checked     = { not @state.readOnly }
+            customClass = "cc-toggle view-mode"
+            onText      = "Edit"
+            offText     = "View"
+            onChange    = {@handleViewModeChange}
+          />
+      }
+      <ul className="round-buttons">
+        <PinButton 
+          pinnable_type = 'Post'
+          pinnable_id   = { @state.post.uuid }
+          title         = { @state.post.title } />
+      </ul>
     </aside>
 
 
@@ -228,7 +236,7 @@ Post = React.createClass
     return null unless @state.post
 
     <div ref="container" className="post-container">
-      { @renderVisibilityDropdown() }
+      { @renderAside() }
       { @renderPins() }
 
       <header>
