@@ -12,6 +12,31 @@ class Pinboard < ActiveRecord::Base
   has_many    :pins
   has_many    :posts, through: :pins, source: :pinnable, source_type: Post
 
+
+  has_many    :readers, -> do
+
+    joins {
+
+      pinboards.outer
+
+    }.joins {
+
+      roles.outer
+
+    }.where {
+
+      pinboards.user_id.eq(uuid) |
+
+      (roles.user_id.eq(uuid) & roles.value.in(['editor', 'reader'])) |
+
+      (pinboards.access_rights.eq('public') & roles.user_id.eq(uuid) & roles.value.in(['follower']))
+
+    }.distinct
+
+  end, through: :roles, source: :user
+
+
+
   sifter :user_own do |user|
     user_id.eq user.id
   end

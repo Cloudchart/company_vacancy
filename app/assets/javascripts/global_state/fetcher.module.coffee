@@ -126,7 +126,7 @@ fetchDone = (response, query, options) ->
       type: 'fetch:done'
       data: [response]
 
-  storeData(Immutable.fromJS(response.query), query.endpoint)
+  #storeData(Immutable.fromJS(response.query), query.endpoint)
 
 
 
@@ -175,11 +175,13 @@ fetch = (query, options = {}) ->
 
     .then(
       (json) ->
-        done fetchDone(json, query, options)
+        fetchDone(json, query, options)
+        done(json)
     ,
       (xhr) ->
         delete cachedPromises[cacheKey]
-        fail fetchFail(xhr, query, options)
+        fetchFail(xhr, query, options)
+        fail(xhr)
     )
 
 

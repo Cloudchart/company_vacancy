@@ -99,7 +99,7 @@ module.exports = React.createClass
 
       <ul>
         <li>
-          { 24 }
+          { @cursor.pinboard.get('readers_count') }
           <i className="fa fa-user" />
         </li>
         <li>
