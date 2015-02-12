@@ -14,8 +14,6 @@ class CompaniesController < ApplicationController
 
   load_and_authorize_resource
 
-  after_action :create_intercom_event, only: :new, if: -> { %(development staging production).include?(Rails.env) }
-
   # GET /companies
   def index
     authorize! :list, :companies
@@ -54,6 +52,11 @@ class CompaniesController < ApplicationController
     @company.roles.build(user: current_user, value: :owner)
     @company.should_build_objects!
     @company.save!
+
+    IntercomEventsWorker.perform_async('created-company',
+      current_user.id,
+      company_id: @company.id
+    ) if should_perform_sidekiq_worker?
 
     redirect_to @company
   end
@@ -200,10 +203,6 @@ private
       :slug,
       :tag_names
     )
-  end
-
-  def create_intercom_event
-    IntercomEventsWorker.perform_async('created-company', current_user.id, company_id: @company.id)
   end
 
 end

@@ -2,4 +2,7 @@ en:
   user:
     activities:
       started_to_sign_up: "%{name} <%{email}> started to sign up"
-      created_company: "%{name} <%{email}> created <%{url}|company>"
+      created_company: "%{name} <%{email}> created <%{company_url}|company>"
+      pinned_post: "%{name} <%{email}> pinned post: <%{post_url}|%{post_title}>"
+      created_pinboard: "%{name} <%{email}> created pinboard: <%{pinboard_url}|%{pinboard_title}>"
+      invited_person: "%{name} <%{email}> invited %{invitee} to join <%{company_url}|%{company_name}> as %{role}"

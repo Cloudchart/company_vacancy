@@ -30,6 +30,10 @@ class PinsController < ApplicationController
 
     pin.save!
 
+    if pin.pinnable_type == 'Post' && should_perform_sidekiq_worker?
+      IntercomEventsWorker.perform_async('pinned-post', current_user.id, pin_id: pin.id)
+    end
+
     respond_to do |format|
       format.json { render json: { id: pin.uuid } }
     end

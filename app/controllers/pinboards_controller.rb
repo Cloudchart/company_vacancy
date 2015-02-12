@@ -22,6 +22,11 @@ class PinboardsController < ApplicationController
   def create
     pinboard = effective_user.pinboards.create!(params_for_create)
 
+    IntercomEventsWorker.perform_async('created-pinboard',
+      current_user.id,
+      pinboard_id: pinboard.id
+    ) if should_perform_sidekiq_worker?
+
     respond_to do |format|
       format.json { render json: { id: pinboard.uuid } }
     end

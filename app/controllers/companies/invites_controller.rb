@@ -38,6 +38,12 @@ module Companies
       email = CloudProfile::Email.find_by(address: token.data[:email]) || token.data[:email]
       
       UserMailer.company_invite(email, token).deliver
+      IntercomEventsWorker.perform_async('invited-person',
+        current_user.id,
+        company_id: @company.id,
+        token_id: token.id,
+        user_id: email.try(:user_id)
+      ) if should_perform_sidekiq_worker?
 
     rescue ActiveRecord::RecordInvalid
       
