@@ -16,6 +16,7 @@ ModalActions        = require('actions/modal_actions')
 AutoSizingInput     = require('components/form/autosizing_input')
 FollowComponent     = require('components/company/follow')
 Checkbox            = require('components/form/checkbox')
+Toggle              = require('components/form/toggle')
 AccessRights        = require('components/company/access_rights')
 TagsComponent       = require('components/company/tags')
 ContentEditableArea = require('components/form/contenteditable_area')
@@ -32,14 +33,12 @@ Component = React.createClass
     return null unless @props.shouldDisplayViewMode
 
     <div className="controls">
-      <label className="cc-toggle view-mode">
-        <input type="checkbox" checked={not @props.readOnly} onChange={@handleViewModeChange} />
-        <span>
-          <span className="off">View</span>
-          <i></i>
-          <span className="on">Edit</span>
-        </span>
-      </label>
+      <Toggle
+        checked     = {not @props.readOnly}
+        customClass = "cc-toggle view-mode"
+        onText      = "Edit"
+        offText     = "View"
+        onChange    = {@handleViewModeChange} />
     </div>
 
   
@@ -151,9 +150,8 @@ Component = React.createClass
     @setState({ logotype_url: URL.createObjectURL(file) })
     @updateLogotype(file)
 
-  handleViewModeChange: (event) ->
-    readOnly = not event.target.checked
-    @props.onChange({ readOnly: readOnly })
+  handleViewModeChange: (checked) ->
+    @props.onChange({ readOnly: !checked })
   
   handleFieldKeyUp: (event) ->
     event.target.blur() if event.key == 'Enter'

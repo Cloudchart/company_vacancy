@@ -51,6 +51,7 @@ MainComponent = React.createClass
         <i className={ "fa #{@getIconClass()}" }></i> if @props.iconClass != ''
       }
       <input type="checkbox" checked={ @state.checked } onChange={ @onChange } />
+      { @props.children }
     </label>
     
 

@@ -25,27 +25,34 @@ Counter             = require('components/shared/counter')
 Hint                = require('components/shared/hint')
 renderHint          = require('utils/render_hint')
 InsightList         = require('components/insight/list')
+Toggle              = require('components/form/toggle')
 
 
 # Main
 #
-Component = React.createClass
+Post = React.createClass
+  
+  displayName: 'Post'
 
   mixins: [GlobalState.mixin]
 
   # Component specifications
   #
   propTypes:
-    id:       React.PropTypes.string.isRequired
-    readOnly: React.PropTypes.bool
+    id:                    React.PropTypes.string.isRequired
+    company_id:            React.PropTypes.string.isRequired
+    readOnly:              React.PropTypes.bool
+    shouldDisplayViewMode: React.PropTypes.bool
 
   getDefaultProps: ->
     cursor:
       pins: PinStore.cursor.items
-    readOnly: false
+    readOnly:              false
+    shouldDisplayViewMode: false
 
   getInitialState: ->
     _.extend @getStateFromStores(@props),
+      readOnly: @props.readOnly
       titleFocused: false
 
   refreshStateFromStores: ->
@@ -136,6 +143,9 @@ Component = React.createClass
     else
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: value })
 
+  handleViewModeChange: (checked) ->
+    @setState(readOnly: !checked)
+
 
   # Lifecycle Methods
   #
@@ -156,14 +166,24 @@ Component = React.createClass
   # Renderers
   #
   renderVisibilityDropdown: ->
-    return null if @props.readOnly
+    return null if @state.readOnly && !@props.shouldDisplayViewMode
 
     <aside>
-      <Dropdown
-        options  = { @getVisibilityOptions() }
-        value    = { @state.visibility_value }
-        onChange = { @handleVisibilityChange }
+      <Toggle
+        checked     = { not @state.readOnly }
+        customClass = "cc-toggle view-mode"
+        onText      = "Edit"
+        offText     = "View"
+        onChange    = {@handleViewModeChange}
       />
+      {
+        if !@state.readOnly
+          <Dropdown
+            options  = { @getVisibilityOptions() }
+            value    = { @state.visibility_value }
+            onChange = { @handleVisibilityChange }
+          />
+      }
     </aside>
 
 
@@ -176,7 +196,7 @@ Component = React.createClass
 
 
   renderButtons: ->
-    return null if @props.readOnly
+    return null if @state.readOnly
 
     <div className="controls">
       <button
@@ -184,7 +204,6 @@ Component = React.createClass
         onClick={@handleDestroyClick}>
         Delete
       </button>
-
       <button
         ref="okButton"
         className="cc"
@@ -198,7 +217,7 @@ Component = React.createClass
     <FuzzyDateInput
       from      = { @state.post.effective_from }
       till      = { @state.post.effective_till }
-      readOnly  = { @props.readOnly }
+      readOnly  = { @state.readOnly }
       onUpdate  = { @handleEffectiveDateUpdate }
     />
 
@@ -221,16 +240,16 @@ Component = React.createClass
               onFocus = { @handleTitleFocus }
               onInput = { @handleTitleInput }
               placeholder = 'Tap to add title'
-              readOnly = { @props.readOnly }
+              readOnly = { @state.readOnly }
               value = { @state.post.title }
             />
           </label>
           <Counter
             count   = { @getTitleLimit(@state.titleLength) }
-            visible = { !@props.readOnly && @state.titleFocused } />
+            visible = { !@state.readOnly && @state.titleFocused } />
           <Hint
             content = renderHint("title")
-            visible = { !@props.readOnly && !@state.titleFocused } />
+            visible = { !@state.readOnly && !@state.titleFocused } />
         </FieldWrapper>
 
         <FieldWrapper>
@@ -239,17 +258,17 @@ Component = React.createClass
           </label>
           <Hint
             content = { renderHint("date") }
-            visible = { !@props.readOnly } />
+            visible = { !@state.readOnly } />
         </FieldWrapper>
 
         <FieldWrapper className="categories">
           <PostsStories
             post_id     = { @state.post.uuid }
             company_id  = { @props.company_id }
-            readOnly    = { @props.readOnly } />
+            readOnly    = { @state.readOnly } />
           <Hint
             content = { renderHint("stories") }
-            visible = { !@props.readOnly } />
+            visible = { !@state.readOnly } />
         </FieldWrapper>
       </header>
 
@@ -259,7 +278,7 @@ Component = React.createClass
         owner_type          = "Post"
         editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI', 'Person']}
         classForArticle     = "editor post"
-        readOnly            = {@props.readOnly}
+        readOnly            = {@state.readOnly}
       />
 
       <FieldWrapper className="tags">
@@ -267,10 +286,10 @@ Component = React.createClass
           placeholder   = "#event-tag"
           taggable_id   = {@state.post.uuid}
           taggable_type = "Post"
-          readOnly      = {@props.readOnly} />
+          readOnly      = {@state.readOnly} />
         <Hint
           content = { renderHint("tags") }
-          visible = { !@props.readOnly } />
+          visible = { !@state.readOnly } />
       </FieldWrapper>
 
       <footer>
@@ -280,4 +299,4 @@ Component = React.createClass
 
 # Exports
 #
-module.exports = Component
+module.exports = Post

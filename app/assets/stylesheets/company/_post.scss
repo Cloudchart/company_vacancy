@@ -412,6 +412,10 @@ div.post-container {
 
     z-index: 1;
 
+    > .view-mode {
+      margin-bottom: 15px;
+    }
+
     > .select {
       width: 120px;
     }
@@ -518,5 +522,6 @@ main.company.timeline > div.wrapper > header {
 
 main.post {
   margin: auto;
+  padding-bottom: 50px;
   width: 800px;
 }
