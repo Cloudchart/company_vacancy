@@ -24,7 +24,7 @@ FieldWrapper        = require('components/editor/field_wrapper')
 Counter             = require('components/shared/counter')
 Hint                = require('components/shared/hint')
 renderHint          = require('utils/render_hint')
-InsightList          = require('components/insight/list')
+InsightList         = require('components/insight/list')
 
 
 # Main
@@ -32,6 +32,39 @@ InsightList          = require('components/insight/list')
 Component = React.createClass
 
   mixins: [GlobalState.mixin]
+
+  # Component specifications
+  #
+  propTypes:
+    id:       React.PropTypes.string.isRequired
+    readOnly: React.PropTypes.bool
+
+  getDefaultProps: ->
+    cursor:
+      pins: PinStore.cursor.items
+    readOnly: false
+
+  getInitialState: ->
+    _.extend @getStateFromStores(@props),
+      titleFocused: false
+
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores(@props))
+
+  getStateFromStores: (props) ->
+    post = PostStore.get(props.id)
+
+    if post
+      visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.id and item.owner_type is 'Post'
+      titleLength = if (title = post.title) then title.length else 0
+
+      post: post
+      titleLength: titleLength
+      published_at: @getPublishedAt(post)
+      visibility: visibility
+      visibility_value: if visibility then visibility.value else 'public'
+    else
+      post: null
 
   # Helpers
   #
@@ -48,6 +81,15 @@ Component = React.createClass
 
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
+
+  getPublishedAt: (post) ->
+    if post
+      if moment(post.published_at).isValid()
+        moment(post.published_at).format('ll')
+      else
+        ''
+    else
+      ''
 
 
   # Handlers
@@ -102,7 +144,6 @@ Component = React.createClass
     PostStore.on('change', @refreshStateFromStores)
     VisibilityStore.on('change', @refreshStateFromStores)
 
-
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
 
@@ -110,42 +151,6 @@ Component = React.createClass
     $(document).off 'keydown', @handleKeydown
     PostStore.off('change', @refreshStateFromStores)
     VisibilityStore.off('change', @refreshStateFromStores)
-
-  # Component Specifications
-  #
-  getPublishedAt: (post) ->
-    if post
-      if moment(post.published_at).isValid()
-        moment(post.published_at).format('ll')
-      else
-        ''
-    else
-      ''
-
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores(@props))
-
-  getStateFromStores: (props) ->
-    visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.id and item.owner_type is 'Post'
-    post = PostStore.get(props.id)
-
-    titleLength = if (title = post.title) then title.length else 0
-
-    post: post
-    titleLength: titleLength
-    published_at: @getPublishedAt(post)
-    visibility: visibility
-    visibility_value: if visibility then visibility.value else 'public'
-
-
-  getDefaultProps: ->
-    cursor:
-      pins: PinStore.cursor.items
-
-
-  getInitialState: ->
-    _.extend @getStateFromStores(@props),
-      titleFocused: false
 
 
   # Renderers

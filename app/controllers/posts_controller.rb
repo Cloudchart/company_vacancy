@@ -32,6 +32,14 @@ class PostsController < ApplicationController
     @post = Post.includes(:owner).find(params[:id])
 
     respond_to do |format|
+      @company = @post.company
+
+      format.html {
+        pagescript_params(
+          id: @post.id,
+          company_id: @company.id
+        )
+      }
       format.json
     end
   end
