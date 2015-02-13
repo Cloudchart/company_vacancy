@@ -1,156 +1,57 @@
 # Imports
 #
-
-Dispatcher      = require('dispatcher/dispatcher')
-PinboardSyncAPI = require('sync/pinboard_sync_api')
-GlobalState     = require('global_state/state')
+GlobalState = require('global_state/state')
 
 
-RoleStore       = require('stores/role_store.cursor')
-
-
-ItemsCursor = GlobalState.cursor(['stores', 'pinboards', 'items'])
-
-
-EmptyPinboards = Immutable.Map({})
-
-
-# Set Data from JSON
+# Stores
 #
-setDataFromJSON = (json) ->
-  Immutable.Seq(json.pinboards || [json.pinboard]).forEach (item) -> ItemsCursor.set(item.uuid, item)
+RoleStore = require('stores/role_store.cursor')
+UserStore = require('stores/user_store.cursor')
 
 
-# Dispatcher
+# Utils
 #
-
-dispatchToken = Dispatcher.register (payload) ->
-
-  if payload.action.type == 'fetch:done'
-    [json] = payload.action.data
-    setDataFromJSON(json) if json.pinboards or json.pinboard
-
-
-# Fetch
-#
-fetchAll = (params = {}, options = {}) ->
-  promise = PinboardSyncAPI.fetchAll(params, options)
-  promise.then(fetchDone, fetchAllFail)
-  promise
+filterRoles = (id, value) ->
+  RoleStore.cursor.items
+    .filter (role) ->
+      role.get('owner_id')    == id and
+      role.get('owner_type')  == 'Pinboard' and
+      role.get('value')       == value
+    .valueSeq()
 
 
-fetchAllFail = (xhr) ->
-  alert 'Error loading pinboards. Please, refresh the page.'
+filterUsersForRole = (id, value) ->
+  user_ids = filterRoles(id, value).map (role) -> role.get('user_id')
 
-
-fetchOne = (id, force = false) ->
-  PinboardSyncAPI.fetchOne(id, force).then(fetchDone, fetchOneFail(id))
-
-
-fetchDone = (json) ->
-  ItemsCursor.transaction()
-
-  Dispatcher.handleServerAction
-    type: 'fetch:done'
-    data: [json]
-
-  ItemsCursor.commit()
-
-
-fetchOneFail = (id) ->
-  (xhr) ->
-    'Error loading pinboard with id "' + id + '". Please, try again later.'
-
-
-# Create
-#
-createDone = (json) ->
-  fetchOne(json.id, true)
-
-
-createFail = (xhr) ->
-
-
-
-# Update
-#
-updateDone = (json) ->
-  fetchOne(json.id, true)
-
-
-updateFail = (id, xhr) ->
-  ItemsCursor.removeIn([id, '--sync--'])
-
-
-# Destroy
-#
-destroyDone = (json) ->
-  ItemsCursor.remove(json.id)
-
-
-destroyFail = (xhr) ->
-  alert 'Error deleting pinboard. Please, try again later.'
-
-
-# Predicates
-#
-
-readablePinboardsFilter = (user) ->
-  (item) ->
-    roles = RoleStore.roles_on_owner_for_user(item, 'Pinboard', user)
-      .map (role) -> role.get('value')
-
-    item.get('access_rights') == 'public'           or
-    item.get('user_id')       == user.get('uuid')   or
-    roles.contains('editor')                        or
-    roles.contains('reader')
-
+  UserStore.cursor.items
+    .filter (user) ->
+      user_ids.contains(user.get('uuid'))
+    .valueSeq()
 
 
 # Exports
 #
-module.exports =
+module.exports = GlobalState.createStore
 
-  empty: EmptyPinboards
+  displayName: 'PinboardStore'
 
+  collectionName: 'pinboards'
+  instanceName:   'pinboard'
 
-  cursor:
-    items: ItemsCursor
-
-
-  has: (id) ->
-    ItemsCursor.has(id)
-
-
-  dispatchToken: dispatchToken
-
-
-  fetchAll: fetchAll
-
-
-  fetchOne: fetchOne
+  syncAPI:        require('sync/pinboard_sync_api')
 
 
   readable_pinboards: (user) ->
-    ItemsCursor.filterCursor readablePinboardsFilter(user)
+    @cursor.items.filterCursor readablePinboardsFilter(user)
 
 
-
-  create: (attributes = {}, options ={}) ->
-    promise = PinboardSyncAPI.create(attributes, options)
-    promise.then(createDone, createFail)
-    promise
+  editorsFor: (id) ->
+    filterUsersForRole(id, 'editor')
 
 
-  update: (id, attributes = {}, options = {}) ->
-    currItem = ItemsCursor.get(id)
-
-    ItemsCursor.set(currItem.get('uuid'), currItem.set('--sync--', true))
-
-    promise = PinboardSyncAPI.update(currItem, attributes, options)
-    promise.then(updateDone, updateFail.bind(null, id))
-    promise
+  readersFor: (id) ->
+    filterUsersForRole(id, 'reader')
 
 
-  destroy: (id) ->
-    PinboardSyncAPI.destroy(id).then(destroyDone, destroyFail)
+  followersFor: (id) ->
+    filterUsersForRole(id, 'follower')

@@ -13,72 +13,21 @@ class Pinboard < ActiveRecord::Base
   has_many    :posts, through: :pins, source: :pinnable, source_type: Post
 
 
-  has_many    :readers, -> do
-
-    joins {
-
-      pinboards.outer
-
-    }.joins {
-
-      roles.outer
-
-    }.where {
-
-      pinboards.user_id.eq(uuid) |
-
-      (roles.user_id.eq(uuid) & roles.value.in(['editor', 'reader'])) |
-
-      (pinboards.access_rights.eq('public') & roles.user_id.eq(uuid) & roles.value.in(['follower']))
-
-    }.distinct
-
-  end, through: :roles, source: :user
-
-
-
-  sifter :user_own do |user|
-    user_id.eq user.id
-  end
-
-  sifter :public do
-    access_rights.eq 'public'
-  end
-
-  sifter :available_through_roles do |user, values|
-    access_rights.not_eq('public') &
-    roles.user_id.eq(user.id) &
-    roles.value.in(values)
+  # Roles on Users
+  #
+  { readers: [:reader, :editor], writers: :editor, followers: :follower }.each do |scope, role|
+    has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, as: :owner, class_name: Role
+    has_many :"#{scope}", through: :"#{scope}_pinboards_roles", source: :user
   end
 
 
-  scope :writable, -> (user) do
-    joins {
-
-      roles.outer
-
-    }.where {
-
-      sift(:user_own, user) |
-      sift(:available_through_roles, user, ['editor'])
-
-    }.distinct
+  scope :readable, -> do
+    joins { roles.outer }.where { roles.value.eq('reader') }
   end
 
 
-  scope :readable, -> (user) do
-    joins {
-
-      roles.outer
-
-    }.where {
-
-      sift(:public) |
-      sift(:user_own, user) |
-      sift(:available_through_roles, user, ['editor', 'reader'])
-
-    }.distinct
+  scope :writable, -> do
+    joins { roles.outer }.where { roles.value.eq('editor') }
   end
-
 
 end

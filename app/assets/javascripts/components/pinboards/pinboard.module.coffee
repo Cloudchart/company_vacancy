@@ -33,7 +33,10 @@ module.exports = React.createClass
       pinboard: ->
         """
           Pinboard {
-            user
+            user,
+            readers,
+            followers,
+            pins
           }
         """
 

@@ -34,8 +34,8 @@ module.exports = React.createClass
         """
           Pinboard {
             posts {
-              owner,
-              blocks
+              blocks,
+              owner
             },
             pins {
               #{PinComponent.getQuery('pin')}

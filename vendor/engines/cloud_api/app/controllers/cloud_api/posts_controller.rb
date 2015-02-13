@@ -4,7 +4,8 @@ module CloudApi
   class PostsController < CloudApi::ApplicationController
 
     def show
-      @source = Post.find(params[:id])
+      @source   = Post
+      @starter  = [:find, params[:id]]
 
       respond_to do |format|
         format.json { render '/main' }

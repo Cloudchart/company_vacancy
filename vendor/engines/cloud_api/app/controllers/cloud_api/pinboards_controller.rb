@@ -4,7 +4,8 @@ module CloudApi
   class PinboardsController < CloudApi::ApplicationController
 
     def show
-      @source = Pinboard.readable(current_user).find(params[:id])
+      @source   = Pinboard
+      @starter  = [:find, params[:id]]
 
       respond_to do |format|
         format.json { render '/main' }

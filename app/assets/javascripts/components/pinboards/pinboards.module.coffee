@@ -31,6 +31,10 @@ module.exports = React.createClass
       pinboards: ->
         """
           Viewer {
+            pinboards {
+              #{PinboardComponent.getQuery('pinboard')}
+            },
+
             readable_pinboards {
               #{PinboardComponent.getQuery('pinboard')}
             }

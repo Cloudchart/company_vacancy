@@ -10,11 +10,20 @@ class PinboardsController < ApplicationController
 
 
   def show
-    @pinboard = effective_user.readable_pinboards.find(params[:id])
+    @pinboard = Pinboard.find(params[:id])
 
     respond_to do |format|
       format.html
       format.json
+    end
+  end
+
+
+  def settings
+    @pinboard = effective_user.pinboards.find(params[:id])
+
+    respond_to do |format|
+      format.html
     end
   end
 
@@ -71,7 +80,7 @@ class PinboardsController < ApplicationController
 
 
   def params_for_create
-    params.require(:pinboard).permit(:title, :access_rights)
+    params.require(:pinboard).permit(:title, :description, :access_rights)
   end
 
 

@@ -4,8 +4,6 @@ class Role < ActiveRecord::Base
   belongs_to :user
   belongs_to :owner, polymorphic: true
 
-  belongs_to :pinboard, -> { where(owner_type: Pinboard.name) }
-
   validates :value, inclusion: { in: Company::INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Company' }
   validates :value, inclusion: { in: Cloudchart::ROLES.map(&:to_s) }, on: :create, if: -> { owner_type.blank? }
   validate :acceptance_of_company_invite, on: :create

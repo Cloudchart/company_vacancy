@@ -107,7 +107,13 @@ Cloudchart::Application.routes.draw do
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :roles, only: [:update, :destroy]
-  resources :pinboards
+
+  resources :pinboards do
+    get :settings, on: :member
+
+    resources :roles, only: [:update, :destroy]
+  end
+
   resources :pins
   resources :posts_stories, only: [:update, :destroy]
 

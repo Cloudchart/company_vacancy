@@ -12,11 +12,19 @@ module.exports = GlobalState.createStore
   collectionName: 'roles'
   instanceName:   'role'
 
+  syncAPI:        require('sync/role_sync_api')
+
 
   rolesFor: (id) ->
     roles = require('stores/role_store.cursor').cursor.items
 
     roles.filter (role) -> role.get('user_id') is id
+
+
+  rolesOn: (id, type) ->
+    @cursor.items.filter (role) ->
+      role.get('owner_id')    == id and
+      role.get('owner_type')  == type
 
 
   roles_on_owner_for_user: (owner, owner_type, user) ->
