@@ -4,7 +4,7 @@ CloudFlux = require('cloud_flux')
 CallbackFactory = require('stores/callback_factory')
 
 
-CrudActions = ['create', 'update']
+CrudActions = ['create', 'update', 'destroy']
 CrudCallbacks = CallbackFactory.create 'person', CrudActions
 
 

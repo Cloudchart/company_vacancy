@@ -42,6 +42,24 @@ Module = CloudFlux.createActions
         data: [key, attributes, xhr.responseJSON, xhr, token]
     
     SyncAPI.update(key, attributes, done, fail)
+
+
+  destroy: (key, token = 'destroy') ->
+    Dispatcher.handleClientAction
+      type: 'person:destroy-'
+      data: [key, token]
+    
+    done = (json) ->
+      Dispatcher.handleServerAction
+        type: 'person:destroy-:done'
+        data: [key, json, token]
+    
+    fail = (xhr) ->
+      Dispatcher.handleServerAction
+        type: 'person:destroy-:fail'
+        data: [key, xhr.responseJSON, xhr, token]
+    
+    SyncAPI.destroy(key, done, fail)
     
 
 # Exports

@@ -25,7 +25,7 @@ Component = React.createClass
       .filter (vacancy) -> _.all queries, (query) -> vacancy.name.toLowerCase().indexOf(query) >= 0
       .sortBy (vacancy) -> vacancy.name
       .map (vacancy) =>
-        (tag.div {
+        (tag.li {
           key:          vacancy.uuid
           className:    'vacancy'
           onClick:      @onVacancyClick.bind(@, vacancy.uuid)
@@ -91,7 +91,7 @@ Component = React.createClass
 
   render: ->
     (tag.div {
-      className: 'vacancy-chooser'
+      className: 'chooser'
     },
       
       (tag.header null,
@@ -105,14 +105,16 @@ Component = React.createClass
       )
       
       (tag.section null,
-        (tag.div {
-          className:  'new'
-          onClick:    @onNewVacancyClick
-        },
-          (tag.i { className: 'fa fa-plus' })
-          "New vacancy"
+        (tag.ul null,
+          (tag.li {
+            className:  'new'
+            onClick:    @onNewVacancyClick
+          },
+            (tag.i { className: 'fa fa-plus' })
+            "New vacancy"
+          )
+          @gatherVacancies()
         )
-        @gatherVacancies()
       )
       
     )

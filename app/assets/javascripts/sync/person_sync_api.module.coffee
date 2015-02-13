@@ -32,3 +32,13 @@ module.exports =
       contentType:  false
     .done done
     .fail fail
+
+
+  destroy: (key, done, fail) ->
+    $.ajax
+      url:          "/people/#{key}"
+      type:         "DELETE"
+      dataType:     "json"
+    .done done
+    .fail fail
+

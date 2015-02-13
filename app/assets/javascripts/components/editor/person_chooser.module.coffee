@@ -1,24 +1,14 @@
-# Imports
-#
-tag = React.DOM
+# @cjsx React.DOM
 
-ModalStack  = require('components/modal_stack')
+ModalStack    = require('components/modal_stack')
 
-PersonStore = require('stores/person')
+BlockStore    = require('stores/block_store')
+PersonStore   = require('stores/person')
+QuoteStore    = require('stores/quote_store')
 
-PersonForm  = require('components/form/person_form')
-
-
-# New Person component
-#
-NewPersonComponent = ->
-  (tag.div {
-    className: 'new'
-    onClick:    @onNewPersonClick
-  },
-    (tag.i { className: 'fa fa-plus' })
-    'New person'
-  )
+PersonActions = require('actions/person_actions')
+PersonAvatar  = require('components/shared/person_avatar')
+PersonForm    = require('components/form/person_form')
 
 
 # Main
@@ -36,9 +26,8 @@ Component = React.createClass
     onSelect:      ->
 
   getInitialState: ->
-    state         = @getStateFromStores()
-    state.query   = ''
-    state
+    _.extend @getStateFromStores(),
+      query: ''
 
   getStateFromStores: ->
     people: PersonStore.filter (person) => person.company_id == @props.company_id
@@ -46,47 +35,38 @@ Component = React.createClass
   refreshStateFromStores: ->
     @setState(@getStateFromStores())
 
-
   # Helpers
   #
-  gatherPeople: ->
-    queries = _.compact(@state.query.toLowerCase().split(/\s+/))
-    
-    _.chain(@state.people)
-      .sortBy(['last_name', 'first_name'])
-      .reject (person) => @props.selected.contains(person.uuid)
-      .filter (person) -> _.all queries, (query) -> person.full_name.toLowerCase().indexOf(query) >= 0
-      .map (person) =>
-        (tag.div {
-          key:        person.uuid || 'new'
-          className:  'person'
-          onClick:    @onPersonClick.bind(@, person.uuid)
-        },
-          (tag.i { className: 'fa fa-user' })
-          person.full_name
-        )
-      .value()
+  isPersonUsed: (person_id) ->
+    !!(QuoteStore.findByPerson(person_id) ||
+      BlockStore.find((block) -> block.identity_type == "Person" && block.identity_ids.indexOf(person_id) != -1))
+
 
   # Handlers
   #
-  onPersonClick: (key, event) ->
+  handlePersonClick: (key, event) ->
     @props.onSelect(key)
+
+  handlePersonDelete: (uuid, event) ->
+    event.preventDefault()
+    event.stopPropagation()
+    PersonActions.destroy(uuid)
   
-  onNewPersonClick: (event) ->
+  handleNewPersonClick: (event) ->
     return if @props.readOnly
 
     newPersonKey = PersonStore.create({ company_id: @props.company_id })
 
-    ModalStack.show(PersonForm({
-      attributes: PersonStore.get(newPersonKey).toJSON()
-      onSubmit:   -> ModalStack.hide()
-      uuid:       newPersonKey
-    }), {
+    ModalStack.show(<PersonForm
+      attributes = { PersonStore.get(newPersonKey).toJSON() }
+      onSubmit   = { -> ModalStack.hide() }
+      uuid       = { newPersonKey } />,
+    {
       beforeHide: =>
         PersonStore.remove(newPersonKey)
     })
 
-  onQueryChange: (event) ->
+  handleQueryChange: (event) ->
     @setState({ query: event.target.value })
 
 
@@ -99,34 +79,63 @@ Component = React.createClass
     PersonStore.off('change', @refreshStateFromStores)
 
 
-  render: ->
-    (tag.div {
-      className: 'vacancy-chooser'
-    },
+  # Renderers:
+  #
+  renderPeople: ->
+    queries = _.compact(@state.query.toLowerCase().split(/\s+/))
     
-      # Query
-      #
-      (tag.header null,
-        (tag.input {
-          ref:          'query-input'
-          autoFocus:    true
-          value:        @state.query
-          onChange:     @onQueryChange
-          placeholder:  'Type here...'
-        })
-      )
-      
-      (tag.section null,
-        # New person
-        #
-        NewPersonComponent.apply(@)
+    people = _.chain(@state.people)
+      .sortBy(['last_name', 'first_name'])
+      .reject (person) => @props.selected.contains(person.uuid)
+      .filter (person) -> _.all queries, (query) -> person.full_name.toLowerCase().indexOf(query) >= 0
+      .reduce((memo, person) =>
+        isPersonUsed = @isPersonUsed(person.uuid)
 
-        # People list
-        #
-        @gatherPeople()
-      )
+        component = <li
+          key        = { person.uuid || 'new' }
+          className  = { 'person' }
+          onClick    = { @handlePersonClick.bind(@, person.uuid) }>
+          <PersonAvatar
+            avatarURL = { person.avatar_url }
+            readOnly  = { true }
+            value     = { person.full_name } />
+          { person.full_name }
+          { <i className="cc-icon cc-times" onClick={ @handlePersonDelete.bind(@, person.uuid) }></i> if !isPersonUsed }
+        </li>
+
+        memo[if isPersonUsed then 'used' else 'not_used'].push component
+
+        memo
+          
+      , { used: [], not_used: [] })
+      .value()
+
+      <section>
+        <ul className="used">
+          <li className = 'new' onClick = { @handleNewPersonClick }>
+            <i className='fa fa-plus'></i>
+            New person
+          </li>
+          { people.used }
+        </ul>
+        <div className="separator">Not used</div>
+        <ul className="not_used">{ people.not_used }</ul>
+      </section>
+
+
+  render: ->
+    <div className='chooser'>
+      <header>
+        <input
+          autoFocus   =  { true }
+          value       =  { @state.query }
+          onChange    =  { @handleQueryChange }
+          placeholder = 'Type here...'
+        />
+      </header>
       
-    )
+      { @renderPeople() }
+    </div>
 
 
 # Exports

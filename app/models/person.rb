@@ -9,11 +9,10 @@ class Person < ActiveRecord::Base
   belongs_to :user
   belongs_to :company
 
-  has_one :block_identity, as: :identity, inverse_of: :identity, dependent: :destroy
   has_and_belongs_to_many :vacancy_reviews, class_name: 'Vacancy', join_table: 'vacancy_reviewers'
-  has_many :quotes
-
-  has_many :node_identities, as: :identity, dependent: :destroy, class_name: CloudBlueprint::Identity
+  has_many :block_identities, as: :identity, inverse_of: :identity, dependent: :restrict_with_error
+  has_many :quotes, dependent: :restrict_with_error
+  has_many :node_identities, as: :identity, class_name: CloudBlueprint::Identity, dependent: :restrict_with_error
 
   validates :full_name, presence: true
 
