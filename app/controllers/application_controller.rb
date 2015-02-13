@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
   end
 
   def should_perform_sidekiq_worker?
-    %(development staging production).include?(Rails.env)
+    %(staging production).include?(Rails.env)
   end
   
 private

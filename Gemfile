@@ -82,9 +82,9 @@ group :production, :staging do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :ruby
   gem 'postmark-rails'
+  gem 'intercom-rails', '~> 0.2.24'
+  gem 'intercom', '~> 2.4.4'
 end
-gem 'intercom-rails', '~> 0.2.24'
-gem 'intercom', '~> 2.4.4'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]

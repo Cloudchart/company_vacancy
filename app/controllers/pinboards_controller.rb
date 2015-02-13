@@ -1,5 +1,7 @@
 class PinboardsController < ApplicationController
 
+  after_action :create_intercom_event, only: :create
+
 
   def index
     respond_to do |format|
@@ -20,15 +22,10 @@ class PinboardsController < ApplicationController
 
 
   def create
-    pinboard = effective_user.pinboards.create!(params_for_create)
-
-    IntercomEventsWorker.perform_async('created-pinboard',
-      current_user.id,
-      pinboard_id: pinboard.id
-    ) if should_perform_sidekiq_worker?
+    @pinboard = effective_user.pinboards.create!(params_for_create)
 
     respond_to do |format|
-      format.json { render json: { id: pinboard.uuid } }
+      format.json { render json: { id: @pinboard.uuid } }
     end
 
   rescue ActiveRecord::RecordInvalid
@@ -82,6 +79,13 @@ class PinboardsController < ApplicationController
 
   def params_for_update
     params_for_create
+  end
+
+
+  def create_intercom_event
+    return unless should_perform_sidekiq_worker? && @pinboard.valid?
+
+    IntercomEventsWorker.perform_async('created-pinboard', current_user.id, pinboard_id: @pinboard.id)
   end
 
 

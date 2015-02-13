@@ -1,5 +1,7 @@
 class PinsController < ApplicationController
 
+  after_action :create_intercom_event, only: :create
+
 
   def index
     query = pin_source.includes(:parent)
@@ -24,18 +26,14 @@ class PinsController < ApplicationController
 
 
   def create
-    pin = pin_source.new(params_for_create)
+    @pin = pin_source.new(params_for_create)
 
-    pin.update_by! current_user
+    @pin.update_by! current_user
 
-    pin.save!
-
-    if pin.pinnable_type == 'Post' && should_perform_sidekiq_worker?
-      IntercomEventsWorker.perform_async('pinned-post', current_user.id, pin_id: pin.id)
-    end
+    @pin.save!
 
     respond_to do |format|
-      format.json { render json: { id: pin.uuid } }
+      format.json { render json: { id: @pin.uuid } }
     end
 
   rescue ActiveRecord::RecordInvalid
@@ -99,5 +97,16 @@ class PinsController < ApplicationController
     fields_for_create - [:user_id]
   end
 
+  def create_intercom_event
+    return unless should_perform_sidekiq_worker? && @pin.valid?
+
+    event_name = if @pin.pinnable_type == 'Post' && @pin.parent.blank?
+      'pinned-post'
+    elsif @pin.pinnable_type == 'Post' && @pin.parent.present?
+      'pinned-post-pin'
+    end
+
+    IntercomEventsWorker.perform_async(event_name, current_user.id, pin_id: @pin.id)
+  end
 
 end

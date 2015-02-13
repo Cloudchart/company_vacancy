@@ -6,3 +6,6 @@ en:
       pinned_post: "%{name} <%{email}> pinned post: <%{post_url}|%{post_title}>"
       created_pinboard: "%{name} <%{email}> created pinboard: <%{pinboard_url}|%{pinboard_title}>"
       invited_person: "%{name} <%{email}> invited %{invitee} to join <%{company_url}|%{company_name}> as %{role}"
+      created_post: "%{name} <%{email}> created <%{post_url}|post>"
+      published_company: "%{name} <%{email}> published company: <%{company_url}|%{company_name}>"
+      pinned_pin: "%{name} <%{email}> pinned %{parent_user_name} <%{parent_user_email}>'s pin related to post: <%{post_url}|%{post_title}>"
