@@ -170,7 +170,7 @@ RailsAdmin.config do |config|
     list do
       exclude_fields :owner, :updated_at
       sort_by :created_at
-      scopes { [:invites] }
+      scopes { [:admin_invites] }
 
       field :uuid do
         formatted_value { Cloudchart::RFC1751.encode(value) }

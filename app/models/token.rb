@@ -5,7 +5,7 @@ class Token < ActiveRecord::Base
 
   belongs_to :owner, polymorphic: true, inverse_of: :tokens
 
-  scope :invites, -> { where(arel_table[:name].eq(:invite).or(arel_table[:name].eq(:request_invite))) }
+  scope :admin_invites, -> { where(arel_table[:name].eq(:invite).or(arel_table[:name].eq(:request_invite)).and(arel_table[:owner_id].eq(nil))) }
 
   validates :name, presence: true
   
