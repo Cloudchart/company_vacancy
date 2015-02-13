@@ -19,6 +19,10 @@ class Pinboard < ActiveRecord::Base
     access_rights.eq 'public'
   end
 
+  sifter :system do
+    access_rights.eq('public') & user_id.eq(nil)
+  end
+
   sifter :available_through_roles do |user, values|
     access_rights.not_eq('public') &
     roles.user_id.eq(user.id) &
@@ -33,6 +37,7 @@ class Pinboard < ActiveRecord::Base
 
     }.where {
 
+      sift(:system) |
       sift(:user_own, user) |
       sift(:available_through_roles, user, ['editor'])
 
