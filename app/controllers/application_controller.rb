@@ -28,6 +28,10 @@ class ApplicationController < ActionController::Base
     klass ||= "#{object.class}Decorator".constantize
     decorator = klass.new(object)
   end
+
+  def should_perform_sidekiq_worker?
+    %(staging production).include?(Rails.env)
+  end
   
 private
 

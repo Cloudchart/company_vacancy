@@ -14,14 +14,12 @@ $modal-splash-width: 480px;
   
   > figure.cloud-chart {
     
-    background-image: image-url('cloudchart-logo.svg');
+    background-image: image-url('cloudchart-logo-square.png');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: auto 100%;
     display: block;
-    height: 75px;
-    margin: 30px 0;
-    
+    height: 100px;
   }
   
   a {

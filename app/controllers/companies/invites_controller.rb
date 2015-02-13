@@ -5,6 +5,8 @@ module Companies
 
     authorize_resource class: :company_invite, except: [:index, :create, :resend]
 
+    after_action :create_intercom_event, only: :create
+
     # Show
     #
     def show
@@ -28,21 +30,21 @@ module Companies
     def create
       authorize! :manage_company_invites, @company
 
-      token = Token.new params.require(:token).permit(data: [:email, :role] ).merge(name: 'invite', owner: @company)
-      token.save!
+      @token = Token.new params.require(:token).permit(data: [:email, :role] ).merge(name: 'invite', owner: @company)
+      @token.save!
 
       respond_to do |format|
-        format.json { render json: token, root: :token }
+        format.json { render json: @token, root: :token }
       end
 
-      email = CloudProfile::Email.find_by(address: token.data[:email]) || token.data[:email]
+      @email = CloudProfile::Email.find_by(address: @token.data[:email]) || @token.data[:email]
       
-      UserMailer.company_invite(email, token).deliver
+      UserMailer.company_invite(@email, @token).deliver
 
     rescue ActiveRecord::RecordInvalid
       
       respond_to do |format|
-        format.json { render json: token, root: :token, status: 412 }
+        format.json { render json: @token, root: :token, status: 412 }
       end
     end
 
@@ -97,6 +99,16 @@ module Companies
 
     def set_token
       @token = Token.find(params[:id])
+    end
+
+    def create_intercom_event
+      return unless should_perform_sidekiq_worker? && @token.valid?
+
+      IntercomEventsWorker.perform_async('invited-person',
+        current_user.id,
+        token_id: @token.id,
+        user_id: @email.try(:user_id)
+      )
     end
   
   end

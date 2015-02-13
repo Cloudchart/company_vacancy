@@ -102,6 +102,9 @@ module CloudProfile
           )
 
           ProfileMailer.activation_email(token).deliver
+          SlackWebhooksWorker.perform_async(
+            text: t('user.activities.started_to_sign_up', name: user.full_name, email: user.email)
+          ) if should_perform_sidekiq_worker?
 
           respond_to do |format|
             format.json { render json: { state: :activation }}
@@ -184,5 +187,6 @@ module CloudProfile
       end
 
     end
+
   end
 end

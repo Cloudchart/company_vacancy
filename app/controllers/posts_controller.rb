@@ -5,6 +5,8 @@ class PostsController < ApplicationController
 
   authorize_resource
 
+  after_action :create_intercom_event, only: :create
+
   def index
     respond_to do |format|
       format.html {
@@ -84,6 +86,12 @@ private
 
   def find_company(relation)
     relation.find_by(slug: params[:company_id]) || relation.find(params[:company_id])
+  end
+
+  def create_intercom_event
+    return unless should_perform_sidekiq_worker? && @post.valid?
+
+    IntercomEventsWorker.perform_async('created-post', current_user.id, post_id: @post.id)
   end
 
 end

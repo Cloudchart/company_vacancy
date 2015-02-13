@@ -1,4 +1,4 @@
-if ['staging', 'production'].include?(Rails.env)
+if %(staging production).include?(Rails.env)
   # Intercom API config
   # 
   Intercom.app_id = ENV['INTERCOM_APP_ID']

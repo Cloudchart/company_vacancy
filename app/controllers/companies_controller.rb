@@ -14,7 +14,7 @@ class CompaniesController < ApplicationController
 
   load_and_authorize_resource
 
-  after_action :create_intercom_event, only: :new, if: -> { %(staging production).include?(Rails.env) }
+  after_action :create_intercom_event, only: [:new, :update]
 
   # GET /companies
   def index
@@ -62,7 +62,7 @@ class CompaniesController < ApplicationController
   def update
     @company.update!(company_params)
 
-    Activity.track_activity(current_user, params[:action], @company)
+    # Activity.track_activity(current_user, params[:action], @company)
 
     update_site_url_verification(@company) if company_params[:site_url]
 
@@ -203,7 +203,15 @@ private
   end
 
   def create_intercom_event
-    IntercomEventWorker.perform_async('created-company', current_user.id, @company.id)
+    return unless should_perform_sidekiq_worker? && @company.valid?
+
+    event_name = if action_name == 'update' && params[:company][:is_published] == 'true'
+      'published-company'
+    elsif action_name == 'new'
+      'created-company'
+    end
+
+    IntercomEventsWorker.perform_async(event_name, current_user.id, company_id: @company.id)
   end
 
 end
