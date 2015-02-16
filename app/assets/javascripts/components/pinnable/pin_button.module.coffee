@@ -63,7 +63,7 @@ module.exports = React.createClass
 
 
   onGlobalStateChange: ->
-    @setState @getStateFromStores() if @isMounted()
+    @setState @getStateFromStores()
 
 
   getStateFromStores: ->
