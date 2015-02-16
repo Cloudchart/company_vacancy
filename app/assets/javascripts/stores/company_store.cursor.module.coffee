@@ -7,6 +7,7 @@ GlobalState   = require('global_state/state')
 EmptyCompanies  = Immutable.Map()
 ItemsCursor     = GlobalState.cursor(['stores', 'companies', 'items'])
 
+syncApi       = require('sync/company')
 
 # setDataFromJSON
 #
@@ -33,3 +34,7 @@ module.exports =
   
   cursor:
     items:  ItemsCursor
+
+  search: (query) ->
+    syncApi.search(query).then (json) =>
+      GlobalState.cursor(['stores', 'companies', Immutable.Seq(json.companies)])

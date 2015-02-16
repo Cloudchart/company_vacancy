@@ -1,7 +1,13 @@
 # Exports
 #
 module.exports =
-  
+
+  search: (query) ->
+    Promise.resolve $.ajax
+      url:        "/companies/search?query=#{query}"
+      type:       "GET"
+      dataType:   "json"
+      cache:      false
   
   fetch: (key, done, fail) ->
     $.ajax

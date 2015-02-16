@@ -126,27 +126,28 @@ Dispatcher = require('dispatcher/dispatcher')
     document.querySelector('[data-react-mount-point="access-rights"]')
   )
 
-# Search
-# 
-@['companies#search'] = (data) ->
-  @['companies#index'](data)
+# # Search
+# # 
+# @['companies#search'] = (data) ->
+#   @['companies#index'](data)
 
-# Index
-# 
-@['companies#index'] = (data) ->
-  $ ->
-    # comanies search
-    #
-    $('header').on 'input propertychange', '.search input', ->
-      perform_search($(@))
+# # Index
+# # 
+# @['companies#index'] = (data) ->
 
-    search_timeout = null
+#   # $ ->
+#   #   # comanies search
+#   #   #
+#   #   $('header').on 'input propertychange', '.search input', ->
+#   #     perform_search($(@))
 
-    search = ($element) ->
-      value = $element.val().replace(/^\s+|\s+$/g, '') 
-      return if value.length < 3 and value.length > 0
-      $element.closest('form').submit()
+#   #   search_timeout = null
 
-    perform_search = ($element) ->
-      clearTimeout(search_timeout)
-      search_timeout = setTimeout((-> search($element)), 700)
+#   #   search = ($element) ->
+#   #     value = $element.val().replace(/^\s+|\s+$/g, '') 
+#   #     return if value.length < 3 and value.length > 0
+#   #     $element.closest('form').submit()
+
+#   #   perform_search = ($element) ->
+#   #     clearTimeout(search_timeout)
+#   #     search_timeout = setTimeout((-> search($element)), 700)

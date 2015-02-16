@@ -1,4 +1,0 @@
-<%= form_tag main_app.search_companies_path, class: 'search', remote: controller_name == 'companies' && action_name =~ /index|search/ ? true : false do %>
-  <%= text_field_tag :query, params[:query], placeholder: t('.search_placeholder', default: 'Find companies'), autocomplete: :off %>
-  <%= font_awesome('search') %>
-<% end %>
