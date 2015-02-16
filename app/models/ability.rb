@@ -15,14 +15,14 @@ class Ability
     can [:read, :accept], Interview
     can :read, Person
     can :read, Vacancy
-
-    can :read, Company, is_public: true
     can :read, Quote
+    
     can [:preview, :read, :pull], CloudBlueprint::Chart, is_public: true
+    can :read, Company, is_public: true
 
     can :read, Post do |post|
       company = post.company
-      (company.is_public || company.is_published) && (post.visibilities.blank? || post.visibility.value == 'public')
+      company.is_public && company.is_published && (post.visibilities.blank? || post.visibility.value == 'public')
     end
 
     return unless user
@@ -80,12 +80,17 @@ class Ability
       owner?(user, visibility.owner.try(:owner))
     end
 
-    can :read, Post do |post|
-      post.visibility.try(:value) == 'trusted' && trusted_reader?(user, post.company)
-    end
-
     cannot [:create, :update], Quote do |quote|
       quote.company && !quote.company.people.include?(quote.person)
+    end
+
+    can :read, Post do |post|
+      company = post.company
+      company.is_published && (post.visibilities.blank? || post.visibility.value == 'public')
+    end
+
+    can :read, Post do |post|
+      post.visibility.try(:value) == 'trusted' && trusted_reader?(user, post.company)
     end
 
   end

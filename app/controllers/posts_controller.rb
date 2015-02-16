@@ -3,7 +3,7 @@ class PostsController < ApplicationController
   before_action :set_company, only: [:index, :create]
   before_action :set_post, only: [:show, :update, :destroy]
 
-  load_and_authorize_resource
+  load_and_authorize_resource except: :create
 
   after_action :create_intercom_event, only: :create
 
@@ -40,6 +40,7 @@ class PostsController < ApplicationController
 
   def create
     @post = @company.posts.build(post_params)
+    authorize! :create, @post
 
     if @post.save
       respond_to do |format|
