@@ -1,9 +1,9 @@
 class PostsController < ApplicationController
 
   before_action :set_company, only: [:index, :create]
-  before_action :set_post, only: [:update, :destroy]
+  before_action :set_post, only: [:show, :update, :destroy]
 
-  authorize_resource
+  load_and_authorize_resource
 
   after_action :create_intercom_event, only: :create
 
@@ -29,16 +29,10 @@ class PostsController < ApplicationController
 
 
   def show
-    @post = Post.includes(:owner).find(params[:id])
-
     respond_to do |format|
-      @company = @post.company
-
-      format.html {
-        pagescript_params(
-          id: @post.id,
-          company_id: @company.id
-        )
+      format.html { 
+        @company = @post.company
+        pagescript_params(id: @post.id, company_id: @company.id)
       }
       format.json
     end
@@ -85,7 +79,7 @@ private
   end
 
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.includes(:owner, :visibilities).find(params[:id])
   end
 
   def set_company
