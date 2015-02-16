@@ -22,7 +22,7 @@ class Ability
 
     can :read, Post do |post|
       company = post.company
-      company.is_public && company.is_published && (post.visibilities.blank? || post.visibility.value == 'public')
+      company.is_public? && company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')
     end
 
     return unless user
@@ -85,14 +85,10 @@ class Ability
     end
 
     can :read, Post do |post|
-      company = post.company
-      company.is_published && (post.visibilities.blank? || post.visibility.value == 'public')
+      (post.company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')) ||
+      (post.visibility.try(:value) == 'trusted' && trusted_reader?(user, post.company))
     end
-
-    can :read, Post do |post|
-      post.visibility.try(:value) == 'trusted' && trusted_reader?(user, post.company)
-    end
-
+    
   end
 
 private
