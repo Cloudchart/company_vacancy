@@ -71,7 +71,7 @@ MainComponent = React.createClass
                 blockKind={block.kind || block.identity_type} />
               <Hint 
                 content = { Hints[block.kind || block.identity_type] }
-                visible = { !@props.readOnly && !!Hints[block.kind || block.identity_type] } />
+                visible = { !@props.readOnly && block.owner_type == "Post" && !!Hints[block.kind || block.identity_type] } />
             </FieldWrapper>
           </section>
         </SortableListItem>
