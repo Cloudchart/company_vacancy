@@ -12,7 +12,6 @@ class Ability
     can :read, BlockIdentity
     can :read, Event
     can :read, Tag
-    can :read, Post
     can [:read, :accept], Interview
     can :read, Person
     can :read, Vacancy
@@ -20,6 +19,11 @@ class Ability
     can :read, Company, is_public: true
     can :read, Quote
     can [:preview, :read, :pull], CloudBlueprint::Chart, is_public: true
+
+    can :read, Post do |post|
+      company = post.company
+      (company.is_public || company.is_published) && post.visibility == 'public'
+    end
 
     return unless user
 

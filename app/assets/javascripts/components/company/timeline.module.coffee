@@ -90,7 +90,7 @@ Component = React.createClass
     
     setTimeout => 
       ModalActions.show(
-        <Post id={id} shouldDisplayViewMode={true} company_id={@props.company_id} readOnly={@props.readOnly} />,
+        <Post id={id} company_id={@props.company_id} cursor={Post.getCursor(@props.company_id)} readOnly={@props.readOnly} />,
         class_for_container: 'post'
         beforeHide: ->
           scrollTop = document.body.scrollTop

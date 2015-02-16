@@ -25,7 +25,7 @@ module.exports = GlobalState.createStore
     me = @cursor.items.cursor('me')
 
     GlobalState.fetch({ model: 'Viewer', relations: '' }).then (json) =>
-      @cursor.items.set('me', json.users[0]) unless me.deref()
+      @cursor.items.set('me', json.users[0]) if json.users && !me.deref()
 
     me
 

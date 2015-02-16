@@ -37,24 +37,31 @@ Post = React.createClass
 
   mixins: [GlobalState.mixin]
 
+  statics: 
+    getCursor: (company_id) ->
+      pins:   PinStore.cursor.items
+      flags:  GlobalState.cursor(['stores', 'companies', 'flags', company_id])
+
+
   # Component specifications
   #
   propTypes:
     id:                    React.PropTypes.string.isRequired
     company_id:            React.PropTypes.string.isRequired
     readOnly:              React.PropTypes.bool
-    shouldDisplayViewMode: React.PropTypes.bool
 
   getDefaultProps: ->
     cursor:
-      pins: PinStore.cursor.items
-    readOnly:              false
-    shouldDisplayViewMode: false
+      pins:   PinStore.cursor.items
+    readOnly: true
 
   getInitialState: ->
     _.extend @getStateFromStores(@props),
       readOnly: @props.readOnly
       titleFocused: false
+
+  onGlobalStateChange: ->
+    @setState(readOnly: @props.cursor.flags.get('is_read_only'))
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
@@ -74,8 +81,12 @@ Post = React.createClass
     else
       post: null
 
+
   # Helpers
   #
+  getViewMode: ->
+    GlobalState.cursor(['stores', 'companies', 'flags', @props.company_id]).get('is_read_only')
+
   getVisibilityOptions: ->
     public:  'Public'
     trusted: 'Trusted'
@@ -177,7 +188,7 @@ Post = React.createClass
           />
       }
       {
-        if @props.shouldDisplayViewMode
+        if !@props.cursor.flags.get('is_read_only')
           <Toggle
             checked     = { not @state.readOnly }
             customClass = "cc-toggle view-mode"
@@ -233,6 +244,7 @@ Post = React.createClass
   # Main render
   #
   render: ->
+    return null unless !_.isUndefined(@state.readOnly)
     return null unless @state.post
 
     <div ref="container" className="post-container">

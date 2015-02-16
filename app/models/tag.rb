@@ -19,6 +19,8 @@ class Tag < ActiveRecord::Base
   scope :acceptable, -> { where{ sift :acceptable } }
 
   scope :available_for_user, -> user do
+    return [] unless user.present?
+
     company_ids = user.companies.select(:uuid).joins(:roles).where{ roles.value.in ['owner', 'editor'] }
     post_ids = Post.select(:uuid).where{ owner_id.in company_ids }
 

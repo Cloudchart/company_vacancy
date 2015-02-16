@@ -102,5 +102,5 @@
   # Mount posts
   # 
   React.renderComponent(
-    Post({ id: data.id, company_id: data.company_id, shouldDisplayViewMode: true }), document.querySelector('body > main')
+    Post({ id: data.id, company_id: data.company_id, cursor: Post.getCursor(data.company_id) }), document.querySelector('body > main')
   )
