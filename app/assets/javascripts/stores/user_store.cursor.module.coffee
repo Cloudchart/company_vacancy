@@ -25,8 +25,9 @@ module.exports = GlobalState.createStore
   me: ->
     me = @cursor.items.cursor('me')
 
-    GlobalState.fetch(ViewerQuery).then (data) =>
-      @cursor.items.set('me', data) unless me.deref()
+    GlobalState.fetch(ViewerQuery).then (json) =>
+      console.log json.users
+      @cursor.items.set('me', json.users[0].uuid) unless me.deref()
 
     me
 
