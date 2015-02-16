@@ -104,7 +104,7 @@ State =
     onGlobalStateChangeWithGlobalStateCheck: ->
       return false if @__globalStateChangeTransactionId == LastUpdateId and UpdateInProgress
 
-      @onGlobalStateChangeWithoutGlobalStateCheck()
+      @onGlobalStateChangeWithoutGlobalStateCheck() if @isMounted()
 
       @__globalStateChangeTransactionId = LastUpdateId
 
@@ -113,7 +113,7 @@ State =
       @shouldComponentUpdateWithoutGlobalStateCheck = @shouldComponentUpdate || => true
       @shouldComponentUpdate = @shouldComponentUpdateWithGlobalStateCheck
 
-      @onGlobalStateChangeWithoutGlobalStateCheck = @onGlobalStateChange || => @setState({}) if @isMounted()
+      @onGlobalStateChangeWithoutGlobalStateCheck = @onGlobalStateChange || => @setState({})
       @onGlobalStateChange = @onGlobalStateChangeWithGlobalStateCheck
 
 
