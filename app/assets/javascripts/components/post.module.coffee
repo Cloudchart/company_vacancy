@@ -244,7 +244,6 @@ Post = React.createClass
   # Main render
   #
   render: ->
-    return null unless !_.isUndefined(@state.readOnly)
     return null unless @state.post
 
     <div ref="container" className="post-container">

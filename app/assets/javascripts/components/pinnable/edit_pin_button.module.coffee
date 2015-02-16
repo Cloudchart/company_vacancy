@@ -44,8 +44,9 @@ module.exports = React.createClass
 
   componentWillMount: ->
     GlobalState.fetch(@getQuery('system_roles')).then =>
-      @setState
-        loaders: @state.loaders.set('system_roles', true)
+      setTimeout =>
+        @setState
+          loaders: @state.loaders.set('system_roles', true)
 
 
   isLoaded: ->
