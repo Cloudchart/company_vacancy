@@ -51,6 +51,12 @@ module.exports = React.createClass
     @cursor.pinboard.deref(false)
 
 
+  handleClick: (event) ->
+    event.preventDefault()
+
+    window.location = @cursor.pinboard.get('url')
+
+
   componentWillMount: ->
     @cursor =
       pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
@@ -119,7 +125,7 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <section className="pinboard cloud-card">
+    <section className="pinboard cloud-card link" onClick={ @handleClick }>
       { @renderHeader() }
       { @renderDescription() }
       { @renderFooter() }

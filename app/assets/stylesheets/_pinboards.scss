@@ -4,7 +4,7 @@ main.pinboards {
   padding: 0;
 }
 
-
+article.pinboard,
 article.pinboards {
   @include display(flex);
   @include justify-content(center);
@@ -31,4 +31,47 @@ article.pinboards {
 
   }
 
+}
+
+
+form.pinboard-settings {
+  width: 100%;
+
+  > fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+
+    & ~ fieldset {
+      margin-top: 30px;
+    }
+
+    > header {
+      margin-bottom: 30px;
+    }
+
+    > label.full {
+      display: block;
+
+      & ~ label.full {
+        margin-top: 20px;
+      }
+
+      input {
+        border: none;
+        border-bottom: 2px solid hsl(137, 54%, 50%);
+        font-size: 20px;
+        font-weight: 300;
+        outline: none;
+        padding: 10px;
+        width: 100%;
+
+        @include placeholder {
+          color: hsl(0, 0%, 73%);
+          font-size: 20px;
+          padding: 0;
+        }
+      }
+    }
+  }
 }

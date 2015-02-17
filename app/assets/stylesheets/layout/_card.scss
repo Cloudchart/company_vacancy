@@ -1,3 +1,13 @@
+header.cloud {
+  @include align-items(center);
+  @include display(flex);
+
+  font-size: 36px;
+  font-weight: 100;
+  line-height: 32px;
+}
+
+
 .cloud-card {
   $basic-space: 20px;
 

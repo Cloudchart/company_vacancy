@@ -77,6 +77,8 @@ module.exports = React.createClass
     return unless Fields.some (name) =>
       @state.attributes.get(name) isnt @cursor.pinboard.get(name)
 
+    @save()
+
 
   handleKeyDown: (event) ->
     return unless event.key == 'Enter'
@@ -146,7 +148,11 @@ module.exports = React.createClass
 
   renderInputs: ->
     <fieldset>
-      <label>
+      <header className="cloud">
+        Pinboard Settings
+      </header>
+
+      <label className="full">
         <input
           type        = "text"
           value       = { @state.attributes.get('title', '') }
@@ -156,8 +162,8 @@ module.exports = React.createClass
           onKeyDown   = { @handleKeyDown }
         />
       </label>
-      <br />
-      <label>
+
+      <label className="full">
         <input
           type        = "text"
           value       = { @state.attributes.get('description', '') }
@@ -210,11 +216,10 @@ module.exports = React.createClass
   render: ->
     return null unless @cursor.pinboard.deref(false)
 
-    <form onSubmit={ @handleSubmit } className="pinboard-settings">
-      { @renderHeader('Pinboard Settings') }
-      { @renderInputs() }
-      { @renderAccessRights() }
-      { @renderHeader('Security') }
-      { @renderPeople() }
-      { @renderFooter() }
-    </form>
+    <section className="cloud-columns">
+      <section className="cloud-column">
+        <form onSubmit={ @handleSubmit } className="pinboard-settings">
+          { @renderInputs() }
+        </form>
+      </section>
+    </section>
