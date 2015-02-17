@@ -76,7 +76,7 @@ module.exports = React.createClass
 
           delta           = bounds.top - prevNodeBounds.bottom
 
-          node.style.top  = '-' + delta + 'px'
+          node.style.top  = '-' + delta + 'px' unless delta == 0
 
 
   gatherPins: ->
