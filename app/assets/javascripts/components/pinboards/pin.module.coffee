@@ -79,10 +79,11 @@ module.exports = React.createClass
   renderComment: ->
     return unless @cursor.pin.deref(false)
 
-    <div className="comment">
+    <footer>
       <section className="paragraph" dangerouslySetInnerHTML={ __html: @cursor.pin.get('content') } />
+      <i className="fa fa-share" />
       <Human type="user" uuid={@cursor.pin.get('user_id')} />
-    </div>
+    </footer>
 
 
   render: ->

@@ -1,0 +1,41 @@
+// Pin Card Footer
+//
+@mixin pin-card-footer {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-wrap(wrap);
+
+  background-color: hsl(0, 0%, 94%);
+  margin: 20px -20px -20px;
+  padding: 15px 20px 15px;
+
+  .paragraph {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding-left: 40px;
+    white-space: pre-wrap;
+    width: 100%;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  i {
+    color: hsl(0, 0%, 100%);
+    font-size: 20px;
+    width: 40px;
+  }
+
+}
+
+
+// Pin Card
+//
+main.pinboards .pin.cloud-card {
+
+  > footer {
+    @include pin-card-footer;
+  }
+
+}

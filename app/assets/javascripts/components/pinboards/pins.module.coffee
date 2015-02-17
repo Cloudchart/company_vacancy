@@ -8,6 +8,7 @@ GlobalState = require('global_state/state')
 #
 PinboardStore = require('stores/pinboard_store')
 PinStore      = require('stores/pin_store')
+UserStore     = require('stores/user_store.cursor')
 
 
 # Components
@@ -43,13 +44,39 @@ module.exports = React.createClass
           }
         """
 
+      me: ->
+        """
+          Viewer
+        """
+
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }).then =>
+    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid })
+    GlobalState.fetch(@getQuery('me'))
 
 
   isLoaded: ->
-    @cursor.pinboard.deref(false)
+    @cursor.pinboard.deref(false) and @cursor.me.deref(false)
+
+
+  repositionNodes: ->
+    return unless parentNode = @getDOMNode()
+
+    Immutable.Seq(parentNode.childNodes)
+      .groupBy (node) ->
+        node.getBoundingClientRect().left
+
+      .forEach (nodes) ->
+        nodes.forEach (node, i) ->
+          return if i == 0
+
+          bounds          = node.getBoundingClientRect()
+          prevNode        = nodes.get(i - 1)
+          prevNodeBounds  = prevNode.getBoundingClientRect()
+
+          delta           = bounds.top - prevNodeBounds.bottom
+
+          node.style.top  = '-' + delta + 'px'
 
 
   gatherPins: ->
@@ -63,8 +90,13 @@ module.exports = React.createClass
     @cursor =
       pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
       pins:     PinStore.cursor.items.filterCursor (item) => item.get('pinboard_id') is @props.uuid
+      me:       UserStore.me()
 
     @fetch() unless @isLoaded()
+
+
+  componentDidUpdate: ->
+    @repositionNodes()
 
 
   getDefaultProps: ->
