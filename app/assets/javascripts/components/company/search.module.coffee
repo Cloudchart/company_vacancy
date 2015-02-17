@@ -21,12 +21,14 @@ CompanySearch = React.createClass
     query: ''
 
   getInitialState: ->
-    query: @props.query
+    query: @props.query || location.hash.substr(1) || ''
 
 
   # Helpers
   #
   search: ->
+    if @state.query
+      location.hash = "#{@state.query}"
     CompanyStore.search(@state.query)
 
 
