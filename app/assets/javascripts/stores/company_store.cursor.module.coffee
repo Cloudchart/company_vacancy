@@ -37,4 +37,7 @@ module.exports =
 
   search: (query) ->
     syncApi.search(query).then (json) =>
-      GlobalState.cursor(['stores', 'companies', Immutable.Seq(json.companies)])
+      ItemsCursor.transaction ->
+        ItemsCursor.clear()
+        Immutable.Seq(json.companies).forEach (company) =>
+          ItemsCursor.set(company.uuid, company)

@@ -10,8 +10,7 @@ Field         = require('components/form/field')
 CompanySearch = React.createClass
 
   displayName: 'CompanySearch'
-
-  mixins: [GlobalState.mixin]
+  
 
   # Component specifications
   #
@@ -25,13 +24,25 @@ CompanySearch = React.createClass
     query: @props.query
 
 
+  # Helpers
+  #
+  search: ->
+    CompanyStore.search(@state.query)
+
+
   # Handlers
   #
   handleSearch: (query) ->
-    CompanyStore.search(query)
+    @search(query)
 
-  handleChange: (query) ->
-    @setState(query: query)
+  handleChange: (event) ->
+    @setState(query: event.target.value)
+
+
+  # Lifecycle methods
+  #
+  componentDidMount: ->
+    @search(@state.query)
 
 
   render: ->

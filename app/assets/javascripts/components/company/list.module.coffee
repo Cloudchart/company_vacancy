@@ -32,25 +32,25 @@ CompanyList = React.createClass
 
   # Renderers
   #
-  renderCounter: ->
-    <div className="counter">
+  renderHeader: ->
+    <header>
       <h1>{ @state.companies.size } companies</h1>
-    </div>
+    </header>
 
   renderCompanies: ->
-    @state.companies.map (company) ->
+    result = @state.companies.map (company) ->
       <CompanyPreview 
         key  = { company.get('uuid') }
         uuid = { company.get('uuid') } />
 
 
   render: ->
-    <li className="companies-search">
-      { @renderCounter() }
-      <div className="result">
-        { @renderCompanies() }
+    <section className="companies-list">
+      { @renderHeader() }
+      <div>
+        { @renderCompanies().toArray() }
       </div>
-    </li>
+    </section>
 
 
 module.exports = CompanyList

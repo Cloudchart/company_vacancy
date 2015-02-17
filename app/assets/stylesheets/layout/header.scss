@@ -73,7 +73,8 @@ $header-button-height: 50px - $header-padding * 2;
 
     input {
       font-size: 15px;
-      height: 26px;
+      height: 27px;
+      padding: 3px 8px;
 
       @include placeholder {
         color: $header-search-placeholder-color;

@@ -2,7 +2,6 @@
 
 CompanyStore  = require('stores/company_store.cursor')
 PersonStore   = require('stores/person_store.cursor')
-TagStore      = require('stores/tag_store.cursor')
 
 Avatar        = require('components/avatar')
 
@@ -20,10 +19,7 @@ CompanyList = React.createClass
     @getStateFromStores()
 
   getStateFromStores: ->
-    companies: @props.cursor.companies.deref(Immutable.Seq())
-
-  onGlobalStateChange: ->
-    @setState  @getStateFromStores()
+    company: CompanyStore.cursor.items.get(@props.uuid)
 
   # Helpers
   #
@@ -32,52 +28,49 @@ CompanyList = React.createClass
 
   # Renderers
   #
-  renderCompanies: ->
-    @state.companies.map (company) ->
-      <CompanyPreview 
-        uuid = { company.get('uuid') } />
-
   renderTags: ->
     null
 
 
   render: ->
+    return null if !@state.company
+
     company = @state.company
 
-    <div className="company-preview">
+    <article className="company-preview">
       <a href="" className="company-preview-link">
         <header>
           <Avatar 
             avatarURL = { company.get('logotype_url') }
             value     = { company.get('name') } />
         </header>
-        <section class="middle">
-          <div class="left">
-            <div class="name">
+        <section className="middle">
+          <div className="left">
+            <div className="name">
               { company.get("name") }
             </div>
-            <div class="description">
+            <div className="description">
               { company.get("description") }
             </div>
           </div>
-          <div class="right">
-            <div class="size">
-              <div class="vacancies">
+          <div className="right">
+            <div className="size">
+              <div className="vacancies">
                 <span>0</span>
-                <i class="fa fa-male"></i>
+                <i className="fa fa-male"></i>
               </div>
-              <div class="people">
+              <div className="people">
                 <span>{ @getPersonCount() }</span>
-                <i class="fa fa-male"></i>
+                <i className="fa fa-male"></i>
               </div>
             </div>
           </div>
         </section>
-        <section class="bottom">
+        <footer>
           <p> { @renderTags() } </p>
-        </section>
+        </footer>
       </a>
-    </div>
+    </article>
 
 
 module.exports = CompanyList
