@@ -46,23 +46,20 @@ module CloudProfile
     # Registration form
     #
     def new
-      if params[:invite].split(' ').length == 12
-        redirect_to cloud_profile.signup_path(invite: Cloudchart::RFC1751.decode(params[:invite]))
-      else
+      if (params[:invite] && !current_user.present?)
+        invite = Cloudchart::RFC1751.decode(params[:invite].split('-').join(' '))
 
-        if (params[:invite] && !current_user.present?)
-          store_return_path if params[:return_to].present? || !return_path_stored?
+        store_return_path if params[:return_to].present? || !return_path_stored?
 
-          user = User.new(full_name: "some", invite: params[:invite])
+        user = User.new(full_name: "some", invite: invite)
 
-          if user.invite.present?
-            pagescript_params(invite: params[:invite], email: user.invite.data.try(:[], :email), full_name: user.invite.data.try(:[], :full_name))
-          else
-            redirect_to main_app.root_path
-          end
+        if user.invite.present?
+          pagescript_params(invite: invite, email: user.invite.data.try(:[], :email), full_name: user.invite.data.try(:[], :full_name))
         else
           redirect_to main_app.root_path
         end
+      else
+        redirect_to main_app.root_path
       end
     end
     
