@@ -2,7 +2,7 @@ class AdminAbility
   include CanCan::Ability
 
   def initialize(user)
-    if user && user.is_admin?
+    if user && user.admin?
       can :access, :rails_admin
       can :dashboard
 
@@ -12,10 +12,6 @@ class AdminAbility
       can [:read, :create], Pinboard
 
       can :manage, [Feature, Interview, Page, Tag, Token]
-
-      # can :update, User do |u|
-      #   !u.is_admin?
-      # end
 
       can [:update, :destroy], Pinboard do |pinboard|
         pinboard.user_id.blank?

@@ -15,13 +15,13 @@ module HelperMethods
 
   def guest_user
     raise "Couldn't find guest user. Please run rake db:seed." unless
-      guest_user = CloudProfile::Email.find_by(address: ENV['GUEST_EMAIL']).try(:user)
-      
+      guest_user = Role.find_by(value: :guest).try(:user)
+
     guest_user
   end
 
   def user_authenticated?
-    warden.authenticated?(:user)
+    warden.authenticated?(:user) && !warden.user(:user).guest?
   end
 
   def current_social_network

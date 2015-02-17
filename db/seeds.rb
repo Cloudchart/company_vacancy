@@ -1,13 +1,11 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 
-if ENV['GUEST_EMAIL'] && CloudProfile::Email.find_by(address: ENV['GUEST_EMAIL']).blank?
-  guest = User.create!(
-    first_name: 'Guest',
-    last_name: 'Guest',
-    emails: [CloudProfile::Email.new(address: ENV['GUEST_EMAIL'])],
-    password: 'theleagueofflavour'
-  )
-
+# Guest user
+# 
+unless Role.find_by(value: :guest).try(:user)
+  guest = User.new(first_name: 'Guest', last_name: 'Guest')
+  guest.save(validate: false)
+  Role.new(value: :guest, user: guest).save(validate: false)
   puts 'Guest user created'
 end
