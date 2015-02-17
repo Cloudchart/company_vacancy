@@ -17,22 +17,41 @@ CompanyList = React.createClass
   propTypes:
     uuid: React.PropTypes.string.isRequired
 
+  getDefaultProps: ->
+    cursor:
+      people:   PersonStore.cursor.items
+      tags:     TagStore.cursor.items
+      taggings: TaggingStore.cursor.items
+
   getInitialState: ->
     @getStateFromStores()
 
   getStateFromStores: ->
-    company: CompanyStore.cursor.items.get(@props.uuid)
+    company:      CompanyStore.cursor.items.get(@props.uuid)
+    personCount:  PersonStore.findByCompany(@props.uuid).size || 0
+    taggingIds:   @getTaggingIdSet()       
+
 
   # Helpers
   #
-  getPersonCount: ->
-    PersonStore.findByCompany(@props.uuid).size
+  taggingDeref: ->
+    @props.cursor.taggings.deref(Immutable.Seq())
+
+  getTaggingIdSet: ->
+    @taggingDeref()
+      .filter (tagging) => tagging.get('taggable_type') is 'Company' && tagging.get('taggable_id') is @props.uuid
+      .map (tagging) -> tagging.get('tag_id')
+      .toSet()
+
 
   # Renderers
   #
   renderTags: ->
-    null
-    # @state.company.get('tag_names')
+    @props.cursor.tags
+      .filter (tag) => @state.taggingIds.contains(tag.get('uuid'))
+      .map (tag) -> "##{tag.get('name')}"
+      .sort (tagA, tagB) -> tagA.localeCompare(tagB)
+      .join(", ")
 
 
   render: ->
@@ -63,7 +82,7 @@ CompanyList = React.createClass
                 <i className="fa fa-male"></i>
               </div>
               <div className="people">
-                <span>{ @getPersonCount() }</span>
+                <span>{ @state.personCount }</span>
                 <i className="fa fa-male"></i>
               </div>
             </div>

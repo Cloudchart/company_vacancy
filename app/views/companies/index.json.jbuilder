@@ -11,9 +11,9 @@ json.people do
 end
 
 json.taggings do
-  json.partial! 'tagging', collection: @taggings, as: :tagging
+  json.partial! 'tagging', collection: taggings, as: :tagging
 end
 
 json.tags do
-  json.partial! 'tag', collection: @tags, as: :tag
+  json.partial! 'tag', collection: tags, as: :tag
 end
