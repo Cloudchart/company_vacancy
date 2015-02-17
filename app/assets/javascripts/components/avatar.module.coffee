@@ -17,7 +17,7 @@ module.exports = React.createClass
     backgroundColor = colors.colors[colors.colorIndex(letters)]
     
     style =
-      backgroundColor:  if @props.avatarURL then @props.backgroundColor || backgroundColor else backgroundColor
+      backgroundColor:  if @props.avatarURL then @props.backgroundColor || 'transparent' else backgroundColor
       backgroundImage:  if @props.avatarURL then "url(#{@props.avatarURL})" else "none"
     
     classes = cx(

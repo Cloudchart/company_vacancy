@@ -3,11 +3,14 @@
 module.exports =
 
   search: (query) ->
+    query_param = if query then "?query=#{query}" else ""
+
     Promise.resolve $.ajax
-      url:        "/companies/search?query=#{query}"
+      url:        "/companies/search#{query_param}"
       type:       "GET"
       dataType:   "json"
       cache:      false
+
   
   fetch: (key, done, fail) ->
     $.ajax

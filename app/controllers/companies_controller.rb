@@ -25,7 +25,7 @@ class CompaniesController < ApplicationController
   def search
     respond_to do |format|
       format.html { render :index }
-      format.json { render json: { companies: @companies } }
+      format.json { render :index }
     end
   end
 
