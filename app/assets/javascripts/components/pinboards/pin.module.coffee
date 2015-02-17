@@ -12,7 +12,7 @@ UserStore = require('stores/user_store.cursor')
 
 # Components
 #
-UserComponent = require('components/pinboards/user')
+Human = require('components/human')
 
 
 # Utils
@@ -67,29 +67,31 @@ module.exports = React.createClass
     @fetch() unless @isLoaded()
 
 
-  renderInsightAuthor: (author_id) ->
-    <UserComponent uuid={ author_id } />
+  renderInsight: ->
+    return unless insight = PinStore.cursor.items.cursor(@cursor.pin.get('parent_id')).deref(false)
+
+    <div className="insight">
+      <section className="paragraph" dangerouslySetInnerHTML={ __html: insight.get('content') } />
+      <Human type="user" uuid={ insight.get('user_id') } />
+    </div>
 
 
-  renderInsight: (pin) ->
-    return null unless pin.deref(false) or pin.get('content')
+  renderComment: ->
+    return unless @cursor.pin.deref(false)
 
-    isMine = pin.get('user_id') == @cursor.me.get('uuid')
-
-    classList = cx
-      insight:  'true'
-      mine:     isMine
-
-    <div className={ classList }>
-      <p dangerouslySetInnerHTML={ __html: pin.get('content') } />
-      { @renderInsightAuthor(pin.get('user_id')) unless isMine }
+    <div className="comment">
+      <section className="paragraph" dangerouslySetInnerHTML={ __html: @cursor.pin.get('content') } />
+      <Human type="user" uuid={@cursor.pin.get('user_id')} />
     </div>
 
 
   render: ->
     return null unless @isLoaded()
 
-    <section className="pin">
-      { @renderInsight(@cursor.pin) }
-      { @renderInsight(PinStore.cursor.items.cursor(@cursor.pin.get('parent_id')) ) }
+    <section className="pin cloud-card">
+      <header className="cloud bottom-line">
+        Pinnable preview
+      </header>
+      { @renderInsight() }
+      { @renderComment() }
     </section>

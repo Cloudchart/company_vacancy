@@ -57,7 +57,6 @@ module.exports = React.createClass
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
       .valueSeq()
-      .groupBy (pin, i) => i % @props.columns
 
 
   componentWillMount: ->
@@ -73,26 +72,19 @@ module.exports = React.createClass
 
 
   renderPin: (pin) ->
-    <li key={ pin.get('uuid') }>
+    <section className="cloud-column" key={ pin.get('uuid') }>
       <PinComponent key={ pin.get('uuid') } uuid={ pin.get('uuid') } />
-    </li>
-
-
-
-  renderPinsGroup: (pins, index) ->
-    <ul key={ index }>
-      { pins.map(@renderPin).toArray() }
-    </ul>
+    </section>
 
 
 
   renderPins: ->
-    @gatherPins().map(@renderPinsGroup)
+    @gatherPins().map(@renderPin)
 
 
   render: ->
     return null unless @isLoaded()
 
-    <section className="list">
+    <section className="cloud-columns cloud-columns-flex">
       { @renderPins().toArray() }
     </section>

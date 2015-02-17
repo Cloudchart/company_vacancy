@@ -37,6 +37,10 @@ header.cloud {
     margin-top: $basic-space - 4px;
   }
 
+  > section.human {
+    margin-top: 10px;
+  }
+
 
   .human {
     @include align-items(center);
