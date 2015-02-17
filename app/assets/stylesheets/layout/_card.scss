@@ -1,0 +1,78 @@
+.cloud-card {
+  $basic-space: 20px;
+
+  background-color: hsl(0, 100%, 100%);
+  padding: $basic-space;
+
+
+  &.link {
+    cursor: pointer;
+  }
+
+
+  > header {
+    @include align-items(center);
+    @include display(flex);
+
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 16px;
+  }
+
+
+  > section.paragraph {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 23px;
+    margin-top: $basic-space - 4px;
+  }
+
+  .spacer {
+    @include flex(1);
+  }
+
+  ul.counters {
+    @include align-items(center);
+    @include display(flex);
+
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    > li {
+
+      color: hsl(0, 0%, 93%);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 12px;
+
+      i {
+        background-color: hsl(0, 0%, 93%);
+        color: hsl(0, 100%, 100%);
+        border-radius: 50%;
+        height: 24px;
+        line-height: 24px;
+        margin-left: 6px;
+        text-align: center;
+        width: 24px;
+      }
+    }
+
+    > li ~ li {
+      margin-left: 12px;
+    }
+  }
+
+  .bottom-line {
+    border-bottom: 1px solid whitesmoke;
+    margin-bottom: $basic-space;
+    padding-bottom: $basic-space;
+  }
+
+  .top-line {
+    border-top: 1px solid whitesmoke;
+    margin-top: $basic-space;
+    padding-top: $basic-space;
+  }
+
+}

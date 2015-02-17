@@ -3,6 +3,7 @@ json.(pinboard, :title, :description, :position)
 json.(pinboard, :access_rights)
 json.(pinboard, :created_at, :updated_at)
 
+json.readers_count pinboard.readers.size
 json.pins_count pinboard.pins.size
 
 json.url main_app::pinboard_url(pinboard)

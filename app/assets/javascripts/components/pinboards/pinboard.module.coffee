@@ -76,6 +76,7 @@ module.exports = React.createClass
       <span className="title">
         { @cursor.pinboard.get('title') }
       </span>
+      <div className="spacer" />
       <span className="pinboard-access-rights">
         { @renderAccessRightsIcon() }
       </span>
@@ -83,8 +84,10 @@ module.exports = React.createClass
 
 
   renderDescription: ->
-    <section className="description">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    return unless description = @cursor.pinboard.get('description', false)
+
+    <section className="paragraph description">
+      { description }
     </section>
 
 
@@ -100,7 +103,7 @@ module.exports = React.createClass
 
       <div className="spacer" />
 
-      <ul>
+      <ul className="counters">
         <li>
           { @cursor.pinboard.get('readers_count') }
           <i className="fa fa-user" />
@@ -116,7 +119,7 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <section className="pinboard">
+    <section className="pinboard cloud-card">
       { @renderHeader() }
       { @renderDescription() }
       { @renderFooter() }

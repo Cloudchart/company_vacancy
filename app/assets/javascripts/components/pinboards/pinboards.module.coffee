@@ -58,11 +58,6 @@ module.exports = React.createClass
       .valueSeq()
 
 
-  handleClick: (pinboard, event) ->
-    event.preventDefault()
-    document.location = pinboard.get('url')
-
-
   componentWillMount: ->
     @cursor =
       pinboards: PinboardStore.cursor.items
@@ -75,20 +70,18 @@ module.exports = React.createClass
 
 
   renderPinboard: (pinboard) ->
-    <li key={ pinboard.get('uuid') } className="link" onClick={ @handleClick.bind(null, pinboard) }>
+    <section className="cloud-column" key={ pinboard.get('uuid') }>
       <PinboardComponent uuid={ pinboard.get('uuid') } />
-    </li>
+    </section>
 
 
   renderPinboards: ->
-    <ul>
-      { @gatherPinboards().map(@renderPinboard).toArray() }
-    </ul>
+    @gatherPinboards().map(@renderPinboard)
 
 
   render: ->
     return null unless @isLoaded()
 
-    <section className="cloud-columns">
-      { @renderPinboards() }
+    <section className="cloud-columns cloud-columns-flex">
+      { @renderPinboards().toArray() }
     </section>
