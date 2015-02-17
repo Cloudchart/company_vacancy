@@ -34,44 +34,97 @@ article.pinboards {
 }
 
 
+
+@mixin pinboard-settings-access-rights-item {
+  color: hsl(0, 0%, 85%);
+  cursor: pointer;
+  display: block;
+  font-size: 16px;
+  line-height: 15px;
+  position: relative;
+
+  input {
+    @include position(absolute, 0px null null 0px);
+    font-size: 0px;
+    opacity: 0;
+
+    &:checked ~ span {
+      color: hsl(0, 0%, 0%);
+    }
+  }
+
+  & ~ label {
+    margin-left: 20px;
+  }
+}
+
+
+@mixin pinboard-settings-bordered-input {
+  border: none;
+  border-bottom: 2px solid hsl(137, 54%, 50%);
+  font-size: 20px;
+  font-weight: 300;
+  outline: none;
+  padding: 10px;
+  width: 100%;
+
+  @include placeholder {
+    color: hsl(0, 0%, 73%);
+    font-size: 20px;
+    padding: 0;
+  }
+}
+
+
+
 form.pinboard-settings {
   width: 100%;
 
   > fieldset {
     border: none;
     margin: 0;
+    min-width: 100%;
     padding: 0;
 
-    & ~ fieldset {
-      margin-top: 30px;
-    }
-
     > header {
+      margin-top: 10px;
       margin-bottom: 30px;
     }
 
-    > label.full {
-      display: block;
+    &.settings {
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
 
-      & ~ label.full {
-        margin-top: 20px;
-      }
-
-      input {
-        border: none;
-        border-bottom: 2px solid hsl(137, 54%, 50%);
-        font-size: 20px;
-        font-weight: 300;
-        outline: none;
-        padding: 10px;
-        width: 100%;
-
-        @include placeholder {
-          color: hsl(0, 0%, 73%);
-          font-size: 20px;
-          padding: 0;
+        li:not(:first-child) {
+          margin-top: 20px;
         }
       }
     }
   }
+
+
+  fieldset.settings {
+
+    .name,
+    .description {
+      input {
+        @include pinboard-settings-bordered-input;
+      }
+    }
+
+    .access-rights {
+
+      @include align-items(center);
+      @include display(flex);
+
+      label {
+        @include pinboard-settings-access-rights-item;
+      }
+
+    }
+  }
+
+
 }

@@ -60,6 +60,9 @@ module.exports = React.createClass
 
 
   save: ->
+    return unless Fields.some (name) =>
+      @state.attributes.get(name) isnt @cursor.pinboard.get(name)
+
     PinboardStore.update(@props.uuid, @state.attributes.toJS())
 
 
@@ -73,10 +76,15 @@ module.exports = React.createClass
       attributes: @state.attributes.set(name, event.target.value)
 
 
-  handleBlur: (event) ->
-    return unless Fields.some (name) =>
-      @state.attributes.get(name) isnt @cursor.pinboard.get(name)
+  handleAccessRightsChange: (event) ->
+    @setState
+      attributes: @state.attributes.set('access_rights', event.target.value)
 
+    clearTimeout @__accessRightsSaveTimeout
+    @__accessRightsSaveTimeout = setTimeout @save, 250
+
+
+  handleBlur: (event) ->
     @save()
 
 
@@ -127,16 +135,62 @@ module.exports = React.createClass
     </header>
 
 
+  renderName: ->
+    <input
+      type        = "text"
+      value       = { @state.attributes.get('title', '') }
+      placeholder = "Please name the pinboard"
+      onChange    = { @handleChange.bind(null, 'title') }
+      onBlur      = { @handleBlur }
+      onKeyDown   = { @handleKeyDown }
+    />
+
+
+  renderDescription: ->
+    <input
+      type        = "text"
+      value       = { @state.attributes.get('description', '') }
+      placeholder = "Please describe the pinboard"
+      onChange    = { @handleChange.bind(null, 'description') }
+      onBlur      = { @handleBlur }
+      onKeyDown   = { @handleKeyDown }
+    />
+
+
+  renderInputs: ->
+    <fieldset className="settings">
+
+      <header className="cloud">
+        Pinboard Settings
+      </header>
+
+      <ul>
+        <li className="name">
+          { @renderName() }
+        </li>
+        <li className="description">
+          { @renderDescription() }
+        </li>
+        <li className="access-rights">
+          { AccessRights.map(@renderAccessRightsItem).toArray() }
+        </li>
+      </ul>
+
+    </fieldset>
+
+
   renderAccessRightsItem: (title, key) ->
     <label key={ key }>
       <input
         name      = "access_rights"
         type      = "radio"
         value     = { key }
-        onChange  = { @handleChange.bind(null, 'access_rights') }
+        onChange  = { @handleAccessRightsChange }
         checked   = { @state.attributes.get('access_rights') == key }
       />
-      { title }
+      <span>
+        { title }
+      </span>
     </label>
 
 
@@ -144,73 +198,6 @@ module.exports = React.createClass
     <fieldset>
       { AccessRights.map(@renderAccessRightsItem).toArray() }
     </fieldset>
-
-
-  renderInputs: ->
-    <fieldset>
-      <header className="cloud">
-        Pinboard Settings
-      </header>
-
-      <label className="full">
-        <input
-          type        = "text"
-          value       = { @state.attributes.get('title', '') }
-          placeholder = "Please name the pinboard"
-          onChange    = { @handleChange.bind(null, 'title') }
-          onBlur      = { @handleBlur }
-          onKeyDown   = { @handleKeyDown }
-        />
-      </label>
-
-      <label className="full">
-        <input
-          type        = "text"
-          value       = { @state.attributes.get('description', '') }
-          placeholder = "Please describe the pinboard"
-          onChange    = { @handleChange.bind(null, 'description') }
-          onBlur      = { @handleBlur }
-          onKeyDown   = { @handleKeyDown }
-        />
-      </label>
-    </fieldset>
-
-
-  renderOwner: ->
-    owner = UserStore.cursor.items.cursor(@cursor.pinboard.get('user_id'))
-
-    <tr>
-      <td>
-        { owner.get('full_name') }
-      </td>
-      <td>
-        Owner
-      </td>
-    </tr>
-
-
-  renderEditors: ->
-    people = @state.editors.concat(@state.readers).concat(@state.followers)
-
-    people
-      .map (user) =>
-        role = @state.roles.find (role) -> role.get('user_id') == user.get('uuid')
-        <UserRole key={ role.get('uuid') } user={ user } role={ role } />
-
-
-  renderPeople: ->
-    <table>
-      <tbody>
-        { @renderOwner() }
-        { @renderEditors().toArray() }
-      </tbody>
-    </table>
-
-
-  renderFooter: ->
-    <footer>
-      <button>Execute</button>
-    </footer>
 
 
   render: ->

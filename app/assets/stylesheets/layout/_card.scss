@@ -37,6 +37,39 @@ header.cloud {
     margin-top: $basic-space - 4px;
   }
 
+
+  .human {
+    @include align-items(center);
+    @include display(flex);
+
+    figure {
+      background-size: contain;
+      border-radius: 50%;
+      height: 50px;
+      margin-right: 10px;
+      width: 50px;
+    }
+
+    .credentials {
+      @include flex(1);
+
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1em;
+    }
+
+    p {
+      margin: 0;
+
+      &.occupation {
+        color: hsl(0, 0%, 53%);
+        font-size: 12px;
+        margin-top: 3px;
+      }
+    }
+  }
+
+
   .spacer {
     @include flex(1);
   }
