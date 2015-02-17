@@ -4,7 +4,7 @@ module CloudProfile
   class AuthenticationsController < ApplicationController
 
     def new
-      redirect_to main_app.root_path if current_user.present? 
+      redirect_to main_app.root_path if user_authenticated?
     end
 
     def create
@@ -27,5 +27,6 @@ module CloudProfile
       warden.logout(:user)
       redirect_to main_app.root_path
     end
+    
   end
 end
