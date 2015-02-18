@@ -7,7 +7,7 @@ module Sluggable
 
   module ClassMethods
     def find(*args)
-      return super if Cloudchart::Utils.is_uuid?(args.first)
+      return super if Cloudchart::Utils.uuid?(args.first)
       find_by(slug: args.first) || super
     end
   end
