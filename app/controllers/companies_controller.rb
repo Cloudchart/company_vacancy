@@ -10,7 +10,6 @@ class CompaniesController < ApplicationController
     :finance,
     :settings
   ]
-  before_action :set_companies, only: [:index, :search]
 
   load_and_authorize_resource
 
@@ -25,7 +24,10 @@ class CompaniesController < ApplicationController
   def search
     respond_to do |format|
       format.html { render :index }
-      format.json { render :index }
+      format.json { 
+        @companies = Company.search(params)
+        render :index 
+      }
     end
   end
 
@@ -180,10 +182,6 @@ private
 
   def find_company(relation)
     relation.find_by(slug: params[:id]) || relation.find(params[:id])
-  end
-
-  def set_companies
-    @companies = Company.search(params)
   end
 
   # Only allow a trusted parameter "white list" through.
