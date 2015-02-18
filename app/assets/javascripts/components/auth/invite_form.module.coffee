@@ -23,7 +23,9 @@ Component = React.createClass
   
   onContinueDone: (json) ->
     if json.state == 'register'
-      location.href = "/signup?invite=#{@state.invite}"     
+      invite = @state.invite.split(' ').join('-').toLowerCase()
+
+      location.href = "/signup?invite=#{invite}"     
   
   onContinueFail: (xhr) ->
     @setState({ errors: xhr.responseJSON.errors })
