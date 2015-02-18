@@ -20,7 +20,8 @@ Owners =
 #
 module.exports = React.createClass
 
-  displayName: 'Pin'
+  displayName: 'PinnablePost'
+
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
@@ -32,8 +33,15 @@ module.exports = React.createClass
       post: ->
         """
           Post {
-            owner,
-            blocks
+            company,
+            blocks {
+              quote,
+              picture,
+              paragraph,
+              block_identities {
+                identity
+              }
+            }
           }
         """
 
@@ -43,7 +51,7 @@ module.exports = React.createClass
 
 
   isLoaded: ->
-    @cursor.post.deref(false) and @cursor.blocks.count() > 0
+    @cursor.post.deref(false)
 
 
   gatherBlocks: ->
@@ -80,7 +88,7 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <article>
+    <article className="pinnable post-preview">
       { @renderOwner() }
       { @renderBlocks().toArray() }
     </article>

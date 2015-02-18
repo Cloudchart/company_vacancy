@@ -14,6 +14,7 @@ UserStore = require('stores/user_store.cursor')
 #
 Human           = require('components/human')
 PinnablePreview = require('components/pinnable/preview')
+PinnablePost    = require('components/pinnable/post')
 
 
 # Utils
@@ -37,6 +38,9 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            post {
+              #{PinnablePost.getQuery('post')}
+            },
             user,
             parent {
               user,
