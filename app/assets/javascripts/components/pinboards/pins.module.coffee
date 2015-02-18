@@ -35,7 +35,8 @@ module.exports = React.createClass
         """
           Pinboard {
             posts {
-              blocks,
+              blocks {
+              },
               owner
             },
             pins {

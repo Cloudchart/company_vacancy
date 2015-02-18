@@ -69,20 +69,12 @@ module.exports = React.createClass
     </section>
 
 
-  renderPinContent: ->
-    return unless @props.pin.get('content', false)
-
-    <section className="pin-content">
-      { @props.pin.get('content') }
-    </section>
-
-
   renderBlock: (block) ->
     <span key={ block.get('uuid') }>{ block.get('identity_type') }</span>
 
 
   renderBlocks: ->
-    @gatherBlocks().map(@renderBlock).toArray()
+    @gatherBlocks().map(@renderBlock)
 
 
   render: ->
@@ -90,6 +82,5 @@ module.exports = React.createClass
 
     <article>
       { @renderOwner() }
-      { @renderPinContent() }
-      { @renderBlocks() }
+      { @renderBlocks().toArray() }
     </article>
