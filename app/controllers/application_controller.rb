@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   before_filter :store_location
   
   rescue_from CanCan::AccessDenied do |exception|
-    if current_user
+    if user_authenticated?
       redirect_to main_app.root_path, alert: exception.message
     else
       redirect_to cloud_profile.login_path
@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
 private
 
   def store_location
-    return if current_user || !request.get? || request.xhr? ||
+    return if user_authenticated? || !request.get? || request.xhr? ||
       "#{controller_name}##{action_name}" =~ /authentications#new|users#new|passwords#reset/
 
     session[:previous_path] = request.fullpath

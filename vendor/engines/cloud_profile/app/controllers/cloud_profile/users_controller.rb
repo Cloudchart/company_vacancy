@@ -46,7 +46,7 @@ module CloudProfile
     # Registration form
     #
     def new
-      if (params[:invite] && !current_user.present?)
+      if (params[:invite] && !user_authenticated?)
         store_return_path if params[:return_to].present? || !return_path_stored?
 
         user = User.new(full_name: "some", invite: params[:invite])

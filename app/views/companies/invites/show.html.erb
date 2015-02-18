@@ -15,7 +15,7 @@
     <%= link_to @company.name, company_path(@company) %>
   </div>
 
-  <% if current_user %>
+  <% if user_authenticated? %>
     <p>
       If you want to join as <%= t("roles.#{@token.data[:role]}") %>, please accept this invitation.
     </p>
