@@ -21,13 +21,14 @@ CompanyList = React.createClass
       companies: CompanyStore.cursor.items
 
   getInitialState: ->
-    @getStateFromStores()
+    _.extend @getStateFromStores(),
+      stateLoaded: false
 
   getStateFromStores: ->
     companies: @props.cursor.companies.deref(Immutable.Seq())
 
   onGlobalStateChange: ->
-    @setState  @getStateFromStores()
+    @setState  _.extend @getStateFromStores(), stateLoaded: true
 
 
   # Renderers
@@ -45,7 +46,7 @@ CompanyList = React.createClass
 
 
   render: ->
-    return null if @state.companies.size == 0
+    return null if @state.companies.size == 0 && !@state.stateLoaded
 
     <section className="companies-list">
       { @renderHeader() }
