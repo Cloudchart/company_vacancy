@@ -11,7 +11,8 @@ Component = React.createClass
 
 
   onClick: (event) ->
-    ModalStack.hide()
+    # ModalStack.hide()
+    location.href = '/'
 
 
   render: ->
