@@ -45,6 +45,8 @@ CompanyList = React.createClass
 
 
   render: ->
+    return null if @state.companies.size == 0
+
     <section className="companies-list">
       { @renderHeader() }
       <div>

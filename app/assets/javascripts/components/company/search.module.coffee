@@ -29,6 +29,9 @@ CompanySearch = React.createClass
   search: ->
     if @state.query
       location.hash = "#{@state.query}"
+    else
+      location.hash = ""
+
     CompanyStore.search(@state.query)
 
 
