@@ -10,29 +10,43 @@ article.pinboards {
   @include justify-content(center);
 }
 
-.pinboard.cloud-card {
 
+@mixin pinboard-card-header {
+  @include align-items(center);
+  @include display(flex);
+  @include justify-content(space-between);
+
+  margin-top: 0;
+
+  > i {
+    color: hsl(0, 0%, 93%);
+    font-size: 15px;
+  }
+}
+
+
+@mixin pinboard-card-footer {
+  @include align-items(center);
+  @include display(flex);
+  @include justify-content(space-between);
+
+  border-top: $card-hr;
+  padding-top: $card-basic-space;
+}
+
+
+main.pinboards .pinboard.cloud-card {
 
   > header {
-    i {
-      color: hsl(0, 0%, 93%);
-      font-size: 15px;
-      line-height: 13px;
-    }
+    @include pinboard-card-header;
   }
 
 
   > footer {
-    @include align-items(center);
-    @include display(flex);
-
-    margin-bottom: -5px;
-    padding-top: 15px;
-
+    @include pinboard-card-footer;
   }
 
 }
-
 
 
 @mixin pinboard-settings-access-rights-item {

@@ -79,35 +79,22 @@ module.exports = React.createClass
 
   renderHeader: ->
     <header>
-      <span className="title">
-        { @cursor.pinboard.get('title') }
-      </span>
-      <div className="spacer" />
-      <span className="pinboard-access-rights">
-        { @renderAccessRightsIcon() }
-      </span>
+      { @cursor.pinboard.get('title') }
+      { @renderAccessRightsIcon() }
     </header>
 
 
   renderDescription: ->
     return unless description = @cursor.pinboard.get('description', false)
 
-    <section className="paragraph description">
+    <section className="paragraph">
       { description }
     </section>
 
 
-  renderOwner: ->
-    <Human type="user" uuid={ @cursor.pinboard.get('user_id') } />
-
-
-
   renderFooter: ->
-    <footer className="top-line">
-
-      { @renderOwner() }
-
-      <div className="spacer" />
+    <footer>
+      <Human type="user" uuid={ @cursor.pinboard.get('user_id') } />
 
       <ul className="counters">
         <li>

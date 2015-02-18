@@ -1,148 +1,160 @@
-header.cloud {
-  @include align-items(center);
-  @include display(flex);
+$card-basic-space: 20px;
+$card-hr: 1px solid whitesmoke;
 
-  font-size: 36px;
-  font-weight: 100;
-  line-height: 32px;
+
+// Header
+//
+@mixin cloud-card-header {
+  font-size: 20px;
+  font-weight: 600;
 }
 
 
+// Paragraph
+//
+@mixin cloud-card-paragraph {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.4em;
+  margin-bottom: 0;
+}
+
+
+// Quote
+//
+@mixin cloud-card-quote {
+  font-size: 20px;
+  font-weight: 100;
+  line-height: 1.4em;
+  margin-bottom: 0;
+}
+
+
+// Human
+//
+@mixin cloud-card-human {
+  @include align-items(center);
+  @include display(flex);
+
+  figure {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 50%;
+    height: 50px;
+    margin-right: 10px;
+    position: relative;
+    width: 50px;
+
+    figcaption {
+      @include position(absolute, 50% null null 0);
+
+      color: hsl(0, 0%, 100%);
+      font-size: 25px;
+      font-weight: 300;
+      line-height: 25px;
+      margin-top: -12px;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  .credentials {
+    @include flex(1);
+
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1em;
+  }
+
+  p {
+    margin: 0;
+
+    &.occupation {
+      color: hsl(0, 0%, 53%);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+  }
+}
+
+
+// Counters
+//
+@mixin cloud-card-counters {
+  @include align-items(center);
+  @include display(flex);
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  > li {
+
+    color: hsl(0, 0%, 93%);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 12px;
+
+    i {
+      background-color: hsl(0, 0%, 93%);
+      color: hsl(0, 100%, 100%);
+      border-radius: 50%;
+      height: 24px;
+      line-height: 24px;
+      margin-left: 6px;
+      text-align: center;
+      width: 24px;
+    }
+  }
+
+  > li ~ li {
+    margin-left: 12px;
+  }
+}
+
+
+// Cloud Card
+//
 .cloud-card {
-  $basic-space: 20px;
+  background-color: white;
+  padding: $card-basic-space;
 
-  background-color: hsl(0, 100%, 100%);
-  padding: $basic-space / 2 $basic-space;
+  > header,
+  > footer,
+  > section {
 
+    margin-top: $card-basic-space;
+
+  }
+
+  > *:nth-child(1) {
+    margin-top: - $card-basic-space;
+  }
 
   &.link {
     cursor: pointer;
   }
 
 
-  > header,
-  > section,
-  > footer {
-    padding: $basic-space / 2 0;
-  }
-
-
   > header {
-    @include align-items(center);
-    @include display(flex);
-
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 16px;
+    @include cloud-card-header;
   }
 
-
-  section.paragraph {
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 23px;
-    padding: $basic-space / 2 0;
+  .paragraph {
+    @include cloud-card-paragraph;
   }
 
-
-  section.human {
-    margin-top: 5px;
+  .quote {
+    @include cloud-card-quote;
   }
-
 
   .human {
-    @include align-items(center);
-    @include display(flex);
-
-    figure {
-      background-position: center center;
-      background-repeat: no-repeat;
-      background-size: cover;
-      border-radius: 50%;
-      height: 50px;
-      margin-right: 10px;
-      position: relative;
-      width: 50px;
-
-      figcaption {
-        @include position(absolute, 50% null null 0);
-
-        color: hsl(0, 0%, 100%);
-        font-size: 25px;
-        font-weight: 300;
-        line-height: 25px;
-        margin-top: -12px;
-        text-align: center;
-        width: 100%;
-      }
-    }
-
-    .credentials {
-      @include flex(1);
-
-      font-size: 16px;
-      font-weight: 300;
-      line-height: 1em;
-    }
-
-    p {
-      margin: 0;
-
-      &.occupation {
-        color: hsl(0, 0%, 53%);
-        font-size: 12px;
-        margin-top: 3px;
-      }
-    }
+    @include cloud-card-human;
   }
 
-
-  .spacer {
-    @include flex(1);
-  }
 
   ul.counters {
-    @include align-items(center);
-    @include display(flex);
-
-    list-style: none;
-    margin: 0;
-    padding: 0;
-
-    > li {
-
-      color: hsl(0, 0%, 93%);
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 12px;
-
-      i {
-        background-color: hsl(0, 0%, 93%);
-        color: hsl(0, 100%, 100%);
-        border-radius: 50%;
-        height: 24px;
-        line-height: 24px;
-        margin-left: 6px;
-        text-align: center;
-        width: 24px;
-      }
-    }
-
-    > li ~ li {
-      margin-left: 12px;
-    }
+    @include cloud-card-counters;
   }
-
-  .bottom-line {
-    border-bottom: 1px solid whitesmoke;
-    margin-bottom: $basic-space / 2;
-    padding-bottom: $basic-space / 2;
-  }
-
-  .top-line {
-    border-top: 1px solid whitesmoke;
-    margin-top: $basic-space / 2;
-    padding-top: $basic-space / 2;
-  }
-
 }

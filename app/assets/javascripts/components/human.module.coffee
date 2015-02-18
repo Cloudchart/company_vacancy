@@ -61,7 +61,7 @@ module.exports = React.createClass
 
 
   renderOccupation: ->
-    return null unless occupation = @cursor.get('occupation', 'Occupation')
+    return null unless occupation = @cursor.get('occupation', false)
 
     <p className="occupation">{ occupation }</p>
 

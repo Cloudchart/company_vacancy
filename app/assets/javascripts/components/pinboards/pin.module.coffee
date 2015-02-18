@@ -38,7 +38,8 @@ module.exports = React.createClass
           Pin {
             user,
             parent {
-              user
+              user,
+              children
             }
           }
         """
@@ -60,20 +61,34 @@ module.exports = React.createClass
 
 
   renderInsight: ->
-    return unless insight = PinStore.cursor.items.cursor(@cursor.pin.get('parent_id')).deref(false)
+    return unless insight = PinStore.getParentFor(@props.uuid)
 
-    <div className="insight">
-      <section className="paragraph" dangerouslySetInnerHTML={ __html: insight.get('content') } />
+    <section className="insight">
+      { @renderPinContent(insight.get('content'), 'quote') }
+
       <Human type="user" uuid={ insight.get('user_id') } />
-    </div>
+
+      <ul className="counters">
+        <li>
+          { PinStore.getChildrenFor(insight.get('uuid')).count() }
+          <i className="fa fa-thumb-tack" />
+        </li>
+      </ul>
+    </section>
+
+
+  renderPinContent: (content, className = 'paragraph') ->
+    return null unless content
+
+    <p className={ className } dangerouslySetInnerHTML={ __html: content } />
 
 
   renderComment: ->
-    return unless @cursor.pin.deref(false)
-
     <footer>
-      <section className="paragraph" dangerouslySetInnerHTML={ __html: @cursor.pin.get('content') } />
+      { @renderPinContent(@cursor.pin.get('content')) }
+
       <i className="fa fa-share" />
+
       <Human type="user" uuid={@cursor.pin.get('user_id')} />
     </footer>
 
@@ -82,9 +97,6 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     <section className="pin cloud-card">
-      <header className="cloud bottom-line">
-        Pinnable preview
-      </header>
       { @renderInsight() }
       { @renderComment() }
     </section>
