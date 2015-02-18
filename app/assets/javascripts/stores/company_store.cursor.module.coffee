@@ -1,35 +1,21 @@
 # Imports
 #
 
-Dispatcher    = require('dispatcher/dispatcher')
-GlobalState   = require('global_state/state')
-
-EmptyCompanies  = Immutable.Map()
-ItemsCursor     = GlobalState.cursor(['stores', 'companies', 'items'])
-
-
-# setDataFromJSON
-#
-setDataFromJSON = (json) ->
-  Immutable.Seq(json.companies || [json.company]).forEach (item) -> ItemsCursor.set(item.uuid, item)
-
-
-# Dispatcher
-#
-dispatchToken = Dispatcher.register (payload) ->
-  type = payload.action.type
-  
-  switch type
-    when 'fetch:done'
-      [json] = payload.action.data
-      setDataFromJSON(json) if json.company or json.companies
-
+Dispatcher      = require('dispatcher/dispatcher')
+GlobalState     = require('global_state/state')
 
 # Exports
 #
-module.exports =
+module.exports = GlobalState.createStore
 
-  empty: EmptyCompanies
-  
-  cursor:
-    items:  ItemsCursor
+  displayName:    'CompanyStore'
+
+  collectionName: 'companies'
+  instanceName:   'company'
+
+  syncAPI:        require('sync/company')
+
+  search: (query) ->
+    @syncAPI.search(query).done (json) =>
+      @cursor.items.clear()
+      @fetchDone(json)

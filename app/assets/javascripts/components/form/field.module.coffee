@@ -5,42 +5,68 @@ cx = React.addons.classSet
 
 MainComponent = React.createClass
 
-  isInvalid: ->
-    @props.errors.length > 0
+  # Component specifications
+  #
+  propTypes:
+    checked:      React.PropTypes.bool
+    defaultValue: React.PropTypes.string
+    errors:       React.PropTypes.array
+    iconClass:    React.PropTypes.string
+    syncing:      React.PropTypes.bool
+    type:         React.PropTypes.string
 
-  onChange:  (event)  ->
-    @props.onChange(event)
-
-  onKeyDown: (event)  -> @props.onKeyDown(event)
-
-  onBlur: (event) -> 
-    @props.onBlur(event)
-
-    @setState
-      active: false
-
-  onFocus: (event) -> 
-    @props.onFocus(event)
-
-    @setState
-      active: true
+    onBlur:       React.PropTypes.func
+    onChange:     React.PropTypes.func
+    onEnter:      React.PropTypes.func
+    onFocus:      React.PropTypes.func
+    onKeyDown:    React.PropTypes.func
 
   getDefaultProps: ->
     inputTag:     tag.input
     type:         "text"
     errors:       []
     defaultValue: ""
+    iconClass:    ""
 
     checked:   false
     syncing:   false
 
     onChange:  ->
+    onEnter:   ->
     onFocus:   ->
     onBlur:    ->
     onKeyDown: ->
 
   getInitialState: ->
     active: false
+
+  # Helpers
+  #
+  isInvalid: ->
+    @props.errors.length > 0
+
+  # Handlers
+  #
+  handleChange: (event) -> @props.onChange(event)
+
+  handleKeyDown: (event) -> 
+    if event.keyCode == 13
+      @props.onEnter()
+
+    @props.onKeyDown(event)
+
+  handleEnter: -> @props.onEnter()
+
+  handleBlur: (event) -> 
+    @props.onBlur(event)
+
+    @setState(active: false)
+
+  handleFocus: (event) -> 
+    @props.onFocus(event)
+
+    @setState(active: true)
+
 
   render: ->
     errors = if _.isArray(@props.errors) then @props.errors else [@props.errors]
@@ -70,10 +96,10 @@ MainComponent = React.createClass
           autoFocus    = { @props.autoFocus }
           defaultValue = { @props.defaultValue }
           name         = { @props.name }
-          onChange     = { @onChange }
-          onBlur       = { @onBlur }
-          onFocus      = { @onFocus }
-          onKeyDown    = { @onKeyDown }
+          onChange     = { @handleChange }
+          onBlur       = { @handleBlur }
+          onFocus      = { @handleFocus }
+          onKeyDown    = { @handleKeyDown }
           placeholder  = { @props.placeholder }
           ref          = "input"
           type         = { @props.type }
@@ -83,6 +109,9 @@ MainComponent = React.createClass
           <span className="fa fa-check"></span> if @props.checked
         }
 
+        {
+          <i className="fa #{@props.iconClass}"></i> if @props.iconClass
+        }
       </span>
       {
         errors

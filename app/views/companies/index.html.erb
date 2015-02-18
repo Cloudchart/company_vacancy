@@ -1,15 +1,6 @@
+<div data-react-class="components/company/list">
+</div>
+
 <% content_for :search do %>
-  <%= render partial: 'shared/header_search' %>
+  <%= true %>
 <% end %>
-
-<article class="companies-search">
-
-  <div class="counter">
-    <%= render 'counter', collection: @companies %>
-  </div>
-
-  <div class="result">
-    <%= render partial: 'shared/companies/company', collection: @companies %>
-  </div>
-  
-</article>

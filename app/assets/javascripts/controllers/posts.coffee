@@ -2,7 +2,6 @@
   Dispatcher = require('dispatcher/dispatcher')
   GlobalState = require('global_state/state')
 
-  TagStore = require('stores/tag_store')
   PostStore = require('stores/post_store')
   BlockStore = require('stores/block_store')
   PersonStore = require('stores/person')

@@ -5,13 +5,14 @@ Dispatcher  = require('dispatcher/dispatcher')
 GlobalState = require('global_state/state')
 
 
-ItemsCursor = GlobalState.cursor(['stores', 'tags', 'items'])
+ItemsCursor = GlobalState.cursor(['stores', 'taggings', 'items'])
+
 
 # Exports
 #
 module.exports = GlobalState.createStore
 
-  displayName:    'TagStore'
+  displayName:    'TaggingStore'
 
-  collectionName: 'tags'
-  instanceName:   'tag'
+  collectionName: 'taggings'
+  instanceName:   'tagging'

@@ -5,6 +5,8 @@
 colors    = require('utils/colors')
 initials  = require('utils/initials')
 
+cx        = React.addons.classSet
+
 module.exports = React.createClass
 
   displayName: 'Avatar'
@@ -15,10 +17,15 @@ module.exports = React.createClass
     backgroundColor = colors.colors[colors.colorIndex(letters)]
     
     style =
-      backgroundColor:  if @props.avatarURL then @props.backgroundColor || backgroundColor else backgroundColor
+      backgroundColor:  if @props.avatarURL then @props.backgroundColor || 'transparent' else backgroundColor
       backgroundImage:  if @props.avatarURL then "url(#{@props.avatarURL})" else "none"
     
-    <figure className="avatar" style={ style }>
+    classes = cx(
+      avatar:         true
+      "image-absent": !@props.avatarURL 
+    ) 
+
+    <figure className={ classes } style={ style }>
       <figcaption>
         { letters unless @props.avatarURL }
       </figcaption>

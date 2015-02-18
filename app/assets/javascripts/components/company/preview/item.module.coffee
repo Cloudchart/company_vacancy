@@ -80,7 +80,7 @@ MainComponent = React.createClass
               # tag.div { className: "burn-rate" },
               #   "$300K"
               #   tag.span { className: "units" }, "month"
-          tag.section { className: "bottom" },
+          tag.footer null,
             if @props.renderButtons
               @gatherButtons()
             else

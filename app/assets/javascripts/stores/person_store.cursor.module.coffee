@@ -11,3 +11,6 @@ module.exports = GlobalState.createStore
   
   collectionName: 'people'
   instanceName:   'person'
+
+  findByCompany: (company_id) ->
+    @filter (person) -> person.get("company_id") == company_id

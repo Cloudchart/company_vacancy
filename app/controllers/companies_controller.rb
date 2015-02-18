@@ -25,7 +25,7 @@ class CompaniesController < ApplicationController
   def search
     respond_to do |format|
       format.html { render :index }
-      format.js
+      format.json { render :index }
     end
   end
 
