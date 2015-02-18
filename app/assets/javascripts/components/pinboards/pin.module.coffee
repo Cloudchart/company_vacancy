@@ -33,12 +33,6 @@ module.exports = React.createClass
 
     queries:
 
-
-      me: ->
-        """
-          Viewer
-        """
-
       pin: ->
         """
           Pin {
@@ -51,18 +45,16 @@ module.exports = React.createClass
 
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pin'), { id: @props.uuid }) unless @cursor.pin.deref(false)
-    GlobalState.fetch(@getQuery('me')) unless @cursor.me.deref(false)
+    GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
 
 
   isLoaded: ->
-    @cursor.pin.deref(false) and @cursor.me.deref(false)
+    @cursor.pin.deref(false)
 
 
   componentWillMount: ->
     @cursor =
       pin:          PinStore.cursor.items.cursor(@props.uuid)
-      me:           UserStore.me()
 
     @fetch() unless @isLoaded()
 

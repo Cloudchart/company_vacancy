@@ -44,19 +44,12 @@ module.exports = React.createClass
           }
         """
 
-      me: ->
-        """
-          Viewer
-        """
-
-
   fetch: ->
     GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid })
-    GlobalState.fetch(@getQuery('me'))
 
 
   isLoaded: ->
-    @cursor.pinboard.deref(false) and @cursor.me.deref(false)
+    @cursor.pinboard.deref(false)
 
 
   repositionNodes: ->
@@ -90,9 +83,12 @@ module.exports = React.createClass
     @cursor =
       pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
       pins:     PinStore.cursor.items.filterCursor (item) => item.get('pinboard_id') is @props.uuid
-      me:       UserStore.me()
 
     @fetch() unless @isLoaded()
+
+
+  componentDidMount: ->
+    @repositionNodes()
 
 
   componentDidUpdate: ->

@@ -12,11 +12,18 @@ header.cloud {
   $basic-space: 20px;
 
   background-color: hsl(0, 100%, 100%);
-  padding: $basic-space;
+  padding: $basic-space / 2 $basic-space;
 
 
   &.link {
     cursor: pointer;
+  }
+
+
+  > header,
+  > section,
+  > footer {
+    padding: $basic-space / 2 0;
   }
 
 
@@ -34,12 +41,12 @@ header.cloud {
     font-size: 16px;
     font-weight: 300;
     line-height: 23px;
-    margin-top: $basic-space - 4px;
+    padding: $basic-space / 2 0;
   }
 
 
   section.human {
-    margin-top: 10px;
+    margin-top: 5px;
   }
 
 
@@ -128,14 +135,14 @@ header.cloud {
 
   .bottom-line {
     border-bottom: 1px solid whitesmoke;
-    margin-bottom: $basic-space;
-    padding-bottom: $basic-space;
+    margin-bottom: $basic-space / 2;
+    padding-bottom: $basic-space / 2;
   }
 
   .top-line {
     border-top: 1px solid whitesmoke;
-    margin-top: $basic-space;
-    padding-top: $basic-space;
+    margin-top: $basic-space / 2;
+    padding-top: $basic-space / 2;
   }
 
 }
