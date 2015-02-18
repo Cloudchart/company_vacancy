@@ -21,6 +21,10 @@ class AdminAbility
         story.company_id.blank?
       end
 
+      cannot :update, User do |user|
+        user.guest?
+      end
+
     end
   end
 end

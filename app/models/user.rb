@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
   end
 
   def email
-    emails.first.address
+    emails.first.try(:address)
   end
 
   def email=(email)
