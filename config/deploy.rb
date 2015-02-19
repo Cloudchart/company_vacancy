@@ -1,6 +1,3 @@
-require './config/boot'
-require 'airbrake/capistrano'
-
 # config valid only for Capistrano 3.1
 lock '3.2.0'
 
