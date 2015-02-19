@@ -160,6 +160,8 @@ class CompaniesController < ApplicationController
 private
 
   def update_site_url_verification(company)
+    return if current_user.editor?
+    
     if company_params[:site_url] == ''
       company.tokens.where(name: :site_url_verification).destroy_all
     else
@@ -203,7 +205,7 @@ private
   def create_intercom_event
     return unless should_perform_sidekiq_worker? && @company.valid?
 
-    event_name = if action_name == 'update' && params[:company][:is_published] == 'true'
+    event_name = if action_name == 'update' && company_params[:is_published] == 'true'
       'published-company'
     elsif action_name == 'new'
       'created-company'

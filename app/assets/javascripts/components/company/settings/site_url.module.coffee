@@ -34,7 +34,7 @@ CheckFileComponent = React.createClass
     <button
       className = "orgpad"
       disabled  = {true if @state.sync}
-      onClick   = @verify>
+      onClick   = {@verify}>
       <span>Check file</span>
       <i className={if @state.sync then "fa fa-spinner fa-spin" else "fa fa-file-text-o"}></i>
     </button>
@@ -65,7 +65,7 @@ CancelVerificationComponent = React.createClass
     <button
       className = "orgpad alert"
       disabled  = {true if @state.sync}
-      onClick   = @update>
+      onClick   = {@update}>
       <span>{@props.name}</span>
       <i className={if @state.sync then "fa fa-spinner fa-spin" else @props.icon}></i>
     </button>
@@ -130,7 +130,7 @@ UpdateSiteUrlComponent = React.createClass
         <button
           className = "orgpad"
           disabled  = {!@isValid() or @state.sync}
-          onClick   = @update
+          onClick   = {@update}
         >
           <span>Verify</span>
           <i className={if @state.sync then "fa fa-spinner fa-spin" else "fa fa-paper-plane-o"}></i>
