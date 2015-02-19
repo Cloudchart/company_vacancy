@@ -71,9 +71,7 @@ CompanyList = React.createClass
             <div className="name">
               { company.get("name") }
             </div>
-            <div className="description">
-              { company.get("description") }
-            </div>
+            <div className="description" dangerouslySetInnerHTML={__html: company.get('description')} />
           </div>
           <div className="right">
             <div className="size">

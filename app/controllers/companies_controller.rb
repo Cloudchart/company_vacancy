@@ -17,7 +17,6 @@ class CompaniesController < ApplicationController
 
   # GET /companies
   def index
-    authorize! :list, :companies
   end
 
   # POST /companies/search
@@ -36,7 +35,6 @@ class CompaniesController < ApplicationController
     respond_to do |format|
       format.html { pagescript_params(id: @company.id) }
       format.json {
-        # TODO: move to jbuilder
         @company = find_company(
           Company.includes(
             :people,

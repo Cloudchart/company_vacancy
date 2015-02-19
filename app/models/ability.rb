@@ -27,6 +27,8 @@ class Ability
         company = post.company
         company.is_public? && company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')
       end
+
+      cannot :index, Company
       
     # Regular user
     #
@@ -35,8 +37,8 @@ class Ability
       can :manage, :cloud_profile_main
       can :update, :cloud_profile_user
       can [:accept, :destroy], :company_invite
-      can :list, :companies
 
+      can :index, Company
       can [:create, :read, :search, :unfollow], Company
       can :create, CloudProfile::Email
       can :vote, Feature
@@ -66,7 +68,7 @@ class Ability
         !user.companies.map(&:id).include?(company.id)
       end
 
-      can :manage, [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post, Story, Quote] do |resource|
+      can :manage, [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post, Story, Quote, PostsStory] do |resource|
         owner_or_editor?(user, resource.company)
       end
 

@@ -1,13 +1,12 @@
 class PostsStoriesController < ApplicationController  
 
-  before_action :set_posts_story, only: [:update, :destroy]
   before_action :set_post, only: [:create]
 
-  # TODO:
-  # authorize_resource
+  load_and_authorize_resource except: :create
 
   def create
     @posts_story = @post.posts_stories.build(posts_story_params)
+    authorize! :create, @posts_story
 
     if @posts_story.save
       respond_to do |format|
@@ -44,10 +43,6 @@ private
 
   def posts_story_params
     params.require(:posts_story).permit(:story_id, :is_highlighted)
-  end
-
-  def set_posts_story
-    @posts_story = PostsStory.find(params[:id])
   end
 
   def set_post

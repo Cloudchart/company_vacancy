@@ -20,13 +20,11 @@ class PostsController < ApplicationController
     end
   end
 
-
   def fetch
     respond_to do |format|
       format.json
     end
   end
-
 
   def show
     respond_to do |format|
@@ -85,10 +83,6 @@ private
 
   def set_company
     @company = Company.find(params[:company_id])
-  end
-
-  def find_company(relation)
-    relation.find_by(slug: params[:company_id]) || relation.find(params[:company_id])
   end
 
   def create_intercom_event
