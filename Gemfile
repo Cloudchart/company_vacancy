@@ -84,6 +84,7 @@ group :production, :staging do
   gem 'postmark-rails'
   gem 'intercom-rails', '~> 0.2.24'
   gem 'intercom', '~> 2.4.4'
+  gem 'airbrake'
 end
 
 # Use debugger

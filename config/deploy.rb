@@ -1,3 +1,6 @@
+require './config/boot'
+require 'airbrake/capistrano'
+
 # config valid only for Capistrano 3.1
 lock '3.2.0'
 
@@ -58,7 +61,6 @@ namespace :deploy do
   end
 
 end
-
 
 namespace :rails do
   desc 'Tails rails log'
