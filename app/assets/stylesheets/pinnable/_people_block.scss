@@ -1,53 +1,56 @@
-@mixin pinnable-post-preview-person-avatar {
-  background-size: cover;
-  border-radius: 50%;
-  height: 0;
-  padding-top: 100%;
-  position: relative;
-  
-  > figcaption {
-    @include position(absolute, 50% null null 50%);
-    @include transform(translateX(-50%) translateY(-50%));
+.post-preview.pinnable {
 
-    color: hsl(0, 100%, 100%);
-    font-size: 40px;
-    font-weight: 100;
+  border-top: $card-hr;
+  padding-top: $card-basic-space;
+  margin-top: 0;
+
+  > *:nth-child(1) {
+    margin-top: 0;
   }
-}
 
-.pinnable-post-preview .people {
-  @include display(flex);
-  @include flex-wrap(wrap);
-  @include justify-content(center);
-  
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  
-  > li.person {
-    padding: 0 10px;
-    margin: 20px 10px 0;
-    width: 25%;
-    
-    > figure {
-      @include pinnable-post-preview-person-avatar;
+  > section {
+    margin-top: $card-basic-space;
+  }
+
+
+  > section.picture {
+
+    img {
+      display: block;
+      margin: 0;
     }
-    
-    > footer {
-      font-size: 15px;
-      margin: 5px -10px 0;
-      text-align: center;
-      
-      > p {
-        margin: 5px 0 0;
-        
-        &.occupation {
-          font-size: .75em;
-          margin-top: 2px;
-          opacity: .5;
-        }
-      }
-      
+
+  }
+
+
+  > section.people {
+    @include display(flex);
+    @include flex-wrap(wrap);
+    @include justify-content(center);
+
+    margin-top: $card-basic-space / 2;
+
+    .human {
+      @extend .cloud-card-human.block;
+
+      margin: $card-basic-space / 2;
+      margin-bottom: 0;
+      width: 30%;
     }
   }
+
+
+  > section.post-quote {
+
+    .quote {
+      font-style: italic;
+    }
+
+    .human {
+      @extend .cloud-card-human.block;
+
+      margin-top: 10px;
+    }
+  }
+
 }

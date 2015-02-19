@@ -76,6 +76,24 @@ $card-hr: 1px solid whitesmoke;
       margin-top: 3px;
     }
   }
+
+  &.block {
+    @include flex-direction(column);
+
+    figure {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+
+    .credentials {
+      text-align: center;
+    }
+  }
+}
+
+
+.cloud-card-human {
+  @include cloud-card-human;
 }
 
 
@@ -150,7 +168,7 @@ $card-hr: 1px solid whitesmoke;
   }
 
   .human {
-    @include cloud-card-human;
+    @extend .cloud-card-human;
   }
 
 

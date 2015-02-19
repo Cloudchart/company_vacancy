@@ -1,27 +1,17 @@
 # @cjsx React.DOM
 
 
-# Stores
-#
-PictureStore = require('stores/picture_store.cursor')
-
-
 # Exports
 #
 module.exports = React.createClass
 
 
-  getDefaultProps: ->
-    cursor:     PictureStore.cursor.items
-  
-  
-  getInitialState: ->
-    picture: @props.cursor.filter((p) => p.get('owner_id') == @props.uuid).first()
-  
+  displayName: 'Picture'
+
 
   render: ->
-    source = @state.picture.get('url') if @state.picture
+    return null unless @props.item and @props.item.get('url', false)
 
-    <div className="picture">
-      <img src={ source } />
-    </div>
+    <section className="picture">
+      <img src={ @props.item.get('url') } width="100%" />
+    </section>

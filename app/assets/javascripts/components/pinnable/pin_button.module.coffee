@@ -88,7 +88,6 @@ module.exports = React.createClass
 
 
   render: ->
-    console.log @props.cursor.user.deref()
     return null unless @props.cursor.user.get('uuid')
 
     classList = cx

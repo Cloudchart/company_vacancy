@@ -6,14 +6,25 @@ GlobalState = require('global_state/state')
 
 # Stores
 #
-PostStore   = require('stores/post_store.cursor')
-BlockStore  = require('stores/block_store.cursor')
+PostStore       = require('stores/post_store.cursor')
+BlockStore      = require('stores/block_store.cursor')
+ParagraphStore  = require('stores/paragraph_store.cursor')
+PictureStore    = require('stores/picture_store.cursor')
+PersonStore     = require('stores/person_store.cursor')
+QuoteStore      = require('stores/quote_store')
 
 
 # Components
 #
 Owners =
   'Company': null
+
+
+Blocks =
+  Paragraph:  require('components/pinnable/block/paragraph')
+  Picture:    require('components/pinnable/block/picture')
+  People:     require('components/pinnable/block/people')
+  Quote:      require('components/pinnable/block/quote')
 
 
 # Exports
@@ -35,7 +46,9 @@ module.exports = React.createClass
           Post {
             company,
             blocks {
-              quote,
+              quote {
+                person
+              },
               picture,
               paragraph,
               block_identities {
@@ -67,18 +80,30 @@ module.exports = React.createClass
     @fetch() unless @isLoaded()
 
 
-  getDefaultProps: ->
-    cursor: {}
-
-
-  renderOwner: ->
-    <section className="owner">
-      { @cursor.post.get('owner_type') }
-    </section>
-
-
   renderBlock: (block) ->
-    <span key={ block.get('uuid') }>{ block.get('identity_type') }</span>
+    switch block.get('identity_type')
+
+      when 'Paragraph'
+        paragraph = ParagraphStore.findByOwner(type: 'Block', id: block.get('uuid'))
+        <Blocks.Paragraph key={ block.get('uuid') } item={ paragraph } />
+
+
+      when 'Picture'
+        picture = PictureStore.findByOwner(type: 'Block', id: block.get('uuid'))
+        <Blocks.Picture key={ block.get('uuid') } item={ picture } />
+
+
+      when 'Person'
+        people = PersonStore.filterForBlock(block.get('uuid'))
+        <Blocks.People key={ block.get('uuid') } items={ people } />
+
+
+      when 'Quote'
+        quote = QuoteStore.findByOwner(type: 'Block', id: block.get('uuid'))
+        <Blocks.Quote key={ block.get('uuid') } item={ quote } />
+      else
+        console.log block.get('identity_type')
+        null
 
 
   renderBlocks: ->
@@ -89,6 +114,5 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     <article className="pinnable post-preview">
-      { @renderOwner() }
       { @renderBlocks().toArray() }
     </article>

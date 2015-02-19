@@ -1,26 +1,15 @@
 # @cjsx React.DOM
 
 
-# Stores
-#
-ParagraphStore = require('stores/paragraph_store.cursor')
-
-
 # Exports
 #
 module.exports = React.createClass
 
 
-  getDefaultProps: ->
-    className: 'paragraph'
-    cursor:     ParagraphStore.cursor.items
-  
-  
-  getInitialState: ->
-    paragraph: @props.cursor.filter((p) => p.get('owner_id') == @props.uuid).first()
-  
+  displayName: 'Paragraph'
+
 
   render: ->
-    content = @state.paragraph.get('content') if @state.paragraph
+    return null unless @props.item and @props.item.get('content', false)
 
-    <div className={ @props.className.toLowerCase() } dangerouslySetInnerHTML={ __html: content } />
+    <section className="paragraph" dangerouslySetInnerHTML={ __html: @props.item.get('content') } />
