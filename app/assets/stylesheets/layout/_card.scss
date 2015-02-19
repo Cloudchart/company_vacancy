@@ -154,13 +154,12 @@ $card-hr: 1px solid whitesmoke;
     margin-top: - $card-basic-space;
   }
 
-  &.link {
-    cursor: pointer;
-  }
-
-
   > header {
     @extend .cloud-card-header;
+  }
+
+  .link {
+    cursor: pointer;
   }
 
   .paragraph {

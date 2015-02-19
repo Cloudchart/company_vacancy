@@ -77,6 +77,12 @@ module.exports = React.createClass
       .sortBy (block) -> block.get('position')
 
 
+  handleClick: (event) ->
+    event.preventDefault()
+
+    window.location = @cursor.post.get('url')
+
+
   componentWillMount: ->
     @cursor =
       post:     PostStore.cursor.items.cursor(@props.uuid)
@@ -138,7 +144,7 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <article className="pinnable post-preview">
+    <article className="pinnable post-preview link" onClick={ @handleClick }>
       { @renderDateAndTitle() }
       { @renderBlocks().toArray() }
     </article>
