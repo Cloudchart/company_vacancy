@@ -92,6 +92,10 @@ $card-hr: 1px solid whitesmoke;
 }
 
 
+.cloud-card-header {
+  @include cloud-card-header;
+}
+
 .cloud-card-human {
   @include cloud-card-human;
 }
@@ -156,7 +160,7 @@ $card-hr: 1px solid whitesmoke;
 
 
   > header {
-    @include cloud-card-header;
+    @extend .cloud-card-header;
   }
 
   .paragraph {

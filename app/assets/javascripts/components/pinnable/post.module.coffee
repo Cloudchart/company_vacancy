@@ -27,6 +27,11 @@ Blocks =
   Quote:      require('components/pinnable/block/quote')
 
 
+# Utils
+#
+fuzzyDate = require('utils/fuzzy_date')
+
+
 # Exports
 #
 module.exports = React.createClass
@@ -80,6 +85,25 @@ module.exports = React.createClass
     @fetch() unless @isLoaded()
 
 
+  renderDate: ->
+    return unless date = fuzzyDate.format(@cursor.post.get('effective_from'), @cursor.post.get('effective_till'))
+
+    <div className="date">{ date }</div>
+
+
+  renderTitle: ->
+    return unless @cursor.post.get('title', false)
+
+    <div className="title" dangerouslySetInnerHTML={ __html: @cursor.post.get('title') } />
+
+
+  renderDateAndTitle: ->
+    <section className="title">
+      { @renderDate() }
+      { @renderTitle() }
+    </section>
+
+
   renderBlock: (block) ->
     switch block.get('identity_type')
 
@@ -101,8 +125,9 @@ module.exports = React.createClass
       when 'Quote'
         quote = QuoteStore.findByOwner(type: 'Block', id: block.get('uuid'))
         <Blocks.Quote key={ block.get('uuid') } item={ quote } />
+
+
       else
-        console.log block.get('identity_type')
         null
 
 
@@ -114,5 +139,6 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     <article className="pinnable post-preview">
+      { @renderDateAndTitle() }
       { @renderBlocks().toArray() }
     </article>

@@ -13,7 +13,9 @@ UserStore = require('stores/user_store.cursor')
 # Components
 #
 Human           = require('components/human')
+PinnableHeader  = require('components/pinnable/header')
 PinnablePreview = require('components/pinnable/preview')
+
 PinnablePost    = require('components/pinnable/post')
 
 
@@ -102,6 +104,7 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     <section className="pin cloud-card">
+      <PinnableHeader uuid={ @props.uuid } />
       <PinnablePreview uuid={ @props.uuid } />
       { @renderInsight() }
       { @renderComment() }

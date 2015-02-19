@@ -1,79 +1,15 @@
-@mixin pinnable-post-preview-header {
-
-  font-size: 1.25em;
-  font-weight: 600;
-  margin-bottom: 20px;
-  
-}
-
-@mixin pinnable-post-preview-paragraph {
-
-  line-height: 1.25em;
-  margin-top: 20px;
-
-  &.quote {
-    font-style: italic;
-  }
-  
-  &.kpi {
-    font-weight: 700;
-  }
-}
-
-
-
-@mixin pinnable-post-preview-person {
-  font-size: 15px;
-  margin: 20px 0 0;
-  padding: 0 10px;
-  text-align: center;
-  width: 25%;
-  
-  figure {
-    background-size: cover;
-    border-radius: 50%;
-    height: 0;
-    margin-bottom: 5px;
-    padding-top: 100%;
-    position: relative;
-    
-    > i {
-      @include position(absolute, 50% null null 50%);
-      @include transform(translateY(-50%) translateX(-50%));
-      
-      color: hsl(0, 100%, 100%);
-      font-size: 40px;
-      font-weight: 100;
-      font-style: normal;
-    }
-  }
-}
-
-
-.pinnable-post-preview {
-  background-color: hsl(0, 100%, 100%);
-  margin: 20px 0;
-  padding: 20px;
-  width: 600px;
-}
-
-
-.pinnable-post-preview > header.company {
+.pin.cloud-card > header.company {
   @include align-items(center);
   @include display(flex);
-  
-  background-color: hsl(0, 100%, 100%);
-  min-height: 50px;
-  
+
+  padding: $card-basic-space 0;
+
   > .logo-and-name {
     @include align-items(center);
     @include display(flex);
     @include flex(1);
-    
-    font-size: 25px;
-    font-weight: 300;
-    
-    > .logo {
+
+    > figure {
       background-position: right center;
       background-repeat: no-repeat;
       background-size: contain;
@@ -81,124 +17,13 @@
       margin-right: 10px;
       width: 40px;
     }
-    
-    &.has-name-in-logo > .logo {
+
+    &.has-name-in-logo > figure {
       background-position: left center;
       width: 100%;
     }
   }
-  
-  > .date {
-    color: hsl(0, 0%, 50%);
-    margin: 0 10px;
-    white-space: nowrap;
-  }
-  
-  > .buttons {
-    @include display(flex);
-    @include flex(1);
-    @include justify-content(flex-end);
-  }
 }
 
-
-.pinnable-post-preview > section.pin-content {
-  background-color: hsl(0, 100%, 100%);
-  border-bottom: 1px solid HSL(0, 0%, 95%);
-  color: hsl(140, 55%, 55%);
-  font-size: 1.25em;
-  margin: 10px 0 20px;
-  padding: 0 0 20px;
-  white-space: pre;
-}
-
-
-.pinnable-post-preview .preview {
-  
-  background-color: hsl(0, 100%, 100%);
-  margin: 10px 0 0;
-  
-  > header {
-    @include pinnable-post-preview-header;
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  
-  > .paragraph,
-  > .quote,
-  > .kpi {
-    @include pinnable-post-preview-paragraph;
-  }
-  
-  > .picture > img {
-    background-color: #000;
-    display: block;
-    margin-top: 20px;
-    width: 100%;
-  }
-  
-  > .person {
-    @include pinnable-post-preview-person;
-  }
-  
-}
-
-
-.pinnable-post-preview .parent {
-  border-bottom: 1px solid HSL(0, 0%, 95%);
-  margin: 10px 0 20px;
-  padding: 0 0 20px;
-  
-  > p {
-    font-size: 1.25em;
-    font-weight: 300;
-    margin: 10px 0;
-    white-space: pre;
-  }
-}
-
-.pinnable-post-preview .user {
-  @include align-items(center);
-  @include display(flex);
-  
-  aside {
-    margin-right: 10px;
-    width: 50px;
-
-    > figure {
-      background-size: cover;
-      border-radius: 50%;
-      height: 0;
-      padding-top: 100%;
-      position: relative;
-      width: 100%;
-      
-      > figcaption {
-        @include position(absolute, 50% null null 50%);
-        @include transform(translateX(-50%) translateY(-50%));
-        
-        color: hsl(0, 100%, 100%);
-        font-size: 20px;
-        font-weight: 300;
-      }
-    }
-  }
-  
-  
-  > section {
-    @include flex(1);
-    
-    > p {
-      margin: 0;
-      
-      &.name {
-        font-size: 18px;
-        font-weight: 300;
-      }
-    }
-  }
-}
 
 @import 'pinnable/people_block';
