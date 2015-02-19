@@ -4,7 +4,8 @@ module CloudApi
   class UsersController < CloudApi::ApplicationController
 
     def me
-      @source = current_user
+      @source   = User
+      @starter  = [:find, current_user.uuid]
 
       respond_to do |format|
         format.json { render '/main' }
@@ -15,7 +16,8 @@ module CloudApi
     def unicorns
       raise CanCan::AccessDenied unless current_user.try(:editor?)
 
-      @source = User.unicorns
+      @source   = User.unicorns
+      @starter  = [:unicorns]
 
       respond_to do |format|
         format.json { render '/main' }

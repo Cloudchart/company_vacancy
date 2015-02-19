@@ -7,16 +7,17 @@ class Pinboard < ActiveRecord::Base
   validates_uniqueness_of   :title, scope: :user_id, case_sensitive: false
 
   belongs_to  :user
-  has_many    :pins
   has_many    :roles, as: :owner
 
+  has_many    :pins
+  has_many    :posts, through: :pins, source: :pinnable, source_type: Post
 
-  sifter :user_own do |user|
-    user_id.eq user.id
-  end
 
-  sifter :public do
-    access_rights.eq 'public'
+  # Roles on Users
+  #
+  { readers: [:reader, :editor], writers: :editor, followers: :follower }.each do |scope, role|
+    has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, as: :owner, class_name: Role
+    has_many :"#{scope}", through: :"#{scope}_pinboards_roles", source: :user
   end
 
   sifter :system do
@@ -30,34 +31,13 @@ class Pinboard < ActiveRecord::Base
   end
 
 
-  scope :writable, -> (user) do
-    joins {
-
-      roles.outer
-
-    }.where {
-
-      sift(:system) |
-      sift(:user_own, user) |
-      sift(:available_through_roles, user, ['editor'])
-
-    }.distinct
+  scope :readable, -> do
+    joins { roles.outer }.where { roles.value.eq('reader') }
   end
 
 
-  scope :readable, -> (user) do
-    joins {
-
-      roles.outer
-
-    }.where {
-
-      sift(:public) |
-      sift(:user_own, user) |
-      sift(:available_through_roles, user, ['editor', 'reader'])
-
-    }.distinct
+  scope :writable, -> do
+    joins { roles.outer }.where { roles.value.eq('editor') }
   end
-
 
 end

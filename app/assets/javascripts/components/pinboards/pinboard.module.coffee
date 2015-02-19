@@ -1,23 +1,18 @@
 # @cjsx React.DOM
 
 GlobalState = require('global_state/state')
+cx          = React.addons.classSet
 
 
 # Stores
 #
-PinboardStore = require('stores/pinboard_store')
-PinStore      = require('stores/pin_store')
-
-
-# Actions
-#
-ModalActions  = require('actions/modal_actions')
+PinboardStore   = require('stores/pinboard_store')
+UserStore       = require('stores/user_store.cursor')
 
 
 # Components
 #
-PinComponent          = require('components/pinnable/pin')
-SettingsFormComponent = require('components/pinboards/settings_form')
+Human = require('components/human')
 
 
 # Exports
@@ -25,7 +20,7 @@ SettingsFormComponent = require('components/pinboards/settings_form')
 module.exports = React.createClass
 
 
-  displayName: 'Pinboard'
+  displayName: 'PinboardPreview'
 
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
@@ -35,95 +30,90 @@ module.exports = React.createClass
 
     queries:
 
-      preview: ->
+      pinboard: ->
         """
           Pinboard {
-            pins {
-              #{PinComponent.getQuery('preview')}
-            }
+            user,
+            readers,
+            followers,
+            pins
           }
         """
 
 
-    getCursor: (uuid) ->
-      pinboard: PinboardStore.cursor.items.cursor(uuid)
-      pins:     PinStore.cursor.items
+  fetch: ->
+    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }).then =>
+      @setState
+        loaders: @state.loaders.set('pinboard', true)
 
 
-  gatherPins: ->
-    PinStore
-      .filterByPinboardId(@props.uuid)
-      .sortBy (pin) -> pin.get('created_at')
-      .reverse()
+  isLoaded: ->
+    @cursor.pinboard.deref(false)
 
 
-  renderSettingsButton: ->
-    if @props.cursor.pinboard.get('user_id') == @props.currentUserId
-      <i className="fa fa-cog settings" onClick={ @handleSettingsLinkClick } />
+  handleClick: (event) ->
+    event.preventDefault()
+
+    window.location = @cursor.pinboard.get('url')
 
 
-  renderHeader: (pins) ->
+  componentWillMount: ->
+    @cursor =
+      pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
+
+    @fetch() unless @isLoaded()
+
+
+  getInitialState: ->
+    loaders: Immutable.Map()
+
+
+  renderAccessRightsIcon: ->
+    classList = cx
+      'fa':       true
+      'fa-lock':  @cursor.pinboard.get('access_rights') is 'private'
+      'fa-users': @cursor.pinboard.get('access_rights') is 'protected'
+
+    <i className={ classList } />
+
+
+  renderHeader: ->
     <header>
-      <a href="/pinboards" className="back" onClick={ @props.onClick }>
-        <i className="fa fa-angle-left" />
-      </a>
-      <span className="title">{ @props.cursor.pinboard.get('title') }</span>
-      { @renderSettingsButton() }
-      <span className="count">{ pins.size } { if pins.size == 1 then 'pin' else 'pins' }</span>
+      { @cursor.pinboard.get('title') }
+      { @renderAccessRightsIcon() }
     </header>
 
 
-  renderPins: (pins) ->
-    pins
-      .map (pin) =>
-        uuid = pin.get('uuid')
-        PinComponent({ key: uuid, uuid: uuid, cursor: @props.cursor.pins.cursor(uuid) })
-      .valueSeq()
+  renderDescription: ->
+    return unless description = @cursor.pinboard.get('description', false)
+
+    <section className="paragraph">
+      { description }
+    </section>
 
 
+  renderFooter: ->
+    <footer>
+      <Human type="user" uuid={ @cursor.pinboard.get('user_id') } />
 
-  preloadTransparentPins: ->
-    unloaded_pins_ids = @gatherPins()
-      .filter (pin) -> pin.get('--part--') == true
-      .keySeq()
-
-    return if unloaded_pins_ids.count() == 0
-
-    PinStore.fetchAll({ ids: unloaded_pins_ids.toArray(), relations: 'all' })
-
-
-  handleSettingsLinkClick: (event) ->
-    event.preventDefault()
-    ModalActions.show(<SettingsFormComponent cursor={ @props.cursor.pinboard } onCancel={ ModalActions.hide } />)
-
-
-  componentDidUpdate: ->
-    @preloadTransparentPins()
-
-
-  componentDidMount: ->
-    query = @getQuery('preview')
-    PinboardStore.fetchAll(relations: query.toString()) unless @props.cursor.pinboard.deref()
-
-
-  onGlobalStateChange: ->
-    @setState
-      refreshed_at: + new Date
-
-
-  getDefaultProps: ->
-    currentUserId: if node = document.querySelector('meta[name="user-id"]') then node.getAttribute('content')
+      <ul className="counters">
+        <li>
+          { @cursor.pinboard.get('readers_count') }
+          <i className="fa fa-user" />
+        </li>
+        <li>
+          { @cursor.pinboard.get('pins_count') }
+          <i className="fa fa-thumb-tack" />
+        </li>
+      </ul>
+    </footer>
 
 
   render: ->
-    return null unless @props.cursor.pinboard.deref()
+    return null unless @isLoaded()
 
-    pins = @gatherPins()
-
-    <article className="pinboard">
-      { @renderHeader(pins) }
-
-      <ul className="pins">
-        { @renderPins(pins).toArray() }
-      </ul>
-    </article>
+    <section className="pinboard cloud-card link" onClick={ @handleClick }>
+      { @renderHeader() }
+      { @renderDescription() }
+      { @renderFooter() }
+    </section>

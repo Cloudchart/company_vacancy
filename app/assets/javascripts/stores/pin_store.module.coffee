@@ -19,6 +19,14 @@ module.exports = GlobalState.createStore
     'post:fetch-all:done': @populate
 
 
+  getParentFor: (id) ->
+    @cursor.items.get(@cursor.items.getIn([id, 'parent_id']))
+
+
+  getChildrenFor: (id) ->
+    @cursor.items.filter (item) -> item.get('parent_id') == id
+
+
   filterByPinboardId: (pinboard_id) ->
     @cursor.items.deref(@empty).filter (item) -> item.get('pinboard_id') == pinboard_id
 

@@ -11,14 +11,14 @@ html {
 body {
   @include display(flex);
   @include flex-direction(column);
-  
+
   min-width: $min-page-width;
   min-height: 100%;
   font-family: $base-font-family;
   font-size: $body-font-size;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizelegibility;
-  
+
   > main {
     @include flex(1);
     padding: 0 $base-unit;
@@ -32,7 +32,7 @@ body {
   input {
     text-rendering: inherit;
   }
-    
+
 }
 
 .shield {
@@ -47,3 +47,5 @@ body {
 @import 'layout/footer';
 @import 'layout/flash';
 @import 'layout/grid';
+@import 'layout/columns';
+@import 'layout/card';

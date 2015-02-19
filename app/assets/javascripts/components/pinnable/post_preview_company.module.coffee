@@ -30,12 +30,6 @@ module.exports = React.createClass
     </div>
 
 
-  renderDate: ->
-    date = moment(@props.pin.get('created_at'))
-    if date.isValid()
-      <div className="date">{ date.format('ll') }</div>
-
-
   renderButtons: ->
     <ul className="buttons round-buttons">
       <PinButton {...@props.pin.toJSON()} />
@@ -48,6 +42,5 @@ module.exports = React.createClass
   render: ->
     <header className="company">
       { @renderLogoAndName() }
-      { @renderDate() }
       { @renderButtons() }
     </header>

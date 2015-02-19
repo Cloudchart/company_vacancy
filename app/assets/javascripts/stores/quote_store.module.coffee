@@ -4,7 +4,7 @@ GlobalState = require('global_state/state')
 # Exports
 #
 module.exports = GlobalState.createStore
-  
+
   displayName:    'QuoteStore'
 
   collectionName: 'quotes'
@@ -17,8 +17,14 @@ module.exports = GlobalState.createStore
 
 
   findByBlock: (block_id) ->
-    @cursor.items.find (quote) -> quote.get("owner_id") == block_id && quote.get("owner_type") == "Block"
+    @findByOwner(type: 'Block', id: block_id)
 
 
   findByPerson: (person_id) ->
     @cursor.items.find (quote) -> quote.get("person_id") == person_id
+
+
+  findByOwner: (owner) ->
+    @cursor.items.find (item) ->
+      item.get('owner_id')    == owner.id and
+      item.get('owner_type')  == owner.type

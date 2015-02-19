@@ -1,0 +1,181 @@
+$card-basic-space: 20px;
+$card-hr: 1px solid whitesmoke;
+
+
+// Header
+//
+@mixin cloud-card-header {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+
+// Paragraph
+//
+@mixin cloud-card-paragraph {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.4em;
+  margin-bottom: 0;
+}
+
+
+// Quote
+//
+@mixin cloud-card-quote {
+  font-size: 20px;
+  font-weight: 100;
+  line-height: 1.4em;
+  margin-bottom: 0;
+}
+
+
+// Human
+//
+@mixin cloud-card-human {
+  @include align-items(center);
+  @include display(flex);
+
+  figure {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 50%;
+    height: 50px;
+    margin-right: 10px;
+    position: relative;
+    width: 50px;
+
+    figcaption {
+      @include position(absolute, 50% null null 0);
+
+      color: hsl(0, 0%, 100%);
+      font-size: 25px;
+      font-weight: 300;
+      line-height: 25px;
+      margin-top: -12px;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  .credentials {
+    @include flex(1);
+
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1em;
+  }
+
+  p {
+    margin: 0;
+
+    &.occupation {
+      color: hsl(0, 0%, 53%);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+  }
+
+  &.block {
+    @include flex-direction(column);
+
+    figure {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+
+    .credentials {
+      text-align: center;
+    }
+  }
+}
+
+
+.cloud-card-header {
+  @include cloud-card-header;
+}
+
+.cloud-card-human {
+  @include cloud-card-human;
+}
+
+
+// Counters
+//
+@mixin cloud-card-counters {
+  @include align-items(center);
+  @include display(flex);
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  > li {
+
+    color: hsl(0, 0%, 93%);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 12px;
+
+    i {
+      background-color: hsl(0, 0%, 93%);
+      color: hsl(0, 100%, 100%);
+      border-radius: 50%;
+      height: 24px;
+      line-height: 24px;
+      margin-left: 6px;
+      text-align: center;
+      width: 24px;
+    }
+  }
+
+  > li ~ li {
+    margin-left: 12px;
+  }
+}
+
+
+// Cloud Card
+//
+.cloud-card {
+  background-color: white;
+  padding: $card-basic-space;
+
+  > header,
+  > footer,
+  > section {
+
+    margin-top: $card-basic-space;
+
+  }
+
+  > *:nth-child(1) {
+    margin-top: - $card-basic-space;
+  }
+
+  > header {
+    @extend .cloud-card-header;
+  }
+
+  .link {
+    cursor: pointer;
+  }
+
+  .paragraph {
+    @include cloud-card-paragraph;
+  }
+
+  .quote {
+    @include cloud-card-quote;
+  }
+
+  .human {
+    @extend .cloud-card-human;
+  }
+
+
+  ul.counters {
+    @include cloud-card-counters;
+  }
+}

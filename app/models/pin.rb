@@ -2,11 +2,13 @@ class Pin < ActiveRecord::Base
   include Uuidable
 
   belongs_to  :user
-  belongs_to  :parent,    class_name: Pin.name
+  belongs_to  :parent,    class_name: Pin
   belongs_to  :pinboard
   belongs_to  :pinnable,  polymorphic: true
 
-  has_many    :children,  class_name: Pin.name, foreign_key: :parent_id
+  belongs_to  :post, foreign_key: :pinnable_id, foreign_type: Post
+
+  has_many    :children,  class_name: Pin, foreign_key: :parent_id
 
 
   validates_presence_of :content, if: :should_validate_content_presence?

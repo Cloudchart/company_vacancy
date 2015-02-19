@@ -1,7 +1,8 @@
 # Imports
 #
-GlobalState   = require('global_state/state')
 
+GlobalState   = require('global_state/state')
+ViewerQuery   = new GlobalState.query.Query("Viewer")
 
 # Exports
 #
@@ -24,11 +25,10 @@ module.exports = GlobalState.createStore
   me: ->
     me = @cursor.items.cursor('me')
 
-    GlobalState.fetch({ model: 'Viewer', relations: '' }).then (json) =>
-      @cursor.items.set('me', json.users[0]) if json.users && !me.deref()
+    GlobalState.fetch(ViewerQuery).then (json) =>
+      @cursor.items.set('me', json.users[0]) unless me.deref()
 
     me
-
 
 
   unicorns: ->
@@ -39,6 +39,6 @@ module.exports = GlobalState.createStore
       .filterCursor (user) ->
         roles.find (role) ->
           role.get('owner_type', null)  is null       and
-          role.get('owner_id', null)    is null       and
+          role.get('owner_id',   null)  is null       and
           role.get('value')             is 'unicorn'  and
           role.get('user_id')           is user.get('uuid')

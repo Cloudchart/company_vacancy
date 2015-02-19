@@ -44,18 +44,22 @@ module CloudApi
     end
 
 
-    def populate_data_for_jbuilder(memo, source, query)
+    def populate_data_for_jbuilder(json, memo, source, query)
       return if source.nil?
 
       if source.respond_to?(:each)
-        source.each do |child|
-          populate_data_for_jbuilder(memo, child, query)
+        json.array! source do |child|
+          populate_data_for_jbuilder(json, memo, child, query)
         end
       else
         (memo[source.class.name.pluralize.underscore.to_sym] ||= []) << source
 
+        json.id source.uuid
+
         query.each do |child, child_query|
-          populate_data_for_jbuilder(memo, source.public_send(child), child_query)
+          json.set! child do
+            populate_data_for_jbuilder(json, memo, source.public_send(child), child_query)
+          end
         end unless query.nil?
       end
     end

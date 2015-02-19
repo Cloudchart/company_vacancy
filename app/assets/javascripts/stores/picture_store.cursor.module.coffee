@@ -11,3 +11,9 @@ module.exports = GlobalState.createStore
 
   collectionName: 'pictures'
   instanceName:   'picture'
+
+
+  findByOwner: (owner) ->
+    @cursor.items.find (item) ->
+      item.get('owner_type')  == owner.type and
+      item.get('owner_id')    == owner.id

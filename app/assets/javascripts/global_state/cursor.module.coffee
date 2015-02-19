@@ -73,8 +73,8 @@ CursorFactory = (data, callback) ->
     applyPredicate: (data, path, notSetValue) ->
       value = data.getIn(path)
 
-      if Immutable.Iterable.isIterable(value)
-        value[@type].call(value, @predicate)
+      @seq || if Immutable.Iterable.isIterable(value)
+        @seq = value[@type].call(value, @predicate).toSeq()
       else
         notSetValue
 

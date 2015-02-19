@@ -12,9 +12,9 @@ class Post < ActiveRecord::Base
   has_many :visibilities, as: :owner, dependent: :destroy
   has_many :pins, as: :pinnable, dependent: :destroy
 
-  def company
-    owner if owner_type == 'Company'
-  end
+
+  belongs_to :company, foreign_key: :owner_id, foreign_type: Company
+
 
   def visibility
     visibilities.first
