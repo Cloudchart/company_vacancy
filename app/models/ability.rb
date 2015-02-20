@@ -68,7 +68,7 @@ class Ability
         !user.companies.map(&:id).include?(company.id)
       end
 
-      can :manage, [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post, Story, Quote, PostsStory] do |resource|
+      can :manage, Company::NESTED_MODELS do |resource|
         owner_or_editor?(user, resource.company)
       end
 

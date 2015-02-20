@@ -8,6 +8,7 @@ class Company < ActiveRecord::Base
 
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
   ROLES           = ([:owner] + INVITABLE_ROLES).freeze
+  NESTED_MODELS   = [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post, Story, Quote, PostsStory, Paragraph]
 
   before_save do
     self.slug = nil if slug.blank?

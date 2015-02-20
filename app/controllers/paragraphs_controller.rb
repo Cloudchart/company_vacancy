@@ -1,9 +1,10 @@
 class ParagraphsController < ApplicationController
   before_action :find_owner
+  before_action :set_paragraph
+
+  load_and_authorize_resource
 
   def create
-    @paragraph = @owner.build_paragraph(paragraph_params)
-
     if @paragraph.save
       respond_to do |format|
         format.json { render json: @paragraph }
@@ -16,9 +17,9 @@ class ParagraphsController < ApplicationController
   end
 
   def update
-    if @owner.paragraph.update(paragraph_params)
+    if @paragraph.update(paragraph_params)
       respond_to do |format|
-        format.json { render json: @owner.paragraph }
+        format.json { render json: @paragraph }
       end
     else
       respond_to do |format|
@@ -28,10 +29,10 @@ class ParagraphsController < ApplicationController
   end
   
   def destroy
-    @owner.paragraph.destroy
+    @paragraph.destroy
     
     respond_to do |format|
-      format.json { render json: @owner.paragraph }
+      format.json { render json: @paragraph }
     end
   end
 
@@ -43,6 +44,14 @@ private
         when :block
           Block.where(identity_type: Paragraph.name).includes(:paragraph).find(params[:block_id])
       end
+    end
+  end
+
+  def set_paragraph
+    @paragraph = if action_name == 'create'
+      @owner.build_paragraph(paragraph_params)
+    else
+      @owner.paragraph
     end
   end
   
