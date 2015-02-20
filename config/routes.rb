@@ -45,10 +45,6 @@ Cloudchart::Application.routes.draw do
       match :update_reviewers, on: :member, via: [:put, :patch]
     end
 
-    resources :people, shallow: true do
-      post :search, on: :collection
-    end
-
     resources :events, shallow: true do
       post :verify, on: :member
     end
@@ -59,7 +55,7 @@ Cloudchart::Application.routes.draw do
     end
 
     resources :posts, except: [:new, :edit], shallow: true
-
+    resources :people, except: [:new, :edit], shallow: true
     resources :blocks, only: :create, type: :company
     resources :stories, only: [:show, :index, :create, :update], shallow: true
     get 'stories/:story_name', to: 'posts#index', as: :story

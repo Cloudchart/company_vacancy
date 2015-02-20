@@ -2,7 +2,7 @@ class ParagraphsController < ApplicationController
   before_action :find_owner
   before_action :set_paragraph
 
-  load_and_authorize_resource
+  authorize_resource
 
   def create
     if @paragraph.save
