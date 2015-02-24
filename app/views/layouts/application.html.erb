@@ -25,7 +25,7 @@
     <div data-react-class="components/modal_stack"></div>
 
     <%= javascript_include_tag 'application' %>
-    <%= pagescript %>
+    <%= pagescript unless controller_name == 'errors' %>
     <%= render 'shared/google_analytics' if Rails.env.production? %>
   </body>
 
