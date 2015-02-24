@@ -1,67 +1,81 @@
 # Query parser
 #
-parseQuery = (query) ->
-  result    = Immutable.Map()
-
-  return result unless query and query.length > 0
-
-  key       = ''
-  count     = 0
-  subquery  = ''
 
 
-  result = result.withMutations (result) ->
-    Immutable.Seq(query).forEach (char) ->
-      switch char
-        when '{'
-          subquery += char if count > 0
-          count++
-        when '}'
-          count--
-          subquery += char if count > 0
-          if count == 0
-            result.set(key, parseQuery(subquery))
-            subquery = ''
-        when ','
-          if count > 0
-            subquery += char
-          else
-            result.set(key, null) unless result.has(key)
-            key = ''
-        else
-          if count > 0 then subquery += char else key += char
+PEG_RULE = """
 
-    result.set(key, null) unless result.has(key)
-
-  result
+start =
+  endpoint
 
 
-# Stringify query
-#
+endpoints =
+  first:endpoint ',' rest:endpoints {
+    Immutable.Seq(rest).forEach(function(item, key) {
+      first[key] = item
+    })
+    return first
+  }
+  / only:endpoint {
+    return only
+  }
+
+
+endpoint =
+  space? identifier:identifier space? children:children? space? {
+    result              = {}
+    result[identifier]  = {}
+
+    if (children)
+      result[identifier].children = children
+
+    return result
+  }
+
+
+children =
+  '{' endpoints:endpoints? '}' {
+    return endpoints
+  }
+
+
+identifier =
+  first:[a-zA-Z_]+ rest:[a-zA-Z0-9_]* {
+    return first.join('') + rest.join('')
+  }
+
+
+space =
+  [ \\t\\n\\r]+
+
+
+"""
+
+Parser = PEG.buildParser(PEG_RULE)
+
+
 stringifyQuery = (query) ->
-  return '' unless query
+  return '' unless (children = query.get('children', false)) and children.size > 0
 
-  query
+  Immutable.List()
 
-    .sortBy (value, key) -> key
+    .withMutations (data) ->
+      children
 
-    .reduce (memo, value, key) ->
-      memo.add key + if value = stringifyQuery(value) then "{#{value}}" else ''
-    , Immutable.Set().asMutable()
+        .sortBy (child_query, key) ->
+          key
+
+        .forEach (child_query, key) ->
+          data.push key + if child = stringifyQuery(child_query) then "{#{child}}" else ''
 
     .join(',')
 
 
-
-# Query model
-#
 class Query
 
-  constructor: (value) ->
-    query       = parseQuery(value.replace(/\s+/g, ''))
-
-    @endpoint   = query.keySeq().first()
-    @query      = query.get(@endpoint)
+  constructor: (query) ->
+    query     = Immutable.fromJS(Parser.parse(query))
+    @endpoint = query.keySeq().first()
+    @query    = query.get(@endpoint)
 
 
   toString: ->
