@@ -5,7 +5,11 @@ module CloudApi
 
     def show
       @source   = Pinboard
-      @starter  = [:find, params[:id]]
+      @starter  = if params[:id] == 'system'
+        [:system]
+      else
+        [:find, params[:id]]
+      end
 
       respond_to do |format|
         format.json { render '/main' }

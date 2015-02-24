@@ -14,9 +14,7 @@ module CloudApi
 
 
     def unicorns
-      raise CanCan::AccessDenied unless current_user.try(:editor?)
-
-      @source   = User.unicorns
+      @source   = User
       @starter  = [:unicorns]
 
       respond_to do |format|

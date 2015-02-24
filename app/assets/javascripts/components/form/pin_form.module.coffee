@@ -58,6 +58,11 @@ module.exports = React.createClass
 
         """
 
+      system_pinboards: ->
+        """
+          SystemPinboards {}
+        """
+
       pin: ->
         """
           Pin {}
@@ -74,6 +79,12 @@ module.exports = React.createClass
       else
         @setState
           loaders: @state.loaders.set('viewer', true).set('unicorns', true)
+
+
+  fetchSystemPinboards: ->
+    GlobalState.fetch(@getQuery('system_pinboards')).then =>
+      @setState
+        loaders: @state.loaders.set('system_pinboards', true)
 
 
   fetchPin: ->
@@ -94,12 +105,14 @@ module.exports = React.createClass
 
   fetch: ->
     @fetchViewer()
+    @fetchSystemPinboards()
     @fetchPin()
 
 
   fetchDone: ->
     @state.loaders.get('viewer') and
     @state.loaders.get('unicorns') and
+    @state.loaders.get('system_pinboards') and
     @state.loaders.get('pin')
 
 

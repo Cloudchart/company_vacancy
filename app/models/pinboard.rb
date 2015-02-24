@@ -31,6 +31,11 @@ class Pinboard < ActiveRecord::Base
   end
 
 
+  scope :system, -> do
+    where access_rights: :public, user_id: nil
+  end
+
+
   scope :readable, -> do
     joins { roles.outer }.where { roles.value.eq('reader') }
   end

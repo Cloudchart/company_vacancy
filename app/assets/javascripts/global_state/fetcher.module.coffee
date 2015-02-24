@@ -51,6 +51,13 @@ Endpoints = Immutable.fromJS
       'user':     'User'
 
 
+  'SystemPinboards':
+    url:          '/api/pinboards/system'
+    handle_id:    false
+    require_id:   false
+    store:        -> require('stores/pinboard_store')
+
+
   'Pin':
     url:          '/api/pins'
     handle_id:    true
