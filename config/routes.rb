@@ -30,7 +30,6 @@ Cloudchart::Application.routes.draw do
     get :fetch, on: :collection#, controller: :posts, action: :fetch
   end
 
-
   # Resources
   #
   resources :companies, except: [:create, :edit], concerns: [:followable] do
