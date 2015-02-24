@@ -244,7 +244,7 @@ module.exports = React.createClass
 
       .valueSeq()
 
-      .concat([UserStore.me()])
+      .concat([UserStore.me().deref({})])
 
       .filterNot (user) =>
         @props.cursor.pins
@@ -252,6 +252,8 @@ module.exports = React.createClass
             pin.get('pinnable_type')  is @props.pinnable_type and
             pin.get('pinnable_id')    is @props.pinnable_id   and
             pin.get('user_id')        is user.get('uuid')
+
+      .toSet()
 
       .map (user) =>
         uuid = user.get('uuid')
