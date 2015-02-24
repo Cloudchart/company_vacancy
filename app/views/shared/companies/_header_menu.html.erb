@@ -10,8 +10,7 @@
       </li>
     <% end %>
 
-    <%# if can?(:finance, @company) %>
-    <% if current_user.try(:admin?) %>
+    <% if current_user.try(:admin?) && can?(:finance, @company) %>
       <li>
         <%= link_with_class_for_current('Finance', main_app.finance_company_path(@company), 'base') %>
       </li>
