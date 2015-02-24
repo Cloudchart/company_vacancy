@@ -20,13 +20,7 @@ module.exports = React.createClass
 
   displayName: 'PinButton'
 
-
   mixins: [GlobalState.mixin]
-
-  statics:
-    getCursor: (id) ->
-      pin:    PinStore.cursor.items.cursor(id)
-      user:   UserStore.me()
 
 
   handleClick: (event) ->
