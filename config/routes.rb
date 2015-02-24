@@ -26,11 +26,6 @@ Cloudchart::Application.routes.draw do
     delete :unfollow, on: :member
   end
 
-  resources :posts, only: [:fetch] do
-    get :fetch, on: :collection#, controller: :posts, action: :fetch
-  end
-
-
   # Resources
   #
   resources :companies, except: [:create, :edit], concerns: [:followable] do
@@ -61,7 +56,6 @@ Cloudchart::Application.routes.draw do
     get 'stories/:story_name', to: 'posts#index', as: :story
   end
 
-
   resources :blocks, only: [:update, :destroy] do
     resources :identities, shallow: true, controller: :block_identities, only: [:index, :create, :destroy]
     resource :picture, type: :block, only: [:create, :update, :destroy]
@@ -70,7 +64,9 @@ Cloudchart::Application.routes.draw do
     match :reposition, on: :collection, via: [:put, :patch]
   end
 
-  resources :quotes, only: [:show]
+  resources :posts, only: [:fetch] do
+    get :fetch, on: :collection
+  end
 
   scope 'posts/:post_id' do
     resources :blocks, only: :create, type: :post, as: :post_blocks
@@ -99,19 +95,19 @@ Cloudchart::Application.routes.draw do
     patch :accept, on: :member
   end
 
-  resources :visibilities, only: :update
-  resources :subscriptions, only: [:create, :update, :destroy]
-  resources :comments, only: [:create, :update, :destroy]
-  resources :roles, only: [:update, :destroy]
-
   resources :pinboards do
     get :settings, on: :member
-
     resources :roles, only: [:update, :destroy]
   end
 
   resources :pins
   resources :posts_stories, only: [:update, :destroy]
+
+  resources :quotes, only: [:show]
+  resources :visibilities, only: :update
+  resources :subscriptions, only: [:create, :update, :destroy]
+  resources :comments, only: [:create, :update, :destroy]
+  resources :roles, only: [:update, :destroy]
 
   # Custom
   #
