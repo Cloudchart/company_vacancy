@@ -37,10 +37,7 @@ module.exports = React.createClass
 
 
   gatherAttributes: ->
-    uuid = @props.cursor.pin.get('uuid')
-
-    cursor:         PinButton.getCursor(uuid)
-    uuid:           uuid
+    uuid:           @props.cursor.pin.get('uuid')
     parent_id:      @props.cursor.pin.get('parent_id')
     pinnable_id:    @props.cursor.pin.get('pinnable_id')
     pinnable_type:  @props.cursor.pin.get('pinnable_type')
