@@ -21,9 +21,12 @@ endpoints =
 
 
 endpoint =
-  space? identifier:identifier space? children:children? space? {
+  space? identifier:identifier id:id? space? children:children? space? {
     result              = {}
     result[identifier]  = {}
+
+    if (id)
+      result[identifier].id = id
 
     if (children)
       result[identifier].children = children
@@ -41,6 +44,12 @@ children =
 identifier =
   first:[a-zA-Z_]+ rest:[a-zA-Z0-9_]* {
     return first.join('') + rest.join('')
+  }
+
+
+id =
+  '(' letters:[a-zA-Z0-9_\-]+ ')' {
+    return letters.join('')
   }
 
 
@@ -75,6 +84,7 @@ class Query
   constructor: (query) ->
     query     = Immutable.fromJS(Parser.parse(query))
     @endpoint = query.keySeq().first()
+    @id       = query.getIn([@endpoint, 'id'])
     @query    = query.get(@endpoint)
 
 
