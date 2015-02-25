@@ -45,6 +45,10 @@ module.exports = GlobalState.createStore
     @cursor.items.filterCursor readablePinboardsFilter(user)
 
 
+  userCursorFor: (id) ->
+    UserStore.cursor.items.cursor(@cursor.items.getIn([id, 'user_id']))
+
+
   editorsFor: (id) ->
     filterUsersForRole(id, 'editor')
 

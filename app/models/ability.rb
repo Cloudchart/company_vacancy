@@ -9,13 +9,13 @@ class Ability
     if user.guest?
       can :read, :company_invite
 
-      can :read, Page
+      # can :read, Page
       can :read, Event
       can :read, Feature
       can :read, BlockIdentity
       can :read, Event
       can :read, Tag
-      can [:read, :accept], Interview
+      # can [:read, :accept], Interview
       can :read, Person
       can :read, Vacancy
       can :read, Quote
@@ -36,7 +36,7 @@ class Ability
       can [:verify, :resend_verification], :cloud_profile_email
       can :manage, :cloud_profile_main
       can :update, :cloud_profile_user
-      can [:accept, :destroy], :company_invite
+      can [:read, :accept, :destroy], :company_invite
 
       can :index, Company
       can [:create, :read, :search, :unfollow], Company
