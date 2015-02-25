@@ -5,7 +5,7 @@ PersonStore   = require('stores/person_store.cursor')
 TaggingStore  = require('stores/tagging_store')
 TagStore      = require('stores/tag_store')
 
-Avatar        = require('components/avatar')
+Logo          = require('components/company/logo')
 
 CompanyList = React.createClass
 
@@ -62,8 +62,8 @@ CompanyList = React.createClass
     <article className="company-preview">
       <a href={ company.get('company_url') } className="company-preview-link">
         <header>
-          <Avatar 
-            avatarURL = { company.get('logotype_url') }
+          <Logo 
+            logoUrl   = { company.get('logotype_url') }
             value     = { company.get('name') } />
         </header>
         <section className="middle">

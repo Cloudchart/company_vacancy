@@ -11,31 +11,43 @@ CompanyList = React.createClass
 
   displayName: 'CompanyList'
 
-  mixins: [GlobalState.mixin]
-
 
   # Component specifications
   #
+  propTypes:
+    headerText:    React.PropTypes.string
+    companiesIds:  React.PropTypes.instanceOf(Immutable.Seq).isRequired
+
   getDefaultProps: ->
-    cursor:
-      companies: CompanyStore.cursor.items
+    headerText: ''
 
   getInitialState: ->
-    _.extend @getStateFromStores(),
-      stateLoaded: false
+    @getStateFromStores(@props)
 
-  getStateFromStores: ->
-    companies: @props.cursor.companies.deref(Immutable.Seq())
+  getStateFromStores: (props) ->
+    companies: CompanyStore.cursor.items.deref(Immutable.Seq()).filter((company) => props.companiesIds.contains(company.get('uuid'))).toSeq()
 
-  onGlobalStateChange: ->
-    @setState  _.extend @getStateFromStores(), stateLoaded: true
+
+  # Helpers
+  #
+  getHeaderText: ->
+    if @props.headerText
+      @props.headerText
+    else
+      "#{@state.companies.size} companies"
+
+
+  # LifecycleMethods
+  #
+  componentWillReceiveProps: (nextProps) ->
+    @setState(@getStateFromStores(nextProps))
 
 
   # Renderers
   #
   renderHeader: ->
     <header>
-      <h1>{ @state.companies.size } companies</h1>
+      <h1>{ @getHeaderText() }</h1>
     </header>
 
   renderCompanies: ->
@@ -43,15 +55,16 @@ CompanyList = React.createClass
       <CompanyPreview 
         key  = { company.get('uuid') }
         uuid = { company.get('uuid') } />
+    .toArray()
 
 
   render: ->
-    return null if @state.companies.size == 0 && !@state.stateLoaded
+    return null if @state.companies.size == 0
 
     <section className="companies-list">
       { @renderHeader() }
       <div>
-        { @renderCompanies().toArray() }
+        { @renderCompanies() }
       </div>
     </section>
 

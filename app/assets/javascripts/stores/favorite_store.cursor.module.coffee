@@ -4,7 +4,7 @@ GlobalState = require('global_state/state')
 
 module.exports = GlobalState.createStore
 
-  displayName:    'TaggingStore'
+  displayName:    'FavoriteStore'
 
-  collectionName: 'taggings'
-  instanceName:   'tagging'
+  collectionName: 'favorites'
+  instanceName:   'favorite'

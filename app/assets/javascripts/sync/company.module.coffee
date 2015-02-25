@@ -24,13 +24,11 @@ module.exports =
 
   # TODO: move to cloud_profile
   fetchAll: (done, fail) ->
-    $.ajax
+    Promise.resolve $.ajax
       url:        "/profile/companies"
       type:       "GET"
       dataType:   "json"
       cache:      false
-    .done done
-    .fail fail
   
 
   update: (key, data, done, fail) ->

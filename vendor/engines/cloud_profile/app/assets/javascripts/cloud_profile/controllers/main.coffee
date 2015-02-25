@@ -2,40 +2,40 @@
 
 # Companies
 #
-@['cloud_profile/main#companies'] = ->
-  CompanySync = require('sync/company')
+# @['cloud_profile/main#companies'] = ->
+#   CompanySync = require('sync/company')
 
-  CompanyStore = require('stores/company')
-  TokenStore = require('stores/token_store')
-  RoleStore = require('stores/role_store')
-  FavoriteStore = require('stores/favorite')
-  Dispatcher = require('dispatcher/dispatcher')
+#   CompanyStore = require('stores/company')
+#   TokenStore = require('stores/token_store')
+#   RoleStore = require('stores/role_store')
+#   FavoriteStore = require('stores/favorite')
+#   Dispatcher = require('dispatcher/dispatcher')
 
-  CompanyPreviewList = require('components/company/preview/list')
+#   CompanyPreviewList = require('components/company/preview/list')
 
-  CompanySync.fetchAll().done((json) ->
+#   CompanySync.fetchAll().done((json) ->
     
-    Dispatcher.handleServerAction
-      type: 'company:fetch:many:done'
-      data: [json]
+#     Dispatcher.handleServerAction
+#       type: 'company:fetch:many:done'
+#       data: [json]
 
-    _.each json.companies, (company) ->
-      CompanyStore.add(company.uuid, company)
+#     _.each json.companies, (company) ->
+#       CompanyStore.add(company.uuid, company)
 
-    _.each json.tokens, (token) ->
-      TokenStore.add(token.uuid, token)
+#     _.each json.tokens, (token) ->
+#       TokenStore.add(token.uuid, token)
 
-    _.each json.roles, (role) ->
-      RoleStore.add(role.uuid, role)
+#     _.each json.roles, (role) ->
+#       RoleStore.add(role.uuid, role)
 
-    _.each json.favorites, (favorite) ->
-      FavoriteStore.add(favorite.uuid, favorite)
+#     _.each json.favorites, (favorite) ->
+#       FavoriteStore.add(favorite.uuid, favorite)
 
-    React.renderComponent(
-      CompanyPreviewList()
-      document.querySelector('body > main')
-    )
-  )
+#     React.renderComponent(
+#       CompanyPreviewList()
+#       document.querySelector('body > main')
+#     )
+#   )
 
 
 # Settings

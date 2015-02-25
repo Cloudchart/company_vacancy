@@ -1,10 +1,13 @@
 # @cjsx React.DOM
 
-GlobalState   = require('global_state/state')
+GlobalState       = require('global_state/state')
 
-CompanyStore  = require('stores/company_store.cursor')
+CompanyStore      = require('stores/company_store.cursor')
 
-Field         = require('components/form/field')
+Field             = require('components/form/field')
+SearchCursorPath  = require('constants').cursors.search
+
+SearchCursor      = GlobalState.cursor(SearchCursorPath)
 
 
 CompanySearch = React.createClass
@@ -22,27 +25,30 @@ CompanySearch = React.createClass
 
   getInitialState: ->
     query: @props.query || location.hash.substr(1) || ''
+    isTyping: false
 
 
   # Helpers
   #
-  search: ->
-    if @state.query
+  search: (query) ->
+    if query.length > 2
       location.hash = "#{@state.query}"
-    else
+      CompanyStore.search(query)
+      SearchCursor.set 'query', query
+    else if query.length == 0
       location.hash = ""
-
-    CompanyStore.search(@state.query)
+      CompanyStore.search(query)
+    
+    SearchCursor.set 'query', query
 
 
   # Handlers
   #
-  handleSearch: (query) ->
-    @search(query)
-
   handleChange: (event) ->
-    @setState(query: event.target.value)
+    @search(event.target.value)
 
+    @setState(query: event.target.value)
+    
 
   # Lifecycle methods
   #
@@ -56,7 +62,6 @@ CompanySearch = React.createClass
         iconClass   = "fa-search"
         placeholder = "Find companies"
         onChange    = { @handleChange }
-        onEnter     = { @handleSearch }
         value       = { @state.query }
       />
     </div>
