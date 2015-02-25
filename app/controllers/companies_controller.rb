@@ -207,9 +207,13 @@ private
       'published-company'
     elsif action_name == 'new'
       'created-company'
+    else
+      nil
     end
 
-    IntercomEventsWorker.perform_async(event_name, current_user.id, company_id: @company.id)
+    if event_name
+      IntercomEventsWorker.perform_async(event_name, current_user.id, company_id: @company.id)
+    end
   end
 
 end

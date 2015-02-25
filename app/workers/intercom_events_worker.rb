@@ -2,6 +2,8 @@ class IntercomEventsWorker < ApplicationWorker
   include Rails.application.routes.url_helpers
 
   def perform(event_name, user_id, options={})
+    return unless event_name.present?
+
     # find user
     user = User.find(user_id)
 
