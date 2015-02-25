@@ -21,8 +21,8 @@ end
 
 includes = gather_includes(@source, query)
 
+@source = @source.includes(includes) unless includes.empty?
 
-@source = @source.includes(includes).references(:all) unless includes.empty?
 @source = @source.public_send(*@starter)
 
 

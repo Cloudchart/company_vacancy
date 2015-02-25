@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   validate :validate_email, on: :create
 
   default_scope -> { includes(:emails) }
-  scope :unicorns, -> { includes(:system_roles).where(roles: { value: 'unicorn'}) }
+  scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
 
 
   # Roles on Pinboards

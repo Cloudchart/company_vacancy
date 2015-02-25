@@ -44,6 +44,7 @@ module.exports = React.createClass
         """
           Viewer {
             roles,
+            pinboards,
             writable_pinboards
           }
 
@@ -53,6 +54,7 @@ module.exports = React.createClass
         """
           Unicorns {
             roles,
+            pinboards,
             writable_pinboards
           }
 
@@ -71,56 +73,54 @@ module.exports = React.createClass
 
 
   fetchViewer: ->
-    GlobalState.fetch(@getQuery('viewer')).then =>
-      if @currentUserIsSystemEditor()
-        @fetchUnicorns()
-        @setState
-          loaders: @state.loaders.set('viewer', true)
-      else
-        @setState
-          loaders: @state.loaders.set('viewer', true).set('unicorns', true)
+    GlobalState.fetch(@getQuery('viewer'))
 
 
   fetchSystemPinboards: ->
-    GlobalState.fetch(@getQuery('system_pinboards')).then =>
-      @setState
-        loaders: @state.loaders.set('system_pinboards', true)
+    GlobalState.fetch(@getQuery('system_pinboards'))
 
 
   fetchPin: ->
     if @props.uuid
-      GlobalState.fetch(@getQuery('pin'), id: @props.uuid).then =>
-        @setState
-          loaders: @state.loaders.set('pin', true)
+      GlobalState.fetch(@getQuery('pin'), id: @props.uuid)
     else
-      @setState
-        loaders: @state.loaders.set('pin', true)
+      true
 
 
   fetchUnicorns: ->
-    GlobalState.fetch(@getQuery('unicorns')).then =>
-      @setState
-        loaders: @state.loaders.set('unicorns', true)
+    GlobalState.fetch(@getQuery('unicorns'))
 
 
   fetch: ->
-    @fetchViewer()
-    @fetchSystemPinboards()
-    @fetchPin()
+    Promise.all([@fetchViewer(), @fetchSystemPinboards(), @fetchUnicorns(), @fetchPin()]).then =>
+      @handleFetchDone()
+
+
+  handleFetchDone: ->
+    @setState
+      fetchDone:  true
+      attributes: @getAttributesFromCursor()
 
 
   fetchDone: ->
-    @state.loaders.get('viewer') and
-    @state.loaders.get('unicorns') and
-    @state.loaders.get('system_pinboards') and
-    @state.loaders.get('pin')
+    @state.fetchDone == true
 
 
   handleSubmit: (event) ->
     event.preventDefault()
+    system_pinboard_ids = PinboardStore.system().keySeq()
+    pinboard_id         = @state.attributes.get('pinboard_id')
+    user_id             = @state.attributes.get('user_id')
 
-    if (@state.attributes.get('pinboard_id') == 'new')
-      PinboardStore.create({ title: @state.attributes.get('pinboard_title') }).then(@handlePinboardSave, @handleSaveFail)
+
+    if (pinboard_id == 'new')
+      PinboardStore.create({ title: @state.attributes.get('pinboard_title'), user_id: user_id })
+        .then(@handlePinboardSave, @handleSaveFail)
+
+    else if system_pinboard_ids.contains(pinboard_id)
+      PinboardStore.create({ title: @props.cursor.pinboards.getIn([pinboard_id, 'title']), user_id: user_id })
+        .then(@handlePinboardSave, @handleSaveFail)
+
     else
       attributes = @state.attributes.remove('pinboard_title').toJSON()
       @savePin(attributes)
@@ -164,45 +164,61 @@ module.exports = React.createClass
       value = value.substring(0, ContentMaxLength)
 
     if name == 'user_id'
-      attributes = attributes.set('pinboard_id', @getDefaultPinboardIdFor(value))
+      attributes = attributes.set('pinboard_id', @getDefaultPinboardId(value))
 
     @setState
       attributes: attributes.set(name, value)
 
 
-  getDefaultUserId: ->
-    if @props.uuid then @props.cursor.pins.items.getIn([@props.uuid, 'user_id']) else @props.cursor.me.get('uuid', '')
+  gatherPinboards: (id = @state.attributes.get('user_id')) ->
+    pinboards         = PinboardStore.writableBy(id)
+
+    pinboard_names    = pinboards
+      .map (item) ->
+        item.get('title')
+      .toSetSeq()
+
+    system_pinboards  = PinboardStore.system()
+      .filterNot (item) ->
+        pinboard_names.contains(item.get('title'))
+
+    pinboards.concat(system_pinboards)
+      .sortBy (item) ->
+        item.get('title')
 
 
-  getDefaultPinboardIdFor: (user_id) ->
-    defaultPinboard = @props.cursor.pinboards
-      .filter (pinboard) =>
-        pinboard.get('user_id') == user_id or
-        pinboard.get('user_id') == null
+  getDefaultPinboardId: (id) ->
+    pinboard = @gatherPinboards(id).first()
 
-      .sortBy (pinboard) -> pinboard.get('title')
-      .first()
-
-    if defaultPinboard then defaultPinboard.get('uuid') else 'new'
+    if pinboard then pinboard.get('uuid') else 'new'
 
 
-  setAttributes: ->
-    attributes  = Immutable.Map({})
-    pin         = @props.cursor.pins.cursor(@props.uuid)
+  getAttributesFromCursor: ->
+    pin = @props.cursor.pins.cursor(@props.uuid)
 
-    attributes  = attributes.withMutations (attributes) =>
+    Immutable.Map().withMutations (attributes) =>
       KnownAttributes.forEach (name) =>
-        attributes.set(name, pin.get(name, @props[name] || ''))
+        attributes.set(name, @state.attributes.get(name) || pin.get(name, ''))
 
-      unless attributes.get('pinboard_id')
-        attributes.set('pinboard_id', @getDefaultPinboardIdFor(@getDefaultUserId()))
+      unless attributes.get('user_id', false)
+        attributes.set('user_id', @props.cursor.me.get('uuid'))
 
-      unless attributes.get('user_id')
-        attributes.set('user_id', @getDefaultUserId())
+      unless attributes.get('pinboard_id', false)
+        attributes.set('pinboard_id', @getDefaultPinboardId(attributes.get('user_id')))
 
-      attributes
 
-    attributes
+  getAttributesFromProps: ->
+    Immutable.Map().withMutations (attributes) =>
+      KnownAttributes.forEach (name) =>
+        attributes.set(name, @props[name] || '')
+
+
+  currentUserIsSystemEditor: ->
+    RoleStore.rolesFor(UserStore.me().get('uuid'))
+      .find (role) =>
+        role.get('owner_id',    null)   is null     and
+        role.get('owner_type',  null)   is null     and
+        role.get('value')               is 'editor'
 
 
   # Lifecycle
@@ -224,7 +240,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     loaders:    Immutable.Map()
-    attributes: @setAttributes()
+    attributes: @getAttributesFromProps()
 
 
   # Render
@@ -246,26 +262,13 @@ module.exports = React.createClass
 
       .concat([UserStore.me().deref({})])
 
-      .filterNot (user) =>
-        @props.cursor.pins
-          .find (pin) =>
-            pin.get('pinnable_type')  is @props.pinnable_type and
-            pin.get('pinnable_id')    is @props.pinnable_id   and
-            pin.get('user_id')        is user.get('uuid')
+      .toSet()
 
       .toSet()
 
       .map (user) =>
         uuid = user.get('uuid')
-        <option key={ uuid } value={ uuid }>{ user.get('first_name') + ' ' + user.get('last_name') }</option>
-
-
-  currentUserIsSystemEditor: ->
-    RoleStore.rolesFor(UserStore.me().get('uuid'))
-      .find (role) =>
-        role.get('owner_id',    null)   is null     and
-        role.get('owner_type',  null)   is null     and
-        role.get('value')               is 'editor'
+        <option key={ uuid } value={ uuid }>{ user.get('full_name') }</option>
 
 
   renderUserSelect: ->
@@ -290,22 +293,15 @@ module.exports = React.createClass
 
 
   renderPinboardSelectOptions: ->
-    options = @props.cursor.pinboards
-      .filter (pinboard) =>
-        pinboard.get('user_id') == @state.attributes.get('user_id') or
-        pinboard.get('user_id') == null
-
-      .sortBy (pinboard) -> pinboard.get('title')
+    @gatherPinboards()
 
       .map (pinboard, uuid) ->
+
         <option key={ uuid } value={ uuid }>{ pinboard.get('title') }</option>
 
-      .toList()
+      .valueSeq()
 
-    if @state.attributes.get('user_id') == @props.cursor.me.get('uuid')
-      options = options.push(<option key="new" value="new">Create Category</option>)
-
-    options
+      .concat [<option key="new" value="new">Create Category</option>]
 
 
   renderPinboardSelect: ->

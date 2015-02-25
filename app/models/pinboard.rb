@@ -1,7 +1,7 @@
 class Pinboard < ActiveRecord::Base
   include Uuidable
 
-  ACCESS_RIGHTS = [:piblic, :protected, :private]
+  ACCESS_RIGHTS = [:public, :protected, :private]
 
   validates                 :title, presence: true
   validates_uniqueness_of   :title, scope: :user_id, case_sensitive: false

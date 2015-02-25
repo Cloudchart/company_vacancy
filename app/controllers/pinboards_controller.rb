@@ -22,7 +22,7 @@ class PinboardsController < ApplicationController
 
 
   def settings
-    @pinboard = effective_user.pinboards.find(params[:id])
+    @pinboard = Pinboard.find(params[:id])
 
     respond_to do |format|
       format.html
@@ -31,7 +31,7 @@ class PinboardsController < ApplicationController
 
 
   def create
-    @pinboard = effective_user.pinboards.create!(params_for_create)
+    @pinboard = pinboard_source.create!(params_for_create)
 
     respond_to do |format|
       format.json { render json: { id: @pinboard.uuid } }
@@ -46,7 +46,7 @@ class PinboardsController < ApplicationController
 
 
   def update
-    pinboard = effective_user.pinboards.find(params[:id])
+    pinboard = pinboard_source.find(params[:id])
 
     pinboard.update!(params_for_update)
 
@@ -63,7 +63,7 @@ class PinboardsController < ApplicationController
 
 
   def destroy
-    pinboard = effective_user.pinboards.find(params[:id])
+    pinboard = pinboard_source.find(params[:id])
 
     pinboard.destroy
 
@@ -81,8 +81,17 @@ class PinboardsController < ApplicationController
   end
 
 
+  def pinboard_source
+    if current_user.editor?
+      Pinboard
+    else
+      effective_user.pinboards
+    end
+  end
+
+
   def params_for_create
-    params.require(:pinboard).permit(:title, :description, :access_rights)
+    params.require(:pinboard).permit(:title, :user_id, :description, :access_rights)
   end
 
 

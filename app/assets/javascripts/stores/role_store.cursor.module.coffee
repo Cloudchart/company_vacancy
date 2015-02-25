@@ -16,9 +16,9 @@ module.exports = GlobalState.createStore
 
 
   rolesFor: (id) ->
-    roles = require('stores/role_store.cursor').cursor.items
-
-    roles.filter (role) -> role.get('user_id') is id
+    @cursor.items
+      .filter (item) ->
+        item.get('user_id') == id
 
 
   rolesOn: (id, type) ->
