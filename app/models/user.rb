@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
   validates :invite, presence: true, if: :should_validate_invite?
   validate :validate_email, on: :create
 
-  default_scope -> { includes(:emails) }
+  #default_scope -> { includes(:emails) }
   scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
 
 
