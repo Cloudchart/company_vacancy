@@ -13,9 +13,12 @@
 
 <div class="spacer"></div>
 
-<% if can?(:index, Company) %>
-  <div class="browse-companies">
-    <%= link_to 'Companies', main_app.companies_path, class: 'base strong' %>
+<% if user_authenticated? %>
+  <div class="menu-link">
+    <%= link_with_class_for_current('Pinboards', main_app.pinboards_path, 'base') %>
+  </div>
+  <div class="menu-link">
+    <%= link_with_class_for_current 'Companies', main_app.companies_path, 'base' %>
   </div>
 <% end %>
 

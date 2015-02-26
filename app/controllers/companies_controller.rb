@@ -80,7 +80,7 @@ class CompaniesController < ApplicationController
   # DELETE /companies/1
   def destroy
     @company.destroy
-    redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
+    redirect_to main_app.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
   # GET /companies/1/finance
