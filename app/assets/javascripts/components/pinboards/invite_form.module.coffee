@@ -2,7 +2,9 @@
 
 # Imports
 # 
-# SomeComponent = require('')
+PinboardStore = require('stores/pinboard_store')
+
+ModalStack = require('components/modal_stack')
 
 
 # Utils
@@ -32,7 +34,24 @@ MainComponent = React.createClass
   # Handlers
   # 
   handleBackButtonClick: (event) ->
-    console.log 'handleBackButtonClick'
+    ModalStack.hide()
+
+  handleSubmit: (event) ->
+    event.preventDefault()
+
+    PinboardStore.sendInvite(@props.pinboard, { email: @state.email, role: @state.role }).then(@handleInviteSave, @handleInviteFail)
+
+  handleEmailChange: (event) ->
+    @setState email: event.target.value
+
+  handleInviteSave: (json) ->
+    console.log 'handleInviteSave'
+
+  handleInviteFail: ->
+    console.warn 'handleInviteFail'
+
+  handleRoleChange: (event) ->
+    @setState role: event.target.value
 
 
   # Lifecycle Methods
@@ -49,7 +68,11 @@ MainComponent = React.createClass
   # Component Specifications
   # 
   # getDefaultProps: ->
-  # getInitialState: ->
+
+  getInitialState: ->
+    email: ''
+    role: 'editor'
+    errors: Immutable.Map({})
 
 
   # Renderers
@@ -60,24 +83,61 @@ MainComponent = React.createClass
   # Main render
   # 
   render: ->
-    <div className="pinboard-invite-form">
+    <div className="pinboard-invite">
       <header>
-        <button className="transparent" onClick={@handleBackButtonClick}>
-          <i className="fa fa-angle-left"/>
+        <button className="transparent" onClick={@handleBackButtonClick} disabled={false}>
+          <i className="fa fa-angle-left" />
         </button>
 
-        <span>
-          Pinboard Invite Form
-        </span>
+        <span>Share <strong>{ @props.pinboard.get('name') }</strong></span>
       </header>
 
-      <div className="content">
-        <ul className="roles">
-          <li>{Roles.editor}</li>
-          <li>{Roles.reader}</li>
-          <li>{Roles.follower}</li>
-        </ul>
-      </div>
+      <form onSubmit={@handleSubmit} >
+        <fieldset className="roles">
+          <input 
+            id="role-editor"
+            type="radio"
+            value="editor"
+            checked={@state.role is 'editor'}
+            onChange={@handleRoleChange}
+          />
+          <label htmlFor="role-editor">{Roles.editor}</label>
+
+          <input 
+            id="role-reader"
+            type="radio"
+            value="reader"
+            checked={@state.role is 'reader'}
+            onChange={@handleRoleChange}
+          />
+          <label htmlFor="role-reader">{Roles.reader}</label>
+
+          <input 
+            id="role-follower"
+            type="radio"
+            value="follower"
+            checked={@state.role is 'follower'}
+            onChange={@handleRoleChange}
+          />
+          <label htmlFor="role-follower">{Roles.follower}</label>
+        </fieldset>
+
+        <footer>
+          <input 
+            id="email"
+            name="email"
+            value={@state.email}
+            placeholder="user@example.com"
+            onChange={@handleEmailChange}
+          />
+
+          <button className="cc cc-wide" type="submit" disabled={false}>
+            Invite
+          </button>
+
+        </footer>
+
+      </form>
     </div>
 
 

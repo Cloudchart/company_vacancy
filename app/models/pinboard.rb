@@ -13,6 +13,7 @@ class Pinboard < ActiveRecord::Base
   has_many :roles, as: :owner
   has_many :posts, through: :pins, source: :pinnable, source_type: 'Post'
   has_many :users, through: :roles
+  has_many :tokens, as: :owner, dependent: :destroy
 
   # Roles on Users
   #

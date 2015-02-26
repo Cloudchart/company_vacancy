@@ -1,7 +1,7 @@
 # Imports
 #
 GlobalState = require('global_state/state')
-
+SyncAPI = require('sync/pinboard_sync_api')
 
 # Stores
 #
@@ -38,7 +38,7 @@ module.exports = GlobalState.createStore
   collectionName: 'pinboards'
   instanceName:   'pinboard'
 
-  syncAPI:        require('sync/pinboard_sync_api')
+  syncAPI:        SyncAPI
 
 
   readable_pinboards: (user) ->
@@ -59,3 +59,6 @@ module.exports = GlobalState.createStore
 
   followersFor: (id) ->
     filterUsersForRole(id, 'follower')
+
+  sendInvite: (item, attributes = {}, options = {}) ->
+    SyncAPI.sendInvite(item, attributes, options)

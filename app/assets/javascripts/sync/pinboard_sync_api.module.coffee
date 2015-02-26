@@ -51,3 +51,12 @@ module.exports =
       url:      '/pinboards/' + id
       type:     'DELETE'
       dataType: 'json'
+
+
+  sendInvite: (item, attributes, options) ->
+    Promise.resolve $.ajax
+      url: "/pinboards/#{item.get('uuid')}/invites"
+      type: 'POST'
+      dataType: 'json'
+      data: 
+        token: attributes

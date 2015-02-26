@@ -95,9 +95,10 @@ module.exports = React.createClass
     return unless event.key == 'Enter'
     event.target.blur()
 
+
   handleinviteClick: (event) ->
     # TODO: get invitable roles and contacts from server
-    ModalStack.show <InviteForm uuid={@props.uuid} />
+    ModalStack.show <InviteForm pinboard={@cursor.pinboard} />
 
 
   getAttributesFromCursor: ->
@@ -230,7 +231,7 @@ module.exports = React.createClass
             { null }
           </ul>
 
-          <button className="cc" onClick={@handleinviteClick} disabled={false}>
+          <button className="cc cc-wide" onClick={@handleinviteClick} disabled={false}>
             Invite
           </button>
         </div>

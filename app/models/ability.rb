@@ -92,30 +92,35 @@ class Ability
         (post.company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')) ||
         (post.visibility.try(:value) == 'trusted' && trusted_reader?(user, post.company))
       end
+
+      can :manage_pinboard_invites, Pinboard do |pinboard|
+        user.id == pinboard.user_id || editor?(user, pinboard)
+      end
+
     end
 
   end
 
 private
 
-  def owner?(user, company)
-    role_value(user, company) == 'owner'
+  def owner?(user, object)
+    role_value(user, object) == 'owner'
   end
 
-  def editor?(user, company)
-    role_value(user, company) == 'editor'
+  def editor?(user, object)
+    role_value(user, object) == 'editor'
   end
 
-  def owner_or_editor?(user, company)
-    role_value(user, company) =~ /owner|editor/
+  def owner_or_editor?(user, object)
+    role_value(user, object) =~ /owner|editor/
   end
 
-  def trusted_reader?(user, company)
-    role_value(user, company) == 'trusted_reader'
+  def trusted_reader?(user, object)
+    role_value(user, object) == 'trusted_reader'
   end
 
-  def role_value(user, company)
-    user.roles.select { |role| role.owner_id == company.id }.first.try(:value)
+  def role_value(user, object)
+    user.roles.select { |role| role.owner_id == object.id }.first.try(:value)
   end
 
 end

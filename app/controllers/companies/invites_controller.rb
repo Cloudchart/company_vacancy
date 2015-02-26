@@ -1,9 +1,9 @@
 module Companies
   class InvitesController < ApplicationController
-    before_action :set_company, only: [:index, :create, :resend]
+    before_action :set_company, only: [:create, :resend]
     before_action :set_token, only: [:show, :accept, :destroy]
 
-    authorize_resource class: :company_invite, except: [:index, :create, :resend]
+    authorize_resource class: :company_invite, except: [:create, :resend]
 
     after_action :create_intercom_event, only: :create
 
