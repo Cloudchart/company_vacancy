@@ -16,19 +16,32 @@ module.exports = GlobalState.createStore
 
   search: (query) ->
     @syncAPI.search(query).done (json) =>
-      @cursor.items.forEach (item, id) =>
-        if @getSearchedCompanies().map((company) -> company.get('uuid')).has(id)
-          @cursor.items.removeIn(item.get('uuid'))
-      @fetchDone(json)
+      @cursor.items.transaction =>
+        @cursor.items.forEach (item, id) =>
+          if @getSearchedCompanies().map((company) -> company.get('uuid')).has(id)
+            @cursor.items.removeIn(item.get('uuid'))
+        Dispatcher.handleServerAction
+          type: 'fetch:done'
+          data: [json]
 
 
   # temp solution, will go away
   fetchAll: ->
-    @syncAPI.fetchAll().done (json) =>
-      @cursor.items.forEach (item, id) =>
-        if !@getSearchedCompanies().map((company) -> company.get('uuid')).has(id)
-          @cursor.items.removeIn(item.get('uuid'))
-      @fetchDone(json)
+    promise = @syncAPI.fetchAll()
+
+    promise.done (json) =>
+      @cursor.items.transaction =>
+        @cursor.items.forEach (item, id) =>
+          if !@getSearchedCompanies().map((company) -> company.get('uuid')).has(id)
+            @cursor.items.removeIn(item.get('uuid'))
+        TokenStore.cursor.items.clear()
+        RoleStore.cursor.items.clear()
+        FavoriteStore.cursor.items.clear()
+        Dispatcher.handleServerAction
+          type: 'fetch:done'
+          data: [json]
+
+    promise
 
 
   getMyCompanies: ->

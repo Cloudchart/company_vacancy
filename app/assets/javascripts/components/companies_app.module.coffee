@@ -59,6 +59,10 @@ CompaniesApp = React.createClass
       location.hash = ""
       CompanyStore.search(query)
 
+  updateStores: ->
+    CompanyStore.fetchAll().done =>
+      @search(@state.query)
+
 
   # Handlers
   #
@@ -70,12 +74,14 @@ CompaniesApp = React.createClass
       @search(@state.query)
     , 250
 
+  handleSyncDone: ->
+    @updateStores()
+
 
   # Lifecycle methods
   #
   componentWillMount: ->
-    CompanyStore.fetchAll()
-    @search(@state.query)
+    @updateStores()
 
 
   # Renderers
@@ -92,7 +98,8 @@ CompaniesApp = React.createClass
   renderCompanies: (companiesIds, headerText='') ->
     <CompanyList 
       companiesIds = { companiesIds }
-      headerText = { headerText} />
+      headerText   = { headerText}
+      onSyncDone   = { @handleSyncDone } />
 
   renderMyCompanies: ->
     @renderCompanies(@state.myCompaniesIds, 'My Companies')
