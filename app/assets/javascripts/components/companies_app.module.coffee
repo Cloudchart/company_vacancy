@@ -8,10 +8,7 @@ FavoriteStore     = require('stores/favorite_store.cursor')
 RoleStore         = require('stores/role_store.cursor')
 
 CompanyList       = require('components/company/list')
-
-SearchCursorPath  = require('constants').cursors.search
-
-SearchCursor      = GlobalState.cursor(SearchCursorPath)
+Field             = require('components/form/field')
 
 
 CompaniesApp = React.createClass
@@ -23,16 +20,19 @@ CompaniesApp = React.createClass
 
   # Component specifications
   #
+  propTypes:
+    query: React.PropTypes.string
+
   getDefaultProps: ->
     cursor:
       companies: CompanyStore.cursor.items 
       tokens:    TokenStore.cursor.items
       favorites: FavoriteStore.cursor.items
       roles:     RoleStore.cursor.items
-      search:    SearchCursor
 
   getInitialState: ->
-    @getStateFromStores()
+    _.extend @getStateFromStores(), 
+      query:    @props.query || location.hash.substr(1) || ''
 
   getStateFromStores: ->
     myCompaniesIds:        @getIds(CompanyStore.getMyCompanies())
@@ -48,18 +48,47 @@ CompaniesApp = React.createClass
   #
   getIds: (companies) ->
     companies
-      .filter((company) => company.get('name').toLowerCase().indexOf(@props.cursor.search.get('query').toLowerCase()) != -1)
+      .filter((company) => company.get('name').toLowerCase().indexOf(@state.query.toLowerCase()) != -1)
       .map((company) -> company.get('uuid')).toSeq()
+
+  search: (query) ->
+    if query.length > 2
+      location.hash = "#{@state.query}"
+      CompanyStore.search(query)
+    else if query.length == 0
+      location.hash = ""
+      CompanyStore.search(query)
+
+
+  # Handlers
+  #
+  handleChange: (event) ->
+    @setState(query: event.target.value)
+
+    clearTimeout(@timeout)
+    @timeout = setTimeout =>
+      @search(@state.query)
+    , 250
 
 
   # Lifecycle methods
   #
   componentWillMount: ->
     CompanyStore.fetchAll()
+    @search(@state.query)
 
 
   # Renderers
   #
+  renderSearch: ->
+    <div className="search">
+      <Field 
+        placeholder = "Search"
+        onChange    = { @handleChange }
+        value       = { @state.query }
+      />
+    </div>
+
   renderCompanies: (companiesIds, headerText='') ->
     <CompanyList 
       companiesIds = { companiesIds }
@@ -80,6 +109,7 @@ CompaniesApp = React.createClass
 
   render: ->
     <section className="cloud-profile-companies">
+      { @renderSearch() }
       { @renderMyCompanies() }
       { @renderInvitedCompanies() }
       { @renderFavoritedCompanies() }

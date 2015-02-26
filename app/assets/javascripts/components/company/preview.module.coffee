@@ -6,6 +6,7 @@ TaggingStore  = require('stores/tagging_store')
 TagStore      = require('stores/tag_store')
 
 Logo          = require('components/company/logo')
+People        = require('components/pinnable/block/people')
 
 CompanyList = React.createClass
 
@@ -28,7 +29,6 @@ CompanyList = React.createClass
 
   getStateFromStores: ->
     company:      CompanyStore.cursor.items.get(@props.uuid)
-    personCount:  PersonStore.findByCompany(@props.uuid).size || 0
     taggingIds:   @getTaggingIdSet()       
 
 
@@ -49,9 +49,9 @@ CompanyList = React.createClass
   renderTags: ->
     @props.cursor.tags
       .filter (tag) => @state.taggingIds.contains(tag.get('uuid'))
-      .map (tag) -> "##{tag.get('name')}"
-      .sort (tagA, tagB) -> tagA.localeCompare(tagB)
-      .join(", ")
+      .sort (tagA, tagB) -> tagA.get('name').localeCompare(tagB.get('name'))
+      .map (tag) -> <div>#{ tag.get('name') }</div>
+      .toArray()
 
 
   render: ->
@@ -59,35 +59,18 @@ CompanyList = React.createClass
 
     company = @state.company
 
-    <article className="company-preview">
+    <article className="company-preview cloud-card">
       <a href={ company.get('company_url') } className="company-preview-link">
         <header>
           <Logo 
             logoUrl   = { company.get('logotype_url') }
             value     = { company.get('name') } />
+          <h1>{ company.get("name") }</h1>
         </header>
-        <section className="middle">
-          <div className="left">
-            <div className="name">
-              { company.get("name") }
-            </div>
-            <div className="description" dangerouslySetInnerHTML={__html: company.get('description')} />
-          </div>
-          <div className="right">
-            <div className="size">
-              <div className="vacancies">
-                <span>0</span>
-                <i className="fa fa-male"></i>
-              </div>
-              <div className="people">
-                <span>{ @state.personCount }</span>
-                <i className="fa fa-male"></i>
-              </div>
-            </div>
-          </div>
-        </section>
+        <div className="description" dangerouslySetInnerHTML={__html: company.get('description')}></div>
         <footer>
-          <p> { @renderTags() } </p>
+          <People items={ PersonStore.findByCompany(@props.uuid) } />
+          <section className="tags">{ @renderTags() }</section>
         </footer>
       </a>
     </article>

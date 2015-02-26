@@ -2,9 +2,6 @@
 #
 module.exports =
 
-  cursors:
-    search: ['meta', 'search']
-
   Company:
     COMPANY_FETCH_DONE:   'company:fetch:done'
     COMPANY_FETCH_FAIL:   'company:fetch:fail'

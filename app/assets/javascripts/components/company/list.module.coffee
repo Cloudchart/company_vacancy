@@ -46,26 +46,24 @@ CompanyList = React.createClass
   # Renderers
   #
   renderHeader: ->
-    <header>
-      <h1>{ @getHeaderText() }</h1>
-    </header>
+    <header>{ @getHeaderText() }</header>
 
   renderCompanies: ->
     result = @state.companies.map (company) ->
-      <CompanyPreview 
-        key  = { company.get('uuid') }
-        uuid = { company.get('uuid') } />
+      <section className="cloud-column">
+        <CompanyPreview 
+          key  = { company.get('uuid') }
+          uuid = { company.get('uuid') } />
+      </section>
     .toArray()
 
 
   render: ->
     return null if @state.companies.size == 0
 
-    <section className="companies-list">
+    <section className="companies-list cloud-columns cloud-columns-flex">
       { @renderHeader() }
-      <div>
-        { @renderCompanies() }
-      </div>
+      { @renderCompanies() }
     </section>
 
 

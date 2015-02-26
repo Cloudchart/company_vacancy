@@ -13,11 +13,9 @@
 
 <div class="spacer"></div>
 
-<% if content_for(:search).present? %>
-  <div data-react-class="components/company/search" data-react-props="<%= { query: params[:query] }.to_json %>"></div>
-<% elsif can?(:index, Company) %>
+<% if can?(:index, Company) %>
   <div class="browse-companies">
-    <%= link_to 'Browse Companies', main_app.companies_path, class: 'base strong' %>
+    <%= link_to 'Companies', main_app.companies_path, class: 'base strong' %>
   </div>
 <% end %>
 

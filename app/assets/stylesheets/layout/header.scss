@@ -16,13 +16,6 @@ $header-title-font-size: 22px;
 $header-title-font-weight: 700;
 $header-title-font-weight-small: 300;
 
-
-$header-search-background-color: hsl(0, 0%, 100%);
-$header-search-placeholder-color: hsl(0, 0%, 73%);
-$header-search-font-weight: 300;
-$header-search-width: 275px;
-
-
 $header-input-font-size: $header-title-font-size;
 $header-input-font-weight: 300;
 
@@ -52,39 +45,6 @@ $header-button-height: 50px - $header-padding * 2;
   font-weight: 300;
   margin-right: 5px;
   
-}
-
-
-// Header search
-//
-@mixin header-search {
-  font-weight: $header-search-font-weight;
-  margin: 0 $header-padding * 2;
-  padding: 0 $header-padding;
-  width: $header-search-width;
-
-  label {
-    margin-bottom: 0;
-  }
-
-  .input {
-    background-color: $header-search-background-color;
-    border: 2px solid $white-smoke;
-
-    input {
-      font-size: 15px;
-      height: 27px;
-      padding: 3px 8px;
-
-      @include placeholder {
-        color: $header-search-placeholder-color;
-      }
-    }
-
-    i {
-      color: $header-search-placeholder-color;
-    }
-  }
 }
 
 
@@ -190,10 +150,6 @@ body > header {
   
   .title {
     @include header-title;
-  }
-  
-  .search {
-    @include header-search;
   }
   
   .spacer {

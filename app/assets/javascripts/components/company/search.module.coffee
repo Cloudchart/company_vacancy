@@ -25,7 +25,6 @@ CompanySearch = React.createClass
 
   getInitialState: ->
     query: @props.query || location.hash.substr(1) || ''
-    isTyping: false
 
 
   # Helpers
@@ -39,8 +38,6 @@ CompanySearch = React.createClass
       location.hash = ""
       CompanyStore.search(query)
     
-    SearchCursor.set 'query', query
-
 
   # Handlers
   #
@@ -57,14 +54,7 @@ CompanySearch = React.createClass
 
 
   render: ->
-    <div className="search">
-      <Field 
-        iconClass   = "fa-search"
-        placeholder = "Find companies"
-        onChange    = { @handleChange }
-        value       = { @state.query }
-      />
-    </div>
+   
 
 
 module.exports = CompanySearch
