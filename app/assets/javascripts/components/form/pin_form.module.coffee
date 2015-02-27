@@ -92,7 +92,7 @@ module.exports = React.createClass
 
 
   fetch: ->
-    Promise.all([@fetchViewer(), @fetchSystemPinboards(), @fetchUnicorns(), @fetchPin()]).then =>
+    Promise.all([@fetchViewer(), @fetchSystemPinboards(), @fetchPin()]).then =>
       @handleFetchDone()
 
 
@@ -271,6 +271,7 @@ module.exports = React.createClass
 
 
   renderUserSelect: ->
+    return null
     return null unless  @currentUserIsSystemEditor()
     return null if      @props.parent_id
 
