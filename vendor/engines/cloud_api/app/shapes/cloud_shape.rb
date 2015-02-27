@@ -17,21 +17,27 @@ class CloudShape
         .uniq
         .group_by { |source| source.class }
         .map do |key, sources|
-          case
-          when key < ActiveRecord::Base
-            shaper = "#{key}_shape".classify.constantize rescue self
-            shaper.process_AR(key, sources, shape)
-          else
-            sources
-          end
+          shaper = "#{key.underscope}_shape".classify.constantize rescue self
+          sources.each { |source| wrap(source, shaper, shape) }
 
+          shaper.process(key, sources, shape)
         end
         .flatten
 
-      source.respond_to?(:each) ? sources : sources.first
+      shapes = sources.map { |source| source.to_shape! }
+
+      source.respond_to?(:each) ? shapes : shapes.first
     end
 
   protected
+
+    def wrap(source, shaper, shape)
+      shape_instance = shaper.new(source, shape)
+
+      source.define_singleton_method :to_shape! do
+        shape_instance.to_shape!
+      end
+    end
 
     def scope(key, &block)
       if block_given?
@@ -48,39 +54,47 @@ class CloudShape
     end
 
 
-    def process_AR(klass, sources, shape)
-      shaped_sources  = sources.map { |source| new(source) }
-      data            = sources.reduce({}) { |memo, source| memo[source.uuid] = { id: source.uuid } ; memo }
-
+    def process(klass, sources, shape)
       shape.each do |key, subshape|
 
         if current_scope = scope(key)
-          current_scope.call(shaped_sources, subshape)
-        elsif klass.reflect_on_association(key)
+          current_scope.call(sources, subshape)
+        elsif klass.respond_to?(:reflect_on_association) && klass.reflect_on_association(key)
           preloader_AR.preload(sources, key)
         end
 
-        children = shaped_sources.reduce({}) do |memo, source|
-          memo[source] = source.public_send(key)
-          memo
-        end
+        shape(sources.map { |source| source.public_send(key) }, subshape)
 
-        shaped_children = shape(children.values, subshape)
-
-        shaped_sources.each_with_index do |source|
-          data[source.uuid][key] = shape(source.public_send(key), subshape)
-        end
       end
 
-      data.values
+      sources
     end
 
   end
 
 
 
-  def initialize(source)
+  def initialize(source, shape)
     @source = source
+    @shape  = shape
+  end
+
+
+  def to_shape!
+    case
+
+    when @source.is_a?(ActiveRecord::Base)
+      @shape.merge({ id: nil }).reduce({}) do |memo, pair|
+        key, shape  = pair
+        child       = public_send(key)
+        children    = [child].flatten.compact.uniq.map { |child| child.respond_to?(:to_shape!) ? child.to_shape! : child }
+        memo[key]   = child.respond_to?(:each) ? children : children.first
+        memo
+      end
+
+    else
+      @source
+    end
   end
 
 
