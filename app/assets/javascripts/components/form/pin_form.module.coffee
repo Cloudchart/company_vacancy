@@ -129,9 +129,8 @@ module.exports = React.createClass
   handleDelete: (event) ->
     event.preventDefault()
 
-    if confirm('Are you sure?')
-      if confirm('Are you really sure?')
-        PinStore.destroy(@props.uuid).then(@props.onDone, @handleSaveFail)
+    if confirm('Are you really sure?')
+      PinStore.destroy(@props.uuid).then(@props.onDone, @handleSaveFail)
 
 
   savePin: (attributes) ->
