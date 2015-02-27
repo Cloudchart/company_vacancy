@@ -14,7 +14,6 @@ class CloudShape
       sources = [source]
         .flatten
         .compact
-        .uniq
         .group_by { |source| source.class }
         .map do |key, sources|
           shaper = "#{key.underscope}_shape".classify.constantize rescue self
@@ -84,10 +83,10 @@ class CloudShape
     case
 
     when @source.is_a?(ActiveRecord::Base)
-      @shape.merge({ id: nil }).reduce({}) do |memo, pair|
+      @shape.keys.concat([:id]).reduce({}) do |memo, pair|
         key, shape  = pair
         child       = public_send(key)
-        children    = [child].flatten.compact.uniq.map { |child| child.respond_to?(:to_shape!) ? child.to_shape! : child }
+        children    = [child].flatten.compact.uniq.map { |child| child.to_shape! rescue child }
         memo[key]   = child.respond_to?(:each) ? children : children.first
         memo
       end
