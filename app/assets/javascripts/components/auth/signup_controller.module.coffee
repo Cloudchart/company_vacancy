@@ -9,12 +9,13 @@ email_re = /.+@.+\..+/i
 
 Errors =
   email:
-    missing:  "Enter email, please"
-    invalid:  "The email is entered in a wrong format"
+    missing:      "Enter email, please"
+    invalid:      "The email is entered in a wrong format"
   full_name:
-    missing:  "Enter full name, please"
+    missing:      "Enter full name, please"
+    wrong_format: "You should include last name and first name"
   password:
-    missing:   "Enter password, please"
+    missing:      "Enter password, please"
 
 getErrorMessages = (errorsLists) ->
   errors = _.mapValues errorsLists, (errors, attributeName) ->
@@ -37,6 +38,9 @@ validate = (attributes) ->
 
   if (!attributes.full_name || attributes.full_name == '')
     errors.full_name.push 'missing'
+
+  if (attributes.full_name && attributes.full_name.trim().split(' ').length < 2)
+    errors.full_name.push 'wrong_format'
 
   if (!attributes.password || attributes.password == '')
     errors.password.push 'missing'

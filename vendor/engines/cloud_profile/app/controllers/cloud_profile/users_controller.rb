@@ -70,6 +70,7 @@ module CloudProfile
       user = User.new params.require(:user).permit(:email, :full_name, :password, :password_confirmation, :invite)
       
       user.should_validate_invite!
+      user.should_validate_name!
       
       if user.valid?
         
