@@ -45,7 +45,7 @@ MainComponent = React.createClass
     @setState email: event.target.value
 
   handleInviteSave: (json) ->
-    console.log 'handleInviteSave'
+    ModalStack.hide()
 
   handleInviteFail: ->
     console.warn 'handleInviteFail'

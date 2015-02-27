@@ -1,0 +1,17 @@
+<p>
+  Hello<%= @user.present? ? " #{@user.full_name_or_email}" : '' %>!
+</p>
+
+<p>
+  You have been invited to join <%= @pinboard.title %> pinboard at <%= link_to 'CloudChart', root_url %>. Please click the following link to continue:
+</p>
+
+<p>
+  <%= link_to "Review Invitation", pinboard_invite_url(@pinboard, @token) %>
+</p>
+
+<p>
+  If you think it’s a mistake, just ignore this email.
+</p>
+
+<%= render 'shared/mailer_signature' %>

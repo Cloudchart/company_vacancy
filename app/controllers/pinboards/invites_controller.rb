@@ -20,9 +20,8 @@ module Pinboards
           format.json { render json: :ok }
         end
 
-        # TODO: send email
-        # email = CloudProfile::Email.find_by(address: token.data[:email]) || token.data[:email]
-        # UserMailer.pinboard_invite(email, token).deliver
+        email = CloudProfile::Email.find_by(address: token.data[:email]) || token.data[:email]
+        UserMailer.pinboard_invite(email, token).deliver
       else
         respond_to do |format|
           format.json { render json: token.errors.messages, root: :token, status: 412 }
