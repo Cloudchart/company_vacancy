@@ -21,6 +21,7 @@ class IntercomEventsWorker < ApplicationWorker
     Intercom::Event.create(
       event_name: event_name,
       created_at: Time.now.to_i,
+      user_id: user.id,
       email: user.email,
       metadata: get_intercom_metadata(event_name, user, options)
     )
