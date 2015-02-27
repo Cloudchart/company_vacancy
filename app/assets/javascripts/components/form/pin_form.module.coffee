@@ -261,7 +261,7 @@ module.exports = React.createClass
 
       .concat([UserStore.me().deref({})])
 
-      .toSet()
+      #.toSet()
 
       .map (user) =>
         uuid = user.get('uuid')
