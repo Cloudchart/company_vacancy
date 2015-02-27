@@ -160,7 +160,7 @@ GEM
       nokogiri (~> 1.5)
     intercom (2.4.4)
       json (~> 1.8)
-    intercom-rails (0.2.24)
+    intercom-rails (0.2.27)
       activesupport (> 3.0)
     jbuilder (2.2.6)
       activesupport (>= 3.0.0, < 5)
