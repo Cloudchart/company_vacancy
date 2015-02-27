@@ -1,4 +1,4 @@
-if %(staging).include?(Rails.env)
+if %(staging production).include?(Rails.env)
   # Intercom API config
   # 
   Intercom.app_id = ENV['INTERCOM_APP_ID']
@@ -26,7 +26,7 @@ if %(staging).include?(Rails.env)
     # == Enabled Environments
     # Which environments is auto inclusion of the Javascript enabled for
     #
-    config.enabled_environments = ['staging']
+    config.enabled_environments = ['staging', 'production']
 
     # == Current user method/variable
     # The method/variable that contains the logged in user in your controllers.
