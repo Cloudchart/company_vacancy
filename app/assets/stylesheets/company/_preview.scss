@@ -1,9 +1,3 @@
-$company-preview-padding: 20px;
-$company-preview-header-height: 170px;
-$company-preview-middle-height: 76px;
-$company-preview-bottom-height: 120px;
-$company-preview-height: $company-preview-header-height + $company-preview-middle-height + $company-preview-bottom-height;
-
 main.companies {
   background-color: $background-color;
   margin: 0;
@@ -16,16 +10,17 @@ main.companies {
   font-size: $basic-font-size;
   margin: 0 auto;
   padding-top: $gutter-size;
-  width: 1000px + 3 * $gutter-size;
+  padding: $gutter-size/2;
+  width: 1000px + 2 * $gutter-size;
 
   .search {
-    margin-bottom: $gutter-size;
+    padding: $gutter-size/2;
   }
 
   .search > label {
     height: 45px;
     font-size: $big-font-size;
-    width: 400px;
+    width: 300px;
   }
 }
 
@@ -52,13 +47,17 @@ article.companies,
 
   .company-add,
   .company-preview {
-    background-color: white;
-    height: $company-preview-height;
+    background-color: $card-color;
+    min-height: 400px;
     position: relative;
   }
 }
 
 .company-add {
+  @include display(flex);
+  @include justify-content(stretch);
+  @include align-items(center);
+
   > a {
     @include display(flex);
     @include flex-direction(column);
@@ -66,8 +65,9 @@ article.companies,
     @include align-items(center);
 
     height: 100%;
+    width: 100%;
     text-decoration: none;
-    color: hsl(60, 1%, 34%);
+    color: $special-link-color;
 
     > i.fa {
       font-size: 50px;
@@ -81,7 +81,7 @@ article.companies,
 }
 
 .company-preview {
-  
+
   > a:nth-child(1) {
     @include display(flex);
     @include flex-direction(column);
@@ -94,37 +94,85 @@ article.companies,
     width: 100%;
   }
 
-  header {
-    > figure {
-      margin: auto 0;
-      width: 145px;
-      height: 100%;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position-y: center;
+  .info {
+    @include position(absolute, $default-margin-size $default-margin-size 0 0);
+  
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
 
-      &.image-absent {
-        border-radius: 100%;
-        font-size: 30px;
-        font-weight: 100;
-        height: 100px;
-        line-height: 100px;
-        text-align: center;
-        width: 100px;
+    .stats {
+      @include display(flex);
+
+      color: $disabled-color;
+      font-size: $big-font-size;
+      font-weight: bold;
+      margin-bottom: $inner-margin-size;
+
+      li {
+        margin-left: $inner-margin-size;
       }
+
+      .round-button {
+        margin-left: 5px;
+
+        > i {
+          font-size: $big-font-size;
+        }
+      }
+    }
+
+    .labels {
+      @include display(flex);
+      @include justify-content(flex-end);
+
+      li {
+        display: block;
+
+        background-color: $label-color;
+        color: $label-text-color;
+        margin-left: $inner-margin-size;
+        padding: 5px; 
+      }
+    }
+  }
+
+  header {
+    @include align-items(flex-start);
+    @include display(flex);
+    @include flex-direction(column);
+    @include justify-content(space-between);
+
+    > img {
+      display: block;
+      margin-bottom: $default-margin-size;
+      max-height: 100px;
+      max-width: 140px;
+      height: auto;
+      width: auto;
     }
 
     > h1 {
       font-size: $large-font-size;
+      margin: 0;
+      margin-bottom: $default-margin-size;
     }
   }
 
   .description {
     font-size: $big-font-size;
+    margin-bottom: $default-margin-size;
   }
 
   footer {
+    @include display(flex);
+    @include flex-direction(column);
+    @include justify-content(space-between);
+    
     border-top: $card-hr;
+    min-height: 75px;
     padding-top: $default-margin-size;
 
     .tags {
@@ -144,19 +192,29 @@ article.companies,
       @include flex-wrap(wrap);
       @include justify-content(center);
 
-      margin-top: $card-basic-space / 2;
+      margin-bottom: $default-margin-size;
 
       .human {
         @extend .cloud-card-human.block;
 
         margin: $card-basic-space / 2;
         margin-bottom: 0;
-        width: 60px;
+        width: 80px;
 
         .credentials {
           font-size: $small-font-size;
         }
       }
+    }
+
+    .buttons {
+      @inlude align-items(center);
+      @include display(flex);
+      @include justify-content(space-between);
+
+      margin: auto;
+      margin-bottom: $default-margin-size;
+      width: 230px; 
     }
   }
 }

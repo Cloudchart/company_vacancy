@@ -27,7 +27,7 @@ CompanyList = React.createClass
     @getStateFromStores(@props)
 
   getStateFromStores: (props) ->
-    companies: CompanyStore.cursor.items.deref(Immutable.Seq()).filter((company) => props.companiesIds.contains(company.get('uuid'))).toSeq()
+    companies: props.companiesIds.map ((id) -> CompanyStore.get(id))
 
 
   # Helpers
@@ -36,7 +36,7 @@ CompanyList = React.createClass
     if @props.headerText
       @props.headerText
     else
-      "#{@state.companies.size} companies"
+      "#{@state.companies.toArray().length} companies"
 
 
   # LifecycleMethods
@@ -55,8 +55,8 @@ CompanyList = React.createClass
       <section key={index} className="cloud-column">
         <CompanyPreview 
           key        = { company.get('uuid') }
-          uuid       = { company.get('uuid') }
-          onSyncDone = { @props.onSyncDone } />
+          onSyncDone = { @props.onSyncDone }
+          uuid       = { company.get('uuid') } />
       </section>
     .toArray()
 
@@ -67,6 +67,7 @@ CompanyList = React.createClass
     <section className="companies-list cloud-columns cloud-columns-flex">
       { @renderHeader() }
       { @renderCompanies() }
+      { @props.children }
     </section>
 
 

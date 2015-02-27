@@ -5,7 +5,7 @@ taggings = @companies.map(&:taggings).flatten
 tags     = @companies.map(&:tags).flatten.uniq
 
 json.companies do
-  json.partial! 'company', collection: @companies, as: :company
+  json.partial! 'company', collection: @companies, as: :company, with_count: true
 end
 
 json.people do

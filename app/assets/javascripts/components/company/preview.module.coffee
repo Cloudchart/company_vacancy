@@ -5,25 +5,27 @@ PersonStore    = require('stores/person_store.cursor')
 TaggingStore   = require('stores/tagging_store')
 TagStore       = require('stores/tag_store')
 TokenStore     = require('stores/token_store.cursor')
+FavoriteStore  = require('stores/favorite_store.cursor')
 
 CompanySyncApi = require('sync/company')
 
 Logo           = require('components/company/logo')
 People         = require('components/pinnable/block/people')
 
-SyncButton     = require('components/form/buttons').SyncButton
+Buttons        = require('components/form/buttons')
 
+SyncButton     = Buttons.SyncButton
+CancelButton   = Buttons.CancelButton
 
 CompanyList = React.createClass
 
   displayName: 'CompanyPreview'
 
-
   # Component specifications
   #
   propTypes:
-    uuid:       React.PropTypes.string.isRequired
     onSyncDone: React.PropTypes.func
+    uuid:       React.PropTypes.string.isRequired
 
   getDefaultProps: ->
     onSyncDone: ->
@@ -41,8 +43,10 @@ CompanyList = React.createClass
       .toSet()
 
   getToken: ->
-    if @cursor.company.deref(false)
-      @cursor.tokens.filter((token) => token.get('owner_id') == @cursor.company.get('uuid')).toArray()[0]
+    TokenStore.findCompanyInvite(@cursor.company)
+
+  getFavorite: ->
+    FavoriteStore.findByCompany(@cursor.company)
 
 
   # Handlers
@@ -65,7 +69,6 @@ CompanyList = React.createClass
       .then(@handleDone, @handleFail)
 
   handleDone: ->
-    @setState(sync: false)
     @props.onSyncDone()
 
   handleFail: ->
@@ -76,11 +79,12 @@ CompanyList = React.createClass
   #
   componentWillMount: ->
     @cursor =
-      company:  CompanyStore.cursor.items.cursor(@props.uuid)
-      people:   PersonStore.cursor.items
-      tags:     TagStore.cursor.items
-      taggings: TaggingStore.cursor.items
-      tokens:   TokenStore.cursor.items
+      company:   CompanyStore.cursor.items.cursor(@props.uuid)
+      people:    PersonStore.cursor.items
+      tags:      TagStore.cursor.items
+      taggings:  TaggingStore.cursor.items
+      tokens:    TokenStore.cursor.items
+      favorites: FavoriteStore.cursor.items
 
 
   # Renderers
@@ -92,14 +96,57 @@ CompanyList = React.createClass
       .map (tag, index) -> <div key={ index } >#{ tag.get('name') }</div>
       .toArray()
 
+  renderInfo: ->
+    <div className="info">
+      <ul className="stats">
+        <li>
+          { @cursor.company.get('posts_count') }
+          <div className="round-button">
+            <i className="fa fa-pencil"></i>
+          </div>
+        </li>
+        <li>
+          { @cursor.company.get('pins_count') }
+          <div className="round-button">
+            <i className="fa fa-thumb-tack"></i>
+          </div>
+        </li>
+      </ul>
+      <ul className="labels">
+        {
+          if @getToken()
+            <li className="label">Invited</li>
+        }
+        {
+          if @getFavorite()
+            <li className="label">Followed</li>
+        }
+      </ul>
+    </div>   
+
+  renderHeader: ->
+    company = @cursor.company
+
+    <header>
+      <Logo 
+        logoUrl = { company.get('logotype_url') }
+        value   = { company.get('name') } />
+      {
+        unless company.get('is_name_in_logo')
+          <h1>{ company.get("name") }</h1>
+      }
+    </header>
+
   renderButtons: ->
     <div className="buttons">
       <SyncButton 
+        className = "cc alert"
         iconClass = "fa-close"
         onClick   = { @handleDeclineClick }
         sync      = { @state.sync }
         text      = "Decline" />
       <SyncButton 
+        className = "cc"
         iconClass = "fa-check"
         onClick   = { @handleAcceptClick }
         sync      = { @state.sync }
@@ -109,14 +156,11 @@ CompanyList = React.createClass
   renderFooter: ->
     <footer>
       {
-        if !@getToken()
-          [
-            <People key="people" items={ PersonStore.findByCompany(@props.uuid) } />
-            <section key="tags" className="tags">{ @renderTags() }</section>
-          ]
-        else
+        if @getToken()
           @renderButtons()
       }
+      <People key="people" items={ PersonStore.findByCompany(@props.uuid) } />
+      <section key="tags" className="tags">{ @renderTags() }</section>
     </footer>
 
 
@@ -127,12 +171,8 @@ CompanyList = React.createClass
 
     <article className="company-preview cloud-card">
       <a href={ company.get('company_url') } className="company-preview-link">
-        <header>
-          <Logo 
-            logoUrl = { company.get('logotype_url') }
-            value   = { company.get('name') } />
-          <h1>{ company.get("name") }</h1>
-        </header>
+        { @renderInfo() }
+        { @renderHeader() }
         <div className="description" dangerouslySetInnerHTML={__html: company.get('description')}></div>
         { @renderFooter() }
       </a>

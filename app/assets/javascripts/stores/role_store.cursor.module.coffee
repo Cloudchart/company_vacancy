@@ -14,6 +14,10 @@ module.exports = GlobalState.createStore
 
   syncAPI:        require('sync/role_sync_api')
 
+  filterForCompanies: ->
+    @cursor.items.filter (role) ->
+      role.get('owner_type') == 'Company'
+
 
   rolesFor: (id) ->
     roles = require('stores/role_store.cursor').cursor.items

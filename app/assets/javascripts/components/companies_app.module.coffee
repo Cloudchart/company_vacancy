@@ -35,10 +35,10 @@ CompaniesApp = React.createClass
       query:    @props.query || location.hash.substr(1) || ''
 
   getStateFromStores: ->
-    myCompaniesIds:        @getIds(CompanyStore.getMyCompanies())
-    invitedCompaniesIds:   @getIds(CompanyStore.getInvitedCompanies())
-    favoritedCompaniesIds: @getIds(CompanyStore.getFavoritedCompanies())
-    searchedCompaniesIds:  CompanyStore.getSearchedCompanies().map((company) -> company.get('uuid')).toSeq()
+    myCompanies = CompanyStore.filterForCurrentUser()
+
+    myCompanies:          @sortCompanies(myCompanies)
+    searchedCompaniesIds: @getIds(@props.cursor.companies).filter((companyId) => !@getIds(myCompanies).contains(companyId))
 
   onGlobalStateChange: ->
     @setState  @getStateFromStores()
@@ -46,20 +46,37 @@ CompaniesApp = React.createClass
 
   # Helpers
   #
+  filterByName: (companies) ->
+    companies.filter((company) => (company.get('name') || "").toLowerCase().indexOf(@state.query.toLowerCase()) != -1)
+
   getIds: (companies) ->
-    companies
-      .filter((company) => company.get('name').toLowerCase().indexOf(@state.query.toLowerCase()) != -1)
-      .map((company) -> company.get('uuid')).toSeq()
+    companies.map((company) -> company.get('uuid')).toSeq()
+
+  getMyCompaniesIds: ->
+    @getIds(@filterByName(@state.myCompanies))
+
+  sortCompanies: (companies) ->
+    companies.sortBy (company) ->
+      id = company.get('uuid')
+
+      -2 * (+RoleStore.filterForCompanies().map((role) -> role.get('owner_id')).contains(id)) -
+      (+TokenStore.filterCompanyInvites().map((token) -> token.get('owner_id')).contains(id))
 
   search: (query) ->
-    if query.length > 2
-      location.hash = "#{@state.query}"
-      CompanyStore.search(query)
-    else if query.length == 0
-      location.hash = ""
-      CompanyStore.search(query)
+    @clearSearchedCompanies()
+    CompanyStore.search(query)
+
+  clearSearchedCompanies: ->
+    @props.cursor.companies.transaction =>
+      @props.cursor.companies.forEach (item, id) =>
+        if @state.searchedCompaniesIds.has(id)
+          @props.cursor.companies.removeIn(id)
 
   updateStores: ->
+    @props.cursor.companies.transaction =>
+      @props.cursor.tokens.clear()
+      @props.cursor.favorites.clear()
+
     CompanyStore.fetchAll().done =>
       @search(@state.query)
 
@@ -69,14 +86,12 @@ CompaniesApp = React.createClass
   handleChange: (event) ->
     @setState(query: event.target.value)
 
-    clearTimeout(@timeout)
-    @timeout = setTimeout =>
-      @search(@state.query)
-    , 250
-
-  handleSyncDone: ->
-    @updateStores()
-
+    if query.length > 2 || query.length == 0
+      clearTimeout(@timeout)
+      @timeout = setTimeout =>
+        location.hash = "#{@state.query}"
+        @search(@state.query)
+      , 250
 
   # Lifecycle methods
   #
@@ -95,20 +110,24 @@ CompaniesApp = React.createClass
       />
     </div>
 
-  renderCompanies: (companiesIds, headerText='') ->
+  renderCompanies: (companiesIds, headerText='', children=null) ->
     <CompanyList 
       companiesIds = { companiesIds }
-      headerText   = { headerText}
-      onSyncDone   = { @handleSyncDone } />
+      children     = { children }
+      headerText   = { headerText }
+      onSyncDone   = { @updateStores } />
 
   renderMyCompanies: ->
-    @renderCompanies(@state.myCompaniesIds, 'My Companies')
-
-  renderInvitedCompanies: ->
-    @renderCompanies(@state.invitedCompaniesIds, 'Invited Companies')
-
-  renderFavoritedCompanies: ->
-    @renderCompanies(@state.favoritedCompaniesIds, 'Followed Companies')
+    @renderCompanies(@getMyCompaniesIds(), 'My Companies', 
+      <section key="add" className="cloud-column">
+        <article className="company-add cloud-card">
+          <a href="companies/new">
+            <i className="fa fa-plus"></i>
+            <span className="hint">Create company</span>
+          </a>
+        </article>
+      </section>
+    )
 
   renderSearchedCompanies: ->
     @renderCompanies(@state.searchedCompaniesIds)
@@ -118,8 +137,6 @@ CompaniesApp = React.createClass
     <section className="cloud-profile-companies">
       { @renderSearch() }
       { @renderMyCompanies() }
-      { @renderInvitedCompanies() }
-      { @renderFavoritedCompanies() }
       { @renderSearchedCompanies() }
     </section>
 

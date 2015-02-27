@@ -72,8 +72,8 @@ $zindex-draggable: 600;
 // new design variables
 
 $gutter-size: 24px;
-$header-height: 75px;
-$footer-height: 75px;
+$default-header-height: 75px;
+$default-footer-height: 75px;
 $default-margin-size: 20px;
 $inner-margin-size: 10px;
 
@@ -89,8 +89,12 @@ $disabled-grey-color:  hsl(0, 0%, 93%);
 $black-color:          hsl(0, 0%, 0%);
 
 $background-color:     $white-color;
+$special-link-color:   $primary-grey-color;
 $card-color:           $accented-white-color;
 $link-color:           $accented-green-color;
+$disabled-color:       $disabled-grey-color;
+$label-color:          $accented-green-color;
+$label-text-color:     $white-color;
 
 
 $micro-font-size:    5px;
