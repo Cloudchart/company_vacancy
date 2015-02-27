@@ -92,7 +92,7 @@ module.exports = React.createClass
 
 
   fetch: ->
-    Promise.all([@fetchViewer(), @fetchSystemPinboards(), @fetchPin()]).then =>
+    Promise.all([@fetchViewer(), @fetchSystemPinboards(), @fetchUnicorns(), @fetchPin()]).then =>
       @handleFetchDone()
 
 
@@ -263,15 +263,12 @@ module.exports = React.createClass
 
       .toSet()
 
-      .toSet()
-
       .map (user) =>
         uuid = user.get('uuid')
         <option key={ uuid } value={ uuid }>{ user.get('full_name') }</option>
 
 
   renderUserSelect: ->
-    return null
     return null unless  @currentUserIsSystemEditor()
     return null if      @props.parent_id
 
