@@ -147,7 +147,7 @@ Component = React.createClass
         (tag.p { className: 'overlay' }) if @state.src
       )
       
-      (tag.input {
+      (InputComponent {
         type:           'text'
         autoComplete:   'off'
         plaeholder:     'Name Surname'
