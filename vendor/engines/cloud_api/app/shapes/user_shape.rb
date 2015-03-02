@@ -1,13 +1,19 @@
 class UserShape < CloudShape
 
-  scope :readable_pinboards do |sources, shape|
-    roles, pinboards = select_readable_pinboards_through_roles(sources.map(&:uuid))
 
-    sources.each do |source|
-      ids = roles.select { |item| item.user_id == source.uuid }.map(&:owner_id)
-      source.readable_pinboards = pinboards.select { |item| ids.include?(item.uuid) }
-    end
-  end
+  defaults :id, :full_name, :avatar_url, :created_at
+
+  restricted :password_digest
+
+
+  # scope :readable_pinboards do |sources, shape|
+  #   roles, pinboards = select_readable_pinboards_through_roles(sources.map(&:uuid))
+  #
+  #   sources.each do |source|
+  #     ids = roles.select { |item| item.user_id == source.uuid }.map(&:owner_id)
+  #     source.readable_pinboards = pinboards.select { |item| ids.include?(item.uuid) }
+  #   end
+  # end
 
 
   def avatar_url

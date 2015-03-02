@@ -1,1 +1,1 @@
-json.unicorns CloudShape.shape(User.all, :full_name, :avatar_url, pinboards: [:id, pins: :id])
+json.unicorns CloudShape.shape(User.all, :full_name, pinboards: [:id, :title])
