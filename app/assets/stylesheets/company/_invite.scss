@@ -1,4 +1,4 @@
-main > article.company-invite {
+main > article.invite {
   @include base-wrapper;
   @include display(flex);
   @include flex-direction(column);
@@ -7,7 +7,7 @@ main > article.company-invite {
   font-size: 15pt;
   line-height: 140%;
 
-  > div.author, div.company-name, div.company-logo {
+  > div.author, div.owner-name, div.owner-logo {
     margin-bottom: $base-unit * 2;
   }
 
@@ -36,7 +36,7 @@ main > article.company-invite {
 
   }
 
-  > div.company-name {
+  > div.owner-name {
     font-size: 40px;
     font-weight: 400;
 
@@ -46,7 +46,7 @@ main > article.company-invite {
     }
   }
 
-  > div.company-logo {
+  > div.owner-logo {
     > a > img {
       max-width: 145px;
     }

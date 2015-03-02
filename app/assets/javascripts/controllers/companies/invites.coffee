@@ -8,3 +8,5 @@
     value: data.author_full_name
     avatarURL: data.author_avatar_url
   ), container)
+
+@['pinboards/invites#show'] = (data) -> @['companies/invites#show'](data)

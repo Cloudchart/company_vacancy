@@ -7,7 +7,7 @@ class Ability
     # Anyone
     #
     if user.guest?
-      can :read, :company_invite
+      can :read, :invite
 
       # can :read, Page
       can :read, Event
@@ -36,7 +36,7 @@ class Ability
       can [:verify, :resend_verification], :cloud_profile_email
       can :manage, :cloud_profile_main
       can :update, :cloud_profile_user
-      can [:read, :accept, :destroy], :company_invite
+      can [:read, :accept, :destroy], :invite
 
       can :index, Company
       can [:create, :read, :search, :unfollow], Company

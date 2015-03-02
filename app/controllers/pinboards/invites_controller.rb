@@ -4,10 +4,17 @@ module Pinboards
     before_action :set_pinboard, only: [:create]
     before_action :set_token, only: [:show, :destroy, :accept, :resend]
 
-    authorize_resource class: :pinboard_invite, except: [:create, :resend]
+    authorize_resource class: :invite, except: [:create, :resend]
 
     def show
-      
+      @pinboard = @token.owner
+      @author = @pinboard.user
+
+      pagescript_params(
+        author_full_name: @author.full_name,
+        author_avatar_url: @author.avatar.try(:url),
+        token: TokenSerializer.new(@token).as_json
+      )
     end
 
     def create
@@ -30,15 +37,40 @@ module Pinboards
     end
 
     def destroy
+      @token.destroy
       
+      respond_to do |format|
+        format.html { redirect_to main_app.pinboards_path }
+        format.json { render json: @token, root: :token }
+      end
     end
 
     def accept
-      
+      pinboard = @token.owner
+      role = current_user.roles.create!(value: @token.data[:role], owner: pinboard)
+      @token.destroy
+
+      respond_to do |format|
+        format.html { redirect_to main_app.pinboard_path(pinboard) }
+        format.json {
+          render json: {
+            role: role,
+            pinboard: pinboard
+          }
+        }
+      end
     end
 
     def resend
-      authorize! :manage_pinboard_invites, @token.owner
+      pinboard = @token.owner
+      authorize! :manage_pinboard_invites, pinboard
+
+      token = pinboard.tokens.where(name: :invite).find(params[:id])
+      UserMailer.pinboard_invite(token.data[:email], token).deliver
+
+      respond_to do |format|
+        format.json { render json: token, root: :token }
+      end
     end
 
   private

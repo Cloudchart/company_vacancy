@@ -1,5 +1,0 @@
-# Exports
-#
-module.exports =
-  
-  noop: ->

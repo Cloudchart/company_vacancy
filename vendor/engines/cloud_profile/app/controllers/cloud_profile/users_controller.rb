@@ -47,16 +47,17 @@ module CloudProfile
     #
     def new
       if (params[:invite] && !user_authenticated?)
-        invite = Cloudchart::RFC1751.decode(params[:invite].split('-').join(' '))
+        invite = Token.find(params[:invite])
+
+        # sign up is allowed only for cc and company tokens
+        unless invite.owner_type.blank? || invite.owner_type == 'Company'
+          redirect_to main_app.root_path and return
+        end
+
         store_return_path if params[:return_to].present? || !return_path_stored?
 
         user = User.new(full_name: "some", invite: invite)
-
-        if user.invite.present?
-          pagescript_params(invite: invite, email: user.invite.data.try(:[], :email), full_name: user.invite.data.try(:[], :full_name))
-        else
-          redirect_to main_app.root_path
-        end
+        pagescript_params(invite: invite, email: user.invite.data.try(:[], :email), full_name: user.invite.data.try(:[], :full_name))
       else
         redirect_to main_app.root_path
       end
