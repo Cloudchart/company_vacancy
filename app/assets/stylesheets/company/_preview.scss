@@ -105,6 +105,7 @@ article.companies,
 
     .stats {
       @include display(flex);
+      @include justify-content(flex-end);
 
       color: $disabled-color;
       font-size: $big-font-size;

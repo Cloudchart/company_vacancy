@@ -7,7 +7,7 @@ TokenStore        = require('stores/token_store.cursor')
 FavoriteStore     = require('stores/favorite_store.cursor')
 RoleStore         = require('stores/role_store.cursor')
 
-CompanyList       = require('components/company/list')
+CompanyPreview    = require('components/company/preview')
 Field             = require('components/form/field')
 
 
@@ -84,7 +84,8 @@ CompaniesApp = React.createClass
   # Handlers
   #
   handleChange: (event) ->
-    @setState(query: event.target.value)
+    query = event.target.value
+    @setState(query: query)
 
     if query.length > 2 || query.length == 0
       clearTimeout(@timeout)
@@ -110,34 +111,39 @@ CompaniesApp = React.createClass
       />
     </div>
 
-  renderCompanies: (companiesIds, headerText='', children=null) ->
-    <CompanyList 
-      companiesIds = { companiesIds }
-      children     = { children }
-      headerText   = { headerText }
-      onSyncDone   = { @updateStores } />
+  renderCompanyPreview: (companyId) ->
+    <section key={companyId} className="cloud-column">
+      <CompanyPreview 
+        key        = { companyId }
+        onSyncDone = { @updateStores }
+        uuid       = { companyId } />
+    </section>
 
-  renderMyCompanies: ->
-    @renderCompanies(@getMyCompaniesIds(), 'My Companies', 
-      <section key="add" className="cloud-column">
-        <article className="company-add cloud-card">
-          <a href="companies/new">
-            <i className="fa fa-plus"></i>
-            <span className="hint">Create company</span>
-          </a>
-        </article>
-      </section>
-    )
+  renderAddCompany: ->
+    <section key="add" className="cloud-column">
+      <article className="company-add cloud-card">
+        <a href="companies/new">
+          <i className="fa fa-plus"></i>
+          <span className="hint">Create company</span>
+        </a>
+      </article>
+    </section>
 
-  renderSearchedCompanies: ->
-    @renderCompanies(@state.searchedCompaniesIds)
+  renderCompanyCollection: (ids) ->
+    ids.toArray().map (id) => @renderCompanyPreview(id)
+
+  renderCompanies: ->
+    @renderCompanyCollection(@getMyCompaniesIds())
+      .concat(@renderAddCompany())
+      .concat(@renderCompanyCollection(@state.searchedCompaniesIds))
 
 
   render: ->
     <section className="cloud-profile-companies">
       { @renderSearch() }
-      { @renderMyCompanies() }
-      { @renderSearchedCompanies() }
+      <section className="companies-list cloud-columns cloud-columns-flex">
+        { @renderCompanies() }
+      </section>
     </section>
 
 
