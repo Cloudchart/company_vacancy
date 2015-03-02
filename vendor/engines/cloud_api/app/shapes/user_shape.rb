@@ -1,6 +1,5 @@
 class UserShape < CloudShape
 
-
   scope :readable_pinboards do |sources, shape|
     roles, pinboards = select_readable_pinboards_through_roles(sources.map(&:uuid))
 
@@ -14,7 +13,6 @@ class UserShape < CloudShape
   def avatar_url
     avatar.url if avatar_stored?
   end
-
 
 private
 
