@@ -1,17 +1,19 @@
 class Pinboard < ActiveRecord::Base
   include Uuidable
 
-  ACCESS_RIGHTS = [:public, :protected, :private]
+  ACCESS_RIGHTS = [:public, :protected, :private].freeze
+  INVITABLE_ROLES = [:editor, :reader, :follower].freeze
 
-  validates                 :title, presence: true
-  validates_uniqueness_of   :title, scope: :user_id, case_sensitive: false
+  validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
+  validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }
 
-  belongs_to  :user
-  has_many    :roles, as: :owner
+  belongs_to :user
 
-  has_many    :pins
-  has_many    :posts, through: :pins, source: :pinnable, source_type: Post
-
+  has_many :pins
+  has_many :roles, as: :owner
+  has_many :posts, through: :pins, source: :pinnable, source_type: 'Post'
+  has_many :users, through: :roles
+  has_many :tokens, as: :owner, dependent: :destroy
 
   # Roles on Users
   #
@@ -30,19 +32,20 @@ class Pinboard < ActiveRecord::Base
     roles.value.in(values)
   end
 
-
   scope :system, -> do
     where access_rights: :public, user_id: nil
   end
-
 
   scope :readable, -> do
     joins { roles.outer }.where { roles.value.eq('reader') }
   end
 
-
   scope :writable, -> do
     joins { roles.outer }.where { roles.value.eq('editor') }
+  end
+
+  def invite_tokens
+    tokens.where(name: :invite)
   end
 
 end

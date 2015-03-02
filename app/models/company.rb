@@ -15,7 +15,7 @@ class Company < ActiveRecord::Base
   end
 
   after_save do
-    update(is_name_in_logo: false) if logotype.blank? && is_name_in_logo
+    update(is_name_in_logo: false) if logotype.blank? && is_name_in_logo?
   end
 
   dragonfly_accessor :logotype

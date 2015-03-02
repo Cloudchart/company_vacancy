@@ -1,4 +1,4 @@
-class CompanyInviteValidator < ActiveModel::Validator
+class InviteValidator < ActiveModel::Validator
   def validate(record)
     record.errors[:email] = 'missing' if record.data[:email].blank?
     record.errors[:email] = 'invalid' unless /.+@.+\..+/i.match(record.data[:email])
@@ -13,8 +13,11 @@ private
   end
   
   def user_already_exists?(record)
-    email = CloudProfile::Email.includes(user: :companies).find_by(address: record.data[:email])
-    ids   = email.try(:user).try(:companies).try(:map, &:uuid) || []
+    owner_relation_name = record.owner_type.tableize.to_sym
+
+    email = CloudProfile::Email.includes(user: owner_relation_name).find_by(address: record.data[:email])
+    ids = email.try(:user).try(owner_relation_name).try(:map, &:id) || []
+        
     ids.include?(record.owner_id)
   end
 end

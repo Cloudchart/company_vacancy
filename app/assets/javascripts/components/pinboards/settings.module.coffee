@@ -14,6 +14,9 @@ RoleStore     = require('stores/role_store.cursor')
 # Components
 #
 UserRole = require('components/pinboards/settings/user_role')
+ModalStack = require('components/modal_stack')
+InviteForm = require('components/pinboards/invite_form')
+# Security = require('')
 
 
 # Fields
@@ -93,6 +96,11 @@ module.exports = React.createClass
     event.target.blur()
 
 
+  handleinviteClick: (event) ->
+    # TODO: get invitable roles and contacts from server
+    ModalStack.show <InviteForm pinboard={@cursor.pinboard} />
+
+
   getAttributesFromCursor: ->
     Fields
 
@@ -102,7 +110,6 @@ module.exports = React.createClass
       , Immutable.Map().asMutable()
 
       .asImmutable()
-
 
 
 
@@ -123,7 +130,7 @@ module.exports = React.createClass
     readers:      PinboardStore.readersFor(@props.uuid)
     followers:    PinboardStore.followersFor(@props.uuid)
     roles:        RoleStore.rolesOn(@props.uuid, 'Pinboard')
-
+    owner:        PinboardStore.userCursorFor(@props.uuid)
 
   getInitialState: ->
     @getStateFromStores()
@@ -208,5 +215,26 @@ module.exports = React.createClass
         <form onSubmit={ @handleSubmit } className="pinboard-settings">
           { @renderInputs() }
         </form>
+
+        <div className="pinboard-security">
+          <h1> Security </h1>
+
+          <div className="owner">
+            <div className="person">
+              <div className="name">{ @state.owner.get('full_name') }</div>
+              <div className="email">{ @state.owner.get('email') }</div>
+            </div>
+            <div className="role">Owner</div>
+          </div>
+
+          <ul className="users">
+            { null }
+          </ul>
+
+          <button className="cc cc-wide" onClick={@handleinviteClick} disabled={false}>
+            Invite
+          </button>
+        </div>
+
       </section>
     </section>

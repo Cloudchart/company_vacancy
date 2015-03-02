@@ -44,6 +44,14 @@ class UserMailer < ActionMailer::Base
     mail to: 'anton@cloudchart.co'
   end
 
+  def pinboard_invite(email, token)
+    @pinboard = token.owner
+    @user = email.try(:user)
+    @token = rfc1751(token.id).parameterize
+    email = email.try(:address) || email
+    mail to: email
+  end
+
 private
 
   def rfc1751(id)

@@ -27,7 +27,7 @@ includes = gather_includes(@source, query)
 
 
 json.query do
- populate_data_for_jbuilder(json, data, @source, query)
+  populate_data_for_jbuilder(json, data, @source, query)
 end
 
 

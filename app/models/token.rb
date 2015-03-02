@@ -9,7 +9,7 @@ class Token < ActiveRecord::Base
 
   validates :name, presence: true
   
-  validates_with CompanyInviteValidator, if: :should_validate_as_company_invite?, on: :create
+  validates_with InviteValidator, if: :should_validate_as_invite?, on: :create
   
   class << self
     
@@ -43,8 +43,8 @@ class Token < ActiveRecord::Base
   
 private
   
-  def should_validate_as_company_invite?
-    owner_type == Company.name and name.to_sym == :invite
+  def should_validate_as_invite?
+    owner_type =~ /Company|Pinboard/ && name.to_sym == :invite
   end
   
 end

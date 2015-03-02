@@ -1,7 +1,7 @@
 # Imports
 #
 GlobalState = require('global_state/state')
-
+SyncAPI = require('sync/pinboard_sync_api')
 
 # Stores
 #
@@ -29,13 +29,6 @@ filterUsersForRole = (id, value) ->
     .valueSeq()
 
 
-pinboardRolesFilter = (id, value) ->
-  (item) ->
-    item.get('owner_id')    == id         and
-    item.get('owner_type')  == 'Pinboard' and
-    item.get('value')       == value
-
-
 # Exports
 #
 module.exports = GlobalState.createStore
@@ -45,26 +38,15 @@ module.exports = GlobalState.createStore
   collectionName: 'pinboards'
   instanceName:   'pinboard'
 
-  syncAPI:        require('sync/pinboard_sync_api')
+  syncAPI:        SyncAPI
 
 
   readable_pinboards: (user) ->
     @cursor.items.filterCursor readablePinboardsFilter(user)
 
 
-  writableBy: (id) ->
-    roles         = RoleStore.rolesFor(id).filter((item) -> item.get('owner_type') == 'Pinboard' and item.get('value') == 'editor')
-    pinboard_ids  = roles.map((item) -> item.get('owner_id')).valueSeq()
-
-    @cursor.items
-      .filter (item) -> item.get('user_id') == id
-      .concat @cursor.items.filter (item) -> pinboard_ids.contains(item.get('uuid'))
-
-
-  system: ->
-    @cursor.items
-      .filter (item) ->
-        item.get('user_id', null) == null
+  userCursorFor: (id) ->
+    UserStore.cursor.items.cursor(@cursor.items.getIn([id, 'user_id']))
 
 
   editorsFor: (id) ->
@@ -77,3 +59,7 @@ module.exports = GlobalState.createStore
 
   followersFor: (id) ->
     filterUsersForRole(id, 'follower')
+
+
+  sendInvite: (item, attributes = {}, options = {}) ->
+    SyncAPI.sendInvite(item, attributes, options)

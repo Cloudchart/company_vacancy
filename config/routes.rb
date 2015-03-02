@@ -91,10 +91,6 @@ Cloudchart::Application.routes.draw do
     post :vote, on: :member
   end
 
-  resources :company_invites, only: [:show, :create, :destroy] do
-    patch :accept, on: :member
-  end
-
   resources :interviews, only: [:show] do
     patch :accept, on: :member
   end
@@ -102,6 +98,11 @@ Cloudchart::Application.routes.draw do
   resources :pinboards do
     get :settings, on: :member
     resources :roles, only: [:update, :destroy]
+
+    resources :invites, only: [:show, :create, :destroy], controller: 'pinboards/invites' do
+      match :resend, on: :member, via: [:put, :patch]
+      post :accept, on: :member
+    end
   end
 
   resources :pins

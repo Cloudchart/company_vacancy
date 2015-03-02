@@ -101,6 +101,8 @@ form.pinboard-settings {
     padding: 0;
 
     > header {
+      font-size: 40px;
+      font-weight: 200;
       margin-top: 10px;
       margin-bottom: 30px;
     }
@@ -140,6 +142,22 @@ form.pinboard-settings {
     }
   }
 
+
+}
+
+
+div.pinboard-security {
+  margin-top: 40px;
+
+  > h1 {
+    font-size: 40px;
+    font-weight: 200;
+    margin-bottom: 30px;
+  }
+
+  > ul.users {
+
+  }
 
 }
 

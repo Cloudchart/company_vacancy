@@ -9,7 +9,7 @@ en:
       company_can_not_become_published: "company can't become published"
       invite_not_found: "Sorry, your invite code is already used"
     roles:
-      acceptance: "you can't accept this invitation, because you are the member of the company"
+      acceptance: "you can't accept this invitation, because you are already associated with this %{name}"
     authentication:
       email_doesnt_exist: "The email does not belong to any account" 
       password_doesnt_match: "The password is incorrect"

@@ -1,0 +1,38 @@
+<article class="invite">
+
+  <div class="author">
+    <div data-react-mount-point="avatar"></div>
+    <%= @author.full_name %> invited you to join this pinboard:
+  </div>
+
+  <div class="owner-name">
+    <%= link_to @pinboard.title, pinboard_path(@pinboard) %>
+  </div>
+
+  <% if user_authenticated? %>
+    <p>
+      If you want to join as <%= t("roles.#{@token.data[:role]}") %>, please accept this invitation.
+    </p>
+
+    <p>
+      <div class="button green">
+        <%= link_to 'Accept', accept_pinboard_invite_path(@token.owner, @token), method: :post %>
+      </div>
+    </p>
+
+    <p>
+      <%= link_to 'No, thanks', pinboard_invite_path(@token.owner, @token), method: :delete, data: { confirm: 'Are you sure?' } %>
+    </p>
+
+  <% else %>
+    <p>
+      Please log in to accept this invitation:
+    </p>
+    
+    <p>
+      <%= link_to "Log In", cloud_profile.login_path %>
+    </p>
+    
+  <% end %>
+  
+</article>
