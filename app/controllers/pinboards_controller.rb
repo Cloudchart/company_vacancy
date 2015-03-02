@@ -1,7 +1,10 @@
 class PinboardsController < ApplicationController
 
-  after_action :create_intercom_event, only: :create
+  before_action :set_pinboard, only: [:show, :settings, :update, :destroy]
 
+  load_and_authorize_resource except: :create
+
+  after_action :create_intercom_event, only: :create
 
   def index
     respond_to do |format|
@@ -10,31 +13,25 @@ class PinboardsController < ApplicationController
     end
   end
 
-
   def show
-    @pinboard = Pinboard.find(params[:id])
-
     respond_to do |format|
       format.html
       format.json
     end
   end
 
-
   def settings
-    @pinboard = effective_user.pinboards.find(params[:id])
-
     respond_to do |format|
       format.html
     end
   end
 
-
   def create
     @pinboard = effective_user.pinboards.create!(params_for_create)
+    authorize! :create, @pinboard
 
     respond_to do |format|
-      format.json { render json: { id: @pinboard.uuid } }
+      format.json { render json: { id: @pinboard.id } }
     end
 
   rescue ActiveRecord::RecordInvalid
@@ -43,15 +40,12 @@ class PinboardsController < ApplicationController
       format.json { render json: :fail, status: 422 }
     end
   end
-
 
   def update
-    pinboard = effective_user.pinboards.find(params[:id])
-
-    pinboard.update!(params_for_update)
+    @pinboard.update!(params_for_update)
 
     respond_to do |format|
-      format.json { render json: { id: pinboard.uuid }}
+      format.json { render json: { id: @pinboard.id }}
     end
 
   rescue ActiveRecord::RecordInvalid
@@ -61,41 +55,36 @@ class PinboardsController < ApplicationController
     end
   end
 
-
   def destroy
-    pinboard = effective_user.pinboards.find(params[:id])
-
-    pinboard.destroy
+    @pinboard.destroy
 
     respond_to do |format|
-      format.json { render json: { id: pinboard.uuid } }
+      format.json { render json: { id: @pinboard.id } }
     end
   end
 
-
-  private
-
+private
 
   def effective_user
     current_user
   end
 
-
   def params_for_create
     params.require(:pinboard).permit(:title, :description, :access_rights)
   end
-
 
   def params_for_update
     params_for_create
   end
 
+  def set_pinboard
+    @pinboard = Pinboard.find(params[:id])
+  end
 
   def create_intercom_event
     return unless should_perform_sidekiq_worker? && @pinboard.valid?
 
     IntercomEventsWorker.perform_async('created-pinboard', current_user.id, pinboard_id: @pinboard.id)
   end
-
 
 end

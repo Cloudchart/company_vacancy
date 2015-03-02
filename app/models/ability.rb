@@ -19,16 +19,15 @@ class Ability
       can :read, Person
       can :read, Vacancy
       can :read, Quote
+      can :show, Pinboard
       
       can [:preview, :read, :pull], CloudBlueprint::Chart, is_public: true
-      can :read, Company, is_public: true
+      can :show, Company, is_public: true
 
       can :read, Post do |post|
         company = post.company
         company.is_public? && company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')
       end
-
-      cannot :index, Company
       
     # Regular user
     #
@@ -45,7 +44,9 @@ class Ability
       can :manage, Subscription
       can [:preview, :read, :pull], CloudBlueprint::Chart
       can :create, Tag
+      can [:read, :create], Pinboard
 
+      can [:update, :destroy, :settings], Pinboard, user_id: user.id
       can :destroy, CloudProfile::Email, user_id: user.id
 
       can :manage, Company do |company|
