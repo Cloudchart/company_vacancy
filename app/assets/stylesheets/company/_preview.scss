@@ -11,7 +11,8 @@ main.companies {
   margin: 0 auto;
   padding-top: $gutter-size;
   padding: $gutter-size/2;
-  width: 1000px + 2 * $gutter-size;
+  position: relative;
+  width: 1000px;
 
   .search {
     padding: $gutter-size/2;
@@ -45,7 +46,6 @@ article.companies,
     @include justify-content(space-between);
   }
 
-  .company-add,
   .company-preview {
     background-color: $card-color;
     min-height: 400px;
@@ -54,29 +54,10 @@ article.companies,
 }
 
 .company-add {
-  @include display(flex);
-  @include justify-content(stretch);
-  @include align-items(center);
+  @include position(absolute, $gutter-size 0px 0 0);
 
-  > a {
-    @include display(flex);
-    @include flex-direction(column);
-    @include justify-content(center);
-    @include align-items(center);
-
-    height: 100%;
-    width: 100%;
-    text-decoration: none;
-    color: $special-link-color;
-
-    > i.fa {
-      font-size: 50px;
-    }
-
-    > span.hint {
-      font-size: 13px;
-      text-transform: uppercase;
-    }
+  i {
+    margin-right: $inner-margin-size;
   }
 }
 

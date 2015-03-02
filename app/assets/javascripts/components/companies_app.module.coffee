@@ -119,28 +119,26 @@ CompaniesApp = React.createClass
         uuid       = { companyId } />
     </section>
 
-  renderAddCompany: ->
-    <section key="add" className="cloud-column">
-      <article className="company-add cloud-card">
-        <a href="companies/new">
-          <i className="fa fa-plus"></i>
-          <span className="hint">Create company</span>
-        </a>
-      </article>
-    </section>
+  renderAddButton: ->
+    <div className="company-add button green">
+      <a href="companies/new">
+        <i className="fa fa-plus"></i>
+        <span>Create company</span>
+      </a>
+    </div>
 
   renderCompanyCollection: (ids) ->
     ids.toArray().map (id) => @renderCompanyPreview(id)
 
   renderCompanies: ->
     @renderCompanyCollection(@getMyCompaniesIds())
-      .concat(@renderAddCompany())
       .concat(@renderCompanyCollection(@state.searchedCompaniesIds))
 
 
   render: ->
     <section className="cloud-profile-companies">
       { @renderSearch() }
+      { @renderAddButton() }
       <section className="companies-list cloud-columns cloud-columns-flex">
         { @renderCompanies() }
       </section>
