@@ -44,4 +44,8 @@ class Pinboard < ActiveRecord::Base
     joins { roles.outer }.where { roles.value.eq('editor') }
   end
 
+  def invite_tokens
+    tokens.where(name: :invite)
+  end
+
 end
