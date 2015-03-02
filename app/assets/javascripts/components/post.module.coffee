@@ -96,7 +96,7 @@ Post = React.createClass
     140 - length
 
   getStrippedTitle: (title) ->
-    title.replace(/<div>|<\/div>/ig, '')
+    title.replace(/(<([^>]+)>)/ig, "").trim()
 
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
