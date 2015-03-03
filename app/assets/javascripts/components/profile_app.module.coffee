@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
 
-UserComponent      = require('components/users/user')
+ProfileInfo        = require('components/profile/info')
 PinboardsComponent = require('components/pinboards/pinboards')
 
 
@@ -18,10 +18,12 @@ module.exports = React.createClass
 
 
   render: ->
-    <div>
-      <UserComponent 
-        uuid     = { @props.uuid }
-        readOnly = { @props.readOnly } />
+    <section className="user-profile">
+      <header>
+        <ProfileInfo
+          uuid     = { @props.uuid }
+          readOnly = { @props.readOnly } />
+      </header>
       <PinboardsComponent
         uuid = { @props.uuid } />
-    </div>
+    </section>

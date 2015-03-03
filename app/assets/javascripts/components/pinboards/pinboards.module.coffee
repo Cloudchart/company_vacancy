@@ -127,6 +127,6 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <section className="cloud-columns cloud-columns-flex">
+    <section className="pinboards cloud-columns cloud-columns-flex">
       { @renderPinboards().toArray() }
     </section>

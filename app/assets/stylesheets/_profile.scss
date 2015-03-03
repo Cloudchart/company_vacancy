@@ -1,0 +1,62 @@
+$profile-header-color: $disabled-grey-color;
+
+main.user-profile {
+  background-color: $background-color;
+
+  padding: 0;
+}
+
+section.user-profile {
+  width: 100%;
+
+  > header {
+    background-color: $profile-header-color;
+  }
+
+  > header > .info, 
+  > .pinboards {
+    margin: 0 auto;
+    width: 1000px + $gutter-size;
+  }
+
+  .info {
+    @include display(flex);
+
+    padding: $gutter-size;
+
+    > aside {
+      > figure {
+        border-radius: 100%;
+        height: 150px;
+        width: 150px;
+      }
+    }
+
+    > .personal {
+      @include display(flex);
+      @include flex-direction(column);
+      @include justify-content(space-between);
+
+      font-size: $basic-font-size;
+      margin-left: $default-margin-size;
+
+      input {
+        background-color: $profile-header-color;
+        border: none;
+        outline: none;
+      }
+
+      .name {
+        font-size: $huge-font-size;
+      }
+
+      .stats {
+        margin: 0;
+      }
+    }
+  }
+
+  .pinboards {
+    padding: $gutter-size/2;
+  }
+}

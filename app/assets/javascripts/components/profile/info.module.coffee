@@ -75,7 +75,7 @@ module.exports  = React.createClass
     pinsCount = @getPinsCount()
     companiesCount = @getCompaniesCount()
 
-    <p>
+    <p className="stats">
       { @getCompaniesCount() }
       { @getPinsCount() }
     </p>
@@ -84,13 +84,15 @@ module.exports  = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <header>
-      <Avatar avatarURL = { @cursor.user.get('avatar_url') } />
-      <label>
-        <AutoSizingInput
-          value       = { @cursor.user.get('full_name') }
-          readOnly    = { @props.readOnly }
-        />
+    <section className="info">
+      <aside>
+        <Avatar avatarURL = { @cursor.user.get('avatar_url') } />
+      </aside>
+      <section className="personal">
+        <label className="name">
+          <AutoSizingInput 
+            value = { @cursor.user.get('full_name') } />
+        </label>
         { @renderUserStats() }
-      </label>
-    </header>
+      </section>
+    </section>

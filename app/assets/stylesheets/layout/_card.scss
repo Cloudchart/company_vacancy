@@ -144,16 +144,14 @@ $card-hr: 1px solid whitesmoke;
 
   > header,
   > footer,
-  > section {
-
+  > section,
+  > a > header,
+  > a > footer,
+  > a > section {
     margin-top: $card-basic-space;
-
   }
 
-  > *:nth-child(1) {
-    margin-top: - $card-basic-space;
-  }
-
+  > a > header,
   > header {
     @extend .cloud-card-header;
   }

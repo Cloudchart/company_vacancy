@@ -44,6 +44,12 @@ $footer-font-weight: normal;
 // Links
 a {
   color: $north-texas-green;
+
+  &.for-group {
+    color: inherit;
+    display: block;
+    text-decoration: none;
+  }
 }
 
 // Buttons

@@ -23,7 +23,7 @@ Component = React.createClass
       className:  'autosizing-input-container'
       style:
         display:  'inline-block'
-        maxWidth: '100%'
+        maxWidth: '101%'
         width:    'auto'
     },
     
@@ -43,7 +43,7 @@ Component = React.createClass
           ref:        'input'
           size:       1
           style:
-            width:    '100%'
+            width:    '101%'
         })
       )
     )

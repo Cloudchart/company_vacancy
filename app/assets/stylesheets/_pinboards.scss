@@ -1,4 +1,4 @@
-main.pinboards {
+.pinboards {
   background-color: hsl(0, 0%, 98%);
   margin: 0;
   padding: 0;
@@ -35,15 +35,17 @@ article.pinboards {
 }
 
 
-main.pinboards .pinboard.cloud-card {
+.pinboards .pinboard.cloud-card {
 
-  > header {
-    @include pinboard-card-header;
-  }
+  > a {
+    > header {
+      @include pinboard-card-header;
+    }
 
 
-  > footer {
-    @include pinboard-card-footer;
+    > footer {
+      @include pinboard-card-footer;
+    }
   }
 
 }
