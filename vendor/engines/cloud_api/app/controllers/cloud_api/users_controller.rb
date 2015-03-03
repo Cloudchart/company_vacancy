@@ -12,7 +12,6 @@ module CloudApi
       end
     end
 
-
     def unicorns
       @source   = User
       @starter  = [:unicorns]
@@ -22,6 +21,13 @@ module CloudApi
       end
     end
 
+    def show
+      @source = User
+      @starter  = [:find, params[:id]]
 
+      respond_to do |format|
+        format.json { render '/main' }
+      end      
+    end
   end
 end

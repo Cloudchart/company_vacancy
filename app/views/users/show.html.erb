@@ -1,0 +1,8 @@
+<article data-react-class="components/profile_app" data-react-props="<%= { uuid: params[:id], readOnly: current_user.id == params[:id] }.to_json %>">
+</article>
+
+<% content_for :header_menu do %>
+  <%= render 'shared/header_menu' %>
+<% end %>
+
+<%= content_for :class_for_main, 'user-profile' %>
