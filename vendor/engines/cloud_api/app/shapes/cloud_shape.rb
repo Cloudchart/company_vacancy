@@ -15,10 +15,14 @@ class CloudShape
 
   class << self
 
-    def shape(source, *shape)
-      sources = wrap_sources(source, *shape).map { |source| source.to_shape }
+    def shape(source, shape)
+      shaped_sources = wrap([source].flatten.compact.uniq, shape)
 
-      sources.respond_to?(:each) ? sources : sources.first
+      fetch(shaped_sources)
+
+      shaped_sources = shaped_sources.map(&:to_shape)
+
+      source.respond_to?(:each) ? shaped_sources : shaped_sources.first
     end
 
 
@@ -35,77 +39,96 @@ class CloudShape
     end
 
 
-    def wrap_sources(sources, *shape)
+    def scope(name, &block)
+      if block_given?
+        define_method :"#{name}" do
+          instance_variable_get(:"@#{name}")
+        end
 
-      [sources]
-        .flatten
-        .compact
+        define_method :"#{name}=" do |value|
+          instance_variable_set(:"@#{name}", value)
+        end
+
+        scopes[name.to_sym] = block
+      else
+        scopes[name.to_sym]
+      end
+    end
+
+
+
+    def wrap(sources, shape)
+      sources
         .group_by { |source| source.class }
         .map do |source_class, sources|
-          shape_hash  = shape.extract_options!
-          shape       = shape.flatten.compact.reduce({}) { |memo, key| memo[key.to_sym] = nil ; memo }.merge(shape_hash)
 
-          shape_class     = "#{source_class.name}Shape".safe_constantize || CloudShape
-          wrapped_sources = sources.map { |source| shape_class.new(source, shape) }
+          shape_class   = "#{source_class.name}Shape".safe_constantize || CloudShape
+          shape_sources = sources.map { |source| shape_class.new(source, shape) }
 
-          case
-          when source_class < ActiveRecord::Base
-            shape.delete_if { |key, values| shape_class.restricted.include?(key) }
+        end
+        .flatten
+    end
 
-            if shape.keys.empty?
-              shape.update(shape_class.defaults.reduce({}) { |memo, key| memo[key.to_sym] = nil ; memo })
-            end
 
-            shape.update({ id: nil })
-          end
+    def preload(shaped_sources)
+      shape         = shaped_sources.first.instance_variable_get(:@shape)
+      sources       = shaped_sources.map { |shaped_source| shaped_source.instance_variable_get(:@source) }
+      source_class  = sources.first.class
 
-          preload(source_class, wrapped_sources, shape)
+      shape.fetch(:fields, {}).keys.each do |field|
 
-          wrapped_sources
-        end.flatten
+        case
+
+        when source_class.try(:reflect_on_association, field)
+          ActiveRecord::Associations::Preloader.new.preload(sources, field)
+
+        end
+
+
+        shaped_children = shaped_sources.map do |shaped_source|
+          value   = shaped_source.public_send(field)
+          values  = wrap([value].flatten.compact.uniq, shape[:fields][field])
+          value   = value.respond_to?(:each) ? values : values.first
+
+          shaped_source.define_singleton_method(field.to_sym) { value }
+
+          values
+        end
+
+        #fetch(shaped_children)
+
+      end if shape
 
     end
 
 
-    def preload(source_class, wrapped_sources, shape)
-      sources     = wrapped_sources.map { |source| source.instance_variable_get(:@source) }
-      reflectable = source_class.respond_to?(:reflect_on_association)
-
-      shape.each do |key, shape|
-
-        case
-        when reflectable && source_class.reflect_on_association(key)
-          ActiveRecord::Associations::Preloader.new.preload(sources, key)
+    def fetch(shaped_sources)
+      shaped_sources
+        .flatten
+        .compact
+        .group_by do |source|
+          source.instance_variable_get(:@source).class
         end
-
-        wrapped_sources.each do |wrapped_source|
-          children          = wrapped_source.public_send(key)
-          wrapped_children  = wrap_sources([children], *shape)
-          wrapped_children  = children.respond_to?(:each) ? wrapped_children : wrapped_children.first
-
-          wrapped_source.define_singleton_method :"#{key}" do
-            wrapped_children
-          end
+        .each do |source_class, sources|
+          preload(sources)
         end
-
-      end
     end
 
 
   end
 
 
-  def initialize(source, shape)
+  def initialize(source, shape = {})
     @source = source
     @shape  = shape
   end
 
 
   def to_shape
-    if @shape.keys.empty?
+    unless @shape
       @source
     else
-      @shape.keys.reduce({}) do |memo, key|
+      @shape[:fields].keys.reduce({}) do |memo, key|
         value       = public_send(key)
         values      = [value].flatten.compact.uniq.map(&:to_shape)
         memo[key]   = value.respond_to?(:each) ? values : values.first
