@@ -253,20 +253,13 @@ module.exports = React.createClass
 
 
   renderUserSelectOptions: ->
+    me = UserStore.me()
+
     UserStore
-
       .unicorns()
-
       .valueSeq()
-
-      .concat([UserStore.me().deref({})])
-
-      .map (user) =>
-        Immutable.Map
-          uuid:       user.get('uuid')
-          full_name:  user.get('full_name')
-
-      .toSet()
+      .filterNot (user) -> user.get('uuid') is me.get('uuid') 
+      .concat([me.deref({})]) 
       .sortBy (user) -> user.get('full_name')
 
       .map (user) =>
