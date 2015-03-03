@@ -53,6 +53,21 @@ module.exports = GlobalState.createStore
     filterUsersForRole(id, 'editor')
 
 
+  writableBy: (id) ->
+    roles         = RoleStore.rolesFor(id).filter((item) -> item.get('owner_type') == 'Pinboard' and item.get('value') == 'editor')
+    pinboard_ids  = roles.map((item) -> item.get('owner_id')).valueSeq()
+
+    @cursor.items
+      .filter (item) -> item.get('user_id') == id
+      .concat @cursor.items.filter (item) -> pinboard_ids.contains(item.get('uuid'))
+
+
+  system: ->
+    @cursor.items
+      .filter (item) ->
+        item.get('user_id', null) == null
+
+
   readersFor: (id) ->
     filterUsersForRole(id, 'reader')
 
@@ -63,3 +78,4 @@ module.exports = GlobalState.createStore
 
   sendInvite: (item, attributes = {}, options = {}) ->
     SyncAPI.sendInvite(item, attributes, options)
+

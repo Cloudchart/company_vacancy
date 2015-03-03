@@ -14,7 +14,7 @@ class Role < ActiveRecord::Base
 private
 
   def acceptance_of_invite
-    if user.roles.map(&:owner_id).include?(owner_id) || owner.try(:user_id) == user_id
+    if owner_type =~ /Company|Pinboard/ && (user.roles.map(&:owner_id).include?(owner_id) || owner.try(:user_id) == user_id)
       errors.add(:base, I18n.t('errors.roles.acceptance', name: owner_type))
     end
   end
