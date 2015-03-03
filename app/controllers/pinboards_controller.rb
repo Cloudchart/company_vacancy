@@ -27,8 +27,10 @@ class PinboardsController < ApplicationController
   end
 
   def create
-    @pinboard = pinboard_source.create!(params_for_create)
+    @pinboard = pinboard_source.new(params_for_create)
     authorize! :create, @pinboard
+
+    @pinboard.save!
 
     respond_to do |format|
       format.json { render json: { id: @pinboard.id } }
@@ -65,15 +67,11 @@ class PinboardsController < ApplicationController
 
 private
 
-  def effective_user
-    current_user
-  end
-
   def pinboard_source
     if current_user.editor?
       Pinboard
     else
-      effective_user.pinboards
+      current_user.pinboards
     end
   end
 

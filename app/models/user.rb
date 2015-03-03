@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   attr_accessor :current_password
   attr_reader :invite
 
+  before_validation :build_blank_emails, unless: -> { emails.any? }
   before_destroy :mark_emails_for_destruction
 
   dragonfly_accessor :avatar
@@ -113,13 +114,17 @@ class User < ActiveRecord::Base
   end
 
   def validate_email
-    errors[:email] = emails.first.errors[:address] unless emails.first.valid?
+    errors.add(:email, emails.first.errors[:address]) unless emails.first.valid?
   end
 
 private
 
   def mark_emails_for_destruction
     emails.each(&:mark_for_destruction)
+  end
+
+  def build_blank_emails
+    emails.build
   end
 
 end
