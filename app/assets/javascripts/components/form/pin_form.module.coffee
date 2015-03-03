@@ -261,7 +261,13 @@ module.exports = React.createClass
 
       .concat([UserStore.me().deref({})])
 
-      #.toSet()
+      .map (user) =>
+        Immutable.Map
+          uuid:       user.get('uuid')
+          full_name:  user.get('full_name')
+
+      .toSet()
+      .sortBy (user) -> user.get('full_name')
 
       .map (user) =>
         uuid = user.get('uuid')
