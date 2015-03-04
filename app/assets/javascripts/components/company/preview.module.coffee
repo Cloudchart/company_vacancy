@@ -187,8 +187,8 @@ CompanyPreview = React.createClass
 
     <article className="company-preview cloud-card">
       <a href={ company.get('company_url') } className="company-preview-link">
-        { @renderInfo() }
         { @renderHeader() }
+        { @renderInfo() }
         <div className="description" dangerouslySetInnerHTML={__html: company.get('description')}></div>
         { @renderFooter() }
       </a>

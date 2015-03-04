@@ -56,15 +56,11 @@ module.exports  = React.createClass
       pluralize(count, 'company', 'companies')
 
 
-  # Handlers
-  #
-
-
   # Lifecycle methods
   #
   componentWillMount: ->
     @cursor = 
-      user:      UserStore.cursor.items.cursor(@props.uuid)
+      user:  UserStore.cursor.items.cursor(@props.uuid)
 
     @fetch() unless @isLoaded()
 

@@ -9,7 +9,7 @@ module FollowableController
         format.json { render json: :fail, status: 412 }
       end
     else
-      object.favorites.create(user: current_user)
+      object.followers.create(user: current_user)
 
       respond_to do |format|
         format.json { render json: object.active_model_serializer.new(object, scope: current_user) }

@@ -15,6 +15,7 @@ section.user-profile {
 
   > header {
     background-color: $profile-header-color;
+    position: relative;
   }
 
   > header > .info,
@@ -23,6 +24,12 @@ section.user-profile {
   > .companies-list {
     margin: 0 auto;
     width: 1000px + $gutter-size;
+  }
+
+  > header > .follow-button {
+    @include position(absolute, 50% $gutter-size 0 0);
+
+    margin-top: -17px;
   }
 
   > header > nav {

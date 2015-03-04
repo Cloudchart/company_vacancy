@@ -108,7 +108,7 @@ Cloudchart::Application.routes.draw do
   resources :pins
   resources :posts_stories, only: [:update, :destroy]
 
-  resources :users, only: [:show]
+  resources :users, only: [:show], concerns: [:followable]
 
   resources :quotes, only: [:show]
   resources :visibilities, only: :update

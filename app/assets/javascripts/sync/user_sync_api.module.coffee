@@ -21,3 +21,16 @@ module.exports =
       type:       'GET'
       dataType:   'json'
     
+  follow: (key) ->
+    Promise.resolve $.ajax
+      url: "/users/#{key}/follow"
+      type: 'POST'
+      dataType: 'json'
+      cache: false
+
+  unfollow: (key) ->
+    Promise.resolve $.ajax
+      url: "/users/#{key}/unfollow"
+      type: 'DELETE'
+      dataType: 'json'
+      cache: false

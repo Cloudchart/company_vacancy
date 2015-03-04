@@ -17,6 +17,8 @@ module.exports = GlobalState.createStore
   findByCompany: (company_id) ->
     @filter (person) -> person.get("company_id") == company_id
 
+  filterForUser: (user_id) ->
+    @filter (person) -> person.get("user_id") == user_id
 
   filterForBlock: (id) ->
     block_identities      = BlockIdentityStore.filterForBlock(id)
