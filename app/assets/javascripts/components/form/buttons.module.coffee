@@ -11,7 +11,7 @@ BaseButton = React.createClass
     defaultClass: React.PropTypes.string
     type:         React.PropTypes.string
 
-    onClick:   React.PropTypes.func
+    onClick:      React.PropTypes.func
 
   getDefaultProps: ->
     className:    ""

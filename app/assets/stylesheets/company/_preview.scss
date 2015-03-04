@@ -1,22 +1,45 @@
-$company-preview-padding: 20px;
-$company-preview-header-height: 170px;
-$company-preview-middle-height: 76px;
-$company-preview-bottom-height: 120px;
-$company-preview-height: $company-preview-header-height + $company-preview-middle-height + $company-preview-bottom-height;
+main.companies {
+  background-color: $background-color;
+  margin: 0;
+  padding: 0;
+}
+
+div.companies {
+  @include justify-content(center);
+  @include display(flex);
+}
+
+.cloud-profile-companies {
+  @include flex-direction(column);
+
+  font-size: $basic-font-size;
+  position: relative;
+
+  .search {
+    padding: $default-margin-size;
+
+    padding-left: $gutter-size;
+  }
+
+  .search > label {
+    height: 45px;
+    font-size: $big-font-size;
+    width: 300px;
+  }
+}
+
+.cloud-profile-companies,
+article.companies,
+.company-preview {
+  @include display(flex);
+  @include justify-content(center);  
+}
 
 .companies-list {
-  margin: 0 auto;
-  margin-bottom: 30px;  
-  width: 800px;
+  padding-top: 0;
 
-  > header > h1 {
-    margin-top: 0;
-    font-weight: normal;
-    font-size: 25pt;
-
-    > span.green {
-      color: $north-texas-green;
-    }
+  > header {
+    font-weight: 600;
   }
 
   > div {
@@ -25,172 +48,158 @@ $company-preview-height: $company-preview-header-height + $company-preview-middl
     @include flex-wrap(wrap);
     @include justify-content(space-between);
   }
-}
 
-.company-add,
-.company-preview {
-  border: 2px solid hsl(0, 0%, 96%);
-  height: $company-preview-height;
-  margin-bottom: 17px;
-  position: relative;
-  width: 48%;
+  .company-preview {
+    background-color: $card-color;
+    min-height: 400px;
+    position: relative;
+  }
 }
 
 .company-add {
+  @include position(absolute, $gutter-size $gutter-size 0 0);
 
-  > a {
-    @include display(flex);
-    @include flex-direction(column);
-    @include justify-content(center);
-    @include align-items(center);
-
-    height: 100%;
-    text-decoration: none;
-    color: hsl(60, 1%, 34%);
-
-    > i.fa {
-      font-size: 50px;
-    }
-
-    > span.hint {
-      font-size: 13px;
-      text-transform: uppercase;
-    }
+  i {
+    margin-right: $inner-margin-size;
   }
 }
 
 .company-preview {
 
-  > a {
+  > a:nth-child(1) {
     @include display(flex);
     @include flex-direction(column);
     @include justify-content(space-between);
 
     color: inherit;
-    text-decoration: none;
+    margin-top: 0;
     outline: none;
+    text-decoration: none;
+    width: 100%;
+  }
+
+  .info {
+    @include position(absolute, $default-margin-size $default-margin-size 0 0);
+  
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .stats {
+      @include display(flex);
+      @include justify-content(flex-end);
+
+      color: $disabled-color;
+      font-size: $big-font-size;
+      font-weight: bold;
+      margin-bottom: $inner-margin-size;
+
+      li {
+        margin-left: $inner-margin-size;
+      }
+
+      .round-button {
+        margin-left: 5px;
+
+        > i {
+          font-size: $big-font-size;
+        }
+      }
+    }
+
+    .labels {
+      @include display(flex);
+      @include justify-content(flex-end);
+
+      li {
+        display: block;
+
+        background-color: $label-color;
+        color: $label-text-color;
+        margin-left: $inner-margin-size;
+        padding: 5px; 
+      }
+    }
   }
 
   header {
+    @include align-items(flex-start);
     @include display(flex);
+    @include flex-direction(column);
+    @include justify-content(space-between);
 
-    padding: $company-preview-padding;
-    height: $company-preview-header-height;
+    > img {
+      display: block;
+      margin-bottom: $default-margin-size;
+      max-height: 100px;
+      max-width: 140px;
+      height: auto;
+      width: auto;
+    }
 
-    > figure {
-      margin: auto 0;
-      width: 145px;
-      height: 100%;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position-y: center;
-
-      &.image-absent {
-        border-radius: 100%;
-        font-size: 30px;
-        font-weight: 100;
-        height: 100px;
-        line-height: 100px;
-        text-align: center;
-        width: 100px;
-      }
+    > h1 {
+      font-size: $large-font-size;
+      margin: 0;
+      margin-bottom: $default-margin-size;
     }
   }
 
-  .middle {
-    @include align-items(stretch);
-    @include display(flex);
-
-    font-size: 15px;
-    height: $company-preview-middle-height;
-    padding: $company-preview-padding;
-    padding-top: 0;
-
-    > .left,
-    > .right {
-      @include display(flex);
-      @include flex-direction(column);
-
-      > * {
-        height: 28px;
-        line-height: 28px;
-      }
-    }
-
-    > .left {
-      @include flex(1);
-
-      > .name {
-        font-size: 20px;
-        font-weight: 600;
-      }
-
-      > .name,
-      > .description {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-
-    > .right {
-      width: auto;
-
-      > .size {
-        @include display(inline-flex);
-
-        > div {
-
-          &.vacancies {
-            color: $alizarin-crimson;
-          }
-
-          &:first-child {
-            margin-right: 30px;
-          }
-
-          > i {
-            margin-left: 3px;
-          }
-        }
-      }
-
-      > .size,
-      > .burn-rate {
-        font-weight: 600;
-        white-space: nowrap;
-        width: auto;
-      }
-
-      > .burn-rate {
-        @include display(flex);
-        @include align-items(center);
-
-        > .units {
-          font-size: 9px;
-          font-weight: 300;
-          margin-left: 5px;
-          text-transform: uppercase;
-        }
-      }
-    }
+  .description {
+    font-size: $big-font-size;
+    margin-bottom: $default-margin-size;
   }
 
   footer {
     @include display(flex);
+    @include flex-direction(column);
+    @include justify-content(space-between);
+    
+    border-top: $card-hr;
+    min-height: 75px;
+    padding-top: $default-margin-size;
 
-    background-color: hsl(0, 0%, 96%);
-    color: hsl(60, 1%, 34%);
-    font-size: 15px;
-    height: $company-preview-bottom-height;
-    padding: $company-preview-padding;
-
-    > .buttons {
+    .tags {
       @include display(flex);
-      @include justify-content(space-around);
+      @include flex-wrap(wrap);
+      @include justify-content(center);
+      
+      color: $link-color;
+
+      > * {
+        margin-right: $inner-margin-size;
+      }
+    }
+
+    .people {
+      @include display(flex);
+      @include flex-wrap(wrap);
+      @include justify-content(center);
+
+      margin-bottom: $default-margin-size;
+
+      .human {
+        @extend .cloud-card-human.block;
+
+        margin: $card-basic-space / 2;
+        margin-bottom: 0;
+        width: 80px;
+
+        .credentials {
+          font-size: $small-font-size;
+        }
+      }
+    }
+
+    .buttons {
+      @inlude align-items(center);
+      @include display(flex);
+      @include justify-content(space-between);
 
       margin: auto;
-      width: 100%;
+      margin-bottom: $default-margin-size;
+      width: 230px; 
     }
   }
 }

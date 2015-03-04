@@ -1,11 +1,11 @@
-# Imports
-#
+Dispatcher    = require('dispatcher/dispatcher')
+GlobalState   = require('global_state/state')
 
-Dispatcher      = require('dispatcher/dispatcher')
-GlobalState     = require('global_state/state')
+RoleStore     = require('stores/role_store.cursor')
+TokenStore    = require('stores/token_store.cursor')
+FavoriteStore = require('stores/favorite_store.cursor')
 
-# Exports
-#
+
 module.exports = GlobalState.createStore
 
   displayName:    'CompanyStore'
@@ -16,6 +16,15 @@ module.exports = GlobalState.createStore
   syncAPI:        require('sync/company')
 
   search: (query) ->
-    @syncAPI.search(query).done (json) =>
-      @cursor.items.clear()
-      @fetchDone(json)
+    @syncAPI.search(query).done @fetchDone
+
+
+  filterForCurrentUser: ->
+    companiesRolesIds = RoleStore.filterForCompanies().map((role) -> role.get('owner_id'))
+    companiesInvitesIds = TokenStore.filterCompanyInvites().map (token) -> token.get('owner_id') 
+    companiesFavoritesIds = FavoriteStore.cursor.items.map (favorite) -> favorite.get('favoritable_id') 
+
+    @cursor.items
+      .filter (company) -> companiesRolesIds.contains(company.get('uuid'))     ||
+                           companiesInvitesIds.contains(company.get('uuid'))   ||
+                           companiesFavoritesIds.contains(company.get('uuid'))

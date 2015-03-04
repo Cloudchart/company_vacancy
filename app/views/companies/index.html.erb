@@ -1,6 +1,8 @@
-<div data-react-class="components/company/list">
+<div class="companies" data-react-class="components/companies_app">
 </div>
 
-<% content_for :search do %>
-  <%= true %>
+<% content_for :header_menu do %>
+  <%= render 'shared/header_menu' %>
 <% end %>
+
+<%= content_for :class_for_main, 'companies' %>

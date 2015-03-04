@@ -1,21 +1,11 @@
 <div class="router" data-company-router-mount-point>
   <ul>
-    <% if can?(:index, Company) %>
-      <li>
-        <%= link_with_class_for_current('Companies', cloud_profile.companies_path, 'base') %>
-      </li>
-    <% end %>
-
+  
     <% if current_user.try(:admin?) && current_user.activities.any? %>
       <li>
         <%= link_with_class_for_current('Newsfeed', cloud_profile.activities_path, 'base') %>
       </li>
     <% end %>
-    
-    <% if can?(:index, Pinboard) %>
-      <li>
-        <%= link_with_class_for_current('Pinboards', main_app.pinboards_path, 'base') %>
-      </li> 
-    <% end %>
+
   </ul>
 </div>

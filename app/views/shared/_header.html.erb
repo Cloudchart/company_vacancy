@@ -13,11 +13,12 @@
 
 <div class="spacer"></div>
 
-<% if content_for(:search).present? %>
-  <div data-react-class="components/company/search" data-react-props="<%= { query: params[:query] }.to_json %>"></div>
-<% elsif can?(:index, Company) %>
-  <div class="browse-companies">
-    <%= link_to 'Browse Companies', main_app.companies_path, class: 'base strong' %>
+<% if user_authenticated? %>
+  <div class="menu-link">
+    <%= link_with_class_for_current('Pinboards', main_app.pinboards_path, 'base') %>
+  </div>
+  <div class="menu-link">
+    <%= link_with_class_for_current 'Companies', main_app.companies_path, 'base' %>
   </div>
 <% end %>
 

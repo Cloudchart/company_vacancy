@@ -69,3 +69,41 @@ $zindex-modal: 900;
 $zindex-dropdown: 700;
 $zindex-draggable: 600;
 
+// new design variables
+
+$gutter-size: 24px;
+$default-header-height: 75px;
+$default-footer-height: 75px;
+$default-margin-size: 20px;
+$inner-margin-size: 10px;
+
+
+$green-color:          hsl(141, 91%, 32%);
+$accented-green-color: hsl(137, 54%, 50%);
+$accented-red-color:   hsl(351, 80%, 49%);
+$white-color:          hsl(0, 0%, 98%);
+$accented-white-color: hsl(0, 0%, 100%);
+$primary-grey-color:   hsl(0, 0%, 53%);
+$auxilary-grey-color:  hsl(0, 0%, 73%);
+$disabled-grey-color:  hsl(0, 0%, 93%);
+$black-color:          hsl(0, 0%, 0%);
+
+$background-color:     $white-color;
+$special-link-color:   $primary-grey-color;
+$card-color:           $accented-white-color;
+$link-color:           $accented-green-color;
+$disabled-color:       $disabled-grey-color;
+$label-color:          $accented-green-color;
+$label-text-color:     $white-color;
+
+
+$micro-font-size:    5px;
+$tiny-font-size:     7px;
+$little-font-size:   10px;
+$small-font-size:    12px;
+$basic-font-size:    16px;
+$big-font-size:      20px;
+$large-font-size:    24px;
+$huge-font-size:     36px;
+$great-font-size:    54px;
+$giant-font-size:    81px;

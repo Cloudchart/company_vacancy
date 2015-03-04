@@ -286,29 +286,30 @@ ul.round-buttons {
   > li ~ li {
     margin-left: $round-button-spacer-size;
   }
+}
+
+.round-button,
+.round-buttons > li {
+  background-color: $round-button-background-color;
+  color: $round-button-color;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 50%;
+  height: $round-button-size;
+  text-align: center;
+  width: $round-button-size;
   
-  > li {
-    background-color: $round-button-background-color;
-    color: $round-button-color;
-    cursor: pointer;
-    display: inline-block;
-    border-radius: 50%;
-    height: $round-button-size;
-    text-align: center;
-    width: $round-button-size;
-    
-    &.active {
-      background-color: $round-button-background-color-active;
-    }
-    
-    &.disabled {
-      background-color: $round-button-background-color-disabled;
-      cursor: default;
-    }
-    
-    > i {
-      font-size: 14px;
-      line-height: $round-button-size;
-    }
+  &.active {
+    background-color: $round-button-background-color-active;
+  }
+  
+  &.disabled {
+    background-color: $round-button-background-color-disabled;
+    cursor: default;
+  }
+  
+  > i {
+    font-size: 14px;
+    line-height: $round-button-size;
   }
 }
