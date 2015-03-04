@@ -69,10 +69,10 @@ class CloudShape
         []
       end
 
+      fields = fields | shape_class.defaults if fields.empty?
       fields = fields - shape_class.restricted
-      fields = fields | shape_class.defaults | [:id]
 
-      fields
+      [:id] | fields
     end
 
 
