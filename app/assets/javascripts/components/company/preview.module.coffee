@@ -43,10 +43,10 @@ CompanyList = React.createClass
       .toSet()
 
   getToken: ->
-    TokenStore.findCompanyInvite(@cursor.company)
+    TokenStore.findCompanyInvite(@props.uuid)
 
   getFavorite: ->
-    FavoriteStore.findByCompany(@cursor.company)
+    FavoriteStore.findByCompany(@props.uuid)
 
 
   # Handlers

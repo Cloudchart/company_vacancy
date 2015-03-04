@@ -9,5 +9,5 @@ module.exports = GlobalState.createStore
   collectionName: 'favorites'
   instanceName:   'favorite'
 
-  findByCompany: (company) ->
-    @cursor.items.filter((favorite) => favorite.get('favoritable_id') == company.get('uuid')).first()
+  findByCompany: (company_id) ->
+    @cursor.items.filter((favorite) => favorite.get('favoritable_id') == company_id).first()

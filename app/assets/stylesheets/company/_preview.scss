@@ -4,18 +4,21 @@ main.companies {
   padding: 0;
 }
 
+div.companies {
+  @include justify-content(center);
+  @include display(flex);
+}
+
 .cloud-profile-companies {
   @include flex-direction(column);
 
   font-size: $basic-font-size;
-  margin: 0 auto;
-  padding-top: $gutter-size;
-  padding: $gutter-size/2;
   position: relative;
-  width: 1000px;
 
   .search {
-    padding: $gutter-size/2;
+    padding: $default-margin-size;
+
+    padding-left: $gutter-size;
   }
 
   .search > label {
@@ -33,7 +36,7 @@ article.companies,
 }
 
 .companies-list {
-  padding: 0;
+  padding-top: 0;
 
   > header {
     font-weight: 600;
@@ -54,7 +57,7 @@ article.companies,
 }
 
 .company-add {
-  @include position(absolute, $gutter-size 0px 0 0);
+  @include position(absolute, $gutter-size $gutter-size 0 0);
 
   i {
     margin-right: $inner-margin-size;

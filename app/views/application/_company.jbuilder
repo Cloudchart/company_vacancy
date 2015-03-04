@@ -9,6 +9,6 @@ json.company_url  main_app.company_path(company)
 if with_count
   posts = company.posts
 
-  json.posts_count posts.length
-  json.pins_count  posts.map(&:pins).flatten.length
+  json.posts_count posts.size
+  json.pins_count  posts.map(&:pins).flatten.size
 end

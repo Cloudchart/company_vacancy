@@ -14,9 +14,9 @@ module.exports = GlobalState.createStore
       token.get('owner_type') == type && 
       token.get('name') == 'invite'
 
-  filterCompanyInvites: (user) ->
+  filterCompanyInvites: ->
     @filterInvites('Company')
 
-  findCompanyInvite: (company) ->
+  findCompanyInvite: (company_id) ->
     @filterCompanyInvites().
-      filter((token) => token.get('owner_id') == company.get('uuid')).first()
+      filter((token) => token.get('owner_id') == company_id).first()
