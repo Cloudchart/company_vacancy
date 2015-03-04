@@ -32,16 +32,20 @@ module.exports  = React.createClass
 
   propTypes:
     uuid:     React.PropTypes.string.isRequired
-    readOnly: React.PropTypes.bool
+
+  getInitialState: ->
+    loaders: Immutable.Map()
 
   fetch: ->
-    GlobalState.fetch(@getQuery('user'), id: @props.uuid)
+    GlobalState.fetch(@getQuery('user'), id: @props.uuid).then =>
+      @setState
+        loaders: @state.loaders.set('user', true)
 
 
   # Helpers
   #
   isLoaded: ->
-    @cursor.user.deref(false)
+    @state.loaders.get('user') == true
 
   getPinsCount: ->
     count = PinStore.filterByUserId(@props.uuid).size
