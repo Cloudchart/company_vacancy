@@ -1,10 +1,9 @@
-#json.set! :unicorns, CloudShape.shape(User.all, :full_name, pinboards: [:title, pins: :user], readable_pinboards: [:title, pins: :user])
-
 shape = {
   fields: {
     id:           nil,
     full_name:    nil,
     avatar_url:   nil,
+    roles:        nil,
     # pinboards:    {
     #   fields: {
     #     id:       nil,
@@ -12,7 +11,15 @@ shape = {
     #     pins: {
     #       fields: {
     #         id:       nil,
-    #         content:  nil
+    #         content:  nil,
+    #         user:     nil,
+    #         parent: {
+    #           fields: {
+    #             id:       nil,
+    #             content:  nil,
+    #             user:     nil,
+    #           }
+    #         }
     #       }
     #     }
     #   }
@@ -20,4 +27,5 @@ shape = {
   }
 }
 
-json.set! :unicorns, CloudShape.shape(User.all, shape)
+json.set! :count, User.unicorns.size
+json.set! :unicorns, CloudShape.shape(User.unicorns, shape)
