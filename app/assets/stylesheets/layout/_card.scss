@@ -151,6 +151,11 @@ $card-hr: 1px solid whitesmoke;
     margin-top: $card-basic-space;
   }
 
+  > :first-child,
+  > a > :first-child {
+    margin-top: 0;
+  }
+
   > a > header,
   > header {
     @extend .cloud-card-header;

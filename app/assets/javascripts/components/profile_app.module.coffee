@@ -120,9 +120,11 @@ module.exports = React.createClass
   render: ->
     <section className="user-profile">
       <header>
-        <ProfileInfo uuid = { @props.uuid } />
-        { @renderMenu() }
-        { @renderFollowButton() }
+        <div className="cloud-columns cloud-columns-flex">
+          <ProfileInfo uuid = { @props.uuid } />
+          { @renderMenu() }
+          { @renderFollowButton() }
+        </div>
       </header>
       { @renderContent() }
     </section>

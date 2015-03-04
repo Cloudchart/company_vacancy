@@ -81,7 +81,9 @@ module.exports  = React.createClass
 
     <section className="info">
       <aside>
-        <Avatar avatarURL = { @cursor.user.get('avatar_url') } />
+        <Avatar 
+          avatarURL = { @cursor.user.get('avatar_url') }
+          value     = { @cursor.user.get('full_name') } />
       </aside>
       <section className="personal">
         <h1> { @cursor.user.get('full_name') } </h1>

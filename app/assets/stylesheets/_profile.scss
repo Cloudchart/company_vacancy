@@ -3,6 +3,7 @@ $menu-color: $auxilary-grey-color;
 $menu-active-color: $accented-green-color;
 $menu-hover-color: $green-color;
 $menu-text-color: $accented-white-color;
+$menu-height: 75px;
 
 main.user-profile {
   background-color: $background-color;
@@ -15,24 +16,24 @@ section.user-profile {
 
   > header {
     background-color: $profile-header-color;
-    position: relative;
+
+    .cloud-columns {
+      @include flex-direction(column);
+
+      margin: 0 auto;
+      padding-bottom: 0;
+      position: relative;
+    }
   }
 
-  > header > .info,
-  > header > nav,
-  > .pinboards,
-  > .companies-list {
-    margin: 0 auto;
-    width: 1000px + $gutter-size;
-  }
-
-  > header > .follow-button {
+  > header .follow-button {
     @include position(absolute, 50% $gutter-size 0 0);
 
-    margin-top: -17px;
+    margin-top: -17px - $menu-height/2;
   }
 
-  > header > nav {
+  > header nav {
+    width: 100%;
 
     ul {
       @include display(flex);
@@ -51,7 +52,7 @@ section.user-profile {
       background-color: $menu-color;
       cursor: pointer;
       font-size: $big-font-size;
-      height: 75px;
+      height: $menu-height;
       width: 25%;
 
       &:hover,
@@ -69,7 +70,7 @@ section.user-profile {
     }
   }
 
-  .info {
+  > header .info {
     @include display(flex);
 
     padding: $gutter-size;
@@ -78,7 +79,16 @@ section.user-profile {
       > figure {
         border-radius: 100%;
         height: 150px;
+        position: relative;
         width: 150px;
+
+        > figcaption {
+          @include position(absolute, 50% null null 50%);
+          @include transform(translateX(-50%) translateY(-50%));
+
+          font-size: $huge-font-size;
+          font-weight: 300;
+        }
       }
     }
 
@@ -105,5 +115,6 @@ section.user-profile {
   .pinboards,
   .companies-list {
     padding: $gutter-size/2;
+    margin: 0 auto;
   }
 }
