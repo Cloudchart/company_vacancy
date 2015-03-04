@@ -117,6 +117,10 @@ class User < ActiveRecord::Base
     errors.add(:email, emails.first.errors[:address]) unless emails.first.valid?
   end
 
+  def blank_company
+    companies.select { |company| company.name.blank? && company.logotype.blank? }.first
+  end
+
 private
 
   def mark_emails_for_destruction

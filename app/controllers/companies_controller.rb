@@ -50,10 +50,14 @@ class CompaniesController < ApplicationController
 
   # GET /companies/new
   def new
-    @company = Company.new
-    @company.roles.build(user: current_user, value: :owner)
-    @company.should_build_objects!
-    @company.save!
+    if blank_company = current_user.blank_company
+      @company = blank_company
+    else
+      @company = Company.new
+      @company.roles.build(user: current_user, value: :owner)
+      @company.should_build_objects!
+      @company.save!
+    end
 
     redirect_to @company
   end
