@@ -18,6 +18,10 @@ module.exports = GlobalState.createStore
   search: (query) ->
     @syncAPI.search(query).done @fetchDone
 
+  filterForUser: (user_id) ->
+    companiesRolesIds = RoleStore.filterForUserCompanies(user_id).map((role) -> role.get('owner_id'))
+
+    @cursor.items.filter (company) -> companiesRolesIds.contains(company.get('uuid'))
 
   filterForCurrentUser: ->
     companiesRolesIds = RoleStore.filterForCompanies().map((role) -> role.get('owner_id'))

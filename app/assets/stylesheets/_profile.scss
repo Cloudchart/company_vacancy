@@ -1,4 +1,8 @@
 $profile-header-color: $disabled-grey-color;
+$menu-color: $auxilary-grey-color;
+$menu-active-color: $accented-green-color;
+$menu-hover-color: $green-color;
+$menu-text-color: $accented-white-color;
 
 main.user-profile {
   background-color: $background-color;
@@ -13,10 +17,49 @@ section.user-profile {
     background-color: $profile-header-color;
   }
 
-  > header > .info, 
-  > .pinboards {
+  > header > .info,
+  > header > nav,
+  > .pinboards,
+  > .companies-list {
     margin: 0 auto;
     width: 1000px + $gutter-size;
+  }
+
+  > header > nav {
+
+    ul {
+      @include display(flex);
+      @include justify-content(center);
+
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(center);
+
+      background-color: $menu-color;
+      cursor: pointer;
+      font-size: $big-font-size;
+      height: 75px;
+      width: 25%;
+
+      &:hover,
+      &.active {
+        color: $menu-text-color;
+      }
+
+      &:hover {
+        background-color: $menu-hover-color;
+      }
+
+      &.active {
+        background-color: $menu-active-color;
+      }
+    }
   }
 
   .info {
@@ -40,14 +83,10 @@ section.user-profile {
       font-size: $basic-font-size;
       margin-left: $default-margin-size;
 
-      input {
-        background-color: $profile-header-color;
-        border: none;
-        outline: none;
-      }
-
-      .name {
+      h1 {
         font-size: $huge-font-size;
+        font-weight: 300;
+        margin: 0;
       }
 
       .stats {
@@ -56,7 +95,8 @@ section.user-profile {
     }
   }
 
-  .pinboards {
+  .pinboards,
+  .companies-list {
     padding: $gutter-size/2;
   }
 }

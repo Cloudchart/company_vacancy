@@ -1,5 +1,7 @@
 # @cjsx React.DOM
 
+GlobalState    = require('global_state/state')
+
 CompanyStore   = require('stores/company_store.cursor')
 PersonStore    = require('stores/person_store.cursor')
 TaggingStore   = require('stores/tagging_store')
@@ -17,9 +19,23 @@ Buttons        = require('components/form/buttons')
 SyncButton     = Buttons.SyncButton
 CancelButton   = Buttons.CancelButton
 
-CompanyList = React.createClass
+CompanyPreview = React.createClass
 
   displayName: 'CompanyPreview'
+
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+  statics:
+
+    queries:
+
+      company: ->
+        """
+          Company {
+            tags,
+            taggings
+          }
+        """  
 
   # Component specifications
   #
@@ -100,13 +116,13 @@ CompanyList = React.createClass
     <div className="info">
       <ul className="stats">
         <li>
-          { @cursor.company.get('posts_count') }
+          { @cursor.company.get('posts_count') || 0 }
           <div className="round-button">
             <i className="fa fa-pencil"></i>
           </div>
         </li>
         <li>
-          { @cursor.company.get('pins_count') }
+          { @cursor.company.get('pins_count') || 0 }
           <div className="round-button">
             <i className="fa fa-thumb-tack"></i>
           </div>
@@ -179,4 +195,4 @@ CompanyList = React.createClass
     </article>
 
 
-module.exports = CompanyList
+module.exports = CompanyPreview

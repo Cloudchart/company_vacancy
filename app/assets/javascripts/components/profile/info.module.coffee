@@ -24,7 +24,7 @@ module.exports  = React.createClass
       user: ->
         """
           User {
-            companies,
+            owned_companies,
             pins,
             roles
           }
@@ -44,16 +44,16 @@ module.exports  = React.createClass
     @cursor.user.deref(false)
 
   getPinsCount: ->
-    count = PinStore.filterByUserId(@cursor.user.get('uuid')).size
+    count = PinStore.filterByUserId(@props.uuid).size
 
     if count > 0
       pluralize(count, 'pin', 'pins')
 
   getCompaniesCount: ->
-    # count = @cursor.companies.filterByUserId(@cursor.user.get('uuid')).size
+    count = CompanyStore.filterForUser(@props.uuid).size
 
-    # if count > 0
-    #   pluralize(count, 'company', 'companies')
+    if count > 0
+      pluralize(count, 'company', 'companies')
 
 
   # Handlers
@@ -72,13 +72,12 @@ module.exports  = React.createClass
   # Renderers
   #
   renderUserStats: ->
-    pinsCount = @getPinsCount()
-    companiesCount = @getCompaniesCount()
+    counters = []
 
-    <p className="stats">
-      { @getCompaniesCount() }
-      { @getPinsCount() }
-    </p>
+    if companiesCount = @getCompaniesCount() then counters.push(companiesCount)
+    if pinsCount = @getPinsCount() then counters.push(pinsCount)
+
+    <p className="stats">{ counters.join(', ') }</p>
 
 
   render: ->
@@ -89,10 +88,7 @@ module.exports  = React.createClass
         <Avatar avatarURL = { @cursor.user.get('avatar_url') } />
       </aside>
       <section className="personal">
-        <label className="name">
-          <AutoSizingInput 
-            value = { @cursor.user.get('full_name') } />
-        </label>
+        <h1> { @cursor.user.get('full_name') } </h1>
         { @renderUserStats() }
       </section>
     </section>
