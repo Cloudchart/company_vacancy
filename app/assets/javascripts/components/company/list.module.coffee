@@ -1,17 +1,19 @@
 # @cjsx React.DOM
 
-GlobalState    = require('global_state/state')
+GlobalState      = require('global_state/state')
 
-CompanyStore   = require('stores/company_store.cursor')
+CompanyStore     = require('stores/company_store.cursor')
 
-CompanyPreview = require('components/company/preview')
+CompanyPreview   = require('components/company/preview')
+
+NodeRepositioner = require('utils/node_repositioner')
 
 
 CompanyList = React.createClass
 
   displayName: 'CompanyList'
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+  mixins: [GlobalState.query.mixin, NodeRepositioner.mixin]
 
   statics:
 
@@ -30,10 +32,15 @@ CompanyList = React.createClass
   # Component specifications
   #
   propTypes:
-    uuid: React.PropTypes.string.isRequired
+    uuid:           React.PropTypes.string
+    ids:            React.PropTypes.instanceOf(Immutable.Seq)
+    isInLegacyMode: React.PropTypes.bool
+
+  getDefaultProps: ->
+    isInLegacyMode: false
 
   getInitialState: ->
-    loaders: Immutable.Map()  
+    loaders: Immutable.Map()
 
   fetch: ->
     GlobalState.fetch(@getQuery('companies'), id: @props.uuid).then =>
@@ -46,6 +53,12 @@ CompanyList = React.createClass
   isLoaded: ->
     @state.loaders.get('companies') == true
 
+  getCompaniesIds: ->
+    if @props.isInLegacyMode
+      @props.ids
+    else
+      @cursor.companies.map (company) -> company.get('uuid')
+
 
   # Lifecycle methods
   #
@@ -53,24 +66,24 @@ CompanyList = React.createClass
     @cursor =
       companies: CompanyStore.cursor.items
 
-    @fetch() unless @isLoaded()
+    @fetch() unless (@isLoaded() || @props.isInLegacyMode)
 
 
   # Renderers
   #
   renderCompanies: ->
-    @cursor.companies.map (company, index) =>
+    @getCompaniesIds().map (id, index) =>
       <section key={index} className="cloud-column">
         <CompanyPreview 
-          key        = { company.get('uuid') }
+          key        = { id }
           onSyncDone = { @props.onSyncDone }
-          uuid       = { company.get('uuid') } />
+          uuid       = { id } />
       </section>
     .toArray()
 
 
   render: ->
-    return null unless @isLoaded()
+    return null unless (@isLoaded() || @props.isInLegacyMode)
 
     <section className="companies-list cloud-columns cloud-columns-flex">
       { @renderCompanies() }

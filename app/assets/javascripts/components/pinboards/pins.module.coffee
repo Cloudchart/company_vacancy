@@ -48,26 +48,6 @@ module.exports = React.createClass
     @cursor.pinboard.deref(false)
 
 
-  repositionNodes: ->
-    return unless parentNode = @getDOMNode()
-
-    Immutable.Seq(parentNode.childNodes)
-      .groupBy (node) ->
-        node.getBoundingClientRect().left
-
-      .forEach (nodes) ->
-        nodes.forEach (node, i) ->
-          return if i == 0
-
-          bounds          = node.getBoundingClientRect()
-          prevNode        = nodes.get(i - 1)
-          prevNodeBounds  = prevNode.getBoundingClientRect()
-
-          delta           = bounds.top - prevNodeBounds.bottom
-
-          node.style.top  = '-' + delta + 'px' unless delta == 0
-
-
   gatherPins: ->
     @cursor.pins
       .sortBy (pin) -> pin.get('created_at')
@@ -81,14 +61,6 @@ module.exports = React.createClass
       pins:     PinStore.cursor.items.filterCursor (item) => item.get('pinboard_id') is @props.uuid
 
     @fetch() unless @isLoaded()
-
-
-  componentDidMount: ->
-    @repositionNodes()
-
-
-  componentDidUpdate: ->
-    @repositionNodes()
 
 
   getDefaultProps: ->

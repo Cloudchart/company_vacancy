@@ -13,6 +13,9 @@ PinboardStore   = require('stores/pinboard_store')
 PinboardComponent  = require('components/pinboards/pinboard')
 
 
+NodeRepositioner = require('utils/node_repositioner')
+
+
 # Exports
 #
 module.exports = React.createClass
@@ -20,7 +23,7 @@ module.exports = React.createClass
 
   displayName: 'Pinboards'
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin, NodeRepositioner.mixin]
 
   statics:
 
@@ -69,26 +72,6 @@ module.exports = React.createClass
     @state.loaders.get('pinboards') == true
 
 
-  repositionNodes: ->
-    return unless parentNode = @getDOMNode()
-
-    Immutable.Seq(parentNode.childNodes)
-      .groupBy (node) ->
-        node.getBoundingClientRect().left
-
-      .forEach (nodes) ->
-        nodes.forEach (node, i) ->
-          return if i == 0
-
-          bounds          = node.getBoundingClientRect()
-          prevNode        = nodes.get(i - 1)
-          prevNodeBounds  = prevNode.getBoundingClientRect()
-
-          delta           = bounds.top - prevNodeBounds.bottom
-
-          node.style.top  = '-' + delta + 'px' unless delta == 0
-
-
   gatherPinboards: ->
     @cursor.pinboards
       .sortBy (item) -> item.get('title')
@@ -100,14 +83,6 @@ module.exports = React.createClass
       pinboards: PinboardStore.cursor.items
 
     @fetch() unless @isLoaded()
-
-
-  componentDidMount: ->
-    @repositionNodes()
-
-
-  componentDidUpdate: ->
-    @repositionNodes()
 
 
   getInitialState: ->

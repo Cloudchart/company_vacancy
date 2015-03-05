@@ -7,7 +7,7 @@ TokenStore        = require('stores/token_store.cursor')
 FavoriteStore     = require('stores/favorite_store.cursor')
 RoleStore         = require('stores/role_store.cursor')
 
-CompanyPreview    = require('components/company/preview')
+CompanyList       = require('components/company/list')
 Field             = require('components/form/field')
 
 
@@ -54,6 +54,9 @@ CompaniesApp = React.createClass
 
   getMyCompaniesIds: ->
     @getIds(@filterByName(@state.myCompanies))
+
+  getAllIds: ->
+    @getMyCompaniesIds().concat(@state.searchedCompaniesIds)
 
   sortCompanies: (companies) ->
     companies.sortBy (company) ->
@@ -111,14 +114,6 @@ CompaniesApp = React.createClass
       />
     </div>
 
-  renderCompanyPreview: (companyId) ->
-    <section key={companyId} className="cloud-column">
-      <CompanyPreview 
-        key        = { companyId }
-        onSyncDone = { @updateStores }
-        uuid       = { companyId } />
-    </section>
-
   renderAddButton: ->
     <div className="company-add button green">
       <a href="companies/new">
@@ -127,21 +122,16 @@ CompaniesApp = React.createClass
       </a>
     </div>
 
-  renderCompanyCollection: (ids) ->
-    ids.toArray().map (id) => @renderCompanyPreview(id)
-
-  renderCompanies: ->
-    @renderCompanyCollection(@getMyCompaniesIds())
-      .concat(@renderCompanyCollection(@state.searchedCompaniesIds))
-
 
   render: ->
     <section className="cloud-profile-companies">
-      { @renderSearch() }
-      { @renderAddButton() }
-      <section className="companies-list cloud-columns cloud-columns-flex">
-        { @renderCompanies() }
-      </section>
+      <header className="cloud-columns cloud-columns-flex">
+        { @renderSearch() }
+        { @renderAddButton() }
+      </header>
+      <CompanyList 
+        ids            = { @getAllIds() }
+        isInLegacyMode = { true } />
     </section>
 
 

@@ -15,6 +15,12 @@ div.companies {
   font-size: $basic-font-size;
   position: relative;
 
+  > header {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(space-between);
+  }
+
   .search {
     padding: $default-margin-size;
 
@@ -38,10 +44,6 @@ article.companies,
 .companies-list {
   padding-top: 0;
 
-  > header {
-    font-weight: 600;
-  }
-
   > div {
     @include align-items(stretch);
     @include display(flex);
@@ -57,14 +59,13 @@ article.companies,
 }
 
 .company-add {
-  @include position(absolute, $gutter-size $gutter-size 0 0);
-
   i {
     margin-right: $inner-margin-size;
   }
 }
 
 .company-preview {
+  position: relative;
 
   > a:nth-child(1) {
     @include display(flex);
