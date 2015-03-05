@@ -9,7 +9,7 @@ CompaniesList      = require('components/company/list')
 UserStore          = require('stores/user_store.cursor')
 FavoriteStore      = require('stores/favorite_store.cursor')
 
-Button             = require('components/form/buttons').StandardButton
+Button             = require('components/form/buttons').SyncButton
 
 SyncApi            = require('sync/user_sync_api')
 
@@ -40,7 +40,8 @@ module.exports = React.createClass
     cursor: FavoriteStore.cursor.items
 
   getInitialState: ->
-    selected: location.hash.substr(1) || 'pins' || ''
+    selected:   location.hash.substr(1) || 'pins' || ''
+    isSyncing:  false
 
   fetch: ->
     GlobalState.fetch(@getQuery('user'), force: true)
@@ -71,12 +72,15 @@ module.exports = React.createClass
     location.hash = selected
 
   handleFollowClick: ->
+    @setState(isSyncing: true)
+
     if favorite = @getFavorite()
       SyncApi.unfollow(@props.uuid).then =>
         FavoriteStore.cursor.items.remove(favorite.get('uuid'))
-      , ->
+        @setState(isSyncing: false)
     else
-      SyncApi.follow(@props.uuid).then @fetch, ->
+      SyncApi.follow(@props.uuid).then => 
+        @fetch().then => @setState(isSyncing: false)
 
 
 
@@ -106,9 +110,11 @@ module.exports = React.createClass
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
     <Button 
-      className = "cc follow-button"
-      onClick   = { @handleFollowClick }
-      text      = { text } />
+      className         = "cc follow-button"
+      onClick           = { @handleFollowClick }
+      text              = { text }
+      sync              = { @state.isSyncing }
+      showSyncAnimation = { false } />
 
   renderContent: ->
     if @state.selected == "pins"
