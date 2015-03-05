@@ -201,7 +201,7 @@ RailsAdmin.config do |config|
     object_label_method :full_name
 
     list do
-      include_fields :first_name, :system_roles, :companies, :created_at
+      include_fields :first_name, :last_name, :system_roles, :companies, :created_at
       sort_by :created_at
 
       field :first_name do
@@ -211,6 +211,10 @@ RailsAdmin.config do |config|
 
       field :companies do
         pretty_value { value.map { |company| bindings[:view].link_to(company.name, bindings[:view].main_app.company_path(company)) }.join(', ').html_safe }
+      end
+
+      field :last_name do
+        visible false
       end
 
     end
