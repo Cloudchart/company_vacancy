@@ -32,6 +32,7 @@ gem 'sprockets-coffee-react'
 gem 'redis-rails'
 gem 'jbuilder'
 gem 'squeel'
+gem 'parslet'
 
 # Engines
 #
