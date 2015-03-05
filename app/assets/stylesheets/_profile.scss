@@ -1,0 +1,121 @@
+$profile-header-color: $disabled-grey-color;
+$menu-color: $auxilary-grey-color;
+$menu-active-color: $accented-green-color;
+$menu-text-color: $accented-white-color;
+$menu-height: 75px;
+
+main.user-profile {
+  background-color: $background-color;
+
+  padding: 0;
+}
+
+section.user-profile {
+  width: 100%;
+
+  > header {
+    background-color: $profile-header-color;
+
+    .cloud-columns {
+      @include flex-direction(column);
+
+      margin: 0 auto;
+      padding-bottom: 0;
+      position: relative;
+    }
+  }
+
+  > header .follow-button {
+    @include position(absolute, 50% $gutter-size 0 0);
+
+    margin-top: -17px - $menu-height/2;
+  }
+
+  > header nav {
+    width: 100%;
+
+    ul {
+      @include display(flex);
+      @include justify-content(center);
+
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(center);
+
+      background-color: $menu-color;
+      cursor: pointer;
+      font-size: $big-font-size;
+      height: $menu-height;
+      width: 25%;
+
+      &:hover,
+      &.active {
+        color: $menu-text-color;
+      }
+
+      &.active {
+        background-color: $menu-active-color;
+      }
+
+      &:hover {
+        background-color: lighten($menu-active-color, 10%);
+      }
+    }
+  }
+
+  > header .info {
+    @include display(flex);
+
+    padding: $gutter-size;
+
+    > aside {
+      > figure {
+        border-radius: 100%;
+        background-position: center center;
+        background-size: cover;
+        height: 150px;
+        position: relative;
+        width: 150px;
+
+        > figcaption {
+          @include position(absolute, 50% null null 50%);
+          @include transform(translateX(-50%) translateY(-50%));
+
+          font-size: $huge-font-size;
+          font-weight: 300;
+        }
+      }
+    }
+
+    > .personal {
+      @include display(flex);
+      @include flex-direction(column);
+      @include justify-content(space-between);
+
+      font-size: $basic-font-size;
+      margin-left: $default-margin-size;
+
+      h1 {
+        font-size: $huge-font-size;
+        font-weight: 300;
+        margin: 0;
+      }
+
+      .stats {
+        margin: 0;
+      }
+    }
+  }
+
+  .pinboards,
+  .companies-list {
+    padding: $gutter-size/2;
+    margin: 0 auto;
+  }
+}

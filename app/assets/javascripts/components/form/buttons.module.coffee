@@ -59,16 +59,18 @@ StandardButton = React.createClass
 SyncButton = React.createClass
  
   propTypes:
-    sync:           React.PropTypes.bool
-    syncText:       React.PropTypes.string
-    syncClassName:  React.PropTypes.string
-    syncIconClass:  React.PropTypes.string
+    sync:              React.PropTypes.bool
+    syncText:          React.PropTypes.string
+    syncClassName:     React.PropTypes.string
+    syncIconClass:     React.PropTypes.string
+    showSyncAnimation: React.PropTypes.bool
 
   getDefaultProps: ->
-    sync:           false
-    syncText:       null
-    syncClassName:  null
-    syncIconClass:  "fa-spinner"
+    sync:              false
+    syncText:          null
+    syncClassName:     null
+    syncIconClass:     "fa-spinner"
+    showSyncAnimation: true
 
   render: ->
     props = _.omit(@props, ["sync", "syncText", "syncClass", "syncIcon"])
@@ -76,9 +78,12 @@ SyncButton = React.createClass
     if @props.sync
       props = _.extend props,
                 disabled:  true
-                text:      if _.isNull(@props.syncText) then @props.text else @props.syncText
-                className: if _.isNull(@props.syncClassName) then @props.className else @props.syncClassName
-                iconClass: joinClasses(@props.syncIconClass, "fa-spin")
+
+      if @props.showSyncAnimation
+        props = _.extend props,
+          text:      if _.isNull(@props.syncText) then @props.text else @props.syncText
+          className: if _.isNull(@props.syncClassName) then @props.className else @props.syncClassName
+          iconClass: joinClasses(@props.syncIconClass, "fa-spin")
 
     StandardButton(props)
 

@@ -18,6 +18,8 @@ module.exports = GlobalState.createStore
     @cursor.items.filter (role) ->
       role.get('owner_type') == 'Company'
 
+  filterForUserCompanies: (user_id) ->
+    @filterForCompanies().filter (role) -> role.get('user_id') == user_id
 
   rolesFor: (id) ->
     @cursor.items

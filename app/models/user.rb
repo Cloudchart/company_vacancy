@@ -24,6 +24,7 @@ class User < ActiveRecord::Base
   has_many :vacancies, foreign_key: :author_id
   has_many :vacancy_responses
   has_many :favorites, dependent: :destroy
+  has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
   has_many :roles, dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :companies, through: :roles, source: :owner, source_type: 'Company'
@@ -31,6 +32,8 @@ class User < ActiveRecord::Base
   has_many :people, dependent: :destroy
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
+
+  has_many :owned_companies, -> { where(is_published: true) }, through: :roles, source: :owner, source_type: Company
 
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?

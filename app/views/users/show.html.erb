@@ -1,0 +1,8 @@
+<div data-react-class="components/profile_app" data-react-props="<%= { uuid: params[:id] }.to_json %>">
+</div>
+
+<% content_for :header_menu do %>
+  <%= render 'shared/header_menu' %>
+<% end %>
+
+<%= content_for :class_for_main, 'user-profile' %>

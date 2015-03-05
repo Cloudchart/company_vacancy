@@ -30,6 +30,8 @@ module.exports = GlobalState.createStore
   filterByPinboardId: (pinboard_id) ->
     @cursor.items.deref(@empty).filter (item) -> item.get('pinboard_id') == pinboard_id
 
+  filterByUserId: (user_id) ->
+    @cursor.items.deref(@empty).filter (pin) -> pin.get('user_id') == user_id
 
   filterInsightsForPost: (post_id) ->
     @cursor.items

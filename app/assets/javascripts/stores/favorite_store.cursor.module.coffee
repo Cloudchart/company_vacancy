@@ -10,4 +10,13 @@ module.exports = GlobalState.createStore
   instanceName:   'favorite'
 
   findByCompany: (company_id) ->
-    @cursor.items.filter((favorite) => favorite.get('favoritable_id') == company_id).first()
+    @findByFavoritable(company_id, 'Company')
+
+  findByUser: (user_id) ->
+    @findByFavoritable(user_id, 'User')
+
+  findByFavoritable: (favoritable_id, favoritable_type) ->
+    @filter (favorite) => 
+      favorite.get('favoritable_id') == favoritable_id &&
+      favorite.get('favoritable_type') == favoritable_type
+    .first()
