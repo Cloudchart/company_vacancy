@@ -16,6 +16,15 @@ class UserShape < CloudShape
   end
 
 
+  scope :unicorns do |sources|
+    unicorns = User.unicorns
+
+    sources.each do |source|
+      source.unicorns = source.editor? ? unicorns : []
+    end
+  end
+
+
   def avatar_url
     avatar.url if avatar_stored?
   end

@@ -72,7 +72,7 @@ class CloudShape
       fields = fields | shape_class.defaults if fields.empty?
       fields = fields - shape_class.restricted
 
-      [:id] | fields
+      [:id, :uuid] | fields
     end
 
 
@@ -125,10 +125,25 @@ class CloudShape
           next
         end
 
-        child_shape = shape.fetch(:fields, {}).fetch(field, {})
+        child_shape = shape.fetch(:fields, {}).fetch(field, {}) || {}
+        functions   = child_shape.fetch(:functions, {}) || {}
 
         children = sources.map do |source|
+
           value = wrap(source.public_send(field), child_shape)
+
+          if f = functions[:sort]
+            value = Array.wrap(value).sort_by { |item| item.public_send(f) }
+          end
+
+          if f = functions[:drop]
+            value = Array.wrap(value).drop(f.to_i)
+          end
+
+          if f = functions[:take]
+            value = Array.wrap(value).take(f.to_i)
+          end
+
           source.define_singleton_method(field) { value }
           source.public_send(field)
         end
