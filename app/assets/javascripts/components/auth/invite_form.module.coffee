@@ -8,6 +8,8 @@ ModalStack        = require("components/modal_stack")
 #
 #
 Component = React.createClass
+
+  displayName: 'InviteForm'
   
   isValidForRegister: ->
     invite_re.test(@state.invite)

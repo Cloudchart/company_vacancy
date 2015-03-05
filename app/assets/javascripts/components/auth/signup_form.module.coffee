@@ -9,10 +9,12 @@ StandardButton = Buttons.StandardButton
 SyncButton     = Buttons.SyncButton
 
 
-RegisterForm = React.createClass
+SignupForm = React.createClass
 
   # Component specifications
   #
+  displayName: 'SignupForm'
+
   propTypes:
     attributes:   React.PropTypes.object
     errors:       React.PropTypes.object
@@ -88,4 +90,4 @@ RegisterForm = React.createClass
     </form>
 
 
-module.exports = RegisterForm
+module.exports = SignupForm
