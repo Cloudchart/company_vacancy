@@ -32,6 +32,7 @@ CompanyPreview = React.createClass
       company: ->
         """
           Company {
+            people,
             tags,
             taggings
           }
