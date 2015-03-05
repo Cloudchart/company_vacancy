@@ -10,12 +10,12 @@ module.exports = GlobalState.createStore
   instanceName:   'favorite'
 
   findByCompany: (company_id) ->
-    @findByFavorite(company_id, 'Company')
+    @findByFavoritable(company_id, 'Company')
 
   findByUser: (user_id) ->
-    @findByFavorite(user_id, 'User')
+    @findByFavoritable(user_id, 'User')
 
-  findByFavorite: (favoritable_id, favoritable_type) ->
+  findByFavoritable: (favoritable_id, favoritable_type) ->
     @filter (favorite) => 
       favorite.get('favoritable_id') == favoritable_id &&
       favorite.get('favoritable_type') == favoritable_type

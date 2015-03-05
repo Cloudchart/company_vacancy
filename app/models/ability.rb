@@ -69,8 +69,8 @@ class Ability
         !user.companies.map(&:id).include?(company.id)
       end
 
-      can [:follow, :unfollow], User do |validated_user|
-        user != validated_user
+      can [:follow, :unfollow], User do |followable_user|
+        user != followable_user
       end
 
       can :manage, Company::NESTED_MODELS do |resource|
