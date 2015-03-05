@@ -48,10 +48,12 @@ validate = (attributes) ->
   errors
 
 
-RegisterController = React.createClass
+SignupController = React.createClass
 
   # Component Specifications
   # 
+  displayName: 'SignupController'
+
   propTypes:
     attributes: React.PropTypes.object
     email:      React.PropTypes.string
@@ -148,4 +150,4 @@ RegisterController = React.createClass
       onChange     = { @handleInputChange }
       onSubmit     = { @requestSignup } />
 
-module.exports = RegisterController
+module.exports = SignupController
