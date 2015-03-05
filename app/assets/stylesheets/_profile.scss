@@ -1,7 +1,6 @@
 $profile-header-color: $disabled-grey-color;
 $menu-color: $auxilary-grey-color;
 $menu-active-color: $accented-green-color;
-$menu-hover-color: $green-color;
 $menu-text-color: $accented-white-color;
 $menu-height: 75px;
 
@@ -60,12 +59,12 @@ section.user-profile {
         color: $menu-text-color;
       }
 
-      &:hover {
-        background-color: $menu-hover-color;
-      }
-
       &.active {
         background-color: $menu-active-color;
+      }
+
+      &:hover {
+        background-color: lighten($menu-active-color, 10%);
       }
     }
   }
@@ -78,6 +77,8 @@ section.user-profile {
     > aside {
       > figure {
         border-radius: 100%;
+        background-position: center center;
+        background-size: cover;
         height: 150px;
         position: relative;
         width: 150px;
