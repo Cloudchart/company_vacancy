@@ -24,11 +24,12 @@ div.companies {
   .search {
     padding: $default-margin-size;
 
-    padding-left: $gutter-size;
+    padding-left: $gutter-size/2;
   }
 
   .search > label {
     height: 45px;
+    margin-bottom: 0;
     font-size: $big-font-size;
     width: 300px;
   }
@@ -59,6 +60,8 @@ article.companies,
 }
 
 .company-add {
+  margin-right: $gutter-size/2;
+
   i {
     margin-right: $inner-margin-size;
   }
