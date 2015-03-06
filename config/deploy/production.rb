@@ -1,7 +1,7 @@
 set :user, 'rails'
 
 set :deploy_to, '/home/rails/apps/cloudchart_mvp'
-set :branch, 'develop'
+set :branch, 'master'
 
 set :puma_conf, "#{shared_path}/config/puma.rb"
 
