@@ -1,28 +1,27 @@
-# Imports
-#
-tag = React.DOM
+# @cjsx React.DOM
 
-Colors      = cc.require('cc.utils.Colors')
-ColorIndex  = cc.require('cc.utils.Colors.Index')
-Letters     = cc.require('cc.utils.Letters')
+# Utils
+#
+colors    = require('utils/colors')
+initials  = require('utils/initials')
 
-#
-#
-Component = React.createClass
+cx        = React.addons.classSet
+
+module.exports = React.createClass
+
+  displayName: 'Avatar'
 
 
   render: ->
-    letters = Letters(@props.value)
+    letters         = initials(@props.value)
+    backgroundColor = colors.colors[colors.colorIndex(letters)]
 
-    (tag.figure {
-      style:
-        backgroundColor:  @props.backgroundColor || Colors[ColorIndex(letters)]
-        backgroundImage:  if @props.avatarURL then "url(#{@props.avatarURL})" else "none"
-    },
-      @props.children || letters unless @props.avatarURL
-    )
+    style =
+      backgroundColor:  if @props.avatarURL then @props.backgroundColor || 'transparent' else backgroundColor
+      backgroundImage:  if @props.avatarURL then "url(#{@props.avatarURL})" else "none"
 
-
-# Exports
-#
-module.exports = Component
+    <figure className="avatar" style={ style }>
+      <figcaption>
+        { letters unless @props.avatarURL }
+      </figcaption>
+    </figure>

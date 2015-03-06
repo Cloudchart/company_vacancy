@@ -5,11 +5,11 @@ class Token < ActiveRecord::Base
 
   belongs_to :owner, polymorphic: true, inverse_of: :tokens
 
-  scope :invites, -> { where(arel_table[:name].eq(:invite).or(arel_table[:name].eq(:request_invite))) }
+  scope :admin_invites, -> { where(arel_table[:name].eq(:invite).or(arel_table[:name].eq(:request_invite)).and(arel_table[:owner_id].eq(nil))) }
 
   validates :name, presence: true
   
-  validates_with CompanyInviteValidator, if: :should_validate_as_company_invite?, on: :create
+  validates_with InviteValidator, if: :should_validate_as_invite?, on: :create
   
   class << self
     
@@ -41,42 +41,10 @@ class Token < ActiveRecord::Base
     write_attribute(:data, data_attribute.try(:to_hash).try(:symbolize_keys))
   end
   
-  rails_admin do
-    label 'Invite'
-    label_plural 'Invites'
-
-    list do
-      exclude_fields :owner, :updated_at
-      sort_by :created_at
-      scopes { [:invites] }
-
-      field :uuid do
-        formatted_value { Cloudchart::RFC1751.encode(value) }
-        column_width 500
-        filterable false
-      end
-
-      field :name do
-        column_width 50
-      end
-
-      field :data do
-        # column_width 200
-        formatted_value { value ? [value[:full_name], value[:email]].join(' – ') : nil }
-        filterable false
-      end
-
-      field :created_at do
-        column_width 50
-      end
-
-    end
-  end
-
 private
   
-  def should_validate_as_company_invite?
-    owner_type == Company.name and name.to_sym == :invite
+  def should_validate_as_invite?
+    owner_type =~ /Company|Pinboard/ && name.to_sym == :invite
   end
   
 end

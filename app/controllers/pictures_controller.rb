@@ -1,40 +1,44 @@
 class PicturesController < ApplicationController
 
-
   before_action :find_owner
+  before_action :set_picture
   
+  authorize_resource
 
   def create
-    picture = @owner.create_picture!(resource_params)
+    if @picture.save
+      respond_to do |format|
+        format.json { render json: @picture, root: :picture }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: :fail, status: 422 }
+      end
+    end
 
-    respond_to do |format|
-      format.json do
-        render json: picture, root: :picture
+  end
+  
+  def update
+    if @picture.update(picture_params)
+      respond_to do |format|
+        format.json { render json: @picture, root: :picture }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: :fail, status: 422 }
       end
     end
   end
   
-  
-  def update
-    @owner.picture.update!(resource_params)
-    
-    respond_to do |format|
-      format.json { render json: @owner.picture, root: :picture }
-    end
-  end
-  
-  
   def destroy
-    @owner.picture.destroy
+    @picture.destroy
     
     respond_to do |format|
-      format.json { render json: @owner.picture, root: :picture }
+      format.json { render json: @picture, root: :picture }
     end
   end
 
-
-  private
-  
+private
   
   def find_owner
     @owner = begin
@@ -44,11 +48,17 @@ class PicturesController < ApplicationController
       end
     end
   end
-  
-  
-  def resource_params
-    params.require(:picture).permit(:image)
+
+  def set_picture
+    @picture = if action_name == 'create'
+      @owner.build_picture(picture_params)
+    else
+      @owner.picture
+    end
   end
   
+  def picture_params
+    params.require(:picture).permit(:image)
+  end
 
 end

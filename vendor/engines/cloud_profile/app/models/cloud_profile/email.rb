@@ -7,9 +7,7 @@ module CloudProfile
     belongs_to :user
     has_many :tokens, as: :owner, dependent: :destroy
 
-    validates_format_of     :address, with: /.+@.+\..+/i
-    validates_uniqueness_of :address
-    validates_presence_of   :address
+    validates :address, presence: true, uniqueness: true, format: { with: /.+@.+\..+/i }
     
     def active?
       persisted? && !activation_token.present?

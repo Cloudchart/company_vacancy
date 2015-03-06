@@ -1,6 +1,6 @@
 #
 #
-tag = cc.require('react/dom')
+tag = React.DOM
 
 # email_re = /(.)@(.)/ # aka hairy chest regex
 email_re = /.+@.+\..+/i # like in CloudProfile::Email

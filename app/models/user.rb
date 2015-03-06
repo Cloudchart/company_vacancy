@@ -1,10 +1,11 @@
 class User < ActiveRecord::Base
   include Uuidable
   include Fullnameable
-  
+
   attr_accessor :current_password
   attr_reader :invite
 
+  before_validation :build_blank_emails, unless: -> { emails.any? }
   before_destroy :mark_emails_for_destruction
 
   dragonfly_accessor :avatar
@@ -24,30 +25,44 @@ class User < ActiveRecord::Base
   has_many :vacancy_responses
   has_many :favorites, dependent: :destroy
   has_many :roles, dependent: :destroy
+  has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :companies, through: :roles, source: :owner, source_type: 'Company'
   has_many :followed_companies, through: :favorites, source: :favoritable, source_type: 'Company'
   has_many :people, dependent: :destroy
-  
+  has_many :pinboards, dependent: :destroy
+  has_many :pins, dependent: :destroy
+
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
+  validate :validate_email, on: :create
 
-  rails_admin do
+  #default_scope -> { includes(:emails) }
+  scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
 
-    list do
-      include_fields :first_name, :is_admin, :companies, :created_at
-      sort_by :created_at
 
-      field :first_name do
-        label 'Full name'
-        formatted_value { bindings[:view].mail_to bindings[:object].email, bindings[:object].full_name }
-      end
+  # Roles on Pinboards
+  #
+  { readable: [:reader, :editor], writable: :editor, followable: :follower }.each do |scope, role|
+    has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, class_name: Role
+    has_many :"#{scope}_pinboards", through: :"#{scope}_pinboards_roles", source: :owner, source_type: Pinboard
+  end
 
-      field :companies do
-        pretty_value { value.map { |company| bindings[:view].link_to(company.name, bindings[:view].main_app.company_path(company)) }.join(', ').html_safe }
-      end
+  def admin?
+    !!roles.find { |role| role.owner_id == nil && role.value == 'admin' }
+  end
 
-    end
+  def editor?
+    !!roles.find { |role| role.owner_id == nil && role.value == 'editor' }
+  end
 
+  def guest?
+    !!roles.find { |role| role.owner_id == nil && role.value == 'guest' }
+  end
+
+  def system_role_ids=(args)
+    roles = args.select(&:present?)
+    roles = roles.map { |value| Role.new(value: value) } if roles.any?
+    self.system_roles = roles
   end
 
   def has_already_voted_for?(object)
@@ -57,15 +72,15 @@ class User < ActiveRecord::Base
   def full_name_or_email
     @full_name_or_email ||= full_name.blank? ? emails.first.address : full_name
   end
-  
+
   def email
-    emails.first.address
+    emails.first.try(:address)
   end
-  
+
   def email=(email)
     self.emails = [CloudProfile::Email.new(address: email)]
   end
-  
+
   def self.find_by_email(email)
     CloudProfile::Email.includes(:user).find_by(address: email).user rescue nil
   end
@@ -78,30 +93,38 @@ class User < ActiveRecord::Base
     tokens = Token.includes(:owner)
       .where(name: 'invite', owner_type: 'Company')
       .select_by_user(id, emails.pluck(:address))
-    
+
     companies = tokens.map(&:owner)
   end
-  
+
   def should_validate_invite?
     @should_validate_invite
   end
-  
+
   def should_validate_invite!
     @should_validate_invite = true
   end
-  
+
   def should_validate_name?
     @should_validate_name
   end
-  
+
   def should_validate_name!
     @should_validate_name = true
+  end
+
+  def validate_email
+    errors.add(:email, emails.first.errors[:address]) unless emails.first.valid?
   end
 
 private
 
   def mark_emails_for_destruction
     emails.each(&:mark_for_destruction)
+  end
+
+  def build_blank_emails
+    emails.build
   end
 
 end

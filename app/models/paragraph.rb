@@ -9,5 +9,9 @@ class Paragraph < ActiveRecord::Base
   def as_json_for_chart
     as_json(only: [:uuid, :content])
   end
+
+  def company
+    owner.try(:company)
+  end
   
 end

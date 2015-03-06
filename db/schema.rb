@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150108110046) do
+ActiveRecord::Schema.define(version: 20150224113812) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -131,10 +131,11 @@ ActiveRecord::Schema.define(version: 20150108110046) do
     t.datetime "updated_at"
     t.date     "established_on"
     t.string   "logotype_uid"
-    t.boolean  "is_published",   default: false
-    t.boolean  "is_public",      default: false
+    t.boolean  "is_published",    default: false
+    t.boolean  "is_public",       default: false
     t.string   "slug"
     t.string   "site_url"
+    t.boolean  "is_name_in_logo", default: false
   end
 
   add_index "companies", ["slug"], name: "index_companies_on_slug", unique: true, using: :btree
@@ -287,6 +288,37 @@ ActiveRecord::Schema.define(version: 20150108110046) do
 
   add_index "pictures", ["owner_id", "owner_type"], name: "index_pictures_on_owner_id_and_owner_type", using: :btree
 
+  create_table "pinboards", primary_key: "uuid", force: true do |t|
+    t.string   "title",                                       null: false
+    t.string   "user_id",       limit: 36
+    t.integer  "position",                 default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "access_rights",            default: "public"
+    t.text     "description"
+    t.text     "welcome"
+    t.boolean  "is_featured"
+  end
+
+  add_index "pinboards", ["access_rights"], name: "index_pinboards_on_access_rights", using: :btree
+  add_index "pinboards", ["user_id"], name: "index_pinboards_on_user_id", using: :btree
+
+  create_table "pins", primary_key: "uuid", force: true do |t|
+    t.string   "user_id",       limit: 36, null: false
+    t.string   "parent_id",     limit: 36
+    t.string   "pinboard_id",   limit: 36
+    t.string   "pinnable_id",   limit: 36
+    t.string   "pinnable_type"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "pins", ["parent_id"], name: "index_pins_on_parent_id", using: :btree
+  add_index "pins", ["pinboard_id"], name: "index_pins_on_pinboard_id", using: :btree
+  add_index "pins", ["pinnable_id", "pinnable_type"], name: "index_pins_on_pinnable_id_and_pinnable_type", using: :btree
+  add_index "pins", ["user_id"], name: "index_pins_on_user_id", using: :btree
+
   create_table "posts", primary_key: "uuid", force: true do |t|
     t.string   "title"
     t.string   "owner_id",       limit: 36
@@ -301,18 +333,31 @@ ActiveRecord::Schema.define(version: 20150108110046) do
   add_index "posts", ["owner_id", "owner_type"], name: "index_posts_on_owner_id_and_owner_type", using: :btree
 
   create_table "posts_stories", primary_key: "uuid", force: true do |t|
-    t.string  "post_id",  limit: 36,             null: false
-    t.string  "story_id", limit: 36,             null: false
-    t.integer "position",            default: 0
+    t.string   "post_id",        limit: 36,                 null: false
+    t.string   "story_id",       limit: 36,                 null: false
+    t.boolean  "is_highlighted",            default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "posts_stories", ["post_id", "story_id"], name: "index_posts_stories_on_post_id_and_story_id", unique: true, using: :btree
 
+  create_table "quotes", primary_key: "uuid", force: true do |t|
+    t.string   "owner_id",   limit: 36
+    t.string   "owner_type"
+    t.text     "text"
+    t.string   "person_id",  limit: 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "quotes", ["owner_id", "owner_type"], name: "index_quotes_on_owner_id_and_owner_type", using: :btree
+
   create_table "roles", primary_key: "uuid", force: true do |t|
     t.string   "value",                 null: false
     t.string   "user_id",    limit: 36, null: false
-    t.string   "owner_id",   limit: 36, null: false
-    t.string   "owner_type", limit: 36, null: false
+    t.string   "owner_id",   limit: 36
+    t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -328,6 +373,7 @@ ActiveRecord::Schema.define(version: 20150108110046) do
     t.integer  "posts_stories_count",            default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "description"
   end
 
   add_index "stories", ["company_id"], name: "index_stories_on_company_id", using: :btree
@@ -378,11 +424,10 @@ ActiveRecord::Schema.define(version: 20150108110046) do
   add_index "tokens", ["owner_id", "owner_type"], name: "index_tokens_on_owner_id_and_owner_type", using: :btree
 
   create_table "users", primary_key: "uuid", force: true do |t|
-    t.string   "password_digest",                 null: false
+    t.string   "password_digest"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "phone"
-    t.boolean  "is_admin",        default: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "avatar_uid"

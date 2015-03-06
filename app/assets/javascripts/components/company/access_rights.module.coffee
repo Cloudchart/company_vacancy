@@ -45,7 +45,7 @@ Component = React.createClass
       newTokenKey: @createNewToken()
   
   onCurrentUsersButtonClick: (event) ->
-    TokenStore.remove(@state.newTokenKey) if @hasNewToken()
+    TokenStore.remove(@state.newTokenKey)
     @setState({ mode: Modes.VIEW })
 
   # Lifecylce Methods

@@ -1,5 +1,5 @@
 CursorFactory = (data, callback) ->
-  
+
   # Initial immutable data
   #
   CurrData = Immutable.fromJS(data)
@@ -7,12 +7,16 @@ CursorFactory = (data, callback) ->
   # Cursor cache
   #
   CursorCache = Immutable.Map({})
-  
+
   # Transaction State
   #
   TransactionState = false
 
-  
+  # Empty Sequence
+  #
+  EmptySeq = Immutable.Seq()
+
+
   # Fetch existing Cursor or create a new one
   #
   fetch = (path) ->
@@ -22,8 +26,8 @@ CursorFactory = (data, callback) ->
       CursorCache = CursorCache.set(pathAsString, new Cursor(path))
 
     CursorCache.get(pathAsString)
-  
-  
+
+
   # Update immutable data
   #
   update = (action, path, value) ->
@@ -32,70 +36,128 @@ CursorFactory = (data, callback) ->
         CurrData.updateIn(path, -> Immutable.fromJS(value))
       when 'unset'
         CurrData.removeIn(path)
-    
+
     callback(CurrData) unless TransactionState
-        
+
 
 
   # Cursor class
   #
   class Cursor
-    
 
-    constructor: (path) ->
+
+    constructor: (path, @predicate, @type) ->
       @path                 = [].concat(path)
       @__CURSOR_INSTANCE__  = true
-    
+
 
     cursor: (path) ->
       fetch(@path.concat(path))
-    
-    
-    transaction: ->
-      TransactionState = true
-    
+
+
+
+    findCursor: (predicate) ->
+      unless predicate instanceof Function
+        throw new Error("GlobalState/Cursor: findCursor should receive a function.")
+
+      new Cursor(@path, predicate, 'find')
+
+
+    filterCursor: (predicate) ->
+      unless predicate instanceof Function
+        throw new Error("GlobalState/Cursor: filterCursor should receive a function.")
+
+      new Cursor(@path, predicate, 'filter')
+
+
+    applyPredicate: (data, path, notSetValue) ->
+      value = data.getIn(path)
+
+      @seq || if Immutable.Iterable.isIterable(value)
+        @seq = value[@type].call(value, @predicate).toSeq()
+      else
+        notSetValue
+
+
+    transaction: (callback) ->
+      if callback instanceof Function
+        do =>
+          @transaction()
+          callback()
+          @commit()
+      else
+        TransactionState = true
+
 
     commit: ->
       TransactionState = false
       callback(CurrData)
-    
-    
+
+
+    count: ->
+      (seq = @deref(EmptySeq)).count.apply(seq, arguments)
+
+    filter: ->
+      (seq = @deref(EmptySeq)).filter.apply(seq, arguments)
+
+    find: ->
+      (seq = @deref(EmptySeq)).find.apply(seq, arguments)
+
+    forEach: ->
+      (seq = @deref(EmptySeq)).forEach.apply(seq, arguments)
+
+    has: ->
+      (seq = @deref(EmptySeq)).has.apply(seq, arguments)
+
+    map: ->
+      (seq = @deref(EmptySeq)).map.apply(seq, arguments)
+
+    sortBy: ->
+      (seq = @deref(EmptySeq)).sortBy.apply(seq, arguments)
+
+    valueSeq: ->
+      (seq = @deref(EmptySeq)).valueSeq.apply(seq, arguments)
+
+
     deref: (notSetValue) ->
       @getIn([], notSetValue)
-    
+
     get: (key, notSetValue) ->
-      @getIn([key.toString()], notSetValue)
-    
+      @getIn([key?.toString()], notSetValue)
+
     getIn: (path, notSetValue) ->
-      CurrData.getIn(@path.concat(path), notSetValue)
-    
-    
+      if @predicate
+        @applyPredicate(CurrData, @path.concat(path), notSetValue)
+      else
+        CurrData.getIn(@path.concat(path), notSetValue)
+
+
     set: (key, value) ->
-      @setIn([key.toString()], value)
-    
+      @setIn([key?.toString()], value)
+
     setIn: (path, value) ->
       update('set', @path.concat(path), value)
       @
-    
+
 
     update: (fn) ->
       @updateIn([], fn)
-    
+
     updateIn: (path, fn) ->
       @setIn(path, fn(@getIn(path)))
-    
-    
+
+
     remove: (key) ->
-      @removeIn([key.toString()])
-    
+      @removeIn([key?.toString()])
+
     removeIn: (path) ->
       update('unset', @path.concat(path))
-    
-    
+
+
     clear: ->
       @removeIn([])
-  
-  
+
+
   # Root Cursor
   #
   fetch([])

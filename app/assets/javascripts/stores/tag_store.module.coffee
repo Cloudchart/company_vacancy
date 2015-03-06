@@ -7,14 +7,11 @@ GlobalState = require('global_state/state')
 
 ItemsCursor = GlobalState.cursor(['stores', 'tags', 'items'])
 
-EmptyTags   = Immutable.Map()
+# Exports
+#
+module.exports = GlobalState.createStore
 
-Dispatcher.register (payload) ->
-  
-  if payload.action.type == 'company:fetch:done'
-    [companyId, json] = payload.action.data
-    
-    ItemsCursor.update (data = EmptyTags) ->
-      data.withMutations (data) ->
-        Immutable.List(json.tags).forEach (tag) ->
-          data.set(tag.uuid, Immutable.fromJS(tag))
+  displayName:    'TagStore'
+
+  collectionName: 'tags'
+  instanceName:   'tag'

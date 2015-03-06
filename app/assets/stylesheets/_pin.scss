@@ -1,0 +1,66 @@
+// Pin Card Insight
+//
+@mixin pin-card-insight {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-wrap(wrap);
+  @include justify-content(space-between);
+
+  border-top: $card-hr;
+  padding-top: $card-basic-space;
+
+  > p {
+    margin-bottom: $card-basic-space * .75;
+    white-space: pre-wrap;
+    width: 100%;
+  }
+
+}
+
+
+
+// Pin Card Footer
+//
+@mixin pin-card-footer {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-wrap(wrap);
+
+  background-color: hsl(0, 0%, 94%);
+  margin-right: - $card-basic-space;
+  margin-bottom: - $card-basic-space;
+  margin-left: - $card-basic-space;
+  padding-top: $card-basic-space;
+  padding-bottom: $card-basic-space;
+
+  > p {
+    margin-bottom: $card-basic-space * .75;
+    margin-left: 60px;
+    white-space: pre-wrap;
+    width: 100%;
+  }
+
+  > i {
+    color: hsl(0, 0%, 100%);
+    font-size: 20px;
+    text-align: center;
+    width: 60px;
+  }
+
+
+}
+
+
+// Pin Card
+//
+main.pinboards .pin.cloud-card {
+
+  > .insight {
+    @include pin-card-insight;
+  }
+
+  > footer {
+    @include pin-card-footer;
+  }
+
+}

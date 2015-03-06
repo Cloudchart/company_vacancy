@@ -10,6 +10,7 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+
 //= require jquery
 //= require jquery_ujs
 //= require arbiter
@@ -24,14 +25,14 @@
 //= require date
 //= require moment
 //= require numeral
-//= require ui
-//= require plugins
-//= require ujs
-//= require utils
-//= require ./models
-//= require ./react_components
+//= require object_assign
+
+//= require constants.module
+//= require cloud_flux.module
+//= require base.module
+
 //= require_tree .
-//= require_tree ./controllers
+
 //= require cloud_profile/application
 //= require cloud_blueprint/application
 

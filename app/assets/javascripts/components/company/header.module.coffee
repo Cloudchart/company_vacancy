@@ -3,19 +3,23 @@
 # Imports
 #
 tag = React.DOM
+cx  = React.addons.classSet
 
-CloudFlux       = require('cloud_flux')
-GlobalState     = require('global_state/state')
+CloudFlux           = require('cloud_flux')
+GlobalState         = require('global_state/state')
 
-CompanyStore    = require('stores/company')
+CompanyStore        = require('stores/company')
 
-CompanyActions  = require('actions/company')
-ModalActions    = require('actions/modal_actions')
+CompanyActions      = require('actions/company')
+ModalActions        = require('actions/modal_actions')
 
-AutoSizingInput = require('components/form/autosizing_input')
-FollowComponent = require('components/company/follow')
-AccessRights    = require('components/company/access_rights')
-TagsComponent   = require('components/company/tags')
+AutoSizingInput     = require('components/form/autosizing_input')
+FollowComponent     = require('components/company/follow')
+Checkbox            = require('components/form/checkbox')
+Toggle              = require('components/form/toggle')
+AccessRights        = require('components/company/access_rights')
+TagsComponent       = require('components/company/tags')
+ContentEditableArea = require('components/form/contenteditable_area')
 
 # Main
 #
@@ -29,14 +33,12 @@ Component = React.createClass
     return null unless @props.shouldDisplayViewMode
 
     <div className="controls">
-      <label className="cc-toggle view-mode">
-        <input type="checkbox" checked={not @props.readOnly} onChange={@handleViewModeChange} />
-        <span>
-          <span className="off">View</span>
-          <i></i>
-          <span className="on">Edit</span>
-        </span>
-      </label>
+      <Toggle
+        checked     = {not @props.readOnly}
+        customClass = "cc-toggle view-mode"
+        onText      = "Edit"
+        offText     = "View"
+        onChange    = {@handleViewModeChange} />
     </div>
 
   
@@ -74,6 +76,8 @@ Component = React.createClass
       </aside>
     )
 
+  getNameClass: ->
+    cx(name: true, inactive: @state.company.is_name_in_logo)
 
   getShareLink: ->
     return null if @props.readOnly
@@ -146,12 +150,18 @@ Component = React.createClass
     @setState({ logotype_url: URL.createObjectURL(file) })
     @updateLogotype(file)
 
-  handleViewModeChange: (event) ->
-    readOnly = not event.target.checked
-    @props.onChange({ readOnly: readOnly })
+  handleViewModeChange: (checked) ->
+    @props.onChange({ readOnly: !checked })
   
   handleFieldKeyUp: (event) ->
     event.target.blur() if event.key == 'Enter'
+
+  handleDescriptionChange: (content) ->
+    return if @state.company.description is content or @props.readOnly
+    CompanyActions.update(@props.uuid, { description: content })
+
+  onIsNameInLogoChange: (value) ->
+    CompanyActions.update(@props.uuid, { is_name_in_logo: value })
 
   # Lifecycle Methods
   # 
@@ -159,8 +169,6 @@ Component = React.createClass
     URL.revokeObjectURL(@state.logotype_url)
     @setState(@getStateFromStores(nextProps))
 
-  componentDidMount: ->
-    $('textarea').autosize() # @seanchas: please don't kill me for this
 
   # Component Specifications
   # 
@@ -169,7 +177,6 @@ Component = React.createClass
 
     company: company
     name: company.name
-    description: company.description
     logotype_url: company.logotype_url
 
   getInitialState: ->
@@ -180,40 +187,52 @@ Component = React.createClass
 
   render: ->
     <header>
-      {@getViewModeSelect()}
-      {@getLogo()}
+      { @getViewModeSelect() }
+      { @getLogo() }
 
-      <label className="name">
-        <AutoSizingInput
-          value = {@state.name}
-          onBlur = {@handleFieldBlur.bind(@, 'name')}
-          onChange = {@handleFieldChange.bind(@, 'name')}
-          onKeyUp = {@handleFieldKeyUp}
-          placeholder = {'Company name'}
-          readOnly = {@props.readOnly}
-        />
+      {
+        if @state.company.logotype_url && !@props.readOnly
+          <Checkbox 
+            customClass      = "is-name-in-logo"
+            checked          = { @state.company.is_name_in_logo }
+            iconClass        = "fa-chain-broken"
+            iconCheckedClass = "fa-link"
+            onChange         = { @onIsNameInLogoChange }
+          />
+      }
 
-        {@getShareLink()}
-      </label>
+      {
+        if !@state.company.is_name_in_logo || !@props.readOnly
+          <label className={ @getNameClass() }>
+              <AutoSizingInput
+                value = { @state.name }
+                onBlur = { @handleFieldBlur.bind(@, 'name') }
+                onChange = { @handleFieldChange.bind(@, 'name') }
+                onKeyUp = { @handleFieldKeyUp }
+                placeholder = 'Company name'
+                readOnly = { @props.readOnly }
+              />
+
+            { @getShareLink() }
+          </label>
+      }
 
       <label className="description">
-        <textarea
-          value = {@state.description}
-          onBlur = {@handleFieldBlur.bind(@, 'description')}
-          onChange = {@handleFieldChange.bind(@, 'description')}
-          onKeyUp = {@handleFieldKeyUp}
-          placeholder = {'Company short description'}
-          readOnly = {@props.readOnly}
+        <ContentEditableArea
+          onChange = { @handleDescriptionChange }
+          placeholder = 'Company short description'
+          readOnly = { @props.readOnly }
+          value = { @state.company.description }
         />
       </label>
 
       <TagsComponent 
-        taggable_id = {@props.uuid}
-        taggable_type = "Company"
-        readOnly = {@props.readOnly}
+        taggable_id = { @props.uuid }
+        taggable_type = 'Company'
+        readOnly = { @props.readOnly }
       />
       
-      {@getFollowButoon()}
+      { @getFollowButoon() }
     </header>
 
 

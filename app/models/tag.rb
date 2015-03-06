@@ -7,40 +7,30 @@ class Tag < ActiveRecord::Base
 
   has_paper_trail
   has_many :taggings, dependent: :destroy
+  has_many :companies, through: :taggings, source: :taggable, source_type: 'Company'
+  has_many :posts, through: :taggings, source: :taggable, source_type: 'Post'
 
   validates :name, presence: true, uniqueness: true
 
-  rails_admin do
+  sifter :acceptable do 
+    is_acceptable.eq true
+  end
 
-    list do
-      sort_by :taggings_count
-      fields :name, :is_acceptable, :taggings_count, :created_at
+  scope :acceptable, -> { where{ sift :acceptable } }
 
-      field :taggings_count do
-        sort_reverse true
-      end
-    end
+  scope :available_for_user, -> user do
+    return [] unless user.present?
 
-    edit do
-      fields :name, :is_acceptable
+    company_ids = user.companies.select(:uuid).joins(:roles).where{ roles.value.in ['owner', 'editor'] }
+    post_ids = Post.select(:uuid).where{ owner_id.in company_ids }
 
-      field :name do
-        html_attributes do
-          { autofocus: true }
-        end
-      end
-
-      field :is_acceptable do
-        html_attributes do
-          { checked:  bindings[:object].new_record? ? 'checked' : bindings[:object].is_acceptable }
-        end
-
-        default_value do
-          '1' if bindings[:object].new_record?
-        end
-      end
-
-    end
+    joins { companies.outer }
+    .joins { posts.outer }
+    .where{ 
+      sift(:acceptable) |
+      companies.uuid.in(company_ids) |
+      posts.uuid.in(post_ids)
+    }.distinct
   end
 
 end

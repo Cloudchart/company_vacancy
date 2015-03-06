@@ -19,7 +19,7 @@ IdentityActions =
 
 # Utils
 #
-uuid = require('utils/uuid')
+UUID = require('utils/uuid')
 
 
 formatName = (name) ->
@@ -27,21 +27,6 @@ formatName = (name) ->
   name = name.replace(/[^a-z0-9\-_|\s]+/ig, '')
   name = name.replace(/\s{2,}/g, ' ')
   name = name.replace(/\s/g, '-')
-
-
-performCompanySearchByTag = (tag) ->
-  csrfToken = $('meta[name=csrf-token]').attr('content')
-  csrfParam = $('meta[name=csrf-param]').attr('content')
-  
-  $form   = $('<form method="post" action="/companies/search"></form>')
-  meta    = '<input type="hidden" name="' + csrfParam + '" value="' + csrfToken + '" />'
-  query   = '<input type="hidden" name="query" value="' + tag + '" />'
-  
-  $form.append(meta)
-  $form.append(query)
-
-  $form.hide().appendTo('body')
-  $form.submit()
 
 
 # Component
@@ -54,14 +39,16 @@ Component = React.createClass
 
 
   gatherTags: ->
-    @state.identityTagNameSeq.map (tag) ->
-      id:   tag
-      name: '#' + tag
+    @state.identityTagNameSeq
+      .sort (tagA, tagB) -> tagA.localeCompare(tagB)
+      .map (tag) ->
+        id:   tag
+        name: '#' + tag
   
   
   getTagForList: (tag) ->
     if @props.taggable_type is 'Company'
-      <a href="/companies/search?query=#{tag}" onClick={@onTagClick.bind(@, tag)}>{'#' + tag}</a>
+      <a href="/companies/search?query=#{tag}">{'#' + tag}</a>
     else
       <span>{'#' + tag}</span>
   
@@ -74,9 +61,9 @@ Component = React.createClass
     query = formatName(@state.query)
       
     @state.tagSeq
-      .filter (tag) -> tag.get('is_acceptable')
       .filter (tag) => not @state.identityTagNameSeq.contains(tag.get('name'))
-      .filter (tag) -> tag.get('name').indexOf(query) >= 0
+      .filter (tag) -> tag.get('name').indexOf(query) == 0 && query.length > 0
+      .sort   (tagA, tagB) -> tagA.get('name').localeCompare(tagB.get('name'))
       .map    (tag) -> <ComboboxOption key={tag.get('name')} value={tag.get('name')}>{'#' + tag.get("name")}</ComboboxOption>
   
   
@@ -92,7 +79,7 @@ Component = React.createClass
         onRemove    = {@onRemove}
         selected    = {@gatherTags().toArray()}
         menuContent = {@gatherTagsForSelect().toArray()}
-        placeholder = "#hashtag"
+        placeholder = {@props.placeholder}
       />
 
 
@@ -104,7 +91,7 @@ Component = React.createClass
     name = formatName(name) ; return if name.length == 0
 
     unless @state.tagNameSeq.contains(name)
-      @props.cursor.set(uuid(), { name: name })
+      @props.cursor.set(UUID(), { name: name })
 
     tag_names = @state.identityTagNameSeq.toSet().add(name)
 
@@ -114,11 +101,6 @@ Component = React.createClass
   onRemove: (object) ->
     tag_names = @state.identityTagNameSeq.toSet().remove(object.id)
     @syncIdentityTagNames(tag_names.toArray())
-
-
-  onTagClick: (tag, event) ->
-    event.preventDefault()
-    performCompanySearchByTag(tag)
   
   
   getStateFromProps: (props) ->
@@ -136,6 +118,7 @@ Component = React.createClass
   
   
   getDefaultProps: ->
+    placeholder: "#hashtag"
     cursor: GlobalState.cursor(['stores', 'tags', 'items'])
 
 

@@ -58,10 +58,20 @@
       > li.ic-combobox {
         width: 160px;
 
+        &.ic-dropdown {
+          width: 200px;
+        }
+
         > .ic-tokeninput {
           height: 100%;
           width: auto;
           position: relative;
+
+          &.ic-tokeninput-is-open {
+            > i {
+              color: hsl(0, 0%, 75%);
+            }
+          }
 
           > input {
             background-color: hsl(0, 0%, 98%);
@@ -78,6 +88,20 @@
             }
           }
 
+          > i {
+            @include position(absolute, 0px 7px 0px 0);
+
+            line-height: 40px;
+          }
+
+          > i + input {
+            padding-right: 30px;
+
+            &.active {
+              padding-right: 28px;
+            }
+          }
+
           &.ic-tokeninput-is-open > ul {
             display: block;
           }
@@ -87,10 +111,10 @@
 
             display: none;
             list-style-type: none;
+            min-width: 100%;
             padding: 0;
-            width: auto;
-            z-index: 100;
             white-space: nowrap;
+            z-index: $zindex-dropdown;
 
             > li {
               @include align-items(center);

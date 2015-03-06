@@ -59,7 +59,6 @@ namespace :deploy do
 
 end
 
-
 namespace :rails do
   desc 'Tails rails log'
   task :log do

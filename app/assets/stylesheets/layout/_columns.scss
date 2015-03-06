@@ -1,0 +1,39 @@
+.cloud-columns {
+  $block-width: 500px;
+  $block-gutter: 24px;
+
+  @include align-items(flex-start);
+  @include display(flex);
+  @include flex-wrap(wrap);
+
+  &.cloud-columns-flex {
+    @for $i from 2 through 5 {
+      $width: $block-width * $i + $block-gutter;
+
+      @media (min-width: $width) {
+        width: $width;
+      }
+    }
+  }
+
+  margin: 0;
+  padding: $block-gutter / 2;
+
+  > header {
+    font-size: 36px;
+    font-weight: 100;
+    line-height: 32px;
+    padding: $block-gutter / 2;
+    padding-bottom: 0;
+    position: relative;
+    width: 100%;
+  }
+
+  > .cloud-column {
+    margin: 0;
+    padding: $block-gutter / 2;
+    position: relative;
+    width: $block-width;
+  }
+
+}

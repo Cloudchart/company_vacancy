@@ -3,6 +3,18 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class UsersController < ApplicationController    
     authorize_resource class: :cloud_profile_user, only: :update
+    
+    
+    # show
+    #
+    def show
+      @user = current_user
+      
+      respond_to do |format|
+        format.json
+      end
+    end
+
 
     # Request invite
     #
@@ -34,9 +46,21 @@ module CloudProfile
     # Registration form
     #
     def new
-      store_return_path if params[:return_to].present? || !return_path_stored?
-      @email = Email.new address: params[:email]
-      @user  = User.new
+      if (params[:invite] && !user_authenticated?)
+        invite = Token.find(params[:invite])
+
+        # sign up is allowed only for cc and company tokens
+        unless invite.owner_type.blank? || invite.owner_type == 'Company'
+          redirect_to main_app.root_path and return
+        end
+
+        store_return_path if params[:return_to].present? || !return_path_stored?
+
+        user = User.new(full_name: "some", invite: invite)
+        pagescript_params(invite: invite, email: user.invite.data.try(:[], :email), full_name: user.invite.data.try(:[], :full_name))
+      else
+        redirect_to main_app.root_path
+      end
     end
     
 
@@ -47,6 +71,7 @@ module CloudProfile
       user = User.new params.require(:user).permit(:email, :full_name, :password, :password_confirmation, :invite)
       
       user.should_validate_invite!
+      user.should_validate_name!
       
       if user.valid?
         
@@ -64,7 +89,7 @@ module CloudProfile
           warden.set_user(user, scope: :user)
 
           respond_to do |format|
-            format.json { render json: { state: :login }}
+            format.json { render json: { state: :login, previous_path: previous_path }}
           end
         else
           # Create activation token and send email
@@ -80,6 +105,9 @@ module CloudProfile
           )
 
           ProfileMailer.activation_email(token).deliver
+          SlackWebhooksWorker.perform_async(
+            text: t('user.activities.started_to_sign_up', name: user.full_name, email: user.email)
+          ) if should_perform_sidekiq_worker?
 
           respond_to do |format|
             format.json { render json: { state: :activation }}
@@ -88,7 +116,7 @@ module CloudProfile
         
       else
         respond_to do |format|
-          format.json { render json: { errors: user.errors.keys }, status: 403 }
+          format.json { render json: { errors: user.errors }, status: 403 }
         end
       end
       
@@ -106,7 +134,6 @@ module CloudProfile
     rescue ActiveRecord::RecordInvalid
       render json: current_user.errors, status: 422
     end
-
 
     def check_invite
       token = Token.find_by_rfc1751(params[:invite])
@@ -163,28 +190,6 @@ module CloudProfile
       end
 
     end
-    
-    
-    # deprecated
-    # def activation_
-    #   @token = Token.find(params[:token])
-    #   @email = Email.new(address: @token.data[:address])
-      
-    #   raise ActiveRecord::RecordNotFound if @email.invalid?
 
-    #   if request.post?
-    #     @user = User.new(password_digest: @token.data[:password_digest])
-    #     if @user.authenticate(params[:password])
-    #       @user.emails << @email
-    #       @user.save!
-    #       @token.destroy
-    #       warden.set_user(@user, scope: :user)
-    #       redirect_to :root
-    #     else
-    #       @password_invalid = true
-    #     end
-    #   end
-    # end
-    
   end
 end

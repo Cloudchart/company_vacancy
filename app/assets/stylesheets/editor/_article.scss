@@ -18,6 +18,8 @@ $editor-paragraph-line-height: 22px;
 
 $editor-placeholder-section-figure-size: 50px;
 
+$editor-hint-width: 20px;
+
 // Editor
 //
 article.editor {
@@ -68,7 +70,7 @@ article.editor.draggable > section {
   &.draggable {
     background-color: hsla(0, 0%, 98%, .9);
     cursor: -webkit-grab;
-    z-index: 100;
+    z-index: $zindex-draggable;
   }
 
   &.hover {
@@ -79,7 +81,7 @@ article.editor.draggable > section {
     @include transform(scale(.5));
     cursor: -webkit-grabbing !important;
     opacity: .75;
-    z-index: 101;
+    z-index: $zindex-draggable + 1;
   }
 
   &.draggable i.remove {
@@ -116,7 +118,6 @@ article.editor > section.placeholder {
     height: $editor-placeholder-section-figure-size;
     position: relative;
     text-align: center;
-    z-index: 1;
   }
   
   > ul {
@@ -169,8 +170,10 @@ article.editor > section.placeholder {
 @import 'paragraph';
 @import 'vacancies';
 @import 'picture';
-@import 'vacancy_chooser';
+@import 'chooser';
 @import 'person_form';
 @import 'vacancy_form';
 @import 'quote';
 @import 'kpi';
+@import 'wrapper';
+

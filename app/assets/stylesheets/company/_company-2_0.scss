@@ -89,45 +89,69 @@ $company-article-block-margin: 30px;
       outline: none;
       padding: 0;
     }
-  }
-  
-  > label.name {
-    input {
-      font-size: 40px;
-      font-weight: 400;
-    }
-  
-    a {
-      @include display(flex);
-      @include position(absolute, 50% 0 0 100%);
 
-      background-color: hsl(136, 47%, 53%);
-      font-size: 15px;
-      height: 26px;
-      margin-left: 10px;
-      margin-top: -13px;
-      text-decoration: none;
-      width: 36px;
-
-      i.fa {
-        color: hsl(0, 0%, 100%);
-        margin: auto;
+    &.name {
+      input {
+        font-size: 40px;
+        font-weight: 400;
       }
-    } 
-  }
-  
-  > label.description textarea {
-    width: 600px;
-    padding: 0;
-    resize: none;
-    outline: none;
-    border: none;
-    text-align: center;
-    font-size: 24px;
-    font-weight: 300;
+    
+      a {
+        @include display(flex);
+        @include position(absolute, 50% 0 0 100%);
+
+        background-color: hsl(136, 47%, 53%);
+        font-size: 15px;
+        height: 26px;
+        margin-left: 10px;
+        margin-top: -13px;
+        text-decoration: none;
+        width: 36px;
+
+        i.fa {
+          color: hsl(0, 0%, 100%);
+          margin: auto;
+        }
+      }
+
+      &.inactive input {
+        color: hsl(0, 0%, 50%);
+
+        @include placeholder {
+          color: hsl(0, 0%, 90%);
+        }
+      }
+    }
+
+    &.description div[contenteditable] {
+      @include editor-contenteditable-area;
+
+      max-width: 800px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 300;
+      line-height: 135%;
+    }
   }
 
-  > div.cc-hashtag-list {
+  .is-name-in-logo {
+    @include transition(margin .1s ease-out);
+  }
+
+  .is-name-in-logo + .name {
+    margin-top: 0;
+  }
+
+  .is-name-in-logo {
+    margin-bottom: 8px;
+
+    &.checked {
+      margin-top: 10px;
+      margin-bottom: -2px;
+    }
+  }
+
+  > .cc-hashtag-list {
     margin-top: 20px;
 
     > ul {

@@ -1,6 +1,7 @@
 //= require ./combobox
 //= require ./token
 
+var addClass = cc.require('plugins/react_tokeninput/add-class');
 var Combobox = cc.require('plugins/react_tokeninput/combobox');
 var Token = cc.require('plugins/react_tokeninput/token');
 var ul = React.DOM.ul;
@@ -8,6 +9,7 @@ var li = React.DOM.li;
 
 MainComponent = React.createClass({
   propTypes: {
+    isDropdown: React.PropTypes.bool,
     onInput: React.PropTypes.func,
     onSelect: React.PropTypes.func.isRequired,
     onRemove: React.PropTypes.func.isRequired,
@@ -15,10 +17,23 @@ MainComponent = React.createClass({
     menuContent: React.PropTypes.any
   },
 
+  getDefaultProps: function() {
+    return {
+      isDropdown: false
+    }
+  },
+
   getInitialState: function() {
     return {
       selectedToken: null
     };
+  },
+
+  getClassName: function() {
+    var className = 'ic-combobox inline-flex'
+    if (this.props.isDropdown)
+      className = addClass(className, 'ic-dropdown');
+    return className;
   },
 
   handleClick: function() {
@@ -59,9 +74,10 @@ MainComponent = React.createClass({
 
     return ul({className: 'ic-tokens flex', onClick: this.handleClick},
       tokens,
-      li({className: 'ic-combobox inline-flex', ref: 'combo-li'},
+      li({className: this.getClassName(), ref: 'combo-li'},
         Combobox({
           id: this.props.id,
+          isDropdown: this.props.isDropdown,
           'aria-label': this.props['combobox-aria-label'],
           onInput: this.handleInput,
           onSelect: this.handleSelect,

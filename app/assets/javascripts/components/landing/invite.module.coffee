@@ -2,8 +2,8 @@
 
 # Imports
 #
-ModalActions  = require('actions/modal_actions')
-InviteForm    = cc.require('react/modals/invite-form')
+ModalActions  = require('components/modal_stack')
+InviteForm    = require('components/auth/invite_form')
 
 
 # Main

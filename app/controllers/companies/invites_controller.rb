@@ -1,9 +1,12 @@
 module Companies
   class InvitesController < ApplicationController
-    before_action :set_company, only: [:index, :create, :resend]
-    before_action :set_token, only: [:show, :accept, :destroy]
 
-    authorize_resource class: :company_invite, except: [:index, :create, :resend]  
+    before_action :set_company, only: [:create]
+    before_action :set_token, only: [:show, :accept, :destroy, :resend]
+
+    authorize_resource class: :invite, except: [:create, :resend]
+
+    after_action :create_intercom_event, only: :create
 
     # Show
     #
@@ -28,30 +31,31 @@ module Companies
     def create
       authorize! :manage_company_invites, @company
 
-      token = Token.new params.require(:token).permit(data: [:email, :role] ).merge(name: 'invite', owner: @company)
-      token.save!
+      @token = Token.new params.require(:token).permit(data: [:email, :role] ).merge(name: 'invite', owner: @company)
+      @token.save!
 
       respond_to do |format|
-        format.json { render json: token, root: :token }
+        format.json { render json: @token, root: :token }
       end
 
-      email = CloudProfile::Email.find_by(address: token.data[:email]) || token.data[:email]
+      @email = CloudProfile::Email.find_by(address: @token.data[:email]) || @token.data[:email]
       
-      UserMailer.company_invite(email, token).deliver
+      UserMailer.company_invite(@email, @token).deliver
 
     rescue ActiveRecord::RecordInvalid
       
       respond_to do |format|
-        format.json { render json: token, root: :token, status: 412 }
+        format.json { render json: @token, root: :token, status: 412 }
       end
     end
 
     # Resend
     #
     def resend
-      authorize! :manage_company_invites, @company
+      company = @token.owner
+      authorize! :manage_company_invites, company
 
-      token = @company.tokens.where(name: :invite).find(params[:id])
+      token = company.tokens.where(name: :invite).find(params[:id])
       UserMailer.company_invite(token.data[:email], token).deliver
 
       respond_to do |format|
@@ -97,6 +101,16 @@ module Companies
 
     def set_token
       @token = Token.find(params[:id])
+    end
+
+    def create_intercom_event
+      return unless should_perform_sidekiq_worker? && @token.valid?
+
+      IntercomEventsWorker.perform_async('invited-person',
+        current_user.id,
+        token_id: @token.id,
+        user_id: @email.try(:user_id)
+      )
     end
   
   end

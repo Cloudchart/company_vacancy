@@ -2,6 +2,7 @@ class CompaniesController < ApplicationController
   include FollowableController
 
   before_action :set_company, only: [
+    :show,
     :update,
     :destroy,
     :verify_site_url,
@@ -9,43 +10,40 @@ class CompaniesController < ApplicationController
     :finance,
     :settings
   ]
-  before_action :set_collection, only: [:index, :search]
 
-  authorize_resource
-  
+  load_and_authorize_resource
+
+  after_action :create_intercom_event, only: [:new, :update]
+
   # GET /companies
   def index
-    authorize! :list, :companies
   end
 
   # POST /companies/search
   def search
     respond_to do |format|
       format.html { render :index }
-      format.js
+      format.json { 
+        @companies = Company.search(params)
+        render :index 
+      }
     end
   end
 
   # GET /companies/1
   def show
-    relation = Company.includes(
-      :people,
-      :vacancies,
-      :pictures,
-      :paragraphs,
-      :roles,
-      :tokens,
-      :stories,
-      users: :emails,
-      blocks: :block_identities
-    )
-    @company = find_company(relation)
-
     respond_to do |format|
-      format.html { pagescript_params(id: @company.uuid) }
-      format.json { 
-        @tags = Tag.order(:name).all
-        @stories = @company.stories + Story.where(company: nil)
+      format.html { pagescript_params(id: @company.id) }
+      format.json {
+        @company = find_company(
+          Company.includes(
+            :people,
+            :vacancies,
+            :pictures,
+            :paragraphs,
+            blocks: :block_identities
+          )
+        )
       }
     end
   end
@@ -56,18 +54,18 @@ class CompaniesController < ApplicationController
     @company.roles.build(user: current_user, value: :owner)
     @company.should_build_objects!
     @company.save!
-    
+
     redirect_to @company
   end
 
   # PATCH/PUT /companies/1
   def update
     @company.update!(company_params)
-    
-    Activity.track_activity(current_user, params[:action], @company)
-    
+
+    # Activity.track_activity(current_user, params[:action], @company)
+
     update_site_url_verification(@company) if company_params[:site_url]
-    
+
     respond_to do |format|
       format.json { render json: CompanySerializer.new(@company, scope: current_user) }
     end
@@ -91,16 +89,16 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1/settings
   def settings
-    pagescript_params(id: @company.uuid)
+    pagescript_params(id: @company.id)
   end
 
   # GET /companies/1/access_rights
   def access_rights
-    @company = find_company(Company.includes(:roles, users: :emails))
+    @company = find_company(Company.includes(:roles, :tokens, users: :emails))
 
     respond_to do |format|
       format.html {
-        pagescript_params(id: @company.uuid)
+        pagescript_params(id: @company.id)
       }
       format.json {
         companies = current_user.companies
@@ -115,7 +113,7 @@ class CompaniesController < ApplicationController
                 unless memo[object.email].include?(object.full_name)
                   memo[object.email].push(object.full_name)
                 end
-              end              
+              end
             end
           end
 
@@ -160,6 +158,8 @@ class CompaniesController < ApplicationController
 private
 
   def update_site_url_verification(company)
+    return if current_user.editor?
+    
     if company_params[:site_url] == ''
       company.tokens.where(name: :site_url_verification).destroy_all
     else
@@ -174,18 +174,14 @@ private
       UserMailer.company_url_verification(token).deliver
     end
   end
-  
+
   # Use callbacks to share common setup or constraints between actions.
   def set_company
-    @company = find_company(Company.includes(:roles))
+    @company = Company.find(params[:id])
   end
 
   def find_company(relation)
     relation.find_by(slug: params[:id]) || relation.find(params[:id])
-  end
-
-  def set_collection
-    @companies = Company.search(params)
   end
 
   # Only allow a trusted parameter "white list" through.
@@ -193,14 +189,31 @@ private
     params.require(:company).permit(
       :name,
       :site_url,
-      :description, 
+      :description,
       :established_on,
       :is_published,
-      :logotype, 
-      :remove_logotype, 
+      :logotype,
+      :remove_logotype,
+      :is_name_in_logo,
       :slug,
       :tag_names
     )
+  end
+
+  def create_intercom_event
+    return unless should_perform_sidekiq_worker? && @company.valid?
+
+    event_name = if action_name == 'update' && company_params[:is_published] == 'true'
+      'published-company'
+    elsif action_name == 'new'
+      'created-company'
+    else
+      nil
+    end
+
+    if event_name
+      IntercomEventsWorker.perform_async(event_name, current_user.id, company_id: @company.id)
+    end
   end
 
 end

@@ -10,10 +10,24 @@
     visibility: hidden;
     width: 30px;
     cursor: pointer;
-    z-index: 1;
   }
 
   &:hover > i.fa.remove {
     visibility: visible;
+  }
+}
+
+@mixin editor-contenteditable-area {
+  outline: none;
+  cursor: text;
+
+  &:empty::before {
+    color: hsl(0, 0, 78%);
+    content: attr(data-placeholder);
+  }
+
+  > p {
+    margin: 0;
+    padding: 0;
   }
 }

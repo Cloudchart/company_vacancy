@@ -1,5 +1,4 @@
 ##= require ./node
-##= require react_components/mixins/draggable
 
 # Imports
 #

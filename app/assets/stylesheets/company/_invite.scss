@@ -1,4 +1,4 @@
-main > article.company-invite {
+main > article.invite {
   @include base-wrapper;
   @include display(flex);
   @include flex-direction(column);
@@ -7,15 +7,13 @@ main > article.company-invite {
   font-size: 15pt;
   line-height: 140%;
 
-  .login-link {
-    margin-right: $base-unit;
+  > div.author, div.owner-name, div.owner-logo {
+    margin-bottom: $base-unit * 2;
   }
 
   > div.author {
     @include display(inline-flex);
     @include align-items(center);
-
-    margin-bottom: $base-unit * 2;
 
     > [data-react-mount-point='avatar'] {
       > figure {
@@ -38,17 +36,20 @@ main > article.company-invite {
 
   }
 
-  > div.company {
-    margin-bottom: $base-unit * 2;
+  > div.owner-name {
+    font-size: 40px;
+    font-weight: 400;
 
     > a {
       color: black;
       text-decoration: none;
-
-      > img {
-        width: 145px;
-      }
     }
-    
   }
+
+  > div.owner-logo {
+    > a > img {
+      max-width: 145px;
+    }
+  }
+
 }

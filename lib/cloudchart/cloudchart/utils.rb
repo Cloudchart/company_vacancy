@@ -20,7 +20,7 @@ module Cloudchart::Utils
     end
   end
 
-  def self.is_uuid?(param)
+  def self.uuid?(param)
     !!param.to_s.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
   end
 

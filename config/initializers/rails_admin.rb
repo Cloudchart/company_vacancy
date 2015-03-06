@@ -1,30 +1,231 @@
 RailsAdmin.config do |config|
+  # Main config
+  # 
   config.main_app_name = ['CloudChart', 'Admin']
-  config.included_models = [
-    'Company',
-    'Feature',
-    'User',
-    'Token',
-    'Page',
-    'Person',
-    'Tag',
-    'Interview',
-    'Story'
-  ]
+  config.included_models = Cloudchart::RAILS_ADMIN_INCLUDED_MODELS
 
   config.authenticate_with do
     authenticate_user
   end
   config.current_user_method(&:current_user)
 
-  config.authorize_with :cancan
+  config.authorize_with :cancan, AdminAbility
   config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail >= 3.0.0
 
+  # Compamy
+  # 
   config.model 'Company' do
     visible false
-  end  
+  end
 
-  # https://github.com/sferik/rails_admin/wiki/Actions
+  # Feature
+  # 
+  config.model 'Feature' do
+    list do
+      exclude_fields :uuid
+    end
+
+    edit do
+      exclude_fields :uuid, :votes_total
+    end
+  end
+
+  # Interview
+  # 
+  config.model 'Interview' do
+    list do
+      exclude_fields :uuid, :email, :ref_email, :slug, :whosaid
+      sort_by :created_at
+
+      field :name do
+        pretty_value { bindings[:view].mail_to bindings[:object].email, value }
+      end
+
+      field :ref_name do
+        pretty_value { bindings[:view].mail_to bindings[:object].ref_email, value }
+      end
+    end
+
+    edit do
+      exclude_fields :uuid, :slug
+    end
+  end
+
+  # Page
+  # 
+  config.model 'Page' do
+    field :title
+    field :body, :wysihtml5 do
+      config_options html: true
+    end
+  end
+
+  # Person
+  # 
+  config.model 'Person' do
+    object_label_method :full_name
+
+    list do
+      exclude_fields :uuid, :phone, :email
+
+      field :user do
+        pretty_value { bindings[:view].mail_to value.email, value.full_name if value }
+      end
+
+      field :company do
+        pretty_value { bindings[:view].link_to(value.name, bindings[:view].main_app.company_path(value)) }
+      end
+    end
+  end
+
+  # Pinboard
+  # 
+  config.model 'Pinboard' do |variable|
+    list do
+      sort_by :title
+      fields :title, :user, :created_at, :updated_at
+    end
+
+    edit do
+      fields :title
+
+      field :title do
+        html_attributes do
+          { autofocus: true }
+        end
+      end
+    end
+  end
+
+  # Role
+  # 
+  config.model 'Role' do
+    visible false
+    object_label_method :value
+  end
+
+  # Story
+  # 
+  config.model 'Story' do
+    list do
+      sort_by :posts_stories_count
+      fields :name, :company, :posts_stories_count, :created_at
+
+      field :posts_stories_count do
+        sort_reverse true
+      end
+    end
+
+    edit do
+      fields :name
+
+      field :name do
+        html_attributes do
+          { autofocus: true }
+        end
+      end
+    end
+  end
+
+  # Tag
+  # 
+  config.model 'Tag' do
+    list do
+      sort_by :taggings_count
+      fields :name, :is_acceptable, :taggings_count, :created_at
+
+      field :taggings_count do
+        sort_reverse true
+      end
+    end
+
+    edit do
+      fields :name, :is_acceptable
+
+      field :name do
+        html_attributes do
+          { autofocus: true }
+        end
+      end
+
+      field :is_acceptable do
+        html_attributes do
+          { checked:  bindings[:object].new_record? ? 'checked' : bindings[:object].is_acceptable }
+        end
+
+        default_value do
+          '1' if bindings[:object].new_record?
+        end
+      end
+    end
+
+  end
+
+  # Token
+  # 
+  config.model 'Token' do
+    label 'Invite'
+    label_plural 'Invites'
+
+    list do
+      exclude_fields :owner, :updated_at
+      sort_by :created_at
+      scopes { [:admin_invites] }
+
+      field :uuid do
+        formatted_value { Cloudchart::RFC1751.encode(value) }
+        column_width 500
+        filterable false
+      end
+
+      field :name do
+        column_width 50
+      end
+
+      field :data do
+        # column_width 200
+        formatted_value { value ? [value[:full_name], value[:email]].join(' – ') : nil }
+        filterable false
+      end
+
+      field :created_at do
+        column_width 50
+      end
+    end
+    
+  end
+
+  # User
+  # 
+  config.model 'User' do
+    object_label_method :full_name
+
+    list do
+      include_fields :first_name, :system_roles, :companies, :created_at
+      sort_by :created_at
+
+      field :first_name do
+        label 'Full name'
+        formatted_value { bindings[:view].mail_to bindings[:object].email, bindings[:object].full_name }
+      end
+
+      field :companies do
+        pretty_value { value.map { |company| bindings[:view].link_to(company.name, bindings[:view].main_app.company_path(company)) }.join(', ').html_safe }
+      end
+
+    end
+
+    edit do
+      include_fields :system_roles
+
+      field :system_roles do
+        partial :system_roles
+      end
+    end
+  end
+
+  # Actions
+  # 
   config.actions do
     dashboard # mandatory
     index # mandatory
@@ -114,22 +315,22 @@ RailsAdmin.config do |config|
     end
     bulk_delete
     show do
-      except ['User', 'Token', 'Person', 'Tag', 'Interview', 'Story']
+      except ['User', 'Token', 'Person', 'Tag', 'Interview', 'Story', 'Pinboard']
     end
     edit do
-      except ['User', 'Token']
+      except ['Token', 'Person']
     end
     delete do
       except ['Person']
     end
     show_in_app do
-      except ['User', 'Token', 'Person', 'Tag', 'Story']
+      except ['User', 'Token', 'Person', 'Tag', 'Story', 'Pinboard']
     end
     history_index do
-      except ['User', 'Token', 'Person']
+      except ['User', 'Token', 'Person', 'Story', 'Pinboard']
     end
     history_show do
-      except ['User', 'Token', 'Person']
+      except ['User', 'Token', 'Person', 'Story', 'Pinboard']
     end
   end
   

@@ -2,7 +2,7 @@ Cloudchart::Application.routes.draw do
   # Root
   #
   root to: 'welcome#index'
-  
+
   # Errors
   #
   match '/404', to: 'errors#not_found', via: [:get, :post]
@@ -13,6 +13,7 @@ Cloudchart::Application.routes.draw do
   mount RailsAdmin::Engine, at: '/admin'
   mount CloudProfile::Engine, at: '/'
   mount CloudBlueprint::Engine, at: '/'
+  mount CloudApi::Engine, at: '/api'
 
   # Concerns
   #
@@ -25,22 +26,22 @@ Cloudchart::Application.routes.draw do
     delete :unfollow, on: :member
   end
 
+  resources :posts, only: [:fetch] do
+    get :fetch, on: :collection#, controller: :posts, action: :fetch
+  end
+
   # Resources
   #
   resources :companies, except: [:create, :edit], concerns: [:followable] do
-    post :search, on: :collection
+    match :search, on: :collection, via: [:get, :post]
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
     get :finance, on: :member
     get :settings, on: :member
     get :access_rights, on: :member
-    
+
     resources :vacancies, except: :edit, shallow: true, concerns: [:statusable] do
       match :update_reviewers, on: :member, via: [:put, :patch]
-    end
-    
-    resources :people, shallow: true do
-      post :search, on: :collection
     end
 
     resources :events, shallow: true do
@@ -53,20 +54,28 @@ Cloudchart::Application.routes.draw do
     end
 
     resources :posts, except: [:new, :edit], shallow: true
+    resources :people, except: [:new, :edit], shallow: true
     resources :blocks, only: :create, type: :company
-    resources :stories, only: [:index, :show, :create], shallow: true
+    resources :stories, only: [:show, :index, :create, :update], shallow: true
+    get 'stories/:story_name', to: 'posts#index', as: :story
   end
 
   resources :blocks, only: [:update, :destroy] do
     resources :identities, shallow: true, controller: :block_identities, only: [:index, :create, :destroy]
     resource :picture, type: :block, only: [:create, :update, :destroy]
     resource :paragraph, type: :block, only: [:create, :update, :destroy]
+    resource :quote, type: :block, only: [:create, :update]
     match :reposition, on: :collection, via: [:put, :patch]
+  end
+
+  resources :posts, only: [:fetch] do
+    get :fetch, on: :collection
   end
 
   scope 'posts/:post_id' do
     resources :blocks, only: :create, type: :post, as: :post_blocks
-    resources :visibilities, only: :create, type: :post, as: :visibility_blocks
+    resources :visibilities, only: :create, type: :post, as: :post_visibilities
+    resources :posts_stories, only: :create, as: :post_posts_stories
   end
 
   scope 'vacancies/:vacancy_id' do
@@ -82,21 +91,32 @@ Cloudchart::Application.routes.draw do
     post :vote, on: :member
   end
 
-  resources :company_invites, only: [:show, :create, :destroy] do
-    patch :accept, on: :member
-  end
-
   resources :interviews, only: [:show] do
     patch :accept, on: :member
   end
 
+  resources :pinboards do
+    get :settings, on: :member
+    resources :roles, only: [:update, :destroy]
+
+    resources :invites, only: [:show, :create, :destroy], controller: 'pinboards/invites' do
+      match :resend, on: :member, via: [:put, :patch]
+      post :accept, on: :member
+    end
+  end
+
+  resources :pins
+  resources :posts_stories, only: [:update, :destroy]
+
+  resources :quotes, only: [:show]
   resources :visibilities, only: :update
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :roles, only: [:update, :destroy]
 
   # Custom
-  # 
+  #
   get ':id', to: 'pages#show', as: :page
+  delete 'logout', to: 'cloud_profile/authentications#destroy', as: 'logout'
 
 end

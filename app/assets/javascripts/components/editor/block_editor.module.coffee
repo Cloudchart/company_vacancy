@@ -5,18 +5,23 @@
 tag = React.DOM
 cx = React.addons.classSet
 
-BlockStore = require('stores/block_store')
+BlockStore       = require('stores/block_store')
 
-BlockActions = require('actions/block_actions')
+BlockActions     = require('actions/block_actions')
 BlockableActions = require('actions/mixins/blockable_actions')
 
-SortableList = require('components/shared/sortable_list')
-SortableListItem  = require('components/shared/sortable_list_item')
+SortableList     = require('components/shared/sortable_list')
+SortableListItem = require('components/shared/sortable_list_item')
+
+FieldWrapper     = require('components/editor/field_wrapper')
+Hint             = require('components/shared/hint')
+renderHint       = require('utils/render_hint')
 
 BlockComponents =
   Picture:    require('components/editor/picture')
   Paragraph:  require('components/editor/paragraph')
-  Person:     require('components/editor/person')
+  Person:     require('components/editor/block_person')
+  Quote:      require('components/editor/quote')
   Vacancy:    require('components/editor/vacancy')
 
 SectionClassNames =
@@ -28,13 +33,16 @@ SectionClassNames =
   KPI:        'kpi'
 
 SectionPlaceholderItemNames = 
-  Person:     'People'
-  Vacancy:    'Vacancies'
   Picture:    'Picture'
   Paragraph:  'Text'
   Quote:      'Quote'
   KPI:        'KPI'
+  Person:     'People'
+  Vacancy:    'Vacancies'
 
+Hints =
+  Quote: renderHint("quote")
+  Paragraph: renderHint("paragraph")
 
 # Main
 # 
@@ -55,18 +63,22 @@ MainComponent = React.createClass
         <SortableListItem key={block_key}>
           <section key={block_key} className={SectionClassNames[block.kind || block.identity_type]}>
             {@getDestroyLink(block.uuid)}
-            <BlockComponent
-              key={block_key}
-              company_id={@props.company_id}
-              readOnly={@props.readOnly}
-              blockKind={block.kind || block.identity_type}
-            />
+            <FieldWrapper>
+              <BlockComponent
+                uuid={block_key}
+                company_id={@props.company_id}
+                readOnly={@props.readOnly}
+                blockKind={block.kind || block.identity_type} />
+              <Hint 
+                content = { Hints[block.kind || block.identity_type] }
+                visible = { !@props.readOnly && block.owner_type == "Post" && !!Hints[block.kind || block.identity_type] } />
+            </FieldWrapper>
           </section>
         </SortableListItem>
 
       .value()
 
-
+  
   getDestroyLink: (block_id) ->
     return null if @props.readOnly
     <i className="fa fa-times remove" onClick={@handleBlockDestroyClick.bind(@, block_id)}></i>
@@ -96,17 +108,13 @@ MainComponent = React.createClass
   getIdentityTypes: ->
     _.pick SectionPlaceholderItemNames, (name, key) => _.contains(@props.editorIdentityTypes, key)
 
-  buildParagraph: ->
-    new_block_key = BlockStore.create({ owner_id: @props.owner_id, owner_type: @props.owner_type, identity_type: 'Paragraph', position: 0 })
-    setTimeout => BlockableActions.createBlock(new_block_key, BlockStore.get(new_block_key).toJSON())
-
 
   # Handlers
   # 
   handleChooseBlockTypeClick: (identity_type) ->
     # -- temporary solution for quotes and kpi's
     kind = null
-    if identity_type.match(/Quote|KPI/)
+    if identity_type.match(/KPI/)
       kind = identity_type
       identity_type = 'Paragraph'
     # --
@@ -124,8 +132,6 @@ MainComponent = React.createClass
     )
 
     BlockableActions.createBlock(key, BlockStore.get(key).toJSON())
-
-    @setState({ position: null })
 
 
   handleSortableChange: (key, currIndex, nextIndex) ->
@@ -171,7 +177,6 @@ MainComponent = React.createClass
   # 
   componentDidMount: ->
     BlockStore.on('change', @refreshStateFromStores)
-    @buildParagraph() if @props.buildParagraph and @state.blocks.length == 0
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -179,21 +184,21 @@ MainComponent = React.createClass
   componentWillUnmount: ->
     BlockStore.off('change', @refreshStateFromStores)
 
+
   # Component Specifications
   # 
-  getDefaultProps: ->
-    buildParagraph: false
-
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
-    blocks: BlockStore.filter (block) => block.owner_id == props.owner_id
+    blocks = BlockStore.filter (block) -> block.owner_id == props.owner_id
+    position = if blocks.length is 0 and @props.owner_type is 'Post'then 0 else null
+
+    blocks: blocks
+    position: position
 
   getInitialState: ->
-    state = @getStateFromStores(@props)
-    state.position = null
-    state
+    @getStateFromStores(@props)
 
   render: ->
     return null unless @state.blocks
@@ -203,7 +208,7 @@ MainComponent = React.createClass
 
     blocks = _.map @gatherBlocks(), (block, i) =>
       [
-        @getSectionPlaceholder(i)
+        @getSectionPlaceholder(i) if !@props.readOnly
         block
       ]
 
@@ -216,7 +221,8 @@ MainComponent = React.createClass
       dragLockX
     >
       {blocks}
-      {@getSectionPlaceholder(blocks.length)}
+
+      {@getSectionPlaceholder(blocks.length) if !@props.readOnly}
     </SortableList>
 
 # Exports

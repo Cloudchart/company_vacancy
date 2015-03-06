@@ -1,0 +1,23 @@
+<article class="pinboard" data-react-class="components/pinboards_app" data-react-props="<%= { uuid: params[:id] }.to_json %>">
+</article>
+
+
+<% content_for :header_menu do %>
+  <%= render 'shared/header_menu' %>
+<% end %>
+
+<% content_for :header_breadcrumbs do %>
+  <div class="breadcrumbs">
+    <%= link_to main_app.pinboards_path, class: 'back-link' do -%>
+      <i class="fa fa-chevron-left"></i>
+    <% end %>
+
+    <div class="company-name">
+      <span>
+        <%= @pinboard.title %>
+      </span>
+    </div>
+  </div>
+<% end %>
+
+<%= content_for :class_for_main, 'pinboards' %>

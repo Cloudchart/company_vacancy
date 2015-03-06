@@ -9,6 +9,7 @@ require 'capistrano/rbenv'
 require 'capistrano/puma'
 require 'capistrano/sidekiq'
 # require 'capistrano/sidekiq/monit' # to require monit tasks
+require 'airbrake/capistrano3'
 
 # Includes tasks from other gems included in your Gemfile
 #

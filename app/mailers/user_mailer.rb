@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default from: ENV['DEFAULT_FROM']
+  default from: ENV['FROM_EMAIL']
 
   def company_invite(email, token)
     @company = token.owner
@@ -42,6 +42,14 @@ class UserMailer < ActionMailer::Base
   def interview_acceptance(interview)
     @interview = interview
     mail to: 'anton@cloudchart.co'
+  end
+
+  def pinboard_invite(email, token)
+    @pinboard = token.owner
+    @user = email.try(:user)
+    @token = rfc1751(token.id).parameterize
+    email = email.try(:address) || email
+    mail to: email
   end
 
 private

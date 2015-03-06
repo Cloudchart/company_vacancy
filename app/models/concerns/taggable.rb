@@ -7,7 +7,7 @@ module Taggable
   end
 
   def tag_names
-    tags.order('taggings.created_at').pluck(:name)
+    tags.map(&:name)
   end
 
   def tag_names=(names)

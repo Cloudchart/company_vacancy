@@ -3,13 +3,16 @@
 CloudFlux = require('cloud_flux')
 CallbackFactory = require('stores/callback_factory')
 
-
 CrudActions = ['create', 'update', 'destroy']
 CrudCallbacks = CallbackFactory.create 'post', CrudActions
 
 
-DefaultMethods = 
-
+DefaultMethods =
+  
+  handleFetchOneDone: (id, json) ->
+    @store.add_or_update(json.post.uuid, json.post)
+    @store.emitChange()
+  
   getSchema: ->
     uuid:           ''
     title:          ''
@@ -17,7 +20,7 @@ DefaultMethods =
     effective_till: ''
     owner_type:     ''
     owner_id:       ''
-    story_ids:      []
+    tag_names:      []
     position:       null
     created_at:     ''
     updated_at:     ''
@@ -31,9 +34,10 @@ DefaultMethods =
       actions["post:#{action}:fail"] = @["handle#{_.str.titleize(action)}Fail"]
 
     # other actions goes here
+    actions['post:fetch-one:done'] = @handleFetchOneDone
 
     actions
-    
+  
 
 # Exports
 #

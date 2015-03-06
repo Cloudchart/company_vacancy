@@ -21,7 +21,7 @@ class RolesController < ApplicationController
     else
       @role.destroy
       render json: {}
-    end    
+    end
   end
 
 private

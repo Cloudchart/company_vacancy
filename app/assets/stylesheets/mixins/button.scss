@@ -111,6 +111,11 @@ $cc-button-wide-padding: 55px;
 
 button.transparent {
   @include transparent-button();
+
+  &.text {
+    color: hsl(138, 63%, 37%);
+    font-size: 15px;
+  }
 }
 
 button.cc {
@@ -124,7 +129,11 @@ button.cc {
     }
   }
 
-  &.cancel,
+  &.cancel {
+    background-color: hsl(0, 0%, 95%);
+    color: hsl(0, 0%, 0%);
+  }
+
   &.revoke {
     i.fa {
       color: hsl(355, 87%, 47%);
@@ -258,3 +267,48 @@ div.button {
   }
 }
 
+
+// Round buttons
+//
+
+$round-button-background-color: hsl(0, 0%, 90%);
+$round-button-background-color-active: hsl(135, 50%, 50%);
+$round-button-background-color-disabled: hsla(0, 0%, 90%, .5);
+$round-button-color: hsl(0, 100%, 100%);
+$round-button-spacer-size: 5px;
+$round-button-size: 30px;
+
+ul.round-buttons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  
+  > li ~ li {
+    margin-left: $round-button-spacer-size;
+  }
+  
+  > li {
+    background-color: $round-button-background-color;
+    color: $round-button-color;
+    cursor: pointer;
+    display: inline-block;
+    border-radius: 50%;
+    height: $round-button-size;
+    text-align: center;
+    width: $round-button-size;
+    
+    &.active {
+      background-color: $round-button-background-color-active;
+    }
+    
+    &.disabled {
+      background-color: $round-button-background-color-disabled;
+      cursor: default;
+    }
+    
+    > i {
+      font-size: 14px;
+      line-height: $round-button-size;
+    }
+  }
+}

@@ -25,7 +25,7 @@ Component = React.createClass
       .filter (vacancy) -> _.all queries, (query) -> vacancy.name.toLowerCase().indexOf(query) >= 0
       .sortBy (vacancy) -> vacancy.name
       .map (vacancy) =>
-        (tag.div {
+        (tag.li {
           key:          vacancy.uuid
           className:    'vacancy'
           onClick:      @onVacancyClick.bind(@, vacancy.uuid)
@@ -56,7 +56,7 @@ Component = React.createClass
   onVacancyClick: (key) ->
     #identity_ids = @state.block.identity_ids[..] ; identity_ids.push(key)
     identity_ids = @state.block.identity_ids.push(key)
-    BlockActions.update(@props.key, { identity_ids: identity_ids.toJS() })
+    BlockActions.update(@props.uuid, { identity_ids: identity_ids.toJS() })
     ModalActions.hide()
 
   
@@ -77,7 +77,7 @@ Component = React.createClass
 
 
   getStateFromStores: ->
-    block = BlockStore.get(@props.key)
+    block = BlockStore.get(@props.uuid)
 
     block:      block
     vacancies:  VacancyStore.filter((vacancy) => vacancy.company_id == @props.company_id)
@@ -91,7 +91,7 @@ Component = React.createClass
 
   render: ->
     (tag.div {
-      className: 'vacancy-chooser'
+      className: 'chooser'
     },
       
       (tag.header null,
@@ -105,14 +105,16 @@ Component = React.createClass
       )
       
       (tag.section null,
-        (tag.div {
-          className:  'new'
-          onClick:    @onNewVacancyClick
-        },
-          (tag.i { className: 'fa fa-plus' })
-          "New vacancy"
+        (tag.ul null,
+          (tag.li {
+            className:  'new'
+            onClick:    @onNewVacancyClick
+          },
+            (tag.i { className: 'fa fa-plus' })
+            "New vacancy"
+          )
+          @gatherVacancies()
         )
-        @gatherVacancies()
       )
       
     )

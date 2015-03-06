@@ -3,8 +3,8 @@
 <% else %>
   <%= link_to "", main_app.root_path, class: 'logo' %>
   <div data-header-react-mount-point>
-    <%= link_to main_app.root_path, class: :title do -%>
-      <small>Cloud</small>Chart
+    <%= link_to main_app.root_path, class: 'title' do %>
+      <%= app_name_for_header %>
     <% end %>
   </div>
 <% end %>
@@ -14,8 +14,8 @@
 <div class="spacer"></div>
 
 <% if content_for(:search).present? %>
-  <%= yield :search %>
-<% elsif can?(:list, :companies) %>
+  <div data-react-class="components/company/search" data-react-props="<%= { query: params[:query] }.to_json %>"></div>
+<% elsif can?(:index, Company) %>
   <div class="browse-companies">
     <%= link_to 'Browse Companies', main_app.companies_path, class: 'base strong' %>
   </div>

@@ -1,47 +1,44 @@
-class PostsController < ApplicationController  
+class PostsController < ApplicationController
 
-  before_action :set_post, only: [:update, :destroy]
   before_action :set_company, only: [:index, :create]
+  before_action :set_post, only: [:show, :update, :destroy]
 
-  authorize_resource
+  load_and_authorize_resource except: :create
+
+  after_action :create_intercom_event, only: :create
 
   def index
-    # get posts
-    posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, blocks: :block_identities)
-
-    # reject based on visibility rules
-    @posts = if can?(:manage, @company)
-      posts
-    elsif can?(:update, @company) || can?(:finance, @company)
-      posts.reject { |post| post.visibility.try(:value) == 'only_me' }
-    else
-      posts.reject { |post| post.visibility.try(:value) =~ /only_me|trusted/ }
-    end
-
-    # get dependent collections
-    dependent_associations = [:visibilities, :pictures, :paragraphs, :blocks]
-
-    dependent_collections = @posts.inject({}) do |memo, post|
-      dependent_associations.each do |association|
-        memo[association] ||= []
-        memo[association] += post.send(association)
-      end
-
-      memo
-    end
-
-    # instantiate associations
-    dependent_associations.each do |association|
-      instance_variable_set("@#{association}", dependent_collections[association])
-    end
-
     respond_to do |format|
+      format.html {
+        pagescript_params(
+          company_id: @company.id,
+          story_id: Story.cc_plus_company(@company.id).find_by(name: params[:story_name]).try(:id)
+        )
+      }
+
+      format.json
+    end
+  end
+
+  def fetch
+    respond_to do |format|
+      format.json
+    end
+  end
+
+  def show
+    respond_to do |format|
+      format.html { 
+        @company = @post.company
+        pagescript_params(id: @post.id, company_id: @company.id)
+      }
       format.json
     end
   end
 
   def create
     @post = @company.posts.build(post_params)
+    authorize! :create, @post
 
     if @post.save
       respond_to do |format|
@@ -77,19 +74,21 @@ class PostsController < ApplicationController
 private
 
   def post_params
-    params.require(:post).permit(:title, :effective_from, :effective_till, :position, story_ids: [])
+    params.require(:post).permit(:title, :effective_from, :effective_till, :position, :tag_names)
   end
 
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.includes(:owner, :visibilities).find(params[:id])
   end
 
   def set_company
-    @company = find_company(Company.includes(:roles))
+    @company = Company.find(params[:company_id])
   end
 
-  def find_company(relation)
-    relation.find_by(slug: params[:company_id]) || relation.find(params[:company_id])
+  def create_intercom_event
+    return unless should_perform_sidekiq_worker? && @post.valid?
+
+    IntercomEventsWorker.perform_async('created-post', current_user.id, post_id: @post.id)
   end
-  
+
 end

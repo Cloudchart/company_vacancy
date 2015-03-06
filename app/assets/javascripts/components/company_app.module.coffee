@@ -18,6 +18,8 @@ BlockEditor     = require('components/editor/block_editor')
 Component = React.createClass
 
   mixins: [GlobalState.mixin]
+  # propTypes: {}
+  displayName: 'Company app'
 
   # Helpers
   # 
@@ -82,7 +84,7 @@ Component = React.createClass
         company_id = {@props.uuid}
         owner_id = {@props.uuid}
         owner_type = "Company"
-        editorIdentityTypes = {['Person', 'Vacancy', 'Picture', 'Paragraph']}
+        editorIdentityTypes = {['Person', 'Picture', 'Paragraph']}
         classForArticle = "editor company company-2_0"
         readOnly = {isInViewMode}
       />

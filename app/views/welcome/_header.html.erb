@@ -1,9 +1,7 @@
 <figure>
-  Cloud<strong>Chart</strong>
+  <%= app_name_for_header %>
 </figure>
 
-<div class="auth" data-react-class="components/landing/auth">
-  <span>
-    Log In
-  </span>
+<div class="auth">
+  <%= link_to "Log In", cloud_profile.login_path %>
 </div>

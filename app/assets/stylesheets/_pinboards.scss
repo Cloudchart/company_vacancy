@@ -1,0 +1,165 @@
+main.pinboards {
+  background-color: hsl(0, 0%, 98%);
+  margin: 0;
+  padding: 0;
+}
+
+article.pinboard,
+article.pinboards {
+  @include display(flex);
+  @include justify-content(center);
+}
+
+
+@mixin pinboard-card-header {
+  @include align-items(center);
+  @include display(flex);
+  @include justify-content(space-between);
+
+  margin-top: 0;
+
+  > i {
+    color: hsl(0, 0%, 93%);
+    font-size: 15px;
+  }
+}
+
+
+@mixin pinboard-card-footer {
+  @include align-items(center);
+  @include display(flex);
+  @include justify-content(space-between);
+
+  border-top: $card-hr;
+  padding-top: $card-basic-space;
+}
+
+
+main.pinboards .pinboard.cloud-card {
+
+  > header {
+    @include pinboard-card-header;
+  }
+
+
+  > footer {
+    @include pinboard-card-footer;
+  }
+
+}
+
+
+@mixin pinboard-settings-access-rights-item {
+  color: hsl(0, 0%, 85%);
+  cursor: pointer;
+  display: block;
+  font-size: 16px;
+  line-height: 15px;
+  position: relative;
+
+  input {
+    @include position(absolute, 0px null null 0px);
+    font-size: 0px;
+    opacity: 0;
+
+    &:checked ~ span {
+      color: hsl(0, 0%, 0%);
+    }
+  }
+
+  & ~ label {
+    margin-left: 20px;
+  }
+}
+
+
+@mixin pinboard-settings-bordered-input {
+  border: none;
+  border-bottom: 2px solid hsl(137, 54%, 50%);
+  font-size: 20px;
+  font-weight: 300;
+  outline: none;
+  padding: 10px;
+  width: 100%;
+
+  @include placeholder {
+    color: hsl(0, 0%, 73%);
+    font-size: 20px;
+    padding: 0;
+  }
+}
+
+
+
+form.pinboard-settings {
+  width: 100%;
+
+  > fieldset {
+    border: none;
+    margin: 0;
+    min-width: 100%;
+    padding: 0;
+
+    > header {
+      font-size: 40px;
+      font-weight: 200;
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+
+    &.settings {
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li:not(:first-child) {
+          margin-top: 20px;
+        }
+      }
+    }
+  }
+
+
+  fieldset.settings {
+
+    .name,
+    .description {
+      input {
+        @include pinboard-settings-bordered-input;
+      }
+    }
+
+    .access-rights {
+
+      @include align-items(center);
+      @include display(flex);
+
+      label {
+        @include pinboard-settings-access-rights-item;
+      }
+
+    }
+  }
+
+
+}
+
+
+div.pinboard-security {
+  margin-top: 40px;
+
+  > h1 {
+    font-size: 40px;
+    font-weight: 200;
+    margin-bottom: 30px;
+  }
+
+  > ul.users {
+
+  }
+
+}
+
+
+@import 'pin';

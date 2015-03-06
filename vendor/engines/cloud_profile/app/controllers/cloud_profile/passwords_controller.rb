@@ -23,7 +23,8 @@ module CloudProfile
     #
     def reset
       token = Token.where(name: :password).find(params[:token]) rescue nil
-      redirect_to main_app.root_path(token: token)
+    
+      pagescript_params(token: token.to_param)
     end
     
     
@@ -41,7 +42,7 @@ module CloudProfile
       warden.set_user(user, scope: :user)
       
       respond_to do |format|
-        format.json { render json: { status: :ok } }
+        format.json { render json: { status: :ok, previous_path: previous_path } }
       end
       
     rescue ActiveRecord::RecordNotFound

@@ -1,6 +1,4 @@
-$modal-overlay-background-color: hsla(0, 0%, 50%, .5);
-$modal-overlay-z-index: 10000;
-
+$modal-overlay-background-color: hsla(0, 0%, 75%, .25);
 $modal-container-background-color: hsl(0, 100%, 100%);
 
 // Modal form
@@ -38,19 +36,19 @@ $modal-form-button-padding: 0 20px;
   height: $modal-form-button-height;
   margin: 0;
   padding: $modal-form-button-padding;
-  
+
   &:disabled {
     background-color: desaturate($modal-form-button-background-color, 100%);
   }
-  
+
   &.alert {
     background-color: $modal-form-button-background-color-alert;
-    
+
     &:disabled {
       background-color: desaturate($modal-form-button-background-color-alert, 100%);
     }
   }
-  
+
   > i.fa {
     margin-left: 8px;
   }
@@ -61,29 +59,29 @@ $modal-form-button-padding: 0 20px;
   font-size: $modal-form-font-size;
   padding: $modal-form-padding;
   width: $login-form-width;
-  
+
   > header {
     font-size: $modal-form-header-font-size;
     font-weight: $modal-form-header-font-weight;
-    
+
     a {
       margin-right: 10px;
     }
   }
-  
+
   > fieldset {
     border: none;
     margin: $modal-form-fieldset-margin;
     padding: 0;
-    
+
     > label {
       @include align-items(center);
       @include display(flex);
       @include justify-content(flex-end);
-      
+
       font-weight: 300;
       margin: $modal-form-fieldset-label-margin;
-      
+
       > input {
         background-color: $modal-form-input-background-color;
         border: none;
@@ -91,7 +89,7 @@ $modal-form-button-padding: 0 20px;
         outline: none;
         padding: $modal-form-input-padding;
         width: 70%;
-        
+
         &.error {
           background-color: $modal-form-input-background-color-error;
           color: $modal-form-input-color-error;
@@ -99,14 +97,14 @@ $modal-form-button-padding: 0 20px;
       }
     }
   }
-  
+
   > footer {
     @include display(flex);
     @include justify-content(space-between);
     @include align-items(center);
 
     margin: $modal-form-footer-margin;
-    
+
     button {
       @include modal-form-button;
     }
@@ -114,31 +112,37 @@ $modal-form-button-padding: 0 20px;
 }
 
 
-
-body .modal-overlay {
-  @include display(flex);
+body ul.modal-stack {
   @include position(fixed, 0px 0px 0px 0px);
-  
-  background-color: $modal-overlay-background-color;
-  overflow: hidden;
-  z-index: 10000;
-  
-  > .modal-container {
-    background-color: $modal-container-background-color;
-    margin: auto;
 
-    &.post {
-      margin: 0 auto;
-      padding: 50px;
-      overflow: scroll;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: $zindex-modal;
+
+  > li.modal-stack-item {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+    @include position(fixed, 0px 0px 0px 0px);
+
+    overflow: scroll;
+
+    background-color: $modal-overlay-background-color;
+
+    > * {
+      background-color: hsl(0, 100%, 100%);
+
+      &.post-container {
+        @include align-self(flex-start);
+
+        min-height: 100%;
+      }
     }
-  }
-  
-  &.blueprint > .modal-container {
-    margin: 0;
   }
 }
 
 
 @import 'modals/login-form';
 @import 'modals/splash';
+@import 'modals/pin-form';

@@ -20,7 +20,7 @@ Progress = React.createClass
     [
       { message: "Give your company a name", passed: !!@state.company.name }
       { message: "Upload logo", passed: !!@state.company.logotype_url }
-      { message: "Create first chart", passed: @state.cursor.flags.get('has_charts') }
+      # { message: "Create first chart", passed: @state.cursor.flags.get('has_charts') }
       { message: "Add some people", passed: @state.cursor.meta.get('people_size') > 0 }
       { message: "Assign keywords", passed: @state.company.tag_names.size > 0 }
     ]
@@ -68,6 +68,12 @@ Progress = React.createClass
     state.company = CompanyStore.get(@props.uuid) unless sync
     state
 
+  shouldDisablePublishButton: ->
+    if @state.company.is_published
+      false
+    else
+      @progressItemsLeft() > 0 or @state.sync
+
   # Handlers
   # 
   handlePublishClick: ->
@@ -104,7 +110,7 @@ Progress = React.createClass
         }
         <button className="orgpad"
                 onClick={@handlePublishClick}
-                disabled={@progressItemsLeft() > 0 or @state.sync}>
+                disabled={@shouldDisablePublishButton()}>
           <span>{if company.is_published then "Unpublish" else "Publish"}</span>
           <i className={@classForButtonIcon()}></i>
         </button>

@@ -5,9 +5,9 @@
 
 <%- else -%>
 
-  <%= link_to "Log In", '', data: { behaviour: "login-button" } %>
+  <%= link_to "Log In", cloud_profile.login_path, class: 'auth' %>
 
-  <button class="orgpad auth <%= yield(:class_for_header_authentication) %>" data-behaviour="invite-button">
+  <button class="cc <%= yield(:class_for_header_authentication) %>" data-behaviour="invite-button">
     <span>
       Invited?
     </span>

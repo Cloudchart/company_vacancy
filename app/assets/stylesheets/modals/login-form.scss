@@ -1,10 +1,7 @@
 $login-form-width: 480px;
 
-.modal-container > form.login,
-.modal-container > form.register,
 .modal-container > form.invite,
-.modal-container > form.request-invite,
-.modal-container > form.password-reset {
+.modal-container > form.request-invite {
   @include modal-auth-form;
   
   button.register i {

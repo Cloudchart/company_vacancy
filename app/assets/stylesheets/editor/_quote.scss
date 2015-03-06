@@ -1,17 +1,48 @@
 article.editor > section.quote {
-  font-size: 26px;
-  line-height: 35px;
-  font-style: italic;
 
-  [contenteditable] {
-    cursor: text;
-    outline: none;
+  .quote-wrapper {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(flex-start);
 
-    &:empty::before {
-      content: attr(data-placeholder);
-      opacity: .25;
+    .person {
+      margin-right: 30px;
+      min-width: 145px;
+      width: 145px;
+
+      > i.remove {
+        @include position(absolute, 3px 3px 0 0);
+      }
+    }
+
+    [contenteditable] {
+      cursor: text;
+      font-size: 26px;
+      font-style: italic;
+      line-height: 35px;
       outline: none;
+
+      &:empty::before {
+        content: attr(data-placeholder);
+        opacity: .25;
+        outline: none;
+      }
     }
   }
 
+  .editor-field-wrapper > aside {
+    height: 100%;
+
+    .hint {
+      width: 250px;
+    }
+  }
+
+  .people-list {
+    margin-top: 20px;
+  }
+
+  [contenteditable] + aside {
+    height: 35px;
+  }
 }

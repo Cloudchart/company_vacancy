@@ -1,0 +1,9 @@
+main.page-form {
+  @include display(flex);
+
+  form {
+    position: relative;
+    margin: auto;
+    width: 400px;
+  }
+}

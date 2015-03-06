@@ -2,8 +2,11 @@
 @import 'normialize';
 @import 'proxima-nova';
 @import 'font-awesome';
+@import 'variables';
 @import 'modal';
 @import 'mixins/landing';
+@import 'mixins/form_2';
+@import 'mixins/button';
 
 $base-unit: 20px;
 $base-font-size: 15px;
@@ -71,7 +74,6 @@ body > header {
   padding: 0 $base-unit * 2;
   
   > figure {
-    background: image-url('cloudchart-logo-neg.svg') no-repeat left center;
     
     font-size: $base-unit * 1.25;
     font-weight: 300;
@@ -84,8 +86,8 @@ body > header {
     }
   }
   
-  > .auth span {
-    cursor: pointer;
+  > .auth a {
+    color: hsl(0, 0%, 100%);
     font-size: $base-unit * .9;
     font-weight: 600;
   }
@@ -175,5 +177,23 @@ body > footer > ul {
     text-decoration: none;
   }
 }
+
+// Env dependent
+// 
+@each $env, $color in (development, hsl(136, 52%, 51%)), 
+                      (staging, hsl(356, 82%, 65%)),
+                      (production, hsl(136, 52%, 51%)) {
+  body.#{$env} {
+    > header {
+      background-color: $color;
+
+      > figure {
+        background: image-url('#{$env}/cloudchart-logo-neg.svg') no-repeat left center;
+      }
+
+    }
+  }
+}
+
 
 @import 'interviews';

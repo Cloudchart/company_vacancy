@@ -39,7 +39,15 @@ module ApplicationHelper
   end
 
   def ams(collection, options = {})
-    collection.active_model_serializer.new(collection, options) if collection
+    collection.active_model_serializer.new(collection, options)
+  end
+
+  def app_name_for_header
+    if Rails.env.staging?
+      raw "Soviet <strong>Union</strong>"
+    else
+      raw "Cloud<strong>Chart</strong>"
+    end
   end
   
 end

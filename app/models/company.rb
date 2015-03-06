@@ -4,12 +4,19 @@ class Company < ActiveRecord::Base
   include Sluggable
   include Taggable
   include Tire::Model::Search
-  include Tire::Model::Callbacks  
+  include Tire::Model::Callbacks
 
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
   ROLES           = ([:owner] + INVITABLE_ROLES).freeze
+  NESTED_MODELS   = [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post, Story, Quote, PostsStory, Paragraph, Picture]
 
-  before_save :nullify_slug, if: 'slug.blank?'
+  before_save do
+    self.slug = nil if slug.blank?
+  end
+
+  after_save do
+    update(is_name_in_logo: false) if logotype.blank? && is_name_in_logo?
+  end
 
   dragonfly_accessor :logotype
 
@@ -30,7 +37,7 @@ class Company < ActiveRecord::Base
   has_many :stories, dependent: :destroy
   
   validates :site_url, url: true, allow_blank: true
-  validate  :publish_check, if: 'is_published && is_published_changed?'
+  validate  :publish_check, if: 'is_published? && is_published_changed?'
 
   settings ElasticSearchNGramSettings do
     mapping do
@@ -57,7 +64,7 @@ class Company < ActiveRecord::Base
 
         sort { by :name } if params[:query].blank?
         filter :term, is_published: true
-
+        size 50
       end
     end
     
@@ -97,7 +104,7 @@ class Company < ActiveRecord::Base
   def build_objects
     blocks.build(position: 0, identity_type: 'Person', is_locked: true)
     blocks.build(position: 1, identity_type: 'Paragraph', is_locked: true)
-    blocks.build(position: 2, identity_type: 'Vacancy', is_locked: true)
+    # blocks.build(position: 2, identity_type: 'Vacancy', is_locked: true)
     blocks.build(position: 3, identity_type: 'Picture', is_locked: true)
     charts.build(title: 'Main Chart')
   end
@@ -105,13 +112,9 @@ class Company < ActiveRecord::Base
 private
 
   def publish_check
-    unless name.present? && logotype.present? && people.any? && tags.any? && charts.first.try(:nodes).try(:any?)
+    unless name.present? && logotype.present? && people.any? && tags.any? #&& charts.first.try(:nodes).try(:any?)
       errors.add(:is_published, I18n.t('errors.messages.company_can_not_become_published'))
     end
-  end
-
-  def nullify_slug
-    self.slug = nil
   end
 
 end

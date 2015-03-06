@@ -1,0 +1,64 @@
+$arrow-size: 15px;
+$hint-button-size: $editor-hint-width;
+$hint-color: hsl(144, 90%, 75%);
+
+.editor-field-wrapper {
+  position: relative;
+
+  > aside {
+    @include align-items(center);
+    @include display(flex);
+    @include position(absolute, 0px 0 0 -2 * $editor-hint-width);
+
+    z-index: 1000;
+
+    > .hint-button {
+      color: hsl(0, 0%, 95%);
+      font-size: 18px;
+      line-height: $hint-button-size;
+      height: $hint-button-size;
+      text-align: center;
+      width: $hint-button-size;
+    }
+
+    .hint {
+      background-color: $hint-color;
+      cursor: default;
+      display: none;
+      font-size: 16px;
+      line-height: 1.5;
+      padding: 20px;
+      margin-left: $arrow-size;
+      width: 250px;
+
+      &.opened {
+        display: block;
+      }
+
+      &:before {
+        @include position(absolute, 50% 0 0 $hint-button-size);
+
+        border-right: $arrow-size solid $hint-color;
+        border-top: $arrow-size*0.8 solid transparent;
+        border-bottom: $arrow-size*0.8  solid transparent;
+        content: "";
+        height: 0;
+        margin-top: -$arrow-size*0.8;  
+        width: 0;
+      }
+    }
+
+    &.counter {
+      @include justify-content(center);
+
+      color: hsl(150, 47%, 53%);
+      font-size: 12px;
+      text-align: center;
+      width: $editor-hint-width;
+
+      &.negative {
+        color: hsl(0, 75%, 55%);
+      }
+    }
+  }
+}

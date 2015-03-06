@@ -1,117 +1,67 @@
 # @cjsx React.DOM
 
+GlobalState = require('global_state/state')
+
 # Imports
-# 
-tag = React.DOM
+#
+PostStore           = require('stores/post_store')
+PostsStoryStore     = require('stores/posts_story_store')
+VisibilityStore     = require('stores/visibility_store')
+PinStore            = require('stores/pin_store')
 
-PostStore = require('stores/post_store')
+PostActions         = require('actions/post_actions')
+VisibilityActions   = require('actions/visibility_actions')
+ModalActions        = require('actions/modal_actions')
 
-PostActions = require('actions/post_actions')
-ModalActions = require('actions/modal_actions')
+PostsStories        = require('components/posts_stories')
+Tags                = require('components/company/tags')
+BlockEditor         = require('components/editor/block_editor')
+FuzzyDateInput      = require('components/form/fuzzy_date_input')
+ContentEditableArea = require('components/form/contenteditable_area')
 
-AutoSizingInput   = require('components/form/autosizing_input')
-StoriesComponent  = require('components/company/stories')
-BlockEditor       = require('components/editor/block_editor')
-FuzzyDateInput    = require('components/form/fuzzy_date_input')
+Dropdown            = require('components/form/dropdown')
+FieldWrapper        = require('components/editor/field_wrapper')
+Counter             = require('components/shared/counter')
+Hint                = require('components/shared/hint')
+renderHint          = require('utils/render_hint')
+InsightList         = require('components/insight/list')
+Toggle              = require('components/form/toggle')
+PinButton           = require('components/pinnable/pin_button')
+
 
 # Main
-# 
-Component = React.createClass
-
-  # mixins: []
-
-  # Helpers
-  # 
-  gatherControls: ->
-    return null if @props.readOnly
-
-    <div className="controls">
-      <button 
-        className="cc alert"
-        onClick={@handleDestroyClick}>
-        Delete
-      </button>
-
-      <button 
-        className="cc"
-        onClick={@handleOkClick}>
-        OK
-      </button>
-    </div>
-
-
-  effectiveDate: ->
-    <FuzzyDateInput
-      from      = { @state.post.effective_from }
-      till      = { @state.post.effective_till }
-      onUpdate  = { @handleEffectiveDateUpdate }
-    />
-
-
-  update: (attributes) ->
-    PostActions.update(@state.post.uuid, attributes)
-
-
-  # Handlers
-  # 
-  handleFieldChange: (name, event) ->
-    state = {}
-    state[name] = event.target.value
-    @setState(state)
-
-
-  handleTitleBlur: ->
-    return if @state.title is @state.post.title
-    @update(title: @state.title)
-
-
-  handleEffectiveDateUpdate: (from, till) ->
-    effective_from = moment(from).format('YYYY-MM-DD')
-    effective_till = moment(till).format('YYYY-MM-DD')
-    return if @state.post.effective_from is effective_from and @state.post.effective_till is effective_till
-
-    @update({ effective_from: effective_from, effective_till: effective_till })
+#
+Post = React.createClass
   
+  displayName: 'Post'
 
-  handleFieldKeyup: (event) ->
-    event.target.blur() if event.key == 'Enter'
+  mixins: [GlobalState.mixin]
 
-  handleDestroyClick: (event) ->
-    if confirm('Are you sure?')
-      ModalActions.hide()
-      PostActions.destroy(@state.post.uuid)
+  statics: 
+    getCursor: (company_id) ->
+      pins:   PinStore.cursor.items
+      flags:  GlobalState.cursor(['stores', 'companies', 'flags', company_id])
 
-  handleOkClick: (event) ->
-    ModalActions.hide()
-    # TODO: show post in timeline
 
-  handleStoriesChange: (story_ids) ->
-    PostActions.update(@state.post.uuid, { story_ids: story_ids })
+  # Component specifications
+  #
+  propTypes:
+    id:                    React.PropTypes.string.isRequired
+    company_id:            React.PropTypes.string.isRequired
+    readOnly:              React.PropTypes.bool
 
-  # Lifecycle Methods
-  # 
-  componentDidMount: ->
-    PostStore.on('change', @refreshStateFromStores)
+  getDefaultProps: ->
+    cursor:
+      pins:   PinStore.cursor.items
+    readOnly: true
 
-  componentWillReceiveProps: (nextProps) ->
-    @setState(@getStateFromStores(nextProps))
+  getInitialState: ->
+    _.extend @getStateFromStores(@props),
+      readOnly: @props.readOnly
+      titleFocused: false
 
-  componentWillUnmount: ->
-    PostStore.off('change', @refreshStateFromStores)
-
-  # Component Specifications
-  # 
-  getTitle: (post) ->
-    if post then post.title else ''
-
-  getPublishedAt: (post) ->
-    if post 
-      if moment(post.published_at).isValid()
-        moment(post.published_at).format('ll')
-      else
-        ''
-    else
-      ''
+  onGlobalStateChange: ->
+    @setState(readOnly: @props.cursor.flags.get('is_read_only'))
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
@@ -119,57 +69,253 @@ Component = React.createClass
   getStateFromStores: (props) ->
     post = PostStore.get(props.id)
 
-    post: post
-    title: @getTitle(post)
-    published_at: @getPublishedAt(post)
+    if post
+      visibility = VisibilityStore.find (item) -> item.uuid and item.owner_id is props.id and item.owner_type is 'Post'
+      titleLength = if (title = post.title) then title.length else 0
 
-  getInitialState: ->
-    state = @getStateFromStores(@props)
-    state
+      post: post
+      titleLength: titleLength
+      published_at: @getPublishedAt(post)
+      visibility: visibility
+      visibility_value: if visibility then visibility.value else 'public'
+    else
+      post: null
 
+
+  # Helpers
+  #
+  getViewMode: ->
+    GlobalState.cursor(['stores', 'companies', 'flags', @props.company_id]).get('is_read_only')
+
+  getVisibilityOptions: ->
+    public:  'Public'
+    trusted: 'Trusted'
+    only_me: 'Only me'
+
+  getTitleLimit: (length) ->
+    140 - length
+
+  getStrippedTitle: (title) ->
+    title.replace(/(<([^>]+)>)/ig, "").trim()
+
+  update: (attributes) ->
+    PostActions.update(@state.post.uuid, attributes)
+
+  getPublishedAt: (post) ->
+    if post
+      if moment(post.published_at).isValid()
+        moment(post.published_at).format('ll')
+      else
+        ''
+    else
+      ''
+
+
+  # Handlers
+  #
+  handleEffectiveDateUpdate: (from, till) ->
+    effective_from = moment(from).format('YYYY-MM-DD')
+    effective_till = moment(till).format('YYYY-MM-DD')
+    return if @state.post.effective_from is effective_from and @state.post.effective_till is effective_till
+
+    @update({ effective_from: effective_from, effective_till: effective_till })
+
+
+  handleTitleChange: (content) ->
+    @update(title: @getStrippedTitle(content))
+
+  handleTitleBlur: ->
+    @setState(titleFocused: false)
+
+  handleTitleFocus: ->
+    @setState(titleFocused: true)
+
+  handleTitleInput: (content) ->
+    @setState(titleLength: @getStrippedTitle(content).length)
+
+  handleDestroyClick: (event) ->
+    if confirm('Are you sure?')
+      ModalActions.hide()
+      PostActions.destroy(@state.post.uuid)
+
+  handleOkClick: (event) ->
+    this.refs.okButton.getDOMNode().focus();
+    ModalActions.hide()
+    # TODO: show post in timeline
+
+  handleKeydown: (event) ->
+    if $(@refs.container.getDOMNode()).find(':focus').length > 0
+      if event.metaKey && event.keyCode == 13
+        event.preventDefault()
+        @handleOkClick()
+
+  handleVisibilityChange: (value) ->
+    if @state.visibility and @state.visibility.value isnt value
+      VisibilityActions.update(@state.visibility.uuid, { value: value })
+    else
+      VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: value })
+
+  handleViewModeChange: (checked) ->
+    @setState(readOnly: !checked)
+
+
+  # Lifecycle Methods
+  #
+  componentDidMount: ->
+    $(document).on 'keydown', @handleKeydown
+    PostStore.on('change', @refreshStateFromStores)
+    VisibilityStore.on('change', @refreshStateFromStores)
+
+  componentWillReceiveProps: (nextProps) ->
+    @setState(@getStateFromStores(nextProps))
+
+  componentWillUnmount: ->
+    $(document).off 'keydown', @handleKeydown
+    PostStore.off('change', @refreshStateFromStores)
+    VisibilityStore.off('change', @refreshStateFromStores)
+
+
+  # Renderers
+  #
+  renderAside: ->
+    <aside>
+      {
+        if !@state.readOnly
+          <Dropdown
+            options  = { @getVisibilityOptions() }
+            value    = { @state.visibility_value }
+            onChange = { @handleVisibilityChange }
+          />
+      }
+      {
+        if !@props.cursor.flags.get('is_read_only')
+          <Toggle
+            checked     = { not @state.readOnly }
+            customClass = "cc-toggle view-mode"
+            onText      = "Edit"
+            offText     = "View"
+            onChange    = {@handleViewModeChange}
+          />
+      }
+      <ul className="round-buttons">
+        <PinButton 
+          pinnable_type = 'Post'
+          pinnable_id   = { @state.post.uuid }
+          title         = { @state.post.title } />
+      </ul>
+    </aside>
+
+
+  renderPins: ->
+    return null if PinStore.filterInsightsForPost(@props.id).size == 0
+
+    <div className="post-pins">
+      <InsightList pinnable_id={ @props.id } pinnable_type="Post" />
+    </div>
+
+
+  renderButtons: ->
+    return null if @state.readOnly
+
+    <div className="controls">
+      <button
+        className="cc alert"
+        onClick={@handleDestroyClick}>
+        Delete
+      </button>
+      <button
+        ref="okButton"
+        className="cc"
+        onClick={@handleOkClick}>
+        OK
+      </button>
+    </div>
+
+
+  renderEffectiveDate: ->
+    <FuzzyDateInput
+      from      = { @state.post.effective_from }
+      till      = { @state.post.effective_till }
+      readOnly  = { @state.readOnly }
+      onUpdate  = { @handleEffectiveDateUpdate }
+    />
+
+
+  # Main render
+  #
   render: ->
     return null unless @state.post
 
-    <div className="post-container">
+    <div ref="container" className="post-container">
+      { @renderAside() }
+      { @renderPins() }
+
       <header>
-        <label className="title">
-          <AutoSizingInput
-            value={@state.title}
-            placeholder={"Tap to add title"}
-            onChange={@handleFieldChange.bind(@, 'title')}
-            onBlur={@handleTitleBlur}
-            onKeyUp={@handleFieldKeyup}
-            readOnly={@props.readOnly}
-          />
-        </label>
+        <FieldWrapper className="title">
+          <label>
+            <ContentEditableArea
+              onBlur = { @handleTitleBlur }
+              onChange = { @handleTitleChange }
+              onFocus = { @handleTitleFocus }
+              onInput = { @handleTitleInput }
+              placeholder = 'Tap to add title'
+              readOnly = { @state.readOnly }
+              value = { @state.post.title }
+            />
+          </label>
+          <Counter
+            count   = { @getTitleLimit(@state.titleLength) }
+            visible = { !@state.readOnly && @state.titleFocused } />
+          <Hint
+            content = renderHint("title")
+            visible = { !@state.readOnly && !@state.titleFocused } />
+        </FieldWrapper>
 
-        <label className="published-at">
-          { @effectiveDate() }
-        </label>
+        <FieldWrapper>
+          <label className="published-at">
+            { @renderEffectiveDate() }
+          </label>
+          <Hint
+            content = { renderHint("date") }
+            visible = { !@state.readOnly } />
+        </FieldWrapper>
 
-        <StoriesComponent
-          post_id = {@state.post.uuid}
-          company_id = {@props.company_id}
-          onChange = {@handleStoriesChange}
-          readOnly = {@props.readOnly}
-        />
+        <FieldWrapper className="categories">
+          <PostsStories
+            post_id     = { @state.post.uuid }
+            company_id  = { @props.company_id }
+            readOnly    = { @state.readOnly } />
+          <Hint
+            content = { renderHint("stories") }
+            visible = { !@state.readOnly } />
+        </FieldWrapper>
       </header>
 
       <BlockEditor
-        company_id = {@props.company_id}
-        owner_id = {@state.post.uuid}
-        owner_type = "Post"
-        editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI']}
-        classForArticle = "editor post"
-        buildParagraph = {true}
-        readOnly = {@props.readOnly}
+        company_id          = {@props.company_id}
+        owner_id            = {@state.post.uuid}
+        owner_type          = "Post"
+        editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI', 'Person']}
+        classForArticle     = "editor post"
+        readOnly            = {@state.readOnly}
       />
 
+      <FieldWrapper className="tags">
+        <Tags
+          placeholder   = "#event-tag"
+          taggable_id   = {@state.post.uuid}
+          taggable_type = "Post"
+          readOnly      = {@state.readOnly} />
+        <Hint
+          content = { renderHint("tags") }
+          visible = { !@state.readOnly } />
+      </FieldWrapper>
+
       <footer>
-        {@gatherControls()}
+        { @renderButtons() }
       </footer>
     </div>
 
 # Exports
-# 
-module.exports = Component
+#
+module.exports = Post

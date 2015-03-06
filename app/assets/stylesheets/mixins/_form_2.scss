@@ -33,7 +33,7 @@
   border: none;
   display: block;
   font-size: 16px;
-  height: 36px;
+  height: 40px;
   overflow: hidden;
   padding: 0;
   position: relative;
@@ -107,6 +107,7 @@
   @include justify-content(flex-end);
 
   font-size: 16px;
+  margin-bottom: 10px;
 
   .title {
     font-weight: 300;
@@ -133,7 +134,6 @@
     
     background-color: hsl(0, 0%, 96%);
     height: 100%;
-    padding: 5px 10px;
     
     input {
       @include flex(1);
@@ -141,8 +141,9 @@
       background-color: transparent;
       border: none;
       color: inherit;
-      height: 100%;
+      height: 31px;
       outline: none;
+      padding: 5px 10px;
       
       @include placeholder {
         color: hsl(0, 0%, 48%);
@@ -150,7 +151,7 @@
     }
     
     .fa {
-      margin-left: 5px;
+      margin-right: 8px;
 
       &.clickable {
         cursor: pointer;
@@ -193,13 +194,21 @@
   &.active {
     .input {
       border: 2px solid hsl(137, 51%, 51%);
-      padding: 3px 8px;
+
+      input {
+        height: 27px;
+        padding: 3px 8px;
+      }
     }    
   }
 
   &.invalid {
     .input {
       background-color: hsl(358, 77%, 78%);
+
+      input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 50px hsl(358, 77%, 78%) inset;
+      }
     }
   }
 
@@ -218,7 +227,7 @@
     margin: 0;
     padding: 0;
     width: auto;
-    z-index: 100;
+    z-index: $zindex-dropdown;
 
     > li {
       @include align-items(center);
@@ -302,6 +311,10 @@
   }
 }
 
+.form-2 {
+  @include form-2;
+}
+
 .form-field-radio-2 {
   @include form-field-radio;
 }
@@ -318,10 +331,10 @@
   @include form-typeahead;
 }
 
-div.select.cc {
+.select.cc {
   background-color: hsl(0, 0%, 98%);
-  width: 120px;
   height: 40px;
+  position: relative;
 
   > select {
     border: none;
@@ -343,5 +356,13 @@ div.select.cc {
     position: absolute;
     top: 12px;
     right: 10px;
+  }
+}
+
+.checkbox.cc {
+  cursor: pointer;
+
+  i + input {
+    display: none;
   }
 }
