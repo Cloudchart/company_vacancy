@@ -20,7 +20,6 @@ QuoteStore          = require('stores/quote_store')
 PostActions         = require('actions/post_actions')
 
 Post                = require('components/post')
-Tags                = require('components/company/tags')
 ContentEditableArea = require('components/form/contenteditable_area')
 PersonAvatar        = require('components/shared/person_avatar')
 Avatar              = require('components/avatar')

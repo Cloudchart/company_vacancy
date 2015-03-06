@@ -14,7 +14,6 @@ VisibilityActions   = require('actions/visibility_actions')
 ModalActions        = require('actions/modal_actions')
 
 PostsStories        = require('components/posts_stories')
-Tags                = require('components/company/tags')
 BlockEditor         = require('components/editor/block_editor')
 FuzzyDateInput      = require('components/form/fuzzy_date_input')
 ContentEditableArea = require('components/form/contenteditable_area')
@@ -299,17 +298,6 @@ Post = React.createClass
         classForArticle     = "editor post"
         readOnly            = {@state.readOnly}
       />
-
-      <FieldWrapper className="tags">
-        <Tags
-          placeholder   = "#event-tag"
-          taggable_id   = {@state.post.uuid}
-          taggable_type = "Post"
-          readOnly      = {@state.readOnly} />
-        <Hint
-          content = { renderHint("tags") }
-          visible = { !@state.readOnly } />
-      </FieldWrapper>
 
       <footer>
         { @renderButtons() }

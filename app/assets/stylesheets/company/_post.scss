@@ -483,20 +483,6 @@ div.post-container {
     height: 25px;
   }
 
-  .tags {
-    max-width: 800px;
-    margin-top: 15px;
-    max-width: 800px;
-  }
-
-  .tags > aside {
-    height: 40px;
-
-    .hint {
-      width: 400px;
-    }
-  }
-
   > footer {
     > div.controls {
       @include display(flex);
