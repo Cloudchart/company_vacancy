@@ -71,12 +71,9 @@ group :development do
 end
 
 group :development, :test do
-  gem 'factory_girl_rails' # fixtures replacement
-  gem 'rspec-rails'
-end
-
-group :test do
-  gem 'capybara'
+  gem 'rspec-rails', '~> 3.0'
+  gem 'factory_girl_rails', '~> 4.0' # fixtures replacement
+  gem 'capybara', '~> 2.0'
 end
 
 group :production, :staging do
