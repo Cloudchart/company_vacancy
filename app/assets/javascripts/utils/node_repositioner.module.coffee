@@ -10,6 +10,8 @@ module.exports =
 
         .forEach (nodes) ->
           nodes.forEach (node, i) ->
+            node.style.top  = 0
+
             return if i == 0
 
             bounds          = node.getBoundingClientRect()
