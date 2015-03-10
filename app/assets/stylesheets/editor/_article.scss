@@ -52,11 +52,6 @@ article.editor {
 // Post editor
 // 
 article.editor.post {
-  background-color: $card-color;
-  padding: $default-margin-size;
-  margin: $gutter-size;
-  width: calc(100% - 2 * #{$gutter-size});
-
   > section {
     padding: 30px 20px;
     margin: 0;

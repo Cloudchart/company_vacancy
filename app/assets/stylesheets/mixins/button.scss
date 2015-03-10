@@ -294,11 +294,18 @@ ul.round-buttons {
   color: $round-button-color;
   cursor: pointer;
   display: inline-block;
-  border-radius: 50%;
+  border-radius: 100%;
+  width: $round-button-size;
   height: $round-button-size;
   text-align: center;
-  width: $round-button-size;
-  
+
+  &.with-counter {
+    border-radius: $round-button-size;
+    min-width: $round-button-size;
+    padding: 0 7px;
+    width: auto;
+  }
+
   &.active {
     background-color: $round-button-background-color-active;
   }
@@ -311,5 +318,11 @@ ul.round-buttons {
   > i {
     font-size: 14px;
     line-height: $round-button-size;
+
+    + span {
+      font-size: $basic-font-size;
+      font-weight: 700;
+      margin-left: 5px;
+    }
   }
 }

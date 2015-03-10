@@ -29,6 +29,7 @@ renderHint          = require('utils/render_hint')
 InsightList         = require('components/insight/list')
 Toggle              = require('components/form/toggle')
 PinButton           = require('components/pinnable/pin_button')
+Button              = require('components/form/buttons').StandardButton
 
 
 # Main
@@ -48,9 +49,9 @@ Post = React.createClass
   # Component specifications
   #
   propTypes:
-    id:                    React.PropTypes.string.isRequired
-    company_id:            React.PropTypes.string.isRequired
-    readOnly:              React.PropTypes.bool
+    id:          React.PropTypes.string.isRequired
+    company_id:  React.PropTypes.string.isRequired
+    readOnly:    React.PropTypes.bool
 
   getDefaultProps: ->
     cursor:
@@ -60,6 +61,7 @@ Post = React.createClass
   getInitialState: ->
     _.extend @getStateFromStores(@props),
       readOnly: @props.readOnly
+      showPins: false
       titleFocused: false
 
   onGlobalStateChange: ->
@@ -161,6 +163,9 @@ Post = React.createClass
   handleViewModeChange: (checked) ->
     @setState(readOnly: !checked)
 
+  handleShowPins: ->
+    @setState(showPins: true)
+
 
   # Lifecycle Methods
   #
@@ -209,14 +214,43 @@ Post = React.createClass
       }
     </section>
 
-  renderPins: ->
+  renderPinMenu: ->
     return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@state.readOnly
+
+    <section className="post-pin-menu">
+      <InsightList pinnable_id={ @props.id } pinnable_type="Post" onlyFirst = { true } />
+      {
+        if !@state.showPins
+          <Button 
+            className = "cc show-pins"
+            onClick   = { @handleShowPins }
+            text      = "Show All" />
+      }
+    </section>
+
+  renderPins: ->
+    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@state.readOnly || !@state.showPins
 
     <section className="post-pins">
       <InsightList pinnable_id={ @props.id } pinnable_type="Post" />
     </section>
 
+  renderPinners: (pinners) ->
+    return null
+
   renderPinInfo: ->
+    return null unless @state.readOnly
+
+    <section className="post-pin">
+      { @renderPinners() }
+      <ul className="round-buttons">
+        <PinButton 
+          pinnable_id   = { @props.id }
+          pinnable_type = 'Post'
+          title         = { @state.post.title }
+          showCounter   = { true } />
+      </ul>
+    </section>
 
 
   renderFooter: ->
@@ -300,17 +334,20 @@ Post = React.createClass
 
         { @renderHeaderControls() }
       </header>
-
+      
       { @renderPinInfo() }
 
-      <BlockEditor
-        company_id          = {@props.company_id}
-        owner_id            = {@state.post.uuid}
-        owner_type          = "Post"
-        editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI', 'Person']}
-        classForArticle     = "editor post"
-        readOnly            = {@state.readOnly}
-      />
+      <section className="content">
+        <BlockEditor
+          company_id          = {@props.company_id}
+          owner_id            = {@state.post.uuid}
+          owner_type          = "Post"
+          editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI', 'Person']}
+          classForArticle     = "editor post"
+          readOnly            = {@state.readOnly}
+        />
+        { @renderPinMenu() }
+      </section>
 
       { @renderPins() }
 

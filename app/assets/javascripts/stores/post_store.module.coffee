@@ -21,6 +21,7 @@ DefaultMethods =
     owner_type:     ''
     owner_id:       ''
     position:       null
+    post_url:       ''
     created_at:     ''
     updated_at:     ''
 
