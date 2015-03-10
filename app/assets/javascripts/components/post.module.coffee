@@ -11,6 +11,7 @@ PostStore           = require('stores/post_store')
 PostsStoryStore     = require('stores/posts_story_store')
 VisibilityStore     = require('stores/visibility_store')
 PinStore            = require('stores/pin_store')
+UserStore           = require('stores/user_store.cursor')
 
 PostActions         = require('actions/post_actions')
 VisibilityActions   = require('actions/visibility_actions')
@@ -30,7 +31,7 @@ InsightList         = require('components/insight/list')
 Toggle              = require('components/form/toggle')
 PinButton           = require('components/pinnable/pin_button')
 Button              = require('components/form/buttons').StandardButton
-
+UserPreview         = require('components/user/preview')
 
 # Main
 #
@@ -43,6 +44,7 @@ Post = React.createClass
   statics: 
     getCursor: (company_id) ->
       pins:   PinStore.cursor.items
+      users:  UserStore.cursor.items
       flags:  GlobalState.cursor(['stores', 'companies', 'flags', company_id])
 
 
@@ -251,12 +253,34 @@ Post = React.createClass
     </section>
 
   renderPinners: (pinners) ->
-    return null
+    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@isReadOnly()
+
+    userIds = PinStore.filterInsightsForPost(@props.id).map (pin) -> pin.get('user_id')
+    usersNumber = if userIds.size > 3 then (userIds.size - 3) else 0
+
+    users = @props.cursor.users.filter (user) -> userIds.take(3).contains(user.get('uuid'))
+
+    <section className="post-pinners">
+      <ul>
+        {
+          users.map (user, index) ->
+            <li key={index}>
+              <UserPreview cursor = { UserPreview.getCursor(user.get('uuid')) } />
+            </li>
+          .toArray()
+        }
+      </ul>
+      {
+        if usersNumber > 0
+          "+ #{usersNumber} others pinned this post"
+      }
+    </section>
+
 
   renderPinInfo: ->
     return null unless @isReadOnly()
 
-    <section className="post-pin">
+    <section className="post-pin-info">
       { @renderPinners() }
       <ul className="round-buttons">
         <PinButton 

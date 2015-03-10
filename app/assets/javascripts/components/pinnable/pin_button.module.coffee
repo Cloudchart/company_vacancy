@@ -72,11 +72,11 @@ module.exports = React.createClass
 
   getPinsCount: ->
     PinStore.cursor.items
-      .find (pin) =>
+      .filter (pin) =>
         pin.get('pinnable_id')      == @props.pinnable_id    and
         pin.get('pinnable_type')    == @props.pinnable_type  and
         pin.get('parent_id', null)  == null
-      .size  
+      .size
 
 
   # Handlers
