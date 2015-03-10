@@ -10,13 +10,15 @@ Dropdown = React.createClass
     customClass:   React.PropTypes.string
     emptyText:     React.PropTypes.string
     hasEmptyValue: React.PropTypes.bool
+    iconClass:     React.PropTypes.string
     onChange:      React.PropTypes.func
     options:       React.PropTypes.object
     value:         React.PropTypes.string
 
   getDefaultProps: ->
+    customClass:   ''
     hasEmptyValue: false
-    customClass: ''
+    iconClass:     "fa fa-angle-down"
 
   getInitialState: ->
     showEmptyValue: !@props.value || @props.value == '' 
@@ -52,10 +54,10 @@ Dropdown = React.createClass
     <div className="select cc">
       <select className={ @props.customClass }
               onChange={ @onChange }
-              value={ @state.value }>
+              value={ @state.value } >
         { @gatherOptions() }
       </select>
-      <i className="fa fa-angle-down"></i>
+      <i className={ @props.iconClass }></i>
     </div>
 
 # Exports

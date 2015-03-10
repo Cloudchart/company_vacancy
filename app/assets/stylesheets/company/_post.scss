@@ -51,6 +51,7 @@ $base-post-preview-margin: 60px;
     > figure {
       background-color: #eee;
       background-size: cover;
+      background-position: center center;
       border-radius: 50%;
       height: 0;
       padding-top: 100%;
@@ -500,6 +501,20 @@ main.post {
 
         > .select {
           width: 120px;
+        }
+
+        > .select:last-child {
+          background-color: transparent;
+          width: 30px;
+          overflow: hidden;
+
+          select {
+            color: $card-color;
+          }
+
+          i {
+            color: $label-color;
+          }
         }
       }
     }

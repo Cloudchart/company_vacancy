@@ -61,11 +61,15 @@ Post = React.createClass
   getInitialState: ->
     _.extend @getStateFromStores(@props),
       readOnly: @props.readOnly
+      viewMode: @getDefaultViewMode()
       showPins: false
       titleFocused: false
 
   onGlobalStateChange: ->
-    @setState(readOnly: @props.cursor.flags.get('is_read_only'))
+    readOnly = @props.cursor.flags.get('is_read_only')
+    viewMode = if readOnly then 'view' else @state.viewMode
+
+    @setState(readOnly: readOnly, viewMode: viewMode)
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
@@ -89,13 +93,23 @@ Post = React.createClass
 
   # Helpers
   #
-  getViewMode: ->
-    GlobalState.cursor(['stores', 'companies', 'flags', @props.company_id]).get('is_read_only')
-
   getVisibilityOptions: ->
     public:  'Public'
     trusted: 'Trusted'
     only_me: 'Only me'
+
+  isReadOnly: ->
+    @state.viewMode == 'view'
+
+  getDefaultViewMode: ->
+    if ['view', 'edit'].indexOf(location.hash.slice(1)) != -1
+      location.hash.slice(1)
+    else
+      'edit'
+
+  getViewModeOptions: ->
+    view: 'View'
+    edit: 'Edit'
 
   getTitleLimit: (length) ->
     140 - length
@@ -160,8 +174,9 @@ Post = React.createClass
     else
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: value })
 
-  handleViewModeChange: (checked) ->
-    @setState(readOnly: !checked)
+  handleViewModeChange: (value) ->
+    @setState(viewMode: value)
+    location.hash = value
 
   handleShowPins: ->
     @setState(showPins: true)
@@ -188,14 +203,14 @@ Post = React.createClass
   # Renderers
   #
   renderCompanyName: ->
-    return null unless @state.readOnly && @state.company
+    return null unless @isReadOnly() && @state.company
 
     <h2>{ @state.company.name }</h2>
 
   renderHeaderControls: ->
     <section className="controls">
       {
-        if !@state.readOnly
+        if !@isReadOnly()
           <Dropdown
             options  = { @getVisibilityOptions() }
             value    = { @state.visibility_value }
@@ -203,19 +218,19 @@ Post = React.createClass
           />
       }
       {
-        if !@props.cursor.flags.get('is_read_only')
-          <Toggle
-            checked     = { not @state.readOnly }
-            customClass = "cc-toggle view-mode"
-            onText      = "Edit"
-            offText     = "View"
-            onChange    = {@handleViewModeChange}
+        if !@state.readOnly
+          <Dropdown
+            options     = { @getViewModeOptions() }
+            value       = { @state.viewMode }
+            className   = "view-mode"
+            iconClass   = "fa fa-chevron-down"
+            onChange    = { @handleViewModeChange }
           />
       }
     </section>
 
   renderPinMenu: ->
-    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@state.readOnly
+    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@isReadOnly()
 
     <section className="post-pin-menu">
       <InsightList pinnable_id={ @props.id } pinnable_type="Post" onlyFirst = { true } />
@@ -229,7 +244,7 @@ Post = React.createClass
     </section>
 
   renderPins: ->
-    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@state.readOnly || !@state.showPins
+    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@isReadOnly() || !@state.showPins
 
     <section className="post-pins">
       <InsightList pinnable_id={ @props.id } pinnable_type="Post" />
@@ -239,7 +254,7 @@ Post = React.createClass
     return null
 
   renderPinInfo: ->
-    return null unless @state.readOnly
+    return null unless @isReadOnly()
 
     <section className="post-pin">
       { @renderPinners() }
@@ -254,7 +269,7 @@ Post = React.createClass
 
 
   renderFooter: ->
-    return null if @state.readOnly
+    return null if @isReadOnly()
 
     <footer>
       <button
@@ -274,7 +289,7 @@ Post = React.createClass
     <FuzzyDateInput
       from      = { @state.post.effective_from }
       till      = { @state.post.effective_till }
-      readOnly  = { @state.readOnly }
+      readOnly  = { @isReadOnly() }
       onUpdate  = { @handleEffectiveDateUpdate }
     />
 
@@ -286,14 +301,14 @@ Post = React.createClass
 
     className = cx({
       "post-container": true,
-      edit: !@state.readOnly
+      edit: !@isReadOnly()
     })
 
     <article ref="container" className={ className } >
 
       <header>
         { @renderCompanyName() }
-        <Wrapper className="editor" isWrapped={!@state.readOnly}>
+        <Wrapper className="editor" isWrapped={!@isReadOnly()}>
           <label className="title">
             <ContentEditableArea
               onBlur = { @handleTitleBlur }
@@ -301,35 +316,35 @@ Post = React.createClass
               onFocus = { @handleTitleFocus }
               onInput = { @handleTitleInput }
               placeholder = 'Tap to add title'
-              readOnly = { @state.readOnly }
+              readOnly = { @isReadOnly() }
               value = { @state.post.title }
             />
           </label>
           <Counter
             count   = { @getTitleLimit(@state.titleLength) }
-            visible = { !@state.readOnly && @state.titleFocused } />
+            visible = { !@isReadOnly() && @state.titleFocused } />
           <Hint
             content = renderHint("title")
-            visible = { !@state.readOnly && !@state.titleFocused } />
+            visible = { !@isReadOnly() && !@state.titleFocused } />
         </Wrapper>
 
-        <Wrapper className="editor" isWrapped={!@state.readOnly}>
+        <Wrapper className="editor" isWrapped={!@isReadOnly()}>
           <label className="published-at">
             { @renderEffectiveDate() }
           </label>
           <Hint
             content = { renderHint("date") }
-            visible = { !@state.readOnly } />
+            visible = { !@isReadOnly() } />
         </Wrapper>
 
-        <Wrapper className="editor" isWrapped={!@state.readOnly}>
+        <Wrapper className="editor" isWrapped={!@isReadOnly()}>
           <PostsStories
             post_id     = { @state.post.uuid }
             company_id  = { @props.company_id }
-            readOnly    = { @state.readOnly } />
+            readOnly    = { @isReadOnly() } />
           <Hint
             content = { renderHint("stories") }
-            visible = { !@state.readOnly } />
+            visible = { !@isReadOnly() } />
         </Wrapper>
 
         { @renderHeaderControls() }
@@ -344,7 +359,7 @@ Post = React.createClass
           owner_type          = "Post"
           editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI', 'Person']}
           classForArticle     = "editor post"
-          readOnly            = {@state.readOnly}
+          readOnly            = {@isReadOnly()}
         />
         { @renderPinMenu() }
       </section>

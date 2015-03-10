@@ -1,5 +1,5 @@
 $arrow-size: 15px;
-$hint-button-size: $editor-hint-width;
+$hint-button-size: $gutter-size;
 $hint-color: hsl(144, 90%, 75%);
 
 .editor.wrapper {
@@ -8,7 +8,7 @@ $hint-color: hsl(144, 90%, 75%);
   > aside {
     @include align-items(center);
     @include display(flex);
-    @include position(absolute, 0px 0 0 -2 * $editor-hint-width);
+    @include position(absolute, 0px 0 0 -2 * $hint-button-size);
 
     z-index: 1000;
 
@@ -54,7 +54,7 @@ $hint-color: hsl(144, 90%, 75%);
       color: hsl(150, 47%, 53%);
       font-size: 12px;
       text-align: center;
-      width: $editor-hint-width;
+      width: $hint-button-size;
 
       &.negative {
         color: hsl(0, 75%, 55%);
