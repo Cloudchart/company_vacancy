@@ -1,7 +1,7 @@
 Dispatcher = require('dispatcher/dispatcher')
 
 # Show
-# 
+#
 @['companies#show'] = (data) ->
 
   CompanyStore    = require('stores/company')
@@ -10,7 +10,7 @@ Dispatcher = require('dispatcher/dispatcher')
   PictureStore    = require('stores/picture_store')
   ParagraphStore  = require('stores/paragraph_store')
   PersonStore     = require('stores/person')
-  VacancyStore    = require('stores/vacancy') 
+  VacancyStore    = require('stores/vacancy')
   RoleStore       = require('stores/role_store')
   TokenStore      = require('stores/token_store')
   UserStore       = require('stores/user_store')
@@ -19,14 +19,15 @@ Dispatcher = require('dispatcher/dispatcher')
   VisibilityStore = require('stores/visibility_store')
   StoryStore      = require('stores/story_store')
   PinStore        = require('stores/pin_store')
-  
+  GlobalState     = require('global_state/state')
+
   # Fetch company with dependencies
-  # 
+  #
   require('sync/company').fetch(data.id).done (json) ->
     Dispatcher.handleServerAction
       type: 'company:fetch:done'
       data: [data.id, json]
-    
+
     _.each {
       blocks:     BlockStore
       pictures:   PictureStore
@@ -41,12 +42,14 @@ Dispatcher = require('dispatcher/dispatcher')
     CompanyStore.emitChange()
 
   # Fetch all posts with dependencies
-  # 
+  #
   require('sync/post_sync_api').fetchAll(data.id).done (json) ->
-    Dispatcher.handleServerAction
-      type: 'post:fetch-all:done'
-      data: [json]
-    
+
+    GlobalState.cursor().transaction ->
+      Dispatcher.handleServerAction
+        type: 'post:fetch-all:done'
+        data: [json]
+
     _.each {
       posts: PostStore
       blocks: BlockStore
@@ -59,12 +62,12 @@ Dispatcher = require('dispatcher/dispatcher')
     PostStore.emitChange()
 
   # Mount company
-  # 
+  #
   Company = require('components/company_app')
   React.renderComponent(Company({ uuid: data.id }), document.querySelector('body > main'))
 
 # Finance
-# 
+#
 @['companies#finance'] = (data) ->
   BurnRate = require('components/company/burn_rate')
 
@@ -72,9 +75,9 @@ Dispatcher = require('dispatcher/dispatcher')
     BurnRate(data.company)
     document.querySelector('body > main')
   )
-  
+
 # Settings
-# 
+#
 @['companies#settings'] = (data) ->
   require('sync/company').fetch(data.id).done (json) ->
 
@@ -91,18 +94,18 @@ Dispatcher = require('dispatcher/dispatcher')
   React.renderComponent(Settings({ uuid: data.id }), document.querySelector('body > main'))
 
 # Access rights
-# 
+#
 @['companies#access_rights'] = (data) ->
-  
+
   CompanyStore = require('stores/company')
   UserStore = require('stores/user_store')
   RoleStore = require('stores/role_store')
   TokenStore = require('stores/token_store')
-  
+
   CompanyAccessRights = require('components/company/access_rights')
 
   # Fetch
-  # 
+  #
   require('sync/company').fetchAccessRights(data.id).done (json) ->
 
     Dispatcher.handleServerAction
@@ -120,19 +123,19 @@ Dispatcher = require('dispatcher/dispatcher')
     CompanyStore.emitChange()
 
   # Mount
-  # 
+  #
   React.renderComponent(
     CompanyAccessRights({ uuid: data.id }),
     document.querySelector('[data-react-mount-point="access-rights"]')
   )
 
 # # Search
-# # 
+# #
 # @['companies#search'] = (data) ->
 #   @['companies#index'](data)
 
 # # Index
-# # 
+# #
 # @['companies#index'] = (data) ->
 
 #   # $ ->
@@ -144,7 +147,7 @@ Dispatcher = require('dispatcher/dispatcher')
 #   #   search_timeout = null
 
 #   #   search = ($element) ->
-#   #     value = $element.val().replace(/^\s+|\s+$/g, '') 
+#   #     value = $element.val().replace(/^\s+|\s+$/g, '')
 #   #     return if value.length < 3 and value.length > 0
 #   #     $element.closest('form').submit()
 
