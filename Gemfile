@@ -74,6 +74,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails', '~> 4.0' # fixtures replacement
   gem 'capybara', '~> 2.0'
+  gem 'database_cleaner', '~> 1.4'
 end
 
 group :production, :staging do
