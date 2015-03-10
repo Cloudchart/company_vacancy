@@ -132,6 +132,7 @@ Component = React.createClass
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
     window.addEventListener('hashchange', @handleWindowHashChange)
+
     setTimeout =>
       @handleWindowHashChange()
     , 100
