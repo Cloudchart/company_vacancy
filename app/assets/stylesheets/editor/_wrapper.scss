@@ -2,7 +2,7 @@ $arrow-size: 15px;
 $hint-button-size: $editor-hint-width;
 $hint-color: hsl(144, 90%, 75%);
 
-.editor-field-wrapper {
+.editor.wrapper {
   position: relative;
 
   > aside {

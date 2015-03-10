@@ -2,8 +2,11 @@
 
 GlobalState = require('global_state/state')
 
+cx = React.addons.classSet
+
 # Imports
 #
+CompanyStore        = require('stores/company')
 PostStore           = require('stores/post_store')
 PostsStoryStore     = require('stores/posts_story_store')
 VisibilityStore     = require('stores/visibility_store')
@@ -19,7 +22,7 @@ FuzzyDateInput      = require('components/form/fuzzy_date_input')
 ContentEditableArea = require('components/form/contenteditable_area')
 
 Dropdown            = require('components/form/dropdown')
-FieldWrapper        = require('components/editor/field_wrapper')
+Wrapper             = require('components/shared/wrapper')
 Counter             = require('components/shared/counter')
 Hint                = require('components/shared/hint')
 renderHint          = require('utils/render_hint')
@@ -73,6 +76,7 @@ Post = React.createClass
       titleLength = if (title = post.title) then title.length else 0
 
       post: post
+      company: CompanyStore.get(props.company_id)
       titleLength: titleLength
       published_at: @getPublishedAt(post)
       visibility: visibility
@@ -163,6 +167,7 @@ Post = React.createClass
   componentDidMount: ->
     $(document).on 'keydown', @handleKeydown
     PostStore.on('change', @refreshStateFromStores)
+    CompanyStore.on('change', @refreshStateFromStores)
     VisibilityStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
@@ -171,13 +176,19 @@ Post = React.createClass
   componentWillUnmount: ->
     $(document).off 'keydown', @handleKeydown
     PostStore.off('change', @refreshStateFromStores)
+    CompanyStore.on('change', @refreshStateFromStores)
     VisibilityStore.off('change', @refreshStateFromStores)
 
 
   # Renderers
   #
-  renderAside: ->
-    <aside>
+  renderCompanyName: ->
+    return null unless @state.readOnly && @state.company
+
+    <h2>{ @state.company.name }</h2>
+
+  renderHeaderControls: ->
+    <section className="controls">
       {
         if !@state.readOnly
           <Dropdown
@@ -196,27 +207,22 @@ Post = React.createClass
             onChange    = {@handleViewModeChange}
           />
       }
-      <ul className="round-buttons">
-        <PinButton 
-          pinnable_type = 'Post'
-          pinnable_id   = { @state.post.uuid }
-          title         = { @state.post.title } />
-      </ul>
-    </aside>
-
+    </section>
 
   renderPins: ->
-    return null if PinStore.filterInsightsForPost(@props.id).size == 0
+    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@state.readOnly
 
-    <div className="post-pins">
+    <section className="post-pins">
       <InsightList pinnable_id={ @props.id } pinnable_type="Post" />
-    </div>
+    </section>
+
+  renderPinInfo: ->
 
 
-  renderButtons: ->
+  renderFooter: ->
     return null if @state.readOnly
 
-    <div className="controls">
+    <footer>
       <button
         className="cc alert"
         onClick={@handleDestroyClick}>
@@ -228,8 +234,7 @@ Post = React.createClass
         onClick={@handleOkClick}>
         OK
       </button>
-    </div>
-
+    </footer>
 
   renderEffectiveDate: ->
     <FuzzyDateInput
@@ -245,13 +250,17 @@ Post = React.createClass
   render: ->
     return null unless @state.post
 
-    <div ref="container" className="post-container">
-      { @renderAside() }
-      { @renderPins() }
+    className = cx({
+      "post-container": true,
+      edit: !@state.readOnly
+    })
+
+    <article ref="container" className={ className } >
 
       <header>
-        <FieldWrapper className="title">
-          <label>
+        { @renderCompanyName() }
+        <Wrapper className="editor" isWrapped={!@state.readOnly}>
+          <label className="title">
             <ContentEditableArea
               onBlur = { @handleTitleBlur }
               onChange = { @handleTitleChange }
@@ -268,18 +277,18 @@ Post = React.createClass
           <Hint
             content = renderHint("title")
             visible = { !@state.readOnly && !@state.titleFocused } />
-        </FieldWrapper>
+        </Wrapper>
 
-        <FieldWrapper>
+        <Wrapper className="editor" isWrapped={!@state.readOnly}>
           <label className="published-at">
             { @renderEffectiveDate() }
           </label>
           <Hint
             content = { renderHint("date") }
             visible = { !@state.readOnly } />
-        </FieldWrapper>
+        </Wrapper>
 
-        <FieldWrapper className="categories">
+        <Wrapper className="editor" isWrapped={!@state.readOnly}>
           <PostsStories
             post_id     = { @state.post.uuid }
             company_id  = { @props.company_id }
@@ -287,8 +296,12 @@ Post = React.createClass
           <Hint
             content = { renderHint("stories") }
             visible = { !@state.readOnly } />
-        </FieldWrapper>
+        </Wrapper>
+
+        { @renderHeaderControls() }
       </header>
+
+      { @renderPinInfo() }
 
       <BlockEditor
         company_id          = {@props.company_id}
@@ -299,10 +312,10 @@ Post = React.createClass
         readOnly            = {@state.readOnly}
       />
 
-      <footer>
-        { @renderButtons() }
-      </footer>
-    </div>
+      { @renderPins() }
+
+      { @renderFooter() } 
+    </article>
 
 # Exports
 #

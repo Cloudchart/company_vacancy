@@ -402,99 +402,104 @@ main.company > div.wrapper > div.posts {
 
 }
 
-// Editor
-//
-div.post-container {
-  position: relative;
-  padding: 25px 50px;
+main.post {
+  background-color: $white-color;
 
-  > aside {
-    @include align-items(center);
-    @include display(flex);
-    @include justify-content(center);
-    @include position(absolute, 28px 5px 0 0);
-
-    z-index: 1;
-
-    > * {
-      margin-right: 15px;
-    }
-
-    > .select {
-      width: 120px;
-    }
-  }
-
-  > header {
-    @include display(flex);
-    @include flex-direction(column);
-
+  article.post-container {
     position: relative;
+    padding: $gutter-size/2;
+    margin: 0 auto;
+    width: 1000 + 2 * $gutter-size;
 
-    .title div[contenteditable] {
-      @include editor-contenteditable-area;
+    > header {
+      @include display(flex);
+      @include flex-direction(column);
 
-      max-width: 550px;
-      font-size: 40px;
-      font-weight: 400;
-    }
-
-    .title > aside {
-      height: 47px;
-    }
-
-    label {
-      margin: 10px 0 0;
+      background-color: $card-color;
+      padding: $default-margin-size;
       position: relative;
+      margin: $gutter-size;
 
-      input {
-        border: none;
-        margin: 0;
-        outline: none;
-        padding: 0;
+      .title div[contenteditable] {
+        @include editor-contenteditable-area;
+
+        max-width: 550px;
+        font-size: 40px;
+        font-weight: 400;
       }
 
-      &.published-at > * {
-        font-size: 24px;
-        font-weight: 300;
+      .title ~ aside {
+        height: 47px;
       }
 
-      &.published-at + aside {
-        height: 29px;
+      label {
+        position: relative;
+
+        input {
+          border: none;
+          margin: 0;
+          outline: none;
+          padding: 0;
+        }
+
+        &.published-at > * {
+          font-size: 24px;
+          font-weight: 300;
+        }
+
+        &.published-at ~ aside {
+          height: 29px;
+        }
+      }
+
+      .categories {
+        max-width: 800px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+      }
+
+      .stories ~ aside {
+        height: 40px;
+
+        .hint {
+          width: 450px;
+        }
+      }
+
+      > .controls {
+        @include align-items(center);
+        @include display(flex);
+        @include justify-content(center);
+        @include position(absolute, 28px 5px 0 0);
+
+        z-index: 1;
+
+        > * {
+          margin-right: 15px;
+        }
+
+        > .select {
+          width: 120px;
+        }
       }
     }
 
-    .categories {
-      max-width: 800px;
-      margin-top: 15px;
-      margin-bottom: 15px;
+    .paragraph ~ aside {
+      height: 25px;
     }
 
-    .categories > aside {
-      height: 40px;
-
-      .hint {
-        width: 450px;
-      }
-    }
-  }
-
-  .paragraph aside {
-    height: 25px;
-  }
-
-  > footer {
-    > div.controls {
+    > footer {
       @include display(flex);
       @include justify-content(space-between);
 
-      margin-top: 50px;
+      background-color: $card-color;
+      margin: $gutter-size;
+      padding: $default-margin-size;
 
       > button {
         width: 80px;
       }
     }
-
   }
 }
 
@@ -508,17 +513,4 @@ main.company.timeline > div.wrapper > header {
     margin: 0;
   }
 
-}
-
-main.post {
-  background-color: $modal-overlay-background-color;
-  padding-top:    24px;
-  padding-bottom: 24px;
-  position: relative;
-
-  .post-container {
-    background-color: white;
-    margin: auto;
-    width: 900px;
-  }
 }

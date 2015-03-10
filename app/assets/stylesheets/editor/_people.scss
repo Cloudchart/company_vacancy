@@ -69,7 +69,7 @@
   }
 } 
 
-.editor-field-wrapper:hover .person-list:not(.frozen),
+.editor.wrapper:hover .person-list:not(.frozen),
 .person-list.hovered {
   > .row:last-child {
     > .item:not(.placeholder) {
