@@ -130,6 +130,7 @@ GEM
       execjs
     coffee-script-source (1.7.0)
     connection_pool (2.0.0)
+    database_cleaner (1.4.1)
     debug_inspector (0.0.2)
     diff-lcs (1.2.5)
     dotenv (0.10.0)
@@ -408,6 +409,7 @@ DEPENDENCIES
   cloud_oauth!
   cloud_profile!
   coffee-rails (~> 4.0.1)
+  database_cleaner (~> 1.4)
   dotenv-rails
   dragonfly (~> 1.0)
   factory_girl_rails (~> 4.0)
