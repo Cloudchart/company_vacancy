@@ -39,7 +39,7 @@ div.companies {
 article.companies,
 .company-preview {
   @include display(flex);
-  @include justify-content(center);  
+  @include justify-content(center);
 }
 
 .companies-list {
@@ -84,7 +84,7 @@ article.companies,
 
   .info {
     @include position(absolute, $default-margin-size $default-margin-size 0 0);
-  
+
     ul {
       list-style: none;
       margin: 0;
@@ -123,7 +123,7 @@ article.companies,
         background-color: $label-color;
         color: $label-text-color;
         margin-left: $inner-margin-size;
-        padding: 5px; 
+        padding: 5px;
       }
     }
   }
@@ -159,7 +159,7 @@ article.companies,
     @include display(flex);
     @include flex-direction(column);
     @include justify-content(space-between);
-    
+
     border-top: $card-hr;
     min-height: 75px;
     padding-top: $default-margin-size;
@@ -168,7 +168,7 @@ article.companies,
       @include display(flex);
       @include flex-wrap(wrap);
       @include justify-content(center);
-      
+
       color: $link-color;
 
       > * {
@@ -197,13 +197,13 @@ article.companies,
     }
 
     .buttons {
-      @inlude align-items(center);
+      @include align-items(center);
       @include display(flex);
       @include justify-content(space-between);
 
       margin: auto;
       margin-bottom: $default-margin-size;
-      width: 230px; 
+      width: 230px;
     }
   }
 }
