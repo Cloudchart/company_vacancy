@@ -50,8 +50,6 @@ module.exports =
 
 
   update: (key, attributes, done, fail) ->
-    attributes.tag_names = attributes.tag_names.join(',') if attributes.tag_names
-
     $.ajax
       url: "/posts/#{key}"
       type: "PUT"

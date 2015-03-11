@@ -22,16 +22,32 @@ module.exports = React.createClass
 
   mixins: [GlobalState.mixin]
 
+  propTypes: 
+    uuid: React.PropTypes.string
+    title: React.PropTypes.string.isRequired
+    pinnable_id: React.PropTypes.string.isRequired
+    pinnable_type: React.PropTypes.string.isRequired
+    showCounter: React.PropTypes.bool
 
-  handleClick: (event) ->
-    if @state.currentUserPin
-      PinStore.destroy(@state.currentUserPin.get('uuid')) if confirm('Are you sure?')
-    else if @state.currentUserRepin
-      PinStore.destroy(@state.currentUserRepin.get('uuid')) if confirm('Are you sure?')
-    else
-      Modal.show(@renderPinForm())
+  getDefaultProps: ->
+    showCounter: false
+    cursor:
+      pins:   PinStore.cursor.items
+      user:   UserStore.me()
+
+  getInitialState: ->
+    @getStateFromStores()
+
+  onGlobalStateChange: ->
+    @setState @getStateFromStores()
+
+  getStateFromStores: ->
+    currentUserPin:     @currentUserPin()
+    currentUserRepin:   @currentUserRepin()
 
 
+  # Helpers
+  #
   currentUserPin: ->
     if @props.uuid
       PinStore.cursor.items
@@ -46,7 +62,6 @@ module.exports = React.createClass
           pin.get('parent_id', null)  == null                           and
           pin.get('user_id')          == @props.cursor.user.get('uuid')
 
-
   currentUserRepin: ->
     return null unless @props.uuid
 
@@ -55,25 +70,28 @@ module.exports = React.createClass
         pin.get('parent_id')  == @props.uuid                    and
         pin.get('user_id')    == @props.cursor.user.get('uuid')
 
-
-  onGlobalStateChange: ->
-    @setState @getStateFromStores()
-
-
-  getStateFromStores: ->
-    currentUserPin:     @currentUserPin()
-    currentUserRepin:   @currentUserRepin()
-
-
-  getDefaultProps: ->
-    cursor:
-      pins:   PinStore.cursor.items
-      user:   UserStore.me()
-
-  getInitialState: ->
-    @getStateFromStores()
+  getPinsCount: ->
+    PinStore.cursor.items
+      .filter (pin) =>
+        pin.get('pinnable_id')      == @props.pinnable_id    and
+        pin.get('pinnable_type')    == @props.pinnable_type  and
+        pin.get('parent_id', null)  == null
+      .size
 
 
+  # Handlers
+  #
+  handleClick: (event) ->
+    if @state.currentUserPin
+      PinStore.destroy(@state.currentUserPin.get('uuid')) if confirm('Are you sure?')
+    else if @state.currentUserRepin
+      PinStore.destroy(@state.currentUserRepin.get('uuid')) if confirm('Are you sure?')
+    else
+      Modal.show(@renderPinForm())
+
+
+  # Renderers
+  #
   renderPinForm: ->
     <PinForm
       title         = { @props.title }
@@ -84,13 +102,20 @@ module.exports = React.createClass
       onCancel      = { Modal.hide }
     />
 
+  renderCounter: ->
+    return null unless @props.showCounter
+
+    <span>{ @getPinsCount() }</span>
+
 
   render: ->
     return null unless @props.cursor.user.get('uuid')
 
     classList = cx
       active: !!@state.currentUserPin or !!@state.currentUserRepin
+      'with-counter': @props.showCounter
 
     <li className={ classList } onClick={ @handleClick }>
       <i className="fa fa-thumb-tack" />
+      { @renderCounter() }
     </li>

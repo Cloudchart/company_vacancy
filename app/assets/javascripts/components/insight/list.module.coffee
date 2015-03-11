@@ -16,7 +16,15 @@ module.exports = React.createClass
 
   displayName: 'InsightList'
 
+  propTypes:
+    onlyFirst: React.PropTypes.bool
 
+  getDefaultProps: ->
+    cursor: PinStore.cursor.items
+    onlyFirst: false
+
+  # Helpers
+  #
   gatherIds: ->
     PinStore
       .filterInsightsForPost(@props.pinnable_id)
@@ -28,11 +36,11 @@ module.exports = React.createClass
       .reverse()
 
 
-  getDefaultProps: ->
-    cursor: PinStore.cursor.items
-
-
+  # Renderers
+  #
   renderItems: (ids) ->
+    ids = ids.take(1) if @props.onlyFirst
+
     ids.map (id) -> <ItemComponent key={ id } uuid={ id } cursor={ ItemComponent.getCursor(id) } />
 
 

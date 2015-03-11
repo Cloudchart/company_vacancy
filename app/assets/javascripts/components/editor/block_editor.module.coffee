@@ -13,7 +13,7 @@ BlockableActions = require('actions/mixins/blockable_actions')
 SortableList     = require('components/shared/sortable_list')
 SortableListItem = require('components/shared/sortable_list_item')
 
-FieldWrapper     = require('components/editor/field_wrapper')
+Wrapper          = require('components/shared/wrapper')
 Hint             = require('components/shared/hint')
 renderHint       = require('utils/render_hint')
 
@@ -63,7 +63,7 @@ MainComponent = React.createClass
         <SortableListItem key={block_key}>
           <section key={block_key} className={SectionClassNames[block.kind || block.identity_type]}>
             {@getDestroyLink(block.uuid)}
-            <FieldWrapper>
+            <Wrapper className="editor" isWrapped={ !@props.readOnly } >
               <BlockComponent
                 uuid={block_key}
                 company_id={@props.company_id}
@@ -72,7 +72,7 @@ MainComponent = React.createClass
               <Hint 
                 content = { Hints[block.kind || block.identity_type] }
                 visible = { !@props.readOnly && block.owner_type == "Post" && !!Hints[block.kind || block.identity_type] } />
-            </FieldWrapper>
+            </Wrapper>
           </section>
         </SortableListItem>
 

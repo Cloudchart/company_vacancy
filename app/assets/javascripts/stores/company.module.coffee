@@ -130,6 +130,7 @@ module.exports = CloudFlux.createStore
     site_url:        ''
     slug:            ''
     logotype_url:    null
+    company_url:     null
     is_name_in_logo: false
     tag_names:       []
     #meta:           {}

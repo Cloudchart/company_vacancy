@@ -20,8 +20,8 @@ DefaultMethods =
     effective_till: ''
     owner_type:     ''
     owner_id:       ''
-    tag_names:      []
     position:       null
+    post_url:       ''
     created_at:     ''
     updated_at:     ''
 
