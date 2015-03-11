@@ -71,16 +71,22 @@ Component = React.createClass
       else
         'cc-icon cc-plus'
 
+    # Dirty hack here, need to fix later
+
     if type == 'placeholder'
       <div className="placeholder">
-        <figure className={type} onClick={@handleCreatePostClick}>
-          <i className={class_for_icon}></i>
-        </figure>
+        <a href="/companies/#{@props.company_id}/posts/new" className="for-group">
+          <figure className={type}>
+            <i className={class_for_icon}></i>
+          </figure>
+        </a>
       </div>
     else
-      <figure className="create" onClick={@handleCreatePostClick}>
-        <i className={class_for_icon}></i>
-      </figure>
+      <a href="/companies/#{@props.company_id}/posts/new" className="for-group">
+        <figure className="create">
+          <i className={class_for_icon}></i>
+        </figure>
+      </a>
 
   getCloudFluxActions: ->
     'post:create:done': @handlePostCreateDone
@@ -99,19 +105,7 @@ Component = React.createClass
       )
 
   # Handlers
-  # 
-  handleCreatePostClick: (event) ->
-    return if PostStore.getSync(@state.new_post_key) == "create"
-
-    if post = _.find(@state.posts, (post) -> post.uuid and post.created_at == post.updated_at)
-      @showPostInModal(post.uuid)
-    else
-      new_post_key = PostStore.create()
-      PostActions.create(new_post_key, { owner_id: @props.company_id, owner_type: 'Company' })
-
-      @setState({ new_post_key: new_post_key })
-
-
+  #
   handlePostCreateDone: (id, attributes, json, sync_token) ->
     @showPostInModal(json.uuid)
   

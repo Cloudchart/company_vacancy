@@ -1,9 +1,9 @@
 class PostsController < ApplicationController
 
-  before_action :set_company, only: [:index, :create]
+  before_action :set_company, only: [:index, :new, :create]
   before_action :set_post, only: [:show, :update, :destroy]
 
-  load_and_authorize_resource except: :create
+  load_and_authorize_resource except: [:create, :new]
 
   after_action :create_intercom_event, only: :create
 
@@ -34,6 +34,14 @@ class PostsController < ApplicationController
       }
       format.json
     end
+  end
+
+  def new
+    @post = @company.posts.build(owner_id: params[:company_id])
+    authorize! :create, @post
+    @post.save!
+
+    redirect_to @post
   end
 
   def create

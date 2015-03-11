@@ -112,10 +112,11 @@ $user-preview-arrow-size: 8px;
   font-size: 12px;
   list-style: none;
   margin: 0;
+  margin-left: 20px;
   overflow: hidden;
   padding: 0;
   padding-bottom: 15px;
-  width: 100%;
+  width: 270px;
 
   > li {
     @include post-preview-insight;
@@ -159,10 +160,9 @@ main.company > div.wrapper > div.posts {
     left: 50%;
   }
 
-
   // Create post top button
   //
-  > figure.create {
+  > a > figure.create {
     @include display(flex);
     @include align-items(center);
     @include justify-content(center);
@@ -176,6 +176,7 @@ main.company > div.wrapper > div.posts {
     border-radius: 50%;
     color: white;
     position: relative;
+    text-decoration: none;
 
     > i.fa,
     > i.cc-icon {
@@ -192,12 +193,12 @@ main.company > div.wrapper > div.posts {
     width: 100%;
 
     &:hover {
-      > figure {
+      > a > figure {
         visibility: visible;
       }
     }
 
-    > figure {
+    > a > figure {
       @include display(flex);
       @include align-items(center);
       @include justify-content(center);
@@ -444,12 +445,17 @@ main.post {
 
       position: relative;
 
+      h2 {
+        margin: 0;
+        margin-bottom: $inner-margin-size/2;
+      }
+
       .title div[contenteditable] {
         @include editor-contenteditable-area;
 
         max-width: 550px;
-        font-size: 40px;
-        font-weight: 400;
+        font-size: $huge-font-size;
+        font-weight: 500;
       }
 
       .title ~ aside {
@@ -458,6 +464,7 @@ main.post {
 
       label {
         position: relative;
+        margin: $inner-margin-size/2 0;
 
         input {
           border: none;
@@ -467,7 +474,7 @@ main.post {
         }
 
         &.published-at > * {
-          font-size: 24px;
+          font-size: $big-font-size;
           font-weight: 300;
         }
 
@@ -476,10 +483,12 @@ main.post {
         }
       }
 
-      .categories {
+      .stories {
         max-width: 800px;
-        margin-top: 15px;
-        margin-bottom: 15px;
+
+        > ul {
+          font-size: $big-font-size;
+        }
       }
 
       .stories ~ aside {
@@ -494,7 +503,7 @@ main.post {
         @include align-items(center);
         @include display(flex);
         @include justify-content(center);
-        @include position(absolute, 28px 5px 0 0);
+        @include position(absolute, $default-margin-size 5px 0 0);
 
         z-index: 1;
 
@@ -509,7 +518,6 @@ main.post {
         > .select:last-child {
           background-color: transparent;
           width: 30px;
-          overflow: hidden;
 
           select {
             color: $card-color;
@@ -517,12 +525,17 @@ main.post {
 
           i {
             color: $label-color;
+            top: 0px;
           }
         }
       }
     }
 
-    .paragraph ~ aside {
+    .post.editor .editor.wrapper > aside {
+      left: -72px;
+    }
+
+    .paragraph .editor.wrapper aside {
       height: 25px;
     }
 
@@ -605,7 +618,10 @@ main.post {
 
     .post-pin-menu {
       margin-left: 24px;
-      width: 256px;
+
+      .insight-list {
+        margin-left: 0;
+      }
 
       > button {
         display: block;
@@ -613,6 +629,33 @@ main.post {
         margin-top: $default-margin-size;
         padding: 0 30px;
       }
+    }
+
+    .post-pins {
+      background-color: $background-color;
+      border: none;
+      padding: 0;
+
+      .insight-list {
+        @include display(flex);
+        @include flex-wrap(wrap);
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .insight-list .insight {
+        margin-bottom: 25px;
+        width: 30%;
+        margin-right: 15px;
+
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+
+        ~ .insight {
+          margin-top: 0;
+        }
+      }      
     }
 
     > footer {

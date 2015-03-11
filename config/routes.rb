@@ -53,7 +53,7 @@ Cloudchart::Application.routes.draw do
       post :accept, on: :member
     end
 
-    resources :posts, except: [:new, :edit], shallow: true
+    resources :posts, except: [:edit], shallow: true
     resources :people, except: [:new, :edit], shallow: true
     resources :blocks, only: :create, type: :company
     resources :stories, only: [:show, :index, :create, :update], shallow: true

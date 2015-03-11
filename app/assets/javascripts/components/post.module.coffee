@@ -156,13 +156,12 @@ Post = React.createClass
 
   handleDestroyClick: (event) ->
     if confirm('Are you sure?')
-      ModalActions.hide()
       PostActions.destroy(@state.post.uuid)
+      location.href = @state.company.company_url
 
   handleOkClick: (event) ->
     this.refs.okButton.getDOMNode().focus();
-    ModalActions.hide()
-    # TODO: show post in timeline
+    location.href = @state.company.company_url
 
   handleKeydown: (event) ->
     if $(@refs.container.getDOMNode()).find(':focus').length > 0
@@ -182,6 +181,9 @@ Post = React.createClass
 
   handleShowPins: ->
     @setState(showPins: true)
+
+    content = $(".content")
+    $('html,body').animate({ scrollTop: content.offset().top + content.height() }, 'slow')
 
 
   # Lifecycle Methods
@@ -298,13 +300,13 @@ Post = React.createClass
     <footer>
       <button
         className="cc alert"
-        onClick={@handleDestroyClick}>
+        onClick={ @handleDestroyClick }>
         Delete
       </button>
       <button
         ref="okButton"
         className="cc"
-        onClick={@handleOkClick}>
+        onClick={ @handleOkClick }>
         OK
       </button>
     </footer>
