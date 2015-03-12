@@ -61,7 +61,7 @@ class User < ActiveRecord::Base
 
   def system_role_ids=(args)
     roles = args.select(&:present?)
-    roles = roles.map { |value| Role.new(value: value) } if roles.any?
+    roles = roles.uniq.map { |value| Role.new(value: value) } if roles.any?
     self.system_roles = roles
   end
 

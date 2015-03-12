@@ -7,7 +7,7 @@ class AdminAbility
       can :dashboard
 
       can :read, Person
-      can [:read, :update], User
+      can [:read, :update, :make_unicorns], User
       can [:read, :create], Story
       can [:read, :create], Pinboard
 
