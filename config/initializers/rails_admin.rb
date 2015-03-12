@@ -250,6 +250,20 @@ RailsAdmin.config do |config|
       end
     end
 
+    member :make_unicorns do
+      only ['User']
+      http_methods { [:put, :patch] }
+      register_instance_option :bulkable? do
+        true
+      end
+      controller do
+        proc do
+          User.find(params[:bulk_ids]).each { |user| user.update(system_role_ids: user.system_roles.map(&:value) + ['unicorn']) }
+          redirect_to index_path(:user), notice: 'All selected users became unicorns'
+        end
+      end
+    end
+
     collection :invite do
       only ['Token']
       link_icon 'icon-envelope'

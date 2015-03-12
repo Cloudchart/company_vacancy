@@ -11,3 +11,5 @@ en:
         title: "Accept invite"
       make_acceptable:
         bulk_link: "Make acceptable"
+      make_unicorns:
+        bulk_link: "Make unicorns"
