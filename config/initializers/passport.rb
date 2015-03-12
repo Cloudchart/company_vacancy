@@ -10,7 +10,9 @@ module HelperMethods
   end
 
   def current_user
-    warden.user(:user) || warden.set_user(guest_user, scope: :user)
+    warden.user(:user) ||
+      warden.set_user(user_from_cookie, scope: :user) ||
+      warden.set_user(guest_user, scope: :user)
   end
 
   def guest_user
@@ -18,6 +20,10 @@ module HelperMethods
       guest_user = Role.find_by(value: :guest).try(:user)
 
     guest_user
+  end
+
+  def user_from_cookie
+    User.find_by(uuid: cookies.signed[:user_id])
   end
 
   def user_authenticated?
