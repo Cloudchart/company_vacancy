@@ -54,17 +54,19 @@ MainComponent = React.createClass
         placeholder = {@props.placeholder}
       />
 
+  getStoryView: (story) ->
+    storyContent = '#' + story.get('formatted_name')
+
+    if story.get('company_id') then storyContent else <strong>{ storyContent }</strong>
   
   gatherStoriesForList: ->
     @filterSelectedStories()
       .sortBy (story) -> story.get('name')
       .map (story) =>
         # company_story_url = @props.cursor.stories.get(story.get('uuid')).get('company_story_url')
-        
-        WrapperTag = if story.get('company_id') then tag.span else tag.strong
 
         <li key={story.get('uuid')}>
-          <WrapperTag>{'#' + story.get('formatted_name')}</WrapperTag>
+          { @getStoryView(story) }
         </li>
         # <a href={company_story_url}>{'#' + story.get('name')}</a>
 
@@ -87,7 +89,7 @@ MainComponent = React.createClass
       .filterNot  (story, key) => @state.storyIdSeq.contains(key)
       .filter     (story, key) => (@state.query.length > 0 && story.get('formatted_name').toLowerCase().indexOf(@state.query.toLowerCase()) == 0) || (@state.query.length == 0 && story.get('company_id') is null)
       .sortBy     (story, key) => story.get('name')
-      .map        (story, key) => <ComboboxOption key={key} value={key}>{'#' + story.get('formatted_name')}</ComboboxOption>
+      .map        (story, key) => <ComboboxOption key={key} value={key}>{ @getStoryView(story) }</ComboboxOption>
 
 
   getStoryIdSeq: ->

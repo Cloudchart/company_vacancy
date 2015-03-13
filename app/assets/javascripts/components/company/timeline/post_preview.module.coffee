@@ -314,7 +314,7 @@ Component = React.createClass
       'only-me': @isOnlyMeVisibility()
       'dimmed': not @isRelatedToStory()
 
-    <article className={article_classes}>
+    <article id={@props.uuid} className={article_classes}>
       { @renderControls() }
       { @renderInsights() }
 

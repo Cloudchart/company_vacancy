@@ -52,12 +52,17 @@ article.editor {
 article.editor.post {
   > section {
     margin: 0;
+    padding: 0;
 
     &.placeholder {
       > figure {
         opacity: 1;
       }
     }
+  }
+
+  > .wrapper > section {
+    padding: 10px 20px;
   }
 }
 

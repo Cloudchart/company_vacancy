@@ -42,42 +42,39 @@ module.exports = React.createClass
     pinnable_id:    @props.cursor.pin.get('pinnable_id')
     pinnable_type:  @props.cursor.pin.get('pinnable_type')
 
-
   getStateFromStores: ->
     user: @props.cursor.users.cursor(@props.cursor.pin.get('user_id'))
 
-
   onGlobalStateChange: ->
     @setState @getStateFromStores()
-
 
   getInitialState: ->
     @getStateFromStores()
 
 
-  renderAvatar: ->
-    <aside>
+  # Renderers
+  #
+  renderContent: ->
+    <section className="content">
+      { @props.cursor.pin.get('content') }
+    </section>
+
+  renderUser: ->
+    <section className="user">
       <Avatar
         avatarURL       = { @state.user.get('avatar_url') }
         backgroundColor = "transparent"
         value           = { @state.user.get('full_name') }
       />
-    </aside>
-
-
-  renderUser: ->
-    <section>
-      <p className="name">
-        { @state.user.get('full_name') }
-      </p>
-      <p className="occupation">
-        { @state.user.get('occupation') }
-      </p>
-      <p className="comment">
-        { @props.cursor.pin.get('content') }
-      </p>
+      <section>
+        <p className="name">
+          { @state.user.get('full_name') }
+        </p>
+        <p className="occupation">
+          { @state.user.get('occupation') }
+        </p>
+      </section>
     </section>
-
 
   renderButtons: ->
     <ul className="round-buttons">
@@ -91,7 +88,7 @@ module.exports = React.createClass
     return null unless @state.user.deref()
 
     <li className="insight">
-      { @renderAvatar() }
       { @renderUser() }
+      { @renderContent() }
       { @renderButtons() }
     </li>

@@ -110,6 +110,10 @@ Component = React.createClass
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
 
+  componentDidUpdate: ->
+    if (id = location.hash) && $(id).length > 0
+      location.hash = ""
+      $(document).scrollTop(parseInt($(id).offset().top) - 30)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))

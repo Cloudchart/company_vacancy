@@ -5,8 +5,6 @@ $user-preview-arrow-size: 8px;
 
 
 @mixin post-preview-insight {
-  @include display(flex);
-
   background-color: $card-color;
   border: 1px solid $border-color;
   padding: $default-margin-size;
@@ -35,76 +33,77 @@ $user-preview-arrow-size: 8px;
   }
 
   > .round-buttons {
-    @include position(absolute, 10px 10px null null);
+    @include position(absolute, $default-margin-size $default-margin-size null null);
 
     > li {
-      height: 25px;
-      width: 25px;
+      height: 24px;
+      width: 24px;
 
       > i {
-        line-height: 25px;
+        line-height: 24px;
       }
     }
   }
 
-  > aside {
-    margin-right: 10px;
-    width: 40px;
+  > .user {
+    @include align-items(center);
+    @include display(flex);
+
+    margin-bottom: $default-margin-size;
 
     > figure {
       background-color: #eee;
       background-size: cover;
       background-position: center center;
       border-radius: 50%;
-      height: 0;
-      padding-top: 100%;
+      height: 50px;
+      margin-right: $inner-margin-size;
       position: relative;
-      width: 100%;
+      width: 50px;
 
       > figcaption {
         @include position(absolute, 50% null null 50%);
         @include transform(translateX(-50%) translateY(-50%));
 
         color: hsl(0, 100%, 100%);
-        font-size: 15px;
+        font-size: $basic-font-size;
       }
     }
-  }
 
-  > section {
-    @include flex(1);
+    > section {
+      @include flex(1);
 
-    margin-top: 5px;
+      margin-top: 5px;
 
-    > p {
-      margin: 0;
+      > p {
+        margin: 0;
 
-      &.name {
-        color: hsl(135, 50%, 50%);
-        font-size: 1.25em;
-        font-weight: 600;
-        padding-right: 60px;
+        &.name {
+          color: hsl(135, 50%, 50%);
+          font-size: $big-font-size;
+          font-weight: 600;
+          padding-right: 60px;
 
-        > i.fa-star {
-          color: hsl(50, 100%, 60%);
-          font-size: .9em;
-          margin-left: 5px;
+          > i.fa-star {
+            color: hsl(50, 100%, 60%);
+            font-size: .9em;
+            margin-left: 5px;
+          }
+        }
+
+        &.occupation {
+          color: hsl(0, 0%, 50%);
+          font-size: .8em;
         }
       }
-
-      &.occupation {
-        color: hsl(0, 0%, 50%);
-        font-size: .8em;
-      }
-
-      &.comment {
-        margin-top: 2px;
-        white-space: pre-wrap;
-      }
     }
-
   }
 
+  .content {
+    font-size: 16px;
+    font-weight: $normal-weight;
+    width: 100%;
+  }
 }
 
 
@@ -428,12 +427,12 @@ main.post {
     @include justify-content(space-between);
 
     position: relative;
-    margin: $gutter-size/2 auto;
-    padding: $gutter-size;
+    margin: 0 auto;
+    padding: $gutter-size/2 $gutter-size;
     width: 976px + 2 * $gutter-size;
 
     > header, > section,
-    .editor.post {
+    > .content {
       background-color: $card-color;
       border: 1px solid $border-color;
       margin: $gutter-size/2 0;
@@ -447,11 +446,14 @@ main.post {
 
       position: relative;
 
+      h2, label, .stories {
+        margin: $inner-margin-size/2 0;
+      }
+
       h2 {
         font-size: $big-font-size;
         font-weight: $bolder-weight;
-        margin: 0;
-        margin-bottom: $inner-margin-size/2;
+        margin-top: 0;
       }
 
       .title div[contenteditable] {
@@ -459,7 +461,6 @@ main.post {
 
         font-size: $huge-font-size;
         font-weight: $bold-weight;
-        max-width: 550px;
       }
 
       .title ~ aside {
@@ -468,7 +469,6 @@ main.post {
 
       label {
         position: relative;
-        margin: $inner-margin-size/2 0;
 
         input {
           border: none;
@@ -480,6 +480,7 @@ main.post {
         &.published-at > * {
           font-size: $big-font-size;
           font-weight: $thin-weight;
+          color: $special-link-color;
         }
 
         &.published-at ~ aside {
@@ -533,10 +534,23 @@ main.post {
             top: 0px;
           }
         }
+
+        .edit-mode {
+          color: $link-color;
+          font-size: $small-font-size;
+          text-transform: uppercase;
+        }
+
+        .cc-times {
+          color: $link-color;
+          font-size: $huge-font-size;
+          height: 15px;
+          width: 15px;
+        }
       }
     }
 
-    .post.editor .editor.wrapper > aside {
+    .editor.post .editor.wrapper > aside {
       left: -72px;
     }
 
@@ -545,6 +559,7 @@ main.post {
     }
 
     > .post-pin-info {
+      @include align-items(center);
       @include display(flex);
       @include justify-content(space-between);
     }
@@ -611,10 +626,12 @@ main.post {
       }
     }
 
-    .editor.post {
+    .content {
       @include flex(1);
 
-      font-size: $big-font-size;
+      > .post.editor {
+        width: 100%;
+      }
 
       > footer {
         @include display(flex);
