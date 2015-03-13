@@ -77,7 +77,7 @@ Person = React.createClass
 
 
   render: ->
-    person = @state.person
+    return null unless person = @state.person
 
     <div key={ person.uuid } className={cx({ person: true, editable: !@props.readOnly })}>
       { @renderRemoveButton() }
