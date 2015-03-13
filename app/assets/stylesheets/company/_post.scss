@@ -3,6 +3,9 @@ $user-preview-text-color: $accented-white-color;
 $user-preview-background-color: $black-color;
 $user-preview-arrow-size: 8px;
 
+@mixin temp-adaptive() {
+  @media only screen and (max-width: 1024px) { @content; }
+}
 
 @mixin post-preview-insight {
   background-color: $card-color;
@@ -431,6 +434,10 @@ main.post {
     padding: $gutter-size/2 $gutter-size;
     width: 976px + 2 * $gutter-size;
 
+    @include temp-adaptive {
+      width: 100%;
+    }
+
     > header, > section,
     > .content {
       background-color: $card-color;
@@ -629,6 +636,10 @@ main.post {
     .content {
       @include flex(1);
 
+      @include temp-adaptive {
+        width: 100%;
+      }
+
       > .post.editor {
         width: 100%;
       }
@@ -662,6 +673,15 @@ main.post {
         margin-left: 0;
       }
 
+      @include temp-adaptive {
+        width: 100%;
+
+        .insight-list {
+          margin: 0 auto;
+          width: 310px;
+        }
+      }
+
       &.expanded {
         margin-left: 0;
         width: 100%;
@@ -669,12 +689,14 @@ main.post {
         .insight-list {
           @include display(flex);
           @include flex-wrap(wrap);
+
+          width: 100%;
         }
 
         .insight-list .insight {
           margin-bottom: 25px;
-          width: 32%;
           margin-right: 2%;
+          width: 32%;
 
           &:nth-child(3n) {
             margin-right: 0;
@@ -682,6 +704,19 @@ main.post {
 
           ~ .insight {
             margin-top: 0;
+          }
+
+          @include temp-adaptive {
+            width: 48%;
+            margin-right: 4%;
+
+            &:nth-child(3n) {
+              margin-right: 4%;
+            }
+
+            &:nth-child(2n) {
+              margin-right: 0;
+            }
           }
         } 
       }     

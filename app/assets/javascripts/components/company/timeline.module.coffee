@@ -46,8 +46,9 @@ Component = React.createClass
     readOnly: true
 
   getInitialState: ->
-    state               = @getStateFromStores(@props)
-    state.new_post_key  = null
+    state                = @getStateFromStores(@props)
+    state.new_post_key   = null
+    state.anchorScrolled = false
     state
 
   refreshStateFromStores: ->
@@ -111,9 +112,9 @@ Component = React.createClass
     PostStore.on('change', @refreshStateFromStores)
 
   componentDidUpdate: ->
-    if (id = location.hash) && $(id).length > 0
-      location.hash = ""
+    if (id = location.hash) && !@state.anchorScrolled && $(id).length > 0
       $(document).scrollTop(parseInt($(id).offset().top) - 30)
+      @setState(anchorScrolled: true)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))

@@ -110,6 +110,10 @@ Post = React.createClass
   getStrippedTitle: (title) ->
     title.replace(/(<([^>]+)>)/ig, "").trim()
 
+  getPinnersNumberText: (userIds) ->
+    usersNumber = if userIds.size > 3 then (userIds.size - 3) else 0
+    if usersNumber > 0 then "+ #{usersNumber} others pinned this post" else null
+
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
 
@@ -215,35 +219,46 @@ Post = React.createClass
         <i className="cc-icon cc-times"></i>
       </a>
 
+  renderEditControls: ->
+    return null unless @state.isInEditMode
+
+    [
+      <Dropdown
+        options  = { @getVisibilityOptions() }
+        value    = { @state.visibility_value }
+        onChange = { @handleVisibilityChange }
+      />
+      <Dropdown
+        options     = { @getViewModeOptions() }
+        value       = "edit"
+        className   = "view-mode"
+        iconClass   = "fa fa-chevron-down"
+        onChange    = { @handleViewModeChange }
+      />
+    ]
+
+  renderViewControls: ->
+    return null if @state.isInEditMode
+
+    <StandardButton 
+      className = "edit-mode transparent"
+      onClick   = { => @handleViewModeChange("edit") }
+      text      = "edit" />
+
   renderHeaderControls: ->
     <section className="controls">
-      {
-        if @state.isInEditMode
-          <Dropdown
-            options  = { @getVisibilityOptions() }
-            value    = { @state.visibility_value }
-            onChange = { @handleVisibilityChange }
-          />
-      }
-      {
-        if @state.isInEditMode
-          <Dropdown
-            options     = { @getViewModeOptions() }
-            value       = "edit"
-            className   = "view-mode"
-            iconClass   = "fa fa-chevron-down"
-            onChange    = { @handleViewModeChange }
-          />
-      }
-      {
-        unless @state.isInEditMode
-          <StandardButton 
-            className = "edit-mode transparent"
-            onClick   = { => @handleViewModeChange("edit") }
-            text      = "edit" />
-      }
+      { @renderEditControls() }
+      { @renderViewControls() }
       { @renderCloseIcon() }
     </section>
+
+  renderExpandButton: ->
+    return null if @state.arePinsExpanded
+
+    <StandardButton 
+      className = "cc show-pins"
+      onClick   = { @handleExpandPins }
+      text      = "Show All" />
 
   renderPins: ->
     return null if PinStore.filterInsightsForPost(@props.id).size == 0 || @state.isInEditMode
@@ -255,21 +270,14 @@ Post = React.createClass
         onlyFirst     = { !@state.arePinsExpanded }
         pinnable_id   = { @props.id }
         pinnable_type = "Post" />
-      {
-        unless @state.arePinsExpanded
-          <StandardButton 
-            className = "cc show-pins"
-            onClick   = { @handleExpandPins }
-            text      = "Show All" />
-      }
+      { @renderExpandButton() }
     </section>
 
   renderPinners: (pinners) ->
     return null if PinStore.filterInsightsForPost(@props.id).size == 0 || @state.isInEditMode
 
     userIds = PinStore.filterInsightsForPost(@props.id).map (pin) -> pin.get('user_id')
-    usersNumber = if userIds.size > 3 then (userIds.size - 3) else 0
-
+    
     users = @props.cursor.users.filter (user) -> userIds.take(3).contains(user.get('uuid'))
 
     <section className="post-pinners">
@@ -282,10 +290,7 @@ Post = React.createClass
           .toArray()
         }
       </ul>
-      {
-        if usersNumber > 0
-          "+ #{usersNumber} others pinned this post"
-      }
+      { @getPinnersNumberText(userIds) }
     </section>
 
 
@@ -316,7 +321,7 @@ Post = React.createClass
         ref       = "okButton"
         className = "cc"
         onClick   = { @handleOkClick }
-        text      = "Ok" />
+        text      = "OK" />
     </footer>
 
   renderEffectiveDate: ->
