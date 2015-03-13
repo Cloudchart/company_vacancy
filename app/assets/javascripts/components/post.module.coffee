@@ -56,8 +56,6 @@ Post = React.createClass
     readOnly:    React.PropTypes.bool
 
   getDefaultProps: ->
-    cursor:
-      pins:   PinStore.cursor.items
     readOnly: true
 
   getInitialState: ->
@@ -88,7 +86,7 @@ Post = React.createClass
       titleLength: titleLength
       published_at: @getPublishedAt(post)
       visibility: visibility
-      visibility_value: if visibility then visibility.value else 'public'
+      visibility_value: if visibility then visibility.value else 'unpublished'
     else
       post: null
 
@@ -96,9 +94,13 @@ Post = React.createClass
   # Helpers
   #
   getVisibilityOptions: ->
-    public:  'Public'
-    trusted: 'Trusted'
-    only_me: 'Only me'
+    options = {}
+    options.unpublished = 'Unpublished' unless @state.visibility
+    options.public = 'Public'
+    options.trusted = 'Trusted'
+    options.only_me = 'Only me'
+    options
+
 
   isReadOnly: ->
     @state.viewMode == 'view'
@@ -162,6 +164,9 @@ Post = React.createClass
   handleOkClick: (event) ->
     this.refs.okButton.getDOMNode().focus();
     location.href = @state.company.company_url
+    
+    unless @state.visibility
+      VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: 'public' })
 
   handleKeydown: (event) ->
     if $(@refs.container.getDOMNode()).find(':focus').length > 0

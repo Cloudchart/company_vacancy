@@ -11,6 +11,7 @@ PostStore = require('stores/post_store')
 PinStore  = require('stores/pin_store')
 StoryStore = require('stores/story_store')
 PostsStoryStore = require('stores/posts_story_store')
+VisibilityStore = require('stores/visibility_store')
 
 PostActions = require('actions/post_actions')
 
@@ -20,8 +21,13 @@ Post = require('components/post')
 
 # Utils
 #
-postVisibilityPredicate = (post) ->
-  post.uuid and post.created_at != post.updated_at
+postVisibilityPredicate = (component) ->
+  (post) ->
+    if component.props.readOnly
+      VisibilityStore.find((item) -> item.owner_id is post.uuid) and
+      post.uuid and post.created_at != post.updated_at
+    else
+      post.uuid and post.created_at != post.updated_at
 
 
 # Main
@@ -60,26 +66,12 @@ Component = React.createClass
 
   # Helpers
   #
-  getCreatePostButton: (type = '') ->
-    return null if @props.readOnly
-      
-    class_for_icon =
-      if PostStore.getSync(@state.new_post_key) == "create"
-        'fa fa-spin fa-spinner'
-      else
-        'cc-icon cc-plus'
-
-    if type == 'placeholder'
-      <div className="placeholder">
-        <figure className={type} onClick={@handleCreatePostClick} >
-          <i className={class_for_icon}></i>
-        </figure>
-      </div>
-    else
-      <figure className="create" onClick={@handleCreatePostClick}>
-        <i className={class_for_icon}></i>
-      </figure>
-
+  getPosts: ->
+    @state.postSeq
+      .filter postVisibilityPredicate(@)
+      .sortBy (post) -> post.effective_from
+      .map    @renderPost(@props)
+      .reverse()
 
   getCloudFluxActions: ->
     'post:create:done': @handlePostCreateDone
@@ -109,6 +101,7 @@ Component = React.createClass
 
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
+    # VisibilityStore.on('change', @refreshStateFromStores)
 
 
   componentWillReceiveProps: (nextProps) ->
@@ -117,16 +110,31 @@ Component = React.createClass
 
   componentWillUnmount: ->
     PostStore.off('change', @refreshStateFromStores)
+    # VisibilityStore.off('change', @refreshStateFromStores)
 
 
   # Renderers
   #
-  renderPosts: ->
-    @state.postSeq
-      .filter postVisibilityPredicate
-      .sortBy (post) -> post.effective_from
-      .map    @renderPost(@props)
-      .reverse()
+  renderCreatePostButton: (type = '') ->
+    return null if @props.readOnly
+      
+    class_for_icon =
+      if PostStore.getSync(@state.new_post_key) == "create"
+        'fa fa-spin fa-spinner'
+      else
+        'cc-icon cc-plus'
+
+    if type == 'placeholder'
+      <div className="placeholder">
+        <figure className={type} onClick={@handleCreatePostClick} >
+          <i className={class_for_icon}></i>
+        </figure>
+      </div>
+    else
+      <figure className="create" onClick={@handleCreatePostClick}>
+        <i className={class_for_icon}></i>
+      </figure>
+
 
   renderPost: (props) ->
     (post) =>
@@ -141,18 +149,18 @@ Component = React.createClass
 
 
   render: ->
-    posts = @renderPosts()
+    posts = @getPosts()
     
     return null if posts.count() == 0 and @props.readOnly
     
     posts = posts.map (post, index) =>
       [
         post
-        @getCreatePostButton('placeholder')
+        @renderCreatePostButton('placeholder')
       ]
 
     <div className="posts">
-      { @getCreatePostButton() }
+      { @renderCreatePostButton() }
       { posts.toArray() }
     </div>
 

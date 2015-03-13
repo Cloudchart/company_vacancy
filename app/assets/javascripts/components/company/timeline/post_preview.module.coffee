@@ -184,7 +184,6 @@ Component = React.createClass
     PersonStore.on('change', @refreshStateFromStores)
     PictureStore.on('change', @refreshStateFromStores)
     ParagraphStore.on('change', @refreshStateFromStores)
-    VisibilityStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -194,7 +193,6 @@ Component = React.createClass
     PersonStore.off('change', @refreshStateFromStores)
     PictureStore.off('change', @refreshStateFromStores)
     ParagraphStore.off('change', @refreshStateFromStores)
-    VisibilityStore.off('change', @refreshStateFromStores)
 
 
   # Renderers
