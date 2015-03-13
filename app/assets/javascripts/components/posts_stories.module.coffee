@@ -61,8 +61,10 @@ MainComponent = React.createClass
       .map (story) =>
         # company_story_url = @props.cursor.stories.get(story.get('uuid')).get('company_story_url')
         
+        WrapperTag = if story.get('company_id') then tag.span else tag.strong
+
         <li key={story.get('uuid')}>
-          <span>{'#' + story.get('formatted_name')}</span>
+          <WrapperTag>{'#' + story.get('formatted_name')}</WrapperTag>
         </li>
         # <a href={company_story_url}>{'#' + story.get('name')}</a>
 

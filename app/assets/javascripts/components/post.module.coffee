@@ -62,10 +62,10 @@ Post = React.createClass
 
   getInitialState: ->
     _.extend @getStateFromStores(@props),
-      readOnly: @props.readOnly
-      viewMode: @getDefaultViewMode()
-      showPins: false
-      titleFocused: false
+      readOnly:        @props.readOnly
+      viewMode:        'view'
+      arePinsExpanded: false
+      titleFocused:    false
 
   onGlobalStateChange: ->
     readOnly = @props.cursor.flags.get('is_read_only')
@@ -102,12 +102,6 @@ Post = React.createClass
 
   isReadOnly: ->
     @state.viewMode == 'view'
-
-  getDefaultViewMode: ->
-    if ['view', 'edit'].indexOf(location.hash.slice(1)) != -1
-      location.hash.slice(1)
-    else
-      'edit'
 
   getViewModeOptions: ->
     view: 'View'
@@ -177,14 +171,13 @@ Post = React.createClass
 
   handleViewModeChange: (value) ->
     @setState(viewMode: value)
-    location.hash = value
 
-  handleShowPins: ->
-    @setState(showPins: true)
+  handleExpandPins: ->
+    @setState(arePinsExpanded: true)
 
-    content = $(".content")
-    $('html,body').animate({ scrollTop: content.offset().top + content.height() }, 'slow')
-
+    setTimeout ->
+      $('html,body').animate({ scrollTop: $(".post-pins").offset().top - 30 }, 'slow')
+    , 10
 
   # Lifecycle Methods
   #
@@ -214,7 +207,7 @@ Post = React.createClass
   renderHeaderControls: ->
     <section className="controls">
       {
-        if !@isReadOnly()
+        unless @isReadOnly()
           <Dropdown
             options  = { @getVisibilityOptions() }
             value    = { @state.visibility_value }
@@ -222,7 +215,7 @@ Post = React.createClass
           />
       }
       {
-        if !@state.readOnly
+        unless @state.readOnly
           <Dropdown
             options     = { @getViewModeOptions() }
             value       = { @state.viewMode }
@@ -233,25 +226,23 @@ Post = React.createClass
       }
     </section>
 
-  renderPinMenu: ->
+  renderPins: ->
     return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@isReadOnly()
 
-    <section className="post-pin-menu">
-      <InsightList pinnable_id={ @props.id } pinnable_type="Post" onlyFirst = { true } />
+    className = cx("post-pins": true, expanded: @state.arePinsExpanded)
+
+    <section className={ className }>
+      <InsightList 
+        onlyFirst     = { !@state.arePinsExpanded }
+        pinnable_id   = { @props.id }
+        pinnable_type = "Post" />
       {
-        if !@state.showPins
+        unless @state.arePinsExpanded
           <Button 
             className = "cc show-pins"
-            onClick   = { @handleShowPins }
+            onClick   = { @handleExpandPins }
             text      = "Show All" />
       }
-    </section>
-
-  renderPins: ->
-    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@isReadOnly() || !@state.showPins
-
-    <section className="post-pins">
-      <InsightList pinnable_id={ @props.id } pinnable_type="Post" />
     </section>
 
   renderPinners: (pinners) ->
@@ -378,21 +369,17 @@ Post = React.createClass
       
       { @renderPinInfo() }
 
-      <section className="content">
-        <BlockEditor
-          company_id          = {@props.company_id}
-          owner_id            = {@state.post.uuid}
-          owner_type          = "Post"
-          editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI', 'Person']}
-          classForArticle     = "editor post"
-          readOnly            = {@isReadOnly()}
-        />
-        { @renderPinMenu() }
-      </section>
+      <BlockEditor
+        company_id          = {@props.company_id}
+        owner_id            = {@state.post.uuid}
+        owner_type          = "Post"
+        editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI', 'Person']}
+        classForArticle     = "editor post"
+        readOnly            = {@isReadOnly()}
+      />
+      { @renderFooter() } 
 
       { @renderPins() }
-
-      { @renderFooter() } 
     </article>
 
 # Exports

@@ -420,23 +420,25 @@ main.company > div.wrapper > div.posts {
 }
 
 main.post {
-  background-color: $white-color;
+  background-color: $background-color;
 
   article.post-container {
-    position: relative;
-    padding: $gutter-size/2;
-    margin: 0 auto;
-    width: 1000 + 2 * $gutter-size;
+    @include display(flex);
+    @include flex-wrap(wrap);
+    @include justify-content(space-between);
 
-    > header, > footer, > section,
+    position: relative;
+    margin: $gutter-size/2 auto;
+    padding: $gutter-size;
+    width: 976px + 2 * $gutter-size;
+
+    > header, > section,
     .editor.post {
       background-color: $card-color;
       border: 1px solid $border-color;
+      margin: $gutter-size/2 0;
       padding: $default-margin-size;
-    }
-
-    > header, > footer, > section {
-      margin: $gutter-size;
+      width: 100%;
     }
 
     > header {
@@ -446,6 +448,8 @@ main.post {
       position: relative;
 
       h2 {
+        font-size: $big-font-size;
+        font-weight: $bolder-weight;
         margin: 0;
         margin-bottom: $inner-margin-size/2;
       }
@@ -453,9 +457,9 @@ main.post {
       .title div[contenteditable] {
         @include editor-contenteditable-area;
 
-        max-width: 550px;
         font-size: $huge-font-size;
-        font-weight: 500;
+        font-weight: $bold-weight;
+        max-width: 550px;
       }
 
       .title ~ aside {
@@ -475,7 +479,7 @@ main.post {
 
         &.published-at > * {
           font-size: $big-font-size;
-          font-weight: 300;
+          font-weight: $thin-weight;
         }
 
         &.published-at ~ aside {
@@ -488,6 +492,7 @@ main.post {
 
         > ul {
           font-size: $big-font-size;
+          font-weight: $thin-weight;
         }
       }
 
@@ -548,6 +553,8 @@ main.post {
       @include align-items(center);
       @include display(flex);
 
+      font-weight: $thin-weight;
+
       > ul {
         @include display(flex);
 
@@ -573,7 +580,7 @@ main.post {
           background-color: $user-preview-background-color;
           color: $user-preview-text-color;
           display: none;
-          font-size: $little-font-size;
+          font-size: $small-font-size;
           padding: $inner-margin-size;
           width: auto;
 
@@ -604,30 +611,18 @@ main.post {
       }
     }
 
-    > .content {
-      @include display(flex);
-
-      background-color: $background-color;
-      border: none;
-      padding: 0;
-    }
-
     .editor.post {
       @include flex(1);
-    }
 
-    .post-pin-menu {
-      margin-left: 24px;
+      font-size: $big-font-size;
 
-      .insight-list {
-        margin-left: 0;
-      }
+      > footer {
+        @include display(flex);
+        @include justify-content(space-between);
 
-      > button {
-        display: block;
-        margin: auto;
-        margin-top: $default-margin-size;
-        padding: 0 30px;
+        > button {
+          width: 80px;
+        }
       }
     }
 
@@ -635,36 +630,44 @@ main.post {
       background-color: $background-color;
       border: none;
       padding: 0;
-
-      .insight-list {
-        @include display(flex);
-        @include flex-wrap(wrap);
-        margin-left: 0;
-        width: 100%;
-      }
-
-      .insight-list .insight {
-        margin-bottom: 25px;
-        width: 30%;
-        margin-right: 15px;
-
-        &:nth-child(3n) {
-          margin-right: 0;
-        }
-
-        ~ .insight {
-          margin-top: 0;
-        }
-      }      
-    }
-
-    > footer {
-      @include display(flex);
-      @include justify-content(space-between);
+      margin-left: 24px;
+      width: 310px;
 
       > button {
-        width: 80px;
+        display: block;
+        margin: auto;
+        margin-top: $default-margin-size;
+        padding: 0 30px;
       }
+
+      .insight-list {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      &.expanded {
+        margin-left: 0;
+        width: 100%;
+
+        .insight-list {
+          @include display(flex);
+          @include flex-wrap(wrap);
+        }
+
+        .insight-list .insight {
+          margin-bottom: 25px;
+          width: 32%;
+          margin-right: 2%;
+
+          &:nth-child(3n) {
+            margin-right: 0;
+          }
+
+          ~ .insight {
+            margin-top: 0;
+          }
+        } 
+      }     
     }
   }
 }
