@@ -26,10 +26,6 @@ Cloudchart::Application.routes.draw do
     delete :unfollow, on: :member
   end
 
-  resources :posts, only: [:fetch] do
-    get :fetch, on: :collection#, controller: :posts, action: :fetch
-  end
-
   # Resources
   #
   resources :companies, except: [:create, :edit], concerns: [:followable] do
@@ -53,7 +49,7 @@ Cloudchart::Application.routes.draw do
       post :accept, on: :member
     end
 
-    resources :posts, except: [:edit], shallow: true
+    resources :posts, except: [:new, :edit], shallow: true
     resources :people, except: [:new, :edit], shallow: true
     resources :blocks, only: :create, type: :company
     resources :stories, only: [:show, :index, :create, :update], shallow: true

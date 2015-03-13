@@ -162,7 +162,7 @@ main.company > div.wrapper > div.posts {
 
   // Create post top button
   //
-  > a > figure.create {
+  > figure.create {
     @include display(flex);
     @include align-items(center);
     @include justify-content(center);
@@ -193,12 +193,12 @@ main.company > div.wrapper > div.posts {
     width: 100%;
 
     &:hover {
-      > a > figure {
+      > figure {
         visibility: visible;
       }
     }
 
-    > a > figure {
+    > figure {
       @include display(flex);
       @include align-items(center);
       @include justify-content(center);

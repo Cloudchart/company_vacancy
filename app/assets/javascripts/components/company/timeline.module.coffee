@@ -13,12 +13,10 @@ StoryStore = require('stores/story_store')
 PostsStoryStore = require('stores/posts_story_store')
 
 PostActions = require('actions/post_actions')
-ModalActions = require('actions/modal_actions')
 
 PostPreview = require('components/company/timeline/post_preview')
 Post = require('components/post')
 
-UUID = require('utils/uuid')
 
 # Utils
 #
@@ -71,49 +69,35 @@ Component = React.createClass
       else
         'cc-icon cc-plus'
 
-    # Dirty hack here, need to fix later
-
     if type == 'placeholder'
       <div className="placeholder">
-        <a href="/companies/#{@props.company_id}/posts/new" className="for-group">
-          <figure className={type}>
-            <i className={class_for_icon}></i>
-          </figure>
-        </a>
-      </div>
-    else
-      <a href="/companies/#{@props.company_id}/posts/new" className="for-group">
-        <figure className="create">
+        <figure className={type} onClick={@handleCreatePostClick} >
           <i className={class_for_icon}></i>
         </figure>
-      </a>
+      </div>
+    else
+      <figure className="create" onClick={@handleCreatePostClick}>
+        <i className={class_for_icon}></i>
+      </figure>
+
 
   getCloudFluxActions: ->
     'post:create:done': @handlePostCreateDone
 
-  showPostInModal: (id) ->
-    return unless @state.postSeq.map((post) -> post.uuid).contains(id)
-    
-    setTimeout => 
-      ModalActions.show(
-        <Post id={id} company_id={@props.company_id} cursor={Post.getCursor(@props.company_id)} readOnly={@props.readOnly} />,
-        class_for_container: 'post'
-        beforeHide: ->
-          scrollTop = document.body.scrollTop
-          window.location.hash = ''
-          document.body.scrollTop = scrollTop
-      )
 
   # Handlers
   #
-  handlePostCreateDone: (id, attributes, json, sync_token) ->
-    @showPostInModal(json.uuid)
-  
-  
-  handleWindowHashChange: (event) ->
-    postId = window.location.hash.split('#').pop()
-    @showPostInModal(postId) if UUID.isUUID(postId)
+  handleCreatePostClick: (event) ->
+    return if PostStore.getSync(@state.new_post_key) == "create"
 
+    new_post_key = PostStore.create()
+    PostActions.create(new_post_key, { owner_id: @props.company_id, owner_type: 'Company' })
+
+    @setState({ new_post_key: new_post_key })
+
+
+  handlePostCreateDone: (id, attributes, json, sync_token) ->
+    window.location.href = json.post_url
 
 
   # Lifecycle Methods
@@ -125,11 +109,6 @@ Component = React.createClass
 
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
-    window.addEventListener('hashchange', @handleWindowHashChange)
-
-    setTimeout =>
-      @handleWindowHashChange()
-    , 100
 
 
   componentWillReceiveProps: (nextProps) ->
@@ -138,7 +117,6 @@ Component = React.createClass
 
   componentWillUnmount: ->
     PostStore.off('change', @refreshStateFromStores)
-    window.removeEventListener('hashchange', @handleWindowHashChange)
 
 
   # Renderers
