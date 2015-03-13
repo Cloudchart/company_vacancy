@@ -84,21 +84,6 @@ CursorFactory = (data, callback) ->
         notSetValue
 
 
-    transaction: (callback) ->
-      if callback instanceof Function
-        do =>
-          @transaction()
-          callback()
-          @commit()
-      else
-        TransactionsCount++
-
-
-    commit: ->
-      TransactionsCount--
-      callback(CurrData)
-
-
     count: ->
       (seq = @deref(EmptySeq)).count.apply(seq, arguments)
 

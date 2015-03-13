@@ -25,13 +25,13 @@ CompaniesApp = React.createClass
 
   getDefaultProps: ->
     cursor:
-      companies: CompanyStore.cursor.items 
+      companies: CompanyStore.cursor.items
       tokens:    TokenStore.cursor.items
       favorites: FavoriteStore.cursor.items
       roles:     RoleStore.cursor.items
 
   getInitialState: ->
-    _.extend @getStateFromStores(), 
+    _.extend @getStateFromStores(),
       query:    @props.query || location.hash.substr(1) || ''
 
   getStateFromStores: ->
@@ -70,15 +70,13 @@ CompaniesApp = React.createClass
     CompanyStore.search(query)
 
   clearSearchedCompanies: ->
-    @props.cursor.companies.transaction =>
-      @props.cursor.companies.forEach (item, id) =>
-        if @state.searchedCompaniesIds.has(id)
-          @props.cursor.companies.removeIn(id)
+    @props.cursor.companies.forEach (item, id) =>
+      if @state.searchedCompaniesIds.has(id)
+        @props.cursor.companies.removeIn(id)
 
   updateStores: ->
-    @props.cursor.companies.transaction =>
-      @props.cursor.tokens.clear()
-      @props.cursor.favorites.clear()
+    @props.cursor.tokens.clear()
+    @props.cursor.favorites.clear()
 
     CompanyStore.fetchAll().done =>
       @search(@state.query)
@@ -107,7 +105,7 @@ CompaniesApp = React.createClass
   #
   renderSearch: ->
     <div className="search">
-      <Field 
+      <Field
         placeholder = "Search"
         onChange    = { @handleChange }
         value       = { @state.query }
@@ -129,7 +127,7 @@ CompaniesApp = React.createClass
         { @renderSearch() }
         { @renderAddButton() }
       </header>
-      <CompanyList 
+      <CompanyList
         ids            = { @getAllIds() }
         isInLegacyMode = { true } />
     </section>

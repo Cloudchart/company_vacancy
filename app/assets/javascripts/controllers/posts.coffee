@@ -12,13 +12,12 @@ populateStores = (data) ->
 
 
   # Fetch company with dependencies
-  # 
+  #
   require('sync/company').fetch(data.company_id).done (json) ->
 
-    GlobalState.cursor().transaction ->
-      Dispatcher.handleServerAction
-        type: 'company:fetch:done'
-        data: [data.company_id, json]
+    Dispatcher.handleServerAction
+      type: 'company:fetch:done'
+      data: [data.company_id, json]
 
     _.each json.people, (person) -> PersonStore.add(person.uuid, person)
 
@@ -26,13 +25,12 @@ populateStores = (data) ->
     CompanyStore.emitChange()
 
   # Fetch all posts with dependencies
-  # 
+  #
   require('sync/post_sync_api').fetchAll(data.company_id).done (json) ->
 
-    GlobalState.cursor().transaction ->
-      Dispatcher.handleServerAction
-        type: 'post:fetch-all:done'
-        data: [json]
+    Dispatcher.handleServerAction
+      type: 'post:fetch-all:done'
+      data: [json]
 
     _.each {
       posts: PostStore
@@ -63,4 +61,3 @@ populateStores = (data) ->
   React.renderComponent(
     Post({ id: data.id, company_id: data.company_id, cursor: Post.getCursor(data.company_id) }), document.querySelector('body > main')
   )
-

@@ -139,10 +139,9 @@ class BaseStore
 
 
   fetchDone: (json) ->
-    @cursor.items.transaction ->
-      Dispatcher.handleServerAction
-        type: 'fetch:done'
-        data: [json]
+    Dispatcher.handleServerAction
+      type: 'fetch:done'
+      data: [json]
 
 
   fetchFail: ->

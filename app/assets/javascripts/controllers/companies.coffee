@@ -45,10 +45,9 @@ Dispatcher = require('dispatcher/dispatcher')
   #
   require('sync/post_sync_api').fetchAll(data.id).done (json) ->
 
-    GlobalState.cursor().transaction ->
-      Dispatcher.handleServerAction
-        type: 'post:fetch-all:done'
-        data: [json]
+    Dispatcher.handleServerAction
+      type: 'post:fetch-all:done'
+      data: [json]
 
     _.each {
       posts: PostStore

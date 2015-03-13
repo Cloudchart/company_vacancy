@@ -128,10 +128,9 @@ storeData = (response, endpointKey) ->
 # Fetch done
 #
 fetchDone = (response, query, options) ->
-  require('global_state/state').cursor().transaction ->
-    Dispatcher.handleServerAction
-      type: 'fetch:done'
-      data: [response]
+  Dispatcher.handleServerAction
+    type: 'fetch:done'
+    data: [response]
 
   #storeData(Immutable.fromJS(response.query), query.endpoint)
 
