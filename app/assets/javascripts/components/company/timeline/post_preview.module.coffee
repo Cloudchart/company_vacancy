@@ -317,15 +317,12 @@ Component = React.createClass
     <article id={@props.uuid} className={article_classes}>
       { @renderControls() }
       { @renderInsights() }
-
-      { @renderOnlyMeOverlay() }
-
       <a href={@state.post.post_url}>
+        { @renderOnlyMeOverlay() }
         { @renderHeader() }
         { @renderContent() }
         { @renderFooter() }
       </a>
-
     </article>
 
 

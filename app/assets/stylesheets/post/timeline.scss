@@ -149,7 +149,7 @@ main.company > div.wrapper > div.posts {
       border: 3px solid hsl(0, 0%, 80%);
     }
 
-    > .only-me-overlay {
+    .only-me-overlay {
       @include align-items(center);
       @include display(flex);
       @include justify-content(center);

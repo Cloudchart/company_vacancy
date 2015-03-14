@@ -161,7 +161,7 @@ Post = React.createClass
 
   handleOkClick: (event) ->
     this.refs.okButton.getDOMNode().focus();
-    location.href = @state.company.company_url
+    location.href = @state.company.company_url + "#" + @props.id
 
   handleKeydown: (event) ->
     if $(@refs.container.getDOMNode()).find(':focus').length > 0
@@ -211,6 +211,32 @@ Post = React.createClass
 
     <h2>{ @state.company.name }</h2>
 
+  renderVisibilityDropdown: ->
+    return null unless @state.isInEditMode
+
+    <Dropdown
+      key      = "visibility"
+      options  = { @getVisibilityOptions() }
+      value    = { @state.visibility_value }
+      onChange = { @handleVisibilityChange } />
+
+  renderEditControl: ->
+    return null if @state.readOnly
+
+    if @state.isInEditMode
+      <Dropdown
+        key         = "view-mode"
+        options     = { @getViewModeOptions() }
+        value       = "edit"
+        className   = "view-mode"
+        iconClass   = "fa fa-chevron-down"
+        onChange    = { @handleViewModeChange } />
+    else
+      <StandardButton 
+        className = "edit-mode transparent"
+        onClick   = { => @handleViewModeChange("edit") }
+        text      = "edit" />
+
   renderCloseIcon: ->
     return null unless @state.company
 
@@ -224,38 +250,10 @@ Post = React.createClass
         <i className="cc-icon cc-times"></i>
       </a>
 
-  renderEditControls: ->
-    return null unless @state.isInEditMode
-
-    [
-      <Dropdown
-        key      = "visibility"
-        options  = { @getVisibilityOptions() }
-        value    = { @state.visibility_value }
-        onChange = { @handleVisibilityChange }
-      />
-      <Dropdown
-        key         = "view-mode"
-        options     = { @getViewModeOptions() }
-        value       = "edit"
-        className   = "view-mode"
-        iconClass   = "fa fa-chevron-down"
-        onChange    = { @handleViewModeChange }
-      />
-    ]
-
-  renderViewControls: ->
-    return null if @state.isInEditMode
-
-    <StandardButton 
-      className = "edit-mode transparent"
-      onClick   = { => @handleViewModeChange("edit") }
-      text      = "edit" />
-
   renderHeaderControls: ->
     <section className="controls">
-      { @renderEditControls() }
-      { @renderViewControls() }
+      { @renderVisibilityDropdown() }
+      { @renderEditControl() }
       { @renderCloseIcon() }
     </section>
 
