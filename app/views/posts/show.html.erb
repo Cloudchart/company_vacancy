@@ -1,5 +1,5 @@
 <% content_for :header_breadcrumbs do %>
-  <%= render 'shared/companies/header_breadcrumbs' %>
+  <%= render partial: 'shared/companies/header_breadcrumbs', locals: { company: @company } %>
 <% end %>
 
 <% content_for :header_menu do %>

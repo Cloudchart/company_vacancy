@@ -52,12 +52,21 @@ article.editor {
 article.editor.post {
   > section {
     margin: 0;
+    padding: 0;
+
+    + section {
+      padding-top: $default-margin-size;
+    }
 
     &.placeholder {
       > figure {
         opacity: 1;
       }
     }
+  }
+
+  > .wrapper > section {
+    padding: 10px 20px;
   }
 }
 

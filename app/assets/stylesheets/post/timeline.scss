@@ -1,0 +1,300 @@
+// Main
+//
+main.company > div.wrapper > div.posts {
+  @include display(flex);
+  @include flex-direction(column);
+  @include align-items(center);
+
+  position: relative;
+  margin: $base-post-preview-margin -20px 0 -20px;
+
+  // Timeline background
+  //
+  &::before,
+  &::after {
+    @include position(absolute, 0px 0px 0px 0px);
+    content: '';
+    z-index: -1;
+  }
+
+  &::before {
+    background-color: hsl(0, 0%, 98%);
+    right: 50%;
+  }
+
+  &::after {
+    background-color: hsl(0, 0%, 94%);
+    left: 50%;
+  }
+
+  // Create post top button
+  //
+  > figure.create {
+    @include display(flex);
+    @include align-items(center);
+    @include justify-content(center);
+
+    margin-top: -45px;
+    margin-bottom: $base-post-preview-margin / 2;
+    width: 90px;
+    height: 90px;
+    cursor: pointer;
+    background-color: hsl(142, 48%, 59%);
+    border-radius: 50%;
+    color: white;
+    position: relative;
+    text-decoration: none;
+
+    > i.fa,
+    > i.cc-icon {
+      font-size: 40px;
+    }
+  }
+
+  // Create post placeholder
+  //
+  div.placeholder {
+    @include display(flex);
+    @include justify-content(center);
+
+    width: 100%;
+
+    &:hover {
+      > figure {
+        visibility: visible;
+      }
+    }
+
+    > figure {
+      @include display(flex);
+      @include align-items(center);
+      @include justify-content(center);
+      @include transform(scale(.5, .5));
+      @include transition(opacity 250ms ease-out, all 150ms ease-out, width 100ms ease-out 150ms);
+
+      visibility: hidden;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      background-color: hsl(142, 48%, 59%);
+      border-radius: 50%;
+      color: white;
+      position: relative;
+
+      &:hover {
+        @include transform(scale(1, 1));
+      }
+
+      > i.fa {
+        font-size: 16px;
+      }
+    }
+  }
+
+  // Post preview
+  //
+  > article.preview.post {
+    position: relative;
+    background-color: white;
+    width: 800px;
+    margin: ($base-post-preview-margin / 2) 0;
+
+    &:hover > ul.controls {
+      visibility: visible;
+    }
+
+    > ul.insight-list {
+      @include position(absolute, 0px null 0px 100%);
+
+      &::before {
+        @include linear-gradient(to bottom, hsla(0, 0%, 94%, 0), hsla(0, 0%, 94%, 1));
+        @include position(absolute, 75% 0px 0px 0px);
+
+        content: '';
+        display: block;
+        z-index: 2;
+      }
+    }
+
+    &.epoch {
+      background: none;
+
+      > a > header {
+        > h1 {
+          font-size: 55px;
+          font-weight: 500;
+        }
+
+        > span.date {
+          font-size: 20px;
+          color: black;
+        }
+      }
+    }
+
+    > .buttons {
+      @include position(absolute, 15px 15px null null);
+
+      ~ a h1 {
+        margin: 0 10%;
+      }
+    }
+
+    &.dimmed {
+      opacity: 0.5;
+    }
+
+    &.only-me {
+      background-color: white;
+      border: 3px solid hsl(0, 0%, 80%);
+    }
+
+    .only-me-overlay {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(center);
+      @include position(absolute, 0px 0 0 0px);
+
+      background-color: rgba(255, 255, 255, 0.85);
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+
+      > i {
+        font-size: 100px;
+        color: rgba(0, 0, 0, 0.7);
+      }
+    }
+
+    > a {
+      display: block;
+      padding: 20px;
+      text-decoration: inherit;
+      color: inherit;
+      outline: none;
+
+      > header {
+        text-align: center;
+
+        > h1 {
+          font-weight: 600;
+          margin: 0;
+
+          > div {
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+        }
+
+        > span.date {
+          color: grey;
+        }
+      }
+
+      > div.content {
+        > div.paragraph {
+          margin-top: 20px;
+          font-size: 16px;
+          line-height: 22px;
+          word-wrap: break-word;
+        }
+
+        .quote {
+          @include align-items(center);
+          @include display(flex);
+          @include justify-content(flex-start);
+
+          > div {
+            font-size: 28px;
+            font-weight: 300;
+            font-style: italic;
+          }
+
+          > .person {
+            margin-right: 30px;
+            min-width: 145px;
+
+            > footer {
+              font-style: normal;
+
+              > p {
+                margin: 0;
+                text-align: center;
+                white-space: wrap;
+
+                &.name {
+                  font-size: 20px;
+                }
+
+                &.occupation {
+                  font-size: 12px;
+                  color: gray;
+                }
+              }
+            }
+          }
+        }
+
+        > .person {
+          width: 150px;
+          text-align: center;
+          margin: 20px auto 0 auto;
+
+          > footer {
+
+            > p {
+              margin: 0;
+              text-align: center;
+              white-space: wrap;
+
+              &.name {
+                font-size: 20px;
+              }
+
+              &.occupation {
+                font-size: 12px;
+                color: gray;
+              }
+            }
+          }
+        }
+
+        > img.cover {
+          width: 100%;
+          margin-top: 20px;
+        }
+      }
+
+      > footer {
+        margin-top: 20px;
+        text-align: center;
+
+        > .cc-hashtag-list {
+          > ul > li {
+            font-size: 16px;
+
+            &.current {
+              font-weight: bold;
+            }
+          }
+        }
+      }
+
+    }
+  }
+
+}
+
+
+// Story header
+//
+main.company.timeline > div.wrapper > header {
+
+  > h1 {
+    font-size: 55px;
+    font-weight: 200;
+    margin: 0;
+  }
+
+}

@@ -2,7 +2,7 @@ $base-font-size: 22pt;
 $base-unit: $base-font-size * .7;
 $base-font-family: 'proxima-nova';
 
-$min-page-width: 1024px;
+$min-page-width: 700px;
 
 // Colors
 $platinum: hsl(0, 0%, 89%);
@@ -97,12 +97,17 @@ $black-color:          hsl(0, 0%, 0%);
 $background-color:     $white-color;
 $border-color:         $disabled-grey-color;
 $special-link-color:   $primary-grey-color;
+$special-input-color:  $primary-grey-color;
 $card-color:           $accented-white-color;
 $link-color:           $accented-green-color;
 $disabled-color:       $disabled-grey-color;
 $label-color:          $accented-green-color;
 $label-text-color:     $white-color;
 
+$thin-weight:          300;
+$normal-weight:        400;
+$bold-weight:          600;
+$bolder-weight:        700;
 
 $micro-font-size:    5px;
 $tiny-font-size:     7px;
@@ -114,3 +119,7 @@ $large-font-size:    24px;
 $huge-font-size:     36px;
 $great-font-size:    54px;
 $giant-font-size:    81px;
+
+strong {
+  font-weight: $bold-weight;
+}

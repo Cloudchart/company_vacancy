@@ -39,4 +39,11 @@ module.exports = GlobalState.createStore
         item.get('pinnable_id')     is post_id  and
         item.get('pinnable_type')   is 'Post'   and
         not item.get('parent_id')               and
-        item.get('content')            
+        item.get('content')       
+
+  filterPinsForPost: (post_id) ->
+    @cursor.items
+      .filter (item) ->
+        item.get('pinnable_id')     is post_id  and
+        item.get('pinnable_type')   is 'Post'   and
+        not item.get('parent_id')

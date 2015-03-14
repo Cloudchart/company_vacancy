@@ -27,10 +27,8 @@ module.exports = React.createClass
     title: React.PropTypes.string.isRequired
     pinnable_id: React.PropTypes.string.isRequired
     pinnable_type: React.PropTypes.string.isRequired
-    showCounter: React.PropTypes.bool
 
   getDefaultProps: ->
-    showCounter: false
     cursor:
       pins:   PinStore.cursor.items
       user:   UserStore.me()
@@ -78,6 +76,13 @@ module.exports = React.createClass
         pin.get('parent_id', null)  == null
       .size
 
+  getRepinsCount: ->
+    PinStore.cursor.items
+      .filter (pin) => pin.get('parent_id') == @props.uuid
+      .size
+
+  getCount: ->
+    if @props.uuid then @getRepinsCount() else @getPinsCount()
 
   # Handlers
   #
@@ -103,9 +108,9 @@ module.exports = React.createClass
     />
 
   renderCounter: ->
-    return null unless @props.showCounter
+    return null unless (count = @getCount()) > 0
 
-    <span>{ @getPinsCount() }</span>
+    <span>{ count }</span>
 
 
   render: ->
@@ -113,7 +118,7 @@ module.exports = React.createClass
 
     classList = cx
       active: !!@state.currentUserPin or !!@state.currentUserRepin
-      'with-counter': @props.showCounter
+      'with-counter': (@getCount() > 0)
 
     <li className={ classList } onClick={ @handleClick }>
       <i className="fa fa-thumb-tack" />

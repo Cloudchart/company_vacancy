@@ -28,12 +28,13 @@ module.exports = React.createClass
     <article 
       className    = "user-preview"
       onMouserOver = @handleMouseOver
-      onMouseLeave = @handleMouseLeave
-    >
+      onMouseLeave = @handleMouseLeave >
       <Avatar
-        avatarURL = { user.get('avatar_url') }
-        value     = { user.get('full_name') } />
+        avatarURL  = { user.get('avatar_url') }
+        value      = { user.get('full_name') } />
       <section className='info'>
-        <header>{ user.get('full_name') }</header>
+        <a href={ user.get('user_url') } className="for-group">
+          <header>{ user.get('full_name') }</header>
+        </a>
       </section>
     </article>

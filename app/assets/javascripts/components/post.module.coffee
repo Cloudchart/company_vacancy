@@ -30,7 +30,7 @@ renderHint          = require('utils/render_hint')
 InsightList         = require('components/insight/list')
 Toggle              = require('components/form/toggle')
 PinButton           = require('components/pinnable/pin_button')
-Button              = require('components/form/buttons').StandardButton
+StandardButton      = require('components/form/buttons').StandardButton
 UserPreview         = require('components/user/preview')
 
 # Main
@@ -60,16 +60,16 @@ Post = React.createClass
 
   getInitialState: ->
     _.extend @getStateFromStores(@props),
-      readOnly: @props.readOnly
-      viewMode: @getDefaultViewMode()
-      showPins: false
-      titleFocused: false
+      readOnly:        @props.readOnly
+      isInEditMode:    false
+      arePinsExpanded: false
+      titleFocused:    false
 
   onGlobalStateChange: ->
     readOnly = @props.cursor.flags.get('is_read_only')
-    viewMode = if readOnly then 'view' else @state.viewMode
+    isInEditMode = isInEditMode && !readOnly
 
-    @setState(readOnly: readOnly, viewMode: viewMode)
+    @setState(readOnly: readOnly, isInEditMode: isInEditMode)
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
@@ -102,15 +102,6 @@ Post = React.createClass
     options
 
 
-  isReadOnly: ->
-    @state.viewMode == 'view'
-
-  getDefaultViewMode: ->
-    if ['view', 'edit'].indexOf(location.hash.slice(1)) != -1
-      location.hash.slice(1)
-    else
-      'edit'
-
   getViewModeOptions: ->
     view: 'View'
     edit: 'Edit'
@@ -120,6 +111,15 @@ Post = React.createClass
 
   getStrippedTitle: (title) ->
     title.replace(/(<([^>]+)>)/ig, "").trim()
+
+  gatherPinnersIds: ->
+    PinStore.filterPinsForPost(@props.id)
+      .sortBy (pin) -> pin.get('created_at')
+      .reverse()
+      .map (pin) -> pin.get('user_id')
+
+  getPinnersNumberText: (pinnersNumber) ->
+    if pinnersNumber > 0 then "+ #{pinnersNumber} others pinned this post" else null
 
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
@@ -163,7 +163,7 @@ Post = React.createClass
 
   handleOkClick: (event) ->
     this.refs.okButton.getDOMNode().focus();
-    location.href = @state.company.company_url
+    location.href = @state.company.company_url + "#" + @props.id
     
     unless @state.visibility
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: 'public' })
@@ -181,14 +181,14 @@ Post = React.createClass
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: value })
 
   handleViewModeChange: (value) ->
-    @setState(viewMode: value)
-    location.hash = value
+    @setState(isInEditMode: value == 'edit')
 
-  handleShowPins: ->
-    @setState(showPins: true)
+  handleExpandPins: ->
+    @setState(arePinsExpanded: true)
 
-    content = $(".content")
-    $('html,body').animate({ scrollTop: content.offset().top + content.height() }, 'slow')
+    setTimeout ->
+      $('html,body').animate({ scrollTop: $(".post-pins").offset().top - 30 }, 'slow')
+    , 10
 
 
   # Lifecycle Methods
@@ -212,80 +212,101 @@ Post = React.createClass
   # Renderers
   #
   renderCompanyName: ->
-    return null unless @isReadOnly() && @state.company
+    return null unless @state.company
 
     <h2>{ @state.company.name }</h2>
 
+  renderVisibilityDropdown: ->
+    return null unless @state.isInEditMode
+
+    <Dropdown
+      key      = "visibility"
+      options  = { @getVisibilityOptions() }
+      value    = { @state.visibility_value }
+      onChange = { @handleVisibilityChange } />
+
+  renderEditControl: ->
+    return null if @state.readOnly
+
+    if @state.isInEditMode
+      <Dropdown
+        key         = "view-mode"
+        options     = { @getViewModeOptions() }
+        value       = "edit"
+        className   = "view-mode"
+        iconClass   = "fa fa-chevron-down"
+        onChange    = { @handleViewModeChange } />
+    else
+      <StandardButton 
+        className = "edit-mode transparent"
+        onClick   = { => @handleViewModeChange("edit") }
+        text      = "edit" />
+
+  renderCloseIcon: ->
+    return null unless @state.company
+
+    if @state.isInEditMode
+      <StandardButton 
+        className = "transparent"
+        iconClass = "cc-icon cc-times"
+        onClick   = { => @handleViewModeChange("view") } />
+    else
+      <a href={ @state.company.get('company_url') + "#" + @props.id }>
+        <i className="cc-icon cc-times"></i>
+      </a>
+
   renderHeaderControls: ->
     <section className="controls">
-      {
-        if !@isReadOnly()
-          <Dropdown
-            options  = { @getVisibilityOptions() }
-            value    = { @state.visibility_value }
-            onChange = { @handleVisibilityChange }
-          />
-      }
-      {
-        if !@state.readOnly
-          <Dropdown
-            options     = { @getViewModeOptions() }
-            value       = { @state.viewMode }
-            className   = "view-mode"
-            iconClass   = "fa fa-chevron-down"
-            onChange    = { @handleViewModeChange }
-          />
-      }
+      { @renderVisibilityDropdown() }
+      { @renderEditControl() }
+      { @renderCloseIcon() }
     </section>
 
-  renderPinMenu: ->
-    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@isReadOnly()
+  renderExpandButton: ->
+    return null if @state.arePinsExpanded
 
-    <section className="post-pin-menu">
-      <InsightList pinnable_id={ @props.id } pinnable_type="Post" onlyFirst = { true } />
-      {
-        if !@state.showPins
-          <Button 
-            className = "cc show-pins"
-            onClick   = { @handleShowPins }
-            text      = "Show All" />
-      }
-    </section>
+    <StandardButton 
+      className = "cc show-pins"
+      onClick   = { @handleExpandPins }
+      text      = "Show All" />
 
   renderPins: ->
-    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@isReadOnly() || !@state.showPins
+    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || @state.isInEditMode
 
-    <section className="post-pins">
-      <InsightList pinnable_id={ @props.id } pinnable_type="Post" />
+    className = cx("post-pins": true, expanded: @state.arePinsExpanded)
+
+    <section className={ className }>
+      <InsightList 
+        onlyFirst     = { !@state.arePinsExpanded }
+        pinnable_id   = { @props.id }
+        pinnable_type = "Post" />
+      { @renderExpandButton() }
     </section>
 
   renderPinners: (pinners) ->
-    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || !@isReadOnly()
+    return null if PinStore.filterPinsForPost(@props.id).size == 0 || @state.isInEditMode
 
-    userIds = PinStore.filterInsightsForPost(@props.id).map (pin) -> pin.get('user_id')
-    usersNumber = if userIds.size > 3 then (userIds.size - 3) else 0
-
-    users = @props.cursor.users.filter (user) -> userIds.take(3).contains(user.get('uuid'))
+    pinnersIds = @gatherPinnersIds()
+    
+    pinners = pinnersIds.take(3).map (pinnerId) => @props.cursor.users.get(pinnerId)
+    pinnersNumber = pinnersIds.skip(3).size
 
     <section className="post-pinners">
       <ul>
         {
-          users.map (user, index) ->
+          pinners.map (user, index) ->
             <li key={index}>
               <UserPreview cursor = { UserPreview.getCursor(user.get('uuid')) } />
             </li>
           .toArray()
         }
       </ul>
-      {
-        if usersNumber > 0
-          "+ #{usersNumber} others pinned this post"
-      }
+      { @getPinnersNumberText(pinnersNumber) }
     </section>
 
 
   renderPinInfo: ->
-    return null unless @isReadOnly()
+    return null if @state.isInEditMode
 
     <section className="post-pin-info">
       { @renderPinners() }
@@ -293,34 +314,31 @@ Post = React.createClass
         <PinButton 
           pinnable_id   = { @props.id }
           pinnable_type = 'Post'
-          title         = { @state.post.title }
-          showCounter   = { true } />
+          title         = { @state.post.title } />
       </ul>
     </section>
 
 
   renderFooter: ->
-    return null if @isReadOnly()
+    return null unless @state.isInEditMode
 
     <footer>
-      <button
-        className="cc alert"
-        onClick={ @handleDestroyClick }>
-        Delete
-      </button>
-      <button
-        ref="okButton"
-        className="cc"
-        onClick={ @handleOkClick }>
-        OK
-      </button>
+      <StandardButton
+        className = "cc alert"
+        onClick   = { @handleDestroyClick }
+        text      = "Delete" />
+      <StandardButton
+        ref       = "okButton"
+        className = "cc"
+        onClick   = { @handleOkClick }
+        text      = "OK" />
     </footer>
 
   renderEffectiveDate: ->
     <FuzzyDateInput
       from      = { @state.post.effective_from }
       till      = { @state.post.effective_till }
-      readOnly  = { @isReadOnly() }
+      readOnly  = { !@state.isInEditMode }
       onUpdate  = { @handleEffectiveDateUpdate }
     />
 
@@ -332,14 +350,14 @@ Post = React.createClass
 
     className = cx({
       "post-container": true,
-      edit: !@isReadOnly()
+      edit: @state.isInEditMode
     })
 
     <article ref="container" className={ className } >
 
       <header>
         { @renderCompanyName() }
-        <Wrapper className="editor" isWrapped={!@isReadOnly()}>
+        <Wrapper className="editor" isWrapped={!@state.isInEditMode}>
           <label className="title">
             <ContentEditableArea
               onBlur = { @handleTitleBlur }
@@ -347,35 +365,35 @@ Post = React.createClass
               onFocus = { @handleTitleFocus }
               onInput = { @handleTitleInput }
               placeholder = 'Tap to add title'
-              readOnly = { @isReadOnly() }
+              readOnly = { !@state.isInEditMode }
               value = { @state.post.title }
             />
           </label>
           <Counter
             count   = { @getTitleLimit(@state.titleLength) }
-            visible = { !@isReadOnly() && @state.titleFocused } />
+            visible = { @state.isInEditMode && @state.titleFocused } />
           <Hint
             content = renderHint("title")
-            visible = { !@isReadOnly() && !@state.titleFocused } />
+            visible = { @state.isInEditMode && !@state.titleFocused } />
         </Wrapper>
 
-        <Wrapper className="editor" isWrapped={!@isReadOnly()}>
+        <Wrapper className="editor" isWrapped={@state.isInEditMode}>
           <label className="published-at">
             { @renderEffectiveDate() }
           </label>
           <Hint
             content = { renderHint("date") }
-            visible = { !@isReadOnly() } />
+            visible = { @state.isInEditMode } />
         </Wrapper>
 
-        <Wrapper className="editor" isWrapped={!@isReadOnly()}>
+        <Wrapper className="editor" isWrapped={@state.isInEditMode}>
           <PostsStories
             post_id     = { @state.post.uuid }
             company_id  = { @props.company_id }
-            readOnly    = { @isReadOnly() } />
+            readOnly    = { !@state.isInEditMode } />
           <Hint
             content = { renderHint("stories") }
-            visible = { !@isReadOnly() } />
+            visible = { @state.isInEditMode } />
         </Wrapper>
 
         { @renderHeaderControls() }
@@ -390,14 +408,12 @@ Post = React.createClass
           owner_type          = "Post"
           editorIdentityTypes = {['Picture', 'Paragraph', 'Quote', 'KPI', 'Person']}
           classForArticle     = "editor post"
-          readOnly            = {@isReadOnly()}
+          readOnly            = {!@state.isInEditMode}
         />
-        { @renderPinMenu() }
+        { @renderFooter() }
       </section>
 
       { @renderPins() }
-
-      { @renderFooter() } 
     </article>
 
 # Exports
