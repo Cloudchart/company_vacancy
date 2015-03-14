@@ -110,9 +110,14 @@ Post = React.createClass
   getStrippedTitle: (title) ->
     title.replace(/(<([^>]+)>)/ig, "").trim()
 
-  getPinnersNumberText: (userIds) ->
-    usersNumber = if userIds.size > 3 then (userIds.size - 3) else 0
-    if usersNumber > 0 then "+ #{usersNumber} others pinned this post" else null
+  gatherPinnersIds: ->
+    PinStore.filterPinsForPost(@props.id)
+      .sortBy (pin) -> pin.get('created_at')
+      .reverse()
+      .map (pin) -> pin.get('user_id')
+
+  getPinnersNumberText: (pinnersNumber) ->
+    if pinnersNumber > 0 then "+ #{pinnersNumber} others pinned this post" else null
 
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
@@ -224,11 +229,13 @@ Post = React.createClass
 
     [
       <Dropdown
+        key      = "visibility"
         options  = { @getVisibilityOptions() }
         value    = { @state.visibility_value }
         onChange = { @handleVisibilityChange }
       />
       <Dropdown
+        key         = "view-mode"
         options     = { @getViewModeOptions() }
         value       = "edit"
         className   = "view-mode"
@@ -274,23 +281,24 @@ Post = React.createClass
     </section>
 
   renderPinners: (pinners) ->
-    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || @state.isInEditMode
+    return null if PinStore.filterPinsForPost(@props.id).size == 0 || @state.isInEditMode
 
-    userIds = PinStore.filterInsightsForPost(@props.id).map (pin) -> pin.get('user_id')
+    pinnersIds = @gatherPinnersIds()
     
-    users = @props.cursor.users.filter (user) -> userIds.take(3).contains(user.get('uuid'))
+    pinners = pinnersIds.take(3).map (pinnerId) => @props.cursor.users.get(pinnerId)
+    pinnersNumber = pinnersIds.skip(3).size
 
     <section className="post-pinners">
       <ul>
         {
-          users.map (user, index) ->
+          pinners.map (user, index) ->
             <li key={index}>
               <UserPreview cursor = { UserPreview.getCursor(user.get('uuid')) } />
             </li>
           .toArray()
         }
       </ul>
-      { @getPinnersNumberText(userIds) }
+      { @getPinnersNumberText(pinnersNumber) }
     </section>
 
 
@@ -303,8 +311,7 @@ Post = React.createClass
         <PinButton 
           pinnable_id   = { @props.id }
           pinnable_type = 'Post'
-          title         = { @state.post.title }
-          showCounter   = { true } />
+          title         = { @state.post.title } />
       </ul>
     </section>
 
