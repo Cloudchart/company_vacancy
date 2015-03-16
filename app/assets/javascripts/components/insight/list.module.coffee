@@ -17,11 +17,10 @@ module.exports = React.createClass
   displayName: 'InsightList'
 
   propTypes:
-    onlyFirst: React.PropTypes.bool
+    limit: React.PropTypes.number
 
   getDefaultProps: ->
     cursor: PinStore.cursor.items
-    onlyFirst: false
 
   # Helpers
   #
@@ -39,7 +38,7 @@ module.exports = React.createClass
   # Renderers
   #
   renderItems: (ids) ->
-    ids = ids.take(1) if @props.onlyFirst
+    ids = ids.take(@props.limit) if @props.limit > 0
 
     ids.map (id) -> <ItemComponent key={ id } uuid={ id } cursor={ ItemComponent.getCursor(id) } />
 

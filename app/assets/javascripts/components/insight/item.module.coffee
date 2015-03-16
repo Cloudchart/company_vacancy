@@ -87,8 +87,10 @@ module.exports = React.createClass
     return null unless @props.cursor.pin.deref()
     return null unless @state.user.deref()
 
-    <li className="insight">
-      { @renderUser() }
-      { @renderContent() }
-      { @renderButtons() }
+    <li>
+      <article className="insight">
+        { @renderUser() }
+        { @renderContent() }
+        { @renderButtons() }
+      </article>
     </li>

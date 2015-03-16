@@ -104,11 +104,7 @@ main.post {
         }
 
         > .select {
-          width: 100px;
-
-          &:nth-of-type(2n) {
-            width: 80px;
-          }
+          width: 130px;
         }
 
         .edit-mode {
@@ -244,7 +240,6 @@ main.post {
       > button {
         display: block;
         margin: auto;
-        margin-top: $default-margin-size;
         padding: 0 30px;
       }
 
@@ -254,11 +249,26 @@ main.post {
       }
 
       @include temp-adaptive {
+        margin-left: 0;
         width: 100%;
 
         .insight-list {
-          margin: 0 auto;
-          width: 310px;
+          @include display(flex);
+          @include flex-wrap(wrap);
+
+          margin: -$default-margin-size/2;
+          margin-bottom: $default-margin-size/2;
+          width: calc(100% + #{$default-margin-size});
+
+          > li {
+            @include flex(0 1 50%);
+
+            padding: $default-margin-size/2;
+
+            ~ li {
+              margin-top: 0;
+            }
+          }
         }
       }
 
@@ -270,32 +280,20 @@ main.post {
           @include display(flex);
           @include flex-wrap(wrap);
 
-          width: 100%;
-        }
+          margin: -$default-margin-size/2;
+          width: calc(100% + #{$default-margin-size});
 
-        .insight-list .insight {
-          margin-bottom: 25px;
-          margin-right: 2%;
-          width: 32%;
+          > li {
+            @include flex(0 1 33.333%);
 
-          &:nth-child(3n) {
-            margin-right: 0;
-          }
-
-          ~ .insight {
-            margin-top: 0;
-          }
-
-          @include temp-adaptive {
-            width: 48%;
-            margin-right: 4%;
-
-            &:nth-child(3n) {
-              margin-right: 4%;
+            @include temp-adaptive {
+              @include flex(0 1 50%);
             }
 
-            &:nth-child(2n) {
-              margin-right: 0;
+            padding: $default-margin-size/2;
+
+            ~ li {
+              margin-top: 0;
             }
           }
         } 

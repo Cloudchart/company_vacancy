@@ -2,6 +2,7 @@
   background-color: $card-color;
   border: 1px solid $border-color;
   padding: $default-margin-size;
+  margin-bottom: 10px;
   position: relative;
 
   &::before,
@@ -99,15 +100,14 @@
   margin-left: 20px;
   overflow: hidden;
   padding: 0;
-  padding-bottom: 15px;
   width: 270px;
 
   > li {
-    @include post-preview-insight;
-  }
+    padding-bottom: $default-margin-size;
 
-  > li ~ li {
-    margin-top: 20px;
+    .insight {
+      @include post-preview-insight;
+    }
   }
 }
 

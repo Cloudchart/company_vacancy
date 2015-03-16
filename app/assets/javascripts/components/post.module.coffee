@@ -67,12 +67,15 @@ Post = React.createClass
 
   onGlobalStateChange: ->
     readOnly = @props.cursor.flags.get('is_read_only')
-    isInEditMode = isInEditMode && !readOnly
+    isInEditMode = @state.isInEditMode && !readOnly
 
     @setState(readOnly: readOnly, isInEditMode: isInEditMode)
 
   refreshStateFromStores: ->
-    @setState(@getStateFromStores(@props))
+    storeData = @getStateFromStores(@props)
+
+    @setState(_.extend storeData, 
+      isInEditMode: @state.isInEditMode || !storeData.visibility)
 
   getStateFromStores: (props) ->
     post = PostStore.get(props.id)
@@ -226,21 +229,12 @@ Post = React.createClass
       onChange = { @handleVisibilityChange } />
 
   renderEditControl: ->
-    return null if @state.readOnly
+    return null if @state.readOnly || @state.isInEditMode
 
-    if @state.isInEditMode
-      <Dropdown
-        key         = "view-mode"
-        options     = { @getViewModeOptions() }
-        value       = "edit"
-        className   = "view-mode"
-        iconClass   = "fa fa-chevron-down"
-        onChange    = { @handleViewModeChange } />
-    else
-      <StandardButton 
-        className = "edit-mode transparent"
-        onClick   = { => @handleViewModeChange("edit") }
-        text      = "edit" />
+    <StandardButton 
+      className = "edit-mode transparent"
+      onClick   = { => @handleViewModeChange("edit") }
+      text      = "edit" />
 
   renderCloseIcon: ->
     return null unless @state.company
@@ -262,8 +256,8 @@ Post = React.createClass
       { @renderCloseIcon() }
     </section>
 
-  renderExpandButton: ->
-    return null if @state.arePinsExpanded
+  renderExpandButton: (insightsNumber) ->
+    return null if @state.arePinsExpanded || insightsNumber <= 0
 
     <StandardButton 
       className = "cc show-pins"
@@ -271,16 +265,17 @@ Post = React.createClass
       text      = "Show All" />
 
   renderPins: ->
-    return null if PinStore.filterInsightsForPost(@props.id).size == 0 || @state.isInEditMode
+    insightsNumber = PinStore.filterInsightsForPost(@props.id).size || 0
+    return null if (insightsNumber == 0 || @state.isInEditMode)
 
     className = cx("post-pins": true, expanded: @state.arePinsExpanded)
 
     <section className={ className }>
       <InsightList 
-        onlyFirst     = { !@state.arePinsExpanded }
+        limit         = { if @state.arePinsExpanded then 0 else 2 }
         pinnable_id   = { @props.id }
         pinnable_type = "Post" />
-      { @renderExpandButton() }
+      { @renderExpandButton(insightsNumber - 2) }
     </section>
 
   renderPinners: (pinners) ->
@@ -322,6 +317,8 @@ Post = React.createClass
   renderFooter: ->
     return null unless @state.isInEditMode
 
+    okText = if @state.visibility then 'OK' else 'Publish'
+
     <footer>
       <StandardButton
         className = "cc alert"
@@ -331,7 +328,7 @@ Post = React.createClass
         ref       = "okButton"
         className = "cc"
         onClick   = { @handleOkClick }
-        text      = "OK" />
+        text      = { okText } />
     </footer>
 
   renderEffectiveDate: ->
