@@ -28,10 +28,6 @@ populateStores = (data, callback) ->
   #
   require('sync/post_sync_api').fetchAll(data.company_id).done (json) ->
 
-    Dispatcher.handleServerAction
-      type: 'post:fetch-all:done'
-      data: [json]
-
     _.each {
       posts: PostStore
       blocks: BlockStore
@@ -41,9 +37,13 @@ populateStores = (data, callback) ->
     }, (store, key) ->
       _.each json[key], (item) -> store.add(item.uuid, item)
 
+    callback() if callback
+
     PostStore.emitChange()
 
-    callback() if callback
+    Dispatcher.handleServerAction
+      type: 'post:fetch-all:done'
+      data: [json]
 
 
 @['posts#index'] = (data) ->
