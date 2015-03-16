@@ -59,9 +59,11 @@ Post = React.createClass
     readOnly: true
 
   getInitialState: ->
-    _.extend @getStateFromStores(@props),
+    storeData = @getStateFromStores(@props)
+
+    _.extend storeData,
       readOnly:        @props.readOnly
-      isInEditMode:    false
+      isInEditMode:    !storeData.visibility
       arePinsExpanded: false
       titleFocused:    false
 
@@ -72,10 +74,7 @@ Post = React.createClass
     @setState(readOnly: readOnly, isInEditMode: isInEditMode)
 
   refreshStateFromStores: ->
-    storeData = @getStateFromStores(@props)
-
-    @setState(_.extend storeData, 
-      isInEditMode: @state.isInEditMode || !storeData.visibility)
+    @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
     post = PostStore.get(props.id)

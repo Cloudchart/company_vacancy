@@ -1,4 +1,4 @@
-populateStores = (data) ->
+populateStores = (data, callback) ->
   Dispatcher = require('dispatcher/dispatcher')
   GlobalState = require('global_state/state')
 
@@ -43,6 +43,8 @@ populateStores = (data) ->
 
     PostStore.emitChange()
 
+    callback() if callback
+
 
 @['posts#index'] = (data) ->
   populateStores(data)
@@ -54,10 +56,9 @@ populateStores = (data) ->
   )
 
 @['posts#show'] = (data) ->
-  populateStores(data)
+  populateStores data, ->
+    Post = require('components/post')
 
-  Post = require('components/post')
-
-  React.renderComponent(
-    Post({ id: data.id, company_id: data.company_id, cursor: Post.getCursor(data.company_id) }), document.querySelector('body > main')
-  )
+    React.renderComponent(
+      Post({ id: data.id, company_id: data.company_id, cursor: Post.getCursor(data.company_id) }), document.querySelector('body > main')
+    )
