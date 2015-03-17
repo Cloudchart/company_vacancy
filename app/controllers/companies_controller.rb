@@ -209,7 +209,7 @@ private
 
     event_name = if action_name == 'update' && company_params[:is_published] == 'true'
       'published-company'
-    elsif action_name == 'new'
+    elsif action_name == 'new' && current_user.companies.any?
       'created-company'
     else
       nil
