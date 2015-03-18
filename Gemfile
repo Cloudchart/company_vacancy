@@ -34,6 +34,9 @@ gem 'jbuilder'
 gem 'squeel'
 gem 'parslet'
 
+gem 'omniauth'
+gem 'omniauth-twitter'
+
 # Engines
 #
 gem 'cloud_profile', path: 'vendor/engines/cloud_profile'
