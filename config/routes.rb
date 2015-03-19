@@ -121,5 +121,6 @@ Cloudchart::Application.routes.draw do
   #
   get '/auth/twitter', as: :twitter_auth
   get '/auth/twitter/callback', to: 'auth#twitter'
+  post '/auth/developer/callback', to: 'auth#developer'
 
 end
