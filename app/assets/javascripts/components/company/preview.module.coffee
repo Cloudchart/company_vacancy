@@ -16,6 +16,8 @@ People         = require('components/pinnable/block/people')
 
 Buttons        = require('components/form/buttons')
 
+pluralize      = require('utils/pluralize')
+
 SyncButton     = Buttons.SyncButton
 CancelButton   = Buttons.CancelButton
 
@@ -58,6 +60,16 @@ CompanyPreview = React.createClass
       .filter (tagging) => tagging.get('taggable_type') is 'Company' && tagging.get('taggable_id') is @props.uuid
       .map (tagging) -> tagging.get('tag_id')
       .toSet()
+
+  getStrippedDescription: ->
+    return "" unless @cursor.company.get('description')
+
+    description = @cursor.company.get('description').replace(/(<([^>]+)>)/ig, " ").trim()
+
+    if description.length > 160
+      description = description.slice(0, 160) + "..."
+
+    description
 
   getToken: ->
     TokenStore.findCompanyInvite(@props.uuid)
@@ -113,48 +125,52 @@ CompanyPreview = React.createClass
       .map (tag, index) -> <div key={ index } >#{ tag.get('name') }</div>
       .toArray()
 
+  renderInvitedLabel: ->
+    return null unless @getToken()
+
+    <li className="label">Invited</li>
+
+  renderFollowedLabel: ->
+    return null unless @getFavorite()
+
+    <li className="label">Followed</li>
+
   renderInfo: ->
     <div className="info">
       <ul className="stats">
         <li>
-          { @cursor.company.get('posts_count') || 0 }
-          <div className="round-button">
-            <i className="fa fa-pencil"></i>
-          </div>
+          { pluralize(@cursor.company.get('posts_count') || 0, "post", "posts") }
         </li>
         <li>
-          { @cursor.company.get('pins_count') || 0 }
-          <div className="round-button">
-            <i className="fa fa-thumb-tack"></i>
-          </div>
+          { pluralize(@cursor.company.get('pins_count') || 0, "pin", "pins") }
         </li>
       </ul>
       <ul className="labels">
-        {
-          if @getToken()
-            <li className="label">Invited</li>
-        }
-        {
-          if @getFavorite()
-            <li className="label">Followed</li>
-        }
+        { @renderInvitedLabel() }
+        { @renderFollowedLabel() }
       </ul>
-    </div>   
+    </div> 
+
+  renderName: (company) ->
+    return null if company.get('is_name_in_logo')
+
+    company.get("name")
 
   renderHeader: ->
     company = @cursor.company
 
     <header>
-      <Logo 
-        logoUrl = { company.get('logotype_url') }
-        value   = { company.get('name') } />
-      {
-        unless company.get('is_name_in_logo')
-          <h1>{ company.get("name") }</h1>
-      }
+      <figure>
+        <Logo 
+          logoUrl = { company.get('logotype_url') }
+          value   = { company.get('name') } />
+      </figure>
+      <h1>{ @renderName(@cursor.company) }</h1>
     </header>
 
   renderButtons: ->
+    return null unless @getToken()
+
     <div className="buttons">
       <SyncButton 
         className = "cc alert"
@@ -172,25 +188,25 @@ CompanyPreview = React.createClass
 
   renderFooter: ->
     <footer>
-      {
-        if @getToken()
-          @renderButtons()
-      }
-      <People key="people" items={ PersonStore.findByCompany(@props.uuid) } />
+      { @renderButtons() }
+      <People 
+        key            = "people"
+        items          = { PersonStore.findByCompany(@props.uuid).take(5) }
+        showOccupation = { false } />
       <section key="tags" className="tags">{ @renderTags() }</section>
     </footer>
 
 
   render: ->
-    return null unless @cursor.company.deref(false)
-
-    company = @cursor.company
+    return null unless (company = @cursor.company.deref(false))
 
     <article className="company-preview cloud-card">
       <a href={ company.get('company_url') } className="company-preview-link">
         { @renderHeader() }
         { @renderInfo() }
-        <div className="description" dangerouslySetInnerHTML={__html: company.get('description')}></div>
+        <p className="description">
+          { @getStrippedDescription() }
+        </p>
         { @renderFooter() }
       </a>
     </article>

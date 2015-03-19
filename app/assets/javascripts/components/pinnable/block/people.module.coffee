@@ -13,9 +13,18 @@ module.exports = React.createClass
 
   displayName: 'People'
 
+  propTypes:
+    showOccupation: React.PropTypes.bool
+
+  getDefaultProps: ->
+    showOccupation: true
 
   renderPerson: (item) ->
-    <Human type="person" key={ item.get('uuid') } uuid={ item.get('uuid') } />
+    <Human 
+      type           = "person"
+      key            = { item.get('uuid') }
+      uuid           = { item.get('uuid') }
+      showOccupation = { @props.showOccupation } />
 
 
   render: ->

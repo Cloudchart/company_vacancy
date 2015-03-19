@@ -54,7 +54,7 @@ article.companies,
 
   .company-preview {
     background-color: $card-color;
-    min-height: 400px;
+    height: 405px;
     position: relative;
   }
 }
@@ -70,140 +70,151 @@ article.companies,
 .company-preview {
   position: relative;
 
-  > a:nth-child(1) {
+  > a {
     @include display(flex);
     @include flex-direction(column);
-    @include justify-content(space-between);
 
     color: inherit;
     margin-top: 0;
     outline: none;
     text-decoration: none;
-    width: 100%;
-  }
+    width: 100%; 
 
-  .info {
-    @include position(absolute, $default-margin-size $default-margin-size 0 0);
+    > .info {
+      @include position(absolute, $default-margin-size $default-margin-size 0 0);
 
-    ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .stats {
-      @include display(flex);
-      @include justify-content(flex-end);
-
-      color: $disabled-color;
-      font-size: $big-font-size;
-      font-weight: bold;
-      margin-bottom: $inner-margin-size;
-
-      li {
-        margin-left: $inner-margin-size;
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
       }
 
-      .round-button {
-        margin-left: 5px;
+      .stats {
+        @include display(flex);
+        @include justify-content(flex-end);
 
-        > i {
-          font-size: $big-font-size;
+        color: $auxilary-grey-color;
+        font-size: $small-font-size;
+        font-weight: 600;
+        margin-bottom: $inner-margin-size;
+        text-transform: uppercase;
+
+        li {
+          margin-left: $inner-margin-size;
+        }
+      }
+
+      .labels {
+        @include display(flex);
+        @include justify-content(flex-end);
+
+        li {
+          display: block;
+
+          background-color: $label-color;
+          color: $label-text-color;
+          margin-left: $inner-margin-size;
+          padding: 5px;
         }
       }
     }
 
-    .labels {
+    > header {
+      @include align-items(flex-start);
       @include display(flex);
-      @include justify-content(flex-end);
-
-      li {
-        display: block;
-
-        background-color: $label-color;
-        color: $label-text-color;
-        margin-left: $inner-margin-size;
-        padding: 5px;
-      }
-    }
-  }
-
-  header {
-    @include align-items(flex-start);
-    @include display(flex);
-    @include flex-direction(column);
-    @include justify-content(space-between);
-
-    > img {
-      display: block;
-      margin-bottom: $default-margin-size;
-      max-height: 100px;
-      max-width: 140px;
-      height: auto;
-      width: auto;
-    }
-
-    > h1 {
-      font-size: $large-font-size;
-      margin: 0;
-      margin-bottom: $default-margin-size;
-    }
-  }
-
-  .description {
-    font-size: $big-font-size;
-    margin-bottom: $default-margin-size;
-  }
-
-  footer {
-    @include display(flex);
-    @include flex-direction(column);
-    @include justify-content(space-between);
-
-    border-top: $card-hr;
-    min-height: 75px;
-    padding-top: $default-margin-size;
-
-    .tags {
-      @include display(flex);
-      @include flex-wrap(wrap);
-      @include justify-content(center);
-
-      color: $link-color;
-
-      > * {
-        margin-right: $inner-margin-size;
-      }
-    }
-
-    .people {
-      @include display(flex);
-      @include flex-wrap(wrap);
-      @include justify-content(center);
-
-      margin-bottom: $default-margin-size;
-
-      .human {
-        @extend .cloud-card-human.block;
-
-        margin: $card-basic-space / 2;
-        margin-bottom: 0;
-        width: 80px;
-
-        .credentials {
-          font-size: $small-font-size;
-        }
-      }
-    }
-
-    .buttons {
-      @include align-items(center);
-      @include display(flex);
+      @include flex-direction(column);
       @include justify-content(space-between);
 
-      margin: auto;
-      margin-bottom: $default-margin-size;
-      width: 230px;
+      width: 100%;
+
+      > figure {
+        height: 80px;
+        margin-bottom: $default-margin-size;
+
+        > img {
+          display: block;
+          max-height: 80px;
+          max-width: 80px;
+          height: auto;
+          width: auto;
+        }        
+      }
+
+      > h1 {
+        font-size: $big-font-size;
+        height: $big-font-size;
+        margin: 0;
+        margin-bottom: $default-margin-size;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+      }
+    }
+
+    > .description {
+      @include flex(1);
+
+      font-size: $basic-font-size;
+      font-weight: 300;
+      height: 85px;
+      line-height: 1.4;
+    }
+
+    > footer {
+      @include display(flex);
+      @include flex-direction(column);
+      @include justify-content(space-between);
+
+      border-top: $card-hr;
+      height: 140px;
+      padding-top: $default-margin-size;
+
+      .tags {
+        @include display(flex);
+        @include flex-wrap(wrap);
+        @include justify-content(center);
+
+        color: $link-color;
+        font-size: $small-font-size;
+        margin-left: $inner-margin-size;
+
+        > * {
+          margin-right: $inner-margin-size;
+        }
+      }
+
+      .people {
+        @include display(flex);
+        @include flex-wrap(wrap);
+        @include justify-content(center);
+
+        margin-bottom: $default-margin-size;
+
+        .human {
+          @extend .cloud-card-human.block;
+
+          margin: $card-basic-space / 2;
+          margin-bottom: 0;
+          width: 65px;
+
+          .credentials {
+            color: $special-input-color;
+            font-size: $little-font-size;
+            font-weight: 300;
+          }
+        }
+      }
+
+      .buttons {
+        @include align-items(center);
+        @include display(flex);
+        @include justify-content(space-between);
+
+        margin: auto;
+        margin-bottom: $default-margin-size;
+        width: 230px;
+      }
     }
   }
 }

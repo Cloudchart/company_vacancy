@@ -40,6 +40,14 @@ module.exports = React.createClass
           Person {}
         """
 
+  propTypes:
+    uuid:           React.PropTypes.string.isRequired
+    showOccupation: React.PropTypes.bool
+    type:           React.PropTypes.string
+
+  getDefaultProps: ->
+    showOccupation: true
+
 
   fetch: ->
     GlobalState.fetch(@getQuery(@props.type), { id: @props.uuid })
@@ -61,7 +69,7 @@ module.exports = React.createClass
 
 
   renderOccupation: ->
-    return null unless occupation = @cursor.get('occupation', false)
+    return null unless occupation = @cursor.get('occupation', false) && @props.showOccupation
 
     <p className="occupation">{ occupation }</p>
 
