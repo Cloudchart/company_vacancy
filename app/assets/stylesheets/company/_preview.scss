@@ -142,9 +142,9 @@ article.companies,
 
       > h1 {
         font-size: $big-font-size;
-        height: $big-font-size;
+        height: $big-font-size + 5;
         margin: 0;
-        margin-bottom: $default-margin-size;
+        margin-bottom: $default-margin-size - 10;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

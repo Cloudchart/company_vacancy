@@ -66,8 +66,8 @@ CompanyPreview = React.createClass
 
     description = @cursor.company.get('description').replace(/(<([^>]+)>)/ig, " ").trim()
 
-    if description.length > 160
-      description = description.slice(0, 160) + "..."
+    if description.length > 170
+      description = description.slice(0, 170) + "..."
 
     description
 
