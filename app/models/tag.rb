@@ -1,7 +1,7 @@
 class Tag < ActiveRecord::Base
   include Uuidable
 
-  before_save do
+  before_validation do
     self.name = name.parameterize
   end
 

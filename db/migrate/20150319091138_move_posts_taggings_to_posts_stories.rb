@@ -4,7 +4,7 @@ class MovePostsTaggingsToPostsStories < ActiveRecord::Migration
       story = Story.find_or_create_by!(name: tagging.tag.name, company: tagging.taggable.company)
       story.posts_stories.find_or_create_by!(post: tagging.taggable)
       tagging.destroy
-      say "#{story.name} story processed"
+      say "#{story.name} tag processed"
     end
   end
 

@@ -20,6 +20,7 @@ formatName = (name) ->
   name = name.trim()
   name = name.replace(/[^A-Za-z0-9\-_|\s]+/ig, '')
   name = name.replace(/\s{2,}/g, ' ')
+  name = name.replace(/\s/g, '_')
 
 
 # Main
@@ -115,7 +116,7 @@ MainComponent = React.createClass
 
   handleSelect: (name_or_uuid) ->
     formattedName = formatName(name_or_uuid) ; return unless formattedName
-    existingStory = @props.cursor.stories.get(name_or_uuid, @props.cursor.stories.find((story) -> story.get('formatted_name') is formattedName))
+    existingStory = @props.cursor.stories.get(name_or_uuid, @props.cursor.stories.find((story) -> story.get('formatted_name') is formattedName.toLowerCase()))
     
     if existingStory
       @createPostsStory(existingStory.get('uuid'))
@@ -152,7 +153,7 @@ MainComponent = React.createClass
       storyIdSeq: @getStoryIdSeq()
 
   getDefaultProps: ->
-    placeholder: '#Category'
+    placeholder: '#category'
 
     cursor: 
       stories: StoryStore.cursor.items

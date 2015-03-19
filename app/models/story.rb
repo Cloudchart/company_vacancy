@@ -1,14 +1,13 @@
 class Story < ActiveRecord::Base
   include Uuidable
 
-  before_save do
+  before_validation do
     self.name = name.gsub(/[^A-Za-z0-9\-_|\s]+/i, '').squish.gsub(/\s/, '_')
     self.company_id = nil if company_id.blank?
   end
 
   belongs_to :company
 
-  # has_paper_trail
   has_many :posts_stories, dependent: :delete_all
   has_many :posts, through: :posts_stories
 
