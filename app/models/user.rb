@@ -16,6 +16,8 @@ class User < ActiveRecord::Base
 
   has_many :emails, -> { order(:address) }, class_name: 'CloudProfile::Email', dependent: :destroy
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
+  has_many :oauth_providers, dependent: :destroy
+
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :charts, through: :companies
   has_many :votes, as: :source

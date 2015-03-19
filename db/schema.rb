@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150224113812) do
+ActiveRecord::Schema.define(version: 20150319143219) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -236,6 +236,18 @@ ActiveRecord::Schema.define(version: 20150224113812) do
     t.datetime "updated_at"
   end
 
+  create_table "oauth_providers", primary_key: "uuid", force: true do |t|
+    t.string   "user_id",     limit: 36
+    t.string   "provider"
+    t.string   "uid"
+    t.text     "info"
+    t.text     "credentials"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "oauth_providers", ["user_id"], name: "index_oauth_providers_on_user_id", using: :btree
+
   create_table "pages", primary_key: "uuid", force: true do |t|
     t.string   "title"
     t.text     "body"
@@ -431,7 +443,12 @@ ActiveRecord::Schema.define(version: 20150224113812) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "avatar_uid"
+    t.string   "twitter"
+    t.string   "occupation"
+    t.string   "company"
   end
+
+  add_index "users", ["twitter"], name: "index_users_on_twitter", using: :btree
 
   create_table "vacancies", primary_key: "uuid", force: true do |t|
     t.string   "name",                                     null: false
