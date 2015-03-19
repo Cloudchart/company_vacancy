@@ -11,8 +11,7 @@ class StorySerializer < ActiveModel::Serializer
   end
 
   def formatted_name
-    # story.name.gsub('_', ' ')
-    story.name.mb_chars.downcase
+    story.name.gsub(/_/, ' ').mb_chars.downcase
   end
 
 end

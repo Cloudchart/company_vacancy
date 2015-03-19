@@ -88,6 +88,7 @@ Component = React.createClass
 
 
   onSelect: (name) ->
+    console.log 123
     name = formatName(name) ; return if name.length == 0
 
     unless @state.tagNameSeq.contains(name)
