@@ -154,6 +154,7 @@ GEM
       railties (>= 3.2, < 5.0)
     haml (4.0.6)
       tilt
+    hashie (3.4.0)
     hashr (0.0.22)
     hike (1.2.3)
     httpclient (2.3.4.1)
@@ -203,12 +204,22 @@ GEM
     net-ssh (2.8.0)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
+    oauth (0.4.7)
     oauth2 (0.9.3)
       faraday (>= 0.8, < 0.10)
       jwt (~> 0.1.8)
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (~> 1.2)
+    omniauth (1.2.2)
+      hashie (>= 1.2, < 4)
+      rack (~> 1.0)
+    omniauth-oauth (1.0.1)
+      oauth
+      omniauth (~> 1.0)
+    omniauth-twitter (1.1.0)
+      multi_json (~> 1.3)
+      omniauth-oauth (~> 1.0)
     paper_trail (3.0.1)
       activerecord (>= 3.0, < 5.0)
       activesupport (>= 3.0, < 5.0)
@@ -426,6 +437,8 @@ DEPENDENCIES
   mini_magick
   mysql2
   oauth2
+  omniauth
+  omniauth-twitter
   pagescript!
   paper_trail
   parslet

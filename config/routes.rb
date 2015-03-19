@@ -117,4 +117,10 @@ Cloudchart::Application.routes.draw do
   get ':id', to: 'pages#show', as: :page
   delete 'logout', to: 'cloud_profile/authentications#destroy', as: 'logout'
 
+  # Twitter OAuth
+  #
+  get '/auth/twitter', as: :twitter_auth
+  get '/auth/twitter/callback', to: 'auth#twitter'
+  post '/auth/developer/callback', to: 'auth#developer'
+
 end
