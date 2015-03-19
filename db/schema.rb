@@ -11,6 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+ActiveRecord::Schema.define(version: 20150319143219) do
+
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
     t.integer  "group_type",                default: 0
