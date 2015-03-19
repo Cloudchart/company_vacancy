@@ -19,7 +19,8 @@ ComboboxOption  = cc.require('plugins/react_tokeninput/option')
 formatName = (name) ->
   name = name.trim()
   name = name.replace(/[^A-Za-z0-9\-_|\s]+/ig, '')
-  name = name.replace(/\s{2,}/g, ' ')
+  name = name.replace(/\s{2,}|_/g, ' ')
+  name = name.toLowerCase()
 
 
 # Main
@@ -152,7 +153,7 @@ MainComponent = React.createClass
       storyIdSeq: @getStoryIdSeq()
 
   getDefaultProps: ->
-    placeholder: '#Category'
+    placeholder: '#category'
 
     cursor: 
       stories: StoryStore.cursor.items
