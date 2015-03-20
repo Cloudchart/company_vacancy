@@ -22,6 +22,7 @@ CompanyList = React.createClass
       companies: ->
         """
           User {
+            roles,
             owned_companies {
               #{CompanyPreview.getQuery('company')}
             }
@@ -57,7 +58,9 @@ CompanyList = React.createClass
     if @props.isInLegacyMode
       @props.ids
     else
-      @cursor.companies.map (company) -> company.get('uuid')
+      CompanyStore
+        .filterForUser(@props.uuid)
+        .map (company) -> company.get('uuid')
 
 
   # Lifecycle methods

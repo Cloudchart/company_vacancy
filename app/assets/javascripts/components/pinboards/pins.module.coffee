@@ -1,20 +1,21 @@
 # @cjsx React.DOM
 
 
-GlobalState = require('global_state/state')
+GlobalState     = require('global_state/state')
 
 
 # Stores
 #
-PinboardStore = require('stores/pinboard_store')
-PinStore      = require('stores/pin_store')
-UserStore     = require('stores/user_store.cursor')
+PinStore        = require('stores/pin_store')
+UserStore       = require('stores/user_store.cursor')
 
 
 # Components
 #
-PinComponent  = require('components/pinboards/pin')
-PostComponent = require('components/pinnable/post')
+PinComponent     = require('components/pinboards/pin')
+
+
+NodeRepositioner = require('utils/node_repositioner')
 
 
 # Exports
@@ -24,13 +25,13 @@ module.exports = React.createClass
   displayName: 'Pins'
 
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin, NodeRepositioner.mixin]
 
   statics:
 
     queries:
 
-      pins: ->
+      viewer_pins: ->
         """
           Viewer {
             pins {
@@ -39,18 +40,46 @@ module.exports = React.createClass
           }
         """
 
+      user_pins: ->
+        """
+          User {
+            pins {
+              #{PinComponent.getQuery('pin')}
+            }
+          }
+        """
+
+  propTypes:
+    uuid: React.PropTypes.string
+
+  getDefaultProps: ->
+    uuid: null
+
+  getInitialState: ->
+    loaders: Immutable.Map()
+
 
   # Helpers
   #
   fetch: ->
-    GlobalState.fetch(@getQuery('pins'))
+    if @props.uuid
+      promise = GlobalState.fetch(@getQuery('user_pins'), id: @props.uuid)
+    else
+      promise = GlobalState.fetch(@getQuery('viewer_pins'))
+
+    promise.then =>
+      @setState
+        loaders: @state.loaders.set('pins', true)
 
   isLoaded: ->
-    @cursor.pins.deref(false) && @cursor.user.deref(false)
+    @state.loaders.get('pins') && @cursor.user.deref(false)
+
+  getUserId: ->
+    if @props.uuid then @props.uuid else @cursor.user.get('uuid')
 
   gatherPins: ->
     @cursor.pins
-      .filter (pin) => pin.get('user_id') == @cursor.user.get('uuid') && pin.get('pinnable_id')
+      .filter (pin) => pin.get('user_id') == @getUserId() && pin.get('pinnable_id')
       .valueSeq()
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
@@ -80,6 +109,6 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <section className="cloud-columns cloud-columns-flex">
+    <section className="pins cloud-columns cloud-columns-flex">
       { @renderPins() }
     </section>

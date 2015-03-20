@@ -3,7 +3,7 @@
 GlobalState        = require('global_state/state')
 
 ProfileInfo        = require('components/profile/info')
-PinboardsComponent = require('components/pinboards/pinboards')
+PinsComponent      = require('components/pinboards/pins')
 CompaniesList      = require('components/company/list')
 
 UserStore          = require('stores/user_store.cursor')
@@ -118,7 +118,7 @@ module.exports = React.createClass
 
   renderContent: ->
     if @state.selected == "pins"
-      <PinboardsComponent uuid = { @props.uuid } />
+      <PinsComponent uuid = { @props.uuid } />
     else if @state.selected = "companies"
       <CompaniesList uuid = { @props.uuid } />
 

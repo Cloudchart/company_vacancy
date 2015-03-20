@@ -53,7 +53,7 @@
 
 // Pin Card
 //
-main.pinboards .pin.cloud-card {
+.pin.cloud-card {
 
   > .insight {
     @include pin-card-insight;

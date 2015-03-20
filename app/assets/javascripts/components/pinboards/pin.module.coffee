@@ -8,6 +8,7 @@ GlobalState = require('global_state/state')
 #
 PinStore  = require('stores/pin_store')
 UserStore = require('stores/user_store.cursor')
+PostStore = require('stores/post_store.cursor')
 
 
 # Components
@@ -49,15 +50,12 @@ module.exports = React.createClass
             parent {
               user,
               children
-            },
-            children
+            }
           }
         """
 
   componentWillMount: ->
-    @cursor = 
-      pin:  PinStore.cursor.items.cursor(@props.uuid)
-      user: UserStore.me()
+    @cursor = PinStore.cursor.items.cursor(@props.uuid)
 
   # Renderers
   #
@@ -84,13 +82,13 @@ module.exports = React.createClass
 
   renderComment: ->
     <footer>
-      { @renderPinContent(@cursor.pin.get('content')) }
+      { @renderPinContent(@cursor.get('content')) }
       <i className="fa fa-share" />
-      <Human type="user" uuid={ @cursor.pin.get('user_id') } />
+      <Human type="user" uuid={ @cursor.get('user_id') } />
     </footer>
 
   render: ->
-    return null unless @cursor.user.deref(false)
+    return null unless @cursor.deref(false)
 
     <section className="pin cloud-card">
       <PinnableHeader uuid={ @props.uuid } />
