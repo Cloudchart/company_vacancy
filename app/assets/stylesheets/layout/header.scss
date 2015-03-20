@@ -68,7 +68,6 @@ body > header {
   @include align-items(center);
   @include justify-content(space-between);
   
-  background-color: $header-background-color;
   font-size: $header-font-size;
   font-weight: $header-font-weight;
   height: $header-height;
@@ -109,10 +108,14 @@ body > header {
       font-size: 25px;
       font-weight: 300;
       margin-left: 15px;
-      max-width: 150px;
+      max-width: 250px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    &.long-menu > .company-name {
+      max-width: 150px;
     }
   }
 
@@ -153,16 +156,23 @@ body > header {
     font-weight: 700;
     list-style: none;
     height: 100%;
-    margin: 0;
-    margin-left: -$default-margin-size;
+    left: 50%;
+    margin: 0 auto;
+    margin-left: -($default-margin-size + 180px)/2;
     padding: 0;
+    width: 180px;
 
     > li {
+      color: $link-color;
       font-size: $basic-font-size;
       margin-right: $default-margin-size;
 
       a {
-        color: $link-color;
+        color: $black-color;
+
+        &:hover {
+          color: $link-color;
+        }
       }
     }
   }

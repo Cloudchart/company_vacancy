@@ -1,6 +1,6 @@
 <%- company ||= nil %>
 
-<div class="breadcrumbs">
+<div class='<%= breadcrumbs_class(@company) %>'>
   <%= link_to company.present? ? company_path(company) : main_app.companies_path, class: 'back-link' do -%>
     <i class="fa fa-chevron-left"></i>
   <%- end -%>
