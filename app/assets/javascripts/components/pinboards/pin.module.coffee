@@ -32,6 +32,8 @@ module.exports = React.createClass
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
+  propTypes:
+    uuid: React.PropTypes.string.isRequired
 
   statics:
 
@@ -47,30 +49,27 @@ module.exports = React.createClass
             parent {
               user,
               children
-            }
+            },
+            children
           }
         """
 
-
-  fetch: ->
-    GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
-
-
-  isLoaded: ->
-    @cursor.pin.deref(false)
-
-
   componentWillMount: ->
-    @cursor =
-      pin:          PinStore.cursor.items.cursor(@props.uuid)
+    @cursor = 
+      pin:  PinStore.cursor.items.cursor(@props.uuid)
+      user: UserStore.me()
 
-    @fetch() unless @isLoaded()
+  # Renderers
+  #
+  renderPinContent: (content, className = 'paragraph') ->
+    return null unless content
 
+    <p className={ className } dangerouslySetInnerHTML={ __html: content } />
 
   renderInsight: ->
     return unless insight = PinStore.getParentFor(@props.uuid)
 
-    <section className="insight">
+    <article className="insight">
       { @renderPinContent(insight.get('content'), 'quote') }
 
       <Human type="user" uuid={ insight.get('user_id') } />
@@ -81,27 +80,17 @@ module.exports = React.createClass
           <i className="fa fa-thumb-tack" />
         </li>
       </ul>
-    </section>
-
-
-  renderPinContent: (content, className = 'paragraph') ->
-    return null unless content
-
-    <p className={ className } dangerouslySetInnerHTML={ __html: content } />
-
+    </article>
 
   renderComment: ->
     <footer>
       { @renderPinContent(@cursor.pin.get('content')) }
-
       <i className="fa fa-share" />
-
-      <Human type="user" uuid={@cursor.pin.get('user_id')} />
+      <Human type="user" uuid={ @cursor.pin.get('user_id') } />
     </footer>
 
-
   render: ->
-    return null unless @isLoaded()
+    return null unless @cursor.user.deref(false)
 
     <section className="pin cloud-card">
       <PinnableHeader uuid={ @props.uuid } />

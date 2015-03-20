@@ -73,7 +73,7 @@ body > header {
   font-weight: $header-font-weight;
   height: $header-height;
   padding: 20px 25px;
-  
+  position: relative;
   
   a {
     text-decoration: none;
@@ -136,8 +136,31 @@ body > header {
     }
   }
 
-  > .menu-link {
-    margin-right: 20px;
+  > .spacer {
+    @include flex(1);
+  }
+
+  > .menu {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+    @include position(absolute, 0px 0px 0px 0px);
+
+    font-weight: 700;
+    list-style: none;
+    height: 100%;
+    margin: 0;
+    margin-left: -$default-margin-size;
+    padding: 0;
+
+    > li {
+      font-size: $basic-font-size;
+      margin-right: $default-margin-size;
+
+      a {
+        color: $link-color;
+      }
+    }
   }
   
   input {
@@ -150,10 +173,6 @@ body > header {
   
   .title {
     @include header-title;
-  }
-  
-  .spacer {
-    @include flex(1);
   }
   
   button.cc {

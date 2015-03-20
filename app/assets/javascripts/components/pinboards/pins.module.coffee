@@ -26,61 +26,60 @@ module.exports = React.createClass
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-
   statics:
 
     queries:
 
-      pinboard: ->
+      pins: ->
         """
-          Pinboard {
+          Viewer {
             pins {
               #{PinComponent.getQuery('pin')}
             }
           }
         """
 
-  fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid })
 
+  # Helpers
+  #
+  fetch: ->
+    GlobalState.fetch(@getQuery('pins'))
 
   isLoaded: ->
-    @cursor.pinboard.deref(false)
-
+    @cursor.pins.deref(false) && @cursor.user.deref(false)
 
   gatherPins: ->
     @cursor.pins
+      .filter (pin) => pin.get('user_id') == @cursor.user.get('uuid') && pin.get('pinnable_id')
+      .valueSeq()
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
-      .valueSeq()
 
 
+  # Lifecycle methods
+  #
   componentWillMount: ->
     @cursor =
-      pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
-      pins:     PinStore.cursor.items.filterCursor (item) => item.get('pinboard_id') is @props.uuid
+      pins: PinStore.cursor.items
+      user: UserStore.me()
 
     @fetch() unless @isLoaded()
 
 
-  getDefaultProps: ->
-    columns: 2
-
-
+  # Renderers
+  #
   renderPin: (pin) ->
     <section className="cloud-column" key={ pin.get('uuid') }>
-      <PinComponent key={ pin.get('uuid') } uuid={ pin.get('uuid') } />
+      <PinComponent uuid={ pin.get('uuid') } />
     </section>
 
-
-
   renderPins: ->
-    @gatherPins().map(@renderPin)
+    @gatherPins().map(@renderPin).toArray()
 
 
   render: ->
     return null unless @isLoaded()
 
     <section className="cloud-columns cloud-columns-flex">
-      { @renderPins().toArray() }
+      { @renderPins() }
     </section>
