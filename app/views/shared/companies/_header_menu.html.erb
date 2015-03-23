@@ -1,10 +1,7 @@
 <div class="router" data-company-router-mount-point>
   <ul>
-    <li>
-      <%= link_with_class_for_current('Summary', main_app.company_path(@company), 'base') %>
-    </li>
 
-    <% if current_user.try(:admin?) %>
+<!--     <% if current_user.try(:admin?) %>
       <li>
         <%= link_with_class_for_current('Chart', cloud_blueprint.company_chart_path(@company, @company.chart.slug), 'base') %>
       </li>
@@ -14,7 +11,7 @@
       <li>
         <%= link_with_class_for_current('Finance', main_app.finance_company_path(@company), 'base') %>
       </li>
-    <% end %>
+    <% end %> -->
 
     <% if can?(:access_rights, @company) %>
       <li>

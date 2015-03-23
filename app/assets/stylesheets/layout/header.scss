@@ -86,58 +86,55 @@ body > header {
     }
   }
 
-  > .breadcrumbs {
+  > .local-menu {
     @include align-items(center);
     @include display(flex);
 
-    > a.back-link {
-      @include display(flex);
+    width: 40%;
 
-      color: hsl(0, 100%, 100%);
-      font-size: 17px;
-      height: 34px;
-      text-align: center;
-      width: 40px;
-    
-      > i {
-        margin: auto;
+    > .breadcrumbs {
+      @include align-items(center);
+      @include display(flex);
+      @include flex(1);
+
+      > .back-link {
+        @include display(flex);
+
+        color: hsl(0, 100%, 100%);
+        font-size: $basic-font-size;
+        height: 33px;
+        text-align: center;
+        width: 39px;
+      
+        > i {
+          margin: auto;
+        }
+      }
+      
+      > .company-name {
+        @include flex(1);
+
+        font-size: $large-font-size;
+        font-weight: 300;
+        margin-left: $inner-margin-size;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
-    
-    > .company-name {
-      font-size: 25px;
-      font-weight: 300;
-      margin-left: 15px;
-      max-width: 250px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
 
-    &.long-menu > .company-name {
-      max-width: 150px;
-    }
-  }
+    > .router {
+      margin: 0 $default-margin-size/2;
 
-  > .router {
-    margin: 0 30px;
-    
-    ul {
-      @include display(flex);
-      
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      
-      > li {
-        margin: 0 $header-padding;
+      ul {
+        @include display(flex);
         
-        &:first-child {
-          margin-left: 0;
-        }
-
-        &:last-child {
-          margin-right: 0;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        
+        > li {
+          margin: 0 $default-margin-size/2;
         }
       }
     }
@@ -147,7 +144,7 @@ body > header {
     @include flex(1);
   }
 
-  > .menu {
+  > .main-menu {
     @include align-items(center);
     @include display(flex);
     @include justify-content(center);
@@ -222,9 +219,9 @@ body > header.inverse {
 
 // Env dependent
 // 
-@each $env, $color, $dark-color in (development, hsl(136, 52%, 51%), hsl(143, 100%, 28%)),
+@each $env, $color, $dark-color in (development, $accented-green-color, $green-color),
                                    (staging, hsl(356, 82%, 65%), hsl(359, 73%, 55%)),
-                                   (production, hsl(136, 52%, 51%), hsl(143, 100%, 28%)) {
+                                   (production, $accented-green-color, $green-color) {
   body.#{$env} {
     > header {
 

@@ -1,20 +1,22 @@
-<% if content_for(:header_breadcrumbs).present? %>
-  <%= yield :header_breadcrumbs %>
-<% else %>
-  <%= link_to "", main_app.root_path, class: 'logo' %>
-  <div data-header-react-mount-point>
-    <%= link_to main_app.root_path, class: 'title' do %>
-      <%= app_name_for_header %>
-    <% end %>
-  </div>
-<% end %>
+<div class="local-menu">
+  <% if content_for(:header_breadcrumbs).present? %>
+    <%= yield :header_breadcrumbs %>
+  <% else %>
+    <%= link_to "", main_app.root_path, class: 'logo' %>
+    <div data-header-react-mount-point>
+      <%= link_to main_app.root_path, class: 'title' do %>
+        <%= app_name_for_header %>
+      <% end %>
+    </div>
+  <% end %>
 
-<%= yield :header_menu %>
+  <%= yield :header_menu %>
+</div>
 
 <div class="spacer"></div>
 
 <% if user_authenticated? %>
-  <ul class="menu">
+  <ul class="main-menu">
     <li>
       <%= link_to_unless_current 'Companies', main_app.companies_path %>
     </li>

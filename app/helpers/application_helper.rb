@@ -49,12 +49,4 @@ module ApplicationHelper
       raw "Cloud<strong>Chart</strong>"
     end
   end
-  
-  def breadcrumbs_class(company)
-    class_name = "breadcrumbs"
-    if company.present? && current_user.try(:admin?) && can?(:access_rights, company)
-      class_name += " long-menu"
-    end
-    class_name
-  end
 end

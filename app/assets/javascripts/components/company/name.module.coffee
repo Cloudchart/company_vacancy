@@ -1,6 +1,4 @@
-# Imports
-#
-tag = React.DOM
+# @cjsx React.DOM
 
 
 CompanyStore = require('stores/company')
@@ -10,29 +8,47 @@ CompanyStore = require('stores/company')
 #
 Component = React.createClass
 
+  # Component specifications
+  #
+  propTypes:
+    key:   React.PropTypes.string.isRequired
+    value: React.PropTypes.string
+    url:   React.PropTypes.string
+
+  getInitialState: ->
+    @getStateFromStores()
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores())
 
-  
   getStateFromStores: ->
     company: CompanyStore.get(@props.key) || {}
 
+  # Helpers
+  #
+  getName: ->
+    @state.company.name || @props.value 
 
+  getUrl: ->
+    @state.company.company_url || @props.url
+
+
+  # Lifecycle methods
+  #
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStores)
-
 
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
 
 
-  getInitialState: ->
-    @getStateFromStores()
-
-
   render: ->
-    (tag.span null, @state.company.name || @props.value)
+    if location.pathname != @getUrl()
+      <a href={ @getUrl() } >
+        { @getName() }
+      </a>
+    else
+      <span>{ @getName() }</span>
 
 
 # Exports
