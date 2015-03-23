@@ -56,7 +56,7 @@ class AuthController < ApplicationController
 
 
   def authenticate_user!(user)
-    warden_scope = :queue
+    warden_scope = user.authorized_at.present? ? :user : :queue
 
     warden.set_user(user, scope: warden_scope)
     cookies.signed[:user_id] = { value: user.id, expires: 2.weeks.from_now } if warden_scope == :user
