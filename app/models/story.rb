@@ -8,7 +8,7 @@ class Story < ActiveRecord::Base
 
   belongs_to :company
 
-  has_many :posts_stories, dependent: :delete_all
+  has_many :posts_stories, dependent: :destroy
   has_many :posts, through: :posts_stories
 
   validates :name, presence: true

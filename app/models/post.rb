@@ -7,7 +7,7 @@ class Post < ActiveRecord::Base
   belongs_to :owner, polymorphic: true
   belongs_to :company, foreign_key: :owner_id, foreign_type: Company
 
-  has_many :posts_stories, dependent: :delete_all
+  has_many :posts_stories, dependent: :destroy
   has_many :stories, through: :posts_stories
   has_many :visibilities, as: :owner, dependent: :destroy
   has_many :pins, as: :pinnable, dependent: :destroy
