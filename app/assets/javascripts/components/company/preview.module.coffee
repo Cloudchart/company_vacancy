@@ -186,8 +186,7 @@ CompanyPreview = React.createClass
       { @renderButtons() }
       <People 
         key            = "people"
-        items          = { PersonStore.findByCompany(@props.uuid).take(5) }
-        showOccupation = { false } />
+        items          = { PersonStore.findByCompany(@props.uuid).take(5) } />
       <section key="tags" className="tags">{ @renderTags() }</section>
     </footer>
 
