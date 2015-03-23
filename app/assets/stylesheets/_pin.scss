@@ -7,7 +7,7 @@
   @include justify-content(space-between);
 
   border-top: $card-hr;
-  padding-top: $card-basic-space;
+  padding: $card-basic-space 0 ;
 
   > p {
     margin-bottom: $card-basic-space * .75;
@@ -30,8 +30,8 @@
   margin-right: - $card-basic-space;
   margin-bottom: - $card-basic-space;
   margin-left: - $card-basic-space;
-  padding-top: $card-basic-space;
-  padding-bottom: $card-basic-space;
+  margin-top: 0;
+  padding: $card-basic-space 0;
 
   > p {
     margin-bottom: $card-basic-space * .75;
@@ -53,7 +53,7 @@
 
 // Pin Card
 //
-main.pinboards .pin.cloud-card {
+.pin.cloud-card {
 
   > .insight {
     @include pin-card-insight;
@@ -62,5 +62,4 @@ main.pinboards .pin.cloud-card {
   > footer {
     @include pin-card-footer;
   }
-
 }

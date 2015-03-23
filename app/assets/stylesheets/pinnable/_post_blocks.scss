@@ -1,7 +1,7 @@
-.post-preview.pinnable {
+.post-preview.pinnable > a {
 
   border-top: $card-hr;
-  padding-top: $card-basic-space;
+  padding: $card-basic-space 0;
   margin-top: 0;
 
   > *:nth-child(1) {
@@ -15,17 +15,19 @@
 
 
   > section.title {
-
-    .date {
-      color: hsl(0, 0%, 53%);
-      font-size: 12px;
-      font-weight: 300;
-      margin-bottom: $card-basic-space / 2;
-      text-align: center;
-    }
-
     .title {
       @extend .cloud-card-header;
+    }
+
+    > .date {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(center);
+
+      color: $special-link-color;
+      margin-bottom: $card-basic-space;
+      font-size: $small-font-size;
+      font-weight: 300;
     }
   }
 

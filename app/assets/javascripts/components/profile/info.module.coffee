@@ -48,7 +48,10 @@ module.exports  = React.createClass
     @state.loaders.get('user') == true
 
   getPinsCount: ->
-    count = PinStore.filterByUserId(@props.uuid).size
+    count = PinStore
+      .filterByUserId(@props.uuid)
+      .filter (pin) -> pin.get('pinnable_id')
+      .size
 
     if count > 0
       pluralize(count, 'pin', 'pins')
