@@ -149,12 +149,7 @@ CompanyPreview = React.createClass
         { @renderInvitedLabel() }
         { @renderFollowedLabel() }
       </ul>
-    </div> 
-
-  renderName: (company) ->
-    return null if company.get('is_name_in_logo')
-
-    company.get("name")
+    </div>
 
   renderHeader: ->
     company = @cursor.company
@@ -165,7 +160,7 @@ CompanyPreview = React.createClass
           logoUrl = { company.get('logotype_url') }
           value   = { company.get('name') } />
       </figure>
-      <h1>{ @renderName(@cursor.company) }</h1>
+      <h1>{ company.get('name') }</h1>
     </header>
 
   renderButtons: ->
