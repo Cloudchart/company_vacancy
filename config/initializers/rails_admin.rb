@@ -201,7 +201,7 @@ RailsAdmin.config do |config|
     object_label_method :full_name
 
     list do
-      include_fields :first_name, :last_name, :system_roles, :companies, :created_at
+      include_fields :first_name, :last_name, :system_roles, :twitter, :companies, :created_at
       sort_by :created_at
 
       field :first_name do
@@ -220,7 +220,7 @@ RailsAdmin.config do |config|
     end
 
     edit do
-      include_fields :system_roles
+      include_fields :system_roles, :twitter
 
       field :system_roles do
         partial :system_roles
