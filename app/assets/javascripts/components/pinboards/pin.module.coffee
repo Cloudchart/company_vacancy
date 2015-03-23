@@ -16,8 +16,8 @@ PostStore = require('stores/post_store.cursor')
 Human           = require('components/human')
 PinnableHeader  = require('components/pinnable/header')
 PinnablePreview = require('components/pinnable/preview')
-
 PinnablePost    = require('components/pinnable/post')
+PinButton       = require('components/pinnable/pin_button')
 
 
 # Utils
@@ -55,10 +55,19 @@ module.exports = React.createClass
         """
 
   componentWillMount: ->
-    @cursor = PinStore.cursor.items.cursor(@props.uuid)
+    @cursor = 
+      pin:  PinStore.cursor.items.cursor(@props.uuid)
+      user: UserStore.me()
 
   # Renderers
   #
+  renderControls: ->
+    return null unless @cursor.pin.get('user_id') == @cursor.user.get('uuid')
+
+    <ul className="round-buttons">
+      <PinButton uuid = { @props.uuid } />
+    </ul>
+
   renderPinContent: (content, className = 'paragraph') ->
     return null unless content
 
@@ -82,17 +91,18 @@ module.exports = React.createClass
 
   renderComment: ->
     <footer>
-      { @renderPinContent(@cursor.get('content')) }
+      { @renderPinContent(@cursor.pin.get('content')) }
       <i className="fa fa-share" />
-      <Human type="user" uuid={ @cursor.get('user_id') } />
+      <Human type="user" uuid={ @cursor.pin.get('user_id') } />
     </footer>
 
   render: ->
-    return null unless @cursor.deref(false)
+    return null unless @cursor.pin.deref(false) && @cursor.user.deref(false)
 
     <section className="pin cloud-card">
       <PinnableHeader uuid={ @props.uuid } />
       <PinnablePreview uuid={ @props.uuid } />
+      { @renderControls() }
       { @renderInsight() }
       { @renderComment() }
     </section>

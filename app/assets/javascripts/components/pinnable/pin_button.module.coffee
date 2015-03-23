@@ -24,9 +24,9 @@ module.exports = React.createClass
 
   propTypes: 
     uuid: React.PropTypes.string
-    title: React.PropTypes.string.isRequired
-    pinnable_id: React.PropTypes.string.isRequired
-    pinnable_type: React.PropTypes.string.isRequired
+    title: React.PropTypes.string
+    pinnable_id: React.PropTypes.string
+    pinnable_type: React.PropTypes.string
 
   getDefaultProps: ->
     cursor:
