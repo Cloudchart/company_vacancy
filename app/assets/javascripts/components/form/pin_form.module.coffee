@@ -12,10 +12,6 @@ UserStore     = require('stores/user_store.cursor')
 
 ModalActions  = require('actions/modal_actions')
 
-# Constants
-#
-ContentMaxLength = 500
-
 
 KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title'])
 
@@ -159,8 +155,8 @@ module.exports = React.createClass
     value       = event.target.value
     attributes  = @state.attributes
 
-    if name == 'content' and value.length > ContentMaxLength
-      value = value.substring(0, ContentMaxLength)
+    if name == 'content' and value.length > (contentMaxLength = @getContentMaxLength())
+      value = value.substring(0, contentMaxLength)
 
     if name == 'user_id'
       attributes = attributes.set('pinboard_id', @getDefaultPinboardId(value))
@@ -191,6 +187,8 @@ module.exports = React.createClass
 
     if pinboard then pinboard.get('uuid') else 'new'
 
+  getContentMaxLength: ->
+    if @isSelectedUserUnicorn() then 500 else 140
 
   getAttributesFromCursor: ->
     pin = @props.cursor.pins.cursor(@props.uuid)
@@ -211,13 +209,18 @@ module.exports = React.createClass
       KnownAttributes.forEach (name) =>
         attributes.set(name, @props[name] || '')
 
-
-  currentUserIsSystemEditor: ->
-    RoleStore.rolesFor(UserStore.me().get('uuid'))
+  isUserWithRole: (userId, roleValue) ->
+    RoleStore.rolesFor(userId)
       .find (role) =>
         role.get('owner_id',    null)   is null     and
         role.get('owner_type',  null)   is null     and
-        role.get('value')               is 'editor'
+        role.get('value')               is roleValue
+
+  isCurrentUserSystemEditor: ->
+    @isUserWithRole(UserStore.me().get('uuid'), 'editor')
+
+  isSelectedUserUnicorn: ->
+    @isUserWithRole(@state.attributes.get('user_id'), 'unicorn')
 
 
   # Lifecycle
@@ -268,7 +271,7 @@ module.exports = React.createClass
 
 
   renderUserSelect: ->
-    return null unless  @currentUserIsSystemEditor()
+    return null unless  @isCurrentUserSystemEditor()
     return null if      @props.parent_id
 
     disabled = !!@props.uuid and @props.cursor.me.get('uuid') isnt @state.attributes.get('user_id')
@@ -289,7 +292,7 @@ module.exports = React.createClass
 
 
   renderPinboardSelectOptions: ->
-    @gatherPinboards()
+    pinboards = @gatherPinboards()
 
       .map (pinboard, uuid) ->
 
@@ -297,7 +300,10 @@ module.exports = React.createClass
 
       .valueSeq()
 
-      .concat [<option key="new" value="new">Create Category</option>]
+    if @isCurrentUserSystemEditor()
+      pinboards = pinboards.concat [<option key="new" value="new">Create Category</option>]
+
+    pinboards
 
 
   renderPinboardSelect: ->
@@ -340,14 +346,14 @@ module.exports = React.createClass
         onChange  = { @handleChange.bind(@, 'content') }
         value     = { @state.attributes.get('content', '') }
       />
-      <span className="counter">{ ContentMaxLength - @state.attributes.get('content').length }</span>
+      <span className="counter">{ @getContentMaxLength() - @state.attributes.get('content').length }</span>
     </label>
 
 
 
   renderDeleteButton: ->
     return null unless @props.uuid
-    return null unless @currentUserIsSystemEditor()
+    return null unless @isCurrentUserSystemEditor()
 
     <button key="delete" type="button" className="cc alert" onClick={ @handleDelete }>Delete</button>
 

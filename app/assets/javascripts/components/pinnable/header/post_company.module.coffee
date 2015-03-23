@@ -32,11 +32,11 @@ module.exports = React.createClass
   renderLogoAndTitle: ->
     classList = cx
       'logo-and-name':      true
-      'has-name-in-logo':   @cursor.get('is_name_in_logo', false)
+      # 'has-name-in-logo':   @cursor.get('is_name_in_logo', false)
 
     <section className={ classList }>
       { @renderLogo() }
-      { @cursor.get('name') unless @cursor.get('is_name_in_logo', false) }
+      { @cursor.get('name') }
     </section>
 
 

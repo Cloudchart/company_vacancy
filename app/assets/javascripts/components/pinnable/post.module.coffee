@@ -77,12 +77,6 @@ module.exports = React.createClass
       .sortBy (block) -> block.get('position')
 
 
-  handleClick: (event) ->
-    event.preventDefault()
-
-    window.location = @cursor.post.get('url')
-
-
   componentWillMount: ->
     @cursor =
       post:     PostStore.cursor.items.cursor(@props.uuid)
@@ -90,25 +84,21 @@ module.exports = React.createClass
 
     @fetch() unless @isLoaded()
 
-
   renderDate: ->
     return unless date = fuzzyDate.format(@cursor.post.get('effective_from'), @cursor.post.get('effective_till'))
 
     <div className="date">{ date }</div>
-
 
   renderTitle: ->
     return unless @cursor.post.get('title', false)
 
     <div className="title" dangerouslySetInnerHTML={ __html: @cursor.post.get('title') } />
 
-
   renderDateAndTitle: ->
     <section className="title">
       { @renderDate() }
       { @renderTitle() }
     </section>
-
 
   renderBlock: (block) ->
     switch block.get('identity_type')
@@ -144,7 +134,9 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <article className="pinnable post-preview link" onClick={ @handleClick }>
-      { @renderDateAndTitle() }
-      { @renderBlocks().toArray() }
+    <article className="pinnable post-preview link">
+      <a className="for-group" href={ @cursor.post.get('url') } >
+        { @renderDateAndTitle() }
+        { @renderBlocks().toArray() }
+      </a>
     </article>

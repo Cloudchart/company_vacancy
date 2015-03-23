@@ -149,12 +149,7 @@ CompanyPreview = React.createClass
         { @renderInvitedLabel() }
         { @renderFollowedLabel() }
       </ul>
-    </div> 
-
-  renderName: (company) ->
-    return null if company.get('is_name_in_logo')
-
-    company.get("name")
+    </div>
 
   renderHeader: ->
     company = @cursor.company
@@ -165,7 +160,7 @@ CompanyPreview = React.createClass
           logoUrl = { company.get('logotype_url') }
           value   = { company.get('name') } />
       </figure>
-      <h1>{ @renderName(@cursor.company) }</h1>
+      <h1>{ company.get('name') }</h1>
     </header>
 
   renderButtons: ->
@@ -191,8 +186,7 @@ CompanyPreview = React.createClass
       { @renderButtons() }
       <People 
         key            = "people"
-        items          = { PersonStore.findByCompany(@props.uuid).take(5) }
-        showOccupation = { false } />
+        items          = { PersonStore.findByCompany(@props.uuid).take(5) } />
       <section key="tags" className="tags">{ @renderTags() }</section>
     </footer>
 

@@ -69,7 +69,7 @@ module.exports = React.createClass
 
 
   isLoaded: ->
-    @state.loaders.get('pinboards') == true
+    @state.loaders.get('pinboards')
 
 
   gatherPinboards: ->

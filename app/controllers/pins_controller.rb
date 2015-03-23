@@ -4,13 +4,8 @@ class PinsController < ApplicationController
 
 
   def index
-    query = pin_source.includes(:parent)
-
-    query = query.find(params[:ids]) if params[:ids]
-
-    @pins = query
-
     respond_to do |format|
+      format.html
       format.json
     end
   end

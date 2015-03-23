@@ -2,12 +2,8 @@
   @include align-items(center);
   @include display(flex);
 
-  padding: $card-basic-space 0;
-
-  &:nth-child(1) {
-    padding-top: 0;
-    margin-top: 0;
-  }
+  margin-bottom: $card-basic-space;
+  position: relative;
 
   > .logo-and-name {
     @include align-items(center);
@@ -18,9 +14,9 @@
       background-position: right center;
       background-repeat: no-repeat;
       background-size: contain;
-      height: 40px;
+      height: 80px;
       margin-right: 10px;
-      width: 40px;
+      width: 80px;
     }
 
     &.has-name-in-logo > figure {
@@ -31,4 +27,4 @@
 }
 
 
-@import 'pinnable/people_block';
+@import 'pinnable/post_blocks';

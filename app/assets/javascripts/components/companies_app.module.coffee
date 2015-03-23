@@ -6,6 +6,7 @@ CompanyStore      = require('stores/company_store.cursor')
 TokenStore        = require('stores/token_store.cursor')
 FavoriteStore     = require('stores/favorite_store.cursor')
 RoleStore         = require('stores/role_store.cursor')
+UserStore         = require('stores/user_store.cursor')
 
 CompanyList       = require('components/company/list')
 Field             = require('components/form/field')
@@ -15,7 +16,17 @@ CompaniesApp = React.createClass
 
   displayName: 'CompaniesApp'
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+  statics:
+
+    queries:
+      viewer: ->
+        """
+          Viewer {
+            system_roles
+          }
+        """
 
 
   # Component specifications
@@ -29,6 +40,7 @@ CompaniesApp = React.createClass
       tokens:    TokenStore.cursor.items
       favorites: FavoriteStore.cursor.items
       roles:     RoleStore.cursor.items
+      user:      UserStore.me()
 
   getInitialState: ->
     _.extend @getStateFromStores(),
@@ -43,9 +55,19 @@ CompaniesApp = React.createClass
   onGlobalStateChange: ->
     @setState  @getStateFromStores()
 
+  fetchViewer: ->
+    GlobalState.fetch(@getQuery('viewer'))
+
 
   # Helpers
   #
+  isCurrentUserSystemEditor: ->
+    RoleStore.rolesFor(@props.cursor.user.get('uuid'))
+      .find (role) =>
+        role.get('owner_id',    null)   is null     and
+        role.get('owner_type',  null)   is null     and
+        role.get('value')               is 'editor'
+
   filterByName: (companies) ->
     companies.filter((company) => (company.get('name') || "").toLowerCase().indexOf(@state.query.toLowerCase()) != -1)
 
@@ -79,8 +101,7 @@ CompaniesApp = React.createClass
     @props.cursor.favorites.clear()
 
     CompanyStore.fetchAll().done =>
-      @search(@state.query)
-
+      @search()
 
   # Handlers
   #
@@ -99,11 +120,14 @@ CompaniesApp = React.createClass
   #
   componentWillMount: ->
     @updateStores()
+    @fetchViewer()
 
 
   # Renderers
   #
   renderSearch: ->
+    return null
+
     <div className="search">
       <Field
         placeholder = "Search"
@@ -113,6 +137,8 @@ CompaniesApp = React.createClass
     </div>
 
   renderAddButton: ->
+    return null unless @isCurrentUserSystemEditor()
+
     <div className="company-add button green">
       <a href="companies/new">
         <i className="fa fa-plus"></i>
@@ -120,13 +146,18 @@ CompaniesApp = React.createClass
       </a>
     </div>
 
+  renderHeader: ->
+    return null unless @isCurrentUserSystemEditor()
+
+    <header className="cloud-columns cloud-columns-flex">
+      { @renderSearch() }
+      { @renderAddButton() }
+    </header>
+
 
   render: ->
     <section className="cloud-profile-companies">
-      <header className="cloud-columns cloud-columns-flex">
-        { @renderSearch() }
-        { @renderAddButton() }
-      </header>
+      { @renderHeader() }
       <CompanyList
         ids            = { @getAllIds() }
         isInLegacyMode = { true } />

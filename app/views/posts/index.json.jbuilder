@@ -1,5 +1,5 @@
 # set posts
-posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :posts_stories, :quotes, :tags, blocks: :block_identities, pins: [ :user, parent: :user ])
+posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :posts_stories, :quotes, blocks: :block_identities, pins: [ :user, parent: :user ])
 
 # reject posts based on visibility rules
 posts = if can?(:manage, @company)

@@ -19,7 +19,8 @@ ComboboxOption  = cc.require('plugins/react_tokeninput/option')
 formatName = (name) ->
   name = name.trim()
   name = name.replace(/[^A-Za-z0-9\-_|\s]+/ig, '')
-  name = name.replace(/\s{2,}/g, ' ')
+  name = name.replace(/\s{2,}|_/g, ' ')
+  name = name.toLowerCase()
 
 
 # Main
@@ -61,7 +62,7 @@ MainComponent = React.createClass
   
   gatherStoriesForList: ->
     @filterSelectedStories()
-      .sortBy (story) -> story.get('name')
+      .sortBy (story) -> +!!story.get('company_id') + story.get('name')
       .map (story) =>
         # company_story_url = @props.cursor.stories.get(story.get('uuid')).get('company_story_url')
 
@@ -152,7 +153,7 @@ MainComponent = React.createClass
       storyIdSeq: @getStoryIdSeq()
 
   getDefaultProps: ->
-    placeholder: '#Category'
+    placeholder: '#category'
 
     cursor: 
       stories: StoryStore.cursor.items

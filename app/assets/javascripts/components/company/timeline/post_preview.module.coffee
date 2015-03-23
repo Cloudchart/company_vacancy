@@ -79,6 +79,10 @@ Component = React.createClass
       when 'Person' then @getBlockPerson(block)
       when 'Quote' then @getQuote(block)
 
+  getStoryView: (story) ->
+    storyContent = '#' + story.get('formatted_name')
+
+    if story.get('company_id') then storyContent else <strong>{ storyContent }</strong>
 
   postStoryMapper: (story, key) ->
     onStoryClick = (event) => 
@@ -89,7 +93,7 @@ Component = React.createClass
     isCurrent = story.get('uuid') == @props.story_id
 
     <li key={key} className={ cx(current: isCurrent) } onClick={ onStoryClick }>
-      { '#' + story.get('formatted_name') }
+      { @getStoryView(story) }
     </li>
 
 
@@ -269,14 +273,14 @@ Component = React.createClass
 
     stories = GlobalState.cursor(['stores', 'stories', 'items']).deref(Immutable.Map())
       .filter (item, key) -> story_ids.contains(key)
-      .sortBy (item, key) -> item.get('name')
+      .sortBy (item, key) -> +!!item.get('company_id') + item.get('name')
       .map    @postStoryMapper
 
     return null if stories.count() == 0
 
     <div className="cc-hashtag-list">
       <ul>
-        {stories.toArray()}
+        { stories.toArray() }
       </ul>
     </div>
 

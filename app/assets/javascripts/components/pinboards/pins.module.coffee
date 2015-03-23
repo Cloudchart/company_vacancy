@@ -1,20 +1,21 @@
 # @cjsx React.DOM
 
 
-GlobalState = require('global_state/state')
+GlobalState     = require('global_state/state')
 
 
 # Stores
 #
-PinboardStore = require('stores/pinboard_store')
-PinStore      = require('stores/pin_store')
-UserStore     = require('stores/user_store.cursor')
+PinStore        = require('stores/pin_store')
+UserStore       = require('stores/user_store.cursor')
 
 
 # Components
 #
-PinComponent  = require('components/pinboards/pin')
-PostComponent = require('components/pinnable/post')
+PinComponent     = require('components/pinboards/pin')
+
+
+NodeRepositioner = require('utils/node_repositioner')
 
 
 # Exports
@@ -24,63 +25,90 @@ module.exports = React.createClass
   displayName: 'Pins'
 
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
-
+  mixins: [GlobalState.mixin, GlobalState.query.mixin, NodeRepositioner.mixin]
 
   statics:
 
     queries:
 
-      pinboard: ->
+      viewer_pins: ->
         """
-          Pinboard {
+          Viewer {
             pins {
               #{PinComponent.getQuery('pin')}
             }
           }
         """
 
-  fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid })
+      user_pins: ->
+        """
+          User {
+            pins {
+              #{PinComponent.getQuery('pin')}
+            }
+          }
+        """
 
+  propTypes:
+    uuid: React.PropTypes.string
+
+  getDefaultProps: ->
+    uuid: null
+
+  getInitialState: ->
+    loaders: Immutable.Map()
+
+
+  # Helpers
+  #
+  fetch: ->
+    if @props.uuid
+      promise = GlobalState.fetch(@getQuery('user_pins'), id: @props.uuid)
+    else
+      promise = GlobalState.fetch(@getQuery('viewer_pins'))
+
+    promise.then =>
+      @setState
+        loaders: @state.loaders.set('pins', true)
 
   isLoaded: ->
-    @cursor.pinboard.deref(false)
+    @state.loaders.get('pins') && @cursor.user.deref(false)
 
+  getUserId: ->
+    if @props.uuid then @props.uuid else @cursor.user.get('uuid')
 
   gatherPins: ->
     @cursor.pins
+      .filter (pin) => pin.get('user_id') == @getUserId() && pin.get('pinnable_id')
+      .valueSeq()
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
-      .valueSeq()
 
 
+  # Lifecycle methods
+  #
   componentWillMount: ->
     @cursor =
-      pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
-      pins:     PinStore.cursor.items.filterCursor (item) => item.get('pinboard_id') is @props.uuid
+      pins: PinStore.cursor.items
+      user: UserStore.me()
 
     @fetch() unless @isLoaded()
 
 
-  getDefaultProps: ->
-    columns: 2
-
-
+  # Renderers
+  #
   renderPin: (pin) ->
     <section className="cloud-column" key={ pin.get('uuid') }>
-      <PinComponent key={ pin.get('uuid') } uuid={ pin.get('uuid') } />
+      <PinComponent uuid={ pin.get('uuid') } />
     </section>
 
-
-
   renderPins: ->
-    @gatherPins().map(@renderPin)
+    @gatherPins().map(@renderPin).toArray()
 
 
   render: ->
     return null unless @isLoaded()
 
-    <section className="cloud-columns cloud-columns-flex">
-      { @renderPins().toArray() }
+    <section className="pins cloud-columns cloud-columns-flex">
+      { @renderPins() }
     </section>

@@ -201,7 +201,7 @@ RailsAdmin.config do |config|
     object_label_method :full_name
 
     list do
-      include_fields :first_name, :last_name, :system_roles, :companies, :created_at
+      include_fields :first_name, :last_name, :system_roles, :twitter, :companies, :created_at, :authorized_at
       sort_by :created_at
 
       field :first_name do
@@ -220,7 +220,7 @@ RailsAdmin.config do |config|
     end
 
     edit do
-      include_fields :system_roles
+      include_fields :system_roles, :twitter, :authorized_at
 
       field :system_roles do
         partial :system_roles
@@ -319,6 +319,19 @@ RailsAdmin.config do |config|
           end
           
           redirect_to index_path(:token), notice: 'Request has been accepted'
+        end
+      end
+    end
+
+    member :authorize do
+      only ['User']
+      link_icon 'icon-ok'
+
+      controller do
+        proc do
+          @object.update(authorized_at: Time.now)
+          # TODO: add mailer
+          redirect_to index_path(:user), notice: 'User has been authorized'
         end
       end
     end

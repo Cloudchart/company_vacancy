@@ -7,6 +7,8 @@ main.companies {
 div.companies {
   @include justify-content(center);
   @include display(flex);
+
+  padding: $gutter-size/2;
 }
 
 .cloud-profile-companies {
@@ -18,7 +20,9 @@ div.companies {
   > header {
     @include align-items(center);
     @include display(flex);
-    @include justify-content(space-between);
+    @include justify-content(flex-end);
+
+    width: 100%;
   }
 
   .search {

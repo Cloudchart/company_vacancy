@@ -8,8 +8,9 @@ $hint-color: hsl(144, 90%, 75%);
   > aside {
     @include align-items(center);
     @include display(flex);
-    @include position(absolute, 0px 0 0 -2 * $hint-button-size);
+    @include position(absolute, 0px 0 0 -1 * $hint-button-size);
 
+    height: 100%;
     z-index: 1000;
 
     > .hint-button {

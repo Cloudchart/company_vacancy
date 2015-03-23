@@ -123,6 +123,9 @@ Post = React.createClass
   getPinnersNumberText: (pinnersNumber) ->
     if pinnersNumber > 0 then "+ #{pinnersNumber} others pinned this post" else null
 
+  getInsightsNumber: ->
+    PinStore.filterInsightsForPost(@props.id).size
+
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
 
@@ -144,7 +147,6 @@ Post = React.createClass
     return if @state.post.effective_from is effective_from and @state.post.effective_till is effective_till
 
     @update({ effective_from: effective_from, effective_till: effective_till })
-
 
   handleTitleChange: (content) ->
     @update(title: @getStrippedTitle(content))
@@ -261,10 +263,10 @@ Post = React.createClass
     <StandardButton 
       className = "cc show-pins"
       onClick   = { @handleExpandPins }
-      text      = "Show All" />
+      text      = "Show All #{@getInsightsNumber()}" />
 
   renderPins: ->
-    insightsNumber = PinStore.filterInsightsForPost(@props.id).size || 0
+    insightsNumber = @getInsightsNumber() || 0
     return null if (insightsNumber == 0 || @state.isInEditMode)
 
     className = cx("post-pins": true, expanded: @state.arePinsExpanded)
@@ -278,7 +280,7 @@ Post = React.createClass
     </section>
 
   renderPinners: (pinners) ->
-    return null if PinStore.filterPinsForPost(@props.id).size == 0 || @state.isInEditMode
+    return null if @getInsightsNumber() == 0 || @state.isInEditMode
 
     pinnersIds = @gatherPinnersIds()
     
