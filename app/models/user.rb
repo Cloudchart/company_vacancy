@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   attr_accessor :current_password
   attr_reader :invite
 
-  before_validation :build_blank_emails, unless: -> { emails.any? }
+  #before_validation :build_blank_emails, unless: -> { emails.any? }
   before_destroy :mark_emails_for_destruction
 
   dragonfly_accessor :avatar
@@ -39,7 +39,9 @@ class User < ActiveRecord::Base
 
   validates :first_name, :last_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
-  validate :validate_email, on: :create
+
+  # We are no longer need to validate email
+  # validate :validate_email, on: :create
 
   #default_scope -> { includes(:emails) }
   scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
@@ -51,6 +53,20 @@ class User < ActiveRecord::Base
     has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, class_name: Role
     has_many :"#{scope}_pinboards", through: :"#{scope}_pinboards_roles", source: :owner, source_type: Pinboard
   end
+
+
+
+  def self.create_with_twitter_omniauth_hash(hash)
+    avatar_url = hash.info.image.present? ? hash.info.image.sub('_normal', '') : nil
+
+    create(
+      full_name:    hash.info.name,
+      twitter:      hash.info.nickname,
+      password:     SecureRandom.uuid,
+      avatar_url:   avatar_url,
+    )
+  end
+
 
   def admin?
     !!roles.find { |role| role.owner_id == nil && role.value == 'admin' }
