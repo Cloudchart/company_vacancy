@@ -67,10 +67,6 @@ main.post {
           font-weight: $thin-weight;
           color: $special-link-color;
         }
-
-        &.published-at ~ aside {
-          height: 29px;
-        }
       }
 
       .stories {
@@ -83,7 +79,7 @@ main.post {
       }
 
       .stories ~ aside {
-        height: 40px;
+        height: 50px;
 
         .hint {
           width: 450px;
@@ -126,7 +122,7 @@ main.post {
     }
 
     .editor.post .editor.wrapper > aside {
-      left: -72px;
+      left: -1 * ($gutter-size + $default-margin-size);
     }
 
     .paragraph .editor.wrapper aside {
