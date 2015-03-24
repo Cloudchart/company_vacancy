@@ -3,6 +3,7 @@
 # Imports
 # 
 tag = React.DOM
+cx  = React.addons.classSet
 
 CloudFlux = require('cloud_flux')
 GlobalState = require('global_state/state')
@@ -123,22 +124,22 @@ Component = React.createClass
   renderCreatePostButton: (type = '') ->
     return null if @props.readOnly
       
-    class_for_icon =
+    iconClasses =
       if PostStore.getSync(@state.new_post_key) == "create"
         'fa fa-spin fa-spinner'
       else
         'cc-icon cc-plus'
 
-    if type == 'placeholder'
-      <div className="placeholder">
-        <figure className={type} onClick={@handleCreatePostClick} >
-          <i className={class_for_icon}></i>
-        </figure>
-      </div>
-    else
-      <figure className="create" onClick={@handleCreatePostClick}>
-        <i className={class_for_icon}></i>
+    placeholderClasses = cx({
+      placeholder: true
+      small: type == 'small'
+    })
+ 
+    <div className={placeholderClasses}>
+      <figure onClick={@handleCreatePostClick} >
+        <i className={iconClasses}></i>
       </figure>
+    </div>
 
 
   renderPost: (props) ->
@@ -146,10 +147,8 @@ Component = React.createClass
       <PostPreview
         key          = { post.uuid }
         uuid         = { post.uuid }
-        company_id   = { props.company_id }
         onStoryClick = { @props.onStoryClick }
         story_id     = { props.story_id }
-        readOnly     = { props.readOnly }
       />
 
 
@@ -161,13 +160,13 @@ Component = React.createClass
     posts = posts.map (post, index) =>
       [
         post
-        @renderCreatePostButton('placeholder')
+        @renderCreatePostButton('small')
       ]
 
-    <div className="posts">
+    <section className="timeline posts">
       { @renderCreatePostButton() }
       { posts.toArray() }
-    </div>
+    </section>
 
 # Exports
 # 

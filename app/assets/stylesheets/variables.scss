@@ -48,6 +48,7 @@ a {
   &.for-group {
     color: inherit;
     display: block;
+    outline: 0;
     text-decoration: none;
   }
 }
@@ -97,6 +98,7 @@ $black-color:          hsl(0, 0%, 0%);
 $background-color:     $white-color;
 $border-color:         $disabled-grey-color;
 $special-link-color:   $primary-grey-color;
+$secondary-text-color: $primary-grey-color;
 $special-input-color:  $primary-grey-color;
 $card-color:           $accented-white-color;
 $link-color:           $accented-green-color;

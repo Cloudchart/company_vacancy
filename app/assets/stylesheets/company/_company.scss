@@ -1,13 +1,12 @@
-$company-article-block-margin: 30px;
-
 @mixin company-article-header-2_0 {
   
   @include align-items(center);
   @include display(flex);
   @include flex-direction(column);
   
-  margin: 0 auto $company-article-block-margin;
-  width: 800px;
+  width: 1024px;
+  margin: 0 auto;
+  padding: $gutter-size 0 $default-margin-size 0;
   position: relative;
 
   // Controls
@@ -15,7 +14,7 @@ $company-article-block-margin: 30px;
   > .controls {
     position: absolute;
     right: 0;
-    top: 0;
+    top: $gutter-size;
 
     .view-mode {
       width: 85px;
@@ -77,10 +76,17 @@ $company-article-block-margin: 30px;
     }
   }
 
+  > * {
+    margin-bottom: $default-margin-size;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
   // Name & Description
   //
   > label {
-    margin-top: 20px;
     position: relative;
     
     input {
@@ -92,23 +98,24 @@ $company-article-block-margin: 30px;
 
     &.name {
       input {
+        background-color: $card-color;
         font-size: 40px;
-        font-weight: 400;
+        font-weight: 300;
       }
     
-      a {
+      > .share-link {
         @include display(flex);
         @include position(absolute, 50% 0 0 100%);
 
-        background-color: hsl(136, 47%, 53%);
-        font-size: 15px;
-        height: 26px;
-        margin-left: 10px;
-        margin-top: -13px;
+        background-color: $link-color;
+        font-size: $small-font-size;
+        height: 23px;
+        margin-left: $inner-margin-size;
+        margin-top: -11px;
         text-decoration: none;
-        width: 36px;
+        width: 31px;
 
-        i.fa {
+        > i.fa {
           color: hsl(0, 0%, 100%);
           margin: auto;
         }
@@ -128,9 +135,9 @@ $company-article-block-margin: 30px;
 
       max-width: 800px;
       text-align: center;
-      font-size: 24px;
+      font-size: $large-font-size;
       font-weight: 300;
-      line-height: 135%;
+      line-height: 1.35;
     }
   }
 
@@ -152,17 +159,10 @@ $company-article-block-margin: 30px;
   }
 
   > .cc-hashtag-list {
-    margin-top: 20px;
-
     > ul {
       @include justify-content(center);
     }
   }
-
-  > button {
-    margin-top: 20px;
-  }
-
 }
 
 
@@ -262,6 +262,11 @@ $company-article-block-margin: 30px;
 
 }
 
-main.company > div.wrapper > header {
-  @include company-article-header-2_0;
+main.company {
+  background-color: $card-color;
+  padding: 0;
+
+  > .wrapper > header {
+    @include company-article-header-2_0;
+  }
 }

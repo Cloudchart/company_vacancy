@@ -64,7 +64,7 @@ Post = React.createClass
     _.extend storeData,
       readOnly:        @props.readOnly
       isInEditMode:    !storeData.visibility
-      arePinsExpanded: false
+      arePinsExpanded: location.hash.slice(1) == 'expanded'
       titleFocused:    false
 
   onGlobalStateChange: ->
@@ -205,6 +205,13 @@ Post = React.createClass
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
+
+  componentDidUpdate: ->
+    if location.hash.slice(1) == 'expanded' && $(".post-pins").length > 0
+      setTimeout ->
+        $('html,body').animate({ scrollTop: $(".post-pins").offset().top - 30 }, 'slow')
+        window.location.hash = ' '
+      , 10
 
   componentWillUnmount: ->
     $(document).off 'keydown', @handleKeydown

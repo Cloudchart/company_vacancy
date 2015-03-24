@@ -12,6 +12,7 @@ ParagraphStore      = require('stores/paragraph_store')
 PictureStore        = require('stores/picture_store')
 PersonStore         = require('stores/person')
 PostsStoryStore     = require('stores/posts_story_store')
+PinStore            = require('stores/pin_store')
 UserStore           = require('stores/user_store.cursor')
 VisibilityStore     = require('stores/visibility_store')
 
@@ -46,6 +47,7 @@ Component = React.createClass
 
   getDefaultProps: ->
     cursor:
+      pins:   PinStore.cursor.items
       quotes: QuoteStore.cursor.items
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
     onStoryClick: ->
@@ -96,7 +98,6 @@ Component = React.createClass
       { @getStoryView(story) }
     </li>
 
-
   getParagraph: (block) ->
     paragraph = ParagraphStore.find (paragraph) -> paragraph.owner_id is block.uuid
     return null unless paragraph
@@ -108,7 +109,6 @@ Component = React.createClass
       'quote': block.kind is 'Quote'
 
     <div className={classes} dangerouslySetInnerHTML={__html: content}></div>
-
 
   getPicture: (block) ->
     picture = PictureStore.find (picture) -> picture.owner_id is block.uuid
@@ -165,6 +165,9 @@ Component = React.createClass
       .filter (posts_story) => posts_story.get('post_id') is @state.post.uuid
       .map (posts_story) -> posts_story.get('story_id')
 
+  getInsightsNumber: ->
+    PinStore.filterInsightsForPost(@props.uuid).size
+
 
   # Handlers
   #
@@ -201,11 +204,26 @@ Component = React.createClass
 
   # Renderers
   #
-  renderInsights: ->
-    <InsightListComponent pinnable_id={ @props.uuid } pinnable_type="Post" />
+  renderPostLink: (insightsNumber) ->
+    return null unless insightsNumber > 0
 
+    <a className = "orgpad-button show-pins"
+       href      = { @state.post.post_url + "#expanded" }>
+      { "Show All #{@getInsightsNumber()}" }
+    </a>
+
+  renderInsights: ->
+    return null if @isEpochType() || (@getInsightsNumber() == 0)
+    limit = 2
+
+    <section className="post-pins">
+      <InsightListComponent pinnable_id={ @props.uuid } pinnable_type="Post" isCarousel={true} limit={ limit } />
+      { @renderPostLink(@getInsightsNumber() - limit) }
+    </section>
 
   renderPinPostItem: ->
+    return null if @isEpochType()
+
     <PinButton pinnable_type='Post' pinnable_id={ @state.post.uuid } title={ @state.post.title } />
 
 
@@ -260,7 +278,7 @@ Component = React.createClass
       <h1>{formatted_date}</h1>
 
     date = if @state.post.title
-      <span className="date">{formatted_date}</span>
+      <h2>{formatted_date}</h2>
     else null
 
     <header>
@@ -316,16 +334,18 @@ Component = React.createClass
       'only-me': @isOnlyMeVisibility()
       'dimmed': not @isRelatedToStory()
 
-    <article id={@props.uuid} className={article_classes}>
-      { @renderControls() }
+    <section className="post-preview-container">
+      <article id={@props.uuid} className={article_classes}>
+        { @renderControls() }
+        <a href={@state.post.post_url} className="for-group">
+          { @renderOnlyMeOverlay() }
+          { @renderHeader() }
+          { @renderContent() }
+          { @renderFooter() }
+        </a>
+      </article>
       { @renderInsights() }
-      <a href={@state.post.post_url}>
-        { @renderOnlyMeOverlay() }
-        { @renderHeader() }
-        { @renderContent() }
-        { @renderFooter() }
-      </a>
-    </article>
+    </section>
 
 
 # Exports

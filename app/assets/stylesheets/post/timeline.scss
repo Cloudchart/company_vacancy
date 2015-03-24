@@ -1,65 +1,29 @@
 // Main
 //
-main.company > div.wrapper > div.posts {
+.timeline.posts {
   @include display(flex);
   @include flex-direction(column);
   @include align-items(center);
 
+  background-color: hsl(0, 0%, 98%);
+  padding: $default-margin-size/2;
   position: relative;
-  margin: $base-post-preview-margin -20px 0 -20px;
-
-  // Timeline background
-  //
-  &::before,
-  &::after {
-    @include position(absolute, 0px 0px 0px 0px);
-    content: '';
-    z-index: -1;
-  }
 
   &::before {
-    background-color: hsl(0, 0%, 98%);
-    right: 50%;
+    @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), hsla(0, 0%, 98%, 1));
+    @include position(absolute, 0px 0px 268px 0px);
+
+    height: 268px;
+    content: '';
+    display: block;
+    z-index: 0;
   }
 
-  &::after {
-    background-color: hsl(0, 0%, 94%);
-    left: 50%;
-  }
-
-  // Create post top button
-  //
-  > figure.create {
-    @include display(flex);
-    @include align-items(center);
-    @include justify-content(center);
-
-    margin-top: -45px;
-    margin-bottom: $base-post-preview-margin / 2;
-    width: 90px;
-    height: 90px;
-    cursor: pointer;
-    background-color: hsl(142, 48%, 59%);
-    border-radius: 50%;
-    color: white;
-    position: relative;
-    text-decoration: none;
-
-    > i.fa,
-    > i.cc-icon {
-      font-size: 40px;
-    }
-  }
-
-  // Create post placeholder
-  //
-  div.placeholder {
+  > .placeholder {
     @include display(flex);
     @include justify-content(center);
 
-    width: 100%;
-
-    &:hover {
+    &.small:hover {
       > figure {
         visibility: visible;
       }
@@ -69,133 +33,108 @@ main.company > div.wrapper > div.posts {
       @include display(flex);
       @include align-items(center);
       @include justify-content(center);
-      @include transform(scale(.5, .5));
-      @include transition(opacity 250ms ease-out, all 150ms ease-out, width 100ms ease-out 150ms);
 
-      visibility: hidden;
-      width: 45px;
-      height: 45px;
+      visibility: visible;
+      width: 90px;
+      height: 90px;
       cursor: pointer;
       background-color: hsl(142, 48%, 59%);
       border-radius: 50%;
       color: white;
       position: relative;
+      margin-top: -45px;
 
-      &:hover {
-        @include transform(scale(1, 1));
+      > i.cc-icon {
+        font-size: 40px;
       }
+    }
 
-      > i.fa {
-        font-size: 16px;
+    &.small {
+      > figure {
+        @include transform(scale(.5, .5));
+        @include transition(opacity 250ms ease-out, all 150ms ease-out, width 100ms ease-out 150ms);
+
+        margin: $inner-margin-size 0;
+        width: 45px;
+        height: 45px;
+        visibility: hidden;
+
+        &:hover {
+          @include transform(scale(1, 1));
+        }
+
+        > i.cc-icon {
+          font-size: 15px;
+        }
       }
     }
   }
+}
 
-  // Post preview
-  //
-  > article.preview.post {
+// Post preview
+//
+.post-preview-container {
+  @include align-items(flex-start);
+  @include display(flex);
+  @include justify-content(flex-start);
+
+  margin: $gutter-size/2 0;
+  width: 1024px;
+
+  > .preview.post {
+    @include display(flex);
+
     position: relative;
-    background-color: white;
-    width: 800px;
-    margin: ($base-post-preview-margin / 2) 0;
+    border: 1px solid $border-color;
+    background-color: $card-color;
+    width: 643px;
+    padding: $default-margin-size;
 
     &:hover > ul.controls {
       visibility: visible;
     }
 
-    > ul.insight-list {
-      @include position(absolute, 0px null 0px 100%);
-
-      &::before {
-        @include linear-gradient(to bottom, hsla(0, 0%, 94%, 0), hsla(0, 0%, 94%, 1));
-        @include position(absolute, 75% 0px 0px 0px);
-
-        content: '';
-        display: block;
-        z-index: 2;
-      }
-    }
-
-    &.epoch {
-      background: none;
-
-      > a > header {
-        > h1 {
-          font-size: 55px;
-          font-weight: 500;
-        }
-
-        > span.date {
-          font-size: 20px;
-          color: black;
-        }
-      }
-    }
-
     > .buttons {
-      @include position(absolute, 15px 15px null null);
+      @include position(absolute, $default-margin-size $default-margin-size null null);
 
       ~ a h1 {
         margin: 0 10%;
       }
     }
 
-    &.dimmed {
-      opacity: 0.5;
-    }
-
-    &.only-me {
-      background-color: white;
-      border: 3px solid hsl(0, 0%, 80%);
-    }
-
-    .only-me-overlay {
-      @include align-items(center);
-      @include display(flex);
-      @include justify-content(center);
-      @include position(absolute, 0px 0 0 0px);
-
-      background-color: rgba(255, 255, 255, 0.85);
-      cursor: pointer;
-      height: 100%;
-      width: 100%;
-      z-index: 1;
-
-      > i {
-        font-size: 100px;
-        color: rgba(0, 0, 0, 0.7);
-      }
-    }
-
     > a {
-      display: block;
-      padding: 20px;
-      text-decoration: inherit;
-      color: inherit;
-      outline: none;
+      @include display(flex);
+      @include flex-direction(column);
+
+      width: 100%;
 
       > header {
         text-align: center;
 
         > h1 {
+          font-size: $large-font-size;
           font-weight: 600;
-          margin: 0;
-
-          > div {
-            text-overflow: ellipsis;
-            overflow: hidden;
-          }
         }
 
-        > span.date {
-          color: grey;
+        > h2 {
+          color: $special-link-color;
+          font-size: $small-font-size;
+          font-weight: 300;
+        }
+
+        > h1, > h2 {
+          padding: $default-margin-size/2 0;
+          margin: 0;
         }
       }
 
       > div.content {
-        > div.paragraph {
-          margin-top: 20px;
-          font-size: 16px;
+        > * {
+          padding: $default-margin-size/2 0;
+        }
+
+        > .paragraph {
+          font-size: $basic-font-size;
           line-height: 22px;
           word-wrap: break-word;
         }
@@ -237,9 +176,9 @@ main.company > div.wrapper > div.posts {
         }
 
         > .person {
-          width: 150px;
+          margin: 0 auto;
           text-align: center;
-          margin: 20px auto 0 auto;
+          width: 150px;
 
           > footer {
 
@@ -262,11 +201,15 @@ main.company > div.wrapper > div.posts {
 
         > img.cover {
           width: 100%;
-          margin-top: 20px;
         }
       }
 
       > footer {
+        @include align-items(flex-end);
+        @include display(flex);
+        @include flex(1);
+        @include justify-content(center);
+
         margin-top: 20px;
         text-align: center;
 
@@ -280,10 +223,64 @@ main.company > div.wrapper > div.posts {
           }
         }
       }
+    }
 
+    &.epoch {
+      background: none;
+      border: none;
+      width: 100%;
+
+      > a > header {
+
+        > h1 {
+          font-size: $great-font-size;
+          font-weight: 300;
+        }
+
+        > h2 {
+          font-size: $basic-font-size;
+          font-weight: 300;
+          color: $black-color;
+        }
+      }
+    }
+
+    &.dimmed {
+      opacity: 0.5;
+    }
+
+    &.only-me {
+      background-color: white;
+      border: 3px solid hsl(0, 0%, 80%);
+    }
+
+    > a > .only-me-overlay {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(center);
+      @include position(absolute, 0px 0 0 0px);
+
+      background-color: rgba(255, 255, 255, 0.85);
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+
+      > i {
+        font-size: 100px;
+        color: rgba(0, 0, 0, 0.7);
+      }
     }
   }
 
+  > .post-pins {
+    > .show-pins {
+      font-size: $basic-font-size;
+      margin-top: $gutter-size;
+      margin-left: $gutter-size;
+      padding: 0 30px;
+    }
+  }
 }
 
 
@@ -292,7 +289,7 @@ main.company > div.wrapper > div.posts {
 main.company.timeline > div.wrapper > header {
 
   > h1 {
-    font-size: 55px;
+    font-size: $great-font-size;
     font-weight: 200;
     margin: 0;
   }

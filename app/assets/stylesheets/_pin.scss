@@ -58,16 +58,6 @@
 
   > .round-buttons {
     @include position(absolute, $default-margin-size $default-margin-size 0 0);
-  
-    > li {
-      width: 24px;
-      height: 24px;
-      margin: 0;
-
-      > i {
-        line-height: 24px;
-      }
-    }
   }
 
   > .insight {

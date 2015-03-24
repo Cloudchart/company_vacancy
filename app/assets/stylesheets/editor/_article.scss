@@ -25,9 +25,11 @@ article.editor {
   width: $editor-width;
   
   > section {
-    margin: -10px -20px;
-    padding: 10px 20px;
     position: relative;
+
+    + section {
+      padding-top: $default-margin-size;
+    }
     
     > i.remove {
       @include position(absolute, -15px -15px 0 0);
@@ -44,30 +46,20 @@ article.editor {
       visibility: visible;
     }
   }
-  
 }
 
 // Post editor
 // 
 article.editor.post {
-  > section {
-    margin: 0;
-    padding: 0;
-
-    + section {
-      padding-top: $default-margin-size;
-    }
-
-    &.placeholder {
-      > figure {
-        opacity: 1;
-      }
+  > section.placeholder {
+    > figure {
+      opacity: 1;
     }
   }
+}
 
-  > .wrapper > section {
-    padding: 10px 20px;
-  }
+.editor.company {
+  padding-bottom: $default-margin-size;
 }
 
 // Draggable
