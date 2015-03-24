@@ -4,6 +4,7 @@
 # Imports
 #
 GlobalState = require('global_state/state')
+CloudRelay  = require('cloud_relay')
 
 
 # Stores
@@ -36,9 +37,9 @@ Fields = Immutable.Seq({ full_name: 'Name Surname', company: 'Company', occupati
 
 # Exports
 #
-module.exports = React.createClass
+MainComponent = React.createClass
 
-  displayName: 'Invite Queue App Component'
+  displayName: 'InviteQueueApp'
 
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
@@ -165,3 +166,17 @@ module.exports = React.createClass
         { @renderButton() }
       </footer>
     </form>
+
+
+# Exports
+#
+module.exports = CloudRelay.createContainer MainComponent,
+
+  queries:
+
+    user: ->
+      """
+        User {
+          tokens
+        }
+      """
