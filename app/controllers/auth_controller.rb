@@ -15,7 +15,6 @@ class AuthController < ApplicationController
     if user = User.find_by_email(oauth_hash.info.email)
       authenticate_user!(user)
     end
-    redirect_to main_app.root_path
   end
 
 
