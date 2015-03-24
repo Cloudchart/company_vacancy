@@ -15,11 +15,16 @@ module.exports = React.createClass
 
   propTypes:
     items: React.PropTypes.instanceOf(Immutable.Seq)
+    showOccupation: React.PropTypes.bool
+
+  getDefaultProps: ->
+    showOccupation: true
 
   renderPerson: (item) ->
     <Human 
       type           = "person"
       key            = { item.get('uuid') }
+      showOccupation = { @props.showOccupation }
       uuid           = { item.get('uuid') } />
 
 
