@@ -214,7 +214,7 @@ Component = React.createClass
 
   renderInsights: ->
     return null if @isEpochType() || (@getInsightsNumber() == 0)
-    limit = 2
+    limit = 3
 
     <section className="post-pins">
       <InsightListComponent pinnable_id={ @props.uuid } pinnable_type="Post" isCarousel={true} limit={ limit } />

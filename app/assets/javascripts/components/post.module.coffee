@@ -210,7 +210,7 @@ Post = React.createClass
     if location.hash.slice(1) == 'expanded' && $(".post-pins").length > 0
       setTimeout ->
         $('html,body').animate({ scrollTop: $(".post-pins").offset().top - 30 }, 'slow')
-        window.location.hash = ' '
+        history.replaceState(null, location.title, location.pathname)
       , 10
 
   componentWillUnmount: ->

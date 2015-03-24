@@ -13,7 +13,7 @@
     padding: 0;
 
     &.container {
-      @include transition(transform 1s ease-in-out);
+      @include transition(transform .5s ease-in-out);
 
       > li {
         @include display(flex);
