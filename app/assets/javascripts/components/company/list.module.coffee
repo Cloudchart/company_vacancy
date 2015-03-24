@@ -23,7 +23,7 @@ CompanyList = React.createClass
         """
           User {
             roles,
-            owned_companies {
+            published_companies {
               #{CompanyPreview.getQuery('company')}
             }
           }
@@ -33,33 +33,25 @@ CompanyList = React.createClass
   # Component specifications
   #
   propTypes:
-    uuid:           React.PropTypes.string
+    user_id:        React.PropTypes.string
     ids:            React.PropTypes.instanceOf(Immutable.Seq)
     isInLegacyMode: React.PropTypes.bool
 
   getDefaultProps: ->
     isInLegacyMode: false
 
-  getInitialState: ->
-    loaders: Immutable.Map()
-
-  fetch: ->
-    GlobalState.fetch(@getQuery('companies'), id: @props.uuid).then =>
-      @setState
-        loaders: @state.loaders.set('companies', true)
-
 
   # Helpers
   #
   isLoaded: ->
-    @state.loaders.get('companies') == true
+    @cursor.companies.deref(false)
 
   getCompaniesIds: ->
     if @props.isInLegacyMode
       @props.ids
     else
       CompanyStore
-        .filterForUser(@props.uuid)
+        .filterForUser(@props.user_id)
         .map (company) -> company.get('uuid')
 
 
@@ -68,8 +60,6 @@ CompanyList = React.createClass
   componentWillMount: ->
     @cursor =
       companies: CompanyStore.cursor.items
-
-    @fetch() unless (@isLoaded() || @props.isInLegacyMode)
 
 
   # Renderers

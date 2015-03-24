@@ -7,6 +7,8 @@ PinsComponent      = require('components/pinboards/pins')
 CompaniesList      = require('components/company/list')
 
 UserStore          = require('stores/user_store.cursor')
+PinStore           = require('stores/pin_store')
+CompanyStore       = require('stores/company_store.cursor')
 FavoriteStore      = require('stores/favorite_store.cursor')
 
 Button             = require('components/form/buttons').SyncButton
@@ -26,12 +28,22 @@ module.exports = React.createClass
   statics:
 
     queries:
-      user: ->
+      viewer: ->
         """
           Viewer {
             favorites
           }
         """
+
+      user: ->
+        """
+          User {
+            #{ProfileInfo.getQuery('user')},
+            #{PinsComponent.getQuery('pins')},
+            #{CompaniesList.getQuery('companies')}
+          }
+        """
+        
 
   propTypes:
     uuid:     React.PropTypes.string.isRequired
@@ -40,11 +52,19 @@ module.exports = React.createClass
     cursor: FavoriteStore.cursor.items
 
   getInitialState: ->
+    fetchDone:  false
     selected:   location.hash.substr(1) || 'pins' || ''
     isSyncing:  false
 
+  fetchViewer: ->
+    GlobalState.fetch(@getQuery('viewer'))
+
+  fetchUser: ->
+    GlobalState.fetch(@getQuery('user'), id: @props.uuid)
+
   fetch: ->
-    GlobalState.fetch(@getQuery('user'), force: true)
+    Promise.all([@fetchUser(), @fetchViewer()]).then =>
+      @setState(fetchDone: true)
 
   getStateFromStores: ->
     favorite: FavoriteStore.findByUser(@props.uuid)
@@ -56,7 +76,7 @@ module.exports = React.createClass
   # Helpers
   #
   isLoaded: ->
-    @cursor.user.deref(false)
+    @state.fetchDone
 
   getMenuOptionClassName: (option) ->
     cx(active: @state.selected == option)
@@ -88,7 +108,9 @@ module.exports = React.createClass
   #
   componentWillMount: ->
     @cursor = 
-      user: UserStore.me()
+      companies:  CompanyStore.cursor.items
+      pins:       PinStore.cursor.items
+      user:       UserStore.me()
 
     @fetch() unless @isLoaded()
 
@@ -105,8 +127,6 @@ module.exports = React.createClass
     </nav>
 
   renderFollowButton: ->
-    return null unless @isLoaded() && @cursor.user.get('email') && @cursor.user.get('uuid') != @props.uuid
-
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
     <Button 
@@ -118,12 +138,14 @@ module.exports = React.createClass
 
   renderContent: ->
     if @state.selected == "pins"
-      <PinsComponent uuid = { @props.uuid } />
+      <PinsComponent user_id = { @props.uuid } />
     else if @state.selected = "companies"
-      <CompaniesList uuid = { @props.uuid } />
+      <CompaniesList user_id = { @props.uuid } />
 
 
   render: ->
+    return null unless @isLoaded()
+
     <section className="user-profile">
       <header>
         <div className="cloud-columns cloud-columns-flex">

@@ -31,16 +31,7 @@ module.exports = React.createClass
 
     queries:
 
-      viewer_pins: ->
-        """
-          Viewer {
-            pins {
-              #{PinComponent.getQuery('pin')}
-            }
-          }
-        """
-
-      user_pins: ->
+      pins: ->
         """
           User {
             pins {
@@ -50,36 +41,20 @@ module.exports = React.createClass
         """
 
   propTypes:
-    uuid: React.PropTypes.string
-
-  getDefaultProps: ->
-    uuid: null
-
-  getInitialState: ->
-    loaders: Immutable.Map()
+    user_id: React.PropTypes.string.isRequired
 
 
   # Helpers
   #
   fetch: ->
-    if @props.uuid
-      promise = GlobalState.fetch(@getQuery('user_pins'), id: @props.uuid)
-    else
-      promise = GlobalState.fetch(@getQuery('viewer_pins'))
-
-    promise.then =>
-      @setState
-        loaders: @state.loaders.set('pins', true)
+    GlobalState.fetch(@getQuery('pins'), id: @props.user_id)
 
   isLoaded: ->
-    @state.loaders.get('pins') && @cursor.user.deref(false)
-
-  getUserId: ->
-    if @props.uuid then @props.uuid else @cursor.user.get('uuid')
+    @cursor.pins.deref(false)
 
   gatherPins: ->
     @cursor.pins
-      .filter (pin) => pin.get('user_id') == @getUserId() && pin.get('pinnable_id')
+      .filter (pin) => pin.get('user_id') == @props.user_id && pin.get('pinnable_id')
       .valueSeq()
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
@@ -90,7 +65,6 @@ module.exports = React.createClass
   componentWillMount: ->
     @cursor =
       pins: PinStore.cursor.items
-      user: UserStore.me()
 
     @fetch() unless @isLoaded()
 

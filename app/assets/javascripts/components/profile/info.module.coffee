@@ -24,28 +24,20 @@ module.exports  = React.createClass
       user: ->
         """
           User {
-            owned_companies,
+            roles,
             pins,
-            roles
+            published_companies
           }
         """
 
   propTypes:
     uuid:     React.PropTypes.string.isRequired
 
-  getInitialState: ->
-    loaders: Immutable.Map()
-
-  fetch: ->
-    GlobalState.fetch(@getQuery('user'), id: @props.uuid).then =>
-      @setState
-        loaders: @state.loaders.set('user', true)
-
 
   # Helpers
   #
   isLoaded: ->
-    @state.loaders.get('user') == true
+    @cursor.user.deref(false)
 
   getPinsCount: ->
     count = PinStore
@@ -67,9 +59,7 @@ module.exports  = React.createClass
   #
   componentWillMount: ->
     @cursor = 
-      user:  UserStore.cursor.items.cursor(@props.uuid)
-
-    @fetch() unless @isLoaded()
+      user:       UserStore.cursor.items.cursor(@props.uuid)
 
 
   # Renderers
