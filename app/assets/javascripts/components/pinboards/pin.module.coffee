@@ -47,6 +47,7 @@ module.exports = React.createClass
               #{PinnablePost.getQuery('post')}
             },
             user,
+            children,
             parent {
               user,
               children
@@ -54,18 +55,26 @@ module.exports = React.createClass
           }
         """
 
+  gatherAttributes: ->
+    uuid:           @cursor.pin.get('uuid')
+    parent_id:      @cursor.pin.get('parent_id')
+    pinnable_id:    @cursor.pin.get('pinnable_id')
+    pinnable_type:  @cursor.pin.get('pinnable_type')
+
+
+  # Lifecycle methods
+  #
   componentWillMount: ->
     @cursor = 
       pin:  PinStore.cursor.items.cursor(@props.uuid)
       user: UserStore.me()
 
+
   # Renderers
   #
   renderControls: ->
-    return null unless @cursor.pin.get('user_id') == @cursor.user.get('uuid')
-
     <ul className="round-buttons">
-      <PinButton uuid = { @props.uuid } />
+      <PinButton {...@gatherAttributes()} title={ @cursor.pin.get('content') } />
     </ul>
 
   renderPinContent: (content, className = 'paragraph') ->
