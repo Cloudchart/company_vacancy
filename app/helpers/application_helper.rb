@@ -42,6 +42,14 @@ module ApplicationHelper
     collection.active_model_serializer.new(collection, options)
   end
 
+  def app_logo_for_header(options={})
+    unless options[:old]
+      image_tag "#{Rails.env}/cloudchart-logo-neg.svg"
+    else
+      image_tag "cloudchart-logo-header.png"
+    end
+  end
+
   def app_name_for_header
     if Rails.env.staging?
       raw "Soviet <strong>Union</strong>"

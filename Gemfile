@@ -37,6 +37,8 @@ gem 'parslet'
 gem 'omniauth'
 gem 'omniauth-twitter'
 
+gem 'useragent'
+
 # Engines
 #
 gem 'cloud_profile', path: 'vendor/engines/cloud_profile'

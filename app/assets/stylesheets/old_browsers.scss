@@ -1,0 +1,85 @@
+@import 'normialize';
+@import 'proxima-nova';
+@import 'variables';
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+.main {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.header {
+  background-color: #3bc462;
+  color: #ffffff;
+  height: 76px;
+  max-height: 76px;
+  position: absolute;
+  width: 100%;
+
+  > table {
+    height: 100%;
+  }
+
+  .logo {
+    width: 76px;
+
+    img {
+      width: 75px;
+    }
+  }
+
+  .title {
+    font-size: $big-font-size;
+  }
+}
+
+.content {
+  font-size: $large-font-size;
+  font-weight: 300;
+  position: absolute;
+  top: 76px;
+  bottom: 0px;
+  width: 100%;
+
+  > .wrapper {
+    display: table;
+    height: 100%;
+    width: 100%;
+
+    > .child {
+      display: table-cell;
+      vertical-align: middle;
+
+      > table {
+        width: 100%;
+
+        .text {
+          > p {
+            font-weight: 300;
+            line-height: 1.4;
+            margin: 0 auto;
+            width: 800px;
+          }
+        }
+
+        .button {
+          > a {
+            background-color: #3bc462;
+            color: #ffffff;
+            display: block;
+            margin: 40px auto 0;
+            padding: 10px 0;
+            text-align: center;
+            text-decoration: none;
+            width: 350px;
+          }
+        }
+      }
+    }
+  }
+}
