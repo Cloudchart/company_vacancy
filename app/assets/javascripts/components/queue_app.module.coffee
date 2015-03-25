@@ -35,48 +35,18 @@ findEmailVerificationTokenFor = (user_id) ->
 Fields = Immutable.Seq({ full_name: 'Name Surname', company: 'Company', occupation: 'Occupation', email: 'Email' })
 
 
-# Exports
+# Main Component
 #
 MainComponent = React.createClass
 
   displayName: 'InviteQueueApp'
 
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
-
-
-  statics:
-
-    queries:
-
-      user: ->
-        """
-          User {
-            tokens
-          }
-        """
-
-
-  fetch: ->
-    GlobalState.fetch(@getQuery('user'), { id: @props.user, force: true })
+  mixins: [GlobalState.mixin]
 
 
   handleSubmit: (event) ->
     event.preventDefault()
-    @setState
-      errors:   []
-      pending:  true
-
-    update(@state.attributes.toJSON())
-      .then =>
-        @fetch()
-        @setState
-          pending: false
-      .catch (xhr) =>
-        @setState
-          attributes: @getAttributesFromCursor()
-          errors:     xhr.responseJSON.errors
-          pending:    false
 
 
   handleChange: (name, event) ->
@@ -92,9 +62,8 @@ MainComponent = React.createClass
 
   componentWillMount: ->
     @cursor =
-      user: UserStore.cursor.items.cursor(@props.user)
-
-    @fetch()
+      user:     UserStore.cursor.items.cursor(@props.user)
+      tokens:   TokenStore.cursor.items
 
 
 
@@ -116,6 +85,16 @@ MainComponent = React.createClass
     pending:    false
 
 
+  renderHeader: ->
+    <header>
+      { "Hello stranger," }
+      <br />
+      { "Welcome to the CloudChart invite queue. Yes, we're popular." }
+      <br />
+      { "If you, like us, rather act than wait, tell us a bit more about yourself. The more we know, the faster we wrap and send you that invite." }
+    </header>
+
+
   renderFields: ->
     fields = Fields.map (placeholder, name) =>
       <label key={ name } style={ display: 'block', margin: '10px 0' }>
@@ -134,19 +113,14 @@ MainComponent = React.createClass
 
 
   renderButton: ->
-    title = if @state.pending then "Saving..." else "Save"
-    icon  = if @state.pending then "fa-spin fa-spinner" else "fa-check"
     <button>
-      { title }
-      <i className="fa #{icon}" style={ marginLeft: 5 } />
+      I want my invite!
     </button>
 
 
   render: ->
     <form onSubmit={@handleSubmit}>
-      <header>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </header>
+      { @renderHeader() }
 
       <section>
         <aside style={ border: '1px solid #ccc', borderRadius: '50%', margin: '10px 0', width: 100, height: 100 }>
