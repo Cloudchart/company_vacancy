@@ -5,6 +5,7 @@ GlobalState        = require('global_state/state')
 ProfileInfo        = require('components/profile/info')
 PinsComponent      = require('components/pinboards/pins')
 CompaniesList      = require('components/company/list')
+FavoritesList      = require('components/favorite/list')
 
 UserStore          = require('stores/user_store.cursor')
 PinStore           = require('stores/pin_store')
@@ -125,6 +126,7 @@ module.exports = React.createClass
       <ul>
         <li className = { @getMenuOptionClassName('pins') } onClick = { @handleMenuClick.bind(@, 'pins') } >Pins</li>
         <li className = { @getMenuOptionClassName('companies') } onClick = { @handleMenuClick.bind(@, 'companies') } >Companies</li>
+        <li className = { @getMenuOptionClassName('activity') } onClick = { @handleMenuClick.bind(@, 'activity') } >Activity</li>
       </ul>
     </nav>
 
@@ -141,10 +143,13 @@ module.exports = React.createClass
       showSyncAnimation = { false } />
 
   renderContent: ->
-    if @state.selected == "pins"
-      <PinsComponent user_id = { @props.uuid } />
-    else if @state.selected = "companies"
-      <CompaniesList user_id = { @props.uuid } />
+    switch @state.selected
+      when 'pins'
+        <PinsComponent uuid = { @props.uuid } />
+      when 'companies'
+        <CompaniesList uuid = { @props.uuid } />
+      when 'activity'
+        <FavoritesList/>
 
 
   render: ->
