@@ -145,9 +145,9 @@ module.exports = React.createClass
   renderContent: ->
     switch @state.selected
       when 'pins'
-        <PinsComponent uuid = { @props.uuid } />
+        <PinsComponent user_id = { @props.uuid } />
       when 'companies'
-        <CompaniesList uuid = { @props.uuid } />
+        <CompaniesList user_id = { @props.uuid } />
       when 'activity'
         <FavoritesList/>
 

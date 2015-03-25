@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   attr_accessor :current_password
   attr_reader :invite
 
-  #before_validation :build_blank_emails, unless: -> { emails.any? }
+  # before_validation :build_blank_emails, unless: -> { emails.any? }
   before_destroy :mark_emails_for_destruction
 
   dragonfly_accessor :avatar
@@ -17,7 +17,6 @@ class User < ActiveRecord::Base
   has_many :emails, -> { order(:address) }, dependent: :destroy
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :oauth_providers, dependent: :destroy
-
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :charts, through: :companies
   has_many :votes, as: :source
@@ -29,13 +28,19 @@ class User < ActiveRecord::Base
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
   has_many :roles, dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
-  has_many :companies, through: :roles, source: :owner, source_type: 'Company'
-  has_many :followed_companies, through: :favorites, source: :favoritable, source_type: 'Company'
   has_many :people, dependent: :destroy
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
+  has_many :companies, through: :roles, source: :owner, source_type: 'Company'
+  has_many :published_companies, -> { where(is_published: true) }, through: :roles, source: :owner, source_type: 'Company'
+  has_many :followed_companies, through: :favorites, source: :favoritable, source_type: 'Company'
 
-  has_many :published_companies, -> { where(is_published: true) }, through: :roles, source: :owner, source_type: Company
+  # Roles on Pinboards
+  #
+  { readable: [:reader, :editor], writable: :editor, followable: :follower }.each do |scope, role|
+    has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, class_name: Role
+    has_many :"#{scope}_pinboards", through: :"#{scope}_pinboards_roles", source: :owner, source_type: Pinboard
+  end
 
   validates :full_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
@@ -45,15 +50,6 @@ class User < ActiveRecord::Base
 
   #default_scope -> { includes(:emails) }
   scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
-
-
-  # Roles on Pinboards
-  #
-  { readable: [:reader, :editor], writable: :editor, followable: :follower }.each do |scope, role|
-    has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, class_name: Role
-    has_many :"#{scope}_pinboards", through: :"#{scope}_pinboards_roles", source: :owner, source_type: Pinboard
-  end
-
 
 
   def self.create_with_twitter_omniauth_hash(hash)
@@ -67,6 +63,21 @@ class User < ActiveRecord::Base
     )
   end
 
+  def self.find_by_email(email)
+    CloudProfile::Email.includes(:user).find_by(address: email).user rescue nil
+  end
+
+
+  # TODO: move logic to activity model
+  def followed_activities
+    company_ids = favorites.where(favoritable_type: 'Company').map(&:favoritable_id)
+    user_ids = favorites.where(favoritable_type: 'User').map(&:favoritable_id)
+
+    Activity.where {
+      (action.eq('create') & trackable_type.eq('Post') & source_id.in(company_ids)) |
+      (action.eq('create') & trackable_type.eq('Pin') & source_id.in(user_ids) )
+    }
+  end
 
   def admin?
     !!roles.find { |role| role.owner_id == nil && role.value == 'admin' }
@@ -102,10 +113,6 @@ class User < ActiveRecord::Base
     self.emails = [Email.new(address: email)]
   end
 
-  def self.find_by_email(email)
-    Email.includes(:user).find_by(address: email).user rescue nil
-  end
-
   def invite=(invite)
     @invite = Token.where(name: :invite).find(invite) rescue Token.where(name: :invite).find(Cloudchart::RFC1751::decode(invite)) rescue nil
   end
@@ -134,9 +141,9 @@ class User < ActiveRecord::Base
     @should_validate_name = true
   end
 
-  def validate_email
-    errors.add(:email, emails.first.errors[:address]) unless emails.first.valid?
-  end
+  # def validate_email
+  #   errors.add(:email, emails.first.errors[:address]) unless emails.first.valid?
+  # end
 
   def blank_company
     companies.select { |company| company.name.blank? && company.logotype.blank? }.first
@@ -148,8 +155,8 @@ private
     emails.each(&:mark_for_destruction)
   end
 
-  def build_blank_emails
-    emails.build
-  end
+  # def build_blank_emails
+  #   emails.build
+  # end
 
 end

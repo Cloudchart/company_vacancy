@@ -114,7 +114,7 @@ module.exports = React.createClass
 
 
       when 'Person'
-        people = PersonStore.filterForBlock(block.get('uuid'))
+        people = PersonStore.filterForBlock(block.get('uuid')).toSeq()
         <Blocks.People key={ block.get('uuid') } items={ people } />
 
 
