@@ -83,7 +83,13 @@ module.exports = React.createClass
   render: ->
     return null unless @cursor.deref(false)
 
-    <div className="human">
-      { @renderAvatar() }
-      { @renderCredentials() }
-    </div>
+    if @props.type == 'user'
+      <a className="human for-group" href={ @cursor.get('user_url') }>
+        { @renderAvatar() }
+        { @renderCredentials() }
+      </a>
+    else
+      <div className="human">
+        { @renderAvatar() }
+        { @renderCredentials() }
+      </div>
