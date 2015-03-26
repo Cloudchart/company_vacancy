@@ -174,9 +174,8 @@ ActiveRecord::Schema.define(version: 20150323144209) do
   add_index "favorites", ["user_id", "favoritable_id", "favoritable_type"], name: "favorites_idx", unique: true, using: :btree
   add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
 
-  create_table "features", id: false, force: true do |t|
-    t.string   "uuid",        limit: 36
-    t.string   "name",                   null: false
+  create_table "features", primary_key: "uuid", force: true do |t|
+    t.string   "name",        null: false
     t.text     "description"
     t.integer  "votes_total"
     t.datetime "created_at"
