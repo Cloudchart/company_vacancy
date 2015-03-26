@@ -22,25 +22,13 @@ module CloudProfile
     #
     #
     class EmailSerializer < ActiveModel::Serializer
-      attributes :uuid, :address, :email_path
-
-      def email_path
-        cloud_profile.email_path(object)
-      end
+      attributes :uuid, :address
     end
 
     # 
     # 
     class VerificationTokenSerializer < ActiveModel::Serializer
-      attributes :uuid, :data, :email_path, :resend_verification_email_path
-
-      def email_path
-        cloud_profile.email_path(object)
-      end
-
-      def resend_verification_email_path
-        cloud_profile.resend_verification_email_path(object)
-      end
+      attributes :uuid, :data
     end
 
     attributes :uuid, :full_name, :avatar_url, :url, :emails, :verification_tokens

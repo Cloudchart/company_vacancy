@@ -1,9 +1,9 @@
-#
-#
+# @cjsx React.DOM
+
 tag = React.DOM
 
 # email_re = /(.)@(.)/ # aka hairy chest regex
-email_re = /.+@.+\..+/i # like in CloudProfile::Email
+email_re = /.+@.+\..+/i # like in Email
 
 # 
 # 
@@ -230,7 +230,7 @@ Component = React.createClass
         (NewEmailComponent {
           onCancel: @onNewEmailCancel
           onCreate: @onNewEmailCreate
-          emails_path: @props.emails_path
+          emails_path: '/emails'
         }) if @state.adding
       )
 
@@ -242,14 +242,13 @@ Component = React.createClass
           (tag.li {}, 'Add')
           (tag.li {}, (tag.i { className: 'fa fa-plus' }))
         )
-      ) unless @props.readOnly or @state.adding
+      ) unless @state.adding
       
     )
 
   getDefaultProps: ->
     emails: []
     verification_tokens: []
-    readOnly: true # what is it for?
 
   getInitialState: ->
     emails: @props.emails
@@ -260,13 +259,12 @@ Component = React.createClass
     @setState({ adding: true })    
 
   emailComponents: ->
-    @state.emails.map (email_props) =>
+    @state.emails.map (email) =>
       EmailComponent
-        key: email_props.uuid
-        address: email_props.address
-        readOnly: @props.readOnly
+        key: email.uuid
+        address: email.address
         length: @state.emails.length
-        email_path: email_props.email_path
+        email_path: "/emails/#{email.uuid}"
         onDelete: @onEmailDelete
 
   onEmailDelete: (event) ->
@@ -286,8 +284,8 @@ Component = React.createClass
       VerificationTokenComponent
         key: verification_token_props.uuid
         address: verification_token_props.data.address
-        email_path: verification_token_props.email_path
-        resend_verification_email_path: verification_token_props.resend_verification_email_path
+        email_path: "/emails/#{verification_token_props.uuid}"
+        resend_verification_email_path: "/emails/#{verification_token_props.uuid}/resend_verification"
         onDelete: @onVerificationTokenDelete
 
   onVerificationTokenDelete: (event) ->
@@ -295,4 +293,4 @@ Component = React.createClass
 
 #
 #
-cc.module('profile/react/settings/account').exports = Component
+module.exports = Component

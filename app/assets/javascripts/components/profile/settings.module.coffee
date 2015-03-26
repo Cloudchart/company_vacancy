@@ -4,9 +4,12 @@
 GlobalState     = require('global_state/state')
 
 UserStore       = require('stores/user_store.cursor')
+EmailStore      = require('stores/email_store')
+TokenStore      = require('stores/token_store.cursor')
 
 UserSyncApi     = require('sync/user_sync_api')
 
+Emails          = require('components/profile/emails')
 PersonAvatar    = require('components/shared/person_avatar')
 Field           = require('components/form/field')
 SyncButton      = require('components/form/buttons').SyncButton
@@ -26,7 +29,10 @@ module.exports  = React.createClass
     queries:
       user: ->
         """
-          User {}
+          User {
+            emails,
+            tokens
+          }
         """
 
   propTypes:
@@ -55,6 +61,23 @@ module.exports  = React.createClass
     Immutable.Map().withMutations (attributes) =>
       KnownAttributes.forEach (name) =>
         attributes.set(name, @state.attributes.get(name) || @cursor.user.get(name, ''))
+
+  getUserEmails: ->
+    @cursor.emails.filter (email) =>
+      email.get('user_id') == @props.uuid
+    .map (email) -> email.toObject()
+    .toArray()
+
+  getEmailUserTokens: ->
+    @cursor.tokens.filter (token) =>
+      token.get('name') == 'email_verification' && 
+      token.get('owner_id') == @props.uuid &&
+      token.get('owner_type') == 'User'
+    .map (token) -> 
+      token = token.toObject()
+      token.data = token.data.toObject()
+      token      
+    .toArray()
 
 
   # Handlers
@@ -86,7 +109,9 @@ module.exports  = React.createClass
   #
   componentWillMount: ->
     @cursor = 
-      user: UserStore.cursor.items.cursor(@props.uuid)
+      user:   UserStore.cursor.items.cursor(@props.uuid)
+      emails: EmailStore.cursor.items
+      tokens: TokenStore.cursor.items
 
     @fetch()
 
@@ -120,6 +145,11 @@ module.exports  = React.createClass
       onClick = { @handleSubmitClick }
       text    = 'Update settings' />
 
+  renderEmails: ->
+    <Emails 
+      emails              = { @getUserEmails() }
+      verification_tokens = { @getEmailUserTokens() } />
+
 
   render: ->
     return null unless @isLoaded()
@@ -132,4 +162,5 @@ module.exports  = React.createClass
         { @renderCompanyInput() }
         { @renderSubmitButton() }
       </fieldset>
+      { @renderEmails() }
     </form>

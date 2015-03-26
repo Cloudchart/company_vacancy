@@ -32,14 +32,13 @@ class Ability
     # Regular user
     #
     else
-      can [:verify, :resend_verification], :cloud_profile_email
+      can [:create, :verify, :resend_verification], Email
       can :manage, :cloud_profile_main
       can :update, :cloud_profile_user
       can [:read, :accept, :destroy], :invite
 
       can :index, Company
       can [:create, :read, :search, :unfollow], Company
-      can :create, CloudProfile::Email
       can :vote, Feature
       can :manage, Subscription
       can [:preview, :read, :pull], CloudBlueprint::Chart
@@ -47,7 +46,7 @@ class Ability
       can [:read, :create], Pinboard
 
       can [:update, :destroy, :settings], Pinboard, user_id: user.id
-      can :destroy, CloudProfile::Email, user_id: user.id
+      can :destroy, Email, user_id: user.id
 
       can :manage, Company do |company|
         owner?(user, company)
