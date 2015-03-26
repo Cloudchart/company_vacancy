@@ -55,6 +55,12 @@ module.exports = React.createClass
           }
         """
 
+  fetch: ->
+    GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
+
+  isLoaded: ->
+    @cursor.pin.deref(false)
+
   gatherAttributes: ->
     uuid:           @cursor.pin.get('uuid')
     parent_id:      @cursor.pin.get('parent_id')
@@ -68,6 +74,8 @@ module.exports = React.createClass
     @cursor = 
       pin:  PinStore.cursor.items.cursor(@props.uuid)
       user: UserStore.me()
+
+    @fetch() unless @isLoaded()
 
 
   # Renderers

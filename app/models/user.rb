@@ -48,7 +48,7 @@ class User < ActiveRecord::Base
   # We are no longer need to validate email
   # validate :validate_email, on: :create
 
-  #default_scope -> { includes(:emails) }
+  # default_scope -> { includes(:emails) }
   scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
 
 
@@ -68,15 +68,8 @@ class User < ActiveRecord::Base
   end
 
 
-  # TODO: move logic to activity model
   def followed_activities
-    company_ids = favorites.where(favoritable_type: 'Company').map(&:favoritable_id)
-    user_ids = favorites.where(favoritable_type: 'User').map(&:favoritable_id)
-
-    Activity.where {
-      (action.eq('create') & trackable_type.eq('Post') & source_id.in(company_ids)) |
-      (action.eq('create') & trackable_type.eq('Pin') & source_id.in(user_ids) )
-    }
+    Activity.followed_by_user(id)
   end
 
   def admin?

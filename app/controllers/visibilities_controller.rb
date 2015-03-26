@@ -9,6 +9,10 @@ class VisibilitiesController < ApplicationController
     @visibility = @owner.visibilities.build(visibility_params)
 
     if @visibility.save
+      if @owner.instance_of?(Post)
+        Activity.track(current_user, params[:action], @owner, @owner.company)
+      end
+
       respond_to do |format|
         format.json { render json: @visibility }
       end

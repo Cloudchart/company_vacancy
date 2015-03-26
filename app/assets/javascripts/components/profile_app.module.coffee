@@ -5,7 +5,7 @@ GlobalState        = require('global_state/state')
 ProfileInfo        = require('components/profile/info')
 PinsComponent      = require('components/pinboards/pins')
 CompaniesList      = require('components/company/list')
-FavoritesList      = require('components/favorite/list')
+UserFeed           = require('components/user/feed')
 
 UserStore          = require('stores/user_store.cursor')
 PinStore           = require('stores/pin_store')
@@ -32,7 +32,8 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
-            favorites
+            favorites,
+            followed_activities
           }
         """
 
@@ -149,7 +150,7 @@ module.exports = React.createClass
       when 'companies'
         <CompaniesList user_id = { @props.uuid } />
       when 'activity'
-        <FavoritesList/>
+        <UserFeed/>
 
 
   render: ->

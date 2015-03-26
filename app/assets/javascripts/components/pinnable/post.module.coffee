@@ -38,9 +38,10 @@ module.exports = React.createClass
 
   displayName: 'PinnablePost'
 
-
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
+  propTypes:
+    uuid: React.PropTypes.string.isRequired
 
   statics:
 
