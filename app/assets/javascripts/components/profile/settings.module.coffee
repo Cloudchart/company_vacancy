@@ -102,7 +102,7 @@ module.exports  = React.createClass
   handleSubmitClick: (event) ->
     event.preventDefault()
 
-    UserSyncApi.updateCurrentUser(@state.attributes.toJSON())
+    UserSyncApi.update(@cursor.user, @state.attributes.toJSON())
 
 
   # Lifecycle methods

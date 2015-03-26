@@ -21,13 +21,13 @@ module.exports =
       type:       'GET'
       dataType:   'json'
 
-  updateCurrentUser: (attributes = {}, options = {}) ->
+  update: (item, attributes = {}, options = {}) ->
     data = _.reduce attributes, (memo, value, name) ->
       memo.append("user[#{name}]", value) ; memo
     , new FormData
 
     Promise.resolve $.ajax
-      url:      '/profile/user'
+      url:      '/users/' + item.get('uuid')
       type:     'PUT'
       dataType: 'json'
       processData: false

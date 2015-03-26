@@ -44,6 +44,10 @@ class Ability
       can [:preview, :read, :pull], CloudBlueprint::Chart
       can :create, Tag
       can [:read, :create], Pinboard
+      can :read, User
+      can [:update, :settings], User do |editable_user|
+        user == editable_user
+      end
 
       can [:update, :destroy, :settings], Pinboard, user_id: user.id
       can :destroy, Email, user_id: user.id
