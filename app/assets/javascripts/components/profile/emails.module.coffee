@@ -218,8 +218,10 @@ Component = React.createClass
   render: ->
 
     (tag.div {
-        className: 'content'
+        className: 'emails-wrapper'
       },
+
+      (tag.h2 {}, 'Emails'),
 
       (tag.ul {
         className: 'emails'  

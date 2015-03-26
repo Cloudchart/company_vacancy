@@ -10,6 +10,7 @@ class UsersController < ApplicationController
   end
 
   def update
+    @user.should_validate_name!
     @user.update! params_for_update
 
     respond_to do |format|
@@ -19,7 +20,7 @@ class UsersController < ApplicationController
   rescue ActiveRecord::RecordInvalid
 
     respond_to do |format|
-      format.json { render json: :fail, status: 422 }
+      format.json { render json: { errors: @user.errors }, status: 422 }
     end
   end
 

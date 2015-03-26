@@ -40,7 +40,9 @@ module.exports  = React.createClass
 
   getInitialState: ->
     attributes: Immutable.Map()
+    errors:     Immutable.Map()
     fetchDone:  false
+    isSyncing:  false
 
   fetch: ->
     GlobalState.fetch(@getQuery('user'), id: @props.uuid).then =>
@@ -88,6 +90,7 @@ module.exports  = React.createClass
 
     @setState
       attributes: attributes.set(name, value)
+      errors:     @state.errors.set(name, [])
 
   handleAvatarChange: (file) ->
     @setState
@@ -99,11 +102,20 @@ module.exports  = React.createClass
       attributes: @state.attributes.withMutations (attributes) ->
         attributes.remove('avatar').remove('avatar_url').set('remove_avatar', true)
 
-  handleSubmitClick: (event) ->
+  handleSubmit: (event) ->
     event.preventDefault()
 
-    UserSyncApi.update(@cursor.user, @state.attributes.toJSON())
+    @setState(isSyncing: true)
 
+    UserSyncApi.update(@cursor.user, @state.attributes.toJSON()).then @handleSubmitDone, @handleSubmitFail
+
+  handleSubmitDone: ->
+    @setState(isSyncing: false)
+
+  handleSubmitFail: (reason) ->
+    @setState
+      errors:    Immutable.Map(reason.responseJSON.errors)
+      isSyncing: false
 
   # Lifecycle methods
   #
@@ -127,23 +139,34 @@ module.exports  = React.createClass
 
   renderFullNameInput: ->
     <Field  
+      title    = 'Full Name'
+      errors   = { @state.errors.get('full_name') }
       onChange = { @handleChange.bind(@, 'full_name') }
       value    = { @state.attributes.get('full_name') } />
 
   renderOccupationInput: ->
     <Field  
+      title    = 'Occupation'
+      errors   = { @state.errors.get('occupation') }
       onChange = { @handleChange.bind(@, 'occupation') }
       value    = { @state.attributes.get('occupation') } />
 
   renderCompanyInput: ->
     <Field  
+      title    = 'Company'
+      errors   = { @state.errors.get('company') }
       onChange = { @handleChange.bind(@, 'company') }
       value    = { @state.attributes.get('company') } />
 
   renderSubmitButton: ->
-    <SyncButton 
-      onClick = { @handleSubmitClick }
-      text    = 'Update settings' />
+    <footer>
+      <div></div>
+      <SyncButton 
+        className = 'cc'
+        sync      = @state.isSyncing
+        type      = 'submit'
+        text      = 'Update settings' />
+    </footer>
 
   renderEmails: ->
     <Emails 
@@ -154,13 +177,13 @@ module.exports  = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <form className="settings">
-      { @renderAvatar() }
+    <form className="settings" onSubmit={ @handleSubmit } >
       <fieldset>
+        { @renderAvatar() }
         { @renderFullNameInput() }
         { @renderOccupationInput() }
         { @renderCompanyInput() }
-        { @renderSubmitButton() }
       </fieldset>
+      { @renderSubmitButton() }
       { @renderEmails() }
     </form>
