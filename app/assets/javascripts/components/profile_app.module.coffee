@@ -56,8 +56,8 @@ module.exports = React.createClass
     selected:   location.hash.substr(1) || 'pins' || ''
     isSyncing:  false
 
-  fetchViewer: ->
-    GlobalState.fetch(@getQuery('viewer'))
+  fetchViewer: (options={}) ->
+    GlobalState.fetch(@getQuery('viewer'), options)
 
   fetchUser: ->
     GlobalState.fetch(@getQuery('user'), id: @props.uuid)
@@ -100,7 +100,8 @@ module.exports = React.createClass
         @setState(isSyncing: false)
     else
       SyncApi.follow(@props.uuid).then => 
-        @fetch().then => @setState(isSyncing: false)
+        # TODO rewrite with grabbing only needed favorite
+        @fetchViewer(force: true).then => @setState(isSyncing: false)
 
 
 
@@ -110,7 +111,8 @@ module.exports = React.createClass
     @cursor = 
       companies:  CompanyStore.cursor.items
       pins:       PinStore.cursor.items
-      user:       UserStore.me()
+      viewer:     UserStore.me()
+      user:       UserStore.cursor.items.cursor(@props.uuid)
 
     @fetch() unless @isLoaded()
 
@@ -127,6 +129,8 @@ module.exports = React.createClass
     </nav>
 
   renderFollowButton: ->
+    return null if @cursor.user.get('uuid') == @cursor.viewer.get('uuid')
+
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
     <Button 
