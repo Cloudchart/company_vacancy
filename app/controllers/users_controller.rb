@@ -6,4 +6,10 @@ class UsersController < ApplicationController
       format.html
     end
   end
+
+  def settings 
+    respond_to do |format|
+      format.html
+    end
+  end
 end

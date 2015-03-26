@@ -20,6 +20,19 @@ module.exports =
       url:        '/profile/user'
       type:       'GET'
       dataType:   'json'
+
+  updateCurrentUser: (attributes = {}, options = {}) ->
+    data = _.reduce attributes, (memo, value, name) ->
+      memo.append("user[#{name}]", value) ; memo
+    , new FormData
+
+    Promise.resolve $.ajax
+      url:      '/profile/user'
+      type:     'PUT'
+      dataType: 'json'
+      processData: false
+      contentType:  false
+      data: data
     
   follow: (key) ->
     Promise.resolve $.ajax

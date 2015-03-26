@@ -125,7 +125,7 @@ module CloudProfile
     
     def update
       current_user.should_validate_name!
-      current_user.update! params.require(:user).permit([:full_name, :avatar, :remove_avatar])
+      current_user.update! params.require(:user).permit([:full_name, :avatar, :remove_avatar, :occupation, :company])
 
       respond_to do |format|
         format.json { render json: current_user, only: [:full_name, :avatar_url], serializer: PersonalSerializer, root: false }

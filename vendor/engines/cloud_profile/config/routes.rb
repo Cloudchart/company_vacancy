@@ -26,10 +26,6 @@ CloudProfile::Engine.routes.draw do
   get 'oauth/:provider',  to: 'social_networks#oauth_provider', as: 'oauth_provider'
 
   scope :profile do
-    
-    # Root
-    #
-    root to: 'main#settings'
 
     # Main
     #
