@@ -1,6 +1,6 @@
 <%- if user_authenticated? -%>
 
-  <%= link_to current_user.full_name_or_email, settings_user_path(current_user), class: 'profile auth' %>
+  <%= link_to current_user.full_name_or_email, user_path(current_user), class: 'profile auth' %>
   <%= link_to font_awesome('external-link-square'), cloud_profile.logout_path, class: 'sign-out header square auth' %>
 
 <%- else -%>
