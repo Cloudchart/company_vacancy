@@ -4,33 +4,37 @@ module.exports =
     repositionNodes: ->
       return unless parentNode = @getDOMNode()
 
-      totalHeights = Immutable.Map()
+      # TODO
+      # Quick solution, but relying on timeout is not good
+      # better find something better later
+      setTimeout ->
+        if parentNode.childNodes.length > 0
+          columnsHeights = Immutable.Map()
 
-      Immutable.Seq(parentNode.childNodes)
-        .groupBy (node) ->
-          node.getBoundingClientRect().left
+          Immutable.Seq(parentNode.childNodes)
+            .groupBy (node) ->
+              node.getBoundingClientRect().left
 
-        .forEach (nodes, j) ->
-          totalHeights = totalHeights.set(j, 0)
+            .forEach (nodes, j) ->
+              columnsHeights = columnsHeights.set(j, 0)
 
-          nodes.forEach (node, i) ->
-            node.style.top  = 0
+              nodes.forEach (node, i) ->
+                node.style.top  = 0
 
-            bounds          = node.getBoundingClientRect()
-            totalHeights    = totalHeights.set(j, totalHeights.get(j) + (bounds.bottom - bounds.top))
+                bounds          = node.getBoundingClientRect()
+                columnsHeights  = columnsHeights.set(j, columnsHeights.get(j) + (bounds.height))
+                return if i == 0
 
-            return if i == 0
+                prevNode        = nodes.get(i - 1)
+                prevNodeBounds  = prevNode.getBoundingClientRect()
 
-            prevNode        = nodes.get(i - 1)
-            prevNodeBounds  = prevNode.getBoundingClientRect()
+                delta           = bounds.top - prevNodeBounds.bottom
 
-            delta           = bounds.top - prevNodeBounds.bottom
+                node.style.top  = '-' + delta + 'px' unless delta == 0
 
-            node.style.top  = '-' + delta + 'px' unless delta == 0
-
-
-      totalHeight = totalHeights.max()
-      parentNode.style.height = totalHeight + 24 + 'px'
+          maxColumnHeight = columnsHeights.max()
+          parentNode.style.height = maxColumnHeight + 24 + 'px'
+      , 100
 
     componentDidMount: ->
       @repositionNodes()
