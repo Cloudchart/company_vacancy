@@ -5,8 +5,9 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  before_filter :check_browser
   before_filter :store_location
-  
+
   rescue_from CanCan::AccessDenied do |exception|
     if user_authenticated?
       redirect_to main_app.root_path, alert: exception.message
@@ -35,9 +36,19 @@ class ApplicationController < ActionController::Base
   
 private
 
+  def check_browser
+    user_agent = UserAgent.parse(request.user_agent)
+
+    if "#{controller_name}##{action_name}" != 'errors#old_browsers' && 
+        cookies[:agree_to_browse].nil? && 
+        Cloudchart::BROWSERS_WHITELIST.detect { |browser| user_agent < browser }
+      redirect_to old_browsers_path
+    end
+  end
+
   def store_location
     return if user_authenticated? || !request.get? || request.xhr? ||
-      "#{controller_name}##{action_name}" =~ /authentications#new|users#new|passwords#reset/
+      "#{controller_name}##{action_name}" =~ /authentications#new|users#new|passwords#reset|errors#old_browsers/
 
     session[:previous_path] = request.fullpath
   end

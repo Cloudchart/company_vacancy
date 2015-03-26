@@ -391,6 +391,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    useragent (0.13.1)
     warden (1.2.3)
       rack (>= 1.0)
     xpath (2.0.0)
@@ -461,4 +462,5 @@ DEPENDENCIES
   tire
   uglifier (~> 2.5.0)
   unicorn
+  useragent
   warden
