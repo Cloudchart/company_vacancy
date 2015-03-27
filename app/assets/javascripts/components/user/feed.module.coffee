@@ -43,6 +43,7 @@ MainComponent = React.createClass
   # Helpers
   # 
   gatherFeed: ->
+    # TODO: filter by insights (content should present)
     ActivityStore.cursor.items.deref(Immutable.Map())
       .sortBy (item) -> item.get('created_at')
       .reverse()

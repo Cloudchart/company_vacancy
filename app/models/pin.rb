@@ -27,9 +27,10 @@ class Pin < ActiveRecord::Base
 
   def destroy
     Pin.transaction do
-      update(pinboard_id: nil, pinnable_id: nil, pinnable_type: nil)
-      super if children.size == 0
-      parent.destroy if parent.present? and parent.pinnable.blank?
+      update(pinboard: nil, pinnable: nil)
+      parent.destroy if parent && parent.pinnable.blank?
+      activities.destroy_all
+      super if children.empty?
     end
   end
 

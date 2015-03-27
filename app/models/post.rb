@@ -6,7 +6,7 @@ class Post < ActiveRecord::Base
   VISIBILITY_WHITELIST = [:public, :trusted, :only_me].freeze
 
   belongs_to :owner, polymorphic: true
-  belongs_to :company, foreign_key: :owner_id, foreign_type: Company
+  belongs_to :company, foreign_key: :owner_id, foreign_type: 'Company'
 
   has_many :posts_stories, dependent: :destroy
   has_many :stories, through: :posts_stories
