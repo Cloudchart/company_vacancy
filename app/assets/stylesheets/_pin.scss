@@ -7,7 +7,7 @@
   @include justify-content(space-between);
 
   border-top: $card-hr;
-  padding: $card-basic-space 0 ;
+  padding: $card-basic-space 0;
 
   > p {
     margin-bottom: $card-basic-space * .75;
@@ -54,12 +54,6 @@
 // Pin Card
 //
 .pin.cloud-card {
-  position: relative;
-
-  > .round-buttons {
-    @include position(absolute, $default-margin-size $default-margin-size 0 0);
-  }
-
   > .insight {
     @include pin-card-insight;
   }

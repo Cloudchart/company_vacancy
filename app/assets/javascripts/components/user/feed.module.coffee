@@ -61,7 +61,9 @@ MainComponent = React.createClass
   renderTrackableItem: (item, index) ->
     switch item.get('trackable_type')
       when 'Post'
-        <PostPreview key = { index } uuid = { item.get('trackable_id') } />
+        <section className="post cloud-card">
+          <PostPreview key = { index } uuid = { item.get('trackable_id') } />
+        </section>
       when 'Pin'
         <Pin key = { index } uuid = { item.get('trackable_id') } />
           
@@ -71,10 +73,8 @@ MainComponent = React.createClass
   render: ->
     # TODO: show more
 
-    <section className="feed cloud-columns">
-      <section className="cloud-column">
-        { @gatherFeed() }
-      </section>
+    <section className="feed">
+      { @gatherFeed() }
     </section>
 
 

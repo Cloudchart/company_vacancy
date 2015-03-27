@@ -114,11 +114,13 @@ section.user-profile {
   }
 
   .pins,
-  .companies-list {
+  .companies-list,
+  .feed {
     padding: $gutter-size/2;
     margin: 0 auto;
   }
 }
 
+@import "profile/feed";
 @import "profile/settings";
 @import "profile/emails";
