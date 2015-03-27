@@ -26,7 +26,9 @@ MainComponent = React.createClass
   # Component Specifications
   # 
   # getDefaultProps: ->
-  # getInitialState: ->
+  getInitialState: ->
+    offset: 0
+    limit: 10
 
 
   # Lifecycle Methods
@@ -43,18 +45,18 @@ MainComponent = React.createClass
   # Helpers
   # 
   gatherFeed: ->
-    # TODO: filter by insights (content should present)
     ActivityStore.cursor.items.deref(Immutable.Map())
       .sortBy (item) -> item.get('created_at')
       .reverse()
-      .take(30)
+      .slice(0, @state.offset + @state.limit)
       .map @renderTrackableItem
       .toArray()
   
 
   # Handlers
   # 
-  # handleThingClick: (event) ->
+  handleShowMoreClick: (event) ->
+    @setState offset: @state.offset + @state.limit
 
 
   # Renderers
@@ -62,20 +64,23 @@ MainComponent = React.createClass
   renderTrackableItem: (item, index) ->
     switch item.get('trackable_type')
       when 'Post'
-        <section className="post cloud-card">
-          <PostPreview key = { index } uuid = { item.get('trackable_id') } />
+        <section key = { index } className="post cloud-card">
+          <PostPreview uuid = { item.get('trackable_id') } />
         </section>
       when 'Pin'
         <Pin key = { index } uuid = { item.get('trackable_id') } />
+
+  renderShowMoreButton: ->
+    return null if ActivityStore.cursor.items.deref(Immutable.Map()).size <= @state.offset + @state.limit
+    <button className="cc" onClick={@handleShowMoreClick}> Show more </button>
           
 
   # Main render
   # 
   render: ->
-    # TODO: show more
-
     <section className="feed">
       { @gatherFeed() }
+      { @renderShowMoreButton() }
     </section>
 
 
