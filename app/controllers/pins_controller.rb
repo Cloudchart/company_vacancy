@@ -89,7 +89,11 @@ class PinsController < ApplicationController
   end
 
   def fields_for_update
-    fields_for_create - [:user_id]
+    if current_user.editor?
+      fields_for_create
+    else
+      fields_for_create - [:user_id] 
+    end
   end
 
   def create_intercom_event
