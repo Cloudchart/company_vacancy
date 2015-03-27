@@ -32,14 +32,14 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
-            favorites,
-            followed_activities
+            favorites
           }
         """
 
       user: ->
         """
           User {
+            followed_activities,
             #{ProfileInfo.getQuery('user')},
             #{PinsComponent.getQuery('pins')},
             #{CompaniesList.getQuery('companies')}
@@ -55,7 +55,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     fetchDone:  false
-    selected:   location.hash.substr(1) || 'pins' || ''
+    selected:   location.hash.substr(1) || 'activity' || ''
     isSyncing:  false
 
   fetchViewer: (options={}) ->
@@ -125,9 +125,9 @@ module.exports = React.createClass
   renderMenu: ->
     <nav>
       <ul>
+        <li className = { @getMenuOptionClassName('activity') } onClick = { @handleMenuClick.bind(@, 'activity') } >Activity</li>
         <li className = { @getMenuOptionClassName('pins') } onClick = { @handleMenuClick.bind(@, 'pins') } >Pins</li>
         <li className = { @getMenuOptionClassName('companies') } onClick = { @handleMenuClick.bind(@, 'companies') } >Companies</li>
-        <li className = { @getMenuOptionClassName('activity') } onClick = { @handleMenuClick.bind(@, 'activity') } >Activity</li>
       </ul>
     </nav>
 
