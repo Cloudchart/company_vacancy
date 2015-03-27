@@ -25,7 +25,7 @@ class Tag < ActiveRecord::Base
     joins { companies.outer }
     .where { 
       sift(:acceptable) |
-      companies.uuid.in(company_ids) #|
+      companies.uuid.in(company_ids)
     }.distinct
   end
 

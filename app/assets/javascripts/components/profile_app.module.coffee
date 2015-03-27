@@ -5,6 +5,7 @@ GlobalState        = require('global_state/state')
 ProfileInfo        = require('components/profile/info')
 PinsComponent      = require('components/pinboards/pins')
 CompaniesList      = require('components/company/list')
+UserFeed           = require('components/user/feed')
 
 UserStore          = require('stores/user_store.cursor')
 PinStore           = require('stores/pin_store')
@@ -38,6 +39,7 @@ module.exports = React.createClass
       user: ->
         """
           User {
+            followed_activities,
             #{ProfileInfo.getQuery('user')},
             #{PinsComponent.getQuery('pins')},
             #{CompaniesList.getQuery('companies')}
@@ -53,7 +55,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     fetchDone:  false
-    selected:   location.hash.substr(1) || 'pins' || ''
+    selected:   location.hash.substr(1) || 'activity' || ''
     isSyncing:  false
 
   fetchViewer: (options={}) ->
@@ -123,6 +125,7 @@ module.exports = React.createClass
   renderMenu: ->
     <nav>
       <ul>
+        <li className = { @getMenuOptionClassName('activity') } onClick = { @handleMenuClick.bind(@, 'activity') } >Activity</li>
         <li className = { @getMenuOptionClassName('pins') } onClick = { @handleMenuClick.bind(@, 'pins') } >Pins</li>
         <li className = { @getMenuOptionClassName('companies') } onClick = { @handleMenuClick.bind(@, 'companies') } >Companies</li>
       </ul>
@@ -141,10 +144,13 @@ module.exports = React.createClass
       showSyncAnimation = { false } />
 
   renderContent: ->
-    if @state.selected == "pins"
-      <PinsComponent user_id = { @props.uuid } />
-    else if @state.selected = "companies"
-      <CompaniesList user_id = { @props.uuid } />
+    switch @state.selected
+      when 'pins'
+        <PinsComponent user_id = { @props.uuid } />
+      when 'companies'
+        <CompaniesList user_id = { @props.uuid } />
+      when 'activity'
+        <UserFeed/>
 
 
   render: ->

@@ -43,6 +43,4 @@ module.exports = React.createClass
   render: ->
     return null unless @cursor.deref(false)
 
-    <header className="company">
-      { @renderLogoAndTitle() }
-    </header>
+    @renderLogoAndTitle()

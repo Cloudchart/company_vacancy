@@ -27,6 +27,8 @@ class PinsController < ApplicationController
 
     @pin.save!
 
+    Activity.track(current_user, params[:action], @pin, @pin.user)
+
     respond_to do |format|
       format.json { render json: { id: @pin.uuid } }
     end
