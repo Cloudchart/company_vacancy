@@ -278,7 +278,7 @@ RailsAdmin.config do |config|
 
             if full_name.blank? && email.present? || full_name.present? && email.blank?
               redirect_to :back, alert: 'Full name and email must be filled both or left blank'
-            elsif email.present? && CloudProfile::Email.find_by(address: email)
+            elsif email.present? && Email.find_by(address: email)
               redirect_to :back, alert: 'We already have user with this email address in database'
             else
               @object = Token.new(

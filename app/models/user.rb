@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :friends
 
-  has_many :emails, -> { order(:address) }, class_name: 'CloudProfile::Email', dependent: :destroy
+  has_many :emails, -> { order(:address) }, dependent: :destroy
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :oauth_providers, dependent: :destroy
 
@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
 
   has_many :published_companies, -> { where(is_published: true) }, through: :roles, source: :owner, source_type: Company
 
-  validates :first_name, :last_name, presence: true, if: :should_validate_name?
+  validates :full_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
 
   # We are no longer need to validate email
@@ -99,11 +99,11 @@ class User < ActiveRecord::Base
   end
 
   def email=(email)
-    self.emails = [CloudProfile::Email.new(address: email)]
+    self.emails = [Email.new(address: email)]
   end
 
   def self.find_by_email(email)
-    CloudProfile::Email.includes(:user).find_by(address: email).user rescue nil
+    Email.includes(:user).find_by(address: email).user rescue nil
   end
 
   def invite=(invite)

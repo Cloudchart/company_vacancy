@@ -1,0 +1,11 @@
+<div class="router" data-company-router-mount-point>
+  <ul>
+
+    <% if can?(:settings, @user) %>
+      <li>
+        <%= link_with_class_for_current('Settings', main_app.settings_user_path(@user), 'base') %>
+      </li>
+    <% end %>
+
+  </ul>
+</div>
