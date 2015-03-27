@@ -43,6 +43,7 @@ MainComponent = React.createClass
   # Helpers
   # 
   gatherFeed: ->
+    # TODO: filter by insights (content should present)
     ActivityStore.cursor.items.deref(Immutable.Map())
       .sortBy (item) -> item.get('created_at')
       .reverse()
@@ -65,8 +66,7 @@ MainComponent = React.createClass
           <PostPreview key = { index } uuid = { item.get('trackable_id') } />
         </section>
       when 'Pin'
-        if item.get('content')
-          <Pin key = { index } uuid = { item.get('trackable_id') } />
+        <Pin key = { index } uuid = { item.get('trackable_id') } />
           
 
   # Main render
