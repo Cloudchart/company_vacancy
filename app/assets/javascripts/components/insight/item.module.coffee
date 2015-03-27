@@ -87,7 +87,7 @@ module.exports = React.createClass
     return null unless @props.cursor.pin.deref()
     return null unless @state.user.deref()
 
-    <article className="insight" onClick={ -> console.log('called') }>
+    <article className="insight">
       { @renderUser() }
       { @renderContent() }
       { @renderButtons() }
