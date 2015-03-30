@@ -9,11 +9,7 @@ class ApplicationController < ActionController::Base
   before_filter :store_location
 
   rescue_from CanCan::AccessDenied do |exception|
-    if user_authenticated?
-      redirect_to main_app.root_path, alert: exception.message
-    else
-      redirect_to cloud_profile.login_path
-    end
+    redirect_to main_app.root_path, alert: exception.message
   end
   
   def authenticate(options = {})

@@ -7,8 +7,8 @@ class Company < ActiveRecord::Base
   include Tire::Model::Callbacks
 
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
-  ROLES           = ([:owner] + INVITABLE_ROLES).freeze
-  NESTED_MODELS   = [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post, Story, Quote, PostsStory, Paragraph, Picture]
+  ROLES = ([:owner] + INVITABLE_ROLES).freeze
+  NESTED_MODELS = [Person, Vacancy, Event, Block, CloudBlueprint::Chart, Post, Story, Quote, PostsStory, Paragraph, Picture]
 
   before_save do
     self.slug = nil if slug.blank?
