@@ -99,6 +99,7 @@ section.user-profile {
       @include justify-content(space-between);
 
       font-size: $basic-font-size;
+      font-weight: 400;
       margin-left: $default-margin-size;
 
       h1 {
@@ -109,6 +110,15 @@ section.user-profile {
 
       .stats {
         margin: 0;
+      }
+
+      .occupation,
+      .twitter {
+        color: $secondary-link-color;
+      }
+
+      .spacer {
+        @include flex(1);
       }
     }
   }

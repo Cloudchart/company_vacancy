@@ -64,13 +64,27 @@ module.exports  = React.createClass
 
   # Renderers
   #
-  renderUserStats: ->
+  renderOccupation: ->
+    strings = []
+    strings.push occupation if (occupation = @cursor.user.get('occupation'))
+    strings.push company if (company = @cursor.user.get('company'))
+
+    <div className="occupation">
+      { strings.join(', ') }
+    </div>
+
+  renderStats: ->
     counters = []
 
     if companiesCount = @getCompaniesCount() then counters.push(companiesCount)
     if pinsCount = @getPinsCount() then counters.push(pinsCount)
 
-    <p className="stats">{ counters.join(', ') }</p>
+    <div className="stats">{ counters.join(', ') }</div>
+
+  renderTwitter: ->
+    twitterHandle = @cursor.user.get('twitter')
+
+    <a className="twitter" href={ "https://twitter.com/" + twitterHandle } target="_blank">@{ twitterHandle }</a>
 
 
   render: ->
@@ -84,6 +98,9 @@ module.exports  = React.createClass
       </aside>
       <section className="personal">
         <h1> { @cursor.user.get('full_name') } </h1>
-        { @renderUserStats() }
+        { @renderOccupation() }
+        <div className="spacer"></div>
+        { @renderStats() }
+        { @renderTwitter() }
       </section>
     </section>
