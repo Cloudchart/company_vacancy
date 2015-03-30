@@ -8,8 +8,6 @@ class BlocksController < ApplicationController
     
     block.save!
 
-    # Activity.track_activity(current_user, params[:action], block, owner)
-    
     blocks = owner.blocks.includes(:block_identities)
     
     respond_to do |format|
@@ -24,8 +22,6 @@ class BlocksController < ApplicationController
 
     block.update!(block_params_for_update)
 
-    # Activity.track_activity(current_user, params[:action], block, block.owner)
-    
     block.reload
 
     respond_to do |format|

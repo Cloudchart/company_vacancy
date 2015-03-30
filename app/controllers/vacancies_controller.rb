@@ -37,7 +37,6 @@ class VacanciesController < ApplicationController
     @vacancy.author = current_user
 
     if @vacancy.save
-      Activity.track_activity(current_user, 'open', @vacancy)
       respond_to do |format|
         format.html { redirect_to @vacancy, notice: t('messages.created', name: t('lexicon.vacancy')) }
         format.json { render json: @vacancy, root: false }
@@ -53,7 +52,6 @@ class VacanciesController < ApplicationController
   # PATCH/PUT /vacancies/1
   def update
     if @vacancy.update(vacancy_params)
-      Activity.track_activity(current_user, 'edit', @vacancy)
       respond_to do |format|
         format.html { redirect_to @vacancy, notice: t('messages.updated', name: t('lexicon.vacancy')) }
         format.json { render json: @vacancy, root: false }

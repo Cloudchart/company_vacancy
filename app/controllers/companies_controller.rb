@@ -66,8 +66,6 @@ class CompaniesController < ApplicationController
   def update
     @company.update!(company_params)
 
-    # Activity.track_activity(current_user, params[:action], @company)
-
     update_site_url_verification(@company) if company_params[:site_url]
 
     respond_to do |format|
