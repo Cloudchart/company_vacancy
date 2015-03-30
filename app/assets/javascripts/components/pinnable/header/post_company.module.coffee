@@ -26,18 +26,13 @@ module.exports = React.createClass
   renderLogo: ->
     return null unless url = @cursor.get('logotype_url', false)
 
-    <figure style={ backgroundImage: "url(#{url})" } />
-
+    <img src={ url } />
 
   renderLogoAndTitle: ->
-    classList = cx
-      'logo-and-name':      true
-      # 'has-name-in-logo':   @cursor.get('is_name_in_logo', false)
-
-    <section className={ classList }>
+    <figure>
       { @renderLogo() }
       { @cursor.get('name') }
-    </section>
+    </figure>
 
 
   render: ->
