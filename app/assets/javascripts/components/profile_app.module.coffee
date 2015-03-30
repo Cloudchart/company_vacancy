@@ -55,7 +55,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     fetchDone:  false
-    selected:   location.hash.substr(1) || 'activity' || ''
+    selected:   location.hash.substr(1) || 'insights' || ''
     isSyncing:  false
 
   fetchViewer: (options={}) ->
@@ -126,7 +126,7 @@ module.exports = React.createClass
     <nav>
       <ul>
         <li className = { @getMenuOptionClassName('activity') } onClick = { @handleMenuClick.bind(@, 'activity') } >Activity</li>
-        <li className = { @getMenuOptionClassName('pins') } onClick = { @handleMenuClick.bind(@, 'pins') } >Pins</li>
+        <li className = { @getMenuOptionClassName('insights') } onClick = { @handleMenuClick.bind(@, 'insights') } >Insights</li>
         <li className = { @getMenuOptionClassName('companies') } onClick = { @handleMenuClick.bind(@, 'companies') } >Companies</li>
       </ul>
     </nav>
@@ -145,12 +145,12 @@ module.exports = React.createClass
 
   renderContent: ->
     switch @state.selected
-      when 'pins'
-        <PinsComponent user_id = { @props.uuid } />
+      when 'insights'
+        <PinsComponent user_id = { @props.uuid } showOnlyInsights = { true } />
       when 'companies'
         <CompaniesList user_id = { @props.uuid } />
       when 'activity'
-        <UserFeed/>
+        <UserFeed />
 
 
   render: ->

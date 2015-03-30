@@ -41,18 +41,6 @@ $footer-link-color: hsl(0, 0%, 47%);
 $footer-font-size: 14pt;
 $footer-font-weight: normal;
 
-// Links
-a {
-  color: $north-texas-green;
-
-  &.for-group {
-    color: inherit;
-    display: block;
-    outline: 0;
-    text-decoration: none;
-  }
-}
-
 // Buttons
 
 $grey-button-back-color: $athens-grey;
@@ -102,6 +90,7 @@ $secondary-text-color: $primary-grey-color;
 $special-input-color:  $primary-grey-color;
 $card-color:           $accented-white-color;
 $link-color:           $accented-green-color;
+$secondary-link-color: $green-color;
 $disabled-color:       $disabled-grey-color;
 $label-color:          $accented-green-color;
 $label-text-color:     $white-color;
@@ -124,4 +113,15 @@ $giant-font-size:    81px;
 
 strong {
   font-weight: $bold-weight;
+}
+
+a {
+  color: $link-color;
+  text-decoration: none;
+
+  &.for-group {
+    color: inherit;
+    display: block;
+    outline: 0;
+  }
 }

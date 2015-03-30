@@ -6,11 +6,12 @@
   @include flex-wrap(wrap);
   @include justify-content(space-between);
 
-  border-top: $card-hr;
-  padding: $card-basic-space 0;
+  border-bottom: $card-hr;
+  margin-bottom: $card-basic-space;
+  padding-bottom: $card-basic-space;
 
   > p {
-    margin-bottom: $card-basic-space * .75;
+    margin-bottom: $inner-margin-size;
     white-space: pre-wrap;
     width: 100%;
   }
@@ -34,7 +35,7 @@
   padding: $card-basic-space 0;
 
   > p {
-    margin-bottom: $card-basic-space * .75;
+    margin-bottom: $inner-margin-size;
     margin-left: 60px;
     white-space: pre-wrap;
     width: 100%;

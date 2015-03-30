@@ -1,7 +1,7 @@
-$profile-header-color: $disabled-grey-color;
-$menu-color: $auxilary-grey-color;
-$menu-active-color: $accented-green-color;
-$menu-text-color: $accented-white-color;
+$profile-header-color: hsl(0, 0%, 93%);
+$menu-color: $profile-header-color;
+$menu-active-color: $white-color;
+$menu-text-color: $black-color;
 $menu-height: 75px;
 
 main.user-profile {
@@ -49,22 +49,15 @@ section.user-profile {
       @include justify-content(center);
 
       background-color: $menu-color;
+      color: $menu-text-color;
       cursor: pointer;
       font-size: $big-font-size;
       height: $menu-height;
-      width: 25%;
+      width: 245px;
 
-      &:hover,
-      &.active {
-        color: $menu-text-color;
-      }
-
-      &.active {
-        background-color: $menu-active-color;
-      }
-
+      &.active,
       &:hover {
-        background-color: lighten($menu-active-color, 10%);
+        background-color: $menu-active-color;
       }
     }
   }
@@ -99,6 +92,7 @@ section.user-profile {
       @include justify-content(space-between);
 
       font-size: $basic-font-size;
+      font-weight: 400;
       margin-left: $default-margin-size;
 
       h1 {
@@ -109,6 +103,15 @@ section.user-profile {
 
       .stats {
         margin: 0;
+      }
+
+      .occupation,
+      .twitter {
+        color: $secondary-link-color;
+      }
+
+      .spacer {
+        @include flex(1);
       }
     }
   }

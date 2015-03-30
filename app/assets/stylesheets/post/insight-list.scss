@@ -51,7 +51,7 @@ ul.insight-list,
         @include position(absolute, $default-margin-size $default-margin-size null null);
       }
 
-      > .user {
+      > .human {
         @include align-items(center);
         @include display(flex);
 

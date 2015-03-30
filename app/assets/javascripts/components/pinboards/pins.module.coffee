@@ -41,7 +41,11 @@ module.exports = React.createClass
         """
 
   propTypes:
-    user_id: React.PropTypes.string.isRequired
+    user_id:          React.PropTypes.string.isRequired
+    showOnlyInsights: React.PropTypes.bool
+
+  getDefaultProps: ->
+    showOnlyInsights: false
 
 
   # Helpers
@@ -54,7 +58,9 @@ module.exports = React.createClass
 
   gatherPins: ->
     @cursor.pins
-      .filter (pin) => pin.get('user_id') == @props.user_id && pin.get('pinnable_id')
+      .filter (pin) =>
+        pin.get('user_id') == @props.user_id && pin.get('pinnable_id') &&
+        (!@props.showOnlyInsights || pin.get('content') || pin.get('parent_id'))
       .valueSeq()
       .sortBy (pin) -> pin.get('created_at')
       .reverse()

@@ -123,7 +123,7 @@ module.exports = React.createClass
     return null unless @cursor.pin.deref(false) && @cursor.user.deref(false)
 
     <section className="pin cloud-card">
-      <PinnablePreview uuid={ @props.uuid } />
       { @renderInsight() }
+      <PinnablePreview uuid={ @props.uuid } />
       { @renderComment() }
     </section>
