@@ -39,14 +39,14 @@ module.exports  = React.createClass
   isLoaded: ->
     @cursor.user.deref(false)
 
-  getPinsCount: ->
+  getInsightsCount: ->
     count = PinStore
       .filterByUserId(@props.uuid)
-      .filter (pin) -> pin.get('pinnable_id')
+      .filter (pin) -> pin.get('pinnable_id') && !pin.get('parent_id') && pin.get('content')
       .size
 
     if count > 0
-      pluralize(count, 'pin', 'pins')
+      pluralize(count, 'insight', 'insights')
 
   getCompaniesCount: ->
     count = CompanyStore.filterForUser(@props.uuid).size
@@ -77,7 +77,7 @@ module.exports  = React.createClass
     counters = []
 
     if companiesCount = @getCompaniesCount() then counters.push(companiesCount)
-    if pinsCount = @getPinsCount() then counters.push(pinsCount)
+    if insightsCount = @getInsightsCount() then counters.push(insightsCount)
 
     <div className="stats">{ counters.join(', ') }</div>
 
