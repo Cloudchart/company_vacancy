@@ -34,8 +34,7 @@ class Ability
       can :update, :cloud_profile_user
       can [:read, :accept, :destroy], :invite
 
-      can :index, Company
-      can [:create, :read, :search, :unfollow], Company
+      can [:create, :unfollow], Company
       can :vote, Feature
       can :manage, Subscription
       can [:preview, :read, :pull], CloudBlueprint::Chart
@@ -44,6 +43,7 @@ class Ability
       can [:read, :create], Pin
       can :read, User
 
+      can [:read, :search], Company, is_published: true
       can [:update, :settings], User, uuid: user.id
       can [:update, :destroy, :settings], Pinboard, user_id: user.id
       can :destroy, Email, user_id: user.id
