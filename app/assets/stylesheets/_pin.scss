@@ -9,11 +9,16 @@
   border-bottom: $card-hr;
   margin-bottom: $card-basic-space;
   padding-bottom: $card-basic-space;
+  position: relative;
 
   > p {
     margin-bottom: $inner-margin-size;
     white-space: pre-wrap;
-    width: 100%;
+    width: calc(100% - 40px);
+  }
+
+  .round-buttons {
+    @include position(absolute, 0px 0px 0 0);
   }
 
 }

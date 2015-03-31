@@ -6,10 +6,19 @@
 
     font-size: $big-font-size;
     font-weight: 400;
+    width: calc(100% - 40px);
 
     > img {
       height: 25px;
       margin-right: $inner-margin-size;
+    }
+
+    > span {
+      @include flex(1);
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
