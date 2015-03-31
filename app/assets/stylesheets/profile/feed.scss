@@ -1,5 +1,5 @@
 .user-profile .feed {
-  @include align-items(flex-end);
+  @include align-items(center);
   @include display(flex);
   @include flex-direction(column);
 
