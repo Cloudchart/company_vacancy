@@ -26,10 +26,6 @@ CloudProfile::Engine.routes.draw do
   get 'oauth/:provider',  to: 'social_networks#oauth_provider', as: 'oauth_provider'
 
   scope :profile do
-    
-    # Root
-    #
-    root to: 'main#settings'
 
     # Main
     #
@@ -42,13 +38,6 @@ CloudProfile::Engine.routes.draw do
     # Activation
     #
     match 'activation(/:token)', to: 'users#activation', as: :profile_activation, via: [:get, :post]
-
-    # Emails
-    #
-    resources :emails do
-      get :verify, on: :member
-      match :resend_verification, on: :member, via: [:put, :patch]
-    end
     
     # User
     #

@@ -83,11 +83,11 @@
 
   > .preview.post {
     @include display(flex);
+    @include flex(1);
 
     position: relative;
     border: 1px solid $border-color;
     background-color: $card-color;
-    width: 643px;
     padding: $default-margin-size;
 
     &:hover > ul.controls {

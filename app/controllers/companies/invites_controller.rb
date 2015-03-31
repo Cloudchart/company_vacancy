@@ -38,7 +38,7 @@ module Companies
         format.json { render json: @token, root: :token }
       end
 
-      @email = CloudProfile::Email.find_by(address: @token.data[:email]) || @token.data[:email]
+      @email = Email.find_by(address: @token.data[:email]) || @token.data[:email]
       
       UserMailer.company_invite(@email, @token).deliver
 

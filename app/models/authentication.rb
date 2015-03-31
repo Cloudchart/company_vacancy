@@ -13,7 +13,7 @@ class Authentication
   def initialize(options)
     super
 
-    profile_email = CloudProfile::Email.includes(:user).find_by(address: options[:email])
+    profile_email = Email.includes(:user).find_by(address: options[:email])
     self.user = profile_email.user if (profile_email.present? && profile_email.user.present?)
   end
 

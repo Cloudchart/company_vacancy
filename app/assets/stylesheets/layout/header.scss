@@ -95,10 +95,11 @@ body > header {
     > .breadcrumbs {
       @include align-items(center);
       @include display(flex);
-      @include flex(1);
+      @include flex(0 1 auto);
 
       > .back-link {
         @include display(flex);
+        @include flex(1 0 auto);
 
         color: hsl(0, 100%, 100%);
         font-size: $basic-font-size;
@@ -112,8 +113,6 @@ body > header {
       }
       
       > .company-name {
-        @include flex(1);
-
         font-size: $large-font-size;
         font-weight: 300;
         margin-left: $inner-margin-size;
@@ -124,15 +123,16 @@ body > header {
     }
 
     > .router {
+      @include flex(1 0 auto);
+
       margin: 0 $default-margin-size/2;
 
       ul {
         @include display(flex);
-        
         list-style: none;
         margin: 0;
         padding: 0;
-        
+
         > li {
           margin: 0 $default-margin-size/2;
         }

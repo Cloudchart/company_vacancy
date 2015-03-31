@@ -68,9 +68,15 @@ module.exports = React.createClass
 
 
   renderOccupation: ->
-    return null unless (occupation = @cursor.get('occupation', false)) && @props.showOccupation
+    return null unless @props.showOccupation
 
-    <p className="occupation">{ occupation }</p>
+    strings = []
+    strings.push occupation if (occupation = @cursor.get('occupation'))
+    strings.push company if (company = @cursor.get('company'))
+
+    return null unless strings.length > 0
+
+    <p className="occupation">{ strings.join(', ') }</p>
 
 
   renderCredentials: ->
@@ -83,7 +89,13 @@ module.exports = React.createClass
   render: ->
     return null unless @cursor.deref(false)
 
-    <div className="human">
-      { @renderAvatar() }
-      { @renderCredentials() }
-    </div>
+    if @props.type == 'user'
+      <a className="human for-group" href={ @cursor.get('user_url') }>
+        { @renderAvatar() }
+        { @renderCredentials() }
+      </a>
+    else
+      <div className="human">
+        { @renderAvatar() }
+        { @renderCredentials() }
+      </div>

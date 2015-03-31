@@ -16,6 +16,8 @@ class AuthController < ApplicationController
   def developer
     if user = User.find_by_email(oauth_hash.info.email)
       authenticate_user!(user)
+    else
+      redirect_to :back
     end
   end
 

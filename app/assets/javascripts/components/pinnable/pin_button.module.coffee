@@ -87,6 +87,9 @@ module.exports = React.createClass
   # Handlers
   #
   handleClick: (event) ->
+    event.preventDefault()
+    event.stopPropagation()
+
     if @state.currentUserPin
       PinStore.destroy(@state.currentUserPin.get('uuid')) if confirm('Are you sure?')
     else if @state.currentUserRepin

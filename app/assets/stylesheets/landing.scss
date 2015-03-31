@@ -25,7 +25,7 @@ html {
   @include box-sizing(border-box);
 
   height: 100%;
-  min-width: 1000px;
+  min-width: 1024px;
 }
 
 
@@ -75,15 +75,24 @@ body > header {
   padding: 0 $base-unit * 2;
 
   > figure {
+    @include align-items(center);
+    @include display(flex);
 
-    font-size: $base-unit * 1.25;
+    font-size: $large-font-size;
     font-weight: 300;
-    height: $base-unit * 2.25;
-    line-height: $base-unit * 2.25;
-    padding-left: $base-unit * 4.25;
+    height: 37px;
 
-    > strong {
-      font-weight: 600;
+    > img {
+      height: 100%;
+      width: 55px;
+    }
+
+    > figcaption {
+      margin-left: $inner-margin-size;
+
+      > strong {
+        font-weight: 700;
+      }
     }
   }
 
@@ -187,11 +196,6 @@ body > footer > ul {
   body.#{$env} {
     > header {
       background-color: $color;
-
-      > figure {
-        background: image-url('#{$env}/cloudchart-logo-neg.svg') no-repeat left center;
-      }
-
     }
   }
 }

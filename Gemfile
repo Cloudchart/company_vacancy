@@ -33,9 +33,9 @@ gem 'redis-rails'
 gem 'jbuilder'
 gem 'squeel'
 gem 'parslet'
-
 gem 'omniauth'
 gem 'omniauth-twitter'
+gem 'useragent'
 
 # Engines
 #
@@ -63,6 +63,8 @@ group :development do
   gem 'binding_of_caller'
   gem 'pry' # An IRB alternative and runtime developer console
   gem 'pry-remote' # pry extension for pow
+  gem 'spring' # speeds up development by keeping application running in the background
+  gem 'spring-commands-rspec' # implements the rspec command for spring
   gem 'awesome_print' # styled print for ruby objects in rails console
   gem 'quiet_assets' # mutes assets pipeline log messages
   gem 'letter_opener' # preview mail in the browser instead of sending
@@ -89,6 +91,3 @@ group :production, :staging do
   gem 'intercom', '~> 2.4.4'
   gem 'airbrake'
 end
-
-# Use debugger
-# gem 'debugger', group: [:development, :test]

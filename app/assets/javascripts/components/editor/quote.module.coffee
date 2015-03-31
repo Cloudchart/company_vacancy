@@ -86,7 +86,7 @@ Quote = React.createClass
         uuid        = { getPersonId(@state.quote) }
         readOnly    = { @props.readOnly }
       />
-    else
+    else if !@props.readOnly
       <PersonPlaceholder 
         company_id  = { @props.company_id }
         onSelect    = { @handlePersonSelect }

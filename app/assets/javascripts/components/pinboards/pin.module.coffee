@@ -14,7 +14,6 @@ PostStore = require('stores/post_store.cursor')
 # Components
 #
 Human           = require('components/human')
-PinnableHeader  = require('components/pinnable/header')
 PinnablePreview = require('components/pinnable/preview')
 PinnablePost    = require('components/pinnable/post')
 PinButton       = require('components/pinnable/pin_button')
@@ -55,11 +54,18 @@ module.exports = React.createClass
           }
         """
 
-  gatherAttributes: ->
-    uuid:           @cursor.pin.get('uuid')
-    parent_id:      @cursor.pin.get('parent_id')
-    pinnable_id:    @cursor.pin.get('pinnable_id')
-    pinnable_type:  @cursor.pin.get('pinnable_type')
+  fetch: ->
+    GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
+
+  isLoaded: ->
+    @cursor.pin.deref(false)
+
+  gatherPinAttributes: (insight) ->
+    uuid:           insight.get('uuid')
+    parent_id:      insight.get('parent_id')
+    pinnable_id:    insight.get('pinnable_id')
+    pinnable_type:  insight.get('pinnable_type')
+    title:          insight.get('content')
 
 
   # Lifecycle methods
@@ -69,12 +75,23 @@ module.exports = React.createClass
       pin:  PinStore.cursor.items.cursor(@props.uuid)
       user: UserStore.me()
 
+    @fetch() unless @isLoaded()
+
+
+  # Helpers
+  #
+  getInsight: ->
+    if @cursor.pin.get('parent_id')
+      PinStore.getParentFor(@props.uuid)
+    else if @cursor.pin.get('content')
+      @cursor.pin
+
 
   # Renderers
   #
-  renderControls: ->
+  renderInsightControls: (insight) ->
     <ul className="round-buttons">
-      <PinButton {...@gatherAttributes()} title={ @cursor.pin.get('content') } />
+      <PinButton {...@gatherPinAttributes(insight)} />
     </ul>
 
   renderPinContent: (content, className = 'paragraph') ->
@@ -83,22 +100,19 @@ module.exports = React.createClass
     <p className={ className } dangerouslySetInnerHTML={ __html: content } />
 
   renderInsight: ->
-    return unless insight = PinStore.getParentFor(@props.uuid)
+    return unless insight = @getInsight()
 
     <article className="insight">
       { @renderPinContent(insight.get('content'), 'quote') }
 
       <Human type="user" uuid={ insight.get('user_id') } />
 
-      <ul className="counters">
-        <li>
-          { PinStore.getChildrenFor(insight.get('uuid')).count() }
-          <i className="fa fa-thumb-tack" />
-        </li>
-      </ul>
+      { @renderInsightControls(insight) }
     </article>
 
   renderComment: ->
+    return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid)
+
     <footer>
       { @renderPinContent(@cursor.pin.get('content')) }
       <i className="fa fa-share" />
@@ -109,9 +123,7 @@ module.exports = React.createClass
     return null unless @cursor.pin.deref(false) && @cursor.user.deref(false)
 
     <section className="pin cloud-card">
-      <PinnableHeader uuid={ @props.uuid } />
-      <PinnablePreview uuid={ @props.uuid } />
-      { @renderControls() }
       { @renderInsight() }
+      <PinnablePreview uuid={ @props.uuid } />
       { @renderComment() }
     </section>

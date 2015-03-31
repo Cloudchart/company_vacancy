@@ -1,0 +1,19 @@
+.user-profile .feed {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+
+  width: 1024px;
+
+  .cloud-card {
+    margin: $gutter-size/2;
+  }
+
+  .post {
+    width: 100%;
+  }
+
+  .pin {
+    width: 500px;
+  }
+}

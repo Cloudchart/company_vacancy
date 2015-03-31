@@ -1,7 +1,7 @@
-$profile-header-color: $disabled-grey-color;
-$menu-color: $auxilary-grey-color;
-$menu-active-color: $accented-green-color;
-$menu-text-color: $accented-white-color;
+$profile-header-color: hsl(0, 0%, 93%);
+$menu-color: $profile-header-color;
+$menu-active-color: $white-color;
+$menu-text-color: $black-color;
 $menu-height: 75px;
 
 main.user-profile {
@@ -49,22 +49,18 @@ section.user-profile {
       @include justify-content(center);
 
       background-color: $menu-color;
+      color: $menu-text-color;
       cursor: pointer;
       font-size: $big-font-size;
       height: $menu-height;
-      width: 25%;
-
-      &:hover,
-      &.active {
-        color: $menu-text-color;
-      }
+      width: 245px;
 
       &.active {
         background-color: $menu-active-color;
       }
 
       &:hover {
-        background-color: lighten($menu-active-color, 10%);
+        color: $link-color;
       }
     }
   }
@@ -99,6 +95,7 @@ section.user-profile {
       @include justify-content(space-between);
 
       font-size: $basic-font-size;
+      font-weight: 400;
       margin-left: $default-margin-size;
 
       h1 {
@@ -110,12 +107,26 @@ section.user-profile {
       .stats {
         margin: 0;
       }
+
+      .occupation,
+      .twitter {
+        color: $secondary-link-color;
+      }
+
+      .spacer {
+        @include flex(1);
+      }
     }
   }
 
   .pins,
-  .companies-list {
+  .companies-list,
+  .feed {
     padding: $gutter-size/2;
     margin: 0 auto;
   }
 }
+
+@import "profile/feed";
+@import "profile/settings";
+@import "profile/emails";

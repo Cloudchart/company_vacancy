@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   attr_accessor :current_password
   attr_reader :invite
 
-  #before_validation :build_blank_emails, unless: -> { emails.any? }
+  # before_validation :build_blank_emails, unless: -> { emails.any? }
   before_destroy :mark_emails_for_destruction
 
   dragonfly_accessor :avatar
@@ -14,10 +14,9 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :friends
 
-  has_many :emails, -> { order(:address) }, class_name: 'CloudProfile::Email', dependent: :destroy
+  has_many :emails, -> { order(:address) }, dependent: :destroy
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :oauth_providers, dependent: :destroy
-
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :charts, through: :companies
   has_many :votes, as: :source
@@ -29,23 +28,12 @@ class User < ActiveRecord::Base
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
   has_many :roles, dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
-  has_many :companies, through: :roles, source: :owner, source_type: 'Company'
-  has_many :followed_companies, through: :favorites, source: :favoritable, source_type: 'Company'
   has_many :people, dependent: :destroy
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
-
-  has_many :published_companies, -> { where(is_published: true) }, through: :roles, source: :owner, source_type: Company
-
-  validates :first_name, :last_name, presence: true, if: :should_validate_name?
-  validates :invite, presence: true, if: :should_validate_invite?
-
-  # We are no longer need to validate email
-  # validate :validate_email, on: :create
-
-  #default_scope -> { includes(:emails) }
-  scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
-
+  has_many :companies, through: :roles, source: :owner, source_type: 'Company'
+  has_many :published_companies, -> { where(is_published: true) }, through: :roles, source: :owner, source_type: 'Company'
+  has_many :followed_companies, through: :favorites, source: :favoritable, source_type: 'Company'
 
   # Roles on Pinboards
   #
@@ -54,6 +42,14 @@ class User < ActiveRecord::Base
     has_many :"#{scope}_pinboards", through: :"#{scope}_pinboards_roles", source: :owner, source_type: Pinboard
   end
 
+  validates :full_name, presence: true, if: :should_validate_name?
+  validates :invite, presence: true, if: :should_validate_invite?
+
+  # We are no longer need to validate email
+  # validate :validate_email, on: :create
+
+  # default_scope -> { includes(:emails) }
+  scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
 
 
   def self.create_with_twitter_omniauth_hash(hash)
@@ -67,6 +63,14 @@ class User < ActiveRecord::Base
     )
   end
 
+  def self.find_by_email(email)
+    Email.includes(:user).find_by(address: email).user rescue nil
+  end
+
+
+  def followed_activities
+    Activity.followed_by_user(id)
+  end
 
   def admin?
     !!roles.find { |role| role.owner_id == nil && role.value == 'admin' }
@@ -99,11 +103,7 @@ class User < ActiveRecord::Base
   end
 
   def email=(email)
-    self.emails = [CloudProfile::Email.new(address: email)]
-  end
-
-  def self.find_by_email(email)
-    CloudProfile::Email.includes(:user).find_by(address: email).user rescue nil
+    self.emails = [Email.new(address: email)]
   end
 
   def invite=(invite)
@@ -134,9 +134,9 @@ class User < ActiveRecord::Base
     @should_validate_name = true
   end
 
-  def validate_email
-    errors.add(:email, emails.first.errors[:address]) unless emails.first.valid?
-  end
+  # def validate_email
+  #   errors.add(:email, emails.first.errors[:address]) unless emails.first.valid?
+  # end
 
   def blank_company
     companies.select { |company| company.name.blank? && company.logotype.blank? }.first
@@ -148,8 +148,8 @@ private
     emails.each(&:mark_for_destruction)
   end
 
-  def build_blank_emails
-    emails.build
-  end
+  # def build_blank_emails
+  #   emails.build
+  # end
 
 end

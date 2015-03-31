@@ -2,16 +2,16 @@
 posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :posts_stories, :quotes, blocks: :block_identities, pins: [ :user, parent: :user ])
 
 # reject posts based on visibility rules
-posts = if can?(:manage, @company)
+posts = if can?(:update, @company)
   posts
-elsif can?(:update, @company) || can?(:finance, @company)
+elsif can?(:finance, @company)
   posts.reject { |post| post.visibility.try(:value) == 'only_me' }
 else
   posts.reject { |post| post.visibility.try(:value) =~ /only_me|trusted/ }
 end
 
 # set dependent collections
-blocks = posts.map(&:blocks).flatten
+blocks = posts.map(&:blocks).flatten.concat(@company.blocks)
 pictures = posts.map(&:pictures).flatten
 paragraphs = posts.map(&:paragraphs).flatten
 quotes = posts.map(&:quotes).flatten

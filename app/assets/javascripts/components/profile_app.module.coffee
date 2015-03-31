@@ -5,6 +5,7 @@ GlobalState        = require('global_state/state')
 ProfileInfo        = require('components/profile/info')
 PinsComponent      = require('components/pinboards/pins')
 CompaniesList      = require('components/company/list')
+UserFeed           = require('components/user/feed')
 
 UserStore          = require('stores/user_store.cursor')
 PinStore           = require('stores/pin_store')
@@ -38,6 +39,7 @@ module.exports = React.createClass
       user: ->
         """
           User {
+            followed_activities,
             #{ProfileInfo.getQuery('user')},
             #{PinsComponent.getQuery('pins')},
             #{CompaniesList.getQuery('companies')}
@@ -53,11 +55,11 @@ module.exports = React.createClass
 
   getInitialState: ->
     fetchDone:  false
-    selected:   location.hash.substr(1) || 'pins' || ''
+    selected:   location.hash.substr(1) || 'activity' || ''
     isSyncing:  false
 
-  fetchViewer: ->
-    GlobalState.fetch(@getQuery('viewer'))
+  fetchViewer: (options={}) ->
+    GlobalState.fetch(@getQuery('viewer'), options)
 
   fetchUser: ->
     GlobalState.fetch(@getQuery('user'), id: @props.uuid)
@@ -100,7 +102,8 @@ module.exports = React.createClass
         @setState(isSyncing: false)
     else
       SyncApi.follow(@props.uuid).then => 
-        @fetch().then => @setState(isSyncing: false)
+        # TODO rewrite with grabbing only needed favorite
+        @fetchViewer(force: true).then => @setState(isSyncing: false)
 
 
 
@@ -110,7 +113,8 @@ module.exports = React.createClass
     @cursor = 
       companies:  CompanyStore.cursor.items
       pins:       PinStore.cursor.items
-      user:       UserStore.me()
+      viewer:     UserStore.me()
+      user:       UserStore.cursor.items.cursor(@props.uuid)
 
     @fetch() unless @isLoaded()
 
@@ -121,12 +125,15 @@ module.exports = React.createClass
   renderMenu: ->
     <nav>
       <ul>
-        <li className = { @getMenuOptionClassName('pins') } onClick = { @handleMenuClick.bind(@, 'pins') } >Pins</li>
+        <li className = { @getMenuOptionClassName('activity') } onClick = { @handleMenuClick.bind(@, 'activity') } >Activity</li>
+        <li className = { @getMenuOptionClassName('insights') } onClick = { @handleMenuClick.bind(@, 'insights') } >Insights</li>
         <li className = { @getMenuOptionClassName('companies') } onClick = { @handleMenuClick.bind(@, 'companies') } >Companies</li>
       </ul>
     </nav>
 
   renderFollowButton: ->
+    return null if @cursor.user.get('uuid') == @cursor.viewer.get('uuid')
+
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
     <Button 
@@ -137,10 +144,13 @@ module.exports = React.createClass
       showSyncAnimation = { false } />
 
   renderContent: ->
-    if @state.selected == "pins"
-      <PinsComponent user_id = { @props.uuid } />
-    else if @state.selected = "companies"
-      <CompaniesList user_id = { @props.uuid } />
+    switch @state.selected
+      when 'insights'
+        <PinsComponent user_id = { @props.uuid } showOnlyInsights = { true } />
+      when 'companies'
+        <CompaniesList user_id = { @props.uuid } />
+      when 'activity'
+        <UserFeed />
 
 
   render: ->

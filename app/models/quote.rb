@@ -5,7 +5,7 @@ class Quote < ActiveRecord::Base
   belongs_to :owner, polymorphic: true
 
   def company
-    if owner_type == "Block" 
+    if owner_type == 'Block' 
       owner.company
     else
       nil

@@ -4,7 +4,7 @@ RSpec.describe PostsController, type: :controller do
 
   describe 'GET #index' do
     it 'responds successfully with HTTP 200 and renders the index template' do
-      sign_in
+      sign_in(create(:user))
       company = create(:company)
       get :index, company_id: company.id
       expect(response).to be_success

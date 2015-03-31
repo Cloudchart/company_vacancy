@@ -1,27 +1,43 @@
-.pin.cloud-card > header.company {
-  @include align-items(center);
-  @include display(flex);
+.pinnable.post-preview > a > header {
 
-  margin-bottom: $card-basic-space;
-  position: relative;
-
-  > .logo-and-name {
+  > figure {
     @include align-items(center);
     @include display(flex);
-    @include flex(1);
 
-    > figure {
-      background-position: right center;
-      background-repeat: no-repeat;
-      background-size: contain;
-      height: 80px;
-      margin-right: 10px;
-      width: 80px;
+    font-size: $big-font-size;
+    font-weight: 400;
+    width: calc(100% - 40px);
+
+    > img {
+      height: 25px;
+      margin-right: $inner-margin-size;
     }
 
-    &.has-name-in-logo > figure {
-      background-position: left center;
-      width: 100%;
+    > span {
+      @include flex(1);
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  > section.title {
+    padding-top: $inner-margin-size;
+
+    .title {
+      @extend .cloud-card-header;
+    }
+
+    > .date {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(center);
+
+      color: $special-link-color;
+      margin-bottom: $inner-margin-size;
+      font-size: $small-font-size;
+      font-weight: 300;
     }
   }
 }

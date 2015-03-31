@@ -12,7 +12,7 @@ UserStore   = require('stores/user_store.cursor')
 
 # Components
 #
-Avatar        = require('components/avatar')
+Human         = require('components/human')
 PinButton     = require('components/pinnable/pin_button')
 EditPinButton = require('components/pinnable/edit_pin_button')
 
@@ -59,23 +59,6 @@ module.exports = React.createClass
       { @props.cursor.pin.get('content') }
     </section>
 
-  renderUser: ->
-    <section className="user">
-      <Avatar
-        avatarURL       = { @state.user.get('avatar_url') }
-        backgroundColor = "transparent"
-        value           = { @state.user.get('full_name') }
-      />
-      <section>
-        <p className="name">
-          { @state.user.get('full_name') }
-        </p>
-        <p className="occupation">
-          { @state.user.get('occupation') }
-        </p>
-      </section>
-    </section>
-
   renderButtons: ->
     <ul className="round-buttons">
       <EditPinButton uuid={ @props.uuid } />
@@ -87,8 +70,8 @@ module.exports = React.createClass
     return null unless @props.cursor.pin.deref()
     return null unless @state.user.deref()
 
-    <article className="insight" onClick={ -> console.log('called') }>
-      { @renderUser() }
+    <article className="insight">
+      <Human uuid = { @props.cursor.pin.get('user_id') } type="user" />
       { @renderContent() }
       { @renderButtons() }
     </article>

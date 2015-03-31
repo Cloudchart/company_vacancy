@@ -7,6 +7,7 @@ Cloudchart::Application.routes.draw do
   #
   match '/404', to: 'errors#not_found', via: [:get, :post]
   match '/500', to: 'errors#internal_error', via: :all
+  match '/old', to: 'errors#old_browsers', via: [:get], as: :old_browsers
 
   # Engines
   #
@@ -57,7 +58,6 @@ Cloudchart::Application.routes.draw do
   end
 
   resources :blocks, only: [:update, :destroy] do
-    resources :identities, shallow: true, controller: :block_identities, only: [:index, :create, :destroy]
     resource :picture, type: :block, only: [:create, :update, :destroy]
     resource :paragraph, type: :block, only: [:create, :update, :destroy]
     resource :quote, type: :block, only: [:create, :update]
@@ -104,7 +104,14 @@ Cloudchart::Application.routes.draw do
   resources :pins
   resources :posts_stories, only: [:update, :destroy]
 
-  resources :users, only: [:show], concerns: [:followable]
+  resources :users, only: [:show, :update], concerns: [:followable] do
+    get :settings, on: :member
+  end
+
+  resources :emails, only: [:create, :destroy] do
+    get :verify, on: :member
+    match :resend_verification, on: :member, via: [:put, :patch]
+  end
 
   resources :quotes, only: [:show]
   resources :visibilities, only: :update
