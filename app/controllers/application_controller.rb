@@ -9,7 +9,11 @@ class ApplicationController < ActionController::Base
   before_filter :store_location
 
   rescue_from CanCan::AccessDenied do |exception|
-    redirect_to main_app.root_path, alert: exception.message
+    if request.env['HTTP_REFERER'].present?
+      redirect_to :back, alert: exception.message
+    else
+      redirect_to main_app.root_path, alert: exception.message
+    end
   end
   
   def authenticate(options = {})

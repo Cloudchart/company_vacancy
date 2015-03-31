@@ -34,9 +34,9 @@ class Ability
       can :update, :cloud_profile_user
       can [:read, :accept, :destroy], :invite
 
-      can [:create, :unfollow], Company
-      can :vote, Feature
-      can :manage, Subscription
+      # can :vote, Feature
+      # can :manage, Subscription
+      can :unfollow, Company
       can [:preview, :read, :pull], CloudBlueprint::Chart
       can :create, Tag
       can [:read, :create], Pinboard
@@ -50,6 +50,10 @@ class Ability
 
       can [:update, :destroy], Pin do |pin|
         pin.user_id == user.id || user.editor?
+      end
+      
+      can :create, Company do |company| 
+        user.editor?
       end
 
       can :manage, Company do |company|
