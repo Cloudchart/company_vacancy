@@ -39,10 +39,13 @@ module.exports  = React.createClass
     uuid: React.PropTypes.string.isRequired
 
   getInitialState: ->
-    attributes: Immutable.Map()
-    errors:     Immutable.Map()
-    fetchDone:  false
-    isSyncing:  false
+    attributes:  Immutable.Map()
+    errors:      Immutable.Map()
+    formUpdated: false
+    fetchDone:   false
+    statusIcon:  ''
+    submitText:  'Update settings'
+    isSyncing:   false
 
   fetch: ->
     GlobalState.fetch(@getQuery('user'), id: @props.uuid).then =>
@@ -89,16 +92,20 @@ module.exports  = React.createClass
     attributes  = @state.attributes
 
     @setState
-      attributes: attributes.set(name, value)
-      errors:     @state.errors.set(name, [])
+      formUpdated: true
+      submitText:  'Update settings'
+      attributes:  attributes.set(name, value)
+      errors:      @state.errors.set(name, [])
 
   handleAvatarChange: (file) ->
     @setState
+      formUpdated: true
       attributes: @state.attributes.withMutations (attributes) ->
         attributes.remove('remove_avatar').set('avatar', file).set('avatar_url', URL.createObjectURL(file))
   
   handleAvatarRemove: ->
     @setState
+      formUpdated: true
       attributes: @state.attributes.withMutations (attributes) ->
         attributes.remove('avatar').remove('avatar_url').set('remove_avatar', true)
 
@@ -110,12 +117,23 @@ module.exports  = React.createClass
     UserSyncApi.update(@cursor.user, @state.attributes.toJSON()).then @handleSubmitDone, @handleSubmitFail
 
   handleSubmitDone: ->
-    @setState(isSyncing: false)
+    setTimeout =>
+      @setState
+        isSyncing:   false
+        formUpdated: false
+        statusIcon:  'fa fa-check'
+        submitText:  'Updated'
+    , 500
 
   handleSubmitFail: (reason) ->
-    @setState
-      errors:    Immutable.Map(reason.responseJSON.errors)
-      isSyncing: false
+    setTimeout =>
+      @setState
+        errors:      Immutable.Map(reason.responseJSON.errors)
+        formUpdated: false
+        statusIcon:  'fa fa-times'
+        isSyncing:   false
+        submitText:  'Update failed'
+    , 500
 
   # Lifecycle methods
   #
@@ -163,9 +181,11 @@ module.exports  = React.createClass
       <div></div>
       <SyncButton 
         className = 'cc'
+        iconClass = { if @state.formUpdated then '' else @state.statusIcon }
+        disabled  = !@state.formUpdated
         sync      = @state.isSyncing
         type      = 'submit'
-        text      = 'Update settings' />
+        text      = @state.submitText />
     </footer>
 
   renderEmails: ->
