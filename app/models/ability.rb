@@ -60,11 +60,11 @@ class Ability
         owner?(user, company)
       end
 
-      can [:update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file, :reposition_blocks], Company do |company|
+      can [:read, :update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file, :reposition_blocks], Company do |company|
         editor?(user, company)
       end
 
-      can [:finance], Company do |company|
+      can [:read, :finance], Company do |company|
         trusted_reader?(user, company)
       end
 
