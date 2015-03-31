@@ -9,10 +9,6 @@ class Company < ActiveRecord::Base
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
   ROLES = ([:owner] + INVITABLE_ROLES).freeze
 
-  before_save do
-    self.slug = nil if slug.blank?
-  end
-
   after_save do
     update(is_name_in_logo: false) if logotype.blank? && is_name_in_logo?
   end

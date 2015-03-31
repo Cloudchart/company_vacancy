@@ -1,11 +1,13 @@
 class User < ActiveRecord::Base
   include Uuidable
   include Fullnameable
+  include Sluggable
 
   attr_accessor :current_password
   attr_reader :invite
 
   # before_validation :build_blank_emails, unless: -> { emails.any? }
+  before_validation :generate_slug
   before_destroy :mark_emails_for_destruction
 
   dragonfly_accessor :avatar
@@ -143,6 +145,10 @@ class User < ActiveRecord::Base
   end
 
 private
+
+  def generate_slug
+    self.slug = twitter.try(:parameterize) if twitter_changed?
+  end
 
   def mark_emails_for_destruction
     emails.each(&:mark_for_destruction)
