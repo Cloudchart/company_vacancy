@@ -32,7 +32,7 @@ class AuthController < ApplicationController
     errors  = []
     user    = User.includes(:tokens).find(queued_user.id)
     token   = Token.find_or_create_by(owner: user, name: :email_verification)
-    email   = CloudProfile::Email.new(address: params[:email])
+    email   = Email.new(address: params[:email])
 
 
     errors << :full_name  unless params[:full_name].present?
