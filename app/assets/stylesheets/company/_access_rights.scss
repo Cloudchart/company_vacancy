@@ -23,6 +23,9 @@ $access-rights-user-list-action-column-width: 65px;
     font-size: 30px;
     padding: 0 95px;
     position: relative;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     > button {
       @include position(absolute, 50% 0 0 0px);
