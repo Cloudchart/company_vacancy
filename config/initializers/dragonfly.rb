@@ -11,6 +11,8 @@ Dragonfly.app.configure do
 
   if Rails.env.production?
     url_host '//i.cloudchart.co'
+  elsif Rails.env.staging?
+    url_host "https://#{ENV['APP_HOST']}"
   else
     url_host "http://#{ENV['APP_HOST']}"
   end
