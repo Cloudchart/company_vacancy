@@ -3,7 +3,7 @@
 GlobalState    = require('global_state/state')
 
 CompanyStore   = require('stores/company_store.cursor')
-PersonStore    = require('stores/person_store.cursor')
+BlockStore     = require('stores/block_store.cursor')
 PostStore      = require('stores/post_store.cursor')
 PinStore       = require('stores/pin_store')
 TaggingStore   = require('stores/tagging_store')
@@ -36,6 +36,7 @@ CompanyPreview = React.createClass
       company: ->
         """
           Company {
+            blocks,
             people,
             tags,
             taggings,
@@ -81,6 +82,20 @@ CompanyPreview = React.createClass
 
   getFavorite: ->
     FavoriteStore.findByCompany(@props.uuid)
+
+  getPeopleIds: ->
+    peopleIds = BlockStore.filter (block) =>
+      block.get('owner_type') == 'Company' &&
+      block.get('owner_id') == @props.uuid &&
+      block.get('identity_type') == 'Person'
+    .sortBy (block) -> block.get('position')
+    .first()
+    .get('identity_ids')
+
+    if peopleIds 
+      peopleIds.take(5).toSeq()
+    else
+      Immutable.Seq()
 
   getPosts: ->
     @cursor.posts.filter (post) =>
@@ -130,8 +145,8 @@ CompanyPreview = React.createClass
   #
   componentWillMount: ->
     @cursor =
+      blocks:    BlockStore.cursor.items
       company:   CompanyStore.cursor.items.cursor(@props.uuid)
-      people:    PersonStore.cursor.items
       posts:     PostStore.cursor.items
       pins:      PinStore.cursor.items
       tags:      TagStore.cursor.items
@@ -216,8 +231,8 @@ CompanyPreview = React.createClass
     else
       <People 
         key            = "people"
-        showOccupation = { false }
-        items          = { PersonStore.findByCompany(@props.uuid).take(5).toSeq() } />
+        ids            = { @getPeopleIds() } 
+        showOccupation = { false } />
 
   renderFooter: ->
     <footer>

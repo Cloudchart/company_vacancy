@@ -1,5 +1,6 @@
 company_ids = companies.map(&:id)
 
+blocks   = companies.map(&:blocks).flatten
 people   = companies.map(&:people).flatten
 taggings = companies.map(&:taggings).flatten
 tags     = companies.map(&:tags).flatten.uniq
@@ -8,6 +9,10 @@ pins     = posts.map(&:pins).flatten
 
 json.companies do
   json.partial! 'company', collection: @companies, as: :company
+end
+
+json.blocks do
+  json.partial! 'block', collection: blocks, as: :block
 end
 
 json.people do

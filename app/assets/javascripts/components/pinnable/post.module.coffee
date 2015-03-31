@@ -146,8 +146,8 @@ module.exports = React.createClass
         <Blocks.Picture key={ block.get('uuid') } item={ picture } />
 
       when 'Person'
-        people = PersonStore.filterForBlock(block.get('uuid')).toSeq()
-        <Blocks.People key={ block.get('uuid') } items={ people } />
+        peopleIds = PersonStore.filterForBlock(block.get('uuid')).map((person) -> person.get('uuid')).toSeq()
+        <Blocks.People key={ block.get('uuid') } ids={ peopleIds } />
 
       when 'Quote'
         quote = QuoteStore.findByOwner(type: 'Block', id: block.get('uuid'))
