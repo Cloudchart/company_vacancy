@@ -68,9 +68,13 @@ module.exports = React.createClass
 
 
   renderOccupation: ->
+    return null unless @props.showOccupation
+
     strings = []
     strings.push occupation if (occupation = @cursor.get('occupation'))
     strings.push company if (company = @cursor.get('company'))
+
+    return null unless strings.length > 0
 
     <p className="occupation">{ strings.join(', ') }</p>
 
