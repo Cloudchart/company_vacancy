@@ -36,6 +36,7 @@ gem 'parslet'
 gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'useragent'
+gem 'meta-tags', '~> 2.0.0'
 
 # Engines
 #

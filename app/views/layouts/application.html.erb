@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CloudChart</title>
+    <%= render 'shared/meta' %>
     <%= favicon_link_tag "#{Rails.env}/favicon.ico" %>
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= render 'shared/meta' %>
   </head>
 
   <body class="<%= Rails.env %>">

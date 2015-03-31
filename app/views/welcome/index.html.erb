@@ -1,9 +1,9 @@
-<% content_for :meta do %>
-  <meta property="og:title" content="CloudChart" />
-  <meta property="og:image" content="<%= image_url('cloudchart-logo-square.png') %>">
-  <meta property="og:url" content="<%= root_url %>" />
-  <meta property="og:description" content="CloudChart is a convenient tool to chart and profile your company. Use it to clarify your team structure, your products, your goals, and become transparent. Transparency benefits your teams, your partners, and your investors." />
-<% end %>
+<% set_meta_tags og: {
+  title: 'CloudChart',
+  image: og_image_url,
+  url: root_url,
+  description: 'CloudChart is a convenient tool to chart and profile your company. Use it to clarify your team structure, your products, your goals, and become transparent. Transparency benefits your teams, your partners, and your investors.'
+} %>
 
 <section class="about">
   <header>

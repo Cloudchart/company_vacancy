@@ -1,9 +1,11 @@
-<% content_for :meta do %>
-  <meta property="og:title" content="<%= decorate(@company).og_name %>" />
-  <meta property="og:image" content="<%= @company.logotype.try(:url, host: request.protocol + request.host) || image_url('cloudchart-logo-square.png') %>">
-  <meta property="og:url" content="<%= company_url(@company) %>" />
-  <meta property="og:description" content="<%= @company.description %>" />
-<% end %>
+<% title @company.name %>
+
+<% set_meta_tags og: {
+  title: decorate(@company).og_name,
+  image: og_image_url(@company.logotype.try(:url)),
+  url: company_url(@company),
+  description: @company.description
+} %>
 
 <% content_for :header_breadcrumbs do %>
   <%= render 'shared/companies/header_breadcrumbs' %>
