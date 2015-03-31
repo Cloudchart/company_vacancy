@@ -81,7 +81,6 @@ group :development, :test do
   gem 'capybara', '~> 2.0'
   gem 'database_cleaner', '~> 1.4'
   gem 'ffaker'
-  gem 'byebug'
 end
 
 group :production, :staging do
