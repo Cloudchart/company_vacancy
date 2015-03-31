@@ -36,9 +36,11 @@ CompanyList = React.createClass
     user_id:        React.PropTypes.string
     ids:            React.PropTypes.instanceOf(Immutable.Seq)
     isInLegacyMode: React.PropTypes.bool
+    onSyncDone:     React.PropTypes.func
 
   getDefaultProps: ->
     isInLegacyMode: false
+    onSyncDone:     ->
 
 
   # Helpers

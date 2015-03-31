@@ -160,7 +160,8 @@ CompaniesApp = React.createClass
       { @renderHeader() }
       <CompanyList
         ids            = { @getAllIds() }
-        isInLegacyMode = { true } />
+        isInLegacyMode = { true }
+        onSyncDone     = { @updateStores } />
     </section>
 
 
