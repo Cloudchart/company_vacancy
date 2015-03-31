@@ -84,16 +84,15 @@ CompanyPreview = React.createClass
     FavoriteStore.findByCompany(@props.uuid)
 
   getPeopleIds: ->
-    peopleIds = BlockStore.filter (block) =>
+    personBlock = BlockStore.filter (block) =>
       block.get('owner_type') == 'Company' &&
       block.get('owner_id') == @props.uuid &&
       block.get('identity_type') == 'Person'
     .sortBy (block) -> block.get('position')
     .first()
-    .get('identity_ids')
 
-    if peopleIds 
-      peopleIds.take(5).toSeq()
+    if personBlock 
+      personBlock.get('identity_ids').take(5).toSeq()
     else
       Immutable.Seq()
 
