@@ -197,31 +197,31 @@ CompanyPreview = React.createClass
       <h1>{ company.get('name') }</h1>
     </header>
 
-  renderButtons: ->
-    return null unless @getToken()
-
-    <div className="buttons">
-      <SyncButton 
-        className = "cc alert"
-        iconClass = "fa-close"
-        onClick   = { @handleDeclineClick }
-        sync      = { @state.sync }
-        text      = "Decline" />
-      <SyncButton 
-        className = "cc"
-        iconClass = "fa-check"
-        onClick   = { @handleAcceptClick }
-        sync      = { @state.sync }
-        text      = "Accept" />
-    </div>
-
-  renderFooter: ->
-    <footer>
-      { @renderButtons() }
+  renderButtonsOrPeople: ->
+    if @getToken()
+      <div className="buttons">
+        <SyncButton 
+          className = "cc alert"
+          iconClass = "fa-close"
+          onClick   = { @handleDeclineClick }
+          sync      = { @state.sync }
+          text      = "Decline" />
+        <SyncButton 
+          className = "cc"
+          iconClass = "fa-check"
+          onClick   = { @handleAcceptClick }
+          sync      = { @state.sync }
+          text      = "Accept" />
+      </div>
+    else
       <People 
         key            = "people"
         showOccupation = { false }
         items          = { PersonStore.findByCompany(@props.uuid).take(5).toSeq() } />
+
+  renderFooter: ->
+    <footer>
+      { @renderButtonsOrPeople() }
       <section key="tags" className="tags">{ @renderTags() }</section>
     </footer>
 
