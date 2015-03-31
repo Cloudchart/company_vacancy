@@ -64,7 +64,7 @@ class User < ActiveRecord::Base
   end
 
   def self.find_by_email(email)
-    CloudProfile::Email.includes(:user).find_by(address: email).user rescue nil
+    Email.includes(:user).find_by(address: email).user rescue nil
   end
 
 
