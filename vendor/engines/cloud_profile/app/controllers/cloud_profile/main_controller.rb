@@ -3,7 +3,6 @@ require_dependency "cloud_profile/application_controller"
 module CloudProfile
   class MainController < ApplicationController
     authorize_resource class: :cloud_profile_main
-    before_action :create_default_company, only: :companies, unless: -> { current_user.companies.any? }
     
     def companies
       # TODO 
@@ -34,12 +33,6 @@ module CloudProfile
 
     def subscriptions
       @subscriptions = current_user.subscriptions.order(created_at: :desc)
-    end
-
-  private
-
-    def create_default_company
-      redirect_to main_app.new_company_path
     end
 
   end
