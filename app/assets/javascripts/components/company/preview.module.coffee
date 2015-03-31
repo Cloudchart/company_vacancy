@@ -91,8 +91,8 @@ CompanyPreview = React.createClass
     .sortBy (block) -> block.get('position')
     .first()
 
-    if personBlock 
-      personBlock.get('identity_ids').take(5).toSeq()
+    if personBlock && (peopleIds = personBlock.get('identity_ids'))
+      peopleIds.take(5).toSeq()
     else
       Immutable.Seq()
 
