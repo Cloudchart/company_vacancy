@@ -1,0 +1,109 @@
+section.invite-queue {
+
+  margin: 40px auto;
+  text-align: center;
+  width: 740px;
+
+
+  figure.avatar {
+    background-size: cover;
+    border-radius: 50%;
+    margin: auto;
+  }
+
+
+  header {
+    position: relative;
+
+    aside {
+      @include position(absolute, 20px 100% null null);
+      margin-right: 10px;
+    }
+
+    figure.avatar {
+      height: 50px;
+      width: 50px;
+    }
+
+    p {
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 32px;
+      text-align: left;
+      margin: 0;
+
+      &:not(:first-of-type) {
+        margin-top: 15px;
+      }
+
+      > strong {
+        font-weight: 700;
+      }
+    }
+  }
+
+
+  .info {
+    margin-top: 30px;
+
+    figure.avatar {
+      margin: auto;
+      height: 150px;
+      width: 150px;
+    }
+
+    p {
+      color: hsl(0, 0%, 53%);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.4em;
+      margin: 0;
+
+      &.name {
+        color: black;
+        font-size: 20px;
+      }
+
+      &.email {
+        color: hsl(137, 54%, 50%);
+        font-weight: 400;
+      }
+
+      &:first-of-type {
+        margin-top: 15px;
+      }
+
+      &:last-of-type {
+        margin-bottom: 15px;
+      }
+    }
+
+  }
+
+
+  fieldset {
+    border: none;
+    margin: 40px auto 0;
+    padding: 0;
+    width: 330px;
+
+    input {
+      background-color: white;
+      border: none;
+      border-bottom: 2px solid hsl(137, 54%, 50%);
+      display: block;
+      font-size: 20px;
+      font-weight: 300;
+      height: 40px;
+      margin-bottom: 20px;
+      outline: none;
+      padding: 0 10px;
+      width: 100%;
+
+      &.error {
+        border-color: hsl(0, 54%, 50%);
+      }
+    }
+  }
+
+}

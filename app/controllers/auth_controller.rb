@@ -2,6 +2,8 @@ class AuthController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: :developer, if: :development?
 
+  layout 'landing'
+
   def twitter
     if user = User.find_by(twitter: oauth_hash.info.nickname)
       authenticate_user!(user)
@@ -28,15 +30,19 @@ class AuthController < ApplicationController
     errors  = []
     user    = User.includes(:tokens).find(queued_user.id)
     token   = Token.find_or_create_by(owner: user, name: :email_verification)
+    email   = CloudProfile::Email.new(address: params[:email])
 
 
     errors << :full_name  unless params[:full_name].present?
-    errors << :email      unless params[:email].present? if token.data.present? && token.data[:address].present?
+    errors << :email      unless email.valid? if params[:email].present? || token.data.present? && token.data[:address].present?
 
     raise ActiveRecord::RecordInvalid.new(user) unless errors.empty?
 
-    user.update!(full_name: params[:full_name], company: params[:company], occupation: params[:occupation])
-    token.update!(data: { address: params[:email] })
+    User.transaction do
+      user.touch
+      user.update!(full_name: params[:full_name], company: params[:company], occupation: params[:occupation])
+      token.update!(data: { address: email.address })
+    end
 
     render json: { id: user.id }
 
