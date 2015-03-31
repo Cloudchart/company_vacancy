@@ -13,6 +13,8 @@ class Post < ActiveRecord::Base
   has_many :visibilities, as: :owner, dependent: :destroy
   has_many :pins, as: :pinnable, dependent: :destroy
 
+  scope :only_public, -> { joins(:visibilities).where(visibilities: { value: 'public' }) }
+
   def visibility
     visibilities.first
   end

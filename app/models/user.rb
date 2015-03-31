@@ -34,8 +34,6 @@ class User < ActiveRecord::Base
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
   has_many :companies, through: :roles, source: :owner, source_type: 'Company'
-  has_many :published_companies, -> { where(is_published: true) }, through: :roles, source: :owner, source_type: 'Company'
-  has_many :followed_companies, through: :favorites, source: :favoritable, source_type: 'Company'
 
   # Roles on Pinboards
   #
@@ -72,6 +70,14 @@ class User < ActiveRecord::Base
 
   def followed_activities
     Activity.followed_by_user(id)
+  end
+
+  def published_companies
+    Company.joins(:roles).where(is_published: true, roles: { user_id: id, owner_type: 'Company' })
+  end
+
+  def followed_companies
+    Company.joins(:followers).where(followers: { user_id: id, favoritable_type: 'Company' })
   end
 
   def admin?

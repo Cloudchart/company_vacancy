@@ -3,7 +3,9 @@
 GlobalState    = require('global_state/state')
 
 CompanyStore   = require('stores/company_store.cursor')
-PersonStore    = require('stores/person_store.cursor')
+BlockStore     = require('stores/block_store.cursor')
+PostStore      = require('stores/post_store.cursor')
+PinStore       = require('stores/pin_store')
 TaggingStore   = require('stores/tagging_store')
 TagStore       = require('stores/tag_store')
 TokenStore     = require('stores/token_store.cursor')
@@ -34,9 +36,13 @@ CompanyPreview = React.createClass
       company: ->
         """
           Company {
+            blocks,
             people,
             tags,
-            taggings
+            taggings,
+            public_posts {
+              pins
+            }
           }
         """  
 
@@ -77,6 +83,37 @@ CompanyPreview = React.createClass
   getFavorite: ->
     FavoriteStore.findByCompany(@props.uuid)
 
+  getPeopleIds: ->
+    peopleIds = BlockStore.filter (block) =>
+      block.get('owner_type') == 'Company' &&
+      block.get('owner_id') == @props.uuid &&
+      block.get('identity_type') == 'Person'
+    .sortBy (block) -> block.get('position')
+    .first()
+    .get('identity_ids')
+
+    if peopleIds 
+      peopleIds.take(5).toSeq()
+    else
+      Immutable.Seq()
+
+  getPosts: ->
+    @cursor.posts.filter (post) =>
+      post.get('owner_type') == 'Company' &&
+      post.get('owner_id') == @props.uuid
+
+  getPostsCount: ->
+    @getPosts().size || 0
+
+  getInsightsCount: ->
+    posts = @getPosts()
+
+    @cursor.pins.filter (pin) ->
+      pin.get('content') &&
+      !pin.get('parent_id') &&
+      posts.has pin.get('pinnable_id') 
+    .size || 0
+
 
   # Handlers
   #
@@ -108,8 +145,10 @@ CompanyPreview = React.createClass
   #
   componentWillMount: ->
     @cursor =
+      blocks:    BlockStore.cursor.items
       company:   CompanyStore.cursor.items.cursor(@props.uuid)
-      people:    PersonStore.cursor.items
+      posts:     PostStore.cursor.items
+      pins:      PinStore.cursor.items
       tags:      TagStore.cursor.items
       taggings:  TaggingStore.cursor.items
       tokens:    TokenStore.cursor.items
@@ -135,15 +174,25 @@ CompanyPreview = React.createClass
 
     <li className="label">Followed</li>
 
+  renderPostsCount: ->
+    return null if (count = @getPostsCount()) == 0
+
+    <li>
+      { pluralize(count, "post", "posts") }
+    </li>
+
+  renderInsightsCount: ->
+    return null if (count = @getInsightsCount()) == 0
+
+    <li>
+      { pluralize(count || 0, "insight", "insights") }
+    </li>
+
   renderInfo: ->
     <div className="info">
       <ul className="stats">
-        <li>
-          { pluralize(@cursor.company.get('posts_count') || 0, "post", "posts") }
-        </li>
-        <li>
-          { pluralize(@cursor.company.get('pins_count') || 0, "pin", "pins") }
-        </li>
+        { @renderInsightsCount() }
+        { @renderPostsCount() }
       </ul>
       <ul className="labels">
         { @renderInvitedLabel() }
@@ -163,31 +212,31 @@ CompanyPreview = React.createClass
       <h1>{ company.get('name') }</h1>
     </header>
 
-  renderButtons: ->
-    return null unless @getToken()
-
-    <div className="buttons">
-      <SyncButton 
-        className = "cc alert"
-        iconClass = "fa-close"
-        onClick   = { @handleDeclineClick }
-        sync      = { @state.sync }
-        text      = "Decline" />
-      <SyncButton 
-        className = "cc"
-        iconClass = "fa-check"
-        onClick   = { @handleAcceptClick }
-        sync      = { @state.sync }
-        text      = "Accept" />
-    </div>
+  renderButtonsOrPeople: ->
+    if @getToken()
+      <div className="buttons">
+        <SyncButton 
+          className = "cc alert"
+          iconClass = "fa-close"
+          onClick   = { @handleDeclineClick }
+          sync      = { @state.sync }
+          text      = "Decline" />
+        <SyncButton 
+          className = "cc"
+          iconClass = "fa-check"
+          onClick   = { @handleAcceptClick }
+          sync      = { @state.sync }
+          text      = "Accept" />
+      </div>
+    else
+      <People 
+        key            = "people"
+        ids            = { @getPeopleIds() } 
+        showOccupation = { false } />
 
   renderFooter: ->
     <footer>
-      { @renderButtons() }
-      <People 
-        key            = "people"
-        showOccupation = { false }
-        items          = { PersonStore.findByCompany(@props.uuid).take(5).toSeq() } />
+      { @renderButtonsOrPeople() }
       <section key="tags" className="tags">{ @renderTags() }</section>
     </footer>
 

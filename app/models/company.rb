@@ -71,6 +71,10 @@ class Company < ActiveRecord::Base
     )
   end
 
+  def public_posts 
+    Post.only_public.where(owner_id: id, owner_type: 'Company')
+  end
+
   def humanized_id
     Cloudchart::RFC1751.encode(id).downcase.gsub(/\s/, '-')
   end
