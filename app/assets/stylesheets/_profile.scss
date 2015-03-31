@@ -55,9 +55,12 @@ section.user-profile {
       height: $menu-height;
       width: 245px;
 
-      &.active,
-      &:hover {
+      &.active {
         background-color: $menu-active-color;
+      }
+
+      &:hover {
+        color: $link-color;
       }
     }
   }
