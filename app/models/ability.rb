@@ -85,7 +85,7 @@ class Ability
         quote.company && !quote.company.people.include?(quote.person)
       end
 
-      can :manage, Company::NESTED_MODELS do |resource|
+      can :manage, [Person, Vacancy, Block, CloudBlueprint::Chart, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
         owner_or_editor?(user, resource.company)
       end
 
