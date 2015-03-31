@@ -95,6 +95,7 @@ body > header {
     > .breadcrumbs {
       @include align-items(center);
       @include display(flex);
+      @include flex(1);
 
       > .back-link {
         @include display(flex);

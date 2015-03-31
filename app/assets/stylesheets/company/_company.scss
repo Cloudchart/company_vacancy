@@ -97,10 +97,13 @@
     }
 
     &.name {
+      max-width: 800px;
+
       input {
         background-color: $card-color;
         font-size: 40px;
         font-weight: 300;
+        max-width: 800px;
       }
     
       > .share-link {
