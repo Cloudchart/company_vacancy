@@ -1,13 +1,13 @@
 class User < ActiveRecord::Base
   include Uuidable
   include Fullnameable
-  include Sluggable
+  # include Sluggable
 
   attr_accessor :current_password
   attr_reader :invite
 
   # before_validation :build_blank_emails, unless: -> { emails.any? }
-  before_validation :generate_slug
+  before_save :generate_slug, if: :twitter_changed?
   before_destroy :mark_emails_for_destruction
 
   dragonfly_accessor :avatar
@@ -55,11 +55,11 @@ class User < ActiveRecord::Base
   def self.create_with_twitter_omniauth_hash(hash)
     avatar_url = hash.info.image.present? ? hash.info.image.sub('_normal', '') : nil
 
-    create(
+    create!(
       full_name:    hash.info.name,
       twitter:      hash.info.nickname,
       password:     SecureRandom.uuid,
-      avatar_url:   avatar_url,
+      avatar_url:   avatar_url
     )
   end
 
@@ -153,7 +153,8 @@ class User < ActiveRecord::Base
 private
 
   def generate_slug
-    self.slug = twitter.try(:parameterize) if twitter_changed?
+    self.slug = twitter.try(:parameterize)
+    self.slug = nil if slug.blank?
   end
 
   def mark_emails_for_destruction
