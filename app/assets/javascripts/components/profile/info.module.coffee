@@ -82,7 +82,7 @@ module.exports  = React.createClass
     <div className="stats">{ counters.join(', ') }</div>
 
   renderTwitter: ->
-    twitterHandle = @cursor.user.get('twitter')
+    return null unless (twitterHandle = @cursor.user.get('twitter'))
 
     <a className="twitter" href={ "https://twitter.com/" + twitterHandle } target="_blank">@{ twitterHandle }</a>
 
