@@ -65,7 +65,7 @@ module.exports  = React.createClass
   getAttributesFromCursor: ->
     Immutable.Map().withMutations (attributes) =>
       KnownAttributes.forEach (name) =>
-        attributes.set(name, @state.attributes.get(name) || @cursor.user.get(name, ''))
+        attributes.set(name, @state.attributes.get(name) || @cursor.user.get(name, '') || '')
 
   getUserEmails: ->
     @cursor.emails.filter (email) =>
