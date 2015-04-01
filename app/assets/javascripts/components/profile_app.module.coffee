@@ -55,7 +55,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     fetchDone:  false
-    selected:   location.hash.substr(1) || 'insights' || ''
+    selected:   location.hash.substr(1) || 'activity' || ''
     isSyncing:  false
 
   fetchViewer: (options={}) ->
