@@ -100,12 +100,14 @@ module.exports  = React.createClass
   handleAvatarChange: (file) ->
     @setState
       formUpdated: true
+      submitText: 'Update settings'
       attributes: @state.attributes.withMutations (attributes) ->
         attributes.remove('remove_avatar').set('avatar', file).set('avatar_url', URL.createObjectURL(file))
   
   handleAvatarRemove: ->
     @setState
       formUpdated: true
+      submitText: 'Update settings'
       attributes: @state.attributes.withMutations (attributes) ->
         attributes.remove('avatar').remove('avatar_url').set('remove_avatar', true)
 
