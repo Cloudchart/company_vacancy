@@ -101,7 +101,7 @@ Cloudchart::Application.routes.draw do
     end
   end
 
-  resources :pins
+  resources :pins, except: [:index]
   resources :posts_stories, only: [:update, :destroy]
 
   resources :users, only: [:show, :update], concerns: [:followable] do
@@ -121,6 +121,7 @@ Cloudchart::Application.routes.draw do
 
   # Custom
   #
+  get '/insights', to: "pins#index"
   get ':id', to: 'pages#show', as: :page
   delete 'logout', to: 'cloud_profile/authentications#destroy', as: 'logout'
 
