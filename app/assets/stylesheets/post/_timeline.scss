@@ -99,7 +99,7 @@
       @include position(absolute, $default-margin-size $default-margin-size null null);
 
       ~ a h1 {
-        margin: 0 10%;
+        margin-right: 10%;
       }
     }
 
@@ -109,99 +109,9 @@
 
       width: 100%;
 
-      > header {
-        text-align: center;
-
-        > h1 {
-          font-size: $large-font-size;
-          font-weight: 600;
-        }
-
-        > h2 {
-          color: $special-link-color;
-          font-size: $small-font-size;
-          font-weight: 300;
-        }
-
-        > h1, > h2 {
-          padding: $default-margin-size/2 0;
-          margin: 0;
-        }
-      }
-
-      > div.content {
+      > .content {
         > * {
-          padding: $default-margin-size/2 0;
-        }
-
-        > .paragraph {
-          font-size: $basic-font-size;
-          line-height: 22px;
-          word-wrap: break-word;
-        }
-
-        .quote {
-          @include align-items(center);
-          @include display(flex);
-          @include justify-content(flex-start);
-
-          > div {
-            font-size: 28px;
-            font-weight: 300;
-            font-style: italic;
-          }
-
-          > .person {
-            margin-right: 30px;
-            min-width: 145px;
-
-            > footer {
-              font-style: normal;
-
-              > p {
-                margin: 0;
-                text-align: center;
-                white-space: wrap;
-
-                &.name {
-                  font-size: 20px;
-                }
-
-                &.occupation {
-                  font-size: 12px;
-                  color: gray;
-                }
-              }
-            }
-          }
-        }
-
-        > .person {
-          margin: 0 auto;
-          text-align: center;
-          width: 150px;
-
-          > footer {
-
-            > p {
-              margin: 0;
-              text-align: center;
-              white-space: wrap;
-
-              &.name {
-                font-size: 20px;
-              }
-
-              &.occupation {
-                font-size: 12px;
-                color: gray;
-              }
-            }
-          }
-        }
-
-        > img.cover {
-          width: 100%;
+          padding-bottom: $inner-margin-size;
         }
       }
 
@@ -211,7 +121,6 @@
         @include flex(1);
         @include justify-content(center);
 
-        margin-top: 20px;
         text-align: center;
 
         > .cc-hashtag-list {
@@ -236,12 +145,30 @@
         > h1 {
           font-size: $great-font-size;
           font-weight: 300;
+          margin: 0;
+          text-align: center;
         }
 
         > h2 {
           font-size: $basic-font-size;
           font-weight: 300;
           color: $black-color;
+          text-align: center;
+        }
+      }
+    }
+
+    &.quote {
+      > a > header {
+        > h1 {
+          font-size: $large-font-size;
+          margin: 0;
+          text-align: center;
+        }
+
+        > h2 {
+          font-size: $basic-font-size;
+          text-align: center;
         }
       }
     }

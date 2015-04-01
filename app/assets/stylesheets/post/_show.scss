@@ -30,21 +30,20 @@ main.post {
 
       position: relative;
 
-      h2, label, .stories {
-        margin: $inner-margin-size/2 0;
+      .company-name, label {
+        padding-bottom: $inner-margin-size;
       }
 
-      h2 {
+      .company-name {
         font-size: $big-font-size;
         font-weight: $bolder-weight;
-        margin-top: 0;
       }
 
       .title div[contenteditable] {
         @include editor-contenteditable-area;
 
         font-size: $huge-font-size;
-        font-weight: $bold-weight;
+        font-weight: 600;
         max-width: 750px;
       }
 
@@ -133,6 +132,10 @@ main.post {
       @include align-items(center);
       @include display(flex);
       @include justify-content(space-between);
+
+      > .spacer {
+        @include flex(1);
+      }
     }
 
     .post-pinners {

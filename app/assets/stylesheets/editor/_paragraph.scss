@@ -1,4 +1,5 @@
-article.editor > section.paragraph {
+.editor > .paragraph,
+.post.preview .paragraph {
   font-size: $big-font-size;
   line-height: 1.5;
 

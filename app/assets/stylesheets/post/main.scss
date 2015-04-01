@@ -7,6 +7,7 @@ $user-preview-arrow-size: 8px;
   @media only screen and (max-width: 1024px) { @content; }
 }
 
-@import 'insight-list';
+@import 'insight_list';
+@import 'header';
 @import 'timeline';
 @import 'show';

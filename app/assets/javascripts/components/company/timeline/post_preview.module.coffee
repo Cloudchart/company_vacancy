@@ -120,10 +120,17 @@ Component = React.createClass
     person_id = block.identity_ids.toJS()[0]
     return null unless person_id
 
-    @getPerson(person_id)
+    <div className="person-list">
+      <div className="row">
+        <div className="item">
+          { @getPerson(person_id) }
+        </div>
+      </div>
+    </div>
 
   getPerson: (person_id) ->
     return null unless person_id
+
     person = PersonStore.get(person_id)
 
     <div className="person">
@@ -139,14 +146,17 @@ Component = React.createClass
       </footer>
     </div>
 
+
   getQuote: (block) ->
     quote = QuoteStore.findByBlock(block.get("uuid"))
     return null unless quote
 
     <div className="quote">
-      { @getPerson(quote.get("person_id")) }
-      
-      <div dangerouslySetInnerHTML={__html: quote.get("text")}></div>
+      <div className="quote-wrapper">
+        { @getPerson(quote.get("person_id")) }
+        
+        <div className="quote-text" dangerouslySetInnerHTML={__html: quote.get("text")}></div>
+      </div>
     </div>
 
   isEpochType: ->
@@ -158,6 +168,9 @@ Component = React.createClass
   isRelatedToStory: ->
     return true unless @props.story_id
     @getStoryIds().contains @props.story_id
+
+  isQuote: ->
+    @state.blocks.length == 1 && @state.blocks[0].identity_type == "Quote"
 
   getStoryIds: ->
     PostsStoryStore.cursor.items.deref(Immutable.Map())
@@ -281,7 +294,7 @@ Component = React.createClass
       <h2>{formatted_date}</h2>
     else null
 
-    <header>
+    <header key="header">
       {title}
       {date}
     </header>
@@ -302,6 +315,14 @@ Component = React.createClass
       </ul>
     </div>
 
+  renderPost: ->
+    unless @isQuote()
+      [@renderHeader(),
+      @renderContent()]
+    else
+      [@renderContent(),
+      @renderHeader()]
+
   renderContent: ->
     first_block = @state.blocks[0]
     return null unless first_block
@@ -314,7 +335,7 @@ Component = React.createClass
     else
       null
 
-    <div className="content">
+    <div className="content" key="content">
       { first_content_item }
       { second_content_item }
     </div>
@@ -330,6 +351,7 @@ Component = React.createClass
     article_classes = cx
       'preview': true
       'post': true
+      'quote': @isQuote()
       'epoch': @isEpochType()
       'only-me': @isOnlyMeVisibility()
       'dimmed': not @isRelatedToStory()
@@ -339,8 +361,7 @@ Component = React.createClass
         { @renderControls() }
         <a href={@state.post.post_url} className="for-group">
           { @renderOnlyMeOverlay() }
-          { @renderHeader() }
-          { @renderContent() }
+          { @renderPost() }
           { @renderFooter() }
         </a>
       </article>

@@ -225,7 +225,7 @@ Post = React.createClass
   renderCompanyName: ->
     return null unless @state.company
 
-    <h2>{ @state.company.name }</h2>
+    <div className="company-name">{ @state.company.name }</div>
 
   renderVisibilityDropdown: ->
     return null unless @state.isInEditMode
@@ -307,12 +307,12 @@ Post = React.createClass
       { @getPinnersNumberText(pinnersNumber) }
     </section>
 
-
   renderPinInfo: ->
     return null if @state.isInEditMode
 
     <section className="post-pin-info">
       { @renderPinners() }
+      <div className="spacer"></div>
       <ul className="round-buttons">
         <PinButton 
           pinnable_id   = { @props.id }
@@ -320,7 +320,6 @@ Post = React.createClass
           title         = { @state.post.title } />
       </ul>
     </section>
-
 
   renderFooter: ->
     return null unless @state.isInEditMode
@@ -362,7 +361,7 @@ Post = React.createClass
 
       <header>
         { @renderCompanyName() }
-        <Wrapper className="editor" isWrapped={!@state.isInEditMode}>
+        <Wrapper className="editor" isWrapped={@state.isInEditMode}>
           <label className="title">
             <ContentEditableArea
               onBlur = { @handleTitleBlur }
