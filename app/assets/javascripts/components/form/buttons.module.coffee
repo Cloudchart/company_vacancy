@@ -48,21 +48,23 @@ StandardButton = React.createClass
   componentDidUpdate: ->
     button = @getDOMNode()
 
-    prevWidth = button.style.width
+    setTransition = (value) ->
+      button.style.transition = button.style.webkitTransition = button.style.mozTransition = value
+
+    prevWidth = getComputedStyle(button).width
     button.style.width = 'auto'
     endWidth = getComputedStyle(button).width
     button.style.width = prevWidth
     button.offsetWidth
-    button.style.transition = 'width .2s ease-in-out'
+    setTransition('width .2s ease-in-out')
     button.style.width = endWidth
 
     handleTransitionEnd = (event) ->
       if event.propertyName == 'width'
-        button.style.transition = ''
-        button.removeEventListener 'webkitTransitionEnd transitionend oTransitionEnd', handleTransitionEnd, false
+        setTransition('')
+        button.removeEventListener 'transitionend', handleTransitionEnd, false
 
-    button.addEventListener 'webkitTransitionEnd transitionend oTransitionEnd', handleTransitionEnd, false
-
+    button.addEventListener 'transitionend', handleTransitionEnd, false
 
   render: ->
     children = []
