@@ -117,7 +117,7 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @props.cursor.user.get('uuid')
+    return null unless @props.cursor.user.get('uuid') && @props.cursor.user.get('twitter')
 
     classList = cx
       active: !!@state.currentUserPin or !!@state.currentUserRepin
