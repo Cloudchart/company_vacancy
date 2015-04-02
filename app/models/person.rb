@@ -17,7 +17,11 @@ class Person < ActiveRecord::Base
   validates :full_name, presence: true
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
-  
+
+
+  before_save :invalidate_verification!
+
+
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :first_name, type: 'string', analyzer: 'ngram_analyzer'
@@ -38,6 +42,15 @@ class Person < ActiveRecord::Base
 
   def as_json_for_chart
     as_json(only: [:uuid, :full_name, :first_name, :last_name, :email, :occupation, :salary])
+  end
+
+  private
+
+  def invalidate_verification!
+    if twitter_changed?
+      self.is_verified = false
+    end
+    true
   end
 
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150331162252) do
+ActiveRecord::Schema.define(version: 20150402085607) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -174,8 +174,9 @@ ActiveRecord::Schema.define(version: 20150331162252) do
   add_index "favorites", ["user_id", "favoritable_id", "favoritable_type"], name: "favorites_idx", unique: true, using: :btree
   add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
 
-  create_table "features", primary_key: "uuid", force: true do |t|
-    t.string   "name",        null: false
+  create_table "features", id: false, force: true do |t|
+    t.string   "uuid",        limit: 36
+    t.string   "name",                   null: false
     t.text     "description"
     t.integer  "votes_total"
     t.datetime "created_at"
@@ -266,13 +267,13 @@ ActiveRecord::Schema.define(version: 20150331162252) do
   end
 
   create_table "people", primary_key: "uuid", force: true do |t|
-    t.string   "first_name",                                                      null: false
-    t.string   "last_name",                                                       null: false
+    t.string   "first_name",                                                        null: false
+    t.string   "last_name",                                                         null: false
     t.string   "email"
     t.string   "occupation"
     t.string   "phone"
     t.string   "user_id",       limit: 36
-    t.string   "company_id",    limit: 36,                                        null: false
+    t.string   "company_id",    limit: 36,                                          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "hired_on"
@@ -284,9 +285,12 @@ ActiveRecord::Schema.define(version: 20150331162252) do
     t.decimal  "salary",                   precision: 10, scale: 2, default: 0.0
     t.float    "stock_options", limit: 24
     t.string   "avatar_uid"
+    t.string   "twitter"
+    t.boolean  "is_verified",                                       default: false
   end
 
   add_index "people", ["company_id"], name: "index_people_on_company_id", using: :btree
+  add_index "people", ["company_id"], name: "index_people_on_company_id_and_twitter", using: :btree
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
   create_table "pictures", primary_key: "uuid", force: true do |t|
