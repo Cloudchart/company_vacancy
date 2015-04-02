@@ -116,6 +116,7 @@ Post = React.createClass
 
   gatherPinnersIds: ->
     PinStore.filterPinsForPost(@props.id)
+      .toOrderedSet()
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
       .map (pin) -> pin.get('user_id')
