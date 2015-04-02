@@ -1,7 +1,9 @@
 class UsersController < ApplicationController
   include FollowableController
 
-  load_and_authorize_resource
+  before_filter :set_user, only: [:show, :update, :settings]
+
+  authorize_resource
   
   def show
     respond_to do |format|
@@ -31,6 +33,10 @@ class UsersController < ApplicationController
   end
 
 private
+
+  def set_user
+    @user = User.friendly.find(params[:id])
+  end
 
   def params_for_update
     params.require(:user).permit(:full_name, :avatar, :remove_avatar, :occupation, :company)

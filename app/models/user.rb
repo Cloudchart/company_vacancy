@@ -1,14 +1,15 @@
 class User < ActiveRecord::Base
   include Uuidable
   include Fullnameable
-  # include Sluggable
+  include FriendlyId
 
   attr_accessor :current_password
   attr_reader :invite
 
   # before_validation :build_blank_emails, unless: -> { emails.any? }
-  before_save :generate_slug, if: :twitter_changed?
   before_destroy :mark_emails_for_destruction
+
+  friendly_id :twitter, use: :slugged
 
   dragonfly_accessor :avatar
 
@@ -44,29 +45,28 @@ class User < ActiveRecord::Base
 
   validates :full_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
+  validates :twitter, uniqueness: true, allow_blank: true
 
-  # We are no longer need to validate email
   # validate :validate_email, on: :create
 
-  # default_scope -> { includes(:emails) }
   scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
 
+  class << self
+    def create_with_twitter_omniauth_hash(hash)
+      avatar_url = hash.info.image.present? ? hash.info.image.sub('_normal', '') : nil
 
-  def self.create_with_twitter_omniauth_hash(hash)
-    avatar_url = hash.info.image.present? ? hash.info.image.sub('_normal', '') : nil
+      create!(
+        full_name:    hash.info.name,
+        twitter:      hash.info.nickname,
+        password:     SecureRandom.uuid,
+        avatar_url:   avatar_url
+      )
+    end
 
-    create!(
-      full_name:    hash.info.name,
-      twitter:      hash.info.nickname,
-      password:     SecureRandom.uuid,
-      avatar_url:   avatar_url
-    )
-  end
-
-  def self.find_by_email(email)
-    Email.includes(:user).find_by(address: email).user rescue nil
-  end
-
+    def find_by_email(email)
+      Email.includes(:user).find_by(address: email).user rescue nil
+    end
+  end # of class methods
 
   def followed_activities
     Activity.followed_by_user(id)
@@ -151,11 +151,6 @@ class User < ActiveRecord::Base
   end
 
 private
-
-  def generate_slug
-    self.slug = twitter.try(:parameterize)
-    self.slug = nil if slug.blank?
-  end
 
   def mark_emails_for_destruction
     emails.each(&:mark_for_destruction)

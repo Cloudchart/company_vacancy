@@ -5,12 +5,7 @@ module CloudApi
 
     def me
       @source = User
-
-      @starter = if current_user.slug.present?
-        [:find_by, slug: current_user.slug]
-      else
-        [:find, current_user.id]
-      end
+      @starter = [:find, current_user.id]
 
       respond_to do |format|
         format.json { render '/main' }
@@ -27,13 +22,8 @@ module CloudApi
     end
 
     def show
-      @source = User
-
-      @starter = if Cloudchart::Utils.uuid?(params[:id])
-        [:find, params[:id]]
-      else
-        [:find_by, slug: params[:id]]
-      end
+      @source = User.friendly
+      @starter = [:find, params[:id]]
 
       respond_to do |format|
         format.json { render '/main' }

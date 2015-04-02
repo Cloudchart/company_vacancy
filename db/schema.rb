@@ -11,7 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150402085607) do
+ActiveRecord::Schema.define(version: 20150402144123) do
+
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -454,7 +455,7 @@ ActiveRecord::Schema.define(version: 20150402085607) do
   end
 
   add_index "users", ["slug"], name: "index_users_on_slug", unique: true, using: :btree
-  add_index "users", ["twitter"], name: "index_users_on_twitter", using: :btree
+  add_index "users", ["twitter"], name: "index_users_on_twitter", unique: true, using: :btree
 
   create_table "vacancies", primary_key: "uuid", force: true do |t|
     t.string   "name",                                     null: false

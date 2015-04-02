@@ -37,6 +37,7 @@ gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'useragent'
 gem 'meta-tags', '~> 2.0.0'
+gem 'friendly_id', '~> 5.1.0'
 
 # Engines
 #

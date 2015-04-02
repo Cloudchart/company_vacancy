@@ -2,7 +2,7 @@ class AddSlugToUsers < ActiveRecord::Migration
   def up
     add_column :users, :slug, :string
     add_index :users, :slug, unique: true
-    User.where.not(twitter: nil).each { |user| user.update(slug: user.twitter) if user.twitter.present? }
+    User.where.not(twitter: nil).each { |user| user.update(slug: user.twitter.parameterize) if user.twitter.present? }
   end
 
   def down
