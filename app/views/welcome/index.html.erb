@@ -5,35 +5,14 @@
   description: 'CloudChart is a convenient tool to chart and profile your company. Use it to clarify your team structure, your products, your goals, and become transparent. Transparency benefits your teams, your partners, and your investors.'
 } %>
 
-<section class="about">
-  <header>
-    Get your growth into the groove
-  </header>
-  
-  <p>
-    Learn how successful startups came to life.
-    <br />
-    Build a timeline of major milestones in your company's growth.
-  </p>
+<header>
+  <h1>Learn from Unicorns</h1>
+  <h2>Discover how successfull startups have grown</h2>
+</header>
+
+<section data-react-class="components/welcome_app" class="featured-posts">
 </section>
 
-<section class="picture">
-  <figure>
-    <%= image_tag('landing-timeline.svg') %>
-  </figure>
-</section>
-
-<section class="tentative">
-  <p>
-    We’re building a collection of successful founder stories
-    <br />
-    into a very visual and informative guide for first-time founders.
-  </p>
-  <p>
-    Excited?
-  </p>
-</section>
-
-<section class="invite" data-react-class="components/landing/invite" data-react-props="<%= { value: 'Get Invited' }.to_json %>">
-  <button>Get Invited</button>
-</section>
+<footer>
+  <%= link_to "Start Learning", cloud_profile.login_path, class: "cc" %>
+</footer>

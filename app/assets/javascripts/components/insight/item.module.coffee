@@ -70,7 +70,7 @@ module.exports = React.createClass
     return null unless @props.cursor.pin.deref()
     return null unless @state.user.deref()
 
-    <article className="insight">
+    <article className="insight item">
       <Human uuid = { @props.cursor.pin.get('user_id') } type="user" />
       { @renderContent() }
       { @renderButtons() }

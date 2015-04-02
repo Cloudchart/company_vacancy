@@ -10,7 +10,6 @@ class Ability
       # can :read, :invite
 
       # can :read, Event
-      # can :read, Feature
       # can :read, Event
       # can :read, Tag
       # can :read, Person
@@ -34,7 +33,6 @@ class Ability
       can :update, :cloud_profile_user
       can [:read, :accept, :destroy], :invite
 
-      # can :vote, Feature
       # can :manage, Subscription
       can :unfollow, Company
       can [:preview, :read, :pull], CloudBlueprint::Chart

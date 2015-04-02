@@ -68,6 +68,10 @@ class User < ActiveRecord::Base
     end
   end # of class methods
 
+  def featured_insights
+    Pin.featured
+  end
+
   def followed_activities
     Activity.followed_by_user(id)
   end

@@ -7,11 +7,13 @@ class AdminAbility
       can :dashboard
 
       can :read, Person
+      can [:read, :update], Pin
       can [:read, :update, :make_unicorns], User
       can [:read, :create], Story
       can [:read, :create], Pinboard
+      can [:read, :destroy], Feature
 
-      can :manage, [Feature, Interview, Page, Tag, Token]
+      can :manage, [Interview, Page, Tag, Token]
 
       can :authorize, User, authorized_at: nil
 

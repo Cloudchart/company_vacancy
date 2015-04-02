@@ -46,6 +46,8 @@ module.exports = React.createClass
     type:           React.PropTypes.string
 
   getDefaultProps: ->
+    cursor:
+      currentUser: Stores.user.me()
     showOccupation: true
 
 
@@ -87,9 +89,9 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @cursor.deref(false)
+    return null unless @cursor.deref(false) && @props.cursor.currentUser.deref(false)
 
-    if @props.type == 'user'
+    if @props.type == 'user' && @props.cursor.currentUser.get('twitter')
       <a className="human for-group" href={ @cursor.get('user_url') }>
         { @renderAvatar() }
         { @renderCredentials() }

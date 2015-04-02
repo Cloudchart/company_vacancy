@@ -7,6 +7,7 @@
 @import 'mixins/landing';
 @import 'mixins/form_2';
 @import 'mixins/button';
+@import 'shared/carousel';
 @import 'invite_queue';
 
 $base-unit: 20px;
@@ -38,33 +39,38 @@ body {
   min-height: 100%;
 
 
-  > header {
+  > header,
+  > footer { 
     @include align-items(center);
     @include display(flex);
-    @include justify-content(space-between);
+
+    background-color: $accented-green-color;    
+    color: $accented-white-color;     
   }
 
+  > header { 
+    @include justify-content(space-between);
+
+    height: 75px;
+  }
+
+  > footer {    
+    @include justify-content(center); 
+
+    height: 90px;    
+  } 
 
   > main {
     @include flex(1);
 
     position: relative;
   }
-
-
-  > footer {
-    @include align-items(center);
-    @include display(flex);
-    @include justify-content(center);
-  }
 }
-
 
 a {
   color: hsl(138, 63%, 37%);
   text-decoration: none;
 }
-
 
 // Header
 //
@@ -88,6 +94,7 @@ body > header {
     }
 
     > figcaption {
+      font-weight: 300;
       margin-left: $inner-margin-size;
 
       > strong {
@@ -96,75 +103,11 @@ body > header {
     }
   }
 
-  > .auth a {
-    color: hsl(0, 0%, 100%);
-    font-size: $base-unit * .9;
-    font-weight: 600;
-  }
-}
-
-
-// Main
-//
-body > main {
-
-  > section.about {
-    background-color: hsl(0, 0%, 96%);
-    font-size: $base-unit;
-    font-weight: 300;
-    padding: $base-unit * 3 0;
-    text-align: center;
-
-    > header {
-      font-size: 2em;
-      font-weight: 400;
-    }
-
-    > p {
-      font-size: 1.2em;
-      line-height: 1.25em;
-      margin: $base-unit * 1.5 0 0;
-    }
-  }
-
-  > section.picture {
-    margin: $base-unit * 3 0;
-
-    > figure {
-      margin: 0 auto;
-      width: 700px;
-    }
-  }
-
-  > section.tentative {
-    font-size: $base-unit;
-    font-weight: 300;
-    padding: 0;
-    text-align: center;
-
-    > p {
-      font-size: 1.2em;
-      line-height: 1.25em;
-      margin: $base-unit auto 0;
-    }
-  }
-
-
-  > section.invite {
-    margin: $base-unit * 2 0 0;
-    text-align: center;
-
-    > button {
-      background-color: hsl(136, 52%, 51%);
-      border: none;
-      color: hsl(0, 100%, 100%);
-      font-size: $base-unit * 1.5;
-      font-weight: 300;
-      height: 60px;
-      padding: 0 60px;
-    }
-  }
-
+  > .auth a {     
+    color: $accented-white-color;     
+    font-size: $basic-font-size;    
+    font-weight: 700;     
+  } 
 }
 
 // Footer
@@ -172,19 +115,69 @@ body > main {
 body > footer > ul {
   list-style: none;
   margin: 0;
-  padding: $base-unit * 2 0;
+  padding: 0 $gutter-size;
 
   > li {
     display: inline-block;
-    margin: 0 $base-unit / 1.5;
+    margin: 0 $default-margin-size/2;
     padding: 0;
   }
 
   a {
-    color: hsl(0, 0%, 78%);
-    font-size: $base-font-size * 1.25;
+    color: $accented-white-color;
+    font-size: $large-font-size;
     font-weight: 300;
     text-decoration: none;
+  }
+}
+
+
+// Main
+//
+body > main {
+  @include display(flex);
+  @include flex-direction(column);
+
+  background-color: $background-color;
+
+  > header {
+    @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), hsla(0, 0%, 98%, 1));
+    padding: 25px 0;
+
+    > h1, > h2 {
+      font-weight: 300;
+      margin: 0;
+      text-align: center;
+    }
+
+    > h1 {
+      font-size: $great-font-size;
+    }
+
+    > h2 {
+      font-size: $huge-font-size;
+    }
+  }
+
+  > .featured-posts {
+    @include flex(1);
+  }
+  
+  > footer {
+    margin: 45px 0;
+    text-align: center;
+    
+    > a.cc {
+      background-color: $accented-green-color;
+      border: none;
+      color: $accented-white-color;
+      display: inline-block;
+      font-size: $huge-font-size;
+      font-weight: 300;
+      height: 82px;
+      line-height: 82px;
+      padding: 0 34px;
+    }
   }
 }
 
@@ -202,3 +195,5 @@ body > footer > ul {
 
 
 @import 'interviews';
+@import 'post/insight_list';
+@import 'post/featured';

@@ -119,7 +119,8 @@ button.transparent {
   }
 }
 
-button.cc {
+button.cc,
+a.cc {
   @include cc-button;
 
   &.cc-wide {

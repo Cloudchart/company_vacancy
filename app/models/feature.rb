@@ -1,9 +1,7 @@
 class Feature < ActiveRecord::Base
   include Uuidable
 
-  has_paper_trail
-  has_many :votes, as: :destination, dependent: :destroy
+  belongs_to :featurable, polymorphic: true
 
-  validates :name, presence: true
-
+  validates :featurable, presence: true
 end
