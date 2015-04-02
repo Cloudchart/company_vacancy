@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150402085607) do
+ActiveRecord::Schema.define(version: 20150402152313) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -174,14 +174,15 @@ ActiveRecord::Schema.define(version: 20150402085607) do
   add_index "favorites", ["user_id", "favoritable_id", "favoritable_type"], name: "favorites_idx", unique: true, using: :btree
   add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
 
-  create_table "features", id: false, force: true do |t|
-    t.string   "uuid",        limit: 36
-    t.string   "name",                   null: false
-    t.text     "description"
-    t.integer  "votes_total"
+  create_table "features", primary_key: "uuid", force: true do |t|
+    t.string   "featurable_id",   limit: 36, null: false
+    t.string   "featurable_type",            null: false
+    t.string   "scope"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "features", ["featurable_id", "featurable_type"], name: "index_features_on_featurable_id_and_featurable_type", using: :btree
 
   create_table "friends", primary_key: "uuid", force: true do |t|
     t.string   "provider",    null: false
