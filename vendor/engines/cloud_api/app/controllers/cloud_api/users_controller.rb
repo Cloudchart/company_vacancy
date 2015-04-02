@@ -14,7 +14,7 @@ module CloudApi
 
     def unicorns
       @source = User
-      @starter = [:unicorns]
+      @starter = current_user.editor? ? [:unicorns] : [:none]
 
       respond_to do |format|
         format.json { render '/main' }
