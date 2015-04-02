@@ -7,12 +7,7 @@ class Company < ActiveRecord::Base
   include Tire::Model::Callbacks
 
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
-  ROLES           = ([:owner] + INVITABLE_ROLES).freeze
-  NESTED_MODELS   = [Person, Vacancy, Event, Block, BlockIdentity, CloudBlueprint::Chart, Post, Story, Quote, PostsStory, Paragraph, Picture]
-
-  before_save do
-    self.slug = nil if slug.blank?
-  end
+  ROLES = ([:owner] + INVITABLE_ROLES).freeze
 
   after_save do
     update(is_name_in_logo: false) if logotype.blank? && is_name_in_logo?
@@ -29,7 +24,7 @@ class Company < ActiveRecord::Base
   has_many :nested_activities, class_name: 'Activity', as: :source, dependent: :destroy
   has_many :subscriptions, as: :subscribable, dependent: :destroy
   has_many :charts, class_name: 'CloudBlueprint::Chart', dependent: :destroy
-  has_many :favorites, as: :favoritable, dependent: :destroy
+  has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :roles, as: :owner, dependent: :destroy
   has_many :users, through: :roles
@@ -74,6 +69,10 @@ class Company < ActiveRecord::Base
     to_json(
       include: { tags: { only: [:name] } }
     )
+  end
+
+  def public_posts 
+    Post.only_public.where(owner_id: id, owner_type: 'Company')
   end
 
   def humanized_id

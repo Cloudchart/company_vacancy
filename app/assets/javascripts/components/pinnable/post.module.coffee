@@ -16,9 +16,8 @@ QuoteStore      = require('stores/quote_store')
 
 # Components
 #
-Owners =
-  'Company': null
-
+PinnablePostCompanyHeader = require('components/pinnable/header/post_company')
+PinButton                 = require('components/pinnable/pin_button')
 
 Blocks =
   Paragraph:  require('components/pinnable/block/paragraph')
@@ -38,9 +37,14 @@ module.exports = React.createClass
 
   displayName: 'PinnablePost'
 
-
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
+  propTypes:
+    uuid:        React.PropTypes.string.isRequired
+    withContent: React.PropTypes.bool
+
+  getDefaultProps: ->
+    withContent: true
 
   statics:
 
@@ -59,7 +63,8 @@ module.exports = React.createClass
               block_identities {
                 identity
               }
-            }
+            },
+            pins
           }
         """
 
@@ -71,18 +76,19 @@ module.exports = React.createClass
   isLoaded: ->
     @cursor.post.deref(false)
 
+  gatherPinAttributes: (insight) ->
+    pinnable_id:    @props.uuid
+    pinnable_type:  'Post'
+    title:          @cursor.post.get('title')
 
   gatherBlocks: ->
     @cursor.blocks
       .sortBy (block) -> block.get('position')
+      .take(2)
 
 
-  handleClick: (event) ->
-    event.preventDefault()
-
-    window.location = @cursor.post.get('url')
-
-
+  # Lifecycle methods
+  #
   componentWillMount: ->
     @cursor =
       post:     PostStore.cursor.items.cursor(@props.uuid)
@@ -91,17 +97,37 @@ module.exports = React.createClass
     @fetch() unless @isLoaded()
 
 
+  # Renderers
+  #
   renderDate: ->
     return unless date = fuzzyDate.format(@cursor.post.get('effective_from'), @cursor.post.get('effective_till'))
 
     <div className="date">{ date }</div>
 
+  renderControls: ->
+    <ul className="round-buttons">
+      <PinButton {...@gatherPinAttributes()} />
+    </ul>
+
+  renderOwnerHeader: ->
+    switch @cursor.post.get('owner_type')
+
+      when 'Company'
+        <PinnablePostCompanyHeader uuid={ @cursor.post.get('owner_id') } />
+
+      else
+        throw new Error("Pinnable Header: Unknown owner type '#{@cursor.post.get('owner_type')}' for pinnable type 'Post'")
+
+  renderHeader: ->
+    <header>
+      { @renderOwnerHeader() }
+      { @renderDateAndTitle() }
+    </header>
 
   renderTitle: ->
     return unless @cursor.post.get('title', false)
 
     <div className="title" dangerouslySetInnerHTML={ __html: @cursor.post.get('title') } />
-
 
   renderDateAndTitle: ->
     <section className="title">
@@ -109,42 +135,40 @@ module.exports = React.createClass
       { @renderTitle() }
     </section>
 
-
   renderBlock: (block) ->
     switch block.get('identity_type')
-
       when 'Paragraph'
         paragraph = ParagraphStore.findByOwner(type: 'Block', id: block.get('uuid'))
         <Blocks.Paragraph key={ block.get('uuid') } item={ paragraph } />
-
 
       when 'Picture'
         picture = PictureStore.findByOwner(type: 'Block', id: block.get('uuid'))
         <Blocks.Picture key={ block.get('uuid') } item={ picture } />
 
-
       when 'Person'
-        people = PersonStore.filterForBlock(block.get('uuid'))
-        <Blocks.People key={ block.get('uuid') } items={ people } />
-
+        peopleIds = PersonStore.filterForBlock(block.get('uuid')).map((person) -> person.get('uuid')).toSeq()
+        <Blocks.People key={ block.get('uuid') } ids={ peopleIds } />
 
       when 'Quote'
         quote = QuoteStore.findByOwner(type: 'Block', id: block.get('uuid'))
         <Blocks.Quote key={ block.get('uuid') } item={ quote } />
 
-
       else
         null
 
-
   renderBlocks: ->
-    @gatherBlocks().map(@renderBlock)
+    return null unless @props.withContent
+
+    @gatherBlocks().map(@renderBlock).toArray()
 
 
   render: ->
     return null unless @isLoaded()
 
-    <article className="pinnable post-preview link" onClick={ @handleClick }>
-      { @renderDateAndTitle() }
-      { @renderBlocks().toArray() }
+    <article className="pinnable post-preview link">
+      <a className="for-group" href={ @cursor.post.get('url') } >
+        { @renderHeader() }
+        { @renderControls() }
+        { @renderBlocks() }
+      </a>
     </article>

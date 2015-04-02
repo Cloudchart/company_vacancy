@@ -13,6 +13,9 @@ PinboardStore   = require('stores/pinboard_store')
 PinboardComponent  = require('components/pinboards/pinboard')
 
 
+NodeRepositioner = require('utils/node_repositioner')
+
+
 # Exports
 #
 module.exports = React.createClass
@@ -20,15 +23,13 @@ module.exports = React.createClass
 
   displayName: 'Pinboards'
 
-
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
-
+  mixins: [GlobalState.mixin, GlobalState.query.mixin, NodeRepositioner.mixin]
 
   statics:
 
     queries:
 
-      pinboards: ->
+      viewer_pinboards: ->
         """
           Viewer {
             pinboards {
@@ -41,35 +42,34 @@ module.exports = React.createClass
           }
         """
 
+      user_pinboards: ->
+        """
+          User {
+            pinboards {
+              #{PinboardComponent.getQuery('pinboard')}
+            }
+          }
+        """
+
+  propTypes:
+    uuid: React.PropTypes.string
+
+  getDefaultProps: ->
+    uuid: null
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pinboards')).then =>
+    if @props.uuid
+      promise = GlobalState.fetch(@getQuery('user_pinboards'), id: @props.uuid)
+    else
+      promise = GlobalState.fetch(@getQuery('viewer_pinboards'))
+
+    promise.then =>
       @setState
         loaders: @state.loaders.set('pinboards', true)
 
 
   isLoaded: ->
-    @state.loaders.get('pinboards') == true
-
-
-  repositionNodes: ->
-    return unless parentNode = @getDOMNode()
-
-    Immutable.Seq(parentNode.childNodes)
-      .groupBy (node) ->
-        node.getBoundingClientRect().left
-
-      .forEach (nodes) ->
-        nodes.forEach (node, i) ->
-          return if i == 0
-
-          bounds          = node.getBoundingClientRect()
-          prevNode        = nodes.get(i - 1)
-          prevNodeBounds  = prevNode.getBoundingClientRect()
-
-          delta           = bounds.top - prevNodeBounds.bottom
-
-          node.style.top  = '-' + delta + 'px' unless delta == 0
+    @state.loaders.get('pinboards')
 
 
   gatherPinboards: ->
@@ -83,14 +83,6 @@ module.exports = React.createClass
       pinboards: PinboardStore.cursor.items
 
     @fetch() unless @isLoaded()
-
-
-  componentDidMount: ->
-    @repositionNodes()
-
-
-  componentDidUpdate: ->
-    @repositionNodes()
 
 
   getInitialState: ->
@@ -110,6 +102,6 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <section className="cloud-columns cloud-columns-flex">
+    <section className="pinboards cloud-columns cloud-columns-flex">
       { @renderPinboards().toArray() }
     </section>

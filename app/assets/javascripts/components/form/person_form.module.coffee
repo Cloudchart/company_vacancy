@@ -23,6 +23,7 @@ Fieldset = ->
   (tag.fieldset {
   },
     Field.apply(@,  ['email',          'fa-envelope-o',    'user@example.com'])
+    Field.apply(@,  ['twitter',        'fa-twitter',       '@handle'])
     Field.apply(@,  ['occupation',     'fa-institution',   'Occupation'])
     #Field.apply(@,  ['phone',          'fa-mobile',        'Mobile phone'])
     #Field.apply(@,  ['int_phone',      'fa-phone',         'Office phone'])
@@ -88,14 +89,14 @@ Component = React.createClass
     date = Date.parse(@state.attributes.get(name))
     if moment(date).isValid()
       @setState({ attributes: @state.attributes.set(name, moment(date).format('ll')) })
-  
-  
+
+
   onAvatarChange: (file) ->
     @setState
       attributes: @state.attributes.withMutations (attributes) ->
         attributes.remove('remove_avatar').set('avatar', file).set('avatar_url', URL.createObjectURL(file))
-  
-  
+
+
   onAvatarRemove: ->
     @setState
       attributes: @state.attributes.withMutations (attributes) ->
@@ -105,13 +106,13 @@ Component = React.createClass
   onFieldChange: (name, value) ->
     value = event.target.value
     @setState({ attributes: @state.attributes.set(name, value) })
-  
+
   # need to put it into separate controller later
   onSubmit: (event) ->
     event.preventDefault()
 
     person = PersonStore.get(@props.uuid)
-    
+
     if person.uuid
       PersonActions.update(@props.uuid, @state.attributes.toJSON())
     else
@@ -129,8 +130,8 @@ Component = React.createClass
       attributes[name] = now.format('ll') if now.isValid()
 
     attributes: Immutable.fromJS(attributes)
-  
-  
+
+
   componentWillReceiveProps: (nextProps) ->
     @setState(@getAttributes(nextProps))
 
@@ -146,16 +147,16 @@ Component = React.createClass
       onSubmit:   @onSubmit
       className:  'person-2'
     },
-      
+
       # Header
       #
       Header.apply(@)
-      
-      # 
+
+      #
       #
       (tag.section {
       },
-      
+
         # Avatar
         #
         #(tag.aside {
@@ -167,13 +168,13 @@ Component = React.createClass
           onRemove:   @onAvatarRemove
           value:      @state.attributes.get('full_name')
         })
-        
+
         # Fields
         #
         Fieldset.apply(@)
-      
+
       )
-      
+
       # Footer
       #
       (tag.footer {
@@ -182,7 +183,7 @@ Component = React.createClass
         # Spacer
         #
         (tag.div { className: 'spacer' })
-      
+
         # Submit
         #
         (tag.button {
@@ -194,7 +195,7 @@ Component = React.createClass
           (tag.i { className: 'fa fa-check' })
         )
       )
-      
+
     )
 
 

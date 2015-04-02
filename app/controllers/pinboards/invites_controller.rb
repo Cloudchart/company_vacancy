@@ -27,7 +27,7 @@ module Pinboards
           format.json { render json: :ok }
         end
 
-        email = CloudProfile::Email.find_by(address: token.data[:email]) || token.data[:email]
+        email = Email.find_by(address: token.data[:email]) || token.data[:email]
         UserMailer.pinboard_invite(email, token).deliver
       else
         respond_to do |format|

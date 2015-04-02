@@ -12,6 +12,7 @@ ParagraphStore      = require('stores/paragraph_store')
 PictureStore        = require('stores/picture_store')
 PersonStore         = require('stores/person')
 PostsStoryStore     = require('stores/posts_story_store')
+PinStore            = require('stores/pin_store')
 UserStore           = require('stores/user_store.cursor')
 VisibilityStore     = require('stores/visibility_store')
 
@@ -20,7 +21,6 @@ QuoteStore          = require('stores/quote_store')
 PostActions         = require('actions/post_actions')
 
 Post                = require('components/post')
-Tags                = require('components/company/tags')
 ContentEditableArea = require('components/form/contenteditable_area')
 PersonAvatar        = require('components/shared/person_avatar')
 Avatar              = require('components/avatar')
@@ -47,6 +47,7 @@ Component = React.createClass
 
   getDefaultProps: ->
     cursor:
+      pins:   PinStore.cursor.items
       quotes: QuoteStore.cursor.items
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
     onStoryClick: ->
@@ -80,6 +81,10 @@ Component = React.createClass
       when 'Person' then @getBlockPerson(block)
       when 'Quote' then @getQuote(block)
 
+  getStoryView: (story) ->
+    storyContent = '#' + story.get('formatted_name')
+
+    if story.get('company_id') then storyContent else <strong>{ storyContent }</strong>
 
   postStoryMapper: (story, key) ->
     onStoryClick = (event) => 
@@ -90,9 +95,8 @@ Component = React.createClass
     isCurrent = story.get('uuid') == @props.story_id
 
     <li key={key} className={ cx(current: isCurrent) } onClick={ onStoryClick }>
-      { '#' + story.get('formatted_name') }
+      { @getStoryView(story) }
     </li>
-
 
   getParagraph: (block) ->
     paragraph = ParagraphStore.find (paragraph) -> paragraph.owner_id is block.uuid
@@ -106,7 +110,6 @@ Component = React.createClass
 
     <div className={classes} dangerouslySetInnerHTML={__html: content}></div>
 
-
   getPicture: (block) ->
     picture = PictureStore.find (picture) -> picture.owner_id is block.uuid
     return null unless picture
@@ -117,10 +120,17 @@ Component = React.createClass
     person_id = block.identity_ids.toJS()[0]
     return null unless person_id
 
-    @getPerson(person_id)
+    <div className="person-list">
+      <div className="row">
+        <div className="item">
+          { @getPerson(person_id) }
+        </div>
+      </div>
+    </div>
 
   getPerson: (person_id) ->
     return null unless person_id
+
     person = PersonStore.get(person_id)
 
     <div className="person">
@@ -136,14 +146,17 @@ Component = React.createClass
       </footer>
     </div>
 
+
   getQuote: (block) ->
     quote = QuoteStore.findByBlock(block.get("uuid"))
     return null unless quote
 
     <div className="quote">
-      { @getPerson(quote.get("person_id")) }
-      
-      <div dangerouslySetInnerHTML={__html: quote.get("text")}></div>
+      <div className="quote-wrapper">
+        { @getPerson(quote.get("person_id")) }
+        
+        <div className="quote-text" dangerouslySetInnerHTML={__html: quote.get("text")}></div>
+      </div>
     </div>
 
   isEpochType: ->
@@ -156,22 +169,21 @@ Component = React.createClass
     return true unless @props.story_id
     @getStoryIds().contains @props.story_id
 
+  isQuote: ->
+    @state.blocks.length == 1 && @state.blocks[0].identity_type == "Quote"
+
   getStoryIds: ->
     PostsStoryStore.cursor.items.deref(Immutable.Map())
       .valueSeq()
       .filter (posts_story) => posts_story.get('post_id') is @state.post.uuid
       .map (posts_story) -> posts_story.get('story_id')
 
+  getInsightsNumber: ->
+    PinStore.filterInsightsForPost(@props.uuid).size
+
 
   # Handlers
   #
-  handleEditClick: (event) ->
-    event.preventDefault()
-
-    scrollTop = document.body.scrollTop
-    window.location.hash = @props.uuid
-    document.body.scrollTop = scrollTop
-
   handleLinkStoryClick: (event) ->
     if @isRelatedToStory()
       id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id).get('uuid')
@@ -192,7 +204,6 @@ Component = React.createClass
     PersonStore.on('change', @refreshStateFromStores)
     PictureStore.on('change', @refreshStateFromStores)
     ParagraphStore.on('change', @refreshStateFromStores)
-    VisibilityStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -202,16 +213,30 @@ Component = React.createClass
     PersonStore.off('change', @refreshStateFromStores)
     PictureStore.off('change', @refreshStateFromStores)
     ParagraphStore.off('change', @refreshStateFromStores)
-    VisibilityStore.off('change', @refreshStateFromStores)
 
 
   # Renderers
   #
-  renderInsights: ->
-    <InsightListComponent pinnable_id={ @props.uuid } pinnable_type="Post" />
+  renderPostLink: (insightsNumber) ->
+    return null unless insightsNumber > 0
 
+    <a className = "orgpad-button show-pins"
+       href      = { @state.post.post_url + "#expanded" }>
+      { "Show All #{@getInsightsNumber()}" }
+    </a>
+
+  renderInsights: ->
+    return null if @isEpochType() || (@getInsightsNumber() == 0)
+    limit = 3
+
+    <section className="post-pins">
+      <InsightListComponent pinnable_id={ @props.uuid } pinnable_type="Post" isCarousel={true} limit={ limit } />
+      { @renderPostLink(@getInsightsNumber() - limit) }
+    </section>
 
   renderPinPostItem: ->
+    return null if @isEpochType()
+
     <PinButton pinnable_type='Post' pinnable_id={ @state.post.uuid } title={ @state.post.title } />
 
 
@@ -266,10 +291,10 @@ Component = React.createClass
       <h1>{formatted_date}</h1>
 
     date = if @state.post.title
-      <span className="date">{formatted_date}</span>
+      <h2>{formatted_date}</h2>
     else null
 
-    <header>
+    <header key="header">
       {title}
       {date}
     </header>
@@ -279,16 +304,24 @@ Component = React.createClass
 
     stories = GlobalState.cursor(['stores', 'stories', 'items']).deref(Immutable.Map())
       .filter (item, key) -> story_ids.contains(key)
-      .sortBy (item, key) -> item.get('name')
+      .sortBy (item, key) -> +!!item.get('company_id') + item.get('name')
       .map    @postStoryMapper
 
     return null if stories.count() == 0
 
     <div className="cc-hashtag-list">
       <ul>
-        {stories.toArray()}
+        { stories.toArray() }
       </ul>
     </div>
+
+  renderPost: ->
+    unless @isQuote()
+      [@renderHeader(),
+      @renderContent()]
+    else
+      [@renderContent(),
+      @renderHeader()]
 
   renderContent: ->
     first_block = @state.blocks[0]
@@ -302,7 +335,7 @@ Component = React.createClass
     else
       null
 
-    <div className="content">
+    <div className="content" key="content">
       { first_content_item }
       { second_content_item }
     </div>
@@ -318,23 +351,22 @@ Component = React.createClass
     article_classes = cx
       'preview': true
       'post': true
+      'quote': @isQuote()
       'epoch': @isEpochType()
       'only-me': @isOnlyMeVisibility()
       'dimmed': not @isRelatedToStory()
 
-    <article className={article_classes}>
-      { @renderControls() }
+    <section className="post-preview-container">
+      <article id={@props.uuid} className={article_classes}>
+        { @renderControls() }
+        <a href={@state.post.post_url} className="for-group">
+          { @renderOnlyMeOverlay() }
+          { @renderPost() }
+          { @renderFooter() }
+        </a>
+      </article>
       { @renderInsights() }
-
-      { @renderOnlyMeOverlay() }
-
-      <a href="" onClick={@handleEditClick}>
-        { @renderHeader() }
-        { @renderContent() }
-        { @renderFooter() }
-      </a>
-
-    </article>
+    </section>
 
 
 # Exports

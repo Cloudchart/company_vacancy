@@ -1,3 +1,4 @@
+# deprecated
 class SubscriptionsWorker < ApplicationWorker
 
   def perform(user_id, action, trackable_id, trackable_type, source_id, source_type, group_type)

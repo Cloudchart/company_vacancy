@@ -1,0 +1,59 @@
+.post-preview.pinnable > a {
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > .round-buttons {
+    @include position(absolute, 0px 0px 0 0);
+  }
+
+  > section {
+    margin-top: $card-basic-space;
+  }
+
+  > section.picture {
+    img {
+      display: block;
+      margin: 0;
+    }
+  }
+
+  > section.people {
+    @include display(flex);
+    @include flex-wrap(wrap);
+    @include justify-content(center);
+
+    margin-top: $card-basic-space / 2;
+
+    .human {
+      @extend .cloud-card-human.block;
+
+      margin: $card-basic-space / 2;
+      margin-bottom: 0;
+      width: 30%;
+    }
+  }
+
+  > section.post-quote {
+
+    .quote {
+      font-style: italic;
+    }
+
+    .human {
+      @extend .cloud-card-human.block;
+
+      margin-top: 10px;
+    }
+  }
+}
+
+.post-preview.pinnable {
+  position: relative;
+
+  + .insight,
+  + footer {
+    margin-top: $card-basic-space;
+  }
+}

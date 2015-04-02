@@ -6,6 +6,7 @@ CloudApi::Engine.routes.draw do
 
   get :me, controller: :users, action: :me
 
+  get '/users/:id', controller: :users, action: :show
 
   get :unicorns, controller: :users, action: :unicorns
 

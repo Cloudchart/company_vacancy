@@ -3,7 +3,7 @@ class PostsController < ApplicationController
   before_action :set_company, only: [:index, :create]
   before_action :set_post, only: [:show, :update, :destroy]
 
-  load_and_authorize_resource except: :create
+  load_and_authorize_resource except: [:create]
 
   after_action :create_intercom_event, only: :create
 
@@ -37,16 +37,22 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = @company.posts.build(post_params)
-    authorize! :create, @post
-
-    if @post.save
+    if blank_post = @company.posts.select { |post| post.created_at == post.updated_at }.first
       respond_to do |format|
-        format.json { render json: @post }
+        format.json { render json: blank_post }
       end
     else
-      respond_to do |format|
-        format.json { render json: :fail, status: 422 }
+      @post = @company.posts.build(post_params)
+      authorize! :create, @post
+
+      if @post.save
+        respond_to do |format|
+          format.json { render json: @post }
+        end
+      else
+        respond_to do |format|
+          format.json { render json: :fail, status: 422 }
+        end
       end
     end
   end
@@ -74,7 +80,7 @@ class PostsController < ApplicationController
 private
 
   def post_params
-    params.require(:post).permit(:title, :effective_from, :effective_till, :position, :tag_names)
+    params.require(:post).permit(:title, :effective_from, :effective_till, :position)
   end
 
   def set_post
@@ -86,7 +92,7 @@ private
   end
 
   def create_intercom_event
-    return unless should_perform_sidekiq_worker? && @post.valid?
+    return unless should_perform_sidekiq_worker? && @post.try(:valid?)
 
     IntercomEventsWorker.perform_async('created-post', current_user.id, post_id: @post.id)
   end

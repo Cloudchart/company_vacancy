@@ -4,12 +4,13 @@ module CloudProfile
   class AuthenticationsController < ApplicationController
 
     def new
-      redirect_to main_app.root_path if user_authenticated?
+      redirect_to main_app.root_path and return if user_authenticated?
+      redirect_to main_app.twitter_auth_path
     end
 
     def create
       authentication = Authentication.new(email: params[:email], password: params[:password])
-      
+
       if authentication.valid?
         warden.set_user(authentication.user, scope: :user)
         cookies.signed[:user_id] = { value: authentication.user.id, expires: 2.weeks.from_now }
@@ -23,12 +24,12 @@ module CloudProfile
         end
       end
     end
-    
+
     def destroy
       warden.logout(:user)
       cookies.delete :user_id
       redirect_to main_app.root_path
     end
-    
+
   end
 end

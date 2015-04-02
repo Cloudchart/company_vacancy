@@ -7,6 +7,7 @@ Cloudchart::Application.routes.draw do
   #
   match '/404', to: 'errors#not_found', via: [:get, :post]
   match '/500', to: 'errors#internal_error', via: :all
+  match '/old', to: 'errors#old_browsers', via: [:get], as: :old_browsers
 
   # Engines
   #
@@ -24,10 +25,6 @@ Cloudchart::Application.routes.draw do
   concern :followable do
     post :follow, on: :member
     delete :unfollow, on: :member
-  end
-
-  resources :posts, only: [:fetch] do
-    get :fetch, on: :collection#, controller: :posts, action: :fetch
   end
 
   # Resources
@@ -61,7 +58,6 @@ Cloudchart::Application.routes.draw do
   end
 
   resources :blocks, only: [:update, :destroy] do
-    resources :identities, shallow: true, controller: :block_identities, only: [:index, :create, :destroy]
     resource :picture, type: :block, only: [:create, :update, :destroy]
     resource :paragraph, type: :block, only: [:create, :update, :destroy]
     resource :quote, type: :block, only: [:create, :update]
@@ -105,8 +101,17 @@ Cloudchart::Application.routes.draw do
     end
   end
 
-  resources :pins
+  resources :pins, except: [:index]
   resources :posts_stories, only: [:update, :destroy]
+
+  resources :users, only: [:show, :update], concerns: [:followable] do
+    get :settings, on: :member
+  end
+
+  resources :emails, only: [:create, :destroy] do
+    get :verify, on: :member
+    match :resend_verification, on: :member, via: [:put, :patch]
+  end
 
   resources :quotes, only: [:show]
   resources :visibilities, only: :update
@@ -116,7 +121,18 @@ Cloudchart::Application.routes.draw do
 
   # Custom
   #
+  get '/insights', to: "pins#index"
   get ':id', to: 'pages#show', as: :page
   delete 'logout', to: 'cloud_profile/authentications#destroy', as: 'logout'
+
+  # Twitter OAuth
+  #
+  get '/auth/twitter', as: :twitter_auth
+  get '/auth/twitter/callback', to: 'auth#twitter'
+
+  get '/auth/queue', to: 'auth#edit', as: :queue
+  put '/auth/queue', to: 'auth#update'
+
+  post '/auth/developer/callback', to: 'auth#developer'
 
 end

@@ -7,6 +7,7 @@ PinStore = require('stores/pin_store')
 
 # Components
 #
+Carousel      = require('components/shared/carousel')
 ItemComponent = require('components/insight/item')
 
 
@@ -16,24 +17,42 @@ module.exports = React.createClass
 
   displayName: 'InsightList'
 
+  propTypes:
+    isCarousel: React.PropTypes.bool
+    limit:      React.PropTypes.number
 
+  getDefaultProps: ->
+    isCarousel: false
+    cursor:     PinStore.cursor.items
+    limit:      0
+
+  getInitialState: ->
+    isSlideshowOn: false
+
+
+  # Helpers
+  #
   gatherIds: ->
     PinStore
       .filterInsightsForPost(@props.pinnable_id)
-
       .sortBy (item) => item.get('created_at')
-
       .keySeq()
-
       .reverse()
 
 
-  getDefaultProps: ->
-    cursor: PinStore.cursor.items
-
-
+  # Renderers
+  #
   renderItems: (ids) ->
-    ids.map (id) -> <ItemComponent key={ id } uuid={ id } cursor={ ItemComponent.getCursor(id) } />
+    ids = ids.take(@props.limit) if @props.limit > 0
+
+    ids.map (id) => 
+      item = <ItemComponent key={ id } uuid={ id } cursor={ ItemComponent.getCursor(id) } />
+
+      unless @props.isCarousel
+        item = <li key={ id }>{ item }</li>
+
+      item
+    .toArray()
 
 
   render: ->
@@ -41,6 +60,12 @@ module.exports = React.createClass
 
     return null if ids.size == 0
 
-    <ul className="insight-list">
-      { @renderItems(ids).toArray() }
-    </ul>
+    if @props.isCarousel
+      <Carousel className = "insight-list">
+        { @renderItems(ids) }
+      </Carousel>
+    else
+      <ul className="insight-list">
+        { @renderItems(ids) }
+      </ul>      
+    

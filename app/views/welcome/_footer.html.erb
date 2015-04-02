@@ -1,9 +1,5 @@
 <ul>
   <li>
-    <%= link_to t('.about_us', default: 'About us'), main_app.company_path(ENV['ABOUT_US_COMPANY_ID']) %>
-  </li>
-
-  <li>
     <%= mail_to ENV['SUPPORT_EMAIL'], t('.support', default: 'Support') %>
   </li>
   

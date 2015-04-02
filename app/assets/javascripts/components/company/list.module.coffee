@@ -1,58 +1,90 @@
 # @cjsx React.DOM
 
-GlobalState = require('global_state/state')
+GlobalState      = require('global_state/state')
 
-CompanyStore   = require('stores/company_store.cursor')
+CompanyStore     = require('stores/company_store.cursor')
 
-CompanyPreview = require('components/company/preview')
+CompanyPreview   = require('components/company/preview')
+
+NodeRepositioner = require('utils/node_repositioner')
 
 
 CompanyList = React.createClass
 
   displayName: 'CompanyList'
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.query.mixin, NodeRepositioner.mixin]
+
+  statics:
+
+    queries:
+
+      companies: ->
+        """
+          User {
+            roles,
+            published_companies {
+              #{CompanyPreview.getQuery('company')}
+            }
+          }
+        """
+
+    isEmpty: (user_id) ->
+      !CompanyStore.filterForUser(user_id).size
 
 
   # Component specifications
   #
+  propTypes:
+    user_id:        React.PropTypes.string
+    ids:            React.PropTypes.instanceOf(Immutable.Seq)
+    isInLegacyMode: React.PropTypes.bool
+    onSyncDone:     React.PropTypes.func
+
   getDefaultProps: ->
-    cursor:
+    isInLegacyMode: false
+    onSyncDone:     ->
+
+
+  # Helpers
+  #
+  isLoaded: ->
+    @cursor.companies.deref(false)
+
+  getCompaniesIds: ->
+    if @props.isInLegacyMode
+      @props.ids
+    else
+      CompanyStore
+        .filterForUser(@props.user_id)
+        .map (company) -> company.get('uuid')
+
+
+  # Lifecycle methods
+  #
+  componentWillMount: ->
+    @cursor =
       companies: CompanyStore.cursor.items
-
-  getInitialState: ->
-    _.extend @getStateFromStores(),
-      stateLoaded: false
-
-  getStateFromStores: ->
-    companies: @props.cursor.companies.deref(Immutable.Seq())
-
-  onGlobalStateChange: ->
-    @setState  _.extend @getStateFromStores(), stateLoaded: true
 
 
   # Renderers
   #
-  renderHeader: ->
-    <header>
-      <h1>{ @state.companies.size } companies</h1>
-    </header>
-
   renderCompanies: ->
-    result = @state.companies.map (company) ->
-      <CompanyPreview 
-        key  = { company.get('uuid') }
-        uuid = { company.get('uuid') } />
+    @getCompaniesIds().map (id, index) =>
+      <section key={index} className="cloud-column">
+        <CompanyPreview 
+          key        = { id }
+          onSyncDone = { @props.onSyncDone }
+          uuid       = { id } />
+      </section>
+    .toArray()
 
 
   render: ->
-    return null if @state.companies.size == 0 && !@state.stateLoaded
+    return null unless (@isLoaded() || @props.isInLegacyMode)
 
-    <section className="companies-list">
-      { @renderHeader() }
-      <div>
-        { @renderCompanies().toArray() }
-      </div>
+    <section className="companies-list cloud-columns cloud-columns-flex">
+      { @renderCompanies() }
     </section>
 
 

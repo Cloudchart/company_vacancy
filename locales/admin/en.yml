@@ -13,3 +13,7 @@ en:
         bulk_link: "Make acceptable"
       make_unicorns:
         bulk_link: "Make unicorns"
+      authorize:
+        menu: "Authorize"
+        breadcrumb: "Authorize"
+        title: "Authorize"

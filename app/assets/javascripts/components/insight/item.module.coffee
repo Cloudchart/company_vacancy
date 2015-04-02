@@ -12,7 +12,7 @@ UserStore   = require('stores/user_store.cursor')
 
 # Components
 #
-Avatar        = require('components/avatar')
+Human         = require('components/human')
 PinButton     = require('components/pinnable/pin_button')
 EditPinButton = require('components/pinnable/edit_pin_button')
 
@@ -42,42 +42,22 @@ module.exports = React.createClass
     pinnable_id:    @props.cursor.pin.get('pinnable_id')
     pinnable_type:  @props.cursor.pin.get('pinnable_type')
 
-
   getStateFromStores: ->
     user: @props.cursor.users.cursor(@props.cursor.pin.get('user_id'))
 
-
   onGlobalStateChange: ->
     @setState @getStateFromStores()
-
 
   getInitialState: ->
     @getStateFromStores()
 
 
-  renderAvatar: ->
-    <aside>
-      <Avatar
-        avatarURL       = { @state.user.get('avatar_url') }
-        backgroundColor = "transparent"
-        value           = { @state.user.get('full_name') }
-      />
-    </aside>
-
-
-  renderUser: ->
-    <section>
-      <p className="name">
-        { @state.user.get('full_name') }
-      </p>
-      <p className="occupation">
-        { @state.user.get('occupation') }
-      </p>
-      <p className="comment">
-        { @props.cursor.pin.get('content') }
-      </p>
+  # Renderers
+  #
+  renderContent: ->
+    <section className="content">
+      { @props.cursor.pin.get('content') }
     </section>
-
 
   renderButtons: ->
     <ul className="round-buttons">
@@ -90,8 +70,8 @@ module.exports = React.createClass
     return null unless @props.cursor.pin.deref()
     return null unless @state.user.deref()
 
-    <li className="insight">
-      { @renderAvatar() }
-      { @renderUser() }
+    <article className="insight">
+      <Human uuid = { @props.cursor.pin.get('user_id') } type="user" />
+      { @renderContent() }
       { @renderButtons() }
-    </li>
+    </article>

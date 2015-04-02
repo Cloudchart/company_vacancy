@@ -1,11 +1,11 @@
-<div class="breadcrumbs">
-  <%= link_to current_user ? cloud_profile.companies_path : main_app.root_path, class: 'back-link' do -%>
+<%- company ||= nil %>
+
+<div class='breadcrumbs'>
+  <%= link_to company.present? ? company_path(company) : main_app.companies_path, class: 'back-link' do -%>
     <i class="fa fa-chevron-left"></i>
   <%- end -%>
 
-  <div class="company-name" data-react-class="components/company/name" data-react-props="<%= { key: @company.uuid, value: decorate(@company).name }.to_json %>">
-    <span>
-      <%= decorate(@company).name %>
-    </span>
+  <div class="company-name" data-react-class="components/company/name" data-react-props="<%= { key: @company.uuid, value: decorate(@company).name, url: company_path(@company) }.to_json %>">
+    <%= link_to_unless_current decorate(@company).name, company_path(@company) %>
   </div>
 </div>

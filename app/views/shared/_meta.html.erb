@@ -1,7 +1,7 @@
+<%= display_meta_tags site: 'CloudChart', separator: '—', reverse: true %>
 <%= csrf_meta_tags %>
-<meta name="viewport" content="width=1200">
-<meta name="google-site-verification" content="BiiA-L9LRx9R-zVP5mRMM_Hhf6C-fI6s_h_qcEJV_jo" />
-<meta property="fb:app_id" content="<%= ENV['FACEBOOK_KEY'] %>" />
 <meta property="og:site_name" content="CloudChart"/>
-<meta name="user-id" content="<%= current_user.try :uuid %>" />
-<%= yield(:meta) %>
+<meta property="fb:app_id" content="<%= ENV['FACEBOOK_KEY'] %>" />
+<meta name="viewport" content="width=1200">
+<meta name="user-id" content="<%= current_user.try(:id) %>" />
+<meta name="google-site-verification" content="BiiA-L9LRx9R-zVP5mRMM_Hhf6C-fI6s_h_qcEJV_jo" />

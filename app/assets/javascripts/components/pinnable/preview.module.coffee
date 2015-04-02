@@ -20,7 +20,9 @@ module.exports = React.createClass
 
 
   render: ->
-    pin       = PinStore.cursor.items.get(@props.uuid)
-    component = PinnableComponents[pin.get('pinnable_type')]
+    pin         = PinStore.cursor.items.get(@props.uuid)
+    insight     = PinStore.getParentFor(@props.uuid)
+    component   = PinnableComponents[pin.get('pinnable_type')]
+    hasInsight  = !!pin.get('content') || !!insight
 
-    component({ uuid: pin.get('pinnable_id'), pin: pin })
+    component({ uuid: pin.get('pinnable_id'), withContent: !hasInsight })

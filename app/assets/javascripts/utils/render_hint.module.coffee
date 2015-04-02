@@ -26,9 +26,6 @@ Hints =
           <li>Funding: company value, series A/B/C etc investment rounds, etc.</li>
         </ul>
       </div>
-  
-  tags:
-    text: "Use general hashtags like #automotive, #hire, #marketing, and company-specific hashtags like #macbook. Usually 3-5 hashtags are enough."
 
 module.exports = (hintKey) ->
   hint = Hints[hintKey]

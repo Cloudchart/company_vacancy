@@ -6,6 +6,8 @@
   
   > .row {
     width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 
     @include display(flex);
     @include justify-content(center);
@@ -69,7 +71,7 @@
   }
 } 
 
-.editor-field-wrapper:hover .person-list:not(.frozen),
+.editor.wrapper:hover .person-list:not(.frozen),
 .person-list.hovered {
   > .row:last-child {
     > .item:not(.placeholder) {

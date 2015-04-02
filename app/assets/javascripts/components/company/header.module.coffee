@@ -85,7 +85,7 @@ Component = React.createClass
     <a href="" className="share-link" onClick={@handleShareClick}>
       {
         if !@state.shareLoading
-          <i className="fa fa-share"></i>
+          <i className="fa fa-send-o"></i>
         else
           <i className="fa fa-spinner fa-spin"></i>
       }

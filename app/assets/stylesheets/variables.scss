@@ -2,7 +2,7 @@ $base-font-size: 22pt;
 $base-unit: $base-font-size * .7;
 $base-font-family: 'proxima-nova';
 
-$min-page-width: 1024px;
+$min-page-width: 700px;
 
 // Colors
 $platinum: hsl(0, 0%, 89%);
@@ -41,11 +41,6 @@ $footer-link-color: hsl(0, 0%, 47%);
 $footer-font-size: 14pt;
 $footer-font-weight: normal;
 
-// Links
-a {
-  color: $north-texas-green;
-}
-
 // Buttons
 
 $grey-button-back-color: $athens-grey;
@@ -69,3 +64,64 @@ $zindex-modal: 900;
 $zindex-dropdown: 700;
 $zindex-draggable: 600;
 
+// new design variables
+
+$gutter-size: 24px;
+$default-header-height: 75px;
+$default-footer-height: 75px;
+$default-margin-size: 20px;
+$inner-margin-size: 10px;
+
+
+$green-color:          hsl(141, 91%, 32%);
+$accented-green-color: hsl(137, 54%, 50%);
+$accented-red-color:   hsl(351, 80%, 49%);
+$white-color:          hsl(0, 0%, 98%);
+$accented-white-color: hsl(0, 0%, 100%);
+$primary-grey-color:   hsl(0, 0%, 53%);
+$auxilary-grey-color:  hsl(0, 0%, 73%);
+$disabled-grey-color:  hsl(0, 0%, 93%);
+$black-color:          hsl(0, 0%, 0%);
+
+$background-color:     $white-color;
+$border-color:         $disabled-grey-color;
+$special-link-color:   $primary-grey-color;
+$secondary-text-color: $primary-grey-color;
+$special-input-color:  $primary-grey-color;
+$card-color:           $accented-white-color;
+$link-color:           $accented-green-color;
+$secondary-link-color: $green-color;
+$disabled-color:       $disabled-grey-color;
+$label-color:          $accented-green-color;
+$label-text-color:     $white-color;
+
+$thin-weight:          300;
+$normal-weight:        400;
+$bold-weight:          600;
+$bolder-weight:        700;
+
+$micro-font-size:    5px;
+$tiny-font-size:     7px;
+$little-font-size:   10px;
+$small-font-size:    12px;
+$basic-font-size:    16px;
+$big-font-size:      20px;
+$large-font-size:    24px;
+$huge-font-size:     36px;
+$great-font-size:    54px;
+$giant-font-size:    81px;
+
+strong {
+  font-weight: $bold-weight;
+}
+
+a {
+  color: $link-color;
+  text-decoration: none;
+
+  &.for-group {
+    color: inherit;
+    display: block;
+    outline: 0;
+  }
+}

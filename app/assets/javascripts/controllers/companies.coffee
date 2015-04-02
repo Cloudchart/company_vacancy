@@ -45,10 +45,9 @@ Dispatcher = require('dispatcher/dispatcher')
   #
   require('sync/post_sync_api').fetchAll(data.id).done (json) ->
 
-    GlobalState.cursor().transaction ->
-      Dispatcher.handleServerAction
-        type: 'post:fetch-all:done'
-        data: [json]
+    Dispatcher.handleServerAction
+      type: 'post:fetch-all:done'
+      data: [json]
 
     _.each {
       posts: PostStore
@@ -128,29 +127,3 @@ Dispatcher = require('dispatcher/dispatcher')
     CompanyAccessRights({ uuid: data.id }),
     document.querySelector('[data-react-mount-point="access-rights"]')
   )
-
-# # Search
-# #
-# @['companies#search'] = (data) ->
-#   @['companies#index'](data)
-
-# # Index
-# #
-# @['companies#index'] = (data) ->
-
-#   # $ ->
-#   #   # comanies search
-#   #   #
-#   #   $('header').on 'input propertychange', '.search input', ->
-#   #     perform_search($(@))
-
-#   #   search_timeout = null
-
-#   #   search = ($element) ->
-#   #     value = $element.val().replace(/^\s+|\s+$/g, '')
-#   #     return if value.length < 3 and value.length > 0
-#   #     $element.closest('form').submit()
-
-#   #   perform_search = ($element) ->
-#   #     clearTimeout(search_timeout)
-#   #     search_timeout = setTimeout((-> search($element)), 700)

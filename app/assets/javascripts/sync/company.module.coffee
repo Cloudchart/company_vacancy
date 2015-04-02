@@ -24,13 +24,11 @@ module.exports =
 
   # TODO: move to cloud_profile
   fetchAll: (done, fail) ->
-    $.ajax
+    Promise.resolve $.ajax
       url:        "/profile/companies"
       type:       "GET"
       dataType:   "json"
       cache:      false
-    .done done
-    .fail fail
   
 
   update: (key, data, done, fail) ->
@@ -86,13 +84,12 @@ module.exports =
     .fail fail
 
 
-  acceptInvite: (key, token_key, done, fail) ->
-    $.ajax
+  acceptInvite: (key, token_key) ->
+    Promise.resolve $.ajax
       url:        "/companies/#{key}/invites/#{token_key}/accept"
       type:       "POST"
       dataType:   "json"
-    .done done
-    .fail fail
+      cache:      false
 
 
   follow: (key, done, fail) ->

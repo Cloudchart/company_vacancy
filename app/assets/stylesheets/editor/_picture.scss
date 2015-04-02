@@ -1,4 +1,6 @@
-article.editor > section.picture {
+.editor > .picture,
+.post.preview .picture  {
+  width: 100%;
   
   .placeholder {
     background-color: $editor-placeholder-background-color;
@@ -61,4 +63,8 @@ article.editor > section.picture {
     width: 0;
   }
   
+}
+
+.post.preview .cover {
+  width: 100%;
 }

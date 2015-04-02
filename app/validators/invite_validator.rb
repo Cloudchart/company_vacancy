@@ -15,7 +15,7 @@ private
   def user_already_exists?(record)
     owner_relation_name = record.owner_type.tableize.to_sym
 
-    email = CloudProfile::Email.includes(user: owner_relation_name).find_by(address: record.data[:email])
+    email = Email.includes(user: owner_relation_name).find_by(address: record.data[:email])
     ids = email.try(:user).try(owner_relation_name).try(:map, &:id) || []
         
     ids.include?(record.owner_id)

@@ -10,7 +10,7 @@ CursorFactory = (data, callback) ->
 
   # Transaction State
   #
-  TransactionState = false
+  TransactionsCount = 0
 
   # Empty Sequence
   #
@@ -28,16 +28,21 @@ CursorFactory = (data, callback) ->
     CursorCache.get(pathAsString)
 
 
+  updateTimer = null
+
   # Update immutable data
   #
   update = (action, path, value) ->
+
     CurrData = switch action
       when 'set'
         CurrData.updateIn(path, -> Immutable.fromJS(value))
       when 'unset'
         CurrData.removeIn(path)
 
-    callback(CurrData) unless TransactionState
+    clearTimeout updateTimer
+    updateTime = setTimeout -> callback(CurrData)
+
 
 
 
@@ -77,21 +82,6 @@ CursorFactory = (data, callback) ->
         @seq = value[@type].call(value, @predicate).toSeq()
       else
         notSetValue
-
-
-    transaction: (callback) ->
-      if callback instanceof Function
-        do =>
-          @transaction()
-          callback()
-          @commit()
-      else
-        TransactionState = true
-
-
-    commit: ->
-      TransactionState = false
-      callback(CurrData)
 
 
     count: ->

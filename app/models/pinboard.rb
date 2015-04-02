@@ -1,5 +1,7 @@
 class Pinboard < ActiveRecord::Base
   include Uuidable
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
 
   ACCESS_RIGHTS = [:public, :protected, :private].freeze
   INVITABLE_ROLES = [:editor, :reader, :follower].freeze
@@ -21,6 +23,32 @@ class Pinboard < ActiveRecord::Base
     has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, as: :owner, class_name: Role
     has_many :"#{scope}", through: :"#{scope}_pinboards_roles", source: :user
   end
+
+  settings ElasticSearchNGramSettings do
+    mapping do
+      indexes :title, type: 'string', analyzer: 'ngram_analyzer'
+      indexes :description, type: 'string', analyzer: 'ngram_analyzer'
+    end
+  end
+
+  class << self
+    def search(params)
+      # TODO: get rid of load option (store everything in elascitsearch)
+      tire.search(load: true) do
+        if params[:query].present?
+          query do
+            boolean do
+              should { string Cloudchart::Utils.tokenized_query_string(params[:query], [:title, :description]) }
+            end
+          end
+        end
+
+        sort { by :title } if params[:query].blank?
+        size 50
+      end
+    end
+    
+  end # of class methods
 
   sifter :system do
     access_rights.eq('public') & user_id.eq(nil)

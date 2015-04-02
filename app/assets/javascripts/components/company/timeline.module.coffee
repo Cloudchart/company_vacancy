@@ -3,6 +3,7 @@
 # Imports
 # 
 tag = React.DOM
+cx  = React.addons.classSet
 
 CloudFlux = require('cloud_flux')
 GlobalState = require('global_state/state')
@@ -11,19 +12,23 @@ PostStore = require('stores/post_store')
 PinStore  = require('stores/pin_store')
 StoryStore = require('stores/story_store')
 PostsStoryStore = require('stores/posts_story_store')
+VisibilityStore = require('stores/visibility_store')
 
 PostActions = require('actions/post_actions')
-ModalActions = require('actions/modal_actions')
 
 PostPreview = require('components/company/timeline/post_preview')
 Post = require('components/post')
 
-UUID = require('utils/uuid')
 
 # Utils
 #
-postVisibilityPredicate = (post) ->
-  post.uuid and post.created_at != post.updated_at
+postVisibilityPredicate = (component) ->
+  (post) ->
+    if component.props.readOnly
+      VisibilityStore.find((item) -> item.owner_id is post.uuid) and
+      post.uuid and post.created_at != post.updated_at
+    else
+      post.uuid and post.created_at != post.updated_at
 
 
 # Main
@@ -48,8 +53,9 @@ Component = React.createClass
     readOnly: true
 
   getInitialState: ->
-    state               = @getStateFromStores(@props)
-    state.new_post_key  = null
+    state                = @getStateFromStores(@props)
+    state.new_post_key   = null
+    state.anchorScrolled = false
     state
 
   refreshStateFromStores: ->
@@ -62,64 +68,30 @@ Component = React.createClass
 
   # Helpers
   #
-  getCreatePostButton: (type = '') ->
-    return null if @props.readOnly
-      
-    class_for_icon =
-      if PostStore.getSync(@state.new_post_key) == "create"
-        'fa fa-spin fa-spinner'
-      else
-        'cc-icon cc-plus'
-
-    if type == 'placeholder'
-      <div className="placeholder">
-        <figure className={type} onClick={@handleCreatePostClick}>
-          <i className={class_for_icon}></i>
-        </figure>
-      </div>
-    else
-      <figure className="create" onClick={@handleCreatePostClick}>
-        <i className={class_for_icon}></i>
-      </figure>
+  getPosts: ->
+    @state.postSeq
+      .filter postVisibilityPredicate(@)
+      .sortBy (post) -> post.effective_from
+      .map    @renderPost(@props)
+      .reverse()
 
   getCloudFluxActions: ->
     'post:create:done': @handlePostCreateDone
 
-  showPostInModal: (id) ->
-    return unless @state.postSeq.map((post) -> post.uuid).contains(id)
-    
-    setTimeout => 
-      ModalActions.show(
-        <Post id={id} company_id={@props.company_id} cursor={Post.getCursor(@props.company_id)} readOnly={@props.readOnly} />,
-        class_for_container: 'post'
-        beforeHide: ->
-          scrollTop = document.body.scrollTop
-          window.location.hash = ''
-          document.body.scrollTop = scrollTop
-      )
 
   # Handlers
-  # 
+  #
   handleCreatePostClick: (event) ->
     return if PostStore.getSync(@state.new_post_key) == "create"
 
-    if post = _.find(@state.posts, (post) -> post.uuid and post.created_at == post.updated_at)
-      @showPostInModal(post.uuid)
-    else
-      new_post_key = PostStore.create()
-      PostActions.create(new_post_key, { owner_id: @props.company_id, owner_type: 'Company' })
+    new_post_key = PostStore.create()
+    PostActions.create(new_post_key, { owner_id: @props.company_id, owner_type: 'Company' })
 
-      @setState({ new_post_key: new_post_key })
+    @setState({ new_post_key: new_post_key })
 
 
   handlePostCreateDone: (id, attributes, json, sync_token) ->
-    @showPostInModal(json.uuid)
-  
-  
-  handleWindowHashChange: (event) ->
-    postId = window.location.hash.split('#').pop()
-    @showPostInModal(postId) if UUID.isUUID(postId)
-
+    window.location.href = json.post_url
 
 
   # Lifecycle Methods
@@ -131,12 +103,12 @@ Component = React.createClass
 
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
-    window.addEventListener('hashchange', @handleWindowHashChange)
+    # VisibilityStore.on('change', @refreshStateFromStores)
 
-    setTimeout =>
-      @handleWindowHashChange()
-    , 100
-
+  componentDidUpdate: ->
+    if (id = location.hash) && !@state.anchorScrolled && $(id).length > 0
+      $(document).scrollTop(parseInt($(id).offset().top) - 30)
+      @setState(anchorScrolled: true)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
@@ -144,45 +116,57 @@ Component = React.createClass
 
   componentWillUnmount: ->
     PostStore.off('change', @refreshStateFromStores)
-    window.removeEventListener('hashchange', @handleWindowHashChange)
+    # VisibilityStore.off('change', @refreshStateFromStores)
 
 
   # Renderers
   #
-  renderPosts: ->
-    @state.postSeq
-      .filter postVisibilityPredicate
-      .sortBy (post) -> post.effective_from
-      .map    @renderPost(@props)
-      .reverse()
+  renderCreatePostButton: (type = '') ->
+    return null if @props.readOnly
+      
+    iconClasses =
+      if PostStore.getSync(@state.new_post_key) == "create"
+        'fa fa-spin fa-spinner'
+      else
+        'cc-icon cc-plus'
+
+    placeholderClasses = cx({
+      placeholder: true
+      small: type == 'small'
+    })
+ 
+    <div className={placeholderClasses}>
+      <figure onClick={@handleCreatePostClick} >
+        <i className={iconClasses}></i>
+      </figure>
+    </div>
+
 
   renderPost: (props) ->
     (post) =>
       <PostPreview
         key          = { post.uuid }
         uuid         = { post.uuid }
-        company_id   = { props.company_id }
         onStoryClick = { @props.onStoryClick }
         story_id     = { props.story_id }
-        readOnly     = { props.readOnly }
       />
 
 
   render: ->
-    posts = @renderPosts()
+    posts = @getPosts()
     
     return null if posts.count() == 0 and @props.readOnly
     
     posts = posts.map (post, index) =>
       [
         post
-        @getCreatePostButton('placeholder')
+        @renderCreatePostButton('small')
       ]
 
-    <div className="posts">
-      { @getCreatePostButton() }
+    <section className="timeline posts">
+      { @renderCreatePostButton() }
       { posts.toArray() }
-    </div>
+    </section>
 
 # Exports
 # 

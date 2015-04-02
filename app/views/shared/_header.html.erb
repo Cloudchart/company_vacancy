@@ -1,24 +1,29 @@
-<% if content_for(:header_breadcrumbs).present? %>
-  <%= yield :header_breadcrumbs %>
-<% else %>
-  <%= link_to "", main_app.root_path, class: 'logo' %>
-  <div data-header-react-mount-point>
-    <%= link_to main_app.root_path, class: 'title' do %>
-      <%= app_name_for_header %>
-    <% end %>
-  </div>
-<% end %>
+<div class="local-menu">
+  <% if content_for(:header_breadcrumbs).present? %>
+    <%= yield :header_breadcrumbs %>
+  <% else %>
+    <%= link_to "", main_app.root_path, class: 'logo' %>
+    <div data-header-react-mount-point>
+      <%= link_to main_app.root_path, class: 'title' do %>
+        <%= app_name_for_header %>
+      <% end %>
+    </div>
+  <% end %>
 
-<%= yield :header_menu %>
+  <%= yield :header_menu %>
+</div>
 
 <div class="spacer"></div>
 
-<% if content_for(:search).present? %>
-  <div data-react-class="components/company/search" data-react-props="<%= { query: params[:query] }.to_json %>"></div>
-<% elsif can?(:index, Company) %>
-  <div class="browse-companies">
-    <%= link_to 'Browse Companies', main_app.companies_path, class: 'base strong' %>
-  </div>
+<% if user_authenticated? %>
+  <ul class="main-menu">
+    <li>
+      <%= link_to_unless_current 'Companies', main_app.companies_path %>
+    </li>
+    <li>
+      <%= link_to_unless_current 'Insights', main_app.insights_path %>
+    </li>
+  </ul>
 <% end %>
 
 <%= render partial: 'shared/header_authentication' %>

@@ -1,6 +1,7 @@
-article.editor > section.paragraph {
-  font-size: $editor-paragraph-font-size;
-  line-height: $editor-paragraph-line-height;
+.editor > .paragraph,
+.post.preview .paragraph {
+  font-size: $big-font-size;
+  line-height: 1.5;
 
   [contenteditable] {
     cursor: text;

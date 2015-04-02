@@ -1,0 +1,302 @@
+main.post {
+  background-color: $background-color;
+
+  article.post-container {
+    @include display(flex);
+    @include flex-wrap(wrap);
+    @include justify-content(space-between);
+
+    position: relative;
+    margin: 0 auto;
+    padding: $gutter-size/2 $gutter-size;
+    width: 976px + 2 * $gutter-size;
+
+    @include temp-adaptive {
+      width: 100%;
+    }
+
+    > header, > section,
+    > .content {
+      background-color: $card-color;
+      border: 1px solid $border-color;
+      margin: $gutter-size/2 0;
+      padding: $default-margin-size;
+      width: 100%;
+    }
+
+    > header {
+      @include display(flex);
+      @include flex-direction(column);
+
+      position: relative;
+
+      .company-name, label {
+        padding-bottom: $inner-margin-size;
+      }
+
+      .company-name {
+        font-size: $big-font-size;
+        font-weight: $bolder-weight;
+      }
+
+      .title div[contenteditable] {
+        @include editor-contenteditable-area;
+
+        font-size: $huge-font-size;
+        font-weight: 600;
+        max-width: 750px;
+      }
+
+      .title ~ aside {
+        height: 47px;
+      }
+
+      label {
+        position: relative;
+
+        input {
+          border: none;
+          margin: 0;
+          outline: none;
+          padding: 0;
+        }
+
+        &.published-at > * {
+          font-size: $big-font-size;
+          font-weight: $thin-weight;
+          color: $special-link-color;
+        }
+      }
+
+      .stories {
+        max-width: 800px;
+
+        > ul {
+          font-size: $big-font-size;
+          font-weight: $thin-weight;
+        }
+      }
+
+      .stories ~ aside {
+        height: 50px;
+
+        .hint {
+          width: 450px;
+        }
+      }
+
+      > .controls {
+        @include align-items(center);
+        @include display(flex);
+        @include justify-content(center);
+        @include position(absolute, $default-margin-size 5px 0 0);
+
+        z-index: 1;
+        height: 40px;
+
+        > * {
+          margin-right: 15px;
+        }
+
+        > .select {
+          width: 130px;
+        }
+
+        .edit-mode {
+          color: $link-color;
+          font-size: $small-font-size;
+          text-transform: uppercase;
+        }
+
+        .transparent:last-child {
+          width: 20px;
+        }
+
+        .cc-times {
+          color: $link-color;
+          font-size: $huge-font-size;
+          width: 20px;
+        }
+      }
+    }
+
+    .editor.post .editor.wrapper > aside {
+      left: -1 * ($gutter-size + $default-margin-size);
+    }
+
+    .paragraph .editor.wrapper aside {
+      height: 25px;
+    }
+
+    > .post-pin-info {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(space-between);
+
+      > .spacer {
+        @include flex(1);
+      }
+    }
+
+    .post-pinners {
+      @include align-items(center);
+      @include display(flex);
+
+      font-weight: $thin-weight;
+
+      > ul {
+        @include display(flex);
+
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+          margin-right: $inner-margin-size;
+        }
+
+        figure {
+          background-size: cover;
+          background-position: center center;
+          border-radius: 50%;
+          height: 50px;
+          width: 50px;
+
+          > figcaption {
+            @include position(absolute, 50% null null 50%);
+            @include transform(translateX(-50%) translateY(-50%));
+            font-size: $basic-font-size;
+          }
+        }
+
+        .user-preview > .info {
+          @include position(absolute, 50px + $user-preview-arrow-size*0.8 0 0 0);
+
+          background-color: $user-preview-background-color;
+          color: $user-preview-text-color;
+          display: none;
+          font-size: $small-font-size;
+          max-width: 200px;
+          padding: $inner-margin-size;
+          white-space: nowrap; 
+          width: auto;
+
+          &:before {
+            @include position(absolute, 0px 0 0 25px - $user-preview-arrow-size*0.8);
+
+            border-bottom: $user-preview-arrow-size solid $user-preview-background-color;
+            border-right: $user-preview-arrow-size*0.8 solid transparent;
+            border-left: $user-preview-arrow-size*0.8  solid transparent;
+            content: "";
+            height: 0;
+            margin-top: -$user-preview-arrow-size*0.8; 
+            width: 0;
+          }
+        }
+
+        .user-preview {
+          position: relative;
+
+          header {
+            font-weight: 700;
+          }
+
+          &:hover > .info {
+            display: block;
+          }
+        }
+      }
+    }
+
+    .content {
+      @include flex(1);
+
+      @include temp-adaptive {
+        width: 100%;
+      }
+
+      > .post.editor {
+        width: 100%;
+      }
+
+      > footer {
+        @include display(flex);
+        @include justify-content(space-between);
+
+        > button {
+          width: 80px;
+        }
+      }
+    }
+
+    .post-pins {
+      background-color: $background-color;
+      border: none;
+      padding: 0;
+      margin-left: 24px;
+      width: 310px;
+
+      > button {
+        display: block;
+        margin: 0;
+        padding: 0 30px;
+      }
+
+      .insight-list {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      @include temp-adaptive {
+        margin-left: 0;
+        width: 100%;
+
+        .insight-list {
+          @include display(flex);
+          @include flex-wrap(wrap);
+
+          margin: -$default-margin-size/2;
+          margin-bottom: $default-margin-size/2;
+          width: calc(100% + #{$default-margin-size});
+
+          > li {
+            @include flex(0 1 50%);
+
+            padding: $default-margin-size/2;
+
+            ~ li {
+              margin-top: 0;
+            }
+          }
+        }
+      }
+
+      &.expanded {
+        margin-left: 0;
+        width: 100%;
+
+        .insight-list {
+          @include display(flex);
+          @include flex-wrap(wrap);
+
+          margin: -$default-margin-size/2;
+          width: calc(100% + #{$default-margin-size});
+
+          > li {
+            @include flex(0 1 33.333%);
+
+            @include temp-adaptive {
+              @include flex(0 1 50%);
+            }
+
+            padding: $default-margin-size/2;
+
+            ~ li {
+              margin-top: 0;
+            }
+          }
+        } 
+      }     
+    }
+  }
+}

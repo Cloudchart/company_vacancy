@@ -86,6 +86,7 @@ $cc-button-wide-padding: 55px;
   font-size: $cc-button-font-size;
   height: $cc-button-height;
   padding: 0 $cc-button-padding;
+  white-space: nowrap;
   
   > i.fa {
     margin-left: 5px;
@@ -271,12 +272,12 @@ div.button {
 // Round buttons
 //
 
-$round-button-background-color: hsl(0, 0%, 90%);
-$round-button-background-color-active: hsl(135, 50%, 50%);
-$round-button-background-color-disabled: hsla(0, 0%, 90%, .5);
-$round-button-color: hsl(0, 100%, 100%);
-$round-button-spacer-size: 5px;
-$round-button-size: 30px;
+$round-button-background-color: $disabled-grey-color;
+$round-button-background-color-active: $accented-green-color;
+$round-button-background-color-disabled: hsla(0, 0%, 93%, .5);
+$round-button-color: $accented-white-color;
+$round-button-spacer-size: $inner-margin-size;
+$round-button-size: 24px;
 
 ul.round-buttons {
   list-style: none;
@@ -286,29 +287,43 @@ ul.round-buttons {
   > li ~ li {
     margin-left: $round-button-spacer-size;
   }
+}
+
+.round-button,
+.round-buttons > li {
+  background-color: $round-button-background-color;
+  color: $round-button-color;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 100%;
+  width: $round-button-size;
+  height: $round-button-size;
+  text-align: center;
+
+  &.with-counter {
+    border-radius: $round-button-size;
+    min-width: $round-button-size;
+    padding: 0 7px;
+    width: auto;
+  }
+
+  &.active {
+    background-color: $round-button-background-color-active;
+  }
   
-  > li {
-    background-color: $round-button-background-color;
-    color: $round-button-color;
-    cursor: pointer;
-    display: inline-block;
-    border-radius: 50%;
-    height: $round-button-size;
-    text-align: center;
-    width: $round-button-size;
-    
-    &.active {
-      background-color: $round-button-background-color-active;
-    }
-    
-    &.disabled {
-      background-color: $round-button-background-color-disabled;
-      cursor: default;
-    }
-    
-    > i {
-      font-size: 14px;
-      line-height: $round-button-size;
+  &.disabled {
+    background-color: $round-button-background-color-disabled;
+    cursor: default;
+  }
+  
+  > i {
+    font-size: 14px;
+    line-height: $round-button-size;
+
+    + span {
+      font-size: $basic-font-size;
+      font-weight: 700;
+      margin-left: 5px;
     }
   }
 }

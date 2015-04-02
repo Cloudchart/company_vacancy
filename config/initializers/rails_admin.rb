@@ -1,6 +1,6 @@
 RailsAdmin.config do |config|
   # Main config
-  # 
+  #
   config.main_app_name = ['CloudChart', 'Admin']
   config.included_models = Cloudchart::RAILS_ADMIN_INCLUDED_MODELS
 
@@ -13,13 +13,13 @@ RailsAdmin.config do |config|
   config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail >= 3.0.0
 
   # Compamy
-  # 
+  #
   config.model 'Company' do
     visible false
   end
 
   # Feature
-  # 
+  #
   config.model 'Feature' do
     list do
       exclude_fields :uuid
@@ -31,7 +31,7 @@ RailsAdmin.config do |config|
   end
 
   # Interview
-  # 
+  #
   config.model 'Interview' do
     list do
       exclude_fields :uuid, :email, :ref_email, :slug, :whosaid
@@ -52,7 +52,7 @@ RailsAdmin.config do |config|
   end
 
   # Page
-  # 
+  #
   config.model 'Page' do
     field :title
     field :body, :wysihtml5 do
@@ -61,7 +61,7 @@ RailsAdmin.config do |config|
   end
 
   # Person
-  # 
+  #
   config.model 'Person' do
     object_label_method :full_name
 
@@ -79,7 +79,7 @@ RailsAdmin.config do |config|
   end
 
   # Pinboard
-  # 
+  #
   config.model 'Pinboard' do |variable|
     list do
       sort_by :title
@@ -98,14 +98,14 @@ RailsAdmin.config do |config|
   end
 
   # Role
-  # 
+  #
   config.model 'Role' do
     visible false
     object_label_method :value
   end
 
   # Story
-  # 
+  #
   config.model 'Story' do
     list do
       sort_by :posts_stories_count
@@ -128,7 +128,7 @@ RailsAdmin.config do |config|
   end
 
   # Tag
-  # 
+  #
   config.model 'Tag' do
     list do
       sort_by :taggings_count
@@ -162,7 +162,7 @@ RailsAdmin.config do |config|
   end
 
   # Token
-  # 
+  #
   config.model 'Token' do
     label 'Invite'
     label_plural 'Invites'
@@ -192,16 +192,16 @@ RailsAdmin.config do |config|
         column_width 50
       end
     end
-    
+
   end
 
   # User
-  # 
+  #
   config.model 'User' do
     object_label_method :full_name
 
     list do
-      include_fields :first_name, :last_name, :system_roles, :companies, :created_at
+      include_fields :first_name, :last_name, :system_roles, :twitter, :companies, :created_at, :authorized_at
       sort_by :created_at
 
       field :first_name do
@@ -220,7 +220,7 @@ RailsAdmin.config do |config|
     end
 
     edit do
-      include_fields :system_roles
+      include_fields :system_roles, :twitter, :authorized_at
 
       field :system_roles do
         partial :system_roles
@@ -229,13 +229,13 @@ RailsAdmin.config do |config|
   end
 
   # Actions
-  # 
+  #
   config.actions do
     dashboard # mandatory
     index # mandatory
 
     # custom
-    # 
+    #
     member :make_acceptable do
       only ['Tag']
       http_methods { [:put, :patch] }
@@ -278,7 +278,7 @@ RailsAdmin.config do |config|
 
             if full_name.blank? && email.present? || full_name.present? && email.blank?
               redirect_to :back, alert: 'Full name and email must be filled both or left blank'
-            elsif email.present? && CloudProfile::Email.find_by(address: email)
+            elsif email.present? && Email.find_by(address: email)
               redirect_to :back, alert: 'We already have user with this email address in database'
             else
               @object = Token.new(
@@ -292,7 +292,7 @@ RailsAdmin.config do |config|
 
               redirect_to index_path(:token), notice: 'Invite has been created'
             end
-            
+
           end
 
         end
@@ -303,11 +303,11 @@ RailsAdmin.config do |config|
       only ['Token']
       link_icon 'icon-ok'
 
-      register_instance_option :pjax? do 
+      register_instance_option :pjax? do
         false
       end
 
-      register_instance_option :visible? do 
+      register_instance_option :visible? do
         bindings[:object].try(:name) == 'request_invite'
       end
 
@@ -317,14 +317,27 @@ RailsAdmin.config do |config|
             @object.update(name: :invite)
             UserMailer.app_invite(@object).deliver if @object.data.present?
           end
-          
+
           redirect_to index_path(:token), notice: 'Request has been accepted'
         end
       end
     end
 
+    member :authorize do
+      only ['User']
+      link_icon 'icon-ok'
+
+      controller do
+        proc do
+          @object.update(authorized_at: Time.now)
+          # TODO: add mailer
+          redirect_to index_path(:user), notice: 'User has been authorized'
+        end
+      end
+    end
+
     # default
-    # 
+    #
     new do
       except ['User', 'Token', 'Person']
     end
@@ -351,5 +364,5 @@ RailsAdmin.config do |config|
       except ['User', 'Token', 'Person', 'Story', 'Pinboard']
     end
   end
-  
+
 end

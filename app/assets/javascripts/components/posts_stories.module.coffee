@@ -19,7 +19,8 @@ ComboboxOption  = cc.require('plugins/react_tokeninput/option')
 formatName = (name) ->
   name = name.trim()
   name = name.replace(/[^A-Za-z0-9\-_|\s]+/ig, '')
-  name = name.replace(/\s{2,}/g, ' ')
+  name = name.replace(/\s{2,}|_/g, ' ')
+  name = name.toLowerCase()
 
 
 # Main
@@ -54,15 +55,19 @@ MainComponent = React.createClass
         placeholder = {@props.placeholder}
       />
 
+  getStoryView: (story) ->
+    storyContent = '#' + story.get('formatted_name')
+
+    if story.get('company_id') then storyContent else <strong>{ storyContent }</strong>
   
   gatherStoriesForList: ->
     @filterSelectedStories()
-      .sortBy (story) -> story.get('name')
+      .sortBy (story) -> +!!story.get('company_id') + story.get('name')
       .map (story) =>
         # company_story_url = @props.cursor.stories.get(story.get('uuid')).get('company_story_url')
-        
+
         <li key={story.get('uuid')}>
-          <span>{'#' + story.get('formatted_name')}</span>
+          { @getStoryView(story) }
         </li>
         # <a href={company_story_url}>{'#' + story.get('name')}</a>
 
@@ -85,7 +90,7 @@ MainComponent = React.createClass
       .filterNot  (story, key) => @state.storyIdSeq.contains(key)
       .filter     (story, key) => (@state.query.length > 0 && story.get('formatted_name').toLowerCase().indexOf(@state.query.toLowerCase()) == 0) || (@state.query.length == 0 && story.get('company_id') is null)
       .sortBy     (story, key) => story.get('name')
-      .map        (story, key) => <ComboboxOption key={key} value={key}>{'#' + story.get('formatted_name')}</ComboboxOption>
+      .map        (story, key) => <ComboboxOption key={key} value={key}>{ @getStoryView(story) }</ComboboxOption>
 
 
   getStoryIdSeq: ->
@@ -148,7 +153,7 @@ MainComponent = React.createClass
       storyIdSeq: @getStoryIdSeq()
 
   getDefaultProps: ->
-    placeholder: '#Category'
+    placeholder: '#category'
 
     cursor: 
       stories: StoryStore.cursor.items

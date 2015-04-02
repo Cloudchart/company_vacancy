@@ -81,7 +81,7 @@ stringifyQuery = (query) ->
 
 class Query
 
-  constructor: (query) ->
+  constructor: (query, options = {}) ->
     query     = Immutable.fromJS(Parser.parse(query))
     @endpoint = query.keySeq().first()
     @id       = query.getIn([@endpoint, 'id'])

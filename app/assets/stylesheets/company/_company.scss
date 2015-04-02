@@ -1,0 +1,275 @@
+@mixin company-article-header-2_0 {
+  
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+  
+  width: 1024px;
+  margin: 0 auto;
+  padding: $gutter-size 0 $default-margin-size 0;
+  position: relative;
+
+  // Controls
+  // 
+  > .controls {
+    position: absolute;
+    right: 0;
+    top: $gutter-size;
+
+    .view-mode {
+      width: 85px;
+    }
+  }
+  
+  // Logo
+  //
+  $logo-height: 110px;
+  $logo-width: 220px;
+
+  > aside {
+    @include editor-destroy-button;
+
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: $logo-height;
+    position: relative;
+    text-align: center;
+    width: $logo-width;
+    
+    > label {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(center);
+      @include position(absolute, 0px 0px 0px 0px);
+
+      cursor: pointer;
+      
+      > .placeholder {
+        @include display(flex);
+        @include flex-direction(column);
+        @include justify-content(center);
+        @include position(absolute, 0px 0 0px 50%);
+        
+        background-color: hsl(0, 0%, 96%);
+        margin-left: -25%;
+        width: 50%;
+        
+        > i.fa {
+          display: block;
+          opacity: .25;
+        }
+        
+        > span {
+          font-size: 12px;
+          font-weight: 400;
+          margin-top: 5px;
+          opacity: .25;
+        }
+      }
+      
+      > input[type="file"] {
+        height: 0;
+        overflow: hidden;
+        width: 0;
+      }
+    }
+  }
+
+  > * {
+    margin-bottom: $default-margin-size;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // Name & Description
+  //
+  > label {
+    position: relative;
+    
+    input {
+      border: none;
+      margin: 0;
+      outline: none;
+      padding: 0;
+    }
+
+    &.name {
+      max-width: 800px;
+
+      input {
+        background-color: $card-color;
+        font-size: 40px;
+        font-weight: 300;
+        max-width: 800px;
+      }
+    
+      > .share-link {
+        @include display(flex);
+        @include position(absolute, 50% 0 0 100%);
+
+        background-color: $link-color;
+        font-size: $small-font-size;
+        height: 23px;
+        margin-left: $inner-margin-size;
+        margin-top: -11px;
+        text-decoration: none;
+        width: 31px;
+
+        > i.fa {
+          color: hsl(0, 0%, 100%);
+          margin: auto;
+        }
+      }
+
+      &.inactive input {
+        color: hsl(0, 0%, 50%);
+
+        @include placeholder {
+          color: hsl(0, 0%, 90%);
+        }
+      }
+    }
+
+    &.description div[contenteditable] {
+      @include editor-contenteditable-area;
+
+      max-width: 800px;
+      text-align: center;
+      font-size: $large-font-size;
+      font-weight: 300;
+      line-height: 1.35;
+    }
+  }
+
+  .is-name-in-logo {
+    @include transition(margin .1s ease-out);
+  }
+
+  .is-name-in-logo + .name {
+    margin-top: 0;
+  }
+
+  .is-name-in-logo {
+    margin-bottom: 8px;
+
+    &.checked {
+      margin-top: -10px;
+      margin-bottom: -2px;
+    }
+  }
+
+  > .cc-hashtag-list {
+    > ul {
+      @include justify-content(center);
+    }
+  }
+}
+
+
+// Picture section
+//
+@mixin company-article-picture-2_0 {
+  margin: $company-article-block-margin auto;
+
+  > .image-input {
+    
+    position: relative;
+    
+    button.delete {
+      @include position(absolute, 5px 5px 0 0);
+      
+      background-color: hsl(1, 76%, 54%);
+      border: none;
+      color: hsl(0, 100%, 100%);
+      font-size: 12px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+      visibility: hidden;
+      width: 20px;
+    }
+    
+    &:hover button.delete {
+      visibility: visible;
+    }
+    
+    label {
+      cursor: pointer;
+      display: block;
+      position: relative;
+    }
+    
+    input[type="file"] {
+      height: 0;
+      overflow: hidden;
+      position: absolute;
+      width: 0;
+    }
+  }
+  
+  .placeholder {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+    
+    background-color: hsl(0, 0%, 96%);
+    padding: 100px 0;
+    
+    > header,
+    > p {
+      font-size: 13px;
+      margin: 5px 0;
+      opacity: .25;
+      width: 250px;
+    }
+    
+    > header {
+      font-size: 16px;
+      font-weight: 700;
+      
+      > i.fa {
+        margin-left: -2em;
+        width: 2em;
+      }
+    }
+  }
+  
+  img {
+    border: none;
+    display: block;
+    width: 100%;
+  }
+}
+
+
+// Paragraph section
+//
+@mixin company-article-paragraph-2_0 {
+  
+  font-size: 16px;
+  line-height: 22px;
+  margin: $company-article-block-margin auto;
+  
+  [contenteditable] {
+    outline: none;
+
+    &:empty::before {
+      content: attr(data-placeholder);
+      opacity: .25;
+      outline: none;
+    }
+  }
+
+}
+
+main.company {
+  background-color: $card-color;
+  padding: 0;
+
+  > .wrapper > header {
+    @include company-article-header-2_0;
+  }
+}

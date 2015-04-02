@@ -50,10 +50,14 @@ class CompaniesController < ApplicationController
 
   # GET /companies/new
   def new
-    @company = Company.new
-    @company.roles.build(user: current_user, value: :owner)
-    @company.should_build_objects!
-    @company.save!
+    if blank_company = current_user.blank_company
+      @company = blank_company
+    else
+      @company = Company.new
+      @company.roles.build(user: current_user, value: :owner)
+      @company.should_build_objects!
+      @company.save!
+    end
 
     redirect_to @company
   end
@@ -61,8 +65,6 @@ class CompaniesController < ApplicationController
   # PATCH/PUT /companies/1
   def update
     @company.update!(company_params)
-
-    # Activity.track_activity(current_user, params[:action], @company)
 
     update_site_url_verification(@company) if company_params[:site_url]
 
@@ -80,7 +82,7 @@ class CompaniesController < ApplicationController
   # DELETE /companies/1
   def destroy
     @company.destroy
-    redirect_to cloud_profile.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
+    redirect_to main_app.companies_path, notice: t('messages.destroyed', name: t('lexicon.company'))
   end
 
   # GET /companies/1/finance
@@ -205,7 +207,7 @@ private
 
     event_name = if action_name == 'update' && company_params[:is_published] == 'true'
       'published-company'
-    elsif action_name == 'new'
+    elsif action_name == 'new' && current_user.companies.any?
       'created-company'
     else
       nil

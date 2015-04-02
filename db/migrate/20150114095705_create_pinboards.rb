@@ -10,12 +10,6 @@ class CreatePinboards < ActiveRecord::Migration
 
     add_index   :pinboards, :user_id
     execute     'ALTER TABLE pinboards ADD PRIMARY KEY (uuid);'
-    
-    Pinboard.transaction do
-      ['Grows', 'Leadership', 'Traction', 'Finance', 'Product'].each do |title|
-        Pinboard.create(title: title)
-      end
-    end
   end
   
   def down

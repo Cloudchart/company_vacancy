@@ -26,11 +26,11 @@ RootCursor = Cursor CurrRootData, (NextRootData, options = {}) ->
     .filter (callbacks, pathAsString) -> State.hasChanged(pathAsString.split('/'))
     .keySeq()
 
-  setTimeout ->
-    LastUpdateId      = uuid()
-    UpdateInProgress  = true
-    changedPaths.forEach (pathAsString) -> applyCallbacksForPath(pathAsString.split('/'))
-    UpdateInProgress = false
+  # setTimeout ->
+  LastUpdateId      = uuid()
+  UpdateInProgress  = true
+  changedPaths.forEach (pathAsString) -> applyCallbacksForPath(pathAsString.split('/'))
+  UpdateInProgress = false
 
 
 # Callbacks

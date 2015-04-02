@@ -204,6 +204,8 @@ MainComponent = React.createClass({
     if (this.state.isOpen) {
       this.hideList();
       this.focusInput();
+    } else if (this.refs.input.getDOMNode().value) { // added
+      this.refs.input.getDOMNode().value = '' // added
     } else {
       this.blurInput();
     }

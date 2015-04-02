@@ -1,7 +1,7 @@
 class CompanySerializer < ActiveModel::Serializer
 
   attributes  :uuid, :name, :established_on, :description
-  attributes  :logotype_url, :is_published, :site_url, :slug, :tag_names, :is_name_in_logo
+  attributes  :logotype_url, :is_published, :site_url, :slug, :tag_names, :is_name_in_logo, :company_url
   attributes  :meta, :flags
   
   alias_method :current_user, :scope
@@ -9,6 +9,10 @@ class CompanySerializer < ActiveModel::Serializer
 
   def logotype_url
     company.logotype.try(:url)
+  end
+
+  def company_url
+    company_path(company)
   end
 
   def meta

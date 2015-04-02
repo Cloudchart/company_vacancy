@@ -1,11 +1,8 @@
 # @cjsx React.DOM
 
-
-# Components
-#
-PinsComponent       = require('components/pinboards/pins')
-PinboardsComponent  = require('components/pinboards/pinboards')
-SettingsComponent   = require('components/pinboards/settings')
+GlobalState    = require('global_state/state')
+UserStore      = require('stores/user_store.cursor')   
+PinsComponent  = require('components/pinboards/pins')
 
 
 # Exports
@@ -14,15 +11,12 @@ module.exports = React.createClass
 
   displayName: 'PinboardsApp'
 
-  getInitialState: ->
-    uuid: @props.uuid
+  mixins: [GlobalState.mixin]
 
+  componentWillMount: ->
+    @cursor = UserStore.me()
 
   render: ->
-    if @state.uuid
-      if @props.action == 'settings'
-        <SettingsComponent uuid={ @state.uuid } />
-      else
-        <PinsComponent uuid={ @state.uuid } />
-    else
-      <PinboardsComponent />
+    return null unless @cursor.deref(false)
+
+    <PinsComponent user_id={ @cursor.get('uuid') } />

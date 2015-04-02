@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= render 'shared/meta' %>
+    <%= favicon_link_tag "#{Rails.env}/favicon.ico" %>
+    <%= stylesheet_link_tag 'old_browsers', media: 'all' %>
+  </head>
+
+  <body class="<%= Rails.env %>">
+    <%= yield %>
+    <%= javascript_include_tag 'old_browsers' %>
+    <%= render 'shared/google_analytics' if Rails.env.production? %>
+  </body>
+</html>

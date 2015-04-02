@@ -13,14 +13,24 @@ module.exports = React.createClass
 
   displayName: 'People'
 
+  propTypes:
+    ids: React.PropTypes.instanceOf(Immutable.Seq)
+    showOccupation: React.PropTypes.bool
 
-  renderPerson: (item) ->
-    <Human type="person" key={ item.get('uuid') } uuid={ item.get('uuid') } />
+  getDefaultProps: ->
+    showOccupation: true
+
+  renderPerson: (id) ->
+    <Human 
+      type           = "person"
+      key            = { id }
+      showOccupation = { @props.showOccupation }
+      uuid           = { id } />
 
 
   render: ->
-    return null unless @props.items.size > 0
+    return null unless @props.ids.size > 0
 
     <section className="people">
-      { @props.items.map(@renderPerson).toArray() }
+      { @props.ids.map(@renderPerson).toArray() }
     </section>

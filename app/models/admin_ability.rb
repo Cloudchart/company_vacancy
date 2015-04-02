@@ -13,6 +13,8 @@ class AdminAbility
 
       can :manage, [Feature, Interview, Page, Tag, Token]
 
+      can :authorize, User, authorized_at: nil
+
       can [:update, :destroy], Pinboard do |pinboard|
         pinboard.user_id.blank?
       end

@@ -1,4 +1,4 @@
-# TODO: refactor
+# deprecated
 module ActivitiesHelper
 
   def activity_message(activity)

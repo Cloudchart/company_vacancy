@@ -20,4 +20,28 @@ module.exports =
       url:        '/profile/user'
       type:       'GET'
       dataType:   'json'
+
+  update: (item, attributes = {}, options = {}) ->
+    data = _.reduce attributes, (memo, value, name) ->
+      memo.append("user[#{name}]", value) ; memo
+    , new FormData
+
+    Promise.resolve $.ajax
+      url:      '/users/' + item.get('uuid')
+      type:     'PUT'
+      dataType: 'json'
+      processData: false
+      contentType:  false
+      data: data
     
+  follow: (key) ->
+    Promise.resolve $.ajax
+      url: "/users/#{key}/follow"
+      type: 'POST'
+      dataType: 'json'
+
+  unfollow: (key) ->
+    Promise.resolve $.ajax
+      url: "/users/#{key}/unfollow"
+      type: 'DELETE'
+      dataType: 'json'

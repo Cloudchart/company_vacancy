@@ -6,12 +6,21 @@ class UserShape < CloudShape
   restricted :password_digest
 
 
-  scope :readable_pinboards do |sources|
+  scope :available_pinboards do |sources|
     roles, pinboards = select_readable_pinboards_through_roles(sources.map(&:id))
 
     sources.each do |source|
       ids = roles.select { |item| item.user_id == source.uuid }.map(&:owner_id)
-      source.readable_pinboards = pinboards.select { |item| ids.include?(item.uuid) }
+      source.available_pinboards = pinboards.select { |item| ids.include?(item.uuid) }
+    end
+  end
+
+
+  scope :unicorns do |sources|
+    unicorns = User.unicorns
+
+    sources.each do |source|
+      source.unicorns = source.editor? ? unicorns : []
     end
   end
 
@@ -20,7 +29,9 @@ class UserShape < CloudShape
     avatar.url if avatar_stored?
   end
 
+
 private
+
 
   def self.select_readable_pinboards_through_roles(user_ids)
     roles = Role

@@ -68,7 +68,7 @@ end
 class Warden::SessionSerializer
   
   def serialize(record)
-    [record.class.name, record.to_param]
+    [record.class.name, record.id]
   end
   
   def deserialize(params)

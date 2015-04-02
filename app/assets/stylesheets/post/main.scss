@@ -1,0 +1,13 @@
+$base-post-preview-margin: 60px;
+$user-preview-text-color: $accented-white-color;
+$user-preview-background-color: $black-color;
+$user-preview-arrow-size: 8px;
+
+@mixin temp-adaptive() {
+  @media only screen and (max-width: 1024px) { @content; }
+}
+
+@import 'insight_list';
+@import 'header';
+@import 'timeline';
+@import 'show';

@@ -1,5 +1,14 @@
+<% title "#{@post.title} — #{@company.name}" %>
+
+<% set_meta_tags og: {
+  title: @post.title,
+  image: og_image_url(@post.quotes.first.try(:person).try(:avatar).try(:url) || @post.pictures.first.try(:image).try(:url)),
+  url: post_url(@post),
+  description: strip_tags(@post.quotes.first.try(:text) || @post.paragraphs.first.try(:content))
+} %>
+
 <% content_for :header_breadcrumbs do %>
-  <%= render 'shared/companies/header_breadcrumbs' %>
+  <%= render partial: 'shared/companies/header_breadcrumbs', locals: { company: @company } %>
 <% end %>
 
 <% content_for :header_menu do %>

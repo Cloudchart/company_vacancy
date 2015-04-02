@@ -8,7 +8,7 @@ CrudActions = ['create', 'update', 'destroy']
 CrudCallbacks = CallbackFactory.create 'person', CrudActions
 
 
-DefaultMethods = 
+DefaultMethods =
 
   getSchema: ->
     uuid:         null
@@ -16,16 +16,18 @@ DefaultMethods =
     full_name:    ''
     first_name:   ''
     last_name:    ''
+    twitter:      ''
     email:        ''
     occupation:   ''
     avatar_url:   ''
     hired_on:     ''
     fired_on:     ''
+    is_verified:  false
 
   getActions: ->
     actions = {}
 
-    _.each CrudActions, (action) => 
+    _.each CrudActions, (action) =>
       actions["person:#{action}-"] = @["handle#{_.str.titleize(action)}"]
       actions["person:#{action}-:done"] = @["handle#{_.str.titleize(action)}Done"]
       actions["person:#{action}-:fail"] = @["handle#{_.str.titleize(action)}Fail"]

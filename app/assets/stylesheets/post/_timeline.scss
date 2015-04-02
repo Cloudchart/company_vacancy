@@ -1,0 +1,225 @@
+// Main
+//
+.timeline.posts {
+  @include display(flex);
+  @include flex-direction(column);
+  @include align-items(center);
+
+  background-color: hsl(0, 0%, 98%);
+  min-height: 268px;
+  padding: $default-margin-size/2;
+  position: relative;
+
+  &::before {
+    @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), hsla(0, 0%, 98%, 1));
+    @include position(absolute, 0px 0px 268px 0px);
+
+    height: 268px;
+    content: '';
+    display: block;
+    z-index: 0;
+  }
+
+  > .placeholder {
+    @include display(flex);
+    @include justify-content(center);
+
+    &.small:hover {
+      > figure {
+        visibility: visible;
+      }
+    }
+
+    > figure {
+      @include display(flex);
+      @include align-items(center);
+      @include justify-content(center);
+
+      visibility: visible;
+      width: 90px;
+      height: 90px;
+      cursor: pointer;
+      background-color: hsl(142, 48%, 59%);
+      border-radius: 50%;
+      color: white;
+      position: relative;
+      margin-top: -45px;
+
+      > i.cc-icon {
+        font-size: 40px;
+      }
+    }
+
+    &.small {
+      > figure {
+        @include transform(scale(.5, .5));
+        @include transition(opacity 250ms ease-out, all 150ms ease-out, width 100ms ease-out 150ms);
+
+        margin: $inner-margin-size 0;
+        width: 45px;
+        height: 45px;
+        visibility: hidden;
+
+        &:hover {
+          @include transform(scale(1, 1));
+        }
+
+        > i.cc-icon {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}
+
+// Post preview
+//
+.post-preview-container {
+  @include align-items(flex-start);
+  @include display(flex);
+  @include justify-content(flex-start);
+
+  margin: $gutter-size/2 0;
+  width: 1024px;
+
+  > .preview.post {
+    @include display(flex);
+    @include flex(1);
+
+    position: relative;
+    border: 1px solid $border-color;
+    background-color: $card-color;
+    padding: $default-margin-size;
+
+    &:hover > ul.controls {
+      visibility: visible;
+    }
+
+    > .buttons {
+      @include position(absolute, $default-margin-size $default-margin-size null null);
+
+      ~ a h1 {
+        margin-right: 10%;
+      }
+    }
+
+    > a {
+      @include display(flex);
+      @include flex-direction(column);
+
+      width: 100%;
+
+      > .content {
+        > * {
+          padding-bottom: $inner-margin-size;
+        }
+      }
+
+      > footer {
+        @include align-items(flex-end);
+        @include display(flex);
+        @include flex(1);
+        @include justify-content(center);
+
+        text-align: center;
+
+        > .cc-hashtag-list {
+          > ul > li {
+            font-size: 16px;
+
+            &.current {
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+
+    &.epoch {
+      background: none;
+      border: none;
+      width: 100%;
+
+      > a > header {
+
+        > h1 {
+          font-size: $great-font-size;
+          font-weight: 300;
+          margin: 0;
+          text-align: center;
+        }
+
+        > h2 {
+          font-size: $basic-font-size;
+          font-weight: 300;
+          color: $black-color;
+          text-align: center;
+        }
+      }
+    }
+
+    &.quote {
+      > a > header {
+        > h1 {
+          font-size: $large-font-size;
+          margin: 0;
+          text-align: center;
+        }
+
+        > h2 {
+          font-size: $basic-font-size;
+          text-align: center;
+        }
+      }
+    }
+
+    &.dimmed {
+      opacity: 0.5;
+    }
+
+    &.only-me {
+      background-color: white;
+      border: 3px solid hsl(0, 0%, 80%);
+    }
+
+    > a > .only-me-overlay {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(center);
+      @include position(absolute, 0px 0 0 0px);
+
+      background-color: rgba(255, 255, 255, 0.85);
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+
+      > i {
+        font-size: 100px;
+        color: rgba(0, 0, 0, 0.7);
+      }
+    }
+  }
+
+  > .post-pins {
+    > .show-pins {
+      font-size: $basic-font-size;
+      margin-top: $gutter-size;
+      margin-left: $gutter-size;
+      padding: 0 30px;
+    }
+  }
+}
+
+
+// Story header
+//
+main.company.timeline > div.wrapper > header {
+
+  > h1 {
+    font-size: $great-font-size;
+    font-weight: 200;
+    margin: 0;
+  }
+
+}
