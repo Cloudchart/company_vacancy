@@ -152,6 +152,8 @@ GEM
     ffaker (1.32.1)
     font-awesome-rails (4.2.0.0)
       railties (>= 3.2, < 5.0)
+    friendly_id (5.1.0)
+      activerecord (>= 4.0.0)
     haml (4.0.6)
       tilt
     hashie (3.4.0)
@@ -433,6 +435,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   ffaker
   font-awesome-rails
+  friendly_id (~> 5.1.0)
   impressionist
   intercom (~> 2.4.4)
   intercom-rails (~> 0.2.24)

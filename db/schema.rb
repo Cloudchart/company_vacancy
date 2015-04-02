@@ -13,7 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20150402144123) do
 
-
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
     t.integer  "group_type",                default: 0
@@ -175,9 +174,8 @@ ActiveRecord::Schema.define(version: 20150402144123) do
   add_index "favorites", ["user_id", "favoritable_id", "favoritable_type"], name: "favorites_idx", unique: true, using: :btree
   add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
 
-  create_table "features", id: false, force: true do |t|
-    t.string   "uuid",        limit: 36
-    t.string   "name",                   null: false
+  create_table "features", primary_key: "uuid", force: true do |t|
+    t.string   "name",        null: false
     t.text     "description"
     t.integer  "votes_total"
     t.datetime "created_at"
@@ -291,7 +289,6 @@ ActiveRecord::Schema.define(version: 20150402144123) do
   end
 
   add_index "people", ["company_id"], name: "index_people_on_company_id", using: :btree
-  add_index "people", ["company_id"], name: "index_people_on_company_id_and_twitter", using: :btree
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
   create_table "pictures", primary_key: "uuid", force: true do |t|
