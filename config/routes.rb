@@ -83,10 +83,6 @@ Cloudchart::Application.routes.draw do
     post :ban_user, on: :member
   end
 
-  resources :features do
-    post :vote, on: :member
-  end
-
   resources :interviews, only: [:show] do
     patch :accept, on: :member
   end

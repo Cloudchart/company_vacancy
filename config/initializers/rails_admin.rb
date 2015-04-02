@@ -18,15 +18,36 @@ RailsAdmin.config do |config|
     visible false
   end
 
+  # Pin
+  # 
+  config.model 'Pin' do
+    label 'Insight'
+    label_plural 'Insights'
+    object_label_method :content
+
+    list do
+      sort_by :user
+      scopes [:insights]
+
+      field :user do
+        sort_reverse true
+        searchable [:first_name, :last_name]
+      end
+
+      field :content
+      field :is_featured, :boolean
+    end
+
+    edit do
+      field :is_featured, :boolean
+    end
+  end
+
   # Feature
   #
   config.model 'Feature' do
     list do
-      exclude_fields :uuid
-    end
-
-    edit do
-      exclude_fields :uuid, :votes_total
+      exclude_fields :uuid, :scope
     end
   end
 
@@ -346,7 +367,7 @@ RailsAdmin.config do |config|
     end
     bulk_delete
     show do
-      except ['User', 'Token', 'Person', 'Tag', 'Interview', 'Story', 'Pinboard']
+      only ['Page']
     end
     edit do
       except ['Token', 'Person']

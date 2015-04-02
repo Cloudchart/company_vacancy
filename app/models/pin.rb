@@ -1,6 +1,7 @@
 class Pin < ActiveRecord::Base
   include Uuidable
   include Trackable
+  include Featurable
 
   belongs_to :user
   belongs_to :parent, class_name: 'Pin'
@@ -11,6 +12,8 @@ class Pin < ActiveRecord::Base
   has_many :children, class_name: 'Pin', foreign_key: :parent_id
 
   validates :content, presence: true, if: :should_validate_content_presence?
+
+  scope :insights, -> { where.not(content: '').where.not(content: nil) }
 
   def should_validate_content_presence?
     @update_by.present? && user_id != @update_by.uuid
