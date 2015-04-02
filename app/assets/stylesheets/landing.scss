@@ -161,89 +161,6 @@ body > main {
 
   > .featured-posts {
     @include flex(1);
-
-    .navigation {
-      position: relative;
-      top: -30px;
-    }
-
-    .featured-post-preview {
-      overflow: hidden;
-      position: relative;
-      width: 100%;
-
-      > .background {
-        @include filter(blur(5px));
-        @include position(absolute);
-
-        width: 100%;
-      }
-
-      > .wrapper {
-        @include align-items(flex-start);
-        @include display(flex);
-
-        margin: 0 auto;
-        max-width: 1024px;
-        padding: 45px;
-        z-index: 1;
-
-        > header {
-          @include flex(1);
-
-          color: $accented-white-color;
-          height: 100%;
-          max-width: 800px;
-          margin-right: 60px;
-          z-index: 1;
-
-          > h1, > h2 {
-            margin: 0;
-          }
-
-          > h1 {
-            font-size: $great-font-size;
-            font-weight: 600;
-            line-height: 78px;
-            margin-left: 10px;
-
-            > span {
-              @include box-shadow(10px 0 0 $accented-green-color, -10px 0 0 $accented-green-color);
-
-              background-color: $accented-green-color;
-            }
-          }
-
-          > .info {
-            @include display(flex);
-
-            margin-top: 35px;
-
-            .round-buttons > li {
-              margin-right: $inner-margin-size;
-            }
-
-            > .date {
-              font-size: $big-font-size;
-              font-weight: 300;
-            }
-          }
-
-          > h2 {
-            font-size: $huge-font-size;
-            font-weight: 300;
-            margin-top: 108px;
-            text-transform: uppercase;
-          }
-        }
-
-        > .insight {
-          @include box-shadow(0 5px 30px hsla(0, 0%, 0%, 0.4));
-
-          width: 280px;
-        }
-      }
-    }
   }
   
   > footer {
@@ -279,3 +196,4 @@ body > main {
 
 @import 'interviews';
 @import 'post/insight_list';
+@import 'post/featured';

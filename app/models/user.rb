@@ -67,6 +67,9 @@ class User < ActiveRecord::Base
     Email.includes(:user).find_by(address: email).user rescue nil
   end
 
+  def featured_insights
+    Pin.featured
+  end
 
   def followed_activities
     Activity.followed_by_user(id)

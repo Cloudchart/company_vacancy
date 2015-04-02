@@ -25,16 +25,19 @@ module.exports = React.createClass
 
     queries:
 
-      post: ->
+      featured: ->
 
         """
-          Post {
-            pins {
+          Viewer {
+            featured_insights {
               user,
+              post {
+                pins,
+                blocks {
+                  picture
+                }
+              },
               children
-            },
-            blocks {
-              picture
             }
           }
         """
@@ -43,65 +46,72 @@ module.exports = React.createClass
     isLoaded: false
 
   fetch: (id) ->
-    GlobalState.fetch(@getQuery('post'), id: id)
+    GlobalState.fetch(@getQuery('featured'))
 
   getPostBackgroundUrl: (post_id) ->
-    block = BlockStore.cursor.items.filter (block) ->
+    picture_blocks = BlockStore.cursor.items.filter (block) ->
       block.get('owner_id') == post_id && 
       block.get('identity_type') == 'Picture'
     .toSeq()
     .sortBy (block) -> block.get('created_at')
-    .first()
-
-    PictureStore
-      .findByOwner(type: 'Block', id: block.get('uuid'))
-      .get('url')
+    
+    if picture_blocks && (picture_block = picture_blocks.first())
+      PictureStore
+        .findByOwner(type: 'Block', id: picture_block.get('uuid'))
+        .get('url')
 
 
   # Lifecycle methods
   #
   componentWillMount: ->
     @cursor =
-      posts:    PostStore.cursor.items
+      pins:    PinStore.cursor.items
 
-    Promise.all([
-      @fetch("aa27f02c-b4df-44fb-9fa1-96c46f80971d"),
-      @fetch("93d78ee7-a3e5-4d44-a96f-f12f69709f07")
-    ]).then =>
-      @setState(isLoaded: true)
-
+    @fetch().then => @setState(isLoaded: true)
 
 
   # Renderers
   #
-  renderPosts: ->
-    @cursor.posts.map (post, index) =>
-      formatted_date = FuzzyDate.format(post.get('effective_from'), post.get('effective_till'))
-      postBackgroundUrl = @getPostBackgroundUrl(post.get('uuid'))
-      insightId = PinStore.filterInsightsForPost(post.get('uuid')).first().get('uuid')
+  renderBackgroundImage: (post_id) ->
+    return null unless (postBackgroundUrl = @getPostBackgroundUrl(post_id))
 
-      <article 
-        className = "featured-post-preview"
-        key       = { index } >
-        <img className="background" src={ postBackgroundUrl } />
-        <div className="wrapper">
-          <header>
-            <h1><span>{ post.get('title') }</span></h1>
-            <div className="info">
-              <ul className="round-buttons">
-                <PinButton 
-                  title         = { post.get('title') }
-                  pinnable_id   = { post.get('uuid') }
-                  pinnable_type = "Post" />
-              </ul>
-              <div className="date">{ formatted_date }</div>
+    <img className="background" src={ postBackgroundUrl } />
+
+  renderPosts: ->
+    @cursor.pins
+      .filter (pin) -> pin.get('is_featured')
+      .map (pin, index) =>
+        post = PostStore.cursor.items.filter (post) ->
+          post.get('uuid') == pin.get('pinnable_id')
+        .first()
+
+        formatted_date = FuzzyDate.format(post.get('effective_from'), post.get('effective_till'))
+
+        <article 
+          className = "featured-post-preview"
+          key       = { index } >
+          { @renderBackgroundImage(post.get('uuid')) }
+          <div className="wrapper">
+            <header>
+              <h1><span>{ post.get('title') }</span></h1>
+              <div className="info">
+                <ul className="round-buttons">
+                  <PinButton 
+                    title         = { post.get('title') }
+                    pinnable_id   = { post.get('uuid') }
+                    pinnable_type = "Post" />
+                </ul>
+                <div className="date">{ formatted_date }</div>
+              </div>
+              <div className="spacer"></div>
+              <h2>Breaking news</h2>
+            </header>
+            <div>
+              <InsightItem cursor = { InsightItem.getCursor(pin.get('uuid')) } />
             </div>
-            <h2>Breaking news</h2>
-          </header>
-          <InsightItem cursor = { InsightItem.getCursor(insightId) } />
-        </div>
-      </article>
-    .toArray()
+          </div>
+        </article>
+      .toArray()
 
 
   render: ->
