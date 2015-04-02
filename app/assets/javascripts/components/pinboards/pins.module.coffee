@@ -40,6 +40,13 @@ module.exports = React.createClass
           }
         """
 
+    isEmpty: (user_id) ->
+      !PinStore.cursor.items
+        .filter (pin) =>
+          pin.get('user_id') == user_id && pin.get('pinnable_id') &&
+          (pin.get('content') || pin.get('parent_id'))
+        .size
+
   propTypes:
     user_id:          React.PropTypes.string.isRequired
     showOnlyInsights: React.PropTypes.bool

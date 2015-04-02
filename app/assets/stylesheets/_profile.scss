@@ -53,6 +53,7 @@ section.user-profile {
       cursor: pointer;
       font-size: $big-font-size;
       height: $menu-height;
+      text-transform: capitalize;
       width: 245px;
 
       &.active {

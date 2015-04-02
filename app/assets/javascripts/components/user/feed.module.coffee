@@ -22,6 +22,10 @@ MainComponent = React.createClass
   # mixins: []
   # propTypes: {}
 
+  statics:
+    isEmpty: ->
+      !ActivityStore.cursor.items.deref(Immutable.Map()).size
+
 
   # Component Specifications
   # 

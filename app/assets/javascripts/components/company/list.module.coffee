@@ -29,6 +29,9 @@ CompanyList = React.createClass
           }
         """
 
+    isEmpty: (user_id) ->
+      !CompanyStore.filterForUser(user_id).size
+
 
   # Component specifications
   #

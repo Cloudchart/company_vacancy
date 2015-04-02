@@ -55,7 +55,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     fetchDone:  false
-    selected:   location.hash.substr(1) || 'activity' || ''
+    selected:   location.hash.substr(1) || null
     isSyncing:  false
 
   fetchViewer: (options={}) ->
@@ -66,13 +66,15 @@ module.exports = React.createClass
 
   fetch: ->
     Promise.all([@fetchUser(), @fetchViewer()]).then =>
-      @setState(fetchDone: true)
+      @setState
+        fetchDone: true
+        selected:  @getInitialTab()
 
   getStateFromStores: ->
     favorite: FavoriteStore.findByUser(@props.uuid)
 
   onGlobalStateChange: ->
-    @setState  @getStateFromStores()
+    @setState @getStateFromStores()
 
 
   # Helpers
@@ -85,6 +87,22 @@ module.exports = React.createClass
 
   getFavorite: ->
     @state.favorite
+
+  getVisibleTabs: ->
+    Immutable.OrderedMap({
+      activity: UserFeed.isEmpty(),
+      insights: PinsComponent.isEmpty(@props.uuid),
+      companies: PinsComponent.isEmpty(@props.uuid)
+    }).filterNot (isEmpty) -> isEmpty
+    .keySeq()
+
+  getInitialTab: ->
+    visibleTabs = @getVisibleTabs()
+
+    if !@state.selected || !visibleTabs.contains(@state.selected)
+      visibleTabs.first()
+    else
+      @state.selected
 
 
   # Handlers
@@ -106,7 +124,6 @@ module.exports = React.createClass
         @fetchViewer(force: true).then => @setState(isSyncing: false)
 
 
-
   # Lifecycle methods
   #
   componentWillMount: ->
@@ -119,15 +136,17 @@ module.exports = React.createClass
     @fetch() unless @isLoaded()
 
 
-
   # Renderers
   #
+  renderTabs: ->
+    @getVisibleTabs().map (tabName) =>
+      <li key = { tabName } className = { @getMenuOptionClassName(tabName) } onClick = { @handleMenuClick.bind(@, tabName) } >{ tabName }</li>
+    .toArray()
+
   renderMenu: ->
     <nav>
       <ul>
-        <li className = { @getMenuOptionClassName('activity') } onClick = { @handleMenuClick.bind(@, 'activity') } >Activity</li>
-        <li className = { @getMenuOptionClassName('insights') } onClick = { @handleMenuClick.bind(@, 'insights') } >Insights</li>
-        <li className = { @getMenuOptionClassName('companies') } onClick = { @handleMenuClick.bind(@, 'companies') } >Companies</li>
+        { @renderTabs() }
       </ul>
     </nav>
 
