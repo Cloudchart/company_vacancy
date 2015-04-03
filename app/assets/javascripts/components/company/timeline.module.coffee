@@ -39,6 +39,8 @@ Component = React.createClass
 
   # Component Specifications
   # 
+  displayName: "Timeline"
+
   propTypes:
     company_id:   React.PropTypes.string.isRequired
     onStoryClick: React.PropTypes.func

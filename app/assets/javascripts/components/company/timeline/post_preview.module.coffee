@@ -40,6 +40,8 @@ Component = React.createClass
 
   # Component Specifications
   #
+  displayName: "TimelinePostPreview"
+
   propTypes:
     onStoryClick: React.PropTypes.func
     story_id:     React.PropTypes.string
@@ -300,7 +302,7 @@ Component = React.createClass
     </header>
 
   renderStories: ->
-    story_ids = @getStoryIds()
+    story_ids = Immutable.Seq(@state.post.story_ids)
 
     stories = GlobalState.cursor(['stores', 'stories', 'items']).deref(Immutable.Map())
       .filter (item, key) -> story_ids.contains(key)

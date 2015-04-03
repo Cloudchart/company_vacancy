@@ -4,6 +4,7 @@ class PostSerializer < ActiveModel::Serializer
   attributes  :created_at, :updated_at
   attributes  :effective_from, :effective_till, :position
   attributes  :post_url
+  attributes  :story_ids
   
   def story_ids
     object.stories.map(&:uuid)
