@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   attr_reader :invite
 
   # before_validation :build_blank_emails, unless: -> { emails.any? }
-  before_validation :generate_password, if: 'password.blank?'
+  before_validation :generate_password, if: -> { password.blank? }
   before_destroy :mark_emails_for_destruction
 
   friendly_id :twitter, use: :slugged
