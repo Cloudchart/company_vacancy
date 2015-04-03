@@ -204,7 +204,6 @@ RailsAdmin.config do |config|
       end
 
       field :data do
-        # column_width 200
         formatted_value { value ? [value[:full_name], value[:email]].join(' – ') : nil }
         filterable false
       end
@@ -222,22 +221,45 @@ RailsAdmin.config do |config|
     object_label_method :full_name
 
     list do
-      include_fields :first_name, :last_name, :system_roles, :twitter, :companies, :created_at, :authorized_at
       sort_by :created_at
 
       field :first_name do
-        label 'Full name'
-        formatted_value { bindings[:view].mail_to bindings[:object].email, bindings[:object].full_name }
-      end
-
-      field :companies do
-        pretty_value { value.map { |company| bindings[:view].link_to(company.name, bindings[:view].main_app.company_path(company)) }.join(', ').html_safe }
+        visible false
       end
 
       field :last_name do
         visible false
       end
 
+      field :full_name
+
+      field :email do
+        formatted_value do 
+          if email = bindings[:object].email
+            bindings[:view].mail_to email, email
+          else
+            email = bindings[:object].tokens.where(name: :email_verification).first.try(:data).try(:[], :address)
+            bindings[:view].mail_to email, email
+          end
+        end
+      end
+
+      field :system_roles
+      field :twitter
+
+      field :companies do
+        pretty_value { value.map { |company| bindings[:view].link_to(company.name, bindings[:view].main_app.company_path(company)) }.join(', ').html_safe }
+      end
+
+      field :created_at
+      field :authorized_at
+    end
+
+    create do
+      field :full_name
+      field :email
+      field :twitter
+      field :avatar
     end
 
     edit do
@@ -360,7 +382,7 @@ RailsAdmin.config do |config|
     # default
     #
     new do
-      except ['User', 'Token', 'Person']
+      except ['Token', 'Person']
     end
     export do
       except ['Token', 'Interview']

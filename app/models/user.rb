@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   attr_reader :invite
 
   # before_validation :build_blank_emails, unless: -> { emails.any? }
+  before_validation :generate_password, if: 'password.blank?'
   before_destroy :mark_emails_for_destruction
 
   friendly_id :twitter, use: :slugged
@@ -58,7 +59,6 @@ class User < ActiveRecord::Base
       create!(
         full_name:    hash.info.name,
         twitter:      hash.info.nickname,
-        password:     SecureRandom.uuid,
         avatar_url:   avatar_url
       )
     end
@@ -158,6 +158,10 @@ private
 
   def mark_emails_for_destruction
     emails.each(&:mark_for_destruction)
+  end
+
+  def generate_password
+    self.password = SecureRandom.uuid
   end
 
   # def build_blank_emails

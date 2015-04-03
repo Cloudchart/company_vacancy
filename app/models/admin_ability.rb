@@ -8,14 +8,14 @@ class AdminAbility
 
       can :read, Person
       can [:read, :update], Pin
-      can [:read, :update, :make_unicorns], User
+      can [:read, :create, :update, :make_unicorns], User
       can [:read, :create], Story
       can [:read, :create], Pinboard
       can [:read, :destroy], Feature
 
       can :manage, [Interview, Page, Tag, Token]
 
-      can :authorize, User, authorized_at: nil
+      can [:authorize, :destroy], User, authorized_at: nil
 
       can [:update, :destroy], Pinboard do |pinboard|
         pinboard.user_id.blank?
