@@ -27,7 +27,7 @@ CompanyPreview = React.createClass
 
   displayName: 'CompanyPreview'
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+  mixins: [GlobalState.query.mixin]
 
   statics:
 
@@ -61,6 +61,18 @@ CompanyPreview = React.createClass
 
   # Helpers
   #
+  getTagNames: ->
+    if (tags = @cursor.company.get('tag_names'))
+      Immutable.Seq(tags)
+        .sort (tagA, tagB) -> tagA.localeCompare(tagB)
+        .take(5)
+    else
+      @cursor.tags
+        .filter (tag) => @getTaggingIdSet().contains(tag.get('uuid'))
+        .sort (tagA, tagB) -> tagA.get('name').localeCompare(tagB.get('name'))
+        .take(5)
+        .map (tag) -> tag.get('name')
+
   getTaggingIdSet: ->
     @cursor.taggings.deref(Immutable.Seq())
       .filter (tagging) => tagging.get('taggable_type') is 'Company' && tagging.get('taggable_id') is @props.uuid
@@ -102,16 +114,22 @@ CompanyPreview = React.createClass
       post.get('owner_id') == @props.uuid
 
   getPostsCount: ->
-    @getPosts().size || 0
+    unless pins_count = @cursor.company.get('posts_count')
+      @getPosts().size || 0
+    else
+      pins_count
 
   getInsightsCount: ->
-    posts = @getPosts()
+    unless insights_count = @cursor.company.get('insights_count')
+      posts = @getPosts()
 
-    @cursor.pins.filter (pin) ->
-      pin.get('content') &&
-      !pin.get('parent_id') &&
-      posts.has pin.get('pinnable_id') 
-    .size || 0
+      @cursor.pins.filter (pin) ->
+        pin.get('content') &&
+        !pin.get('parent_id') &&
+        posts.has pin.get('pinnable_id') 
+      .size || 0
+    else
+      insights_count
 
 
   # Handlers
@@ -157,10 +175,8 @@ CompanyPreview = React.createClass
   # Renderers
   #
   renderTags: ->
-    @cursor.tags
-      .filter (tag) => @getTaggingIdSet().contains(tag.get('uuid'))
-      .sort (tagA, tagB) -> tagA.get('name').localeCompare(tagB.get('name'))
-      .map (tag, index) -> <div key={ index } >#{ tag.get('name') }</div>
+    @getTagNames()
+      .map (tag, index) -> <div key={ index } >#{ tag }</div>
       .toArray()
 
   renderInvitedLabel: ->

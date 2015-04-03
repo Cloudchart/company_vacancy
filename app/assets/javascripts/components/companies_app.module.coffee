@@ -47,10 +47,10 @@ CompaniesApp = React.createClass
       query:    @props.query || location.hash.substr(1) || ''
 
   getStateFromStores: ->
-    myCompanies = CompanyStore.filterForCurrentUser()
+    myCompaniesIds = @getIds(@sortCompanies(CompanyStore.filterForCurrentUser()))
 
-    myCompanies:          @sortCompanies(myCompanies)
-    searchedCompaniesIds: @getIds(@props.cursor.companies).filter((companyId) => !@getIds(myCompanies).contains(companyId))
+    myCompaniesIds:       myCompaniesIds
+    searchedCompaniesIds: @getIds(@props.cursor.companies.sortBy((company) -> company.get('name'))).filter((companyId) => !myCompaniesIds.contains(companyId))
 
   onGlobalStateChange: ->
     @setState  @getStateFromStores()
@@ -72,20 +72,23 @@ CompaniesApp = React.createClass
     companies.filter((company) => (company.get('name') || "").toLowerCase().indexOf(@state.query.toLowerCase()) != -1)
 
   getIds: (companies) ->
-    companies.map((company) -> company.get('uuid')).toSeq()
-
-  getMyCompaniesIds: ->
-    @getIds(@filterByName(@state.myCompanies))
+    companies
+      .map (company) -> company.get('uuid')
+      .toSeq()
 
   getAllIds: ->
-    @getMyCompaniesIds().concat(@state.searchedCompaniesIds)
+    myCompaniesIds = @state.myCompaniesIds
+    searchedCompaniesIds = @state.searchedCompaniesIds.filter (companyId) -> !myCompaniesIds.contains(companyId)
+
+    myCompaniesIds.concat(searchedCompaniesIds)
 
   sortCompanies: (companies) ->
     companies.sortBy (company) ->
       id = company.get('uuid')
 
-      -2 * (+RoleStore.filterForCompanies().map((role) -> role.get('owner_id')).contains(id)) -
-      (+TokenStore.filterCompanyInvites().map((token) -> token.get('owner_id')).contains(id))
+      ((-2 * (+RoleStore.filterForCompanies().map((role) -> role.get('owner_id')).contains(id)) -
+      (+TokenStore.filterCompanyInvites().map((token) -> token.get('owner_id')).contains(id))) + 
+      company.get('name')).toString()
 
   search: (query) ->
     @clearSearchedCompanies()

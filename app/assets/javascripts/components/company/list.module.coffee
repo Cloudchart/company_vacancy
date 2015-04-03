@@ -13,7 +13,7 @@ CompanyList = React.createClass
 
   displayName: 'CompanyList'
 
-  mixins: [GlobalState.query.mixin, NodeRepositioner.mixin]
+  mixins: [GlobalState.query.mixin]
 
   statics:
 
@@ -58,6 +58,7 @@ CompanyList = React.createClass
       CompanyStore
         .filterForUser(@props.user_id)
         .map (company) -> company.get('uuid')
+        .sortBy (company) -> company.get('created_at')
 
 
   # Lifecycle methods
