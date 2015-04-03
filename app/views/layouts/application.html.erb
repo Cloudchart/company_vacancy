@@ -7,9 +7,31 @@
   </head>
 
   <body class="<%= Rails.env %>">
-    <header class="<%= yield(:class_for_header) %>">
-      <%= render 'shared/header' %>
-    </header>
+
+    <%= content_tag :header, nil, data: {
+      "react-class" => "components/header_app",
+      "react-props" => {
+        title:        app_name_for_header,
+        root_url:     main_app.root_path,
+        login_url:    cloud_profile.login_path,
+        logout_url:   cloud_profile.logout_path,
+        links: [
+          {
+            title:  'Companies',
+            url:    current_page?(main_app.companies_path) ? nil : main_app.companies_path
+          },
+          {
+            title:  'Insights',
+            url:    current_page?(main_app.insights_path) ? nil : main_app.insights_path
+          }
+        ],
+        user: user_authenticated? ? {
+          id:     current_user.id,
+          name:   current_user.full_name,
+          url:    user_path(current_user)
+        } : {}
+      }
+    } -%>
 
     <%= render 'shared/flash' %>
 
