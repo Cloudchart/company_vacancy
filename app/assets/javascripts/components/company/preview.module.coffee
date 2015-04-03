@@ -247,7 +247,8 @@ CompanyPreview = React.createClass
       <People 
         key            = "people"
         ids            = { @getPeopleIds() } 
-        showOccupation = { false } />
+        showOccupation = { false }
+        showLink       = { false } />
 
   renderFooter: ->
     <footer>
@@ -260,7 +261,7 @@ CompanyPreview = React.createClass
     return null unless (company = @cursor.company.deref(false))
 
     <article className="company-preview cloud-card">
-      <a href={ company.get('company_url') } className="company-preview-link">
+      <a href={ company.get('company_url') } className="company-preview-link for-group">
         { @renderHeader() }
         { @renderInfo() }
         <p className="description">

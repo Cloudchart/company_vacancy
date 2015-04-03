@@ -147,7 +147,7 @@ module.exports = React.createClass
 
       when 'Person'
         peopleIds = PersonStore.filterForBlock(block.get('uuid')).map((person) -> person.get('uuid')).toSeq()
-        <Blocks.People key={ block.get('uuid') } ids={ peopleIds } />
+        <Blocks.People key={ block.get('uuid') } ids={ peopleIds } showLink={ false } />
 
       when 'Quote'
         quote = QuoteStore.findByOwner(type: 'Block', id: block.get('uuid'))
