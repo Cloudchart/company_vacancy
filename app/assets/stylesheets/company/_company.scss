@@ -266,10 +266,41 @@
 }
 
 main.company {
+  @include display(flex);
+  @include flex-direction(column);
+  @include flex(1);
+
   background-color: $card-color;
   padding: 0;
 
-  > .wrapper > header {
-    @include company-article-header-2_0;
+  > .wrapper {
+    @include display(flex);
+    @include flex-direction(column);
+    @include flex(1);
+
+    height: 100%;
+
+    > header {
+      @include company-article-header-2_0;
+    }
+
+    > .tabs {
+      li {
+        background-color: $card-color;
+
+        &.active {
+          background-color: hsl(0, 0%, 98%);
+        }
+      }
+    }
+
+    > .content {
+      @include flex(1);
+
+      background-color: $background-color;
+      padding: $gutter-size;
+      position: relative;
+      width: 100%;
+    }
   }
 }

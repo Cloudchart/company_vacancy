@@ -15,13 +15,13 @@
 
     <% if can?(:access_rights, @company) %>
       <li>
-        <%= link_with_class_for_current('Users', main_app.access_rights_company_path(@company), 'base') %>
+        <%= link_with_class_for_current('Users', main_app.company_path(@company, anchor: "users"), 'base') %>
       </li>
     <% end %>
 
     <% if can?(:settings, @company) %>
       <li>
-        <%= link_with_class_for_current('Settings', main_app.settings_company_path(@company), 'base') %>
+        <%= link_with_class_for_current('Settings', main_app.company_path(@company, anchor: "settings"), 'base') %>
       </li>
     <% end %>
 

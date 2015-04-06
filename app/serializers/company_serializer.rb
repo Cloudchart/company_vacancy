@@ -21,7 +21,7 @@ class CompanySerializer < ActiveModel::Serializer
       vacancies_size: company.vacancies.size,
       invitable_roles: Company::INVITABLE_ROLES,
       company_url: company_path(company),
-      settings_url: settings_company_url(company),
+      settings_url: company_path(company),
       verify_site_url: verify_site_url_company_path(company),
       download_verification_file_url: download_verification_file_company_path(company)
     }

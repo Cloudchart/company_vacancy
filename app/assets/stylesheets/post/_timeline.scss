@@ -5,20 +5,9 @@
   @include flex-direction(column);
   @include align-items(center);
 
-  background-color: hsl(0, 0%, 98%);
   min-height: 268px;
   padding: $default-margin-size/2;
   position: relative;
-
-  &::before {
-    @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), hsla(0, 0%, 98%, 1));
-    @include position(absolute, 0px 0px 268px 0px);
-
-    height: 268px;
-    content: '';
-    display: block;
-    z-index: 0;
-  }
 
   > .placeholder {
     @include display(flex);

@@ -55,7 +55,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     fetchDone:  false
-    selected:   location.hash.substr(1) || null
+    currentTab: location.hash.substr(1) || null
     isSyncing:  false
 
   fetchViewer: (options={}) ->
@@ -67,8 +67,8 @@ module.exports = React.createClass
   fetch: ->
     Promise.all([@fetchUser(), @fetchViewer()]).then =>
       @setState
-        fetchDone: true
-        selected:  @getInitialTab()
+        fetchDone:   true
+        currentTab:  @getInitialTab()
 
   getStateFromStores: ->
     favorite: FavoriteStore.findByUser(@props.uuid)
@@ -83,7 +83,7 @@ module.exports = React.createClass
     @state.fetchDone
 
   getMenuOptionClassName: (option) ->
-    cx(active: @state.selected == option)
+    cx(active: @state.currentTab == option)
 
   getFavorite: ->
     @state.favorite
@@ -92,24 +92,24 @@ module.exports = React.createClass
     Immutable.OrderedMap({
       activity: UserFeed.isEmpty(),
       insights: PinsComponent.isEmpty(@props.uuid),
-      companies: PinsComponent.isEmpty(@props.uuid)
+      companies: CompaniesList.isEmpty(@props.uuid)
     }).filterNot (isEmpty) -> isEmpty
     .keySeq()
 
   getInitialTab: ->
     visibleTabs = @getVisibleTabs()
 
-    if !@state.selected || !visibleTabs.contains(@state.selected)
+    if !@state.currentTab || !visibleTabs.contains(@state.currentTab)
       visibleTabs.first()
     else
-      @state.selected
+      @state.currentTab
 
 
   # Handlers
   #
-  handleMenuClick: (selected) ->
-    @setState selected: selected
-    location.hash = selected
+  handleHashChange: ->
+    currentTab = location.hash.substr(1)
+    @setState currentTab: currentTab
 
   handleFollowClick: ->
     @setState(isSyncing: true)
@@ -135,16 +135,25 @@ module.exports = React.createClass
 
     @fetch() unless @isLoaded()
 
+    window.addEventListener 'hashchange', @handleHashChange
+
+  componentWillUnmount: ->
+    window.removeEventListener 'hashchange', @handleHashChange
+
 
   # Renderers
   #
   renderTabs: ->
     @getVisibleTabs().map (tabName) =>
-      <li key = { tabName } className = { @getMenuOptionClassName(tabName) } onClick = { @handleMenuClick.bind(@, tabName) } >{ tabName }</li>
+      <li key = { tabName } className = { @getMenuOptionClassName(tabName) } >
+        <a href = { location.pathname + "#" + tabName } className="for-group">
+          { tabName }
+        </a>
+      </li>
     .toArray()
 
   renderMenu: ->
-    <nav>
+    <nav className="tabs">
       <ul>
         { @renderTabs() }
       </ul>
@@ -163,7 +172,7 @@ module.exports = React.createClass
       showSyncAnimation = { false } />
 
   renderContent: ->
-    switch @state.selected
+    switch @state.currentTab
       when 'insights'
         <PinsComponent user_id = { @props.uuid } showOnlyInsights = { true } />
       when 'companies'

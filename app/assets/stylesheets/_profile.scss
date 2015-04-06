@@ -1,8 +1,4 @@
 $profile-header-color: hsl(0, 0%, 93%);
-$menu-color: $profile-header-color;
-$menu-active-color: $white-color;
-$menu-text-color: $black-color;
-$menu-height: 75px;
 
 main.user-profile {
   background-color: $background-color;
@@ -28,42 +24,7 @@ section.user-profile {
   > header .follow-button {
     @include position(absolute, 50% $gutter-size 0 0);
 
-    margin-top: -17px - $menu-height/2;
-  }
-
-  > header nav {
-    width: 100%;
-
-    ul {
-      @include display(flex);
-      @include justify-content(center);
-
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    li {
-      @include align-items(center);
-      @include display(flex);
-      @include justify-content(center);
-
-      background-color: $menu-color;
-      color: $menu-text-color;
-      cursor: pointer;
-      font-size: $big-font-size;
-      height: $menu-height;
-      text-transform: capitalize;
-      width: 245px;
-
-      &.active {
-        background-color: $menu-active-color;
-      }
-
-      &:hover {
-        color: $link-color;
-      }
-    }
+    margin-top: -17px - 33px;
   }
 
   > header .info {

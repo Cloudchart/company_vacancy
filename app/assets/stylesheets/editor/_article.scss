@@ -21,7 +21,9 @@ $editor-placeholder-section-figure-size: 50px;
 // Editor
 //
 article.editor {
+  background-color: $card-color;
   margin: 0 auto;
+  padding: $default-margin-size;
   width: $editor-width;
   
   > section {
@@ -51,15 +53,13 @@ article.editor {
 // Post editor
 // 
 article.editor.post {
+  padding: 0;
+
   > section.placeholder {
     > figure {
       opacity: 1;
     }
   }
-}
-
-.editor.company {
-  padding-bottom: $default-margin-size;
 }
 
 // Draggable

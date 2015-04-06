@@ -1,0 +1,46 @@
+$tabs-color: hsl(0, 0%, 93%);
+$tabs-active-color: $white-color;
+$tabs-text-color: $black-color;
+$tabs-height: 75px;
+
+nav.tabs {
+  width: 100%;
+
+  ul {
+    @include display(flex);
+    @include justify-content(center);
+
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    background-color: $tabs-color;
+    color: $tabs-text-color;
+    cursor: pointer;
+    font-size: $large-font-size;
+    font-weight: 300;
+    height: $tabs-height;
+    text-transform: capitalize;
+    width: 245px;
+
+    &.active {
+      background-color: $tabs-active-color;
+      font-weight: 600;
+    }
+
+    &:hover {
+      color: $link-color;
+    }
+
+    > a {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(center);
+
+      height: 100%;
+      width: 100%;
+    }
+  }
+}

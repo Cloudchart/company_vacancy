@@ -118,14 +118,11 @@ Component = React.createClass
   # 
   handleAccessRightsDone: -> 
     setTimeout =>
-      @setState(shareLoading: false)
-      ModalActions.show(<AccessRights uuid={@props.uuid} />)
-    
+      @setState(shareLoading: false)    
 
   handleRemoveLogotype: ->
     return if @props.readOnly
     CompanyActions.update(@props.uuid, { logotype_url: null, remove_logotype: true })
-
 
   handleShareClick: (event) ->
     event.preventDefault()
@@ -135,7 +132,6 @@ Component = React.createClass
     else
       @setState(shareLoading: true)
       CompanyActions.fetchAccessRights(@props.uuid)
-
 
   handleFieldBlur: (attr_name, event) ->
     @update(attr_name) unless @state[attr_name] == @state.company[attr_name]
@@ -163,11 +159,16 @@ Component = React.createClass
   onIsNameInLogoChange: (value) ->
     CompanyActions.update(@props.uuid, { is_name_in_logo: value })
 
+
   # Lifecycle Methods
   # 
   componentWillReceiveProps: (nextProps) ->
     URL.revokeObjectURL(@state.logotype_url)
     @setState(@getStateFromStores(nextProps))
+
+  componentWillUpdate: (nextProps, nextState) ->
+    if @state.shareLoading && !nextState.shareLoading
+      ModalActions.show(<AccessRights uuid={@props.uuid} />)
 
 
   # Component Specifications

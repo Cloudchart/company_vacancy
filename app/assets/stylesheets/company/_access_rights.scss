@@ -2,20 +2,16 @@ $access-rights-list-item-height: 50px;
 $access-rights-list-item-padding: 15px;
 $access-rights-user-list-action-column-width: 65px;
 
-.company-access-rights-container {
-  padding: 30px;
-}
-
 .access-rights {
+  background-color: $card-color;
   font-size: 15px;
+  padding: $default-margin-size;
   margin: 0 auto;
   width: 700px;
 
   .modal-container > & {
     header {
-      background-color: hsl(60, 11%, 98%);
-
-      padding: 25px 95px;
+      background-color: $card-color;
     }
   }
 
@@ -37,7 +33,7 @@ $access-rights-user-list-action-column-width: 65px;
   }
 
   .content {
-    padding: 30px 95px 50px;
+    padding: 20px 95px 0;
   }
 
   .users-list {
