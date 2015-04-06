@@ -84,16 +84,14 @@ class User < ActiveRecord::Base
     Company.joins(:followers).where(followers: { user_id: id, favoritable_type: 'Company' })
   end
 
-  def admin?
-    !!roles.find { |role| role.owner_id == nil && role.value == 'admin' }
+  (Cloudchart::ROLES + [:guest]).map(&:to_s).each do |role_name|
+    define_method("#{role_name}?") do
+      !!roles.find { |role| role.owner_id == nil && role.value == role_name }
+    end
   end
 
-  def editor?
-    !!roles.find { |role| role.owner_id == nil && role.value == 'editor' }
-  end
-
-  def guest?
-    !!roles.find { |role| role.owner_id == nil && role.value == 'guest' }
+  def authorized?
+    authorized_at.present?
   end
 
   def system_role_ids=(args)
@@ -149,6 +147,10 @@ class User < ActiveRecord::Base
   # def validate_email
   #   errors.add(:email, emails.first.errors[:address]) unless emails.first.valid?
   # end
+
+  def should_generate_new_friendly_id?
+    slug.blank? || twitter_changed?
+  end
 
   def blank_company
     companies.select { |company| company.name.blank? && company.logotype.blank? }.first

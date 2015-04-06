@@ -256,17 +256,41 @@ RailsAdmin.config do |config|
     end
 
     create do
-      field :full_name
-      field :email
+      field :full_name do
+        required false
+      end
+
+      field :system_roles do
+        partial :system_roles
+      end
+
       field :twitter
       field :avatar
     end
 
     edit do
-      include_fields :system_roles, :twitter, :authorized_at
+      field :full_name do
+        visible do
+          bindings[:object].unicorn? ? true : false
+        end
+      end
 
       field :system_roles do
         partial :system_roles
+      end
+
+      field :twitter
+
+      field :avatar do
+        visible do
+          bindings[:object].unicorn? ? true : false
+        end
+      end
+
+      field :authorized_at do
+        visible do
+          bindings[:object].authorized? ? true : false
+        end
       end
     end
   end
