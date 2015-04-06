@@ -118,22 +118,12 @@ module.exports = React.createClass
       else
         throw new Error("Pinnable Header: Unknown owner type '#{@cursor.post.get('owner_type')}' for pinnable type 'Post'")
 
-  renderHeader: ->
-    <header>
-      { @renderOwnerHeader() }
-      { @renderDateAndTitle() }
-    </header>
-
   renderTitle: ->
     return unless @cursor.post.get('title', false)
 
-    <div className="title" dangerouslySetInnerHTML={ __html: @cursor.post.get('title') } />
-
-  renderDateAndTitle: ->
-    <section className="title">
-      { @renderDate() }
-      { @renderTitle() }
-    </section>
+    <header>
+      <div className="title" dangerouslySetInnerHTML={ __html: @cursor.post.get('title') } />
+    </header>
 
   renderBlock: (block) ->
     switch block.get('identity_type')
@@ -166,9 +156,10 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     <article className="pinnable post-preview link">
-      <a className="for-group" href={ @cursor.post.get('url') } >
-        { @renderHeader() }
+      <a className="for-group" href={ @cursor.post.get('post_url') } >
+        { @renderTitle() }
         { @renderControls() }
         { @renderBlocks() }
+        { @renderOwnerHeader() }
       </a>
     </article>

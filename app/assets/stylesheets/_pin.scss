@@ -6,9 +6,6 @@
   @include flex-wrap(wrap);
   @include justify-content(space-between);
 
-  border-bottom: $card-hr;
-  margin-bottom: $card-basic-space;
-  padding-bottom: $card-basic-space;
   position: relative;
 
   > p {
@@ -21,6 +18,14 @@
     @include position(absolute, 0px 0px 0 0);
   }
 
+  a.company {
+    font-weight: 600;
+  }
+
+  a.post {
+    color: black;
+    font-weight: 600;
+  }
 }
 
 
@@ -52,8 +57,6 @@
     text-align: center;
     width: 60px;
   }
-
-
 }
 
 
@@ -66,5 +69,9 @@
 
   > footer {
     @include pin-card-footer;
+  }
+
+  .insight + footer {
+    margin-top: $default-margin-size;
   }
 }

@@ -17,6 +17,7 @@ Human           = require('components/human')
 PinnablePreview = require('components/pinnable/preview')
 PinnablePost    = require('components/pinnable/post')
 PinButton       = require('components/pinnable/pin_button')
+InsightContent  = require('components/pinnable/insight_content')
 
 
 # Utils
@@ -103,12 +104,18 @@ module.exports = React.createClass
     return unless insight = @getInsight()
 
     <article className="insight">
-      { @renderPinContent(insight.get('content'), 'quote') }
+      <InsightContent uuid = { insight.get('uuid') } />
 
       <Human type="user" uuid={ insight.get('user_id') } />
 
       { @renderInsightControls(insight) }
     </article>
+
+  renderPinnablePreviewOrInsight: ->
+    if insight = @getInsight()
+      @renderInsight()
+    else
+      <PinnablePreview uuid={ @props.uuid } />
 
   renderComment: ->
     return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid)
@@ -123,7 +130,6 @@ module.exports = React.createClass
     return null unless @cursor.pin.deref(false) && @cursor.user.deref(false)
 
     <section className="pin cloud-card">
-      { @renderInsight() }
-      <PinnablePreview uuid={ @props.uuid } />
+      { @renderPinnablePreviewOrInsight() }
       { @renderComment() }
     </section>

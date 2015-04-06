@@ -29,7 +29,7 @@ module.exports = React.createClass
     <img src={ url } />
 
   renderLogoAndTitle: ->
-    <figure>
+    <figure className="company-header">
       { @renderLogo() }
       { @cursor.get('name') }
     </figure>
