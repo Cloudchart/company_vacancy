@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   before_validation :generate_password, if: -> { password.blank? }
   before_destroy :mark_emails_for_destruction
 
+  nilify_blanks only: [:twitter, :authorized_at]
+
   friendly_id :twitter, use: :slugged
 
   dragonfly_accessor :avatar
@@ -50,7 +52,11 @@ class User < ActiveRecord::Base
 
   # validate :validate_email, on: :create
 
-  scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
+  scope :unicorns, -> { joins(:system_roles).where(roles: { value: 'unicorn'}) }
+  scope :available_for_merge, -> user { 
+    where.not(uuid: user.id, authorized_at: nil)
+    .where(twitter: nil, first_name: user.first_name, last_name: user.last_name)
+  }
 
   class << self
     def create_with_twitter_omniauth_hash(hash)

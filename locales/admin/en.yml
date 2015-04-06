@@ -17,3 +17,7 @@ en:
         menu: "Authorize"
         breadcrumb: "Authorize"
         title: "Authorize"
+      merge:
+        menu: "Merge"
+        breadcrumb: "Merge"
+        title: "Merge"

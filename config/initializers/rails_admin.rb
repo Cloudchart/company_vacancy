@@ -399,6 +399,18 @@ RailsAdmin.config do |config|
       end
     end
 
+    member :merge do
+      only ['User']
+      link_icon 'icon-user'
+
+      controller do
+        proc do
+          # TODO: add logic
+          redirect_to index_path(:user)#, notice: 'User has been merged'
+        end
+      end
+    end
+
     # default
     #
     new do

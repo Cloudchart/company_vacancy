@@ -4,6 +4,8 @@ class Person < ActiveRecord::Base
   include Tire::Model::Search
   include Tire::Model::Callbacks
 
+  before_save :invalidate_verification!
+
   dragonfly_accessor :avatar
 
   belongs_to :user
@@ -17,10 +19,6 @@ class Person < ActiveRecord::Base
   validates :full_name, presence: true
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
-
-
-  before_save :invalidate_verification!
-
 
   settings ElasticSearchNGramSettings do
     mapping do
@@ -44,7 +42,7 @@ class Person < ActiveRecord::Base
     as_json(only: [:uuid, :full_name, :first_name, :last_name, :email, :occupation, :salary])
   end
 
-  private
+private
 
   def invalidate_verification!
     if twitter_changed?
