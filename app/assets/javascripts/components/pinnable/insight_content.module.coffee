@@ -43,7 +43,7 @@ module.exports = React.createClass
       <a href= { company.get('company_url') } className="company">
         { company.get('name') }
       </a>
-      { ", " }  
+      <strong>, </strong> 
       <a href={ post.get('post_url') } className="post">
         { post.get('title') }
       </a>
