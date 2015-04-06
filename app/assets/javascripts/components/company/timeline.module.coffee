@@ -37,6 +37,11 @@ Component = React.createClass
 
   mixins: [CloudFlux.mixins.Actions, GlobalState.mixin]
 
+  statics:
+    isEmpty: (company_id) ->
+      !PostStore.all().length
+
+
   # Component Specifications
   # 
   displayName: "Timeline"
@@ -156,19 +161,29 @@ Component = React.createClass
 
   render: ->
     posts = @getPosts()
-    
-    return null if posts.count() == 0 and @props.readOnly
-    
-    posts = posts.map (post, index) =>
-      [
-        post
-        @renderCreatePostButton('small')
-      ]
 
-    <section className="timeline posts">
-      { @renderCreatePostButton() }
-      { posts.toArray() }
-    </section>
+    unless posts.count() == 0
+      posts = posts.map (post, index) =>
+        [
+          post
+          @renderCreatePostButton('small')
+        ]
+
+      <section className="timeline posts">
+        { @renderCreatePostButton() }
+        { posts.toArray() }
+      </section>
+    else if !@props.readOnly
+      <section className="timeline posts">
+        { @renderCreatePostButton() }
+        <div className="instruction">
+          You have no posts on your timeline.<br />
+          Let’s add some by pressing plus button.
+        </div>
+      </section>
+    else
+      null
+
 
 # Exports
 # 

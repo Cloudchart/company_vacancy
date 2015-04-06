@@ -9,6 +9,7 @@ CloudFlux       = require('cloud_flux')
 GlobalState     = require('global_state/state')
 
 CompanyStore    = require('stores/company')
+PostStore       = require('stores/post_store')
 
 CompanyActions  = require('actions/company')
 
@@ -30,19 +31,20 @@ Component = React.createClass
     cursor: GlobalState.cursor(['meta', 'company'])
 
   getInitialState: ->
-    state             = @getStateFromStores()
-    state.cursor      =
-      meta:   GlobalState.cursor(['stores', 'companies', 'meta', @props.uuid])
-      flags:  GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
-    state.currentTab = location.hash.substr(1) || null
-    state.isAccessRightsLoading = false
-    state
+    _.extend @getStateFromStores(),
+      cursor:
+        meta:                GlobalState.cursor(['stores', 'companies', 'meta', @props.uuid])
+        flags:               GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
+      currentTab:            location.hash.substr(1) || null
+      isAccessRightsLoading: false
+      postsLoaded:           false
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores())
   
   getStateFromStores: ->
-    company:     CompanyStore.get(@props.uuid)
+    company:   CompanyStore.get(@props.uuid)
+    posts:     PostStore.all()
   
   onGlobalStateChange: ->
     @setState
@@ -51,6 +53,9 @@ Component = React.createClass
 
   # Helpers
   # 
+  isLoaded: ->
+    !_.isUndefined(@state.cursor.flags.get('is_read_only')) && @state.company && @state.postsLoaded
+
   getMenuOptionClassName: (option) ->
     cx(active: @state.currentTab == option)
 
@@ -63,7 +68,11 @@ Component = React.createClass
     @state.readOnly || !@canEdit()
 
   getVisibleTabs: ->
-    visibleTabs = Immutable.Seq(['timeline', 'about'])
+    visibleTabs = Immutable.Seq(['about'])
+
+    if !Timeline.isEmpty() || @canEdit()
+      visibleTabs = Immutable.Seq(['timeline']).concat(visibleTabs)
+    
     visibleTabs = visibleTabs.concat(['users', 'settings']) if @canEdit()
     visibleTabs
 
@@ -76,11 +85,12 @@ Component = React.createClass
       @state.currentTab
 
   updateInitialTab: ->
-    if !_.isUndefined(@state.cursor.flags.get('is_read_only'))
-      if (tab = @getInitialTab()) != @state.currentTab
-        location.hash = tab
-      else if @state.currentTab == 'users'
-        @fetchAccessRights()
+    return null unless @isLoaded()
+
+    if (tab = @getInitialTab()) != @state.currentTab
+      @setState(currentTab: tab)
+    else if @state.currentTab == 'users'
+      @fetchAccessRights()
 
   isAccessRightsLoaded: ->
     GlobalState.cursor(['flags', 'companies']).get('isAccessRightsLoaded')
@@ -111,11 +121,15 @@ Component = React.createClass
     setTimeout =>
       @setState(isAccessRightsLoading: false)
 
+  handlePostsLoaded: ->
+    @setState postsLoaded: true
+
 
   # Lifecylce Methods
   # 
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStores)
+    PostStore.on('change', @handlePostsLoaded)
     window.addEventListener 'hashchange', @handleHashChange
 
     @updateInitialTab()
@@ -125,6 +139,7 @@ Component = React.createClass
 
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
+    PostStore.off('change', @handlePostsLoaded)
 
     window.removeEventListener 'hashchange', @handleHashChange
 

@@ -9,6 +9,12 @@
   padding: $default-margin-size/2;
   position: relative;
 
+  > .instruction {
+    font-size: $large-font-size;
+    margin-top: 40px;
+    text-align: center;
+  }
+
   > .placeholder {
     @include display(flex);
     @include justify-content(center);
