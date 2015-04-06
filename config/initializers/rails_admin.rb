@@ -235,12 +235,8 @@ RailsAdmin.config do |config|
 
       field :email do
         formatted_value do 
-          if email = bindings[:object].email
-            bindings[:view].mail_to email, email
-          else
-            email = bindings[:object].tokens.where(name: :email_verification).first.try(:data).try(:[], :address)
-            bindings[:view].mail_to email, email
-          end
+          email = bindings[:object].email || bindings[:object].tokens.where(name: :email_verification).first.try(:data).try(:[], :address)
+          bindings[:view].mail_to email, email
         end
       end
 
@@ -271,7 +267,7 @@ RailsAdmin.config do |config|
     edit do
       field :full_name do
         visible do
-          bindings[:object].unicorn? ? true : false
+          bindings[:object].unicorn? || bindings[:object].full_name.blank? ? true : false
         end
       end
 
