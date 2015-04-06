@@ -57,8 +57,8 @@ CompanyList = React.createClass
     else
       CompanyStore
         .filterForUser(@props.user_id)
+        .sortBy (company) -> company.get('name')
         .map (company) -> company.get('uuid')
-        .sortBy (company) -> company.get('created_at')
 
 
   # Lifecycle methods
