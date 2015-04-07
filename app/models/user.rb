@@ -119,7 +119,7 @@ class User < ActiveRecord::Base
   end
 
   def email=(email)
-    self.emails = [Email.new(address: email)]
+    self.emails = [Email.new(address: email)] unless email.blank?      
   end
 
   def invite=(invite)
