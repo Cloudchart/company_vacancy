@@ -1,5 +1,6 @@
 class Tag < ActiveRecord::Base
   include Uuidable
+  include Admin::Tag
 
   before_validation do
     self.name = name.parameterize

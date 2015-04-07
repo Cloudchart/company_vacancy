@@ -1,6 +1,7 @@
 class Interview < ActiveRecord::Base
   include Uuidable
   include Sluggable
+  include Admin::Interview
 
   after_validation :generate_slug
 

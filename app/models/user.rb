@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   include Uuidable
   include Fullnameable
   include FriendlyId
+  include Admin::User
 
   attr_accessor :current_password
   attr_reader :invite

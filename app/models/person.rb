@@ -3,6 +3,7 @@ class Person < ActiveRecord::Base
   include Fullnameable
   include Tire::Model::Search
   include Tire::Model::Callbacks
+  include Admin::Person
 
   before_save :invalidate_verification!
 
