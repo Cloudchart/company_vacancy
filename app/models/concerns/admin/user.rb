@@ -28,7 +28,16 @@ module Admin::User
           end
         end
 
-        field :twitter
+        field :twitter do
+          formatted_value do 
+            if bindings[:object].twitter
+              bindings[:view].link_to "@#{bindings[:object].twitter}", "https://twitter.com/#{bindings[:object].twitter}"
+            else
+              nil
+            end
+          end
+        end
+
         field :system_roles
 
         field :companies do

@@ -10,8 +10,6 @@ module Admin::Pinboard
       end
 
       edit do
-        fields :title
-
         field :title do
           html_attributes do
             { autofocus: true }

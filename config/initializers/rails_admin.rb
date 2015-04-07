@@ -123,33 +123,31 @@ RailsAdmin.config do |config|
     member :merge do
       only ['User']
       link_icon 'icon-user'
+      http_methods { [:get, :post] }
 
       controller do
         proc do
-          users = User.available_for_merge(@object)
 
-          if users.size == 1
-            user = users.first
+          if request.get?
+            @users = User.available_for_merge(@object)
+          elsif request.post?
+            user = User.find(params[:user_id])
 
             User.transaction do
-              user.full_name = @object.full_name
-              user.email = @object.email
-              user.twitter = @object.twitter
-              user.avatar = @object.avatar
-              user.occupation = @object.occupation
-              user.company = @object.company
+              [:full_name, :twitter, :avatar, :occupation, :company].each do |attribute|
+                user.send(:"#{attribute}=", @object.send(attribute))
+              end
               user.authorized_at = Time.now
+              @object.emails.first.update(user: user) if @object.email
               @object.update(twitter: nil)
+
               user.save!
               @object.destroy
             end
 
             redirect_to edit_path(:user, user.id), notice: 'User has been merged'
-          elsif users.many?
-            # TODO: render custom partial
-          else
-            redirect_to index_path(:user), notice: 'Nothing happened'
           end
+
         end
       end
     end
