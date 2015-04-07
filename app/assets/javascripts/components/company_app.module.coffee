@@ -68,13 +68,13 @@ Component = React.createClass
     @state.readOnly || !@canEdit()
 
   getVisibleTabs: ->
-    visibleTabs = Immutable.Seq(['about'])
-
-    if !Timeline.isEmpty() || @canEdit()
-      visibleTabs = Immutable.Seq(['timeline']).concat(visibleTabs)
-    
-    visibleTabs = visibleTabs.concat(['users', 'settings']) if @canEdit()
-    visibleTabs
+     Immutable.OrderedMap(
+      timeline:  !Timeline.isEmpty() || @canEdit()
+      about:     true
+      users:     @canEdit()
+      settings:  @canEdit()
+    ).filter (visible) -> visible
+     .keySeq()
 
   getInitialTab: ->
     visibleTabs = @getVisibleTabs()
