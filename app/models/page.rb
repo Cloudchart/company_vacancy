@@ -1,6 +1,7 @@
 class Page < ActiveRecord::Base
   include Uuidable
   include Sluggable
+  include Admin::Page
 
   after_validation :generate_slug
 

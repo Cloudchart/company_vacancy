@@ -5,6 +5,7 @@ class Company < ActiveRecord::Base
   include Taggable
   include Tire::Model::Search
   include Tire::Model::Callbacks
+  include Admin::Company
 
   INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
   ROLES = ([:owner] + INVITABLE_ROLES).freeze

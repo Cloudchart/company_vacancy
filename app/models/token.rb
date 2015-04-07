@@ -1,5 +1,6 @@
 class Token < ActiveRecord::Base
   include Uuidable
+  include Admin::Token
 
   serialize :data
 

@@ -2,6 +2,7 @@ class Pin < ActiveRecord::Base
   include Uuidable
   include Trackable
   include Featurable
+  include Admin::Pin
 
   belongs_to :user
   belongs_to :parent, class_name: 'Pin'

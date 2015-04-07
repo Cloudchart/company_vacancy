@@ -1,5 +1,6 @@
 class Role < ActiveRecord::Base
   include Uuidable
+  include Admin::Role
 
   belongs_to :user
   belongs_to :owner, polymorphic: true

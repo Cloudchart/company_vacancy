@@ -12,285 +12,6 @@ RailsAdmin.config do |config|
   config.authorize_with :cancan, AdminAbility
   config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail >= 3.0.0
 
-  # Compamy
-  #
-  config.model 'Company' do
-    visible false
-  end
-
-  # Pin
-  # 
-  config.model 'Pin' do
-    label 'Insight'
-    label_plural 'Insights'
-    object_label_method :content
-
-    list do
-      sort_by :user
-      scopes [:insights]
-
-      field :user do
-        sort_reverse true
-        searchable [:first_name, :last_name]
-      end
-
-      field :content
-      field :is_featured, :boolean
-    end
-
-    edit do
-      field :is_featured, :boolean
-    end
-  end
-
-  # Feature
-  #
-  config.model 'Feature' do
-    list do
-      exclude_fields :uuid, :scope
-    end
-  end
-
-  # Interview
-  #
-  config.model 'Interview' do
-    list do
-      exclude_fields :uuid, :email, :ref_email, :slug, :whosaid
-      sort_by :created_at
-
-      field :name do
-        pretty_value { bindings[:view].mail_to bindings[:object].email, value }
-      end
-
-      field :ref_name do
-        pretty_value { bindings[:view].mail_to bindings[:object].ref_email, value }
-      end
-    end
-
-    edit do
-      exclude_fields :uuid, :slug
-    end
-  end
-
-  # Page
-  #
-  config.model 'Page' do
-    field :title
-    field :body, :wysihtml5 do
-      config_options html: true
-    end
-  end
-
-  # Person
-  #
-  config.model 'Person' do
-    object_label_method :full_name
-
-    list do
-      exclude_fields :uuid, :phone, :email
-
-      field :user do
-        pretty_value { bindings[:view].mail_to value.email, value.full_name if value }
-      end
-
-      field :company do
-        pretty_value { bindings[:view].link_to(value.name, bindings[:view].main_app.company_path(value)) }
-      end
-    end
-  end
-
-  # Pinboard
-  #
-  config.model 'Pinboard' do |variable|
-    list do
-      sort_by :title
-      fields :title, :user, :created_at, :updated_at
-    end
-
-    edit do
-      fields :title
-
-      field :title do
-        html_attributes do
-          { autofocus: true }
-        end
-      end
-    end
-  end
-
-  # Role
-  #
-  config.model 'Role' do
-    visible false
-    object_label_method :value
-  end
-
-  # Story
-  #
-  config.model 'Story' do
-    list do
-      sort_by :posts_stories_count
-      fields :name, :company, :posts_stories_count, :created_at
-
-      field :posts_stories_count do
-        sort_reverse true
-      end
-    end
-
-    edit do
-      fields :name
-
-      field :name do
-        html_attributes do
-          { autofocus: true }
-        end
-      end
-    end
-  end
-
-  # Tag
-  #
-  config.model 'Tag' do
-    list do
-      sort_by :taggings_count
-      fields :name, :is_acceptable, :taggings_count, :created_at
-
-      field :taggings_count do
-        sort_reverse true
-      end
-    end
-
-    edit do
-      fields :name, :is_acceptable
-
-      field :name do
-        html_attributes do
-          { autofocus: true }
-        end
-      end
-
-      field :is_acceptable do
-        html_attributes do
-          { checked:  bindings[:object].new_record? ? 'checked' : bindings[:object].is_acceptable }
-        end
-
-        default_value do
-          '1' if bindings[:object].new_record?
-        end
-      end
-    end
-
-  end
-
-  # Token
-  #
-  config.model 'Token' do
-    label 'Invite'
-    label_plural 'Invites'
-
-    list do
-      exclude_fields :owner, :updated_at
-      sort_by :created_at
-      scopes { [:admin_invites] }
-
-      field :uuid do
-        formatted_value { Cloudchart::RFC1751.encode(value) }
-        column_width 500
-        filterable false
-      end
-
-      field :name do
-        column_width 50
-      end
-
-      field :data do
-        formatted_value { value ? [value[:full_name], value[:email]].join(' – ') : nil }
-        filterable false
-      end
-
-      field :created_at do
-        column_width 50
-      end
-    end
-
-  end
-
-  # User
-  #
-  config.model 'User' do
-    object_label_method :full_name
-
-    list do
-      sort_by :created_at
-
-      field :first_name do
-        visible false
-      end
-
-      field :last_name do
-        visible false
-      end
-
-      field :full_name
-
-      field :email do
-        formatted_value do 
-          email = bindings[:object].email || bindings[:object].tokens.where(name: :email_verification).first.try(:data).try(:[], :address)
-          bindings[:view].mail_to email, email
-        end
-      end
-
-      field :system_roles
-      field :twitter
-
-      field :companies do
-        pretty_value { value.map { |company| bindings[:view].link_to(company.name, bindings[:view].main_app.company_path(company)) }.join(', ').html_safe }
-      end
-
-      field :created_at
-      field :authorized_at
-    end
-
-    create do
-      field :full_name do
-        required false
-      end
-
-      field :system_roles do
-        partial :system_roles
-      end
-
-      field :twitter
-      field :avatar
-    end
-
-    edit do
-      field :full_name do
-        visible do
-          bindings[:object].unicorn? || bindings[:object].full_name.blank? ? true : false
-        end
-      end
-
-      field :system_roles do
-        partial :system_roles
-      end
-
-      field :twitter
-
-      field :avatar do
-        visible do
-          bindings[:object].unicorn? ? true : false
-        end
-      end
-
-      field :authorized_at do
-        visible do
-          bindings[:object].authorized? ? true : false
-        end
-      end
-    end
-  end
-
   # Actions
   #
   config.actions do
@@ -395,6 +116,38 @@ RailsAdmin.config do |config|
           @object.update(authorized_at: Time.now)
           # TODO: add mailer
           redirect_to index_path(:user), notice: 'User has been authorized'
+        end
+      end
+    end
+
+    member :merge do
+      only ['User']
+      link_icon 'icon-user'
+      http_methods { [:get, :post] }
+
+      controller do
+        proc do
+
+          if request.get?
+            @users = User.available_for_merge(@object)
+          elsif request.post?
+            user = User.find(params[:user_id])
+
+            User.transaction do
+              [:full_name, :twitter, :avatar, :occupation, :company].each do |attribute|
+                user.send(:"#{attribute}=", @object.send(attribute))
+              end
+              user.authorized_at = Time.now
+              @object.emails.first.update(user: user) if @object.email
+              @object.update(twitter: nil)
+
+              user.save!
+              @object.destroy
+            end
+
+            redirect_to edit_path(:user, user.id), notice: 'User has been merged'
+          end
+
         end
       end
     end

@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   include Uuidable
   include Fullnameable
   include FriendlyId
+  include Admin::User
 
   attr_accessor :current_password
   attr_reader :invite
@@ -9,6 +10,8 @@ class User < ActiveRecord::Base
   # before_validation :build_blank_emails, unless: -> { emails.any? }
   before_validation :generate_password, if: -> { password.blank? }
   before_destroy :mark_emails_for_destruction
+
+  nilify_blanks only: [:twitter, :authorized_at]
 
   friendly_id :twitter, use: :slugged
 
@@ -50,7 +53,11 @@ class User < ActiveRecord::Base
 
   # validate :validate_email, on: :create
 
-  scope :unicorns, -> { joins { :system_roles }.where(roles: { value: 'unicorn'}) }
+  scope :unicorns, -> { joins(:system_roles).where(roles: { value: 'unicorn'}) }
+  scope :available_for_merge, -> user { 
+    where.not(uuid: user.id, authorized_at: nil)
+    .where(twitter: nil, first_name: user.first_name, last_name: user.last_name)
+  }
 
   class << self
     def create_with_twitter_omniauth_hash(hash)
@@ -113,7 +120,7 @@ class User < ActiveRecord::Base
   end
 
   def email=(email)
-    self.emails = [Email.new(address: email)]
+    self.emails = [Email.new(address: email)] unless email.blank?      
   end
 
   def invite=(invite)

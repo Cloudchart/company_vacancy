@@ -2,6 +2,7 @@ class Pinboard < ActiveRecord::Base
   include Uuidable
   include Tire::Model::Search
   include Tire::Model::Callbacks
+  include Admin::Pinboard
 
   ACCESS_RIGHTS = [:public, :protected, :private].freeze
   INVITABLE_ROLES = [:editor, :reader, :follower].freeze
