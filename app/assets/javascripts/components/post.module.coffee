@@ -12,6 +12,7 @@ PostsStoryStore     = require('stores/posts_story_store')
 VisibilityStore     = require('stores/visibility_store')
 PinStore            = require('stores/pin_store')
 UserStore           = require('stores/user_store.cursor')
+RoleStore           = require('stores/role_store.cursor')
 
 PostActions         = require('actions/post_actions')
 VisibilityActions   = require('actions/visibility_actions')
@@ -39,7 +40,7 @@ Post = React.createClass
   
   displayName: 'Post'
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics: 
     getCursor: (company_id) ->
@@ -47,6 +48,13 @@ Post = React.createClass
       users:  UserStore.cursor.items
       flags:  GlobalState.cursor(['stores', 'companies', 'flags', company_id])
 
+    queries:
+      system_roles: ->
+        """
+          Viewer {
+            system_roles
+          }
+        """
 
   # Component specifications
   #
@@ -66,6 +74,7 @@ Post = React.createClass
       isInEditMode:    !storeData.visibility
       arePinsExpanded: location.hash.slice(1) == 'expanded'
       titleFocused:    false
+      user:            UserStore.me()
 
   onGlobalStateChange: ->
     readOnly = @props.cursor.flags.get('is_read_only')
@@ -103,6 +112,13 @@ Post = React.createClass
     options.only_me = 'Only me'
     options
 
+  isEditor: ->
+    !!RoleStore.cursor.items
+      .find (role) =>
+        role.get('owner_id', null)    is null     and
+        role.get('owner_type', null)  is null     and
+        role.get('value')             is 'editor' and
+        role.get('user_id')           is @state.user.get('uuid')
 
   getViewModeOptions: ->
     view: 'View'
@@ -198,6 +214,11 @@ Post = React.createClass
 
   # Lifecycle Methods
   #
+  componentWillMount: ->
+    GlobalState.fetch(@getQuery('system_roles')).then =>
+      if @isEditor()
+        @setState isInEditMode: true
+
   componentDidMount: ->
     $(document).on 'keydown', @handleKeydown
     PostStore.on('change', @refreshStateFromStores)
