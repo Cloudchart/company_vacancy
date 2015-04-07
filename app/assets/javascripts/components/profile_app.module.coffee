@@ -6,6 +6,7 @@ ProfileInfo        = require('components/profile/info')
 PinsComponent      = require('components/pinboards/pins')
 CompaniesList      = require('components/company/list')
 UserFeed           = require('components/user/feed')
+Settings           = require('components/profile/settings')
 
 UserStore          = require('stores/user_store.cursor')
 PinStore           = require('stores/pin_store')
@@ -44,19 +45,16 @@ module.exports = React.createClass
             #{PinsComponent.getQuery('pins')},
             #{CompaniesList.getQuery('companies')}
           }
-        """
-        
+        """ 
 
   propTypes:
     uuid:     React.PropTypes.string.isRequired
 
-  getDefaultProps: ->
-    cursor: FavoriteStore.cursor.items
-
   getInitialState: ->
-    fetchDone:  false
-    currentTab: location.hash.substr(1) || null
-    isSyncing:  false
+    fetchDone:   false
+    currentTab:  location.hash.substr(1) || null
+    isSyncing:   false
+    visibleTabs: Immutable.Seq()
 
   fetchViewer: (options={}) ->
     GlobalState.fetch(@getQuery('viewer'), options)
@@ -69,6 +67,7 @@ module.exports = React.createClass
       @setState
         fetchDone:   true
         currentTab:  @getInitialTab()
+        visibleTabs: @getVisibleTabs()
 
   getStateFromStores: ->
     favorite: FavoriteStore.findByUser(@props.uuid)
@@ -89,11 +88,12 @@ module.exports = React.createClass
     @state.favorite
 
   getVisibleTabs: ->
-    Immutable.OrderedMap({
-      activity: UserFeed.isEmpty(),
-      insights: PinsComponent.isEmpty(@props.uuid),
-      companies: CompaniesList.isEmpty(@props.uuid)
-    }).filterNot (isEmpty) -> isEmpty
+    Immutable.OrderedMap(
+      activity:  !UserFeed.isEmpty()
+      insights:  !PinsComponent.isEmpty(@props.uuid)
+      companies: !CompaniesList.isEmpty(@props.uuid)
+      settings:  @cursor.viewer.get('uuid') == @props.uuid
+    ).filter (visible) -> visible
     .keySeq()
 
   getInitialTab: ->
@@ -109,7 +109,8 @@ module.exports = React.createClass
   #
   handleHashChange: ->
     currentTab = location.hash.substr(1)
-    @setState currentTab: currentTab
+    if @state.visibleTabs.contains(currentTab)
+      @setState currentTab: currentTab
 
   handleFollowClick: ->
     @setState(isSyncing: true)
@@ -144,7 +145,7 @@ module.exports = React.createClass
   # Renderers
   #
   renderTabs: ->
-    @getVisibleTabs().map (tabName) =>
+    @state.visibleTabs.map (tabName) =>
       <li key = { tabName } className = { @getMenuOptionClassName(tabName) } >
         <a href = { location.pathname + "#" + tabName } className="for-group">
           { tabName }
@@ -160,7 +161,7 @@ module.exports = React.createClass
     </nav>
 
   renderFollowButton: ->
-    return null if @cursor.user.get('uuid') == @cursor.viewer.get('uuid')
+    return null if @props.uuid == @cursor.viewer.get('uuid')
 
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
@@ -179,6 +180,8 @@ module.exports = React.createClass
         <CompaniesList user_id = { @props.uuid } />
       when 'activity'
         <UserFeed />
+      when 'settings'
+        <Settings uuid = { @props.uuid } />
 
 
   render: ->
