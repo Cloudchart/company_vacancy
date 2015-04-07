@@ -35,11 +35,9 @@ nav.tabs {
     }
 
     > a {
-      @include align-items(center);
-      @include display(flex);
-      @include justify-content(center);
-
       height: 100%;
+      line-height: $tabs-height;
+      text-align: center;
       width: 100%;
     }
   }
