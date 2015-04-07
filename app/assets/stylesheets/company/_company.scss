@@ -301,6 +301,36 @@ main.company {
       padding: $gutter-size;
       position: relative;
       width: 100%;
+
+      > .about {
+        background-color: $card-color;
+        position: relative;
+        margin: 0 auto;
+        width: 800px;
+
+        > button:first-of-type {
+          @include position(absolute, $default-margin-size $default-margin-size 0 0);
+        
+          &.edit-mode {
+            color: $link-color;
+            font-size: $small-font-size;
+            text-transform: uppercase;
+          }
+
+          > .cc-times {
+            color: $link-color;
+            font-size: $huge-font-size;
+            width: 20px;
+          }
+        }
+
+        > button.cc {
+          margin-bottom: $default-margin-size;
+          padding: 0 20px;
+          position: relative;
+          left: calc(100% - 80px);
+        }
+      }
     }
   }
 }

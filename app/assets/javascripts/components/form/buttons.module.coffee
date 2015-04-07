@@ -45,27 +45,6 @@ StandardButton = React.createClass
     text:      null
     type:      "button"
 
-  componentDidUpdate: ->
-    button = @getDOMNode()
-
-    setTransition = (value) ->
-      button.style.transition = button.style.webkitTransition = button.style.mozTransition = value
-
-    prevWidth = getComputedStyle(button).width
-    button.style.width = 'auto'
-    endWidth = getComputedStyle(button).width
-    button.style.width = prevWidth
-    button.offsetWidth
-    setTransition('width .2s ease-in-out')
-    button.style.width = endWidth
-
-    handleTransitionEnd = (event) ->
-      if event.propertyName == 'width'
-        setTransition('')
-        button.removeEventListener 'transitionend', handleTransitionEnd, false
-
-    button.addEventListener 'transitionend', handleTransitionEnd, false
-
   render: ->
     children = []
     if @props.text
@@ -92,6 +71,28 @@ SyncButton = React.createClass
     syncClassName:     null
     syncIconClass:     "fa-spinner"
     showSyncAnimation: true
+
+  componentDidUpdate: ->
+    button = @getDOMNode()
+
+    setTransition = (value) ->
+      button.style.transition = button.style.webkitTransition = button.style.mozTransition = value
+
+    prevWidth = getComputedStyle(button).width
+    button.style.width = 'auto'
+    endWidth = getComputedStyle(button).width
+    button.style.width = prevWidth
+    button.offsetWidth
+    setTransition('width .2s ease-in-out')
+    button.style.width = endWidth
+
+    handleTransitionEnd = (event) ->
+      if event.propertyName == 'width'
+        setTransition('')
+        button.removeEventListener 'transitionend', handleTransitionEnd, false
+
+    button.addEventListener 'transitionend', handleTransitionEnd, false
+
 
   render: ->
     props = _.omit(@props, ["sync", "syncText", "syncClass", "syncIcon"])

@@ -18,6 +18,7 @@ Timeline        = require('components/company/timeline')
 BlockEditor     = require('components/editor/block_editor')
 Settings        = require('components/company/settings')
 AccessRights    = require('components/company/access_rights')
+StandardButton  = require('components/form/buttons').StandardButton
 
 # Main
 #
@@ -36,6 +37,7 @@ Component = React.createClass
         meta:                GlobalState.cursor(['stores', 'companies', 'meta', @props.uuid])
         flags:               GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
       currentTab:            location.hash.substr(1) || null
+      isEditingAbout:        false
       isAccessRightsLoading: false
       postsLoaded:           false
 
@@ -117,6 +119,9 @@ Component = React.createClass
   handleViewModeChange: (data) ->
     @props.cursor.set('mode', if data.readOnly then 'view' else 'edit')
 
+  handleAboutViewModeChange: (value) ->
+    @setState(isEditingAbout: value == 'edit')
+
   handleAccessRightsDone: -> 
     setTimeout =>
       @setState(isAccessRightsLoading: false)
@@ -156,10 +161,31 @@ Component = React.createClass
     .toArray()
 
   renderAccessRights: ->
-    if @isAccessRightsLoaded()
-      <AccessRights uuid={@props.uuid} />
+    return null unless @isAccessRightsLoaded()
+    
+    <AccessRights uuid={@props.uuid} />
+
+  renderEditControl: ->
+    return null unless @canEdit()
+
+    if @state.isEditingAbout
+      <StandardButton 
+        className = "transparent"
+        iconClass = "cc-icon cc-times"
+        onClick   = { => @handleAboutViewModeChange("view") } />
     else
-      <div />  
+      <StandardButton 
+        className = "edit-mode transparent"
+        onClick   = { => @handleAboutViewModeChange("edit") }
+        text      = "edit" />
+
+  renderOkButton: ->
+    return null unless @state.isEditingAbout
+
+    <StandardButton 
+      className = "cc"
+      onClick   = { => @handleAboutViewModeChange("view") }
+      text      = "OK" />
 
   renderMenu: ->
     <nav className="tabs">
@@ -175,13 +201,17 @@ Component = React.createClass
           company_id = { @state.company.uuid }
           readOnly   = { @isInViewMode() } />
       when 'about'
-        <BlockEditor
-          company_id          = { @props.uuid }
-          owner_id            = { @props.uuid }
-          owner_type          = "Company"
-          editorIdentityTypes = { ['Person', 'Picture', 'Paragraph'] }
-          classForArticle     = "editor company company-2_0"
-          readOnly            = { @isInViewMode() } />
+        <section className="about">
+          <BlockEditor
+            company_id          = { @props.uuid }
+            owner_id            = { @props.uuid }
+            owner_type          = "Company"
+            editorIdentityTypes = { ['Person', 'Picture', 'Paragraph'] }
+            classForArticle     = "editor company company-2_0"
+            readOnly            = { !@state.isEditingAbout } />
+          { @renderEditControl() }
+          { @renderOkButton() }
+        </section>
       when 'users'
         @renderAccessRights()
       when 'settings'
