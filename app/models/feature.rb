@@ -13,6 +13,9 @@ class Feature < ActiveRecord::Base
 
   validates :insight, presence: true
 
+  scope :insights, -> { where(featurable_type: "Pin") }
+  scope :only_active, -> { where(is_active: true) }
+
   def assigned_image
     image_stored? ? image : insight.post.pictures.first.try(:image)
   end

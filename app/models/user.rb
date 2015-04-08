@@ -76,8 +76,8 @@ class User < ActiveRecord::Base
     end
   end # of class methods
 
-  def featured_insights
-    Pin.featured
+  def insight_features
+    Feature.insights.only_active
   end
 
   def followed_activities
