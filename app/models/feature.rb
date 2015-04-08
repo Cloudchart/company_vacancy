@@ -13,13 +13,6 @@ class Feature < ActiveRecord::Base
 
   validates :insight, presence: true
 
-  # def image
-  #   # image || insight.post.pictures.first.try(:image)
-  #   # insight.post.pictures.first.try(:image)
-  #   # image_stored? ? super : insight.post.pictures.first.try(:image)
-  #   super
-  # end
-
   def assigned_image
     image_stored? ? image : insight.post.pictures.first.try(:image)
   end

@@ -5,7 +5,11 @@ module Admin::Feature
 
     rails_admin do
       list do
-        field :insight
+        field :insight do
+          pretty_value do
+            bindings[:view].link_to bindings[:object].insight.content, bindings[:view].main_app.post_path(bindings[:object].insight.post)
+          end
+        end
 
         field :assigned_title do
           label 'Title'
