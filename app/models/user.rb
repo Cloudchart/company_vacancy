@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
 
   # before_validation :build_blank_emails, unless: -> { emails.any? }
   before_validation :generate_password, if: -> { password.blank? }
+  before_save :nillify_last_sign_in_at, if: -> { twitter_changed? }
   before_destroy :mark_emails_for_destruction
 
   nilify_blanks only: [:twitter, :authorized_at]
@@ -171,6 +172,10 @@ private
 
   def generate_password
     self.password = SecureRandom.uuid
+  end
+
+  def nillify_last_sign_in_at
+    self.last_sign_in_at = nil
   end
 
   # def build_blank_emails

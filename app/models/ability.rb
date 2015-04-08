@@ -1,12 +1,12 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user)
-    return unless user
+  def initialize(current_user)
+    return unless current_user
 
     # Anyone
     #
-    if user.guest?
+    if current_user.guest?
       # can :read, :invite
 
       # can :read, Event
@@ -39,43 +39,50 @@ class Ability
       can :create, Tag
       can [:read, :create], Pinboard
       can [:read, :create], Pin
-      can :read, User
 
       can [:read, :search], Company, is_published: true
-      can [:update, :settings], User, uuid: user.id
-      can [:update, :destroy, :settings], Pinboard, user_id: user.id
-      can :destroy, Email, user_id: user.id
+      can [:update, :destroy, :settings], Pinboard, user_id: current_user.id
+      can :destroy, Email, user_id: current_user.id
+
+      can :read, User do |user|
+        !user.guest?
+      end
+
+      can [:update, :settings], User do |user|
+        user.id == current_user.id || 
+        (user.last_sign_in_at.blank? && current_user.editor?)
+      end
 
       can [:update, :destroy], Pin do |pin|
-        pin.user_id == user.id || user.editor?
+        pin.user_id == current_user.id || current_user.editor?
       end
       
       can :create, Company do |company| 
-        user.editor?
+        current_user.editor?
       end
 
       can :manage, Company do |company|
-        owner?(user, company)
+        owner?(current_user, company)
       end
 
       can [:read, :update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file, :reposition_blocks], Company do |company|
-        editor?(user, company)
+        editor?(current_user, company)
       end
 
       can [:read, :finance], Company do |company|
-        trusted_reader?(user, company)
+        trusted_reader?(current_user, company)
       end
 
       cannot :follow, Company do |company|
-        user.companies.map(&:id).include?(company.id)
+        current_user.companies.map(&:id).include?(company.id)
       end
 
       can :follow, Company do |company|
-        !user.companies.map(&:id).include?(company.id)
+        !current_user.companies.map(&:id).include?(company.id)
       end
 
-      can [:follow, :unfollow], User do |followable_user|
-        user != followable_user
+      can [:follow, :unfollow], User do |user|
+        current_user != user
       end
 
       # TODO: test this
@@ -84,28 +91,28 @@ class Ability
       end
 
       can :manage, [Person, Vacancy, Block, CloudBlueprint::Chart, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
-        owner_or_editor?(user, resource.company)
+        owner_or_editor?(current_user, resource.company)
       end
 
       can :manage_company_invites, Company do |company|
-        owner_or_editor?(user, company)
+        owner_or_editor?(current_user, company)
       end
 
       can [:update, :destroy], Role do |role|
-        owner_or_editor?(user, role.owner)
+        owner_or_editor?(current_user, role.owner)
       end
 
       can :manage, Visibility do |visibility|
-        owner?(user, visibility.owner.try(:owner))
+        owner?(current_user, visibility.owner.try(:owner))
       end
 
       can :read, Post do |post|
         (post.company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')) ||
-        (post.visibility.try(:value) == 'trusted' && trusted_reader?(user, post.company))
+        (post.visibility.try(:value) == 'trusted' && trusted_reader?(current_user, post.company))
       end
 
       can :manage_pinboard_invites, Pinboard do |pinboard|
-        user.id == pinboard.user_id || editor?(user, pinboard)
+        current_user.id == pinboard.user_id || editor?(current_user, pinboard)
       end
 
     end

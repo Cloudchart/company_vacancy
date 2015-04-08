@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150402152313) do
+ActiveRecord::Schema.define(version: 20150408151702) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -451,6 +451,7 @@ ActiveRecord::Schema.define(version: 20150402152313) do
     t.string   "company"
     t.datetime "authorized_at"
     t.string   "slug"
+    t.datetime "last_sign_in_at"
   end
 
   add_index "users", ["slug"], name: "index_users_on_slug", unique: true, using: :btree
