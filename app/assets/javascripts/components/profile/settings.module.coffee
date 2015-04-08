@@ -36,7 +36,11 @@ module.exports  = React.createClass
         """
 
   propTypes:
-    uuid: React.PropTypes.string.isRequired
+    uuid:       React.PropTypes.string.isRequired
+    withEmails: React.PropTypes.bool
+
+  getDefaultProps: ->
+    withEmails: false
 
   getInitialState: ->
     attributes:  Immutable.Map()
@@ -47,8 +51,8 @@ module.exports  = React.createClass
     submitText:  'Update settings'
     isSyncing:   false
 
-  fetch: ->
-    GlobalState.fetch(@getQuery('user'), id: @props.uuid).then =>
+  fetch: (options = {}) ->
+    GlobalState.fetch(@getQuery('user'), _.extend(options, id: @props.uuid)).then =>
       @handleFetchDone()
 
 
@@ -120,6 +124,8 @@ module.exports  = React.createClass
 
   handleSubmitDone: ->
     setTimeout =>
+      @fetch(force: true)
+
       @setState
         isSyncing:   false
         formUpdated: false
@@ -191,6 +197,8 @@ module.exports  = React.createClass
     </footer>
 
   renderEmails: ->
+    return null unless @props.withEmails
+
     <Emails 
       emails              = { @getUserEmails() }
       verification_tokens = { @getEmailUserTokens() } />

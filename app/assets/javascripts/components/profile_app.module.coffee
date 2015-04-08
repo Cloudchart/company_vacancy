@@ -48,7 +48,10 @@ module.exports = React.createClass
         """ 
 
   propTypes:
-    uuid:     React.PropTypes.string.isRequired
+    uuid:   React.PropTypes.string.isRequired
+
+  getDefaultProps: ->
+    cursor: UserStore.cursor.items
 
   getInitialState: ->
     fetchDone:   false
@@ -92,7 +95,7 @@ module.exports = React.createClass
       activity:  !UserFeed.isEmpty()
       insights:  !PinsComponent.isEmpty(@props.uuid)
       companies: !CompaniesList.isEmpty(@props.uuid)
-      settings:  @cursor.viewer.get('uuid') == @props.uuid
+      settings:  @cursor.user.get('is_editable')
     ).filter (visible) -> visible
     .keySeq()
 
@@ -181,7 +184,8 @@ module.exports = React.createClass
       when 'activity'
         <UserFeed />
       when 'settings'
-        <Settings uuid = { @props.uuid } />
+        <Settings uuid = { @props.uuid } 
+          withEmails = { @cursor.viewer.get('uuid') == @cursor.user.get('uuid') } />
 
 
   render: ->
