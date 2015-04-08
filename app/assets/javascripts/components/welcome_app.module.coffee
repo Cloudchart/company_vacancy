@@ -109,7 +109,7 @@ module.exports = React.createClass
   render: ->
     return null unless @state.isLoaded
 
-    <Carousel>
+    <Carousel withSlideshow = { true } >
       { @renderPosts() }
     </Carousel>
     

@@ -8,20 +8,37 @@ module.exports = React.createClass
   # Component Specifications
   # 
   propTypes:
-    className:      React.PropTypes.string
+    className:     React.PropTypes.string
+    delay:         React.PropTypes.number
+    withSlideshow: React.PropTypes.bool
 
   getDefaultProps: ->
     className:      ""
+    delay:          7000
+    withSlideshow:  false
 
   getInitialState: ->
-    position:      0
-    isAnimating:   false
+    position:       0
+    isSliding:      false
+    isTransitionOn: true
+    isSlideshowOn:  @props.withSlideshow
 
 
   # Helpers
   #
+  adjustOffset: ->
+    if @state.position == -1 || @state.position == @getPositionsNumber()
+      @setState
+        isTransitionOn: false
+        position:       (@state.position + @getPositionsNumber()) % @getPositionsNumber()
+      setTimeout =>
+        @setState(isTransitionOn: true)
+      , 10
+
   getContainerLeft: ->
-    -@state.position * 100/@getSlidesNumber()
+    slideOffset = if @props.withSlideshow then 1 else 0
+
+    -(@state.position + slideOffset) * 100/@getSlidesNumber()
 
   getContainerCSS: ->
     transform = "translate3d(#{@getContainerLeft()}%, 0px, 0px)"
@@ -31,31 +48,70 @@ module.exports = React.createClass
       width:               "#{(@getSlidesNumber()) * 100}%"
 
   getSlidesNumber: ->
+    @props.children.length + (if @props.withSlideshow then 2 else 0)
+
+  getPositionsNumber: ->
     @props.children.length
 
-  goToPosition: (newPosition) ->
-    return null if @state.isAnimating || newPosition == @state.position
+  getSlides: ->
+    if @props.withSlideshow && @getPositionsNumber() > 1
+      preSlide = React.addons.cloneWithProps(@props.children[@getPositionsNumber() - 1])
+      postSlide = React.addons.cloneWithProps(@props.children[0])
+
+      [preSlide].concat(@props.children, postSlide)
+    else
+      @props.children
+
+  navigate: (direction) ->
+    return null if @state.isSliding
+
+    newPosition = if direction == 'prev'
+      @state.position - 1
+    else if direction == 'next'
+      @state.position + 1
 
     @setState
-      isAnimating: true
-      position:    newPosition
+      isSliding: true
+      position: newPosition
+
+  goToPosition: (newPosition) ->
+    return null if @state.isSliding || newPosition == @state.position
+
+    @setState
+      isSliding:     true
+      isSlideshowOn: false
+      position:      newPosition
+
 
   # Handlers
   #
   handleClick: (index) ->
     @goToPosition(index)
 
+
   # Lifecycle methods
   #
   componentDidMount: ->
     $(@refs.container.getDOMNode()).on 'transitionend webkitTransitionEnd oTransitionEnd', =>
-      @setState(isAnimating: false)
+      @setState(isSliding: false)
+
+      @adjustOffset()
+
+    startSlideshow = =>
+      setTimeout =>
+        if @state.isSlideshowOn
+          @navigate('next')
+          startSlideshow()
+      , @props.delay
+
+    if @props.withSlideshow && @getPositionsNumber() > 1
+      startSlideshow()
 
 
   # Renderers
   #
   renderNavigation: ->
-    return null unless @props.children.length > 1
+    return null unless @getPositionsNumber() > 1
 
     <ul className="navigation">
       { @renderSlideLinks() }
@@ -73,7 +129,7 @@ module.exports = React.createClass
     slideStyle =
       width: "#{100/@getSlidesNumber()}%"
 
-    @props.children.map (child, index) ->
+    @getSlides().map (child, index) ->
       <li key={index} style={ slideStyle }>
         { child }
       </li>
@@ -81,6 +137,8 @@ module.exports = React.createClass
 
   render: ->
     className = "carousel #{@props.className}".trim()
+
+    className += ' no-transition' unless @state.isTransitionOn
 
     <div className={ className }>
       <ul className="container" ref="container" style={ @getContainerCSS() }>

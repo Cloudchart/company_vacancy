@@ -46,7 +46,7 @@
     }
   }
 
-   &.no-animation {
+  &.no-transition {
     > ul.container {
       @include transition(none);
     }
