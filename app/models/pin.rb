@@ -4,6 +4,8 @@ class Pin < ActiveRecord::Base
   include Featurable
   include Admin::Pin
 
+  nilify_blanks only: [:content]
+
   belongs_to :user
   belongs_to :parent, class_name: 'Pin'
   belongs_to :pinboard
@@ -11,10 +13,11 @@ class Pin < ActiveRecord::Base
   belongs_to :post, foreign_key: :pinnable_id
 
   has_many :children, class_name: 'Pin', foreign_key: :parent_id
+  has_many :features, inverse_of: :insight
 
   validates :content, presence: true, if: :should_validate_content_presence?
 
-  scope :insights, -> { where.not(content: '').where.not(content: nil) }
+  scope :insights, -> { where.not(content: nil).where.not(content: nil) }
 
   def should_validate_content_presence?
     @update_by.present? && user_id != @update_by.uuid

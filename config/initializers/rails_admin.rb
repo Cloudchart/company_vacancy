@@ -171,13 +171,13 @@ RailsAdmin.config do |config|
       except ['Person']
     end
     show_in_app do
-      except ['User', 'Token', 'Person', 'Tag', 'Story', 'Pinboard']
+      except ['User', 'Token', 'Person', 'Tag', 'Story', 'Pinboard', 'Feature']
     end
     history_index do
-      except ['User', 'Token', 'Person', 'Story', 'Pinboard']
+      except ['User', 'Token', 'Person', 'Story', 'Pinboard', 'Feature']
     end
     history_show do
-      except ['User', 'Token', 'Person', 'Story', 'Pinboard']
+      except ['User', 'Token', 'Person', 'Story', 'Pinboard', 'Feature']
     end
   end
 

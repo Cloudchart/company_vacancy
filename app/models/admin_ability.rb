@@ -11,7 +11,7 @@ class AdminAbility
       can [:read, :create, :update, :make_unicorns], User
       can [:read, :create], Story
       can [:read, :create], Pinboard
-      can [:read, :destroy], Feature
+      can [:manage], Feature
 
       can :manage, [Interview, Page, Tag, Token]
 

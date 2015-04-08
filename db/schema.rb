@@ -175,11 +175,15 @@ ActiveRecord::Schema.define(version: 20150408151702) do
   add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
 
   create_table "features", primary_key: "uuid", force: true do |t|
-    t.string   "featurable_id",   limit: 36, null: false
-    t.string   "featurable_type",            null: false
+    t.string   "featurable_id",   limit: 36,                 null: false
+    t.string   "featurable_type",                            null: false
     t.string   "scope"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "title"
+    t.string   "category"
+    t.string   "image_uid"
+    t.boolean  "is_active",                  default: false
   end
 
   add_index "features", ["featurable_id", "featurable_type"], name: "index_features_on_featurable_id_and_featurable_type", using: :btree
