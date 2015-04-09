@@ -141,7 +141,7 @@ Post = React.createClass
     if pinnersNumber > 0 then "+ #{pinnersNumber} others pinned this post" else null
 
   getInsightsNumber: ->
-    PinStore.filterInsightsForPost(@props.id).size
+    PinStore.filterInsightsForPost(@props.id).size || 0
 
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
@@ -216,7 +216,7 @@ Post = React.createClass
   #
   componentWillMount: ->
     GlobalState.fetch(@getQuery('system_roles')).then =>
-      if @isEditor()
+      if @isEditor() && !@props.cursor.flags.get('is_read_only')
         @setState isInEditMode: true
 
   componentDidMount: ->
@@ -295,7 +295,8 @@ Post = React.createClass
       text      = "Show All #{@getInsightsNumber()}" />
 
   renderPins: ->
-    insightsNumber = @getInsightsNumber() || 0
+    insightsNumber = @getInsightsNumber()
+
     return null if (insightsNumber == 0 || @state.isInEditMode)
 
     className = cx("post-pins": true, expanded: @state.arePinsExpanded)
