@@ -7,10 +7,15 @@ UserStore       = require('stores/user_store.cursor')
 CompanyStore    = require('stores/company_store.cursor')
 PinStore        = require('stores/pin_store')
 
+UserSyncApi     = require('sync/user_sync_api')
+
 pluralize       = require('utils/pluralize')
 
 AutoSizingInput = require('components/form/autosizing_input')
-Avatar          = require('components/avatar')
+PersonAvatar    = require('components/shared/person_avatar')
+
+KnownAttributes = Immutable.Seq(['avatar_url'])
+
 
 module.exports  = React.createClass
 
@@ -30,14 +35,39 @@ module.exports  = React.createClass
           }
         """
 
+      fetching_user: ->
+        """
+          User
+        """
+
   propTypes:
     uuid:     React.PropTypes.string.isRequired
+
+  getDefaultProps: ->
+    cursor: UserStore.cursor.items
+
+  getInitialState: ->
+    attributes: Immutable.Map()
+    fetchDone:  false
+
+  fetch: ->
+    GlobalState.fetch(@getQuery('user'), id: @props.uuid).then =>
+      @handleFetchDone()
 
 
   # Helpers
   #
   isLoaded: ->
     @cursor.user.deref(false)
+
+  handleFetchDone: ->
+    @setState
+      attributes: @getAttributesFromCursor()
+
+  getAttributesFromCursor: ->
+    Immutable.Map().withMutations (attributes) =>
+      KnownAttributes.forEach (name) =>
+        attributes.set(name, @state.attributes.get(name) || @cursor.user.get(name, '') || '')
 
   getInsightsCount: ->
     count = PinStore
@@ -54,6 +84,22 @@ module.exports  = React.createClass
     if count > 0
       pluralize(count, 'company', 'companies')
 
+  update: (attributes) ->
+    UserSyncApi.update(@cursor.user, @state.attributes.toJSON()).then @handleSubmitDone, @handleSubmitFail
+
+
+  # Handlers
+  #
+  handleAvatarChange: (file) ->
+    newAttributes = @state.attributes.withMutations (attributes) ->
+      attributes.remove('remove_avatar').set('avatar', file).set('avatar_url', URL.createObjectURL(file))
+
+    @setState(attributes: newAttributes)
+    @update(newAttributes)
+
+  handleSubmitDone: ->
+    GlobalState.fetch(@getQuery("fetching_user"), force: true, id: @props.uuid)
+    
 
   # Lifecycle methods
   #
@@ -61,6 +107,7 @@ module.exports  = React.createClass
     @cursor = 
       user:       UserStore.cursor.items.cursor(@props.uuid)
 
+    if @isLoaded() then @handleFetchDone() else @fetch() 
 
   # Renderers
   #
@@ -91,11 +138,12 @@ module.exports  = React.createClass
     return null unless @isLoaded()
 
     <section className="info">
-      <aside>
-        <Avatar 
-          avatarURL = { @cursor.user.get('avatar_url') }
-          value     = { @cursor.user.get('full_name') } />
-      </aside>
+      <PersonAvatar
+        avatarURL  =  { @state.attributes.get('avatar_url') }
+        onChange   =  { @handleAvatarChange }
+        readOnly   =  { !@cursor.user.get('is_editable') }
+        value      =  { @cursor.user.get('full_name') }
+        withCamera =  { true } />
       <section className="personal">
         <h1> { @cursor.user.get('full_name') } </h1>
         { @renderOccupation() }

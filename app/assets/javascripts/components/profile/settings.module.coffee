@@ -10,12 +10,11 @@ TokenStore      = require('stores/token_store.cursor')
 UserSyncApi     = require('sync/user_sync_api')
 
 Emails          = require('components/profile/emails')
-PersonAvatar    = require('components/shared/person_avatar')
 Field           = require('components/form/field')
 SyncButton      = require('components/form/buttons').SyncButton
 
 
-KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company', 'avatar_url'])
+KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company'])
 
 
 module.exports  = React.createClass
@@ -101,20 +100,6 @@ module.exports  = React.createClass
       attributes:  attributes.set(name, value)
       errors:      @state.errors.set(name, [])
 
-  handleAvatarChange: (file) ->
-    @setState
-      formUpdated: true
-      submitText: 'Update settings'
-      attributes: @state.attributes.withMutations (attributes) ->
-        attributes.remove('remove_avatar').set('avatar', file).set('avatar_url', URL.createObjectURL(file))
-  
-  handleAvatarRemove: ->
-    @setState
-      formUpdated: true
-      submitText: 'Update settings'
-      attributes: @state.attributes.withMutations (attributes) ->
-        attributes.remove('avatar').remove('avatar_url').set('remove_avatar', true)
-
   handleSubmit: (event) ->
     event.preventDefault()
 
@@ -156,13 +141,6 @@ module.exports  = React.createClass
 
   # Renderers
   #
-  renderAvatar: ->
-    <PersonAvatar
-      avatarURL =  @state.attributes.get('avatar_url')
-      onChange  =  @handleAvatarChange
-      onRemove  =  @handleAvatarRemove
-      value     =  @state.attributes.get('full_name') />
-
   renderFullNameInput: ->
     <Field  
       title    = 'Full Name'
@@ -209,7 +187,6 @@ module.exports  = React.createClass
 
     <form className="settings" onSubmit={ @handleSubmit } >
       <fieldset>
-        { @renderAvatar() }
         { @renderFullNameInput() }
         { @renderOccupationInput() }
         { @renderCompanyInput() }
