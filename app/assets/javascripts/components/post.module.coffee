@@ -155,6 +155,12 @@ Post = React.createClass
     else
       ''
 
+  getTimelineUrl: ->
+    @state.company.get('company_url') + "#" + @props.id
+
+  goToTimeline: ->
+    location.href = @getTimelineUrl()
+
 
   # Handlers
   #
@@ -184,7 +190,7 @@ Post = React.createClass
 
   handleOkClick: (event) ->
     this.refs.okButton.getDOMNode().focus();
-    location.href = @state.company.company_url + "#" + @props.id
+    @goToTimeline()
     
     unless @state.visibility
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: 'public' })
@@ -193,7 +199,12 @@ Post = React.createClass
     if $(@refs.container.getDOMNode()).find(':focus').length > 0
       if event.metaKey && event.keyCode == 13
         event.preventDefault()
-        @handleOkClick()
+        @goToTimeline()
+
+    if $(@refs.container.getDOMNode()).find(':focus').length == 0
+      if event.keyCode == 27
+        event.preventDefault()
+        @goToTimeline()
 
   handleVisibilityChange: (value) ->
     if @state.visibility and @state.visibility.value isnt value
@@ -247,7 +258,9 @@ Post = React.createClass
   renderCompanyName: ->
     return null unless @state.company
 
-    <div className="company-name">{ @state.company.name }</div>
+    <div className="company-name">
+      <a href={ @getTimelineUrl() }>{ @state.company.name }</a>
+    </div>
 
   renderVisibilityDropdown: ->
     return null unless @state.isInEditMode
@@ -275,7 +288,7 @@ Post = React.createClass
         iconClass = "cc-icon cc-times"
         onClick   = { => @handleViewModeChange("view") } />
     else
-      <a href={ @state.company.get('company_url') + "#" + @props.id }>
+      <a href={ @getTimelineUrl() }>
         <i className="cc-icon cc-times"></i>
       </a>
 
