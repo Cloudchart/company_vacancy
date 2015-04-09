@@ -31,7 +31,7 @@ module.exports = React.createClass
 
   displayName: 'Pin'
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+  mixins: [GlobalState.query.mixin]
 
   propTypes:
     uuid: React.PropTypes.string.isRequired

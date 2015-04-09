@@ -51,7 +51,7 @@ module.exports = React.createClass
     uuid:   React.PropTypes.string.isRequired
 
   getDefaultProps: ->
-    cursor: UserStore.cursor.items
+    cursor: FavoriteStore.cursor.items
 
   getInitialState: ->
     fetchDone:   false
