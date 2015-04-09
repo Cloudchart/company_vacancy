@@ -35,8 +35,11 @@ module.exports = React.createClass
         @setState(isTransitionOn: true)
       , 10
 
+  showSlideshow: ->
+    @props.withSlideshow && @getPositionsNumber() > 1
+
   getContainerLeft: ->
-    slideOffset = if @props.withSlideshow then 1 else 0
+    slideOffset = if @showSlideshow() then 1 else 0
 
     -(@state.position + slideOffset) * 100/@getSlidesNumber()
 
@@ -48,13 +51,13 @@ module.exports = React.createClass
       width:               "#{(@getSlidesNumber()) * 100}%"
 
   getSlidesNumber: ->
-    @props.children.length + (if @props.withSlideshow then 2 else 0)
+    @props.children.length + (if @showSlideshow() then 2 else 0)
 
   getPositionsNumber: ->
     @props.children.length
 
   getSlides: ->
-    if @props.withSlideshow && @getPositionsNumber() > 1
+    if @showSlideshow()
       preSlide = React.addons.cloneWithProps(@props.children[@getPositionsNumber() - 1])
       postSlide = React.addons.cloneWithProps(@props.children[0])
 
@@ -104,7 +107,7 @@ module.exports = React.createClass
           startSlideshow()
       , @props.delay
 
-    if @props.withSlideshow && @getPositionsNumber() > 1
+    if @showSlideshow()
       startSlideshow()
 
 
