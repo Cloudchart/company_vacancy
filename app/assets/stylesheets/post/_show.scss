@@ -2,6 +2,7 @@ main.post {
   background-color: $background-color;
 
   article.post-container {
+    @include align-items(flex-start);
     @include display(flex);
     @include flex-wrap(wrap);
     @include justify-content(space-between);
