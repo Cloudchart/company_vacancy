@@ -91,6 +91,12 @@ module.exports = React.createClass
   handleClick: (index) ->
     @goToPosition(index)
 
+  handleMouseOver: ->
+    @setState(isSlideshowOn: false)
+
+  handleMouseOut: ->
+    @setState(isSlideshowOn: true)
+
 
   # Lifecycle methods
   #
@@ -101,10 +107,9 @@ module.exports = React.createClass
       @adjustOffset()
 
     startSlideshow = =>
-      setTimeout =>
-        if @state.isSlideshowOn
-          @navigate('next')
-          startSlideshow()
+      setTimeout => 
+        @navigate('next') if @state.isSlideshowOn
+        startSlideshow()
       , @props.delay
 
     if @showSlideshow()
@@ -124,7 +129,7 @@ module.exports = React.createClass
     @props.children.map (child, index) =>
       linkClassName = cx(active: index == @state.position)
 
-      <li key={ index } >
+      <li key={ index }>
         <button className={ linkClassName } onClick={ @handleClick.bind(@, index) } />
       </li>
 
@@ -143,8 +148,12 @@ module.exports = React.createClass
 
     className += ' no-transition' unless @state.isTransitionOn
 
-    <div className={ className }>
-      <ul className="container" ref="container" style={ @getContainerCSS() }>
+    <div className={ className } >
+      <ul className   = "container" 
+          ref         = "container"
+          style       = { @getContainerCSS() }
+          onMouseOver = { @handleMouseOver }
+          onMouseOut  = { @handleMouseOut } >
         { @renderSlides() }
       </ul>
       { @renderNavigation() }
