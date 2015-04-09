@@ -17,6 +17,20 @@ Button             = require('components/form/buttons').SyncButton
 
 SyncApi            = require('sync/user_sync_api')
 
+EmptyTabTexts =
+  activityOwn:    "Follow people and companies"
+  activityOther:  "This person doesn't follow any people and companies yet"
+  insightsOwn:    "Collect successful founders' insights and put them to action"
+  insightsOther:  "This person hasn't added any insights yet"
+  companiesOwn:   ->
+    <span>
+      Want to see your company on CloudChart? <a href="mailto:team@cloudchart.co">Let us know</a>
+    </span>
+  companiesOther: ->  
+    <span>
+      Does this person have a company you want to see on CloudChart? <a href="mailto:team@cloudchart.co">Let us know</a>
+    </span>
+
 cx = React.addons.classSet
 
 module.exports = React.createClass
@@ -92,9 +106,9 @@ module.exports = React.createClass
 
   getVisibleTabs: ->
     Immutable.OrderedMap(
-      activity:  !UserFeed.isEmpty()
-      insights:  !PinsComponent.isEmpty(@props.uuid)
-      companies: !CompaniesList.isEmpty(@props.uuid)
+      activity:  true
+      insights:  true
+      companies: true
       settings:  @cursor.user.get('is_editable')
     ).filter (visible) -> visible
     .keySeq()
@@ -106,6 +120,9 @@ module.exports = React.createClass
       visibleTabs.first()
     else
       @state.currentTab
+
+  isViewerProfile: ->
+    @props.uuid == @cursor.viewer.get('uuid')
 
 
   # Handlers
@@ -164,7 +181,7 @@ module.exports = React.createClass
     </nav>
 
   renderFollowButton: ->
-    return null if @props.uuid == @cursor.viewer.get('uuid')
+    return null if @isViewerProfile()
 
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
@@ -175,17 +192,43 @@ module.exports = React.createClass
       sync              = { @state.isSyncing }
       showSyncAnimation = { false } />
 
+  renderEmptyTabText: (key) ->
+    emptyTextKey = key + (if @isViewerProfile() then "Own" else "Other")
+    renderedText = if _.isFunction(text = EmptyTabTexts[emptyTextKey]) then text() else text
+
+    <p className="empty">
+      { renderedText }
+    </p>
+
+  renderActivity: ->
+    unless UserFeed.isEmpty()
+      <UserFeed />
+    else
+      @renderEmptyTabText("activity")
+
+  renderCompanies: ->
+    unless CompaniesList.isEmpty(@props.uuid)
+      <CompaniesList user_id = { @props.uuid } />
+    else
+      @renderEmptyTabText("companies")
+
+  renderInsights: ->
+    unless PinsComponent.isEmpty(@props.uuid)
+      <PinsComponent user_id = { @props.uuid } showOnlyInsights = { true } />
+    else
+      @renderEmptyTabText("insights")
+
   renderContent: ->
     switch @state.currentTab
       when 'insights'
-        <PinsComponent user_id = { @props.uuid } showOnlyInsights = { true } />
+        @renderInsights()
       when 'companies'
-        <CompaniesList user_id = { @props.uuid } />
+        @renderCompanies()
       when 'activity'
-        <UserFeed />
+        @renderActivity()
       when 'settings'
         <Settings uuid = { @props.uuid } 
-          withEmails = { @cursor.viewer.get('uuid') == @cursor.user.get('uuid') } />
+          withEmails = { @isViewerProfile() } />
 
 
   render: ->
