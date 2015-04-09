@@ -132,10 +132,14 @@ main.post {
     > .post-pin-info {
       @include align-items(center);
       @include display(flex);
-      @include justify-content(space-between);
+      @include justify-content(center);
 
       > .spacer {
         @include flex(1);
+      }
+
+      > .cc {
+        padding: 0 15px;
       }
     }
 

@@ -346,16 +346,25 @@ Post = React.createClass
   renderPinInfo: ->
     return null if @state.isInEditMode
 
-    <section className="post-pin-info">
-      { @renderPinners() }
-      <div className="spacer"></div>
-      <ul className="round-buttons">
-        <PinButton 
-          pinnable_id   = { @props.id }
-          pinnable_type = 'Post'
-          title         = { @state.post.title } />
-      </ul>
-    </section>
+    if @getInsightsNumber() > 0
+      <section className="post-pin-info">
+        { @renderPinners() }
+        <div className="spacer"></div>
+        <ul className="round-buttons">
+          <PinButton 
+            pinnable_id   = { @props.id }
+            pinnable_type = 'Post'
+            title         = { @state.post.title } />
+        </ul>
+      </section>
+    else
+      <section className="post-pin-info">
+        <PinButton
+          asTextButton   = { true }
+          pinnable_id    = { @props.id }
+          pinnable_type  = 'Post'
+          title          = { @state.post.title } />
+      </section>
 
   renderFooter: ->
     return null unless @state.isInEditMode

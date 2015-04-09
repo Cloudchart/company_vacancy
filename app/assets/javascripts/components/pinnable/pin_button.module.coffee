@@ -1,12 +1,13 @@
 # @cjsx React.DOM
 
 
-GlobalState = require('global_state/state')
-PinStore    = require('stores/pin_store')
-UserStore   = require('stores/user_store.cursor')
+GlobalState     = require('global_state/state')
+PinStore        = require('stores/pin_store')
+UserStore       = require('stores/user_store.cursor')
 
-PinForm     = require('components/form/pin_form')
-Modal       = require('components/modal_stack')
+PinForm         = require('components/form/pin_form')
+Modal           = require('components/modal_stack')
+StandardButton  = require('components/form/buttons').StandardButton
 
 
 # Utils
@@ -23,12 +24,14 @@ module.exports = React.createClass
   mixins: [GlobalState.mixin]
 
   propTypes: 
-    uuid: React.PropTypes.string
-    title: React.PropTypes.string
-    pinnable_id: React.PropTypes.string
+    uuid:          React.PropTypes.string
+    title:         React.PropTypes.string
+    pinnable_id:   React.PropTypes.string
     pinnable_type: React.PropTypes.string
+    asTextButton:  React.PropTypes.bool
 
   getDefaultProps: ->
+    asTextButton: false
     cursor:
       pins:   PinStore.cursor.items
       user:   UserStore.me()
@@ -123,7 +126,13 @@ module.exports = React.createClass
       active: !!@state.currentUserPin or !!@state.currentUserRepin
       'with-counter': (@getCount() > 0)
 
-    <li className={ classList } onClick={ @handleClick }>
-      <i className="fa fa-thumb-tack" />
-      { @renderCounter() }
-    </li>
+    unless @props.asTextButton
+      <li className={ classList } onClick={ @handleClick }>
+        <i className="fa fa-thumb-tack" />
+        { @renderCounter() }
+      </li>
+    else
+      <StandardButton 
+        className = "cc"
+        onClick   = { @handleClick }
+        text      = "Be the first to leave an insight" />
