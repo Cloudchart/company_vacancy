@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150408151702) do
+ActiveRecord::Schema.define(version: 20150410142400) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -184,6 +184,7 @@ ActiveRecord::Schema.define(version: 20150408151702) do
     t.string   "category"
     t.string   "image_uid"
     t.boolean  "is_active",                  default: false
+    t.string   "url"
   end
 
   add_index "features", ["featurable_id", "featurable_type"], name: "index_features_on_featurable_id_and_featurable_type", using: :btree
