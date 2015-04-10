@@ -50,6 +50,9 @@ module.exports = React.createClass
     return null unless post && company
 
     <span>
+      <a href={ post.get('post_url') } className="content" >
+        <span dangerouslySetInnerHTML={ __html: @cursor.pin.get('content') } />
+      </a>
       { " — " }
       <a href= { company.get('company_url') } className="company">
         { company.get('name') }
@@ -65,7 +68,6 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     <p className="quote">
-      <span dangerouslySetInnerHTML={ __html: @cursor.pin.get('content') } />
       { @renderInsightContext() }
     </p>
 

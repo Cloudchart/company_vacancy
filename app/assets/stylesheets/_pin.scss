@@ -18,6 +18,10 @@
     @include position(absolute, 0px 0px 0 0);
   }
 
+  a.content {
+    color: black;
+  }
+
   a.company {
     font-weight: 600;
   }
