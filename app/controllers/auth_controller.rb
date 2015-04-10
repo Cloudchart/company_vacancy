@@ -41,6 +41,8 @@ class AuthController < ApplicationController
       user.update!(full_name: params[:full_name], company: params[:company], occupation: params[:occupation])
       token.update!(data: { address: email.address })
     end
+    
+    SlackWebhooksWorker.perform_async('added_details_to_queue', user.id) if should_perform_sidekiq_worker? && user.valid?
 
     render json: { id: user.id }
 
@@ -57,7 +59,7 @@ private
     warden.set_user(user, scope: warden_scope)
     cookies.signed[:user_id] = { value: user.id, expires: 2.weeks.from_now } if warden_scope == :user
     current_user.update(last_sign_in_at: Time.now) unless current_user.guest?
-    send_slack_notification(user) if warden_scope == :queue
+    SlackWebhooksWorker.perform_async('added_to_queue', user.id) if should_perform_sidekiq_worker? && warden_scope == :queue
 
     redirect_to warden_scope == :user ? main_app.root_path : main_app.queue_path
   end
@@ -68,12 +70,6 @@ private
 
   def queued_user
     warden.user(:queue)
-  end
-
-  def send_slack_notification(user)
-    SlackWebhooksWorker.perform_async(
-      text: t('user.activities.added_to_queue', name: user.full_name, twitter: user.twitter)
-    ) if should_perform_sidekiq_worker?
   end
 
 end
