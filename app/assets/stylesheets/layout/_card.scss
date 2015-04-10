@@ -70,6 +70,19 @@ $card-hr: 1px solid whitesmoke;
   p {
     margin: 0;
 
+    &.name {
+      .last-part {
+        display: inline-block;
+      }
+
+      .svg-icon {
+        background-size: 16px 16px;
+        height: 16px;
+        margin-left: 3px;
+        width: 16px;
+      }
+    }
+
     &.occupation {
       color: hsl(0, 0%, 53%);
       font-size: 12px;

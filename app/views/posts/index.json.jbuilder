@@ -1,5 +1,5 @@
 # set posts
-posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :posts_stories, :quotes, blocks: :block_identities, pins: [ :user, parent: :user ])
+posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :posts_stories, :quotes, blocks: :block_identities, pins: [user: :unicorn_role, parent: [user: :unicorn_role] ])
 
 # reject posts based on visibility rules
 posts = if can?(:update, @company)
@@ -20,6 +20,7 @@ pins = posts.map(&:pins).flatten
 stories = Story.cc_plus_company(@company.id)
 posts_stories = posts.map(&:posts_stories).flatten
 users = pins.map(&:user).compact.uniq
+roles = users.map(&:unicorn_role).compact
 
 # return json
 json.posts ams(posts, scope: current_user)
@@ -41,4 +42,8 @@ end
 
 json.users users do |user|
   json.partial! 'user', user: user
+end
+
+json.roles roles do |role|
+  json.partial! 'role', role: role
 end

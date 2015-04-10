@@ -22,3 +22,18 @@ i.cc-icon {
     content: "×";
   }
 }
+
+i.svg-icon {
+  display: inline-block;
+  height: 23px;
+  position: relative;
+  top: -2px;
+  vertical-align: middle;
+  width: 23px;
+
+  &.svg-unicorn {
+    background: image_url('unicorn.svg') no-repeat no-repeat center center;
+    background-size: 16px 16px;
+    color: hsl(51, 99%, 61%);
+  }
+}

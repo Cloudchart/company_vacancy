@@ -3,6 +3,8 @@
 
 GlobalState = require('global_state/state')
 
+RoleStore   = require('stores/role_store.cursor')
+
 
 # Stores
 #
@@ -41,16 +43,19 @@ module.exports = React.createClass
         """
 
   propTypes:
-    uuid:           React.PropTypes.string.isRequired
-    showOccupation: React.PropTypes.bool
-    showLink:       React.PropTypes.bool
-    type:           React.PropTypes.string
+    uuid:            React.PropTypes.string.isRequired
+    showOccupation:  React.PropTypes.bool
+    showLink:        React.PropTypes.bool
+    showUnicornIcon: React.PropTypes.bool
+    type:            React.PropTypes.string
 
   getDefaultProps: ->
     cursor:
-      currentUser:  Stores.user.me()
-    showOccupation: true
-    showLink:       true
+      currentUser:     Stores.user.me()
+      roles:           RoleStore.cursor.items
+      showUnicornIcon: false
+    showOccupation:    true
+    showLink:          true
 
   fetch: ->
     GlobalState.fetch(@getQuery(@props.type), { id: @props.uuid })
@@ -66,6 +71,14 @@ module.exports = React.createClass
     else if @props.type == "person" && @cursor.get('is_verified')
       "/users/#{@cursor.get('twitter')}"
 
+  isUnicorn: ->
+    @props.cursor.roles.filter (role) =>
+      role.get('owner_type', null)  is null       and
+      role.get('owner_id',   null)  is null       and
+      role.get('value')             is 'unicorn'  and
+      role.get('user_id')           is @props.uuid
+    .size
+
 
   # Lifecycle methods
   #
@@ -80,8 +93,29 @@ module.exports = React.createClass
   renderAvatar: ->
     <Avatar backgroundColor="transparent" avatarURL={ @cursor.get('avatar_url') } value={ @cursor.get('full_name') } />
 
+  renderTextWithIcon: (text, icon) ->
+    if text && icon
+      textParts = text.trim().split(' ')
+
+      <span>
+        { textParts[0..-2].join(' ') + " " }
+        <span className="last-part">
+          { textParts.pop() }
+          { icon }
+        </span>
+      </span>
+    else
+      text
+
+  renderUnicornIcon: ->
+    return null unless @props.type == 'user' && @props.showUnicornIcon && @isUnicorn()
+
+    <i className="svg-icon svg-unicorn" />
+
   renderName: ->
-    <p className="name">{ @cursor.get('full_name') }</p>
+    <p className="name">
+      { @renderTextWithIcon(@cursor.get('full_name'), @renderUnicornIcon()) }
+    </p>
 
   renderOccupation: ->
     return null unless @props.showOccupation

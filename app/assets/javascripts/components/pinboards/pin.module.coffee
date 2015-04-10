@@ -46,10 +46,14 @@ module.exports = React.createClass
             post {
               #{PinnablePost.getQuery('post')}
             },
-            user,
+            user {
+              unicorn_role
+            },
             children,
             parent {
-              user,
+              user {
+                unicorn_role
+              },
               children
             }
           }
@@ -106,7 +110,7 @@ module.exports = React.createClass
     <article className="insight">
       <InsightContent uuid = { insight.get('uuid') } />
 
-      <Human type="user" uuid={ insight.get('user_id') } />
+      <Human showUnicornIcon={ true } type="user" uuid={ insight.get('user_id') } />
 
       { @renderInsightControls(insight) }
     </article>

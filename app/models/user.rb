@@ -35,6 +35,7 @@ class User < ActiveRecord::Base
   has_many :favorites, dependent: :destroy
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
   has_many :roles, dependent: :destroy
+  has_one  :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :people, dependent: :destroy
   has_many :pinboards, dependent: :destroy

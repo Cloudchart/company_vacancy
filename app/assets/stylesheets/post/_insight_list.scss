@@ -97,10 +97,8 @@ ul.insight-list,
           font-weight: 600;
           padding-right: 60px;
 
-          > i.fa-star {
-            color: hsl(50, 100%, 60%);
-            font-size: 20px;
-            margin-left: 5px;
+          .last-part {
+            display: inline-block;
           }
         }
 
