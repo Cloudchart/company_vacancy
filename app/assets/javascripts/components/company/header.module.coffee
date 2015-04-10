@@ -28,20 +28,7 @@ Component = React.createClass
   mixins: [CloudFlux.mixins.Actions]
 
   # Helpers
-  # 
-  getViewModeSelect: ->
-    return null unless @props.shouldDisplayViewMode
-
-    <div className="controls">
-      <Toggle
-        checked     = {not @props.readOnly}
-        customClass = "cc-toggle view-mode"
-        onText      = "Edit"
-        offText     = "View"
-        onChange    = {@handleViewModeChange} />
-    </div>
-
-  
+  #
   getLogoBackgroundImage: ->
     if @state.logotype_url then "url(#{@state.logotype_url})" else "none"
   
@@ -145,9 +132,6 @@ Component = React.createClass
     file = event.target.files[0]
     @setState({ logotype_url: URL.createObjectURL(file) })
     @updateLogotype(file)
-
-  handleViewModeChange: (checked) ->
-    @props.onChange({ readOnly: !checked })
   
   handleFieldKeyUp: (event) ->
     event.target.blur() if event.key == 'Enter'
@@ -188,7 +172,6 @@ Component = React.createClass
 
   render: ->
     <header>
-      { @getViewModeSelect() }
       { @getLogo() }
 
       {

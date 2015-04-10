@@ -32,12 +32,15 @@ Component = React.createClass
     cursor: GlobalState.cursor(['meta', 'company'])
 
   getInitialState: ->
+    currentTab = location.hash.substr(1) || null
+
     _.extend @getStateFromStores(),
       cursor:
         meta:                GlobalState.cursor(['stores', 'companies', 'meta', @props.uuid])
         flags:               GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
-      currentTab:            location.hash.substr(1) || null
+      currentTab:            currentTab
       isEditingAbout:        false
+      isEditingSettings:     currentTab == "settings"
       isAccessRightsLoading: false
       postsLoaded:           false
 
@@ -47,10 +50,6 @@ Component = React.createClass
   getStateFromStores: ->
     company:   CompanyStore.get(@props.uuid)
     posts:     PostStore.all()
-  
-  onGlobalStateChange: ->
-    @setState
-      readOnly:    @props.cursor.get('mode', 'edit') isnt 'edit'
 
 
   # Helpers
@@ -65,9 +64,6 @@ Component = React.createClass
     isReadOnly = @state.cursor.flags.get('is_read_only')
 
     !_.isUndefined(isReadOnly) && !isReadOnly
-
-  isInViewMode: ->
-    @state.readOnly || !@canEdit()
 
   getVisibleTabs: ->
      Immutable.OrderedMap(
@@ -90,7 +86,9 @@ Component = React.createClass
     return null unless @isLoaded()
 
     if (tab = @getInitialTab()) != @state.currentTab
-      @setState(currentTab: tab)
+      @setState
+        currentTab:        tab
+        isEditingSettings: tab == 'settings'
     else if @state.currentTab == 'users'
       @fetchAccessRights()
 
@@ -114,10 +112,9 @@ Component = React.createClass
     if @getVisibleTabs().contains(currentTab)
       if currentTab == 'users' && !@isAccessRightsLoaded()
         @fetchAccessRights()
-      @setState currentTab: currentTab
-
-  handleViewModeChange: (data) ->
-    @props.cursor.set('mode', if data.readOnly then 'view' else 'edit')
+      @setState
+        currentTab:        currentTab
+        isEditingSettings: currentTab == 'settings' 
 
   handleAboutViewModeChange: (value) ->
     @setState(isEditingAbout: value == 'edit')
@@ -199,7 +196,7 @@ Component = React.createClass
       when 'timeline'
         <Timeline 
           company_id = { @state.company.uuid }
-          readOnly   = { @isInViewMode() } />
+          readOnly   = { !@canEdit() } />
       when 'about'
         <section className="about">
           <BlockEditor
@@ -224,9 +221,7 @@ Component = React.createClass
     <div className="wrapper">
       <CompanyHeader
         uuid                  = { @props.uuid }
-        readOnly              = { @isInViewMode() }
-        shouldDisplayViewMode = { !@state.cursor.flags.get('is_read_only') }
-        onChange              = { @handleViewModeChange }
+        readOnly              = { !@state.isEditingSettings }
       />
       { @renderMenu() }
       <section className="content">
