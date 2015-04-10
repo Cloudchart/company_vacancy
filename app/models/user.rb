@@ -120,6 +120,10 @@ class User < ActiveRecord::Base
     emails.first.try(:address)
   end
 
+  def unverified_email
+    tokens.find_by(name: :email_verification).try(:data).try(:[], :address)
+  end
+
   def email=(email)
     self.emails = [Email.new(address: email)] unless email.blank?      
   end

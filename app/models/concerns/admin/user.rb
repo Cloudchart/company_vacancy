@@ -23,7 +23,7 @@ module Admin::User
 
         field :email do
           formatted_value do 
-            email = bindings[:object].email || bindings[:object].tokens.where(name: :email_verification).first.try(:data).try(:[], :address)
+            email = bindings[:object].email || bindings[:object].unverified_email
             bindings[:view].mail_to email, email
           end
         end
