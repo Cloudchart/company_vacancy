@@ -73,7 +73,8 @@ module.exports = React.createClass
         value:  record.full_name
 
     @setState
-      unicorns: unicorns.toArray()
+      unicorns:       unicorns.toArray()
+      unicorn_names:  unicorns.map((u) -> u.value.toLowerCase()).toArray()
 
 
   handleUserFetch: (json) ->
@@ -102,8 +103,9 @@ module.exports = React.createClass
 
     if query.length == 0
       @setState
-        unicorns: []
-        value:    @props.defaultValue
+        unicorns:       []
+        unicorn_names:  []
+        value:          @props.defaultValue
 
 
   handleValueChange: (user) ->
@@ -146,6 +148,7 @@ module.exports = React.createClass
     return null if @state.value
     return null unless @state.query
     return null unless @state.query.split(' ').filter((part) -> part).length > 1
+    return null if @state.unicorn_names.indexOf(@state.query.trim().toLowerCase()) >= 0
 
     <Button
       className = "create-button transparent"
