@@ -18,15 +18,16 @@
     @include position(absolute, 0px 0px 0 0);
   }
 
-  a.content {
+  .content {
     color: black;
   }
 
-  a.company {
+  .company {
+    color: $link-color;
     font-weight: 600;
   }
 
-  a.post {
+  .post {
     color: black;
     font-weight: 600;
   }

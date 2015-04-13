@@ -37,3 +37,165 @@ main.user-profile {
     }
   }
 }
+
+// TODO refactor properly
+
+.user-profile .settings {
+
+  $settings-form-width: 600px;
+
+  $settings-form-header-background-color: hsl(60, 10%, 95%);
+  $settings-form-header-font-size: 28px;
+  $settings-form-header-title-color: hsl(0, 0%, 60%);
+
+
+  width: $settings-form-width;
+
+
+  @mixin settings-form-header {
+    @include display(flex);
+
+    background-color: $settings-form-header-background-color;
+    font-size: $settings-form-header-font-size;
+    font-weight: 300;
+    padding: 20px 30px;
+
+    > .title {
+      @include flex(1);
+
+      color: $settings-form-header-title-color;
+      font-weight: 300;
+      margin-left: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+
+  @mixin pin-form-select-wrapper {
+    position: relative;
+
+    > i {
+      @include position(absolute, 50% 0px null null);
+      @include transform(translateY(-50%));
+
+      color: hsl(145, 60%, 60%);
+      margin-right: 20px;
+    }
+  }
+
+
+  @mixin settings-form-fieldset {
+    border: none;
+    margin: 20px 30px;
+    padding: 0;
+
+    > label {
+      @include align-items(center);
+      @include display(flex);
+
+      margin-top: 20px;
+
+      > *:not(.title) {
+        @include flex(1);
+      }
+
+      > .title {
+        font-size: 20px;
+        width: 40%;
+      }
+
+      &.comment > .title {
+        @include align-self(flex-start);
+      }
+
+      > .select-wrapper {
+        @include pin-form-select-wrapper;
+      }
+    }
+
+    .comment {
+      position: relative;
+    }
+
+    .user select,
+    .pinboard select,
+    .cc-typeahead input {
+      @include appearance(none);
+
+      background-color: hsl(0, 0%, 95%);
+      border: none;
+      border-radius: 0;
+      font-size: 20px;
+      font-weight: 400;
+      height: 40px;
+      margin: 0;
+      outline: none;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    .comment textarea {
+      background-color: hsl(0, 0%, 95%);
+      border: none;
+      font-size: 16px;
+      outline: none;
+      padding: 10px;
+      resize: none;
+      width: 100%;
+    }
+
+    .comment .counter {
+      @include position(absolute, null null -20px 540px * 0.4);
+
+      color: hsl(145, 60%, 60%);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .unicorn-chooser {
+      position: relative;
+
+      .create-button {
+        @include position(absolute, 0px 10px null null);
+
+        color: $green-color;
+        font-size: $big-font-size;
+        line-height: 40px;
+        height: 40px;
+      }
+    }
+
+  }
+
+
+  @mixin settings-form-footer {
+    @include display(flex);
+    @include justify-content(space-between);
+
+    margin: 20px 30px;
+    padding: 0 0 20px;
+  }
+
+
+  > header {
+    @include settings-form-header;
+  }
+
+  > fieldset {
+    @include settings-form-fieldset;
+  }
+
+  > footer {
+    @include settings-form-footer;
+
+    button {
+      width: 85px;
+    }
+
+    button ~ button {
+      margin-left: 20px;
+    }
+  }
+}

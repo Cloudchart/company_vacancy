@@ -1,33 +1,24 @@
-.modal-container form.pin,
-.user-profile .settings {
+body ul.modal-stack > li.modal-stack-item > form.pin {
 
-  $pin-form-width: 600px;
+  $pin-form-width: 476px;
 
-  $pin-form-header-background-color: hsl(60, 10%, 95%);
-  $pin-form-header-font-size: 28px;
-  $pin-form-header-title-color: hsl(0, 0%, 60%);
+  $pin-form-header-background-color: $disabled-grey-color;
 
-
+  background-color: $white-color;
   width: $pin-form-width;
-
 
   @mixin pin-form-header {
     @include display(flex);
 
     background-color: $pin-form-header-background-color;
-    font-size: $pin-form-header-font-size;
-    font-weight: 300;
-    padding: 20px 30px;
-
-    > .title {
-      @include flex(1);
-
-      color: $pin-form-header-title-color;
-      font-weight: 300;
-      margin-left: 20px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    
+    h1 {
+      font-size: $large-font-size;
+      font-weight: 700;
+      margin: 0;
+      padding: $default-margin-size;
+      text-align: center;
+      width: 100%;
     }
   }
 
@@ -47,22 +38,27 @@
 
   @mixin pin-form-fieldset {
     border: none;
-    margin: 20px 30px;
+    margin: $default-margin-size;
     padding: 0;
 
     > label {
       @include align-items(center);
       @include display(flex);
 
-      margin-top: 20px;
+      margin-bottom: $default-margin-size;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
 
       > *:not(.title) {
         @include flex(1);
       }
 
       > .title {
-        font-size: 20px;
-        width: 40%;
+        font-size: $basic-font-size;
+        font-weight: 400;
+        width: 90px;
       }
 
       &.comment > .title {
@@ -83,7 +79,7 @@
     .cc-typeahead input {
       @include appearance(none);
 
-      background-color: hsl(0, 0%, 95%);
+      background-color: white;
       border: none;
       border-radius: 0;
       font-size: 20px;
@@ -96,7 +92,7 @@
     }
 
     .comment textarea {
-      background-color: hsl(0, 0%, 95%);
+      background-color: white;
       border: none;
       font-size: 16px;
       outline: none;
@@ -106,11 +102,10 @@
     }
 
     .comment .counter {
-      @include position(absolute, null null -20px 540px * 0.4);
-
-      color: hsl(145, 60%, 60%);
-      font-size: 12px;
-      font-weight: 600;
+      color: $link-color;
+      font-size: $basic-font-size;
+      font-weight: 700;
+      margin-top: $inner-margin-size;
     }
 
     .unicorn-chooser {
@@ -133,13 +128,31 @@
     @include display(flex);
     @include justify-content(space-between);
 
-    margin: 20px 30px;
-    padding: 0 0 20px;
+    margin: $default-margin-size;
   }
 
 
   > header {
     @include pin-form-header;
+  }
+
+  > .quote {
+    background-color: $accented-white-color;
+    font-size: 20px;
+    font-weight: 100;
+    line-height: 1.4em;
+    padding: $default-margin-size;
+    white-space: pre-wrap;
+
+    .company {
+      color: $link-color;
+      font-weight: 600;
+    }
+
+    .post {
+      color: black;
+      font-weight: 600;
+    }
   }
 
   > fieldset {
@@ -159,3 +172,4 @@
   }
 
 }
+

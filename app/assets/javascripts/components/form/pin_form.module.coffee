@@ -13,7 +13,8 @@ UserStore     = require('stores/user_store.cursor')
 ModalActions  = require('actions/modal_actions')
 
 
-UnicornChooser = require('components/unicorn_chooser')
+InsightContent  = require('components/pinnable/insight_content')
+UnicornChooser  = require('components/unicorn_chooser')
 
 
 KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title'])
@@ -276,17 +277,18 @@ module.exports = React.createClass
 
   renderHeader: ->
     <header>
-      <div>Pin It</div>
-      <div className="title">{ unwrapTitle(@props.title) }</div>
+      <h1>Pin this to your pinboard</h1>
     </header>
 
+  #<div className="title">{ unwrapTitle(@props.title) }</div>
+     
 
   renderUserSelect: ->
     return null unless  @isCurrentUserSystemEditor()
     return null if      @props.parent_id
 
     <label className="user">
-      <span className="title">Choose an author</span>
+      <span className="title">Author</span>
       <UnicornChooser
         value         = { @state.attributes.get('user_id') }
         defaultValue  = { @props.cursor.me.get('uuid') }
@@ -309,7 +311,7 @@ module.exports = React.createClass
 
   renderPinboardSelect: ->
     <label className="pinboard">
-      <span className="title">Pick a Category</span>
+      <div className="title">Category</div>
       <div className="select-wrapper">
         <select
           value     = { @state.attributes.get('pinboard_id') }
@@ -326,7 +328,7 @@ module.exports = React.createClass
     return null unless @state.attributes.get('pinboard_id') == 'new'
 
     <label className="pinboard">
-      <span className="title" />
+      <div className="title" />
       <div className="input-wrapper">
         <input
           className   = "form-control"
@@ -341,13 +343,17 @@ module.exports = React.createClass
 
   renderPinComment: ->
     <label className="comment">
-      <span className="title">Add Comments</span>
+      <div className="title">
+        { if @props.parent_id then "Note" else "Insight" }
+        <div className="counter">
+          { @getContentMaxLength() - @state.attributes.get('content').length }
+        </div>
+      </div>
       <textarea
         rows      = 5
         onChange  = { @handleChange.bind(@, 'content') }
         value     = { @state.attributes.get('content', '') }
       />
-      <span className="counter">{ @getContentMaxLength() - @state.attributes.get('content').length }</span>
     </label>
 
 
@@ -363,7 +369,7 @@ module.exports = React.createClass
 
     <footer>
       <div>
-        <button key="cancel" type="button" className="cc cancel" onClick={ @props.onCancel }>Cancel</button>
+        <button key="cancel" type="button" className="cc alert" onClick={ @props.onCancel }>Cancel</button>
         { @renderDeleteButton() }
       </div>
       <button key="submit" type="submit" disabled={ not @state.attributes.get('user_id', false) } className="cc">{ submitButtonTitle }</button>
@@ -375,6 +381,12 @@ module.exports = React.createClass
 
     <form className="pin" onSubmit={ @handleSubmit }>
       { @renderHeader() }
+
+      <InsightContent 
+        withLinks = { false }
+        type      = { if @state.attributes.get('parent_id') then 'pin' else 'post' }
+        uuid      = { if @state.attributes.get('parent_id') then @state.attributes.get('parent_id') }
+        post_id   = { @state.attributes.get('pinnable_id') } />
 
       <fieldset>
         { @renderUserSelect() }
