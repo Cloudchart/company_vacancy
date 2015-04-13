@@ -76,12 +76,6 @@ Post = React.createClass
       titleFocused:    false
       user:            UserStore.me()
 
-  onGlobalStateChange: ->
-    readOnly = @props.cursor.flags.get('is_read_only')
-    isInEditMode = @state.isInEditMode && !readOnly
-
-    @setState(readOnly: readOnly, isInEditMode: isInEditMode)
-
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
 
@@ -100,6 +94,12 @@ Post = React.createClass
       visibility_value: if visibility then visibility.value else 'unpublished'
     else
       post: null
+
+  fetchViewer: ->
+    GlobalState.fetch(new GlobalState.query.Query("Viewer"))
+
+  fetchSystemRoles: ->
+    GlobalState.fetch(@getQuery('system_roles'))
 
 
   # Helpers
@@ -226,9 +226,13 @@ Post = React.createClass
   # Lifecycle Methods
   #
   componentWillMount: ->
-    GlobalState.fetch(@getQuery('system_roles')).then =>
+    Promise.all([@fetchSystemRoles(), @fetchViewer()]).then =>
       if @isEditor() && !@props.cursor.flags.get('is_read_only')
-        @setState isInEditMode: true
+        @setState readOnly: false, isInEditMode: true
+      else if !@props.cursor.flags.get('is_read_only')
+        @setState readOnly: false, isInEditMode: false
+      else
+        @setState readOnly: true, isInEditMode: false
 
   componentDidMount: ->
     $(document).on 'keydown', @handleKeydown
