@@ -22,7 +22,7 @@ RailsAdmin.config do |config|
     #
     member :make_acceptable do
       only ['Tag']
-      http_methods { [:put, :patch] }
+      http_methods { [:post] }
       register_instance_option :bulkable? do
         true
       end
@@ -36,7 +36,7 @@ RailsAdmin.config do |config|
 
     member :make_unicorns do
       only ['User']
-      http_methods { [:put, :patch] }
+      http_methods { [:post] }
       register_instance_option :bulkable? do
         true
       end
@@ -50,7 +50,7 @@ RailsAdmin.config do |config|
 
     member :make_active do
       only ['Feature']
-      http_methods { [:put, :patch] }
+      http_methods { [:post] }
       register_instance_option :bulkable? do
         true
       end
@@ -166,6 +166,28 @@ RailsAdmin.config do |config|
       end
     end
 
+    member :approve do
+      only ['Pin']
+      link_icon 'icon-ok'
+      http_methods { [:post, :get] }
+
+      register_instance_option :bulkable? do
+        true
+      end
+
+      controller do
+        proc do
+          if request.get?
+            @object.update(is_approved: true)
+            redirect_to index_path(:pin), notice: 'Insight has been approved'
+          elsif request.post?
+            Pin.find(params[:bulk_ids]).each { |pin| pin.update(is_approved: true) }
+            redirect_to index_path(:pin), notice: 'All selected insights approved'
+          end
+        end
+      end
+    end
+
     # default
     #
     new do
@@ -193,6 +215,7 @@ RailsAdmin.config do |config|
     history_show do
       except ['User', 'Token', 'Person', 'Story', 'Pinboard', 'Feature']
     end
+
   end
 
 end

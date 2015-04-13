@@ -28,22 +28,19 @@ class Ability
     # Regular user
     #
     else
-      can [:create, :verify, :resend_verification], Email
       can :manage, :cloud_profile_main
       can :update, :cloud_profile_user
       can [:read, :accept, :destroy], :invite
 
       # can :manage, Subscription
-      can :unfollow, Company
       can [:preview, :read, :pull], CloudBlueprint::Chart
       can :create, Tag
-      can [:read, :create], Pinboard
-      can [:read, :create], Pin
 
-      can [:read, :search], Company, is_published: true
-      can [:update, :destroy, :settings], Pinboard, user_id: current_user.id
+      can [:create, :verify, :resend_verification], Email
       can :destroy, Email, user_id: current_user.id
 
+      # User
+      # 
       can :read, User do |user|
         !user.guest?
       end
@@ -53,10 +50,31 @@ class Ability
         (user.last_sign_in_at.blank? && current_user.editor?)
       end
 
+      can [:follow, :unfollow], User do |user|
+        current_user != user
+      end
+
+      # Pin
+      # 
+      can :create, Pin
+
+      can :read, Pin do |pin|
+        pin.content.blank? || pin.is_approved? || (current_user.admin? || current_user.editor?)
+      end
+
+      can :approve, Pin do |pin|
+        current_user.admin? || current_user.editor?
+      end
+
       can [:update, :destroy], Pin do |pin|
         pin.user_id == current_user.id || current_user.editor?
       end
       
+      # Company
+      # 
+      can :unfollow, Company
+      can [:read, :search], Company, is_published: true
+
       can :create, Company do |company| 
         current_user.editor?
       end
@@ -81,21 +99,27 @@ class Ability
         !current_user.companies.map(&:id).include?(company.id)
       end
 
-      can [:follow, :unfollow], User do |user|
-        current_user != user
+      can :manage_company_invites, Company do |company|
+        owner_or_editor?(current_user, company)
       end
 
-      # TODO: test this
+      # Pinboard
+      # 
+      can [:read, :create], Pinboard
+      can [:update, :destroy, :settings], Pinboard, user_id: current_user.id
+
+      can :manage_pinboard_invites, Pinboard do |pinboard|
+        current_user.id == pinboard.user_id || editor?(current_user, pinboard)
+      end
+
+      # Miscellaneous
+      # 
       cannot [:create, :update], Quote do |quote|
         quote.company && !quote.company.people.include?(quote.person)
       end
 
       can :manage, [Person, Vacancy, Block, CloudBlueprint::Chart, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
         owner_or_editor?(current_user, resource.company)
-      end
-
-      can :manage_company_invites, Company do |company|
-        owner_or_editor?(current_user, company)
       end
 
       can [:update, :destroy], Role do |role|
@@ -109,10 +133,6 @@ class Ability
       can :read, Post do |post|
         (post.company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')) ||
         (post.visibility.try(:value) == 'trusted' && trusted_reader?(current_user, post.company))
-      end
-
-      can :manage_pinboard_invites, Pinboard do |pinboard|
-        current_user.id == pinboard.user_id || editor?(current_user, pinboard)
       end
 
     end

@@ -19,10 +19,12 @@ module Admin::Pin
 
         field :content
         field :is_featured, :boolean
+        field :is_approved
       end
 
       edit do
         field :is_featured, :boolean
+        field :is_approved
       end
     end
 

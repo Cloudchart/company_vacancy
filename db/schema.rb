@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150408151702) do
+ActiveRecord::Schema.define(version: 20150413111745) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -323,7 +323,7 @@ ActiveRecord::Schema.define(version: 20150408151702) do
   add_index "pinboards", ["user_id"], name: "index_pinboards_on_user_id", using: :btree
 
   create_table "pins", primary_key: "uuid", force: true do |t|
-    t.string   "user_id",       limit: 36, null: false
+    t.string   "user_id",       limit: 36,                 null: false
     t.string   "parent_id",     limit: 36
     t.string   "pinboard_id",   limit: 36
     t.string   "pinnable_id",   limit: 36
@@ -331,6 +331,7 @@ ActiveRecord::Schema.define(version: 20150408151702) do
     t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_approved",              default: false
   end
 
   add_index "pins", ["parent_id"], name: "index_pins_on_parent_id", using: :btree
