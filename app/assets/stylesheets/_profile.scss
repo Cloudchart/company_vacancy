@@ -3,6 +3,7 @@ $profile-header-color: hsl(0, 0%, 93%);
 main.user-profile {
   @include display(flex);
   @include flex-direction(column);
+  @include justify-content(stretch);
   background-color: $background-color;
 
   padding: 0;
@@ -10,15 +11,14 @@ main.user-profile {
   > div {
     @include display(flex);
     @include flex-direction(column);
-    @include flex(1);
-    height: 100%;
+    @include justify-content(stretch);
   }
 }
 
 section.user-profile {
   @include display(flex);
   @include flex-direction(column);
-  @include flex(1);
+  @include justify-content(stretch);
 
   width: 100%;
 
