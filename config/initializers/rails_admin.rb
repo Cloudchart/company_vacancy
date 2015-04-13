@@ -48,6 +48,20 @@ RailsAdmin.config do |config|
       end
     end
 
+    member :make_active do
+      only ['Feature']
+      http_methods { [:put, :patch] }
+      register_instance_option :bulkable? do
+        true
+      end
+      controller do
+        proc do
+          Feature.find(params[:bulk_ids]).each { |feature| feature.update(is_active: true) }
+          redirect_to index_path(:feature), notice: 'All selected features became active'
+        end
+      end
+    end    
+
     collection :invite do
       only ['Token']
       link_icon 'icon-envelope'
