@@ -3,6 +3,12 @@ Cloudchart::Application.routes.draw do
   #
   root to: 'welcome#index'
 
+
+  # Sandbox
+  #
+  match '/sandbox', to: 'sandbox#index', via: [:get] if Rails.env.development?
+
+
   # Errors
   #
   match '/404', to: 'errors#not_found', via: [:get, :post]

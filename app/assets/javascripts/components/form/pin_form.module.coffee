@@ -13,6 +13,9 @@ UserStore     = require('stores/user_store.cursor')
 ModalActions  = require('actions/modal_actions')
 
 
+UnicornChooser = require('components/unicorn_chooser')
+
+
 KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title'])
 
 
@@ -46,20 +49,22 @@ module.exports = React.createClass
 
         """
 
-      unicorns: ->
+
+      user: ->
         """
-          Unicorns {
+          User {
             roles,
             pinboards,
             writable_pinboards
           }
-
         """
+
 
       system_pinboards: ->
         """
           SystemPinboards {}
         """
+
 
       pin: ->
         """
@@ -76,19 +81,23 @@ module.exports = React.createClass
     GlobalState.fetch(@getQuery('system_pinboards'))
 
 
+  fetchUser: (id) ->
+    if id
+      GlobalState.fetch(@getQuery('user'), id: id).then => @setState({})
+    else
+      GlobalState.fetch(@getQuery('viewer')).then => @setState({})
+
+
   fetchPin: ->
     if @props.uuid
-      GlobalState.fetch(@getQuery('pin'), id: @props.uuid)
+      promise = GlobalState.fetch(@getQuery('pin'), id: @props.uuid).then =>
+        @fetchUser(@props.cursor.pins.getIn([@props.uuid, 'user_id']))
     else
-      true
-
-
-  fetchUnicorns: ->
-    GlobalState.fetch(@getQuery('unicorns'))
+      @fetchUser()
 
 
   fetch: ->
-    Promise.all([@fetchViewer(), @fetchSystemPinboards(), @fetchUnicorns(), @fetchPin()]).then =>
+    Promise.all([@fetchSystemPinboards(), @fetchPin()]).then =>
       @handleFetchDone()
 
 
@@ -104,10 +113,12 @@ module.exports = React.createClass
 
   handleSubmit: (event) ->
     event.preventDefault()
+
+    return unless @state.attributes.get('user_id', false)
+
     system_pinboard_ids = PinboardStore.system().keySeq()
     pinboard_id         = @state.attributes.get('pinboard_id')
     user_id             = @state.attributes.get('user_id')
-
 
     if (pinboard_id == 'new')
       PinboardStore.create({ title: @state.attributes.get('pinboard_title'), user_id: user_id })
@@ -165,6 +176,16 @@ module.exports = React.createClass
       attributes: attributes.set(name, value)
 
 
+  handleUserIdChange: (user_id) ->
+    if user_id
+      @fetchUser(user_id).then =>
+        @handleChange('user_id', { target: { value: user_id } })
+    else
+      @setState
+        attributes: @state.attributes.set('user_id', null)
+
+
+
   gatherPinboards: (id = @state.attributes.get('user_id')) ->
     pinboards         = PinboardStore.writableBy(id)
 
@@ -187,8 +208,10 @@ module.exports = React.createClass
 
     if pinboard then pinboard.get('uuid') else 'new'
 
+
   getContentMaxLength: ->
     if @isSelectedUserUnicorn() then 500 else 140
+
 
   getAttributesFromCursor: ->
     pin = @props.cursor.pins.cursor(@props.uuid)
@@ -209,6 +232,7 @@ module.exports = React.createClass
       KnownAttributes.forEach (name) =>
         attributes.set(name, @props[name] || '')
 
+
   isUserWithRole: (userId, roleValue) ->
     RoleStore.rolesFor(userId)
       .find (role) =>
@@ -216,8 +240,10 @@ module.exports = React.createClass
         role.get('owner_type',  null)   is null     and
         role.get('value')               is roleValue
 
+
   isCurrentUserSystemEditor: ->
     @isUserWithRole(UserStore.me().get('uuid'), 'editor')
+
 
   isSelectedUserUnicorn: ->
     @isUserWithRole(@state.attributes.get('user_id'), 'unicorn')
@@ -255,49 +281,24 @@ module.exports = React.createClass
     </header>
 
 
-  renderUserSelectOptions: ->
-    me = UserStore.me()
-
-    UserStore
-      .unicorns()
-      .valueSeq()
-      .filterNot (user) -> user.get('uuid') is me.get('uuid') 
-      .concat([me.deref({})]) 
-      .sortBy (user) -> user.get('full_name')
-
-      .map (user) =>
-        uuid = user.get('uuid')
-        <option key={ uuid } value={ uuid }>{ user.get('full_name') }</option>
-
-
   renderUserSelect: ->
     return null unless  @isCurrentUserSystemEditor()
     return null if      @props.parent_id
 
-    disabled = !!@props.uuid and @props.cursor.me.get('uuid') isnt @state.attributes.get('user_id')
-
     <label className="user">
       <span className="title">Choose an author</span>
-      <div className="select-wrapper">
-        <select
-          value     = { @state.attributes.get('user_id') }
-          onChange  = { @handleChange.bind(@, 'user_id') }
-          disabled  = { disabled }
-        >
-          { @renderUserSelectOptions().toArray() }
-        </select>
-        <i className="fa fa-angle-down select-icon" />
-      </div>
+      <UnicornChooser
+        value         = { @state.attributes.get('user_id') }
+        defaultValue  = { @props.cursor.me.get('uuid') }
+        onChange      = { @handleUserIdChange }
+      />
     </label>
 
 
   renderPinboardSelectOptions: ->
     pinboards = @gatherPinboards()
-
       .map (pinboard, uuid) ->
-
         <option key={ uuid } value={ uuid }>{ pinboard.get('title') }</option>
-
       .valueSeq()
 
     if @isCurrentUserSystemEditor()
@@ -311,8 +312,8 @@ module.exports = React.createClass
       <span className="title">Pick a Category</span>
       <div className="select-wrapper">
         <select
-          value     ={ @state.attributes.get('pinboard_id') }
-          onChange  ={ @handleChange.bind(@, 'pinboard_id') }
+          value     = { @state.attributes.get('pinboard_id') }
+          onChange  = { @handleChange.bind(@, 'pinboard_id') }
         >
           { @renderPinboardSelectOptions().toArray() }
         </select>
@@ -350,7 +351,6 @@ module.exports = React.createClass
     </label>
 
 
-
   renderDeleteButton: ->
     return null unless @props.uuid
     return null unless @isCurrentUserSystemEditor()
@@ -366,7 +366,7 @@ module.exports = React.createClass
         <button key="cancel" type="button" className="cc cancel" onClick={ @props.onCancel }>Cancel</button>
         { @renderDeleteButton() }
       </div>
-      <button key="submit" type="submit" className="cc">{ submitButtonTitle }</button>
+      <button key="submit" type="submit" disabled={ not @state.attributes.get('user_id', false) } className="cc">{ submitButtonTitle }</button>
     </footer>
 
 

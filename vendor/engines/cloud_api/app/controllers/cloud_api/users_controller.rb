@@ -27,8 +27,18 @@ module CloudApi
 
       respond_to do |format|
         format.json { render '/main' }
-      end      
+      end
     end
+
+
+    def create_unicorn
+      user = User.new(full_name: params[:unicorn][:full_name])
+      user.roles << Role.new(value: 'unicorn')
+      user.save!
+
+      render json: { id: user.id }
+    end
+
 
   end
 end

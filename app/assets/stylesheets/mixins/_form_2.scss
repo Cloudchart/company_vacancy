@@ -327,7 +327,8 @@
   @include cc-toggle();
 }
 
-.typeahead {
+.typeahead,
+.cc-typeahead {
   @include form-typeahead;
 }
 

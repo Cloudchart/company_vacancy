@@ -36,6 +36,8 @@ class PinboardsController < ApplicationController
 
   rescue ActiveRecord::RecordInvalid
 
+    Rails.logger.debug @pinboard.errors.inspect
+
     respond_to do |format|
       format.json { render json: :fail, status: 422 }
     end

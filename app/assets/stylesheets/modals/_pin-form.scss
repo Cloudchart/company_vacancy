@@ -79,7 +79,8 @@
     }
 
     .user select,
-    .pinboard select {
+    .pinboard select,
+    .cc-typeahead input {
       @include appearance(none);
 
       background-color: hsl(0, 0%, 95%);
@@ -110,6 +111,19 @@
       color: hsl(145, 60%, 60%);
       font-size: 12px;
       font-weight: 600;
+    }
+
+    .unicorn-chooser {
+      position: relative;
+
+      .create-button {
+        @include position(absolute, 0px 10px null null);
+
+        color: $green-color;
+        font-size: $big-font-size;
+        line-height: 40px;
+        height: 40px;
+      }
     }
 
   }
