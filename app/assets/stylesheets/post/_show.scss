@@ -139,7 +139,18 @@ main.post {
       }
 
       > .cc {
-        padding: 0 15px;
+        padding-left: 15px;
+
+        > i {
+          background-color: white;
+          border-radius: 100%;
+          color: $green-color;
+          font-size: $small-font-size;
+          line-height: 20px;
+          margin-left: $inner-margin-size;
+          height: 20px;
+          width: 20px;
+        }
       }
     }
 

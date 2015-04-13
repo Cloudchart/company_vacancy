@@ -134,5 +134,6 @@ module.exports = React.createClass
     else
       <StandardButton 
         className = "cc"
+        iconClass = "fa fa-thumb-tack"
         onClick   = { @handleClick }
         text      = "Be the first to leave an insight" />
