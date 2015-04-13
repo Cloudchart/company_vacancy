@@ -63,7 +63,7 @@ class Ability
       end
 
       can :approve, Pin do |pin|
-        current_user.admin? || current_user.editor?
+        (current_user.admin? || current_user.editor?) && pin.content.present? && !pin.is_approved?
       end
 
       can [:update, :destroy], Pin do |pin|
