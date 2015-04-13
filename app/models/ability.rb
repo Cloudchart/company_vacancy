@@ -49,8 +49,8 @@ class Ability
       end
 
       can [:update, :settings], User do |user|
-        user.id == current_user.id || 
-        (user.last_sign_in_at.blank? && current_user.editor?)
+        user.id == current_user.id ||
+        (current_user.editor? && user.unicorn? && user.last_sign_in_at.blank?)
       end
 
       can [:update, :destroy], Pin do |pin|
