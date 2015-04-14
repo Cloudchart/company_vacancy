@@ -83,7 +83,7 @@ module.exports = React.createClass
           className = "featured-post-preview"
           key       = { index } >
           { @renderBackgroundImage(feature) }
-          <div className="wrapper">
+          <a className="wrapper for-group" href={ feature.get('assigned_url') }>
             <header>
               <h1><span>{ feature.get('assigned_title') }</span></h1>
               <div className="info">
@@ -101,7 +101,7 @@ module.exports = React.createClass
             <div>
               <InsightItem cursor = { InsightItem.getCursor(pin.get('uuid')) } />
             </div>
-          </div>
+          </a>
         </article>
       .toArray()
 
