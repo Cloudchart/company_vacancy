@@ -21,6 +21,11 @@ class PinsController < ApplicationController
 
   def create
     @pin.update_by! current_user
+
+    if (current_user.admin? || current_user.editor? || current_user.unicorn?) && @pin.content.present?
+      @pin.is_approved = true
+    end
+
     @pin.save!
 
     Activity.track(current_user, params[:action], @pin, @pin.user)
@@ -56,6 +61,14 @@ class PinsController < ApplicationController
 
     respond_to do |format|
       format.json { render json: { id: @pin.id } }
+    end
+  end
+
+  def approve
+    @pin.update(is_approved: true)
+
+    respond_to do |format|
+      format.json { render json: { id: @pin.id }}
     end
   end
 

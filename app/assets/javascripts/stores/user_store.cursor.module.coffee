@@ -4,6 +4,19 @@
 GlobalState   = require('global_state/state')
 ViewerQuery   = new GlobalState.query.Query("Viewer")
 
+RoleStore = require('stores/role_store.cursor')
+
+
+# waiting for shapers \_(")_/
+findSystemRoleForUser = (user, value) ->
+  RoleStore.cursor.items
+    .find (role) ->
+      role.get('owner_id', null) is null and
+      role.get('owner_type', null) is null and
+      role.get('user_id') is user.get('uuid') and
+      role.get('value') is value
+
+
 # Exports
 #
 module.exports = GlobalState.createStore
@@ -32,7 +45,7 @@ module.exports = GlobalState.createStore
 
 
   unicorns: ->
-    roles = require('stores/role_store.cursor').cursor.items
+    roles = RoleStore.cursor.items
 
     @cursor.items
 
@@ -42,3 +55,10 @@ module.exports = GlobalState.createStore
           role.get('owner_id',   null)  is null       and
           role.get('value')             is 'unicorn'  and
           role.get('user_id')           is user.get('uuid')
+
+
+  isEditor: ->
+    !!findSystemRoleForUser(@me(), 'editor')
+
+  isAdmin: ->
+    !!findSystemRoleForUser(@me(), 'admin')

@@ -23,3 +23,8 @@ en:
         menu: "Merge"
         breadcrumb: "Merge"
         title: "Merge"
+      approve:
+        menu: "Approve"
+        breadcrumb: "Approve"
+        title: "Approve"
+        bulk_link: "Approve"

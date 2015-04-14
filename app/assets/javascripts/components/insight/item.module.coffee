@@ -15,6 +15,7 @@ UserStore   = require('stores/user_store.cursor')
 Human         = require('components/human')
 PinButton     = require('components/pinnable/pin_button')
 EditPinButton = require('components/pinnable/edit_pin_button')
+ModeratePinButton = require('components/pinnable/moderate_pin_button')
 
 
 # Utils
@@ -61,6 +62,7 @@ module.exports = React.createClass
 
   renderButtons: ->
     <ul className="round-buttons">
+      <ModeratePinButton uuid = { @props.uuid } />
       <EditPinButton uuid={ @props.uuid } />
       <PinButton {...@gatherAttributes()} title={ @props.cursor.pin.get('content') } />
     </ul>

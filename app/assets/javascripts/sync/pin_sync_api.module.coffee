@@ -52,3 +52,10 @@ module.exports =
       url:      '/pins/' + item.get('uuid')
       type:     'DELETE'
       dataType: 'json'
+
+
+  approve: (item) ->
+    Promise.resolve $.ajax
+      url:      '/pins/' + item.get('uuid') + '/approve'
+      type:     'PATCH'
+      dataType: 'json'

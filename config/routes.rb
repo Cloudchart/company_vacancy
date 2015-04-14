@@ -102,7 +102,10 @@ Cloudchart::Application.routes.draw do
     end
   end
 
-  resources :pins, except: [:index]
+  resources :pins, except: [:index] do
+    match :approve, on: :member, via: [:put, :patch]
+  end
+
   resources :posts_stories, only: [:update, :destroy]
 
   resources :users, only: [:show, :update], concerns: [:followable] do
