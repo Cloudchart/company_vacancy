@@ -53,15 +53,6 @@ module.exports = React.createClass
     @state.loaders.get('system_roles') == true
 
 
-  isEditor: ->
-    !!RoleStore.cursor.items
-      .find (role) =>
-        role.get('owner_id', null)    is null     and
-        role.get('owner_type', null)  is null     and
-        role.get('value')             is 'editor' and
-        role.get('user_id')           is @state.user.get('uuid')
-
-
   isUnicornPin: ->
     true
 
@@ -77,7 +68,7 @@ module.exports = React.createClass
 
   render: ->
     return null unless @isLoaded()
-    return null unless @isEditor()
+    return null unless UserStore.isEditor()
     return null unless @isUnicornPin()
 
     <li onClick={ @handleClick }>
