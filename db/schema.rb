@@ -184,6 +184,7 @@ ActiveRecord::Schema.define(version: 20150413111745) do
     t.string   "category"
     t.string   "image_uid"
     t.boolean  "is_active",                  default: false
+    t.string   "url"
   end
 
   add_index "features", ["featurable_id", "featurable_type"], name: "index_features_on_featurable_id_and_featurable_type", using: :btree

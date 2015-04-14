@@ -7,7 +7,9 @@ module Admin::Feature
       list do
         field :insight do
           pretty_value do
-            bindings[:view].link_to bindings[:object].insight.content, bindings[:view].main_app.post_path(bindings[:object].insight.post)
+            feature = bindings[:object]
+            url = feature.url.present? ? feature.formatted_url : bindings[:view].main_app.post_path(feature.insight.post)
+            bindings[:view].link_to feature.insight.content, url
           end
         end
 
@@ -36,6 +38,7 @@ module Admin::Feature
         field :title
         field :image
         field :category
+        field :url
         field :is_active
       end
 
