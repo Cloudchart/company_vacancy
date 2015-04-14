@@ -15,6 +15,7 @@ ModalActions  = require('actions/modal_actions')
 
 InsightContent  = require('components/pinnable/insight_content')
 UnicornChooser  = require('components/unicorn_chooser')
+StandardButton  = require('components/form/buttons').StandardButton
 
 
 KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title'])
@@ -272,16 +273,16 @@ module.exports = React.createClass
     attributes: @getAttributesFromProps()
 
 
-  # Render
+  # Renderers
   #
-
   renderHeader: ->
     <header>
       <h1>Pin this to your pinboard</h1>
+      <StandardButton 
+        className  = "close-button transparent"
+        onClick    = { @props.onCancel }
+        iconClass  = "cc-icon cc-times" />
     </header>
-
-  #<div className="title">{ unwrapTitle(@props.title) }</div>
-     
 
   renderUserSelect: ->
     return null unless  @isCurrentUserSystemEditor()
@@ -295,7 +296,6 @@ module.exports = React.createClass
         onChange      = { @handleUserIdChange }
       />
     </label>
-
 
   renderPinboardSelectOptions: ->
     pinboards = @gatherPinboards()
