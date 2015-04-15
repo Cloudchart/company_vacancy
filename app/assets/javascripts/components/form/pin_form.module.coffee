@@ -18,7 +18,7 @@ UnicornChooser  = require('components/unicorn_chooser')
 StandardButton  = require('components/form/buttons').StandardButton
 
 
-KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title'])
+KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title', 'origin'])
 
 
 # Utils
@@ -340,6 +340,18 @@ module.exports = React.createClass
       </div>
     </label>
 
+  renderPinOrigin: ->
+    return null unless @isCurrentUserSystemEditor()
+
+    <label className="origin">
+      <div className="title">Origin</div>
+      <div className="input-wrapper">
+        <input
+          onChange  = { @handleChange.bind(@, 'origin') }
+          value     = { @state.attributes.get('origin', '') }
+        />
+      </div>
+    </label>
 
   renderPinComment: ->
     <label className="comment">
@@ -393,6 +405,7 @@ module.exports = React.createClass
         { @renderPinboardSelect() }
         { @renderPinboardInput() }
         { @renderPinComment() }
+        { @renderPinOrigin() }
       </fieldset>
 
       { @renderFooter() }

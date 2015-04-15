@@ -105,7 +105,7 @@ private
     if current_user.editor?
       fields_for_create
     else
-      fields_for_create - [:user_id] 
+      fields_for_create - [:user_id, :origin] 
     end
   end
 
