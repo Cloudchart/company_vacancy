@@ -116,5 +116,18 @@ ul.insight-list,
     font-weight: $normal-weight;
     line-height: 1.4;
     width: 100%;
+
+    > .origin {
+      color: $link-color;
+
+      > .tooltip {
+        left: -10px;
+        top: 100%;
+
+        &:before {
+          left: 12px;
+        }
+      }
+    }
   }
 }

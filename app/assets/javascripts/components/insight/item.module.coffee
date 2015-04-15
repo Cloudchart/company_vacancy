@@ -12,10 +12,11 @@ UserStore   = require('stores/user_store.cursor')
 
 # Components
 #
-Human         = require('components/human')
-PinButton     = require('components/pinnable/pin_button')
-EditPinButton = require('components/pinnable/edit_pin_button')
+Human             = require('components/human')
+PinButton         = require('components/pinnable/pin_button')
+EditPinButton     = require('components/pinnable/edit_pin_button')
 ModeratePinButton = require('components/pinnable/moderate_pin_button')
+Tooltip           = require('components/shared/tooltip')
 
 
 # Utils
@@ -53,11 +54,36 @@ module.exports = React.createClass
     @getStateFromStores()
 
 
+  # Helpers
+  #
+  isLink: (string) ->
+    /^https?:\/\/.*/.test(string)
+
+
   # Renderers
   #
+  renderOriginIcon: ->
+    <i className="fa fa-code" />
+
+  renderOrigin: ->
+    return null unless (origin = @props.cursor.pin.get('origin'))
+
+    if @isLink(origin)
+      <a className="origin" href={ origin } target="_blank">
+        { @renderOriginIcon() }
+      </a>
+    else
+      <Tooltip 
+        className      = "origin"
+        element        = { @renderOriginIcon() }
+        tooltipContent = { origin } />
+      
+
   renderContent: ->
     <section className="content">
       { @props.cursor.pin.get('content') }
+      { " " }
+      { @renderOrigin() }
     </section>
 
   renderButtons: ->
