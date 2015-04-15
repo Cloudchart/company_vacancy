@@ -21,11 +21,7 @@ class PinsController < ApplicationController
 
   def create
     @pin.update_by! current_user
-
-    if (current_user.admin? || current_user.editor? || current_user.unicorn?) && @pin.content.present?
-      @pin.is_approved = true
-    end
-
+    @pin.is_approved = true if autoapproval_granted?
     @pin.save!
 
     Activity.track(current_user, params[:action], @pin, @pin.user)
@@ -73,6 +69,11 @@ class PinsController < ApplicationController
   end
 
 private
+
+  def autoapproval_granted?
+    @pin.content.present? &&
+    (current_user.roles.reject(&:owner_id).map(&:value) & %w(admin editor unicorn trustee)).any?
+  end
 
   def pin_source
     current_user.editor? ? Pin : current_user.pins

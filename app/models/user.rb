@@ -95,7 +95,7 @@ class User < ActiveRecord::Base
 
   (Cloudchart::ROLES + [:guest]).map(&:to_s).each do |role_name|
     define_method("#{role_name}?") do
-      !!roles.find { |role| role.owner_id == nil && role.value == role_name }
+      !!roles.find { |role| role.owner_id.nil? && role.value == role_name }
     end
   end
 
