@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150413111745) do
+ActiveRecord::Schema.define(version: 20150415105451) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -333,6 +333,7 @@ ActiveRecord::Schema.define(version: 20150413111745) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_approved",              default: false
+    t.text     "origin"
   end
 
   add_index "pins", ["parent_id"], name: "index_pins_on_parent_id", using: :btree
