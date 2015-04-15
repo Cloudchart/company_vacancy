@@ -15,7 +15,7 @@ UserStore   = require('stores/user_store.cursor')
 Human             = require('components/human')
 PinButton         = require('components/pinnable/pin_button')
 EditPinButton     = require('components/pinnable/edit_pin_button')
-ModeratePinButton = require('components/pinnable/moderate_pin_button')
+ApprovePinButton  = require('components/pinnable/approve_pin_button')
 Tooltip           = require('components/shared/tooltip')
 
 
@@ -88,7 +88,7 @@ module.exports = React.createClass
 
   renderButtons: ->
     <ul className="round-buttons">
-      <ModeratePinButton uuid = { @props.uuid } />
+      <ApprovePinButton uuid = { @props.uuid } />
       <EditPinButton uuid={ @props.uuid } />
       <PinButton {...@gatherAttributes()} title={ @props.cursor.pin.get('content') } />
     </ul>
@@ -98,7 +98,12 @@ module.exports = React.createClass
     return null unless @props.cursor.pin.deref()
     return null unless @state.user.deref()
 
-    <article className="insight item">
+    insightClasses = cx
+      insight: true
+      item: true
+      unapproved: !@props.cursor.pin.get('is_approved')
+
+    <article className = { insightClasses } >
       <Human 
         uuid            = { @props.cursor.pin.get('user_id') }
         showUnicornIcon = { true }

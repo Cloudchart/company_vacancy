@@ -22,24 +22,25 @@ cx = React.addons.classSet
 # 
 MainComponent = React.createClass
 
-  displayName: 'ModeratePinButton'
+  displayName: 'ApprovePinButton'
 
-  # mixins: [GlobalState.mixin, GlobalState.query.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-  # statics:
-  #   queries:
-  #     system_roles: ->
-  #       """
-  #         Viewer {
-  #           system_roles
-  #         }
-  #       """
+  statics:
+    queries:
+      system_roles: ->
+        """
+          Viewer {
+            system_roles
+          }
+        """
 
   propTypes:
     uuid: React.PropTypes.string.isRequired
 
   getInitialState: ->
     isSyncing: false
+    loaders: Immutable.Map()
 
   
   # Lifecycle Methods
@@ -48,6 +49,9 @@ MainComponent = React.createClass
     @cursor = 
       user: UserStore.me()
       pin: PinStore.cursor.items.cursor(@props.uuid)
+
+    GlobalState.fetch(@getQuery('system_roles')).then =>  
+      @setState loaders: @state.loaders.set('system_roles', true) if @isMounted()
 
   # componentDidMount: ->
   # componentWillReceiveProps: (nextProps) ->
@@ -60,7 +64,7 @@ MainComponent = React.createClass
   # Helpers
   # 
   isLoaded: ->
-    RoleStore.cursor.items.deref(false) and @cursor.user.deref(false) and @cursor.pin.deref(false)
+    !!@state.loaders.get('system_roles') and @cursor.user.deref(false) and @cursor.pin.deref(false)
 
 
   # Handlers
@@ -69,11 +73,12 @@ MainComponent = React.createClass
     event.preventDefault()
     event.stopPropagation()
 
-    @setState isSyncing: true
-    
-    PinSyncAPI.approve(@cursor.pin).then (json) => 
-      PinStore.fetchOne(json.id).then =>
-        @setState isSyncing: false if @isMounted()
+    if confirm('Are you sure?')
+      @setState isSyncing: true
+      
+      PinSyncAPI.approve(@cursor.pin).then (json) => 
+        PinStore.fetchOne(json.id).then =>
+          @setState isSyncing: false if @isMounted()
 
 
   # Renderers

@@ -7,7 +7,7 @@ ViewerQuery   = new GlobalState.query.Query("Viewer")
 RoleStore = require('stores/role_store.cursor')
 
 
-# waiting for shapers \_(")_/
+# waiting for shapers \_(@)_/
 findSystemRoleForUser = (user, value) ->
   RoleStore.cursor.items
     .find (role) ->
