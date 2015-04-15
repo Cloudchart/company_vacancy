@@ -1,0 +1,40 @@
+$tooltip-text-color: $accented-white-color;
+$tooltip-background-color: $black-color;
+$tooltip-arrow-size: 8px;
+
+
+.tooltip-wrapper {
+  display: inline-block;
+  position: relative;
+
+  &:hover > .tooltip {
+    display: block;
+  }
+
+  > .tooltip {
+    @include position(absolute, 100% 0 0 0);
+
+    background-color: $tooltip-background-color;
+    color: $tooltip-text-color;
+    display: none;
+    font-size: $small-font-size;
+    max-width: 200px;
+    padding: $inner-margin-size;
+    top: calc(100% + #{$tooltip-arrow-size} * 0.8);
+    white-space: nowrap; 
+    width: auto;
+
+    &:before {
+      @include position(absolute, 0px 0 0 0);
+
+      border-bottom: $tooltip-arrow-size solid $tooltip-background-color;
+      border-right: $tooltip-arrow-size*0.8 solid transparent;
+      border-left: $tooltip-arrow-size*0.8  solid transparent;
+      content: "";
+      height: 0;
+      margin-top: -$tooltip-arrow-size*0.8; 
+      width: 0;
+      z-index: $zindex-tooltip;
+    }
+  }
+}

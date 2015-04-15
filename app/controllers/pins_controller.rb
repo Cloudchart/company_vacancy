@@ -98,14 +98,14 @@ private
   end
 
   def fields_for_create
-    [:user_id, :pinnable_id, :pinnable_type, :pinboard_id, :content, :parent_id]
+    [:user_id, :pinnable_id, :pinnable_type, :pinboard_id, :content, :parent_id, :origin]
   end
 
   def fields_for_update
     if current_user.editor?
       fields_for_create
     else
-      fields_for_create - [:user_id] 
+      fields_for_create - [:user_id, :origin] 
     end
   end
 

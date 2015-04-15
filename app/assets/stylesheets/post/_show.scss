@@ -185,40 +185,13 @@ main.post {
           }
         }
 
-        .user-preview > .info {
-          @include position(absolute, 50px + $user-preview-arrow-size*0.8 0 0 0);
-
-          background-color: $user-preview-background-color;
-          color: $user-preview-text-color;
-          display: none;
-          font-size: $small-font-size;
-          max-width: 200px;
-          padding: $inner-margin-size;
-          white-space: nowrap; 
-          width: auto;
-
-          &:before {
-            @include position(absolute, 0px 0 0 25px - $user-preview-arrow-size*0.8);
-
-            border-bottom: $user-preview-arrow-size solid $user-preview-background-color;
-            border-right: $user-preview-arrow-size*0.8 solid transparent;
-            border-left: $user-preview-arrow-size*0.8  solid transparent;
-            content: "";
-            height: 0;
-            margin-top: -$user-preview-arrow-size*0.8; 
-            width: 0;
-          }
-        }
-
-        .user-preview {
-          position: relative;
-
+        .tooltip {
           header {
             font-weight: 700;
           }
 
-          &:hover > .info {
-            display: block;
+          &:before {
+            left: 25px - $tooltip-arrow-size*0.8;
           }
         }
       }
