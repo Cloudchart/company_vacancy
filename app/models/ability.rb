@@ -58,6 +58,10 @@ class Ability
       # 
       can :create, Pin
 
+      can :index, :pins do
+        current_user.admin? || current_user.editor?
+      end
+
       can :read, Pin do |pin|
         pin.content.blank? || pin.is_approved? || pin.user_id == current_user.id ||
         (current_user.admin? || current_user.editor?)
@@ -74,9 +78,13 @@ class Ability
       # Company
       # 
       can :unfollow, Company
-      can [:read, :search], Company, is_published: true
+      can :read, Company, is_published: true
 
-      can :create, Company do |company| 
+      can [:index, :search], :companies do
+        current_user.admin? || current_user.editor?
+      end
+
+      can :create, Company do
         current_user.editor?
       end
 

@@ -12,7 +12,7 @@ class WelcomeController < ApplicationController
 private
   
   def redirect_to_profile
-    redirect_to main_app.companies_path
+    redirect_to main_app.user_path(current_user)
   end
   
 end

@@ -11,7 +11,8 @@ class CompaniesController < ApplicationController
     :settings
   ]
 
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:index, :search]
+  authorize_resource only: [:index, :search], class: controller_name.to_sym
 
   after_action :create_intercom_event, only: [:new, :update]
 

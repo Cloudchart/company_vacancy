@@ -2,7 +2,8 @@ class PinsController < ApplicationController
 
   before_filter :set_pin, except: :index
 
-  authorize_resource
+  authorize_resource except: :index
+  authorize_resource only: :index, class: controller_name.to_sym
 
   after_action :create_intercom_event, only: :create
 
