@@ -1,29 +1,35 @@
-<div class="local-menu">
-  <% if content_for(:header_breadcrumbs).present? %>
-    <%= yield :header_breadcrumbs %>
-  <% else %>
-    <%= link_to "", main_app.root_path, class: 'logo' %>
-    <div data-header-react-mount-point>
-      <%= link_to main_app.root_path, class: 'title' do %>
-        <%= app_name_for_header %>
-      <% end %>
-    </div>
-  <% end %>
+<%
 
-  <%= yield :header_menu %>
-</div>
+links = []
+user = {}
 
-<div class="spacer"></div>
+if user_authenticated? && (current_user.admin? || current_user.editor?)
+  links = [
+    {
+      title: 'Companies',
+      url: current_page?(main_app.companies_path) ? nil : main_app.companies_path
+    },
+    {
+      title: 'Insights',
+      url: current_page?(main_app.insights_path) ? nil : main_app.insights_path
+    }
+  ]
+end
 
-<% if user_authenticated? %>
-  <ul class="main-menu">
-    <li>
-      <%= link_to_unless_current 'Companies', main_app.companies_path %>
-    </li>
-    <li>
-      <%= link_to_unless_current 'Insights', main_app.insights_path %>
-    </li>
-  </ul>
-<% end %>
+if user_authenticated?
+  user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) } 
+end
 
-<%= render partial: 'shared/header_authentication' %>
+%>
+
+<%= content_tag :header, nil, data: {
+  "react-class" => "components/header_app",
+  "react-props" => {
+    title: app_name_for_header,
+    root_url: main_app.root_path,
+    login_url: cloud_profile.login_path,
+    logout_url: cloud_profile.logout_path,
+    links: links,
+    user: user
+  }
+} %>
