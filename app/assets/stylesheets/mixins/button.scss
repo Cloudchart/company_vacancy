@@ -317,7 +317,9 @@ ul.round-buttons {
     cursor: default;
   }
   
-  > i {
+  > i,
+  > button > i {
+    color: $round-button-color;
     font-size: 14px;
     line-height: $round-button-size;
 

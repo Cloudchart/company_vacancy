@@ -10,6 +10,8 @@ PinStore = require('stores/pin_store')
 
 PinSyncAPI = require('sync/pin_sync_api')
 
+SyncButton = require('components/form/buttons').SyncButton
+
 
 # Utils
 #
@@ -36,11 +38,8 @@ MainComponent = React.createClass
   propTypes:
     uuid: React.PropTypes.string.isRequired
 
-
-  # Component Specifications
-  # 
-  # getDefaultProps: ->
-  # getInitialState: ->
+  getInitialState: ->
+    isSyncing: false
 
   
   # Lifecycle Methods
@@ -69,8 +68,12 @@ MainComponent = React.createClass
   handleModerateClick: (event) ->
     event.preventDefault()
     event.stopPropagation()
+
+    @setState isSyncing: true
     
-    PinSyncAPI.approve(@cursor.pin).then (json) => PinStore.fetchOne(json.id)
+    PinSyncAPI.approve(@cursor.pin).then (json) => 
+      PinStore.fetchOne(json.id).then =>
+        @setState isSyncing: false if @isMounted()
 
 
   # Renderers
@@ -83,8 +86,12 @@ MainComponent = React.createClass
   render: ->
     return null unless @isLoaded() and !@cursor.pin.get('is_approved') and UserStore.isEditor()
 
-    <li onClick = { @handleModerateClick } >
-      <i className="fa fa-check" />
+    <li>
+      <SyncButton
+        className = "transparent"
+        onClick   = { @handleModerateClick }
+        sync      = { @state.isSyncing }
+        iconClass = "fa fa-check" />
     </li>
 
 
