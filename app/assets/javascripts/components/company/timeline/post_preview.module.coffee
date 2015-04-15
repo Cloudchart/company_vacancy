@@ -25,7 +25,7 @@ ContentEditableArea = require('components/form/contenteditable_area')
 PersonAvatar        = require('components/shared/person_avatar')
 Avatar              = require('components/avatar')
 
-InsightListComponent = require('components/insight/list')
+InsightTimelineList = require('components/insight/timeline_list')
 
 PinButton           = require('components/pinnable/pin_button')
 
@@ -232,7 +232,7 @@ Component = React.createClass
     limit = 3
 
     <section className="post-pins">
-      <InsightListComponent pinnable_id={ @props.uuid } pinnable_type="Post" isCarousel={true} limit={ limit } />
+      <InsightTimelineList pinnable_id={ @props.uuid } pinnable_type="Post" />
       { @renderPostLink(@getInsightsNumber() - limit) }
     </section>
 

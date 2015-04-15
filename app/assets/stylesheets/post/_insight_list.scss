@@ -1,11 +1,3 @@
-.insight-list.carousel {
-  width: 310px + $gutter-size;
-
-  > ul.container > li {
-    margin-left: $gutter-size;
-  }
-}
-
 ul.insight-list,
 .insight-list > ul.container {
   list-style: none;
@@ -19,6 +11,53 @@ ul.insight-list,
 
     > .insight {
       width: 100%;
+    }
+  }
+}
+
+.insight-timeline-list {
+  margin-left: $gutter-size;
+
+  .insighters {
+    @include display(flex);
+
+    list-style: none;
+    margin-right: $inner-margin-size;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      cursor: pointer;
+      margin-right: $inner-margin-size;
+      margin-bottom: $inner-margin-size;
+      position: relative;
+
+      &.active {
+        &:before {
+          @include position(absolute, 0px 0px 0px 0px);
+
+          border: 2px solid hsla(137, 54%, 50%, 0.75);
+          border-radius: 50%;
+          content: '';
+        }
+      }
+
+      > figure {
+        background-color: #eee;
+        background-size: cover;
+        background-position: center center;
+        border-radius: 50%;
+        height: 32px;
+        width: 32px;
+      }
+    }
+  }
+
+  .insight-list > li {
+    display: none;
+
+    &.active {
+      display: block;
     }
   }
 }
