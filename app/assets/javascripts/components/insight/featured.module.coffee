@@ -16,7 +16,7 @@ FuzzyDate    = require('utils/fuzzy_date')
 #
 module.exports = React.createClass
 
-  displayName: 'WelcomeApp'
+  displayName: 'FeaturedInsights'
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
@@ -83,25 +83,27 @@ module.exports = React.createClass
           className = "featured-post-preview"
           key       = { index } >
           { @renderBackgroundImage(feature) }
-          <a className="wrapper for-group" href={ feature.get('assigned_url') }>
-            <header>
-              <h1><span>{ feature.get('assigned_title') }</span></h1>
-              <div className="info">
-                <ul className="round-buttons">
-                  <PinButton 
-                    title         = { feature.get('title') }
-                    pinnable_id   = { post.get('uuid') }
-                    pinnable_type = "Post" />
-                </ul>
-                <div className="date">{ formatted_date }</div>
-              </div>
-              <div className="spacer"></div>
-              <h2> { feature.get('category') } </h2>
-            </header>
+          <div className="wrapper">
+            <a className="for-group" href={ feature.get('assigned_url') }>
+              <header>
+                <h1><span>{ feature.get('assigned_title') }</span></h1>
+                <div className="info">
+                  <ul className="round-buttons">
+                    <PinButton 
+                      title         = { feature.get('title') }
+                      pinnable_id   = { post.get('uuid') }
+                      pinnable_type = "Post" />
+                  </ul>
+                  <div className="date">{ formatted_date }</div>
+                </div>
+                <div className="spacer"></div>
+                <h2> { feature.get('category') } </h2>
+              </header>
+            </a>
             <div>
-              <InsightItem cursor = { InsightItem.getCursor(pin.get('uuid')) } />
-            </div>
-          </a>
+              <InsightItem cursor = { InsightItem.getCursor(pin.get('uuid')) } uuid = { pin.get('uuid') } />
+            </div> 
+          </div>
         </article>
       .toArray()
 
@@ -109,7 +111,7 @@ module.exports = React.createClass
   render: ->
     return null unless @state.isLoaded
 
-    <Carousel withSlideshow = { true } >
+    <Carousel className="featured-insights" >
       { @renderPosts() }
     </Carousel>
     

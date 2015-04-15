@@ -135,48 +135,56 @@ body > footer > ul {
 // Main
 //
 body > main {
-  @include display(flex);
-  @include flex-direction(column);
+  min-height: 100%;
 
-  background-color: $background-color;
+  > .landing-wrapper {
+    min-height: 100%;
 
-  > header {
-    @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), hsla(0, 0%, 98%, 1));
-    padding: 25px 0;
+    > .landing {
+      @include display(flex);
+      @include flex-direction(column);    
 
-    > h1, > h2 {
-      font-weight: 300;
-      margin: 0;
-      text-align: center;
-    }
+      background-color: $background-color;
 
-    > h1 {
-      font-size: $great-font-size;
-    }
+      > header {
+        @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), hsla(0, 0%, 98%, 1));
+        padding: 25px 0;
 
-    > h2 {
-      font-size: $huge-font-size;
-    }
-  }
+        > h1, > h2 {
+          font-weight: 300;
+          margin: 0;
+          text-align: center;
+        }
 
-  > .featured-posts {
-    @include flex(1);
-  }
-  
-  > footer {
-    margin: 45px 0;
-    text-align: center;
-    
-    > a.cc {
-      background-color: $accented-green-color;
-      border: none;
-      color: $accented-white-color;
-      display: inline-block;
-      font-size: $huge-font-size;
-      font-weight: 300;
-      height: 82px;
-      line-height: 82px;
-      padding: 0 34px;
+        > h1 {
+          font-size: $great-font-size;
+        }
+
+        > h2 {
+          font-size: $huge-font-size;
+        }
+      }
+
+      > .featured-insights {
+        @include flex(1);
+      }
+      
+      > footer {
+        margin: 45px 0;
+        text-align: center;
+        
+        > a.cc {
+          background-color: $accented-green-color;
+          border: none;
+          color: $accented-white-color;
+          display: inline-block;
+          font-size: $huge-font-size;
+          font-weight: 300;
+          height: 82px;
+          line-height: 82px;
+          padding: 0 34px;
+        }
+      }
     }
   }
 }
