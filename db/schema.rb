@@ -333,7 +333,7 @@ ActiveRecord::Schema.define(version: 20150415105451) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_approved",              default: false
-    t.text     "origin"
+    t.string   "origin"
   end
 
   add_index "pins", ["parent_id"], name: "index_pins_on_parent_id", using: :btree
