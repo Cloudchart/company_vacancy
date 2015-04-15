@@ -214,7 +214,7 @@ module.exports = React.createClass
 
   renderInsights: ->
     unless PinsComponent.isEmpty(@props.uuid)
-      <PinsComponent user_id = { @props.uuid } showOnlyInsights = { true } />
+      <PinsComponent user_id = { @props.uuid } showOnlyInsights = { !@isViewerProfile() } />
     else
       @renderEmptyTabText("insights")
 
