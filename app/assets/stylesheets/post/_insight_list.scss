@@ -19,6 +19,7 @@ ul.insight-list,
   margin-left: $gutter-size;
 
   .insighters {
+    @include align-items(center);
     @include display(flex);
 
     list-style: none;
@@ -31,6 +32,13 @@ ul.insight-list,
       margin-right: $inner-margin-size;
       margin-bottom: $inner-margin-size;
       position: relative;
+
+      &.more {
+        color: $link-color;
+        font-size: $small-font-size;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
 
       &.active {
         &:before {

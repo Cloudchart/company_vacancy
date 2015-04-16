@@ -219,21 +219,15 @@ Component = React.createClass
 
   # Renderers
   #
-  renderPostLink: (insightsNumber) ->
-    return null unless insightsNumber > 0
-
-    <a className = "orgpad-button show-pins"
-       href      = { @state.post.post_url + "#expanded" }>
-      { "Show All #{@getInsightsNumber()}" }
-    </a>
-
   renderInsights: ->
     return null if @isEpochType() || (@getInsightsNumber() == 0)
     limit = 3
 
     <section className="post-pins">
-      <InsightTimelineList pinnable_id={ @props.uuid } pinnable_type="Post" />
-      { @renderPostLink(@getInsightsNumber() - limit) }
+      <InsightTimelineList 
+        pinnable_id={ @props.uuid }
+        pinnable_type="Post"
+        postUrl = { @state.post.post_url + "#expanded" } />
     </section>
 
   renderPinPostItem: ->

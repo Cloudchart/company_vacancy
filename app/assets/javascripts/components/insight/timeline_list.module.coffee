@@ -19,6 +19,9 @@ module.exports = React.createClass
 
   displayName: 'InsightTimelineList'
 
+  propTypes:
+    postUrl: React.PropTypes.string.isRequired
+
   getDefaultProps: ->
     cursor:         PinStore.cursor.items
 
@@ -33,12 +36,17 @@ module.exports = React.createClass
       .filterInsightsForPost(@props.pinnable_id)
       .sortBy (item) => item.get('created_at')
       .reverse()
-      .take(3)
+
+  gatherInsightsForPreview: ->
+    @gatherInsights().take(3)
 
   gatherInsighters: (insights) ->
     insights
       .map (insight) -> insight.get('user_id')
       .map (user_id) -> UserStore.get(user_id)
+
+  getMoreNumber: ->
+    (@gatherInsights().size || 0) - (@gatherInsightsForPreview().size || 0)
 
 
   # Handlers
@@ -49,8 +57,14 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderAddText: ->
+  renderMoreText: ->
+    return null unless ((count = @getMoreNumber()) > 0)
 
+    <li className="more">
+      <a href = { @props.postUrl } >
+        + { count } more
+      </a>
+    </li>
 
   renderInsighters: (insights) ->
     @gatherInsighters(insights).toArray().map (insighter, index) =>
@@ -70,13 +84,14 @@ module.exports = React.createClass
 
 
   render: ->
-    insights = @gatherInsights()
+    insights = @gatherInsightsForPreview()
 
     return null if insights.size == 0
 
     <section className="insight-timeline-list">
       <ul className="insighters">
         { @renderInsighters(insights) }
+        { @renderMoreText() }
       </ul>
       <ul className="insight-list">
         { @renderItems(insights) }
