@@ -77,6 +77,10 @@ class Ability
       
       # Company
       # 
+      can :manage, Company do |company|
+        owner?(current_user, company)
+      end
+
       can :unfollow, Company
       can :read, Company, is_published: true
 
@@ -88,16 +92,16 @@ class Ability
         current_user.editor?
       end
 
-      can :manage, Company do |company|
-        owner?(current_user, company)
-      end
-
       can [:read, :update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file, :reposition_blocks], Company do |company|
         editor?(current_user, company)
       end
 
       can [:read, :finance], Company do |company|
         trusted_reader?(current_user, company)
+      end
+
+      can :read, Company do |company|
+        public_reader?(current_user, company)
       end
 
       cannot :follow, Company do |company|
@@ -164,6 +168,10 @@ private
 
   def trusted_reader?(user, object)
     role_value(user, object) == 'trusted_reader'
+  end
+
+  def public_reader?(user, object)
+    role_value(user, object) == 'public_reader'
   end
 
   def role_value(user, object)
