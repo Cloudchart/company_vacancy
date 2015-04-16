@@ -5,7 +5,7 @@
     position: relative;
     
     
-    > aside.avatar {
+    > .avatar {
       $vacancy-avatar-size: 150px;
       
       @include display(flex);

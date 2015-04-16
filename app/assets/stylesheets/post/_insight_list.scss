@@ -39,14 +39,12 @@ ul.insight-list,
           border: 2px solid hsla(137, 54%, 50%, 0.75);
           border-radius: 50%;
           content: '';
+          z-index: 1;
         }
       }
 
-      > figure {
-        background-color: #eee;
-        background-size: cover;
-        background-position: center center;
-        border-radius: 50%;
+      > .avatar {
+        font-size: 16px;
         height: 32px;
         width: 32px;
       }

@@ -36,27 +36,8 @@ $card-hr: 1px solid whitesmoke;
   @include align-items(center);
   @include display(flex);
 
-  figure {
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    border-radius: 50%;
-    height: 50px;
+  .avatar {
     margin-right: 10px;
-    position: relative;
-    width: 50px;
-
-    figcaption {
-      @include position(absolute, 50% null null 0);
-
-      color: hsl(0, 0%, 100%);
-      font-size: 25px;
-      font-weight: 300;
-      line-height: 25px;
-      margin-top: -12px;
-      text-align: center;
-      width: 100%;
-    }
   }
 
   .credentials {

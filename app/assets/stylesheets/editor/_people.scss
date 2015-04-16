@@ -44,7 +44,7 @@
           opacity: 0;
           width: 100px;
 
-          figure > i.hint {
+          figcaption > i.hint {
             display: none;
           }
         }
@@ -94,12 +94,13 @@
   margin: 0;
   position: relative;
 
-  &.placeholder-wrapper > aside {
+  &.placeholder-wrapper > .avatar {
     background-color: $editor-placeholder-background-color;
     color: $editor-placeholder-color;
 
-    span {
-      font-size: 100px;
+    > figcaption {
+      @include display(flex);
+      @include flex-direction(column);
     }
   }
   
@@ -142,33 +143,32 @@
     }
   }
 
-  > aside.avatar {
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    border-radius: 50%;
+  > .avatar {
+    font-size: $editor-placeholder-font-size;
+    font-weight: 100;
     height: 0;
     margin: 0;
     padding: 0;
     padding-top: 100%;
     position: relative;
+    width: 100%;
     
-    > figure {
-      @include position(absolute, 50% 0px 0 0px);
+    > figcaption {
+      @include position(absolute, 50% 0 0 0px);
       @include transform(translateY(-50%));
-      
-      display: inline-block;
-      font-size: $editor-placeholder-font-size;
-      font-weight: 100;
-      line-height: 1em;
-      text-align: center;
-      
-      i.hint {
-        @include position(absolute, 85% 0px 0 0px);
 
-        font-size: .25em;
+      text-align: center;
+      width: 100%;
+
+      i.cc-plus {
+        display: block;
+        line-height: 50px;
+        height: 50px;
+      }
+
+      i.hint {
+        font-size: 16px;
         font-style: normal;
-        line-height: 1em;
         text-transform: uppercase;
       }
     }

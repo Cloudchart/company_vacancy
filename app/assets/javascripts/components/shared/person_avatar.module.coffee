@@ -54,7 +54,7 @@ Component = React.createClass
   render: ->
     personInitials = initials(@props.value)
 
-    (tag.aside {
+    (tag.figure {
       className:  'avatar'
       onClick:    @props.onClick
       style:
@@ -81,7 +81,7 @@ Component = React.createClass
         onClick:    @onAvatarRemove
       }) if @props.avatarURL and !@props.readOnly and @props.onRemove
 
-      (tag.figure null, personInitials) unless @props.avatarURL
+      (tag.figcaption null, personInitials) unless @props.avatarURL
     )
 
 
