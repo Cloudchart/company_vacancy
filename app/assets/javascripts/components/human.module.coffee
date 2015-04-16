@@ -79,14 +79,20 @@ module.exports = React.createClass
       role.get('user_id')           is @props.uuid
     .size
 
+  updateCursor: (props) ->
+    @cursor = Stores[props.type].cursor.items.cursor(props.uuid)
+
+    @fetch() unless @cursor.deref(false) if props.uuid
+
 
   # Lifecycle methods
   #
   componentWillMount: ->
-    @cursor = Stores[@props.type].cursor.items.cursor(@props.uuid)
+    @updateCursor(@props)
 
-    @fetch() unless @cursor.deref(false) if @props.uuid
-
+  componentWillReceiveProps: (newProps) ->
+    if !@props.uuid != newProps.uuid
+      @updateCursor(newProps)   
 
   # Renderers
   #
