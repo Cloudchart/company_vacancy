@@ -18,7 +18,7 @@ Button             = require('components/form/buttons').SyncButton
 SyncApi            = require('sync/user_sync_api')
 
 EmptyTabTexts =
-  activityOwn:    "Follow people and companies"
+  activityOwn:    "Follow people and companies you're interested in to learn from them"
   activityOther:  "This person doesn't follow any people and companies yet"
   insightsOwn:    "Collect successful founders' insights and put them to action"
   insightsOther:  "This person hasn't added any insights yet"
