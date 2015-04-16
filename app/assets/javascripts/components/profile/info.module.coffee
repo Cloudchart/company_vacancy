@@ -31,7 +31,7 @@ module.exports  = React.createClass
           User {
             roles,
             pins,
-            published_companies
+            owned_companies
           }
         """
 

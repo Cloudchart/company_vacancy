@@ -85,8 +85,12 @@ class User < ActiveRecord::Base
     Activity.followed_by_user(id)
   end
 
-  def published_companies
+  def owned_companies
     Company.joins(:roles).where(is_published: true, roles: { user_id: id, owner_type: 'Company' })
+  end
+
+  def published_companies
+    Company.where(is_published: true).order('created_at DESC').limit(6)
   end
 
   def followed_companies

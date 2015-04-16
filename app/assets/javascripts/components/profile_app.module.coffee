@@ -4,7 +4,7 @@ GlobalState        = require('global_state/state')
 
 ProfileInfo        = require('components/profile/info')
 PinsComponent      = require('components/pinboards/pins')
-CompaniesList      = require('components/company/list')
+UserCompanies      = require('components/company/lists/user')
 UserFeed           = require('components/user/feed')
 Settings           = require('components/profile/settings')
 
@@ -57,7 +57,7 @@ module.exports = React.createClass
             followed_activities,
             #{ProfileInfo.getQuery('user')},
             #{PinsComponent.getQuery('pins')},
-            #{CompaniesList.getQuery('companies')}
+            #{UserCompanies.getQuery('companies')}
           }
         """ 
 
@@ -207,8 +207,8 @@ module.exports = React.createClass
       @renderEmptyTabText("activity")
 
   renderCompanies: ->
-    unless CompaniesList.isEmpty(@props.uuid)
-      <CompaniesList user_id = { @props.uuid } />
+    unless UserCompanies.isEmpty(@props.uuid)
+      <UserCompanies user_id = { @props.uuid } />
     else
       @renderEmptyTabText("companies")
 

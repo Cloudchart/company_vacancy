@@ -3,6 +3,7 @@
 GlobalState      = require('global_state/state')
 
 FeaturedInsights = require('components/insight/featured')
+RecentCompanies  = require('components/company/lists/recent')
 
 # Exports
 #
@@ -34,9 +35,15 @@ module.exports = React.createClass
       <a href="/auth/twitter" className="cc">Start Learning</a>
     </footer>
 
+  renderRecentCompanies: ->
+    return null unless @props.isAuthorized
+
+    <RecentCompanies />
+
   render: ->
     <section className="landing">
       { @renderHeader() }
       <FeaturedInsights />
+      { @renderRecentCompanies() }
       { @renderFooter() }
     </section>

@@ -76,11 +76,13 @@ CompaniesApp = React.createClass
       .map (company) -> company.get('uuid')
       .toSeq()
 
-  getAllIds: ->
+  getAllCompanies: ->
     myCompaniesIds = @state.myCompaniesIds
     searchedCompaniesIds = @state.searchedCompaniesIds.filter (companyId) -> !myCompaniesIds.contains(companyId)
 
-    myCompaniesIds.concat(searchedCompaniesIds)
+    myCompaniesIds.concat(searchedCompaniesIds).map (id) ->
+      CompanyStore.get(id)
+    .toArray()
 
   sortCompanies: (companies) ->
     companies.sortBy (company) ->
@@ -162,8 +164,7 @@ CompaniesApp = React.createClass
     <section className="cloud-profile-companies">
       { @renderHeader() }
       <CompanyList
-        ids            = { @getAllIds() }
-        isInLegacyMode = { true }
+        companies      = { @getAllCompanies() }
         onSyncDone     = { @updateStores } />
     </section>
 
