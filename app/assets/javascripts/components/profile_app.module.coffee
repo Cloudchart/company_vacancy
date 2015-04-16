@@ -87,7 +87,11 @@ module.exports = React.createClass
         visibleTabs: @getVisibleTabs()
 
   getStateFromStores: ->
-    favorite: FavoriteStore.findByUser(@props.uuid)
+    favorite: FavoriteStore.filter((favorite) => 
+      favorite.get('favoritable_id') == @props.uuid &&
+      favorite.get('favoritable_type') == 'User' &&
+      favorite.get('user_id') == @cursor.viewer.get('uuid')
+    ).first()
 
   onGlobalStateChange: ->
     @setState @getStateFromStores()
