@@ -32,6 +32,7 @@ module.exports = React.createClass
               insight {
                 user,
                 post {
+                  company,
                   pins
                 },
                 children
@@ -111,7 +112,7 @@ module.exports = React.createClass
   render: ->
     return null unless @state.isLoaded
 
-    <Carousel className="featured-insights" >
+    <Carousel className="featured-insights" withSlideshow = { true } >
       { @renderPosts() }
     </Carousel>
     
