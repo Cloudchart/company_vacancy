@@ -1,7 +1,5 @@
-class WelcomeController < ApplicationController  
+class WelcomeController < ApplicationController
   def index
-    layout = current_user.twitter.present? ? "application" : "landing"
-
-    render layout: layout
+    render layout: 'guest' unless user_authenticated?
   end
 end

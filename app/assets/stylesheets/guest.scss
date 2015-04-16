@@ -4,11 +4,12 @@
 @import 'font-awesome';
 @import 'variables';
 @import 'modal';
-@import 'mixins/landing';
+@import 'mixins/guest';
 @import 'mixins/form_2';
 @import 'mixins/button';
 @import 'shared/carousel';
 @import 'invite_queue';
+@import 'landing';
 
 $base-unit: 20px;
 $base-font-size: 15px;
@@ -136,57 +137,6 @@ body > footer > ul {
 //
 body > main {
   min-height: 100%;
-
-  > .landing-wrapper {
-    min-height: 100%;
-
-    > .landing {
-      @include display(flex);
-      @include flex-direction(column);    
-
-      background-color: $background-color;
-
-      > header {
-        @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), hsla(0, 0%, 98%, 1));
-        padding: 25px 0;
-
-        > h1, > h2 {
-          font-weight: 300;
-          margin: 0;
-          text-align: center;
-        }
-
-        > h1 {
-          font-size: $great-font-size;
-        }
-
-        > h2 {
-          font-size: $huge-font-size;
-        }
-      }
-
-      > .featured-insights {
-        @include flex(1);
-      }
-      
-      > footer {
-        margin: 45px 0;
-        text-align: center;
-        
-        > a.cc {
-          background-color: $accented-green-color;
-          border: none;
-          color: $accented-white-color;
-          display: inline-block;
-          font-size: $huge-font-size;
-          font-weight: 300;
-          height: 82px;
-          line-height: 82px;
-          padding: 0 34px;
-        }
-      }
-    }
-  }
 }
 
 // Env dependent
