@@ -93,12 +93,16 @@ class User < ActiveRecord::Base
     Company.joins(:roles).where(is_published: true, roles: { user_id: id, owner_type: 'Company' })
   end
 
-  def published_companies
+  def recent_companies
     Company.where(is_published: true).order('created_at DESC').limit(4)
   end
 
   def followed_companies
     Company.joins(:followers).where(followers: { user_id: id, favoritable_type: 'Company' })
+  end
+
+  def company_invite_tokens
+    Token.where(name: :invite, owner_type: 'Company').select_by_user(id, emails.pluck(:address))
   end
 
   (Cloudchart::ROLES + [:guest]).map(&:to_s).each do |role_name|

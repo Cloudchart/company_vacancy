@@ -21,7 +21,7 @@ UserCompanies = React.createClass
       companies: ->
         """
           Viewer {
-            published_companies {
+            recent_companies {
               #{CompanyPreview.getQuery('company')}
             }
           }
