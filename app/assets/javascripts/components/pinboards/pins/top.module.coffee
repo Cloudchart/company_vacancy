@@ -28,7 +28,7 @@ module.exports = React.createClass
 
     queries:
 
-      pins: ->
+      insights: ->
         """
           Viewer {
             top_insights {
@@ -37,30 +37,25 @@ module.exports = React.createClass
           }
         """
 
-  propTypes:
-    user_id:          React.PropTypes.string.isRequired
-    showOnlyInsights: React.PropTypes.bool
-
-  getDefaultProps: ->
-    showOnlyInsights: false
+  getInitialState: ->
+    isLoaded: false
 
 
   # Helpers
   #
   fetch: ->
-    GlobalState.fetch(@getQuery('pins'), id: @props.user_id)
+    GlobalState.fetch(@getQuery('insights'))
+    
 
-  isLoaded: ->
-    @cursor.pins.deref(false)
-
-  gatherPins: ->
+  gatherInsights: ->
     @cursor.pins
       .filter (pin) =>
-        pin.get('user_id') == @props.user_id && pin.get('pinnable_id') &&
-        (!@props.showOnlyInsights || pin.get('content') || pin.get('parent_id'))
+        pin.get('pinnable_id') && (pin.get('content') || pin.get('parent_id'))
       .valueSeq()
-      .sortBy (pin) -> pin.get('created_at')
+      .sortBy (pin) -> pin.get('pins_count')
       .reverse()
+      .take(4)
+      .toArray()
 
 
   # Lifecycle methods
@@ -69,16 +64,12 @@ module.exports = React.createClass
     @cursor =
       pins: PinStore.cursor.items
 
-    @fetch() unless @isLoaded()
+    @fetch().then => @setState isLoaded: true
 
 
   # Renderers
   #
-  renderPins: ->
-    @gatherPins().toArray()
-
-
   render: ->
-    return null unless @isLoaded()
+    return null unless @state.isLoaded
 
-    <PinsList pins = { @gatherPins() } />
+    <PinsList pins = { @gatherInsights() } />

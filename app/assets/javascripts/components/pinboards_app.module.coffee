@@ -2,7 +2,7 @@
 
 GlobalState    = require('global_state/state')
 UserStore      = require('stores/user_store.cursor')   
-PinsComponent  = require('components/pinboards/pins')
+UserPins       = require('components/pinboards/pins/user')
 
 
 # Exports
@@ -19,4 +19,4 @@ module.exports = React.createClass
   render: ->
     return null unless @cursor.deref(false)
 
-    <PinsComponent user_id={ @cursor.get('uuid') } />
+    <UserPins user_id={ @cursor.get('uuid') } />

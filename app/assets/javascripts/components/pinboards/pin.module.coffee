@@ -108,7 +108,10 @@ module.exports = React.createClass
     return unless insight = @getInsight()
 
     <article className="insight">
-      <InsightContent uuid = { insight.get('uuid') } type = 'pin' />
+      <InsightContent
+        type = 'pin'
+        post_id = { @cursor.pin.get('pinnable_id') }
+        uuid = { insight.get('uuid') }  />
 
       <Human showUnicornIcon={ true } type="user" uuid={ insight.get('user_id') } />
 

@@ -3,7 +3,7 @@
 GlobalState        = require('global_state/state')
 
 ProfileInfo        = require('components/profile/info')
-PinsComponent      = require('components/pinboards/pins')
+UserPins           = require('components/pinboards/pins/user')
 UserCompanies      = require('components/company/lists/user')
 UserFeed           = require('components/user/feed')
 Settings           = require('components/profile/settings')
@@ -56,7 +56,7 @@ module.exports = React.createClass
           User {
             followed_activities,
             #{ProfileInfo.getQuery('user')},
-            #{PinsComponent.getQuery('pins')},
+            #{UserPins.getQuery('pins')},
             #{UserCompanies.getQuery('companies')}
           }
         """ 
@@ -213,8 +213,8 @@ module.exports = React.createClass
       @renderEmptyTabText("companies")
 
   renderInsights: ->
-    unless PinsComponent.isEmpty(@props.uuid)
-      <PinsComponent user_id = { @props.uuid } showOnlyInsights = { !@isViewerProfile() } />
+    unless UserPins.isEmpty(@props.uuid)
+      <UserPins user_id = { @props.uuid } showOnlyInsights = { !@isViewerProfile() } />
     else
       @renderEmptyTabText("insights")
 

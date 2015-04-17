@@ -69,6 +69,7 @@ module.exports = React.createClass
       .valueSeq()
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
+      .toArray()
 
 
   # Lifecycle methods
@@ -82,10 +83,6 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderPins: ->
-    @gatherPins().toArray()
-
-
   render: ->
     return null unless @isLoaded()
 

@@ -4,6 +4,7 @@ GlobalState      = require('global_state/state')
 
 FeaturedInsights = require('components/insight/featured')
 RecentCompanies  = require('components/company/lists/recent')
+TopInsights      = require('components/pinboards/pins/top')
 
 # Exports
 #
@@ -18,7 +19,7 @@ module.exports = React.createClass
     isAuthorized: false
 
 
-  # Lifecycle methods
+  # Renderers
   #
   renderHeader: ->
     return null if @props.isAuthorized
@@ -35,15 +36,22 @@ module.exports = React.createClass
       <a href="/auth/twitter" className="cc">Start Learning</a>
     </footer>
 
+  renderTopInsights: ->
+    return null unless @props.isAuthorized
+
+    <TopInsights />
+
   renderRecentCompanies: ->
     return null unless @props.isAuthorized
 
     <RecentCompanies />
 
+
   render: ->
     <section className="landing">
       { @renderHeader() }
       <FeaturedInsights />
+      { @renderTopInsights() }
       { @renderRecentCompanies() }
       { @renderFooter() }
     </section>

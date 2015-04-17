@@ -81,6 +81,10 @@ class User < ActiveRecord::Base
     Feature.insights.only_active
   end
 
+  def top_insights
+    Pin.insights.order('pins_count desc, created_at desc').limit(4)
+  end
+
   def followed_activities
     Activity.followed_by_user(id)
   end
