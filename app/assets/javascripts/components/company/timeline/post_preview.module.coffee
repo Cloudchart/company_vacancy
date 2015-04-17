@@ -320,21 +320,20 @@ Component = React.createClass
       @renderHeader()]
 
   renderContent: ->
-    first_block = @state.blocks[0]
-    return null unless first_block
+    return null unless @state.blocks.length > 0
 
-    first_content_item = @identityContentSwitcher(first_block)
-
-    second_block = @state.blocks[1]
-    second_content_item = if second_block and second_block.identity_type isnt first_block.identity_type
-      @identityContentSwitcher(second_block)
-    else
-      null
+    items = @state.blocks.slice(0, 2).map (block) =>
+      if block then @identityContentSwitcher(block) else null
 
     <div className="content" key="content">
-      { first_content_item }
-      { second_content_item }
+      { items[0] }
+      { items[1] }
     </div>
+
+  renderReadMore: ->
+    return null unless @state.blocks.length > 2
+
+    <span className="read-more">More</span>
 
   renderFooter: ->
     <footer>
@@ -359,6 +358,7 @@ Component = React.createClass
           { @renderOnlyMeOverlay() }
           { @renderPost() }
           { @renderFooter() }
+          { @renderReadMore() }
         </a>
       </article>
       { @renderInsights() }
