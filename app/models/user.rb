@@ -94,7 +94,7 @@ class User < ActiveRecord::Base
   end
 
   def published_companies
-    Company.where(is_published: true).order('created_at DESC').limit(6)
+    Company.where(is_published: true).order('created_at DESC').limit(4)
   end
 
   def followed_companies

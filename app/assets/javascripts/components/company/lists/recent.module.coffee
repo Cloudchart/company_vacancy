@@ -41,7 +41,7 @@ UserCompanies = React.createClass
       .filter (company) -> company.get('is_published')
       .sortBy (company) -> company.get('created_at')
       .reverse()
-      .take(6)
+      .take(4)
       .toArray()
 
 
