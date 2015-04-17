@@ -47,10 +47,7 @@ Component = React.createClass
   
   
   getTagForList: (tag) ->
-    if @props.taggable_type is 'Company'
-      <a href="/companies/search?query=#{tag}">{'#' + tag}</a>
-    else
-      <span>{'#' + tag}</span>
+    <span>{'#' + tag}</span>
   
 
   gatherTagsForList: ->
