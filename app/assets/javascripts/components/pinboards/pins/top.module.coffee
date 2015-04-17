@@ -45,14 +45,17 @@ module.exports = React.createClass
   #
   fetch: ->
     GlobalState.fetch(@getQuery('insights'))
-    
 
   gatherInsights: ->
     @cursor.pins
       .filter (pin) =>
-        pin.get('pinnable_id') && (pin.get('content') || pin.get('parent_id'))
+        pin.get('pinnable_id') && pin.get('content') && !pin.get('parent_id')
       .valueSeq()
-      .sortBy (pin) -> pin.get('pins_count')
+      .sort (pinA, pinB) -> 
+        if pinA.get('pins_count') == pinB.get('pins_count')
+          pinA.get('created_at') - pinB.get('created_at')
+        else
+          pinA.get('pins_count') - pinB.get('pins_count')
       .reverse()
       .take(4)
       .toArray()

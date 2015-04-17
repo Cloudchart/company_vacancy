@@ -17,7 +17,7 @@ class Pin < ActiveRecord::Base
 
   validates :content, presence: true, if: :should_validate_content_presence?
 
-  scope :insights, -> { where(parent_id: nil).where.not(content: nil) }
+  scope :insights, -> { where(parent_id: nil).where.not(content: nil, pinnable_id: nil) }
 
   def should_validate_content_presence?
     @update_by.present? && user_id != @update_by.uuid
