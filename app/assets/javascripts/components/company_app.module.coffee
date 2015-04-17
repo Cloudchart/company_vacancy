@@ -2,7 +2,6 @@
 
 # Imports
 #
-tag = React.DOM
 cx = React.addons.classSet
 
 CloudFlux       = require('cloud_flux')
@@ -10,6 +9,7 @@ GlobalState     = require('global_state/state')
 
 CompanyStore    = require('stores/company')
 PostStore       = require('stores/post_store')
+StoryStore      = require('stores/story_store')
 
 CompanyActions  = require('actions/company')
 
@@ -29,10 +29,11 @@ Component = React.createClass
   displayName: 'Company app'
 
   getDefaultProps: ->
-    cursor: GlobalState.cursor(['meta', 'company'])
+    cursor:
+      stories: StoryStore.cursor.items
 
   getInitialState: ->
-    currentTab = location.hash.substr(1) || null
+    currentTab = @getCurrentTabName()
 
     _.extend @getStateFromStores(),
       cursor:
@@ -43,6 +44,7 @@ Component = React.createClass
       isEditingSettings:     currentTab == "settings"
       isAccessRightsLoading: false
       postsLoaded:           false
+      story_id:              null
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores())
@@ -50,6 +52,11 @@ Component = React.createClass
   getStateFromStores: ->
     company:   CompanyStore.get(@props.uuid)
     posts:     PostStore.all()
+
+  onGlobalStateChange: ->
+    @setState
+      refreshed_at: + new Date
+      story_id: @getCurrentStoryId()
 
 
   # Helpers
@@ -103,11 +110,23 @@ Component = React.createClass
       @setState(isAccessRightsLoading: true)
       CompanyActions.fetchAccessRights(@props.uuid)
 
+  getCurrentTabName: ->
+    tabName = location.hash.substr(1) || null
+    return 'timeline' if tabName.match(/story/)
+    tabName
+
+  getCurrentStoryId: ->
+    if location.hash.match(/story/)
+      story = @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop()
+      story.get('uuid')
+    else
+      null
+
 
   # Handlers
   # 
   handleHashChange: ->
-    currentTab = location.hash.substr(1)
+    currentTab = @getCurrentTabName()
 
     if @getVisibleTabs().contains(currentTab)
       if currentTab == 'users' && !@isAccessRightsLoaded()
@@ -126,6 +145,11 @@ Component = React.createClass
   handlePostsLoaded: ->
     @setState postsLoaded: true
 
+  handleStoryClick: (story) ->
+    if @state.story_id != story.get('uuid')
+      location.hash = "story-#{story.get('formatted_name')}"
+      @setState(story_id: story.get('uuid'))
+
 
   # Lifecylce Methods
   # 
@@ -142,7 +166,6 @@ Component = React.createClass
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
     PostStore.off('change', @handlePostsLoaded)
-
     window.removeEventListener 'hashchange', @handleHashChange
 
 
@@ -196,7 +219,9 @@ Component = React.createClass
       when 'timeline'
         <Timeline 
           company_id = { @state.company.uuid }
-          readOnly   = { !@canEdit() } />
+          story_id = { @state.story_id }
+          onStoryClick = { @handleStoryClick }
+          readOnly = { !@canEdit() } />
       when 'about'
         <section className="about">
           <BlockEditor
@@ -216,7 +241,7 @@ Component = React.createClass
 
 
   render: ->
-    return null unless @state.company
+    return null unless @state.company and @props.cursor.stories.deref(false)
 
     <div className="wrapper">
       <CompanyHeader
@@ -228,6 +253,7 @@ Component = React.createClass
         { @renderContent() }
       </section>
     </div>
+
 
 # Exports
 #

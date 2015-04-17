@@ -2,7 +2,6 @@
 
 # Imports
 # 
-tag = React.DOM
 cx  = React.addons.classSet
 
 CloudFlux = require('cloud_flux')
@@ -54,7 +53,7 @@ Component = React.createClass
   getDefaultProps: ->
     cursor:
       pins: PinStore.cursor.items
-      stories: StoryStore.cursor.items
+      # stories: StoryStore.cursor.items
       posts_stories: PostsStoryStore.cursor.items
     onStoryClick: ->
     readOnly: true
