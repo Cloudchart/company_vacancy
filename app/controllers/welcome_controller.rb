@@ -1,18 +1,5 @@
-class WelcomeController < ApplicationController  
-  before_action :redirect_to_profile, only: :index, if: :user_authenticated?
-  
-  layout 'landing'
-
+class WelcomeController < ApplicationController
   def index
-    pagescript_params(
-      token: TokenSerializer.new(( Token.find(params[:token]) rescue Token.find_by_rfc1751(params[:token]) rescue nil )).as_json
-    )
+    render layout: 'guest' unless user_authenticated?
   end
-  
-private
-  
-  def redirect_to_profile
-    redirect_to main_app.user_path(current_user)
-  end
-  
 end

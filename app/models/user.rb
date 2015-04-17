@@ -81,16 +81,28 @@ class User < ActiveRecord::Base
     Feature.insights.only_active
   end
 
+  def top_insights
+    Pin.insights.order('pins_count desc, created_at desc').limit(4)
+  end
+
   def followed_activities
     Activity.followed_by_user(id)
   end
 
-  def published_companies
+  def owned_companies
     Company.joins(:roles).where(is_published: true, roles: { user_id: id, owner_type: 'Company' })
+  end
+
+  def recent_companies
+    Company.where(is_published: true).order('created_at DESC').limit(4)
   end
 
   def followed_companies
     Company.joins(:followers).where(followers: { user_id: id, favoritable_type: 'Company' })
+  end
+
+  def company_invite_tokens
+    Token.where(name: :invite, owner_type: 'Company').select_by_user(id, emails.pluck(:address))
   end
 
   (Cloudchart::ROLES + [:guest]).map(&:to_s).each do |role_name|

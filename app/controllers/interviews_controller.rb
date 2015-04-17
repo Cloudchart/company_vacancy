@@ -1,7 +1,7 @@
 class InterviewsController < ApplicationController
   before_action :set_itreview
 
-  layout 'landing'
+  layout 'guest'
 
   def show
     @interview = decorate(@interview)

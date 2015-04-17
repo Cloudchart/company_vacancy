@@ -33,7 +33,7 @@ module.exports  = React.createClass
             roles,
             followers,
             pins,
-            published_companies
+            owned_companies
           }
         """
 

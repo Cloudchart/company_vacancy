@@ -1,199 +1,55 @@
-@import 'bourbon';
-@import 'normialize';
-@import 'proxima-nova';
-@import 'font-awesome';
-@import 'variables';
-@import 'modal';
-@import 'mixins/landing';
-@import 'mixins/form_2';
-@import 'mixins/button';
-@import 'shared/carousel';
-@import 'invite_queue';
-
-$base-unit: 20px;
-$base-font-size: 15px;
-$base-font-family: 'proxima-nova';
-
-
-*,
-*::before,
-*::after {
-  @include box-sizing(inherit);
-}
-
-
-html {
-  @include box-sizing(border-box);
-
-  height: 100%;
-  min-width: 1024px;
-}
-
-
-body {
-  @include display(flex);
-  @include flex-direction(column);
-
-  font-family: $base-font-family;
-  font-size: $base-font-size;
+.landing-wrapper {
   min-height: 100%;
 
-
-  > header,
-  > footer { 
+  > .landing {
     @include align-items(center);
     @include display(flex);
+    @include flex-direction(column);    
 
-    background-color: $accented-green-color;    
-    color: $accented-white-color;     
-  }
+    background-color: $background-color;
 
-  > header { 
-    @include justify-content(space-between);
+    > header {
+      @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), hsla(0, 0%, 98%, 1));
+      padding: 25px 0;
 
-    height: 75px;
-  }
+      > h1, > h2 {
+        font-weight: 300;
+        margin: 0;
+        text-align: center;
+      }
 
-  > footer {    
-    @include justify-content(center); 
+      > h1 {
+        font-size: $great-font-size;
+      }
 
-    height: 90px;    
-  } 
-
-  > main {
-    @include flex(1);
-
-    position: relative;
-  }
-}
-
-a {
-  color: hsl(138, 63%, 37%);
-  text-decoration: none;
-}
-
-// Header
-//
-body > header {
-  background-color: hsl(136, 52%, 51%);
-  color: hsl(0, 0%, 100%);
-  height: $base-unit * 4;
-  padding: 0 $base-unit * 2;
-
-  > figure {
-    @include align-items(center);
-    @include display(flex);
-
-    font-size: $large-font-size;
-    font-weight: 300;
-    height: 37px;
-
-    > img {
-      height: 100%;
-      width: 55px;
+      > h2 {
+        font-size: $huge-font-size;
+      }
     }
 
-    > figcaption {
-      font-weight: 300;
-      margin-left: $inner-margin-size;
+    > .featured-insights {
+      @include flex(1);
+    }
 
-      > strong {
-        font-weight: 700;
+    > .companies-list {
+      margin-top: $inner-margin-size;
+    }
+    
+    > footer {
+      margin: 45px 0;
+      text-align: center;
+      
+      > a.cc {
+        background-color: $accented-green-color;
+        border: none;
+        color: $accented-white-color;
+        display: inline-block;
+        font-size: $huge-font-size;
+        font-weight: 300;
+        height: 82px;
+        line-height: 82px;
+        padding: 0 34px;
       }
     }
   }
-
-  > .auth a {     
-    color: $accented-white-color;     
-    font-size: $basic-font-size;    
-    font-weight: 700;     
-  } 
 }
-
-// Footer
-//
-body > footer > ul {
-  list-style: none;
-  margin: 0;
-  padding: 0 $gutter-size;
-
-  > li {
-    display: inline-block;
-    margin: 0 $default-margin-size/2;
-    padding: 0;
-  }
-
-  a {
-    color: $accented-white-color;
-    font-size: $large-font-size;
-    font-weight: 300;
-    text-decoration: none;
-  }
-}
-
-
-// Main
-//
-body > main {
-  @include display(flex);
-  @include flex-direction(column);
-
-  background-color: $background-color;
-
-  > header {
-    @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), hsla(0, 0%, 98%, 1));
-    padding: 25px 0;
-
-    > h1, > h2 {
-      font-weight: 300;
-      margin: 0;
-      text-align: center;
-    }
-
-    > h1 {
-      font-size: $great-font-size;
-    }
-
-    > h2 {
-      font-size: $huge-font-size;
-    }
-  }
-
-  > .featured-posts {
-    @include flex(1);
-  }
-  
-  > footer {
-    margin: 45px 0;
-    text-align: center;
-    
-    > a.cc {
-      background-color: $accented-green-color;
-      border: none;
-      color: $accented-white-color;
-      display: inline-block;
-      font-size: $huge-font-size;
-      font-weight: 300;
-      height: 82px;
-      line-height: 82px;
-      padding: 0 34px;
-    }
-  }
-}
-
-// Env dependent
-//
-@each $env, $color in (development, hsl(136, 52%, 51%)),
-                      (staging, hsl(356, 82%, 65%)),
-                      (production, hsl(136, 52%, 51%)) {
-  body.#{$env} {
-    > header {
-      background-color: $color;
-    }
-  }
-}
-
-
-@import 'interviews';
-@import 'post/insight_list';
-@import 'post/featured';

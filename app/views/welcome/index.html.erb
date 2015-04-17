@@ -5,14 +5,5 @@
   description: t('meta.app_description')
 } %>
 
-<header>
-  <h1>Learn from Unicorns</h1>
-  <h2>Discover how successfull startups have grown</h2>
-</header>
-
-<section data-react-class="components/welcome_app" class="featured-posts">
+<section data-react-class="components/landing_app" data-react-props="<%= { isAuthorized: current_user.twitter.present? }.to_json %>" class="landing-wrapper">
 </section>
-
-<footer>
-  <%= link_to "Start Learning", cloud_profile.login_path, class: "cc" %>
-</footer>

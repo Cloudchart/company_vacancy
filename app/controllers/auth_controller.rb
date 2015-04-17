@@ -2,7 +2,7 @@ class AuthController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: :developer, if: -> { Rails.env.development? }
 
-  layout 'landing'
+  layout 'guest'
 
   def twitter
     if user = User.find_by(twitter: oauth_hash.info.nickname)

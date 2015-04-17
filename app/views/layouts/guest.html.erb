@@ -3,19 +3,19 @@
   <head>
     <%= render 'shared/meta' %>
     <%= favicon_link_tag "#{Rails.env}/favicon.ico" %>
-    <%= stylesheet_link_tag 'landing', media: 'all' %>
+    <%= stylesheet_link_tag 'guest', media: 'all' %>
   </head>
 
   <body class="<%= Rails.env %>">
-    <header class="landing">
+    <header class="guest">
       <%= render 'welcome/header' %>
     </header>
 
-    <main class="landing">
+    <main class="guest">
       <%= yield %>
     </main>
 
-    <footer class="landing">
+    <footer class="guest">
       <%= render 'welcome/footer' %>
     </footer>
 

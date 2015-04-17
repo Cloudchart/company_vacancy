@@ -14,8 +14,7 @@ module CloudProfile
       @companies = my_companies + followed_companies + invited_by_companies
       company_ids = @companies.map(&:id)
 
-      @tokens = Token.where(owner_type: 'Company', owner_id: company_ids)
-        .select_by_user(current_user.id, current_user.emails.pluck(:address))
+      @tokens = current_user.company_invite_tokens
       @roles = current_user.roles.where(owner_type: 'Company', owner_id: company_ids)
       @favorites = current_user.favorites.where(favoritable_type: 'Company', favoritable_id: company_ids)
     end

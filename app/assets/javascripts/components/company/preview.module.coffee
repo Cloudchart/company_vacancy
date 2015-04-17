@@ -10,6 +10,7 @@ TaggingStore   = require('stores/tagging_store')
 TagStore       = require('stores/tag_store')
 TokenStore     = require('stores/token_store.cursor')
 FavoriteStore  = require('stores/favorite_store.cursor')
+UserStore      = require('stores/user_store.cursor')
 
 CompanySyncApi = require('sync/company')
 
@@ -27,7 +28,7 @@ CompanyPreview = React.createClass
 
   displayName: 'CompanyPreview'
 
-  mixins: [GlobalState.query.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics:
 
@@ -36,6 +37,7 @@ CompanyPreview = React.createClass
       company: ->
         """
           Company {
+            followers,
             blocks,
             people,
             tags,
@@ -44,7 +46,18 @@ CompanyPreview = React.createClass
               pins
             }
           }
-        """  
+        """
+
+      tokens: ->
+        """
+          Viewer {
+            company_invite_tokens
+          }
+        """
+
+  fetch: ->
+    GlobalState.fetch(@getQuery('tokens'))
+
 
   # Component specifications
   #
@@ -53,6 +66,8 @@ CompanyPreview = React.createClass
     uuid:       React.PropTypes.string.isRequired
 
   getDefaultProps: ->
+    cursor:
+      tokens: TokenStore.cursor.items
     onSyncDone: ->
 
   getInitialState: ->
@@ -61,6 +76,9 @@ CompanyPreview = React.createClass
 
   # Helpers
   #
+  isLoaded: ->
+    @cursor.tokens.deref(false)
+
   getTagNames: ->
     if (tags = @cursor.company.get('tag_names'))
       Immutable.Seq(tags)
@@ -93,7 +111,11 @@ CompanyPreview = React.createClass
     TokenStore.findCompanyInvite(@props.uuid)
 
   getFavorite: ->
-    FavoriteStore.findByCompany(@props.uuid)
+    FavoriteStore.filter (favorite) => 
+      favorite.get('favoritable_id') == @props.uuid &&
+      favorite.get('favoritable_type') == 'Company' &&
+      favorite.get('user_id') == @cursor.viewer.get('uuid')
+    .first()
 
   getPeopleIds: ->
     personBlock = BlockStore.filter (block) =>
@@ -152,6 +174,7 @@ CompanyPreview = React.createClass
       .then(@handleDone, @handleFail)
 
   handleDone: ->
+    @cursor.tokens.remove(@getToken().get('uuid'))
     @props.onSyncDone()
 
   handleFail: ->
@@ -170,6 +193,9 @@ CompanyPreview = React.createClass
       taggings:  TaggingStore.cursor.items
       tokens:    TokenStore.cursor.items
       favorites: FavoriteStore.cursor.items
+      viewer:    UserStore.me()
+
+    @fetch() unless @isLoaded()
 
 
   # Renderers
