@@ -19,7 +19,7 @@
     width: 100%;
 
     > .background {
-      @include filter(blur(5px));
+      @include filter(blur(10px));
       @include position(absolute);
 
       width: 100%;
