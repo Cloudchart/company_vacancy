@@ -1,0 +1,81 @@
+.modal-stack-item > .tour {
+  @include align-items(center);
+  @include display(flex);
+
+  background-color: transparent;
+  box-shadow: none;
+  height: 100%;
+  overflow: visible;
+  width: 100%;
+
+  > .carousel {
+    > .navigation {
+      margin-top: 24px;
+    }
+
+    > ul.container {
+      > li {
+        > .slide {
+          @include align-items(center);
+          @include display(flex);
+          @include box-shadow(0 5px 30px hsla(0, 0%, 0%, .4));
+          @include flex-direction(column);
+          @include justify-content(space-between);
+
+          background-color: $background-color;
+          padding: $gutter-size;
+          height: 588px;
+          width: 810px;
+
+          &.slide1 {
+            padding: 50px 135px;
+
+            h1, h2, .logo {
+              font-weight: 300;
+              text-align: center;
+            }
+
+            .logo {
+              color: $link-color;
+              font-size: $large-font-size;
+
+              i {
+                margin-right: $inner-margin-size;
+                vertical-align: bottom;
+              }
+
+              strong {
+                font-weight: 700;
+              }  
+            }
+
+            h1 {
+              font-size: $huge-font-size;
+              margin: 0;
+              margin-top: $default-margin-size;
+            }
+
+            h2 {
+              font-size: $large-font-size;
+              margin: 0;
+              margin-top: $inner-margin-size;
+            }
+
+            p {
+              font-size: $big-font-size;
+              font-weight: 300;
+              line-height: 27px;
+            }
+
+            button {
+              font-size: $large-font-size;
+              font-weight: 300;
+              height: 55px;
+              width: 220px;
+            }
+          } 
+        }
+      }
+    }
+  }
+}

@@ -29,10 +29,10 @@
       margin-left: -$inner-margin-size;
       width: 100%;
       z-index: 1;
-        
+
       button {
-        background-color: $card-color;
-        border: 1px solid $border-color;
+        background-color: hsla(0, 0%, 75%, 1);
+        border: none;
         border-radius: 50%;
         height: 15px;
         margin-left: $inner-margin-size;
@@ -40,7 +40,7 @@
         width: 15px;
 
         &.active {
-          background-color: $disabled-color;
+          background-color: $accented-white-color;
         }
       }      
     }

@@ -20,6 +20,9 @@
 
     <div data-react-class="components/modal_stack"></div>
 
+    <% if current_user.tokens.where(name: "tour").size == 0 %>
+      <div data-react-class="components/tour/app"></div>
+
     <%= javascript_include_tag 'application' %>
     <%= pagescript unless controller_name == 'errors' %>
     <%= render 'shared/google_analytics' if Rails.env.production? %>

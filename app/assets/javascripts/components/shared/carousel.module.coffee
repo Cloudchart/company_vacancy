@@ -57,13 +57,16 @@ module.exports = React.createClass
     @props.children.length
 
   getSlides: ->
-    if @showSlideshow()
-      preSlide = React.addons.cloneWithProps(@props.children[@getPositionsNumber() - 1])
-      postSlide = React.addons.cloneWithProps(@props.children[0])
+    children = @props.children.map (child) => 
+      React.addons.cloneWithProps(child, onNext: @navigateNext)
 
-      [preSlide].concat(@props.children, postSlide)
+    if @showSlideshow()
+      preSlide = React.addons.cloneWithProps(@props.children[@getPositionsNumber() - 1], onNext: @navigateNext)
+      postSlide = React.addons.cloneWithProps(@props.children[0], onNext: @navigateNext)
+
+      [preSlide].concat(children, postSlide)
     else
-      @props.children
+      children
 
   navigate: (direction) ->
     return null if @state.isSliding
@@ -84,6 +87,12 @@ module.exports = React.createClass
       isSliding:     true
       isSlideshowOn: false
       position:      newPosition
+
+  navigateNext: ->
+    @navigate("next")
+
+  navigatePrev: ->
+    @navigate("next")
 
 
   # Handlers
