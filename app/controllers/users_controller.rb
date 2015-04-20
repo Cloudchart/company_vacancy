@@ -3,7 +3,7 @@ class UsersController < ApplicationController
 
   before_filter :set_user, only: [:show, :update, :settings]
 
-  authorize_resource
+  authorize_resource except: [:finish_tour]
   
   def show
     respond_to do |format|
@@ -29,6 +29,14 @@ class UsersController < ApplicationController
   def settings 
     respond_to do |format|
       format.html
+    end
+  end
+
+  def finish_tour
+    current_user.tokens.find_by(name: :tour).try(:destroy)
+
+    respond_to do |format|
+      format.json { render json: :ok }
     end
   end
 
