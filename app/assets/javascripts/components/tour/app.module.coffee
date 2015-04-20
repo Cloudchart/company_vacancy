@@ -25,7 +25,7 @@ module.exports = React.createClass
 
     ModalStack.show(
       <section className="tour">
-        <Carousel>
+        <Carousel showNavButtons = { true } >
           { @renderTourSlides() }
         </Carousel>
       </section>

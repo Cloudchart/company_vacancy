@@ -1,5 +1,7 @@
 # @cjsx React.DOM
 #
+Button = require('components/form/buttons').StandardButton
+
 
 module.exports = React.createClass
   
@@ -8,13 +10,15 @@ module.exports = React.createClass
   # Component Specifications
   # 
   propTypes:
-    className:     React.PropTypes.string
-    delay:         React.PropTypes.number
-    withSlideshow: React.PropTypes.bool
+    className:      React.PropTypes.string
+    delay:          React.PropTypes.number
+    showNavButtons: React.PropTypes.bool
+    withSlideshow:  React.PropTypes.bool
 
   getDefaultProps: ->
     className:      ""
     delay:          7000
+    showNavButtons: false
     withSlideshow:  false
 
   getInitialState: ->
@@ -92,7 +96,7 @@ module.exports = React.createClass
     @navigate("next")
 
   navigatePrev: ->
-    @navigate("next")
+    @navigate("prev")
 
 
   # Handlers
@@ -134,6 +138,22 @@ module.exports = React.createClass
       { @renderSlideLinks() }
     </ul>
 
+  renderPrevButton: ->
+    return null unless @props.showNavButtons && @state.position != 0
+
+    <Button
+      className = "nav-button left"
+      iconClass = "fa fa-chevron-left"
+      onClick   = { @navigatePrev } />
+
+  renderNextButton: ->
+    return null unless @props.showNavButtons && @state.position != @getPositionsNumber() - 1
+
+    <Button
+      className = "nav-button right"
+      iconClass = "fa fa-chevron-right"
+      onClick   = { @navigateNext } />
+
   renderSlideLinks: ->
     @props.children.map (child, index) =>
       linkClassName = cx(active: index == @state.position)
@@ -165,6 +185,8 @@ module.exports = React.createClass
           onMouseOut  = { @handleMouseOut } >
         { @renderSlides() }
       </ul>
+      { @renderPrevButton() }
+      { @renderNextButton() }
       { @renderNavigation() }
     </div>
 

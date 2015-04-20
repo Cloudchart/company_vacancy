@@ -46,6 +46,31 @@
     }
   }
 
+  > .nav-button {
+    @include box-shadow(0 2px 20px hsla(0, 0%, 0%, 0.2));
+    @include position(absolute, 50% 0 0 0);
+
+    background-color: $background-color;
+    border: none;
+    border-radius: 100%;
+    color: $link-color;
+    font-size: 20px;
+    line-height: 60px;
+    margin-top: -30px;
+    height: 60px;
+    outline: 0;
+    text-align: center;
+    width: 60px;
+
+    &.left {
+      left: $gutter-size;
+    }
+
+    &.right {
+      right: $gutter-size;
+    }
+  }
+
   &.no-transition {
     > ul.container {
       @include transition(none);
