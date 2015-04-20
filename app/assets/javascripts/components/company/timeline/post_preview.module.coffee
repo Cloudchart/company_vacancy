@@ -15,7 +15,6 @@ PostsStoryStore     = require('stores/posts_story_store')
 PinStore            = require('stores/pin_store')
 UserStore           = require('stores/user_store.cursor')
 VisibilityStore     = require('stores/visibility_store')
-
 QuoteStore          = require('stores/quote_store')
 
 PostActions         = require('actions/post_actions')
@@ -342,6 +341,7 @@ Component = React.createClass
     </footer>
 
   render: ->
+    console.log @props.story_id
     return null unless @state.post
 
     article_classes = cx

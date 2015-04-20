@@ -146,6 +146,9 @@ Component = React.createClass
 
   # Lifecycle Methods
   # 
+  componentDidMount: ->
+    CompanyStore.on('change', @refreshStateFromStores)
+
   componentWillReceiveProps: (nextProps) ->
     URL.revokeObjectURL(@state.logotype_url)
     @setState(@getStateFromStores(nextProps))
@@ -154,15 +157,21 @@ Component = React.createClass
     if @state.shareLoading && !nextState.shareLoading
       ModalActions.show(<AccessRights uuid={@props.uuid} />)
 
+  componentWillUnmount: ->
+    CompanyStore.off('change', @refreshStateFromStores)
+
 
   # Component Specifications
   # 
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores(@props))
+
   getStateFromStores: (props) ->
     company = CompanyStore.get(props.uuid)
 
     company: company
-    name: company.name
-    logotype_url: company.logotype_url
+    name: company.name if company
+    logotype_url: company.logotype_url if company
 
   getInitialState: ->
     _.extend @getStateFromStores(@props),
@@ -171,6 +180,8 @@ Component = React.createClass
         flags: GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
 
   render: ->
+    return null unless @state.company
+
     <header>
       { @getLogo() }
 
