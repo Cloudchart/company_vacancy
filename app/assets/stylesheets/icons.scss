@@ -25,15 +25,24 @@ i.cc-icon {
 
 i.svg-icon {
   display: inline-block;
-  height: 23px;
   position: relative;
-  top: -2px;
   vertical-align: middle;
-  width: 23px;
 
   &.svg-unicorn {
     background: image_url('unicorn.svg') no-repeat no-repeat center center;
     background-size: 16px 16px;
     color: hsl(51, 99%, 61%);
+    height: 23px;
+    top: -2px;
+    width: 23px;
+  }
+
+  &.svg-cloudchart-logo {
+    background: image_url('cloudchart-logo.svg') no-repeat no-repeat center center;
+    background-size: 53px 34px;
+    color: hsl(137, 54%, 50%);
+    height: 34px;
+    top: -2px;
+    width: 53px;
   }
 }

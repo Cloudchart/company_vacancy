@@ -1,5 +1,7 @@
 # @cjsx React.DOM
 #
+Button = require('components/form/buttons').StandardButton
+
 
 module.exports = React.createClass
   
@@ -8,13 +10,15 @@ module.exports = React.createClass
   # Component Specifications
   # 
   propTypes:
-    className:     React.PropTypes.string
-    delay:         React.PropTypes.number
-    withSlideshow: React.PropTypes.bool
+    className:      React.PropTypes.string
+    delay:          React.PropTypes.number
+    showNavButtons: React.PropTypes.bool
+    withSlideshow:  React.PropTypes.bool
 
   getDefaultProps: ->
     className:      ""
     delay:          7000
+    showNavButtons: false
     withSlideshow:  false
 
   getInitialState: ->
@@ -57,13 +61,16 @@ module.exports = React.createClass
     @props.children.length
 
   getSlides: ->
-    if @showSlideshow()
-      preSlide = React.addons.cloneWithProps(@props.children[@getPositionsNumber() - 1])
-      postSlide = React.addons.cloneWithProps(@props.children[0])
+    children = @props.children.map (child) => 
+      React.addons.cloneWithProps(child, onNext: @navigateNext)
 
-      [preSlide].concat(@props.children, postSlide)
+    if @showSlideshow()
+      preSlide = React.addons.cloneWithProps(@props.children[@getPositionsNumber() - 1], onNext: @navigateNext)
+      postSlide = React.addons.cloneWithProps(@props.children[0], onNext: @navigateNext)
+
+      [preSlide].concat(children, postSlide)
     else
-      @props.children
+      children
 
   navigate: (direction) ->
     return null if @state.isSliding
@@ -84,6 +91,12 @@ module.exports = React.createClass
       isSliding:     true
       isSlideshowOn: false
       position:      newPosition
+
+  navigateNext: ->
+    @navigate("next")
+
+  navigatePrev: ->
+    @navigate("prev")
 
 
   # Handlers
@@ -125,6 +138,22 @@ module.exports = React.createClass
       { @renderSlideLinks() }
     </ul>
 
+  renderPrevButton: ->
+    return null unless @props.showNavButtons && @state.position != 0
+
+    <Button
+      className = "nav-button left"
+      iconClass = "fa fa-chevron-left"
+      onClick   = { @navigatePrev } />
+
+  renderNextButton: ->
+    return null unless @props.showNavButtons && @state.position != @getPositionsNumber() - 1
+
+    <Button
+      className = "nav-button right"
+      iconClass = "fa fa-chevron-right"
+      onClick   = { @navigateNext } />
+
   renderSlideLinks: ->
     @props.children.map (child, index) =>
       linkClassName = cx(active: index == @state.position)
@@ -156,6 +185,8 @@ module.exports = React.createClass
           onMouseOut  = { @handleMouseOut } >
         { @renderSlides() }
       </ul>
+      { @renderPrevButton() }
+      { @renderNextButton() }
       { @renderNavigation() }
     </div>
 

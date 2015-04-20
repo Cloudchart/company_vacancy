@@ -1,4 +1,4 @@
-$modal-overlay-background-color: hsla(0, 0%, 75%, .25);
+$modal-overlay-background-color: hsla(0, 0%, 0%, 0.5);;
 $modal-container-background-color: hsl(0, 100%, 100%);
 
 // Modal form
@@ -131,10 +131,6 @@ body ul.modal-stack {
     background-color: $modal-overlay-background-color;
 
     > * {
-      background-color: hsl(0, 100%, 100%);
-
-      @include box-shadow(0 5px 30px hsla(0, 0%, 0%, .4));
-
       &.post-container {
         @include align-self(flex-start);
 
@@ -142,6 +138,12 @@ body ul.modal-stack {
       }
     }
   }
+}
+
+.modal-stack-item > * {
+  @include box-shadow(0 5px 30px hsla(0, 0%, 0%, .4));
+
+  background-color: hsl(0, 100%, 100%);
 }
 
 

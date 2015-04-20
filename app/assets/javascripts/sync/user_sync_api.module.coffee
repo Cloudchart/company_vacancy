@@ -45,3 +45,9 @@ module.exports =
       url: "/users/#{key}/unfollow"
       type: 'DELETE'
       dataType: 'json'
+
+  finishTour: (key) ->
+    Promise.resolve $.ajax
+      url: "/users/finish_tour"
+      type: 'DELETE'
+      dataType: 'json'

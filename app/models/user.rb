@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   before_validation :generate_password, if: -> { password.blank? }
   before_save :nillify_last_sign_in_at, if: -> { twitter_changed? }
   before_destroy :mark_emails_for_destruction
+  after_create :create_tour_token, if: -> { should_create_tour_token? }
 
   nilify_blanks only: [:twitter, :authorized_at]
 
@@ -65,11 +66,15 @@ class User < ActiveRecord::Base
     def create_with_twitter_omniauth_hash(hash)
       avatar_url = hash.info.image.present? ? hash.info.image.sub('_normal', '') : nil
 
-      create!(
+      user = new(
         full_name:    hash.info.name,
         twitter:      hash.info.nickname,
         avatar_url:   avatar_url
       )
+
+      user.should_create_tour_token!
+      user.save!
+      user
     end
 
     def find_by_email(email)
@@ -161,6 +166,14 @@ class User < ActiveRecord::Base
     @should_validate_invite = true
   end
 
+  def should_create_tour_token?
+    @should_create_tour_token
+  end
+
+  def should_create_tour_token!
+    @should_create_tour_token = true
+  end
+
   def should_validate_name?
     @should_validate_name
   end
@@ -193,6 +206,10 @@ private
 
   def nillify_last_sign_in_at
     self.last_sign_in_at = nil
+  end
+
+  def create_tour_token
+    tokens.build(name: :tour).save!
   end
 
   # def build_blank_emails
