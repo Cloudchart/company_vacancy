@@ -39,6 +39,7 @@ gem 'useragent'
 gem 'meta-tags', '~> 2.0.0'
 gem 'friendly_id', '~> 5.1.0'
 gem 'nilify_blanks', '~> 1.2.0'
+gem 'libv8', '~> 3.16'
 
 # Engines
 #
