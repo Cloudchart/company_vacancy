@@ -1,7 +1,6 @@
 # @cjsx React.DOM
 
 
-
 # Exports
 #
 module.exports = React.createClass
@@ -10,15 +9,6 @@ module.exports = React.createClass
 
   propTypes:
     onNext: React.PropTypes.func
-
-
-  # Lifecycle methods
-  #
-
-
-  # Renderers
-  #
-
 
   render: ->
     <article className="slide slide-1">
@@ -31,7 +21,7 @@ module.exports = React.createClass
         <h2>Discover how successfull startups have grown</h2>
       </header>
       <p>
-        Hello, <strong>Tiffany,</strong> and welcome to CloudChart. Use it as your educational tool  to learn from unicorns: follow their companies' timelines, collect valuable insights by successful entrepreneurs, investors, and experts, and put them to action.
+        Hello, <strong>{ @props.user.get('first_name') },</strong><br/> and welcome to CloudChart. Use it as your educational tool  to learn from unicorns: follow their companies' timelines, collect valuable insights by successful entrepreneurs, investors, and experts, and put them to action.
       </p>
       <button className="cc" onClick = { @props.onNext }>
         Start Learning

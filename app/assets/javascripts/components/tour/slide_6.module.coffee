@@ -1,6 +1,12 @@
 # @cjsx React.DOM
 
 
+UserSyncApi  = require('sync/user_sync_api')
+
+ModalStack   = require('components/modal_stack')
+
+SyncButton   = require("components/form/buttons").SyncButton
+
 
 # Exports
 #
@@ -11,14 +17,14 @@ module.exports = React.createClass
   propTypes:
     onNext: React.PropTypes.func
 
+  getInitialState: ->
+    isSyncing: false
 
-  # Lifecycle methods
-  #
+  finishTour: ->
+    @setState isSyncing: true
 
-
-  # Renderers
-  #
-
+    UserSyncApi.finishTour().then =>
+      ModalStack.hide()
 
   render: ->
     <article className="slide slide-6">
@@ -37,8 +43,10 @@ module.exports = React.createClass
         =
         <i className="fa fa-heart" />
       </div>
-      <input className="" placeholder="Peter, your work email goes here" />
-      <button className="cc">
-        Sign me up!
-      </button>
+      <input className="" placeholder={ @props.user.get('first_name') + ", your work email goes here" } />
+      <SyncButton
+        className = "cc"
+        isSyncing = { @state.isSyncing }
+        onClick   = { @finishTour }
+        text      = "Sign me up!" />
     </article>

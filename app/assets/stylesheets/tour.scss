@@ -267,11 +267,11 @@
             line-height: 32px;
           }
 
-          > button {
+          > button.cc {
             font-size: $large-font-size;
             font-weight: 300;
             height: 55px;
-            width: 220px;
+            padding: 0 40px;
           }
         }
       }
