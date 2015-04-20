@@ -1,3 +1,209 @@
+@mixin tour-header {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+
+  width: 577px;
+
+  h1, h2, .logo {
+    font-weight: 300;
+    text-align: center;
+  }
+
+  .logo {
+    color: $link-color;
+    font-size: $large-font-size;
+
+    i {
+      margin-right: $inner-margin-size;
+      vertical-align: bottom;
+    }
+
+    strong {
+      font-weight: 700;
+    }  
+  }
+
+  h1 {
+    font-size: $huge-font-size;
+    margin: 0;
+    margin-top: $default-margin-size;
+    text-transform: capitalize;
+  }
+
+  h2 {
+    font-size: $large-font-size;
+    margin: 0;
+    margin-top: $inner-margin-size;
+  }
+}
+
+@mixin tour-slide-1 {
+  padding: 50px 135px;
+
+  p {
+    font-size: $big-font-size;
+    font-weight: 300;
+    line-height: 27px;
+    width: 100%;
+  }
+}
+
+@mixin tour-slide-2 {
+  .companies-list {
+    @include display(flex);
+    @include justify-content(space-between);
+
+    width: 100%;
+
+    > .company-preview {
+      background: image_url('tour/company-placeholder.jpg') center center no-repeat;
+      height: 426px;
+      width: 370px;
+    }
+  }
+}
+
+@mixin tour-slide-3 {
+  .tour-timeline {
+    @include display(flex);
+    @include justify-content(space-between);
+
+    padding-bottom: 70px;
+    width: 100%;
+
+    > .tour-post {
+      background: image_url('tour/post.jpg') center center no-repeat;
+      height: 359px;
+      width: 536px;
+    }
+
+    > .tour-insight {
+      background: image_url('tour/timeline-insight.png') center center no-repeat;
+      height: 135px;
+      width: 204px;
+    }
+  }
+}
+
+@mixin tour-slide-4 {
+  padding-bottom: 150px;
+
+  > p > i {
+    background-color: $link-color;
+    border-radius: 100%;
+    color: $accented-white-color;
+    display: inline-block;
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: middle;
+    text-align: center;
+    width: 20px;
+  }
+
+  > .insight {
+    background: image_url('tour/insight.png') center center no-repeat;
+    height: 268px;
+    width: 406px;
+
+    &.active {
+      background-image: image_url('tour/insight-active.png');
+    }
+  }
+}
+
+@mixin tour-slide-5 {
+
+  > p {
+    width: 100%;
+  }
+
+  > .insight-guide {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+
+    > .insight {
+      background: image_url('tour/insight-schematic.png') center center no-repeat;
+      height: 268px;
+      margin-bottom: 20px;
+      width: 406px;
+    }
+
+    > .valid, .invalid {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: center;
+      width: 320px;
+
+      > hr {
+        @include position(absolute);
+
+        background-color: $accented-red-color;
+        border: none;
+        height: 2px;
+        top: 50%;
+        margin-top: -1px;
+        width: 100%;
+      }
+
+      > .fa-check {
+        color: $link-color;
+        padding-left: $inner-margin-size;
+      }
+    }
+  }
+}
+
+@mixin tour-slide-6 {
+  padding: 50px;
+
+  > .equation {
+    @include align-items(center);
+    @include display(flex);
+
+    font-size: 36px;
+
+    > * {
+      margin-right: $inner-margin-size;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    > .svg-icon {
+      background-size: 105px 69px;
+
+      height: 69px;
+      width: 105px;
+    }
+    
+    > .fa {
+      font-size: 72px;
+
+      &.fa-heart {
+        color: $accented-red-color;
+      }
+    }
+  }
+
+  > input {
+    background-color: white;
+    border: none;
+    border-bottom: 2px solid hsl(137, 54%, 50%);
+    display: block;
+    font-size: 20px;
+    font-weight: 300;
+    height: 40px;
+    margin-bottom: 20px;
+    outline: none;
+    padding: 0 10px;
+    width: 330px;
+  }
+}
+
 .modal-stack-item > .tour {
   @include align-items(center);
   @include display(flex);
@@ -27,53 +233,46 @@
           height: 588px;
           width: 810px;
 
-          &.slide1 {
-            padding: 50px 135px;
+          > header {
+            @include tour-header();
+          }
 
-            h1, h2, .logo {
-              font-weight: 300;
-              text-align: center;
-            }
+          &.slide-1 {
+            @include tour-slide-1();
+          }
 
-            .logo {
-              color: $link-color;
-              font-size: $large-font-size;
+          &.slide-2 {
+            @include tour-slide-2();
+          }
 
-              i {
-                margin-right: $inner-margin-size;
-                vertical-align: bottom;
-              }
+          &.slide-3 {
+            @include tour-slide-3();
+          }
 
-              strong {
-                font-weight: 700;
-              }  
-            }
+          &.slide-4 {
+            @include tour-slide-4();
+          }
 
-            h1 {
-              font-size: $huge-font-size;
-              margin: 0;
-              margin-top: $default-margin-size;
-            }
+          &.slide-5 {
+            @include tour-slide-5();
+          }
 
-            h2 {
-              font-size: $large-font-size;
-              margin: 0;
-              margin-top: $inner-margin-size;
-            }
+          &.slide-6 {
+            @include tour-slide-6();
+          }
 
-            p {
-              font-size: $big-font-size;
-              font-weight: 300;
-              line-height: 27px;
-            }
+          p, div {
+            font-size: 24px;
+            font-weight: 300;
+            line-height: 32px;
+          }
 
-            button {
-              font-size: $large-font-size;
-              font-weight: 300;
-              height: 55px;
-              width: 220px;
-            }
-          } 
+          > button {
+            font-size: $large-font-size;
+            font-weight: 300;
+            height: 55px;
+            width: 220px;
+          }
         }
       }
     }

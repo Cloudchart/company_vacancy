@@ -21,13 +21,13 @@ module.exports = React.createClass
 
 
   render: ->
-    <article className="slide slide1">
+    <article className="slide slide-1">
       <header>
         <div className="logo">
           <i className="svg-icon svg-cloudchart-logo"></i>
           Cloud<b>Chart</b>
         </div>
-        <h1>Learn from Unicorns</h1>
+        <h1>Learn from unicorns</h1>
         <h2>Discover how successfull startups have grown</h2>
       </header>
       <p>
