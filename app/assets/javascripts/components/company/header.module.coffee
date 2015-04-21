@@ -81,7 +81,7 @@ Component = React.createClass
 
   getFollowButoon: ->
     return null unless @state.cursor.flags.get('can_follow')
-    <FollowComponent key={@props.uuid}, is_followed={@state.cursor.flags.get('is_followed')} />
+    <FollowComponent uuid={@props.uuid}, is_followed={@state.cursor.flags.get('is_followed')} />
 
   update: (attr_name) ->
     return if @props.readOnly

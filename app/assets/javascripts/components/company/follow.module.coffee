@@ -19,9 +19,9 @@ MainComponent = React.createClass
     event.preventDefault()
 
     if @props.is_followed
-      CompanyActions.unfollow(@props.key)
+      CompanyActions.unfollow(@props.uuid)
     else
-      CompanyActions.follow(@props.key)
+      CompanyActions.follow(@props.uuid)
 
   # Lifecycle Methods
   # 
@@ -41,7 +41,7 @@ MainComponent = React.createClass
   render: ->
     (tag.button { 
       className: 'orgpad'
-      disabled: /follow|unfollow/.test(CompanyStore.getSync(@props.key))
+      disabled: /follow|unfollow/.test(CompanyStore.getSync(@props.uuid))
       onClick: @handleFollowClick
     },
       if @props.is_followed then 'Unfollow' else 'Follow'

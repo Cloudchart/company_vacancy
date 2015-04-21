@@ -165,8 +165,12 @@ module.exports = React.createClass
 
     children = React.Children.map @props.children, (child) =>
       if child instanceof SortableListItem
-        @orderedSortables.push(child.props.key)
-        React.addons.cloneWithProps(child, { key: child.props.key, ref: child.props.key })
+        @orderedSortables.push(child.props.uuid)
+        React.addons.cloneWithProps(child,
+          key: child.props.uuid
+          uuid: child.props.uuid
+          ref: child.props.uuid
+        )
       else
         child
     

@@ -44,7 +44,7 @@ Component = React.createClass
     newVacancyKey = VacancyStore.create({ company_id: @state.block.owner_id })
 
     component = VacancyForm
-      key:          newVacancyKey
+      uuid:      newVacancyKey
       onCreate:  -> setTimeout ModalActions.hide
         
 
