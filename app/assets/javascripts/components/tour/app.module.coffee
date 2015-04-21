@@ -30,32 +30,34 @@ module.exports = React.createClass
   # Renderers
   #
   renderIntroduction: ->
-    return null unless @state.position == 0
-
-    <TourIntroduction onNext = { @goToNext } user = { @cursor } />
+    <TourIntroduction 
+      active = { @state.position == 0 }
+      onNext = { @goToNext }
+      user   = { @cursor } />
 
   renderCompanies: ->
-    return null unless @state.position == 1
-
-    <TourCompanies />
+    <TourCompanies 
+      active = { @state.position == 1 } />
 
   renderTimeline: ->
-    return null unless @state.position == 2 || @state.position == 3
-
-    <TourTimeline />
+    <TourTimeline 
+      active           = { @state.position == 2 || @state.position == 3 }
+      isInsightFocused = { @state.position == 3 } />
 
   renderSubscription: ->
-    return null unless @state.position == 4
-
-    <TourSubscription user = { @cursor } />
+    <TourSubscription 
+      active = { @state.position == 4 }
+      user   = { @cursor } />
 
 
   render: ->
     <section className="tour navigator">
-      { @renderIntroduction() }
-      { @renderCompanies() }
-      { @renderTimeline() }
-      { @renderSubscription() }
+      <section className="tour-wrapper">
+        { @renderIntroduction() }
+        { @renderCompanies() }
+        { @renderTimeline() }
+        { @renderSubscription() }
+      </section>
       { @renderPrevButton() }
       { @renderNextButton() }
       { @renderNavigation() }

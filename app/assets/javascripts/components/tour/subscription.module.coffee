@@ -7,18 +7,26 @@ ModalStack   = require('components/modal_stack')
 
 SyncButton   = require("components/form/buttons").SyncButton
 
+cx           = React.addons.classSet
 
 # Exports
 #
 module.exports = React.createClass
 
-  displayName: 'Slide2'
+  displayName: 'TourSubscription'
 
   propTypes:
     onNext: React.PropTypes.func
 
   getInitialState: ->
     isSyncing: false
+
+
+  getClassName: ->
+    cx(
+      "slide tour-subscription": true
+      active: @props.active
+    )
 
   finishTour: ->
     @setState isSyncing: true
@@ -27,7 +35,7 @@ module.exports = React.createClass
       ModalStack.hide()
 
   render: ->
-    <article className="slide slide-6">
+    <article className={ @getClassName() }>>
       <header>
         <div className="logo">
           <i className="svg-icon svg-cloudchart-logo"></i>

@@ -38,7 +38,7 @@
   }
 }
 
-@mixin tour-slide-1 {
+@mixin tour-introduction {
   padding: 50px 135px;
 
   p {
@@ -49,7 +49,7 @@
   }
 }
 
-@mixin tour-slide-2 {
+@mixin tour-companies {
   .companies-list {
     @include display(flex);
     @include justify-content(space-between);
@@ -70,102 +70,74 @@
   }
 }
 
-@mixin tour-slide-3 {
-  .tour-timeline {
-    @include display(flex);
-    @include justify-content(space-between);
+@mixin tour-timeline {
+  @include display(flex);
+  @include justify-content(space-between);
 
-    padding-bottom: 70px;
+  padding-bottom: 70px;
+
+  > .timeline {
+    overflow: hidden;
+    position: relative;
+    height: 380px;
     width: 100%;
 
-    > .tour-post {
-      background: image_url('tour/post.png') center center no-repeat;
-      background-size: cover;
-      height: 359px;
-      width: 536px;
-    }
+    .container {
+      @include transition(transform .5s ease-in-out);
 
-    > .tour-insight {
-      background: image_url('tour/timeline-insight.png') center center no-repeat;
-      background-size: cover;
-      height: 135px;
-      width: 204px;
-    }
-  }
-}
-
-@mixin tour-slide-4 {
-  padding-bottom: 150px;
-
-  > p > i {
-    background-color: $link-color;
-    border-radius: 100%;
-    color: $accented-white-color;
-    display: inline-block;
-    font-size: 12px;
-    height: 20px;
-    line-height: 20px;
-    vertical-align: middle;
-    text-align: center;
-    width: 20px;
-  }
-
-  > .insight {
-    background: image_url('tour/insight.png') center center no-repeat;
-    background-size: cover;
-    height: 268px;
-    width: 406px;
-
-    &.active {
-      background-image: image_url('tour/insight-active.png');
-    }
-  }
-}
-
-@mixin tour-slide-5 {
-
-  > p {
-    width: 100%;
-  }
-
-  > .insight-guide {
-    @include align-items(center);
-    @include display(flex);
-    @include flex-direction(column);
-
-    > .insight {
-      background: image_url('tour/insight-schematic.png') center center no-repeat;
-      height: 268px;
-      margin-bottom: 20px;
-      width: 406px;
-    }
-
-    > .valid, .invalid {
       position: relative;
-      margin-bottom: 20px;
-      text-align: center;
-      width: 320px;
 
-      > hr {
-        @include position(absolute);
+      > .posts {
+        @include transition(transform 1s ease-in-out);
 
-        background-color: $accented-red-color;
-        border: none;
-        height: 2px;
-        top: 50%;
-        margin-top: -1px;
-        width: 100%;
+        background: image_url('tour/posts.png') center center no-repeat;
+        background-size: 759px 784px;
+        height: 784px;
+        width: 759px;
       }
 
-      > .fa-check {
-        color: $link-color;
-        padding-left: $inner-margin-size;
+      > .insight {
+        @include position(absolute, 0 0px 220px 0);
+        @include transition(transform 1s ease-in-out);
+
+        background: image_url('tour/insight.png') center center no-repeat;
+        background-size: cover;
+        height: 155px;
+        width: 235px;
       }
     }
   }
+
+  &.scrolled {
+    > .timeline > .container {
+      @include transform(translateY(calc(-100% + 375px)));
+    }
+  }
+
+  &.insight-focused {
+    > .timeline > .container {
+      > .posts {
+        @include transform(translateX(calc(-100%)));
+      }
+
+      > .insight {
+        @include transform(translate(-270px, 115px) scale(1.8));
+      }
+    }
+  }
+
+  &.no-transition {
+    > .timeline > .container {
+      @include transition(none);
+      
+      > .posts, > .insight {
+        @include transition(none);
+      } 
+    } 
+  }
 }
 
-@mixin tour-slide-6 {
+@mixin tour-subscription {
   padding: 50px;
 
   > .equation {
@@ -227,57 +199,65 @@
     margin-top: 24px;
   }
 
-  > .slide {
-    @include align-items(center);
+  > .tour-wrapper {
     @include box-shadow(0 5px 30px hsla(0, 0%, 0%, .4));
-    @include display(flex);
-    @include flex-direction(column);
-    @include justify-content(space-between);
 
     background-color: $background-color;
     height: 588px;
-    padding: $gutter-size;
+    min-height: 588px;
+    position: relative;
     width: 810px;
 
-    > header {
-      @include tour-header();
-    }
+    > .slide {
+      @include align-items(center);
+      @include display(flex);
+      @include flex-direction(column);
+      @include justify-content(space-between);
+      @include position(absolute);
+      @include transition(opacity .5s ease-in-out);
 
-    &.slide-1 {
-      @include tour-slide-1();
-    }
+      height: 100%;
+      opacity: 0;
+      padding: $gutter-size;
+      width: 100%;
 
-    &.slide-2 {
-      @include tour-slide-2();
-    }
+      &.active {
+        opacity: 1;
+        z-index: 1;
+      }
 
-    &.slide-3 {
-      @include tour-slide-3();
-    }
+      > header {
+        @include tour-header();
+      }
 
-    &.slide-4 {
-      @include tour-slide-4();
-    }
+      &.tour-introduction {
+        @include tour-introduction();
+      }
 
-    &.slide-5 {
-      @include tour-slide-5();
-    }
+      &.tour-companies {
+        @include tour-companies();
+      }
 
-    &.slide-6 {
-      @include tour-slide-6();
-    }
+      &.tour-timeline {
+        @include tour-timeline();
+      }
 
-    p, div {
-      font-size: 24px;
-      font-weight: 300;
-      line-height: 32px;
-    }
+      &.tour-subscription {
+        @include tour-subscription();
+      }
 
-    > button.cc {
-      font-size: $large-font-size;
-      font-weight: 300;
-      height: 55px;
-      padding: 0 40px;
+      p, div {
+        font-size: 24px;
+        font-weight: 300;
+        line-height: 32px;
+      }
+
+      > button.cc {
+        font-size: $large-font-size;
+        font-weight: 300;
+        height: 55px;
+        padding: 0 40px;
+      }
     }
   }
 }

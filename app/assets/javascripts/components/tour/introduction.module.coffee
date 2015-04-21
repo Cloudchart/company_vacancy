@@ -1,17 +1,26 @@
 # @cjsx React.DOM
 
+cx = React.addons.classSet
 
 # Exports
 #
 module.exports = React.createClass
 
-  displayName: 'Slide1'
+  displayName: 'TourIntroduction'
 
   propTypes:
+    active: React.PropTypes.bool
     onNext: React.PropTypes.func
 
+  getClassName: ->
+    cx(
+      "slide tour-introduction": true
+      active: @props.active
+    )
+
+
   render: ->
-    <article className="slide slide-1">
+    <article className={ @getClassName() }>
       <header>
         <div className="logo">
           <i className="svg-icon svg-cloudchart-logo"></i>
