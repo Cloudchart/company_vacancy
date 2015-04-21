@@ -24,14 +24,13 @@ class Company < ActiveRecord::Base
   has_many :activities, as: :trackable, dependent: :destroy
   has_many :nested_activities, class_name: 'Activity', as: :source, dependent: :destroy
   has_many :subscriptions, as: :subscribable, dependent: :destroy
-  has_many :charts, class_name: 'CloudBlueprint::Chart', dependent: :destroy
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :roles, as: :owner, dependent: :destroy
   has_many :users, through: :roles
   has_many :posts, as: :owner, dependent: :destroy
   has_many :stories, dependent: :destroy
-  
+
   validates :site_url, url: true, allow_blank: true
   validate  :publish_check, if: 'is_published? && is_published_changed?'
 
@@ -63,7 +62,7 @@ class Company < ActiveRecord::Base
         size 50
       end
     end
-    
+
   end # of class methods
 
   def to_indexed_json
@@ -72,7 +71,7 @@ class Company < ActiveRecord::Base
     )
   end
 
-  def public_posts 
+  def public_posts
     Post.only_public.where(owner_id: id, owner_type: 'Company')
   end
 

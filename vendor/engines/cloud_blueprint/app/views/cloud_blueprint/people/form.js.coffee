@@ -1,1 +1,0 @@
-return """<%= render(partial: "form") %>"""

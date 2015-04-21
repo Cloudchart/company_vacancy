@@ -16,15 +16,14 @@ class Ability
       # can :read, Vacancy
       # can :read, Quote
       # can :show, Pinboard
-      
-      # can [:preview, :read, :pull], CloudBlueprint::Chart, is_public: true
+
       # can :show, Company, is_public: true
 
       # can :read, Post do |post|
       #   company = post.company
       #   company.is_public? && company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')
       # end
-      
+
     # Regular user
     #
     else
@@ -33,14 +32,13 @@ class Ability
       can [:read, :accept, :destroy], :invite
 
       # can :manage, Subscription
-      can [:preview, :read, :pull], CloudBlueprint::Chart
       can :create, Tag
 
       can [:create, :verify, :resend_verification], Email
       can :destroy, Email, user_id: current_user.id
 
       # User
-      # 
+      #
       can :read, User do |user|
         !user.guest?
       end
@@ -55,7 +53,7 @@ class Ability
       end
 
       # Pin
-      # 
+      #
       can :create, Pin
 
       can :index, :pins do
@@ -74,9 +72,9 @@ class Ability
       can [:update, :destroy], Pin do |pin|
         pin.user_id == current_user.id || current_user.editor?
       end
-      
+
       # Company
-      # 
+      #
       can :manage, Company do |company|
         owner?(current_user, company)
       end
@@ -117,7 +115,7 @@ class Ability
       end
 
       # Pinboard
-      # 
+      #
       can [:read, :create], Pinboard
       can [:update, :destroy, :settings], Pinboard, user_id: current_user.id
 
@@ -126,12 +124,12 @@ class Ability
       end
 
       # Miscellaneous
-      # 
+      #
       cannot [:create, :update], Quote do |quote|
         quote.company && !quote.company.people.include?(quote.person)
       end
 
-      can :manage, [Person, Vacancy, Block, CloudBlueprint::Chart, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
+      can :manage, [Person, Vacancy, Block, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
         owner_or_editor?(current_user, resource.company)
       end
 

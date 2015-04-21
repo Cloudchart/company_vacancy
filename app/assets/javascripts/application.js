@@ -34,6 +34,5 @@
 //= require_tree .
 
 //= require cloud_profile/application
-//= require cloud_blueprint/application
 
 require('base')
