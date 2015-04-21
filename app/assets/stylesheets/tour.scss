@@ -56,10 +56,16 @@
 
     width: 100%;
 
-    > .company-preview {
-      background: image_url('tour/company-placeholder.jpg') center center no-repeat;
+    > .company-preview-1,
+    > .company-preview-2 {
+      background: image_url('tour/company-1.png') center center no-repeat;
+      background-size: cover;
       height: 426px;
       width: 370px;
+    }
+
+    > .company-preview-2 {
+      background-image: image_url('tour/company-2.png');
     }
   }
 }
@@ -73,13 +79,15 @@
     width: 100%;
 
     > .tour-post {
-      background: image_url('tour/post.jpg') center center no-repeat;
+      background: image_url('tour/post.png') center center no-repeat;
+      background-size: cover;
       height: 359px;
       width: 536px;
     }
 
     > .tour-insight {
       background: image_url('tour/timeline-insight.png') center center no-repeat;
+      background-size: cover;
       height: 135px;
       width: 204px;
     }
@@ -104,6 +112,7 @@
 
   > .insight {
     background: image_url('tour/insight.png') center center no-repeat;
+    background-size: cover;
     height: 268px;
     width: 406px;
 

@@ -26,7 +26,7 @@ module.exports = React.createClass
         Learn from unicorns. Follow companies you're interested in to get their updates and watch them grow.
       </p>
       <section className="companies-list">
-        <article className="company-preview" />
-        <article className="company-preview" />
+        <article className="company-preview-1" />
+        <article className="company-preview-2" />
       </section>
     </article>
