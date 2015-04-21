@@ -46,23 +46,11 @@ Component = React.createClass
   isLoaded: ->
     @state.canEdit isnt null and @state.isCompanyLoaded and @state.postsLoaded
 
-  # getCurrentStoryId: ->
-  #   if location.hash.match(/story/)
-  #     story = @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop()
-  #     story.get('uuid')
-  #   else
-  #     null
-
 
   # Handlers
   # 
   handleAboutViewModeChange: (value) ->
     @setState(isEditingAbout: value == 'edit')
-
-  # handleStoryClick: (story) ->
-  #   if @state.story_id != story.get('uuid')
-  #     location.hash = "story-#{story.get('formatted_name')}"
-  #     @setState(story_id: story.get('uuid'))
 
   handleNavChange: (currentTab) ->
     @setState currentTab: currentTab

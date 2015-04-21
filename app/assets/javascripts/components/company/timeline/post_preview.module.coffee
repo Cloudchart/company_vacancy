@@ -35,10 +35,6 @@ FuzzyDate           = require('utils/fuzzy_date')
 #
 Component = React.createClass
 
-  mixins: [GlobalState.mixin]
-
-  # Component Specifications
-  #
   displayName: "TimelinePostPreview"
 
   propTypes:
@@ -46,15 +42,20 @@ Component = React.createClass
     story_id:     React.PropTypes.string
     uuid:         React.PropTypes.string.isRequired
 
+  mixins: [GlobalState.mixin]
+
+  # Component Specifications
+  #
   getDefaultProps: ->
     cursor:
-      pins:   PinStore.cursor.items
+      pins: PinStore.cursor.items
+      posts_stories: PostsStoryStore.cursor.items
       quotes: QuoteStore.cursor.items
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
     onStoryClick: ->
 
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores(@props))
+  # refreshStateFromStores: ->
+  #   @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
     blocks = _.chain BlockStore.all()
@@ -70,7 +71,7 @@ Component = React.createClass
     @getStateFromStores(@props)
 
   onGlobalStateChange: ->
-    @setState @getStateFromStores(@props)
+    @setState refreshed_at: + new Date
 
 
   # Helpers
@@ -186,12 +187,13 @@ Component = React.createClass
   # Handlers
   #
   handleLinkStoryClick: (event) ->
+    # TODO: update PostStore only on client side
+
     if @isRelatedToStory()
       id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id).get('uuid')
       PostsStoryStore.destroy(id)
     else
       PostsStoryStore.create(@props.uuid, { story_id: @props.story_id })
-
 
   handleStarClick: (posts_story, event) ->
     is_highlighted = if posts_story.get('is_highlighted') then false else true
@@ -200,20 +202,20 @@ Component = React.createClass
 
   # Lifecycle Methods
   #
-  componentDidMount: ->
-    BlockStore.on('change', @refreshStateFromStores)
-    PersonStore.on('change', @refreshStateFromStores)
-    PictureStore.on('change', @refreshStateFromStores)
-    ParagraphStore.on('change', @refreshStateFromStores)
+  # componentDidMount: ->
+    # BlockStore.on('change', @refreshStateFromStores)
+    # PersonStore.on('change', @refreshStateFromStores)
+    # PictureStore.on('change', @refreshStateFromStores)
+    # ParagraphStore.on('change', @refreshStateFromStores)
 
-  componentWillReceiveProps: (nextProps) ->
-    @setState(@getStateFromStores(nextProps))
+  # componentWillReceiveProps: (nextProps) ->
+  #   @setState(@getStateFromStores(nextProps))
 
-  componentWillUnmount: ->
-    BlockStore.off('change', @refreshStateFromStores)
-    PersonStore.off('change', @refreshStateFromStores)
-    PictureStore.off('change', @refreshStateFromStores)
-    ParagraphStore.off('change', @refreshStateFromStores)
+  # componentWillUnmount: ->
+    # BlockStore.off('change', @refreshStateFromStores)
+    # PersonStore.off('change', @refreshStateFromStores)
+    # PictureStore.off('change', @refreshStateFromStores)
+    # ParagraphStore.off('change', @refreshStateFromStores)
 
 
   # Renderers
@@ -341,7 +343,6 @@ Component = React.createClass
     </footer>
 
   render: ->
-    console.log @props.story_id
     return null unless @state.post
 
     article_classes = cx

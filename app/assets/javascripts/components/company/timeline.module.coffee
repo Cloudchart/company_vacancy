@@ -34,6 +34,12 @@ postVisibilityPredicate = (component) ->
 # 
 Component = React.createClass
 
+  displayName: 'CompanyTimeline'
+
+  propTypes:
+    company_id: React.PropTypes.string.isRequired
+    readOnly: React.PropTypes.bool
+  
   mixins: [CloudFlux.mixins.Actions, GlobalState.mixin]
 
   statics:
@@ -43,26 +49,22 @@ Component = React.createClass
 
   # Component Specifications
   # 
-  displayName: "Timeline"
-
-  propTypes:
-    company_id:   React.PropTypes.string.isRequired
-    onStoryClick: React.PropTypes.func
-    readOnly:     React.PropTypes.bool
-
   getDefaultProps: ->
     cursor:
-      pins: PinStore.cursor.items
-      # stories: StoryStore.cursor.items
-      posts_stories: PostsStoryStore.cursor.items
-    onStoryClick: ->
+      # pins: PinStore.cursor.items
+      stories: StoryStore.cursor.items
+      # posts_stories: PostsStoryStore.cursor.items
     readOnly: true
 
   getInitialState: ->
     state                = @getStateFromStores(@props)
     state.new_post_key   = null
     state.anchorScrolled = false
+    state.story_id       = null
     state
+
+  onGlobalStateChange: ->
+    @setState story_id: @getCurrentStoryId()
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
@@ -70,6 +72,9 @@ Component = React.createClass
   getStateFromStores: (props) ->
     posts:      PostStore.all()
     postSeq:    Immutable.Seq(PostStore.all())
+
+  getCloudFluxActions: ->
+    'post:create:done': @handlePostCreateDone
 
 
   # Helpers
@@ -81,8 +86,12 @@ Component = React.createClass
       .map    @renderPost(@props)
       .reverse()
 
-  getCloudFluxActions: ->
-    'post:create:done': @handlePostCreateDone
+  getCurrentStoryId: ->
+    if location.hash.match(/story/)
+      story = @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop()
+      if story then story.get('uuid') else null
+    else
+      null
 
 
   # Handlers
@@ -99,14 +108,14 @@ Component = React.createClass
   handlePostCreateDone: (id, attributes, json, sync_token) ->
     window.location.href = json.post_url
 
+  handleStoryClick: (story) ->
+    if @state.story_id != story.get('uuid')
+      location.hash = "story-#{story.get('formatted_name')}"
+      @setState(story_id: story.get('uuid'))
+
 
   # Lifecycle Methods
   # 
-  onGlobalStateChange: ->
-    @setState
-      refreshed_at: + new Date
-
-
   componentDidMount: ->
     PostStore.on('change', @refreshStateFromStores)
     # VisibilityStore.on('change', @refreshStateFromStores)
@@ -153,8 +162,8 @@ Component = React.createClass
       <PostPreview
         key          = { post.uuid }
         uuid         = { post.uuid }
-        onStoryClick = { @props.onStoryClick }
-        story_id     = { props.story_id }
+        onStoryClick = { @handleStoryClick }
+        story_id     = { @getCurrentStoryId() }
       />
 
 
