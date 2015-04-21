@@ -341,7 +341,7 @@ module.exports = React.createClass
     </label>
 
   renderPinOrigin: ->
-    return null unless @isCurrentUserSystemEditor()
+    return null if !@isCurrentUserSystemEditor() || @props.parent_id
 
     <label className="origin">
       <div className="title">Origin</div>
