@@ -12,6 +12,8 @@ PinButton    = require('components/pinnable/pin_button')
 
 FuzzyDate    = require('utils/fuzzy_date')
 
+ModalStackCursor  = GlobalState.cursor(['meta', 'modal', 'stack'])
+
 # Exports
 #
 module.exports = React.createClass
@@ -40,6 +42,9 @@ module.exports = React.createClass
             }
           }
         """
+
+  getDefaultProps: ->
+    cursor: ModalStackCursor
 
   getInitialState: ->
     isLoaded: false
@@ -112,7 +117,10 @@ module.exports = React.createClass
   render: ->
     return null unless @state.isLoaded
 
-    <Carousel className="featured-insights" withSlideshow = { true } >
+    <Carousel 
+      className     = "featured-insights"
+      withSlideshow = { true }
+      isSlideshowOn =  { !ModalStackCursor.deref(Immutable.List()).size } >
       { @renderPosts() }
     </Carousel>
     

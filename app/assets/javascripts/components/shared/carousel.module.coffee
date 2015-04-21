@@ -14,18 +14,20 @@ module.exports = React.createClass
     delay:          React.PropTypes.number
     showNavButtons: React.PropTypes.bool
     withSlideshow:  React.PropTypes.bool
+    isSlideshowOn:  React.PropTypes.bool
 
   getDefaultProps: ->
     className:      ""
     delay:          7000
     showNavButtons: false
     withSlideshow:  false
+    isSlideshowOn:  false
 
   getInitialState: ->
     position:       0
     isSliding:      false
     isTransitionOn: true
-    isSlideshowOn:  @props.withSlideshow
+    isSlideshowOn:  @props.isSlideshowOn || @props.withSlideshow
 
 
   # Helpers
@@ -128,6 +130,9 @@ module.exports = React.createClass
     if @showSlideshow()
       startSlideshow()
 
+  componentWillReceiveProps: (nextProps) ->
+    @setState(isSlideshowOn: nextProps.isSlideshowOn)
+
 
   # Renderers
   #
@@ -177,7 +182,7 @@ module.exports = React.createClass
 
     className += ' no-transition' unless @state.isTransitionOn
 
-    <div className={ className } >
+    <div className={ className }>
       <ul className   = "container" 
           ref         = "container"
           style       = { @getContainerCSS() }
