@@ -381,7 +381,7 @@ module.exports = React.createClass
 
     <footer>
       <div>
-        <button key="cancel" type="button" className="cc alert" onClick={ @props.onCancel }>Cancel</button>
+        <button key="cancel" type="button" className="cc cancel" onClick={ @props.onCancel }>Cancel</button>
         { @renderDeleteButton() }
       </div>
       <button key="submit" type="submit" disabled={ not @state.attributes.get('user_id', false) } className="cc">{ submitButtonTitle }</button>

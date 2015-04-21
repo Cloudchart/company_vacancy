@@ -132,7 +132,7 @@ a.cc {
   }
 
   &.cancel {
-    background-color: hsl(0, 0%, 95%);
+    background-color: $disabled-grey-color;
     color: hsl(0, 0%, 0%);
   }
 
