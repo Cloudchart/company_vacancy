@@ -1,7 +1,4 @@
 .carousel {
-  @include display(flex);
-  @include flex-direction(column);
-
   width: 100%;
   overflow: hidden;
   position: relative;
@@ -20,54 +17,6 @@
         @include display(flex);
         @include justify-content(center);
       }
-    }
-
-    &.navigation {
-      @include display(flex);
-      @include justify-content(center);
-
-      margin-left: -$inner-margin-size;
-      width: 100%;
-      z-index: 1;
-
-      button {
-        background-color: hsla(0, 0%, 75%, 1);
-        border: none;
-        border-radius: 50%;
-        height: 15px;
-        margin-left: $inner-margin-size;
-        outline: none;
-        width: 15px;
-
-        &.active {
-          background-color: $accented-white-color;
-        }
-      }      
-    }
-  }
-
-  > .nav-button {
-    @include box-shadow(0 2px 20px hsla(0, 0%, 0%, 0.2));
-    @include position(absolute, 50% 0 0 0);
-
-    background-color: $background-color;
-    border: none;
-    border-radius: 100%;
-    color: $link-color;
-    font-size: 20px;
-    line-height: 60px;
-    margin-top: -30px;
-    height: 60px;
-    outline: 0;
-    text-align: center;
-    width: 60px;
-
-    &.left {
-      left: $gutter-size;
-    }
-
-    &.right {
-      right: $gutter-size;
     }
   }
 

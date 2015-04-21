@@ -7,24 +7,9 @@ module.exports =
   propTypes:
     showNavButtons: React.PropTypes.bool
 
-  getDefaultProps: ->
-    showNavButtons: false
-
   getInitialState: ->
     isNavigating:   false
     position:       0
-
-
-  # Handlers
-  #
-  handleNavLinkClick: (index) ->
-    @goToPosition(index, @getNavigationClickState())
-
-  handleNextButtonClick: ->
-    @navigate("next", @getNavigationClickState())
-
-  handlePrevButtonClick: ->
-    @navigate("prev", @getNavigationClickState())
 
 
   # Helpers
@@ -51,10 +36,28 @@ module.exports =
     @setState _.extend(stateChanges, position: newPosition)
 
 
+  # Handlers
+  #
+  handleNavLinkClick: (index) ->
+    state = if @getNavigationClickState then @getNavigationClickState() else {}
+
+    @goToPosition(index, state)
+
+  handleNextButtonClick: ->
+    state = if @getNavigationClickState then @getNavigationClickState() else {}
+
+    @navigate("next", state)
+
+  handlePrevButtonClick: ->
+    state = if @getNavigationClickState then @getNavigationClickState() else {}
+    
+    @navigate("prev", state)
+
+
   # Renderers
   #
   renderNavLinks: ->
-    @props.children.map (child, index) =>
+    [0..@getPositionsNumber()-1].map (index) =>
       linkClassName = cx(active: index == @state.position)
 
       <li key={ index }>
@@ -69,7 +72,7 @@ module.exports =
     </ul>
 
   renderPrevButton: ->
-    return null unless @props.showNavButtons && @state.position != 0
+    return null if @state.position == 0
 
     <Button
       className = "nav-button left"
@@ -77,7 +80,7 @@ module.exports =
       onClick   = { @handlePrevButtonClick } />
 
   renderNextButton: ->
-    return null unless @props.showNavButtons && @state.position != @getPositionsNumber() - 1
+    return null if @state.position == @getPositionsNumber() - 1
 
     <Button
       className = "nav-button right"

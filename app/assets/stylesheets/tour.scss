@@ -215,75 +215,69 @@
 
 .modal-stack-item > .tour {
   @include align-items(center);
-  @include display(flex);
+  @include justify-content(center);
 
   background-color: transparent;
   box-shadow: none;
   height: 100%;
-  overflow: visible;
+  position: relative;
   width: 100%;
 
-  > .carousel {
-    > .navigation {
-      margin-top: 24px;
+  > .navigation {
+    margin-top: 24px;
+  }
+
+  > .slide {
+    @include align-items(center);
+    @include box-shadow(0 5px 30px hsla(0, 0%, 0%, .4));
+    @include display(flex);
+    @include flex-direction(column);
+    @include justify-content(space-between);
+
+    background-color: $background-color;
+    height: 588px;
+    padding: $gutter-size;
+    width: 810px;
+
+    > header {
+      @include tour-header();
     }
 
-    > ul.container {
-      > li {
-        > .slide {
-          @include align-items(center);
-          @include display(flex);
-          @include box-shadow(0 5px 30px hsla(0, 0%, 0%, .4));
-          @include flex-direction(column);
-          @include justify-content(space-between);
+    &.slide-1 {
+      @include tour-slide-1();
+    }
 
-          background-color: $background-color;
-          padding: $gutter-size;
-          height: 588px;
-          width: 810px;
+    &.slide-2 {
+      @include tour-slide-2();
+    }
 
-          > header {
-            @include tour-header();
-          }
+    &.slide-3 {
+      @include tour-slide-3();
+    }
 
-          &.slide-1 {
-            @include tour-slide-1();
-          }
+    &.slide-4 {
+      @include tour-slide-4();
+    }
 
-          &.slide-2 {
-            @include tour-slide-2();
-          }
+    &.slide-5 {
+      @include tour-slide-5();
+    }
 
-          &.slide-3 {
-            @include tour-slide-3();
-          }
+    &.slide-6 {
+      @include tour-slide-6();
+    }
 
-          &.slide-4 {
-            @include tour-slide-4();
-          }
+    p, div {
+      font-size: 24px;
+      font-weight: 300;
+      line-height: 32px;
+    }
 
-          &.slide-5 {
-            @include tour-slide-5();
-          }
-
-          &.slide-6 {
-            @include tour-slide-6();
-          }
-
-          p, div {
-            font-size: 24px;
-            font-weight: 300;
-            line-height: 32px;
-          }
-
-          > button.cc {
-            font-size: $large-font-size;
-            font-weight: 300;
-            height: 55px;
-            padding: 0 40px;
-          }
-        }
-      }
+    > button.cc {
+      font-size: $large-font-size;
+      font-weight: 300;
+      height: 55px;
+      padding: 0 40px;
     }
   }
 }

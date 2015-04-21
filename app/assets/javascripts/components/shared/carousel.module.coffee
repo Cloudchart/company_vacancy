@@ -19,7 +19,7 @@ module.exports = React.createClass
 
   getDefaultProps: ->
     className:           ""
-    delay:               2000
+    delay:               7000
     withSlideshow:       false
     isSlideshowPaused:   true
 
@@ -120,7 +120,7 @@ module.exports = React.createClass
 
 
   render: ->
-    className = "carousel #{@props.className}".trim()
+    className = "carousel navigator #{@props.className}".trim()
 
     className += ' no-transition' unless @state.isTransitionOn
 
@@ -132,8 +132,6 @@ module.exports = React.createClass
           onMouseOut  = { @handleMouseOut } >
         { @renderSlides() }
       </ul>
-      { @renderPrevButton() }
-      { @renderNextButton() }
       { @renderNavigation() }
     </div>
 
