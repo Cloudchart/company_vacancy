@@ -24,8 +24,9 @@ module.exports = React.createClass
   componentDidMount: ->
     changeActive = =>
       setTimeout =>
-        @setState isActive: !@state.isActive
-        changeActive()
+        if @isMounted()
+          @setState isActive: !@state.isActive
+          changeActive()
       , 2000
 
     changeActive()
