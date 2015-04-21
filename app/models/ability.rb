@@ -57,7 +57,7 @@ class Ability
       can :create, Pin
 
       can :index, :pins do
-        current_user.admin? || current_user.editor?
+        true # current_user.admin? || current_user.editor?
       end
 
       can :read, Pin do |pin|
@@ -83,7 +83,7 @@ class Ability
       can :read, Company, is_published: true
 
       can [:index, :search], :companies do
-        current_user.admin? || current_user.editor?
+        true # current_user.admin? || current_user.editor?
       end
 
       can :create, Company do
