@@ -27,7 +27,7 @@ MainComponent = React.createClass
   # getDefaultProps: ->
 
   getInitialState: ->
-    currentTab: 'timeline'
+    currentTab: @getInitialTab()
 
   
   # Lifecycle Methods
@@ -36,6 +36,7 @@ MainComponent = React.createClass
 
   componentDidMount: ->
     window.addEventListener 'hashchange', @handleHashChange
+    @props.onChange(@state.currentTab)
 
   # componentWillReceiveProps: (nextProps) ->
   # shouldComponentUpdate: (nextProps, nextState) ->
@@ -49,7 +50,7 @@ MainComponent = React.createClass
   # Helpers
   # 
   getVisibleTabs: ->
-     Immutable.OrderedMap(
+    Immutable.OrderedMap(
       timeline:  !Timeline.isEmpty() || @props.canEdit
       about:     true
       users:     @props.canEdit
@@ -62,35 +63,32 @@ MainComponent = React.createClass
 
   getCurrentTabName: ->
     tabName = location.hash.substr(1) || null
-    return 'timeline' if tabName.match(/story/)
+    return 'timeline' if tabName and tabName.match(/story/)
     tabName
+
+  getInitialTab: ->
+    visibleTabs = @getVisibleTabs()
+
+    if visibleTabs.contains(currentTab = @getCurrentTabName())
+      currentTab
+    else
+      visibleTabs.first()
 
 
   # Handlers
   # 
   handleHashChange: ->
-    # console.log 'handleHashChange'
-    currentTab = @getCurrentTabName()
-    @setState currentTab: currentTab
-    @props.onChange(currentTab)
-    # currentTab = @getCurrentTabName()
-
-    # if @getVisibleTabs().contains(currentTab)
-    #   if currentTab == 'users' && !@isAccessRightsLoaded()
-    #     @fetchAccessRights()
-    #   @setState
-    #     currentTab:        currentTab
-    #     isEditingSettings: currentTab == 'settings' 
-
+    if @getVisibleTabs().contains(currentTab = @getCurrentTabName())
+      @setState currentTab: currentTab
+      @props.onChange(currentTab)
 
 
   # Renderers
   # 
-  # renderSomething: ->
   renderTabs: ->
     @getVisibleTabs().map (tabName) =>
       <li key = { tabName } className = { @getMenuOptionClassName(tabName) } >
-        <a href = { location.pathname + "#" + tabName } className="for-group">
+        <a href = { location.pathname + "#" + tabName } className = "for-group" >
           { tabName }
         </a>
       </li>
