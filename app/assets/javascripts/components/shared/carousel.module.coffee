@@ -107,10 +107,12 @@ module.exports = React.createClass
     @goToPosition(index)
 
   handleMouseOver: ->
-    @setState(isSlideshowOn: false)
+    if @props.isSlideshowOn
+      @setState(isSlideshowOn: false)
 
   handleMouseOut: ->
-    @setState(isSlideshowOn: true)
+    if @props.isSlideshowOn
+      @setState(isSlideshowOn: true)
 
 
   # Lifecycle methods
