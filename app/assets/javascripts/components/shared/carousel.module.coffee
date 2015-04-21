@@ -1,33 +1,32 @@
 # @cjsx React.DOM
 #
-Button = require('components/form/buttons').StandardButton
+NavigatorMixin = require('components/mixins/navigator')
 
 
 module.exports = React.createClass
   
   displayName: "Carousel"
 
+  mixins: [NavigatorMixin]
+
   # Component Specifications
   # 
   propTypes:
-    className:      React.PropTypes.string
-    delay:          React.PropTypes.number
-    showNavButtons: React.PropTypes.bool
-    withSlideshow:  React.PropTypes.bool
-    isSlideshowOn:  React.PropTypes.bool
+    className:          React.PropTypes.string
+    delay:              React.PropTypes.number
+    withSlideshow:      React.PropTypes.bool
+    isSlideshowPaused:  React.PropTypes.bool
 
   getDefaultProps: ->
-    className:      ""
-    delay:          7000
-    showNavButtons: false
-    withSlideshow:  false
-    isSlideshowOn:  false
+    className:           ""
+    delay:               2000
+    withSlideshow:       false
+    isSlideshowPaused:   true
 
   getInitialState: ->
-    position:       0
-    isSliding:      false
-    isTransitionOn: true
-    isSlideshowOn:  @props.isSlideshowOn || @props.withSlideshow
+    isTransitionOn:     true
+    isSlideshowStopped: !@props.withSlideshow
+    isSlideshowPaused:  !@props.withSlideshow || @props.isSlideshowPaused
 
 
   # Helpers
@@ -63,112 +62,53 @@ module.exports = React.createClass
     @props.children.length
 
   getSlides: ->
-    children = @props.children.map (child) => 
-      React.addons.cloneWithProps(child, onNext: @navigateNext)
-
     if @showSlideshow()
-      preSlide = React.addons.cloneWithProps(@props.children[@getPositionsNumber() - 1], onNext: @navigateNext)
-      postSlide = React.addons.cloneWithProps(@props.children[0], onNext: @navigateNext)
+      preSlide = React.addons.cloneWithProps(@props.children[@getPositionsNumber() - 1])
+      postSlide = React.addons.cloneWithProps(@props.children[0])
 
-      [preSlide].concat(children, postSlide)
+      [preSlide].concat(@props.children, postSlide)
     else
-      children
-
-  navigate: (direction) ->
-    return null if @state.isSliding
-
-    newPosition = if direction == 'prev'
-      @state.position - 1
-    else if direction == 'next'
-      @state.position + 1
-
-    @setState
-      isSliding: true
-      position: newPosition
-
-  goToPosition: (newPosition) ->
-    return null if @state.isSliding || newPosition == @state.position
-
-    @setState
-      isSliding:     true
-      isSlideshowOn: false
-      position:      newPosition
-
-  navigateNext: ->
-    @navigate("next")
-
-  navigatePrev: ->
-    @navigate("prev")
+      @props.children
 
 
   # Handlers
   #
-  handleClick: (index) ->
-    @goToPosition(index)
+  getNavigationClickState: ->
+    isNavigating:       true
+    isSlideshowStopped: true
 
   handleMouseOver: ->
-    if @props.isSlideshowOn
-      @setState(isSlideshowOn: false)
+    if !@props.isSlideshowPaused
+      @setState(isSlideshowPaused: true)
 
   handleMouseOut: ->
-    if @props.isSlideshowOn
-      @setState(isSlideshowOn: true)
+    if !@props.isSlideshowPaused
+      @setState(isSlideshowPaused: false)
 
 
   # Lifecycle methods
   #
   componentDidMount: ->
     $(@refs.container.getDOMNode()).on 'transitionend webkitTransitionEnd oTransitionEnd', =>
-      @setState(isSliding: false)
+      @setState(isNavigating: false)
 
       @adjustOffset()
 
     startSlideshow = =>
       setTimeout => 
-        @navigate('next') if @state.isSlideshowOn
-        startSlideshow()
+        @goToNext(isNavigating: true) unless @state.isSlideshowPaused || @state.isSlideshowStopped
+        startSlideshow() unless @state.isSlideshowStopped
       , @props.delay
 
     if @showSlideshow()
       startSlideshow()
 
   componentWillReceiveProps: (nextProps) ->
-    @setState(isSlideshowOn: nextProps.isSlideshowOn)
+    @setState(isSlideshowPaused: nextProps.isSlideshowPaused)
 
 
   # Renderers
   #
-  renderNavigation: ->
-    return null unless @getPositionsNumber() > 1
-
-    <ul className="navigation">
-      { @renderSlideLinks() }
-    </ul>
-
-  renderPrevButton: ->
-    return null unless @props.showNavButtons && @state.position != 0
-
-    <Button
-      className = "nav-button left"
-      iconClass = "fa fa-chevron-left"
-      onClick   = { @navigatePrev } />
-
-  renderNextButton: ->
-    return null unless @props.showNavButtons && @state.position != @getPositionsNumber() - 1
-
-    <Button
-      className = "nav-button right"
-      iconClass = "fa fa-chevron-right"
-      onClick   = { @navigateNext } />
-
-  renderSlideLinks: ->
-    @props.children.map (child, index) =>
-      linkClassName = cx(active: index == @state.position)
-
-      <li key={ index }>
-        <button className={ linkClassName } onClick={ @handleClick.bind(@, index) } />
-      </li>
-
   renderSlides: ->
     slideStyle =
       width: "#{100/@getSlidesNumber()}%"

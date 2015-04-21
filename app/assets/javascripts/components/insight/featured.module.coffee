@@ -118,9 +118,9 @@ module.exports = React.createClass
     return null unless @state.isLoaded
 
     <Carousel 
-      className     = "featured-insights"
-      withSlideshow = { true }
-      isSlideshowOn =  { !ModalStackCursor.deref(Immutable.List()).size } >
+      className         = "featured-insights"
+      withSlideshow     = { true }
+      isSlideshowPaused = { !!ModalStackCursor.deref(Immutable.List()).size } >
       { @renderPosts() }
     </Carousel>
     
