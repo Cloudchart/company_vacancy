@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :oauth_providers, dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
-  has_many :charts, through: :companies
+  #has_many :charts, through: :companies
   has_many :votes, as: :source
   has_many :activities, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
@@ -57,7 +57,7 @@ class User < ActiveRecord::Base
   # validate :validate_email, on: :create
 
   scope :unicorns, -> { joins(:system_roles).where(roles: { value: 'unicorn'}) }
-  scope :available_for_merge, -> user { 
+  scope :available_for_merge, -> user {
     where.not(uuid: user.id, authorized_at: nil)
     .where(twitter: nil, first_name: user.first_name, last_name: user.last_name)
   }
@@ -143,7 +143,7 @@ class User < ActiveRecord::Base
   end
 
   def email=(email)
-    self.emails = [Email.new(address: email)] unless email.blank?      
+    self.emails = [Email.new(address: email)] unless email.blank?
   end
 
   def invite=(invite)
