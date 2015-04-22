@@ -34,7 +34,7 @@ class EmailsController < ApplicationController
       end
     end
 
-    redirect_to settings_user_path(current_user)
+    redirect_to user_path(current_user, anchor: "settings")
   end
   
   
