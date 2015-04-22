@@ -44,15 +44,11 @@ Component = React.createClass
       .map (tag) ->
         id:   tag
         name: '#' + tag
-  
-  
-  getTagForList: (tag) ->
-    <span>{'#' + tag}</span>
-  
 
   gatherTagsForList: ->
-    @state.identityTagNameSeq.map (tag) => <li key={tag}>{@getTagForList(tag)}</li>
-
+    @gatherTags()
+      .map (tag) => <li key={ tag.id }>{ tag.name }</li>
+      .toArray()
 
   gatherTagsForSelect: ->
     query = formatName(@state.query)
@@ -67,7 +63,7 @@ Component = React.createClass
   getComponentChild: ->
     if @props.readOnly
       <ul>
-        {@gatherTagsForList().toArray()}
+        { @gatherTagsForList() }
       </ul>
     else
       <TokenInput
