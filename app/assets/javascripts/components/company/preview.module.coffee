@@ -55,23 +55,35 @@ CompanyPreview = React.createClass
           }
         """
 
-  fetch: ->
+      favorites: ->
+        """
+          Viewer {
+            favorites
+          }
+        """
+
+  fetchTokens: ->
     GlobalState.fetch(@getQuery('tokens'))
+
+  fetchFavorites: (options={}) ->
+    GlobalState.fetch(@getQuery('favorites'), options)
 
 
   # Component specifications
   #
   propTypes:
-    onSyncDone: React.PropTypes.func
-    uuid:       React.PropTypes.string.isRequired
+    onSyncDone:       React.PropTypes.func
+    showFollowButton: React.PropTypes.bool
+    uuid:             React.PropTypes.string.isRequired
 
   getDefaultProps: ->
     cursor:
       tokens: TokenStore.cursor.items
     onSyncDone: ->
+    showFollowButton: false
 
   getInitialState: ->
-    sync: false
+    sync: Immutable.Map()
 
 
   # Helpers
@@ -156,29 +168,43 @@ CompanyPreview = React.createClass
 
   # Handlers
   #
+  handleFollowClick: (event) ->
+    event.preventDefault()
+    event.stopPropagation()
+
+    @setState(sync: @state.sync.set('follow', true))
+
+    CompanySyncApi.follow(@cursor.company.get('uuid'), @handleFollowDone, @handleFail.bind(@, 'unfollow'))
+
   handleDeclineClick: (event) ->
     event.preventDefault()
     event.stopPropagation()
 
-    @setState(sync: true)
+    @setState(sync: @state.sync.set('decline', true))
 
-    CompanySyncApi.cancelInvite(@cursor.company.get('uuid'), @getToken().get('uuid'), @handleDone, @handleFail)
+    CompanySyncApi.cancelInvite(@cursor.company.get('uuid'), @getToken().get('uuid'), @handleInviteDone.bind(@, 'decline'), @handleFail.bind(@, 'decline'))
 
   handleAcceptClick: (event) ->
     event.preventDefault()
     event.stopPropagation()
 
-    @setState(sync: true)
+    @setState(sync: @state.sync.set('accept', true))
 
     CompanySyncApi.acceptInvite(@cursor.company.get('uuid'), @getToken().get('uuid'))
-      .then(@handleDone, @handleFail)
+      .then(@handleInviteDone.bind(@, 'accept'), @handleFail.bind(@, 'accept'))
 
-  handleDone: ->
+  handleFollowDone: (syncKey) ->
+    # TODO rewrite with grabbing only needed favorite
+    @fetchFavorites(force: true).then => 
+      @setState(sync: @state.sync.set('follow', false))
+
+  handleInviteDone: (syncKey) ->
     @cursor.tokens.remove(@getToken().get('uuid'))
     @props.onSyncDone()
+    @setState(sync: @state.sync.set(syncKey, false))
 
-  handleFail: ->
-    @setState(sync: false)
+  handleFail: (syncKey) ->
+    @setState(sync: @state.sync.set(syncKey, false))
 
 
   # Lifecycle methods
@@ -195,7 +221,7 @@ CompanyPreview = React.createClass
       favorites: FavoriteStore.cursor.items
       viewer:    UserStore.me()
 
-    @fetch() unless @isLoaded()
+    @fetchTokens() unless @isLoaded()
 
 
   # Renderers
@@ -209,6 +235,15 @@ CompanyPreview = React.createClass
     return null unless @getToken()
 
     <li className="label">Invited</li>
+
+  renderFollowButton: ->
+    return null unless @props.showFollowButton && !@getFavorite()
+
+    <SyncButton
+      className = "cc follow"
+      onClick   = { @handleFollowClick }
+      sync      = { @state.sync.get('follow') }
+      text      = "Follow" />
 
   renderFollowedLabel: ->
     return null unless @getFavorite()
@@ -237,6 +272,7 @@ CompanyPreview = React.createClass
       </ul>
       <ul className="labels">
         { @renderInvitedLabel() }
+        { @renderFollowButton() }
         { @renderFollowedLabel() }
       </ul>
     </div>
@@ -260,13 +296,13 @@ CompanyPreview = React.createClass
           className = "cc alert"
           iconClass = "fa-close"
           onClick   = { @handleDeclineClick }
-          sync      = { @state.sync }
+          sync      = { @state.sync.get('decline') }
           text      = "Decline" />
         <SyncButton 
           className = "cc"
           iconClass = "fa-check"
           onClick   = { @handleAcceptClick }
-          sync      = { @state.sync }
+          sync      = { @state.sync.get('accept') }
           text      = "Accept" />
       </div>
     else

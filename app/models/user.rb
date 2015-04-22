@@ -98,8 +98,8 @@ class User < ActiveRecord::Base
     Company.joins(:roles).where(is_published: true, roles: { user_id: id, owner_type: 'Company' })
   end
 
-  def recent_companies
-    Company.where(is_published: true).order('created_at DESC').limit(4)
+  def published_companies
+    Company.where(is_published: true).order('created_at DESC')
   end
 
   def followed_companies

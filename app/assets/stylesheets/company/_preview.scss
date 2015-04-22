@@ -117,8 +117,11 @@ article.companies,
 
           background-color: $label-color;
           color: $label-text-color;
+          font-size: 15px;
+          height: 34px;
+          line-height: 34px;
           margin-left: $inner-margin-size;
-          padding: 5px;
+          padding: 0 10px;
         }
       }
     }

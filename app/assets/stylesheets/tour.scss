@@ -56,17 +56,21 @@
 
     width: 100%;
 
-    > .company-preview-1,
-    > .company-preview-2 {
-      background: image_url('tour/company-1.png') center center no-repeat;
-      background-size: cover;
+    > .company-preview {
       height: 426px;
       width: 370px;
-    }
 
-    > .company-preview-2 {
-      background-image: image_url('tour/company-2.png');
+      .human:nth-child(3) ~ .human {
+        display: none;
+      }
     }
+  }
+
+  > .placeholder {
+    line-height: 34px;
+    margin-bottom: 200px;
+    text-align: center;
+    width: 300px;
   }
 }
 
@@ -246,7 +250,7 @@
         @include tour-subscription();
       }
 
-      p, div {
+      > p, > div {
         font-size: 24px;
         font-weight: 300;
         line-height: 32px;
