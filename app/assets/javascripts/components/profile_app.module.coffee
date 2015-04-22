@@ -18,8 +18,8 @@ Button             = require('components/form/buttons').SyncButton
 SyncApi            = require('sync/user_sync_api')
 
 EmptyTabTexts =
-  activityOwn:    "Follow people and companies you're interested in to learn from them"
-  activityOther:  "This person doesn't follow any people and companies yet"
+  feedOwn:        "Follow people and companies you're interested in to learn from them"
+  feedOther:      "This person doesn't follow any people and companies yet"
   insightsOwn:    "Collect successful founders' insights and put them to action"
   insightsOther:  "This person hasn't added any insights yet"
   companiesOwn:   ->
@@ -111,7 +111,7 @@ module.exports = React.createClass
   getVisibleTabs: ->
     Immutable.OrderedMap(
       insights:  true
-      activity:  true
+      feed:      true
       companies: true
       settings:  @cursor.user.get('is_editable')
     ).filter (visible) -> visible
@@ -204,11 +204,11 @@ module.exports = React.createClass
       { renderedText }
     </p>
 
-  renderActivity: ->
+  renderFeed: ->
     unless UserFeed.isEmpty()
       <UserFeed />
     else
-      @renderEmptyTabText("activity")
+      @renderEmptyTabText("feed")
 
   renderCompanies: ->
     unless UserCompanies.isEmpty(@props.uuid)
@@ -228,8 +228,8 @@ module.exports = React.createClass
         @renderInsights()
       when 'companies'
         @renderCompanies()
-      when 'activity'
-        @renderActivity()
+      when 'feed'
+        @renderFeed()
       when 'settings'
         <Settings uuid = { @props.uuid } 
           withEmails = { @isViewerProfile() } />
