@@ -53,17 +53,19 @@ ul.insight-list,
 
         + article {
           position: relative;
-          left: -16px;
+          left: -20px;
           z-index: 2;
         }
 
         + article + article {
           position: relative;
-          left: -32px;
+          left: -40px;
           z-index: 1;
         }
 
         &.active {
+          z-index: 4;
+
           &:before {
             @include position(absolute, 0px 0 0 0px);
 
