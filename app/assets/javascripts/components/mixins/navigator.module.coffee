@@ -15,12 +15,14 @@ module.exports =
   # Helpers
   #
   navigate: (direction, stateChanges={}) ->
-    return null if @state.isNavigating
+    return if @state.isNavigating
 
     newPosition = if direction == 'prev'
       @state.position - 1
     else if direction == 'next'
       @state.position + 1
+
+    return if newPosition > @getPositionsNumber() - 1 || newPosition < 0
 
     @setState _.extend(stateChanges, position: newPosition)
 
@@ -31,7 +33,7 @@ module.exports =
     @navigate("prev", stateChanges)
 
   goToPosition: (newPosition, stateChanges={}) ->
-    return null if @state.isNavigating || newPosition == @state.position
+    return if @state.isNavigating || newPosition == @state.position
 
     @setState _.extend(stateChanges, position: newPosition)
 

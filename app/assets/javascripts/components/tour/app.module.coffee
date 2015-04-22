@@ -44,6 +44,13 @@ module.exports = React.createClass
     5
 
 
+  # Handlers
+  #
+  handleNavigationButtons: (event) ->
+    @goToPrev() if event.keyCode == 37
+    @goToNext() if event.keyCode == 39
+
+
   # Lifecycle methods
   #
   componentWillMount: ->
@@ -51,6 +58,12 @@ module.exports = React.createClass
 
     unless @isLoaded()
       @fetch().then => @setState isLoaded: true
+
+  componentDidMount: ->
+    window.addEventListener('keydown', @handleNavigationButtons)
+
+  componentWillUnmount: ->
+    window.removeEventListener('keydown', @handleNavigationButtons)
 
 
   # Renderers
