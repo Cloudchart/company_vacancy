@@ -51,7 +51,7 @@ module.exports = React.createClass
 
   # Handlers
   #
-  handleMouseOver: (index) ->
+  handleMouseEnter: (index) ->
     @setState currentIndex: index
 
 
@@ -66,13 +66,28 @@ module.exports = React.createClass
       </a>
     </li>
 
-  renderInsighters: (insights) ->
-    @gatherInsighters(insights).toArray().map (insighter, index) =>
-      <li key={ index } className={ cx(active: @state.currentIndex == index) } onMouseOver = { @handleMouseOver.bind(@, index) }>
+  renderInsighterGroup: (insighters) ->
+    insighters.map (insighter, index) =>
+      <article 
+        key={ index }
+        className={ cx(active: @state.currentIndex == index) }
+        onMouseEnter = { @handleMouseEnter.bind(@, index) }>
         <Avatar 
           avatarURL  = { insighter.get('avatar_url') }
           value      = { insighter.get('full_name') } />
-      </li>
+      </article>
+    .toArray()
+
+  renderInsighters: (insights) ->
+    return null unless (insighters = @gatherInsighters(insights)).size > 1
+
+    insighters.valueSeq().toMap()
+      .groupBy (insighter) -> insighter.get('uuid')
+      .map (insighters, index) =>
+        <li key={ index }>
+          { @renderInsighterGroup(insighters) }
+        </li>
+      .toArray()
 
   renderItems: (insights) ->
     insights.map (insight) -> insight.get('uuid')

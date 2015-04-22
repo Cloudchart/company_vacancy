@@ -28,10 +28,12 @@ ul.insight-list,
     padding: 0;
 
     > li {
-      cursor: pointer;
+      @include align-items(center);
+      @include display(flex);
+
       margin-right: $inner-margin-size;
       margin-bottom: $inner-margin-size;
-      position: relative;
+      z-index: 10;
 
       &.more {
         color: $link-color;
@@ -40,21 +42,45 @@ ul.insight-list,
         text-transform: uppercase;
       }
 
-      &.active {
-        &:before {
-          @include position(absolute, 0px 0px 0px 0px);
+      > article {
+        cursor: pointer;
+        position: relative;
+        z-index: 3;
 
-          border: 2px solid hsla(137, 54%, 50%, 0.75);
-          border-radius: 50%;
-          content: '';
+        ~ article {
+          width: 16px;
+        }
+
+        + article {
+          position: relative;
+          left: -16px;
+          z-index: 2;
+        }
+
+        + article + article {
+          position: relative;
+          left: -32px;
           z-index: 1;
         }
-      }
 
-      > .avatar {
-        font-size: 16px;
-        height: 32px;
-        width: 32px;
+        &.active {
+          &:before {
+            @include position(absolute, 0px 0 0 0px);
+
+            border: 2px solid hsla(137, 54%, 50%, 0.75);
+            border-radius: 50%;
+            content: '';
+            height: 32px;
+            width: 32px;
+            z-index: 4;
+          }
+        }
+
+        > .avatar {
+          font-size: 16px;
+          height: 32px;
+          width: 32px;
+        }
       }
     }
   }
