@@ -100,12 +100,25 @@ Component = React.createClass
       { @getStoryView(story) }
     </li>
 
-  getParagraph: (block) ->
-    paragraph = ParagraphStore.find (paragraph) -> paragraph.owner_id is block.uuid
-    return null unless paragraph
+  isBlockTruncated: (block) ->
+    return false if block.identity_type != 'Paragraph'
+    return false unless (paragraph = @getParagraphByBlock(block))
+
+    @getTruncatedParagraph(block) != paragraph.content
+
+  getParagraphByBlock: (block) ->
+    ParagraphStore.find (paragraph) -> paragraph.owner_id is block.uuid
+
+  getTruncatedParagraph: (block) ->
+    return null unless (paragraph = @getParagraphByBlock(block))
 
     parts = paragraph.content.match(/<div>(.*?)<\/div>/i)
-    content = "<div>#{_.str.truncate(parts[1], 600)}</div>"
+
+    "<div>#{_.str.truncate(parts[1], 600)}</div>"
+
+  getParagraph: (block) ->
+    content = @getTruncatedParagraph(block)
+
     classes = cx
       'paragraph': true
       'quote': block.kind is 'Quote'
@@ -331,7 +344,8 @@ Component = React.createClass
     </div>
 
   renderReadMore: ->
-    return null unless @state.blocks.length > 2
+    return null if @state.blocks.length < 2 && 
+                   @state.blocks.every (block) => !@isBlockTruncated(block)
 
     <span className="read-more">More</span>
 
