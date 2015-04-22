@@ -110,8 +110,8 @@ module.exports = React.createClass
 
   getVisibleTabs: ->
     Immutable.OrderedMap(
-      activity:  true
       insights:  true
+      activity:  true
       companies: true
       settings:  @cursor.user.get('is_editable')
     ).filter (visible) -> visible
