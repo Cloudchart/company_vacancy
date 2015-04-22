@@ -59,12 +59,12 @@ Component = React.createClass
   getInitialState: ->
     state                = @getStateFromStores(@props)
     state.new_post_key   = null
-    state.anchorScrolled = false
+    # state.anchorScrolled = false
     state.story_id       = null
     state
 
   onGlobalStateChange: ->
-    @setState story_id: @getCurrentStoryId()
+    @setState refreshed_at: + new Date
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
@@ -86,12 +86,8 @@ Component = React.createClass
       .map    @renderPost(@props)
       .reverse()
 
-  getCurrentStoryId: ->
-    if location.hash.match(/story/)
-      story = @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop()
-      if story then story.get('uuid') else null
-    else
-      null
+  isLoaded: ->
+    @state.posts and @props.cursor.stories.deref(false)
 
 
   # Handlers
@@ -116,21 +112,26 @@ Component = React.createClass
 
   # Lifecycle Methods
   # 
-  componentDidMount: ->
-    PostStore.on('change', @refreshStateFromStores)
+  componentWillMount: ->
+    if location.hash.match(/story/)
+      story = @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop()
+      @setState story_id: story.get('uuid') if story
+    
+  # componentDidMount: ->
+  #   PostStore.on('change', @refreshStateFromStores)
     # VisibilityStore.on('change', @refreshStateFromStores)
 
-  componentDidUpdate: ->
-    if (id = location.hash) && !@state.anchorScrolled && $(id).length > 0
-      $(document).scrollTop(parseInt($(id).offset().top) - 30)
-      @setState(anchorScrolled: true)
+  # componentDidUpdate: ->
+    # if (id = location.hash) && !@state.anchorScrolled && $(id).length > 0
+    #   $(document).scrollTop(parseInt($(id).offset().top) - 30)
+    #   @setState(anchorScrolled: true)
 
-  componentWillReceiveProps: (nextProps) ->
-    @setState(@getStateFromStores(nextProps))
+  # componentWillReceiveProps: (nextProps) ->
+  #   @setState(@getStateFromStores(nextProps))
 
 
-  componentWillUnmount: ->
-    PostStore.off('change', @refreshStateFromStores)
+  # componentWillUnmount: ->
+  #   PostStore.off('change', @refreshStateFromStores)
     # VisibilityStore.off('change', @refreshStateFromStores)
 
 
@@ -163,11 +164,13 @@ Component = React.createClass
         key          = { post.uuid }
         uuid         = { post.uuid }
         onStoryClick = { @handleStoryClick }
-        story_id     = { @getCurrentStoryId() }
+        story_id     = { @state.story_id }
       />
 
 
   render: ->
+    return null unless @isLoaded()
+
     posts = @getPosts()
 
     unless posts.count() == 0

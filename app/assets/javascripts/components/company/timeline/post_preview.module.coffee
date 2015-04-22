@@ -49,7 +49,7 @@ Component = React.createClass
   getDefaultProps: ->
     cursor:
       pins: PinStore.cursor.items
-      posts_stories: PostsStoryStore.cursor.items
+      # posts_stories: PostsStoryStore.cursor.items
       quotes: QuoteStore.cursor.items
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
     onStoryClick: ->
@@ -94,9 +94,10 @@ Component = React.createClass
       event.stopPropagation()
       @props.onStoryClick(story)
 
-    isCurrent = story.get('uuid') == @props.story_id
+    # isCurrent = story.get('uuid') == @props.story_id
+    # className={ cx(current: isCurrent) }
 
-    <li key={key} className={ cx(current: isCurrent) } onClick={ onStoryClick }>
+    <li key={key} onClick={ onStoryClick }>
       { @getStoryView(story) }
     </li>
 
@@ -148,7 +149,6 @@ Component = React.createClass
       </footer>
     </div>
 
-
   getQuote: (block) ->
     quote = QuoteStore.findByBlock(block.get("uuid"))
     return null unless quote
@@ -175,25 +175,43 @@ Component = React.createClass
     @state.blocks.length == 1 && @state.blocks[0].identity_type == "Quote"
 
   getStoryIds: ->
-    PostsStoryStore.cursor.items.deref(Immutable.Map())
-      .valueSeq()
-      .filter (posts_story) => posts_story.get('post_id') is @state.post.uuid
-      .map (posts_story) -> posts_story.get('story_id')
+    @state.post.story_ids
+    # PostsStoryStore.cursor.items.deref(Immutable.Map())
+    #   .valueSeq()
+    #   .filter (posts_story) => posts_story.get('post_id') is @state.post.uuid
+    #   .map (posts_story) -> posts_story.get('story_id')
 
   getInsightsNumber: ->
     PinStore.filterInsightsForPost(@props.uuid).size
 
 
+  # temp and hacky solution to display updates
+  updateStoryIds: (action) ->
+    story_ids = switch action
+      when 'link'
+        @state.post.story_ids.concat(@props.story_id)
+      when 'unlink'
+        @state.post.story_ids.filterNot((id) => id is @props.story_id)
+    
+    PostStore.update(@state.post.uuid, story_ids: story_ids.toArray())
+    PostStore.emitChange()
+
+
+  isLoaded: ->
+    @state.post and @props.cursor.pins.deref(false) and @props.cursor.quotes.deref(false)
+
+
   # Handlers
   #
   handleLinkStoryClick: (event) ->
-    # TODO: update PostStore only on client side
-
     if @isRelatedToStory()
       id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id).get('uuid')
       PostsStoryStore.destroy(id)
+      @updateStoryIds('unlink')
     else
       PostsStoryStore.create(@props.uuid, { story_id: @props.story_id })
+      @updateStoryIds('link')
+
 
   handleStarClick: (posts_story, event) ->
     is_highlighted = if posts_story.get('is_highlighted') then false else true
@@ -203,15 +221,17 @@ Component = React.createClass
   # Lifecycle Methods
   #
   # componentDidMount: ->
+  #   PostStore.on('change', @refreshStateFromStores)
     # BlockStore.on('change', @refreshStateFromStores)
     # PersonStore.on('change', @refreshStateFromStores)
     # PictureStore.on('change', @refreshStateFromStores)
     # ParagraphStore.on('change', @refreshStateFromStores)
 
-  # componentWillReceiveProps: (nextProps) ->
-  #   @setState(@getStateFromStores(nextProps))
+  componentWillReceiveProps: (nextProps) ->
+    @setState(@getStateFromStores(nextProps))
 
   # componentWillUnmount: ->
+  #   PostStore.off('change', @refreshStateFromStores)
     # BlockStore.off('change', @refreshStateFromStores)
     # PersonStore.off('change', @refreshStateFromStores)
     # PictureStore.off('change', @refreshStateFromStores)
@@ -263,6 +283,10 @@ Component = React.createClass
 
 
   renderStarPostForStoryItem: ->
+    # temporary disabled
+    return null
+    # 
+
     return null unless @props.story_id
     posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id)
     return null unless posts_story
@@ -343,7 +367,7 @@ Component = React.createClass
     </footer>
 
   render: ->
-    return null unless @state.post
+    return null unless @isLoaded()
 
     article_classes = cx
       'preview': true
