@@ -41,6 +41,7 @@ Component = React.createClass
     onStoryClick: React.PropTypes.func
     story_id:     React.PropTypes.string
     uuid:         React.PropTypes.string.isRequired
+    readOnly:     React.PropTypes.bool.isRequired
 
   mixins: [GlobalState.mixin]
 
@@ -272,7 +273,7 @@ Component = React.createClass
     </div>
 
   renderLinkPostWithStoryItem: ->
-    return null unless @props.story_id
+    return null unless @props.story_id and !@props.readOnly
 
     classes = cx
       active: @isRelatedToStory()

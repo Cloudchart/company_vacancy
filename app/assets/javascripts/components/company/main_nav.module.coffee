@@ -63,7 +63,7 @@ MainComponent = React.createClass
 
   getCurrentTabName: ->
     tabName = location.hash.substr(1) || null
-    return 'timeline' if tabName and tabName.match(/story/)
+    return 'timeline' if tabName and tabName.match(/^#story/)
     tabName
 
   getInitialTab: ->

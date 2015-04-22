@@ -23,11 +23,15 @@ Post = require('components/post')
 #
 postVisibilityPredicate = (component) ->
   (post) ->
-    if component.props.readOnly
-      VisibilityStore.find((item) -> item.owner_id is post.uuid) and
-      post.uuid and post.created_at != post.updated_at
+    isPersisted = post.uuid and post.created_at != post.updated_at
+    hasVisibility = VisibilityStore.find((item) -> item.owner_id is post.uuid)
+
+    if component.props.readOnly and component.state.story_id
+      post.story_ids.contains(component.state.story_id) and hasVisibility and isPersisted
+    else if component.props.readOnly
+      hasVisibility and isPersisted
     else
-      post.uuid and post.created_at != post.updated_at
+      isPersisted
 
 
 # Main
@@ -80,6 +84,8 @@ Component = React.createClass
   # Helpers
   #
   getPosts: ->
+    # TODO: fix sortBy when there is new post with blank visibility and effective_from
+
     @state.postSeq
       .filter postVisibilityPredicate(@)
       .sortBy (post) -> post.effective_from
@@ -88,6 +94,13 @@ Component = React.createClass
 
   isLoaded: ->
     @state.posts and @props.cursor.stories.deref(false)
+
+  updateCurrentStory: ->
+    if location.hash.match(/^#story/)
+      story = @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop()
+      @setState story_id: story.get('uuid') if story
+    else
+      @setState story_id: null
 
 
   # Handlers
@@ -107,18 +120,18 @@ Component = React.createClass
   handleStoryClick: (story) ->
     if @state.story_id != story.get('uuid')
       location.hash = "story-#{story.get('formatted_name')}"
-      @setState(story_id: story.get('uuid'))
 
+  handleHashChange: ->
+    @updateCurrentStory()
 
   # Lifecycle Methods
   # 
   componentWillMount: ->
-    if location.hash.match(/story/)
-      story = @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop()
-      @setState story_id: story.get('uuid') if story
+    @updateCurrentStory()
     
-  # componentDidMount: ->
-  #   PostStore.on('change', @refreshStateFromStores)
+  componentDidMount: ->
+    window.addEventListener 'hashchange', @handleHashChange
+    # PostStore.on('change', @refreshStateFromStores)
     # VisibilityStore.on('change', @refreshStateFromStores)
 
   # componentDidUpdate: ->
@@ -130,8 +143,9 @@ Component = React.createClass
   #   @setState(@getStateFromStores(nextProps))
 
 
-  # componentWillUnmount: ->
-  #   PostStore.off('change', @refreshStateFromStores)
+  componentWillUnmount: ->
+    window.removeEventListener 'hashchange', @handleHashChange
+    # PostStore.off('change', @refreshStateFromStores)
     # VisibilityStore.off('change', @refreshStateFromStores)
 
 
@@ -165,9 +179,19 @@ Component = React.createClass
         uuid         = { post.uuid }
         onStoryClick = { @handleStoryClick }
         story_id     = { @state.story_id }
+        readOnly     = { @props.readOnly }
       />
 
+  renderCurrentStory: ->
+    return null unless @state.story_id
 
+    <header>
+      <h1></h1>
+      <div className="description"></div>
+    </header>
+
+  # Main render
+  # 
   render: ->
     return null unless @isLoaded()
 
