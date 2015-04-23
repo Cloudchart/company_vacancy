@@ -46,15 +46,6 @@ populateStores = (data, callback) ->
       data: [json]
 
 
-@['posts#index'] = (data) ->
-  populateStores(data)
-
-  PostsApp = require('components/posts_app')
-
-  React.renderComponent(
-    PostsApp({ company_id: data.company_id, story_id: data.story_id }), document.querySelector('body > main')
-  )
-
 @['posts#show'] = (data) ->
   populateStores data, ->
     Post = require('components/post')

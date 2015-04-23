@@ -12,6 +12,13 @@
       margin: 0;
       font-size: 40px;
       font-weight: 300;
+
+      > i.fa {
+        margin-left: 12px;
+        font-size: 35px;
+        color: hsl(136, 49%, 52%);
+        cursor: pointer;
+      }
     }
 
     > .description {
@@ -21,7 +28,7 @@
 
       > div[contenteditable] {
         @include editor-contenteditable-area;
-        max-width: 800px;
+        max-width: 1024px;
       }
     }
   }

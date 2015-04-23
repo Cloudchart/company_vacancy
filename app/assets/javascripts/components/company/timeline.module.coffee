@@ -98,7 +98,7 @@ Component = React.createClass
 
   getCurrentStory: ->
     if location.hash.match(/^#story/)
-      @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop() || null
+      @props.cursor.stories.find (story) -> story.get('name') is location.hash.split(/#story-/).pop() || null
     else
       null
 
@@ -122,6 +122,9 @@ Component = React.createClass
 
   handleStoryDescriptionChange: (value) ->
     StoryStore.update(@state.story.get('uuid'), description: value)
+
+  handleStoriesListClick: (event) ->
+    console.log 'handleStoriesListClick'
 
 
   # Lifecycle Methods
@@ -194,7 +197,10 @@ Component = React.createClass
       <div className="description" dangerouslySetInnerHTML={__html: @state.story.get('description')} />
 
     <header>
-      <h1>{ '#' + @state.story.get('formatted_name') }</h1>
+      <h1>
+        { '#' + @state.story.get('formatted_name') }
+        <i className="fa fa-chevron-down" onClick = { @handleStoriesListClick } />
+      </h1>
       { description }
     </header>
 
@@ -202,7 +208,6 @@ Component = React.createClass
   # 
   render: ->
     return null unless @isLoaded()
-    console.log @state.story.get('description') if @state.story
 
     posts = @getPosts()
 

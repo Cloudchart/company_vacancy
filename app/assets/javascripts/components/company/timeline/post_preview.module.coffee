@@ -216,7 +216,7 @@ Component = React.createClass
     event.stopPropagation()
 
     if @props.story is null or @props.story.get('uuid') != story.get('uuid')
-      location.hash = "story-#{story.get('formatted_name')}"
+      location.hash = "story-#{story.get('name')}"
 
 
   # Lifecycle Methods
