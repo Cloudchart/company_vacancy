@@ -17,6 +17,7 @@ PostActions = require('actions/post_actions')
 
 PostPreview = require('components/company/timeline/post_preview')
 Post = require('components/post')
+ContentEditableArea = require('components/form/contenteditable_area')
 
 
 # Utils
@@ -61,21 +62,21 @@ Component = React.createClass
     readOnly: true
 
   getInitialState: ->
-    state                = @getStateFromStores(@props)
-    state.new_post_key   = null
+    state = @getStateFromStores(@props)
+    state.new_post_key = null
     # state.anchorScrolled = false
-    state.story          = null
+    state.story = @getCurrentStory()
     state
 
   onGlobalStateChange: ->
-    @setState refreshed_at: + new Date
+    @setState story: @getCurrentStory()
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
-    posts:      PostStore.all()
-    postSeq:    Immutable.Seq(PostStore.all())
+    posts: PostStore.all()
+    postSeq: Immutable.Seq(PostStore.all())
 
   getCloudFluxActions: ->
     'post:create:done': @handlePostCreateDone
@@ -95,12 +96,11 @@ Component = React.createClass
   isLoaded: ->
     @state.posts and @props.cursor.stories.deref(false)
 
-  updateCurrentStory: ->
+  getCurrentStory: ->
     if location.hash.match(/^#story/)
-      story = @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop()
-      @setState story: story if story
+      @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop() || null
     else
-      @setState story: null
+      null
 
 
   # Handlers
@@ -118,13 +118,14 @@ Component = React.createClass
     window.location.href = json.post_url
 
   handleHashChange: ->
-    @updateCurrentStory()
+    @setState story: @getCurrentStory()
+
+  handleStoryDescriptionChange: (value) ->
+    StoryStore.update(@state.story.get('uuid'), description: value)
+
 
   # Lifecycle Methods
   # 
-  componentWillMount: ->
-    @updateCurrentStory()
-    
   componentDidMount: ->
     window.addEventListener 'hashchange', @handleHashChange
     # PostStore.on('change', @refreshStateFromStores)
@@ -179,16 +180,29 @@ Component = React.createClass
 
   renderCurrentStory: ->
     return null unless @state.story
+    
+    description = if @state.story.get('company_id') and !@props.readOnly
+      <label className="description">
+        <ContentEditableArea
+          onChange = { @handleStoryDescriptionChange }
+          placeholder = 'Tap to add description'
+          readOnly = { @props.readOnly }
+          value = { @state.story.get('description') }
+        />
+      </label>
+    else
+      <div className="description" dangerouslySetInnerHTML={__html: @state.story.get('description')} />
 
     <header>
       <h1>{ '#' + @state.story.get('formatted_name') }</h1>
-      <div className="description">{ @state.story.get('description') }</div>
+      { description }
     </header>
 
   # Main render
   # 
   render: ->
     return null unless @isLoaded()
+    console.log @state.story.get('description') if @state.story
 
     posts = @getPosts()
 

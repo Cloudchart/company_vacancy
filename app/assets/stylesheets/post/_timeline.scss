@@ -1,3 +1,4 @@
+// 
 // Main
 // 
 .timeline.wrapper {
@@ -9,13 +10,19 @@
 
     > h1 {
       margin: 0;
-      font-size: 24px;
-      font-weight: 600;
+      font-size: 40px;
+      font-weight: 300;
     }
 
     > .description {
-      font-size: 20px;
+      font-size: $large-font-size;
+      font-weight: 300;
       line-height: 1.5;
+
+      > div[contenteditable] {
+        @include editor-contenteditable-area;
+        max-width: 800px;
+      }
     }
   }
 
@@ -142,9 +149,12 @@
         > .cc-hashtag-list {
           > ul > li {
             font-size: 16px;
+            padding: 5px 10px;
 
             &.current {
-              font-weight: bold;
+              border-radius: 20px;
+              background-color: rgb(73,193,105);
+              color: white;
             }
           }
         }

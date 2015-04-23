@@ -39,20 +39,10 @@ module.exports =
       data:
         story: attributes
 
-  # create: (company_id, attributes, done, fail) ->
-  #   $.ajax
-  #     url: "/companies/#{company_id}/stories"
-  #     type: "POST"
-  #     dataType: "json"
-  #     data:
-  #       story: attributes
-  #   .done done
-  #   .fail fail
 
-
-  update: (id, attributes) ->
+  update: (item, attributes) ->
     Promise.resolve $.ajax
-      url: "/stories/#{id}"
+      url: "/stories/#{item.get('uuid')}"
       type: 'PATCH'
       dataType: 'json'
       data:

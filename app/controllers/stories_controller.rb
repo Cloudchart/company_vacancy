@@ -40,7 +40,7 @@ class StoriesController < ApplicationController
   def update
     if @story.update(story_params)
       respond_to do |format|
-        format.json { render json: @story, root: :story }
+        format.json { render json: { id: @story.id } }
       end
     else
       respond_to do |format|

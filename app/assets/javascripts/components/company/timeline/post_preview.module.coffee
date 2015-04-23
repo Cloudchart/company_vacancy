@@ -90,7 +90,9 @@ Component = React.createClass
     if story.get('company_id') then storyContent else <strong>{ storyContent }</strong>
 
   postStoryMapper: (story, key) ->
-    <li key={key} className={ cx(current: story is @props.story) } onClick={ @handleStoryClick.bind(@, story) }>
+    isCurrentStory = if @props.story then story.get('uuid') is @props.story.get('uuid') else false
+
+    <li key={key} className={ cx(current: isCurrentStory) } onClick={ @handleStoryClick.bind(@, story) }>
       { @getStoryView(story) }
     </li>
 
@@ -212,7 +214,9 @@ Component = React.createClass
   handleStoryClick: (story) ->  
     event.preventDefault()
     event.stopPropagation()
-    location.hash = "story-#{story.get('formatted_name')}" if @props.story != story
+
+    if @props.story is null or @props.story.get('uuid') != story.get('uuid')
+      location.hash = "story-#{story.get('formatted_name')}"
 
 
   # Lifecycle Methods
