@@ -39,7 +39,7 @@ Component = React.createClass
 
   propTypes:
     onStoryClick: React.PropTypes.func
-    story_id:     React.PropTypes.string
+    story:        React.PropTypes.object
     uuid:         React.PropTypes.string.isRequired
     readOnly:     React.PropTypes.bool.isRequired
 
@@ -90,15 +90,7 @@ Component = React.createClass
     if story.get('company_id') then storyContent else <strong>{ storyContent }</strong>
 
   postStoryMapper: (story, key) ->
-    onStoryClick = (event) => 
-      event.preventDefault()
-      event.stopPropagation()
-      @props.onStoryClick(story)
-
-    # isCurrent = story.get('uuid') == @props.story_id
-    # className={ cx(current: isCurrent) }
-
-    <li key={key} onClick={ onStoryClick }>
+    <li key={key} className={ cx(current: story is @props.story) } onClick={ @handleStoryClick.bind(@, story) }>
       { @getStoryView(story) }
     </li>
 
@@ -169,8 +161,8 @@ Component = React.createClass
     @state.visibility && @state.visibility.value == "only_me"
 
   isRelatedToStory: ->
-    return true unless @props.story_id
-    @getStoryIds().contains @props.story_id
+    return true unless @props.story
+    @getStoryIds().contains @props.story.get('uuid')
 
   isQuote: ->
     @state.blocks.length == 1 && @state.blocks[0].identity_type == "Quote"
@@ -190,9 +182,9 @@ Component = React.createClass
   updateStoryIds: (action) ->
     story_ids = switch action
       when 'link'
-        @state.post.story_ids.concat(@props.story_id)
+        @state.post.story_ids.concat(@props.story.get('uuid'))
       when 'unlink'
-        @state.post.story_ids.filterNot((id) => id is @props.story_id)
+        @state.post.story_ids.filterNot((id) => id is @props.story.get('uuid'))
     
     PostStore.update(@state.post.uuid, story_ids: story_ids.toArray())
     PostStore.emitChange()
@@ -206,17 +198,21 @@ Component = React.createClass
   #
   handleLinkStoryClick: (event) ->
     if @isRelatedToStory()
-      id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id).get('uuid')
+      id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story.get('uuid')).get('uuid')
       PostsStoryStore.destroy(id)
       @updateStoryIds('unlink')
     else
-      PostsStoryStore.create(@props.uuid, { story_id: @props.story_id })
+      PostsStoryStore.create(@props.uuid, { story_id: @props.story.get('uuid') })
       @updateStoryIds('link')
-
 
   handleStarClick: (posts_story, event) ->
     is_highlighted = if posts_story.get('is_highlighted') then false else true
     PostsStoryStore.update(posts_story.get('uuid'), { is_highlighted: is_highlighted }, { optimistic: false })
+
+  handleStoryClick: (story) ->  
+    event.preventDefault()
+    event.stopPropagation()
+    location.hash = "story-#{story.get('formatted_name')}" if @props.story != story
 
 
   # Lifecycle Methods
@@ -273,7 +269,7 @@ Component = React.createClass
     </div>
 
   renderLinkPostWithStoryItem: ->
-    return null unless @props.story_id and !@props.readOnly
+    return null unless @props.story and !@props.readOnly
 
     classes = cx
       active: @isRelatedToStory()
@@ -288,8 +284,8 @@ Component = React.createClass
     return null
     # 
 
-    return null unless @props.story_id
-    posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id)
+    return null unless @props.story
+    posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story.get('uuid'))
     return null unless posts_story
 
     classes = cx

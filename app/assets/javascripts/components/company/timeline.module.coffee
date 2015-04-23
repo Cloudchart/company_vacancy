@@ -26,8 +26,8 @@ postVisibilityPredicate = (component) ->
     isPersisted = post.uuid and post.created_at != post.updated_at
     hasVisibility = VisibilityStore.find((item) -> item.owner_id is post.uuid)
 
-    if component.props.readOnly and component.state.story_id
-      post.story_ids.contains(component.state.story_id) and hasVisibility and isPersisted
+    if component.props.readOnly and component.state.story
+      post.story_ids.contains(component.state.story.get('uuid')) and hasVisibility and isPersisted
     else if component.props.readOnly
       hasVisibility and isPersisted
     else
@@ -64,7 +64,7 @@ Component = React.createClass
     state                = @getStateFromStores(@props)
     state.new_post_key   = null
     # state.anchorScrolled = false
-    state.story_id       = null
+    state.story          = null
     state
 
   onGlobalStateChange: ->
@@ -98,9 +98,9 @@ Component = React.createClass
   updateCurrentStory: ->
     if location.hash.match(/^#story/)
       story = @props.cursor.stories.find (story) -> story.get('formatted_name') is location.hash.split(/#story-/).pop()
-      @setState story_id: story.get('uuid') if story
+      @setState story: story if story
     else
-      @setState story_id: null
+      @setState story: null
 
 
   # Handlers
@@ -116,10 +116,6 @@ Component = React.createClass
 
   handlePostCreateDone: (id, attributes, json, sync_token) ->
     window.location.href = json.post_url
-
-  handleStoryClick: (story) ->
-    if @state.story_id != story.get('uuid')
-      location.hash = "story-#{story.get('formatted_name')}"
 
   handleHashChange: ->
     @updateCurrentStory()
@@ -177,17 +173,16 @@ Component = React.createClass
       <PostPreview
         key          = { post.uuid }
         uuid         = { post.uuid }
-        onStoryClick = { @handleStoryClick }
-        story_id     = { @state.story_id }
+        story        = { @state.story }
         readOnly     = { @props.readOnly }
       />
 
   renderCurrentStory: ->
-    return null unless @state.story_id
+    return null unless @state.story
 
     <header>
-      <h1></h1>
-      <div className="description"></div>
+      <h1>{ '#' + @state.story.get('formatted_name') }</h1>
+      <div className="description">{ @state.story.get('description') }</div>
     </header>
 
   # Main render
@@ -197,17 +192,22 @@ Component = React.createClass
 
     posts = @getPosts()
 
-    unless posts.count() == 0
+    if posts.count() > 0
       posts = posts.map (post, index) =>
         [
           post
           @renderCreatePostButton('small')
         ]
 
-      <section className="timeline posts">
-        { @renderCreatePostButton() }
-        { posts.toArray() }
+      <section className="timeline wrapper">
+        { @renderCurrentStory() }
+
+        <section className="timeline posts">
+          { @renderCreatePostButton() }
+          { posts.toArray() }
+        </section>
       </section>
+
     else if !@props.readOnly
       <section className="timeline posts">
         { @renderCreatePostButton() }

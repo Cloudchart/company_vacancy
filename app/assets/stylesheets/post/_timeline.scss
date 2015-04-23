@@ -1,70 +1,91 @@
 // Main
-//
-.timeline.posts {
-  @include display(flex);
-  @include flex-direction(column);
-  @include align-items(center);
+// 
+.timeline.wrapper {
+  width: 1024px;
+  margin: 0 auto;
 
-  min-height: 268px;
-  padding: $default-margin-size/2;
-  position: relative;
+  > header {
+    margin-bottom: 24px;
 
-  > .instruction {
-    font-size: $large-font-size;
-    margin-top: 40px;
-    text-align: center;
-  }
-
-  > .placeholder {
-    @include display(flex);
-    @include justify-content(center);
-
-    &.small:hover {
-      > figure {
-        visibility: visible;
-      }
+    > h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
     }
 
-    > figure {
+    > .description {
+      font-size: 20px;
+      line-height: 1.5;
+    }
+  }
+
+  > .timeline.posts {
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
+
+    min-height: 268px;
+    padding: $default-margin-size/2;
+    position: relative;
+
+    > .instruction {
+      font-size: $large-font-size;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    > .placeholder {
       @include display(flex);
-      @include align-items(center);
       @include justify-content(center);
 
-      visibility: visible;
-      width: 90px;
-      height: 90px;
-      cursor: pointer;
-      background-color: hsl(142, 48%, 59%);
-      border-radius: 50%;
-      color: white;
-      position: relative;
-      margin-top: -45px;
-
-      > i.cc-icon {
-        font-size: 40px;
-      }
-    }
-
-    &.small {
-      > figure {
-        @include transform(scale(.5, .5));
-        @include transition(opacity 250ms ease-out, all 150ms ease-out, width 100ms ease-out 150ms);
-
-        margin: $inner-margin-size 0;
-        width: 45px;
-        height: 45px;
-        visibility: hidden;
-
-        &:hover {
-          @include transform(scale(1, 1));
+      &.small:hover {
+        > figure {
+          visibility: visible;
         }
+      }
+
+      > figure {
+        @include display(flex);
+        @include align-items(center);
+        @include justify-content(center);
+
+        visibility: visible;
+        width: 90px;
+        height: 90px;
+        cursor: pointer;
+        background-color: hsl(142, 48%, 59%);
+        border-radius: 50%;
+        color: white;
+        position: relative;
+        margin-top: -45px;
 
         > i.cc-icon {
-          font-size: 15px;
+          font-size: 40px;
+        }
+      }
+
+      &.small {
+        > figure {
+          @include transform(scale(.5, .5));
+          @include transition(opacity 250ms ease-out, all 150ms ease-out, width 100ms ease-out 150ms);
+
+          margin: $inner-margin-size 0;
+          width: 45px;
+          height: 45px;
+          visibility: hidden;
+
+          &:hover {
+            @include transform(scale(1, 1));
+          }
+
+          > i.cc-icon {
+            font-size: 15px;
+          }
         }
       }
     }
   }
+
 }
 
 // Post preview
@@ -203,17 +224,4 @@
       padding: 0 30px;
     }
   }
-}
-
-
-// Story header
-//
-main.company.timeline > div.wrapper > header {
-
-  > h1 {
-    font-size: $great-font-size;
-    font-weight: 200;
-    margin: 0;
-  }
-
 }
