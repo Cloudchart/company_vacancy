@@ -27,6 +27,7 @@ class EmailsController < ApplicationController
   def verify
     @token = Token.where(name: 'email_verification').find(params[:id])
     current_user.emails.create!(address: @token.data[:address])
+    current_user.tokens.create! name: :subscription if @token.data[:subscribe] && !current_user.tokens.find_by(name: :subscription)
 
     Token.transaction do
       Token.where(name: 'email_verification').each do |token|

@@ -87,7 +87,7 @@
     width: 100%;
 
     .container {
-      @include transition(transform .5s ease-in-out);
+      @include transition(transform 1s ease-in-out);
 
       position: relative;
 
@@ -143,6 +143,24 @@
 
 @mixin tour-subscription {
   padding: 50px;
+  position: relative;
+
+  > .close {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+    @include position(absolute, 20px 20px 0 0);
+
+    color: $accented-red-color;
+    height: 20px;
+    width: 20px;
+    font-size: 48px;
+
+    > .cc-icon {
+      position: relative;
+      top: -10px;
+    }
+  }
 
   > .equation {
     @include align-items(center);
@@ -174,18 +192,28 @@
     }
   }
 
-  > input {
-    background-color: white;
-    border: none;
-    border-bottom: 2px solid hsl(137, 54%, 50%);
-    display: block;
-    font-size: 20px;
-    font-weight: 300;
-    height: 40px;
-    margin-bottom: 20px;
-    outline: none;
-    padding: 0 10px;
-    width: 330px;
+  > form {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+
+    > input {
+      background-color: white;
+      border: none;
+      border-bottom: 2px solid $accented-green-color;
+      display: block;
+      font-size: 20px;
+      font-weight: 300;
+      height: 40px;
+      margin-bottom: 20px;
+      outline: none;
+      padding: 0 10px;
+      width: 330px;
+
+      &.error {
+        border-color: $accented-red-color;
+      }
+    }
   }
 }
 
@@ -256,7 +284,8 @@
         line-height: 32px;
       }
 
-      > button.cc {
+      > button.cc,
+      > form > button.cc {
         font-size: $large-font-size;
         font-weight: 300;
         height: 55px;

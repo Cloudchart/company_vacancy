@@ -109,7 +109,8 @@ Cloudchart::Application.routes.draw do
 
   resources :users, only: [:show, :update], concerns: [:followable] do
     get :settings, on: :member
-    delete :finish_tour, on: :collection
+    patch :subscribe, on: :member
+    delete :tour, on: :member
   end
 
   resources :emails, only: [:create, :destroy] do

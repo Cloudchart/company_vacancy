@@ -52,6 +52,10 @@ class Ability
         current_user != user
       end
 
+      can [:subscribe, :tour], User do |user|
+        current_user == user
+      end
+
       # Pin
       #
       can :create, Pin
