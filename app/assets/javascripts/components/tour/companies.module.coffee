@@ -8,6 +8,7 @@ CompanyStore   = require('stores/company_store.cursor')
 FavoriteStore  = require('stores/favorite_store.cursor')
 UserStore      = require('stores/user_store.cursor')
 
+ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 cx = React.addons.classSet
 
@@ -57,7 +58,6 @@ module.exports = React.createClass
                            !favoritesIds.contains(company.get('uuid'))
       .sortBy (company) -> company.get('created_at')
       .reverse()
-      .take(2)
 
   getClassName: ->
     cx(
@@ -70,7 +70,7 @@ module.exports = React.createClass
   #
   renderCompanies: ->
     @getCompanies().map (company, index) =>
-      <CompanyPreview 
+      <CompanyPreview
         key              = { index }
         showFollowButton = { true }
         uuid             = { company.get('uuid') } />
@@ -79,7 +79,9 @@ module.exports = React.createClass
   renderPlaceholder: ->
     return null if @getCompanies().size
 
-    <p className="placeholder">You are already following all the companies we have.</p>
+    <div className="placeholder">
+      <p>You are already following all the companies we have.</p>
+    </div>
 
 
   render: ->
@@ -87,8 +89,8 @@ module.exports = React.createClass
       <p>
         Learn from unicorns. Follow companies you're interested in to get their updates and watch them grow.
       </p>
-      <section className="companies-list">
+      <ReactCSSTransitionGroup component={ React.DOM.section } className="companies-list" transitionName="company">
         { @renderCompanies() }
-      </section>
+      </ReactCSSTransitionGroup>
       { @renderPlaceholder() }
     </article>

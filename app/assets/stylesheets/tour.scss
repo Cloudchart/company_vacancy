@@ -50,27 +50,45 @@
 }
 
 @mixin tour-companies {
+  @include align-items(flex-start);
+
+  overflow: hidden;
+
   .companies-list {
     @include display(flex);
-    @include justify-content(space-between);
-
-    width: 100%;
+    @include justify-content(flex-start);
 
     > .company-preview {
       height: 426px;
+      margin-right: 24px;
       width: 370px;
 
       .human:nth-child(3) ~ .human {
         display: none;
       }
+
+      &.company-leave {
+        transition: opacity .5s ease-in-out;
+
+        &.company-leave-active {
+          opacity: 0;
+        }
+      }
     }
   }
 
   > .placeholder {
-    line-height: 34px;
-    margin-bottom: 200px;
-    text-align: center;
-    width: 300px;
+    @include position(absolute, 0 0px 0px 0px);
+
+    width: 100%;
+
+    > p {
+      line-height: 34px;
+      margin: 0 auto;
+      margin-bottom: 250px;
+      text-align: center;
+      width: 300px;
+    }
   }
 }
 
