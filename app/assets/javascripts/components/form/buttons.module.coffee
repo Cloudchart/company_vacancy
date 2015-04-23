@@ -1,111 +1,70 @@
 # @cjsx React.DOM
 
 joinClasses = (firstClass, secondClass) ->
-  (firstClass + " " + secondClass).trim()
+  (firstClass + " " + secondClass).trim()    
 
-BaseButton = React.createClass
 
-  propTypes:
-    className:    React.PropTypes.string
-    disabled:     React.PropTypes.bool
-    defaultClass: React.PropTypes.string
-    type:         React.PropTypes.string
-
-    onClick:      React.PropTypes.func
-
-  getDefaultProps: ->
-    className:    ""
-    disabled:     false
-    type:         "button"
-    children:     null
-    defaultClass: ""
-
-    onClick:   ->
-
-  render: ->
-    className = joinClasses(@props.className, @props.defaultClass)
-
-    <button type      = @props.type
-            disabled  = @props.disabled
-            className = className
-            onClick   = {@props.onClick}>
-      { @props.children }
-    </button>
-
-# TODO rewrite when added new props syntax from React 0.12
 StandardButton = React.createClass
  
   propTypes:
     iconClass: React.PropTypes.string
     text:      React.PropTypes.string
-    type:      React.PropTypes.string
 
   getDefaultProps: ->
     iconClass: ""
     text:      null
-    type:      "button"
 
   render: ->
     children = []
-    if @props.text
-      children.push @props.text
-    if @props.iconClass.length > 0
-      children.push <i key="icon" className="fa fa-fw #{@props.iconClass}"></i>
+    children.push @props.text if @props.text
+    children.push <i key="icon" className="fa fa-fw #{@props.iconClass}"></i> if @props.iconClass.length > 0
 
-    BaseButton(_.omit(@props, ["children", "text", "iconClass"]), 
-      children
-    )
+    <button 
+      className = { @props.className }
+      disabled  = { @props.disabled }
+      onClick   = { @props.onClick }
+      type      = { @props.type }>
+      <div>
+        { children }
+      </div>
+    </button>
+
 
 SyncButton = React.createClass
  
   propTypes:
     sync:              React.PropTypes.bool
-    syncText:          React.PropTypes.string
-    syncClassName:     React.PropTypes.string
     syncIconClass:     React.PropTypes.string
-    showSyncAnimation: React.PropTypes.bool
 
   getDefaultProps: ->
-    sync:              false
-    syncText:          null
-    syncClassName:     null
-    syncIconClass:     "fa-spinner"
-    showSyncAnimation: true
+    sync:            false
+    syncIconClass:   "fa-spinner"
+
+  getInitialState: ->
+    iconClass:   @props.iconClass
+    sync:        @props.sync
+    text:        @props.text
+
+
+  updateWidth: ->
+    @getDOMNode().style.width = getComputedStyle(@getDOMNode().childNodes[0]).width
+
+  # Lifecycle methods
+  #
+  componentDidMount: ->
+    @updateWidth()
 
   componentDidUpdate: ->
-    button = @getDOMNode()
-
-    setTransition = (value) ->
-      button.style.transition = button.style.webkitTransition = button.style.mozTransition = value
-
-    prevWidth = getComputedStyle(button).width
-    button.style.width = 'auto'
-    endWidth = getComputedStyle(button).width
-    button.style.width = prevWidth
-    button.offsetWidth
-    setTransition('width .2s ease-in-out')
-    button.style.width = endWidth
-
-    handleTransitionEnd = (event) ->
-      if event.propertyName == 'width'
-        setTransition('')
-        button.removeEventListener 'transitionend', handleTransitionEnd, false
-
-    button.addEventListener 'transitionend', handleTransitionEnd, false
-
+    @updateWidth()
 
   render: ->
-    props = _.omit(@props, ["sync", "syncText", "syncClass", "syncIcon"])
+    props = _.extend @props, className: joinClasses(@props.className, "sync")
 
     if @props.sync
       props = _.extend props,
+                className: joinClasses(@props.className, "syncing sync")
                 disabled:  true
-
-      if @props.showSyncAnimation
-        props = _.extend props,
-          text:      if _.isNull(@props.syncText) then @props.text else @props.syncText
-          className: if _.isNull(@props.syncClassName) then @props.className else @props.syncClassName
-          iconClass: joinClasses(@props.syncIconClass, "fa-spin")
+                iconClass: joinClasses(@props.syncIconClass, "fa-spin")
 
     StandardButton(props)
 

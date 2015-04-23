@@ -13,7 +13,7 @@ PinStore           = require('stores/pin_store')
 CompanyStore       = require('stores/company_store.cursor')
 FavoriteStore      = require('stores/favorite_store.cursor')
 
-Button             = require('components/form/buttons').SyncButton
+SyncButton         = require('components/form/buttons').SyncButton
 
 SyncApi            = require('sync/user_sync_api')
 
@@ -189,12 +189,11 @@ module.exports = React.createClass
 
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
-    <Button 
+    <SyncButton 
       className         = "cc follow-button"
       onClick           = { @handleFollowClick }
       text              = { text }
-      sync              = { @state.isSyncing }
-      showSyncAnimation = { false } />
+      sync              = { @state.isSyncing } />
 
   renderEmptyTabText: (key) ->
     emptyTextKey = key + (if @isViewerProfile() then "Own" else "Other")

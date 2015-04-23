@@ -88,7 +88,7 @@ $cc-button-wide-padding: 55px;
   padding: 0 $cc-button-padding;
   white-space: nowrap;
   
-  > i.fa {
+  i.fa {
     margin-left: 5px;
   }
   
@@ -122,6 +122,21 @@ button.transparent {
 button.cc,
 a.cc {
   @include cc-button;
+
+  &.sync {
+    @include transition(width .2s ease-in-out);
+
+    overflow: hidden;
+    position: relative;
+
+    > div {
+      @include position(absolute, 0px 0 0 0px);
+
+      line-height: 34px;
+      padding: 0 10px;
+      width: auto;
+    }
+  }
 
   &.cc-wide {
     padding: 0 $cc-button-wide-padding;
