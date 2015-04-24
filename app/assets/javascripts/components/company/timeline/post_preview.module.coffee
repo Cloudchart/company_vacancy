@@ -38,7 +38,6 @@ Component = React.createClass
   displayName: "TimelinePostPreview"
 
   propTypes:
-    onStoryClick: React.PropTypes.func
     story:        React.PropTypes.object
     uuid:         React.PropTypes.string.isRequired
     readOnly:     React.PropTypes.bool.isRequired
@@ -53,7 +52,6 @@ Component = React.createClass
       # posts_stories: PostsStoryStore.cursor.items
       quotes: QuoteStore.cursor.items
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
-    onStoryClick: ->
 
   # refreshStateFromStores: ->
   #   @setState(@getStateFromStores(@props))
@@ -171,10 +169,6 @@ Component = React.createClass
 
   getStoryIds: ->
     @state.post.story_ids
-    # PostsStoryStore.cursor.items.deref(Immutable.Map())
-    #   .valueSeq()
-    #   .filter (posts_story) => posts_story.get('post_id') is @state.post.uuid
-    #   .map (posts_story) -> posts_story.get('story_id')
 
   getInsightsNumber: ->
     PinStore.filterInsightsForPost(@props.uuid).size

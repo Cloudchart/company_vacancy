@@ -1,7 +1,7 @@
 class StorySerializer < ActiveModel::Serializer
 
   attributes :uuid, :name, :description, :company_id, :created_at, :updated_at
-  attributes :formatted_name
+  attributes :posts_stories_count, :formatted_name
 
   alias_method :company, :scope
   alias_method :story, :object

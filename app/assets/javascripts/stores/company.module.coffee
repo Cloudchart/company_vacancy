@@ -115,6 +115,7 @@ module.exports = CloudFlux.createStore
     company_url:     null
     is_name_in_logo: false
     tag_names:       []
+    post_ids:        []
     #meta:           {}
     #flags:          {}
 

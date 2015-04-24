@@ -18,6 +18,7 @@ PostActions = require('actions/post_actions')
 PostPreview = require('components/company/timeline/post_preview')
 Post = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
+StoriesList = require('components/story/list')
 
 
 # Utils
@@ -65,6 +66,7 @@ Component = React.createClass
     state = @getStateFromStores(@props)
     state.new_post_key = null
     # state.anchorScrolled = false
+    state.shouldDisplayStories = @shouldDisplayStories()
     state.story = @getCurrentStory()
     state
 
@@ -102,6 +104,9 @@ Component = React.createClass
     else
       null
 
+  shouldDisplayStories: ->
+    !!location.hash.match(/^#stories/)
+
 
   # Handlers
   #
@@ -118,13 +123,15 @@ Component = React.createClass
     window.location.href = json.post_url
 
   handleHashChange: ->
-    @setState story: @getCurrentStory()
+    @setState 
+      story: @getCurrentStory()
+      shouldDisplayStories: @shouldDisplayStories()
 
   handleStoryDescriptionChange: (value) ->
     StoryStore.update(@state.story.get('uuid'), description: value)
 
   handleStoriesListClick: (event) ->
-    console.log 'handleStoriesListClick'
+    location.hash = 'stories'
 
 
   # Lifecycle Methods
@@ -208,6 +215,7 @@ Component = React.createClass
   # 
   render: ->
     return null unless @isLoaded()
+    return <StoriesList company_id = { @props.company_id } /> if @state.shouldDisplayStories
 
     posts = @getPosts()
 

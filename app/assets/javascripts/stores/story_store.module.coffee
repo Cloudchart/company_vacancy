@@ -17,9 +17,6 @@ module.exports = GlobalState.createStore
   serverActions: ->
     'post:fetch-all:done': @populate
 
-  fetchAllByCompany: (company_id, options = {}) ->
-    @syncAPI.fetchAllByCompany(company_id, options).then(@fetchDone, @fetcFail)
-
   createByCompany: (company_id, attributes = {}, options = {}) ->
     promise = @syncAPI.createByCompany(company_id, attributes, options)
     promise.then(@createDone, @createFail)

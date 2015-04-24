@@ -8,17 +8,6 @@ cachedPromises = {}
 module.exports =
   
 
-  fetchAllByCompany: (company_id, options = {}) ->
-    url = '/companies/' + company_id + '/stories'
-
-    delete cachedPromises[url] if options.force == true
-    
-    cachedPromises[url] ||= Promise.resolve $.ajax
-      url: url
-      type: 'GET'
-      dataType: 'json'
-  
-  
   fetchOne: (id, params = {}, options = {}) ->
     url = '/stories/' + id
     

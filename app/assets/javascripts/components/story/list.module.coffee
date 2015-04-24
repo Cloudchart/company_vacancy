@@ -2,7 +2,12 @@
 
 # Imports
 # 
-# SomeComponent = require('')
+GlobalState = require('global_state/state')
+
+CompanyStore = require('stores/company')
+StoryStore = require('stores/story_store')
+PostsStoryStore = require('stores/posts_story_store.cursor')
+PinStore = require('stores/pin_store')
 
 
 # Utils
@@ -14,16 +19,26 @@ cx = React.addons.classSet
 # 
 MainComponent = React.createClass
 
-  # displayName: 'Meaningful name'
-  # mixins: []
+  displayName: 'StoriesList'
+  mixins: [GlobalState.mixin]
   # statics: {}
-  # propTypes: {}
+  propTypes:
+    company_id: React.PropTypes.string.isRequired
 
 
   # Component Specifications
   # 
-  # getDefaultProps: ->
-  # getInitialState: ->
+  getDefaultProps: ->
+    cursor:
+      stories: StoryStore.cursor.items
+      posts_stories: PostsStoryStore.cursor.items
+      pins: PinStore.cursor.items
+
+  getInitialState: ->
+    company: CompanyStore.get(@props.company_id)
+
+  onGlobalStateChange: ->
+    @setState refreshed_at: + new Date
 
   
   # Lifecycle Methods
@@ -39,23 +54,80 @@ MainComponent = React.createClass
 
   # Helpers
   # 
-  # getSomething: ->
+  isLoaded: ->
+    @props.cursor.stories.deref(false) and @props.cursor.posts_stories.deref(false) and @props.cursor.pins.deref(false)
+
+  getPostsSizeForStory: (story) ->
+    story_id = story.get('uuid')
+    post_ids = @state.company.post_ids
+
+    @props.cursor.posts_stories
+      .filter (posts_story) -> posts_story.get('story_id') is story_id and post_ids.contains(posts_story.get('post_id'))
+      .size
+
+  getPinsSizeForStory: (story) ->
+    story_id = story.get('uuid')
+    post_ids = @props.cursor.posts_stories
+      .filter (posts_story) -> posts_story.get('story_id') is story_id
+      .map (posts_story) -> posts_story.get('post_id')
+      .valueSeq()
+    
+    @props.cursor.pins
+      .filter (pin) -> pin.get('is_approved') and !pin.get('parent_id') and 
+                       pin.get('pinboard_id') and pin.get('pinnable_id') and 
+                       post_ids.contains(pin.get('pinnable_id'))
+      .size
 
 
   # Handlers
   # 
-  # handleThingClick: (event) ->
+  handleStoryClick: (story) ->
+    location.hash = "story-#{story.get('name')}"
 
 
   # Renderers
   # 
-  # renderSomething: ->
+  renderStories: ->
+    stories = @props.cursor.stories
+      .filter (story) -> story.get('posts_stories_count')
+      .sortBy (story) -> story.get('name')
+      .map @storyItemMapper
+
+    <ul className="stories list">
+      { stories.toArray() }
+    </ul>
+
+  storyItemMapper: (story, uuid) ->
+    <li key={ uuid } onClick={ @handleStoryClick.bind(@, story) } >
+      <header>
+        <h3>{ '#' + story.get('formatted_name') }</h3>
+      </header>
+
+      <div className="content" dangerouslySetInnerHTML={__html: story.get('description')} />
+
+      <footer>
+        <ul className="counters">
+          <li className="posts">
+            <span>{ @getPostsSizeForStory(story) }</span>
+            <i className="fa fa-list-alt" />
+          </li>
+          <li className="pins">
+            <span>{ @getPinsSizeForStory(story) }</span>
+            <i className="fa fa-thumb-tack" />
+          </li>
+        </ul>
+      </footer>
+    </li>
 
 
   # Main render
   # 
   render: ->
-    null
+    return null unless @isLoaded()
+
+    <section className="stories">
+      { @renderStories() }
+    </section>
 
 
 # Exports
