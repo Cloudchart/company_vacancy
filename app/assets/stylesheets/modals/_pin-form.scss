@@ -2,40 +2,8 @@ body ul.modal-stack > li.modal-stack-item > form.pin {
 
   $pin-form-width: 476px;
 
-  $pin-form-header-background-color: $disabled-grey-color;
-
   background-color: $white-color;
   width: $pin-form-width;
-
-  @mixin pin-form-header {
-    @include display(flex);
-
-    background-color: $pin-form-header-background-color;
-    position: relative;
-    
-    > h1 {
-      font-size: $large-font-size;
-      font-weight: 700;
-      margin: 0;
-      padding: $default-margin-size;
-      text-align: center;
-      width: 100%;
-    }
-
-    > .close-button {
-      @include position(absolute, 50% 0px 0 0);
-      height: 36px;
-      margin-top: -18px;
-
-      > i {
-        color: $accented-white-color;
-        font-size: 36px;
-        font-weight: 700;
-        line-height: 36px;
-      }
-    }
-  }
-
 
   @mixin pin-form-select-wrapper {
     position: relative;
@@ -48,7 +16,6 @@ body ul.modal-stack > li.modal-stack-item > form.pin {
       margin-right: 20px;
     }
   }
-
 
   @mixin pin-form-fieldset {
     border: none;
@@ -143,17 +110,11 @@ body ul.modal-stack > li.modal-stack-item > form.pin {
 
   }
 
-
   @mixin pin-form-footer {
     @include display(flex);
     @include justify-content(space-between);
 
     margin: $default-margin-size;
-  }
-
-
-  > header {
-    @include pin-form-header;
   }
 
   > .quote {

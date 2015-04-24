@@ -10,9 +10,7 @@ PinStore      = require('stores/pin_store')
 UserStore     = require('stores/user_store.cursor')
 
 
-ModalActions  = require('actions/modal_actions')
-
-
+ModalHeader     = require('components/shared/modal_header')
 InsightContent  = require('components/pinnable/insight_content')
 UnicornChooser  = require('components/unicorn_chooser')
 StandardButton  = require('components/form/buttons').StandardButton
@@ -275,15 +273,6 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderHeader: ->
-    <header>
-      <h1>Pin this to your pinboard</h1>
-      <StandardButton 
-        className  = "close-button transparent"
-        onClick    = { @props.onCancel }
-        iconClass  = "cc-icon cc-times" />
-    </header>
-
   renderUserSelect: ->
     return null unless  @isCurrentUserSystemEditor()
     return null if      @props.parent_id
@@ -392,7 +381,9 @@ module.exports = React.createClass
     return null unless @fetchDone()
 
     <form className="pin" onSubmit={ @handleSubmit }>
-      { @renderHeader() }
+      <ModalHeader 
+        text    = "Pin this to your pinboard"
+        onClose = { @props.onCancel } />
 
       <InsightContent 
         withLinks = { false }

@@ -29,3 +29,28 @@ main > .error {
     padding: 60px 0 45px;
   }
 }
+
+.modal-stack-item > .error {
+  width: 476px;
+
+  > .content {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+
+    padding: $default-margin-size;
+    width: 100%;
+
+    > p {
+      font-size: $big-font-size;
+    }
+
+    > figure {
+      background: image_url("error.png") center center no-repeat;
+      background-size: contain;
+      height: 172px;
+      margin: 40px 0;
+      width: 265px;
+    }
+  }
+}

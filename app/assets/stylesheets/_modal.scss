@@ -111,6 +111,35 @@ $modal-form-button-padding: 0 20px;
   }
 }
 
+@mixin modal-header {
+  @include display(flex);
+
+  background-color: $disabled-grey-color;
+  position: relative;
+  
+  > h1 {
+    font-size: $large-font-size;
+    font-weight: 700;
+    margin: 0;
+    padding: $default-margin-size;
+    text-align: center;
+    width: 100%;
+  }
+
+  > .close-button {
+    @include position(absolute, 50% 0px 0 0);
+    height: 36px;
+    margin-top: -18px;
+
+    i {
+      color: $accented-white-color;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 36px;
+    }
+  }
+}
+
 
 body ul.modal-stack {
   @include position(fixed, 0px 0px 0px 0px);
@@ -129,6 +158,10 @@ body ul.modal-stack {
     overflow: scroll;
 
     background-color: $modal-overlay-background-color;
+
+    .modal-header {
+      @include modal-header();
+    }
 
     > * {
       &.post-container {
