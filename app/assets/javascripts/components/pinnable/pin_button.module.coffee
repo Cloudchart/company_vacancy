@@ -9,6 +9,7 @@ PinForm         = require('components/form/pin_form')
 Modal           = require('components/modal_stack')
 StandardButton  = require('components/form/buttons').StandardButton
 
+InsightTourApp  = require('components/tour/insight/app')
 
 # Utils
 #
@@ -99,6 +100,7 @@ module.exports = React.createClass
       PinStore.destroy(@state.currentUserRepin.get('uuid')) if confirm('Are you sure?')
     else
       Modal.show(@renderPinForm())
+      Modal.show(<InsightTourApp />)
 
 
   # Renderers

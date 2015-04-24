@@ -235,6 +235,52 @@
   }
 }
 
+@mixin tour-insight-lesson {
+  > p {
+    width: 100%;
+  }
+
+  > .insight-guide {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 32px;
+
+    > .insight {
+      background: image_url('tour/insight-schematic.png') center center no-repeat;
+      height: 268px;
+      margin-bottom: 20px;
+      width: 406px;
+    }
+
+    > .valid, .invalid {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: center;
+      width: 320px;
+
+      > hr {
+        @include position(absolute);
+
+        background-color: $accented-red-color;
+        border: none;
+        height: 2px;
+        top: 50%;
+        margin-top: -1px;
+        width: 100%;
+      }
+
+      > .fa-check {
+        color: $link-color;
+        padding-left: $inner-margin-size;
+      }
+    }
+  }
+}
+
 .modal-stack-item > .tour {
   @include align-items(center);
   @include justify-content(center);
@@ -294,6 +340,16 @@
 
       &.tour-subscription {
         @include tour-subscription();
+      }
+
+      &.tour-insight-introduction {
+      }
+
+      &.tour-insight-lesson {
+        @include tour-insight-lesson();
+      }
+
+      &.tour-insight-list {
       }
 
       > p, > div {

@@ -93,7 +93,7 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <section className="tour navigator">
+    <section className="tour welcome-tour navigator">
       <section className="tour-wrapper">
         { @renderIntroduction() }
         { @renderCompanies() }
