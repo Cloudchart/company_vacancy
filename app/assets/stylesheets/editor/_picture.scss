@@ -1,6 +1,23 @@
-.editor > .picture,
-.post.preview .picture  {
+.editor > .picture {
   width: 100%;
+
+  .picture-wrapper {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+
+    position: relative;
+
+    > button {
+      @include position(absolute, 0 10px 10px 0);
+
+      font-size: 16px;
+    }
+
+    img {
+      cursor: pointer;
+    }
+  }
   
   .placeholder {
     background-color: $editor-placeholder-background-color;
@@ -30,29 +47,14 @@
       margin-left: -1.5em;
       width: 1.5em;
     }
-    
   }
   
   .image-input {
     position: relative;
   }
   
-  // .image-input i.remove {
-  //   @include position(absolute, 10px 10px 0 0);
-    
-  //   color: $editor-remove-button-color;
-  //   cursor: pointer;
-  //   font-size: 20px;
-  //   visibility: hidden;
-  // }
-  
-  // .image-input:hover i.remove {
-  //   visibility: visible;
-  // }
-  
   img {
     width: 100%;
-    cursor: pointer;
   }
   
   input[type="file"] {
@@ -61,10 +63,25 @@
     overflow: hidden;
     position: absolute;
     width: 0;
-  }
-  
+  } 
+}
+
+.wrapper.editor img {
+  cursor: pointer;
 }
 
 .post.preview .cover {
   width: 100%;
+}
+
+.editor .picture .picture-wrapper.small img,
+.editor .picture img.small,
+.post.preview img.cover.small {
+  @include has-columns(4);
+}
+
+.editor .picture .picture-wrapper.medium img,
+.editor .picture img.medium,
+.post.preview img.cover.medium {
+  @include has-columns(6);
 }

@@ -79,4 +79,5 @@ module.exports = CloudFlux.createStore
     uuid:           ''
     owner_type:     ''
     owner_id:       ''
+    size:           ''
     url:            ''

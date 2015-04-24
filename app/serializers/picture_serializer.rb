@@ -1,6 +1,6 @@
 class PictureSerializer < ActiveModel::Serializer
   attributes  :uuid, :owner_id, :owner_type
-  attributes  :url
+  attributes  :url, :size
   attributes  :created_at, :updated_at
   
   def url

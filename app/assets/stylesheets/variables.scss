@@ -67,12 +67,16 @@ $zindex-tooltip: 800;
 
 // new design variables
 
-$gutter-size: 24px;
+$column-size:           59px;
+$gutter-size:           24px;
 $default-header-height: 75px;
 $default-footer-height: 75px;
-$default-margin-size: 20px;
-$inner-margin-size: 10px;
+$default-margin-size:   20px;
+$inner-margin-size:     10px;
 
+@mixin has-columns($columns-number) {
+  width: $columns-number * ($column-size + $gutter-size) - $gutter-size;
+}
 
 $green-color:          hsl(141, 91%, 32%);
 $accented-green-color: hsl(137, 54%, 50%);
