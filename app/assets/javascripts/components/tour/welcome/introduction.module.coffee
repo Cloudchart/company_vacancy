@@ -6,7 +6,7 @@ cx = React.addons.classSet
 #
 module.exports = React.createClass
 
-  displayName: 'TourIntroduction'
+  displayName: 'WelcomeTourIntroduction'
 
   propTypes:
     active: React.PropTypes.bool

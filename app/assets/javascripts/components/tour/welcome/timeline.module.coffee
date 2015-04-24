@@ -6,7 +6,7 @@ cx = React.addons.classSet
 #
 module.exports = React.createClass
 
-  displayName: 'TourTimeline'
+  displayName: 'WelcomeTourTimeline'
 
   propTypes:
     active:           React.PropTypes.bool

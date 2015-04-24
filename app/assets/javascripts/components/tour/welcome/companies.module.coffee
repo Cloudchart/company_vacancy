@@ -16,7 +16,7 @@ cx = React.addons.classSet
 #
 module.exports = React.createClass
 
-  displayName: 'TourCompanies'
+  displayName: 'WelcomeTourCompanies'
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
