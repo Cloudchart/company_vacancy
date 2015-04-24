@@ -20,6 +20,8 @@ body {
   text-rendering: optimizelegibility;
 
   > main {
+    @include display(flex);
+    @include flex-direction(column);
     @include flex(1);
     position: relative;
   }

@@ -10,6 +10,7 @@
 @import 'shared/carousel';
 @import 'invite_queue';
 @import 'landing';
+@import 'errors';
 
 $base-unit: 20px;
 $base-font-size: 15px;
@@ -62,6 +63,8 @@ body {
   } 
 
   > main {
+    @include display(flex);
+    @include flex-direction(column);
     @include flex(1);
 
     position: relative;
