@@ -200,7 +200,7 @@ Component = React.createClass
 
 
   isLoaded: ->
-    @state.post and @props.cursor.pins.deref(false) and @props.cursor.quotes.deref(false)
+    @state.post
 
 
   # Handlers

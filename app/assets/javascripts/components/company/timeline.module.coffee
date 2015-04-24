@@ -204,7 +204,18 @@ Component = React.createClass
       { description }
     </header>
 
-  
+  renderPosts: (posts) ->
+    if posts.count() > 0
+      posts.toArray()
+    else if !@props.readOnly
+      <div className="instruction">
+        You have no posts on your timeline.<br />
+        Let’s add some by pressing plus button.
+      </div>
+    else
+      null
+
+
   # Main render
   # 
   render: ->
@@ -213,32 +224,20 @@ Component = React.createClass
 
     posts = @getPosts()
 
-    if posts.count() > 0
-      posts = posts.map (post, index) =>
-        [
-          post
-          @renderCreatePostButton('small')
-        ]
+    posts = posts.map (post, index) =>
+      [
+        post
+        @renderCreatePostButton('small')
+      ]
 
-      <section className="timeline wrapper">
-        { @renderCurrentStory() }
+    <section className="timeline wrapper">
+      { @renderCurrentStory() }
 
-        <section className="timeline posts">
-          { @renderCreatePostButton() }
-          { posts.toArray() }
-        </section>
-      </section>
-
-    else if !@props.readOnly
       <section className="timeline posts">
         { @renderCreatePostButton() }
-        <div className="instruction">
-          You have no posts on your timeline.<br />
-          Let’s add some by pressing plus button.
-        </div>
+        { @renderPosts(posts) }
       </section>
-    else
-      null
+    </section>
 
 
 # Exports
