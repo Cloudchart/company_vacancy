@@ -208,6 +208,7 @@ Component = React.createClass
   handleStoryClick: (story) ->  
     event.preventDefault()
     event.stopPropagation()
+    $('html,body').animate({ scrollTop: $(".timeline").offset().top - 30 }, 'slow')
 
     if @props.story is null or @props.story.get('uuid') != story.get('uuid')
       location.hash = "story-#{story.get('name')}"
@@ -236,8 +237,7 @@ Component = React.createClass
   # Renderers
   #
   renderInsights: ->
-    return null if @isEpochType() || (@getInsightsNumber() == 0)
-    limit = 3
+    return null if @isEpochType() || !@isRelatedToStory() || (@getInsightsNumber() == 0)
 
     <section className="post-pins">
       <InsightTimelineList 
@@ -332,14 +332,16 @@ Component = React.createClass
     </div>
 
   renderPost: ->
-    unless @isQuote()
-      [@renderHeader(),
-      @renderContent()]
-    else
+    if @isQuote()
       [@renderContent(),
       @renderHeader()]
+    else
+      [@renderHeader(),
+      @renderContent()]
 
   renderContent: ->
+    return null unless @isRelatedToStory()
+
     first_block = @state.blocks[0]
     return null unless first_block
 
@@ -357,6 +359,8 @@ Component = React.createClass
     </div>
 
   renderFooter: ->
+    return null unless @isRelatedToStory()
+
     <footer>
       { @renderStories() }
     </footer>

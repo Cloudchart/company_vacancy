@@ -84,6 +84,9 @@ MainComponent = React.createClass
   handleStoryClick: (story) ->
     location.hash = "story-#{story.get('name')}"
 
+  handleBackToTimelineClick: ->
+    location.hash = 'timeline'
+
 
   # Renderers
   # 
@@ -94,10 +97,22 @@ MainComponent = React.createClass
       .map @storyItemMapper
 
     <ul className="stories list">
+      <li onClick = { @handleBackToTimelineClick } >
+        <header>
+          <h3>Everything</h3>
+        </header>
+
+        <div className="content">{ "All posts from #{@state.company.name}" }</div>
+      </li>
+
       { stories.toArray() }
     </ul>
 
   storyItemMapper: (story, uuid) ->
+    posts_count = @getPostsSizeForStory(story)
+    pins_count = @getPinsSizeForStory(story)
+    return null if posts_count == pins_count == 0
+
     <li key={ uuid } onClick={ @handleStoryClick.bind(@, story) } >
       <header>
         <h3>{ '#' + story.get('formatted_name') }</h3>
@@ -106,16 +121,7 @@ MainComponent = React.createClass
       <div className="content" dangerouslySetInnerHTML={__html: story.get('description')} />
 
       <footer>
-        <ul className="counters">
-          <li className="posts">
-            <span>{ @getPostsSizeForStory(story) }</span>
-            <i className="fa fa-list-alt" />
-          </li>
-          <li className="pins">
-            <span>{ @getPinsSizeForStory(story) }</span>
-            <i className="fa fa-thumb-tack" />
-          </li>
-        </ul>
+        { "#{posts_count} posts, #{pins_count} insights" }
       </footer>
     </li>
 

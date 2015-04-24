@@ -38,27 +38,7 @@ main.company .stories {
       }
 
       > footer {
-
-        > ul.counters {
-          @include flex-ul;
-          @include justify-content(flex-end);
-
-          > li {
-            margin-right: 12px;
-
-            &:last-child {
-              margin-right: 0;
-            }
-
-            > span {
-              margin-right: 4px;
-            }
-
-            > i {
-              font-size: 15px;
-            }
-          }
-        }
+        font-size: 15px;
       }
 
     }

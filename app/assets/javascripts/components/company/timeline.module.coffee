@@ -57,15 +57,14 @@ Component = React.createClass
   # 
   getDefaultProps: ->
     cursor:
-      # pins: PinStore.cursor.items
       stories: StoryStore.cursor.items
       # posts_stories: PostsStoryStore.cursor.items
+      # pins: PinStore.cursor.items
     readOnly: true
 
   getInitialState: ->
     state = @getStateFromStores(@props)
     state.new_post_key = null
-    # state.anchorScrolled = false
     state.shouldDisplayStories = @shouldDisplayStories()
     state.story = @getCurrentStory()
     state
@@ -141,14 +140,8 @@ Component = React.createClass
     # PostStore.on('change', @refreshStateFromStores)
     # VisibilityStore.on('change', @refreshStateFromStores)
 
-  # componentDidUpdate: ->
-    # if (id = location.hash) && !@state.anchorScrolled && $(id).length > 0
-    #   $(document).scrollTop(parseInt($(id).offset().top) - 30)
-    #   @setState(anchorScrolled: true)
-
   # componentWillReceiveProps: (nextProps) ->
   #   @setState(@getStateFromStores(nextProps))
-
 
   componentWillUnmount: ->
     window.removeEventListener 'hashchange', @handleHashChange
@@ -211,6 +204,7 @@ Component = React.createClass
       { description }
     </header>
 
+  
   # Main render
   # 
   render: ->
