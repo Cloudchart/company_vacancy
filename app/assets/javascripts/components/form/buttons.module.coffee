@@ -7,26 +7,29 @@ joinClasses = (firstClass, secondClass) ->
 StandardButton = React.createClass
  
   propTypes:
-    iconClass: React.PropTypes.string
-    text:      React.PropTypes.string
+    iconClass:    React.PropTypes.string
+    text:         React.PropTypes.string
+    wrapChildren: React.PropTypes.bool
 
   getDefaultProps: ->
-    iconClass: ""
-    text:      null
+    iconClass:    ""
+    text:         null
+    wrapChildren: false
 
-  render: ->
+  renderChildren: ->
     children = []
     children.push @props.text if @props.text
     children.push <i key="icon" className="fa fa-fw #{@props.iconClass}"></i> if @props.iconClass.length > 0
 
+    if @props.wrapChildren then <div className="wrapper">{children}</div> else children
+
+  render: ->
     <button 
       className = { @props.className }
       disabled  = { @props.disabled }
       onClick   = { @props.onClick }
       type      = { @props.type }>
-      <div>
-        { children }
-      </div>
+      { @renderChildren() }
     </button>
 
 
@@ -84,9 +87,10 @@ SyncButton = React.createClass
 
   render: ->
     props = _.extend @props, 
-                    className: joinClasses(@props.className, "sync")
-                    iconClass: @state.iconClass
-                    text:      @state.text
+                    className:    joinClasses(@props.className, "sync")
+                    iconClass:    @state.iconClass
+                    text:         @state.text
+                    wrapChildren: true
 
     if @state.sync
       props = _.extend props,

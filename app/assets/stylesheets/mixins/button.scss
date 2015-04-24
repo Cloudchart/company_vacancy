@@ -131,9 +131,11 @@ a.cc {
     position: relative;
 
     > div {
+      @include align-items(center);
+      @include display(flex);
       @include position(absolute, 0px 0 0 0px);
 
-      line-height: 34px;
+      height: 100%;
       padding: 0 10px;
       width: auto;
     }
