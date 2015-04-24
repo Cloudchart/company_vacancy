@@ -15,7 +15,6 @@ PostsStoryStore     = require('stores/posts_story_store')
 PinStore            = require('stores/pin_store')
 UserStore           = require('stores/user_store.cursor')
 VisibilityStore     = require('stores/visibility_store')
-
 QuoteStore          = require('stores/quote_store')
 
 PostActions         = require('actions/post_actions')
@@ -36,26 +35,26 @@ FuzzyDate           = require('utils/fuzzy_date')
 #
 Component = React.createClass
 
+  displayName: "TimelinePostPreview"
+
+  propTypes:
+    story:        React.PropTypes.object
+    uuid:         React.PropTypes.string.isRequired
+    readOnly:     React.PropTypes.bool.isRequired
+
   mixins: [GlobalState.mixin]
 
   # Component Specifications
   #
-  displayName: "TimelinePostPreview"
-
-  propTypes:
-    onStoryClick: React.PropTypes.func
-    story_id:     React.PropTypes.string
-    uuid:         React.PropTypes.string.isRequired
-
   getDefaultProps: ->
     cursor:
-      pins:   PinStore.cursor.items
+      pins: PinStore.cursor.items
+      # posts_stories: PostsStoryStore.cursor.items
       quotes: QuoteStore.cursor.items
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
-    onStoryClick: ->
 
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores(@props))
+  # refreshStateFromStores: ->
+  #   @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
     blocks = _.chain BlockStore.all()
@@ -71,7 +70,7 @@ Component = React.createClass
     @getStateFromStores(@props)
 
   onGlobalStateChange: ->
-    @setState @getStateFromStores(@props)
+    @setState refreshed_at: + new Date
 
 
   # Helpers
@@ -89,14 +88,9 @@ Component = React.createClass
     if story.get('company_id') then storyContent else <strong>{ storyContent }</strong>
 
   postStoryMapper: (story, key) ->
-    onStoryClick = (event) => 
-      event.preventDefault()
-      event.stopPropagation()
-      @props.onStoryClick(story)
+    isCurrentStory = if @props.story then story.get('uuid') is @props.story.get('uuid') else false
 
-    isCurrent = story.get('uuid') == @props.story_id
-
-    <li key={key} className={ cx(current: isCurrent) } onClick={ onStoryClick }>
+    <li key={key} className={ cx(current: isCurrentStory) } onClick={ @handleStoryClick.bind(@, story) }>
       { @getStoryView(story) }
     </li>
 
@@ -161,7 +155,6 @@ Component = React.createClass
       </footer>
     </div>
 
-
   getQuote: (block) ->
     quote = QuoteStore.findByBlock(block.get("uuid"))
     return null unless quote
@@ -181,60 +174,83 @@ Component = React.createClass
     @state.visibility && @state.visibility.value == "only_me"
 
   isRelatedToStory: ->
-    return true unless @props.story_id
-    @getStoryIds().contains @props.story_id
+    return true unless @props.story
+    @getStoryIds().contains @props.story.get('uuid')
 
   isQuote: ->
     @state.blocks.length == 1 && @state.blocks[0].identity_type == "Quote"
 
   getStoryIds: ->
-    PostsStoryStore.cursor.items.deref(Immutable.Map())
-      .valueSeq()
-      .filter (posts_story) => posts_story.get('post_id') is @state.post.uuid
-      .map (posts_story) -> posts_story.get('story_id')
+    @state.post.story_ids
 
   getInsightsNumber: ->
     PinStore.filterInsightsForPost(@props.uuid).size
+
+
+  # temp and hacky solution to display updates
+  updateStoryIds: (action) ->
+    story_ids = switch action
+      when 'link'
+        @state.post.story_ids.concat(@props.story.get('uuid'))
+      when 'unlink'
+        @state.post.story_ids.filterNot((id) => id is @props.story.get('uuid'))
+    
+    PostStore.update(@state.post.uuid, story_ids: story_ids.toArray())
+    PostStore.emitChange()
+
+
+  isLoaded: ->
+    @state.post and @props.cursor.pins.deref(false) and @props.cursor.quotes.deref(false)
 
 
   # Handlers
   #
   handleLinkStoryClick: (event) ->
     if @isRelatedToStory()
-      id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id).get('uuid')
+      id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story.get('uuid')).get('uuid')
       PostsStoryStore.destroy(id)
+      @updateStoryIds('unlink')
     else
-      PostsStoryStore.create(@props.uuid, { story_id: @props.story_id })
-
+      PostsStoryStore.create(@props.uuid, { story_id: @props.story.get('uuid') })
+      @updateStoryIds('link')
 
   handleStarClick: (posts_story, event) ->
     is_highlighted = if posts_story.get('is_highlighted') then false else true
     PostsStoryStore.update(posts_story.get('uuid'), { is_highlighted: is_highlighted }, { optimistic: false })
 
+  handleStoryClick: (story) ->  
+    event.preventDefault()
+    event.stopPropagation()
+    $('html,body').animate({ scrollTop: $(".timeline").offset().top - 30 }, 'slow')
+
+    if @props.story is null or @props.story.get('uuid') != story.get('uuid')
+      location.hash = "story-#{story.get('name')}"
+
 
   # Lifecycle Methods
   #
-  componentDidMount: ->
-    BlockStore.on('change', @refreshStateFromStores)
-    PersonStore.on('change', @refreshStateFromStores)
-    PictureStore.on('change', @refreshStateFromStores)
-    ParagraphStore.on('change', @refreshStateFromStores)
+  # componentDidMount: ->
+  #   PostStore.on('change', @refreshStateFromStores)
+    # BlockStore.on('change', @refreshStateFromStores)
+    # PersonStore.on('change', @refreshStateFromStores)
+    # PictureStore.on('change', @refreshStateFromStores)
+    # ParagraphStore.on('change', @refreshStateFromStores)
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
 
-  componentWillUnmount: ->
-    BlockStore.off('change', @refreshStateFromStores)
-    PersonStore.off('change', @refreshStateFromStores)
-    PictureStore.off('change', @refreshStateFromStores)
-    ParagraphStore.off('change', @refreshStateFromStores)
+  # componentWillUnmount: ->
+  #   PostStore.off('change', @refreshStateFromStores)
+    # BlockStore.off('change', @refreshStateFromStores)
+    # PersonStore.off('change', @refreshStateFromStores)
+    # PictureStore.off('change', @refreshStateFromStores)
+    # ParagraphStore.off('change', @refreshStateFromStores)
 
 
   # Renderers
   #
   renderInsights: ->
-    return null if @isEpochType() || (@getInsightsNumber() == 0)
-    limit = 3
+    return null if @isEpochType() || !@isRelatedToStory() || (@getInsightsNumber() == 0)
 
     <section className="post-pins">
       <InsightTimelineList 
@@ -264,7 +280,7 @@ Component = React.createClass
     </div>
 
   renderLinkPostWithStoryItem: ->
-    return null unless @props.story_id
+    return null unless @props.story and !@props.readOnly
 
     classes = cx
       active: @isRelatedToStory()
@@ -275,8 +291,12 @@ Component = React.createClass
 
 
   renderStarPostForStoryItem: ->
-    return null unless @props.story_id
-    posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id)
+    # temporary disabled
+    return null
+    # 
+
+    return null unless @props.story
+    posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story.get('uuid'))
     return null unless posts_story
 
     classes = cx
@@ -325,15 +345,15 @@ Component = React.createClass
     </div>
 
   renderPost: ->
-    unless @isQuote()
-      [@renderHeader(),
-      @renderContent()]
-    else
+    if @isQuote()
       [@renderContent(),
       @renderHeader()]
+    else
+      [@renderHeader(),
+      @renderContent()]
 
   renderContent: ->
-    return null unless @state.blocks.length > 0
+    return null unless @state.blocks.length > 0 and @isRelatedToStory()
 
     items = @state.blocks.slice(0, 2).map (block) =>
       if block then @identityContentSwitcher(block) else null
@@ -350,12 +370,14 @@ Component = React.createClass
     <span className="read-more">More</span>
 
   renderFooter: ->
+    return null unless @isRelatedToStory()
+
     <footer>
       { @renderStories() }
     </footer>
 
   render: ->
-    return null unless @state.post
+    return null unless @isLoaded()
 
     article_classes = cx
       'preview': true

@@ -2,16 +2,12 @@
 
 # Imports
 #
-tag = React.DOM
 cx = React.addons.classSet
 
-CloudFlux       = require('cloud_flux')
 GlobalState     = require('global_state/state')
 
 CompanyStore    = require('stores/company')
 PostStore       = require('stores/post_store')
-
-CompanyActions  = require('actions/company')
 
 CompanyHeader   = require('components/company/header')
 Timeline        = require('components/company/timeline')
@@ -19,109 +15,48 @@ BlockEditor     = require('components/editor/block_editor')
 Settings        = require('components/company/settings')
 AccessRights    = require('components/company/access_rights')
 StandardButton  = require('components/form/buttons').StandardButton
+CompanyNav      = require('components/company/main_nav')
 
 # Main
 #
 Component = React.createClass
 
-  mixins: [GlobalState.mixin, CloudFlux.mixins.Actions]
+  # mixins: []
+  mixins: [GlobalState.mixin]
   # propTypes: {}
   displayName: 'Company app'
 
   getDefaultProps: ->
-    cursor: GlobalState.cursor(['meta', 'company'])
+    cursor:
+      companies_flags: GlobalState.cursor(['stores', 'companies', 'flags'])
 
   getInitialState: ->
-    currentTab = location.hash.substr(1) || null
+    canEdit: null
+    currentTab: null
+    isEditingAbout: false
+    isCompanyLoaded: false
+    postsLoaded: false
 
-    _.extend @getStateFromStores(),
-      cursor:
-        meta:                GlobalState.cursor(['stores', 'companies', 'meta', @props.uuid])
-        flags:               GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
-      currentTab:            currentTab
-      isEditingAbout:        false
-      isEditingSettings:     currentTab == "settings"
-      isAccessRightsLoading: false
-      postsLoaded:           false
-
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores())
-  
-  getStateFromStores: ->
-    company:   CompanyStore.get(@props.uuid)
-    posts:     PostStore.all()
+  onGlobalStateChange: ->
+    @setState canEdit: !@props.cursor.companies_flags.cursor(@props.uuid).get('is_read_only')
 
 
   # Helpers
   # 
   isLoaded: ->
-    !_.isUndefined(@state.cursor.flags.get('is_read_only')) && @state.company && @state.postsLoaded
-
-  getMenuOptionClassName: (option) ->
-    cx(active: @state.currentTab == option)
-
-  canEdit: ->
-    isReadOnly = @state.cursor.flags.get('is_read_only')
-
-    !_.isUndefined(isReadOnly) && !isReadOnly
-
-  getVisibleTabs: ->
-     Immutable.OrderedMap(
-      timeline:  !Timeline.isEmpty() || @canEdit()
-      about:     true
-      users:     @canEdit()
-      settings:  @canEdit()
-    ).filter (visible) -> visible
-     .keySeq()
-
-  getInitialTab: ->
-    visibleTabs = @getVisibleTabs()
-
-    if !@state.currentTab || !visibleTabs.contains(@state.currentTab)
-      visibleTabs.first()
-    else
-      @state.currentTab
-
-  updateInitialTab: ->
-    return null unless @isLoaded()
-
-    if (tab = @getInitialTab()) != @state.currentTab
-      @setState
-        currentTab:        tab
-        isEditingSettings: tab == 'settings'
-    else if @state.currentTab == 'users'
-      @fetchAccessRights()
-
-  isAccessRightsLoaded: ->
-    GlobalState.cursor(['flags', 'companies']).get('isAccessRightsLoaded')
-
-  getCloudFluxActions: ->
-    'company:access_rights:fetch:done': @handleAccessRightsDone
-
-  fetchAccessRights: ->
-    if !@isAccessRightsLoaded() && !@state.isAccessRightsLoading
-      @setState(isAccessRightsLoading: true)
-      CompanyActions.fetchAccessRights(@props.uuid)
+    @state.canEdit isnt null and @state.isCompanyLoaded and @state.postsLoaded
 
 
   # Handlers
   # 
-  handleHashChange: ->
-    currentTab = location.hash.substr(1)
-
-    if @getVisibleTabs().contains(currentTab)
-      if currentTab == 'users' && !@isAccessRightsLoaded()
-        @fetchAccessRights()
-      @setState
-        currentTab:        currentTab
-        isEditingSettings: currentTab == 'settings' 
-
   handleAboutViewModeChange: (value) ->
     @setState(isEditingAbout: value == 'edit')
 
-  handleAccessRightsDone: -> 
-    setTimeout =>
-      @setState(isAccessRightsLoading: false)
+  handleNavChange: (currentTab) ->
+    @setState currentTab: currentTab
+
+  handleCompanyLoaded: ->
+    @setState isCompanyLoaded: true
 
   handlePostsLoaded: ->
     @setState postsLoaded: true
@@ -130,40 +65,18 @@ Component = React.createClass
   # Lifecylce Methods
   # 
   componentDidMount: ->
-    CompanyStore.on('change', @refreshStateFromStores)
+    CompanyStore.on('change', @handleCompanyLoaded)
     PostStore.on('change', @handlePostsLoaded)
-    window.addEventListener 'hashchange', @handleHashChange
-
-    @updateInitialTab()
-
-  componentDidUpdate: ->
-    @updateInitialTab()
 
   componentWillUnmount: ->
-    CompanyStore.off('change', @refreshStateFromStores)
+    CompanyStore.off('change', @handleCompanyLoaded)
     PostStore.off('change', @handlePostsLoaded)
-
-    window.removeEventListener 'hashchange', @handleHashChange
 
 
   # Renderers
   #
-  renderTabs: ->
-    @getVisibleTabs().map (tabName) =>
-      <li key = { tabName } className = { @getMenuOptionClassName(tabName) } >
-        <a href = { location.pathname + "#" + tabName } className="for-group">
-          { tabName }
-        </a>
-      </li>
-    .toArray()
-
-  renderAccessRights: ->
-    return null unless @isAccessRightsLoaded()
-    
-    <AccessRights uuid={@props.uuid} />
-
   renderEditControl: ->
-    return null unless @canEdit()
+    return null unless @state.canEdit
 
     if @state.isEditingAbout
       <StandardButton 
@@ -179,24 +92,18 @@ Component = React.createClass
   renderOkButton: ->
     return null unless @state.isEditingAbout
 
-    <StandardButton 
+    <StandardButton
       className = "cc"
       onClick   = { => @handleAboutViewModeChange("view") }
       text      = "OK" />
 
-  renderMenu: ->
-    <nav className="tabs">
-      <ul>
-        { @renderTabs() }
-      </ul>
-    </nav>
 
   renderContent: ->
     switch @state.currentTab
       when 'timeline'
         <Timeline 
-          company_id = { @state.company.uuid }
-          readOnly   = { !@canEdit() } />
+          company_id = { @props.uuid }
+          readOnly = { !@state.canEdit } />
       when 'about'
         <section className="about">
           <BlockEditor
@@ -210,24 +117,32 @@ Component = React.createClass
           { @renderOkButton() }
         </section>
       when 'users'
-        @renderAccessRights()
+        <AccessRights uuid = { @props.uuid } />
       when 'settings'
         <Settings uuid = { @props.uuid } />
+      else
+        null
 
 
   render: ->
-    return null unless @state.company
+    return null unless @isLoaded()
 
     <div className="wrapper">
       <CompanyHeader
-        uuid                  = { @props.uuid }
-        readOnly              = { !@state.isEditingSettings }
+        uuid = { @props.uuid }
+        readOnly = { @state.currentTab isnt 'settings' }
       />
-      { @renderMenu() }
+
+      <CompanyNav 
+        onChange = { @handleNavChange }
+        canEdit = { @state.canEdit }
+      />
+
       <section className="content">
         { @renderContent() }
       </section>
     </div>
+
 
 # Exports
 #

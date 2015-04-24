@@ -21,25 +21,10 @@ Dispatcher = require('dispatcher/dispatcher')
   PinStore        = require('stores/pin_store')
   GlobalState     = require('global_state/state')
 
-  # Fetch company with dependencies
+  # Mount company
   #
-  require('sync/company').fetch(data.id).done (json) ->
-    Dispatcher.handleServerAction
-      type: 'company:fetch:done'
-      data: [data.id, json]
-
-    _.each {
-      blocks:     BlockStore
-      pictures:   PictureStore
-      paragraphs: ParagraphStore
-      people:     PersonStore
-      vacancies:  VacancyStore
-      # tags:       TagStore # Updated by dispatcher
-    }, (store, key) ->
-      _.each json[key], (item) -> store.add(item.uuid, item)
-
-    CompanyStore.add(json.company.uuid, json.company)
-    CompanyStore.emitChange()
+  Company = require('components/company_app')
+  React.renderComponent(Company({ uuid: data.id }), document.querySelector('body > main'))
 
   # Fetch all posts with dependencies
   #
@@ -60,10 +45,25 @@ Dispatcher = require('dispatcher/dispatcher')
 
     PostStore.emitChange()
 
-  # Mount company
+  # Fetch company with dependencies
   #
-  Company = require('components/company_app')
-  React.renderComponent(Company({ uuid: data.id }), document.querySelector('body > main'))
+  require('sync/company').fetch(data.id).done (json) ->
+    Dispatcher.handleServerAction
+      type: 'company:fetch:done'
+      data: [data.id, json]
+
+    _.each {
+      blocks:     BlockStore
+      pictures:   PictureStore
+      paragraphs: ParagraphStore
+      people:     PersonStore
+      vacancies:  VacancyStore
+      # tags:       TagStore # Updated by dispatcher
+    }, (store, key) ->
+      _.each json[key], (item) -> store.add(item.uuid, item)
+
+    CompanyStore.add(json.company.uuid, json.company)
+    CompanyStore.emitChange()
 
 # Finance
 #

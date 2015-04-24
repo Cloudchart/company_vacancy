@@ -5,12 +5,7 @@ class StoriesController < ApplicationController
   authorize_resource
 
   def index
-    respond_to do |format|
-      format.html { 
-        @company = Company.find(params[:company_id])
-        pagescript_params(company_id: @company.id)
-      }
-      
+    respond_to do |format|      
       format.json { 
         @company = find_company(Company.includes(posts: [:stories, :pins])) 
       }
@@ -40,7 +35,7 @@ class StoriesController < ApplicationController
   def update
     if @story.update(story_params)
       respond_to do |format|
-        format.json { render json: @story, root: :story }
+        format.json { render json: { id: @story.id } }
       end
     else
       respond_to do |format|

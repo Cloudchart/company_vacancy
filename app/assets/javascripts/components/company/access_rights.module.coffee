@@ -10,6 +10,8 @@ RoleStore  = require('stores/role_store')
 UserStore = require('stores/user_store')
 TokenStore = require('stores/token_store')
 
+CompanyActions  = require('actions/company')
+
 CompanyInviteUserForm = require('components/company/access_rights/invite_user_form')
 CompanyUsersList = require('components/company/access_rights/users_list')
 
@@ -33,11 +35,15 @@ Component = React.createClass
 
   getCloudFluxActions: ->
     'token:create:done': @handleTokenCreateDone
+    'company:access_rights:fetch:done': @handleAccessRightsDone
 
   # Handlers
   # 
   handleTokenCreateDone: ->
     @setState({ mode: Modes.VIEW })
+
+  handleAccessRightsDone: -> 
+    @setState isAccessRightsLoaded: true
 
   onInviteUserButtonClick: (event) ->
     @setState
@@ -50,6 +56,14 @@ Component = React.createClass
 
   # Lifecylce Methods
   # 
+  componentWillMount: ->
+    isAccessRightsLoaded = !!GlobalState.cursor(['flags', 'companies']).get('isAccessRightsLoaded')
+
+    if isAccessRightsLoaded
+      @setState isAccessRightsLoaded: isAccessRightsLoaded
+    else
+      CompanyActions.fetchAccessRights(@props.uuid)
+
   componentDidMount: ->
     CompanyStore.on('change', @refreshStateFromStores)
     RoleStore.on('change', @refreshStateFromStores)
@@ -74,12 +88,13 @@ Component = React.createClass
     state = @getStateFromStores()
     state.newTokenKey = null
     state.mode = Modes.VIEW
+    state.isAccessRightsLoaded = false
     state.cursor = 
       constants: GlobalState.cursor(['constants', 'companies'])
     state
 
   render: ->
-    return null unless @state.company
+    return null unless @state.company && @state.isAccessRightsLoaded
 
     <div className="access-rights">
       {

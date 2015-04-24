@@ -9,13 +9,6 @@ class PostsController < ApplicationController
 
   def index
     respond_to do |format|
-      format.html {
-        pagescript_params(
-          company_id: @company.id,
-          story_id: Story.cc_plus_company(@company.id).find_by(name: params[:story_name]).try(:id)
-        )
-      }
-
       format.json
     end
   end

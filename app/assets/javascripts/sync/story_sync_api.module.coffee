@@ -8,17 +8,6 @@ cachedPromises = {}
 module.exports =
   
 
-  fetchAllByCompany: (company_id, options = {}) ->
-    url = '/companies/' + company_id + '/stories'
-
-    delete cachedPromises[url] if options.force == true
-    
-    cachedPromises[url] ||= Promise.resolve $.ajax
-      url: url
-      type: 'GET'
-      dataType: 'json'
-  
-  
   fetchOne: (id, params = {}, options = {}) ->
     url = '/stories/' + id
     
@@ -39,20 +28,10 @@ module.exports =
       data:
         story: attributes
 
-  # create: (company_id, attributes, done, fail) ->
-  #   $.ajax
-  #     url: "/companies/#{company_id}/stories"
-  #     type: "POST"
-  #     dataType: "json"
-  #     data:
-  #       story: attributes
-  #   .done done
-  #   .fail fail
 
-
-  update: (id, attributes) ->
+  update: (item, attributes) ->
     Promise.resolve $.ajax
-      url: "/stories/#{id}"
+      url: "/stories/#{item.get('uuid')}"
       type: 'PATCH'
       dataType: 'json'
       data:

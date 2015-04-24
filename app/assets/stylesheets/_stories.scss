@@ -1,8 +1,8 @@
-main.stories > div.wrapper {
+main.company .stories {
   margin: 0 auto;
-  width: 800px;
+  width: 1024px;
 
-  ul.stories-list {
+  ul.stories.list {
     @include flex-ul;
     @include display(flex);
     @include flex-wrap(wrap);
@@ -12,11 +12,11 @@ main.stories > div.wrapper {
       @include flex-direction(column);
 
       background-color: white;
-      border: 2px solid hsl(0, 0%, 96%);
+      border: 1px solid hsl(0, 0%, 96%);
       margin: 0 20px 20px 0;
       padding: 20px;
       cursor: pointer;
-      width: 380px;
+      width: 320px;
       height: 190px;
 
       > header {
@@ -38,27 +38,7 @@ main.stories > div.wrapper {
       }
 
       > footer {
-
-        > ul.counters {
-          @include flex-ul;
-          @include justify-content(flex-end);
-
-          > li {
-            margin-right: 12px;
-
-            &:last-child {
-              margin-right: 0;
-            }
-
-            > span {
-              margin-right: 4px;
-            }
-
-            > i {
-              font-size: 15px;
-            }
-          }
-        }
+        font-size: 15px;
       }
 
     }
