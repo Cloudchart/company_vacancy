@@ -108,25 +108,21 @@ module.exports  = React.createClass
     UserSyncApi.update(@cursor.user, @state.attributes.toJSON()).then @handleSubmitDone, @handleSubmitFail
 
   handleSubmitDone: ->
-    setTimeout =>
-      @fetch(force: true)
+    @fetch(force: true)
 
-      @setState
-        isSyncing:   false
-        formUpdated: false
-        statusIcon:  'fa fa-check'
-        submitText:  'Updated'
-    , 500
+    @setState
+      isSyncing:   false
+      formUpdated: false
+      statusIcon:  'fa fa-check'
+      submitText:  'Updated'
 
   handleSubmitFail: (reason) ->
-    setTimeout =>
-      @setState
-        errors:      Immutable.Map(reason.responseJSON.errors)
-        formUpdated: false
-        statusIcon:  'fa fa-times'
-        isSyncing:   false
-        submitText:  'Update failed'
-    , 500
+    @setState
+      errors:      Immutable.Map(reason.responseJSON.errors)
+      formUpdated: false
+      statusIcon:  'fa fa-times'
+      isSyncing:   false
+      submitText:  'Update failed'
 
   # Lifecycle methods
   #

@@ -34,10 +34,12 @@ SyncButton = React.createClass
  
   propTypes:
     sync:              React.PropTypes.bool
+    syncDelay:         React.PropTypes.number
     syncIconClass:     React.PropTypes.string
 
   getDefaultProps: ->
     sync:            false
+    syncDelay:       500
     syncIconClass:   "fa-spinner"
 
   getInitialState: ->
@@ -46,27 +48,54 @@ SyncButton = React.createClass
     text:        @props.text
 
 
+  # Helpers
+  #
   updateWidth: ->
     @getDOMNode().style.width = getComputedStyle(@getDOMNode().childNodes[0]).width
+
 
   # Lifecycle methods
   #
   componentDidMount: ->
+    @isAnimating = false
+    @nextState   = {}
+
     @updateWidth()
+
+  componentWillReceiveProps: (nextProps) ->
+    nextState = _.pick nextProps, ["iconClass", "sync", "text"]
+
+    if @isAnimating
+      @nextState = _.extend @nextState, nextState
+    else
+      @setState nextState
+
+      if nextProps.sync && nextProps.sync != @props.sync
+        @isAnimating = true
+
+        setTimeout =>
+          @isAnimating = false
+          @setState @nextState
+        , @props.syncDelay
 
   componentDidUpdate: ->
     @updateWidth()
 
-  render: ->
-    props = _.extend @props, className: joinClasses(@props.className, "sync")
 
-    if @props.sync
+  render: ->
+    props = _.extend @props, 
+                    className: joinClasses(@props.className, "sync")
+                    iconClass: @state.iconClass
+                    text:      @state.text
+
+    if @state.sync
       props = _.extend props,
                 className: joinClasses(@props.className, "syncing sync")
                 disabled:  true
                 iconClass: joinClasses(@props.syncIconClass, "fa-spin")
 
     StandardButton(props)
+
 
 CancelButton = React.createClass
 
