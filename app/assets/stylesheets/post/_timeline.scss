@@ -105,6 +105,10 @@
       width: 100%;
 
       > .content {
+        @include align-items(center);
+        @include display(flex);
+        @include flex-direction(column);
+
         > * {
           padding-bottom: $inner-margin-size;
         }

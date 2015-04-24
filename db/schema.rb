@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150416152851) do
+ActiveRecord::Schema.define(version: 20150424130212) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -304,6 +304,7 @@ ActiveRecord::Schema.define(version: 20150416152851) do
     t.string   "image_uid"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "size",                  default: 0
   end
 
   add_index "pictures", ["owner_id", "owner_type"], name: "index_pictures_on_owner_id_and_owner_type", using: :btree

@@ -129,7 +129,7 @@ Component = React.createClass
     picture = PictureStore.find (picture) -> picture.owner_id is block.uuid
     return null unless picture
 
-    <img className="cover" src={picture.url}/>
+    <img className={ "cover #{picture.size}" } src={picture.url}/>
 
   getBlockPerson: (block) ->
     person_id = block.identity_ids.toJS()[0]

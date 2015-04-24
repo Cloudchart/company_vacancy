@@ -9,10 +9,9 @@ PictureActions  = require('actions/picture_actions')
 PictureStore    = require('stores/picture_store')
 
 ImageInput      = require('components/form/image_input')
+StandardButton  = require('components/form/buttons').StandardButton
 
 
-# Placeholder
-#
 Placeholder = (title) ->
   <div className="placeholder">
     <div className="content">
@@ -32,59 +31,74 @@ Placeholder = (title) ->
     </div>
   </div>
 
+sizeMapper =
+  big:    "small"
+  small:  "medium"
+  medium: "big"
 
-# Main
-#
 Component = React.createClass
+
+  displayName: "Picture"
 
   statics:
     isEmpty: (block_id) ->
       !PictureStore.find (item) => item.uuid and item.owner_id == block_id and item.owner_type == 'Block'
 
-  onChange: (file) ->
+  getInitialState: ->
+    @getStateFromStores()
+    
+  getStateFromStores: ->
+    picture: PictureStore.find (item) => item.owner_id == @props.uuid and item.owner_type == 'Block'
+  
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores())
+
+
+  # Helpers
+  #
+  getClass: ->
+    "picture-wrapper " + (if @state.picture then @state.picture.size else "big")
+
+  getResizerIcon: ->
+    if @state.picture.size == "big" then "fa fa-compress" else "fa fa-expand"
+ 
+
+  # Handlers
+  #
+  handleChange: (file) ->
     if @state.picture
       PictureActions.update(@state.picture.uuid, { image: file })
     else
       PictureActions.create(@props.uuid, { image: file })
 
+  handleResize: (event) ->
+    return if @props.readOnly
+    event.preventDefault()
+    event.stopPropagation()
 
-  onDelete: ->
-    PictureActions.destroy(@state.picture.uuid)
-  
-  
-  onError: ->
-    console.log 'Error'
-  
-    
-  getStateFromStores: ->
-    picture: PictureStore.find (item) => item.owner_id == @props.uuid and item.owner_type == 'Block'
-  
-  
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores())
-  
-  
+    PictureActions.update(@state.picture.uuid, { size: sizeMapper[@state.picture.size] })
+
+
+  # Lifecycle methods
+  #
   componentDidMount: ->
     PictureStore.on('change', @refreshStateFromStores)
-  
   
   componentWillUnmount: ->
     PictureStore.off('change', @refreshStateFromStores)
 
 
-  getInitialState: ->
-    @getStateFromStores()
-
-
-  render: ->        
-    <ImageInput
-      src={@state.picture.url if @state.picture}
-      onChange={@onChange}
-      onDelete={@onDelete}
-      onError={@onError}
-      readOnly={@props.readOnly} 
-      placeholder={<Placeholder />}
-    />
+  render: ->
+    <div
+      className={ @getClass() }
+      onClick   = { @handleResize }>
+      <ImageInput
+        src         = { @state.picture.url if @state.picture }
+        size        = { @state.picture.size if @state.picture }
+        onChange    = { @handleChange }
+        readOnly    = { @props.readOnly } 
+        placeholder = { <Placeholder /> } />
+    </div>
 
 
 # Exports

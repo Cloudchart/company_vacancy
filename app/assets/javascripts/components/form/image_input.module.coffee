@@ -1,62 +1,63 @@
-# Imports
-#
-tag = React.DOM
+# @cjsx React.DOM
 
 
 # Main
 #
-Component = React.createClass
+module.exports = React.createClass
 
+  displayName: "ImageInput"
+
+  propTypes:
+    onChange:    React.PropTypes.func
+    onError:     React.PropTypes.func
+    placeholder: React.PropTypes.component
+    readOnly:    React.PropTypes.bool
+    src:         React.PropTypes.string
+
+  getDefaultProps: ->
+    onChange:  ->
+    onError:   ->
+    readOnly:  true
   
-  onChange: (event) ->
+  handleChange: (event) ->
     file  = event.target.files[0] ; return unless file
     image = new Image
 
     image.addEventListener 'load', =>
-      @props.onChange(file) if _.isFunction(@props.onChange)
+      @props.onChange(file)
       URL.revokeObjectURL(image.src)
     
     image.addEventListener 'error', =>
-      @props.onError() if _.isFunction(@props.onError)
+      @props.onError()
       URL.revokeObjectURL(image.src)
 
     image.src = URL.createObjectURL(file)
 
 
+  # Renderers
+  #
+  renderInput: ->
+    return null if @props.readOnly
+
+    <input
+      type     =   'file'
+      onChange =   { @handleChange } 
+      value    =   '' />
+
+  renderImage: ->
+    if @props.src
+      @transferPropsTo(<img />)
+    else
+      @props.placeholder
+
+
   render: ->
-    (tag.div {
-      className: 'image-input'
-    },
-
-      (tag.label {
-      },
-        (tag.input {
-          type:       'file'
-          onChange:   @onChange
-          value:      ''
-        }) unless @props.readOnly
-
-        @props.placeholder unless @props.src
-      
-        @transferPropsTo((tag.img {})) if @props.src
-
-      )
-      
-      # (tag.i {
-      #   className:  'fa fa-times remove'
-      #   onClick:    @props.onDelete
-      # }) if @props.src unless @props.readOnly
-
-      # (tag.button {
-      #   className:  'delete'
-      #   onClick:    @props.onDelete
-      #   type:       'button'
-      # },
-      #   (tag.i { className: 'fa fa-times' })
-      # ) if @props.src unless @props.readOnly
-    )
-
-
-# Exports
-#
-module.exports = Component
+    if @props.readOnly
+      @renderImage()
+    else
+      <div className = 'image-input'>
+        <label>
+          { @renderInput() }
+          { @renderImage() }
+        </label>
+      </div>
