@@ -3,6 +3,7 @@ Dispatcher = require('dispatcher/dispatcher')
 # Show
 #
 @['companies#show'] = (data) ->
+  return null unless data.id
 
   CompanyStore    = require('stores/company')
   PostStore       = require('stores/post_store')
