@@ -31,7 +31,6 @@ module.exports  = React.createClass
         """
           User {
             roles,
-            followers,
             pins,
             owned_companies
           }
@@ -84,16 +83,7 @@ module.exports  = React.createClass
     count = CompanyStore.filterForUser(@props.uuid).size
 
     if count > 0
-      pluralize(count, 'company', 'companies')
-
-  getFollowersCount: ->
-    count = FavoriteStore.filter (favorite) => 
-      favorite.get('favoritable_id') == @props.uuid &&
-      favorite.get('favoritable_type') == 'User'
-    .size
-
-    if count > 0
-      pluralize(count, 'follower', 'followers')    
+      pluralize(count, 'company', 'companies')  
 
   update: (attributes) ->
     UserSyncApi.update(@cursor.user, @state.attributes.toJSON()).then @handleSubmitDone, @handleSubmitFail
@@ -136,7 +126,6 @@ module.exports  = React.createClass
 
     if companiesCount = @getCompaniesCount() then counters.push(companiesCount)
     if insightsCount = @getInsightsCount() then counters.push(insightsCount)
-    if followersCount = @getFollowersCount() then counters.push(followersCount)
 
     <div className="stats">{ counters.join(', ') }</div>
 
