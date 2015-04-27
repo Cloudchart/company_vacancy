@@ -29,10 +29,18 @@
 
     > .featured-insights {
       @include flex(1);
+
+      margin-bottom: $gutter-size;
     }
 
-    > .companies-list {
-      margin-top: $inner-margin-size;
+    > section > header {
+      font-size: $huge-font-size;
+      font-weight: 300;
+      margin-left: $gutter-size;
+    }
+
+    > section > .companies-list {
+      margin-top: $gutter-size/2;
     }
     
     > footer {

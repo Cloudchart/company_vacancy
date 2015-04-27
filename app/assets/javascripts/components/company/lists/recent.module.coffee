@@ -56,7 +56,10 @@ UserCompanies = React.createClass
   render: ->
     return null unless @state.isLoaded
 
-    <CompanyList companies = { @getCompanies() } />
+    <section>
+      <header>Featured Companies</header>
+      <CompanyList companies = { @getCompanies() } />
+    </section>
 
 
 module.exports = UserCompanies
