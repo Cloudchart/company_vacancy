@@ -13,7 +13,7 @@ Cloudchart::Application.routes.draw do
   #
   match '/404', to: 'errors#not_found', via: [:get, :post]
   match '/500', to: 'errors#internal_error', via: :all
-  match '/old', to: 'errors#old_browsers', via: [:get], as: :old_browsers
+  match '/old', to: 'welcome#old_browsers', via: [:get], as: :old_browsers
 
   # Engines
   #

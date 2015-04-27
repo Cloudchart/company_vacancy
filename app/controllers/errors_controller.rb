@@ -6,8 +6,4 @@ class ErrorsController < ApplicationController
   def internal_error
     render status: 500, layout: (user_authenticated? ? 'application' : 'guest')
   end
-
-  def old_browsers
-    render layout: "old_browsers"
-  end
 end
