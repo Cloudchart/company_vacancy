@@ -15,7 +15,7 @@ module.exports = React.createClass
     text:    React.PropTypes.string
     onClose: React.PropTypes.func
 
-  geDefaultProps: ->
+  getDefaultProps: ->
     text:    ""
     onClose: -> ModalStack.hide()
 
@@ -25,5 +25,6 @@ module.exports = React.createClass
       <StandardButton 
         className  = "close-button transparent"
         onClick    = { @props.onClose }
+        type       = "button"
         iconClass  = "cc-icon cc-times" />
     </header>
