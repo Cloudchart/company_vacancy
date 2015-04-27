@@ -4,6 +4,6 @@ class WelcomeController < ApplicationController
   end
 
   def old_browsers
-    render layout: "old_browsers"
+    render layout: 'old_browsers'
   end
 end

@@ -3,17 +3,11 @@ Cloudchart::Application.routes.draw do
   #
   root to: 'welcome#index'
 
-
-  # Sandbox
-  #
-  match '/sandbox', to: 'sandbox#index', via: [:get] if Rails.env.development?
-
-
   # Errors
   #
   match '/404', to: 'errors#not_found', via: [:get, :post]
+  match '/422', to: 'errors#unprocessable_entity', via: :all
   match '/500', to: 'errors#internal_error', via: :all
-  match '/old', to: 'welcome#old_browsers', via: [:get], as: :old_browsers
 
   # Engines
   #
@@ -126,8 +120,10 @@ Cloudchart::Application.routes.draw do
   # Custom
   #
   get '/insights', to: "pins#index"
+  delete '/logout', to: 'cloud_profile/authentications#destroy', as: :logout
+  get '/old', to: 'welcome#old_browsers', as: :old_browsers
+  match '/sandbox', to: 'sandbox#index', via: [:get] if Rails.env.development?
   get ':id', to: 'pages#show', as: :page
-  delete 'logout', to: 'cloud_profile/authentications#destroy', as: 'logout'
 
   # Twitter OAuth
   #

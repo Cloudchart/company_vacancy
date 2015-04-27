@@ -9,10 +9,9 @@ class ApplicationController < ActionController::Base
   before_filter :store_location
 
   rescue_from CanCan::AccessDenied do |exception|
-    if request.env['HTTP_REFERER'].present?
-      redirect_to :back, alert: exception.message
-    else
-      redirect_to main_app.root_path, alert: exception.message
+    respond_to do |format|
+      format.html { redirect_to main_app.root_path, alert: exception.message }
+      format.json { render json: { message: exception.message }, status: 404 }
     end
   end
   
@@ -39,17 +38,14 @@ private
   def check_browser
     user_agent = UserAgent.parse(request.user_agent)
 
-    if "#{controller_name}##{action_name}" != 'errors#old_browsers' && 
-        cookies[:agree_to_browse].nil? && 
+    if request.path != main_app.old_browsers_path && cookies[:agree_to_browse].nil? && 
         Cloudchart::BROWSERS_WHITELIST.detect { |browser| user_agent < browser }
-      redirect_to old_browsers_path
+      redirect_to main_app.old_browsers_path
     end
   end
 
   def store_location
-    return if user_authenticated? || !request.get? || request.xhr? ||
-      "#{controller_name}##{action_name}" =~ /authentications#new|users#new|passwords#reset|errors#old_browsers/
-
+    return if user_authenticated? || !request.get? || request.xhr? || main_app.old_browsers_path
     session[:previous_path] = request.fullpath
   end
   

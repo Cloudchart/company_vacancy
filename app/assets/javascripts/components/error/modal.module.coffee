@@ -24,7 +24,7 @@ module.exports = React.createClass
         <p>{ @props.message }</p>
         <figure />
         <button className="cc" onClick = { @props.onClick }>
-          Sure thing
+          Okay
         </button>
       </section>
     </article>
