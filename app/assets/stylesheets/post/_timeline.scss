@@ -36,10 +36,6 @@
   }
 
   > .timeline.posts {
-    @include display(flex);
-    @include flex-direction(column);
-    @include align-items(center);
-
     min-height: 268px;
     padding: $default-margin-size/2;
     position: relative;

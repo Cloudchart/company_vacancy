@@ -47,6 +47,8 @@
   
   .image-input {
     position: relative;
+
+    width: 100%;
   }
   
   img {
@@ -74,10 +76,14 @@
 .editor .picture img.small,
 .post.preview img.cover.small {
   @include has-columns(4);
+
+  margin: 0 auto;
 }
 
 .editor .picture .picture-wrapper.medium img,
 .editor .picture img.medium,
 .post.preview img.cover.medium {
   @include has-columns(6);
+
+  margin: 0 auto;
 }

@@ -72,11 +72,13 @@ Component = React.createClass
       PictureActions.create(@props.uuid, { image: file })
 
   handleResize: (event) ->
-    return if @props.readOnly
+    return if @props.readOnly || !@state.picture.uuid
+    
     event.preventDefault()
     event.stopPropagation()
 
     PictureActions.update(@state.picture.uuid, { size: sizeMapper[@state.picture.size] })
+
 
 
   # Lifecycle methods
@@ -88,16 +90,20 @@ Component = React.createClass
     PictureStore.off('change', @refreshStateFromStores)
 
 
-  render: ->
-    <div
-      className={ @getClass() }
-      onClick   = { @handleResize }>
+  renderImage: ->
+    if @state.picture || @props.readOnly
+      <img src = { @state.picture.url } />
+    else
       <ImageInput
-        src         = { @state.picture.url if @state.picture }
-        size        = { @state.picture.size if @state.picture }
         onChange    = { @handleChange }
         readOnly    = { @props.readOnly } 
         placeholder = { <Placeholder /> } />
+
+
+  render: ->
+    <div className = { @getClass() }
+         onClick   = { @handleResize }>
+      { @renderImage() }
     </div>
 
 
