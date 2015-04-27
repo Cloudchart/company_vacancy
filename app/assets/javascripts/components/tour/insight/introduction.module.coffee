@@ -18,4 +18,5 @@ module.exports = React.createClass
         Looks like you're about to add your first insight. 
         It's a short actionable comment that you add to posts when saving them to your board.
       </p>
+      <div className="pin-form-placeholder"></div>
     </article>

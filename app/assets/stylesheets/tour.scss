@@ -163,23 +163,6 @@
   padding: 50px;
   position: relative;
 
-  > .close {
-    @include align-items(center);
-    @include display(flex);
-    @include justify-content(center);
-    @include position(absolute, 20px 20px 0 0);
-
-    color: $accented-red-color;
-    height: 20px;
-    width: 20px;
-    font-size: 48px;
-
-    > .cc-icon {
-      position: relative;
-      top: -10px;
-    }
-  }
-
   > .equation {
     @include align-items(center);
     @include display(flex);
@@ -232,6 +215,24 @@
         border-color: $accented-red-color;
       }
     }
+  }
+}
+
+@mixin tour-insight-introduction {
+  > .pin-form-placeholder {
+    background: image_url('tour/pin-form.png') center center no-repeat;
+    background-size: cover;
+    height: 450px;
+    width: 462px;
+  }
+}
+
+@mixin tour-insight-list {
+  > .insight-list-placeholder {
+    background: image_url('tour/insight-list.png') center center no-repeat;
+    background-size: cover;
+    height: 387px;
+    width: 750px;
   }
 }
 
@@ -343,6 +344,7 @@
       }
 
       &.tour-insight-introduction {
+        @include tour-insight-introduction();
       }
 
       &.tour-insight-lesson {
@@ -350,6 +352,7 @@
       }
 
       &.tour-insight-list {
+        @include tour-insight-list();
       }
 
       > p, > div {
@@ -363,7 +366,27 @@
         font-size: $large-font-size;
         font-weight: 300;
         height: 55px;
-        padding: 0 40px;
+
+        > .wrapper {
+          padding: 0 40px;
+        }
+      }
+
+      > .close {
+        @include align-items(center);
+        @include display(flex);
+        @include justify-content(center);
+        @include position(absolute, 20px 20px 0 0);
+
+        color: $accented-red-color;
+        height: 20px;
+        width: 20px;
+        font-size: 48px;
+
+        > .cc-icon {
+          position: relative;
+          top: -10px;
+        }
       }
     }
   }

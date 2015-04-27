@@ -209,7 +209,7 @@ private
   end
 
   def create_tour_token
-    tokens.build(name: :tour).save!
+    tokens.build(name: :welcome_tour).save!
   end
 
   # def build_blank_emails

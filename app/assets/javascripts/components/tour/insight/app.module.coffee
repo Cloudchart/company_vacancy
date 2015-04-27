@@ -1,4 +1,5 @@
 # @cjsx React.DOM
+UserStore         = require('stores/user_store.cursor')
 
 TourIntroduction  = require('components/tour/insight/introduction')
 TourLesson        = require('components/tour/insight/lesson')
@@ -30,6 +31,9 @@ module.exports = React.createClass
 
   # Lifecycle methods
   #
+  componentWillMount: ->
+    @cursor = UserStore.me()
+
   componentDidMount: ->
     window.addEventListener('keydown', @handleNavigationButtons)
 
@@ -44,7 +48,7 @@ module.exports = React.createClass
       <section className="tour-wrapper">
         <TourIntroduction active = { @state.position == 0 } />
         <TourLesson       active = { @state.position == 1 } />
-        <TourList         active = { @state.position == 2 } />
+        <TourList         active = { @state.position == 2 } user = { @cursor } />
       </section>
       { @renderPrevButton() }
       { @renderNextButton() }
