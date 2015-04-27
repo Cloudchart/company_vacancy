@@ -122,7 +122,7 @@ Cloudchart::Application.routes.draw do
   get '/insights', to: "pins#index"
   delete '/logout', to: 'cloud_profile/authentications#destroy', as: :logout
   get '/old', to: 'welcome#old_browsers', as: :old_browsers
-  match '/sandbox', to: 'sandbox#index', via: [:get] if Rails.env.development?
+  get '/sandbox', to: 'sandbox#index' if Rails.env.development?
   get ':id', to: 'pages#show', as: :page
 
   # Twitter OAuth
