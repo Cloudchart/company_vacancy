@@ -79,7 +79,7 @@ module.exports = React.createClass
   render: ->
     <article className={ "tour-companies " + @props.className }>
       <p>
-        Learn from unicorns. Follow companies you're interested in to get their updates and watch them grow.
+        Discover how successful startups have grown. Follow companies you're interested in to get their updates and insights.
       </p>
       <ReactCSSTransitionGroup component={ React.DOM.section } className="companies-list" transitionName="company">
         { @renderCompanies() }

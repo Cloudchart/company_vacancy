@@ -18,10 +18,10 @@ module.exports = React.createClass
           Cloud<b>Chart</b>
         </div>
         <h1>Learn from unicorns</h1>
-        <h2>Discover how successfull startups have grown</h2>
+        <h2>Discover the insights on how successful startups have grown</h2>
       </header>
       <p>
-        Hello, <strong>{ @props.user.get('first_name') },</strong><br/> and welcome to CloudChart. Use it as your educational tool  to learn from unicorns: follow their companies' timelines, collect valuable insights by successful entrepreneurs, investors, and experts, and put them to action.
+        Hello, <strong>{ @props.user.get('first_name') },</strong><br/> and welcome to CloudChart. Use it to grow your business: follow unicorns' timelines, collect valuable insights by successful entrepreneurs, investors, and experts.
       </p>
       <button className="cc" onClick = { @props.onNext }>
         Start Learning
