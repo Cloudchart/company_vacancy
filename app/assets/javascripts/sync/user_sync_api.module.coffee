@@ -46,11 +46,13 @@ module.exports =
       type: 'DELETE'
       dataType: 'json'
 
-  finishTour: (user) ->
+  finishTour: (user, attributes={}) ->
     Promise.resolve $.ajax
       url: "#{user.get('user_url')}/tour"
       type: 'DELETE'
       dataType: 'json'
+      data: 
+        type: attributes.type
 
   subscribe: (user, attributes={}) ->
     data = attributes.reduce (memo, value, name) ->

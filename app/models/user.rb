@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   before_validation :generate_password, if: -> { password.blank? }
   before_save :nillify_last_sign_in_at, if: -> { twitter_changed? }
   before_destroy :mark_emails_for_destruction
-  after_create :create_tour_token, if: -> { should_create_tour_token? }
+  after_create :create_tour_tokens, if: -> { should_create_tour_tokens? }
 
   nilify_blanks only: [:twitter, :authorized_at]
 
@@ -72,7 +72,7 @@ class User < ActiveRecord::Base
         avatar_url:   avatar_url
       )
 
-      user.should_create_tour_token!
+      user.should_create_tour_tokens!
       user.save!
       user
     end
@@ -166,11 +166,11 @@ class User < ActiveRecord::Base
     @should_validate_invite = true
   end
 
-  def should_create_tour_token?
+  def should_create_tour_tokens?
     @should_create_tour_token
   end
 
-  def should_create_tour_token!
+  def should_create_tour_tokens!
     @should_create_tour_token = true
   end
 
@@ -208,8 +208,8 @@ private
     self.last_sign_in_at = nil
   end
 
-  def create_tour_token
-    tokens.build(name: :tour).save!
+  def create_tour_tokens
+    tokens << [Token.new(name: :welcome_tour), Token.new(name: :insight_tour)]
   end
 
   # def build_blank_emails

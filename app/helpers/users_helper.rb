@@ -1,5 +1,5 @@
 module UsersHelper
-  def show_tour?
-    current_user.tokens.find_by(name: "tour")
+  def show_welcome_tour?
+    current_user.tokens.find_by(name: :welcome_tour)
   end
 end

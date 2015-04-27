@@ -59,7 +59,7 @@ class UsersController < ApplicationController
   end
 
   def tour
-    @user.tokens.find_by(name: :tour).try(:destroy)
+    @user.tokens.find_by(name: "#{params[:type]}_tour").try(:destroy)
 
     respond_to do |format|
       format.json { render json: :ok }

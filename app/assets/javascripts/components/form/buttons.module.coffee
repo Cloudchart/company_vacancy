@@ -77,8 +77,9 @@ SyncButton = React.createClass
         @isAnimating = true
 
         setTimeout =>
-          @isAnimating = false
-          @setState @nextState
+          if @isMounted()
+            @isAnimating = false
+            @setState @nextState
         , @props.syncDelay
 
   componentDidUpdate: ->

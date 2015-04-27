@@ -1,20 +1,23 @@
 # @cjsx React.DOM
 
 
-GlobalState   = require('global_state/state')
+GlobalState     = require('global_state/state')
 
 
-PinboardStore = require('stores/pinboard_store')
-RoleStore     = require('stores/role_store.cursor')
-PinStore      = require('stores/pin_store')
-UserStore     = require('stores/user_store.cursor')
+PinboardStore   = require('stores/pinboard_store')
+RoleStore       = require('stores/role_store.cursor')
+PinStore        = require('stores/pin_store')
+UserStore       = require('stores/user_store.cursor')
+TokenStore      = require('stores/token_store.cursor')
 
 
 ModalHeader     = require('components/shared/modal_header')
+ModalStack      = require('components/modal_stack')
 InsightContent  = require('components/pinnable/insight_content')
 UnicornChooser  = require('components/unicorn_chooser')
 StandardButton  = require('components/form/buttons').StandardButton
 
+InsightTourApp  = require('components/tour/insight/app')
 
 KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title', 'origin'])
 
@@ -43,6 +46,7 @@ module.exports = React.createClass
         """
           Viewer {
             roles,
+            tokens,
             pinboards,
             writable_pinboards
           }
@@ -98,6 +102,7 @@ module.exports = React.createClass
 
   fetch: ->
     Promise.all([@fetchSystemPinboards(), @fetchPin()]).then =>
+      ModalStack.show(<InsightTourApp />) if @shouldShowTour()
       @handleFetchDone()
 
 
@@ -240,10 +245,14 @@ module.exports = React.createClass
         role.get('owner_type',  null)   is null     and
         role.get('value')               is roleValue
 
+  shouldShowTour: ->
+    TokenStore.filter (token) =>
+      token.get('name') == 'insight_tour' &&
+      token.get('owner_id') == @props.cursor.me.get('uuid')
+    .size
 
   isCurrentUserSystemEditor: ->
     @isUserWithRole(UserStore.me().get('uuid'), 'editor')
-
 
   isSelectedUserUnicorn: ->
     @isUserWithRole(@state.attributes.get('user_id'), 'unicorn')

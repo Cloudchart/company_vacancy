@@ -15,7 +15,7 @@ cx             = React.addons.classSet
 #
 module.exports = React.createClass
 
-  displayName: 'TourSubscription'
+  displayName: 'WelcomeTourSubscription'
 
   propTypes:
     onNext: React.PropTypes.func
@@ -38,7 +38,7 @@ module.exports = React.createClass
     Immutable.Map({}).set('email', props.user.get('email') || '')
 
   finishTour: ->
-    UserSyncApi.finishTour(@props.user).then =>
+    UserSyncApi.finishTour(@props.user, type: "welcome").then =>
       ModalStack.hide()
 
   subscribe: ->

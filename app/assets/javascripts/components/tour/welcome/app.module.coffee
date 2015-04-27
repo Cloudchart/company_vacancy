@@ -4,10 +4,10 @@ GlobalState       = require('global_state/state')
 
 UserStore         = require('stores/user_store.cursor')
 
-TourIntroduction  = require('components/tour/introduction')
-TourCompanies     = require('components/tour/companies')
-TourTimeline      = require('components/tour/timeline')
-TourSubscription  = require('components/tour/subscription')
+TourIntroduction  = require('components/tour/welcome/introduction')
+TourCompanies     = require('components/tour/welcome/companies')
+TourTimeline      = require('components/tour/welcome/timeline')
+TourSubscription  = require('components/tour/welcome/subscription')
 
 NavigatorMixin    = require('components/mixins/navigator')
 
@@ -15,7 +15,7 @@ NavigatorMixin    = require('components/mixins/navigator')
 #
 module.exports = React.createClass
 
-  displayName: 'TourApp'
+  displayName: 'WelcomeTourApp'
 
   mixins: [NavigatorMixin, GlobalState.query.mixin]
 
@@ -93,7 +93,7 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <section className="tour navigator">
+    <section className="tour welcome-tour navigator">
       <section className="tour-wrapper">
         { @renderIntroduction() }
         { @renderCompanies() }

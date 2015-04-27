@@ -2,6 +2,8 @@ class Token < ActiveRecord::Base
   include Uuidable
   include Admin::Token
 
+  TOUR_TYPES = [:welcome, :insight].freeze
+
   serialize :data
 
   belongs_to :owner, polymorphic: true, inverse_of: :tokens

@@ -5,14 +5,14 @@ UserStore    = require('stores/user_store.cursor')
 
 ModalStack   = require('components/modal_stack')
 
-Tour         = require('components/tour/app')
+Tour         = require('components/tour/welcome/app')
 
 
 # Exports
 #
 module.exports = React.createClass
 
-  displayName: 'TourApp'
+  displayName: 'WelcomeTourApp'
 
   mixins: [GlobalState.mixin]
 

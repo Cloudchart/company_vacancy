@@ -4,6 +4,7 @@
 GlobalState     = require('global_state/state')
 PinStore        = require('stores/pin_store')
 UserStore       = require('stores/user_store.cursor')
+TokenStore      = require('stores/token_store.cursor')
 
 PinForm         = require('components/form/pin_form')
 Modal           = require('components/modal_stack')
@@ -37,7 +38,8 @@ module.exports = React.createClass
       user:   UserStore.me()
 
   getInitialState: ->
-    @getStateFromStores()
+    _.extend loaders: Immutable.Map(),
+      @getStateFromStores()
 
   onGlobalStateChange: ->
     @setState @getStateFromStores()
@@ -86,6 +88,7 @@ module.exports = React.createClass
 
   getCount: ->
     if @props.uuid then @getRepinsCount() else @getPinsCount()
+
 
   # Handlers
   #
