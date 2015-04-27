@@ -108,7 +108,7 @@ Component = React.createClass
 
     parts = paragraph.content.match(/<div>(.*?)<\/div>/i)
 
-    "<div>#{_.str.truncate(parts[1], 600)}</div>"
+    "<div>#{parts[1]}</div>"
 
   getParagraph: (block) ->
     content = @getTruncatedParagraph(block)
