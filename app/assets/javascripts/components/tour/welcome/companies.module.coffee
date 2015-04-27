@@ -10,8 +10,6 @@ UserStore      = require('stores/user_store.cursor')
 
 ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
-cx = React.addons.classSet
-
 # Exports
 #
 module.exports = React.createClass
@@ -34,8 +32,8 @@ module.exports = React.createClass
         """
 
   propTypes:
-    active: React.PropTypes.bool
-    onNext: React.PropTypes.func
+    className: React.PropTypes.string
+    onNext:    React.PropTypes.func
 
   getDefaultProps: ->
     cursor:
@@ -59,12 +57,6 @@ module.exports = React.createClass
       .sortBy (company) -> company.get('created_at')
       .reverse()
 
-  getClassName: ->
-    cx(
-      "slide tour-companies": true
-      active: @props.active
-    )
-
 
   # Renderers
   #
@@ -85,7 +77,7 @@ module.exports = React.createClass
 
 
   render: ->
-    <article className={ @getClassName() }>
+    <article className={ "tour-companies " + @props.className }>
       <p>
         Learn from unicorns. Follow companies you're interested in to get their updates and watch them grow.
       </p>

@@ -10,7 +10,9 @@ module.exports = React.createClass
 
   propTypes:
     active:           React.PropTypes.bool
+    className:        React.PropTypes.string
     isInsightFocused: React.PropTypes.bool
+    isAnimated:       React.PropTypes.bool
 
   getDefaultProps: ->
     isInsightFocused: false
@@ -22,53 +24,33 @@ module.exports = React.createClass
 
   getClassName: ->
     cx(
-      "slide tour-timeline": true
-      active:                @props.active
       scrolled:              @state.arePostsScrolled
       "insight-focused":     @state.isInsightFocused
-      "no-transition":       @state.isTransitionOff
     )
-
 
 
   # Lifecycle methods
   #
   componentWillReceiveProps: (nextProps) ->
-    if @props.active && nextProps.active && nextProps.isInsightFocused
-      @setState isInsightFocused: true
-
-    if @props.active && nextProps.active && !nextProps.isInsightFocused
-      @setState isInsightFocused: false
-
     if !@props.active && nextProps.active
-      if !nextProps.isInsightFocused
-        setTimeout =>
-          @setState
-            arePostsScrolled: true
-            isTransitionOff:  false
-        , 1000
-      else
-        @setState arePostsScrolled: true
+      @setState
+        arePostsScrolled: true
+        isInsightFocused: nextProps.isInsightFocused
+    else if @props.active && !nextProps.active
+      @setState
+        arePostsScrolled: false
 
-        setTimeout =>
-          @setState
-            isInsightFocused: true
-            isTransitionOff:  false
-        , 500
-
-    if @props.active && !nextProps.active
       setTimeout =>
-        @setState
-          arePostsScrolled: false
-          isInsightFocused: false
-          isTransitionOff:  true
+        @setState isInsightFocused: false
       , 500
+    else
+      @setState isInsightFocused: nextProps.isInsightFocused
 
 
   # Renderers
   #
   render: ->
-    <article className={ @getClassName() }>
+    <article className={ "tour-timeline " + @props.className + " " + @getClassName() }>
       <p>
         Browse unicorns' milestones in company timeline and discover actionable insights by founders, investors, and experts — or, add your own.
       </p>

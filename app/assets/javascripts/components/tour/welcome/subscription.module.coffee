@@ -9,8 +9,6 @@ Buttons        = require("components/form/buttons")
 SyncButton     = Buttons.SyncButton
 StandardButton = Buttons.StandardButton
 
-cx             = React.addons.classSet
-
 # Exports
 #
 module.exports = React.createClass
@@ -18,7 +16,8 @@ module.exports = React.createClass
   displayName: 'WelcomeTourSubscription'
 
   propTypes:
-    onNext: React.PropTypes.func
+    className: React.PropTypes.string
+    onNext:    React.PropTypes.func
 
   getInitialState: ->
     attributes: @getAttributesFromProps(@props)
@@ -28,12 +27,6 @@ module.exports = React.createClass
 
   # Helpers
   #
-  getClassName: ->
-    cx(
-      "slide tour-subscription": true
-      active: @props.active
-    )
-
   getAttributesFromProps: (props) ->
     Immutable.Map({}).set('email', props.user.get('email') || '')
 
@@ -81,7 +74,7 @@ module.exports = React.createClass
 
 
   render: ->
-    <article className={ @getClassName() }>
+    <article className={ "tour-subscription " + @props.className }>
       <StandardButton 
         className = "close transparent"
         iconClass = "cc-icon cc-times"

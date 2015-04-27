@@ -11,6 +11,8 @@ TourSubscription  = require('components/tour/welcome/subscription')
 
 NavigatorMixin    = require('components/mixins/navigator')
 
+cx = React.addons.classSet
+
 # Exports
 #
 module.exports = React.createClass
@@ -43,6 +45,13 @@ module.exports = React.createClass
   getPositionsNumber: ->
     5
 
+  getSlideClass: (indexes...) ->
+    cx(
+      active:            indexes.indexOf(@state.position) != -1
+      slide:             true
+      "with-transition": @state.isNexted
+    )
+
 
   # Handlers
   #
@@ -70,24 +79,26 @@ module.exports = React.createClass
   #
   renderIntroduction: ->
     <TourIntroduction
-      active = { @state.position == 0 }
-      onNext = { @goToNext }
-      user   = { @cursor } />
+      className = { @getSlideClass(0) }
+      onNext    = { @goToNext }
+      user      = { @cursor } />
 
   renderCompanies: ->
-    <TourCompanies
-      active = { @state.position == 1 }
-      onNext = { @goToNext } />
+    <TourCompanies 
+      className = { @getSlideClass(1) }
+      onNext    = { @goToNext } />
 
   renderTimeline: ->
-    <TourTimeline
-      active           = { @state.position == 2 || @state.position == 3 }
-      isInsightFocused = { @state.position == 3 } />
+    <TourTimeline 
+      active           = { [2, 3].indexOf(@state.position) != -1 }
+      className        = { @getSlideClass(2, 3) }
+      isInsightFocused = { @state.position == 3 }
+      isAnimated       = { @state.isNexted } />
 
   renderSubscription: ->
     <TourSubscription
-      active = { @state.position == 4 }
-      user   = { @cursor } />
+      className = { @getSlideClass(4) }
+      user     = { @cursor } />
 
 
   render: ->

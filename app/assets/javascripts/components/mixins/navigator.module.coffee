@@ -10,6 +10,7 @@ module.exports =
   getInitialState: ->
     isNavigating:   false
     position:       0
+    isNexted:       true
 
 
   # Helpers
@@ -24,7 +25,7 @@ module.exports =
 
     return if newPosition > @getPositionsNumber() - 1 || newPosition < 0
 
-    @setState _.extend(stateChanges, position: newPosition)
+    @setState _.extend(stateChanges, position: newPosition, isNexted: direction == 'next')
 
   goToNext: (stateChanges={}) ->
     @navigate("next", stateChanges)
@@ -35,7 +36,7 @@ module.exports =
   goToPosition: (newPosition, stateChanges={}) ->
     return if @state.isNavigating || newPosition == @state.position
 
-    @setState _.extend(stateChanges, position: newPosition)
+    @setState _.extend(stateChanges, position: newPosition, isNexted: (newPosition - @state.position == 1))
 
 
   # Handlers

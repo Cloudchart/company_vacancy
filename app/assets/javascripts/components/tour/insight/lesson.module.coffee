@@ -6,14 +6,11 @@ module.exports = React.createClass
 
   displayName: 'InsightTourLesson'
 
-  getClassName: ->
-    cx(
-      "slide tour-insight-lesson": true
-      active: @props.active
-    )
+  propTypes:
+    className: React.PropTypes.string
 
   render: ->
-    <article className={ @getClassName() }>
+    <article className={ "tour-insight-lesson " + @props.className }>
       <p>
         Make yourself valuable to founder community.
       </p>

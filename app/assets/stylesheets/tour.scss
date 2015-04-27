@@ -105,13 +105,9 @@
     width: 100%;
 
     .container {
-      @include transition(transform 1s ease-in-out);
-
       position: relative;
 
       > .posts {
-        @include transition(transform 1s ease-in-out);
-
         background: image_url('tour/posts.png') center center no-repeat;
         background-size: 759px 784px;
         height: 784px;
@@ -120,7 +116,6 @@
 
       > .insight {
         @include position(absolute, 0 0px 220px 0);
-        @include transition(transform 1s ease-in-out);
 
         background: image_url('tour/insight.png') center center no-repeat;
         background-size: cover;
@@ -148,12 +143,12 @@
     }
   }
 
-  &.no-transition {
+  &.with-transition {
     > .timeline > .container {
-      @include transition(none);
+      @include transition(transform 1s ease-in-out 1s);
       
       > .posts, > .insight {
-        @include transition(none);
+        @include transition(transform 1s ease-in-out);
       } 
     } 
   }
@@ -311,7 +306,6 @@
       @include flex-direction(column);
       @include justify-content(space-between);
       @include position(absolute);
-      @include transition(opacity .5s ease-in-out);
 
       height: 100%;
       opacity: 0;
@@ -321,6 +315,10 @@
       &.active {
         opacity: 1;
         z-index: 1;
+      }
+
+      &.with-transition {
+        @include transition(opacity .5s ease-in-out);
       }
 
       > header {

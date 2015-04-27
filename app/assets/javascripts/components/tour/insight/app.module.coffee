@@ -21,6 +21,13 @@ module.exports = React.createClass
   getPositionsNumber: ->
     3
 
+  getSlideClass: (indexes...) ->
+    cx(
+      active:            indexes.indexOf(@state.position) != -1
+      slide:             true
+      "with-transition": @state.isNexted
+    )
+
 
   # Handlers
   #
@@ -46,9 +53,9 @@ module.exports = React.createClass
   render: ->
     <section className="tour navigator">
       <section className="tour-wrapper">
-        <TourIntroduction active = { @state.position == 0 } />
-        <TourLesson       active = { @state.position == 1 } />
-        <TourList         active = { @state.position == 2 } user = { @cursor } />
+        <TourIntroduction className = { @getSlideClass(0) } />
+        <TourLesson       className = { @getSlideClass(1) } />
+        <TourList         className = { @getSlideClass(2) } user = { @cursor } />
       </section>
       { @renderPrevButton() }
       { @renderNextButton() }
