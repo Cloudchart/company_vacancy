@@ -63,11 +63,10 @@ Component = React.createClass
     readOnly: true
 
   getInitialState: ->
-    state = @getStateFromStores(@props)
-    state.new_post_key = null
-    state.shouldDisplayStories = @shouldDisplayStories()
-    state.story = @getCurrentStory()
-    state
+    _.extend @getStateFromStores(@props),
+      new_post_key:         null
+      shouldDisplayStories: @shouldDisplayStories()
+      story:                @getCurrentStory()
 
   onGlobalStateChange: ->
     @setState story: @getCurrentStory()
@@ -106,6 +105,11 @@ Component = React.createClass
   shouldDisplayStories: ->
     !!location.hash.match(/^#stories/)
 
+  scrollToPost: ->
+    if (id = location.hash) && $(id).length > 0
+      $(document).scrollTop(parseInt($(id).offset().top) - 10)
+      history.replaceState('', document.title, window.location.pathname)
+
 
   # Handlers
   #
@@ -136,17 +140,14 @@ Component = React.createClass
   # Lifecycle Methods
   # 
   componentDidMount: ->
+    @scrollToPost()
     window.addEventListener 'hashchange', @handleHashChange
-    # PostStore.on('change', @refreshStateFromStores)
-    # VisibilityStore.on('change', @refreshStateFromStores)
 
-  # componentWillReceiveProps: (nextProps) ->
-  #   @setState(@getStateFromStores(nextProps))
+  componentWillUpdate: ->
+    @scrollToPost()
 
   componentWillUnmount: ->
     window.removeEventListener 'hashchange', @handleHashChange
-    # PostStore.off('change', @refreshStateFromStores)
-    # VisibilityStore.off('change', @refreshStateFromStores)
 
 
   # Renderers

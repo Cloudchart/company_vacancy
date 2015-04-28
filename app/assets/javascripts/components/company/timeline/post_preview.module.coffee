@@ -38,9 +38,9 @@ Component = React.createClass
   displayName: "TimelinePostPreview"
 
   propTypes:
-    story:        React.PropTypes.object
-    uuid:         React.PropTypes.string.isRequired
-    readOnly:     React.PropTypes.bool.isRequired
+    story:         React.PropTypes.object
+    readOnly:      React.PropTypes.bool.isRequired
+    uuid:          React.PropTypes.string.isRequired
 
   mixins: [GlobalState.mixin]
 
@@ -49,12 +49,8 @@ Component = React.createClass
   getDefaultProps: ->
     cursor:
       pins: PinStore.cursor.items
-      # posts_stories: PostsStoryStore.cursor.items
       quotes: QuoteStore.cursor.items
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
-
-  # refreshStateFromStores: ->
-  #   @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
     blocks = _.chain BlockStore.all()
@@ -67,7 +63,8 @@ Component = React.createClass
     visibility: VisibilityStore.find (item) -> item.uuid && item.owner_id is props.uuid && item.owner_type is 'Post'
 
   getInitialState: ->
-    @getStateFromStores(@props)
+    _.extend @getStateFromStores(@props),
+      asPlaceholder: true
 
   onGlobalStateChange: ->
     @setState refreshed_at: + new Date
@@ -202,6 +199,35 @@ Component = React.createClass
   isLoaded: ->
     @state.post
 
+  handleScroll: (event) ->
+    if @timer || @stickyTimer
+      clearTimeout @timer
+      clearTimeout @stickyTimer
+
+    newScroll = $(window).scrollTop()
+    direction = if newScroll - @lastScroll > 0 then 'down' else 'up'
+    @lastScroll = newScroll
+
+    @timer       = setTimeout @changePlaceholder.bind(@, direction), 100
+    @stickyTimer = setTimeout @scrollSticky, 1000
+
+  changePlaceholder: (direction=null) ->
+    return unless @isMounted()
+
+    difference = $(@getDOMNode()).offset().top - $(window).scrollTop()
+    bottomBorder = if direction == 'down' then 3 * $(window).height() else $(window).height()
+
+    if difference > 0 && difference < bottomBorder
+      @setState asPlaceholder: false
+
+  scrollSticky: ->
+    return unless @isMounted()
+    
+    difference = $(window).scrollTop() - $(@getDOMNode()).offset().top
+
+    if difference < $(@getDOMNode()).height() && difference > 10 && @state.asPlaceholder
+      $('html,body').animate({ scrollTop: $(@getDOMNode()).next().offset().top - 10 }, 'slow')
+
 
   # Handlers
   #
@@ -229,22 +255,22 @@ Component = React.createClass
 
   # Lifecycle Methods
   #
-  # componentDidMount: ->
-  #   PostStore.on('change', @refreshStateFromStores)
-    # BlockStore.on('change', @refreshStateFromStores)
-    # PersonStore.on('change', @refreshStateFromStores)
-    # PictureStore.on('change', @refreshStateFromStores)
-    # ParagraphStore.on('change', @refreshStateFromStores)
+  componentDidMount: ->
+    @lastScroll = $(window).scrollTop()
+    @timer = false
+    @stickyTimer = false
+
+    @changePlaceholder()
+    @stickyTimer = setTimeout @scrollSticky, 1000
+    window.addEventListener "scroll", @handleScroll
+    window.addEventListener "resize", @changePlaceholder
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
 
-  # componentWillUnmount: ->
-  #   PostStore.off('change', @refreshStateFromStores)
-    # BlockStore.off('change', @refreshStateFromStores)
-    # PersonStore.off('change', @refreshStateFromStores)
-    # PictureStore.off('change', @refreshStateFromStores)
-    # ParagraphStore.off('change', @refreshStateFromStores)
+  componentWillUnmount: ->
+    window.removeEventListener "scroll", @handleScroll
+    window.removeEventListener "resize", @changePlaceholder
 
 
   # Renderers
@@ -252,18 +278,20 @@ Component = React.createClass
   renderInsights: ->
     return null if @isEpochType() || !@isRelatedToStory() || (@getInsightsNumber() == 0)
 
-    <section className="post-pins">
-      <InsightTimelineList 
-        pinnable_id={ @props.uuid }
-        pinnable_type="Post"
-        postUrl = { @state.post.post_url + "#expanded" } />
-    </section>
+    if !@state.asPlaceholder
+      <section className="post-pins">
+        <InsightTimelineList 
+          pinnable_id={ @props.uuid }
+          pinnable_type="Post"
+          postUrl = { @state.post.post_url + "#expanded" } />
+      </section>
+    else
+      <div className="post-pins-placeholder"></div>
 
   renderPinPostItem: ->
     return null if @isEpochType()
 
     <PinButton pinnable_type='Post' pinnable_id={ @state.post.uuid } title={ @state.post.title } />
-
 
   renderControls: ->
     <ul className="buttons round-buttons">
@@ -387,18 +415,26 @@ Component = React.createClass
       'only-me': @isOnlyMeVisibility()
       'dimmed': not @isRelatedToStory()
 
-    <section className="post-preview-container">
-      <article id={@props.uuid} className={article_classes}>
-        { @renderControls() }
-        <a href={@state.post.post_url} className="for-group">
-          { @renderOnlyMeOverlay() }
-          { @renderPost() }
-          { @renderFooter() }
-          { @renderReadMore() }
-        </a>
-      </article>
-      { @renderInsights() }
-    </section>
+    if !@state.asPlaceholder
+      <section id={@props.uuid} className="post-preview-container">
+        <article className={article_classes}>
+          { @renderControls() }
+          <a href={@state.post.post_url} className="for-group">
+            { @renderOnlyMeOverlay() }
+            { @renderPost() }
+            { @renderFooter() }
+            { @renderReadMore() }
+          </a>
+        </article>
+        { @renderInsights() }
+      </section>
+    else
+      <section id={@props.uuid} className="post-preview-container">
+        <article className="preview post">
+          <div className="post-placeholder"></div>
+        </article>
+        { @renderInsights() }
+      </section> 
 
 
 # Exports

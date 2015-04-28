@@ -123,6 +123,13 @@
     background-color: $card-color;
     padding: $default-margin-size;
 
+    > .post-placeholder {
+      background-image: image_url('placeholders/paragraph.png');
+      background-repeat: no-repeat space;
+      height: 250px;
+      width: 261px;
+    }
+
     &:hover > ul.controls {
       visibility: visible;
     }
@@ -259,5 +266,13 @@
       margin-left: $gutter-size;
       padding: 0 30px;
     }
+  }
+
+  > .post-pins-placeholder {
+    background-image: image_url('placeholders/insight.png');
+    background-size: cover;
+    height: 270px;
+    margin-left: $gutter-size;
+    width: 310px;
   }
 }
