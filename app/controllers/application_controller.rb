@@ -8,9 +8,11 @@ class ApplicationController < ActionController::Base
   before_filter :check_browser
   before_filter :store_location
 
+  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
+
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
-      format.html { render file: "#{Rails.root}/public/404.html", status: 404, layout: false }
+      format.html { render_not_found }
       format.json { render json: { message: exception.message }, status: 404 }
     end
   end
@@ -47,6 +49,10 @@ private
   def store_location
     return if user_authenticated? || !request.get? || request.xhr? || main_app.old_browsers_path
     session[:previous_path] = request.fullpath
+  end
+
+  def render_not_found
+    render file: "#{Rails.root}/public/404.html", status: 404, layout: false
   end
   
 end
