@@ -3,12 +3,6 @@ Cloudchart::Application.routes.draw do
   #
   root to: 'welcome#index'
 
-  # Errors
-  #
-  match '/404', to: 'errors#not_found', via: [:get, :post]
-  match '/422', to: 'errors#unprocessable_entity', via: :all
-  match '/500', to: 'errors#internal_error', via: :all
-
   # Engines
   #
   mount RailsAdmin::Engine, at: '/admin'

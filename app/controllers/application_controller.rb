@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
-      format.html { redirect_to main_app.root_path, alert: exception.message }
+      format.html { render file: "#{Rails.root}/public/404.html", status: 404, layout: false }
       format.json { render json: { message: exception.message }, status: 404 }
     end
   end

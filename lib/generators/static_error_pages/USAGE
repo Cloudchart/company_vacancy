@@ -1,0 +1,10 @@
+Description:
+    Generates static error pages in public folder.
+
+Example:
+    rails generate static_error_pages
+
+    This will create:
+        public/404.html
+        public/422.html
+        public/500.html

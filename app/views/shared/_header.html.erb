@@ -17,10 +17,8 @@ if user_authenticated?
       url: current_page?(main_app.insights_path) ? nil : main_app.insights_path
     }
   end
-end
 
-if user_authenticated?
-  user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) } 
+  user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) }
 end
 
 %>
