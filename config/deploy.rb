@@ -46,6 +46,17 @@ namespace :deploy do
 #     end
 #   end
 
+  desc 'Generates static error pages in public folder'
+  task :generate_error_pages do
+    on roles :app do
+      within release_path do
+        with rails_env: fetch(:stage) do
+          execute :rails, 'generate static_error_pages -f'
+        end 
+      end     
+    end
+  end
+
   desc 'Runs rake db:seed'
   task :seed do
     on roles :db do
@@ -56,6 +67,8 @@ namespace :deploy do
       end
     end
   end
+
+  after :publishing, :generate_error_pages
 
 end
 

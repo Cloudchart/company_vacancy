@@ -19,8 +19,8 @@
     <main>
       <section class="error">
         <header>
-          <h1><%= t("messages.errors.#{@error_name}.title") %></h1>
-          <h2><%= t("messages.errors.#{@error_name}.description") %></h2>
+          <h1><%= t("errors.pages.#{@error_name}.title") %></h1>
+          <h2><%= t("errors.pages.#{@error_name}.description") %></h2>
         </header>
         <%= image_tag 'error.png' %>
         <%= link_to 'Okay', root_path, class: 'cc' %>
