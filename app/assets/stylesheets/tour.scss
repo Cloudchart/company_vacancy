@@ -109,15 +109,15 @@
 
       > .posts {
         background: image_url('tour/posts.png') center center no-repeat;
-        background-size: 759px 784px;
-        height: 784px;
-        width: 759px;
+        background-size: cover;
+        height: 1397px;
+        width: 762px;
       }
 
       > .insight {
-        @include position(absolute, 0 0px 220px 0);
+        @include position(absolute, 0 0px 207px 0);
 
-        background: image_url('tour/insight.png') center center no-repeat;
+        background: image_url('tour/insight-timeline.png') center center no-repeat;
         background-size: cover;
         height: 155px;
         width: 235px;
