@@ -98,6 +98,21 @@
 
   padding-bottom: 70px;
 
+  > .texts {
+    position: relative;
+    width: 100%;
+
+    > p {
+      @include position(absolute, 0px 0 0 0px);
+
+      opacity: 0;
+
+      &:first-child {
+        opacity: 1;
+      }
+    }
+  }
+
   > .timeline {
     overflow: hidden;
     position: relative;
@@ -132,6 +147,14 @@
   }
 
   &.insight-focused {
+    > .texts > p {
+      opacity: 1;
+
+      &:first-child {
+        opacity: 0;
+      }
+    }
+
     > .timeline > .container {
       > .posts {
         @include transform(translateX(calc(-100%)));
@@ -144,6 +167,10 @@
   }
 
   &.with-transition {
+    > .texts > p {
+      @include transition(opacity .5s ease-in-out);
+    }
+
     > .timeline > .container {
       @include transition(transform 1s ease-in-out 1s);
       
@@ -348,7 +375,7 @@
         @include tour-insight-list();
       }
 
-      > p, > div {
+      p, > div {
         font-size: 24px;
         font-weight: 300;
         line-height: 32px;

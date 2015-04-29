@@ -51,9 +51,14 @@ module.exports = React.createClass
   #
   render: ->
     <article className={ "tour-timeline " + @props.className + " " + @getClassName() }>
-      <p>
-        Learn from unicorns. Browse unicorns' milestones in company timeline. Discover actionable insights by founders, investors, and experts — or, add your own.
-      </p>
+      <section className="texts">
+        <p>
+          Learn from unicorns. Browse unicorns' milestones in company timeline. 
+        </p>
+        <p>
+          Discover actionable insights by founders, investors, and experts — or, add your own.
+        </p>
+      </section>
       <section className="timeline">
         <div className="container">
           <article className="posts" />
