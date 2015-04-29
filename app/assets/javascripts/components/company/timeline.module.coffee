@@ -7,18 +7,20 @@ cx  = React.addons.classSet
 CloudFlux = require('cloud_flux')
 GlobalState = require('global_state/state')
 
-PostStore = require('stores/post_store')
-PinStore  = require('stores/pin_store')
-StoryStore = require('stores/story_store')
+CompanyStore   = require('stores/company')
+PostStore      = require('stores/post_store')
+PinStore       = require('stores/pin_store')
+StoryStore     = require('stores/story_store')
 PostsStoryStore = require('stores/posts_story_store')
 VisibilityStore = require('stores/visibility_store')
 
 PostActions = require('actions/post_actions')
 
-PostPreview = require('components/company/timeline/post_preview')
-Post = require('components/post')
+PostPreview         = require('components/company/timeline/post_preview')
+Post                = require('components/post')
 ContentEditableArea = require('components/form/contenteditable_area')
-StoriesList = require('components/story/list')
+StoriesList         = require('components/story/list')
+StandardButton      = require('components/form/buttons').StandardButton
 
 
 # Utils
@@ -75,7 +77,8 @@ Component = React.createClass
     @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
-    posts: PostStore.all()
+    company: CompanyStore.get(props.company_id)
+    posts:   PostStore.all()
     postSeq: Immutable.Seq(PostStore.all())
 
   getCloudFluxActions: ->
@@ -141,12 +144,14 @@ Component = React.createClass
   # 
   componentDidMount: ->
     @scrollToPost()
+    CompanyStore.on('change', @refreshStateFromStores)
     window.addEventListener 'hashchange', @handleHashChange
 
   componentWillUpdate: ->
     @scrollToPost()
 
   componentWillUnmount: ->
+    CompanyStore.off('change', @refreshStateFromStores)
     window.removeEventListener 'hashchange', @handleHashChange
 
 
@@ -172,7 +177,6 @@ Component = React.createClass
       </figure>
     </div>
 
-
   renderPost: (props) ->
     (post) =>
       <PostPreview
@@ -182,10 +186,31 @@ Component = React.createClass
         readOnly     = { @props.readOnly }
       />
 
-  renderCurrentStory: ->
+  renderStoryCancel: ->
     return null unless @state.story
-    
-    description = if @state.story.get('company_id') and !@props.readOnly
+
+    <StandardButton
+      className = "transparent"
+      iconClass = "cc-icon cc-times"
+      onClick   = { -> location.hash = 'timeline' } />
+
+  renderStoryName: ->
+    storyName = if @state.story
+      '#' + @state.story.get('formatted_name')
+    else
+      'Everything'
+
+    storyClassName = if !@state.story then "main" else null
+
+    <h1 className={ storyClassName }>
+      <span onClick = { @handleStoriesListClick }> { storyName }</span>
+      { @renderStoryCancel() }
+    </h1>
+
+  renderStoryDescription: ->
+    if !@state.story 
+      <div className="description">Story of { @state.company.name if @state.company }</div>
+    else if @state.story.get('company_id') and !@props.readOnly
       <label className="description">
         <ContentEditableArea
           onChange = { @handleStoryDescriptionChange }
@@ -197,12 +222,10 @@ Component = React.createClass
     else
       <div className="description" dangerouslySetInnerHTML={__html: @state.story.get('description')} />
 
+  renderCurrentStory: ->
     <header>
-      <h1>
-        { '#' + @state.story.get('formatted_name') }
-        <i className="fa fa-chevron-down" onClick = { @handleStoriesListClick } />
-      </h1>
-      { description }
+      { @renderStoryName() }
+      { @renderStoryDescription() }
     </header>
 
   renderPosts: (posts) ->

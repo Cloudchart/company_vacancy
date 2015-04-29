@@ -30,9 +30,9 @@ MainComponent = React.createClass
   # 
   getDefaultProps: ->
     cursor:
-      stories: StoryStore.cursor.items
+      stories:       StoryStore.cursor.items
       posts_stories: PostsStoryStore.cursor.items
-      pins: PinStore.cursor.items
+      pins:          PinStore.cursor.items
 
   getInitialState: ->
     company: CompanyStore.get(@props.company_id)
@@ -102,7 +102,7 @@ MainComponent = React.createClass
           <h3>Everything</h3>
         </header>
 
-        <div className="content">{ "All posts from #{@state.company.name}" }</div>
+        <div className="content">{ "Story of #{@state.company.name}" }</div>
       </li>
 
       { stories.toArray() }
