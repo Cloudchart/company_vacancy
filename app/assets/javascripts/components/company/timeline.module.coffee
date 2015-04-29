@@ -89,7 +89,7 @@ Component = React.createClass
 
     @state.postSeq
       .filter postVisibilityPredicate(@)
-      .sortBy (post) -> post.effective_from
+      .sortBy (post) -> post.effective_till + +(post.effective_till != post.effective_from)
       .map    @renderPost(@props)
       .reverse()
 
