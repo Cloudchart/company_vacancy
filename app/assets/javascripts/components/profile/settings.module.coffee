@@ -37,12 +37,10 @@ module.exports  = React.createClass
 
   propTypes:
     uuid:       React.PropTypes.string.isRequired
-    withEmails: React.PropTypes.bool
 
   getDefaultProps: ->
     cursor:
       tokens: TokenStore.cursor.items
-    withEmails: false
 
   getInitialState: ->
     attributes:  Immutable.Map()
@@ -155,6 +153,7 @@ module.exports  = React.createClass
   componentWillMount: ->
     @cursor = 
       user:   UserStore.cursor.items.cursor(@props.uuid)
+      me:     UserStore.me()
       emails: EmailStore.cursor.items
       tokens: TokenStore.cursor.items
 
@@ -185,7 +184,7 @@ module.exports  = React.createClass
       value    = { @state.attributes.get('company') } />
 
   renderTwitterHandle: ->
-    return null unless @props.uuid isnt UserStore.me().get('uuid') and
+    return null unless @props.uuid isnt @cursor.me.get('uuid') and
       UserStore.isEditor() and UserStore.isUnicorn(@cursor.user)
 
     <Field  
@@ -207,13 +206,15 @@ module.exports  = React.createClass
     </footer>
 
   renderEmails: ->
-    return null unless @props.withEmails
+    return null unless @props.uuid is @cursor.me.get('uuid')
 
     <Emails 
       emails              = { @getUserEmails() }
       verification_tokens = { @getEmailUserTokens() } />
 
   renderSubscription: ->
+    return null unless @props.uuid is @cursor.me.get('uuid')
+
     <section className="subscription">
       <h2>Subscriptions</h2>
       <Checkbox

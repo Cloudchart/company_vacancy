@@ -231,8 +231,7 @@ module.exports = React.createClass
       when 'feed'
         @renderFeed()
       when 'settings'
-        <Settings uuid = { @props.uuid } 
-          withEmails = { @isViewerProfile() } />
+        <Settings uuid = { @props.uuid } />
 
 
   render: ->
