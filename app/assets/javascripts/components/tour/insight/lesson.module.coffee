@@ -12,7 +12,7 @@ module.exports = React.createClass
   render: ->
     <article className={ "tour-insight-lesson " + @props.className }>
       <p>
-        Make yourself valuable to founder community.
+        An insight is always something that can be put to action — a concise and useful idea for the founders' community.
       </p>
       <section className="insight-guide">
         <article className="insight" />
