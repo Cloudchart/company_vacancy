@@ -15,7 +15,7 @@ SyncButton      = require('components/form/buttons').SyncButton
 Checkbox        = require('components/form/checkbox')
 
 
-KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company'])
+KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company', 'twitter'])
 
 
 module.exports  = React.createClass
@@ -184,6 +184,16 @@ module.exports  = React.createClass
       onChange = { @handleChange.bind(@, 'company') }
       value    = { @state.attributes.get('company') } />
 
+  renderTwitterHandle: ->
+    return null unless @props.uuid isnt UserStore.me().get('uuid') and
+      UserStore.isEditor() and UserStore.isUnicorn(@cursor.user)
+
+    <Field  
+      title    = 'Twitter'
+      errors   = { @state.errors.get('twitter') }
+      onChange = { @handleChange.bind(@, 'twitter') }
+      value    = { @state.attributes.get('twitter') } />
+
   renderSubmitButton: ->
     <footer>
       <div></div>
@@ -222,6 +232,7 @@ module.exports  = React.createClass
         { @renderFullNameInput() }
         { @renderOccupationInput() }
         { @renderCompanyInput() }
+        { @renderTwitterHandle() }
       </fieldset>
       { @renderSubmitButton() }
       { @renderEmails() }

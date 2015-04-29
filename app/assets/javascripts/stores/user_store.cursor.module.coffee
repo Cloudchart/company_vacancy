@@ -57,8 +57,14 @@ module.exports = GlobalState.createStore
           role.get('user_id')           is user.get('uuid')
 
 
-  isEditor: ->
-    !!findSystemRoleForUser(@me(), 'editor')
+  isAdmin: (user = null) ->
+    user ||= @me()
+    !!findSystemRoleForUser(user, 'admin')
 
-  isAdmin: ->
-    !!findSystemRoleForUser(@me(), 'admin')
+  isEditor: (user = null) ->
+    user ||= @me()
+    !!findSystemRoleForUser(user, 'editor')
+
+  isUnicorn: (user = null) ->
+    user ||= @me()
+    !!findSystemRoleForUser(user, 'unicorn')

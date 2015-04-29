@@ -82,10 +82,18 @@ private
   end
 
   def params_for_update
-    params.require(:user).permit(:full_name, :avatar, :remove_avatar, :occupation, :company)
+    params.require(:user).permit(fields_for_update)
   end
 
   def params_for_subscribe
     params.require(:user).permit(:email)
   end
+
+  def fields_for_update
+    default_fields = [:full_name, :avatar, :remove_avatar, :occupation, :company]
+    conditional_fields = []
+    conditional_fields << :twitter if @user.try(:unicorn?) && current_user.try(:editor?)
+    default_fields + conditional_fields
+  end
+
 end

@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   # before_validation :build_blank_emails, unless: -> { emails.any? }
   before_validation :generate_password, if: -> { password.blank? }
   before_save :nillify_last_sign_in_at, if: -> { twitter_changed? }
+  before_save :nillify_slug, if: -> { twitter_changed? && twitter.blank? }
   before_destroy :mark_emails_for_destruction
   after_create :create_tour_tokens, if: -> { should_create_tour_tokens? }
 
@@ -27,7 +28,6 @@ class User < ActiveRecord::Base
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :oauth_providers, dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
-  #has_many :charts, through: :companies
   has_many :votes, as: :source
   has_many :activities, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
@@ -187,7 +187,7 @@ class User < ActiveRecord::Base
   # end
 
   def should_generate_new_friendly_id?
-    slug.blank? || twitter_changed?
+    twitter_changed? && twitter.present?
   end
 
   def blank_company
@@ -206,6 +206,10 @@ private
 
   def nillify_last_sign_in_at
     self.last_sign_in_at = nil
+  end
+
+  def nillify_slug
+    self.slug = nil
   end
 
   def create_tour_tokens

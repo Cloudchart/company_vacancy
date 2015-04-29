@@ -47,7 +47,8 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
-            favorites
+            favorites,
+            system_roles
           }
         """
 
