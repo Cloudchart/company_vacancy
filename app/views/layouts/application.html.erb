@@ -20,8 +20,12 @@
 
     <div data-react-class="components/modal_stack"></div>
 
-    <%- if show_welcome_tour? %>
+    <%- if show_welcome_tour? || params[:tour] == 'welcome' %>
       <div data-react-class="components/tour/welcome/trigger"></div>
+    <%- end %>
+
+    <%- if params[:tour] == 'insight' %>
+      <div data-react-class="components/tour/insight/trigger"></div>
     <%- end %>
 
     <%= javascript_include_tag 'application' %>
