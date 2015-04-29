@@ -179,6 +179,15 @@ Component = React.createClass
       cursor:
         flags: GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
 
+
+  renderTags: ->
+    return null if @props.readOnly
+
+    <TagsComponent 
+      taggable_id = { @props.uuid }
+      taggable_type = 'Company'
+      readOnly = { @props.readOnly } />
+
   render: ->
     return null unless @state.company
 
@@ -221,11 +230,7 @@ Component = React.createClass
         />
       </label>
 
-      <TagsComponent 
-        taggable_id = { @props.uuid }
-        taggable_type = 'Company'
-        readOnly = { @props.readOnly }
-      />
+      { @renderTags() }
       
       { @getFollowButoon() }
     </header>
