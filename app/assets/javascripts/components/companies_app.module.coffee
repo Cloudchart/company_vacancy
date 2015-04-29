@@ -10,6 +10,7 @@ UserStore         = require('stores/user_store.cursor')
 
 CompanyList       = require('components/company/list')
 Field             = require('components/form/field')
+Subscription      = require('components/shared/subscription')
 
 
 CompaniesApp = React.createClass
@@ -159,6 +160,10 @@ CompaniesApp = React.createClass
       { @renderAddButton() }
     </header>
 
+  renderFooter: ->
+    <Subscription 
+      subscribedText = "Great news: you're already on our mailing list!"
+      text = "We're adding new companies every week — join our mailing list to get updates on new unicorns' timelines and useful insights." />
 
   render: ->
     <section className="cloud-profile-companies">
@@ -166,6 +171,7 @@ CompaniesApp = React.createClass
       <CompanyList
         companies      = { @getAllCompanies() }
         onSyncDone     = { @updateStores } />
+      { @renderFooter() }
     </section>
 
 

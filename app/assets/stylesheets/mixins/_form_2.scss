@@ -217,6 +217,24 @@
   }
 }
 
+@mixin form-input {
+  background-color: white;
+  border: none;
+  border-bottom: 2px solid $accented-green-color;
+  display: block;
+  font-size: 20px;
+  font-weight: 300;
+  height: 40px;
+  margin-bottom: 20px;
+  outline: none;
+  padding: 0 10px;
+  width: 330px;
+
+  &.error {
+    border-color: $accented-red-color;
+  }
+}
+
 @mixin form-typeahead {
   position: relative;
 
@@ -330,6 +348,10 @@
 .typeahead,
 .cc-typeahead {
   @include form-typeahead;
+}
+
+.cc-input {
+  @include form-input;
 }
 
 .select.cc {

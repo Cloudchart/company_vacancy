@@ -188,26 +188,21 @@
     }
   }
 
-  > form {
-    @include align-items(center);
-    @include display(flex);
-    @include flex-direction(column);
-
-    > input {
-      background-color: white;
-      border: none;
-      border-bottom: 2px solid $accented-green-color;
-      display: block;
-      font-size: 20px;
+  > .subscription  {
+    > p {
+      font-size: 24px;
       font-weight: 300;
-      height: 40px;
-      margin-bottom: 20px;
-      outline: none;
-      padding: 0 10px;
-      width: 330px;
+      text-align: center;
+      width: 400px;
+    }
 
-      &.error {
-        border-color: $accented-red-color;
+    > form {
+      @include align-items(center);
+      @include display(flex);
+      @include flex-direction(column);
+
+      > input {
+        width: 330px;
       }
     }
   }
@@ -360,7 +355,7 @@
       }
 
       > button.cc,
-      > form > button.cc {
+      > .subscription > form > button {
         font-size: $large-font-size;
         font-weight: 300;
         height: 55px;

@@ -1,13 +1,11 @@
 # @cjsx React.DOM
 
-GlobalState    = require('global_state/state')
 UserSyncApi    = require('sync/user_sync_api')
 
 ModalStack     = require('components/modal_stack')
 
-Buttons        = require("components/form/buttons")
-SyncButton     = Buttons.SyncButton
-StandardButton = Buttons.StandardButton
+StandardButton = require('components/form/buttons').StandardButton
+Subscription   = require('components/shared/subscription')
 
 # Exports
 #
@@ -19,60 +17,16 @@ module.exports = React.createClass
     className: React.PropTypes.string
     onNext:    React.PropTypes.func
 
-  getInitialState: ->
-    attributes: @getAttributesFromProps(@props)
-    errors:     Immutable.List()
-    isSyncing:  false
-
 
   # Helpers
   #
-  getAttributesFromProps: (props) ->
-    Immutable.Map({}).set('email', props.user.get('email') || '')
-
   finishTour: ->
     UserSyncApi.finishTour(@props.user, type: "welcome").then =>
       ModalStack.hide()
 
-  subscribe: ->
-    @setState isSyncing: true
-
-    UserSyncApi.subscribe(@props.user, @state.attributes)
-      .then =>
-        GlobalState.fetch(new GlobalState.query.Query("Viewer{emails}"), { force: true })
-        @finishTour()
-      , (xhr) =>
-        @setState
-          errors: Immutable.List(xhr.responseJSON.errors)
-          isSyncing: false
-
-
-  # Handlers
-  #
-  handleChange: (name, event) ->
-    @setState
-      attributes: @state.attributes.set(name, event.target.value)
-      errors:     @state.errors.remove(@state.errors.indexOf(name))
-
 
   # Renderers
   #
-  renderForm: ->
-    <form onSubmit={ @subcribe }>
-      <input 
-        className   = { if @state.errors.contains('email') then 'error' else null }
-        onChange    = { @handleChange.bind(@, 'email') }
-        placeholder = { @props.user.get('first_name') + ", your work email goes here" }
-        type        = "email"
-        value       = { @state.attributes.get('email') } />
-      <SyncButton
-        className = "cc"
-        sync      = { @state.isSyncing }
-        onClick   = { @subscribe }
-        text      = "Sign me up!" />
-    </form>
-
-
   render: ->
     <article className={ "tour-subscription " + @props.className }>
       <StandardButton 
@@ -94,5 +48,8 @@ module.exports = React.createClass
         =
         <i className="fa fa-heart" />
       </div>
-      { @renderForm() }
+      <Subscription 
+        buttonText         = "Sign me up!"
+        subscribedText     = "Great news: you have already subscribed, we'll be in touch!"
+        onSubscriptionDone = { @finishTour } />
     </article>

@@ -52,7 +52,7 @@ class Ability
         current_user != user
       end
 
-      can [:subscribe, :tour], User do |user|
+      can [:subscribe, :unsubscribe, :tour], User do |user|
         current_user == user
       end
 

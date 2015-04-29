@@ -54,10 +54,11 @@ module.exports =
       data: 
         type: attributes.type
 
-  subscribe: (user, attributes={}) ->
-    data = attributes.reduce (memo, value, name) ->
-      memo.append("user[#{name}]", value); memo
-    , new FormData
+  subscribe: (user, attributes=null) ->
+    if attributes
+      data = attributes.reduce (memo, value, name) ->
+        memo.append("user[#{name}]", value); memo
+      , new FormData
 
     Promise.resolve $.ajax
       url: "#{user.get('user_url')}/subscribe"
@@ -66,3 +67,9 @@ module.exports =
       processData: false
       contentType: false
       data: data
+
+  unsubscribe: (user, attributes={}) ->
+    Promise.resolve $.ajax
+      url: "#{user.get('user_url')}/unsubscribe"
+      type: 'DELETE'
+      dataType: 'json'

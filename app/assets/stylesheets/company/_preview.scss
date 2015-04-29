@@ -12,6 +12,7 @@ div.companies {
 }
 
 .cloud-profile-companies {
+  @include align-items(center);
   @include flex-direction(column);
 
   font-size: $basic-font-size;
@@ -36,6 +37,30 @@ div.companies {
     margin-bottom: 0;
     font-size: $big-font-size;
     width: 300px;
+  }
+
+  .subscription {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+
+    width: 600px;
+
+    > p {
+      font-size: $big-font-size;
+    }
+
+    > form {
+      @include display(flex);
+
+      > input {
+        margin-right: $inner-margin-size;
+      }
+
+      > button {
+        padding: 0 10px;
+      }
+    }
   }
 }
 

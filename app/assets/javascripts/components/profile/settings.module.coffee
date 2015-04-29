@@ -12,6 +12,7 @@ UserSyncApi     = require('sync/user_sync_api')
 Emails          = require('components/profile/emails')
 Field           = require('components/form/field')
 SyncButton      = require('components/form/buttons').SyncButton
+Checkbox        = require('components/form/checkbox')
 
 
 KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company'])
@@ -39,6 +40,8 @@ module.exports  = React.createClass
     withEmails: React.PropTypes.bool
 
   getDefaultProps: ->
+    cursor:
+      tokens: TokenStore.cursor.items
     withEmails: false
 
   getInitialState: ->
@@ -77,7 +80,7 @@ module.exports  = React.createClass
     .toArray()
 
   getEmailUserTokens: ->
-    @cursor.tokens.filter (token) =>
+    @props.cursor.tokens.filter (token) =>
       token.get('name') == 'email_verification' && 
       token.get('owner_id') == @props.uuid &&
       token.get('owner_type') == 'User'
@@ -86,6 +89,18 @@ module.exports  = React.createClass
       token.data = token.data.toObject()
       token      
     .toArray()
+
+  isSubscribed: ->
+    !!@props.cursor.tokens.filter (token) =>
+      token.get('owner_id') == @props.uuid &&
+      token.get('name') == 'subscription'
+    .size
+
+  clearSubscriptionTokens: ->
+    @props.cursor.tokens.forEach (item, id) =>
+      if item.get('owner_id') == @props.uuid &&
+         item.get('name') == 'subscription'
+        TokenStore.cursor.items.removeIn(id)
 
 
   # Handlers
@@ -123,6 +138,17 @@ module.exports  = React.createClass
       statusIcon:  'fa fa-times'
       isSyncing:   false
       submitText:  'Update failed'
+
+  handleSubscriptionChange: (checked) ->
+    if checked
+      UserSyncApi.subscribe(@cursor.user).then =>
+        GlobalState.fetch(new GlobalState.query.Query("Viewer{tokens}"), { force: true })
+    else
+      UserSyncApi.unsubscribe(@cursor.user).then =>
+        @clearSubscriptionTokens()
+        GlobalState.fetch(new GlobalState.query.Query("Viewer{tokens}"), { force: true })
+
+
 
   # Lifecycle methods
   #
@@ -177,6 +203,16 @@ module.exports  = React.createClass
       emails              = { @getUserEmails() }
       verification_tokens = { @getEmailUserTokens() } />
 
+  renderSubscription: ->
+    <section className="subscription">
+      <h2>Subscriptions</h2>
+      <Checkbox
+        checked  = { @isSubscribed() } 
+        onChange = { @handleSubscriptionChange }>
+        Subscribe me
+      </Checkbox>
+    </section>
+
 
   render: ->
     return null unless @isLoaded()
@@ -189,4 +225,5 @@ module.exports  = React.createClass
       </fieldset>
       { @renderSubmitButton() }
       { @renderEmails() }
+      { @renderSubscription() }
     </form>

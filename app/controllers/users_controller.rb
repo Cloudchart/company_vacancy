@@ -36,13 +36,14 @@ class UsersController < ApplicationController
     errors = []
     errors << :subscribed if @user.tokens.find_by(name: :subscription)
 
-    if @user.emails.pluck(:address).include? params_for_subscribe[:email]
+    if params[:user].try(:[], :email).nil? || @user.emails.pluck(:address).include?(params_for_subscribe[:email])
       @user.tokens.create! name: :subscription
     else
       email = Email.new(address: params_for_subscribe[:email])
 
       if email.valid?
-        token = @user.tokens.create name: 'email_verification', data: { address: email.address, subscribe: true }
+        @user.tokens.create! name: :subscription
+        token = @user.tokens.create name: 'email_verification', data: { address: email.address }
         CloudProfile::ProfileMailer.verification_email(token).deliver
       else
         errors << :email
@@ -56,6 +57,14 @@ class UsersController < ApplicationController
   rescue ActiveRecord::RecordInvalid
 
     render json: { errors: errors }, status: 422
+  end
+
+  def unsubscribe
+    @user.tokens.find_by(name: :subscription).try(:destroy)
+
+    respond_to do |format|
+      format.json { render json: :ok }
+    end
   end
 
   def tour

@@ -178,6 +178,21 @@ main.user-profile {
     padding: 0 0 20px;
   }
 
+  @mixin settings-subscription {
+    > h2 {
+      margin-top: $gutter-size;
+    }
+
+    > label {
+      font-size: $basic-font-size;
+      font-weight: 400;
+
+      > input {
+        margin-right: $inner-margin-size;
+      }
+    }
+  }
+
 
   > header {
     @include settings-form-header;
@@ -189,5 +204,9 @@ main.user-profile {
 
   > footer {
     @include settings-form-footer;
+  }
+
+  > .subscription {
+    @include settings-subscription;
   }
 }
