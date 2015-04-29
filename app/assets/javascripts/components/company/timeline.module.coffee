@@ -223,6 +223,8 @@ Component = React.createClass
       <div className="description" dangerouslySetInnerHTML={__html: @state.story.get('description')} />
 
   renderCurrentStory: ->
+    return null unless @getPosts().size > 0
+
     <header>
       { @renderStoryName() }
       { @renderStoryDescription() }
