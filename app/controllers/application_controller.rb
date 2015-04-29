@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
   before_filter :check_browser
   before_filter :store_location
 
+  skip_after_filter :intercom_rails_auto_include, if: -> { current_user.try(:guest?) }
+
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
 
   rescue_from CanCan::AccessDenied do |exception|
