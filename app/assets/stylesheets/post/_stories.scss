@@ -19,17 +19,21 @@ main.company .stories {
       width: 320px;
       height: 190px;
 
+      &.inactive {
+        opacity: 0.5;
+      }
+
       > header {
         @include display(flex);
 
         margin-bottom: 20px;
 
         > h3 {
+          color: $link-color;
           font-size: 20px;
           font-weight: 600;
           margin: 0;
         }
-
       }
 
       > div.content {

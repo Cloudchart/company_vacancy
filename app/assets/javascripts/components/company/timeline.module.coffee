@@ -244,7 +244,7 @@ Component = React.createClass
   # 
   render: ->
     return null unless @isLoaded()
-    return <StoriesList company_id = { @props.company_id } /> if @state.shouldDisplayStories
+    return <StoriesList company_id = { @props.company_id } readOnly = { @props.readOnly } /> if @state.shouldDisplayStories
 
     posts = @getPosts()
 

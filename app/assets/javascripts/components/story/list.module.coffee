@@ -24,11 +24,13 @@ MainComponent = React.createClass
   # statics: {}
   propTypes:
     company_id: React.PropTypes.string.isRequired
+    readOnly:   React.PropTypes.bool
 
 
   # Component Specifications
   # 
   getDefaultProps: ->
+    readOnly: true
     cursor:
       stories:       StoryStore.cursor.items
       posts_stories: PostsStoryStore.cursor.items
@@ -93,7 +95,7 @@ MainComponent = React.createClass
   renderStories: ->
     stories = @props.cursor.stories
       .filter (story) -> story.get('posts_stories_count')
-      .sortBy (story) -> story.get('name')
+      .sortBy (story) -> +!!story.get('company_id') + story.get('name')
       .map @storyItemMapper
 
     <ul className="stories list">
@@ -101,7 +103,6 @@ MainComponent = React.createClass
         <header>
           <h3>Everything</h3>
         </header>
-
         <div className="content">{ "Story of #{@state.company.name}" }</div>
       </li>
 
@@ -110,16 +111,19 @@ MainComponent = React.createClass
 
   storyItemMapper: (story, uuid) ->
     posts_count = @getPostsSizeForStory(story)
-    pins_count = @getPinsSizeForStory(story)
-    return null if posts_count == pins_count == 0
+    return null unless posts_count >= 5 || 
+                       !story.get('company_id') && posts_count > 0 ||
+                       !@props.readOnly
 
-    <li key={ uuid } onClick={ @handleStoryClick.bind(@, story) } >
+    storyClassName = if posts_count < 5 then 'inactive' else null                 
+
+    pins_count = @getPinsSizeForStory(story)
+
+    <li className={ storyClassName } key={ uuid } onClick={ @handleStoryClick.bind(@, story) } >
       <header>
         <h3>{ '#' + story.get('formatted_name') }</h3>
       </header>
-
       <div className="content" dangerouslySetInnerHTML={__html: story.get('description')} />
-
       <footer>
         { "#{posts_count} posts, #{pins_count} insights" }
       </footer>
