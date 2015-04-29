@@ -33,6 +33,7 @@ module.exports = React.createClass
             insight_features {
               insight {
                 user,
+                pinboard,
                 post {
                   company,
                   pins

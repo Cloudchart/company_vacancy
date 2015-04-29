@@ -40,6 +40,9 @@ module.exports = GlobalState.createStore
 
   syncAPI:        SyncAPI
 
+  serverActions: ->
+    'post:fetch-all:done': @populate
+
 
   readable_pinboards: (user) ->
     @cursor.items.filterCursor readablePinboardsFilter(user)

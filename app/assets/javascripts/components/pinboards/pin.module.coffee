@@ -43,6 +43,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            pinboard,
             post {
               #{PinnablePost.getQuery('post')}
             },

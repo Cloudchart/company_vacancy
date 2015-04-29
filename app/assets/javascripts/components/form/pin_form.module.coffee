@@ -99,7 +99,6 @@ module.exports = React.createClass
     else
       @fetchUser()
 
-
   fetch: ->
     Promise.all([@fetchSystemPinboards(), @fetchPin()]).then =>
       ModalStack.show(<InsightTourApp />) if @shouldShowTour()
@@ -209,7 +208,7 @@ module.exports = React.createClass
 
 
   getDefaultPinboardId: (id) ->
-    pinboard = @gatherPinboards(id).first()
+    pinboard = (if @props.parent_id then @getParentPinboard(id)) || @gatherPinboards(id).first()
 
     if pinboard then pinboard.get('uuid') else 'new'
 
@@ -257,10 +256,20 @@ module.exports = React.createClass
   isSelectedUserUnicorn: ->
     @isUserWithRole(@state.attributes.get('user_id'), 'unicorn')
 
+  getParentPinboard: (id) ->
+    return null unless (parentPin = @props.cursor.pins
+      .filter (pin) => pin.get('uuid') == @props.parent_id
+      .first())
+
+    return null unless (parentPinboard = @props.cursor.pinboards
+      .filter (pinboard) -> pinboard.get('uuid') == parentPin.get('pinboard_id')
+      .first())
+
+    @gatherPinboards(id).filter((pinboard) -> pinboard.get('title') == parentPinboard.get('title')).first()
+
 
   # Lifecycle
   #
-
   componentDidMount: ->
     @fetch()
 

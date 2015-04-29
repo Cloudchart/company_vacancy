@@ -20,6 +20,7 @@ pins = posts.map(&:pins).flatten.reject { |pin| cannot?(:read, pin) }
 stories = Story.cc_plus_company(@company.id)
 posts_stories = posts.map(&:posts_stories).flatten
 users = pins.map(&:user).compact.uniq
+pinboards = pins.map(&:pinboard).compact.uniq
 roles = users.map(&:unicorn_role).compact
 
 # return json
@@ -38,6 +39,10 @@ json.posts_stories ams(posts_stories)
 
 json.pins pins do |pin|
   json.partial! 'pin', pin: pin
+end
+
+json.pinboards pinboards do |pinboard|
+  json.partial! 'pinboard', pinboard: pinboard
 end
 
 json.users users do |user|
