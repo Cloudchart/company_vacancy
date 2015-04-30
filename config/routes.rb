@@ -111,6 +111,7 @@ Cloudchart::Application.routes.draw do
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :roles, only: [:update, :destroy]
+  resources :limbo, only: [:index]
 
   # Custom
   #
