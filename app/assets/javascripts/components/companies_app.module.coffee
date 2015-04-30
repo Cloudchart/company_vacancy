@@ -46,6 +46,7 @@ CompaniesApp = React.createClass
   getInitialState: ->
     _.extend @getStateFromStores(),
       query:    @props.query || location.hash.substr(1) || ''
+      isLoaded: false
 
   getStateFromStores: ->
     myCompaniesIds = @getIds(@sortCompanies(CompanyStore.filterForCurrentUser()))
@@ -62,6 +63,9 @@ CompaniesApp = React.createClass
 
   # Helpers
   #
+  isLoaded: ->
+    @state.isLoaded
+
   isCurrentUserSystemEditor: ->
     RoleStore.rolesFor(@props.cursor.user.get('uuid'))
       .find (role) =>
@@ -95,7 +99,8 @@ CompaniesApp = React.createClass
 
   search: (query) ->
     @clearSearchedCompanies()
-    CompanyStore.search(query)
+    CompanyStore.search(query).then =>
+      @setState isLoaded: true
 
   clearSearchedCompanies: ->
     @props.cursor.companies.forEach (item, id) =>
@@ -162,10 +167,11 @@ CompaniesApp = React.createClass
 
   renderFooter: ->
     <Subscription 
-      subscribedText = "Great news: you're already on our mailing list!"
       text = "We're adding new companies every week — join our mailing list to get updates on new unicorns' timelines and useful insights." />
 
   render: ->
+    return null unless @isLoaded()
+
     <section className="cloud-profile-companies">
       { @renderHeader() }
       <CompanyList

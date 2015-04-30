@@ -16,7 +16,9 @@ module.exports = GlobalState.createStore
   syncAPI:        require('sync/company')
 
   search: (query) ->
-    @syncAPI.search(query).done @fetchDone
+    promise = @syncAPI.search(query)
+    promise.done @fetchDone
+    promise
 
   filterForUser: (user_id) ->
     companiesRolesIds = RoleStore.filterForUserCompanies(user_id).map((role) -> role.get('owner_id'))

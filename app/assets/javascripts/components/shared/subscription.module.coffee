@@ -103,7 +103,9 @@ module.exports = React.createClass
   renderPlaceholder: ->
     return null unless @props.subscribedText
 
-    <p>{ @props.subscribedText }</p>
+    <section className="subscription">
+      <p>{ @props.subscribedText }</p>
+    </section>
 
   renderText: ->
     return null unless @props.text
@@ -115,10 +117,7 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     if @isSubscribed()
-      <section className="subscription">
-        { @renderText() }
-        { @renderPlaceholder() }
-      </section>
+      @renderPlaceholder()
     else
       <section className="subscription">
         { @renderText() }
@@ -126,7 +125,7 @@ module.exports = React.createClass
           <input 
             className   = { if @state.errors.contains('email') then 'cc-input error' else 'cc-input' }
             onChange    = { @handleChange.bind(@, 'email') }
-            placeholder = { @props.cursor.user.get('first_name') + ", your work email goes here" }
+            placeholder = { "Please enter your email" }
             type        = "email"
             value       = { @state.attributes.get('email') } />
           <SyncButton
