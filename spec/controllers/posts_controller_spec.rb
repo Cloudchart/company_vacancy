@@ -6,21 +6,20 @@ RSpec.describe PostsController, type: :controller do
     it 'responds successfully with HTTP 200 and renders the index template' do
       sign_in(create(:user))
       company = create(:company)
-      get :index, company_id: company.id
+      get :index, company_id: company.id, format: :json
       expect(response).to be_success
       expect(response).to have_http_status(200)
-      expect(response).to render_template(:index)
     end
   end
 
   describe 'PUT #update' do
     context 'when user is not authorized' do
-      it 'responds with HTTP 302 (redirected)' do
+      it 'responds with HTTP 404' do
         sign_in(create(:user))
         company = create(:company)
         post = create(:post, owner: company)
         put :update, id: post.id, post: { title: 'New title' }, format: :json
-        expect(response).to redirect_to(root_url)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -40,11 +39,11 @@ RSpec.describe PostsController, type: :controller do
 
   describe 'POST #create' do
     context 'when user is not authorized' do
-      it 'responds with HTTP 302 (redirected)' do
+      it 'responds with HTTP 404' do
         sign_in(create(:user))
         company = create(:company)
         post :create, company_id: company.id, post: { title: 'New title' }, format: :json
-        expect(response).to redirect_to(root_url)
+        expect(response).to have_http_status(404)
       end
     end
 
