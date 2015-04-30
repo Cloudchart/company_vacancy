@@ -11,6 +11,7 @@ class Pin < ActiveRecord::Base
   belongs_to :pinboard
   belongs_to :pinnable, polymorphic: true
   belongs_to :post, foreign_key: :pinnable_id
+  belongs_to :author, class_name: 'User'
 
   has_many :children, class_name: 'Pin', foreign_key: :parent_id
   has_many :features, inverse_of: :insight
