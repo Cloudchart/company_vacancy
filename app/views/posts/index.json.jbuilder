@@ -1,5 +1,5 @@
 # set posts
-posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :posts_stories, :quotes, blocks: :block_identities, pins: [:pinboard, user: :unicorn_role, parent: [user: :unicorn_role] ])
+posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :quotes, :stories, :posts_stories, blocks: :block_identities, pins: [:pinboard, user: [:unicorn_role, :emails], parent: [user: [:unicorn_role, :emails] ] ])
 
 # reject posts based on visibility rules
 posts = if can?(:update, @company)
@@ -29,13 +29,13 @@ json.blocks ams(blocks)
 json.pictures ams(pictures)
 json.paragraphs ams(paragraphs)
 
-json.quotes quotes do |quote|
-  json.partial! 'quote', quote: quote
-end
-
 json.visibilities ams(visibilities)
 json.stories ams(stories, scope: @company)
 json.posts_stories ams(posts_stories)
+
+json.quotes quotes do |quote|
+  json.partial! 'quote', quote: quote
+end
 
 json.pins pins do |pin|
   json.partial! 'pin', pin: pin
