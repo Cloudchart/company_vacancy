@@ -11,7 +11,7 @@ en:
     roles:
       acceptance: "you can't accept this invitation, because you are already associated with this %{name}"
     authentication:
-      email_doesnt_exist: "The email does not belong to any account" 
+      email_doesnt_exist: "The email does not belong to any account"
       password_doesnt_match: "The password is incorrect"
     pages:
       not_found:
@@ -23,3 +23,6 @@ en:
       internal_server_error:
         title: "Something went wrong"
         description: "We've been notified about the issue."
+      authentication_error:
+        title: "Authentication error"
+        description: "You're not authenticated."

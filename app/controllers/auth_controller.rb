@@ -4,6 +4,12 @@ class AuthController < ApplicationController
 
   layout 'guest'
 
+
+  def failure
+    render file: "#{Rails.root}/public/403.html", status: 200, layout: false
+  end
+
+
   def twitter
     if user = User.find_by(twitter: oauth_hash.info.nickname)
       authenticate_user!(user)
@@ -41,7 +47,7 @@ class AuthController < ApplicationController
       user.update!(full_name: params[:full_name], company: params[:company], occupation: params[:occupation])
       token.update!(data: { address: email.address })
     end
-    
+
     SlackWebhooksWorker.perform_async('added_details_to_queue', user.id) if should_perform_sidekiq_worker? && user.valid?
 
     render json: { id: user.id }
