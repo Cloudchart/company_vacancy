@@ -99,6 +99,9 @@
   padding-bottom: 70px;
 
   > .texts {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 32px;
     position: relative;
     width: 100%;
 
@@ -375,7 +378,7 @@
         @include tour-insight-list();
       }
 
-      p, > div {
+      > p, > div {
         font-size: 24px;
         font-weight: 300;
         line-height: 32px;
