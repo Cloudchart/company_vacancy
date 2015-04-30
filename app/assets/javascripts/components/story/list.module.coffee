@@ -101,7 +101,7 @@ MainComponent = React.createClass
     <ul className="stories list">
       <li onClick = { @handleBackToTimelineClick } >
         <header>
-          <h3>Everything</h3>
+          <h3>All events</h3>
         </header>
         <div className="content">{ "Story of #{@state.company.name}" }</div>
       </li>
@@ -115,7 +115,7 @@ MainComponent = React.createClass
                        !story.get('company_id') && posts_count > 0 ||
                        !@props.readOnly
 
-    storyClassName = if posts_count < 5 then 'inactive' else null                 
+    storyClassName = if (posts_count < 5 && story.get('company_id')) then 'inactive' else null                 
 
     pins_count = @getPinsSizeForStory(story)
 

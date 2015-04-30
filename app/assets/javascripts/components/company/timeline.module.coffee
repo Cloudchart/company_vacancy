@@ -186,6 +186,11 @@ Component = React.createClass
         readOnly     = { @props.readOnly }
       />
 
+  renderStoryChevron: ->
+    return null if @state.story
+
+    <i className="fa fa-chevron-down" />
+
   renderStoryCancel: ->
     return null unless @state.story
 
@@ -196,21 +201,25 @@ Component = React.createClass
 
   renderStoryName: ->
     storyName = if @state.story
-      '#' + @state.story.get('formatted_name')
+      "#" + @state.story.get('formatted_name')
     else
-      'Everything'
+      "all events"
 
-    storyClassName = if !@state.story then "main" else null
-
-    <h1 className={ storyClassName }>
-      <span onClick = { @handleStoriesListClick }> { storyName }</span>
+    <h1>
+      <span>
+        { "Showing " }
+        <span className="link" onClick = { @handleStoriesListClick }>
+          { storyName }
+          { @renderStoryChevron() }
+        </span>
+      </span>
       { @renderStoryCancel() }
     </h1>
 
   renderStoryDescription: ->
-    if !@state.story 
-      <div className="description">Story of { @state.company.name if @state.company }</div>
-    else if @state.story.get('company_id') and !@props.readOnly
+    return null unless @state.story
+
+    if @state.story.get('company_id') and !@props.readOnly
       <label className="description">
         <ContentEditableArea
           onChange = { @handleStoryDescriptionChange }

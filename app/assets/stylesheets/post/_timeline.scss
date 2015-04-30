@@ -15,11 +15,22 @@
       @include align-items(center);
       @include display(flex);
 
-      color: $link-color;
       cursor: pointer;
       font-size: 54px;
       font-weight: 300;
       margin: 0;
+
+      .link {
+        color: $link-color;
+
+        > .fa-chevron-down {
+          cursor: pointer;
+          font-size: 32px;
+          margin-left: 12px;
+          position: relative;
+          top: -5px;
+        }
+      }
 
       .cc-times {
         color: $link-color;
