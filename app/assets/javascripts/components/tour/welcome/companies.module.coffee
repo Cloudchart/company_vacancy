@@ -25,6 +25,7 @@ module.exports = React.createClass
       companies: ->
         """
           Viewer {
+            roles,
             published_companies {
               #{CompanyPreview.getQuery('company')}
             }
@@ -50,10 +51,14 @@ module.exports = React.createClass
 
   getCompanies: ->
     favoritesIds = @getFavorites().map (favorite) -> favorite.get('favoritable_id')
+    ownedCompaniesIds = CompanyStore
+      .filterForUser(@props.cursor.user.get('uuid'))
+      .map (company) -> company.get('uuid')
 
     CompanyStore
       .filter (company) -> company.get('is_published') && 
-                           !favoritesIds.contains(company.get('uuid'))
+                           !favoritesIds.contains(company.get('uuid')) &&
+                           !ownedCompaniesIds.contains(company.get('uuid'))
       .sortBy (company) -> company.get('created_at')
       .reverse()
 

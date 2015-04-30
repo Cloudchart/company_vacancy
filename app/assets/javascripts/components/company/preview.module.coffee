@@ -6,6 +6,7 @@ CompanyStore   = require('stores/company_store.cursor')
 BlockStore     = require('stores/block_store.cursor')
 PostStore      = require('stores/post_store.cursor')
 PinStore       = require('stores/pin_store')
+RoleStore      = require('stores/role_store.cursor')
 TaggingStore   = require('stores/tagging_store')
 TagStore       = require('stores/tag_store')
 TokenStore     = require('stores/token_store.cursor')
@@ -48,10 +49,11 @@ CompanyPreview = React.createClass
           }
         """
 
-      tokens: ->
+      viewer: ->
         """
           Viewer {
-            company_invite_tokens
+            company_invite_tokens,
+            roles
           }
         """
 
@@ -62,8 +64,8 @@ CompanyPreview = React.createClass
           }
         """
 
-  fetchTokens: ->
-    GlobalState.fetch(@getQuery('tokens'))
+  fetchViewer: ->
+    GlobalState.fetch(@getQuery('viewer'))
 
   fetchFavorites: (options={}) ->
     GlobalState.fetch(@getQuery('favorites'), options)
@@ -78,6 +80,7 @@ CompanyPreview = React.createClass
 
   getDefaultProps: ->
     cursor:
+      roles:  RoleStore.cursor.items
       tokens: TokenStore.cursor.items
     onSyncDone: ->
     showFollowButton: false
@@ -165,6 +168,12 @@ CompanyPreview = React.createClass
     else
       insights_count
 
+  isViewerOwner: ->
+    !!CompanyStore
+      .filterForUser(@cursor.viewer.get('uuid'))
+      .filter (company) => company.get('uuid') == @props.uuid
+      .size
+
 
   # Handlers
   #
@@ -221,7 +230,7 @@ CompanyPreview = React.createClass
       favorites: FavoriteStore.cursor.items
       viewer:    UserStore.me()
 
-    @fetchTokens() unless @isLoaded()
+    @fetchViewer() unless @isLoaded()
 
 
   # Renderers
@@ -237,7 +246,7 @@ CompanyPreview = React.createClass
     <li className="label">Invited</li>
 
   renderFollowButton: ->
-    return null unless @props.showFollowButton && !@getFavorite()
+    return null unless @props.showFollowButton && !@getFavorite() && !@isViewerOwner()
 
     <SyncButton
       className = "cc follow"
