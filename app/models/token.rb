@@ -2,7 +2,7 @@ class Token < ActiveRecord::Base
   include Uuidable
   include Admin::Token
 
-  TOUR_TYPES = [:welcome, :insight].freeze
+  TEMP_INFO_BLOCK_TYPES = [:welcome_tour, :insight_tour, :greeting].freeze
 
   serialize :data
 

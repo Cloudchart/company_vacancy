@@ -27,7 +27,7 @@ module.exports = React.createClass
   finishTour: ->
     @setState isSyncing: true
 
-    UserSyncApi.finishTour(@props.user, type: "insight").then =>
+    UserSyncApi.deleteTempInfoBlock(@props.user, type: "insight_tour").then =>
       @clearTokens()
 
       GlobalState.fetch(new GlobalState.query.Query("Viewer{tokens}"), force: true)

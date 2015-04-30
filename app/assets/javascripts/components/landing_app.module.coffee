@@ -5,6 +5,7 @@ GlobalState      = require('global_state/state')
 FeaturedInsights = require('components/insight/featured')
 RecentCompanies  = require('components/company/lists/recent')
 TopInsights      = require('components/pinboards/pins/top')
+Greeting         = require('components/shared/greeting')
 
 # Exports
 #
@@ -49,6 +50,7 @@ module.exports = React.createClass
 
   render: ->
     <section className="landing">
+      <Greeting />
       { @renderHeader() }
       <FeaturedInsights />
       { @renderTopInsights() }

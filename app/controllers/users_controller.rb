@@ -67,8 +67,8 @@ class UsersController < ApplicationController
     end
   end
 
-  def tour
-    @user.tokens.find_by(name: "#{params[:type]}_tour").try(:destroy)
+  def temp_info_block
+    @user.tokens.find_by(name: "#{params[:type]}").try(:destroy) if Token::TEMP_INFO_BLOCK_TYPES.include?(params[:type].to_sym)
 
     respond_to do |format|
       format.json { render json: :ok }

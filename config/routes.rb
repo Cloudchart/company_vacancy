@@ -98,7 +98,7 @@ Cloudchart::Application.routes.draw do
     get :settings, on: :member
     patch :subscribe, on: :member
     delete :unsubscribe, on: :member
-    delete :tour, on: :member
+    delete :temp_info_block, on: :member
   end
 
   resources :emails, only: [:create, :destroy] do

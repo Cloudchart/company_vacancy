@@ -21,7 +21,7 @@ module.exports = React.createClass
   # Helpers
   #
   finishTour: ->
-    UserSyncApi.finishTour(@props.user, type: "welcome").then =>
+    UserSyncApi.deleteTempInfoBlock(@props.user, type: "welcome_tour").then =>
       ModalStack.hide()
 
 
