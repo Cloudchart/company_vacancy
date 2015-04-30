@@ -23,7 +23,9 @@ module Cloudchart
 
     config.autoload_paths += %W(#{config.root}/lib/cloudchart)
     config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/serializers)
-    
+    config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/mutations)
+    config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/nodes)
+
     # Handle exceptions
     #
     config.exceptions_app = self.routes
