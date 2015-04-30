@@ -327,9 +327,7 @@ Post = React.createClass
     </section>
 
   renderPinners: (pinners) ->
-    return null if @getInsightsNumber() == 0 || @state.isInEditMode
-
-    pinnersIds = @gatherPinnersIds()
+    return null if (pinnersIds = @gatherPinnersIds()).size == 0 || @state.isInEditMode
     
     pinners = pinnersIds.take(3).map (pinnerId) => @props.cursor.users.get(pinnerId)
     pinnersNumber = pinnersIds.skip(3).size
@@ -350,7 +348,7 @@ Post = React.createClass
   renderPinInfo: ->
     return null if @state.isInEditMode
 
-    if @getInsightsNumber() > 0
+    if @gatherPinnersIds().size > 0
       <section className="post-pin-info">
         { @renderPinners() }
         <div className="spacer"></div>
