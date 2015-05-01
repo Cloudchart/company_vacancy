@@ -17,6 +17,7 @@ PinButton         = require('components/pinnable/pin_button')
 EditPinButton     = require('components/pinnable/edit_pin_button')
 ApprovePinButton  = require('components/pinnable/approve_pin_button')
 Tooltip           = require('components/shared/tooltip')
+StandardButton    = require('components/form/buttons').StandardButton
 
 
 # Utils
@@ -61,6 +62,9 @@ module.exports = React.createClass
       PinStore.getParentFor(@props.cursor.pin.get('uuid'))
     else
       @props.cursor.pin
+
+  destroySuggestion: ->
+    PinStore.destroy(@props.cursor.pin.get('uuid')) if confirm('Are you sure?')
 
 
   # Helpers
@@ -116,7 +120,12 @@ module.exports = React.createClass
     return null unless @isSuggested()
 
     <section className="suggestion">
+      <i className="svg-icon svg-cloudchart-logo" />
       Suggested by CloudChart
+      <StandardButton 
+        className = "transparent"
+        iconClass = "cc-icon cc-times"
+        onClick   = { @destroySuggestion } />
     </section>
 
 

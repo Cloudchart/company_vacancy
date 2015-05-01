@@ -100,6 +100,7 @@ ul.insight-list,
   background-color: $card-color;
   border: 1px solid $border-color;
   padding: $default-margin-size;
+  padding-bottom: $inner-margin-size;
   margin-top: 14px;
   position: relative;
   width: 310px;
@@ -192,6 +193,7 @@ ul.insight-list,
     font-size: 16px;
     font-weight: $normal-weight;
     line-height: 1.4;
+    margin-bottom: $inner-margin-size;
     width: 100%;
 
     > .origin {
@@ -205,6 +207,29 @@ ul.insight-list,
           left: 12px;
         }
       }
+    }
+  }
+
+  > .suggestion {
+    font-size: $small-font-size;
+    font-weight: 300;
+    height: 34px;
+    line-height: 34px;
+    position: relative;
+
+    > i {
+      background-size: 28px 18px;
+      height: 18px;
+      margin-right: $inner-margin-size;
+      width: 28px;
+    }
+
+    .cc-times {
+      @include position(absolute, 50% 0px 0 0);
+
+      color: $accented-red-color;
+      font-size: 24px;
+      margin-top: -12px;
     }
   }
 }

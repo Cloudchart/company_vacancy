@@ -361,11 +361,11 @@ Post = React.createClass
       { @getPinnersNumberText(pinnersNumber) }
     </section>
 
-  renderSuggestInsight: ->
+  renderSuggestInsightButton: ->
     return null unless @isEditor()
 
     <StandardButton 
-      className = "cc"
+      className = "cc suggest"
       text      = "Suggest Insight"
       onClick   = { @handleSuggestInsightClick } />
 
@@ -379,7 +379,7 @@ Post = React.createClass
       <section className="post-pin-info">
         { @renderPinners() }
         <div className="spacer"></div>
-        { @renderSuggestInsight() }
+        { @renderSuggestInsightButton() }
         <ul className="round-buttons">
           <PinButton 
             pinnable_id   = { @props.id }
@@ -389,7 +389,7 @@ Post = React.createClass
       </section>
     else
       <section className="post-pin-info">
-        { @renderSuggestInsight() }
+        { @renderSuggestInsightButton() }
         <PinButton
           asTextButton   = { true }
           pinnable_id    = { @props.id }

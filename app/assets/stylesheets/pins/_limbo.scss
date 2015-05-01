@@ -9,3 +9,8 @@ section.limbo {
     margin-right: $gutter-size;
   }
 }
+
+.modal-stack-item > .pins {
+  height: 600px;
+  overflow: scroll;
+}
