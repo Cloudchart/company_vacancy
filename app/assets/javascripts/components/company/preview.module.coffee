@@ -324,7 +324,6 @@ CompanyPreview = React.createClass
   renderFooter: ->
     <footer>
       { @renderButtonsOrPeople() }
-      <section key="tags" className="tags">{ @renderTags() }</section>
     </footer>
 
 
