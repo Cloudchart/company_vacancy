@@ -11,11 +11,7 @@ Settings           = require('components/profile/settings')
 UserStore          = require('stores/user_store.cursor')
 PinStore           = require('stores/pin_store')
 CompanyStore       = require('stores/company_store.cursor')
-FavoriteStore      = require('stores/favorite_store.cursor')
 
-SyncButton         = require('components/form/buttons').SyncButton
-
-SyncApi            = require('sync/user_sync_api')
 
 EmptyTabTexts =
   feedOwn:        "Follow people and companies you're interested in to learn from them"
@@ -56,22 +52,20 @@ module.exports = React.createClass
         """
           User {
             followed_activities,
-            #{ProfileInfo.getQuery('user')},
+            roles,
+            pins,
+            owned_companies,
             #{UserPins.getQuery('pins')},
             #{UserCompanies.getQuery('companies')}
           }
-        """ 
+        """
 
   propTypes:
     uuid:   React.PropTypes.string.isRequired
 
-  getDefaultProps: ->
-    cursor: FavoriteStore.cursor.items
-
   getInitialState: ->
     fetchDone:   false
     currentTab:  location.hash.substr(1) || null
-    isSyncing:   false
     visibleTabs: Immutable.Seq()
 
   fetchViewer: (options={}) ->
@@ -87,16 +81,6 @@ module.exports = React.createClass
         currentTab:  @getInitialTab()
         visibleTabs: @getVisibleTabs()
 
-  getStateFromStores: ->
-    favorite: FavoriteStore.filter((favorite) => 
-      favorite.get('favoritable_id') == @props.uuid &&
-      favorite.get('favoritable_type') == 'User' &&
-      favorite.get('user_id') == @cursor.viewer.get('uuid')
-    ).first()
-
-  onGlobalStateChange: ->
-    @setState @getStateFromStores()
-
 
   # Helpers
   #
@@ -105,9 +89,6 @@ module.exports = React.createClass
 
   getMenuOptionClassName: (option) ->
     cx(active: @state.currentTab == option)
-
-  getFavorite: ->
-    @state.favorite
 
   getVisibleTabs: ->
     Immutable.OrderedMap(
@@ -129,6 +110,16 @@ module.exports = React.createClass
   isViewerProfile: ->
     @props.uuid == @cursor.viewer.get('uuid')
 
+  getInsightsCount: ->
+    count = PinStore
+      .filterByUserId(@props.uuid)
+      .filter (pin) -> 
+        pin.get('pinnable_id') && (pin.get('parent_id') || pin.get('content'))
+      .size
+
+  getCompaniesCount: ->
+    count = CompanyStore.filterForUser(@props.uuid).size
+
 
   # Handlers
   #
@@ -136,18 +127,6 @@ module.exports = React.createClass
     currentTab = location.hash.substr(1)
     if @state.visibleTabs.contains(currentTab)
       @setState currentTab: currentTab
-
-  handleFollowClick: ->
-    @setState(isSyncing: true)
-
-    if favorite = @getFavorite()
-      SyncApi.unfollow(@props.uuid).then =>
-        FavoriteStore.cursor.items.remove(favorite.get('uuid'))
-        @setState(isSyncing: false)
-    else
-      SyncApi.follow(@props.uuid).then => 
-        # TODO rewrite with grabbing only needed favorite
-        @fetchViewer(force: true).then => @setState(isSyncing: false)
 
 
   # Lifecycle methods
@@ -173,7 +152,7 @@ module.exports = React.createClass
     @state.visibleTabs.map (tabName) =>
       <li key = { tabName } className = { @getMenuOptionClassName(tabName) } >
         <a href = { location.pathname + "#" + tabName } className="for-group">
-          { tabName }
+          { @renderTabName(tabName) }
         </a>
       </li>
     .toArray()
@@ -184,17 +163,6 @@ module.exports = React.createClass
         { @renderTabs() }
       </ul>
     </nav>
-
-  renderFollowButton: ->
-    return null if @isViewerProfile()
-
-    text = if @getFavorite() then 'Unfollow' else 'Follow'
-
-    <SyncButton 
-      className         = "cc follow-button"
-      onClick           = { @handleFollowClick }
-      text              = { text }
-      sync              = { @state.isSyncing } />
 
   renderEmptyTabText: (key) ->
     emptyTextKey = key + (if @isViewerProfile() then "Own" else "Other")
@@ -222,6 +190,27 @@ module.exports = React.createClass
     else
       @renderEmptyTabText("insights")
 
+  renderInsightsNumber: ->
+    return null unless (insightsCount = @getInsightsCount()) > 0
+
+    <strong>{ insightsCount }</strong>
+
+  renderCompaniesNumber: ->
+    return null unless (companiesCount = @getCompaniesCount()) > 0
+
+    <strong>{ companiesCount }</strong>
+
+  renderTabName: (key) ->
+    switch key
+      when 'insights'
+        <span>Insights { @renderInsightsNumber() }</span>
+      when 'companies'
+        <span>Companies { @renderCompaniesNumber() }</span>
+      when 'feed'
+        "Feed"
+      when 'settings'
+        "Settings"
+
   renderContent: ->
     switch @state.currentTab
       when 'insights'
@@ -242,7 +231,6 @@ module.exports = React.createClass
         <div className="cloud-columns cloud-columns-flex">
           <ProfileInfo uuid = { @props.uuid } />
           { @renderMenu() }
-          { @renderFollowButton() }
         </div>
       </header>
       { @renderContent() }

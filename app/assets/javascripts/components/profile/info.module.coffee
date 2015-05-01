@@ -15,6 +15,10 @@ pluralize       = require('utils/pluralize')
 AutoSizingInput = require('components/form/autosizing_input')
 PersonAvatar    = require('components/shared/person_avatar')
 
+SyncButton         = require('components/form/buttons').SyncButton
+
+SyncApi            = require('sync/user_sync_api')
+
 KnownAttributes = Immutable.Seq(['avatar_url'])
 
 
@@ -27,33 +31,43 @@ module.exports  = React.createClass
   statics:
 
     queries:
-      user: ->
+
+      viewer: ->
         """
-          User {
-            roles,
-            pins,
-            owned_companies
+          Viewer {
+            favorites
           }
         """
 
       fetching_user: ->
         """
-          User
+          User{}
         """
 
   propTypes:
     uuid:     React.PropTypes.string.isRequired
 
   getDefaultProps: ->
-    cursor: UserStore.cursor.items
+    cursor: 
+      users:     UserStore.cursor.items
+      favorites: FavoriteStore.cursor.items
+
+  fetchViewer: (options={}) ->
+    GlobalState.fetch(@getQuery('viewer'), options)
 
   getInitialState: ->
-    attributes: Immutable.Map()
-    fetchDone:  false
+    attributes:  Immutable.Map()
+    isSyncing:   false
 
-  fetch: ->
-    GlobalState.fetch(@getQuery('user'), id: @props.uuid).then =>
-      @handleFetchDone()
+  getStateFromStores: ->
+    favorite: FavoriteStore.filter((favorite) => 
+      favorite.get('favoritable_id')   == @props.uuid &&
+      favorite.get('favoritable_type') == 'User' &&
+      favorite.get('user_id')          == @cursor.viewer.get('uuid')
+    ).first()
+
+  onGlobalStateChange: ->
+    @setState @getStateFromStores()
 
 
   # Helpers
@@ -65,28 +79,19 @@ module.exports  = React.createClass
     @setState
       attributes: @getAttributesFromCursor()
 
+  getFavorite: ->
+    @state.favorite
+
   getAttributesFromCursor: ->
     Immutable.Map().withMutations (attributes) =>
       KnownAttributes.forEach (name) =>
         attributes.set(name, @state.attributes.get(name) || @cursor.user.get(name, '') || '')
 
-  getInsightsCount: ->
-    count = PinStore
-      .filterByUserId(@props.uuid)
-      .filter (pin) -> pin.get('pinnable_id') && !pin.get('parent_id') && pin.get('content')
-      .size
-
-    if count > 0
-      pluralize(count, 'insight', 'insights')
-
-  getCompaniesCount: ->
-    count = CompanyStore.filterForUser(@props.uuid).size
-
-    if count > 0
-      pluralize(count, 'company', 'companies')  
-
   update: (attributes) ->
     UserSyncApi.update(@cursor.user, @state.attributes.toJSON()).then @handleSubmitDone, @handleSubmitFail
+
+  isViewerProfile: ->
+    @props.uuid == @cursor.viewer.get('uuid')
 
 
   # Handlers
@@ -101,17 +106,42 @@ module.exports  = React.createClass
   handleSubmitDone: ->
     GlobalState.fetch(@getQuery("fetching_user"), force: true, id: @props.uuid)
     
+  handleFollowClick: ->
+    @setState(isSyncing: true)
+
+    if favorite = @getFavorite()
+      SyncApi.unfollow(@props.uuid).then =>
+        FavoriteStore.cursor.items.remove(favorite.get('uuid'))
+        @setState(isSyncing: false)
+    else
+      SyncApi.follow(@props.uuid).then => 
+        # TODO rewrite with grabbing only needed favorite
+        @fetchViewer(force: true).then => @setState(isSyncing: false)
+
 
   # Lifecycle methods
   #
   componentWillMount: ->
     @cursor = 
-      user:       UserStore.cursor.items.cursor(@props.uuid)
+      user:   UserStore.cursor.items.cursor(@props.uuid)
+      viewer: UserStore.me()
 
-    if @isLoaded() then @handleFetchDone() else @fetch() 
+    @handleFetchDone()
+
 
   # Renderers
   #
+  renderFollowButton: ->
+    return null if @isViewerProfile()
+
+    text = if @getFavorite() then 'Unfollow' else 'Follow'
+
+    <SyncButton 
+      className         = "cc follow-button"
+      onClick           = { @handleFollowClick }
+      text              = { text }
+      sync              = { @state.isSyncing } />
+
   renderOccupation: ->
     strings = []
     strings.push occupation if (occupation = @cursor.user.get('occupation'))
@@ -120,14 +150,6 @@ module.exports  = React.createClass
     <div className="occupation">
       { strings.join(', ') }
     </div>
-
-  renderStats: ->
-    counters = []
-
-    if companiesCount = @getCompaniesCount() then counters.push(companiesCount)
-    if insightsCount = @getInsightsCount() then counters.push(insightsCount)
-
-    <div className="stats">{ counters.join(', ') }</div>
 
   renderTwitter: ->
     return null unless (twitterHandle = @cursor.user.get('twitter'))
@@ -146,10 +168,9 @@ module.exports  = React.createClass
         value      =  { @cursor.user.get('full_name') }
         withCamera =  { true } />
       <section className="personal">
-        <h1> { @cursor.user.get('full_name') } </h1>
+        <h1> { @cursor.user.get('full_name') } { @renderTwitter() } </h1>
         { @renderOccupation() }
         <div className="spacer"></div>
-        { @renderStats() }
-        { @renderTwitter() }
+        { @renderFollowButton() }
       </section>
     </section>
