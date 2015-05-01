@@ -47,14 +47,17 @@ module.exports = React.createClass
         """
 
   fetch: ->
-    GlobalState.fetch(@getQuery(@props.type), { id: @props.post_id }).then =>
+    if !@props.post_id
       @setState isLoaded: true
+    else
+      GlobalState.fetch(@getQuery(@props.type), { id: @props.post_id }).then =>
+        @setState isLoaded: true
 
 
   # Helpers
   #
   isLoaded: ->
-    @getPost().deref(false) || (@state && @state.isLoaded)
+    (@getPost() && @getPost().deref(false)) || (@state && @state.isLoaded)
 
   getPin: ->
     if @props.type == 'pin'
@@ -64,18 +67,11 @@ module.exports = React.createClass
 
   getPost: ->
     post_id = if @props.type == 'pin'
-      if (pinnable_id = @getPin().get('pinnable_id'))
-        pinnable_id
-      else
-        repin = @cursor.pins.filter (pin) =>
-          pin.get('parent_id') == @props.uuid
-        .first()
-
-        repin.get('pinnable_id') if repin
+      @getPin().get('pinnable_id')
     else
       @props.post_id
 
-    @cursor.posts.cursor(post_id)
+    @cursor.posts.cursor(post_id) if post_id
 
 
   # Lifecycle methods
@@ -92,20 +88,23 @@ module.exports = React.createClass
     pin     = @getPin()
     post    = @getPost()
 
-    return null unless pin && post
+    return null unless pin
 
-    if @props.withLinks
-      <span>
-        <a href={ post.get('post_url') } className="content" >
-          <span dangerouslySetInnerHTML={ __html: pin.get('content') } />
-        </a>
-        { " — " }
-      </span>    
+    if post
+      if @props.withLinks
+        <span>
+          <a href={ post.get('post_url') } className="content" >
+            <span dangerouslySetInnerHTML={ __html: pin.get('content') } />
+          </a>
+          { " — " }
+        </span>    
+      else
+        <span>
+          <span className="content" dangerouslySetInnerHTML={ __html: pin.get('content') } />
+          { " — " }
+        </span>
     else
-      <span>
-        <span className="content" dangerouslySetInnerHTML={ __html: pin.get('content') } />
-        { " — " }
-      </span>    
+      <span className="content" dangerouslySetInnerHTML={ __html: pin.get('content') } />
 
   renderInsightContext: ->
     post    = @getPost()

@@ -34,7 +34,8 @@ module.exports = React.createClass
   mixins: [GlobalState.query.mixin]
 
   propTypes:
-    uuid: React.PropTypes.string.isRequired
+    uuid:          React.PropTypes.string.isRequired
+    showPinButton: React.PropTypes.bool
 
   statics:
 
@@ -59,6 +60,9 @@ module.exports = React.createClass
             }
           }
         """
+
+  getDefaultProps: ->
+    showPinButton: true
 
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
@@ -96,6 +100,8 @@ module.exports = React.createClass
   # Renderers
   #
   renderInsightControls: (insight) ->
+    return null unless @props.showPinButton
+
     <ul className="round-buttons">
       <PinButton {...@gatherPinAttributes(insight)} />
     </ul>
@@ -110,9 +116,9 @@ module.exports = React.createClass
 
     <article className="insight">
       <InsightContent
-        type = 'pin'
+        type    = 'pin'
         post_id = { @cursor.pin.get('pinnable_id') }
-        uuid = { insight.get('uuid') }  />
+        uuid    = { insight.get('uuid') }  />
 
       <Human showUnicornIcon={ true } type="user" uuid={ insight.get('user_id') } />
 

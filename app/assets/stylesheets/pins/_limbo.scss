@@ -1,0 +1,11 @@
+section.limbo {
+  @include align-items(flex-end);
+  @include display(flex);
+  @include flex-direction(column);
+
+  padding-top: $gutter-size;
+
+  > button {
+    margin-right: $gutter-size;
+  }
+}

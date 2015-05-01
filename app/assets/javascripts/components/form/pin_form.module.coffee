@@ -147,6 +147,9 @@ module.exports = React.createClass
   savePin: (attributes) ->
     delete attributes['pinboard_title']
     delete attributes['parent_id'] unless attributes['parent_id']
+    delete attributes['pinboard_id'] unless attributes['pinboard_id']
+    delete attributes['pinnable_id'] unless attributes['pinnable_id']
+    delete attributes['pinnable_type'] unless attributes['pinnable_type']
 
     if @props.uuid
       PinStore.update(@props.uuid, attributes).then(@props.onDone, @handleSaveFail)
@@ -208,6 +211,8 @@ module.exports = React.createClass
 
 
   getDefaultPinboardId: (id) ->
+    return null if !@props.pinnable_id
+
     pinboard = (if @props.parent_id then @getParentPinboard(id)) || @gatherPinboards(id).first()
 
     if pinboard then pinboard.get('uuid') else 'new'
@@ -317,6 +322,8 @@ module.exports = React.createClass
 
 
   renderPinboardSelect: ->
+    return null unless @state.attributes.get('pinnable_id')
+
     <label className="pinboard">
       <div className="title">Category</div>
       <div className="select-wrapper">
