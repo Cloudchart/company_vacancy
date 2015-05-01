@@ -24,6 +24,7 @@ class PinsController < ApplicationController
     @pin.update_by! current_user
     @pin.is_approved = true if autoapproval_granted?
     @pin.author = current_user if should_assign_author?
+    @pin.user = @pin.parent.user if @pin.is_suggestion
     @pin.save!
 
     Activity.track(current_user, params[:action], @pin, @pin.user)

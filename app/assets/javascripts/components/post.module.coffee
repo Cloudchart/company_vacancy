@@ -33,6 +33,7 @@ Toggle              = require('components/form/toggle')
 PinButton           = require('components/pinnable/pin_button')
 StandardButton      = require('components/form/buttons').StandardButton
 UserPreview         = require('components/user/preview')
+LimboInsights       = require('components/pinboards/pins/limbo')
 
 # Main
 #
@@ -161,6 +162,16 @@ Post = React.createClass
   goToTimeline: ->
     location.href = @getTimelineUrl()
 
+  suggestPost: (insight) ->
+    attributes = Immutable.Map(
+      is_suggestion: true
+      pinnable_id:   @props.id
+      pinnable_type: 'Post'
+      parent_id:     insight.get('uuid')
+    ).toJSON()
+
+    PinStore.create(attributes).then(ModalActions.hide, ModalActions.hide)
+
 
   # Handlers
   #
@@ -221,6 +232,9 @@ Post = React.createClass
     setTimeout ->
       $('html,body').animate({ scrollTop: $(".post-pins").offset().top - 30 }, 'slow')
     , 10
+
+  handleSuggestInsightClick: ->
+    ModalActions.show(@renderSuggestChooser())
 
 
   # Lifecycle Methods
@@ -347,6 +361,17 @@ Post = React.createClass
       { @getPinnersNumberText(pinnersNumber) }
     </section>
 
+  renderSuggestInsight: ->
+    return null unless @isEditor()
+
+    <StandardButton 
+      className = "cc"
+      text      = "Suggest Insight"
+      onClick   = { @handleSuggestInsightClick } />
+
+  renderSuggestChooser: ->
+    <LimboInsights onItemClick = { @suggestPost } />
+
   renderPinInfo: ->
     return null if @state.isInEditMode
 
@@ -354,6 +379,7 @@ Post = React.createClass
       <section className="post-pin-info">
         { @renderPinners() }
         <div className="spacer"></div>
+        { @renderSuggestInsight() }
         <ul className="round-buttons">
           <PinButton 
             pinnable_id   = { @props.id }
@@ -363,6 +389,7 @@ Post = React.createClass
       </section>
     else
       <section className="post-pin-info">
+        { @renderSuggestInsight() }
         <PinButton
           asTextButton   = { true }
           pinnable_id    = { @props.id }

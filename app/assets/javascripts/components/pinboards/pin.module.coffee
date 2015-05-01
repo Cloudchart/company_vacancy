@@ -36,6 +36,7 @@ module.exports = React.createClass
   propTypes:
     uuid:          React.PropTypes.string.isRequired
     showPinButton: React.PropTypes.bool
+    onClick:       React.PropTypes.func
 
   statics:
 
@@ -63,6 +64,7 @@ module.exports = React.createClass
 
   getDefaultProps: ->
     showPinButton: true
+    onClick:       ->
 
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
@@ -95,6 +97,14 @@ module.exports = React.createClass
       PinStore.getParentFor(@props.uuid)
     else if @cursor.pin.get('content')
       @cursor.pin
+
+
+  # Handlers
+  #
+  handleClick: ->
+    return unless @props.onClick
+
+    @props.onClick(@cursor.pin)
 
 
   # Renderers
@@ -143,7 +153,7 @@ module.exports = React.createClass
   render: ->
     return null unless @cursor.pin.deref(false) && @cursor.user.deref(false)
 
-    <section className="pin cloud-card">
+    <section className="pin cloud-card" onClick={ @handleClick }>
       { @renderPinnablePreviewOrInsight() }
       { @renderComment() }
     </section>

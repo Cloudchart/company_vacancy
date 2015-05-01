@@ -17,6 +17,7 @@ paragraphs = posts.map(&:paragraphs).flatten
 quotes = posts.map(&:quotes).flatten
 visibilities = posts.map(&:visibilities).flatten
 pins = posts.map(&:pins).flatten.reject { |pin| cannot?(:read, pin) }
+pins.concat pins.map(&:parent).compact.uniq
 stories = Story.cc_plus_company(@company.id)
 posts_stories = posts.map(&:posts_stories).flatten
 users = pins.map(&:user).compact.uniq

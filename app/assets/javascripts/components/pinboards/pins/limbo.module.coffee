@@ -34,9 +34,13 @@ MainComponent = React.createClass
           }
         """
 
+  propTypes:
+    onItemClick:   React.PropTypes.func
+
   getDefaultProps: ->
     cursor: 
       pins: PinStore.cursor.items
+    onItemClick: ->
 
   getInitialState: ->
     isLoaded: false
@@ -72,7 +76,10 @@ MainComponent = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <PinsList pins = { @gatherInsights() } showPinButton = { false } />
+    <PinsList
+      onItemClick   = { @props.onItemClick }
+      pins          = { @gatherInsights() }
+      showPinButton = { false } />
 
 
 # Exports

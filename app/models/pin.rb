@@ -22,7 +22,7 @@ class Pin < ActiveRecord::Base
   scope :limbo, -> { where(parent: nil, pinnable: nil).where.not(content: nil, author: nil) }
 
   def should_validate_content_presence?
-    @update_by.present? && user_id != @update_by.uuid
+    @update_by.present? && user_id != @update_by.uuid && !is_suggestion
   end
 
   def update_by!(update_by)

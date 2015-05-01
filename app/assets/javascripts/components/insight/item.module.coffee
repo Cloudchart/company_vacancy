@@ -39,19 +39,28 @@ module.exports = React.createClass
 
 
   gatherAttributes: ->
-    uuid:           @props.cursor.pin.get('uuid')
-    parent_id:      @props.cursor.pin.get('parent_id')
+    uuid:           @getInsight().get('uuid')
+    parent_id:      @getInsight().get('parent_id')
     pinnable_id:    @props.cursor.pin.get('pinnable_id')
     pinnable_type:  @props.cursor.pin.get('pinnable_type')
 
   getStateFromStores: ->
-    user: @props.cursor.users.cursor(@props.cursor.pin.get('user_id'))
+    user: @props.cursor.users.cursor(@getInsight().get('user_id'))
 
   onGlobalStateChange: ->
     @setState @getStateFromStores()
 
   getInitialState: ->
     @getStateFromStores()
+
+  isSuggested: ->
+    @props.cursor.pin
+
+  getInsight: ->
+    if @isSuggested()
+      PinStore.getParentFor(@props.cursor.pin.get('uuid'))
+    else
+      @props.cursor.pin
 
 
   # Helpers
@@ -66,7 +75,7 @@ module.exports = React.createClass
     <i className="fa fa-code" />
 
   renderOrigin: ->
-    return null unless (origin = @props.cursor.pin.get('origin'))
+    return null unless (origin = @getInsight().get('origin'))
 
     if @isLink(origin)
       <a className="origin" href={ origin } target="_blank">
@@ -81,33 +90,52 @@ module.exports = React.createClass
 
   renderContent: ->
     <section className="content">
-      { @props.cursor.pin.get('content') }
+      { @getInsight().get('content') }
       { " " }
       { @renderOrigin() }
     </section>
 
+  renderApproveButton: ->
+    return null if @isSuggested()
+
+    <ApprovePinButton uuid = { @props.uuid } />
+
+  renderEditButton: ->
+    return null if @isSuggested()
+
+    <EditPinButton uuid={ @props.uuid } />
+
   renderButtons: ->
     <ul className="round-buttons">
-      <ApprovePinButton uuid = { @props.uuid } />
-      <EditPinButton uuid={ @props.uuid } />
-      <PinButton {...@gatherAttributes()} title={ @props.cursor.pin.get('content') } />
+      { @renderApproveButton() }
+      { @renderEditButton() }
+      <PinButton {...@gatherAttributes()} title={ @getInsight().get('content') } />
     </ul>
+
+  renderSuggestion: ->
+    return null unless @isSuggested()
+
+    <section className="suggestion">
+      Suggested by CloudChart
+    </section>
 
 
   render: ->
-    return null unless @props.cursor.pin.deref()
-    return null unless @state.user.deref()
+    return null unless @props.cursor.pin.deref(false)
+    return null unless @state.user.deref(false)
 
     insightClasses = cx
-      insight: true
-      item: true
-      unapproved: !@props.cursor.pin.get('is_approved')
+      insight:    true
+      item:       true
+      unapproved: !@getInsight().get('is_approved')
+      suggested:  @isSuggested()
 
     <article className = { insightClasses } >
       <Human 
-        uuid            = { @props.cursor.pin.get('user_id') }
+        uuid            = { @getInsight().get('user_id') }
         showUnicornIcon = { true }
         type            = "user" />
       { @renderContent() }
       { @renderButtons() }
+      { @renderSuggestion() }
     </article>

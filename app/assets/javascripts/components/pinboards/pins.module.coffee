@@ -16,16 +16,21 @@ module.exports = React.createClass
 
   propTypes:
     pins:          React.PropTypes.array.isRequired
+    onItemClick:   React.PropTypes.func
     showPinButton: React.PropTypes.bool
 
   getDefaultProps: ->
+    onItemClick:   ->
     showPinButton: true
 
   # Renderers
   #
   renderPin: (pin) ->
     <section className="cloud-column" key={ pin.get('uuid') }>
-      <PinComponent uuid={ pin.get('uuid') } showPinButton = { @props.showPinButton } />
+      <PinComponent
+        uuid          = { pin.get('uuid') }
+        onClick       = { @props.onItemClick }
+        showPinButton = { @props.showPinButton } />
     </section>
 
   renderPins: ->
