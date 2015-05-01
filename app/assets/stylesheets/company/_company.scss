@@ -289,7 +289,7 @@ main.company {
         background-color: $card-color;
 
         &.active {
-          background-color: hsl(0, 0%, 98%);
+          background-color: $tabs-active-color;
         }
       }
     }
