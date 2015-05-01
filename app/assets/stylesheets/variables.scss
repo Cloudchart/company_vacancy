@@ -35,12 +35,6 @@ $body-font-size: 10pt;
 $header-background-color: hsl(0, 0%, 91%);
 $header-font-size: $base-font-size;
 
-// Footer
-$footer-background-color: hsl(0, 0%, 94%);
-$footer-link-color: hsl(0, 0%, 47%);
-$footer-font-size: 14pt;
-$footer-font-weight: normal;
-
 // Buttons
 
 $grey-button-back-color: $athens-grey;
@@ -88,8 +82,8 @@ $auxilary-grey-color:  hsl(0, 0%, 73%);
 $disabled-grey-color:  hsl(0, 0%, 93%);
 $black-color:          hsl(0, 0%, 0%);
 
-$background-color:     $white-color;
-$border-color:         $disabled-grey-color;
+$background-color:     hsl(60, 2%, 92%);
+$border-color:         hsl(60, 4%, 91%);
 $special-link-color:   $primary-grey-color;
 $secondary-text-color: $primary-grey-color;
 $special-input-color:  $primary-grey-color;
@@ -115,6 +109,13 @@ $large-font-size:    24px;
 $huge-font-size:     36px;
 $great-font-size:    54px;
 $giant-font-size:    81px;
+
+// Footer
+$footer-background-color: $accented-green-color;
+$footer-link-color: $accented-white-color;
+$footer-font-size: $basic-font-size;
+$footer-font-weight: 300;
+$footer-height: 75px;
 
 strong {
   font-weight: $bold-weight;

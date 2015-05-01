@@ -3,7 +3,8 @@ body > footer {
   color: $footer-link-color;
   font-size: $footer-font-size;
   font-weight: $footer-font-weight;
-  padding: $base-unit * .75;
+  height: $footer-height;
+  line-height: $footer-height;
   
   &.inverse {
     background-color: hsl(0, 0%, 78%);
@@ -20,7 +21,7 @@ body > footer {
     list-style: none;
 
     li:not(:first-child) {
-      margin-left: $base-unit;
+      margin-left: $inner-margin-size;
     }
 
     a {

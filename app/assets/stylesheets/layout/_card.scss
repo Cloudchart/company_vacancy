@@ -133,7 +133,8 @@ $card-hr: 1px solid whitesmoke;
 // Cloud Card
 //
 .cloud-card {
-  background-color: white;
+  background-color: $accented-white-color;
+  border: 1px solid $border-color;
   padding: $card-basic-space;
 
   > header,
