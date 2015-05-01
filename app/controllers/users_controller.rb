@@ -67,14 +67,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def temp_info_block
-    @user.tokens.find_by(name: "#{params[:type]}").try(:destroy) if Token::TEMP_INFO_BLOCK_TYPES.include?(params[:type].to_sym)
-
-    respond_to do |format|
-      format.json { render json: :ok }
-    end
-  end
-
 private
 
   def set_user
@@ -90,10 +82,8 @@ private
   end
 
   def fields_for_update
-    default_fields = [:full_name, :avatar, :remove_avatar, :occupation, :company]
-    conditional_fields = []
-    conditional_fields << :twitter if @user.try(:unicorn?) && current_user.try(:editor?)
-    default_fields + conditional_fields
+    fields = [:full_name, :avatar, :remove_avatar, :occupation, :company]
+    fields << :twitter if @user.try(:unicorn?) && current_user.try(:editor?)
   end
 
 end

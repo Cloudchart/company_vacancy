@@ -1,9 +1,9 @@
 # @cjsx React.DOM
 
 GlobalState    = require('global_state/state')
-UserSyncApi    = require('sync/user_sync_api')
 
 TokenStore     = require('stores/token_store.cursor')
+UserStore      = require('stores/user_store.cursor')
 
 ModalStack     = require('components/modal_stack')
 
@@ -23,26 +23,18 @@ module.exports = React.createClass
   getInitialState: ->
     isSyncing:  false
 
+  getInsightTour: ->
+    TokenStore.findByUserAndName(UserStore.me(), 'insight_tour')
 
   finishTour: ->
     @setState isSyncing: true
-
-    UserSyncApi.deleteTempInfoBlock(@props.user, type: "insight_tour").then =>
-      @clearTokens()
-
-      GlobalState.fetch(new GlobalState.query.Query("Viewer{tokens}"), force: true)
-      ModalStack.hide()
-
-  clearTokens: ->
-    TokenStore.cursor.items.forEach (item, id) =>
-      if item.get('owner_id') == @props.user.get('uuid')
-        TokenStore.cursor.items.removeIn(id)
+    TokenStore.destroyInsightTour(@getInsightTour().get('uuid')).then -> ModalStack.hide()
 
 
   render: ->
     <article className={ "tour-insight-list " + @props.className }>
       <p>
-        The link to your Insights board is at the top of the page; your insight can also be found next to the post you've commented on.
+        { "The link to your Insights board is at the top of the page; your insight can also be found next to the post you've commented on." }
       </p>
       <div className="insight-list-placeholder"></div>
       <SyncButton

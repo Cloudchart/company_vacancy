@@ -1,7 +1,6 @@
 # @cjsx React.DOM
 
 GlobalState    = require('global_state/state')
-UserSyncApi    = require('sync/user_sync_api')
 
 TokenStore     = require('stores/token_store.cursor')
 UserStore      = require('stores/user_store.cursor')
@@ -39,6 +38,9 @@ module.exports = React.createClass
   fetch: ->
     GlobalState.fetch(@getQuery('tokens'))
 
+  onGlobalStateChange: ->
+    @setState refreshed_at: + new Date
+
 
   # Helpers
   #
@@ -47,22 +49,10 @@ module.exports = React.createClass
 
   finishGreeting: ->
     @setState isSyncing: true
-
-    UserSyncApi.deleteTempInfoBlock(@props.cursor.user, type: "greeting").then => 
-      @clearTokens()
-
-      GlobalState.fetch(new GlobalState.query.Query("Viewer{tokens}"), force: true)
+    TokenStore.destroyGreeting(@getGreeting().get('uuid'))
 
   getGreeting: ->
-    @props.cursor.tokens.filter (token) =>
-      token.get('owner_id') == @props.cursor.user.get('uuid') &&
-      token.get('name') == 'greeting'
-    .first()
-
-  clearTokens: ->
-    TokenStore.cursor.items.forEach (item, id) =>
-      if item.get('owner_id') == @props.cursor.user.get('uuid')
-        TokenStore.cursor.items.removeIn(id)
+    TokenStore.findByUserAndName(@props.cursor.user, 'greeting')
 
 
   # Lifecycle methods
@@ -74,7 +64,7 @@ module.exports = React.createClass
   # Renderers
   #
   renderText: ->
-    <p>{ @getGreeting().get('data').get('content') }</p>
+    <p dangerouslySetInnerHTML={__html: @getGreeting().get('data').get('content') } />
 
 
   render: ->

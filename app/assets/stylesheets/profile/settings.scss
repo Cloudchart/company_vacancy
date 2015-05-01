@@ -3,6 +3,11 @@ main.user-profile {
     margin: $gutter-size auto;
     width: 500px;
 
+    div[contenteditable] {
+      font-size: 16px;
+      @include editor-contenteditable-area;
+    }
+
     fieldset {
       margin: 0;
       margin-bottom: $gutter-size;

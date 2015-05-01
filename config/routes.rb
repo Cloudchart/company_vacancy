@@ -98,7 +98,6 @@ Cloudchart::Application.routes.draw do
     get :settings, on: :member
     patch :subscribe, on: :member
     delete :unsubscribe, on: :member
-    delete :temp_info_block, on: :member
   end
 
   resources :emails, only: [:create, :destroy] do
@@ -111,10 +110,17 @@ Cloudchart::Application.routes.draw do
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
   resources :roles, only: [:update, :destroy]
+  resources :tokens, only: :show
 
   # Custom
   #
-  get '/insights', to: "pins#index"
+  post '/users/:user_id/greeting', to: 'tokens#create_greeting'
+  match '/user_greeting/:id', to: 'tokens#update_greeting', via: [:put, :patch]
+  delete '/user_greeting/:id', to: 'tokens#destroy_greeting'
+  delete '/user_welcome_tour/:id', to: 'tokens#destroy_welcome_tour'
+  delete '/user_insight_tour/:id', to: 'tokens#destroy_insight_tour'
+
+  get '/insights', to: 'pins#index'
   delete '/logout', to: 'cloud_profile/authentications#destroy', as: :logout
   get '/old', to: 'welcome#old_browsers', as: :old_browsers
   get '/sandbox', to: 'sandbox#index' if Rails.env.development?
@@ -122,7 +128,6 @@ Cloudchart::Application.routes.draw do
 
   # Twitter OAuth
   #
-
   get '/auth/failure', to: 'auth#failure'
 
   get '/auth/twitter', as: :twitter_auth

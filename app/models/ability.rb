@@ -52,7 +52,7 @@ class Ability
         current_user != user
       end
 
-      can [:subscribe, :unsubscribe, :temp_info_block], User do |user|
+      can [:subscribe, :unsubscribe], User do |user|
         current_user == user
       end
 
@@ -125,6 +125,26 @@ class Ability
 
       can :manage_pinboard_invites, Pinboard do |pinboard|
         current_user.id == pinboard.user_id || editor?(current_user, pinboard)
+      end
+
+      # Token
+      # 
+      can :read, Token
+
+      can :create_greeting, User do |user|
+        user != current_user && current_user.editor? && user.unicorn?
+      end
+
+      can [:update_greeting], Token do |token|
+        current_user.editor?
+      end
+
+      can :destroy_greeting, Token do |token|
+        current_user.editor? || token.owner == current_user
+      end
+
+      can [:destroy_welcome_tour, :destroy_insight_tour], Token do |token|
+        token.owner == current_user
       end
 
       # Miscellaneous

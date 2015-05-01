@@ -46,14 +46,6 @@ module.exports =
       type: 'DELETE'
       dataType: 'json'
 
-  deleteTempInfoBlock: (user, attributes={}) ->
-    Promise.resolve $.ajax
-      url: "#{user.get('user_url')}/temp_info_block"
-      type: 'DELETE'
-      dataType: 'json'
-      data:
-        type: attributes.type
-
   subscribe: (user, attributes=null) ->
     if attributes
       data = attributes.reduce (memo, value, name) ->

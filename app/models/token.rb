@@ -2,8 +2,6 @@ class Token < ActiveRecord::Base
   include Uuidable
   include Admin::Token
 
-  TEMP_INFO_BLOCK_TYPES = [:welcome_tour, :insight_tour, :greeting].freeze
-
   serialize :data
 
   belongs_to :owner, polymorphic: true, inverse_of: :tokens

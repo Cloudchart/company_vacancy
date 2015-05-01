@@ -1,9 +1,9 @@
 # @cjsx React.DOM
 
-UserSyncApi    = require('sync/user_sync_api')
+TokenStore     = require('stores/token_store.cursor')
+UserStore      = require('stores/user_store.cursor')
 
 ModalStack     = require('components/modal_stack')
-
 StandardButton = require('components/form/buttons').StandardButton
 Subscription   = require('components/shared/subscription')
 
@@ -20,9 +20,11 @@ module.exports = React.createClass
 
   # Helpers
   #
+  getWelcomeTour: ->
+    TokenStore.findByUserAndName(UserStore.me(), 'welcome_tour')
+
   finishTour: ->
-    UserSyncApi.deleteTempInfoBlock(@props.user, type: "welcome_tour").then =>
-      ModalStack.hide()
+    TokenStore.destroyInsightTour(@getWelcomeTour().get('uuid')).then -> ModalStack.hide()
 
 
   # Renderers

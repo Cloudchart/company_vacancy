@@ -1,19 +1,18 @@
 # @cjsx React.DOM
 
+GlobalState = require('global_state/state')
 
-GlobalState     = require('global_state/state')
+UserStore = require('stores/user_store.cursor')
+EmailStore = require('stores/email_store')
+TokenStore = require('stores/token_store.cursor')
 
-UserStore       = require('stores/user_store.cursor')
-EmailStore      = require('stores/email_store')
-TokenStore      = require('stores/token_store.cursor')
+UserSyncApi = require('sync/user_sync_api')
 
-UserSyncApi     = require('sync/user_sync_api')
-
-Emails          = require('components/profile/emails')
-Field           = require('components/form/field')
-SyncButton      = require('components/form/buttons').SyncButton
-Checkbox        = require('components/form/checkbox')
-
+Emails = require('components/profile/emails')
+Field = require('components/form/field')
+SyncButton = require('components/form/buttons').SyncButton
+Checkbox = require('components/form/checkbox')
+ContentEditableArea = require('components/form/contenteditable_area')
 
 KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company', 'twitter'])
 
@@ -54,6 +53,9 @@ module.exports  = React.createClass
   fetch: (options = {}) ->
     GlobalState.fetch(@getQuery('user'), _.extend(options, id: @props.uuid)).then =>
       @handleFetchDone()
+
+  onGlobalStateChange: ->
+    @setState refreshed_at: + new Date
 
 
   # Helpers
@@ -99,6 +101,12 @@ module.exports  = React.createClass
       if item.get('owner_id') == @props.uuid &&
          item.get('name') == 'subscription'
         TokenStore.cursor.items.removeIn(id)
+
+  isEditorUpdatingUnicorn: ->
+    @props.uuid isnt @cursor.me.get('uuid') and UserStore.isEditor() and UserStore.isUnicorn(@cursor.user)
+
+  getGreeting: ->
+    TokenStore.findByUserAndName(@cursor.user, 'greeting')
 
 
   # Handlers
@@ -146,6 +154,15 @@ module.exports  = React.createClass
         @clearSubscriptionTokens()
         GlobalState.fetch(new GlobalState.query.Query("Viewer{tokens}"), { force: true })
 
+  handleGreetingChange: (value) ->
+    greeting = @getGreeting()
+
+    if value and greeting
+      TokenStore.updateGreeting(greeting.get('uuid'), content: value)
+    else if value and !greeting
+      TokenStore.createGreeting(@cursor.user, content: value)
+    else if !value and greeting
+      TokenStore.destroyGreeting(greeting.get('uuid'))
 
 
   # Lifecycle methods
@@ -184,8 +201,7 @@ module.exports  = React.createClass
       value    = { @state.attributes.get('company') } />
 
   renderTwitterHandle: ->
-    return null unless @props.uuid isnt @cursor.me.get('uuid') and
-      UserStore.isEditor() and UserStore.isUnicorn(@cursor.user)
+    return null unless @isEditorUpdatingUnicorn()
 
     <Field  
       title    = 'Twitter'
@@ -224,7 +240,29 @@ module.exports  = React.createClass
       </Checkbox>
     </section>
 
+  renderGreeting: ->
+    return null unless @isEditorUpdatingUnicorn()
 
+    greeting = @getGreeting()
+    value = if greeting
+      greeting.get('data').get('content')
+    else
+      null
+
+    <section className="greeting-form">
+      <h2>Greeting</h2>
+
+      <ContentEditableArea
+        onChange = { @handleGreetingChange }
+        placeholder = 'Tap to add message'
+        readOnly = { false }
+        value = { value }
+      />
+    </section>
+
+
+  # Main render
+  # 
   render: ->
     return null unless @isLoaded()
 
@@ -238,4 +276,5 @@ module.exports  = React.createClass
       { @renderSubmitButton() }
       { @renderEmails() }
       { @renderSubscription() }
+      { @renderGreeting() }
     </form>
