@@ -211,8 +211,6 @@ module.exports = React.createClass
 
 
   getDefaultPinboardId: (id) ->
-    return null if !@props.pinnable_id
-
     pinboard = (if @props.parent_id then @getParentPinboard(id)) || @gatherPinboards(id).first()
 
     if pinboard then pinboard.get('uuid') else 'new'
@@ -322,8 +320,6 @@ module.exports = React.createClass
 
 
   renderPinboardSelect: ->
-    return null unless @state.attributes.get('pinnable_id')
-
     <label className="pinboard">
       <div className="title">Category</div>
       <div className="select-wrapper">

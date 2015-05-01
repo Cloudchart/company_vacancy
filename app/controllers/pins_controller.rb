@@ -23,6 +23,7 @@ class PinsController < ApplicationController
   def create
     @pin.update_by! current_user
     @pin.is_approved = true if autoapproval_granted?
+    @pin.author = current_user if should_assign_author?
     @pin.save!
 
     Activity.track(current_user, params[:action], @pin, @pin.user)
@@ -99,16 +100,24 @@ private
     params.require(:pin).permit(fields_for_update)
   end
 
+  def default_fields
+    params = [:pinnable_id, :pinnable_type, :pinboard_id, :content, :parent_id]
+  end
+
   def fields_for_create
-    [:user_id, :pinnable_id, :pinnable_type, :pinboard_id, :content, :parent_id, :origin]
+    params = default_fields << [:user_id]
+    params << [:is_suggestion, :origin] if current_user.editor?
+    params
   end
 
   def fields_for_update
-    if current_user.editor?
-      fields_for_create
-    else
-      fields_for_create - [:user_id, :origin] 
-    end
+    params = default_fields
+    params << [:user_id, :origin] if current_user.editor?
+    params
+  end
+
+  def should_assign_author?
+    current_user.editor? && (@pin.pinnable.blank? || @pin.is_suggestion)
   end
 
   def create_intercom_event

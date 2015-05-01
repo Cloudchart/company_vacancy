@@ -131,7 +131,7 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @isLoaded()
+    return null unless @isLoaded() && (@getPin() || @getPost())
 
     <p className="quote">
       { @renderInsight() }
