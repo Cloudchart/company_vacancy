@@ -21,6 +21,7 @@ UserCompanies = React.createClass
       companies: ->
         """
           Viewer {
+            roles,
             published_companies {
               #{CompanyPreview.getQuery('company')}
             }
