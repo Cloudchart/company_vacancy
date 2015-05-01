@@ -52,7 +52,7 @@ MainComponent = React.createClass
   getVisibleTabs: ->
     Immutable.OrderedMap(
       timeline:  !Timeline.isEmpty() || @props.canEdit
-      about:     true
+      about:     !Timeline.isEmpty() || @props.canEdit
       users:     @props.canEdit
       settings:  @props.canEdit
     ).filter (visible) -> visible
