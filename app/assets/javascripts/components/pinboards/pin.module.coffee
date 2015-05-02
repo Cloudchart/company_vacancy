@@ -17,6 +17,7 @@ Human           = require('components/human')
 PinnablePreview = require('components/pinnable/preview')
 PinnablePost    = require('components/pinnable/post')
 PinButton       = require('components/pinnable/pin_button')
+EditPinButton   = require('components/pinnable/edit_pin_button')
 InsightContent  = require('components/pinnable/insight_content')
 
 
@@ -112,11 +113,21 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderEditButton: ->
+    return null unless @getInsight() && @getInsight().get('author_id')
+
+    <EditPinButton uuid={ @getInsight().get('uuid') } />
+
+  renderPinButton: ->
+    return null unless @props.showPinButton && (insight = @getInsight())
+
+    <PinButton {...@gatherPinAttributes(insight)} />
+
   renderInsightControls: (insight) ->
-    return null unless @props.showPinButton
 
     <ul className="round-buttons">
-      <PinButton {...@gatherPinAttributes(insight)} />
+      { @renderEditButton() }
+      { @renderPinButton() }
     </ul>
 
   renderPinContent: (content, className = 'paragraph') ->
