@@ -24,7 +24,10 @@ module.exports = React.createClass
     TokenStore.findByUserAndName(UserStore.me(), 'welcome_tour')
 
   finishTour: ->
-    TokenStore.destroyInsightTour(@getWelcomeTour().get('uuid')).then -> ModalStack.hide()
+    if @getWelcomeTour()
+      TokenStore.destroyInsightTour(@getWelcomeTour().get('uuid')).then -> ModalStack.hide()
+    else
+      ModalStack.hide()
 
 
   # Renderers

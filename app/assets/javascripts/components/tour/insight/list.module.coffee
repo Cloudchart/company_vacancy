@@ -28,7 +28,11 @@ module.exports = React.createClass
 
   finishTour: ->
     @setState isSyncing: true
-    TokenStore.destroyInsightTour(@getInsightTour().get('uuid')).then -> ModalStack.hide()
+
+    if @getInsightTour()
+      TokenStore.destroyInsightTour(@getInsightTour().get('uuid')).then -> ModalStack.hide()
+    else
+      ModalStack.hide()
 
 
   render: ->
