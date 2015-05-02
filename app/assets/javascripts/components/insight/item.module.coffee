@@ -31,13 +31,20 @@ module.exports = React.createClass
 
   displayName: 'InsightItem'
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics:
     getCursor: (id) ->
       pin:    PinStore.cursor.items.cursor(id)
       users:  UserStore.cursor.items
 
+    queries:
+      system_roles: ->
+        """
+          Viewer {
+            system_roles
+          }
+        """
 
   gatherAttributes: ->
     uuid:           @getInsight().get('uuid')
@@ -55,7 +62,7 @@ module.exports = React.createClass
     @getStateFromStores()
 
   isSuggested: ->
-    @props.cursor.pin
+    @props.cursor.pin.get('is_suggestion')
 
   getInsight: ->
     if @isSuggested()
@@ -71,6 +78,12 @@ module.exports = React.createClass
   #
   isLink: (string) ->
     /^https?:\/\/.*/.test(string)
+
+
+  # Lifecycle methods
+  #
+  componentWillMount: ->
+    GlobalState.fetch(@getQuery('system_roles'))
 
 
   # Renderers
@@ -116,16 +129,21 @@ module.exports = React.createClass
       <PinButton {...@gatherAttributes()} title={ @getInsight().get('content') } />
     </ul>
 
+  renderSuggestionDeleteButton: ->
+    return null unless UserStore.isEditor()
+
+    <StandardButton 
+      className = "transparent"
+      iconClass = "cc-icon cc-times"
+      onClick   = { @destroySuggestion } />
+
   renderSuggestion: ->
     return null unless @isSuggested()
 
     <section className="suggestion">
       <i className="svg-icon svg-cloudchart-logo" />
       Suggested by CloudChart
-      <StandardButton 
-        className = "transparent"
-        iconClass = "cc-icon cc-times"
-        onClick   = { @destroySuggestion } />
+      { @renderSuggestionDeleteButton() }
     </section>
 
 

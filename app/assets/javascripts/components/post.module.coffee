@@ -33,7 +33,7 @@ Toggle              = require('components/form/toggle')
 PinButton           = require('components/pinnable/pin_button')
 StandardButton      = require('components/form/buttons').StandardButton
 UserPreview         = require('components/user/preview')
-LimboInsights       = require('components/pinboards/pins/limbo')
+LimboApp            = require('components/limbo_app')
 
 # Main
 #
@@ -370,7 +370,9 @@ Post = React.createClass
       onClick   = { @handleSuggestInsightClick } />
 
   renderSuggestChooser: ->
-    <LimboInsights onItemClick = { @suggestPost } />
+    <LimboApp
+      showSearch  = { true }
+      onItemClick = { @suggestPost } />
 
   renderPinInfo: ->
     return null if @state.isInEditMode

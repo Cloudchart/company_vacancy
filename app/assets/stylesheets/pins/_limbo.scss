@@ -3,14 +3,33 @@ section.limbo {
   @include display(flex);
   @include flex-direction(column);
 
+  background-color: $background-color;
   padding-top: $gutter-size;
+
+   > header {
+    border-bottom: 1px solid #ccc;
+    margin: 0 $gutter-size;
+    width: calc(100% - 2 * #{$gutter-size});
+    
+    > input {
+      background-color: $background-color;
+      border: none;
+      font-size: $basic-font-size;
+      height: 34px;
+      margin: 0;
+      outline: none;
+      padding: 0 10px;
+      width: 100%;
+    }
+  }
 
   > button {
     margin-right: $gutter-size;
   }
 }
 
-.modal-stack-item > .pins {
-  height: 600px;
+.modal-stack-item > .limbo > .pins {
+  max-height: 600px;
+  min-height: 600px;
   overflow: scroll;
 }

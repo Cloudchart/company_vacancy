@@ -18,6 +18,13 @@ if user_authenticated?
     }
   end
 
+  if can?(:access, :limbo)
+    links << {
+      title: 'Limbo',
+      url: current_page?(main_app.limbo_index_path) ? nil : main_app.limbo_index_path
+    }
+  end
+
   user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) }
 end
 

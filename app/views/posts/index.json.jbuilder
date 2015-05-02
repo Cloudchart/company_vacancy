@@ -1,5 +1,5 @@
 # set posts
-posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :quotes, :stories, :posts_stories, blocks: :block_identities, pins: [:pinboard, user: [:unicorn_role, :emails], parent: [user: [:unicorn_role, :emails] ] ])
+posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :quotes, :stories, :posts_stories, blocks: :block_identities, pins: [:pinboard, user: [:unicorn_role, :emails], parent: [:pinboard, user: [:unicorn_role, :emails] ] ])
 
 # reject posts based on visibility rules
 posts = if can?(:update, @company)

@@ -407,10 +407,9 @@ module.exports = React.createClass
         onClose = { @props.onCancel } />
 
       <InsightContent 
-        withLinks = { false }
-        type      = { if @state.attributes.get('parent_id') then 'pin' else 'post' }
-        uuid      = { if @state.attributes.get('parent_id') then @state.attributes.get('parent_id') }
-        post_id   = { @state.attributes.get('pinnable_id') } />
+        withLinks   = { false }
+        pin_id      = { @state.attributes.get('parent_id') }
+        pinnable_id = { @state.attributes.get('pinnable_id') } />
 
       <fieldset>
         { @renderUserSelect() }

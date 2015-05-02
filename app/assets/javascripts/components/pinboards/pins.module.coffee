@@ -20,7 +20,6 @@ module.exports = React.createClass
     showPinButton: React.PropTypes.bool
 
   getDefaultProps: ->
-    onItemClick:   ->
     showPinButton: true
 
   # Renderers

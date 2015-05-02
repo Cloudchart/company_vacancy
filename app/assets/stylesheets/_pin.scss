@@ -68,6 +68,10 @@
 // Pin Card
 //
 .pin.cloud-card {
+  &.clickable {
+    cursor: pointer;
+  }
+
   > .insight {
     @include pin-card-insight;
   }

@@ -18,10 +18,9 @@ module.exports = React.createClass
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   propTypes:
-    uuid:      React.PropTypes.string
-    post_id:   React.PropTypes.string
-    type:      React.PropTypes.string
-    withLinks: React.PropTypes.bool
+    pin_id:      React.PropTypes.string
+    pinnable_id: React.PropTypes.string
+    withLinks:   React.PropTypes.bool
 
   getDefaultProps: ->
     withLinks: true
@@ -29,15 +28,6 @@ module.exports = React.createClass
   statics:
 
     queries:
-      pin: ->
-        """
-          Post {
-            company,
-            pins {
-              children
-            }
-          }
-        """
 
       post: ->
         """
@@ -47,31 +37,23 @@ module.exports = React.createClass
         """
 
   fetch: ->
-    if !@props.post_id
-      @setState isLoaded: true
-    else
-      GlobalState.fetch(@getQuery(@props.type), { id: @props.post_id }).then =>
+    if @props.pinnable_id
+      GlobalState.fetch(@getQuery('post'), { id: @props.pinnable_id }).then =>
         @setState isLoaded: true
+    else
+      @setState isLoaded: true
 
 
   # Helpers
   #
   isLoaded: ->
-    (@getPost() && @getPost().deref(false)) || (@state && @state.isLoaded)
+    @state && @state.isLoaded
 
   getPin: ->
-    if @props.type == 'pin'
-      @cursor.pins.cursor(@props.uuid)
-    else
-      null
+    @cursor.pins.cursor(@props.pin_id) if @props.pin_id
 
   getPost: ->
-    post_id = if @props.type == 'pin'
-      @getPin().get('pinnable_id')
-    else
-      @props.post_id
-
-    @cursor.posts.cursor(post_id) if post_id
+    @cursor.posts.cursor(@props.pinnable_id) if @props.pinnable_id
 
 
   # Lifecycle methods
@@ -131,7 +113,7 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @isLoaded() && (@getPin() || @getPost())
+    return null unless @isLoaded() && (@getPost() || @getPin())
 
     <p className="quote">
       { @renderInsight() }
