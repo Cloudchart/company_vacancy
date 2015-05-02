@@ -147,6 +147,9 @@ module.exports = React.createClass
   savePin: (attributes) ->
     delete attributes['pinboard_title']
     delete attributes['parent_id'] unless attributes['parent_id']
+    delete attributes['pinboard_id'] unless attributes['pinboard_id']
+    delete attributes['pinnable_id'] unless attributes['pinnable_id']
+    delete attributes['pinnable_type'] unless attributes['pinnable_type']
 
     if @props.uuid
       PinStore.update(@props.uuid, attributes).then(@props.onDone, @handleSaveFail)
@@ -404,10 +407,9 @@ module.exports = React.createClass
         onClose = { @props.onCancel } />
 
       <InsightContent 
-        withLinks = { false }
-        type      = { if @state.attributes.get('parent_id') then 'pin' else 'post' }
-        uuid      = { if @state.attributes.get('parent_id') then @state.attributes.get('parent_id') }
-        post_id   = { @state.attributes.get('pinnable_id') } />
+        withLinks   = { false }
+        pin_id      = { @state.attributes.get('parent_id') }
+        pinnable_id = { @state.attributes.get('pinnable_id') } />
 
       <fieldset>
         { @renderUserSelect() }

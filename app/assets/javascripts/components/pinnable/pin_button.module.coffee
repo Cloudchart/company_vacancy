@@ -78,7 +78,7 @@ module.exports = React.createClass
       .filter (pin) =>
         pin.get('pinnable_id')      == @props.pinnable_id    and
         pin.get('pinnable_type')    == @props.pinnable_type  and
-        pin.get('parent_id', null)  == null
+        (pin.get('parent_id', null)  == null || pin.get('is_suggestion'))
       .size
 
   getRepinsCount: ->

@@ -36,14 +36,13 @@ module.exports = GlobalState.createStore
   filterInsightsForPost: (post_id) ->
     @cursor.items
       .filter (item) ->
-        item.get('pinnable_id')     is post_id  and
-        item.get('pinnable_type')   is 'Post'   and
-        not item.get('parent_id')               and
-        item.get('content')       
+        item.get('pinnable_id')    == post_id  &&
+        item.get('pinnable_type')  == 'Post'   &&
+        ((!item.get('parent_id') && item.get('content')) || item.get('is_suggestion'))           
 
   filterPinsForPost: (post_id) ->
     @cursor.items
       .filter (item) ->
         item.get('pinnable_id')     is post_id  and
         item.get('pinnable_type')   is 'Post'   and
-        not item.get('parent_id')
+        (not item.get('parent_id') || item.get('is_suggestion'))

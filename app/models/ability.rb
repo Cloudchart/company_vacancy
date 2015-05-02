@@ -170,6 +170,10 @@ class Ability
         (post.visibility.try(:value) == 'trusted' && trusted_reader?(current_user, post.company))
       end
 
+      can :access, :limbo do
+        current_user.editor?
+      end
+
     end
 
   end

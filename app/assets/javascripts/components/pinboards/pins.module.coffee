@@ -15,14 +15,21 @@ module.exports = React.createClass
   mixins: [NodeRepositioner.mixin]
 
   propTypes:
-    pins: React.PropTypes.array.isRequired
+    pins:          React.PropTypes.array.isRequired
+    onItemClick:   React.PropTypes.func
+    showPinButton: React.PropTypes.bool
 
+  getDefaultProps: ->
+    showPinButton: true
 
   # Renderers
   #
   renderPin: (pin) ->
     <section className="cloud-column" key={ pin.get('uuid') }>
-      <PinComponent uuid={ pin.get('uuid') } />
+      <PinComponent
+        uuid          = { pin.get('uuid') }
+        onClick       = { @props.onItemClick }
+        showPinButton = { @props.showPinButton } />
     </section>
 
   renderPins: ->

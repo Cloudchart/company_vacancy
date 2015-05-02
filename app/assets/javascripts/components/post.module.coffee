@@ -33,6 +33,7 @@ Toggle              = require('components/form/toggle')
 PinButton           = require('components/pinnable/pin_button')
 StandardButton      = require('components/form/buttons').StandardButton
 UserPreview         = require('components/user/preview')
+LimboApp            = require('components/limbo_app')
 
 # Main
 #
@@ -161,6 +162,16 @@ Post = React.createClass
   goToTimeline: ->
     location.href = @getTimelineUrl()
 
+  suggestPost: (insight) ->
+    attributes = Immutable.Map(
+      is_suggestion: true
+      pinnable_id:   @props.id
+      pinnable_type: 'Post'
+      parent_id:     insight.get('uuid')
+    ).toJSON()
+
+    PinStore.create(attributes).then(ModalActions.hide, ModalActions.hide)
+
 
   # Handlers
   #
@@ -221,6 +232,9 @@ Post = React.createClass
     setTimeout ->
       $('html,body').animate({ scrollTop: $(".post-pins").offset().top - 30 }, 'slow')
     , 10
+
+  handleSuggestInsightClick: ->
+    ModalActions.show(@renderSuggestChooser())
 
 
   # Lifecycle Methods
@@ -345,6 +359,19 @@ Post = React.createClass
       { @getPinnersNumberText(pinnersNumber) }
     </section>
 
+  renderSuggestInsightButton: ->
+    return null unless @isEditor()
+
+    <StandardButton 
+      className = "cc suggest"
+      text      = "Suggest Insight"
+      onClick   = { @handleSuggestInsightClick } />
+
+  renderSuggestChooser: ->
+    <LimboApp
+      showSearch  = { true }
+      onItemClick = { @suggestPost } />
+
   renderPinInfo: ->
     return null if @state.isInEditMode
 
@@ -352,6 +379,7 @@ Post = React.createClass
       <section className="post-pin-info">
         { @renderPinners() }
         <div className="spacer"></div>
+        { @renderSuggestInsightButton() }
         <ul className="round-buttons">
           <PinButton 
             pinnable_id   = { @props.id }
@@ -361,6 +389,7 @@ Post = React.createClass
       </section>
     else
       <section className="post-pin-info">
+        { @renderSuggestInsightButton() }
         <PinButton
           asTextButton   = { true }
           pinnable_id    = { @props.id }

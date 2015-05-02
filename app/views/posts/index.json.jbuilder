@@ -1,5 +1,5 @@
 # set posts
-posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :quotes, :stories, :posts_stories, blocks: :block_identities, pins: [:pinboard, user: [:unicorn_role, :emails], parent: [user: [:unicorn_role, :emails] ] ])
+posts = @company.posts.includes(:visibilities, :pictures, :paragraphs, :quotes, :stories, :posts_stories, blocks: :block_identities, pins: [:pinboard, user: [:unicorn_role, :emails], parent: [:pinboard, user: [:unicorn_role, :emails] ] ])
 
 # reject posts based on visibility rules
 posts = if can?(:update, @company)
@@ -17,6 +17,7 @@ paragraphs = posts.map(&:paragraphs).flatten
 quotes = posts.map(&:quotes).flatten
 visibilities = posts.map(&:visibilities).flatten
 pins = posts.map(&:pins).flatten.reject { |pin| cannot?(:read, pin) }
+pins.concat pins.map(&:parent).compact.uniq
 stories = Story.cc_plus_company(@company.id)
 posts_stories = posts.map(&:posts_stories).flatten
 users = pins.map(&:user).compact.uniq

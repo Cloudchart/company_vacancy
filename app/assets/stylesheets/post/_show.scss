@@ -138,6 +138,10 @@ main.post {
         @include flex(1);
       }
 
+      > .suggest {
+        margin-right: $inner-margin-size;
+      }
+
       > .cc {
         padding-left: 15px;
 

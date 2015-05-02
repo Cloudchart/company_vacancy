@@ -34,7 +34,9 @@ module.exports = React.createClass
   mixins: [GlobalState.query.mixin]
 
   propTypes:
-    uuid: React.PropTypes.string.isRequired
+    uuid:          React.PropTypes.string.isRequired
+    showPinButton: React.PropTypes.bool
+    onClick:       React.PropTypes.func
 
   statics:
 
@@ -52,6 +54,7 @@ module.exports = React.createClass
             },
             children,
             parent {
+              pinboard,
               user {
                 unicorn_role
               },
@@ -59,6 +62,9 @@ module.exports = React.createClass
             }
           }
         """
+
+  getDefaultProps: ->
+    showPinButton: true
 
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
@@ -92,10 +98,23 @@ module.exports = React.createClass
     else if @cursor.pin.get('content')
       @cursor.pin
 
+  isClickable: ->
+    _.isFunction(@props.onClick)
+
+
+  # Handlers
+  #
+  handleClick: (event) ->
+    return unless @isClickable()
+
+    @props.onClick(@cursor.pin)
+
 
   # Renderers
   #
   renderInsightControls: (insight) ->
+    return null unless @props.showPinButton
+
     <ul className="round-buttons">
       <PinButton {...@gatherPinAttributes(insight)} />
     </ul>
@@ -110,11 +129,14 @@ module.exports = React.createClass
 
     <article className="insight">
       <InsightContent
-        type = 'pin'
-        post_id = { @cursor.pin.get('pinnable_id') }
-        uuid = { insight.get('uuid') }  />
+        pinnable_id = { @cursor.pin.get('pinnable_id') }
+        pin_id      = { insight.get('uuid') }  />
 
-      <Human showUnicornIcon={ true } type="user" uuid={ insight.get('user_id') } />
+      <Human
+        showUnicornIcon = { true }
+        showLink        = { !@isClickable() }
+        type            = "user"
+        uuid            = { insight.get('user_id') } />
 
       { @renderInsightControls(insight) }
     </article>
@@ -137,7 +159,13 @@ module.exports = React.createClass
   render: ->
     return null unless @cursor.pin.deref(false) && @cursor.user.deref(false)
 
-    <section className="pin cloud-card">
+    classes = cx(
+      pin:        true
+      "cloud-card": true
+      clickable:  @isClickable()
+    )
+
+    <section className={ classes } onClick={ @handleClick }>
       { @renderPinnablePreviewOrInsight() }
       { @renderComment() }
     </section>

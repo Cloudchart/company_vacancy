@@ -18,10 +18,9 @@ module.exports = React.createClass
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   propTypes:
-    uuid:      React.PropTypes.string
-    post_id:   React.PropTypes.string
-    type:      React.PropTypes.string
-    withLinks: React.PropTypes.bool
+    pin_id:      React.PropTypes.string
+    pinnable_id: React.PropTypes.string
+    withLinks:   React.PropTypes.bool
 
   getDefaultProps: ->
     withLinks: true
@@ -29,15 +28,6 @@ module.exports = React.createClass
   statics:
 
     queries:
-      pin: ->
-        """
-          Post {
-            company,
-            pins {
-              children
-            }
-          }
-        """
 
       post: ->
         """
@@ -47,35 +37,23 @@ module.exports = React.createClass
         """
 
   fetch: ->
-    GlobalState.fetch(@getQuery(@props.type), { id: @props.post_id }).then =>
+    if @props.pinnable_id
+      GlobalState.fetch(@getQuery('post'), { id: @props.pinnable_id }).then =>
+        @setState isLoaded: true
+    else
       @setState isLoaded: true
 
 
   # Helpers
   #
   isLoaded: ->
-    @getPost().deref(false) || (@state && @state.isLoaded)
+    @state && @state.isLoaded
 
   getPin: ->
-    if @props.type == 'pin'
-      @cursor.pins.cursor(@props.uuid)
-    else
-      null
+    @cursor.pins.cursor(@props.pin_id) if @props.pin_id
 
   getPost: ->
-    post_id = if @props.type == 'pin'
-      if (pinnable_id = @getPin().get('pinnable_id'))
-        pinnable_id
-      else
-        repin = @cursor.pins.filter (pin) =>
-          pin.get('parent_id') == @props.uuid
-        .first()
-
-        repin.get('pinnable_id') if repin
-    else
-      @props.post_id
-
-    @cursor.posts.cursor(post_id)
+    @cursor.posts.cursor(@props.pinnable_id) if @props.pinnable_id
 
 
   # Lifecycle methods
@@ -92,20 +70,23 @@ module.exports = React.createClass
     pin     = @getPin()
     post    = @getPost()
 
-    return null unless pin && post
+    return null unless pin
 
-    if @props.withLinks
-      <span>
-        <a href={ post.get('post_url') } className="content" >
-          <span dangerouslySetInnerHTML={ __html: pin.get('content') } />
-        </a>
-        { " — " }
-      </span>    
+    if post
+      if @props.withLinks
+        <span>
+          <a href={ post.get('post_url') } className="content" >
+            <span dangerouslySetInnerHTML={ __html: pin.get('content') } />
+          </a>
+          { " — " }
+        </span>    
+      else
+        <span>
+          <span className="content" dangerouslySetInnerHTML={ __html: pin.get('content') } />
+          { " — " }
+        </span>
     else
-      <span>
-        <span className="content" dangerouslySetInnerHTML={ __html: pin.get('content') } />
-        { " — " }
-      </span>    
+      <span className="content" dangerouslySetInnerHTML={ __html: pin.get('content') } />
 
   renderInsightContext: ->
     post    = @getPost()
@@ -132,7 +113,7 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @isLoaded()
+    return null unless @isLoaded() && (@getPost() || @getPin())
 
     <p className="quote">
       { @renderInsight() }

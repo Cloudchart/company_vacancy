@@ -11,16 +11,18 @@ class Pin < ActiveRecord::Base
   belongs_to :pinboard
   belongs_to :pinnable, polymorphic: true
   belongs_to :post, foreign_key: :pinnable_id
+  belongs_to :author, class_name: 'User'
 
   has_many :children, class_name: 'Pin', foreign_key: :parent_id
   has_many :features, inverse_of: :insight
 
   validates :content, presence: true, if: :should_validate_content_presence?
 
-  scope :insights, -> { where(parent_id: nil).where.not(content: nil, pinnable_id: nil) }
+  scope :insights, -> { where(parent: nil).where.not(content: nil, pinnable: nil) }
+  scope :limbo, -> { where(parent: nil, pinnable: nil).where.not(content: nil, author: nil) }
 
   def should_validate_content_presence?
-    @update_by.present? && user_id != @update_by.uuid
+    @update_by.present? && user_id != @update_by.uuid && !is_suggestion
   end
 
   def update_by!(update_by)
