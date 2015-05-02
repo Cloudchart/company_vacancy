@@ -67,7 +67,7 @@ MainComponent = React.createClass
         # company_story_url = @props.cursor.stories.get(story.get('uuid')).get('company_story_url')
 
         <li key={story.get('uuid')}>
-          { @getStoryView(story) }
+          <a href={ @props.company_url + "#story-" + story.get('name') }>{ @getStoryView(story) }</a>
         </li>
         # <a href={company_story_url}>{'#' + story.get('name')}</a>
 

@@ -469,6 +469,7 @@ Post = React.createClass
         <Wrapper className="editor" isWrapped={@state.isInEditMode}>
           <PostsStories
             post_id     = { @state.post.uuid }
+            company_url = { @state.company.company_url }
             company_id  = { @props.company_id }
             readOnly    = { !@state.isInEditMode } />
           <Hint
