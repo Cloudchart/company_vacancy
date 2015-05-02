@@ -46,6 +46,7 @@ module.exports = React.createClass
   getInitialState: ->
     attributes:         @getAttributesFromCursor()
     errors:             Immutable.List()
+    isLoaded:           false
     isSyncing:          false
 
   onGlobalStateChange: ->
@@ -58,7 +59,7 @@ module.exports = React.createClass
   # Helpers
   #
   isLoaded: ->
-    @props.cursor.user.deref(false) && @props.cursor.tokens.deref(false) 
+    @props.cursor.user.deref(false) && @state.isLoaded
 
   getAttributesFromCursor: ->
     Immutable.Map({}).set('email', @props.cursor.user.get('email') || '')
@@ -95,7 +96,7 @@ module.exports = React.createClass
   # Lifecycle methods
   #
   componentWillMount: ->
-    @fetch() unless @isLoaded()
+    @fetch().then => @setState(isLoaded: true) unless @isLoaded()
 
 
   # Renderers
