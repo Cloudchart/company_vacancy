@@ -37,7 +37,7 @@ module.exports = React.createClass
         """
 
   fetch: ->
-    if @props.pinnable_id
+    if @props.pinnable_id && !@getPost().deref(false)
       GlobalState.fetch(@getQuery('post'), { id: @props.pinnable_id }).then =>
         @setState isLoaded: true
     else
@@ -113,7 +113,7 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @isLoaded() && (@getPost() || @getPin())
+    return null unless @isLoaded() && (@getPost().deref(false) || @getPin().deref(false))
 
     <p className="quote">
       { @renderInsight() }
