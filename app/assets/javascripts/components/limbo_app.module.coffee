@@ -70,8 +70,8 @@ MainComponent = React.createClass
         pin.get('author_id') && pin.get('content')
       .filter (pin) =>
         !@state.query ||
-        (pin.get('content').indexOf(@state.query) != -1 ||
-         @cursor.users.get(pin.get('user_id')).get('full_name').indexOf(@state.query)) != -1
+        (pin.get('content').toLowerCase().indexOf(@state.query.toLowerCase()) != -1 ||
+         @cursor.users.get(pin.get('user_id')).get('full_name').toLowerCase().indexOf(@state.query.toLowerCase())) != -1
       .valueSeq()
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
