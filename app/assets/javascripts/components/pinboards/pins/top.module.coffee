@@ -75,7 +75,7 @@ module.exports = React.createClass
   render: ->
     return null unless @state.isLoaded
 
-    <section>
+    <section className="trending-insights">
       <header>Trending Insights</header>
       <PinsList pins = { @gatherInsights() } />
     </section>

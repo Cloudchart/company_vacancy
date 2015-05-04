@@ -9,7 +9,7 @@
     background-color: $background-color;
 
     > header {
-      @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), hsla(0, 0%, 98%, 1));
+      @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), #{$background-color});
       padding: 25px 0;
 
       > h1, > h2 {
@@ -29,8 +29,6 @@
 
     > .featured-insights {
       @include flex(1);
-
-      margin-bottom: $gutter-size;
     }
 
     > section > header {
@@ -41,6 +39,10 @@
 
     > section > .companies-list {
       margin-top: $gutter-size/2;
+    }
+
+    > .trending-insights {
+      margin-top: $gutter-size;
     }
     
     > footer {

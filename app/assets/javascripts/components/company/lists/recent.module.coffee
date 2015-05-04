@@ -57,7 +57,7 @@ UserCompanies = React.createClass
   render: ->
     return null unless @state.isLoaded
 
-    <section>
+    <section className="recent-companies">
       <header>Featured Companies</header>
       <CompanyList companies = { @getCompanies() } />
     </section>
