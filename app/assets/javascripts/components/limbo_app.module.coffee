@@ -133,8 +133,7 @@ MainComponent = React.createClass
       { @renderCreateButton() }
       <PinsList
         onItemClick   = { @props.onItemClick }
-        pins          = { @gatherInsights() }
-        showPinButton = { false } />
+        pins          = { @gatherInsights() } />
     </section>
 
 

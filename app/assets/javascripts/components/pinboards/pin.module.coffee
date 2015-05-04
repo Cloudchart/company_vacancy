@@ -36,7 +36,6 @@ module.exports = React.createClass
 
   propTypes:
     uuid:          React.PropTypes.string.isRequired
-    showPinButton: React.PropTypes.bool
     onClick:       React.PropTypes.func
 
   statics:
@@ -63,9 +62,6 @@ module.exports = React.createClass
             }
           }
         """
-
-  getDefaultProps: ->
-    showPinButton: true
 
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
@@ -119,7 +115,7 @@ module.exports = React.createClass
     <EditPinButton uuid={ @getInsight().get('uuid') } />
 
   renderPinButton: ->
-    return null unless @props.showPinButton && (insight = @getInsight())
+    return null unless insight = @getInsight()
 
     <PinButton {...@gatherPinAttributes(insight)} />
 

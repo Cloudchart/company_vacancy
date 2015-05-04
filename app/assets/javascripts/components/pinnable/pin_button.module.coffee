@@ -89,10 +89,15 @@ module.exports = React.createClass
   getCount: ->
     if @props.uuid then @getRepinsCount() else @getPinsCount()
 
+  isClickable: ->
+    @props.pinnable_id || @currentUserRepin() || @currentUserPin()
+
 
   # Handlers
   #
   handleClick: (event) ->
+    return null unless @isClickable()
+
     event.preventDefault()
     event.stopPropagation()
 
@@ -126,8 +131,9 @@ module.exports = React.createClass
     return null unless @props.cursor.user.get('uuid') && @props.cursor.user.get('twitter')
 
     classList = cx
-      active: !!@state.currentUserPin or !!@state.currentUserRepin
+      active:         !!@state.currentUserPin or !!@state.currentUserRepin
       'with-counter': (@getCount() > 0)
+      'unclickable':  !@isClickable()
 
     unless @props.asTextButton
       <li className={ classList } onClick={ @handleClick }>

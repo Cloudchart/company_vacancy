@@ -326,6 +326,10 @@ ul.round-buttons {
     width: auto;
   }
 
+  &.unclickable {
+    cursor: default;
+  }
+
   &.active {
     background-color: $round-button-background-color-active;
   }

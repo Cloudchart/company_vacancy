@@ -270,6 +270,11 @@ module.exports = React.createClass
 
     @gatherPinboards(id).filter((pinboard) -> pinboard.get('title') == parentPinboard.get('title')).first()
 
+  hasRepins: (id) ->
+    PinStore
+      .filter (pin) -> pin.get('parent_id') == id
+      .size
+
 
   # Lifecycle
   #
@@ -382,6 +387,7 @@ module.exports = React.createClass
   renderDeleteButton: ->
     return null unless @props.uuid
     return null unless @isCurrentUserSystemEditor()
+    return null if !@props.pinnable_id && @hasRepins(@props.uuid)
 
     <button key="delete" type="button" className="cc alert" onClick={ @handleDelete }>Delete</button>
 
