@@ -160,16 +160,11 @@ article.companies,
       width: 100%;
 
       > figure {
+        background-size: contain;
+        background-repeat: no-repeat;
         height: 80px;
-        margin-bottom: $default-margin-size;
-
-        > img {
-          display: block;
-          max-height: 80px;
-          max-width: 80px;
-          height: auto;
-          width: auto;
-        }        
+        width: 80px;
+        margin-bottom: $default-margin-size;     
       }
 
       > h1 {

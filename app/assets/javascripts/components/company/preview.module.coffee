@@ -290,11 +290,9 @@ CompanyPreview = React.createClass
     company = @cursor.company
 
     <header>
-      <figure>
-        <Logo 
-          logoUrl = { company.get('logotype_url') }
-          value   = { company.get('name') } />
-      </figure>
+      <Logo 
+        logoUrl = { company.get('logotype_url') }
+        value   = { company.get('name') } />
       <h1>{ company.get('name') }</h1>
     </header>
 
