@@ -128,7 +128,7 @@ RailsAdmin.config do |config|
       controller do
         proc do
           @object.update(authorized_at: Time.now)
-          # TODO: add mailer
+          UserMailer.app_invite_(@object).deliver if @object.email
           redirect_to index_path(:user), notice: 'User has been authorized'
         end
       end
@@ -156,6 +156,7 @@ RailsAdmin.config do |config|
               @object.update(twitter: nil)
 
               user.save!
+              UserMailer.app_invite_(user).deliver if user.email
               @object.destroy
             end
 

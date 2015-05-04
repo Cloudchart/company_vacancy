@@ -52,6 +52,13 @@ class UserMailer < ActionMailer::Base
     mail to: email
   end
 
+  def app_invite_(user)
+    @user = user
+    mail(to: @user.email) do |format|
+      format.html { render layout: 'user_mailer_' }
+    end
+  end
+
 private
 
   def rfc1751(id)

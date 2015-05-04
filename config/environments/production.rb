@@ -85,6 +85,7 @@ Cloudchart::Application.configure do
   config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = { api_key: ENV['POSTMARK_API_KEY'] }  
   config.action_mailer.default_url_options = { host: ENV['APP_HOST'] }
+  config.action_mailer.asset_host = "http://#{ENV['APP_HOST']}"
 
   routes.default_url_options = { host: ENV['APP_HOST'] }
   

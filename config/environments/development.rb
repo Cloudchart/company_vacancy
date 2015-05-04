@@ -16,10 +16,12 @@ Cloudchart::Application.configure do
   # Show full error reports and disable caching.
   config.consider_all_requests_local = true
   config.action_controller.perform_caching = false
+  config.action_controller.asset_host = ENV['APP_HOST']
 
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_url_options = { host: ENV['APP_HOST'] }
+  config.action_mailer.asset_host = "http://#{ENV['APP_HOST']}"
 
   routes.default_url_options = { host: ENV['APP_HOST'] }
 
