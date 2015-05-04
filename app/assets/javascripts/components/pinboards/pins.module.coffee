@@ -4,7 +4,7 @@
 #
 PinComponent     = require('components/pinboards/pin')
 
-NodeRepositioner = require('utils/node_repositioner')
+MasonryMixin     = require('utils/masonry_mixin')
 
 # Exports
 #
@@ -12,7 +12,7 @@ module.exports = React.createClass
 
   displayName: 'Pins'
 
-  mixins: [NodeRepositioner.mixin]
+  mixins: [MasonryMixin]
 
   propTypes:
     pins:          React.PropTypes.array.isRequired

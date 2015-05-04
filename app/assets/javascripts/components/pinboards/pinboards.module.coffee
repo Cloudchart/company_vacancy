@@ -13,7 +13,7 @@ PinboardStore   = require('stores/pinboard_store')
 PinboardComponent  = require('components/pinboards/pinboard')
 
 
-NodeRepositioner = require('utils/node_repositioner')
+MasonryMixin       = require('utils/masonry_mixin')
 
 
 # Exports
@@ -23,7 +23,7 @@ module.exports = React.createClass
 
   displayName: 'Pinboards'
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin, NodeRepositioner.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin, Masonrymixin]
 
   statics:
 
