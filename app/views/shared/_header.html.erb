@@ -4,17 +4,17 @@ links = []
 user = {}
 
 if user_authenticated?
-  if can?(:index, :companies)
-    links << {
-      title: 'Companies',
-      url: current_page?(main_app.companies_path) ? nil : main_app.companies_path
-    }
-  end
-
   if can?(:index, :pins)
     links << {
       title: 'Insights',
       url: current_page?(main_app.insights_path) ? nil : main_app.insights_path
+    }
+  end
+
+  if can?(:index, :companies)
+    links << {
+      title: 'Companies',
+      url: current_page?(main_app.companies_path) ? nil : main_app.companies_path
     }
   end
 
