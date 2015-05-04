@@ -6,7 +6,7 @@ GlobalState = require('global_state/state')
 
 CompanyStore = require('stores/company')
 StoryStore = require('stores/story_store')
-PostsStoryStore = require('stores/posts_story_store.cursor')
+PostsStoryStore = require('stores/posts_story_store')
 PinStore = require('stores/pin_store')
 
 
