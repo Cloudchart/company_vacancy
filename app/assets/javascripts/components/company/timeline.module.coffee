@@ -109,8 +109,10 @@ Component = React.createClass
     !!location.hash.match(/^#stories/)
 
   scrollToPost: ->
+    headerHeight = $('body > header').height()
+
     if (id = location.hash) && $(id).length > 0
-      $(document).scrollTop(parseInt($(id).offset().top) - 10)
+      $(document).scrollTop(parseInt($(id).offset().top) - (10 + headerHeight))
       history.replaceState('', document.title, window.location.pathname)
 
 

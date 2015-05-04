@@ -223,10 +223,11 @@ Component = React.createClass
   scrollSticky: ->
     return unless @isMounted()
     
+    headerHeight = $('body > header').height()
     difference = $(window).scrollTop() - $(@getDOMNode()).offset().top
 
     if difference < $(@getDOMNode()).height() && difference > 10 && @state.asPlaceholder
-      $('html,body').animate({ scrollTop: $(@getDOMNode()).next().offset().top - 10 }, 'slow')
+      $('html,body').animate({ scrollTop: $(@getDOMNode()).next().offset().top - (10 + headerHeight) }, 'slow')
 
 
   # Handlers
@@ -260,7 +261,7 @@ Component = React.createClass
     @timer = false
     @stickyTimer = false
 
-    @changePlaceholder()
+    @timer = setTimeout @changePlaceholder, 1000
     @stickyTimer = setTimeout @scrollSticky, 1000
     window.addEventListener "scroll", @handleScroll
     window.addEventListener "resize", @changePlaceholder
