@@ -393,7 +393,7 @@ Component = React.createClass
     </div>
 
   renderReadMore: ->
-    return null if @state.blocks.length < 2 && 
+    return null if @state.blocks.length <= 2 && 
                    @state.blocks.every (block) => !@isBlockTruncated(block)
 
     <span className="read-more">More</span>
