@@ -1,15 +1,15 @@
-$header-background-color: hsl(0, 100%, 100%);
+$header-background-color: hsla(0, 100%, 100%, 0.9);
 $header-background-color-inverse: hsl(139, 72%, 35%);
 $header-color-inverse: hsl(0, 100%, 100%);
-$header-font-size: 15px;
+$header-font-size: $basic-font-size;
 $header-font-weight: 400;
-$header-height: auto;
+$header-height: 60px;
 $header-padding: 10px;
 
 
-$header-logo-height: 32px;
+$header-logo-height: 40px;
 $header-logo-margins: -3px 0 0;
-$header-logo-width: 48px;
+$header-logo-width: 60px;
 
 
 $header-title-font-size: 22px;
@@ -63,145 +63,153 @@ $header-button-height: 50px - $header-padding * 2;
 
 // Main header style
 //
-body > header > .header-content {
-  @include display(flex);
-  @include align-items(center);
-  @include justify-content(space-between);
-
-  font-size: $header-font-size;
-  font-weight: $header-font-weight;
+body > header {
+  background-color: $header-background-color;
   height: $header-height;
-  padding: 20px 25px;
-  position: relative;
 
-  a {
-    text-decoration: none;
-
-    &.base {
-      color: hsl(0, 0%, 0%);
-    }
-
-    &.strong, &.current {
-      font-weight: 700;
-    }
-  }
-
-  > .local-menu {
-    @include align-items(center);
+  > .header-content {
+    @include position(fixed, 0px 0px 0 0px);
     @include display(flex);
+    @include align-items(center);
+    @include justify-content(space-between);
 
-    width: 40%;
+    background-color: $header-background-color;
+    border-bottom: 1px solid hsl(0, 0%, 92%);
+    font-size: $header-font-size;
+    font-weight: $header-font-weight;
+    height: $header-height;
+    padding: 0 25px;
+    z-index: 1;
 
-    > .breadcrumbs {
+    a {
+      text-decoration: none;
+
+      &.base {
+        color: hsl(0, 0%, 0%);
+      }
+
+      &.strong, &.current {
+        font-weight: 700;
+      }
+    }
+
+    > .local-menu {
       @include align-items(center);
       @include display(flex);
-      @include flex(0 1 auto);
 
-      > .back-link {
+      width: 40%;
+
+      > .breadcrumbs {
+        @include align-items(center);
         @include display(flex);
+        @include flex(0 1 auto);
+
+        > .back-link {
+          @include display(flex);
+          @include flex(1 0 auto);
+
+          color: hsl(0, 100%, 100%);
+          font-size: $basic-font-size;
+          height: 33px;
+          text-align: center;
+          width: 39px;
+
+          > i {
+            margin: auto;
+          }
+        }
+
+        > .company-name {
+          font-size: $large-font-size;
+          font-weight: 300;
+          margin-left: $inner-margin-size;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+
+      > .router {
         @include flex(1 0 auto);
 
-        color: hsl(0, 100%, 100%);
+        margin: 0 $default-margin-size/2;
+
+        ul {
+          @include display(flex);
+          list-style: none;
+          margin: 0;
+          padding: 0;
+
+          > li {
+            margin: 0 $default-margin-size/2;
+          }
+        }
+      }
+    }
+
+    > .spacer {
+      @include flex(1);
+    }
+
+    > .main-menu {
+      @include align-items(center);
+      @include display(flex);
+      @include justify-content(center);
+      @include position(absolute, 0px 0px 0px 0px);
+
+      font-weight: 700;
+      list-style: none;
+      height: 100%;
+      left: 50%;
+      margin: 0 auto;
+      margin-left: -($default-margin-size + 250px)/2;
+      padding: 0;
+      width: 250px;
+
+      > li {
+        color: $link-color;
         font-size: $basic-font-size;
-        height: 33px;
-        text-align: center;
-        width: 39px;
+        margin-right: $default-margin-size;
 
-        > i {
-          margin: auto;
-        }
-      }
+        a {
+          color: $black-color;
 
-      > .company-name {
-        font-size: $large-font-size;
-        font-weight: 300;
-        margin-left: $inner-margin-size;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-
-    > .router {
-      @include flex(1 0 auto);
-
-      margin: 0 $default-margin-size/2;
-
-      ul {
-        @include display(flex);
-        list-style: none;
-        margin: 0;
-        padding: 0;
-
-        > li {
-          margin: 0 $default-margin-size/2;
+          &:hover {
+            color: $link-color;
+          }
         }
       }
     }
-  }
 
-  > .spacer {
-    @include flex(1);
-  }
+    input {
+      @include header-input;
+    }
 
-  > .main-menu {
-    @include align-items(center);
-    @include display(flex);
-    @include justify-content(center);
-    @include position(absolute, 0px 0px 0px 0px);
+    .logo {
+      @include header-logo;
+    }
 
-    font-weight: 700;
-    list-style: none;
-    height: 100%;
-    left: 50%;
-    margin: 0 auto;
-    margin-left: -($default-margin-size + 250px)/2;
-    padding: 0;
-    width: 250px;
+    .title {
+      @include header-title;
+    }
 
-    > li {
-      color: $link-color;
-      font-size: $basic-font-size;
-      margin-right: $default-margin-size;
+    button.cc {
+      height: $header-button-height;
+      font-size: $header-button-font-size;
+      margin-left: $header-padding;
 
-      a {
-        color: $black-color;
-
-        &:hover {
-          color: $link-color;
-        }
+      &.square {
+        width: $header-button-height;
       }
     }
-  }
 
-  input {
-    @include header-input;
-  }
-
-  .logo {
-    @include header-logo;
-  }
-
-  .title {
-    @include header-title;
-  }
-
-  button.cc {
-    height: $header-button-height;
-    font-size: $header-button-font-size;
-    margin-left: $header-padding;
-
-    &.square {
-      width: $header-button-height;
+    .auth {
+      margin-left: $header-padding;
     }
-  }
 
-  .auth {
-    margin-left: $header-padding;
-  }
-
-  .sign-out {
-    font-size: 18px;
+    .sign-out {
+      font-size: 18px;
+    }
   }
 }
 
