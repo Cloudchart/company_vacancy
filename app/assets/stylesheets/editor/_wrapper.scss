@@ -11,7 +11,7 @@ $hint-color: hsl(144, 90%, 75%);
     @include position(absolute, 0px 0 0 -1 * $hint-button-size);
 
     height: 100%;
-    z-index: 1000;
+    z-index: 1;
 
     > .hint-button {
       color: hsl(0, 0%, 95%);
