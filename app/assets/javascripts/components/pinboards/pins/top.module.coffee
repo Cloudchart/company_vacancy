@@ -8,6 +8,8 @@ GlobalState     = require('global_state/state')
 #
 PinStore        = require('stores/pin_store')
 UserStore       = require('stores/user_store.cursor')
+CompanyStore    = require('stores/company_store.cursor')
+PostStore       = require('stores/post_store.cursor')
 
 
 # Components
@@ -46,10 +48,19 @@ module.exports = React.createClass
   fetch: ->
     GlobalState.fetch(@getQuery('insights'))
 
+  gatherPublishedCompaniesIds: ->
+    CompanyStore
+      .filter (company) -> company.get('is_published')
+      .map (company) -> company.get('uuid')
+
   gatherInsights: ->
+    publishedCompaniesIds = @gatherPublishedCompaniesIds()
+
     @cursor.pins
       .filter (pin) =>
-        pin.get('pinnable_id') && pin.get('content') && !pin.get('parent_id')
+        pin.get('pinnable_id') && pin.get('content') && !pin.get('parent_id') &&
+        (post = PostStore.cursor.items.get(pin.get('pinnable_id'))) && 
+        publishedCompaniesIds.contains(post.get('owner_id'))
       .valueSeq()
       .sort (pinA, pinB) -> 
         if pinA.get('pins_count') == pinB.get('pins_count')

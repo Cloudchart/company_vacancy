@@ -87,7 +87,7 @@ class User < ActiveRecord::Base
   end
 
   def top_insights
-    Pin.insights.order('pins_count desc, created_at desc').limit(4)
+    Pin.insights.includes(post: :company).where('companies.is_published = ?', true).references(:company).order('pins.pins_count desc, pins.created_at desc').limit(4)
   end
 
   def followed_activities
