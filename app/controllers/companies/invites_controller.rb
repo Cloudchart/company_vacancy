@@ -66,9 +66,8 @@ module Companies
     # Accept
     # 
     def accept
+      favorite = favorites.find_by(favoritable_id: @token.owner_id)
       role = current_user.roles.create!(value: @token.data[:role], owner: @token.owner)
-      favorite = current_user.favorites.find_by(favoritable_id: @token.owner_id).try(:delete)
-      @token.destroy
 
       respond_to do |format|
         format.html { redirect_to main_app.company_path(@token.owner) }

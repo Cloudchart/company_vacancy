@@ -2,6 +2,8 @@ class Role < ActiveRecord::Base
   include Uuidable
   include Admin::Role
 
+  after_create :clean_user_owner_associations
+
   belongs_to :user
   belongs_to :owner, polymorphic: true
 
@@ -13,6 +15,11 @@ class Role < ActiveRecord::Base
   validate :acceptance_of_invite, on: :create
 
 private
+
+  def clean_user_owner_associations
+    user.favorites.find_by(favoritable_id: owner_id).try(:delete)
+    user.tokens.find_by(name: 'invite', owner_id: owner_id).try(:delete)
+  end
 
   def acceptance_of_invite
     if owner_type =~ /Company|Pinboard/ && (user.roles.map(&:owner_id).include?(owner_id) || owner.try(:user_id) == user_id)
