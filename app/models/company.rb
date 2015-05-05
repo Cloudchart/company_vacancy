@@ -91,11 +91,6 @@ class Company < ActiveRecord::Base
     roles.find_by(value: :owner).user
   end
 
-  # temporary has_one simulation
-  def chart
-    charts.order(:created_at).first
-  end
-
   def invite_tokens
     tokens.where(name: :invite)
   end
@@ -103,15 +98,13 @@ class Company < ActiveRecord::Base
   def build_objects
     blocks.build(position: 0, identity_type: 'Person', is_locked: true)
     blocks.build(position: 1, identity_type: 'Paragraph', is_locked: true)
-    # blocks.build(position: 2, identity_type: 'Vacancy', is_locked: true)
     blocks.build(position: 3, identity_type: 'Picture', is_locked: true)
-    # charts.build(title: 'Main Chart')
   end
 
 private
 
   def publish_check
-    unless name.present? && logotype.present? && people.any? && tags.any? #&& charts.first.try(:nodes).try(:any?)
+    unless name.present? && logotype.present? && people.any? && tags.any?
       errors.add(:is_published, I18n.t('errors.messages.company_can_not_become_published'))
     end
   end

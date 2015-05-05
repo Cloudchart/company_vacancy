@@ -5,7 +5,8 @@ class Person < ActiveRecord::Base
   include Tire::Model::Callbacks
   include Admin::Person
 
-  before_save :invalidate_verification!
+  before_save :reset_verification, if: :twitter_changed?
+  before_save :verify, if: :should_be_verified?
 
   dragonfly_accessor :avatar
 
@@ -42,13 +43,44 @@ class Person < ActiveRecord::Base
     as_json(only: [:uuid, :full_name, :first_name, :last_name, :email, :occupation, :salary])
   end
 
+  def should_be_verified!
+    @should_be_verified = true
+  end
+
+  def should_be_verified?
+    !!@should_be_verified
+  end
+
 private
 
-  def invalidate_verification!
-    if twitter_changed?
-      self.is_verified = false
-    end
+  def reset_verification
+    self.is_verified = false
     true
+  end
+
+  def verify
+    if twitter_changed? && twitter.present?
+      self.transaction do
+        if user_found_by_twitter = User.find_by(twitter: twitter)
+          self.user = user_found_by_twitter
+          self.is_verified = true
+
+          unless user_found_by_twitter.companies.include?(company)
+            if invite = user_found_by_twitter.company_invite_tokens.select { |token| token.owner_id == company_id }.first
+              value = invite.data[:role]
+              invite.destroy
+            else
+              value = 'public_reader'
+            end
+            user_found_by_twitter.roles.create!(value: value, owner: company)
+          end
+        else
+          self.user = nil
+          # TODO: think about what to with a role here
+        end
+
+      end
+    end
   end
 
 end

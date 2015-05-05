@@ -4,6 +4,8 @@ class PeopleController < ApplicationController
 
   load_and_authorize_resource
 
+  before_action :mark_for_verification, only: [:create, :update], if: -> { current_user.editor? }
+
   # GET companies/1/people
   def index
     @people = @company.people.includes(:user)
@@ -23,9 +25,6 @@ class PeopleController < ApplicationController
   # POST companies/1//people
   def create
     if @person.save
-
-      verify_person!
-
       respond_to do |format|
         format.json { render json: @person, root: false }
       end
@@ -39,9 +38,6 @@ class PeopleController < ApplicationController
   # PATCH/PUT /people/1
   def update
     if @person.update(person_params)
-
-      verify_person!
-
       respond_to do |format|
         format.json { render json: @person, root: false }
       end
@@ -78,14 +74,9 @@ private
     end
   end
 
-
-  def verify_person!
-    return unless current_user.editor?
-    user = User.find_by(twitter: @person.twitter)
-    @person.update(user: user, is_verified: true) if user.present?
-    user.roles.create!(value: 'public_reader', owner: @person.company) if user.present? && !user.companies.include?(@company)
+  def mark_for_verification
+    @person.should_be_verified!
   end
-
 
   def person_params
     params.require(:person).permit([
