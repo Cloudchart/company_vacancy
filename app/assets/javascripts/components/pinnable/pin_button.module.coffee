@@ -138,7 +138,7 @@ module.exports = React.createClass
     classList = cx
       active:         !!@state.currentUserPin or !!@state.currentUserRepin
       'with-counter': (@getCount() > 0)
-      'unclickable':  !@isClickable()
+      'disabled':     !@isClickable()
 
     unless @props.asTextButton
       <li className={ classList } onClick={ @handleClick }>

@@ -291,9 +291,9 @@ div.button {
 // Round buttons
 //
 
-$round-button-background-color: hsl(60, 4%, 91%);
+$round-button-background-color: hsl(60, 3%, 85%);
 $round-button-background-color-active: $accented-green-color;
-$round-button-background-color-disabled: hsla(60, 4%, 91%, .5);
+$round-button-background-color-disabled: hsla(60, 3%, 85%, .5);
 $round-button-color: $accented-white-color;
 $round-button-spacer-size: $inner-margin-size;
 $round-button-size: 24px;
@@ -326,7 +326,7 @@ ul.round-buttons {
     width: auto;
   }
 
-  &.unclickable {
+  &.disabled {
     cursor: default;
   }
 
