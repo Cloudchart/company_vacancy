@@ -99,7 +99,7 @@ class User < ActiveRecord::Base
   end
 
   def owned_companies
-    Company.joins(:roles).where(is_published: true, roles: { user_id: id, owner_type: 'Company' })
+    Company.joins(:roles).where(roles: { user_id: id, owner_type: 'Company' })
   end
 
   def published_companies

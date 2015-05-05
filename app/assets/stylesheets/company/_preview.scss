@@ -99,6 +99,11 @@ article.companies,
 .company-preview {
   position: relative;
 
+  &.unpublished {
+    cursor: pointer;
+    opacity: 0.5;
+  }
+
   > a {
     @include display(flex);
     @include flex-direction(column);

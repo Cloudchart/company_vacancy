@@ -17,6 +17,7 @@ CompanySyncApi = require('sync/company')
 
 Logo           = require('components/company/logo')
 People         = require('components/pinnable/block/people')
+ModalStack     = require('components/modal_stack')
 
 Buttons        = require('components/form/buttons')
 
@@ -174,6 +175,12 @@ CompanyPreview = React.createClass
       .filter (company) => company.get('uuid') == @props.uuid
       .size
 
+  isUnpublished: ->
+    !@cursor.company.get('is_published') && !@isViewerOwner()
+
+  getPreviewLink: ->
+    @cursor.company.get('company_url') unless @isUnpublished()
+
 
   # Handlers
   #
@@ -214,6 +221,19 @@ CompanyPreview = React.createClass
 
   handleFail: (syncKey) ->
     @setState(sync: @state.sync.set(syncKey, false))
+
+  handlePreviewClick: ->
+    return unless @isUnpublished()
+
+    ModalStack.show(
+      <section className="info-modal">
+        <header>{ @cursor.company.get('name') }</header>
+        <p>This company is not on Cloudchart yet. But we've recorded, that you've been interested and will inform you when it will appear.</p>
+        <button className="cc" onClick={ ModalStack.hide }>
+          Got it
+        </button>
+      </section>
+    )
 
 
   # Lifecycle methods
@@ -328,8 +348,13 @@ CompanyPreview = React.createClass
   render: ->
     return null unless (company = @cursor.company.deref(false))
 
-    <article className="company-preview cloud-card">
-      <a href={ company.get('company_url') } className="company-preview-link for-group">
+    article_classes = cx
+      'company-preview': true
+      'cloud-card': true
+      'unpublished': @isUnpublished()
+
+    <article className={ article_classes }>
+      <a onClick = { @handlePreviewClick } href={ @getPreviewLink() } className="company-preview-link for-group">
         { @renderHeader() }
         { @renderInfo() }
         <p className="description">

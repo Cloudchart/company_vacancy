@@ -46,7 +46,7 @@ UserCompanies = React.createClass
   getCompanies: ->
     CompanyStore
       .filterForUser(@props.user_id)
-      .sortBy (company) -> company.get('name')
+      .sortBy (company) -> !company.get('is_published') + company.get('name')
       .toArray()
 
 

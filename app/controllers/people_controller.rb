@@ -83,7 +83,7 @@ private
     return unless current_user.editor?
     user = User.find_by(twitter: @person.twitter)
     @person.update(user: user, is_verified: true) if user.present?
-    user.roles.create!(value: :public_reader, owner: @company) if user.present? && !user.companies.include?(@company)
+    user.roles.create!(value: 'public_reader', owner: @person.company) if user.present? && !user.companies.include?(@company)
   end
 
 
