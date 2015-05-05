@@ -55,10 +55,7 @@ MainComponent = React.createClass
 
 
   # Helpers
-  # 
-  isLoaded: ->
-    @props.cursor.stories.deref(false) and @props.cursor.posts_stories.deref(false) and @props.cursor.pins.deref(false)
-
+  #
   getPostsSizeForStory: (story) ->
     story_id = story.get('uuid')
     post_ids = @state.company.post_ids
@@ -117,7 +114,7 @@ MainComponent = React.createClass
 
     storyClassName = if (posts_count < 5 && story.get('company_id')) then 'inactive' else null                 
 
-    pins_count = @getPinsSizeForStory(story)
+    pins_count = @getPinsSizeForStory(story) || 0
 
     <li className={ storyClassName } key={ uuid } onClick={ @handleStoryClick.bind(@, story) } >
       <header>
@@ -133,8 +130,6 @@ MainComponent = React.createClass
   # Main render
   # 
   render: ->
-    return null unless @isLoaded()
-
     <section className="stories">
       { @renderStories() }
     </section>
