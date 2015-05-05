@@ -368,25 +368,34 @@ module.exports = React.createClass
       </div>
     </label>
 
+  renderPinCommentCounter: ->
+    return null unless !@props.uuid || @isCurrentUserSystemEditor()
+
+    <div className="counter">
+      { @getContentMaxLength() - @state.attributes.get('content').length }
+    </div>
+
+  renderPinCommentInput: ->
+    if !@props.uuid || @isCurrentUserSystemEditor()
+      <textarea
+        rows      = 5
+        onChange  = { @handleChange.bind(@, 'content') }
+        value     = { @state.attributes.get('content', '') } />
+    else
+      <p>{ @state.attributes.get('content', '') }</p>
+
   renderPinComment: ->
     <label className="comment">
       <div className="title">
         { if @props.parent_id then "Note" else "Insight" }
-        <div className="counter">
-          { @getContentMaxLength() - @state.attributes.get('content').length }
-        </div>
+        { @renderPinCommentCounter() }
       </div>
-      <textarea
-        rows      = 5
-        onChange  = { @handleChange.bind(@, 'content') }
-        value     = { @state.attributes.get('content', '') }
-      />
+      { @renderPinCommentInput() }
     </label>
 
 
   renderDeleteButton: ->
     return null unless @props.uuid
-    return null unless @isCurrentUserSystemEditor()
     return null if !@props.pinnable_id && @hasRepins(@props.uuid)
 
     <button key="delete" type="button" className="cc alert" onClick={ @handleDelete }>Delete</button>

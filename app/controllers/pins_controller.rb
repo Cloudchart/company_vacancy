@@ -102,18 +102,18 @@ private
   end
 
   def default_fields
-    params = [:pinnable_id, :pinnable_type, :pinboard_id, :content, :parent_id]
+    params = [:pinboard_id]
   end
 
   def fields_for_create
-    params = default_fields << [:user_id]
+    params = default_fields << [:user_id, :content, :pinnable_id, :pinnable_type, :parent_id]
     params << [:is_suggestion, :origin] if current_user.editor?
     params
   end
 
   def fields_for_update
     params = default_fields
-    params << [:user_id, :origin] if current_user.editor?
+    params << [:user_id, :origin, :content] if current_user.editor?
     params
   end
 

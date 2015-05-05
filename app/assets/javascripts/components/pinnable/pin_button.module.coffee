@@ -102,9 +102,9 @@ module.exports = React.createClass
     event.stopPropagation()
 
     if @state.currentUserPin
-      PinStore.destroy(@state.currentUserPin.get('uuid')) if confirm('Are you sure?')
+      Modal.show(@renderEditPinForm(@state.currentUserPin.get('uuid')))
     else if @state.currentUserRepin
-      PinStore.destroy(@state.currentUserRepin.get('uuid')) if confirm('Are you sure?')
+      Modal.show(@renderEditPinForm(@state.currentUserRepin.get('uuid')))
     else
       Modal.show(@renderPinForm())
 
@@ -118,8 +118,13 @@ module.exports = React.createClass
       pinnable_id   = { @props.pinnable_id }
       pinnable_type = { @props.pinnable_type }
       onDone        = { Modal.hide }
-      onCancel      = { Modal.hide }
-    />
+      onCancel      = { Modal.hide } />
+
+  renderEditPinForm: (uuid) ->
+    <PinForm
+      uuid          = { uuid }
+      onDone        = { Modal.hide }
+      onCancel      = { Modal.hide } />
 
   renderCounter: ->
     return null unless (count = @getCount()) > 0

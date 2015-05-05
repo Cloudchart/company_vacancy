@@ -88,6 +88,10 @@ body ul.modal-stack > li.modal-stack-item > form.pin {
       width: 100%;
     }
 
+    .comment p {
+      font-size: $basic-font-size;
+    }
+
     .comment .counter {
       color: $link-color;
       font-size: $basic-font-size;
