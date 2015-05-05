@@ -24,7 +24,7 @@ module.exports = React.createClass
 
   displayName: 'TopInsights'
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+  mixins: [GlobalState.query.mixin]
 
   statics:
 
