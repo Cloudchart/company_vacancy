@@ -3,7 +3,25 @@ body ul.modal-stack > li.modal-stack-item > form.pin {
   $pin-form-width: 476px;
 
   background-color: $white-color;
+  position: relative;
   width: $pin-form-width;
+
+  > .close {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+    @include position(absolute, 20px 20px 0 0);
+
+    color: $accented-red-color;
+    height: 20px;
+    width: 20px;
+    font-size: 36px;
+
+    > .cc-icon {
+      position: relative;
+      top: -10px;
+    }
+  }
 
   @mixin pin-form-select-wrapper {
     position: relative;
@@ -127,6 +145,7 @@ body ul.modal-stack > li.modal-stack-item > form.pin {
     font-weight: 100;
     line-height: 1.4em;
     padding: $default-margin-size;
+    padding-right: 40px;
     white-space: pre-wrap;
 
     .company {

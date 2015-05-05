@@ -417,9 +417,10 @@ module.exports = React.createClass
     return null unless @fetchDone()
 
     <form className="pin" onSubmit={ @handleSubmit }>
-      <ModalHeader 
-        text    = "Pin this to your pinboard"
-        onClose = { @props.onCancel } />
+      <StandardButton 
+        className = "close transparent"
+        iconClass = "cc-icon cc-times"
+        onClick   = { @props.onCancel }/>
 
       <InsightContent 
         withLinks   = { false }
