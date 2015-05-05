@@ -12,17 +12,32 @@
   .featured-post-preview {
     @include display(flex);
 
-    background-color: $black-color;
+    background-color: transparent;
     min-height: 500px;
     overflow: hidden;
     position: relative;
     width: 100%;
 
     > .background {
-      @include filter(blur(10px));
-      @include position(absolute);
+      @include position(absolute, 0px 0px 0px 0px);
 
-      width: 100%;
+      overflow: hidden;
+
+      > div {
+        @include filter(blur(10px));
+        @include position(absolute, -10px -15px -15px -10px);
+
+        background-size: cover;
+
+        &::after {
+          @include position(absolute, 0px 0px 0px 0px);
+
+          background-color: $black-color;
+          opacity: 0.2;
+          content: '';
+          z-index: 1;
+        }
+      }
     }
 
     > .wrapper {

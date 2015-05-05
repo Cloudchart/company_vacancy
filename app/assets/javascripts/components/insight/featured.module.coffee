@@ -68,7 +68,9 @@ module.exports = React.createClass
   renderBackgroundImage: (feature) ->
     return null unless (postBackgroundUrl = feature.get('assigned_image_url'))
 
-    <img className="background" src={ postBackgroundUrl } />
+    <div className="background">
+      <div style={ backgroundImage: "url(#{postBackgroundUrl})" }></div>
+    </div>
 
   renderPosts: ->
     @cursor.features
