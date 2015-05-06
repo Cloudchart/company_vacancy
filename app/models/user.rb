@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
 
   dragonfly_accessor :avatar
 
+  has_should_markers :should_validate_invite, :should_validate_name, :should_create_tour_tokens
+
   has_secure_password
 
   has_and_belongs_to_many :friends
@@ -160,30 +162,6 @@ class User < ActiveRecord::Base
       .select_by_user(id, emails.pluck(:address))
 
     companies = tokens.map(&:owner)
-  end
-
-  def should_validate_invite?
-    @should_validate_invite
-  end
-
-  def should_validate_invite!
-    @should_validate_invite = true
-  end
-
-  def should_create_tour_tokens?
-    @should_create_tour_token
-  end
-
-  def should_create_tour_tokens!
-    @should_create_tour_token = true
-  end
-
-  def should_validate_name?
-    @should_validate_name
-  end
-
-  def should_validate_name!
-    @should_validate_name = true
   end
 
   # def validate_email
