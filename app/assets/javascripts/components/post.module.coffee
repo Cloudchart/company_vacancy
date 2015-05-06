@@ -426,7 +426,7 @@ Post = React.createClass
   # Main render
   #
   render: ->
-    return null unless @state.post
+    return null unless @state.post && @state.company
 
     className = cx({
       "post-container": true,
