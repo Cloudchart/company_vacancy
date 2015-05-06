@@ -19,7 +19,7 @@ class ActivitiesController < ApplicationController
 private
 
   def activity_params
-    partams.require(:activity).permit(:action, :trackable_id, :trackable_type)
+    params.require(:activity).permit(:action, :trackable_id, :trackable_type)
   end
 
 end
