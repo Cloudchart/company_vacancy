@@ -61,5 +61,107 @@
         padding: 0 34px;
       }
     }
+
+    > .guide {
+      @include align-items(stretch);
+      @include display(flex);
+      @include flex-direction(column);
+
+      width: 100%;
+
+      > section {
+        @include align-items(center);
+        @include display(flex);
+        @include flex-direction(column);
+
+        padding: 40px;
+
+        &:first-child {
+          background-color: hsl(60, 9%, 98%);
+        }
+
+        > header {
+          font-size: $huge-font-size;
+          font-weight: 300;
+          line-height: 50px;
+        }
+
+        > p,
+        .insight-guide > p {
+          font-size: $large-font-size;
+          font-weight: 300;
+          line-height: 32px;
+          margin: 0;
+          max-width: 800px;
+          padding: 0;
+          text-align: center;
+        }
+
+        > .insight-guide {
+          @include align-items(center);
+          @include display(flex);
+          @include justify-content(space-between);
+
+          margin-top: 40px;
+          max-width: 1024px;
+          width: 100%;
+
+          > p {
+            max-width: 450px;
+            text-align: left;
+          }
+        }
+
+        .insight {
+          .mitch-wainer figure {
+            background-image: image_url('guide/mitch_wainer.jpeg');
+          }
+
+          .round-buttons .active {
+            cursor: default;
+          }
+        }
+
+        > .companies-list {
+          @include display(flex);
+
+          margin-top: 40px;
+
+          > .company-preview {
+            height: 426px;
+            margin-right: 24px;
+            width: 370px;
+
+            &.tesla {
+              .logo {
+                background-image: image_url('guide/tesla_logo.png');
+              }
+
+              .elon-musk figure {
+                background-image: image_url('guide/elon_musk.jpg');
+              }
+            }
+
+            &.opsware {
+              .logo {
+                background-image: image_url('guide/opsware_logo.jpg');
+              }
+
+              .ben-horowitz figure {
+                background-image: image_url('guide/ben_horowitz.png');
+              }
+
+              .tim-howes figure {
+                background-image: image_url('guide/tim_howes.png');
+              }
+            }
+
+            &:last-child {
+              margin-right: 0;
+            }
+          }
+        }
+      }
+    }
   }
 }

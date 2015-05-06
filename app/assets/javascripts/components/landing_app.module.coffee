@@ -6,6 +6,7 @@ FeaturedInsights = require('components/insight/featured')
 RecentCompanies  = require('components/company/lists/recent')
 TopInsights      = require('components/pinboards/pins/top')
 Greeting         = require('components/shared/greeting')
+Guide            = require('components/guide')
 
 # Exports
 #
@@ -29,6 +30,11 @@ module.exports = React.createClass
       <h1>Learn from Unicorns</h1>
       <h2>Discover how successfull startups have grown</h2>
     </header>
+
+  renderGuide: ->
+    return null if @props.isAuthorized
+
+    <Guide />
 
   renderFooter: ->
     return null if @props.isAuthorized
@@ -56,4 +62,5 @@ module.exports = React.createClass
       { @renderTopInsights() }
       { @renderRecentCompanies() }
       { @renderFooter() }
+      { @renderGuide() }
     </section>

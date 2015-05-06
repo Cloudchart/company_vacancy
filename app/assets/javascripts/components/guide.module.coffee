@@ -1,0 +1,129 @@
+# @cjsx React.DOM
+
+GlobalState      = require('global_state/state')
+
+FeaturedInsights = require('components/insight/featured')
+RecentCompanies  = require('components/company/lists/recent')
+TopInsights      = require('components/pinboards/pins/top')
+Greeting         = require('components/shared/greeting')
+Guide            = require('components/guide')
+
+# Exports
+#
+module.exports = React.createClass
+
+  displayName: 'Guide'
+
+  propTypes:
+    isAuthorized: React.PropTypes.bool
+
+  getDefaultProps: ->
+    isAuthorized: false
+
+  renderInsight: ->
+    <article className="insight item">
+      <div className="human mitch-wainer">
+        <figure className="avatar"></figure>
+        <section className="credentials">
+          <p className="name">
+            <span>
+              <span>Mitch </span>
+              <span className="last-part">
+                <span>Wainer</span>
+                <i className="svg-icon svg-unicorn"></i>
+              </span>
+            </span>
+          </p>
+          <p className="occupation">CMO, Digital Ocean</p>
+        </section>
+      </div>
+      <section className="content">
+        <span>Everything we do moving forward is to simplify the complexities of cloud infrastructure.</span>
+      </section>
+      <ul className="round-buttons">
+        <li className="active">
+          <i className="fa fa-thumb-tack"></i>
+        </li>
+      </ul>
+    </article>
+
+  renderTeslaPreview: ->
+    <article className="company-preview cloud-card tesla">
+      <a className="company-preview-link for-group">
+        <header>
+          <figure className="logo"></figure>
+          <h1>Tesla Motors</h1>
+        </header>
+        <div className="info">
+          <ul className="stats">
+            <li>11 insights</li>
+            <li>50 posts</li>
+          </ul>
+        </div>
+        <p className="description">American company that designs, manufactures, and sells electric cars and electric vehicle powertrain components</p>
+        <footer>
+          <section className="people">
+            <div className="human elon-musk">
+              <figure className="avatar"></figure>
+              <section className="credentials">
+                <p className="name">Elon Musk</p>
+              </section>
+            </div>
+          </section>
+        </footer>
+      </a>
+    </article>
+
+  renderOpswarePreview: ->
+    <article className="company-preview cloud-card opsware">
+      <a className="company-preview-link for-group">
+        <header>
+          <figure className="logo"></figure>
+          <h1>Opsware</h1>
+        </header>
+        <div className="info">
+          <ul className="stats">
+            <li>12 insights</li>
+            <li>55 posts</li>
+          </ul>
+        </div>
+        <p className="description">A software company providing cloud computing services</p>
+        <footer>
+          <section className="people ben-horowitz">
+            <div className="human">
+              <figure className="avatar"></figure>
+              <section className="credentials">
+                <p className="name">Ben Horowitz</p>
+              </section>
+            </div>
+            <div className="human tim-howes">
+              <figure className="avatar"></figure>
+              <section className="credentials">
+                <p className="name">Tim Howes</p>
+              </section>
+            </div>
+          </section>
+        </footer>
+      </a>
+    </article>
+
+
+  render: ->
+    <section className="guide">
+      <section>
+        <header>A tool for the next generation of founders.</header>
+        <p>Just like your business, CloudChart evolves everyday, providing you with fresh learning material: <strong>new insights</strong> and unicorn companies' updates.</p>
+        <section className="insight-guide">
+          <p>Learn how to grow your own company using <strong>actionable insights</strong> by successful founders, investors, and experts.</p>
+          { @renderInsight() }
+        </section>
+      </section>
+      <section>
+        <header>Follow companies you’re interested in.</header>
+        <p>Get their updates and learn from their successes and failures in real time.</p>
+        <section className="companies-list">
+          { @renderTeslaPreview() }
+          { @renderOpswarePreview() }
+        </section>
+      </section>
+    </section>
