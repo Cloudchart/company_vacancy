@@ -10,3 +10,5 @@ en:
       subject: "Thank you for requesting an invitation to CloudChart!"
     company_url_verification:
       subject: "CloudChart company site URL changed"
+    app_invite_:
+      subject: "Invitation to CloudChart"

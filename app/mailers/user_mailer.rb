@@ -6,13 +6,13 @@ class UserMailer < ActionMailer::Base
     @user = email.try(:user)
     @token = rfc1751(token.id).parameterize
     email = email.try(:address) || email
+    
     mail to: email
   end
 
   def company_url_verification(token)
     @company = token.owner
     @user = User.find(token.data[:user_id])
-
     file_name = "#{@company.humanized_id}.txt"
     attachments[file_name] = File.read(File.join(Rails.root, 'tmp', 'verifications', file_name))
 
@@ -22,6 +22,7 @@ class UserMailer < ActionMailer::Base
   def vacancy_response(vacancy, email)
     @vacancy = vacancy
     @user = email.user
+
     mail to: email.address
   end
 
@@ -29,6 +30,7 @@ class UserMailer < ActionMailer::Base
     @token = rfc1751(token.id).parameterize
     @code = rfc1751(token.id)
     @name = token.data[:full_name]
+
     email = token.data[:email]
     mail to: email
   end
@@ -36,11 +38,13 @@ class UserMailer < ActionMailer::Base
   def thanks_for_invite_request(token)
     @name = token.data[:full_name]
     email = token.data[:email]
+
     mail to: email
   end
 
   def interview_acceptance(interview)
     @interview = interview
+
     mail to: 'anton@cloudchart.co'
   end
 
@@ -48,13 +52,24 @@ class UserMailer < ActionMailer::Base
     @pinboard = token.owner
     @user = email.try(:user)
     @token = rfc1751(token.id).parameterize
+
     email = email.try(:address) || email
     mail to: email
   end
 
   def app_invite_(user)
     @user = user
+
     mail(to: @user.email) do |format|
+      format.html { render layout: 'user_mailer_' }
+    end
+  end
+
+  def custom_invite(user, email_template)
+    @user = user
+    @email_template = email_template
+
+    mail(to: email_template.email, subject: email_template.subject) do |format|
       format.html { render layout: 'user_mailer_' }
     end
   end
