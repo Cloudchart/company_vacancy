@@ -26,7 +26,8 @@ main > .error {
   }
 
   > img {
-    padding: 60px 0 45px;
+    margin: 60px 0 45px;
+    height: 190px;
   }
 }
 
@@ -46,7 +47,7 @@ main > .error {
     }
 
     > figure {
-      background: image_url("error.png") center center no-repeat;
+      background: image_url("error.svg") center center no-repeat;
       background-size: contain;
       height: 172px;
       margin: 40px 0;
