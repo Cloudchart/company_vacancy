@@ -27,7 +27,7 @@ class PinsController < ApplicationController
     @pin.user = @pin.parent.user if @pin.is_suggestion
     @pin.save!
 
-    Activity.track(current_user, params[:action], @pin, @pin.user)
+    Activity.track(current_user, params[:action], @pin, { source: @pin.user })
 
     respond_to do |format|
       format.json { render json: { id: @pin.uuid } }
