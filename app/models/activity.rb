@@ -1,6 +1,8 @@
 class Activity < ActiveRecord::Base
   include Uuidable
 
+  ACTION_WHITE_LIST = [:click].freeze
+
   paginates_per 30
 
   belongs_to :user
@@ -8,6 +10,8 @@ class Activity < ActiveRecord::Base
   belongs_to :trackable, polymorphic: true
 
   has_many :favorites, primary_key: :source_id, foreign_key: :favoritable_id
+
+  validates :action, inclusion: { in: ACTION_WHITE_LIST.map(&:to_s) }, on: :create, if: :should_validate_action?
 
   scope :followed_by_user, -> id {
     joins { favorites }
@@ -21,6 +25,14 @@ class Activity < ActiveRecord::Base
 
   def self.track(user, action, trackable, source = nil)
     create(user: user, action: action, trackable: trackable, source: source)
+  end
+
+  def should_validate_action?
+    !!@should_validate_action
+  end
+
+  def should_validate_action!
+    @should_validate_action = true
   end
 
 end

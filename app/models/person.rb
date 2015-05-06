@@ -61,6 +61,7 @@ private
   def verify
     if twitter_changed? && twitter.present?
       self.transaction do
+        
         if user_found_by_twitter = User.find_by(twitter: twitter)
           self.user = user_found_by_twitter
           self.is_verified = true
