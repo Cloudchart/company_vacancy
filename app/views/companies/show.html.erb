@@ -4,7 +4,7 @@
   title: decorate(@company).og_name,
   image: og_image_url(@company.logotype.try(:url)),
   url: company_url(@company),
-  description: @company.description
+  description: t('meta.company.description', company_name: @company.name)
 } %>
 
 <% content_for :header_breadcrumbs do %>
