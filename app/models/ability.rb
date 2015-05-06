@@ -7,8 +7,6 @@ class Ability
     # Anyone
     #
     if current_user.guest?
-      # can :read, :invite
-
       # can :read, Event
       # can :read, Event
       # can :read, Tag
@@ -29,13 +27,15 @@ class Ability
     else
       can :manage, :cloud_profile_main
       can :update, :cloud_profile_user
-      can [:read, :accept, :destroy], :invite
+      can [:read, :accept, :destroy], :company_invite
 
-      # can :manage, Subscription
       can :create, Tag
-
       can [:create, :verify, :resend_verification], Email
       can :destroy, Email, user_id: current_user.id
+
+      can :manage, :invite do
+        current_user.inviter?
+      end
 
       # User
       #
