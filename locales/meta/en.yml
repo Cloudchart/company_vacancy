@@ -1,6 +1,5 @@
 en:
   meta: 
-    app_description: "Cloudchart is a constantly updating tool designed to educate the next generation of founders. Browse unicorns' timelines to see how they came to life and grew. Learn from actionable insights."
-    welcome_description: "Discover the insights on how successful startups have grown. Explore the companies' timelines, collect insights, add your own, and put them to action."
+    app_description: "Learn from unicorns. Cloudchart is a educational tool for the next generation of founders. Discover the insights on how successful startups are growing. Use them to grow your business."
     company:
       description: "Learn from unicorns on CloudChart: explore %{company_name}'s timeline and discover actionable insights by founders, investors, and experts to be used to grow your own business."
