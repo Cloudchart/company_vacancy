@@ -48,9 +48,11 @@ module.exports = React.createClass
   propTypes:
     user_id:          React.PropTypes.string.isRequired
     showOnlyInsights: React.PropTypes.bool
+    showPlaceholders: React.PropTypes.bool
 
   getDefaultProps: ->
     showOnlyInsights: false
+    showPlaceholders: false
 
 
   # Helpers
@@ -84,6 +86,16 @@ module.exports = React.createClass
   # Renderers
   #
   render: ->
-    return null unless @isLoaded()
-
-    <PinsList pins = { @gatherPins() } />
+    if @isLoaded()
+      <PinsList pins = { @gatherPins() } />
+    else if @props.showPlaceholders
+      <section className="pins cloud-columns cloud-columns-flex">
+        <section className="cloud-column">
+          <section className="pin cloud-card placeholder" />
+        </section>
+        <section className="cloud-column">
+          <section className="pin cloud-card placeholder" />
+        </section>
+      </section>
+    else
+      null

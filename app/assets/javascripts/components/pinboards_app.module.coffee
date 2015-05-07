@@ -19,4 +19,4 @@ module.exports = React.createClass
   render: ->
     return null unless @cursor.deref(false)
 
-    <UserPins user_id={ @cursor.get('uuid') } />
+    <UserPins user_id={ @cursor.get('uuid') } showPlaceholders = { true } />

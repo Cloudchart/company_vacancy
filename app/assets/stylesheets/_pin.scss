@@ -68,6 +68,13 @@
 // Pin Card
 //
 .pin.cloud-card {
+  &.placeholder {
+    background-image: image_url('placeholders/pin.png');
+    background-size: cover;
+
+    height: 566px;
+  }
+
   &.clickable {
     cursor: pointer;
   }

@@ -170,15 +170,25 @@ CompaniesApp = React.createClass
       text = "We're adding new companies every week — join our mailing list to get updates on new unicorns' timelines and useful insights." />
 
   render: ->
-    return null unless @isLoaded()
-
-    <section className="cloud-profile-companies">
-      { @renderHeader() }
-      <CompanyList
-        companies      = { @getAllCompanies() }
-        onSyncDone     = { @updateStores } />
-      { @renderFooter() }
-    </section>
-
+    if @isLoaded()
+      <section className="cloud-profile-companies">
+        { @renderHeader() }
+        <CompanyList
+          companies      = { @getAllCompanies() }
+          onSyncDone     = { @updateStores } />
+        { @renderFooter() }
+      </section>
+    else
+      <section className="cloud-profile-companies">
+        { @renderHeader() }
+        <section className="companies-list cloud-columns cloud-columns-flex">
+          <section className="cloud-column">
+            <section className="company-preview cloud-card placeholder" />
+          </section>
+          <section className="cloud-column">
+            <section className="company-preview cloud-card placeholder" />
+          </section>
+        </section>
+      </section>
 
 module.exports = CompaniesApp

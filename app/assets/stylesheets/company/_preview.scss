@@ -113,6 +113,11 @@ article.companies,
 .company-preview {
   position: relative;
 
+  &.placeholder {
+    background-image: image_url('placeholders/company.png');
+    background-size: cover;
+  }
+
   > a {
     @include display(flex);
     @include flex-direction(column);
@@ -121,7 +126,7 @@ article.companies,
     margin-top: 0;
     outline: none;
     text-decoration: none;
-    width: 100%; 
+    width: 100%;
 
     > .info {
       @include position(absolute, $default-margin-size $default-margin-size 0 0);
