@@ -1,5 +1,6 @@
 # @cjsx React.DOM
 
+cx = React.addons.classSet
 
 # Exports
 #
@@ -10,6 +11,10 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @props.item and @props.item.get('content', false)
+    return null unless @props.text
 
-    <section className="paragraph" dangerouslySetInnerHTML={ __html: @props.item.get('content') } />
+    classes = cx
+      'paragraph': true
+      'truncated': @props.truncated
+
+    <section className={ classes } dangerouslySetInnerHTML={ __html: @props.text } />

@@ -1,5 +1,6 @@
 .editor > .paragraph,
-.post.preview .paragraph {
+.post.preview .paragraph,
+.post-preview .paragraph {
   font-size: $big-font-size;
   line-height: 1.5;
 
@@ -25,4 +26,9 @@
       text-transform: uppercase;
     }
   }
+}
+
+.post-preview .paragraph {
+  font-size: $basic-font-size;
+  font-weight: 400;
 }

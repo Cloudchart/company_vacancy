@@ -86,6 +86,29 @@ module.exports = React.createClass
       .sortBy (block) -> block.get('position')
       .take(2)
 
+  isPostTruncated: ->
+    @cursor.blocks.deref([]).size > 2 || 
+    @gatherBlocks().some (block) => @isBlockTruncated(block)
+
+  isBlockTruncated: (block) ->
+    return false if block.get('identity_type') != 'Paragraph'
+    return false unless (paragraph = @getParagraphByBlock(block))
+
+    @getTruncatedParagraph(block) != paragraph.content
+
+  getTruncatedParagraph: (block) ->
+    return null unless (paragraph = @getParagraphByBlock(block))
+
+    parts = paragraph.get('content').match(/<div>(.*?)<\/div>/i)
+
+    "<span>#{parts[1]}</span>"
+
+  getParagraphByBlock: (block) ->
+    ParagraphStore.findByOwner(type: 'Block', id: block.get('uuid'))
+
+  isPostPreviewWithParagraphs: ->
+    @gatherBlocks().some (block) => block.get('identity_type') == 'Paragraph'
+
 
   # Lifecycle methods
   #
@@ -99,6 +122,11 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderReadMore: ->
+    return null unless @isPostTruncated() && !@isPostPreviewWithParagraphs()
+
+    <span className="read-more">More</span>
+
   renderDate: ->
     return unless date = fuzzyDate.format(@cursor.post.get('effective_from'), @cursor.post.get('effective_till'))
 
@@ -128,8 +156,8 @@ module.exports = React.createClass
   renderBlock: (block) ->
     switch block.get('identity_type')
       when 'Paragraph'
-        paragraph = ParagraphStore.findByOwner(type: 'Block', id: block.get('uuid'))
-        <Blocks.Paragraph key={ block.get('uuid') } item={ paragraph } />
+        paragraph = @getParagraphByBlock(block)
+        <Blocks.Paragraph key={ block.get('uuid') } text={ @getTruncatedParagraph(block) } truncated = { @isPostTruncated() } />
 
       when 'Picture'
         picture = PictureStore.findByOwner(type: 'Block', id: block.get('uuid'))
@@ -161,5 +189,6 @@ module.exports = React.createClass
         { @renderControls() }
         { @renderBlocks() }
         { @renderOwnerHeader() }
+        { @renderReadMore() }
       </a>
     </article>

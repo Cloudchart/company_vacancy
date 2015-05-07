@@ -99,7 +99,7 @@ Component = React.createClass
 
   isPostTruncated: ->
     @state.blocks.length > 2 || 
-    @state.blocks.some (block) => !@isBlockTruncated(block)
+    @state.blocks.some (block) => @isBlockTruncated(block)
 
   isPostPreviewWithParagraphs: ->
     @state.blocks.slice(0, 2).some (block) => block.identity_type == 'Paragraph'
