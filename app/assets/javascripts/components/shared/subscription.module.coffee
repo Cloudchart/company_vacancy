@@ -61,8 +61,20 @@ module.exports = React.createClass
   isLoaded: ->
     @props.cursor.user.deref(false) && @state.isLoaded
 
+  getEmailFromTokens: ->
+    token = @props.cursor.tokens.filter (token) =>
+      token.get('owner_id') == @props.cursor.user.get('uuid') &&
+      token.get('name') == 'email_verification'
+    .first()
+
+    return null unless token
+    token.get('data').get('address')
+
+  getUserEmail: ->
+    @props.cursor.user.get('email') || @getEmailFromTokens() || ''
+
   getAttributesFromCursor: ->
-    Immutable.Map({}).set('email', @props.cursor.user.get('email') || '')
+    Immutable.Map({}).set('email', @getUserEmail())
 
   subscribe: (event) ->
     event.preventDefault()
