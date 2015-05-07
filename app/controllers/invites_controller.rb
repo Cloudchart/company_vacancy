@@ -27,7 +27,7 @@ class InvitesController < ApplicationController
     @email_template = EmailTemplate.new(email_template_params)
 
     if @email_template.valid?
-      UserMailer.custom_invite(@user, @email_template)
+      UserMailer.custom_invite(@user, @email_template).deliver
 
       respond_to do |format|
         format.json { render json: :ok }

@@ -1,18 +1,26 @@
-<p class="greeting" style="margin:0;padding:0;padding:0 50px;width:85%;padding-top:50px;padding-bottom:2px">
-  <%= I18n.t('custom_invite.app_invite.greeting') %>
+<p class="greeting" style="margin:0;padding:0;padding:0 50px;width:85%;padding-top:50px;padding-bottom:10px">
+  <%= I18n.t('user_mailer.custom_invite.greeting') %>
+</p>
+
+<%- if @email_template.body.present? %>
+  <p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+    <%= @email_template.body %>
+  </p>
+<%- end %>
+
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  <%= I18n.t('user_mailer.custom_invite.first_paragraph') %>
 </p>
 
 <p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
-  <%= @email_template.body %>
+  <%= I18n.t('user_mailer.custom_invite.second_paragraph') %>
 </p>
 
-<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
-  <%= I18n.t('custom_invite.app_invite.first_paragraph') %>
-</p>
-
-<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
-  <%= I18n.t('custom_invite.app_invite.second_paragraph') %>
-</p>
+<ul style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  <li><%= I18n.t('user_mailer.custom_invite.first_item') %></li>
+  <li><%= I18n.t('user_mailer.custom_invite.second_item') %></li>
+  <li><%= I18n.t('user_mailer.custom_invite.third_item') %></li>
+</ul>
 
 <p style="margin:0;padding:0;padding:0 50px;width:85%">
   <%= link_to 'Join CloudChart', cloud_profile.login_url, style: 'color:#3bc462;font-weight:600;text-decoration:none;background-color:#3bc462;color:white;display:block;line-height:55px;margin:30px auto;height:55px;padding:0 30px;font-weight:300;font-size:24px;text-align:center;width:200px;' %>
