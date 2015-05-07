@@ -29,6 +29,11 @@ class InvitesController < ApplicationController
 
     if @email_template.valid?
       UserMailer.custom_invite(@user, @email_template).deliver
+      Activity.track(current_user, 'email_invite', @user, data: { 
+        subject: @email_template.subject,
+        body:    @email_template.body,
+        email:   @email_template.email
+      })
 
       respond_to do |format|
         format.json { render json: :ok }
