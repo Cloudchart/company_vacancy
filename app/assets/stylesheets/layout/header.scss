@@ -160,6 +160,7 @@ body > header {
       font-weight: 700;
       list-style: none;
       padding: 0;
+      z-index: -1;
 
       > li {
         color: $link-color;
