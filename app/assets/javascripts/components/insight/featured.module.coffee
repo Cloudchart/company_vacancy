@@ -2,6 +2,7 @@
 
 GlobalState  = require('global_state/state')
 
+UserStore    = require('stores/user_store.cursor')
 FeatureStore = require('stores/feature_store')
 PostStore    = require('stores/post_store.cursor')
 PinStore     = require('stores/pin_store')
@@ -45,13 +46,26 @@ module.exports = React.createClass
         """
 
   getDefaultProps: ->
-    cursor: ModalStackCursor
+    cursor: 
+      modal: ModalStackCursor
+      user:  UserStore.me()
 
   getInitialState: ->
     isLoaded: false
 
   fetch: (id) ->
     GlobalState.fetch(@getQuery('featured'))
+
+
+  # Helpers
+  #
+  getFeatureUrl: (feature) ->
+    return null unless @props.cursor.user.get('twitter')
+
+    feature.get('assigned_url')
+
+  isLoaded: ->
+    @state.isLoaded && @props.cursor.user.deref(false)
 
 
   # Lifecycle methods
@@ -93,7 +107,7 @@ module.exports = React.createClass
           key       = { index } >
           { @renderBackgroundImage(feature) }
           <div className="wrapper">
-            <a className="for-group" href={ feature.get('assigned_url') }>
+            <a className="for-group" href={ @getFeatureUrl(feature) }>
               <header>
                 <h1><span>{ feature.get('assigned_title') }</span></h1>
                 <div className="info">
@@ -118,7 +132,7 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @state.isLoaded
+    return null unless @isLoaded()
 
     <Carousel 
       className         = "featured-insights"
