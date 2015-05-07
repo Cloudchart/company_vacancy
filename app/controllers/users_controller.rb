@@ -32,9 +32,12 @@ class UsersController < ApplicationController
     end
   end
 
+  # TODO: refactor
   def subscribe
     errors = []
     errors << :subscribed if @user.tokens.find_by(name: :subscription)
+
+    raise ActiveRecord::RecordInvalid.new(@user) unless errors.empty?
 
     if params[:user].try(:[], :email).nil? || @user.emails.pluck(:address).include?(params_for_subscribe[:email])
       @user.tokens.create! name: :subscription
