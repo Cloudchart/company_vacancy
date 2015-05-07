@@ -10,10 +10,12 @@
   font-weight: 400;
   line-height: 29px;
   width: calc(100% - 2 * #{$gutter-size} );
+  max-width: 1024px;
   padding: 40px;
 
   p {
-    max-width: 1024px;
+    width: 700px;
+    text-align: left;
   }
 
   a, b {
