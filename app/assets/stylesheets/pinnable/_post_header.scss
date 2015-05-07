@@ -29,6 +29,8 @@
     font-size: $big-font-size;
     font-weight: 600;
 
+    margin-right: 50px;
+
     .title {
       @extend .cloud-card-header;
     }
