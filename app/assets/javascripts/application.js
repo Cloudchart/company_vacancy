@@ -27,6 +27,7 @@
 //= require numeral
 //= require object_assign
 //= require masonry
+//= require imagesloaded
 
 //= require constants.module
 //= require cloud_flux.module

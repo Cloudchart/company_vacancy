@@ -49,9 +49,15 @@ module.exports =
 
     @masonry.layout()
 
+  imagesLoaded: ->
+    window.imagesLoaded @getDOMNode(), (instance) =>
+      @masonry.layout()
+
   componentDidMount: ->
     @initializeMasonry()
     @performLayout()
+    @imagesLoaded()
 
   componentDidUpdate: ->
     @performLayout()
+    @imagesLoaded()
