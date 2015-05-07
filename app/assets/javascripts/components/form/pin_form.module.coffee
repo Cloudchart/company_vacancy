@@ -371,18 +371,22 @@ module.exports = React.createClass
   renderPinCommentCounter: ->
     return null unless !@props.uuid || @isCurrentUserSystemEditor()
 
+    content = @state.attributes.get('content') || ''
+
     <div className="counter">
-      { @getContentMaxLength() - @state.attributes.get('content', '').length }
+      { @getContentMaxLength() - content.length }
     </div>
 
   renderPinCommentInput: ->
+    content = @state.attributes.get('content') || ''
+
     if !@props.uuid || @isCurrentUserSystemEditor()
       <textarea
         rows      = 5
         onChange  = { @handleChange.bind(@, 'content') }
-        value     = { @state.attributes.get('content', '') } />
+        value     = { content } />
     else
-      <p>{ @state.attributes.get('content', '') }</p>
+      <p>{ content }</p>
 
   renderPinComment: ->
     <label className="comment">
@@ -417,12 +421,12 @@ module.exports = React.createClass
     return null unless @fetchDone()
 
     <form className="pin" onSubmit={ @handleSubmit }>
-      <StandardButton 
+      <StandardButton
         className = "close transparent"
         iconClass = "cc-icon cc-times"
         onClick   = { @props.onCancel }/>
 
-      <InsightContent 
+      <InsightContent
         withLinks   = { false }
         pin_id      = { @state.attributes.get('parent_id') }
         pinnable_id = { @state.attributes.get('pinnable_id') } />
