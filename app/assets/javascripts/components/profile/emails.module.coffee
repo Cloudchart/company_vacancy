@@ -217,11 +217,11 @@ Component = React.createClass
 
   render: ->
 
-    (tag.div {
+    (tag.section {
         className: 'emails-wrapper'
       },
 
-      (tag.h2 {}, 'Emails'),
+      (tag.h2 {}, 'Email settings'),
 
       (tag.ul {
         className: 'emails'  

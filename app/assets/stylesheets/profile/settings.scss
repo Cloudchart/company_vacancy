@@ -1,214 +1,55 @@
-main.user-profile {
-  .settings {
-    margin: $gutter-size auto;
-    width: 500px;
-
-    div[contenteditable] {
-      font-size: 16px;
-      @include editor-contenteditable-area;
-    }
-
-    fieldset {
-      margin: 0;
-      margin-bottom: $gutter-size;
-
-      > label {
-        @include flex-wrap(wrap);
-        @include justify-content(flex-end);
-
-        .title {
-          width: 25%;
-        }
-
-        .input,
-        .error {
-          @include flex(0 1 auto);
-          width: 100%;
-        }
-        
-        .title ~ .input,
-        .title ~ .error {
-          width: 75%;
-        }
-      }
-    }
-
-    footer {
-      margin: 0;
-    }
-
-    button {
-      width: auto;
-    }
-  }
-}
-
-// TODO refactor properly
-
 .user-profile .settings {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
 
-  $settings-form-width: 600px;
+  margin-bottom: 30px;
+  width: 100%;
 
-  $settings-form-header-background-color: hsl(60, 10%, 95%);
-  $settings-form-header-font-size: 28px;
-  $settings-form-header-title-color: hsl(0, 0%, 60%);
+  > section, > form {
+    width: 476px;
+  }
 
+  > section > h2,
+  > form > h2 {
+    font-size: $huge-font-size;
+    font-weight: 100;
+    margin-bottom: $default-margin-size;
+    width: 100%;
+  }
 
-  width: $settings-form-width;
-
-
-  @mixin settings-form-header {
+  @mixin settings-form {
+    @include align-items(stretch);
     @include display(flex);
+    @include flex-direction(column);
 
-    background-color: $settings-form-header-background-color;
-    font-size: $settings-form-header-font-size;
-    font-weight: 300;
-    padding: 20px 30px;
-
-    > .title {
-      @include flex(1);
-
-      color: $settings-form-header-title-color;
-      font-weight: 300;
-      margin-left: 20px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    > input {
+      width: 100%;
     }
-  }
 
-
-  @mixin pin-form-select-wrapper {
-    position: relative;
-
-    > i {
-      @include position(absolute, 50% 0px null null);
-      @include transform(translateY(-50%));
-
-      color: hsl(145, 60%, 60%);
-      margin-right: 20px;
-    }
-  }
-
-
-  @mixin settings-form-fieldset {
-    border: none;
-    margin: 20px 30px;
-    padding: 0;
-
-    > label {
-      @include align-items(center);
+    > footer {
       @include display(flex);
 
-      margin-top: 20px;
-
-      > *:not(.title) {
+      > div {
         @include flex(1);
       }
-
-      > .title {
-        font-size: 20px;
-        width: 40%;
-      }
-
-      &.comment > .title {
-        @include align-self(flex-start);
-      }
-
-      > .select-wrapper {
-        @include pin-form-select-wrapper;
-      }
     }
-
-    .comment {
-      position: relative;
-    }
-
-    .user select,
-    .pinboard select,
-    .cc-typeahead input {
-      @include appearance(none);
-
-      background-color: hsl(0, 0%, 95%);
-      border: none;
-      border-radius: 0;
-      font-size: 20px;
-      font-weight: 400;
-      height: 40px;
-      margin: 0;
-      outline: none;
-      padding: 0 20px;
-      width: 100%;
-    }
-
-    .comment textarea {
-      background-color: hsl(0, 0%, 95%);
-      border: none;
-      font-size: 16px;
-      outline: none;
-      padding: 10px;
-      resize: none;
-      width: 100%;
-    }
-
-    .comment .counter {
-      @include position(absolute, null null -20px 540px * 0.4);
-
-      color: hsl(145, 60%, 60%);
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .unicorn-chooser {
-      position: relative;
-
-      .create-button {
-        @include position(absolute, 0px 10px null null);
-
-        color: $green-color;
-        font-size: $big-font-size;
-        line-height: 40px;
-        height: 40px;
-      }
-    }
-
-  }
-
-
-  @mixin settings-form-footer {
-    @include display(flex);
-    @include justify-content(space-between);
-
-    margin: 20px 30px;
-    padding: 0 0 20px;
   }
 
   @mixin settings-subscription {
-    > h2 {
-      margin-top: $gutter-size;
-    }
-
     > label {
       font-size: $basic-font-size;
       font-weight: 400;
 
       > input {
+        font-weight: 300;
         margin-right: $inner-margin-size;
       }
     }
   }
 
-
-  > header {
-    @include settings-form-header;
-  }
-
-  > fieldset {
-    @include settings-form-fieldset;
-  }
-
-  > footer {
-    @include settings-form-footer;
+  > form {
+    @include settings-form;
   }
 
   > .subscription {

@@ -108,6 +108,9 @@ module.exports  = React.createClass
   getGreeting: ->
     TokenStore.findByUserAndName(@cursor.user, 'greeting')
 
+  getInputClass: (name) ->
+    if @state.errors.has(name) && @state.errors.get(name).length > 0 then 'cc-input error' else 'cc-input'
+
 
   # Handlers
   #
@@ -180,34 +183,34 @@ module.exports  = React.createClass
   # Renderers
   #
   renderFullNameInput: ->
-    <Field  
-      title    = 'Full Name'
-      errors   = { @state.errors.get('full_name') }
-      onChange = { @handleChange.bind(@, 'full_name') }
-      value    = { @state.attributes.get('full_name') } />
+    <input  
+      placeholder = 'Full Name'
+      className   = { @getInputClass('full_name') }
+      onChange    = { @handleChange.bind(@, 'full_name') }
+      value       = { @state.attributes.get('full_name') } />
 
   renderOccupationInput: ->
-    <Field  
-      title    = 'Occupation'
-      errors   = { @state.errors.get('occupation') }
-      onChange = { @handleChange.bind(@, 'occupation') }
-      value    = { @state.attributes.get('occupation') } />
+    <input  
+      placeholder  = 'Job Title'
+      className    = { @getInputClass('occupation') }
+      onChange     = { @handleChange.bind(@, 'occupation') }
+      value        = { @state.attributes.get('occupation') } />
 
   renderCompanyInput: ->
-    <Field  
-      title    = 'Company'
-      errors   = { @state.errors.get('company') }
-      onChange = { @handleChange.bind(@, 'company') }
-      value    = { @state.attributes.get('company') } />
+    <input  
+      placeholder  = 'Company'
+      className    = { @getInputClass('company') }
+      onChange     = { @handleChange.bind(@, 'company') }
+      value        = { @state.attributes.get('company') } />
 
   renderTwitterHandle: ->
     return null unless @isEditorUpdatingUnicorn()
 
-    <Field  
-      title    = 'Twitter'
-      errors   = { @state.errors.get('twitter') }
-      onChange = { @handleChange.bind(@, 'twitter') }
-      value    = { @state.attributes.get('twitter') } />
+    <input  
+      placeholder  = 'Twitter'
+      className    = { @getInputClass('twitter') }
+      onChange     = { @handleChange.bind(@, 'twitter') }
+      value        = { @state.attributes.get('twitter') } />
 
   renderSubmitButton: ->
     <footer>
@@ -236,7 +239,7 @@ module.exports  = React.createClass
       <Checkbox
         checked  = { @isSubscribed() } 
         onChange = { @handleSubscriptionChange }>
-        Subscribe me
+        Our happy newsletter
       </Checkbox>
     </section>
 
@@ -266,15 +269,16 @@ module.exports  = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <form className="settings" onSubmit={ @handleSubmit } >
-      <fieldset>
+    <section className="settings">
+      <form onSubmit={ @handleSubmit }>
+        <h2>Basic info</h2>
         { @renderFullNameInput() }
         { @renderOccupationInput() }
         { @renderCompanyInput() }
         { @renderTwitterHandle() }
-      </fieldset>
-      { @renderSubmitButton() }
+        { @renderSubmitButton() }
+      </form>
       { @renderEmails() }
       { @renderSubscription() }
       { @renderGreeting() }
-    </form>
+    </section>
