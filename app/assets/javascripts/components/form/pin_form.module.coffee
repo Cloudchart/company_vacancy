@@ -372,7 +372,7 @@ module.exports = React.createClass
     return null unless !@props.uuid || @isCurrentUserSystemEditor()
 
     <div className="counter">
-      { @getContentMaxLength() - @state.attributes.get('content').length }
+      { @getContentMaxLength() - @state.attributes.get('content', '').length }
     </div>
 
   renderPinCommentInput: ->
