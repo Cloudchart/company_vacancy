@@ -8,6 +8,7 @@ class InvitesController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @user.authorized_at = Time.now
 
     if @user.save
       Activity.track(current_user, 'invite', @user)
