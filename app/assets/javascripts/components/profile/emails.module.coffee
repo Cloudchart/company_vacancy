@@ -15,7 +15,7 @@ CancelLinkComponent = React.createClass
       className: 'delete-link'
       href: ''
     },
-      (tag.i { className: 'fa fa-times' })
+      (tag.i { className: 'cc-icon cc-times' })
     )
 
   getDefaultProps: ->
@@ -32,6 +32,10 @@ VerificationTokenComponent = React.createClass
   render: ->
     (tag.li {},
 
+      (tag.div { className: 'address grey' },
+        @props.address
+      )
+
       (tag.button {
         onClick: @onResendButtonClick
         disabled: @state.sync
@@ -39,16 +43,18 @@ VerificationTokenComponent = React.createClass
       },
         (tag.ul {},
           (tag.li {}, 'Resend')
-          (tag.li {}, (tag.i { className: 'fa fa-envelope-o' }))
         )
       )
 
-      (tag.div { className: 'address grey' }, @props.address)
-
-      (CancelLinkComponent {
-        onDelete: @onDeleteClick  
+      (tag.button {
+        onClick: @onDeleteClick
         disabled: @state.sync
-      })
+        className: 'orgpad alert'
+      },
+        (tag.ul {},
+          (tag.li {}, 'Remove')
+        )
+      )
 
     )
 
@@ -88,18 +94,17 @@ EmailComponent = React.createClass
 
     (tag.li {},
 
+      (tag.div { className: 'address green' }, @props.address)
+
       (tag.button {
         onClick: @onDeleteClick
         disabled: @state.sync
         className: 'orgpad alert'
       },
         (tag.ul {},
-          (tag.li {}, 'Delete')
-          (tag.li {}, (tag.i { className: 'fa fa-eraser' }))
+          (tag.li {}, 'Remove')
         )
       ) unless @props.length == 1
-
-      (tag.div { className: 'address green' }, @props.address)
 
     )
 
@@ -108,14 +113,14 @@ EmailComponent = React.createClass
 
   onDeleteClick: (event) ->
     event.preventDefault()
-    confirm('Are you sure?')
-    @setState({ sync: true })
+    if confirm('Are you sure?')
+      @setState({ sync: true })
 
-    $.ajax
-      url: @props.email_path
-      method: 'DELETE'
-      dataType: 'json'
-    .done @onDeleteDone
+      $.ajax
+        url: @props.email_path
+        method: 'DELETE'
+        dataType: 'json'
+      .done @onDeleteDone
 
   onDeleteDone: (json) ->
     @setState({ sync: false })
@@ -129,22 +134,11 @@ NewEmailComponent = React.createClass
 
     (tag.li {},
 
-      (tag.button {
-        disabled: !@isEmailValid() or @state.sync
-        onClick: @onVerifyButtonClick
-        className: 'orgpad verify'
-      },
-        (tag.ul {},
-          (tag.li {}, 'Verify')
-          (tag.li {}, (tag.i { className: 'fa fa-envelope-o' }))
-        )
-      )
-
       (tag.input {
         type: 'email'
         name: 'address'
         value: @state.address
-        className: 'error' if @state.error
+        className: if @state.error then 'cc-input error' else 'cc-input'
         disabled: @state.sync
         autoComplete: 'off'
         autoFocus: true
@@ -154,9 +148,14 @@ NewEmailComponent = React.createClass
         onFocus: @onFocus
       })
 
-      (CancelLinkComponent {
-        onDelete: @onDeleteClick
-      })
+      (tag.button {
+        onClick: @onVerifyButtonClick
+        className: 'orgpad add'
+      },
+        (tag.ul {},
+          (tag.li {}, 'Add email')
+        )
+      )
 
     )
 
@@ -204,12 +203,10 @@ NewEmailComponent = React.createClass
     .fail @onCreateFail
 
   onCreateDone: (json) ->
-    # console.log json
     @setState({ sync: false })
     @props.onCreate({ target: { value: json.verification_tokens } })
 
   onCreateFail: (json) ->
-    # console.log json
     @setState({ sync: false, error: true })
 # 
 # 
@@ -226,25 +223,15 @@ Component = React.createClass
       (tag.ul {
         className: 'emails'  
       },
-        @emailComponents()
-        @verificationTokenComponents()
-
         (NewEmailComponent {
           onCancel: @onNewEmailCancel
           onCreate: @onNewEmailCreate
           emails_path: '/emails'
-        }) if @state.adding
-      )
+        })
 
-      (tag.button {
-        onClick: @onAddButtonClick
-        className: 'orgpad add'
-      },
-        (tag.ul {},
-          (tag.li {}, 'Add')
-          (tag.li {}, (tag.i { className: 'fa fa-plus' }))
-        )
-      ) unless @state.adding
+        @emailComponents()
+        @verificationTokenComponents() 
+      )
       
     )
 
