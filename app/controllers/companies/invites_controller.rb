@@ -4,7 +4,7 @@ module Companies
     before_action :set_company, only: [:create]
     before_action :set_token, only: [:show, :accept, :destroy, :resend]
 
-    authorize_resource class: :invite, except: [:create, :resend]
+    authorize_resource class: :company_invite, except: [:create, :resend]
 
     after_action :create_intercom_event, only: :create
 

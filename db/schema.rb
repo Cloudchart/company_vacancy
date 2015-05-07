@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20150507110831) do
     t.string   "subscriber_id",  limit: 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "data"
   end
 
   add_index "activities", ["source_id", "source_type"], name: "index_activities_on_source_id_and_source_type", using: :btree

@@ -12,3 +12,10 @@ en:
       subject: "CloudChart company site URL changed"
     app_invite_:
       subject: "You're invited to CloudChart"
+    custom_invite:
+      greeting: "Hi,"
+      first_paragraph: "You have been invited to CloudChart, an educational tool designed for founders. At CloudChart, we create unicorn companies' timelines that contain actionable insights by successful founders, investors and experts. Explore their success stories, and use the insights to grow your own business."
+      second_paragraph: "Log in with your Twitter account. Take a really short and helpful tour to unleash the whole power of CloudChart, or start using it right away:"
+      first_item: "browse unicorns' timelines to see how they came to life and grew."
+      second_item: "discover actionable insights by founders, investors, and experts and use them to grow your business."
+      third_item: "follow companies you're interested in to get their updates and learn from their successes and failures."

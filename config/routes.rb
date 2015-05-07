@@ -105,6 +105,10 @@ Cloudchart::Application.routes.draw do
     match :resend_verification, on: :member, via: [:put, :patch]
   end
 
+  resources :invites, only: [:index, :create] do
+    match :email, on: :member, via: [:put, :patch]
+  end
+
   resources :quotes, only: [:show]
   resources :visibilities, only: :update
   resources :subscriptions, only: [:create, :update, :destroy]

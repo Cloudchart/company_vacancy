@@ -4,7 +4,7 @@ module Pinboards
     before_action :set_pinboard, only: [:create]
     before_action :set_token, only: [:show, :destroy, :accept, :resend]
 
-    authorize_resource class: :invite, except: [:create, :resend]
+    authorize_resource class: :pinboard_invite, except: [:create, :resend]
 
     def show
       @pinboard = @token.owner

@@ -4,6 +4,13 @@ links = []
 user = {}
 
 if user_authenticated?
+  if can?(:manage, :invite)
+    links << {
+      title: 'Invites',
+      url: current_page?(main_app.invites_path) ? nil : main_app.invites_path
+    }
+  end
+
   if can?(:index, :pins)
     links << {
       title: 'Insights',

@@ -10,7 +10,7 @@ class VisibilitiesController < ApplicationController
 
     if @visibility.save
       if @owner.instance_of?(Post)
-        Activity.track(current_user, params[:action], @owner, @owner.company)
+        Activity.track(current_user, params[:action], @owner, { source: @owner.company })
       end
 
       respond_to do |format|
