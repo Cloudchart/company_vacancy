@@ -52,7 +52,7 @@ MainComponent = React.createClass
   getVisibleTabs: ->
     Immutable.OrderedMap(
       timeline:  !Timeline.isEmpty() || @props.canEdit
-      about:     !Timeline.isEmpty() || @props.canEdit
+      about:     true
       users:     @props.canEdit
       settings:  @props.canEdit
     ).filter (visible) -> visible
@@ -86,6 +86,8 @@ MainComponent = React.createClass
   # Renderers
   # 
   renderTabs: ->
+    return null if @getVisibleTabs().size == 1
+
     @getVisibleTabs().map (tabName) =>
       <li key = { tabName } className = { @getMenuOptionClassName(tabName) } >
         <a href = { location.pathname + "#" + tabName } className = "for-group" >
