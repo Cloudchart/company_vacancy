@@ -44,7 +44,7 @@ module.exports = React.createClass
           Cloud<b>Chart</b>
         </div>
         <h1>Stay in the loop</h1>
-        <h2>Add your email to profile: we'll keep you posted on new unicorns' timelines, useful insights, and new CloudChart features.</h2>
+        <h2>Sign up for our weekly mailing list: we'll keep you posted on new unicorns' timelines, useful insights, and new CloudChart features.</h2>
       </header>
       <div className="equation">
         <i className="svg-icon svg-cloudchart-logo" />
