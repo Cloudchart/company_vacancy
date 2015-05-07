@@ -20,11 +20,11 @@ EmptyTabTexts =
   insightsOther:  "This person hasn't added any insights yet"
   companiesOwn:   ->
     <span>
-      Want to see your company on CloudChart? <a href="mailto:team@cloudchart.co">Let us know</a>
+      Want to see your company on CloudChart? <a href="mailto:team@cloudchart.co?subject=I want to see my company on CloudChart">Let us know</a>
     </span>
   companiesOther: ->  
     <span>
-      Does this person have a company you want to see on CloudChart? <a href="mailto:team@cloudchart.co">Let us know</a>
+      Does this person have a company you want to see on CloudChart? <a href="mailto:team@cloudchart.co?subject=I want to see a company on CloudChart">Let us know</a>
     </span>
 
 cx = React.addons.classSet
