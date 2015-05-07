@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-  </head>
-  <body>
-    <p>
-      You or someone else has added <%= @token.data[:address] %> to the list of your email addresses. Please click the link below to verify your new email address.
-    </p>
-    <p>
-      <%= link_to "Verify Your CloudChart Email", main_app.verify_email_url(@token) %>
-    </p>
-    <p>
-      If you think it’s a mistake, just ignore this email.
-    </p>
-    
-    <%= render 'shared/mailer_signature' %>
-    
-  </body>
-</html>
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-top:50px;padding-bottom:10px">
+  Hello, <%= @user.first_name %>
+</p>
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  You or someone else has added <%= @token.data[:address] %> to the list of your email addresses.
+</p>
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  Please confirm your email address:
+</p>
+<p style="margin:0;padding:0;padding:0 50px;width:85%">
+  <%= link_to 'Confirm', main_app.verify_email_url(@token), style: 'color:#3bc462;font-weight:600;text-decoration:none;background-color:#3bc462;color:white;display:block;line-height:55px;margin:30px auto;height:55px;padding:0 30px;font-weight:300;font-size:24px;text-align:center;width:200px;' %>
+</p>
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  If you think it’s a mistake, just ignore this email.
+</p>
