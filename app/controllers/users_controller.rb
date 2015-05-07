@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   before_filter :set_user
 
   authorize_resource
-  
+
   def show
     respond_to do |format|
       format.html
@@ -26,7 +26,7 @@ class UsersController < ApplicationController
     end
   end
 
-  def settings 
+  def settings
     respond_to do |format|
       format.html
     end
@@ -84,6 +84,7 @@ private
   def fields_for_update
     fields = [:full_name, :avatar, :remove_avatar, :occupation, :company]
     fields << :twitter if @user.try(:unicorn?) && current_user.try(:editor?)
+    fields
   end
 
 end
