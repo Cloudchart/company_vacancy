@@ -97,6 +97,13 @@ Component = React.createClass
 
     @getTruncatedParagraph(block) != paragraph.content
 
+  isPostTruncated: ->
+    @state.blocks.length > 2 || 
+    @state.blocks.some (block) => !@isBlockTruncated(block)
+
+  isPostPreviewWithParagraphs: ->
+    @state.blocks.slice(0, 2).some (block) => block.identity_type == 'Paragraph'
+
   getParagraphByBlock: (block) ->
     ParagraphStore.find (paragraph) -> paragraph.owner_id is block.uuid
 
@@ -105,14 +112,15 @@ Component = React.createClass
 
     parts = paragraph.content.match(/<div>(.*?)<\/div>/i)
 
-    "<div>#{parts[1]}</div>"
+    "<span>#{parts[1]}</span>"
 
   getParagraph: (block) ->
     content = @getTruncatedParagraph(block)
 
     classes = cx
       'paragraph': true
-      'quote': block.kind is 'Quote'
+      'quote':     block.kind is 'Quote'
+      'truncated': @isPostTruncated()
 
     <div className={classes} dangerouslySetInnerHTML={__html: content}></div>
 
@@ -393,8 +401,7 @@ Component = React.createClass
     </div>
 
   renderReadMore: ->
-    return null if @state.blocks.length <= 2 && 
-                   @state.blocks.every (block) => !@isBlockTruncated(block)
+    return null unless @isPostTruncated() && !@isPostPreviewWithParagraphs()
 
     <span className="read-more">More</span>
 
