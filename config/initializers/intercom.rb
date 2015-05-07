@@ -45,8 +45,10 @@ if %(staging production).include?(Rails.env)
     # user object, or a Proc which will be passed the current user.
     #
     config.user.custom_data = {
-      twitter: :twitter
-      # pins_count: Proc.new { |user| user.pins.size }
+      name: :full_name,
+      twitter: :twitter,
+      is_unicorn: :unicorn?
+      # pins_count: proc { |user| user.pins.size }
     }
 
     # == User -> Company association
