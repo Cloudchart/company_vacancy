@@ -26,9 +26,7 @@ module.exports = React.createClass
   renderInfo: ->
     user = @props.cursor.user
 
-    <a href={ user.get('user_url') } className="for-group">
-      <header>{ user.get('full_name') }</header>
-    </a>
+    <header>{ user.get('full_name') }</header>
 
   renderAvatar: ->
     user = @props.cursor.user
@@ -41,6 +39,8 @@ module.exports = React.createClass
   render: ->
     return null unless @props.cursor.user.deref()
 
-    <Tooltip 
-      element        = { @renderAvatar() }
-      tooltipContent = { @renderInfo() } />
+    <a href={ @props.cursor.user.get('user_url') } className="for-group">
+      <Tooltip 
+        element        = { @renderAvatar() }
+        tooltipContent = { @renderInfo() } />
+    </a>
