@@ -13,11 +13,11 @@ class InvitesController < ApplicationController
       Activity.track(current_user, 'invite', @user)
 
       respond_to do |format|
-        format.json { render json: :ok }
+        format.json { render json: { id: @user.uuid } }
       end
     else
       respond_to do |format|
-        format.json { render json: :fail, status: 422 }
+        format.json { render json: { errors: @user.errors }, status: 422 }
       end
     end
   end
@@ -34,7 +34,7 @@ class InvitesController < ApplicationController
       end
     else
       respond_to do |format|
-        format.json { render json: :fail, status: 422 }
+        format.json { render json: { errors: @email_template.errors }, status: 422 }
       end
     end
   end

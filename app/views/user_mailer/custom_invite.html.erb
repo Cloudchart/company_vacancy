@@ -1,14 +1,17 @@
-<p>
-  <%= @email_template.body %>
-</p>
-
 <p class="greeting" style="margin:0;padding:0;padding:0 50px;width:85%;padding-top:50px;padding-bottom:2px">
-  Hello, <b style="font-weight:600"><%= "@#{@user.twitter}" %></b>,
+  <%= I18n.t('custom_invite.app_invite.greeting') %>
 </p>
 
 <p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
-  You have been invited to CloudChart. To start learning from unicorns, log in with your Twitter account. Explore featured startups' timelines, discover actionable insights, add your own. 
-  add your own.
+  <%= @email_template.body %>
+</p>
+
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  <%= I18n.t('custom_invite.app_invite.first_paragraph') %>
+</p>
+
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  <%= I18n.t('custom_invite.app_invite.second_paragraph') %>
 </p>
 
 <p style="margin:0;padding:0;padding:0 50px;width:85%">

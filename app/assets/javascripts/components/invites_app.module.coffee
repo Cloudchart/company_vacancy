@@ -3,8 +3,10 @@
 GlobalState    = require('global_state/state')
 UserStore      = require('stores/user_store.cursor')
 
-StandardButton = require('components/form/buttons').StandardButton  
+InviteSyncApi  = require('sync/invite_sync_api')
 
+StandardButton = require('components/form/buttons').StandardButton
+SyncButton     = require('components/form/buttons').SyncButton
 
 # Exports
 #
@@ -12,16 +14,28 @@ module.exports = React.createClass
 
   displayName: 'InvitesApp'
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+  statics:
+
+    queries:
+      user: ->
+        """
+          User {}
+        """
 
   getDefaultProps: ->
     cursor: UserStore.me()
 
   getInitialState: ->
-    twitter:          ""
-    progress:         null
-    inviteAttributes: Immutable.Map()
-    emailAttributes:  Immutable.Map()
+    invitedUser:       Immutable.Map()
+    progress:          null
+    isInviteSyncing:   false
+    isEmailSyncing:    false
+    inviteAttributes:  Immutable.Map()
+    inviteErrors:      Immutable.Map()
+    emailAttributes:   Immutable.Map()
+    emailErrors:       Immutable.Map()
 
 
   # Helpers
@@ -35,36 +49,66 @@ module.exports = React.createClass
 
   # Handlers
   #
-  handleEmailInputChange: (name, event) ->
-    value            = event.target.value
-    emailAttributes  = @state.emailAttributes
-
-    @setState emailAttributes: emailAttributes.set(name, value)
-
   handleInviteInputChange: (name, event) ->
     value            = event.target.value
     inviteAttributes = @state.inviteAttributes
 
     @setState inviteAttributes: inviteAttributes.set(name, value)
 
-  handleEmailSubmit: (event) ->
-    event.preventDefault()
-
-    @setState
-      progress:        "email_sent"
-      emailAttributes: @getDefaultEmailAttributes()
-
-  handleEmailSkip: ->
-    @setState progress: "email_skipped"
-
   handleInviteSubmit: (event) ->
     event.preventDefault()
 
+    @setState isInviteSyncing: true
+
+    InviteSyncApi.create(@state.inviteAttributes).then @handleInviteSubmitDone, @handleInviteSubmitFail
+
+  handleInviteSubmitDone: (data) ->
+    GlobalState.fetch(@getQuery("user"), { id: data.id }).then =>
+      user = UserStore.cursor.items.get(data.id)
+
+      @setState
+        progress:         "invite_sent"
+        isInviteSyncing:  false
+        inviteAttributes: Immutable.Map()
+        inviteErrors:     Immutable.Map()
+        emailAttributes:  @getDefaultEmailAttributes()
+        invitedUser:      user
+
+  handleInviteSubmitFail: (reason) ->
     @setState
-      progress:         "invite_sent"
-      twitter:          @state.inviteAttributes.get('twitter')
-      inviteAttributes: Immutable.Map()
-      emailAttributes:  @getDefaultEmailAttributes()
+      inviteErrors:     Immutable.Map(reason.responseJSON.errors).keySeq()
+      isInviteSyncing:  false
+
+  handleEmailInputChange: (name, event) ->
+    value            = event.target.value
+    emailAttributes  = @state.emailAttributes
+
+    @setState emailAttributes: emailAttributes.set(name, value)
+
+  handleEmailSubmit: (event) ->
+    event.preventDefault()
+
+    @setState isEmailSyncing: true
+
+    InviteSyncApi.send_email(@state.invitedUser, @state.emailAttributes).then @handleEmailSubmitDone, @handleEmailSubmitFail
+
+  handleEmailSubmitDone: ->
+    @setState
+      progress:        "email_sent"
+      isEmailSyncing:  false
+      emailAttributes: @getDefaultEmailAttributes()
+      emailErrors:     Immutable.Map()
+
+  handleEmailSubmitFail: (reason) ->
+    @setState
+      emailErrors:      Immutable.Map(reason.responseJSON.errors).keySeq()
+      isEmailSyncing:   false
+
+  handleEmailSkip: ->
+    @setState
+      progress:        "email_skipped"
+      emailAttributes: @getDefaultEmailAttributes()
+      emailErrors:     Immutable.Map()
 
 
   # Renderers
@@ -73,7 +117,7 @@ module.exports = React.createClass
     switch @state.progress
       when "invite_sent"
         <section>
-          <p>Great, now @{ @state.twitter } has access to CloudChart. You can let them know yourself or send them an email:</p>
+          <p>Great, now @{ @state.invitedUser.get('twitter') } has access to CloudChart. You can let them know yourself or send them an email:</p>
         </section>
       when "email_skipped", "email_sent"
         <section>
@@ -91,12 +135,13 @@ module.exports = React.createClass
 
     <form className="invite" onSubmit={ @handleInviteSubmit }>
       <input 
-        className   = 'cc-input'
+        className   = { if @state.inviteErrors.contains('twitter') then 'cc-input error' else 'cc-input' }
         placeholder = '@twitter'
         onChange    = { @handleInviteInputChange.bind(@, 'twitter') }
         value       = { @state.inviteAttributes.get('twitter', '') }  />
-      <StandardButton
+      <SyncButton
         className   = "cc"
+        sync        = { @state.isInviteSyncing }
         text        = "Invite"
         type        = "submit" />
     </form>
@@ -108,7 +153,7 @@ module.exports = React.createClass
       <label>
         To:
         <input 
-          className   = 'cc-input'
+          className   = { if @state.emailErrors.contains('email') then 'cc-input error' else 'cc-input' }
           placeholder = 'user@example.com'
           type        = 'email'
           onChange    = { @handleEmailInputChange.bind(@, 'email') }
@@ -117,30 +162,32 @@ module.exports = React.createClass
       <label>
         Subject:
         <input 
-          className   = 'cc-input'
+          className   = { if @state.emailErrors.contains('subject') then 'cc-input error' else 'cc-input' }
           placeholder = 'Subject goes here'
           onChange    = { @handleEmailInputChange.bind(@, 'subject') }
           value       = { @state.emailAttributes.get('subject', '') } />
       </label>
       <section className="content">
-        <p>Hi,</p>
-        <textarea 
+        <p>{ @props.email_copy.greeting }</p>
+        <textarea
+          className   = { if @state.emailErrors.contains('body') then 'error' else null } 
           rows        = 3
           placeholder = 'Add a few words from yourself.'
-          onChange    = { @handleEmailInputChange.bind(@, 'content') }
-          value       = { @state.emailAttributes.get('content', '') } />
-        <p>You have been invited to CloudChart, an educational tool designed for founders. At CloudChart, we create unicorn companies' timelines that contain actionable insights by successful founders, investors and experts. Explore their success stories, and use the insights to grow your own business.</p>
-        <p>Log in with your Twitter account. Take a really short and helpful tour to unleash the whole power of CloudChart, or start using it right away:</p>
+          onChange    = { @handleEmailInputChange.bind(@, 'body') }
+          value       = { @state.emailAttributes.get('body', '') } />
+        <p>{ @props.email_copy.first_paragraph }</p>
+        <p>{ @props.email_copy.second_paragraph }</p>
         <ul>
-          <li>browse unicorns' timelines to see how they came to life and grew.</li>
-          <li>discover actionable insights by founders, investors, and experts and use them to grow your business.</li>
-          <li>follow companies you're interested in to get their updates and learn from their successes and failures.</li>
+          <li>{ @props.email_copy.first_item }</li>
+          <li>{ @props.email_copy.second_item }</li>
+          <li>{ @props.email_copy.third_item }</li>
         </ul>
-        <p>Have questions? suggestions? doughnuts? Simply reply to this email or chat with @cloudchartapp on Twitter.</p>
+        <p>Have questions? Suggestions? Doughnuts? Simply reply to this email or chat with <a href="https://twitter.com/cloudchartapp" target="_blank">@CloudChartApp</a> on Twitter.</p>
       </section>
       <section className="controls">
-        <StandardButton
+        <SyncButton
           className   = "cc"
+          sync        = { @state.isEmailSyncing }
           text        = "Send email"
           type        = "submit" />
         <StandardButton
