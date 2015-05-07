@@ -9,10 +9,11 @@ class User < ActiveRecord::Base
 
   # before_validation :build_blank_emails, unless: -> { emails.any? }
   before_validation :generate_password, if: -> { password.blank? }
-  before_save :nillify_last_sign_in_at, if: -> { twitter_changed? }
+  before_validation :extract_twitter, if: -> { twitter_changed? && twitter.present? }
+  before_save :nillify_last_sign_in_at, if: :twitter_changed?
   before_save :nillify_slug, if: -> { twitter_changed? && twitter.blank? }
   before_destroy :mark_emails_for_destruction
-  after_create :create_tour_tokens, if: -> { should_create_tour_tokens? }
+  after_create :create_tour_tokens, if: :should_create_tour_tokens?
 
   nilify_blanks only: [:twitter, :authorized_at]
 
@@ -192,6 +193,10 @@ private
 
   def nillify_slug
     self.slug = nil
+  end
+
+  def extract_twitter
+    self.twitter = twitter.to_s.split('/').last.gsub(/@/, '')
   end
 
   def create_tour_tokens
