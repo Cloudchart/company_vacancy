@@ -45,5 +45,5 @@ module.exports = React.createClass
         className = "cc"
         sync      = { @state.isSyncing }
         onClick   = { @finishTour }
-        text      = "Got This!" />
+        text      = "Got It!" />
     </article>
