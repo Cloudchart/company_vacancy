@@ -28,7 +28,7 @@ module.exports = React.createClass
 
     <header>
       <h1>Learn from Unicorns</h1>
-      <h2>Discover how successfull startups have grown</h2>
+      <h2>Discover how successfull startups are growing</h2>
     </header>
 
   renderGuide: ->

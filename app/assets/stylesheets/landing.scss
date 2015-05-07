@@ -45,7 +45,8 @@
       margin-top: $gutter-size;
     }
     
-    > footer {
+    > footer,
+    > .guide > footer {
       margin: 45px 0;
       text-align: center;
       
@@ -68,6 +69,10 @@
       @include flex-direction(column);
 
       width: 100%;
+
+      > footer {
+        margin-top: 5px;
+      }
 
       > section {
         @include align-items(center);
@@ -113,8 +118,8 @@
         }
 
         .insight {
-          .mitch-wainer figure {
-            background-image: image_url('guide/mitch_wainer.jpeg');
+          .shervin-pishevar figure {
+            background-image: image_url('guide/shervin_pishevar.png');
           }
 
           .round-buttons .active {

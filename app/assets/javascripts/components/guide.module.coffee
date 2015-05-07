@@ -22,23 +22,27 @@ module.exports = React.createClass
 
   renderInsight: ->
     <article className="insight item">
-      <div className="human mitch-wainer">
+      <div className="human shervin-pishevar">
         <figure className="avatar"></figure>
         <section className="credentials">
           <p className="name">
             <span>
-              <span>Mitch </span>
+              <span>Shervin </span>
               <span className="last-part">
-                <span>Wainer</span>
+                <span>Pishevar</span>
                 <i className="svg-icon svg-unicorn"></i>
               </span>
             </span>
           </p>
-          <p className="occupation">CMO, Digital Ocean</p>
+          <p className="occupation">Co-Founder and Managing Partner, SherpaVentures</p>
         </section>
       </div>
       <section className="content">
-        <span>Everything we do moving forward is to simplify the complexities of cloud infrastructure.</span>
+        <span>Surround yourself with value creators so you can be open with your heart and mind in an environment based on grace, merit and generosity.</span>
+        { " " }
+        <a className="origin" target="_blank" href="https://twitter.com/shervin/status/300671129960452096">
+          <i className="fa fa-code"></i>
+        </a>
       </section>
       <ul className="round-buttons">
         <li className="active">
@@ -126,4 +130,7 @@ module.exports = React.createClass
           { @renderOpswarePreview() }
         </section>
       </section>
+      <footer>
+        <a href="/auth/twitter" className="cc">Start Learning</a>
+      </footer>
     </section>
