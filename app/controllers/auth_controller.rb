@@ -75,7 +75,8 @@ private
   end
 
   def queued_user
-    warden.user(:queue)
+    user = warden.user(:queue)
+    user.present? && !user.authorized? ? user : nil
   end
 
 end
