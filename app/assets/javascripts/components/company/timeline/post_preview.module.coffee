@@ -260,7 +260,7 @@ Component = React.createClass
     is_highlighted = if posts_story.get('is_highlighted') then false else true
     PostsStoryStore.update(posts_story.get('uuid'), { is_highlighted: is_highlighted }, { optimistic: false })
 
-  handleStoryClick: (story) ->
+  handleStoryClick: (story, event) ->
     event.preventDefault()
     event.stopPropagation()
     $('html,body').animate({ scrollTop: $(".timeline").offset().top - 30 }, 'slow')
