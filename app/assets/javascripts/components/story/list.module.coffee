@@ -112,7 +112,7 @@ MainComponent = React.createClass
                        !story.get('company_id') && posts_count > 0 ||
                        !@props.readOnly
 
-    storyClassName = if (posts_count < 5 && story.get('company_id')) then 'inactive' else null                 
+    storyClassName = if (posts_count < 5 && story.get('company_id')) || (posts_count == 0) then 'inactive' else null                 
 
     pins_count = @getPinsSizeForStory(story) || 0
 
