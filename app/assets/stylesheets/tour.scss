@@ -249,9 +249,9 @@
 
 @mixin tour-insight-list {
   > .insight-list-placeholder {
-    background: image_url('tour/insight-list.png') center center no-repeat;
+    background: image_url('tour/insight-list.png') top center no-repeat;
     background-size: cover;
-    height: 387px;
+    height: 360px;
     width: 750px;
   }
 }
