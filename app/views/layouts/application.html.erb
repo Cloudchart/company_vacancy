@@ -6,7 +6,7 @@
     <%= stylesheet_link_tag 'application', media: 'all' %>
   </head>
 
-  <body class="<%= Rails.env %>">
+  <body class="<%= Rails.env %> <%= yield(:class_for_body) %>">
     <%= render 'shared/header' %>
     <%= render 'shared/flash' %>
 

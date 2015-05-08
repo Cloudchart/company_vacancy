@@ -64,7 +64,7 @@ $header-button-height: 50px - $header-padding * 2;
 // Main header style
 //
 body > header {
-  background-color: $header-background-color;
+  background-color: transparent;
   height: $header-height;
 
   > .header-content {

@@ -12,12 +12,21 @@ body {
   @include display(flex);
   @include flex-direction(column);
 
+  background-color: $background-color;
   min-width: $min-page-width;
   min-height: 100%;
   font-family: $base-font-family;
   font-size: $body-font-size;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizelegibility;
+
+  &.company-body {
+    background-color: $accented-white-color;
+  }
+
+  &.user-profile-body {
+    background-color: hsl(60, 10%, 96%);
+  }
 
   > main {
     @include display(flex);
