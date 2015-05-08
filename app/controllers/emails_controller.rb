@@ -35,6 +35,12 @@ class EmailsController < ApplicationController
     end
 
     redirect_to user_path(current_user, anchor: "settings")
+
+  rescue ActiveRecord::RecordNotFound
+
+    respond_to do |format|
+      format.html
+    end
   end
   
   
