@@ -94,6 +94,10 @@ class User < ActiveRecord::Base
     Activity.followed_by_user(id)
   end
 
+  def click_activities
+    activities.where(action: :click)
+  end
+
   def limbo_pins
     Pin.limbo
   end

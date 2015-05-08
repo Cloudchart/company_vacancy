@@ -99,9 +99,18 @@ article.companies,
 .company-preview {
   position: relative;
 
-  &.unpublished {
-    cursor: pointer;
-    opacity: 0.5;
+  > .overlay {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+    @include position(absolute, 0px 0px 0px 0px);
+
+    background-color: hsla(0, 0%, 0%, 0.5);
+    visibility: hidden;
+  }
+
+  &:hover > .overlay {
+    visibility: visible;
   }
 
   > a {

@@ -7,11 +7,11 @@ class ActivitiesController < ApplicationController
 
     if @activity.save
       respond_to do |format|
-        format.json { render json: @activity }
+        format.json { render json: { id: @activity.uuid } }
       end
     else
       respond_to do |format|
-        format.json { render json: @activity, status: 422 }
+        format.json { render json: { errors: @activity.errors }, status: 422 }
       end
     end
   end

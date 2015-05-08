@@ -94,6 +94,8 @@ Cloudchart::Application.routes.draw do
 
   resources :posts_stories, only: [:update, :destroy]
 
+  resources :activities, only: [:create]
+
   resources :users, only: [:show, :update], concerns: [:followable] do
     get :settings, on: :member
     patch :subscribe, on: :member
