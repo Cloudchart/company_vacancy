@@ -141,7 +141,6 @@ NewEmailComponent = React.createClass
         className: if @state.error then 'cc-input error' else 'cc-input'
         disabled: @state.sync
         autoComplete: 'off'
-        autoFocus: true
         onKeyUp: @onKeyUp
         onChange: @onChange
         onBlur: @onBlur
