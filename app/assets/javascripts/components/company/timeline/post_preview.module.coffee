@@ -98,7 +98,7 @@ Component = React.createClass
     @getTruncatedParagraph(block) != paragraph.content
 
   isPostTruncated: ->
-    @state.blocks.length > 2 || 
+    @state.blocks.length > 2 ||
     @state.blocks.some (block) => @isBlockTruncated(block)
 
   isPostPreviewWithParagraphs: ->
@@ -167,7 +167,7 @@ Component = React.createClass
     <div className="quote">
       <div className="quote-wrapper">
         { @getPerson(quote.get("person_id")) }
-        
+
         <div className="quote-text" dangerouslySetInnerHTML={__html: quote.get("text")}></div>
       </div>
     </div>
@@ -199,7 +199,7 @@ Component = React.createClass
         @state.post.story_ids.concat(@props.story.get('uuid'))
       when 'unlink'
         @state.post.story_ids.filterNot((id) => id is @props.story.get('uuid'))
-    
+
     PostStore.update(@state.post.uuid, story_ids: story_ids.toArray())
     PostStore.emitChange()
 
@@ -230,7 +230,7 @@ Component = React.createClass
 
   scrollSticky: ->
     return unless @isMounted()
-    
+
     headerHeight = $('body > header').height()
     difference = $(window).scrollTop() - $(@getDOMNode()).offset().top
 
@@ -240,6 +240,10 @@ Component = React.createClass
 
   # Handlers
   #
+
+  handlePostClick: (post, event) ->
+    history.replaceState({}, null, window.location.origin + window.location.pathname + '#' + post.uuid)
+
   handleLinkStoryClick: (event) ->
     if @isRelatedToStory()
       id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story.get('uuid')).get('uuid')
@@ -253,7 +257,7 @@ Component = React.createClass
     is_highlighted = if posts_story.get('is_highlighted') then false else true
     PostsStoryStore.update(posts_story.get('uuid'), { is_highlighted: is_highlighted }, { optimistic: false })
 
-  handleStoryClick: (story) ->  
+  handleStoryClick: (story) ->
     event.preventDefault()
     event.stopPropagation()
     $('html,body').animate({ scrollTop: $(".timeline").offset().top - 30 }, 'slow')
@@ -289,7 +293,7 @@ Component = React.createClass
 
     if !@state.asPlaceholder
       <section className="post-pins">
-        <InsightTimelineList 
+        <InsightTimelineList
           pinnable_id={ @props.uuid }
           pinnable_type="Post"
           postUrl = { @state.post.post_url + "#expanded" } />
@@ -330,7 +334,7 @@ Component = React.createClass
   renderStarPostForStoryItem: ->
     # temporary disabled
     return null
-    # 
+    #
 
     return null unless @props.story
     posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story.get('uuid'))
@@ -427,7 +431,7 @@ Component = React.createClass
       <section id={@props.uuid} className="post-preview-container">
         <article className={article_classes}>
           { @renderControls() }
-          <a href={@state.post.post_url} className="for-group">
+          <a href={@state.post.post_url} onClick={ @handlePostClick.bind(@, @state.post) } className="for-group">
             { @renderOnlyMeOverlay() }
             { @renderPost() }
             { @renderFooter() }
@@ -442,7 +446,7 @@ Component = React.createClass
           <div className="post-placeholder"></div>
         </article>
         { @renderInsights() }
-      </section> 
+      </section>
 
 
 # Exports
