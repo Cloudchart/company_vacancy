@@ -56,7 +56,7 @@ Primer = """
 
 Parser = require('cloud_relay/mutation_parser')
 
-console.log JSON.stringify Parser.parse(Primer, QueryParser: require('cloud_relay/query_parser'))
+# console.log JSON.stringify Parser.parse(Primer, QueryParser: require('cloud_relay/query_parser'))
 
 
 class Mutation

@@ -58,9 +58,10 @@ class UserMailer < ActionMailer::Base
   end
 
   def app_invite_(user)
+    return unless email = user.unverified_email || user.email
     @user = user
 
-    mail(to: @user.email) do |format|
+    mail(to: email) do |format|
       format.html { render layout: 'user_mailer_' }
     end
   end

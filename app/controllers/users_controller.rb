@@ -32,21 +32,17 @@ class UsersController < ApplicationController
     end
   end
 
-  # TODO: refactor
   def subscribe
     errors = []
     errors << :subscribed if @user.tokens.find_by(name: :subscription)
 
-    raise ActiveRecord::RecordInvalid.new(@user) unless errors.empty?
-
-    if params[:user].try(:[], :email).nil? || @user.emails.pluck(:address).include?(params_for_subscribe[:email])
-      @user.tokens.create! name: :subscription
-    else
+    if should_verify_email?(@user) && errors.empty?
       email = Email.new(address: params_for_subscribe[:email])
 
       if email.valid?
-        @user.tokens.create! name: :subscription
-        token = @user.tokens.create name: 'email_verification', data: { address: email.address }
+        token = @user.tokens.where(name: :email_verification).select { |token| token.data[:address] == email.address }.first ||
+                @user.tokens.create(name: :email_verification, data: { address: email.address })
+        
         CloudProfile::ProfileMailer.verification_email(token).deliver
       else
         errors << :email
@@ -54,6 +50,8 @@ class UsersController < ApplicationController
     end
 
     raise ActiveRecord::RecordInvalid.new(@user) unless errors.empty?
+
+    @user.tokens.create! name: :subscription
 
     render json: :ok
 
@@ -88,6 +86,10 @@ private
     fields = [:full_name, :avatar, :remove_avatar, :occupation, :company]
     fields << :twitter if @user.try(:unicorn?) && current_user.try(:editor?)
     fields
+  end
+
+  def should_verify_email?(user)
+    email = params[:user].try(:[], :email) && !user.emails.map(&:address).include?(email)
   end
 
 end

@@ -4,11 +4,9 @@ class AuthController < ApplicationController
 
   layout 'guest'
 
-
   def failure
     render file: "#{Rails.root}/public/403.html", status: 200, layout: false
   end
-
 
   def twitter
     if user = User.find_by(twitter: oauth_hash.info.nickname)
