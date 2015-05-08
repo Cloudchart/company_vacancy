@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150507162240) do
+ActiveRecord::Schema.define(version: 20150508103052) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -339,6 +339,7 @@ ActiveRecord::Schema.define(version: 20150507162240) do
     t.integer  "pins_count",               default: 0
     t.boolean  "is_suggestion",            default: false
     t.string   "author_id"
+    t.integer  "weight"
   end
 
   add_index "pins", ["author_id"], name: "index_pins_on_author_id", using: :btree
