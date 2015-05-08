@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   include Admin::User
 
   attr_accessor :current_password
+  attr_reader :should_create_tour_tokens # needed for rails_admin
   attr_reader :invite
 
   # before_validation :build_blank_emails, unless: -> { emails.any? }
@@ -175,6 +176,11 @@ class User < ActiveRecord::Base
 
   def blank_company
     companies.select { |company| company.name.blank? && company.logotype.blank? }.first
+  end
+
+  # needed for rails_admin
+  def should_create_tour_tokens=(value)
+    should_create_tour_tokens! if value == '1'
   end
 
 private

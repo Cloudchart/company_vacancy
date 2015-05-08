@@ -59,6 +59,10 @@ module Admin::User
 
         field :twitter
         field :avatar
+
+        field :should_create_tour_tokens, :boolean do
+          default_value true
+        end
       end
 
       # Edit
