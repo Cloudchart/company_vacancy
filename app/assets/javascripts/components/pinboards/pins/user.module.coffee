@@ -54,6 +54,9 @@ module.exports = React.createClass
     showOnlyInsights: false
     showPlaceholders: false
 
+  getInitialState: ->
+    isLoaded: false
+
 
   # Helpers
   #
@@ -61,7 +64,7 @@ module.exports = React.createClass
     GlobalState.fetch(@getQuery('pins'), id: @props.user_id)
 
   isLoaded: ->
-    @cursor.pins.deref(false)
+    @cursor.pins.deref(false) || @state.isLoaded
 
   gatherPins: ->
     @cursor.pins
@@ -80,14 +83,17 @@ module.exports = React.createClass
     @cursor =
       pins: PinStore.cursor.items
 
-    @fetch() unless @isLoaded()
+    @fetch().then => @setState isLoaded: true unless @isLoaded()
 
 
   # Renderers
   #
   render: ->
     if @isLoaded()
-      <PinsList pins = { @gatherPins() } />
+      if (pins = @gatherPins()).length > 0
+        <PinsList pins = { @gatherPins() } />
+      else
+        <p>Collect successful founders' insights and put them to action.</p>
     else if @props.showPlaceholders
       <section className="pins cloud-columns cloud-columns-flex">
         <section className="cloud-column">

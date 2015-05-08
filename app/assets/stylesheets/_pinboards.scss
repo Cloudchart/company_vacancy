@@ -8,6 +8,15 @@ article.pinboard,
 article.pinboards {
   @include display(flex);
   @include justify-content(center);
+  @include flex(1);
+
+  > p {
+    font-size: $large-font-size;
+    font-weight: 300;
+    margin-top: 50px;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 
