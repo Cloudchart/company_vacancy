@@ -1,8 +1,9 @@
 class Activity < ActiveRecord::Base
   include Uuidable
 
-  serialize :data
   ACTION_WHITE_LIST = [:click].freeze
+  
+  serialize :data
 
   paginates_per 30
 

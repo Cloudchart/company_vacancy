@@ -31,7 +31,6 @@ class Ability
 
       can :create, Tag
       can :create, Activity
-
       can [:create, :verify, :resend_verification], Email
       can :destroy, Email, user_id: current_user.id
 
