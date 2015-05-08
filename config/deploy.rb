@@ -52,8 +52,8 @@ namespace :deploy do
       within release_path do
         with rails_env: fetch(:stage) do
           execute :rails, 'generate static_error_pages -f'
-        end 
-      end     
+        end
+      end
     end
   end
 
@@ -96,9 +96,25 @@ namespace :tire do
       within release_path do
         with rails_env: fetch(:stage) do
           execute :rake, 'environment tire:import:all FORCE=true'
-        end 
-      end     
+        end
+      end
     end
   end
-  
+
+end
+
+
+namespace :cc do
+
+  desc 'Calculate insights weights'
+  task :calculate_insight_weight do
+    on roles :app do
+      within release_path do
+        with rails_env: fetch(:stage) do
+          execute :rake, 'cc:calculate_insight_weight'
+        end
+      end
+    end
+  end
+
 end
