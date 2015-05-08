@@ -126,15 +126,23 @@ MainComponent = React.createClass
   # Main render
   # 
   render: ->
-    return null unless @isLoaded()
-
-    <section className="limbo">
-      { @renderSearch() }
-      { @renderCreateButton() }
-      <PinsList
-        onItemClick   = { @props.onItemClick }
-        pins          = { @gatherInsights() } />
-    </section>
+    if @isLoaded()
+      <section className="limbo">
+        { @renderSearch() }
+        { @renderCreateButton() }
+        <PinsList
+          onItemClick   = { @props.onItemClick }
+          pins          = { @gatherInsights() } />
+      </section>
+    else
+      <section className="pins cloud-columns cloud-columns-flex">
+        <section className="cloud-column">
+          <section className="pin cloud-card placeholder" />
+        </section>
+        <section className="cloud-column">
+          <section className="pin cloud-card placeholder" />
+        </section>
+      </section>
 
 
 # Exports
