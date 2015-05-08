@@ -235,7 +235,10 @@ Component = React.createClass
     difference = $(window).scrollTop() - $(@getDOMNode()).offset().top
 
     if difference < $(@getDOMNode()).height() && difference > 10 && @state.asPlaceholder
-      $('html,body').animate({ scrollTop: $(@getDOMNode()).next().offset().top - (10 + headerHeight) }, 'slow')
+      if $(window).scrollTop() + $(window).height() != $(document).height()
+        $('html,body').animate({ scrollTop: $(@getDOMNode()).next().offset().top - (10 + headerHeight) }, 'slow')
+      else
+        $('html,body').animate({ scrollTop: $(@getDOMNode()).offset().top - (10 + headerHeight) }, 'slow')
 
 
   # Handlers
