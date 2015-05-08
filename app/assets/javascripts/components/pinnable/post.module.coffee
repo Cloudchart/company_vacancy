@@ -94,7 +94,7 @@ module.exports = React.createClass
     return false if block.get('identity_type') != 'Paragraph'
     return false unless (paragraph = @getParagraphByBlock(block))
 
-    @getTruncatedParagraph(block) != paragraph.content
+    paragraph.get('content').match(/<div>(.*?)<\/div>/ig).length > 1
 
   getTruncatedParagraph: (block) ->
     return null unless (paragraph = @getParagraphByBlock(block))

@@ -95,7 +95,7 @@ Component = React.createClass
     return false if block.identity_type != 'Paragraph'
     return false unless (paragraph = @getParagraphByBlock(block))
 
-    @getTruncatedParagraph(block) != paragraph.content
+    paragraph.content.match(/<div>(.*?)<\/div>/ig).length > 1
 
   isPostTruncated: ->
     @state.blocks.length > 2 ||
