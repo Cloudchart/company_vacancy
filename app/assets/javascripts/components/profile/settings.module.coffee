@@ -239,7 +239,7 @@ module.exports  = React.createClass
       <Checkbox
         checked  = { @isSubscribed() } 
         onChange = { @handleSubscriptionChange }>
-        Our happy newsletter
+        Our weekly newsletter
       </Checkbox>
     </section>
 
