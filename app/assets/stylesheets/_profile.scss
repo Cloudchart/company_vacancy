@@ -99,6 +99,7 @@ section.user-profile {
       @include display(flex);
       @include flex-direction(column);
       @include justify-content(space-between);
+      @include flex(1);
 
       font-size: $basic-font-size;
       font-weight: 400;
@@ -119,7 +120,20 @@ section.user-profile {
         margin: 0;
       }
 
-      .occupation,
+      .occupations {
+        @include display(flex);
+        @include flex-wrap(wrap);
+
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        > li {
+          margin-right: $default-margin-size;
+        }
+      }
+
+      .occupations,
       .twitter {
         color: $accented-green-color;
       }

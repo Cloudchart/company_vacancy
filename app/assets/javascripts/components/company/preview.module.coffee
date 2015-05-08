@@ -2,6 +2,7 @@
 
 GlobalState    = require('global_state/state')
 
+ActivityStore  = require('stores/activity_store')
 CompanyStore   = require('stores/company_store.cursor')
 BlockStore     = require('stores/block_store.cursor')
 PostStore      = require('stores/post_store.cursor')
@@ -13,10 +14,13 @@ TokenStore     = require('stores/token_store.cursor')
 FavoriteStore  = require('stores/favorite_store.cursor')
 UserStore      = require('stores/user_store.cursor')
 
-CompanySyncApi = require('sync/company')
+ActivitySyncApi = require('sync/activity_sync_api')
+CompanySyncApi  = require('sync/company')
 
 Logo           = require('components/company/logo')
 People         = require('components/pinnable/block/people')
+ModalStack     = require('components/modal_stack')
+ModalError     = require('components/error/modal')
 
 Buttons        = require('components/form/buttons')
 
@@ -52,6 +56,7 @@ CompanyPreview = React.createClass
       viewer: ->
         """
           Viewer {
+            click_activities,
             company_invite_tokens,
             roles
           }
@@ -80,8 +85,9 @@ CompanyPreview = React.createClass
 
   getDefaultProps: ->
     cursor:
-      roles:  RoleStore.cursor.items
-      tokens: TokenStore.cursor.items
+      activities: ActivityStore.cursor.items
+      roles:      RoleStore.cursor.items
+      tokens:     TokenStore.cursor.items
     onSyncDone: ->
     showFollowButton: false
 
@@ -174,6 +180,20 @@ CompanyPreview = React.createClass
       .filter (company) => company.get('uuid') == @props.uuid
       .size
 
+  isUnpublished: ->
+    !@cursor.company.get('is_published') && !@isViewerOwner()
+
+  getPreviewLink: ->
+    @cursor.company.get('company_url') unless @isUnpublished()
+
+  isClickedByViewer: ->
+    !!ActivityStore
+      .filter (activity) => 
+        activity.get('user_id') == @cursor.viewer.get('uuid') &&
+        activity.get('action') == 'click' &&
+        activity.get('trackable_id') == @props.uuid
+      .size
+
 
   # Handlers
   #
@@ -215,20 +235,52 @@ CompanyPreview = React.createClass
   handleFail: (syncKey) ->
     @setState(sync: @state.sync.set(syncKey, false))
 
+  handlePreviewClick: ->
+    return unless @isUnpublished()
+
+    @setState sync: @state.sync.set('company_click', true)
+
+    ActivitySyncApi.create(Immutable.Map(
+      action:         'click'
+      trackable_id:   @props.uuid
+      trackable_type: 'Company'
+    )).then @handleActivityCreateDone, @handleActivityCreateFail
+    
+  handleActivityCreateDone: (data) ->
+    GlobalState.fetch(@getQuery('viewer')).then =>
+      @setState sync: @state.sync.set('company_click', false)
+
+      ModalStack.show(
+        <section className="info-modal">
+          <header>{ @cursor.company.get('name') }</header>
+          <p>This company is not on Cloudchart yet. But we've recorded, that you've been interested and will inform you when it will appear.</p>
+          <button className="cc" onClick={ ModalStack.hide }>
+            Got it
+          </button>
+        </section>
+      )
+
+  handleActivityCreateFail: ->
+    @setState sync: @state.sync.set('company_click', false)
+
+    ModalStack.show(<ModalError />)
+
+
 
   # Lifecycle methods
   #
   componentWillMount: ->
     @cursor =
-      blocks:    BlockStore.cursor.items
-      company:   CompanyStore.cursor.items.cursor(@props.uuid)
-      posts:     PostStore.cursor.items
-      pins:      PinStore.cursor.items
-      tags:      TagStore.cursor.items
-      taggings:  TaggingStore.cursor.items
-      tokens:    TokenStore.cursor.items
-      favorites: FavoriteStore.cursor.items
-      viewer:    UserStore.me()
+      activities: ActivityStore.cursor.items
+      blocks:     BlockStore.cursor.items
+      company:    CompanyStore.cursor.items.cursor(@props.uuid)
+      posts:      PostStore.cursor.items
+      pins:       PinStore.cursor.items
+      tags:       TagStore.cursor.items
+      taggings:   TaggingStore.cursor.items
+      tokens:     TokenStore.cursor.items
+      favorites:  FavoriteStore.cursor.items
+      viewer:     UserStore.me()
 
     @fetchViewer() unless @isLoaded()
 
@@ -324,12 +376,30 @@ CompanyPreview = React.createClass
       { @renderButtonsOrPeople() }
     </footer>
 
+  renderOverlay: ->
+    return null unless @isUnpublished()
+
+    text = if @isClickedByViewer() then "We'll notify you when this company appears on CloudChart" else "I'd like to learn from this company on CloudChart"
+
+    <div className="overlay">
+      <SyncButton
+        className = "cc"
+        disabled  = { @isClickedByViewer() }
+        sync      = { @state.sync.get('company_click') }
+        onClick   = { @handlePreviewClick }
+        text      = { text } />
+    </div>
+
 
   render: ->
     return null unless (company = @cursor.company.deref(false))
 
-    <article className="company-preview cloud-card">
-      <a href={ company.get('company_url') } className="company-preview-link for-group">
+    article_classes = cx
+      'company-preview': true
+      'cloud-card': true
+
+    <article className={ article_classes } onMouseOver = { @handlePreviewMouseOver }>
+      <a href={ @getPreviewLink() } className="company-preview-link for-group">
         { @renderHeader() }
         { @renderInfo() }
         <p className="description">
@@ -337,6 +407,7 @@ CompanyPreview = React.createClass
         </p>
         { @renderFooter() }
       </a>
+      { @renderOverlay() }
     </article>
 
 

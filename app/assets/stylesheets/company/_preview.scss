@@ -118,6 +118,20 @@ article.companies,
     background-size: cover;
   }
 
+  > .overlay {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+    @include position(absolute, 0px 0px 0px 0px);
+
+    background-color: hsla(0, 0%, 0%, 0.5);
+    visibility: hidden;
+  }
+
+  &:hover > .overlay {
+    visibility: visible;
+  }
+
   > a {
     @include display(flex);
     @include flex-direction(column);

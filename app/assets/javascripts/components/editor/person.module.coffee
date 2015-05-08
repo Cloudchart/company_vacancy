@@ -44,7 +44,7 @@ Person = React.createClass
       React.DOM.a
 
   getLink: ->
-    if @props.readOnly && @state.person.is_verified
+    if @props.readOnly && @state.person.is_verified && @state.person.twitter
       "/users/" + @state.person.twitter
 
   # Handlers

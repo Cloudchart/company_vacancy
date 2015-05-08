@@ -30,6 +30,8 @@ class Ability
       can [:read, :accept, :destroy], :company_invite
 
       can :create, Tag
+      can :create, Activity
+
       can [:create, :verify, :resend_verification], Email
       can :destroy, Email, user_id: current_user.id
 

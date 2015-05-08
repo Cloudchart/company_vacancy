@@ -98,12 +98,16 @@ class User < ActiveRecord::Base
     Activity.followed_by_user(id)
   end
 
+  def click_activities
+    activities.where(action: :click)
+  end
+
   def limbo_pins
     Pin.limbo
   end
 
   def owned_companies
-    Company.joins(:roles).where(is_published: true, roles: { user_id: id, owner_type: 'Company' })
+    Company.joins(:roles).where(roles: { user_id: id, owner_type: 'Company' })
   end
 
   def published_companies

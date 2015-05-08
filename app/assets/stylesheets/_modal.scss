@@ -183,6 +183,28 @@ body ul.modal-stack {
   background-color: hsl(0, 100%, 100%);
 }
 
+.info-modal {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+
+  padding: $gutter-size;
+  width: 400px;
+
+  > header {
+    font-size: $large-font-size;
+    font-weight: 700;
+    width: 100%;
+  }
+
+  > p {
+    font-size: $basic-font-size;
+    font-weight: 300;
+    line-height: 1.4;
+    margin: $default-margin-size 0;
+  }
+}
+
 
 @import 'modals/login-form';
 @import 'modals/splash';

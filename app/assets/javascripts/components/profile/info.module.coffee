@@ -6,6 +6,7 @@ GlobalState     = require('global_state/state')
 UserStore       = require('stores/user_store.cursor')
 CompanyStore    = require('stores/company_store.cursor')
 FavoriteStore   = require('stores/favorite_store.cursor')
+PersonStore     = require('stores/person_store.cursor')
 PinStore        = require('stores/pin_store')
 
 UserSyncApi     = require('sync/user_sync_api')
@@ -93,6 +94,26 @@ module.exports  = React.createClass
   isViewerProfile: ->
     @props.uuid == @cursor.viewer.get('uuid')
 
+  getRelatedPeople: ->
+    companiesIds = CompanyStore.filterForUser(@props.uuid).map (company) -> company.get('uuid')
+
+    people = PersonStore
+      .filter (person) => 
+        person.get('is_verified') && companiesIds.contains(person.get('company_id')) && 
+        person.get('twitter') == @cursor.user.get('twitter')
+
+  getOccupations: ->
+    if (people = @getRelatedPeople()).size > 0
+      people
+        .map (person) ->
+          occupation: person.get('occupation'),
+          company:    CompanyStore.cursor.items.get(person.get('company_id')).get('name')
+    else
+      Immutable.Seq([
+        occupation: @cursor.user.get('occupation')
+        company: @cursor.user.get('company')
+      ])
+
 
   # Handlers
   #
@@ -142,14 +163,19 @@ module.exports  = React.createClass
       text              = { text }
       sync              = { @state.isSyncing } />
 
-  renderOccupation: ->
+  renderOccupation: (item) ->
     strings = []
-    strings.push occupation if (occupation = @cursor.user.get('occupation'))
-    strings.push company if (company = @cursor.user.get('company'))
+    strings.push item.occupation if item.occupation
+    strings.push item.company if item.company
 
-    <div className="occupation">
-      { strings.join(', ') }
-    </div>
+    strings.join(', ')
+
+  renderOccupations: ->
+    @getOccupations().map (item, index) =>
+      <li key = { index }>
+        { @renderOccupation(item) }
+      </li>
+    .toArray()
 
   renderTwitter: ->
     return null unless (twitterHandle = @cursor.user.get('twitter'))
@@ -169,7 +195,9 @@ module.exports  = React.createClass
         withCamera =  { true } />
       <section className="personal">
         <h1> { @cursor.user.get('full_name') } { @renderTwitter() } </h1>
-        { @renderOccupation() }
+        <ul className="occupations">
+          { @renderOccupations() }
+        </ul>
         <div className="spacer"></div>
         { @renderFollowButton() }
       </section>
