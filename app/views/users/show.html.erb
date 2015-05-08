@@ -1,8 +1,11 @@
-<% set_meta_tags og: {
+<% set_meta_tags(
+title: "#{@user.full_name} @#{@user.twitter}",
+og: {
   title: title(@user.full_name),
   image: og_image_url(@user.avatar.try(:url)),
   url: user_url(@user)
-} %>
+} 
+) %>
 
 <% content_for :header_menu do %>
   <%= render 'shared/users/header_menu' %>
