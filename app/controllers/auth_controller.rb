@@ -10,6 +10,7 @@ class AuthController < ApplicationController
 
   def twitter
     if user = User.find_by(twitter: oauth_hash.info.nickname)
+      user.update_with_twitter_omniauth_hash(oauth_hash) if user.last_sign_in_at.blank?
       authenticate_user!(user)
     else
       authenticate_user!(User.create_with_twitter_omniauth_hash(oauth_hash))
