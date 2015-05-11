@@ -125,6 +125,16 @@ module.exports = React.createClass
 
     <p>{ @props.text }</p>
 
+  renderEmail: ->
+    return null if @props.cursor.user.get('email')
+
+    <input 
+      className   = { if @state.errors.contains('email') then 'cc-input error' else 'cc-input' }
+      onChange    = { @handleChange.bind(@, 'email') }
+      placeholder = { "Please enter your email" }
+      type        = "email"
+      value       = { @state.attributes.get('email') } />
+
 
   render: ->
     return null unless @isLoaded()
@@ -135,12 +145,7 @@ module.exports = React.createClass
       <section className="subscription">
         { @renderText() }
         <form onSubmit={ @subscribe }>
-          <input 
-            className   = { if @state.errors.contains('email') then 'cc-input error' else 'cc-input' }
-            onChange    = { @handleChange.bind(@, 'email') }
-            placeholder = { "Please enter your email" }
-            type        = "email"
-            value       = { @state.attributes.get('email') } />
+          { @renderEmail() }
           <SyncButton
             className = "cc"
             sync      = { @state.isSyncing }
