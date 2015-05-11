@@ -24,12 +24,15 @@
       overflow: hidden;
 
       > div {
-        @include filter(blur(10px));
         @include position(absolute, -10px -15px -15px -10px);
 
         background-size: cover;
 
-        &::after {
+        &.blurred {
+          @include filter(blur(10px));
+        }
+
+        &.darkened::after {
           @include position(absolute, 0px 0px 0px 0px);
 
           background-color: $black-color;

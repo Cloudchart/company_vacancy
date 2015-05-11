@@ -23,6 +23,8 @@ module Admin::Feature
 
         field :category
         field :is_active
+        field :is_blurred
+        field :is_darkened
       end
 
       edit do
@@ -40,6 +42,8 @@ module Admin::Feature
         field :category
         field :url
         field :is_active
+        field :is_blurred
+        field :is_darkened
       end
 
     end

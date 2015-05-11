@@ -15,6 +15,12 @@ FuzzyDate    = require('utils/fuzzy_date')
 
 ModalStackCursor  = GlobalState.cursor(['meta', 'modal', 'stack'])
 
+
+# Utils
+#
+cx = React.addons.classSet
+
+
 # Exports
 #
 module.exports = React.createClass
@@ -82,8 +88,12 @@ module.exports = React.createClass
   renderBackgroundImage: (feature) ->
     return null unless (postBackgroundUrl = feature.get('assigned_image_url'))
 
+    bgClasses = cx
+      blurred: feature.get('is_blurred')
+      darkened: feature.get('is_darkened')
+
     <div className="background">
-      <div style={ backgroundImage: "url(#{postBackgroundUrl})" }></div>
+      <div className = { bgClasses } style = { backgroundImage: "url(#{postBackgroundUrl})" } />
     </div>
 
   renderPosts: ->
