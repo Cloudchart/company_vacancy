@@ -9,6 +9,7 @@ class InvitesController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.should_create_tour_tokens!
+    @user.should_validate_logged_in_twitter_handle!
     @user.authorized_at = Time.now
 
     if @user.save

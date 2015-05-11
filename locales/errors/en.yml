@@ -8,6 +8,7 @@ en:
       title_is_not_unique: "title is not unique"
       company_can_not_become_published: "company can't become published"
       invite_not_found: "Sorry, your invite code is already used"
+      twitter_handle_logged_in: "user with this twitter handle logged in"
     roles:
       acceptance: "you can't accept this invitation, because you are already associated with this %{name}"
     authentication:

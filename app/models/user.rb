@@ -22,7 +22,12 @@ class User < ActiveRecord::Base
 
   dragonfly_accessor :avatar
 
-  has_should_markers :should_validate_invite, :should_validate_name, :should_create_tour_tokens
+  has_should_markers(
+    :should_validate_invite,
+    :should_validate_name,
+    :should_create_tour_tokens,
+    :should_validate_logged_in_twitter_handle
+  )
 
   has_secure_password
 
@@ -58,6 +63,7 @@ class User < ActiveRecord::Base
   validates :invite, presence: true, if: :should_validate_invite?
   validates :twitter, twitter_handle: true, uniqueness: { case_sensitive: false }, allow_blank: true
 
+  validate :validate_logged_in_twitter_handle, if: :should_validate_logged_in_twitter_handle?
   # validate :validate_email, on: :create
 
   scope :unicorns, -> { joins(:system_roles).where(roles: { value: 'unicorn'}) }
@@ -218,6 +224,12 @@ private
 
   def create_tour_tokens
     tokens << [Token.new(name: :welcome_tour), Token.new(name: :insight_tour)]
+  end
+
+  def validate_logged_in_twitter_handle
+    if errors.added?(:twitter, :taken) && self.class.friendly.find(twitter).last_sign_in_at.present?
+      errors.add(:twitter, I18n.t('errors.messages.twitter_handle_logged_in'))
+    end
   end
 
   # def build_blank_emails
