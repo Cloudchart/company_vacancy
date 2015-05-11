@@ -89,7 +89,8 @@ private
   end
 
   def should_verify_email?(user)
-    email = params[:user].try(:[], :email) && !user.emails.map(&:address).include?(email)
+    email = params[:user].try(:[], :email)
+    email && !user.emails.map(&:address).include?(email)
   end
 
 end
