@@ -6,6 +6,6 @@ class EmailTemplate
   attribute :body
 
   validates :email, email: :true, presence: true
-  validates :subject, presence: true
+  validates :subject, :body, presence: true
 
 end

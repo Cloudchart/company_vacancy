@@ -43,8 +43,11 @@ module.exports = React.createClass
   isLoaded: ->
     @props.cursor.deref(false)
 
-  getDefaultEmailAttributes: ->
-    Immutable.Map(subject: "#{@props.cursor.get('first_name')} invited you to CloudChart")
+  getDefaultEmailAttributes: (user=null) ->
+    Immutable.Map(
+      subject: "#{@props.cursor.get('first_name')} invited you to CloudChart"
+      body:    "Hi, @#{user.get('twitter')}" if user
+    )
 
 
   # Handlers
@@ -71,7 +74,7 @@ module.exports = React.createClass
         isInviteSyncing:  false
         inviteAttributes: Immutable.Map()
         inviteErrors:     Immutable.Map()
-        emailAttributes:  @getDefaultEmailAttributes()
+        emailAttributes:  @getDefaultEmailAttributes(user)
         invitedUser:      user
 
   handleInviteSubmitFail: (reason) ->
@@ -168,7 +171,6 @@ module.exports = React.createClass
           value       = { @state.emailAttributes.get('subject', '') } />
       </label>
       <section className="content">
-        <p>{ @props.email_copy.greeting }</p>
         <textarea
           className   = { if @state.emailErrors.contains('body') then 'error' else null } 
           rows        = 3

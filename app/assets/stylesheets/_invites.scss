@@ -60,6 +60,10 @@ $input-height: 40px;
           margin-bottom: $default-margin-size;
           padding: 10px;
           width: 100%;
+
+          &.error {
+            border-bottom-color: $accented-red-color;
+          }
         }
       }
 
