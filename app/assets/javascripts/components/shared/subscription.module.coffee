@@ -29,6 +29,7 @@ module.exports = React.createClass
         """
 
   propTypes:
+    asBlock:               React.PropTypes.bool
     buttonText:            React.PropTypes.string
     subscribedText:        React.PropTypes.string
     onSubscriptionDone:    React.PropTypes.func
@@ -38,6 +39,7 @@ module.exports = React.createClass
     buttonText:         "Sign me up"
     subscribedText:     null
     text:               null
+    asBlock:            false
     onSubscriptionDone: ->
     cursor:           
       tokens:  TokenStore.cursor.items 
@@ -96,6 +98,9 @@ module.exports = React.createClass
       token.get('name') == 'subscription'
     .size
 
+  getClassName: ->
+    if @props.asBlock then "subscription standalone" else "subscription"
+
 
   # Handlers
   #
@@ -142,7 +147,7 @@ module.exports = React.createClass
     if @isSubscribed()
       @renderPlaceholder()
     else
-      <section className="subscription">
+      <section className={ @getClassName() }>
         { @renderText() }
         <form onSubmit={ @subscribe }>
           { @renderEmail() }

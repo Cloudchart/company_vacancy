@@ -7,6 +7,7 @@ RecentCompanies  = require('components/company/lists/recent')
 TopInsights      = require('components/pinboards/pins/top')
 Greeting         = require('components/shared/greeting')
 Guide            = require('components/guide')
+Subscription     = require('components/shared/subscription')
 
 # Exports
 #
@@ -43,15 +44,16 @@ module.exports = React.createClass
       <a href="/auth/twitter" className="cc">Start Learning</a>
     </footer>
 
-  renderTopInsights: ->
+  renderAuthorizedContent: ->
     return null unless @props.isAuthorized
 
-    <TopInsights />
-
-  renderRecentCompanies: ->
-    return null unless @props.isAuthorized
-
-    <RecentCompanies />
+    <section className="authorized">
+      <TopInsights />
+      <RecentCompanies />
+      <Subscription 
+        asBlock   = { true }
+        text      = "Subscribe to our weekly email: we'll keep you posted on new unicorns' timelines, useful insights and new CloudChart features." />
+    </section>
 
 
   render: ->
@@ -59,8 +61,7 @@ module.exports = React.createClass
       <Greeting />
       { @renderHeader() }
       <FeaturedInsights />
-      { @renderTopInsights() }
-      { @renderRecentCompanies() }
+      { @renderAuthorizedContent() }
       { @renderFooter() }
       { @renderGuide() }
     </section>

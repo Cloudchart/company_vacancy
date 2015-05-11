@@ -31,18 +31,20 @@
       @include flex(1);
     }
 
-    > section > header {
-      font-size: $huge-font-size;
-      font-weight: 300;
-      margin-left: $gutter-size;
-    }
+    > .authorized {
+      > section > header {
+        font-size: $huge-font-size;
+        font-weight: 300;
+        margin-left: $gutter-size;
+      }
 
-    > section > .companies-list {
-      margin-top: $gutter-size/2;
-    }
+      > section > .companies-list {
+        margin-top: $gutter-size/2;
+      }
 
-    > .trending-insights {
-      margin-top: $gutter-size;
+      > .trending-insights {
+        margin-top: $gutter-size;
+      }
     }
     
     > footer,

@@ -38,44 +38,6 @@ div.companies {
     font-size: $big-font-size;
     width: 300px;
   }
-
-  .subscription {
-    @include align-items(center);
-    @include display(flex);
-    @include flex-direction(column);
-
-    background-color: hsl(145, 92%, 75%);
-    border: 1px solid hsl(144, 100%, 81%);
-    margin: $gutter-size;
-    font-size: $big-font-size;
-    font-weight: 400;
-    line-height: 29px;
-    width: calc(100% - 2 * #{$gutter-size} );
-    padding: 40px;
-
-    p {
-      max-width: 600px;
-      text-align: center;
-    }
-
-    > form {
-      @include display(flex);
-
-      > input {
-        margin-right: $inner-margin-size;
-      }
-
-      button.cc {
-        background-color: hsl(60, 4%, 11%);
-        color: hsl(145, 92%, 75%);
-        height: 40px;
-
-        > div {
-          padding: 10px;
-        }
-      }
-    }
-  }
 }
 
 .cloud-profile-companies,

@@ -161,7 +161,8 @@ CompaniesApp = React.createClass
 
   renderFooter: ->
     <Subscription 
-      text = "We're adding new companies every week — join our mailing list to get updates on new unicorns' timelines and useful insights." />
+      asBlock   = { true }
+      text      = "We're adding new companies every week — join our mailing list to get updates on new unicorns' timelines and useful insights." />
 
   render: ->
     if @isLoaded()
