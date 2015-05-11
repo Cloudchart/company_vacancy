@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
 
   validates :full_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
-  validates :twitter, uniqueness: true, allow_blank: true
+  validates :twitter, uniqueness: { case_sensitive: false }, allow_blank: true
 
   # validate :validate_email, on: :create
 
