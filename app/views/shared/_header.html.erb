@@ -4,12 +4,6 @@ links = []
 user = {}
 
 if user_authenticated?
-  if can?(:manage, :invite)
-    links << {
-      title: 'Invites',
-      url: current_page?(main_app.invites_path) ? nil : main_app.invites_path
-    }
-  end
 
   if can?(:index, :pins)
     links << {
@@ -25,9 +19,18 @@ if user_authenticated?
     }
   end
 
+  if can?(:manage, :invite)
+    links << {
+      title: 'Invites',
+      icon: 'fa fa-user-plus',
+      url: current_page?(main_app.invites_path) ? nil : main_app.invites_path
+    }
+  end
+
   if can?(:access, :limbo)
     links << {
       title: 'Limbo',
+      icon: 'fa fa-leanpub',
       url: current_page?(main_app.limbo_index_path) ? nil : main_app.limbo_index_path
     }
   end

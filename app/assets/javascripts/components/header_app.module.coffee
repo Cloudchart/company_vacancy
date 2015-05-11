@@ -14,16 +14,27 @@ module.exports = React.createClass
       <a href={ @props.root_url } className="title" dangerouslySetInnerHTML={ __html: @props.title } />
     </div>
 
+  renderLinkIcon: (link) ->
+    return null unless link.icon
+
+    <i className={ link.icon } />
+
+  renderLink: (link) ->
+    if link.url
+      <a href={ link.url }>
+        { @renderLinkIcon(link) }
+        <span>{ link.title }</span>
+      </a>
+    else
+      <span>
+        { @renderLinkIcon(link) }
+        <span>{ link.title }</span>
+      </span>
 
   renderLinks: ->
-    links = Immutable.Seq(@props.links).map (link, index) ->
-      linkOrTitle = if link.url
-        <a href={ link.url }>{ link.title }</a>
-      else
-        link.title
-
+    links = Immutable.Seq(@props.links).map (link, index) =>
       <li key={ index }>
-        { linkOrTitle }
+        { @renderLink(link) }
       </li>
 
     <ul className="main-menu">
