@@ -69,7 +69,6 @@ private
           unless user_found_by_twitter.companies.include?(company)
             if invite = user_found_by_twitter.company_invite_tokens.select { |token| token.owner_id == company_id }.first
               value = invite.data[:role]
-              invite.destroy
             else
               value = 'public_reader'
             end

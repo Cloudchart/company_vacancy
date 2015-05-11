@@ -66,13 +66,13 @@ module Companies
     # Accept
     # 
     def accept
-      favorite = favorites.find_by(favoritable_id: @token.owner_id)
+      favorite = current_user.favorites.find_by(favoritable_id: @token.owner_id)
       role = current_user.roles.create!(value: @token.data[:role], owner: @token.owner)
 
       respond_to do |format|
         format.html { redirect_to main_app.company_path(@token.owner) }
-        format.json { 
-          render json: { 
+        format.json {
+          render json: {
             role: role,
             favorite: favorite,
             company: CompanySerializer.new(@token.owner, scope: current_user)

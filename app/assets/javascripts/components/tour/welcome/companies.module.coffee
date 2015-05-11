@@ -69,7 +69,6 @@ module.exports = React.createClass
     @getCompanies().map (company, index) =>
       <CompanyPreview
         key              = { index }
-        showFollowButton = { true }
         uuid             = { company.get('uuid') } />
     .toArray()
 

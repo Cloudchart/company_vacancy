@@ -12,10 +12,6 @@ CompanyList = React.createClass
   #
   propTypes:
     companies:      React.PropTypes.array.isRequired
-    onSyncDone:     React.PropTypes.func
-
-  getDefaultProps: ->
-    onSyncDone:     ->
 
 
   # Helpers
@@ -31,7 +27,6 @@ CompanyList = React.createClass
       <section key={index} className="cloud-column">
         <CompanyPreview 
           key        = { index }
-          onSyncDone = { @props.onSyncDone }
           uuid       = { company.get('uuid') } />
       </section>
 

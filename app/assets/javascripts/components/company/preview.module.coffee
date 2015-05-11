@@ -79,8 +79,6 @@ CompanyPreview = React.createClass
   # Component specifications
   #
   propTypes:
-    onSyncDone:       React.PropTypes.func
-    showFollowButton: React.PropTypes.bool
     uuid:             React.PropTypes.string.isRequired
 
   getDefaultProps: ->
@@ -88,8 +86,6 @@ CompanyPreview = React.createClass
       activities: ActivityStore.cursor.items
       roles:      RoleStore.cursor.items
       tokens:     TokenStore.cursor.items
-    onSyncDone: ->
-    showFollowButton: false
 
   getInitialState: ->
     sync: Immutable.Map()
@@ -203,7 +199,7 @@ CompanyPreview = React.createClass
 
     @setState(sync: @state.sync.set('follow', true))
 
-    CompanySyncApi.follow(@cursor.company.get('uuid'), @handleFollowDone, @handleFail.bind(@, 'unfollow'))
+    CompanySyncApi.follow(@cursor.company.get('uuid'), @handleFollowDone, @handleFollowFail)
 
   handleDeclineClick: (event) ->
     event.preventDefault()
@@ -222,14 +218,18 @@ CompanyPreview = React.createClass
     CompanySyncApi.acceptInvite(@cursor.company.get('uuid'), @getToken().get('uuid'))
       .then(@handleInviteDone.bind(@, 'accept'), @handleFail.bind(@, 'accept'))
 
-  handleFollowDone: (syncKey) ->
+  handleFollowDone: ->
     # TODO rewrite with grabbing only needed favorite
     @fetchFavorites(force: true).then => 
       @setState(sync: @state.sync.set('follow', false))
 
+  handleFollowFail: ->
+    @setState(sync: @state.sync.set('follow', false))
+
+    ModalStack.show(<ModalError />)
+
   handleInviteDone: (syncKey) ->
     @cursor.tokens.remove(@getToken().get('uuid'))
-    @props.onSyncDone()
     @setState(sync: @state.sync.set(syncKey, false))
 
   handleFail: (syncKey) ->
@@ -298,13 +298,15 @@ CompanyPreview = React.createClass
     <li className="label">Invited</li>
 
   renderFollowButton: ->
-    return null unless @props.showFollowButton && !@getFavorite() && !@isViewerOwner()
+    return null unless !@getFavorite() && !@isViewerOwner()
 
-    <SyncButton
-      className = "cc follow"
-      onClick   = { @handleFollowClick }
-      sync      = { @state.sync.get('follow') }
-      text      = "Follow" />
+    <li>
+      <SyncButton
+        className = "cc follow"
+        onClick   = { @handleFollowClick }
+        sync      = { @state.sync.get('follow') }
+        text      = "Follow" />
+    </li>
 
   renderFollowedLabel: ->
     return null unless @getFavorite()

@@ -2,7 +2,7 @@ class Role < ActiveRecord::Base
   include Uuidable
   include Admin::Role
 
-  after_create :clean_user_owner_associations
+  after_create :clean_user_owner_associations, if: -> { owner_type == 'Company' }
 
   belongs_to :user
   belongs_to :owner, polymorphic: true
@@ -18,7 +18,7 @@ private
 
   def clean_user_owner_associations
     user.favorites.find_by(favoritable_id: owner_id).try(:delete)
-    user.tokens.find_by(name: 'invite', owner_id: owner_id).try(:delete)
+    user.company_invite_tokens.select { |token| token.owner_id == owner_id }.try(:first).try(:delete)
   end
 
   def acceptance_of_invite

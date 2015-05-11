@@ -38,9 +38,6 @@ CompaniesApp = React.createClass
   getDefaultProps: ->
     cursor:
       companies: CompanyStore.cursor.items
-      tokens:    TokenStore.cursor.items
-      favorites: FavoriteStore.cursor.items
-      roles:     RoleStore.cursor.items
       user:      UserStore.me()
 
   getInitialState: ->
@@ -108,9 +105,6 @@ CompaniesApp = React.createClass
         @props.cursor.companies.removeIn(id)
 
   updateStores: ->
-    @props.cursor.tokens.clear()
-    @props.cursor.favorites.clear()
-
     CompanyStore.fetchAll().done =>
       @search()
 
@@ -174,8 +168,7 @@ CompaniesApp = React.createClass
       <section className="cloud-profile-companies">
         { @renderHeader() }
         <CompanyList
-          companies      = { @getAllCompanies() }
-          onSyncDone     = { @updateStores } />
+          companies      = { @getAllCompanies() } />
         { @renderFooter() }
       </section>
     else
