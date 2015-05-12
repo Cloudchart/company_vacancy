@@ -8,7 +8,7 @@ module CloudProfile
       # TODO 
       # rewrite n+1 query for invited_by_companies, change three merges
       my_companies = current_user.companies.includes(:people, :tags).order(updated_at: :desc).all
-      followed_companies = current_user.followed_companies.includes(:people, :tags).order(updated_at: :desc).all
+      followed_companies = current_user.followed_companies.where(is_published: true).includes(:people, :tags).order(updated_at: :desc).all
       invited_by_companies = current_user.invited_by_companies
 
       @companies = my_companies + followed_companies + invited_by_companies
