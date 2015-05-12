@@ -79,7 +79,7 @@ module.exports = React.createClass
 
   handleInviteSubmitFail: (reason) ->
     @setState
-      inviteErrors:     Immutable.Map(reason.responseJSON.errors).keySeq()
+      inviteErrors:     Immutable.Map(reason.responseJSON.errors)
       isInviteSyncing:  false
 
   handleEmailInputChange: (name, event) ->
@@ -104,7 +104,7 @@ module.exports = React.createClass
 
   handleEmailSubmitFail: (reason) ->
     @setState
-      emailErrors:      Immutable.Map(reason.responseJSON.errors).keySeq()
+      emailErrors:      Immutable.Map(reason.responseJSON.errors)
       isEmailSyncing:   false
 
   handleEmailSkip: ->
@@ -116,6 +116,17 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderInviteErrors: (key) ->
+    return null unless @state.inviteErrors.has(key)
+
+    <ul className="errors">
+      {
+        @state.inviteErrors.get(key).map (error) ->
+          <li>{ error }</li>
+      }
+    </ul>
+
+
   renderText: ->
     switch @state.progress
       when "invite_sent"
@@ -137,11 +148,14 @@ module.exports = React.createClass
     return null if @state.progress == "invite_sent"
 
     <form className="invite" onSubmit={ @handleInviteSubmit }>
-      <input 
-        className   = { if @state.inviteErrors.contains('twitter') then 'cc-input error' else 'cc-input' }
-        placeholder = '@twitter'
-        onChange    = { @handleInviteInputChange.bind(@, 'twitter') }
-        value       = { @state.inviteAttributes.get('twitter', '') }  />
+      <label className="cc-input-label">
+        <input 
+          className   = { if @state.inviteErrors.has('twitter') || @state.inviteErrors.has('base') then 'cc-input error' else 'cc-input' }
+          placeholder = '@twitter'
+          onChange    = { @handleInviteInputChange.bind(@, 'twitter') }
+          value       = { @state.inviteAttributes.get('twitter', '') }  />
+        { @renderInviteErrors('base') }
+      </label>
       <SyncButton
         className   = "cc"
         sync        = { @state.isInviteSyncing }
@@ -156,7 +170,7 @@ module.exports = React.createClass
       <label>
         To:
         <input 
-          className   = { if @state.emailErrors.contains('email') then 'cc-input error' else 'cc-input' }
+          className   = { if @state.emailErrors.has('email') then 'cc-input error' else 'cc-input' }
           placeholder = 'user@example.com'
           type        = 'email'
           onChange    = { @handleEmailInputChange.bind(@, 'email') }
@@ -165,14 +179,14 @@ module.exports = React.createClass
       <label>
         Subject:
         <input 
-          className   = { if @state.emailErrors.contains('subject') then 'cc-input error' else 'cc-input' }
+          className   = { if @state.emailErrors.has('subject') then 'cc-input error' else 'cc-input' }
           placeholder = 'Subject goes here'
           onChange    = { @handleEmailInputChange.bind(@, 'subject') }
           value       = { @state.emailAttributes.get('subject', '') } />
       </label>
       <section className="content">
         <textarea
-          className   = { if @state.emailErrors.contains('body') then 'error' else null } 
+          className   = { if @state.emailErrors.has('body') then 'error' else null } 
           rows        = 3
           placeholder = 'Add a few words from yourself.'
           onChange    = { @handleEmailInputChange.bind(@, 'body') }
