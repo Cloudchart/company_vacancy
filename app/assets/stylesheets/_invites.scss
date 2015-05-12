@@ -26,28 +26,38 @@ $input-height: 40px;
     form.invite {
       @include display(flex);
 
-      input {
+      position: relative;
+
+      .cc-input {
         margin-right: $inner-margin-size;
       }
-    }
 
-    label {
-      @include display(flex);
+      label.checkbox {
+        @include position(absolute, 0 0 -20px 0px);
 
-      line-height: $input-height;
-
-      span {
-        width: 70px;
-      }
-
-      input {
-        margin-left: $inner-margin-size;
+        input {
+          margin-right: $inner-margin-size;
+        }
       }
     }
 
     form.email {
       @include display(flex);
       @include flex-direction(column);
+
+      label {
+        @include display(flex);
+
+        line-height: $input-height;
+
+        span {
+          width: 70px;
+        }
+
+        input {
+          margin-left: $inner-margin-size;
+        }
+      }
 
       .content {
         background-color: white;

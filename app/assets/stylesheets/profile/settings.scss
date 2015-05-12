@@ -52,6 +52,21 @@
     @include settings-form;
   }
 
+  > .invitation-form {
+    [contenteditable] {
+      font-size: $basic-font-size;
+      margin-bottom: $default-margin-size;
+      outline: none;
+
+      &:empty::before {
+        color: black;
+        content: attr(data-placeholder);
+        opacity: .25;
+        outline: none;
+      }
+    }
+  }
+
   > .subscription {
     @include settings-subscription;
   }

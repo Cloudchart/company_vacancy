@@ -11,7 +11,7 @@ class Landing < ActiveRecord::Base
 
   delegate :twitter, to: :user, allow_nil: true
 
-  validates :user, :author, :body, presence: true
+  validates :user, :author, presence: true
 
   def twitter_with_random_hex
     "#{twitter}-#{SecureRandom.hex(2)}"

@@ -2,11 +2,13 @@
 
 GlobalState = require('global_state/state')
 
-UserStore = require('stores/user_store.cursor')
-EmailStore = require('stores/email_store')
-TokenStore = require('stores/token_store.cursor')
+UserStore    = require('stores/user_store.cursor')
+EmailStore   = require('stores/email_store')
+TokenStore   = require('stores/token_store.cursor')
+LandingStore = require('stores/landing_store')
 
-UserSyncApi = require('sync/user_sync_api')
+LandingSyncApi = require('sync/landing_sync_api')
+UserSyncApi    = require('sync/user_sync_api')
 
 Emails = require('components/profile/emails')
 Field = require('components/form/field')
@@ -29,6 +31,9 @@ module.exports  = React.createClass
       user: ->
         """
           User {
+            landings {
+              author
+            },
             emails,
             tokens
           }
@@ -48,7 +53,7 @@ module.exports  = React.createClass
     fetchDone:   false
     statusIcon:  ''
     submitText:  'Update settings'
-    isSyncing:   false
+    sync:        Immutable.Map()
 
   fetch: (options = {}) ->
     GlobalState.fetch(@getQuery('user'), _.extend(options, id: @props.uuid)).then =>
@@ -111,6 +116,10 @@ module.exports  = React.createClass
   getInputClass: (name) ->
     if @state.errors.has(name) && @state.errors.get(name).length > 0 then 'cc-input error' else 'cc-input'
 
+  getLandings: ->
+    LandingStore.filter (landing) ->
+      landing.get('user_id') == @cursor.user.get('uuid')
+
 
   # Handlers
   #
@@ -127,7 +136,7 @@ module.exports  = React.createClass
   handleSubmit: (event) ->
     event.preventDefault()
 
-    @setState(isSyncing: true)
+    @setState(sync: @state.sync.set('personal', true))
 
     UserSyncApi.update(@cursor.user, @state.attributes.toJSON()).then @handleSubmitDone, @handleSubmitFail
 
@@ -135,7 +144,7 @@ module.exports  = React.createClass
     @fetch(force: true)
 
     @setState
-      isSyncing:   false
+      sync:        @state.sync.set('personal', false)
       formUpdated: false
       statusIcon:  'fa fa-check'
       submitText:  'Updated'
@@ -145,7 +154,7 @@ module.exports  = React.createClass
       errors:      Immutable.Map(reason.responseJSON.errors)
       formUpdated: false
       statusIcon:  'fa fa-times'
-      isSyncing:   false
+      sync:        @state.sync.set('personal', false)
       submitText:  'Update failed'
 
   handleSubscriptionChange: (checked) ->
@@ -166,6 +175,9 @@ module.exports  = React.createClass
       TokenStore.createGreeting(@cursor.user, content: value)
     else if !value and greeting
       TokenStore.destroyGreeting(greeting.get('uuid'))
+
+  handleCreateLandingClick: ->
+    LandingSyncApi.create(@cursor.user)
 
 
   # Lifecycle methods
@@ -219,7 +231,7 @@ module.exports  = React.createClass
         className = 'cc'
         iconClass = { if @state.formUpdated then '' else @state.statusIcon }
         disabled  = !@state.formUpdated
-        sync      = @state.isSyncing
+        sync      = @state.sync.get('personal')
         type      = 'submit'
         text      = @state.submitText />
     </footer>
@@ -243,6 +255,30 @@ module.exports  = React.createClass
       </Checkbox>
     </section>
 
+  renderLandingPages: ->
+    return null unless (landings = @getLandings()).size
+
+    <ul>
+      {
+        landings.map (landing) ->
+          author = UserStore.cursor.items.cursor(landing.get('author_id')).deref(Immutable.Map())
+
+          <a href={ landing.landing_url } target="_blank">
+            "Personal landing page by #{author.get('full_name')}"
+          </a>
+      }
+    </ul>
+
+  renderLandingsControls: ->
+    <section className="landings">
+      { @renderLandingPages() }
+      <SyncButton 
+        className = "cc"
+        onClick   = { @handleCreateLandingClick }
+        sync      = { @state.sync.get('landing') }
+        text      = "Create personal landing page" />
+    </section>
+
   renderGreeting: ->
     return null unless @isEditorUpdatingUnicorn()
 
@@ -252,15 +288,20 @@ module.exports  = React.createClass
     else
       null
 
-    <section className="greeting-form">
-      <h2>Greeting</h2>
+    <ContentEditableArea
+      onChange    = { @handleGreetingChange }
+      placeholder = 'Tap to add message'
+      readOnly    = { false }
+      value       = { value } />
 
-      <ContentEditableArea
-        onChange = { @handleGreetingChange }
-        placeholder = 'Tap to add message'
-        readOnly = { false }
-        value = { value }
-      />
+  renderInvitation: ->
+    return null unless UserStore.isEditor()
+
+    <section className="invitation-form">
+      <h2>Invitation</h2>
+
+      { @renderGreeting() }
+      { @renderLandingsControls() }
     </section>
 
 
@@ -270,6 +311,7 @@ module.exports  = React.createClass
     return null unless @isLoaded()
 
     <section className="settings">
+      { @renderInvitation() }
       <form onSubmit={ @handleSubmit }>
         <h2>Basic info</h2>
         { @renderFullNameInput() }
@@ -280,5 +322,4 @@ module.exports  = React.createClass
       </form>
       { @renderEmails() }
       { @renderSubscription() }
-      { @renderGreeting() }
     </section>

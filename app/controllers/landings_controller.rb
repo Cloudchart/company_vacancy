@@ -1,15 +1,9 @@
 class LandingsController < ApplicationController
 
-  before_filter :set_user, only: [:index, :create]
-  before_filter :set_landing, only: [:show, :update, :destroy]
+  before_filter :set_user, only: [:create]
+  before_filter :set_landing, only: [:create, :show, :update, :destroy]
 
   load_and_authorize_resource
-
-  def index
-    respond_to do |format|
-      format.json
-    end
-  end
 
   def show
     respond_to do |format|
@@ -67,7 +61,7 @@ private
   end
 
   def landing_params
-    params.require(:landing).permit(:title, :image, :body)
+    params.permit(:landing).permit(:title, :image, :body)
   end
 
 end

@@ -230,7 +230,7 @@ private
   end
 
   def create_unicorn_role
-    roles.create(value: :unicorn)
+    roles.create(value: 'unicorn')
   end
 
   def validate_twitter_handle_for_invite
