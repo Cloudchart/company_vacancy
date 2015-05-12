@@ -163,7 +163,7 @@ class Ability
       end
 
       can :manage, Visibility do |visibility|
-        owner?(current_user, visibility.owner.try(:owner))
+        owner_or_editor?(current_user, visibility.owner.try(:owner))
       end
 
       can :read, Post do |post|
