@@ -5,6 +5,7 @@ UserStore      = require('stores/user_store.cursor')
 
 ModalStack     = require('components/modal_stack')
 StandardButton = require('components/form/buttons').StandardButton
+SyncButton     = require("components/form/buttons").SyncButton
 Subscription   = require('components/shared/subscription')
 
 # Exports
@@ -53,8 +54,12 @@ module.exports = React.createClass
         =
         <i className="fa fa-heart" />
       </div>
-      <Subscription 
-        buttonText         = "Sign me up!"
-        subscribedText     = "Great news: you have already subscribed, we'll be in touch!"
-        onSubscriptionDone = { @finishTour } />
+      <Subscription buttonText = "Sign me up!" onSubscriptionDone = { @finishTour }>
+        <p>Great news: you have already subscribed, we'll be in touch!</p>
+        <SyncButton
+          className = "cc"
+          onClick   = { @finishTour }
+          text      = "Got This!"
+          type      = "button" />
+      </Subscription>
     </article>

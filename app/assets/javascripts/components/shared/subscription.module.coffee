@@ -31,13 +31,11 @@ module.exports = React.createClass
   propTypes:
     asBlock:               React.PropTypes.bool
     buttonText:            React.PropTypes.string
-    subscribedText:        React.PropTypes.string
     onSubscriptionDone:    React.PropTypes.func
     text:                  React.PropTypes.string
 
   getDefaultProps: ->
     buttonText:         "Sign me up"
-    subscribedText:     null
     text:               null
     asBlock:            false
     onSubscriptionDone: ->
@@ -119,10 +117,10 @@ module.exports = React.createClass
   # Renderers
   #
   renderPlaceholder: ->
-    return null unless @props.subscribedText
+    return null unless @props.children
 
     <section className="subscription">
-      <p>{ @props.subscribedText }</p>
+      { @props.children }
     </section>
 
   renderText: ->

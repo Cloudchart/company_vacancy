@@ -219,6 +219,10 @@
   }
 
   > .subscription  {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+
     > p {
       font-size: 24px;
       font-weight: 300;
@@ -385,7 +389,7 @@
       }
 
       > button.cc,
-      > .subscription > form > button {
+      > .subscription button {
         font-size: $large-font-size;
         font-weight: 300;
         height: 55px;
