@@ -51,6 +51,7 @@ class User < ActiveRecord::Base
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
   has_many :companies, through: :roles, source: :owner, source_type: 'Company'
+  has_many :landings, dependent: :destroy
 
   # Roles on Pinboards
   #

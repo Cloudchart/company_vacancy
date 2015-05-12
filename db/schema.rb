@@ -251,10 +251,12 @@ ActiveRecord::Schema.define(version: 20150512115457) do
     t.text     "body"
     t.string   "slug"
     t.string   "user_id",    limit: 36
+    t.string   "author_id",  limit: 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "landings", ["author_id"], name: "index_landings_on_author_id", using: :btree
   add_index "landings", ["user_id"], name: "index_landings_on_user_id", using: :btree
 
   create_table "oauth_providers", primary_key: "uuid", force: true do |t|
