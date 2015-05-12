@@ -8,13 +8,13 @@ $hint-color: hsl(144, 90%, 75%);
   > aside {
     @include align-items(center);
     @include display(flex);
-    @include position(absolute, 0px 0 0 -1 * $hint-button-size);
+    @include position(absolute, 0px 0 0 -1 * (2 * $gutter-size));
 
     height: 100%;
     z-index: 1;
 
     > .hint-button {
-      color: hsl(0, 0%, 95%);
+      color: $white-color;
       font-size: 18px;
       line-height: $hint-button-size;
       height: $hint-button-size;
