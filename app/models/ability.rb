@@ -148,6 +148,14 @@ class Ability
         token.owner == current_user
       end
 
+      # Landing
+      # 
+      can [:read, :create], Landing do |landing|
+        current_user.editor?
+      end
+
+      can [:update, :destroy], Landing, user_id: current_user.id
+
       # Miscellaneous
       #
       cannot [:create, :update], Quote do |quote|
