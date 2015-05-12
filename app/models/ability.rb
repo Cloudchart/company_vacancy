@@ -7,7 +7,7 @@ class Ability
     # Anyone
     #
     if current_user.guest?
-      # can :read, Event
+      can :read, Landing
       # can :read, Event
       # can :read, Tag
       # can :read, Person
@@ -154,7 +154,7 @@ class Ability
         current_user.editor?
       end
 
-      can [:update, :destroy], Landing, user_id: current_user.id
+      can [:update, :destroy], Landing, author_id: current_user.id
 
       # Miscellaneous
       #
