@@ -59,7 +59,7 @@ module.exports = React.createClass
         <SyncButton
           className = "cc"
           onClick   = { @finishTour }
-          text      = "Got This!"
+          text      = "Got it!"
           type      = "button" />
       </Subscription>
     </article>
