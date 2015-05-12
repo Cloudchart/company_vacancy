@@ -30,6 +30,9 @@ Blocks =
 #
 fuzzyDate = require('utils/fuzzy_date')
 
+trimDots    = require('utils/trim_string').trimDots
+trimBreak   = require('utils/trim_string').trimBreak
+
 
 # Exports
 #
@@ -96,12 +99,17 @@ module.exports = React.createClass
 
     paragraph.get('content').match(/<div>(.*?)<\/div>/ig).length > 1
 
+  trimDotsInParagraph: (content) ->
+    trimDots(trimBreak(content))
+
   getTruncatedParagraph: (block) ->
     return null unless (paragraph = @getParagraphByBlock(block))
 
-    parts = paragraph.get('content').match(/<div>(.*?)<\/div>/i)
+    content = paragraph.get('content').match(/<div>(.*?)<\/div>/i)[1].trim()
 
-    "<span>#{parts[1]}</span>"
+    content = if @isPostTruncated() then @trimDotsInParagraph(content) else content
+
+    "<span>#{content}</span>"
 
   getParagraphByBlock: (block) ->
     ParagraphStore.findByOwner(type: 'Block', id: block.get('uuid'))

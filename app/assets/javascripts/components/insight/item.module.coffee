@@ -19,6 +19,8 @@ ApprovePinButton  = require('components/pinnable/approve_pin_button')
 Tooltip           = require('components/shared/tooltip')
 StandardButton    = require('components/form/buttons').StandardButton
 
+trimDots          = require('utils/trim_string').trimDots
+
 
 # Utils
 #
@@ -73,6 +75,14 @@ module.exports = React.createClass
   destroySuggestion: ->
     PinStore.destroy(@props.cursor.pin.get('uuid')) if confirm('Are you sure?')
 
+  getOrigin: ->
+    @getInsight().get('origin')
+
+  getContent: ->
+    content = @getInsight().get('content')
+
+    if @getOrigin() then trimDots(content) else content
+
 
   # Helpers
   #
@@ -92,7 +102,7 @@ module.exports = React.createClass
     <i className="fa fa-code" />
 
   renderOrigin: ->
-    return null unless (origin = @getInsight().get('origin'))
+    return null unless (origin = @getOrigin())
 
     if @isLink(origin)
       <a className="origin" href={ origin } target="_blank">
@@ -104,10 +114,9 @@ module.exports = React.createClass
         element        = { @renderOriginIcon() }
         tooltipContent = { origin } />
       
-
   renderContent: ->
     <section className="content">
-      { @getInsight().get('content') }
+      { @getContent() }
       { " " }
       { @renderOrigin() }
     </section>

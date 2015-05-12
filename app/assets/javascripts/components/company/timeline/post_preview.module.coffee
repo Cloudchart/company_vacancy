@@ -30,6 +30,9 @@ PinButton           = require('components/pinnable/pin_button')
 
 FuzzyDate           = require('utils/fuzzy_date')
 
+trimDots            = require('utils/trim_string').trimDots
+trimBreak           = require('utils/trim_string').trimBreak
+
 
 # Main
 #
@@ -112,7 +115,12 @@ Component = React.createClass
 
     parts = paragraph.content.match(/<div>(.*?)<\/div>/i)
 
-    "<span>#{parts[1]}</span>"
+    "<span>#{parts[1].trim()}</span>"
+
+  trimDotsInParagraph: (content) ->
+    content = trimDots(trimBreak(content.match(/<span>(.*?)<\/span>/i)[1]))
+
+    "<span>#{content}</span>"
 
   getParagraph: (block) ->
     content = @getTruncatedParagraph(block)
@@ -121,6 +129,9 @@ Component = React.createClass
       'paragraph': true
       'quote':     block.kind is 'Quote'
       'truncated': @isPostTruncated()
+
+    if @isPostTruncated()
+      content = @trimDotsInParagraph(content)
 
     <div className={classes} dangerouslySetInnerHTML={__html: content}></div>
 
