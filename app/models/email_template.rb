@@ -5,7 +5,7 @@ class EmailTemplate
   attribute :subject
   attribute :body
 
-  validates :email, email: :true, presence: true
+  validates :email, extended_email: :true, presence: true
   validates :subject, :body, presence: true
 
 end

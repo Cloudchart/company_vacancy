@@ -220,7 +220,6 @@ module.exports = React.createClass
         <input 
           className   = { if @state.emailErrors.has('email') then 'cc-input error' else 'cc-input' }
           placeholder = 'user@example.com'
-          type        = 'email'
           onChange    = { @handleEmailInputChange.bind(@, 'email') }
           value       = { @state.emailAttributes.get('email', '') } />
       </label>
