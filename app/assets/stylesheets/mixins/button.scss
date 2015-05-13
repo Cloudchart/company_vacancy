@@ -97,8 +97,11 @@ $cc-button-wide-padding: 55px;
     background-color: $cc-button-background-color-alert;
   }
 
-  &[disabled] {
+  &[disabled],
+  &.disabled {
     background-color: $cc-button-background-color-disabled;
+    color: $cc-button-color;
+    opacity: 1;
   }
   
 }

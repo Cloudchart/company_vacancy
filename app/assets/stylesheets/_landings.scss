@@ -1,0 +1,49 @@
+.custom-landing {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+
+  margin-top: $gutter-size;
+
+  .message {
+    @include display(flex);
+
+    margin-bottom: $default-margin-size;
+    width: 450px;
+
+    > .avatar {
+      font-size: 30px;
+      font-weight: 100;
+      height: 150px;
+      margin: 0 auto;
+      width: 150px;
+    }
+
+    > [contenteditable] {
+      @include flex(1);
+
+      font-size: $basic-font-size;
+      margin-left: $default-margin-size;
+      outline: none;
+
+      &:empty::before {
+        color: black;
+        content: attr(data-placeholder);
+        opacity: .25;
+        outline: none;
+      }
+    }
+  }
+
+  .login-controls {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+
+    margin-bottom: $gutter-size;
+
+    > .cc {
+      margin-bottom: $inner-margin-size;
+    }
+  }
+}

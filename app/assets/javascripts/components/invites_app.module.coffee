@@ -23,7 +23,9 @@ module.exports = React.createClass
     queries:
       user: ->
         """
-          User {}
+          User {
+            system_roles
+          }
         """
 
       viewer: ->
@@ -142,7 +144,7 @@ module.exports = React.createClass
   # Renderers
   #
   renderEditorText: ->
-    return null unless UserStore.isEditor()
+    return null unless UserStore.isEditor() && UserStore.isUnicorn(@state.invitedUser)
 
     settingsUrl = @state.invitedUser.get('user_url') + '#settings'
 

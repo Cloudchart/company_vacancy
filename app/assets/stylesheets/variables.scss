@@ -131,4 +131,9 @@ a {
     display: block;
     outline: 0;
   }
+
+  &.disabled {
+    color: $black-color;
+    opacity: 0.25;
+  }
 }

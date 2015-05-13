@@ -1,1 +1,4 @@
-
+<%= content_tag :article, nil, class: "custom-landing-wrapper", data: {
+  "react-class" => "components/custom_landing_app",
+  "react-props" => { uuid: @landing.uuid, user_id: @landing.user_id }
+} %>

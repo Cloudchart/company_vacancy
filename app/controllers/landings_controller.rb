@@ -54,14 +54,14 @@ private
 
   def set_landing
     @landing = if action_name == 'create'
-      @user.landings.build(landing_params)
+      @user.landings.build
     else
       Landing.friendly.find(params[:id])
     end
   end
 
   def landing_params
-    params.permit(:landing).permit(:title, :image, :body)
+    params.require(:landing).permit(:title, :image, :body)
   end
 
 end

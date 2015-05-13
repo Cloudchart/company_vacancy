@@ -44,7 +44,8 @@ module.exports  = React.createClass
 
   getDefaultProps: ->
     cursor:
-      tokens: TokenStore.cursor.items
+      tokens:   TokenStore.cursor.items
+      landings: LandingStore.cursor.items
 
   getInitialState: ->
     attributes:  Immutable.Map()
@@ -117,7 +118,7 @@ module.exports  = React.createClass
     if @state.errors.has(name) && @state.errors.get(name).length > 0 then 'cc-input error' else 'cc-input'
 
   getLandings: ->
-    LandingStore.filter (landing) ->
+    LandingStore.filter (landing) =>
       landing.get('user_id') == @cursor.user.get('uuid')
 
 
@@ -177,7 +178,18 @@ module.exports  = React.createClass
       TokenStore.destroyGreeting(greeting.get('uuid'))
 
   handleCreateLandingClick: ->
-    LandingSyncApi.create(@cursor.user)
+    @setState sync: @state.sync.set('landing', true)
+
+    LandingSyncApi.create(@cursor.user).then @handleCreateLandingDone, @handleCreateLandingFail
+
+  handleCreateLandingDone: (data) ->
+    LandingStore.fetchOne(data.id).then (json) =>
+      @setState sync: @state.sync.set('landing', false)
+
+      location.hash = json.url
+
+  handleCreateLandingFail: ->
+    @setState sync: @state.sync.set('landing', false)
 
 
   # Lifecycle methods
@@ -263,9 +275,12 @@ module.exports  = React.createClass
         landings.map (landing) ->
           author = UserStore.cursor.items.cursor(landing.get('author_id')).deref(Immutable.Map())
 
-          <a href={ landing.landing_url } target="_blank">
-            "Personal landing page by #{author.get('full_name')}"
-          </a>
+          <li key = { landing.get('uuid') }>
+            <a href={ landing.get('url') }>
+              Personal landing page by { author.get('full_name') }
+            </a>
+          </li>
+        .toArray()
       }
     </ul>
 
