@@ -66,9 +66,10 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def custom_invite(user, email_template)
+  def custom_invite(user, email_template, inviter)
     @user = user
     @email_template = email_template
+    @inviter = inviter
 
     mail(to: email_template.email, subject: email_template.subject) do |format|
       format.html { render layout: 'user_mailer_' }

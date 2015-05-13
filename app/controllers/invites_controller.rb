@@ -31,7 +31,7 @@ class InvitesController < ApplicationController
     @email_template = EmailTemplate.new(email_template_params)
 
     if @email_template.valid?
-      UserMailer.custom_invite(@user, @email_template).deliver
+      UserMailer.custom_invite(@user, @email_template, current_user).deliver
       Activity.track(current_user, 'email_invite', @user, data: { 
         subject: @email_template.subject,
         body:    @email_template.body,

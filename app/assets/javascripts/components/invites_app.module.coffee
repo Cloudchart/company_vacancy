@@ -236,7 +236,7 @@ module.exports = React.createClass
           placeholder = 'Add a few words from yourself.'
           onChange    = { @handleEmailInputChange.bind(@, 'body') }
           value       = { @state.emailAttributes.get('body', '') } />
-        <p>{ @props.email_copy.first_paragraph }</p>
+        <p>{ @props.email_copy.first_paragraph.replace('%{inviter_name}', @props.cursor.get('full_name')) }</p>
         <p>{ @props.email_copy.second_paragraph }</p>
         <ul>
           <li>{ @props.email_copy.first_item }</li>
