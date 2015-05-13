@@ -32,7 +32,8 @@ class AuthController < ApplicationController
 
   def update
     errors  = []
-    user    = User.includes(:tokens).find(queued_user.id)
+
+    user    = User.includes(:tokens).find(queued_user.try(:id))
     token   = Token.find_or_create_by(owner: user, name: :email_verification)
     email   = Email.new(address: params[:email])
 
@@ -54,6 +55,11 @@ class AuthController < ApplicationController
   rescue ActiveRecord::RecordInvalid
 
     render json: { id: user.id, errors: errors }, status: 422
+
+  rescue ActiveRecord::RecordNotFound
+
+    render json: { errors: [:user] }, status: 404
+
   end
 
 private
