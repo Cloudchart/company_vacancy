@@ -5,6 +5,11 @@ class SlackWebhooksWorker < ApplicationWorker
     result = {}
 
     case event_name
+    when 'first_time_logged_in'
+      result[:text] = I18n.t('user.activities.first_time_logged_in',
+        name: user.full_name,
+        twitter: user.twitter
+      )
     when 'added_to_queue'
       result[:text] = I18n.t('user.activities.added_to_queue',
         name: user.full_name,

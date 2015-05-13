@@ -11,3 +11,4 @@ en:
       pinned_pin: "%{name} <%{email}> pinned %{parent_user_name} <%{parent_user_email}>'s pin related to post: <%{post_url}|%{post_title}>"
       added_to_queue: "%{name} <https://twitter.com/%{twitter}|@%{twitter}> added to waiting list"
       added_details_to_queue: "%{name} <https://twitter.com/%{twitter}|@%{twitter}> added his details to waiting list"
+      first_time_logged_in: "%{name} <https://twitter.com/%{twitter}|@%{twitter}> logged in for the first time"
