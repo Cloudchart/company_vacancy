@@ -13,7 +13,7 @@ class AuthController < ApplicationController
       user.update_with_twitter_omniauth_hash(oauth_hash) if user.last_sign_in_at.blank?
       authenticate_user!(user)
     else
-      authenticate_user!(User.create_with_twitter_omniauth_hash(oauth_hash))
+      authenticate_user!(User.create_with_twitter_omniauth_hash(oauth_hash), new_user: true)
     end
   end
 
@@ -64,13 +64,16 @@ class AuthController < ApplicationController
 
 private
 
-  def authenticate_user!(user)
+  def authenticate_user!(user, options={})
     warden_scope = user.authorized_at.present? ? :user : :queue
 
     warden.set_user(user, scope: warden_scope)
     cookies.signed[:user_id] = { value: user.id, expires: 2.weeks.from_now } if warden_scope == :user
     current_user.update(last_sign_in_at: Time.now) unless current_user.guest?
-    SlackWebhooksWorker.perform_async('added_to_queue', user.id) if should_perform_sidekiq_worker? && warden_scope == :queue
+
+    if should_perform_sidekiq_worker? && options[:new_user] && warden_scope == :queue
+      SlackWebhooksWorker.perform_async('added_to_queue', user.id)
+    end
 
     redirect_to warden_scope == :user ? main_app.root_path : main_app.queue_path
   end
