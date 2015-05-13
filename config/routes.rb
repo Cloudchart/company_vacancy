@@ -100,7 +100,7 @@ Cloudchart::Application.routes.draw do
     get :settings, on: :member
     patch :subscribe, on: :member
     delete :unsubscribe, on: :member
-    resources :landings, only: [:index, :create]
+    resources :landings, only: :create
   end
 
   resources :emails, only: [:create, :destroy] do
