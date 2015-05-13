@@ -67,9 +67,11 @@
     }
 
     [contenteditable] {
+      background-color: hsl(145, 92%, 75%);
       font-size: $basic-font-size;
       margin-bottom: $default-margin-size;
       outline: none;
+      padding: $default-margin-size;
 
       &:empty::before {
         color: black;
