@@ -186,7 +186,7 @@ module.exports  = React.createClass
     LandingStore.fetchOne(data.id).then (json) =>
       @setState sync: @state.sync.set('landing', false)
 
-      location.hash = json.url
+      location.href = json.landing.url
 
   handleCreateLandingFail: ->
     @setState sync: @state.sync.set('landing', false)
