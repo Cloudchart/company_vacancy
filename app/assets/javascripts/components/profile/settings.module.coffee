@@ -121,6 +121,11 @@ module.exports  = React.createClass
     LandingStore.filter (landing) =>
       landing.get('user_id') == @cursor.user.get('uuid')
 
+  getViewerLandings: ->
+    LandingStore.filter (landing) =>
+      landing.get('user_id') == @cursor.user.get('uuid') &&
+      landing.get('author_id') == @cursor.me.get('uuid')
+
 
   # Handlers
   #
@@ -284,14 +289,19 @@ module.exports  = React.createClass
       }
     </ul>
 
+  renderLandingCreateButton: ->
+    return null if @getViewerLandings().size
+
+    <SyncButton 
+      className = "cc"
+      onClick   = { @handleCreateLandingClick }
+      sync      = { @state.sync.get('landing') }
+      text      = "Create personal landing page" />
+
   renderLandingsControls: ->
     <section className="landings">
       { @renderLandingPages() }
-      <SyncButton 
-        className = "cc"
-        onClick   = { @handleCreateLandingClick }
-        sync      = { @state.sync.get('landing') }
-        text      = "Create personal landing page" />
+      { @renderLandingCreateButton() }
     </section>
 
   renderGreeting: ->
