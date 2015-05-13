@@ -13,4 +13,44 @@
   font-weight: 300;
   position: relative;
   width: 50px;
+
+  &:hover {
+    > label {
+      &:before {
+        @include position(absolute, 0px 0px 0px 0px);
+
+        content: "";
+        background-color: hsla(0, 0%, 70%, 0.7);
+        border-radius: 100%;
+      }
+
+      > i.fa-camera {
+        visibility: visible;
+      }
+    }
+  }
+  
+  > label {
+    @include position(absolute, 0px 0px 0px 0px);
+    cursor: pointer;
+
+    > i.fa-camera {
+      @include position(absolute, 50% 0 0 50%);
+      
+      color: black;
+      cursor: pointer;
+      margin-left: -10px;
+      margin-top: -10px;
+      font-size: 20px;
+      visibility: hidden;
+    }
+    
+    input {
+      height: 0;
+      overflow: hidden;
+      position: absolute;
+      visibility: hidden;
+      width: 0;
+    }
+  } 
 }

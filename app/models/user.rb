@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
   before_save :nillify_slug, if: -> { twitter_changed? && twitter.blank? }
   before_destroy :mark_emails_for_destruction
   after_create :create_tour_tokens, if: :should_create_tour_tokens?
+  after_create :create_unicorn_role, if: :should_create_unicorn_role?
 
   nilify_blanks only: [:twitter, :authorized_at]
 
@@ -26,7 +27,8 @@ class User < ActiveRecord::Base
     :should_validate_invite,
     :should_validate_name,
     :should_create_tour_tokens,
-    :should_validate_twitter_handle_for_invite
+    :should_validate_twitter_handle_for_invite,
+    :should_create_unicorn_role
   )
 
   has_secure_password
@@ -51,6 +53,7 @@ class User < ActiveRecord::Base
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
   has_many :companies, through: :roles, source: :owner, source_type: 'Company'
+  has_many :landings, dependent: :destroy
 
   # Roles on Pinboards
   #
@@ -224,6 +227,10 @@ private
 
   def create_tour_tokens
     tokens << [Token.new(name: :welcome_tour), Token.new(name: :insight_tour)]
+  end
+
+  def create_unicorn_role
+    roles.create(value: 'unicorn')
   end
 
   def validate_twitter_handle_for_invite

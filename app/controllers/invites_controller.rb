@@ -8,8 +8,9 @@ class InvitesController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    @user.should_create_tour_tokens!
     @user.should_validate_twitter_handle_for_invite!
+    @user.should_create_tour_tokens!
+    @user.should_create_unicorn_role! if has_rights_to_assign_unicorn?
     @user.authorized_at = Time.now
 
     if @user.save
@@ -55,6 +56,10 @@ private
 
   def email_template_params
     params.require(:email_template).permit(:email, :subject, :body)
+  end
+
+  def has_rights_to_assign_unicorn?
+    params[:user].try(:[], :is_unicorn) == '1' && current_user.editor?
   end
 
 end

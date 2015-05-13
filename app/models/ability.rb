@@ -7,7 +7,7 @@ class Ability
     # Anyone
     #
     if current_user.guest?
-      # can :read, Event
+      can :read, Landing
       # can :read, Event
       # can :read, Tag
       # can :read, Person
@@ -147,6 +147,14 @@ class Ability
       can [:destroy_welcome_tour, :destroy_insight_tour], Token do |token|
         token.owner == current_user
       end
+
+      # Landing
+      # 
+      can [:read, :create], Landing do |landing|
+        current_user.editor?
+      end
+
+      can [:update, :destroy], Landing, author_id: current_user.id
 
       # Miscellaneous
       #

@@ -52,6 +52,34 @@
     @include settings-form;
   }
 
+  > .invitation-form {
+    .landings {
+      ul {
+        @include display(flex);
+        @include flex-direction(column);
+
+        font-size: $basic-font-size;
+        list-style: none; 
+        margin: 0;
+        margin-bottom: $inner-margin-size;
+        padding: 0;
+      }
+    }
+
+    [contenteditable] {
+      font-size: $basic-font-size;
+      margin-bottom: $default-margin-size;
+      outline: none;
+
+      &:empty::before {
+        color: black;
+        content: attr(data-placeholder);
+        opacity: .25;
+        outline: none;
+      }
+    }
+  }
+
   > .subscription {
     @include settings-subscription;
   }

@@ -8,6 +8,8 @@ InviteSyncApi  = require('sync/invite_sync_api')
 StandardButton = require('components/form/buttons').StandardButton
 SyncButton     = require('components/form/buttons').SyncButton
 
+Checkbox       = require('components/form/checkbox')
+
 # Exports
 #
 module.exports = React.createClass
@@ -21,7 +23,16 @@ module.exports = React.createClass
     queries:
       user: ->
         """
-          User {}
+          User {
+            system_roles
+          }
+        """
+
+      viewer: ->
+        """
+          Viewer {
+            system_roles
+          }
         """
 
   getDefaultProps: ->
@@ -32,16 +43,20 @@ module.exports = React.createClass
     progress:          null
     isInviteSyncing:   false
     isEmailSyncing:    false
+    isLoaded:          false
     inviteAttributes:  Immutable.Map()
     inviteErrors:      Immutable.Map()
     emailAttributes:   Immutable.Map()
     emailErrors:       Immutable.Map()
 
+  fetch: ->
+    GlobalState.fetch(@getQuery('viewer')).then => @setState isLoaded: true
+
 
   # Helpers
   #
   isLoaded: ->
-    @props.cursor.deref(false)
+    @props.cursor.deref(false) && @state.isLoaded
 
   getDefaultEmailAttributes: (user=null) ->
     Immutable.Map(
@@ -53,7 +68,11 @@ module.exports = React.createClass
   # Handlers
   #
   handleInviteInputChange: (name, event) ->
-    value            = event.target.value
+    if name == 'is_unicorn'
+      value = event
+    else  
+      value = event.target.value
+    
     inviteAttributes = @state.inviteAttributes
 
     @setState inviteAttributes: inviteAttributes.set(name, value)
@@ -63,7 +82,9 @@ module.exports = React.createClass
 
     @setState isInviteSyncing: true
 
-    InviteSyncApi.create(@state.inviteAttributes).then @handleInviteSubmitDone, @handleInviteSubmitFail
+    inviteAttributes = @state.inviteAttributes.set('is_unicorn', if @state.inviteAttributes.get('is_unicorn') then 1 else 0)
+
+    InviteSyncApi.create(inviteAttributes).then @handleInviteSubmitDone, @handleInviteSubmitFail
 
   handleInviteSubmitDone: (data) ->
     GlobalState.fetch(@getQuery("user"), { id: data.id }).then =>
@@ -114,6 +135,12 @@ module.exports = React.createClass
       emailErrors:     Immutable.Map()
 
 
+  # Lifecycle methods
+  #
+  componentWillMount: ->
+    @fetch() unless @isLoaded()
+
+
   # Renderers
   #
   renderInviteErrors: (key) ->
@@ -126,12 +153,20 @@ module.exports = React.createClass
       }
     </ul>
 
+  renderEditorText: ->
+    return null unless UserStore.isEditor() && UserStore.isUnicorn(@state.invitedUser)
+
+    settingsUrl = @state.invitedUser.get('user_url') + '#settings'
+
+    <span>
+      You can add a <a href={ settingsUrl } target="_blank">personal greeting</a> and <a href={ settingsUrl } target="_blank">do a special landing page</a>.
+    </span>
 
   renderText: ->
     switch @state.progress
       when "invite_sent"
         <section>
-          <p>Great, now @{ @state.invitedUser.get('twitter') } has access to CloudChart. You can let them know yourself or send them an email:</p>
+          <p>Great, now @{ @state.invitedUser.get('twitter') } has access to CloudChart. { @renderEditorText() } You can let them know yourself or send them an email:</p>
         </section>
       when "email_skipped", "email_sent"
         <section>
@@ -144,6 +179,15 @@ module.exports = React.createClass
           <p>Simply enter that person's Twitter handle and we'll send them an invitation.</p>
         </section>
 
+  renderUnicornCheckbox: ->
+    return null unless UserStore.isEditor()
+
+    <Checkbox
+      checked   = { @state.inviteAttributes.get('is_unicorn', false) }
+      onChange  = { @handleInviteInputChange.bind(@, 'is_unicorn') } >
+      That's a unicorn
+    </Checkbox>
+
   renderInviteInput: ->
     return null if @state.progress == "invite_sent"
 
@@ -155,6 +199,7 @@ module.exports = React.createClass
           onChange    = { @handleInviteInputChange.bind(@, 'twitter') }
           value       = { @state.inviteAttributes.get('twitter', '') }  />
         { @renderInviteErrors('base') }
+        { @renderUnicornCheckbox() }
       </label>
       <SyncButton
         className   = "cc"

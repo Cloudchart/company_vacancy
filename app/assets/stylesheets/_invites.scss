@@ -26,6 +26,8 @@ $input-height: 40px;
     form.invite {
       @include display(flex);
 
+      position: relative;
+
       label {
         position: relative;
 
@@ -40,9 +42,16 @@ $input-height: 40px;
         }
       }
 
-      input {
+      .cc-input {
         margin-right: $inner-margin-size;
+      }
 
+      label.checkbox {
+        @include position(absolute, 0 0 -25px 0px);
+
+        input {
+          margin-right: $inner-margin-size;
+        }
       }
     }
 
