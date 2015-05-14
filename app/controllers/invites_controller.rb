@@ -1,9 +1,13 @@
 class InvitesController < ApplicationController
 
   authorize_resource class: :invite
+  before_action :call_page_visit_to_slack_channel, only: :index
+  after_action :create_intercom_event, only: :create
 
   def index
-    # maybe list invites based on activities?
+    respond_to do |format|
+      format.html
+    end
   end
 
   def create
@@ -60,6 +64,19 @@ private
 
   def has_rights_to_assign_unicorn?
     params[:user].try(:[], :is_unicorn) == '1' && current_user.editor?
+  end
+
+  def create_intercom_event
+    return unless should_perform_sidekiq_worker? && @user.valid?
+
+    IntercomEventsWorker.perform_async('invited-user-to-app',
+      current_user.id,
+      user_id: @user.id
+    )
+  end
+
+  def call_page_visit_to_slack_channel
+    post_page_visit_to_slack_channel('Invites page', main_app.invites_url)
   end
 
 end

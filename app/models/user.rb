@@ -166,6 +166,10 @@ class User < ActiveRecord::Base
     @full_name_or_email ||= full_name.blank? ? emails.first.address : full_name
   end
 
+  def full_name_or_twitter
+    full_name.present? ? full_name : "@#{twitter}"
+  end
+
   def email
     emails.first.try(:address)
   end
@@ -205,6 +209,10 @@ class User < ActiveRecord::Base
   # needed for rails_admin
   def should_create_tour_tokens=(value)
     should_create_tour_tokens! if value == '1'
+  end
+
+  def twitter_url
+    "https://twitter.com/#{twitter}"
   end
 
 private

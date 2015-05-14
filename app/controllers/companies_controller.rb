@@ -14,6 +14,7 @@ class CompaniesController < ApplicationController
   load_and_authorize_resource except: [:index, :search]
   authorize_resource only: [:index, :search], class: controller_name.to_sym
 
+  before_action :call_page_visit_to_slack_channel, only: [:index, :show]
   after_action :create_intercom_event, only: [:new, :update]
 
   # GET /companies
@@ -217,6 +218,19 @@ private
     if event_name
       IntercomEventsWorker.perform_async(event_name, current_user.id, company_id: @company.id)
     end
+  end
+
+  def call_page_visit_to_slack_channel
+    case action_name
+    when 'index'
+      page_title = 'companies list'
+      page_url = main_app.companies_url
+    when 'show'
+      page_title = "#{@company.name}'s page"
+      page_url = main_app.company_url(@company)
+    end
+    
+    post_page_visit_to_slack_channel(page_title, page_url)
   end
 
 end

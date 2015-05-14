@@ -1,10 +1,26 @@
 class SlackWebhooksWorker < ApplicationWorker
 
-  def perform(event_name, user_id)
+  def perform(event_name, user_id, options={})
     user = User.find(user_id)
+    options.symbolize_keys!
     result = {}
 
     case event_name
+    when 'visited_page'
+      return if user.guest? || user.editor? || user.admin?
+
+      result[:text] = I18n.t('user.activities.visited_page',
+        name: user.full_name,
+        twitter: user.twitter,
+        twitter_url: user.twitter_url,
+        page_title: options[:page_title],
+        page_url: options[:page_url]
+      )
+    when 'first_time_logged_in'
+      result[:text] = I18n.t('user.activities.first_time_logged_in',
+        name: user.full_name,
+        twitter: user.twitter
+      )
     when 'added_to_queue'
       result[:text] = I18n.t('user.activities.added_to_queue',
         name: user.full_name,

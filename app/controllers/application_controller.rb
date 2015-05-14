@@ -5,8 +5,8 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_filter :check_browser
-  before_filter :store_location
+  before_action :check_browser
+  before_action :store_location
 
   skip_after_filter :intercom_rails_auto_include, if: -> { current_user.try(:guest?) }
 
@@ -35,6 +35,11 @@ class ApplicationController < ActionController::Base
 
   def should_perform_sidekiq_worker?
     %(staging production).include?(Rails.env)
+  end
+
+  def post_page_visit_to_slack_channel(page_title, page_url)
+    return unless should_perform_sidekiq_worker? && request.format.html?
+    SlackWebhooksWorker.perform_async('visited_page', current_user.id, page_title: page_title, page_url: page_url)
   end
   
 private
