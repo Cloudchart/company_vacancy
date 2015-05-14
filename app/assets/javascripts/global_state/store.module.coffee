@@ -24,6 +24,7 @@ GlobalState = -> require('global_state/state')
 # Empty Sequence
 #
 EmptySequence = Immutable.Seq({})
+EmptySet      = Immutable.Set()
 
 
 # Store default
@@ -33,6 +34,7 @@ StoreDefaults = Immutable.Seq
   collectionName:   null
   instanceName:     null
   syncAPI:          null
+  foreignKeys:      []
 
 
 # Pending queries
@@ -54,16 +56,25 @@ class BaseStore
       .fail =>
         throw new Error("#{@displayName}: instanceName is undefined.")
 
-    @cursor =
-      items: GlobalState().cursor(['stores', @collectionName, 'items'])
+    @cursor   =
+      items:    GlobalState().cursor(['stores', @collectionName, 'items'])
+      indices:  GlobalState().cursor(['stores', @collectionName, 'indices'])
 
-    @empty  = EmptySequence
+    @indices  = @prepareIndices()
+
+    @empty    = EmptySequence
 
 
   populate: (json) ->
     return unless json[@collectionName] or json[@instanceName]
 
     Immutable.Seq(json[@collectionName] || [json[@instanceName]]).forEach (item) =>
+      @cleanupIndices(item.uuid)
+
+      @indices.forEach (data, name) =>
+        foreign_key = data.fields.map((name) => item[name]).join("::")
+        @cursor.indices.setIn([name, foreign_key], @cursor.indices.getIn([name, foreign_key], EmptySet).add(item.uuid))
+
       currItem = @cursor.items.get(item.uuid)
 
       unless item['--part--'] is true
@@ -74,6 +85,31 @@ class BaseStore
 
       if currItem.get('--part--') is true
         return @cursor.items.set(item.uuid, item)
+
+
+  #
+  #
+  prepareIndices: ->
+    Immutable.Seq(@foreignKeys).reduce (reduction, data, name) ->
+      reduction.set name,
+        fields: Immutable.Seq([].concat(data.fields))
+    , Immutable.Map()
+
+
+  cleanupIndices: (id) ->
+    @indices.forEach (data, name) =>
+      @cursor.indices.get(name, EmptySequence).forEach (items, foreign_key) =>
+        @cursor.indices.setIn([name, foreign_key], items.remove(id))
+
+
+  byFK: (name, values...) ->
+    @cursor.indices.getIn([name, values.join('::')], EmptySet).map (id) =>
+      @cursor.items.get(id)
+
+
+  indexedCursor: (name, values...) =>
+    @cursor.indices.cursor([name].concat(values))
+
 
 
   #
@@ -184,6 +220,7 @@ class BaseStore
 
 
   destroyDone: (json) ->
+    @cleanupIndices(json.id)
     @cursor.items.remove(json.id)
 
 
@@ -216,12 +253,13 @@ create = (descriptor = {}) ->
 
 
   StoreDefaults.forEach (value, name) ->
-    Store.prototype[name] = descriptor[name] ? StoreDefaults[name]
+    Store.prototype[name] = descriptor[name] ? StoreDefaults.get(name)
     delete descriptor[name]
 
 
   Immutable.Seq(descriptor).forEach (value, name) ->
     Store.prototype[name] = value if value instanceof Function
+
 
   store = new Store
 
