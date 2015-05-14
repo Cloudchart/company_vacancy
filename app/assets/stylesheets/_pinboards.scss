@@ -39,6 +39,10 @@
     font-weight: 300;
     line-height: 27px;
     padding-left: $gutter-size;
+
+    > i {
+      color: $link-color;
+    }
   }
 }
 

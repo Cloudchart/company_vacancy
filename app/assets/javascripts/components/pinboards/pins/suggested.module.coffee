@@ -34,7 +34,7 @@ module.exports = React.createClass
     if @getUserPins(user.get('uuid')).size < 3
       <section className="suggested-insights cloud-columns cloud-columns-flex">
         <header>Trending Insights</header>
-        <p>Collect successful founders' insights and put them to action: press the (pin) button to add an insight to your board.</p>
+        <p>Collect successful founders' insights and put them to action: press the <i className="fa fa-thumb-tack"/> button to add an insight to your board.</p>
         <TrendingInsights filterPinned = { true } />
       </section>
     else
