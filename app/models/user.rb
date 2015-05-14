@@ -203,6 +203,10 @@ class User < ActiveRecord::Base
     should_create_tour_tokens! if value == '1'
   end
 
+  def twitter_url
+    "https://twitter.com/#{twitter}"
+  end
+
 private
 
   def mark_emails_for_destruction

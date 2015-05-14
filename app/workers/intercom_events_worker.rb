@@ -59,6 +59,9 @@ private
       result[:post_url] = post_url(options[:pin].pinnable)
       result[:parent_id] = options[:pin].parent_id
       result[:pin_content] = options[:pin].content if options[:pin].content.present?
+    when 'invited-user-to-app'
+      result[:invitee_twitter] = options[:user].twitter
+      result[:is_invitee_unicorn] = options[:user].unicorn?
     end
 
     result
@@ -173,6 +176,21 @@ private
         post_url: post_url(post)
       )
 
+    # Invited user to app
+    # 
+    when 'invited-user-to-app'
+      roles = options[:user].system_roles.map(&:value).to_sentence
+      roles = 'regular user' if roles.blank?
+
+      result[:text] = I18n.t('user.activities.invited_user_to_app',
+        name: user.full_name,
+        twitter: user.twitter,
+        twitter_url: user.twitter_url,
+        invitee_twitter: options[:user].twitter,
+        invitee_twitter_url: options[:user].twitter_url,
+        roles: roles
+      )
+
     # Invited person
     # 
     when 'invited-person'
@@ -194,7 +212,6 @@ private
         invitee: invitee,
         role: token.data[:role].gsub(/_/, ' ')
       )
-
     end
 
     result.to_json
