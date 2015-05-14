@@ -1,7 +1,45 @@
+.pinboards-wrapper {
+  width: 100%;
+
+  > * {
+    margin: 0 auto;
+  }
+
+  > p {
+    font-size: $large-font-size;
+    font-weight: 300;
+    margin: $gutter-size 0;
+    width: 100%;
+    text-align: center;
+  }
+}
+
 .pinboards {
   background-color: $background-color;
   margin: 0;
   padding: 0;
+}
+
+.suggested-insights {
+  margin: 0 auto;
+  padding: 0;
+
+  > header {
+    @include align-self(flex-start);
+
+    font-size: $huge-font-size;
+    font-weight: 300;
+    padding-left: $gutter-size;
+  }
+
+  > p {
+    @include align-self(flex-start);
+
+    font-size: $big-font-size;
+    font-weight: 300;
+    line-height: 27px;
+    padding-left: $gutter-size;
+  }
 }
 
 article.pinboard,
@@ -9,14 +47,6 @@ article.pinboards {
   @include display(flex);
   @include justify-content(center);
   @include flex(1);
-
-  > p {
-    font-size: $large-font-size;
-    font-weight: 300;
-    margin-top: 50px;
-    width: 100%;
-    text-align: center;
-  }
 }
 
 

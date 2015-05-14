@@ -15,6 +15,14 @@ module.exports = GlobalState.createStore
   syncAPI:        require('sync/pin_sync_api')
 
 
+  foreignKeys:
+    'user':
+      fields: 'user_id'
+
+    'owner':
+      fields: ['owner_id', 'owner_type']
+
+
   serverActions: ->
     'post:fetch-all:done': @populate
 
@@ -46,3 +54,13 @@ module.exports = GlobalState.createStore
         item.get('pinnable_id')     is post_id  and
         item.get('pinnable_type')   is 'Post'   and
         (not item.get('parent_id') || item.get('is_suggestion'))
+
+  filterPinsForUser: (user_id, onlyInsights=false) ->
+    @byFK('user', user_id)
+      .filter (pin) =>
+        pin.get('pinnable_id') &&
+        (!onlyInsights || pin.get('content') || pin.get('parent_id'))
+
+  filterRepinsForUser: (user_id) ->
+    @byFK('user', user_id)
+      .filter (pin) => pin.get('pinnable_id') && pin.get('parent_id')

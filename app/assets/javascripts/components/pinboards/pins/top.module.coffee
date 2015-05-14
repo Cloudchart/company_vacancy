@@ -26,6 +26,9 @@ module.exports = React.createClass
 
   mixins: [GlobalState.query.mixin]
 
+  propTypes:
+    filterPinned: React.PropTypes.bool
+
   statics:
 
     queries:
@@ -39,6 +42,9 @@ module.exports = React.createClass
           }
         """
 
+  getDefaultProps: ->
+    filterPinned: false
+
   getInitialState: ->
     isLoaded: false
 
@@ -48,6 +54,9 @@ module.exports = React.createClass
   fetch: ->
     GlobalState.fetch(@getQuery('insights'))
 
+  isLoaded: ->
+    @state.isLoaded && @cursor.user.deref(false)
+
   gatherPublishedCompaniesIds: ->
     CompanyStore
       .filter (company) -> company.get('is_published')
@@ -55,18 +64,20 @@ module.exports = React.createClass
 
   gatherInsights: ->
     publishedCompaniesIds = @gatherPublishedCompaniesIds()
+    pinnedIds = PinStore.filterRepinsForUser(@cursor.user.get('uuid')).map (pin) -> pin.get('parent_id')
 
     @cursor.pins
       .filter (pin) =>
         pin.get('pinnable_id') && pin.get('content') && !pin.get('parent_id') &&
         (post = PostStore.cursor.items.get(pin.get('pinnable_id'))) && 
-        publishedCompaniesIds.contains(post.get('owner_id'))
+        publishedCompaniesIds.contains(post.get('owner_id')) &&
+        (!@props.filterPinned || !pinnedIds.contains(pin.get('uuid')))
       .valueSeq()
       .sort (pinA, pinB) -> 
-        if pinA.get('pins_count') == pinB.get('pins_count')
+        if pinA.get('weight') == pinB.get('weight')
           pinA.get('created_at') - pinB.get('created_at')
         else
-          pinA.get('pins_count') - pinB.get('pins_count')
+          pinA.get('weight') - pinB.get('weight')
       .reverse()
       .take(4)
       .toArray()
@@ -76,6 +87,7 @@ module.exports = React.createClass
   #
   componentWillMount: ->
     @cursor =
+      user: UserStore.me()
       pins: PinStore.cursor.items
 
     @fetch().then => @setState isLoaded: true
@@ -84,9 +96,6 @@ module.exports = React.createClass
   # Renderers
   #
   render: ->
-    return null unless @state.isLoaded
+    return null unless @isLoaded()
 
-    <section className="trending-insights">
-      <header>Trending Insights</header>
-      <PinsList pins = { @gatherInsights() } />
-    </section>
+    <PinsList pins = { @gatherInsights() } />

@@ -48,11 +48,9 @@ module.exports = React.createClass
   propTypes:
     user_id:          React.PropTypes.string.isRequired
     showOnlyInsights: React.PropTypes.bool
-    showPlaceholders: React.PropTypes.bool
 
   getDefaultProps: ->
     showOnlyInsights: false
-    showPlaceholders: false
 
   getInitialState: ->
     isLoaded: false
@@ -64,13 +62,10 @@ module.exports = React.createClass
     GlobalState.fetch(@getQuery('pins'), id: @props.user_id)
 
   isLoaded: ->
-    @cursor.pins.deref(false) || @state.isLoaded
+    @state.isLoaded
 
   gatherPins: ->
-    @cursor.pins
-      .filter (pin) =>
-        pin.get('user_id') == @props.user_id && pin.get('pinnable_id') &&
-        (!@props.showOnlyInsights || pin.get('content') || pin.get('parent_id'))
+    PinStore.filterPinsForUser(@props.user_id, @props.showOnlyInsights)
       .valueSeq()
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
@@ -83,25 +78,12 @@ module.exports = React.createClass
     @cursor =
       pins: PinStore.cursor.items
 
-    @fetch().then => @setState isLoaded: true unless @isLoaded()
+    @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
 
 
   # Renderers
   #
   render: ->
-    if @isLoaded()
-      if (pins = @gatherPins()).length > 0
-        <PinsList pins = { @gatherPins() } />
-      else
-        <p>Collect successful founders' insights and put them to action.</p>
-    else if @props.showPlaceholders
-      <section className="pins cloud-columns cloud-columns-flex">
-        <section className="cloud-column">
-          <section className="pin cloud-card placeholder" />
-        </section>
-        <section className="cloud-column">
-          <section className="pin cloud-card placeholder" />
-        </section>
-      </section>
-    else
-      null
+    return null unless @isLoaded()
+    
+    <PinsList pins = { @gatherPins() } />

@@ -36,8 +36,13 @@ module.exports =
           parentNode.style.height = maxColumnHeight + 24 + 'px'
       , 100
 
+    imagesLoaded: ->
+      window.imagesLoaded @getDOMNode(), (instance) =>
+        @repositionNodes()
+
     componentDidMount: ->
       @repositionNodes()
+      @imagesLoaded()
 
       window.addEventListener 'resize', @repositionNodes
 
@@ -46,3 +51,4 @@ module.exports =
 
     componentDidUpdate: ->
       @repositionNodes()
+      @imagesLoaded()

@@ -48,7 +48,10 @@ module.exports = React.createClass
     return null unless @props.isAuthorized
 
     <section className="authorized">
-      <TopInsights />
+      <section className="trending-insights">
+        <header>Trending Insights</header>
+        <TopInsights />
+      </section>
       <RecentCompanies />
       <Subscription 
         asBlock   = { true }

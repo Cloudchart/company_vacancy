@@ -1,6 +1,11 @@
 <% title 'Insights' %>
 
-<article class="pinboards" data-react-class="components/pinboards_app"></article>
+<%= content_tag :article, nil, data: {
+  "react-class" => "components/pinboards_app",
+  "react-props" => {
+    user_id: current_user.uuid
+  }
+} %>
 
 <% content_for :header_menu do %>
   <%= render 'shared/header_menu' %>
