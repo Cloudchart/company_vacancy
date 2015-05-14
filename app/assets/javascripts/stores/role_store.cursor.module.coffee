@@ -49,7 +49,7 @@ module.exports = GlobalState.createStore
   #     role.get('owner_type')  == type
 
   rolesOn: (id, type) ->
-    @byFK('owner', [id, type])
+    @byFK('owner', id, type)
 
 
   # roles_on_owner_for_user: (owner, owner_type, user) ->
