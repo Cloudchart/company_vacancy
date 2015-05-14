@@ -1,9 +1,11 @@
 class UsersController < ApplicationController
   include FollowableController
 
-  before_filter :set_user
+  before_action :set_user
 
   authorize_resource
+
+  before_action :call_page_visit_to_slack_channel, only: :show
 
   def show
     respond_to do |format|
@@ -91,6 +93,11 @@ private
   def should_verify_email?(user)
     email = params[:user].try(:[], :email)
     email && !user.emails.map(&:address).include?(email)
+  end
+
+  def call_page_visit_to_slack_channel
+    page_title = current_user == @user ? 'his profile' : "#{@user.full_name_or_twitter}'s profile"
+    post_page_visit_to_slack_channel(page_title, main_app.user_url(current_user))
   end
 
 end

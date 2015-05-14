@@ -150,7 +150,9 @@ class Ability
 
       # Landing
       # 
-      can [:read, :create], Landing do |landing|
+      can :read, Landing
+
+      can :create, Landing do |landing|
         current_user.editor?
       end
 

@@ -5,6 +5,7 @@ class PinsController < ApplicationController
   authorize_resource except: :index
   authorize_resource only: :index, class: controller_name.to_sym
 
+  before_action :call_page_visit_to_slack_channel, only: :index
   after_action :create_intercom_event, only: :create
 
   def index
@@ -131,6 +132,10 @@ private
     end
 
     IntercomEventsWorker.perform_async(event_name, current_user.id, pin_id: @pin.id)
+  end
+
+  def call_page_visit_to_slack_channel
+    post_page_visit_to_slack_channel('insights list', main_app.pins_url)
   end
 
 end

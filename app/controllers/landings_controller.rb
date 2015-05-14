@@ -1,11 +1,12 @@
 class LandingsController < ApplicationController
 
-  before_filter :set_user, only: :create
-  before_filter :set_landing, only: [:create, :show, :update, :destroy]
+  before_action :set_user, only: :create
+  before_action :set_landing, only: [:create, :show, :update, :destroy]
 
   load_and_authorize_resource
 
-  before_filter :check_existing_landing, only: :create
+  before_action :check_existing_landing, only: :create
+  before_action :call_page_visit_to_slack_channel, only: :show
 
   def show
     respond_to do |format|
@@ -72,6 +73,16 @@ private
         format.json { render json: { id: existing_landing.id } }
       end and return
     end
+  end
+
+  def call_page_visit_to_slack_channel
+    page_title = if current_user == @landing.user
+      'his personal landing page'
+    else
+      "#{@landing.user.full_name_or_twitter}'s personal landing page"
+    end
+
+    post_page_visit_to_slack_channel(page_title, main_app.landing_url(@landing))
   end
 
 end

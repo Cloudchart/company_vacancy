@@ -162,6 +162,10 @@ class User < ActiveRecord::Base
     @full_name_or_email ||= full_name.blank? ? emails.first.address : full_name
   end
 
+  def full_name_or_twitter
+    full_name.present? ? full_name : "@#{twitter}"
+  end
+
   def email
     emails.first.try(:address)
   end

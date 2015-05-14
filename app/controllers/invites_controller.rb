@@ -1,10 +1,13 @@
 class InvitesController < ApplicationController
 
   authorize_resource class: :invite
+  before_action :call_page_visit_to_slack_channel, only: :index
   after_action :create_intercom_event, only: :create
 
   def index
-    # maybe list invites based on activities?
+    respond_to do |format|
+      format.html
+    end
   end
 
   def create
@@ -70,6 +73,10 @@ private
       current_user.id,
       user_id: @user.id
     )
+  end
+
+  def call_page_visit_to_slack_channel
+    post_page_visit_to_slack_channel('Invites page', main_app.invites_url)
   end
 
 end
