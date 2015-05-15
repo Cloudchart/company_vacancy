@@ -316,6 +316,10 @@
   position: relative;
   width: 100%;
 
+  @media (max-height: 650px) {
+    @include transform(scale(0.7));
+  }
+
   > .navigation {
     margin-top: 24px;
   }
