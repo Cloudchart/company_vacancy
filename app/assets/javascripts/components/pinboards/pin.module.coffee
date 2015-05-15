@@ -37,6 +37,7 @@ module.exports = React.createClass
   propTypes:
     uuid:          React.PropTypes.string.isRequired
     onClick:       React.PropTypes.func
+    showHotzone:   React.PropTypes.bool
 
   statics:
 
@@ -117,7 +118,7 @@ module.exports = React.createClass
   renderPinButton: ->
     return null unless insight = @getInsight()
 
-    <PinButton {...@gatherPinAttributes(insight)} />
+    <PinButton {...@gatherPinAttributes(insight)} showHotzone = { @props.showHotzone } />
 
   renderInsightControls: (insight) ->
 

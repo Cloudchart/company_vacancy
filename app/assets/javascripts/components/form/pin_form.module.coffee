@@ -248,10 +248,7 @@ module.exports = React.createClass
         role.get('value')               is roleValue
 
   shouldShowTour: ->
-    TokenStore.filter (token) =>
-      token.get('name') == 'insight_tour' &&
-      token.get('owner_id') == @props.cursor.me.get('uuid')
-    .size
+    !!TokenStore.findByUserAndName(@props.cursor.me, 'insight_tour')
 
   isCurrentUserSystemEditor: ->
     @isUserWithRole(UserStore.me().get('uuid'), 'editor')
@@ -424,6 +421,7 @@ module.exports = React.createClass
       <StandardButton
         className = "close transparent"
         iconClass = "cc-icon cc-times"
+        type      = "button"
         onClick   = { @props.onCancel }/>
 
       <InsightContent

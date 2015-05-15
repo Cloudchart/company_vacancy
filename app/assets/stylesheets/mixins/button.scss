@@ -320,6 +320,7 @@ ul.round-buttons {
   border-radius: 100%;
   width: $round-button-size;
   height: $round-button-size;
+  position: relative;
   text-align: center;
 
   &.with-counter {

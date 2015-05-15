@@ -9,6 +9,7 @@ TokenStore      = require('stores/token_store.cursor')
 PinForm         = require('components/form/pin_form')
 Modal           = require('components/modal_stack')
 StandardButton  = require('components/form/buttons').StandardButton
+Hotzone         = require('components/shared/hotzone')
 
 
 # Utils
@@ -30,15 +31,17 @@ module.exports = React.createClass
     pinnable_id:   React.PropTypes.string
     pinnable_type: React.PropTypes.string
     asTextButton:  React.PropTypes.bool
+    showHotzone:   React.PropTypes.bool
 
   getDefaultProps: ->
     asTextButton: false
+    showHotzone:  false
     cursor:
       pins:   PinStore.cursor.items
       user:   UserStore.me()
 
   getInitialState: ->
-    _.extend loaders: Immutable.Map(),
+    _.extend loaders: Immutable.Map(), clicked: false,
       @getStateFromStores()
 
   onGlobalStateChange: ->
@@ -101,6 +104,8 @@ module.exports = React.createClass
     event.preventDefault()
     event.stopPropagation()
 
+    @setState(clicked: true)
+
     if @state.currentUserPin
       Modal.show(@renderEditPinForm(@state.currentUserPin.get('uuid')))
     else if @state.currentUserRepin
@@ -131,6 +136,11 @@ module.exports = React.createClass
 
     <span>{ count }</span>
 
+  renderHotzone: ->
+    return null unless @props.showHotzone && !@state.clicked
+
+    <Hotzone />
+
 
   render: ->
     return null unless @props.cursor.user.get('uuid') && @props.cursor.user.get('twitter')
@@ -144,6 +154,7 @@ module.exports = React.createClass
       <li className={ classList } onClick={ @handleClick }>
         <i className="fa fa-thumb-tack" />
         { @renderCounter() }
+        { @renderHotzone() }
       </li>
     else
       <StandardButton 

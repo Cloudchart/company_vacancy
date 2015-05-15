@@ -17,14 +17,16 @@ module.exports = React.createClass
   propTypes:
     pins:          React.PropTypes.array.isRequired
     onItemClick:   React.PropTypes.func
+    showHotzone:   React.PropTypes.bool
 
   # Renderers
   #
-  renderPin: (pin) ->
+  renderPin: (pin, index) ->
     <section className="cloud-column" key={ pin.get('uuid') }>
       <PinComponent
         uuid          = { pin.get('uuid') }
-        onClick       = { @props.onItemClick } />
+        onClick       = { @props.onItemClick }
+        showHotzone   = { @props.showHotzone && index == 0 } />
     </section>
 
   renderPins: ->
