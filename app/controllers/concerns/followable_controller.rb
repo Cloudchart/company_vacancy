@@ -3,33 +3,19 @@ module FollowableController
 
   def follow
     object = controller_name.classify.constantize.find(params[:id])
+    object.followers.find_or_create_by(user: current_user)
 
-    if current_user.favorites.pluck(:favoritable_id).include?(object.id)
-      respond_to do |format|
-        format.json { render json: :fail, status: 412 }
-      end
-    else
-      object.followers.create(user: current_user)
-
-      respond_to do |format|
-        format.json { render json: object.active_model_serializer.new(object, scope: current_user) }
-      end
+    respond_to do |format|
+      format.json { render json: object.active_model_serializer.new(object, scope: current_user) }
     end
   end
 
   def unfollow
     object = controller_name.classify.constantize.find(params[:id])
+    current_user.favorites.find_by(favoritable: object).try(:delete)
 
-    if current_user.favorites.pluck(:favoritable_id).include?(object.id)
-      current_user.favorites.find_by(favoritable: object).delete
-
-      respond_to do |format|
-        format.json { render json: object.active_model_serializer.new(object, scope: current_user) }
-      end
-    else
-      respond_to do |format|
-        format.json { render json: :fail, status: 412 }
-      end
+    respond_to do |format|
+      format.json { render json: object.active_model_serializer.new(object, scope: current_user) }
     end
   end  
   

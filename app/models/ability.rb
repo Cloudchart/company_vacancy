@@ -84,7 +84,7 @@ class Ability
         owner?(current_user, company)
       end
 
-      can :unfollow, Company
+      can [:follow, :unfollow], Company
       can :read, Company, is_published: true
 
       can [:index, :search], :companies do
@@ -105,14 +105,6 @@ class Ability
 
       can :read, Company do |company|
         public_reader?(current_user, company)
-      end
-
-      cannot :follow, Company do |company|
-        current_user.companies.map(&:id).include?(company.id)
-      end
-
-      can :follow, Company do |company|
-        !current_user.companies.map(&:id).include?(company.id)
       end
 
       can :manage_company_invites, Company do |company|
