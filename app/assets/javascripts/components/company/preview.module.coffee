@@ -298,7 +298,7 @@ CompanyPreview = React.createClass
     <li className="label">Invited</li>
 
   renderFollowButton: ->
-    return null unless !@getFavorite() && !@isViewerOwner()
+    return null unless !@getFavorite()
 
     <li>
       <SyncButton
