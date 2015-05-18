@@ -20,7 +20,7 @@ Human = require('components/human')
 module.exports = React.createClass
 
 
-  displayName: 'PinboardPreview'
+  displayName: 'Pinboard'
 
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]

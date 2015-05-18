@@ -1,11 +1,11 @@
 # @cjsx React.DOM
 
-GlobalState   = require('global_state/state')
+GlobalState       = require('global_state/state')
 
 
 # Stores
 #
-PinboardStore   = require('stores/pinboard_store')
+PinboardStore     = require('stores/pinboard_store')
 
 
 # Components
@@ -13,7 +13,7 @@ PinboardStore   = require('stores/pinboard_store')
 PinboardComponent  = require('components/pinboards/pinboard')
 
 
-MasonryMixin       = require('utils/masonry_mixin')
+NodeRepositioner   = require('utils/node_repositioner')
 
 
 # Exports
@@ -23,7 +23,7 @@ module.exports = React.createClass
 
   displayName: 'Pinboards'
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin, Masonrymixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin, NodeRepositioner.mixin]
 
   statics:
 
@@ -100,8 +100,6 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @isLoaded()
-
     <section className="pinboards cloud-columns cloud-columns-flex">
       { @renderPinboards().toArray() }
     </section>
