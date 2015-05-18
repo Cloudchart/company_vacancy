@@ -7,7 +7,7 @@
     
   &::before,
   &::after {
-    @include animation(hotzone .4s ease-out alternate 20);
+    @include animation(hotzone .4s ease-out alternate 40);
     @include position(absolute, 0px 0px 0px 0px);
 
     border-radius: 50%;
