@@ -177,7 +177,7 @@ CompanyPreview = React.createClass
       .size
 
   isUnpublished: ->
-    !@cursor.company.get('is_published') && !@isViewerOwner()
+    !@cursor.company.get('is_published') && !@isViewerOwner() && !@getToken()
 
   getPreviewLink: ->
     @cursor.company.get('company_url') unless @isUnpublished()
