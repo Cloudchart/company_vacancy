@@ -301,7 +301,8 @@ $round-button-color: $accented-white-color;
 $round-button-spacer-size: $inner-margin-size;
 $round-button-size: 24px;
 
-ul.round-buttons {
+.round-buttons,
+.counters {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -312,7 +313,8 @@ ul.round-buttons {
 }
 
 .round-button,
-.round-buttons > li {
+.round-buttons > li,
+.counters > li > .icon {
   background-color: $round-button-background-color;
   color: $round-button-color;
   cursor: pointer;
@@ -354,5 +356,16 @@ ul.round-buttons {
       font-weight: 700;
       margin-left: 5px;
     }
+  }
+}
+
+.counters > li {
+  color: $round-button-background-color;
+  display: inline-block;
+  font-size: $basic-font-size;
+  font-weight: 700;
+
+  > .icon {
+    margin-left: 5px;
   }
 }

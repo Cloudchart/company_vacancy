@@ -14,5 +14,6 @@ module.exports = React.createClass
 
   render: ->
     <section className="pinboards-wrapper">
+      <header className="cloud-columns cloud-columns-flex">Your boards</header>
       <PinboardsComponent />
     </section>
