@@ -277,7 +277,7 @@ Post = React.createClass
     return null unless @state.company
 
     <div className="company-name">
-      <a href={ @getTimelineUrl() }>{ @state.company.name }</a>
+      <a href={ @getTimelineUrl() }>Explore { @state.company.name } timeline</a>
     </div>
 
   renderVisibilityDropdown: ->
