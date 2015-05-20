@@ -143,6 +143,7 @@ module.exports = React.createClass
 
   renderName: ->
     <input
+      className   = "cc-input"
       type        = "text"
       value       = { @state.attributes.get('title', '') }
       placeholder = "Please name the pinboard"
@@ -154,6 +155,7 @@ module.exports = React.createClass
 
   renderDescription: ->
     <input
+      className   = "cc-input"
       type        = "text"
       value       = { @state.attributes.get('description', '') }
       placeholder = "Please describe the pinboard"
@@ -165,10 +167,6 @@ module.exports = React.createClass
 
   renderInputs: ->
     <fieldset className="settings">
-
-      <header className="cloud">
-        Pinboard Settings
-      </header>
 
       <ul>
         <li className="name">

@@ -6,6 +6,8 @@ GlobalState     = require('global_state/state')
 #
 PinboardStore   = require('stores/pinboard_store')
 UserStore       = require('stores/user_store.cursor')
+PinStore        = require('stores/pin_store')
+FavoriteStore   = require('stores/favorite_store.cursor')
 
 
 # Components
@@ -13,6 +15,9 @@ UserStore       = require('stores/user_store.cursor')
 PinboardSettings = require('components/pinboards/settings')
 PinboardPins     = require('components/pinboards/pins/pinboard')
 PinboardTabs     = require('components/pinboards/tabs')
+SyncButton       = require('components/form/buttons').SyncButton
+
+SyncApi          = require('sync/pinboard_sync_api')
 
 
 
@@ -38,19 +43,33 @@ module.exports = React.createClass
           }
         """
 
+      viewer: ->
+        """
+          Viewer {
+            favorites
+          }
+        """
+
   propTypes:
     uuid: React.PropTypes.string.isRequired
 
   getDefaultProps: ->
     cursor:
       pinboards: PinboardStore.cursor.items
+      pins:      PinStore.cursor.items
+      favorites: FavoriteStore.cursor.items
+      viewer:    UserStore.me()
 
   getInitialState: ->
     uuid:       @props.uuid
     currentTab: null
+    isSyncing:  false
 
   fetch: ->
     GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid })
+
+  fetchViewer: (options={}) ->
+    GlobalState.fetch(@getQuery('viewer'), options)
 
 
   # Helpers
@@ -64,6 +83,16 @@ module.exports = React.createClass
   getOwner: ->
     UserStore.cursor.items.get(@getPinboard().get('user_id'))
 
+  getFavorite: ->
+    FavoriteStore.findByPinboardForUser(@props.uuid, @props.cursor.viewer.get('uuid'))
+
+  getInsightsNumber: ->
+    count = PinStore
+      .filterByUserId(@getOwner().get('uuid'))
+      .filter (pin) ->
+        pin.get('pinnable_id') && (pin.get('parent_id') || pin.get('content'))
+      .size
+
 
   # Handlers
   #
@@ -76,15 +105,40 @@ module.exports = React.createClass
   componentWillMount: ->
     @fetch() unless @isLoaded()
 
+  handleFollowClick: ->
+    # TODO 
+    # make the united Follow Sync API
+
+    @setState(isSyncing: true)
+
+    if favorite = @getFavorite()
+      SyncApi.unfollow(@props.uuid).then =>
+        favoriteId = favorite.get('uuid')
+        FavoriteStore.cursor.items.remove(favoriteId)
+        FavoriteStore.cleanupIndices(favoriteId)
+        @setState(isSyncing: false)
+    else
+      SyncApi.follow(@props.uuid).then =>
+        @fetchViewer(force: true).then => @setState(isSyncing: false)
+
 
   # Renderers
   #
+  renderFollowButton: ->
+    text = if @getFavorite() then 'Unfollow' else 'Follow'
+
+    <SyncButton 
+      className         = "cc"
+      onClick           = { @handleFollowClick }
+      text              = { text }
+      sync              = { @state.isSyncing } />
+
   renderHeader: ->
-    <section>
-      <header>
-        { @getPinboard().get('title') } by { @getOwner().get('full_name') }
-      </header>
-      <ul className="counter">
+    <header>
+      <h1>
+        { @getPinboard().get('title') } <strong>by</strong> <a href={ @getOwner().get('user_url') }>{ @getOwner().get('full_name') }</a>
+      </h1>
+      <ul className="counters">
         <li>
           { @getPinboard().get('readers_count') }
           <span className="icon">
@@ -92,8 +146,11 @@ module.exports = React.createClass
           </span>
         </li>
       </ul>
-    </section>
-
+      <div className="follow-button">
+        { @renderFollowButton() }
+      </div>
+    </header>
+      
   renderContent: ->
     switch @state.currentTab
       when 'insights'
@@ -107,8 +164,14 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <section className="pinboard-wrapper">
-      { @renderHeader() }
-      <PinboardTabs onChange = { @handleTabChange } />
+    <section className="user-pinboards">
+      <section className="tab-header">
+        <div className="cloud-columns cloud-columns-flex">
+          { @renderHeader() }
+          <PinboardTabs
+            insightsNumber = { @getInsightsNumber() }
+            onChange       = { @handleTabChange } />
+        </div>
+      </section>
       { @renderContent() }
     </section>

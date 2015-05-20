@@ -113,8 +113,11 @@ class Ability
 
       # Pinboard
       #
-      can [:read, :create], Pinboard
+      can [:create], Pinboard
       can [:update, :destroy, :settings], Pinboard, user_id: current_user.id
+      can [:read, :follow, :unfollow], Pinboard do |pinboard|
+        current_user.id == pinboard.user_id || reader_or_editor?(current_user, pinboard)
+      end
 
       can :manage_pinboard_invites, Pinboard do |pinboard|
         current_user.id == pinboard.user_id || editor?(current_user, pinboard)
@@ -189,6 +192,14 @@ private
 
   def editor?(user, object)
     role_value(user, object) == 'editor'
+  end
+
+  def reader?(user, object)
+    role_value(user, object) == 'reader'
+  end
+
+  def reader_or_editor?(user, object)
+    role_value(user, object) =~ /reader|editor/
   end
 
   def owner_or_editor?(user, object)

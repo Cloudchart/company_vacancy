@@ -61,11 +61,7 @@ module.exports  = React.createClass
     isSyncing:   false
 
   getStateFromStores: ->
-    favorite: FavoriteStore.filter((favorite) => 
-      favorite.get('favoritable_id')   == @props.uuid &&
-      favorite.get('favoritable_type') == 'User' &&
-      favorite.get('user_id')          == @cursor.viewer.get('uuid')
-    ).first()
+    favorite: FavoriteStore.findByUserForUser(@props.uuid, @cursor.viewer.get('uuid'))
 
   onGlobalStateChange: ->
     @setState @getStateFromStores()
@@ -132,7 +128,9 @@ module.exports  = React.createClass
 
     if favorite = @getFavorite()
       SyncApi.unfollow(@props.uuid).then =>
-        FavoriteStore.cursor.items.remove(favorite.get('uuid'))
+        favoriteId = favorite.get('uuid')
+        FavoriteStore.cursor.items.remove(favoriteId)
+        FavoriteStore.cleanupIndices(favoriteId)
         @setState(isSyncing: false)
     else
       SyncApi.follow(@props.uuid).then => 
