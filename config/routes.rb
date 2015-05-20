@@ -78,7 +78,7 @@ Cloudchart::Application.routes.draw do
     patch :accept, on: :member
   end
 
-  resources :pinboards do
+  resources :pinboards, concerns: [:followable] do
     get :settings, on: :member
     resources :roles, only: [:update, :destroy]
 

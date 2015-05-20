@@ -60,3 +60,15 @@ module.exports =
       dataType: 'json'
       data: 
         token: attributes
+
+  follow: (key) ->
+    Promise.resolve $.ajax
+      url: "/pinboards/#{key}/follow"
+      type: 'POST'
+      dataType: 'json'
+
+  unfollow: (key) ->
+    Promise.resolve $.ajax
+      url: "/pinboards/#{key}/unfollow"
+      type: 'DELETE'
+      dataType: 'json'

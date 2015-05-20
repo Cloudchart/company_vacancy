@@ -7,6 +7,7 @@ UserPins           = require('components/pinboards/pins/user')
 UserCompanies      = require('components/company/lists/user')
 UserFeed           = require('components/user/feed')
 Settings           = require('components/profile/settings')
+Tabs               = require('components/profile/tabs')
 
 UserStore          = require('stores/user_store.cursor')
 PinStore           = require('stores/pin_store')
@@ -65,8 +66,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     fetchDone:   false
-    currentTab:  location.hash.substr(1) || null
-    visibleTabs: Immutable.Seq()
+    currentTab:  null
 
   fetchViewer: (options={}) ->
     GlobalState.fetch(@getQuery('viewer'), options)
@@ -78,8 +78,6 @@ module.exports = React.createClass
     Promise.all([@fetchUser(), @fetchViewer()]).then =>
       @setState
         fetchDone:   true
-        currentTab:  @getInitialTab()
-        visibleTabs: @getVisibleTabs()
 
 
   # Helpers
@@ -87,46 +85,24 @@ module.exports = React.createClass
   isLoaded: ->
     @state.fetchDone
 
-  getMenuOptionClassName: (option) ->
-    cx(active: @state.currentTab == option)
-
-  getVisibleTabs: ->
-    Immutable.OrderedMap(
-      insights:  true
-      feed:      true
-      companies: true
-      settings:  @cursor.user.get('is_editable')
-    ).filter (visible) -> visible
-    .keySeq()
-
-  getInitialTab: ->
-    visibleTabs = @getVisibleTabs()
-
-    if !@state.currentTab || !visibleTabs.contains(@state.currentTab)
-      visibleTabs.first()
-    else
-      @state.currentTab
-
   isViewerProfile: ->
     @props.uuid == @cursor.viewer.get('uuid')
 
-  getInsightsCount: ->
+  getInsightsNumber: ->
     count = PinStore
       .filterByUserId(@props.uuid)
       .filter (pin) -> 
         pin.get('pinnable_id') && (pin.get('parent_id') || pin.get('content'))
       .size
 
-  getCompaniesCount: ->
+  getCompaniesNumber: ->
     count = CompanyStore.filterForUser(@props.uuid).size
 
 
   # Handlers
   #
-  handleHashChange: ->
-    currentTab = location.hash.substr(1)
-    if @state.visibleTabs.contains(currentTab)
-      @setState currentTab: currentTab
+  handleTabChange: (tab) ->
+    @setState currentTab: tab
 
 
   # Lifecycle methods
@@ -140,30 +116,9 @@ module.exports = React.createClass
 
     @fetch() unless @isLoaded()
 
-    window.addEventListener 'hashchange', @handleHashChange
-
-  componentWillUnmount: ->
-    window.removeEventListener 'hashchange', @handleHashChange
-
 
   # Renderers
   #
-  renderTabs: ->
-    @state.visibleTabs.map (tabName) =>
-      <li key = { tabName } className = { @getMenuOptionClassName(tabName) } >
-        <a href = { location.pathname + "#" + tabName } className="for-group">
-          { @renderTabName(tabName) }
-        </a>
-      </li>
-    .toArray()
-
-  renderMenu: ->
-    <nav className="tabs">
-      <ul>
-        { @renderTabs() }
-      </ul>
-    </nav>
-
   renderEmptyTabText: (key) ->
     emptyTextKey = key + (if @isViewerProfile() then "Own" else "Other")
     renderedText = if _.isFunction(text = EmptyTabTexts[emptyTextKey]) then text() else text
@@ -190,27 +145,6 @@ module.exports = React.createClass
     else
       @renderEmptyTabText("insights")
 
-  renderInsightsNumber: ->
-    return null unless (insightsCount = @getInsightsCount()) > 0
-
-    <strong>{ insightsCount }</strong>
-
-  renderCompaniesNumber: ->
-    return null unless (companiesCount = @getCompaniesCount()) > 0
-
-    <strong>{ companiesCount }</strong>
-
-  renderTabName: (key) ->
-    switch key
-      when 'insights'
-        <span>Insights { @renderInsightsNumber() }</span>
-      when 'companies'
-        <span>Companies { @renderCompaniesNumber() }</span>
-      when 'feed'
-        "Feed"
-      when 'settings'
-        "Settings"
-
   renderContent: ->
     switch @state.currentTab
       when 'insights'
@@ -230,7 +164,11 @@ module.exports = React.createClass
       <header>
         <div className="cloud-columns cloud-columns-flex">
           <ProfileInfo uuid = { @props.uuid } />
-          { @renderMenu() }
+          <Tabs 
+            companiesNumber = { @getCompaniesNumber() }
+            insightsNumber  = { @getInsightsNumber() }
+            canEdit         = { @cursor.user.get('is_editable') }
+            onChange        = { @handleTabChange } />
         </div>
       </header>
       { @renderContent() }

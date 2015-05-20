@@ -22,6 +22,9 @@ module.exports = GlobalState.createStore
     'owner':
       fields: ['owner_id', 'owner_type']
 
+    'pinboard':
+      fields: 'pinboard_id'
+
 
   serverActions: ->
     'post:fetch-all:done': @populate
@@ -36,7 +39,7 @@ module.exports = GlobalState.createStore
 
 
   filterByPinboardId: (pinboard_id) ->
-    @cursor.items.deref(@empty).filter (item) -> item.get('pinboard_id') == pinboard_id
+    @byFK('pinboard', pinboard_id)
 
   filterByUserId: (user_id) ->
     @cursor.items.deref(@empty).filter (pin) -> pin.get('user_id') == user_id

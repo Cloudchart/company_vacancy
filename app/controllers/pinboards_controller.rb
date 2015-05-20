@@ -1,4 +1,5 @@
 class PinboardsController < ApplicationController
+  include FollowableController
 
   before_action :set_pinboard, only: [:show, :settings, :update, :destroy]
 
@@ -8,12 +9,14 @@ class PinboardsController < ApplicationController
 
   def index
     respond_to do |format|
+      format.html
       format.json
     end
   end
 
   def show
     respond_to do |format|
+      format.html
       format.json
     end
   end

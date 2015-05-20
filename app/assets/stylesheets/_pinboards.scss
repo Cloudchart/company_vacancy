@@ -1,3 +1,5 @@
+$pinboard-header-color: hsl(60, 10%, 96%);
+
 .pinboards-wrapper {
   width: 100%;
 
@@ -12,12 +14,62 @@
     width: 100%;
     text-align: center;
   }
+
+  > header {
+    font-size: 36px;
+    font-weight: 100;
+    line-height: 32px;
+    position: relative;
+    padding: $gutter-size $gutter-size;
+    padding-bottom: 0;
+    width: 100%;
+  }
 }
 
-.pinboards {
+.user-pinboards {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+  @include justify-content(stretch);
+
   background-color: $background-color;
-  margin: 0;
   padding: 0;
+
+  > .tab-header {
+    @include align-self(stretch);
+    @include display(flex);
+    @include flex-direction(column);
+    @include justify-content(stretch);
+
+    background-color: $pinboard-header-color;
+
+    > .cloud-columns {
+      @include flex-direction(column);
+
+      margin: 0 auto;
+      padding-bottom: 0;
+
+      > header {
+        @include align-items(center);
+        @include display(flex);
+        @include justify-content(space-between);
+
+        > h1 {
+          font-size: $huge-font-size;
+          font-weight: 300;
+          margin-right: 50px;
+        }
+
+        > .counters > li > .icon {
+          background-color: transparent;
+
+          > i {
+            color: $round-button-background-color;
+          }
+        }
+      }
+    }
+  }
 }
 
 .suggested-insights {
@@ -95,7 +147,7 @@ article.pinboards {
 
 
 @mixin pinboard-settings-access-rights-item {
-  color: hsl(0, 0%, 85%);
+  color: hsl(0, 0%, 73%);
   cursor: pointer;
   display: block;
   font-size: 16px;
@@ -179,6 +231,9 @@ form.pinboard-settings {
 
       @include align-items(center);
       @include display(flex);
+
+      background-color: transparent;
+      width: auto;
 
       label {
         @include pinboard-settings-access-rights-item;

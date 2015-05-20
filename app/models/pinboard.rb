@@ -5,7 +5,7 @@ class Pinboard < ActiveRecord::Base
   include Admin::Pinboard
 
   ACCESS_RIGHTS = [:public, :protected, :private].freeze
-  INVITABLE_ROLES = [:editor, :reader, :follower].freeze
+  INVITABLE_ROLES = [:editor, :reader].freeze
 
   validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
   validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }
@@ -17,10 +17,11 @@ class Pinboard < ActiveRecord::Base
   has_many :posts, through: :pins, source: :pinnable, source_type: 'Post'
   has_many :users, through: :roles
   has_many :tokens, as: :owner, dependent: :destroy
+  has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
 
   # Roles on Users
   #
-  { readers: [:reader, :editor], writers: :editor, followers: :follower }.each do |scope, role|
+  { readers: [:reader, :editor], writers: :editor }.each do |scope, role|
     has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, as: :owner, class_name: Role
     has_many :"#{scope}", through: :"#{scope}_pinboards_roles", source: :user
   end

@@ -13,7 +13,6 @@ RoleStore     = require('stores/role_store.cursor')
 
 # Components
 #
-UserRole = require('components/pinboards/settings/user_role')
 ModalStack = require('components/modal_stack')
 InviteForm = require('components/pinboards/invite_form')
 # Security = require('')
@@ -144,6 +143,7 @@ module.exports = React.createClass
 
   renderName: ->
     <input
+      className   = "cc-input"
       type        = "text"
       value       = { @state.attributes.get('title', '') }
       placeholder = "Please name the pinboard"
@@ -155,6 +155,7 @@ module.exports = React.createClass
 
   renderDescription: ->
     <input
+      className   = "cc-input"
       type        = "text"
       value       = { @state.attributes.get('description', '') }
       placeholder = "Please describe the pinboard"
@@ -166,10 +167,6 @@ module.exports = React.createClass
 
   renderInputs: ->
     <fieldset className="settings">
-
-      <header className="cloud">
-        Pinboard Settings
-      </header>
 
       <ul>
         <li className="name">
@@ -215,26 +212,5 @@ module.exports = React.createClass
         <form onSubmit={ @handleSubmit } className="pinboard-settings">
           { @renderInputs() }
         </form>
-
-        <div className="pinboard-security">
-          <h1> Security </h1>
-
-          <div className="owner">
-            <div className="person">
-              <div className="name">{ @state.owner.get('full_name') }</div>
-              <div className="email">{ @state.owner.get('email') }</div>
-            </div>
-            <div className="role">Owner</div>
-          </div>
-
-          <ul className="users">
-            { null }
-          </ul>
-
-          <button className="cc cc-wide" onClick={@handleinviteClick} disabled={false}>
-            Invite
-          </button>
-        </div>
-
       </section>
     </section>

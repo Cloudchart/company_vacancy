@@ -20,7 +20,7 @@ Human = require('components/human')
 module.exports = React.createClass
 
 
-  displayName: 'PinboardPreview'
+  displayName: 'Pinboard'
 
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
@@ -88,16 +88,23 @@ module.exports = React.createClass
 
   renderFooter: ->
     <footer>
-      <Human type="user" uuid={ @cursor.pinboard.get('user_id') } />
+      <Human 
+        type = "user"
+        uuid = { @cursor.pinboard.get('user_id') }
+        showLink = { false } />
 
       <ul className="counters">
         <li>
           { @cursor.pinboard.get('readers_count') }
-          <i className="fa fa-user" />
+          <span className="icon">
+            <i className="fa fa-male" />
+          </span>
         </li>
         <li>
           { @cursor.pinboard.get('pins_count') }
-          <i className="fa fa-thumb-tack" />
+          <span className="icon">
+            <i className="fa fa-thumb-tack" />
+          </span>
         </li>
       </ul>
     </footer>

@@ -15,7 +15,7 @@ BlockEditor     = require('components/editor/block_editor')
 Settings        = require('components/company/settings')
 AccessRights    = require('components/company/access_rights')
 StandardButton  = require('components/form/buttons').StandardButton
-CompanyNav      = require('components/company/main_nav')
+CompanyTabs     = require('components/company/tabs')
 
 # Main
 #
@@ -133,7 +133,7 @@ Component = React.createClass
         readOnly = { @state.currentTab isnt 'settings' }
       />
 
-      <CompanyNav 
+      <CompanyTabs 
         onChange = { @handleNavChange }
         canEdit = { @state.canEdit }
       />

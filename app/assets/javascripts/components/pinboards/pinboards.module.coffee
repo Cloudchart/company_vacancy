@@ -1,11 +1,11 @@
 # @cjsx React.DOM
 
-GlobalState   = require('global_state/state')
+GlobalState       = require('global_state/state')
 
 
 # Stores
 #
-PinboardStore   = require('stores/pinboard_store')
+PinboardStore     = require('stores/pinboard_store')
 
 
 # Components
@@ -13,7 +13,7 @@ PinboardStore   = require('stores/pinboard_store')
 PinboardComponent  = require('components/pinboards/pinboard')
 
 
-MasonryMixin       = require('utils/masonry_mixin')
+NodeRepositioner   = require('utils/node_repositioner')
 
 
 # Exports
@@ -23,30 +23,23 @@ module.exports = React.createClass
 
   displayName: 'Pinboards'
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin, Masonrymixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin, NodeRepositioner.mixin]
 
   statics:
 
     queries:
 
-      viewer_pinboards: ->
+      pinboards: ->
         """
           Viewer {
             pinboards {
               #{PinboardComponent.getQuery('pinboard')}
             },
 
-            readable_pinboards {
-              #{PinboardComponent.getQuery('pinboard')}
-            }
-          }
-        """
-
-      user_pinboards: ->
-        """
-          User {
-            pinboards {
-              #{PinboardComponent.getQuery('pinboard')}
+            roles {
+              pinboard {
+                #{PinboardComponent.getQuery('pinboard')}
+              }
             }
           }
         """
@@ -57,27 +50,28 @@ module.exports = React.createClass
   getDefaultProps: ->
     uuid: null
 
-  fetch: ->
-    if @props.uuid
-      promise = GlobalState.fetch(@getQuery('user_pinboards'), id: @props.uuid)
-    else
-      promise = GlobalState.fetch(@getQuery('viewer_pinboards'))
+  getInitialState: ->
+    loaders: Immutable.Map()
 
-    promise.then =>
+  fetch: ->
+    GlobalState.fetch(@getQuery('pinboards')).then =>
       @setState
         loaders: @state.loaders.set('pinboards', true)
-
 
   isLoaded: ->
     @state.loaders.get('pinboards')
 
 
+  # Helpers
+  #
   gatherPinboards: ->
     @cursor.pinboards
       .sortBy (item) -> item.get('title')
       .valueSeq()
 
 
+  # Lifecyle methods
+  #
   componentWillMount: ->
     @cursor =
       pinboards: PinboardStore.cursor.items
@@ -85,23 +79,18 @@ module.exports = React.createClass
     @fetch() unless @isLoaded()
 
 
-  getInitialState: ->
-    loaders: Immutable.Map()
-
-
+  # Renderers
+  #
   renderPinboard: (pinboard) ->
     <section className="cloud-column" key={ pinboard.get('uuid') }>
       <PinboardComponent uuid={ pinboard.get('uuid') } />
     </section>
-
 
   renderPinboards: ->
     @gatherPinboards().map(@renderPinboard)
 
 
   render: ->
-    return null unless @isLoaded()
-
     <section className="pinboards cloud-columns cloud-columns-flex">
       { @renderPinboards().toArray() }
     </section>
