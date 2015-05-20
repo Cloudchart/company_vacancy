@@ -335,7 +335,12 @@ ul.round-buttons {
   }
 
   &.active {
-    background-color: $round-button-background-color-active;
+    background-color: transparent;
+    color: $round-button-background-color-active;
+
+    > i {
+      color: $round-button-background-color-active;
+    }
   }
   
   &.disabled {
