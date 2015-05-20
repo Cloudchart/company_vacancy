@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150512115457) do
+ActiveRecord::Schema.define(version: 20150520134429) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -399,14 +399,17 @@ ActiveRecord::Schema.define(version: 20150512115457) do
   add_index "quotes", ["owner_id", "owner_type"], name: "index_quotes_on_owner_id_and_owner_type", using: :btree
 
   create_table "roles", primary_key: "uuid", force: true do |t|
-    t.string   "value",                 null: false
-    t.string   "user_id",    limit: 36, null: false
-    t.string   "owner_id",   limit: 36
+    t.string   "value",                    null: false
+    t.string   "user_id",       limit: 36, null: false
+    t.string   "owner_id",      limit: 36
     t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "author_id",     limit: 36
+    t.string   "pending_value"
   end
 
+  add_index "roles", ["author_id"], name: "index_roles_on_author_id", using: :btree
   add_index "roles", ["owner_id", "owner_type"], name: "index_roles_on_owner_id_and_owner_type", using: :btree
   add_index "roles", ["user_id", "owner_id"], name: "index_roles_on_user_id_and_owner_id", unique: true, using: :btree
   add_index "roles", ["user_id"], name: "index_roles_on_user_id", using: :btree
