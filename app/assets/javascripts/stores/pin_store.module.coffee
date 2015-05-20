@@ -58,7 +58,7 @@ module.exports = GlobalState.createStore
   filterPinsForUser: (user_id, onlyInsights=false) ->
     @byFK('user', user_id)
       .filter (pin) =>
-        pin.get('pinnable_id') &&
+        pin.get('pinnable_id') && !pin.get('is_suggestion') &&
         (!onlyInsights || pin.get('content') || pin.get('parent_id'))
 
   filterRepinsForUser: (user_id) ->
