@@ -95,6 +95,9 @@ module.exports = React.createClass
   isClickable: ->
     @props.pinnable_id || @currentUserRepin() || @currentUserPin()
 
+  isActive: ->
+    !!@state.currentUserPin || !!@state.currentUserRepin
+
 
   # Handlers
   #
@@ -132,9 +135,14 @@ module.exports = React.createClass
       onCancel      = { Modal.hide } />
 
   renderCounter: ->
-    return null unless (count = @getCount()) > 0
+    return null unless (count = @getCount()) > 0 && @isActive()
 
     <span>{ count }</span>
+
+  renderText: ->
+    return null if @isActive()
+
+    "Save"
 
   renderHotzone: ->
     return null unless @props.showHotzone && !@state.clicked
@@ -146,8 +154,8 @@ module.exports = React.createClass
     return null unless @props.cursor.user.get('uuid') && @props.cursor.user.get('twitter')
 
     classList = cx
-      active:         !!@state.currentUserPin or !!@state.currentUserRepin
-      'with-counter': (@getCount() > 0)
+      active:         @isActive()
+      'with-content': true
       'pin-button':   true
       'disabled':     !@isClickable()
 
@@ -155,6 +163,7 @@ module.exports = React.createClass
       <li className={ classList } onClick={ @handleClick }>
         <i className="fa fa-thumb-tack" />
         { @renderCounter() }
+        { @renderText() }
         { @renderHotzone() }
       </li>
     else

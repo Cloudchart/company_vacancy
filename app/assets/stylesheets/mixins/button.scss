@@ -325,15 +325,20 @@ $round-button-size: 24px;
   position: relative;
   text-align: center;
 
-  &.with-counter {
+  &.with-content {
     border-radius: $round-button-size;
     min-width: $round-button-size;
     padding: 0 7px;
+    text-transform: uppercase;
     width: auto;
   }
 
   &.disabled {
     cursor: default;
+  }
+
+  &.pin-button {
+    background-color: $round-button-background-color-active;
   }
 
   &.active {

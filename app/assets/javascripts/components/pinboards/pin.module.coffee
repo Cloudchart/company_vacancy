@@ -38,6 +38,7 @@ module.exports = React.createClass
     uuid:          React.PropTypes.string.isRequired
     onClick:       React.PropTypes.func
     showHotzone:   React.PropTypes.bool
+    showAuthor:    React.PropTypes.bool
 
   statics:
 
@@ -63,6 +64,10 @@ module.exports = React.createClass
             }
           }
         """
+
+  getDefaultProps: ->
+    showAuthor:  true
+    showHotzone: false
 
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
@@ -121,32 +126,27 @@ module.exports = React.createClass
     <PinButton {...@gatherPinAttributes(insight)} showHotzone = { @props.showHotzone } />
 
   renderInsightControls: (insight) ->
-
     <ul className="round-buttons">
       { @renderEditButton() }
       { @renderPinButton() }
     </ul>
 
-  renderPinContent: (content, className = 'paragraph') ->
-    return null unless content
-
-    <p className={ className } dangerouslySetInnerHTML={ __html: content } />
-
   renderInsight: ->
     return unless insight = @getInsight()
 
     <article className="insight">
-      <InsightContent
-        pinnable_id = { @cursor.pin.get('pinnable_id') }
-        pin_id      = { insight.get('uuid') }  />
+      <header>
+        { @renderInsightControls(insight) }
+        <InsightContent
+          pinnable_id = { @cursor.pin.get('pinnable_id') }
+          pin_id      = { insight.get('uuid') }  />
+      </header>
 
       <Human
         showUnicornIcon = { true }
         showLink        = { !@isClickable() }
         type            = "user"
         uuid            = { insight.get('user_id') } />
-
-      { @renderInsightControls(insight) }
     </article>
 
   renderPinnablePreviewOrInsight: ->
@@ -155,14 +155,33 @@ module.exports = React.createClass
     else
       <PinnablePreview uuid={ @props.uuid } />
 
+  renderCommentContent: ->
+    return null unless content = @cursor.pin.get('content')
+
+    <span dangerouslySetInnerHTML={ __html: content } />
+
+  renderCommentAuthor: ->
+    return null unless @props.showAuthor
+
+    <Human 
+      showLink   = { false }
+      isOneLiner = { true }
+      type       = "user"
+      uuid       = { @cursor.pin.get('user_id') } />
+
   renderComment: ->
-    return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid)
+    return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid) || 
+      (!@cursor.pin.get('content') && !@props.showAuthor)
 
     <footer>
-      { @renderPinContent(@cursor.pin.get('content')) }
       <i className="fa fa-share" />
-      <Human type="user" uuid={ @cursor.pin.get('user_id') } />
+      <p>
+        { @renderCommentContent() }
+        { " — " if @renderCommentContent() && @renderCommentAuthor() }
+        { @renderCommentAuthor() }
+      </p>
     </footer>
+
 
   render: ->
     return null unless @cursor.pin.deref(false) && @cursor.user.deref(false)

@@ -47,6 +47,7 @@ module.exports = React.createClass
     showOccupation:  React.PropTypes.bool
     showLink:        React.PropTypes.bool
     showUnicornIcon: React.PropTypes.bool
+    isOneLiner:      React.PropTypes.bool
     type:            React.PropTypes.string
 
   getDefaultProps: ->
@@ -55,6 +56,7 @@ module.exports = React.createClass
       roles:           RoleStore.cursor.items
       showUnicornIcon: false
     showOccupation:    true
+    isOneLiner:        false
     showLink:          true
 
   fetch: ->
@@ -84,6 +86,16 @@ module.exports = React.createClass
 
     @fetch() unless @cursor.deref(false) if props.uuid
 
+  getName: ->
+    @cursor.get('full_name')
+
+  getOccupation: ->
+    strings = []
+    strings.push occupation if (occupation = @cursor.get('occupation'))
+    strings.push company if (company = @cursor.get('company'))
+
+    strings.join(', ')
+
 
   # Lifecycle methods
   #
@@ -93,6 +105,7 @@ module.exports = React.createClass
   componentWillReceiveProps: (newProps) ->
     if !@props.uuid != newProps.uuid
       @updateCursor(newProps)   
+
 
   # Renderers
   #
@@ -120,19 +133,14 @@ module.exports = React.createClass
 
   renderName: ->
     <p className="name">
-      { @renderTextWithIcon(@cursor.get('full_name'), @renderUnicornIcon()) }
+      { @renderTextWithIcon(@getName(), @renderUnicornIcon()) }
     </p>
 
   renderOccupation: ->
     return null unless @props.showOccupation
+    return null unless (occupation = @getOccupation())
 
-    strings = []
-    strings.push occupation if (occupation = @cursor.get('occupation'))
-    strings.push company if (company = @cursor.get('company'))
-
-    return null unless strings.length > 0
-
-    <p className="occupation">{ strings.join(', ') }</p>
+    <p className="occupation">{ occupation }</p>
 
   renderCredentials: ->
     <section className="credentials">
@@ -144,13 +152,22 @@ module.exports = React.createClass
   render: ->
     return null unless @cursor.deref(false) && @props.cursor.currentUser.deref(false)
 
-    if (link = @getLink())
-      <a className="human for-group" href={ link }>
-        { @renderAvatar() }
-        { @renderCredentials() }
-      </a>
+    if @props.isOneLiner
+      <span className="human">
+        <strong>
+          { @getName() }
+          { ", " if @getOccupation() } 
+        </strong>
+        <span className="occupation">{ @getOccupation() }</span>
+      </span>
     else
-      <div className="human">
-        { @renderAvatar() }
-        { @renderCredentials() }
-      </div>
+      if (link = @getLink())
+        <a className="human for-group" href={ link }>
+          { @renderAvatar() }
+          { @renderCredentials() }
+        </a>
+      else
+        <div className="human">
+          { @renderAvatar() }
+          { @renderCredentials() }
+        </div>

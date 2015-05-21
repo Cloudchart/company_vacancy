@@ -132,58 +132,59 @@ ul.insight-list,
     opacity: 0.7;
   }
 
-  > .round-buttons {
-    @include position(absolute, $default-margin-size $default-margin-size null null);
-  }
-
-  > .human {
-    @include align-items(center);
+  > header {
     @include display(flex);
+    @include justify-content(space-between);
 
-    margin-bottom: $default-margin-size;
-
-    > figure {
-      background-color: #eee;
-      background-size: cover;
-      background-position: center center;
-      border-radius: 50%;
-      height: 50px;
-      margin-right: $inner-margin-size;
-      position: relative;
-      width: 50px;
-
-      > figcaption {
-        @include position(absolute, 50% null null 50%);
-        @include transform(translateX(-50%) translateY(-50%));
-
-        color: hsl(0, 100%, 100%);
-        font-size: $basic-font-size;
-      }
-    }
-
-    > section {
+    > .human {
+      @include align-items(center);
+      @include display(flex);
       @include flex(1);
 
-      margin-top: 5px;
+      margin-bottom: $default-margin-size;
 
-      > p {
-        margin: 0;
+      > figure {
+        background-color: #eee;
+        background-size: cover;
+        background-position: center center;
+        border-radius: 50%;
+        height: 50px;
+        margin-right: $inner-margin-size;
+        position: relative;
+        width: 50px;
 
-        &.name {
-          color: hsl(135, 50%, 50%);
-          font-size: $big-font-size;
-          font-weight: 600;
-          padding-right: 90px;
+        > figcaption {
+          @include position(absolute, 50% null null 50%);
+          @include transform(translateX(-50%) translateY(-50%));
 
-          .last-part {
-            display: inline-block;
-          }
+          color: hsl(0, 100%, 100%);
+          font-size: $basic-font-size;
         }
+      }
 
-        &.occupation {
-          color: $secondary-text-color;
-          font-size: 16px;
-          font-weight: 300;
+      > section {
+        @include flex(1);
+
+        margin-top: 5px;
+
+        > p {
+          margin: 0;
+
+          &.name {
+            color: hsl(135, 50%, 50%);
+            font-size: $big-font-size;
+            font-weight: 600;
+
+            .last-part {
+              display: inline-block;
+            }
+          }
+
+          &.occupation {
+            color: $secondary-text-color;
+            font-size: 16px;
+            font-weight: 300;
+          }
         }
       }
     }
