@@ -3,7 +3,7 @@
 # Imports
 #
 CompanyActions    = require('actions/company')
-RoleMap           = require('utils/role_map')
+RoleMap           = require('utils/role_map').Company
 Typeahead         = require('components/form/typeahead')
 Field             = require('components/form/field')
 

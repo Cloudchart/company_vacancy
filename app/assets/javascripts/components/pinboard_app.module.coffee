@@ -7,12 +7,14 @@ GlobalState     = require('global_state/state')
 PinboardStore   = require('stores/pinboard_store')
 UserStore       = require('stores/user_store.cursor')
 PinStore        = require('stores/pin_store')
+RoleStore       = require('stores/role_store.cursor')
 FavoriteStore   = require('stores/favorite_store.cursor')
 
 
 # Components
 #
 PinboardSettings = require('components/pinboards/settings')
+PinboardRoles    = require('components/pinboards/roles')
 PinboardPins     = require('components/pinboards/pins/pinboard')
 PinboardTabs     = require('components/pinboards/tabs')
 SyncButton       = require('components/form/buttons').SyncButton
@@ -46,6 +48,7 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
+            roles,
             favorites
           }
         """
@@ -58,6 +61,7 @@ module.exports = React.createClass
       pinboards: PinboardStore.cursor.items
       pins:      PinStore.cursor.items
       favorites: FavoriteStore.cursor.items
+      roles:     RoleStore.cursor.items
       viewer:    UserStore.me()
 
   getInitialState: ->
@@ -83,8 +87,11 @@ module.exports = React.createClass
   getOwner: ->
     UserStore.cursor.items.get(@getPinboard().get('user_id'))
 
+  getViewerId: ->
+    @props.cursor.viewer.get('uuid')
+
   getFavorite: ->
-    FavoriteStore.findByPinboardForUser(@props.uuid, @props.cursor.viewer.get('uuid'))
+    FavoriteStore.findByPinboardForUser(@props.uuid, @getViewerId())
 
   getInsightsNumber: ->
     count = PinStore
@@ -92,6 +99,16 @@ module.exports = React.createClass
       .filter (pin) ->
         pin.get('pinnable_id') && (pin.get('parent_id') || pin.get('content'))
       .size
+
+  isViewerOwner: ->
+    @getOwner().get('uuid') == @getViewerId()
+
+  isViewerEditor: ->
+    (role = RoleStore.rolesOnOwnerForUser(@getPinboard.get('uuid'), 'Pinboard', @getViewerId()).first()) && 
+    role.get('value') == 'editor'
+
+  canViewerEdit: ->
+    @isViewerOwner() || @isViewerEditor()
 
 
   # Handlers
@@ -155,6 +172,8 @@ module.exports = React.createClass
         <PinboardPins pinboard_id = { @props.uuid } />
       when 'settings'
         <PinboardSettings uuid = { @props.uuid } />
+      when 'users'
+        <PinboardRoles uuid = { @props.uuid } />
       else
         null
 
@@ -168,6 +187,7 @@ module.exports = React.createClass
           { @renderHeader() }
           <PinboardTabs
             insightsNumber = { @getInsightsNumber() }
+            canEdit        = { @canViewerEdit() }
             onChange       = { @handleTabChange } />
         </div>
       </section>

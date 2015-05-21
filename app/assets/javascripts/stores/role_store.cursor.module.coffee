@@ -58,8 +58,20 @@ module.exports = GlobalState.createStore
   #     item.get('owner_type')  == owner_type         and
   #     item.get('user_id')     == user.get('uuid')
 
-  roles_on_owner_for_user: (owner, owner_type, user) ->
+  rolesOnOwnerForUser: (owner, owner_type, user) ->
     @byFK('user', user.get('uuid'))
       .filter (item) ->
         item.get('owner_id')    == owner.get('uuid') and
         item.get('owner_type')  == owner_type
+
+  accept: (id) ->
+    item = @cursor.items.get(id)
+
+    return false unless item
+    @syncAPI.accept(item).then @updateDone, @updateFail
+
+  decline: (id) ->
+    item = @cursor.items.get(id)
+
+    return false unless item
+    @syncAPI.decline().then @destroyDone, @destroyFail

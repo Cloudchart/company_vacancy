@@ -19,7 +19,12 @@ MainComponent = React.createClass
 
   propTypes:
     insightsNumber:  React.PropTypes.number
+    canEdit:         React.PropTypes.bool
     onChange:        React.PropTypes.func.isRequired
+
+  getDefaultProps: ->
+    insightsNumber: null
+    canEdit:        false
 
 
   # Helpers
@@ -27,7 +32,8 @@ MainComponent = React.createClass
   getVisibleTabs: ->
     Immutable.OrderedMap(
       insights:  true
-      settings:  true
+      users:     @props.canEdit
+      settings:  @props.canEdit
     ).filter (visible) -> visible
      .keySeq()
 
@@ -43,6 +49,8 @@ MainComponent = React.createClass
     switch key
       when 'insights'
         <span>Insights { @renderInsightsNumber() }</span>
+      when 'users'
+        "Users"
       when 'settings'
         "Settings"
 

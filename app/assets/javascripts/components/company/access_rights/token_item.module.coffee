@@ -7,7 +7,7 @@ TokenStore                = require('stores/token_store')
 Buttons                   = require('components/form/buttons')
 SyncButton                = Buttons.SyncButton
 CancelButton              = Buttons.CancelButton
-RoleMap                   = require('utils/role_map')
+RoleMap                   = require('utils/role_map').Company
 
 # Main
 #

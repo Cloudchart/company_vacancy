@@ -3,7 +3,7 @@
 # Imports
 #
 GlobalState     = require('global_state/state')
-RoleMap         = require('utils/role_map').Company
+RoleMap         = require('utils/role_map')
 
 RoleActions     = require('actions/roles')
 
@@ -59,8 +59,8 @@ Component = React.createClass
         {
           if @state.role.value isnt 'owner'
             <CancelButton
-              sync      = {@state.sync is "delete"}
-              onClick   = {@onRevokeButtonClick} 
+              sync      = { @state.sync is "delete" }
+              onClick   = { @onRevokeButtonClick } 
             />
         }
       </td>
