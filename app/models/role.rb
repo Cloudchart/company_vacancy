@@ -6,7 +6,7 @@ class Role < ActiveRecord::Base
   after_create  :clean_user_owner_associations, if: -> { owner_type == 'Company' }
 
   belongs_to :user
-  belongs_to :author
+  belongs_to :author, class_name: User.name
   belongs_to :owner, polymorphic: true
 
   belongs_to :pinboard, foreign_key: :owner_id, foreign_type: Pinboard

@@ -53,11 +53,13 @@ module.exports =
       dataType: 'json'
 
 
-  request_access: (item) ->
+  request_access: (item, message) ->
     Promise.resolve $.ajax
       url:        "/pinboards/#{item.get('uuid')}/invites"
       type:       "POST"
       dataType:   "json"
+      data:
+        message: message
 
 
   grant_access: (item, token, role) ->

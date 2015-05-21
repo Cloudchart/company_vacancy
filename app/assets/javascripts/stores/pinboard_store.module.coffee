@@ -5,8 +5,9 @@ SyncAPI = require('sync/pinboard_sync_api')
 
 # Stores
 #
-RoleStore = require('stores/role_store.cursor')
-UserStore = require('stores/user_store.cursor')
+RoleStore   = require('stores/role_store.cursor')
+UserStore   = require('stores/user_store.cursor')
+TokenStore  = require('stores/token_store.cursor')
 
 
 # Utils
@@ -79,6 +80,26 @@ module.exports = GlobalState.createStore
     filterUsersForRole(id, 'follower')
 
 
-  sendInvite: (item, attributes = {}, options = {}) ->
-    SyncAPI.sendInvite(item, attributes, options)
+  # sendInvite: (item, attributes = {}, options = {}) ->
+  #   SyncAPI.sendInvite(item, attributes, options)
 
+  requestAccess: (item, message) ->
+    SyncAPI
+      .request_access(item, message)
+      .done (json) =>
+        TokenStore.fetchOne(json.id)
+
+
+  grantAccess: (item, token, role) ->
+    SyncAPI
+      .grant_access(item, token, role)
+      .done (json) ->
+        TokenStore.cursor.items.remove(json.token_id)
+        RoleStore.fetchOne(json.role_id)
+
+
+  denyAccess: (item, token) ->
+    SyncAPI
+      .deny_access(item, token)
+      .done =>
+        TokenStore.cursor.items.remove(token.get('uuid'))
