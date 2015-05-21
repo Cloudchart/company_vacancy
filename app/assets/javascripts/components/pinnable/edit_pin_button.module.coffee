@@ -71,6 +71,6 @@ module.exports = React.createClass
     return null unless UserStore.isEditor()
     return null unless @isUnicornPin()
 
-    <li onClick={ @handleClick }>
+    <li onClick={ @handleClick } className="edit-pin-button" >
       <i className="fa fa-pencil" />
     </li>

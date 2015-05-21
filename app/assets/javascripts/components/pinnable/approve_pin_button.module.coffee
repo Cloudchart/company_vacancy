@@ -91,7 +91,7 @@ MainComponent = React.createClass
   render: ->
     return null unless @isLoaded() and !@cursor.pin.get('is_approved') and UserStore.isEditor()
 
-    <li>
+    <li className="approve-pin-button">
       <SyncButton
         className = "transparent"
         onClick   = { @handleModerateClick }

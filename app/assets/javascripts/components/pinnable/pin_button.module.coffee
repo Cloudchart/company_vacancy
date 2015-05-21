@@ -148,6 +148,7 @@ module.exports = React.createClass
     classList = cx
       active:         !!@state.currentUserPin or !!@state.currentUserRepin
       'with-counter': (@getCount() > 0)
+      'pin-button':   true
       'disabled':     !@isClickable()
 
     unless @props.asTextButton
