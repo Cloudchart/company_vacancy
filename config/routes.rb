@@ -83,10 +83,12 @@ Cloudchart::Application.routes.draw do
 
     resources :roles, only: [:update, :destroy]
 
-    resources :invites, only: [:show, :create, :destroy], controller: 'pinboards/invites' do
-      match :resend, on: :member, via: [:put, :patch]
-      post :accept, on: :member
-    end
+    resources :invites, only: [:show, :create, :update, :destroy], controller: 'pinboards/invites'
+
+    # resources :invites, only: [:show, :create, :destroy], controller: 'pinboards/invites' do
+    #   match :resend, on: :member, via: [:put, :patch]
+    #   post :accept, on: :member
+    # end
   end
 
   resources :pins, except: [:index] do
