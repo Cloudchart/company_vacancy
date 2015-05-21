@@ -56,8 +56,12 @@ $pinboard-header-color: hsl(60, 10%, 96%);
 
         > h1 {
           font-size: $huge-font-size;
-          font-weight: 300;
+          font-weight: 600;
+          line-height: 44px;
+          margin: 0;
           margin-right: 50px;
+
+          max-width: 50%;
         }
 
         > .counters > li > .icon {
@@ -65,6 +69,14 @@ $pinboard-header-color: hsl(60, 10%, 96%);
 
           > i {
             color: $round-button-background-color;
+          }
+        }
+
+        > .cc {
+          height: 40px;
+
+          > div {
+            padding: 20px;
           }
         }
       }
@@ -150,8 +162,9 @@ article.pinboards {
   color: hsl(0, 0%, 73%);
   cursor: pointer;
   display: block;
-  font-size: 16px;
-  line-height: 15px;
+  font-size: $big-font-size;
+  font-weight: 400;
+  line-height: 1.43;
   position: relative;
 
   input {
@@ -228,12 +241,13 @@ form.pinboard-settings {
     }
 
     .access-rights {
-
       @include align-items(center);
       @include display(flex);
+      @include justify-content(space-between);
 
       background-color: transparent;
-      width: auto;
+      padding: 0;
+      width: 100%;
 
       label {
         @include pinboard-settings-access-rights-item;

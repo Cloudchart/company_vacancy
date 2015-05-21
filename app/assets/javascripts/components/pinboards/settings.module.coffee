@@ -27,8 +27,8 @@ Fields = Immutable.Seq(['title', 'description', 'access_rights'])
 #
 AccessRights = Immutable.Seq
   public:     'Open to everyone'
-  protected:  'Invite-only group'
-  private:    'Private group'
+  protected:  'Invite-only'
+  private:    'Private'
 
 
 # Exports
@@ -149,8 +149,7 @@ module.exports = React.createClass
       placeholder = "Please name the pinboard"
       onChange    = { @handleChange.bind(null, 'title') }
       onBlur      = { @handleBlur }
-      onKeyDown   = { @handleKeyDown }
-    />
+      onKeyDown   = { @handleKeyDown } />
 
 
   renderDescription: ->
@@ -161,8 +160,7 @@ module.exports = React.createClass
       placeholder = "Please describe the pinboard"
       onChange    = { @handleChange.bind(null, 'description') }
       onBlur      = { @handleBlur }
-      onKeyDown   = { @handleKeyDown }
-    />
+      onKeyDown   = { @handleKeyDown } />
 
 
   renderInputs: ->
@@ -190,8 +188,7 @@ module.exports = React.createClass
         type      = "radio"
         value     = { key }
         onChange  = { @handleAccessRightsChange }
-        checked   = { @state.attributes.get('access_rights') == key }
-      />
+        checked   = { @state.attributes.get('access_rights') == key } />
       <span>
         { title }
       </span>

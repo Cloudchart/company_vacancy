@@ -136,7 +136,7 @@ module.exports = React.createClass
   renderHeader: ->
     <header>
       <h1>
-        { @getPinboard().get('title') } <strong>by</strong> <a href={ @getOwner().get('user_url') }>{ @getOwner().get('full_name') }</a>
+        { @getPinboard().get('title') } — <a href={ @getOwner().get('user_url') }>{ @getOwner().get('full_name') }</a>
       </h1>
       <ul className="counters">
         <li>
@@ -146,9 +146,7 @@ module.exports = React.createClass
           </span>
         </li>
       </ul>
-      <div className="follow-button">
-        { @renderFollowButton() }
-      </div>
+      { @renderFollowButton() }
     </header>
       
   renderContent: ->
