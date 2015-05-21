@@ -36,7 +36,7 @@ class InvitesController < ApplicationController
 
     if @email_template.valid?
       UserMailer.custom_invite(@user, @email_template, current_user).deliver
-      Activity.track(current_user, 'email_invite', @user, data: { 
+      Activity.track(current_user, 'email_invite', @user, data: {
         subject: @email_template.subject,
         body:    @email_template.body,
         email:   @email_template.email

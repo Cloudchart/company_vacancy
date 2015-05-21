@@ -80,6 +80,7 @@ Cloudchart::Application.routes.draw do
 
   resources :pinboards, concerns: [:followable] do
     get :settings, on: :member
+
     resources :roles, only: [:update, :destroy]
 
     resources :invites, only: [:show, :create, :destroy], controller: 'pinboards/invites' do
@@ -116,7 +117,11 @@ Cloudchart::Application.routes.draw do
   resources :visibilities, only: :update
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
-  resources :roles, only: [:update, :destroy]
+
+  resources :roles, only: [:create, :update, :destroy] do
+    match :accept, on: :member, via: [:put, :patch]
+  end
+
   resources :tokens, only: :show
   resources :limbo, only: :index
   resources :landings, only: [:show, :update, :destroy]
