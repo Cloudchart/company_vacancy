@@ -1,6 +1,15 @@
 class RolesController < ApplicationController
   load_and_authorize_resource
 
+
+
+  def create
+    @role         = Role.build(role_create_params)
+    @role.author  = current_user
+  end
+
+
+
   def update
     @role.update!(role_params)
 
@@ -25,6 +34,10 @@ class RolesController < ApplicationController
   end
 
 private
+
+  def role_create_params
+    params.require(:role).permit(:user_id, :value, :owner_id, :owner_type)
+  end
 
   def role_params
     params.require(:role).permit(:value)

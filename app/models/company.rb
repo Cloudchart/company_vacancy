@@ -7,8 +7,9 @@ class Company < ActiveRecord::Base
   include Tire::Model::Callbacks
   include Admin::Company
 
-  INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
-  ROLES = ([:owner] + INVITABLE_ROLES).freeze
+  INVITABLE_ROLES   = [:editor, :trusted_reader, :public_reader].freeze
+  ROLES             = ([:owner] + INVITABLE_ROLES).freeze
+  ACCESS_ROLE       = :public_reader
 
   after_save do
     update(is_name_in_logo: false) if logotype.blank? && is_name_in_logo?
