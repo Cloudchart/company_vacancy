@@ -13,7 +13,7 @@ module.exports = GlobalState.createStore
 
   filterInvites: (type) ->
     @cursor.items.filter (token) ->
-      token.get('owner_type') == type && 
+      token.get('owner_type') == type &&
       token.get('name') == 'invite'
 
   filterCompanyInvites: ->
@@ -61,4 +61,4 @@ module.exports = GlobalState.createStore
     promise
 
   destroyDone: (json) ->
-    @cursor.items.remove(json.id)
+    @remove(json.id)

@@ -116,7 +116,7 @@ module.exports = React.createClass
     @fetch() unless @isLoaded()
 
   handleFollowClick: ->
-    # TODO 
+    # TODO
     # make the united Follow Sync API
 
     @setState(isSyncing: true)
@@ -124,8 +124,7 @@ module.exports = React.createClass
     if favorite = @getFavorite()
       SyncApi.unfollow(@props.uuid).then =>
         favoriteId = favorite.get('uuid')
-        FavoriteStore.cursor.items.remove(favoriteId)
-        FavoriteStore.cleanupIndices(favoriteId)
+        FavoriteStore.remove(favoriteId)
         @setState(isSyncing: false)
     else
       SyncApi.follow(@props.uuid).then =>
@@ -137,7 +136,7 @@ module.exports = React.createClass
   renderFollowButton: ->
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
-    <SyncButton 
+    <SyncButton
       className         = "cc"
       onClick           = { @handleFollowClick }
       text              = { text }
@@ -160,7 +159,7 @@ module.exports = React.createClass
       </ul>
       { @renderFollowButton() }
     </header>
-      
+
   renderContent: ->
     switch @state.currentTab
       when 'insights'

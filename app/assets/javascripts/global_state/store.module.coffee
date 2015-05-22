@@ -86,6 +86,9 @@ class BaseStore
       if currItem.get('--part--') is true
         return @cursor.items.set(item.uuid, item)
 
+  remove: (id) ->
+    @cleanupIndices(json.id)
+    @cursor.items.remove(json.id)
 
   #
   #
@@ -220,8 +223,7 @@ class BaseStore
 
 
   destroyDone: (json) ->
-    @cleanupIndices(json.id)
-    @cursor.items.remove(json.id)
+    @remove(json.id)
 
 
 # Register dispatcher

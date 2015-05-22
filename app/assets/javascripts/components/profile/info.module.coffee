@@ -49,7 +49,7 @@ module.exports  = React.createClass
     uuid:     React.PropTypes.string.isRequired
 
   getDefaultProps: ->
-    cursor: 
+    cursor:
       users:     UserStore.cursor.items
       favorites: FavoriteStore.cursor.items
 
@@ -94,8 +94,8 @@ module.exports  = React.createClass
     companiesIds = CompanyStore.filterForUser(@props.uuid).map (company) -> company.get('uuid')
 
     people = PersonStore
-      .filter (person) => 
-        person.get('is_verified') && companiesIds.contains(person.get('company_id')) && 
+      .filter (person) =>
+        person.get('is_verified') && companiesIds.contains(person.get('company_id')) &&
         person.get('twitter') == @cursor.user.get('twitter')
 
   getOccupations: ->
@@ -122,18 +122,17 @@ module.exports  = React.createClass
 
   handleSubmitDone: ->
     GlobalState.fetch(@getQuery("fetching_user"), force: true, id: @props.uuid)
-    
+
   handleFollowClick: ->
     @setState(isSyncing: true)
 
     if favorite = @getFavorite()
       SyncApi.unfollow(@props.uuid).then =>
         favoriteId = favorite.get('uuid')
-        FavoriteStore.cursor.items.remove(favoriteId)
-        FavoriteStore.cleanupIndices(favoriteId)
+        FavoriteStore.remove(favoriteId)
         @setState(isSyncing: false)
     else
-      SyncApi.follow(@props.uuid).then => 
+      SyncApi.follow(@props.uuid).then =>
         # TODO rewrite with grabbing only needed favorite
         @fetchViewer(force: true).then => @setState(isSyncing: false)
 
@@ -141,7 +140,7 @@ module.exports  = React.createClass
   # Lifecycle methods
   #
   componentWillMount: ->
-    @cursor = 
+    @cursor =
       user:   UserStore.cursor.items.cursor(@props.uuid)
       viewer: UserStore.me()
 
@@ -155,7 +154,7 @@ module.exports  = React.createClass
 
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
-    <SyncButton 
+    <SyncButton
       className         = "cc follow-button"
       onClick           = { @handleFollowClick }
       text              = { text }

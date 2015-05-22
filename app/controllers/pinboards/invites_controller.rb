@@ -42,7 +42,7 @@ module Pinboards
       token.destroy
 
       respond_to do |format|
-        format.json { render json: {} }
+        format.json { render json: { id: token.id } }
       end
     end
 

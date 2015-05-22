@@ -94,7 +94,7 @@ module.exports = GlobalState.createStore
     SyncAPI
       .grant_access(item, token, role)
       .done (json) ->
-        TokenStore.cursor.items.remove(json.token_id)
+        TokenStore.remove(json.token_id)
         RoleStore.fetchOne(json.role_id)
 
 
@@ -102,4 +102,4 @@ module.exports = GlobalState.createStore
     SyncAPI
       .deny_access(item, token)
       .done =>
-        TokenStore.cursor.items.remove(token.get('uuid'))
+        TokenStore.remove(token.get('uuid'))

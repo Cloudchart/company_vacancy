@@ -87,13 +87,13 @@ module.exports  = React.createClass
 
   getEmailUserTokens: ->
     @props.cursor.tokens.filter (token) =>
-      token.get('name') == 'email_verification' && 
+      token.get('name') == 'email_verification' &&
       token.get('owner_id') == @props.uuid &&
       token.get('owner_type') == 'User'
-    .map (token) -> 
+    .map (token) ->
       token = token.toObject()
       token.data = token.data.toObject()
-      token      
+      token
     .toArray()
 
   isSubscribed: ->
@@ -106,7 +106,7 @@ module.exports  = React.createClass
     @props.cursor.tokens.forEach (item, id) =>
       if item.get('owner_id') == @props.uuid &&
          item.get('name') == 'subscription'
-        TokenStore.cursor.items.removeIn(id)
+        TokenStore.remove(id)
 
   isEditorUpdatingUnicorn: ->
     @props.uuid isnt @cursor.me.get('uuid') and UserStore.isEditor() and UserStore.isUnicorn(@cursor.user)
@@ -200,7 +200,7 @@ module.exports  = React.createClass
   # Lifecycle methods
   #
   componentWillMount: ->
-    @cursor = 
+    @cursor =
       user:   UserStore.cursor.items.cursor(@props.uuid)
       me:     UserStore.me()
       emails: EmailStore.cursor.items
@@ -212,21 +212,21 @@ module.exports  = React.createClass
   # Renderers
   #
   renderFullNameInput: ->
-    <input  
+    <input
       placeholder = 'Full Name'
       className   = { @getInputClass('full_name') }
       onChange    = { @handleChange.bind(@, 'full_name') }
       value       = { @state.attributes.get('full_name') } />
 
   renderOccupationInput: ->
-    <input  
+    <input
       placeholder  = 'Job Title'
       className    = { @getInputClass('occupation') }
       onChange     = { @handleChange.bind(@, 'occupation') }
       value        = { @state.attributes.get('occupation') } />
 
   renderCompanyInput: ->
-    <input  
+    <input
       placeholder  = 'Company'
       className    = { @getInputClass('company') }
       onChange     = { @handleChange.bind(@, 'company') }
@@ -235,7 +235,7 @@ module.exports  = React.createClass
   renderTwitterHandle: ->
     return null unless @isEditorUpdatingUnicorn()
 
-    <input  
+    <input
       placeholder  = 'Twitter'
       className    = { @getInputClass('twitter') }
       onChange     = { @handleChange.bind(@, 'twitter') }
@@ -244,7 +244,7 @@ module.exports  = React.createClass
   renderSubmitButton: ->
     <footer>
       <div></div>
-      <SyncButton 
+      <SyncButton
         className = 'cc'
         iconClass = { if @state.formUpdated then '' else @state.statusIcon }
         disabled  = !@state.formUpdated
@@ -256,7 +256,7 @@ module.exports  = React.createClass
   renderEmails: ->
     return null unless @props.uuid is @cursor.me.get('uuid')
 
-    <Emails 
+    <Emails
       emails              = { @getUserEmails() }
       verification_tokens = { @getEmailUserTokens() } />
 
@@ -266,7 +266,7 @@ module.exports  = React.createClass
     <section className="subscription">
       <h2>Subscriptions</h2>
       <Checkbox
-        checked  = { @isSubscribed() } 
+        checked  = { @isSubscribed() }
         onChange = { @handleSubscriptionChange }>
         Our weekly newsletter
       </Checkbox>
@@ -292,7 +292,7 @@ module.exports  = React.createClass
   renderLandingCreateButton: ->
     return null if @getViewerLandings().size
 
-    <SyncButton 
+    <SyncButton
       className = "cc"
       onClick   = { @handleCreateLandingClick }
       sync      = { @state.sync.get('landing') }
@@ -331,7 +331,7 @@ module.exports  = React.createClass
 
 
   # Main render
-  # 
+  #
   render: ->
     return null unless @isLoaded()
 
