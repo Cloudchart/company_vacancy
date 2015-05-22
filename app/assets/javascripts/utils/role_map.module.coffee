@@ -25,7 +25,7 @@ RoleMap =
       description: 'Allow to edit pinboard'
       hint: 'Someone you trust.'
       header: "pinboard and allow to edit"
-    public_reader:
+    reader:
       name: 'Reader'
       description: 'View to only read'
       hint: 'Who you want to see your pinboard.'

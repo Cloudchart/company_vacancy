@@ -120,7 +120,7 @@ Cloudchart::Application.routes.draw do
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :comments, only: [:create, :update, :destroy]
 
-  resources :roles, only: [:create, :update, :destroy] do
+  resources :roles, only: [:create, :update, :destroy, :show] do
     match :accept, on: :member, via: [:put, :patch]
   end
 

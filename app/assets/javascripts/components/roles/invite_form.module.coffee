@@ -27,23 +27,50 @@ Component = React.createClass
 
   getInitialState: ->
     isSyncing:   false
-    attributes:  Immutable.Map()
+    attributes:  @getDefaultAttributes()
     errors:      Immutable.Map()
 
 
   # Helpers
   #
-  getRoleCopy: ->
-    RoleMap[@props.ownerType]
+  getRoleCopy: (value) ->
+    RoleMap[@props.ownerType][value]
 
   getPinboard: ->
     PinboardStore.cursor.items.get(@props.ownerId)
+
+  getDefaultAttributes: ->
+    Immutable.Map(
+      value:      @props.roleValues[0]
+      owner_id:   @props.ownerId
+      owner_type: @props.ownerType
+    )
 
 
   # Handlers
   #
   handleInputChange: (name, event) ->
     @setState attributes: @state.attributes.set(name, event.target.value)
+
+  handleSubmit: (event) ->
+    event.preventDefault()
+
+    @setState isSyncing: true
+
+    RoleStore.create(@state.attributes.toJSON()).then @handleSubmitDone, @handleSubmitFail
+
+  handleSubmitDone: ->
+    @setState
+      attributes:  @getDefaultAttributes()
+      errors:      Immutable.Map()
+      isSyncing:   false
+
+    @props.onBackClick()
+
+  handleSubmitFail: (reason) ->
+    @setState
+      errors:    Immutable.Map(reason.responseJSON.errors)
+      isSyncing: false
 
 
   # Renderers
@@ -87,7 +114,7 @@ Component = React.createClass
         Share <strong>{ @getPinboard().get('title') }</strong> { @getRoleCopy(@state.attributes.get('value')).header }
       </header>
 
-      <form onSubmit={ @onSubmit } >
+      <form onSubmit={ @handleSubmit } >
         <fieldset className="roles">
           { @renderRoleSelectors() }
         </fieldset>
@@ -96,9 +123,9 @@ Component = React.createClass
           { @renderTwitterInput() }
 
           <SyncButton 
-            className = "cc cc-wide"
+            className = "cc"
             text      = "Invite"
-            sync      = { @isSyncing } />
+            sync      = { @state.isSyncing } />
         </footer>
       </form>
     </section>

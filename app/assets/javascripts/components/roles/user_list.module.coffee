@@ -8,7 +8,7 @@ RoleStore        = require("stores/role_store.cursor")
 UserStore        = require("stores/user_store.cursor")
 PinboardStore    = require('stores/pinboard_store')
 
-RoleItem         = require("components/company/access_rights/role_item")
+RoleItem         = require("components/roles/item")
 StandardButton   = require('components/form/buttons').StandardButton
 
 
@@ -54,7 +54,7 @@ Component = React.createClass
   # Helpers
   #
   getRoles: ->
-    RoleStore.rolesOn(@props.uuid, @props.type)
+    RoleStore.rolesOn(@props.ownerId, @props.ownerType)
 
   getPinboard: ->
     PinboardStore.cursor.items.get(@props.ownerId)
@@ -77,28 +77,33 @@ Component = React.createClass
   renderRoles: ->
     owner = @getOwner()
 
-    @getRoles().map (role, index) => 
-      user = UserStore.cursor.items.get(role.get('user_id'))
+    Immutable.Seq([
+      <RoleItem
+        user       = { owner }
+        isOwner    = { true }
+        key        = 'owner'
+        roleValues = { @props.roleValues }
+        ownerType  = { @props.ownerType } />
+    ]).concat(
+      @getRoles()
+        .sortBy (role) -> role.get('created_at')
+        .map (role, index) => 
+          user = UserStore.cursor.items.get(role.get('user_id'))
 
-      <li key = { index } >
-        { user.get('full_name') }
-        { user.get('twitter') }
-        { role.get('value') }
-      </li>
-    .valueSeq()
-    .concat(
-      <li key = 'owner'>
-        { owner.get('full_name') }
-        { owner.get('twitter') }
-        { 'owner' }
-      </li>
+          <RoleItem
+            user       = { user }
+            role       = { role }
+            key        = { role.get('uuid') }
+            roleValues = { @props.roleValues }
+            ownerType  = { @props.ownerType } />
+        .valueSeq()
     )
     .toArray()
 
   render: ->
     return null unless @isLoaded()
 
-    <section className="role-list">
+    <section className="user-list">
       <ul>
         { @renderRoles() }
       </ul>

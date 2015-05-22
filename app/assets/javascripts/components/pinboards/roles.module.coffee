@@ -38,14 +38,14 @@ Component = React.createClass
             <RolesUserList
               ownerId        = { @props.uuid }
               ownerType      = { ownerType }
-              roleValues      = { roleValues }
+              roleValues     = { roleValues }
               onInviteClick  = { @changeMode.bind(@, Modes.INVITE) } />
 
           when Modes.INVITE
             <RolesInviteForm
               ownerId     = { @props.uuid }
               ownerType   = { ownerType }
-              roleValues   = { roleValues }
+              roleValues  = { roleValues }
               onBackClick = { @changeMode.bind(@, Modes.VIEW) } />
       }
     </section>

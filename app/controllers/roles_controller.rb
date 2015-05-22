@@ -1,10 +1,10 @@
 class RolesController < ApplicationController
-  load_and_authorize_resource
+  before_filter :set_role, except: :create
 
-
+  # authorize_resource except: :create
 
   def create
-    @role         = Role.build(role_create_params)
+    @role         = Role.new(role_create_params)
     @role.author  = current_user
 
     if params[:twitter]
@@ -49,13 +49,17 @@ class RolesController < ApplicationController
 
   end
 
-
+  def show
+    respond_to do |format|
+      format.json
+    end
+  end
 
   def update
     @role.update!(role_update_params)
 
     respond_to do |format|
-      format.json { render json: @role }
+      format.json { render json: { id: @role.id } }
     end
 
   rescue ActiveRecord::RecordInvalid
@@ -70,7 +74,7 @@ class RolesController < ApplicationController
       render json: { errors: { base: 'owner' } }, status: 422
     else
       @role.destroy
-      render json: {}
+      render json: { id: @role.id }
     end
   end
 
@@ -82,6 +86,10 @@ private
 
   def role_update_params
     params.require(:role).permit(:value)
+  end
+
+  def set_role
+    @role = Role.find(params[:id])
   end
 
 end
