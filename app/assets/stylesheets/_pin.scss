@@ -7,7 +7,6 @@
   position: relative;
 
   > header {
-    overflow: auto;
     width: 100%;
 
     > p {
@@ -16,6 +15,8 @@
 
     > .round-buttons {
       float: right;
+      padding-left: $default-margin-size;
+      padding-bottom: $default-margin-size;
     }
   }
 
