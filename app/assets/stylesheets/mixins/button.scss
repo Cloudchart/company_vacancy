@@ -374,8 +374,13 @@ $round-button-size: 24px;
   display: inline-block;
   font-size: $basic-font-size;
   font-weight: 700;
+  text-transform: uppercase;
 
   > .icon {
+    margin-left: 5px;
+  }
+
+  > .text {
     margin-left: 5px;
   }
 }

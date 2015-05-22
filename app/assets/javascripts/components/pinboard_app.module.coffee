@@ -93,13 +93,6 @@ module.exports = React.createClass
   getFavorite: ->
     FavoriteStore.findByPinboardForUser(@props.uuid, @getViewerId())
 
-  getInsightsNumber: ->
-    count = PinStore
-      .filterByUserId(@getOwner().get('uuid'))
-      .filter (pin) ->
-        pin.get('pinnable_id') && (pin.get('parent_id') || pin.get('content'))
-      .size
-
   isViewerOwner: ->
     @getOwner().get('uuid') == @getViewerId()
 
@@ -158,9 +151,11 @@ module.exports = React.createClass
       <ul className="counters">
         <li>
           { @getPinboard().get('readers_count') }
-          <span className="icon">
-            <i className="fa fa-male" />
-          </span>
+          <span className="text">followers</span>
+        </li>
+        <li>
+          { @getPinboard().get('pins_count') }
+          <span className="text">pins</span>
         </li>
       </ul>
       { @renderFollowButton() }
@@ -186,7 +181,7 @@ module.exports = React.createClass
         <div className="cloud-columns cloud-columns-flex">
           { @renderHeader() }
           <PinboardTabs
-            insightsNumber = { @getInsightsNumber() }
+            insightsNumber = { @getPinboard().get('pins_count') }
             canEdit        = { @canViewerEdit() }
             onChange       = { @handleTabChange } />
         </div>

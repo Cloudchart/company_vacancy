@@ -5,10 +5,10 @@ user = {}
 
 if user_authenticated?
 
-  if can?(:index, :pins)
+  if can?(:index, :pinboards)
     links << {
-      title: 'Insights',
-      url: current_page?(main_app.insights_path) ? nil : main_app.insights_path
+      title: 'Boards',
+      url: current_page?(main_app.pinboards_path) ? nil : main_app.pinboards_path
     }
   end
 

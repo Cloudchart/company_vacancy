@@ -31,8 +31,11 @@ Component = React.createClass
   getRoleCopy: (value) ->
     RoleMap[@props.ownerType][value]
 
+  isPending: ->
+    @props.role.get('pending_value')
+
   getRoleValue: (roleValue) ->
-    if (pending_value = @props.role.get('pending_value')) then pending_value else @props.role.get('value')
+    if @isPending() then @props.role.get('pending_value') else @props.role.get('value')
 
     
   # Handlers
@@ -54,6 +57,13 @@ Component = React.createClass
     <CancelButton
       sync      = { @state.isSyncing }
       onClick   = { @handleDeleteButtonClick } />
+
+  renderStatus: ->
+    return null if @props.isOwner || !@isPending()
+
+    <span className="status">
+      Pending invite, can only view board.
+    </span>
 
   renderRoleChooser: ->
     return @getRoleCopy('owner').name if @props.isOwner
@@ -77,8 +87,9 @@ Component = React.createClass
       <div className="name">
         { @props.user.get('full_name') }
         <span className="twitter">
-          { @props.user.get('twitter') }
+          @{ @props.user.get('twitter') }
         </span>
+        { @renderStatus() }
       </div>
       
       <div className="role-chooser">

@@ -113,6 +113,10 @@ class Ability
 
       # Pinboard
       #
+      can :index, :pinboards do
+        true
+      end
+
       can [:create], Pinboard
       can [:update, :destroy, :settings], Pinboard, user_id: current_user.id
       can [:read, :follow, :unfollow], Pinboard do |pinboard|
