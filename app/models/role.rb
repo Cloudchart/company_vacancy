@@ -23,11 +23,20 @@ class Role < ActiveRecord::Base
   end
 
 
+  def should_skip_pending_role!
+    @should_skip_pending_role = true
+  end
+
+  def should_skip_pending_role?
+    !!@should_skip_pending_role
+  end
+
+
 private
 
 
   def check_value
-    if new_record?
+    if new_record? && !should_skip_pending_role?
       self.pending_value  = self.value
       self.value          = owner.class::ACCESS_ROLE
     else

@@ -25,9 +25,9 @@ class CompaniesController < ApplicationController
   def search
     respond_to do |format|
       format.html { render :index }
-      format.json { 
+      format.json {
         @companies = Company.search(params)
-        render :index 
+        render :index
       }
     end
   end
@@ -56,7 +56,7 @@ class CompaniesController < ApplicationController
       @company = blank_company
     else
       @company = Company.new
-      @company.roles.build(user: current_user, value: :owner)
+      @company.roles.build(user: current_user, value: :owner).should_skip_pending_role!
       @company.should_build_objects!
       @company.save!
     end
@@ -163,7 +163,7 @@ private
 
   def update_site_url_verification(company)
     return if current_user.editor?
-    
+
     if company_params[:site_url] == ''
       company.tokens.where(name: :site_url_verification).destroy_all
     else
@@ -229,7 +229,7 @@ private
       page_title = "#{@company.name}'s page"
       page_url = main_app.company_url(@company)
     end
-    
+
     post_page_visit_to_slack_channel(page_title, page_url)
   end
 
