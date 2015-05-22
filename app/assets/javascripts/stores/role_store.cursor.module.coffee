@@ -64,14 +64,5 @@ module.exports = GlobalState.createStore
         item.get('owner_id')    == owner.get('uuid') and
         item.get('owner_type')  == owner_type
 
-  accept: (id) ->
-    item = @cursor.items.get(id)
-
-    return false unless item
+  accept: (item) ->
     @syncAPI.accept(item).then @updateDone, @updateFail
-
-  decline: (id) ->
-    item = @cursor.items.get(id)
-
-    return false unless item
-    @syncAPI.decline().then @destroyDone, @destroyFail

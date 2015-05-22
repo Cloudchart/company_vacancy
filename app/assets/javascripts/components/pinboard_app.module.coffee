@@ -104,7 +104,7 @@ module.exports = React.createClass
     @getOwner().get('uuid') == @getViewerId()
 
   isViewerEditor: ->
-    (role = RoleStore.rolesOnOwnerForUser(@getPinboard.get('uuid'), 'Pinboard', @getViewerId()).first()) && 
+    (role = RoleStore.rolesOnOwnerForUser(@getPinboard().get('uuid'), 'Pinboard', @props.cursor.viewer).first()) && 
     role.get('value') == 'editor'
 
   canViewerEdit: ->

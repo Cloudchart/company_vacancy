@@ -7,7 +7,10 @@ cx          = React.addons.classSet
 # Stores
 #
 PinboardStore   = require('stores/pinboard_store')
+RoleStore       = require('stores/role_store.cursor')
 UserStore       = require('stores/user_store.cursor')
+
+SyncButton      = require('components/form/buttons').SyncButton
 
 
 # Components
@@ -40,28 +43,67 @@ module.exports = React.createClass
           }
         """
 
-
   fetch: ->
     GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }).then =>
       @setState
         loaders: @state.loaders.set('pinboard', true)
 
+  getInitialState: ->
+    loaders: Immutable.Map()
+    sync:    Immutable.Map()
 
+
+  # Helpers
+  #
   isLoaded: ->
+    @getPinboard() && @getViewer()
+
+  getPinboard: ->
     @cursor.pinboard.deref(false)
 
+  getViewer: ->
+    @cursor.viewer.deref(false)
 
+  getRole: ->
+    RoleStore.rolesOnOwnerForUser(@getPinboard(), 'Pinboard', @getViewer()).first()
+
+  isInvited: ->
+    @getRole() && @getRole().get('pending_value')
+
+
+  # Handlers
+  #
+  handleDeclineClick: (event) ->
+    event.preventDefault()
+    event.stopPropagation()
+
+    @setState(sync: @state.sync.set('decline', true))
+
+    RoleStore.destroy(@getRole().get('uuid')).done =>
+      @setState(sync: @state.sync.set('decline', false))
+
+  handleAcceptClick: (event) ->
+    event.preventDefault()
+    event.stopPropagation()
+
+    @setState(sync: @state.sync.set('accept', true))
+
+    RoleStore.accept(@getRole()).done =>
+      @setState(sync: @state.sync.set('decline', false))
+
+
+  # Lifecycle methods
+  #
   componentWillMount: ->
     @cursor =
       pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
+      viewer:   UserStore.me()
 
     @fetch() unless @isLoaded()
 
 
-  getInitialState: ->
-    loaders: Immutable.Map()
-
-
+  # Renderers
+  #
   renderAccessRightsIcon: ->
     classList = cx
       'fa':       true
@@ -70,13 +112,11 @@ module.exports = React.createClass
 
     <i className={ classList } />
 
-
   renderHeader: ->
     <header>
       { @cursor.pinboard.get('title') }
       { @renderAccessRightsIcon() }
     </header>
-
 
   renderDescription: ->
     return unless description = @cursor.pinboard.get('description', false)
@@ -84,7 +124,6 @@ module.exports = React.createClass
     <section className="paragraph">
       { description }
     </section>
-
 
   renderFooter: ->
     <footer>
@@ -109,6 +148,24 @@ module.exports = React.createClass
       </ul>
     </footer>
 
+  renderInviteActions: ->
+    return null unless @isInvited()
+
+    <div className="buttons">
+      <SyncButton 
+        className = "cc alert"
+        iconClass = "fa-close"
+        onClick   = { @handleDeclineClick }
+        sync      = { @state.sync.get('decline') }
+        text      = "Decline" />
+      <SyncButton 
+        className = "cc"
+        iconClass = "fa-check"
+        onClick   = { @handleAcceptClick }
+        sync      = { @state.sync.get('accept') }
+        text      = "Accept" />
+    </div>
+
 
   render: ->
     return null unless @isLoaded()
@@ -116,6 +173,7 @@ module.exports = React.createClass
     <section className="pinboard cloud-card link">
       <a className="for-group" href={ @cursor.pinboard.get('url') }>
         { @renderHeader() }
+        { @renderInviteActions() }
         { @renderDescription() }
         { @renderFooter() }
       </a>
