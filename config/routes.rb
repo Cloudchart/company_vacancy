@@ -83,7 +83,7 @@ Cloudchart::Application.routes.draw do
 
     resources :roles, only: [:update, :destroy]
 
-    resources :invites, only: [:show, :create, :update, :destroy], controller: 'pinboards/invites'
+    resources :invites, only: [:create, :update, :destroy], controller: 'pinboards/invites'
 
     # resources :invites, only: [:show, :create, :destroy], controller: 'pinboards/invites' do
     #   match :resend, on: :member, via: [:put, :patch]
@@ -93,6 +93,7 @@ Cloudchart::Application.routes.draw do
 
   get '/collections',     to: 'pinboards#index',  as: 'collections'
   get '/collections/:id', to: 'pinboards#show',   as: 'collection'
+  get '/collections/:id/invite', to: 'pinboards/invites#new', as: 'new_collection_invite'
 
   resources :pins, except: [:index] do
     match :approve, on: :member, via: [:put, :patch]

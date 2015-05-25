@@ -84,10 +84,10 @@ module.exports = GlobalState.createStore
   #   SyncAPI.sendInvite(item, attributes, options)
 
   requestAccess: (item, message) ->
-    SyncAPI
-      .request_access(item, message)
-      .done (json) =>
-        TokenStore.fetchOne(json.id)
+    promise = SyncAPI.request_access(item, message)
+    promise.done (json) => TokenStore.fetchOne(json.id)
+
+    promise
 
 
   grantAccess: (item, token, role) ->

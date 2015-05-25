@@ -5,6 +5,7 @@ class Token < ActiveRecord::Base
   serialize :data
 
   belongs_to :owner, polymorphic: true, inverse_of: :tokens
+  belongs_to :target, polymorphic: true
 
 
   scope :admin_invites, -> { where(arel_table[:name].eq(:invite).or(arel_table[:name].eq(:request_invite)).and(arel_table[:owner_id].eq(nil))) }

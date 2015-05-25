@@ -39,6 +39,7 @@ class User < ActiveRecord::Base
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :oauth_providers, dependent: :destroy
   has_many :tokens, as: :owner, dependent: :destroy
+  has_many :tokens_as_target, as: :target, class_name: 'Token', dependent: :destroy
   has_many :votes, as: :source
   has_many :activities, dependent: :destroy
   has_many :subscriptions, dependent: :destroy

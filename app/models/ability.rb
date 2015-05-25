@@ -118,12 +118,17 @@ class Ability
       end
 
       can [:create], Pinboard
-      can [:update, :destroy, :settings], Pinboard, user_id: current_user.id
-      can [:read, :follow, :unfollow], Pinboard do |pinboard|
+      can [:destroy], Pinboard, user_id: current_user.id
+      can [:view, :follow, :unfollow], Pinboard do |pinboard|
         pinboard.public? || current_user.id == pinboard.user_id || reader_or_editor?(current_user, pinboard)
       end
-
-      can :manage_pinboard_invites, Pinboard do |pinboard|
+      can [:request_access], Pinboard do |pinboard|
+        !can?(:view, pinboard) && pinboard.protected?
+      end
+      can [:read], Pinboard do |pinboard|
+        can?(:view, pinboard) || can?(:request_access, pinboard)
+      end
+      can [:update, :settings, :manage_pinboard_invites], Pinboard do |pinboard|
         current_user.id == pinboard.user_id || editor?(current_user, pinboard)
       end
 

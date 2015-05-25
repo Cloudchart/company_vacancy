@@ -6,6 +6,7 @@ GlobalState      = require('global_state/state')
 
 RoleStore        = require("stores/role_store.cursor")
 UserStore        = require("stores/user_store.cursor")
+TokenStore       = require("stores/token_store.cursor")
 PinboardStore    = require('stores/pinboard_store')
 
 RoleItem         = require("components/roles/item")
@@ -29,6 +30,9 @@ Component = React.createClass
           Pinboard {
             roles {
               user
+            },
+            tokens {
+              target
             }
           }
         """
@@ -41,8 +45,9 @@ Component = React.createClass
 
   getDefaultProps: ->
     cursor:
-      roles: RoleStore.cursor.items
-      users: UserStore.cursor.items
+      roles:  RoleStore.cursor.items
+      tokens: TokenStore.cursor.items
+      users:  UserStore.cursor.items
 
   getInitialState: ->
     isLoaded: false
@@ -56,10 +61,13 @@ Component = React.createClass
   getRoles: ->
     RoleStore.rolesOn(@props.ownerId, @props.ownerType)
 
+  getTokens: ->
+    TokenStore.filterAccessRequestsByOwner(@props.ownerId, @props.ownerType)
+
   getPinboard: ->
     PinboardStore.cursor.items.get(@props.ownerId)
 
-  getOwner: ->
+  getUser: ->
     UserStore.cursor.items.get(@getPinboard().get('user_id'))
 
   isLoaded: ->
@@ -69,21 +77,21 @@ Component = React.createClass
   # Lifecyle methods
   #
   componentWillMount: ->
-    @fetch().then => @setState isLoaded: true 
+    @fetch().then => @setState isLoaded: true
 
 
   # Renderers
   #
   renderRoles: ->
-    owner = @getOwner()
+    owner = @getUser()
 
     Immutable.Seq([
       <RoleItem
-        user       = { owner }
-        isOwner    = { true }
-        key        = 'owner'
-        roleValues = { @props.roleValues }
-        ownerType  = { @props.ownerType } />
+        user        = { owner }
+        key         = 'owner'
+        roleValues  = { @props.roleValues }
+        owner       = { @getPinboard() }
+        ownerType   = { @props.ownerType } />
     ]).concat(
       @getRoles()
         .sortBy (role) -> role.get('created_at')
@@ -95,6 +103,21 @@ Component = React.createClass
             role       = { role }
             key        = { role.get('uuid') }
             roleValues = { @props.roleValues }
+            owner      = { @getPinboard() }
+            ownerType  = { @props.ownerType } />
+        .valueSeq()
+    ).concat(
+      @getTokens()
+        .sortBy (token) -> token.get('created_at')
+        .map (token, index) => 
+          user = UserStore.cursor.items.get(token.get('target_id'))
+
+          <RoleItem
+            user       = { user }
+            token      = { token }
+            key        = { token.get('uuid') }
+            roleValues = { @props.roleValues }
+            owner      = { @getPinboard() }
             ownerType  = { @props.ownerType } />
         .valueSeq()
     )

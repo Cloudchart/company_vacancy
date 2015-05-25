@@ -46,6 +46,12 @@ module Pinboards
       end
     end
 
+    def new
+      pinboard = Pinboard.find(params[:id])
+
+      authorize! :request_access, pinboard
+    end
+
   end
 
 

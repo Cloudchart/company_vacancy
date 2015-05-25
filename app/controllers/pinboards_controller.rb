@@ -15,6 +15,8 @@ class PinboardsController < ApplicationController
   end
 
   def show
+    redirect_to new_collection_invite_path and return if can?(:request_access, @pinboard)
+
     respond_to do |format|
       format.html
       format.json

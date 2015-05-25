@@ -87,8 +87,8 @@ class BaseStore
         return @cursor.items.set(item.uuid, item)
 
   remove: (id) ->
-    @cleanupIndices(json.id)
-    @cursor.items.remove(json.id)
+    @cleanupIndices(id)
+    @cursor.items.remove(id)
 
   #
   #

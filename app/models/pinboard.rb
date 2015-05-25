@@ -84,4 +84,8 @@ class Pinboard < ActiveRecord::Base
     access_rights == 'public'
   end
 
+  def protected?
+    access_rights == 'protected'
+  end
+
 end
