@@ -11,12 +11,40 @@
       > li {
         @include align-items(center);
         @include display(flex);
+        @include flex-wrap(wrap);
 
         padding: $inner-margin-size 0;
         position: relative;
 
+        > .message {
+          @include display(flex);
+
+          width: 100%;
+
+          p {
+            background-color: $card-color;
+            font-size: $basic-font-size;
+            font-weight: 300;
+            margin-left: 100px;
+            margin-bottom: 10px;
+            padding: $inner-margin-size;
+            position: relative;
+
+            &::before {
+              @include position(absolute, null null -10px 0px);
+
+              border: 5px solid transparent;
+              border-top-color: $card-color;
+              border-left-color: $card-color;
+              content: '';
+              display: block;
+              z-index: 1;  
+            }
+          }
+        }
+
         > button {
-          @include position(absolute, 0 0 0 -30px);
+          @include position(absolute, 0 0 10px -30px);
 
           height: 25px;
           text-align: center;
@@ -153,4 +181,40 @@
       }
     }
   }
+}
+
+.access-request-form {
+  background-color: $background-color;
+  padding: 40px;
+  width: 500px;
+
+  > header {
+    font-size: $large-font-size;
+  }
+
+  > form {
+    @include display(flex);
+    @include flex-direction(column);
+
+    margin-top: 20px;
+
+    > button {
+      @include align-self(flex-end);
+    }
+  }
+
+  > section {
+    @include display(flex);
+    @include flex-direction(column);
+
+    p {
+      font-size: $big-font-size;
+      font-weight: 300;
+    }
+
+    > button {
+      @include align-self(flex-end);
+    }
+  }
+
 }

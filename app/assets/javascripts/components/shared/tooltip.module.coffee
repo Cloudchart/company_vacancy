@@ -12,7 +12,7 @@ module.exports = React.createClass
     tooltipContent: React.PropTypes.any.isRequired
 
   render: ->
-    <span className    = "tooltip-wrapper #{@props.className}">
+    <span className = "tooltip-wrapper #{@props.className}">
       { @props.element }
       <div className='tooltip'>
         { @props.tooltipContent }

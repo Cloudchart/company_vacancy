@@ -11,6 +11,10 @@ module.exports = GlobalState.createStore
 
   syncAPI: require('sync/token_sync_api')
 
+  foreignKeys:
+    'owner':
+      fields: ['owner_id', 'owner_type']
+
   filterInvites: (type) ->
     @cursor.items.filter (token) ->
       token.get('owner_type') == type &&
@@ -62,3 +66,12 @@ module.exports = GlobalState.createStore
 
   destroyDone: (json) ->
     @remove(json.id)
+
+  filterAccessRequestsByOwner: (id, type) ->
+    @byFK('owner', id, type).filter (token) ->
+      token.get('name') == 'access_request'
+
+  findAccessRequestByOwnerAndUser: (id, type, user_id) ->
+    @filterAccessRequestsByOwner(id, type).filter (token) ->
+      token.get('target_id') == user_id && token.get('target_type') == 'User'
+    .first()

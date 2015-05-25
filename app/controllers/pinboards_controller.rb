@@ -3,7 +3,7 @@ class PinboardsController < ApplicationController
 
   before_action :set_pinboard, only: [:show, :settings, :update, :destroy]
 
-  load_and_authorize_resource except: :create
+  load_and_authorize_resource except: [:create, :show]
 
   after_action :create_intercom_event, only: :create
 
@@ -15,6 +15,10 @@ class PinboardsController < ApplicationController
   end
 
   def show
+    redirect_to new_collection_invite_path and return if can?(:request_access, @pinboard)
+
+    authorize! :read, @pinboard
+
     respond_to do |format|
       format.html
       format.json
