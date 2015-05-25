@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150520134429) do
+ActiveRecord::Schema.define(version: 20150525105432) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -461,15 +461,18 @@ ActiveRecord::Schema.define(version: 20150520134429) do
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "tokens", primary_key: "uuid", force: true do |t|
-    t.string   "name",                  null: false
+    t.string   "name",                   null: false
     t.text     "data"
-    t.string   "owner_id",   limit: 36
+    t.string   "owner_id",    limit: 36
     t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "target_id",   limit: 36
+    t.string   "target_type"
   end
 
   add_index "tokens", ["owner_id", "owner_type"], name: "index_tokens_on_owner_id_and_owner_type", using: :btree
+  add_index "tokens", ["target_id", "target_type"], name: "index_tokens_on_target_id_and_target_type", using: :btree
 
   create_table "users", primary_key: "uuid", force: true do |t|
     t.string   "password_digest"
