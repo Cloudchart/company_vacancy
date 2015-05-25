@@ -120,11 +120,11 @@ class Ability
       can [:create], Pinboard
       can [:update, :destroy, :settings], Pinboard, user_id: current_user.id
       can [:read, :follow, :unfollow], Pinboard do |pinboard|
-        current_user.id == pinboard.user_id || reader_or_editor?(current_user, pinboard)
+        pinboard.public? || current_user.id == pinboard.user_id || reader_or_editor?(current_user, pinboard)
       end
 
       can :manage_pinboard_invites, Pinboard do |pinboard|
-        pinboard.public? || current_user.id == pinboard.user_id || editor?(current_user, pinboard)
+        current_user.id == pinboard.user_id || editor?(current_user, pinboard)
       end
 
       # Token
