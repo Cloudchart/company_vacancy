@@ -139,24 +139,9 @@ body ul.modal-stack > li.modal-stack-item > form.pin {
     margin: $default-margin-size;
   }
 
-  > .quote {
-    background-color: $accented-white-color;
-    font-size: 20px;
-    font-weight: 100;
-    line-height: 1.4em;
+  > .insight-content {
     padding: $default-margin-size;
     padding-right: 40px;
-    white-space: pre-wrap;
-
-    .company {
-      color: $link-color;
-      font-weight: 600;
-    }
-
-    .post {
-      color: black;
-      font-weight: 600;
-    }
   }
 
   > fieldset {

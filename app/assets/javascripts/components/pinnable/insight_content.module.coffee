@@ -115,7 +115,7 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded() && (@getPost() || @getPin())
 
-    <p className="quote">
+    <p className="insight-content">
       { @renderInsight() }
       { @renderInsightContext() }
     </p>
