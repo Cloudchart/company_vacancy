@@ -91,6 +91,9 @@ Cloudchart::Application.routes.draw do
     # end
   end
 
+  get '/collections',     to: 'pinboards#index',  as: 'collections'
+  get '/collections/:id', to: 'pinboards#show',   as: 'collection'
+
   resources :pins, except: [:index] do
     match :approve, on: :member, via: [:put, :patch]
   end
