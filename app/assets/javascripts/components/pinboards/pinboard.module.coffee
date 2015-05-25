@@ -129,8 +129,7 @@ module.exports = React.createClass
     <footer>
       <Human 
         type = "user"
-        uuid = { @cursor.pinboard.get('user_id') }
-        showLink = { false } />
+        uuid = { @cursor.pinboard.get('user_id') } />
 
       <ul className="counters">
         <li>
@@ -175,6 +174,6 @@ module.exports = React.createClass
         { @renderHeader() }
         { @renderInviteActions() }
         { @renderDescription() }
-        { @renderFooter() }
       </a>
+      { @renderFooter() }
     </section>

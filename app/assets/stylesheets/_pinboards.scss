@@ -148,11 +148,10 @@ article.pinboards {
     > header {
       @include pinboard-card-header;
     }
+  }
 
-
-    > footer {
-      @include pinboard-card-footer;
-    }
+  > footer {
+    @include pinboard-card-footer;
   }
 
 }
