@@ -124,11 +124,11 @@ class Ability
       end
 
       can :manage_pinboard_invites, Pinboard do |pinboard|
-        current_user.id == pinboard.user_id || editor?(current_user, pinboard)
+        pinboard.public? || current_user.id == pinboard.user_id || editor?(current_user, pinboard)
       end
 
       # Token
-      # 
+      #
       can :read, Token
 
       can :create_greeting, User do |user|
@@ -148,7 +148,7 @@ class Ability
       end
 
       # Landing
-      # 
+      #
       can :read, Landing
 
       can :create, Landing do |landing|

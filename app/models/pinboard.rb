@@ -67,6 +67,7 @@ class Pinboard < ActiveRecord::Base
     where access_rights: :public, user_id: nil
   end
 
+
   scope :readable, -> do
     joins { roles.outer }.where { roles.value.eq('reader') }
   end
@@ -77,6 +78,10 @@ class Pinboard < ActiveRecord::Base
 
   def invite_tokens
     tokens.where(name: :invite)
+  end
+
+  def public?
+    access_rights == 'public'
   end
 
 end
