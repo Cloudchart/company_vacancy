@@ -5,7 +5,7 @@ module Pinboards
     def create
       pinboard  = Pinboard.find(params[:pinboard_id])
 
-      token     = pinboard.tokens.create!(name: 'access_request', data: {
+      token     = pinboard.tokens.create!(name: 'access_request', target: current_user, data: {
         user_id:    current_user.id,
         user_name:  current_user.full_name,
         message:    params[:message]
@@ -23,7 +23,7 @@ module Pinboards
       authorize! :manage_pinboard_invites, pinboard
 
       token = pinboard.tokens.find(params[:id])
-      role  = pinboard.roles.create!(user_id: token.data[:user_id], author: current_user, value: params[:role])
+      role  = pinboard.roles.create!(user: token.target, author: current_user, value: params[:role])
       token.destroy
 
       respond_to do |format|
