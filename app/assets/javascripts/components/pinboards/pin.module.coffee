@@ -78,8 +78,8 @@ module.exports = React.createClass
   gatherPinAttributes: (insight) ->
     uuid:           insight.get('uuid')
     parent_id:      insight.get('parent_id')
-    pinnable_id:    insight.get('pinnable_id')
-    pinnable_type:  insight.get('pinnable_type')
+    pinnable_id:    @cursor.pin.get('pinnable_id')
+    pinnable_type:  @cursor.pin.get('pinnable_type')
     title:          insight.get('content')
 
 
@@ -116,7 +116,7 @@ module.exports = React.createClass
   # Renderers
   #
   renderEditButton: ->
-    return null unless @getInsight() && @getInsight().get('author_id')
+    return null unless @getInsight()
 
     <EditPinButton uuid={ @getInsight().get('uuid') } />
 
