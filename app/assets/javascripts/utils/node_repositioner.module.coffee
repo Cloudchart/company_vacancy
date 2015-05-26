@@ -2,7 +2,7 @@ module.exports =
   mixin: 
 
     repositionNodes: ->
-      return unless parentNode = @getDOMNode()
+      return unless (parentNode = @getDOMNode()) && @isMounted()
 
       # TODO
       # Quick solution, but relying on timeout is not good

@@ -41,6 +41,11 @@ module.exports = GlobalState.createStore
 
   syncAPI:        SyncAPI
 
+  foreignKeys:
+    'user':
+      fields: 'user_id'
+
+
   serverActions: ->
     'post:fetch-all:done': @populate
 
@@ -79,6 +84,16 @@ module.exports = GlobalState.createStore
   followersFor: (id) ->
     filterUsersForRole(id, 'follower')
 
+  filterByOwner: (user_id) ->
+    @byFK('user', user_id)
+
+
+  filterUserPinboards: (user_id, options={}) ->
+    @filterByOwner(user_id)
+      .concat(require('stores/role_store.cursor').filterUserPinboards(user_id))
+      .concat(require('stores/favorite_store.cursor').filterUserFavoritePinboards(user_id))
+      .filter (pinboard) ->
+        options.showPrivate || pinboard.get('access_rights') != 'private'
 
   # sendInvite: (item, attributes = {}, options = {}) ->
   #   SyncAPI.sendInvite(item, attributes, options)

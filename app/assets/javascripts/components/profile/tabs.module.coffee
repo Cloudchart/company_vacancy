@@ -18,27 +18,24 @@ MainComponent = React.createClass
   displayName: 'ProfileTabs'
 
   propTypes:
-    companiesNumber: React.PropTypes.number
-    insightsNumber:  React.PropTypes.number
-    onChange:        React.PropTypes.func.isRequired
-    canEdit:         React.PropTypes.bool.isRequired
+    collectionsNumber: React.PropTypes.number
+    pinboardsNumber:   React.PropTypes.number
+    insightsNumber:    React.PropTypes.number
+    onChange:          React.PropTypes.func.isRequired
+    canEdit:           React.PropTypes.bool.isRequired
 
 
   # Helpers
   # 
   getVisibleTabs: ->
     Immutable.OrderedMap(
-      insights:  true
-      feed:      true
-      companies: true
-      settings:  @props.canEdit
+      collections: true
+      insights:    true
+      feed:        true
+      companies:   true
+      settings:    @props.canEdit
     ).filter (visible) -> visible
     .keySeq()
-
-  getCurrentTab: ->
-    tabName = location.hash.substr(1) || null
-    return 'timeline' if tabName and tabName.match(/^#story/)
-    tabName
 
 
   # Renderers
@@ -53,8 +50,15 @@ MainComponent = React.createClass
 
     <strong>{ companiesCount }</strong>
 
+  renderCollectionsNumber: ->
+    return null unless (collectionsCount = @props.pinboardsNumber) > 0
+
+    <strong>{ collectionsCount }</strong>
+
   renderTabName: (key) ->
-    switch key
+    switch key      
+      when 'collections'
+        <span>Collections { @renderCollectionsNumber() }</span>
       when 'insights'
         <span>Insights { @renderInsightsNumber() }</span>
       when 'companies'
@@ -69,7 +73,6 @@ MainComponent = React.createClass
   # 
   render: ->
     <Tabs
-      getCurrentTab  = { @getCurrentTab }
       renderTabName  = { @renderTabName }
       onChange       = { @props.onChange }
       tabs           = { @getVisibleTabs() } />

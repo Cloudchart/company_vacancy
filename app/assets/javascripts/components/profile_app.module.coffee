@@ -6,11 +6,13 @@ ProfileInfo        = require('components/profile/info')
 UserPins           = require('components/pinboards/pins/user')
 UserCompanies      = require('components/company/lists/user')
 UserFeed           = require('components/user/feed')
+UserPinboards      = require('components/pinboards/lists/user')
 Settings           = require('components/profile/settings')
 Tabs               = require('components/profile/tabs')
 
 UserStore          = require('stores/user_store.cursor')
 PinStore           = require('stores/pin_store')
+PinboardStore      = require('stores/pinboard_store')
 CompanyStore       = require('stores/company_store.cursor')
 
 
@@ -19,6 +21,8 @@ EmptyTabTexts =
   feedOther:      "This person doesn't follow any people and companies yet"
   insightsOwn:    "Collect successful founders' insights and put them to action"
   insightsOther:  "This person hasn't added any insights yet"
+  pinboardsOwn:   "Follow our most popular collections to start, or, create your own"
+  pinboardsOther: "This person has no collections yet"
   companiesOwn:   ->
     <span>
       Want to see your company on CloudChart? <a href="mailto:team@cloudchart.co?subject=I want to see my company on CloudChart">Let us know</a>
@@ -45,7 +49,8 @@ module.exports = React.createClass
         """
           Viewer {
             favorites,
-            system_roles
+            system_roles,
+            roles
           }
         """
 
@@ -57,7 +62,8 @@ module.exports = React.createClass
             pins,
             owned_companies,
             #{UserPins.getQuery('pins')},
-            #{UserCompanies.getQuery('companies')}
+            #{UserCompanies.getQuery('companies')},
+            #{UserPinboards.getQuery('pinboards')}
           }
         """
 
@@ -97,6 +103,9 @@ module.exports = React.createClass
 
   getCompaniesNumber: ->
     count = CompanyStore.filterForUser(@props.uuid).size
+
+  getPinboardsNumber: ->
+    PinboardStore.filterUserPinboards(@props.uuid).size
 
 
   # Handlers
@@ -145,8 +154,16 @@ module.exports = React.createClass
     else
       @renderEmptyTabText("insights")
 
+  renderPinboards: ->
+    unless UserPinboards.isEmpty(@props.uuid)
+      <UserPinboards user_id = { @props.uuid } />
+    else
+      @renderEmptyTabText("pinboards")
+
   renderContent: ->
     switch @state.currentTab
+      when 'collections'
+        @renderPinboards()
       when 'insights'
         @renderInsights()
       when 'companies'
@@ -167,6 +184,7 @@ module.exports = React.createClass
           <Tabs 
             companiesNumber = { @getCompaniesNumber() }
             insightsNumber  = { @getInsightsNumber() }
+            pinboardsNumber = { @getPinboardsNumber() }
             canEdit         = { @cursor.user.get('is_editable') }
             onChange        = { @handleTabChange } />
         </div>

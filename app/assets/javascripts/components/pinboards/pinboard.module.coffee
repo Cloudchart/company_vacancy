@@ -6,12 +6,13 @@ cx          = React.addons.classSet
 
 # Stores
 #
-PinboardStore   = require('stores/pinboard_store')
-RoleStore       = require('stores/role_store.cursor')
-UserStore       = require('stores/user_store.cursor')
+PinboardStore     = require('stores/pinboard_store')
+RoleStore         = require('stores/role_store.cursor')
+UserStore         = require('stores/user_store.cursor')
 
-SyncButton      = require('components/form/buttons').SyncButton
-
+SyncButton        = require('components/form/buttons').SyncButton
+ModalStack        = require('components/modal_stack')
+RoleAccessRequest = require('components/roles/access_request')
 
 # Components
 #
@@ -48,6 +49,10 @@ module.exports = React.createClass
       @setState
         loaders: @state.loaders.set('pinboard', true)
 
+  getDefaultProps: ->
+    cursor:
+      roles: RoleStore.cursor.items
+
   getInitialState: ->
     loaders: Immutable.Map()
     sync:    Immutable.Map()
@@ -70,6 +75,17 @@ module.exports = React.createClass
   isInvited: ->
     @getRole() && @getRole().get('pending_value')
 
+  isProtected: ->
+    @getPinboard().get('access_rights') == 'protected' &&
+    !PinboardStore.filterUserPinboards(@getViewer().get('uuid')).contains(@getPinboard())
+
+  openRequest: ->
+    ModalStack.show(
+      <RoleAccessRequest
+        ownerId    = { @props.uuid }
+        ownerType  = 'Pinboard' />
+    )
+
 
   # Handlers
   #
@@ -90,6 +106,13 @@ module.exports = React.createClass
 
     RoleStore.accept(@getRole()).done =>
       @setState(sync: @state.sync.set('decline', false))
+
+  handleLinkClick: ->
+    return unless @isProtected()
+
+    event.preventDefault()
+    event.stopPropagation()
+    @openRequest()
 
 
   # Lifecycle methods
@@ -170,7 +193,7 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     <section className="pinboard cloud-card link">
-      <a className="for-group" href={ @cursor.pinboard.get('url') }>
+      <a className="for-group" href={ @cursor.pinboard.get('url') } onClick = { @handleLinkClick } >
         { @renderHeader() }
         { @renderInviteActions() }
         { @renderDescription() }

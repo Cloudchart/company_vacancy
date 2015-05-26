@@ -64,5 +64,16 @@ module.exports = GlobalState.createStore
         item.get('owner_id')    == owner.get('uuid') and
         item.get('owner_type')  == owner_type
 
+  filterUserRoles: (user_id, owner_type=null) ->
+    @byFK('user', user_id).filter (role) ->
+      !owner_type || role.get('owner_type') == owner_type
+
+  filterUserPinboards: (user_id) ->
+    pinboards_ids = @filterUserRoles(user_id, 'Pinboard')
+      .map (item) -> item.get('owner_id')
+
+    require('stores/pinboard_store').filter (item) ->
+      pinboards_ids.contains(item.get('uuid'))
+
   accept: (item) ->
     @syncAPI.accept(item).then @updateDone, @updateFail

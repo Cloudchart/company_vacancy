@@ -1,7 +1,10 @@
 <% title 'Pinboards' %>
 
 <%= content_tag :article, nil, data: {
-  "react-class" => "components/pinboards_app"
+  "react-class" => "components/pinboards_app",
+  "react-props" => {
+    user_id: current_user.uuid
+  }
 } %>
 
 <% content_for :header_menu do %>

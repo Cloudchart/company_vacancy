@@ -7,8 +7,8 @@ if user_authenticated?
 
   if can?(:index, :pinboards)
     links << {
-      title: 'Boards',
-      url: current_page?(main_app.pinboards_path) ? nil : main_app.pinboards_path
+      title: 'Collections',
+      url: current_page?(main_app.collections_path) ? nil : main_app.collections_path
     }
   end
 

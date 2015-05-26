@@ -29,3 +29,14 @@ module.exports = GlobalState.createStore
     @byFK('favoritable', id, type).filter (favorite) ->
       favorite.get('user_id') == follower_id
     .first()
+
+  filterUserFavorites: (user_id, favoritable_type=null) ->
+    @byFK('user', user_id).filter (favorite) ->
+      !favoritable_type || favorite.get('favoritable_type') == favoritable_type
+
+  filterUserFavoritePinboards: (user_id) ->
+    pinboards_ids = @filterUserFavorites(user_id, 'Pinboard')
+      .map (item) -> item.get('favoritable_id')
+
+    require('stores/pinboard_store').filter (item) ->
+      pinboards_ids.contains(item.get('uuid'))
