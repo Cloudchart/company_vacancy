@@ -76,7 +76,7 @@ private
     cookies.signed[:user_id] = { value: user.id, expires: 2.weeks.from_now } if warden_scope == :user
     current_user.update(last_sign_in_at: Time.now) unless current_user.guest?
 
-    redirect_to warden_scope == :user ? main_app.root_path : main_app.queue_path
+    redirect_to warden_scope == :user ? request.env['omniauth.origin'] || main_app.root_path : main_app.queue_path
   end
 
   def oauth_hash
