@@ -403,7 +403,7 @@ module.exports = React.createClass
 
 
   renderFooter: ->
-    submitButtonTitle = if @props.uuid then 'Update' else 'Pin It'
+    submitButtonTitle = if @props.uuid then 'Update' else 'Save It'
 
     <footer>
       <div>
