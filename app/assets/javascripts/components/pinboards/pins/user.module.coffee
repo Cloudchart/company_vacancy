@@ -38,11 +38,9 @@ module.exports = React.createClass
           }
         """
 
-    isEmpty: (user_id) ->
-      !PinStore.cursor.items
-        .filter (pin) =>
-          pin.get('user_id') == user_id && pin.get('pinnable_id') &&
-          (pin.get('content') || pin.get('parent_id'))
+    isEmpty: (user_id, options={}) ->
+      !PinStore
+        .filterPinsForUser(user_id, onlyInsights: options.onlyInsights)
         .size
 
   propTypes:
@@ -65,7 +63,7 @@ module.exports = React.createClass
     @state.isLoaded
 
   gatherPins: ->
-    PinStore.filterPinsForUser(@props.user_id, @props.showOnlyInsights)
+    PinStore.filterPinsForUser(@props.user_id, onlyInsights: @props.showOnlyInsights)
       .valueSeq()
       .sortBy (pin) -> pin.get('created_at')
       .reverse()

@@ -96,9 +96,7 @@ module.exports = React.createClass
 
   getInsightsNumber: ->
     count = PinStore
-      .filterByUserId(@props.uuid)
-      .filter (pin) -> 
-        pin.get('pinnable_id') && (pin.get('parent_id') || pin.get('content'))
+      .filterPinsForUser(@props.uuid, onlyInsights: true)
       .size
 
   getCompaniesNumber: ->
@@ -149,7 +147,7 @@ module.exports = React.createClass
       @renderEmptyTabText("companies")
 
   renderInsights: ->
-    unless UserPins.isEmpty(@props.uuid)
+    unless UserPins.isEmpty(@props.uuid, onlyInsights: true)
       <UserPins user_id = { @props.uuid } showOnlyInsights = { !@isViewerProfile() } />
     else
       @renderEmptyTabText("insights")
