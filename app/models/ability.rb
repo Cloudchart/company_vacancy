@@ -178,7 +178,7 @@ class Ability
       end
 
       can :read, Post do |post|
-        (post.company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')) ||
+        ((post.company.is_published? || public_reader?(current_user, post.company)) && (post.visibilities.blank? || post.visibility.value == 'public')) ||
         (post.visibility.try(:value) == 'trusted' && trusted_reader?(current_user, post.company))
       end
 
