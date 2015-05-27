@@ -48,13 +48,29 @@ class UserMailer < ActionMailer::Base
     mail to: 'anton@cloudchart.co'
   end
 
-  def pinboard_invite(email, token)
-    @pinboard = token.owner
-    @user = email.try(:user)
-    @token = rfc1751(token.id).parameterize
+  def pinboard_invite(role, email)
+    @pinboard = role.owner
+    @user = role.user
+    @author = role.author
 
-    email = email.try(:address) || email
-    mail to: email
+    return unless email.present?
+
+    mail(to: email) do |format|
+      format.html { render layout: 'user_mailer_' }
+    end
+  end
+
+  def request_pinboard_invite(user, token)
+    @pinboard = token.owner
+    @user = user
+    @owner = @pinboard.user
+    @message = token.data[:message]
+
+    return unless email = @owner.email
+
+    mail(to: email) do |format|
+      format.html { render layout: 'user_mailer_' }
+    end
   end
 
   def app_invite_(user)

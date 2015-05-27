@@ -13,8 +13,15 @@ class RolesController < ApplicationController
 
     @role.save!
 
+    Activity.track(current_user, 'invite', @role.owner, data: {
+      user_id: @role.user.uuid
+    })
+
     if params[:email]
-      # TODO: send email
+      UserMailer.pinboard_invite(@role, params[:email]).deliver
+      Activity.track(current_user, 'email_invite', @role.owner, data: {
+        user_id: @role.user.uuid
+      })
     end
 
     respond_to do |format|
@@ -36,6 +43,10 @@ class RolesController < ApplicationController
     else
       raise ActiveRecord::RecordNotFound
     end
+
+    Activity.track(current_user, 'accept_invite', @role.owner, data: {
+      author_id: @role.author.id
+    })
 
     respond_to do |format|
       format.json { render json: { id: @role.id } }
@@ -74,6 +85,10 @@ class RolesController < ApplicationController
       render json: { errors: { base: 'owner' } }, status: 422
     else
       @role.destroy
+      Activity.track(current_user, 'decline_invite', @role.owner, data: {
+        author_id: @role.author.id
+      })
+
       render json: { id: @role.id }
     end
   end

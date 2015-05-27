@@ -1,0 +1,18 @@
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-top:50px;padding-bottom:10px">
+  Hi, <%= @owner.first_name %>,
+</p>
+
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  <%= @user.full_name %> (<%= link_to "@#{@user.twitter}", main_app.user_url(@user), target: "_blank" %>) would like to join your <%= link_to @pinboard.title, main_app.collection_url(@pinboard) %> collection on Cloudchart.
+</p>
+
+<%- if @message.present? %>
+  <p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+    "<%= @message %>"
+  </p>
+<%- end %>
+
+<p style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:50px">
+ After they join the collection, they will be able to see and add insights. 
+ <%= link_to 'Allow them in', main_app.collection_url(@pinboard, anchor: 'users'), target: "_blank" %> or, if you do not wish to, simply ignore this email.
+</p>

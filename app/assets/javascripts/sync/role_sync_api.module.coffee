@@ -8,8 +8,9 @@ module.exports =
       type:     'POST'
       dataType: 'json'
       data:
-        role:    _.omit(attributes, 'twitter')
+        role:    _.omit(attributes, 'twitter', 'email')
         twitter: attributes.twitter
+        email:   attributes.email
 
   update: (item, attributes = {}, options = {}) ->
     Promise.resolve $.ajax
