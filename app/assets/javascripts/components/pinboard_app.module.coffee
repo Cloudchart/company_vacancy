@@ -70,7 +70,10 @@ module.exports = React.createClass
     isSyncing:  false
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid })
+    Promise.all([
+      GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }),
+      @fetchViewer()
+    ])
 
   fetchViewer: (options={}) ->
     GlobalState.fetch(@getQuery('viewer'), options)
@@ -96,9 +99,11 @@ module.exports = React.createClass
   isViewerOwner: ->
     @getOwner().get('uuid') == @getViewerId()
 
+  getViewerRole: ->
+    RoleStore.rolesOnOwnerForUser(@getPinboard(), 'Pinboard', @props.cursor.viewer).first()
+
   isViewerEditor: ->
-    (role = RoleStore.rolesOnOwnerForUser(@getPinboard().get('uuid'), 'Pinboard', @props.cursor.viewer).first()) && 
-    role.get('value') == 'editor'
+    !!(role = @getViewerRole()) && role.get('value') == 'editor'
 
   canViewerEdit: ->
     @isViewerOwner() || @isViewerEditor()
@@ -134,6 +139,8 @@ module.exports = React.createClass
   # Renderers
   #
   renderFollowButton: ->
+    return null if @isViewerOwner() || @isViewerEditor()
+
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
     <SyncButton
