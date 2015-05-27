@@ -309,7 +309,7 @@ main.company {
         width: 800px;
 
         > button:first-of-type {
-          @include position(absolute, $default-margin-size $default-margin-size 0 0);
+          @include position(absolute, 10px 10px 0 0);
         
           &.edit-mode {
             color: $link-color;
