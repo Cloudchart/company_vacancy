@@ -25,7 +25,7 @@ module.exports = React.createClass
 
   mixins: [GlobalState.mixin]
 
-  propTypes: 
+  propTypes:
     uuid:          React.PropTypes.string
     title:         React.PropTypes.string
     pinnable_id:   React.PropTypes.string
@@ -107,6 +107,10 @@ module.exports = React.createClass
     event.preventDefault()
     event.stopPropagation()
 
+    location.href = '/auth/developer'
+
+    return null unless @props.cursor.user.get('twitter', false)
+
     @setState(clicked: true)
 
     if @state.currentUserPin
@@ -151,7 +155,7 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @props.cursor.user.get('uuid') && @props.cursor.user.get('twitter')
+    return null unless @props.cursor.user.get('uuid') #&& @props.cursor.user.get('twitter')
 
     classList = cx
       active:         @isActive()
@@ -167,7 +171,7 @@ module.exports = React.createClass
         { @renderHotzone() }
       </li>
     else
-      <StandardButton 
+      <StandardButton
         className = "cc"
         iconClass = "fa fa-thumb-tack"
         onClick   = { @handleClick }
