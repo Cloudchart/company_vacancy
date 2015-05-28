@@ -129,9 +129,9 @@ module.exports = React.createClass
   #
   renderAccessRightsIcon: ->
     classList = cx
-      'fa':       true
-      'fa-lock':  @cursor.pinboard.get('access_rights') is 'private'
-      'fa-users': @cursor.pinboard.get('access_rights') is 'protected'
+      'fa':           true
+      'fa-lock':      @cursor.pinboard.get('access_rights') is 'private'
+      'fa-eye-slash': @cursor.pinboard.get('access_rights') is 'protected'
 
     <i className={ classList } />
 
