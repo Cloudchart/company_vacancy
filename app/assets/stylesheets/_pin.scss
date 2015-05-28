@@ -6,19 +6,18 @@
 
   position: relative;
 
-  > header {
-    width: 100%;
-
-    > p {
-      margin-bottom: $inner-margin-size;
-    }
-
-    > .round-buttons {
-      float: right;
-      padding-left: $default-margin-size;
-      padding-bottom: $default-margin-size;
-    }
+  > p {
+    margin-bottom: $inner-margin-size;
   }
+
+  > footer {
+    @include align-items(flex-end);
+    @include display(flex);
+    @include justify-content(space-between);
+
+    width: 100%;
+  }
+
 }
 
 

@@ -135,18 +135,18 @@ module.exports = React.createClass
     return unless insight = @getInsight()
 
     <article className="insight">
-      <header>
-        { @renderInsightControls(insight) }
-        <InsightContent
-          pinnable_id = { @cursor.pin.get('pinnable_id') }
-          pin_id      = { insight.get('uuid') }  />
-      </header>
+      <InsightContent
+        pinnable_id = { @cursor.pin.get('pinnable_id') }
+        pin_id      = { insight.get('uuid') }  />
 
-      <Human
-        showUnicornIcon = { true }
-        showLink        = { !@isClickable() }
-        type            = "user"
-        uuid            = { insight.get('user_id') } />
+      <footer>
+        <Human
+          showUnicornIcon = { true }
+          showLink        = { !@isClickable() }
+          type            = "user"
+          uuid            = { insight.get('user_id') } />
+        { @renderInsightControls(insight) }
+      </footer>
     </article>
 
   renderPinnablePreviewOrInsight: ->
