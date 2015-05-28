@@ -93,4 +93,6 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <PinboardsList pinboards = { @gatherPinboards() } />
+    <PinboardsList 
+      pinboards = { @gatherPinboards() }
+      user_id   = { @props.user_id } />

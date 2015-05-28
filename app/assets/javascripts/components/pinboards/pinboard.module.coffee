@@ -49,6 +49,9 @@ module.exports = React.createClass
       @setState
         loaders: @state.loaders.set('pinboard', true)
 
+  propTypes:
+    user_id: React.PropTypes.string
+
   getDefaultProps: ->
     cursor:
       roles: RoleStore.cursor.items
@@ -148,11 +151,16 @@ module.exports = React.createClass
       { description }
     </section>
 
+  renderOwner: ->
+    return <div /> if @cursor.pinboard.get('user_id') == @props.user_id
+
+    <Human 
+      type = "user"
+      uuid = { @cursor.pinboard.get('user_id') } />
+
   renderFooter: ->
     <footer>
-      <Human 
-        type = "user"
-        uuid = { @cursor.pinboard.get('user_id') } />
+      { @renderOwner() }
 
       <ul className="counters">
         <li>

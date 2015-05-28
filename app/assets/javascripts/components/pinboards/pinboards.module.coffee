@@ -17,13 +17,16 @@ module.exports = React.createClass
 
   propTypes:
     pinboards: React.PropTypes.array.isRequired
+    user_id:   React.PropTypes.string
 
 
   # Renderers
   #
   renderPinboard: (pinboard) ->
     <section className="cloud-column" key={ pinboard.get('uuid') }>
-      <PinboardComponent uuid={ pinboard.get('uuid') } />
+      <PinboardComponent 
+        uuid    = { pinboard.get('uuid') }
+        user_id = { @props.user_id } />
     </section>
 
   renderPinboards: ->
