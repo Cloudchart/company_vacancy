@@ -311,7 +311,7 @@ CompanyPreview = React.createClass
   renderFollowedLabel: ->
     return null unless @getFavorite()
 
-    <li className="label">Followed</li>
+    <li className="label">Following</li>
 
   renderPostsCount: ->
     return null if (count = @getPostsCount()) == 0
