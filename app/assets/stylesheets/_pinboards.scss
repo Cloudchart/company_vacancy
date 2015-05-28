@@ -148,6 +148,15 @@ article.pinboards {
     > header {
       @include pinboard-card-header;
     }
+
+    > .buttons {
+      @include display(flex);
+      @include justify-content(space-between);
+
+      width: 50%;
+
+      margin: 10px auto;
+    }
   }
 
   > footer {
