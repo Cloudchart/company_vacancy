@@ -107,9 +107,9 @@ module.exports = React.createClass
     event.preventDefault()
     event.stopPropagation()
 
-    location.href = '/auth/twitter'
-
-    return null unless @props.cursor.user.get('twitter', false)
+    unless @props.cursor.user.get('twitter', false)
+      location.href = '/auth/twitter'
+      return null 
 
     @setState(clicked: true)
 
