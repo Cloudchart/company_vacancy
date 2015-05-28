@@ -219,13 +219,16 @@ Component = React.createClass
     @state.post
 
   handleScroll: (event) ->
-    if @timer || @stickyTimer
-      clearTimeout @timer
-      clearTimeout @stickyTimer
-
     newScroll = $(window).scrollTop()
     direction = if newScroll - @lastScroll > 0 then 'down' else 'up'
     @lastScroll = newScroll
+
+    if @animation && direction == 'up'
+      @animation.stop()
+
+    if @timer || @stickyTimer
+      clearTimeout @timer
+      clearTimeout @stickyTimer
 
     @timer       = setTimeout @changePlaceholder.bind(@, direction), 100
     @stickyTimer = setTimeout @scrollSticky, 1000
@@ -247,7 +250,7 @@ Component = React.createClass
 
     if difference < $(@getDOMNode()).height() && difference > 10 && @state.asPlaceholder
       if $(window).scrollTop() + $(window).height() != $(document).height()
-        $('html,body').animate({ scrollTop: $(@getDOMNode()).next().offset().top - (10 + headerHeight) }, 'slow')
+        @animation = $('html,body').animate({ scrollTop: $(@getDOMNode()).next().offset().top - (10 + headerHeight) }, 'slow')
       else
         $('html,body').animate({ scrollTop: $(@getDOMNode()).offset().top - (10 + headerHeight) }, 'slow')
 
