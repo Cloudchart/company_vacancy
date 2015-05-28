@@ -11,6 +11,8 @@ Modal           = require('components/modal_stack')
 StandardButton  = require('components/form/buttons').StandardButton
 Hotzone         = require('components/shared/hotzone')
 
+HotzoneCursor   = GlobalState.cursor(['meta', 'insight', 'hotzone'])
+
 
 # Utils
 #
@@ -23,7 +25,19 @@ module.exports = React.createClass
 
   displayName: 'PinButton'
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+  statics:
+
+    queries:
+
+      viewer: ->
+
+        """
+          Viewer {
+            tokens
+          }
+        """
 
   propTypes:
     uuid:          React.PropTypes.string
@@ -31,14 +45,14 @@ module.exports = React.createClass
     pinnable_id:   React.PropTypes.string
     pinnable_type: React.PropTypes.string
     asTextButton:  React.PropTypes.bool
-    showHotzone:   React.PropTypes.bool
 
   getDefaultProps: ->
     asTextButton: false
-    showHotzone:  false
     cursor:
-      pins:   PinStore.cursor.items
-      user:   UserStore.me()
+      pins:    PinStore.cursor.items
+      tokens:  TokenStore.cursor.items
+      hotzone: HotzoneCursor
+      user:    UserStore.me()
 
   getInitialState: ->
     _.extend loaders: Immutable.Map(), clicked: false,
@@ -50,6 +64,9 @@ module.exports = React.createClass
   getStateFromStores: ->
     currentUserPin:     @currentUserPin()
     currentUserRepin:   @currentUserRepin()
+
+  fetch: (id) ->
+    GlobalState.fetch(@getQuery('viewer'))
 
 
   # Helpers
@@ -98,6 +115,26 @@ module.exports = React.createClass
   isActive: ->
     !!@state.currentUserPin || !!@state.currentUserRepin
 
+  shouldShowHotzone: ->
+    (!!TokenStore.findByUserAndName(@props.cursor.user, 'insight_tour') || location.search == '?hotzone=true')
+
+  getPinButtonKey: ->
+    @props.pinnable_id + @props.uuid
+
+  showHotzone: ->
+    @shouldShowHotzone() && (HotzoneCursor.deref(false) == @getPinButtonKey())
+
+  isHotzoneShown: ->
+    HotzoneCursor.deref(false)
+
+  checkVisibility: ->
+    return null unless @shouldShowHotzone() && !@isHotzoneShown()
+
+    difference = $(window).scrollTop() + $(window).height() - $(@getDOMNode()).offset().top
+
+    if difference > 0 && difference < $(window).height() && $(@getDOMNode()).offset().left > 0
+      HotzoneCursor.update (data) => @getPinButtonKey()
+
 
   # Handlers
   #
@@ -119,6 +156,24 @@ module.exports = React.createClass
       Modal.show(@renderEditPinForm(@state.currentUserRepin.get('uuid')))
     else
       Modal.show(@renderPinForm())
+
+
+  # Lifecycle methods
+  #
+  componentWillMount: ->
+    @fetch()
+
+  componentDidMount: ->
+    @timer = false
+
+    setTimeout @checkVisibility, 100
+
+    window.addEventListener "scroll", @checkVisibility
+    window.addEventListener "resize", @checkVisibility
+
+  componentWillUnmount: ->
+    window.removeEventListener "scroll", @checkVisibility
+    window.removeEventListener "resize", @checkVisibility
 
 
   # Renderers
@@ -149,7 +204,7 @@ module.exports = React.createClass
     "Save"
 
   renderHotzone: ->
-    return null unless @props.showHotzone && !@state.clicked
+    return null unless @showHotzone() && !@state.clicked && @isClickable()
 
     <Hotzone />
 

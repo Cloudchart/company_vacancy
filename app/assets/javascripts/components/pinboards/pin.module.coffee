@@ -37,7 +37,6 @@ module.exports = React.createClass
   propTypes:
     uuid:          React.PropTypes.string.isRequired
     onClick:       React.PropTypes.func
-    showHotzone:   React.PropTypes.bool
     showAuthor:    React.PropTypes.bool
 
   statics:
@@ -67,7 +66,6 @@ module.exports = React.createClass
 
   getDefaultProps: ->
     showAuthor:  true
-    showHotzone: false
 
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
@@ -123,7 +121,7 @@ module.exports = React.createClass
   renderPinButton: ->
     return null unless insight = @getInsight()
 
-    <PinButton {...@gatherPinAttributes(insight)} showHotzone = { @props.showHotzone } />
+    <PinButton {...@gatherPinAttributes(insight)} />
 
   renderInsightControls: (insight) ->
     <ul className="round-buttons">

@@ -17,7 +17,6 @@ module.exports = React.createClass
   propTypes:
     pins:          React.PropTypes.array.isRequired
     onItemClick:   React.PropTypes.func
-    showHotzone:   React.PropTypes.bool
 
   # Helpers
   #
@@ -33,8 +32,7 @@ module.exports = React.createClass
       <PinComponent
         uuid          = { pin.get('uuid') }
         onClick       = { @props.onItemClick }
-        showAuthor    = { !@hasOneAuthor() }
-        showHotzone   = { @props.showHotzone && index == 0 } />
+        showAuthor    = { !@hasOneAuthor() } />
     </section>
 
   renderPins: ->

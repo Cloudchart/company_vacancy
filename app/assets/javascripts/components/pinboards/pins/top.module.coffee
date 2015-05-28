@@ -10,7 +10,6 @@ PinStore        = require('stores/pin_store')
 UserStore       = require('stores/user_store.cursor')
 CompanyStore    = require('stores/company_store.cursor')
 PostStore       = require('stores/post_store.cursor')
-TokenStore      = require('stores/token_store.cursor')
 
 
 # Components
@@ -37,7 +36,6 @@ module.exports = React.createClass
       insights: ->
         """
           Viewer {
-            tokens,
             top_insights {
               #{PinComponent.getQuery('pin')}
             }
@@ -84,9 +82,6 @@ module.exports = React.createClass
       .take(4)
       .toArray()
 
-  shouldShowHotzone: ->
-    !!TokenStore.findByUserAndName(@cursor.user, 'insight_tour') || location.search == '?hotzone=true'
-
 
   # Lifecycle methods
   #
@@ -103,4 +98,4 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <PinsList pins = { @gatherInsights() } showHotzone = { @shouldShowHotzone() } />
+    <PinsList pins = { @gatherInsights() } />
