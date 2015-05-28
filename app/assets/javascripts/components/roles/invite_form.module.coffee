@@ -8,6 +8,8 @@ Buttons           = require('components/form/buttons')
 StandardButton    = Buttons.StandardButton
 SyncButton        = Buttons.SyncButton
 
+Checkbox          = require('components/form/checkbox')
+
 RoleStore         = require("stores/role_store.cursor")
 UserStore         = require("stores/user_store.cursor")
 PinboardStore     = require('stores/pinboard_store')
@@ -29,6 +31,7 @@ Component = React.createClass
     isSyncing:   false
     attributes:  @getDefaultAttributes()
     errors:      Immutable.Map()
+    showEmail:   false
 
 
   # Helpers
@@ -72,6 +75,11 @@ Component = React.createClass
       errors:    Immutable.Map(reason.responseJSON.errors)
       isSyncing: false
 
+  handleEmailVisibilityChange: (value) ->
+    @setState
+      showEmail:  value
+      attributes: @state.attributes.delete('email')
+
 
   # Renderers
   #
@@ -103,6 +111,24 @@ Component = React.createClass
         value       = { @state.attributes.get('twitter', '') }  />
     </label>
 
+  renderEmailInput: ->
+    return null unless @state.showEmail
+
+    <label className="cc-input-label">
+      <input 
+        className   = { if @state.errors.has('email') then 'cc-input error' else 'cc-input' }
+        placeholder = 'Email'
+        onChange    = { @handleInputChange.bind(@, 'email') }
+        value       = { @state.attributes.get('email', '') }  />
+    </label>
+
+  renderEmailCheckbox: ->
+    <Checkbox
+      checked   = { @state.showEmail }
+      onChange  = { @handleEmailVisibilityChange } >
+      Notify by email
+    </Checkbox>
+
 
   render: ->
     <section className="invite-form">
@@ -121,6 +147,8 @@ Component = React.createClass
 
         <footer>
           { @renderTwitterInput() }
+          { @renderEmailInput() }
+          { @renderEmailCheckbox() }
 
           <SyncButton 
             className = "cc"

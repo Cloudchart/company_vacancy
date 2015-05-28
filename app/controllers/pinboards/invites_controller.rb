@@ -5,14 +5,27 @@ module Pinboards
     def create
       pinboard  = Pinboard.find(params[:pinboard_id])
 
-      token     = pinboard.tokens.create!(name: 'access_request', target: current_user, data: {
+      token     = pinboard.tokens.build(name: 'access_request', target: current_user, data: {
         user_id:    current_user.id,
         user_name:  current_user.full_name,
         message:    params[:message]
       })
 
+      token.save!
+
+      UserMailer.request_pinboard_invite(current_user, token).deliver
+      Activity.track(current_user, 'request_invite', pinboard, data: {
+        message: params[:message]
+      })
+
       respond_to do |format|
         format.json { render json: { id: token.id } }
+      end
+
+    rescue ActiveRecord::RecordInvalid
+
+      respond_to do |format|
+        format.json { render json: { errors: token.errors }, status: 402 }
       end
     end
 
@@ -25,6 +38,11 @@ module Pinboards
       token = pinboard.tokens.find(params[:id])
       role  = pinboard.roles.create!(user: token.target, author: current_user, value: params[:role])
       token.destroy
+
+      UserMailer.pinboard_invite(role, role.user.email).deliver
+      Activity.track(current_user, 'accept_request_access', role.owner, data: {
+        user_id: @role.user.id
+      })
 
       respond_to do |format|
         format.json { render json: { token_id: token.id, role_id: role.id } }
@@ -40,6 +58,9 @@ module Pinboards
       token = pinboard.tokens.find(params[:id])
 
       token.destroy
+      Activity.track(current_user, 'decline_request_access', role.owner, data: {
+        user_id: token.target.id
+      })
 
       respond_to do |format|
         format.json { render json: { id: token.id } }
