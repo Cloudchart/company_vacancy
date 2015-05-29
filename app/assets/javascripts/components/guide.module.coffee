@@ -22,21 +22,28 @@ module.exports = React.createClass
 
   renderInsight: ->
     <article className="insight item">
-      <div className="human shervin-pishevar">
-        <figure className="avatar"></figure>
-        <section className="credentials">
-          <p className="name">
-            <span>
-              <span>Shervin </span>
-              <span className="last-part">
-                <span>Pishevar</span>
-                <i className="svg-icon svg-unicorn"></i>
+      <header>
+        <div className="human shervin-pishevar">
+          <figure className="avatar"></figure>
+          <section className="credentials">
+            <p className="name">
+              <span>
+                <span>Shervin </span>
+                <span className="last-part">
+                  <span>Pishevar</span>
+                  <i className="svg-icon svg-unicorn"></i>
+                </span>
               </span>
-            </span>
-          </p>
-          <p className="occupation">Co-Founder and Managing Partner, SherpaVentures</p>
-        </section>
-      </div>
+            </p>
+            <p className="occupation">Co-Founder and Managing Partner, SherpaVentures</p>
+          </section>
+        </div>
+        <ul className="round-buttons">
+          <li className="active">
+            <i className="fa fa-thumb-tack"></i>
+          </li>
+        </ul>
+      </header>
       <section className="content">
         <span>Surround yourself with value creators so you can be open with your heart and mind in an environment based on grace, merit and generosity.</span>
         { " " }
@@ -44,11 +51,6 @@ module.exports = React.createClass
           <i className="fa fa-code"></i>
         </a>
       </section>
-      <ul className="round-buttons">
-        <li className="active">
-          <i className="fa fa-thumb-tack"></i>
-        </li>
-      </ul>
     </article>
 
   renderTeslaPreview: ->
@@ -125,9 +127,13 @@ module.exports = React.createClass
       <section>
         <header>Follow companies you’re interested in.</header>
         <p>Get their updates and learn from their successes and failures in real time.</p>
-        <section className="companies-list">
-          { @renderTeslaPreview() }
-          { @renderOpswarePreview() }
+        <section className="companies-list cloud-columns cloud-columns-flex">
+          <section className="cloud-column">
+            { @renderTeslaPreview() }
+          </section>
+          <section className="cloud-column">
+            { @renderOpswarePreview() }
+          </section>
         </section>
       </section>
       <footer>

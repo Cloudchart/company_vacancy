@@ -78,6 +78,11 @@
             line-height: 78px;
             margin-left: 10px;
 
+            @include respond-to(small) {
+              font-size: $huge-font-size;
+              line-height: 50px;
+            }
+
             > span {
               @include box-shadow(10px 0 0 $accented-green-color, -10px 0 0 $accented-green-color);
 
@@ -105,7 +110,7 @@
           }
 
           > h2 {
-            font-size: $huge-font-size;
+            font-size: $large-font-size;
             font-weight: 300;
             text-transform: uppercase;
           }
@@ -117,6 +122,10 @@
 
         margin-top: 7px;
         width: 280px;
+
+        @include respond-to(small) {
+          width: 230px;
+        }
       }
     }
   }

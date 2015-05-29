@@ -6,7 +6,7 @@
   @include flex-wrap(wrap);
 
   &.cloud-columns-flex {
-    @for $i from 2 through 5 {
+    @for $i from 1 through 5 {
       $width: $block-width * $i + $gutter-size;
 
       @media (min-width: $width) {

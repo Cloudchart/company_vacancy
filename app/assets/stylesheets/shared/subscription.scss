@@ -9,8 +9,11 @@
   font-size: $big-font-size;
   font-weight: 400;
   line-height: 29px;
-  width: calc(100% - 2 * #{$gutter-size} );
   padding: 40px;
+
+  @include respond-to(medium) {
+    width: 476px;
+  }
 
   p {
     max-width: 600px;

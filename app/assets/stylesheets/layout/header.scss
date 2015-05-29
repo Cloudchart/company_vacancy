@@ -45,6 +45,10 @@ $header-button-height: 50px - $header-padding * 2;
   font-weight: 300;
   margin-right: 5px;
 
+
+  @include respond-to(small) {
+    display: none;
+  }
 }
 
 
@@ -78,7 +82,7 @@ body > header {
     font-size: $header-font-size;
     font-weight: $header-font-weight;
     height: $header-height;
-    min-width: 800px;
+    min-width: min-page-width;
     padding: 0 25px;
     z-index: $zindex-header;
 
@@ -181,7 +185,7 @@ body > header {
             display: none;
           }
 
-          @media (max-width: 850px) {
+          @include respond-to(small) {
             > i + span {
               display: none;
             }

@@ -5,8 +5,7 @@
 @import 'variables';
 @import 'modal';
 @import 'mixins/guest';
-@import 'mixins/form_2';
-@import 'mixins/button';
+@import 'mixins';
 @import 'icons';
 @import 'shared/avatar';
 @import 'shared/navigator';
@@ -17,6 +16,8 @@
 @import 'landing';
 @import 'landings';
 @import 'errors';
+@import 'layout/card';
+@import 'layout/columns';
 
 $base-unit: 20px;
 $base-font-size: 15px;
@@ -34,7 +35,6 @@ html {
   @include box-sizing(border-box);
 
   height: 100%;
-  min-width: 1024px;
 }
 
 
@@ -45,12 +45,13 @@ body {
   font-family: $base-font-family;
   font-size: $base-font-size;
   min-height: 100%;
-
+  min-width: $min-page-width;
 
   > header,
   > footer { 
     @include align-items(center);
     @include display(flex);
+    @include flex(1);
 
     background-color: $accented-green-color;    
     color: $accented-white-color;     

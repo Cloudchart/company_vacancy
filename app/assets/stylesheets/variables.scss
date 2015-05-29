@@ -2,8 +2,6 @@ $base-font-size: 22pt;
 $base-unit: $base-font-size * .7;
 $base-font-family: 'proxima-nova';
 
-$min-page-width: 700px;
-
 // Colors
 $platinum: hsl(0, 0%, 89%);
 $athens-grey: hsl(0, 0, 87%);
@@ -117,6 +115,10 @@ $footer-link-color: $accented-white-color;
 $footer-font-size: $basic-font-size;
 $footer-font-weight: 300;
 $footer-height: 75px;
+
+$small-break-width: 850px;
+$medium-break-width: 1024px;
+$min-page-width: 600px;
 
 strong {
   font-weight: $bold-weight;
