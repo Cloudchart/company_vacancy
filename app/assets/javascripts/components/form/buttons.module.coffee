@@ -3,6 +3,7 @@
 joinClasses = (firstClass, secondClass) ->
   (firstClass + " " + secondClass).trim()    
 
+cx = React.addons.classSet
 
 StandardButton = React.createClass
  
@@ -49,12 +50,16 @@ SyncButton = React.createClass
     iconClass:   @props.iconClass
     sync:        @props.sync
     text:        @props.text
+    transition:  false
 
 
   # Helpers
   #
   updateWidth: ->
     @getDOMNode().style.width = getComputedStyle(@getDOMNode().childNodes[0]).width
+
+  addTransition: ->
+    @setState transition: true
 
 
   # Lifecycle methods
@@ -64,6 +69,10 @@ SyncButton = React.createClass
     @nextState   = {}
 
     @updateWidth()
+
+    setTimeout =>
+      @addTransition()
+    , 500
 
   componentWillReceiveProps: (nextProps) ->
     nextState = _.pick nextProps, ["iconClass", "sync", "text"]
@@ -88,14 +97,14 @@ SyncButton = React.createClass
 
   render: ->
     props = _.extend @props, 
-                    className:    joinClasses(@props.className, "sync")
+                    className:    joinClasses(@props.className, cx(sync: true, "no-transition": !@state.transition))
                     iconClass:    @state.iconClass
                     text:         @state.text
                     wrapChildren: true
 
     if @state.sync
       props = _.extend props,
-                className: joinClasses(@props.className, "syncing sync")
+                className: joinClasses(@props.className, "syncing")
                 disabled:  true
                 iconClass: joinClasses(@props.syncIconClass, "fa-spin")
 

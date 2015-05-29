@@ -133,6 +133,10 @@ a.cc {
     overflow: hidden;
     position: relative;
 
+    &.no-transition {
+      @include transition(none);
+    }
+
     > div {
       @include align-items(center);
       @include display(flex);
