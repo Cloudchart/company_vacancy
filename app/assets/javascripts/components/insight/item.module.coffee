@@ -167,13 +167,11 @@ module.exports = React.createClass
       suggested:  @isSuggested()
 
     <article className = { insightClasses } >
-      <header>
-        <Human 
-          uuid            = { @getInsight().get('user_id') }
-          showUnicornIcon = { true }
-          type            = "user" />
-        { @renderButtons() }
-      </header>
+      <Human 
+        uuid            = { @getInsight().get('user_id') }
+        showUnicornIcon = { true }
+        type            = "user" />
       { @renderContent() }
+      { @renderButtons() }
       { @renderSuggestion() }  
     </article>

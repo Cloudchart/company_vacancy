@@ -132,59 +132,54 @@ ul.insight-list,
     opacity: 0.7;
   }
 
-  > header {
+  > .human {
+    @include align-items(center);
     @include display(flex);
-    @include justify-content(space-between);
+    @include flex(1);
 
-    > .human {
-      @include align-items(center);
-      @include display(flex);
+    margin-bottom: $default-margin-size;
+
+    > figure {
+      background-color: #eee;
+      background-size: cover;
+      background-position: center center;
+      border-radius: 50%;
+      height: 50px;
+      margin-right: $inner-margin-size;
+      position: relative;
+      width: 50px;
+
+      > figcaption {
+        @include position(absolute, 50% null null 50%);
+        @include transform(translateX(-50%) translateY(-50%));
+
+        color: hsl(0, 100%, 100%);
+        font-size: $basic-font-size;
+      }
+    }
+
+    > section {
       @include flex(1);
 
-      margin-bottom: $default-margin-size;
+      margin-top: 5px;
 
-      > figure {
-        background-color: #eee;
-        background-size: cover;
-        background-position: center center;
-        border-radius: 50%;
-        height: 50px;
-        margin-right: $inner-margin-size;
-        position: relative;
-        width: 50px;
+      > p {
+        margin: 0;
 
-        > figcaption {
-          @include position(absolute, 50% null null 50%);
-          @include transform(translateX(-50%) translateY(-50%));
+        &.name {
+          color: hsl(135, 50%, 50%);
+          font-size: $big-font-size;
+          font-weight: 600;
 
-          color: hsl(0, 100%, 100%);
-          font-size: $basic-font-size;
+          .last-part {
+            display: inline-block;
+          }
         }
-      }
 
-      > section {
-        @include flex(1);
-
-        margin-top: 5px;
-
-        > p {
-          margin: 0;
-
-          &.name {
-            color: hsl(135, 50%, 50%);
-            font-size: $big-font-size;
-            font-weight: 600;
-
-            .last-part {
-              display: inline-block;
-            }
-          }
-
-          &.occupation {
-            color: $secondary-text-color;
-            font-size: 16px;
-            font-weight: 300;
-          }
+        &.occupation {
+          color: $secondary-text-color;
+          font-size: 16px;
+          font-weight: 300;
         }
       }
     }
