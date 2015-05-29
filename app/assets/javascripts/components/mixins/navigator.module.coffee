@@ -23,7 +23,7 @@ module.exports =
     else if direction == 'next'
       @state.position + 1
 
-    return if newPosition > @getPositionsNumber() - 1 || newPosition < 0
+    return if !stateChanges.cycle && (newPosition > @getPositionsNumber() - 1 || newPosition < 0)
 
     @setState _.extend(stateChanges, position: newPosition, isNexted: direction == 'next')
 
@@ -61,7 +61,7 @@ module.exports =
   #
   renderNavLinks: ->
     [0..@getPositionsNumber()-1].map (index) =>
-      linkClassName = cx(active: index == @state.position)
+      linkClassName = cx(active: index == @state.position % @getPositionsNumber())
 
       <li key={ index }>
         <button className={ linkClassName } onClick={ @handleNavLinkClick.bind(@, index) } />

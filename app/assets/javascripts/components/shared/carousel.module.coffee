@@ -96,7 +96,7 @@ module.exports = React.createClass
 
     startSlideshow = =>
       setTimeout => 
-        @goToNext(isNavigating: true) unless @state.isSlideshowPaused || @state.isSlideshowStopped
+        @goToNext(isNavigating: true, cycle: true) unless @state.isSlideshowPaused || @state.isSlideshowStopped
         startSlideshow() unless @state.isSlideshowStopped
       , @props.delay
 
