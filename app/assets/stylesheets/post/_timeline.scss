@@ -5,6 +5,10 @@
   width: 1024px;
   margin: 0 auto;
 
+  @include respond-to(medium) {
+    width: 550px;
+  }
+
   > header {
     @include display(flex);
     @include flex-direction(column);
@@ -131,6 +135,12 @@
   margin: $gutter-size/2 0;
   width: 1024px;
 
+  @include respond-to(medium) {
+    @include flex-direction(column);
+
+    width: 550px;
+  }
+
   > .preview.post {
     @include display(flex);
     @include flex(1);
@@ -139,6 +149,10 @@
     border: 1px solid $border-color;
     background-color: $card-color;
     padding: $default-margin-size;
+
+    @include respond-to(medium) {
+      width: 100%;
+    }
 
     > .post-placeholder {
       background-image: image_url('placeholders/paragraph.png');
@@ -282,7 +296,6 @@
   > .post-pins {
     > .show-pins {
       font-size: $basic-font-size;
-      margin-left: $gutter-size;
       padding: 0 30px;
     }
   }
@@ -291,7 +304,17 @@
     background-image: image_url('placeholders/insight.png');
     background-size: cover;
     height: 270px;
-    margin-left: $gutter-size;
     width: 310px;
+  }
+
+  > .post-pins-placeholder,
+  > .post-pins > .show-pins,
+  > .post-pins > .insight-timeline-list {
+    margin-left: $gutter-size;
+
+    @include respond-to(medium) {
+      margin-left: 0;
+      margin-top: $gutter-size;
+    }
   }
 }

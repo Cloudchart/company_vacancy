@@ -9,6 +9,10 @@
   padding: $gutter-size 0 $default-margin-size 0;
   position: relative;
 
+  @include respond-to(medium) {
+    width: 600px;
+  }
+
   // Controls
   // 
   > .controls {
@@ -307,6 +311,10 @@ main.company {
         position: relative;
         margin: 0 auto;
         width: 800px;
+
+        @include respond-to(medium) {
+          width: 550px;
+        }
 
         > button:first-of-type {
           @include position(absolute, 10px 10px 0 0);

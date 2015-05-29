@@ -102,8 +102,6 @@ body > header {
       @include align-items(center);
       @include display(flex);
 
-      width: 200px;
-
       > .breadcrumbs {
         @include align-items(center);
         @include display(flex);

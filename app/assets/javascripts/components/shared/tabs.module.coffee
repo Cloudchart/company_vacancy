@@ -2,6 +2,7 @@
 
 # Imports
 #
+Dropdown = require('components/form/dropdown')
 
 
 # Utils
@@ -53,6 +54,13 @@ MainComponent = React.createClass
     else
       @props.tabs.first()
 
+  getTabOptions: ->
+    @props.tabs.reduce (memo, tabName) =>
+      memo[tabName] = @props.renderTabName(tabName)
+
+      memo
+    , {}
+
 
   # Handlers
   # 
@@ -61,28 +69,40 @@ MainComponent = React.createClass
       @setState currentTab: currentTab
       @props.onChange(currentTab)
 
+  handleSelect: (value) ->
+    location.href = location.pathname + "#" + value
+
 
   # Renderers
   # 
   renderTabs: ->
     return null if @props.tabs.size == 1
 
-    @props.tabs.map (tabName) =>
-      <li key = { tabName } className = { @getMenuOptionClassName(tabName) } >
-        <a href = { location.pathname + "#" + tabName } className = "for-group" >
-          { @props.renderTabName(tabName) }
-        </a>
-      </li>
-    .toArray()
+    <ul>
+      {
+        @props.tabs.map (tabName) =>
+          <li key = { tabName } className = { @getMenuOptionClassName(tabName) } >
+            <a href = { location.pathname + "#" + tabName } className = "for-group" >
+              { @props.renderTabName(tabName) }
+            </a>
+          </li>
+        .toArray()
+      }
+    </ul>
+
+  renderDropdownTabs: ->
+    <Dropdown
+      options  = { @getTabOptions() }
+      value    = { @state.currentTab }
+      onChange = { @handleSelect } />
 
 
   # Main render
   # 
   render: ->
     <nav className="tabs">
-      <ul>
-        { @renderTabs() }
-      </ul>
+      { @renderTabs() }
+      { @renderDropdownTabs() } 
     </nav>
 
 

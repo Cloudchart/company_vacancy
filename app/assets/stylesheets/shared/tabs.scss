@@ -13,6 +13,34 @@ nav.tabs {
     list-style: none;
     margin: 0;
     padding: 0;
+
+    @include respond-to(small) {
+      display: none;
+    }
+  }
+
+  .select {
+    display: none;
+
+    @include respond-to(small) {
+      display: block;
+
+      background-color: $background-color;
+      height: 70px;
+      margin: 0 auto;
+      width: 200px;
+
+      select {
+        font-size: $large-font-size;
+        padding-left: 20px;
+        text-transform: capitalize;
+      }
+
+      .fa {
+        font-size: $large-font-size;
+        top: 24px;
+      }
+    }
   }
 
   li {

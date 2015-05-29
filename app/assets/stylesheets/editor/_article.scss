@@ -25,6 +25,10 @@ article.editor {
   margin: 0 auto;
   padding: $default-margin-size;
   width: $editor-width;
+
+  @include respond-to(medium) {
+    width: 550px;
+  }
   
   > section {
     position: relative;
