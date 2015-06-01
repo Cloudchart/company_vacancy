@@ -2,33 +2,42 @@ data  = {}
 query = parse_relations_query(params[:relations])
 
 
-def gather_includes(source, query)
-  result = {}
+def __prepare(sources, query, data)
+  grouped_sources = {}
 
-  if query.present? && !query.empty? && source.respond_to?(:reflect_on_association)
+  sources.compact!
 
-    query.each do |key, value|
-      if association = source.reflect_on_association(key)
-        result[key.to_sym] = gather_includes(association.klass, value) if association.constructable?
-      end
-    end
-
+  sources.each do |source|
+    (grouped_sources[source.class] ||= []) << source
   end
 
-  result
+  query.each do |key, value|
+
+    grouped_sources.each do |klass, instances|
+
+      if klass.present? && klass.reflect_on_association(key)
+        ActiveRecord::Associations::Preloader.new.preload(instances, key)
+      end
+
+    end
+
+    children = sources.map { |source| source.public_send(key) }.flatten
+
+    __prepare(children, value, data)
+
+  end if query.present?
+
+  sources.each do |source|
+    (data[source.class.name.underscore.pluralize] ||= []) << source
+  end
+
 end
 
-
-includes = gather_includes(@source, query)
-
-@source = @source.includes(includes) unless includes.empty?
 
 @source = @source.public_send(*@starter)
 
 
-json.query do
-  populate_data_for_jbuilder(json, data, @source, query)
-end
+__prepare([@source].flatten, query, data)
 
 
 data.each do |key, values|
