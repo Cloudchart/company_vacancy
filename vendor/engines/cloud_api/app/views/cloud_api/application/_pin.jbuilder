@@ -9,4 +9,4 @@ json.is_featured begin
   preload_association(siblings, :feature, cache)
 
   pin.featured?
-end if fields.include?(:is_featured)
+end
