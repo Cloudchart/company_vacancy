@@ -44,6 +44,14 @@ module CloudApi
     end
 
 
+    def preload_association(records, association, cache)
+      unless cache.include?(association)
+        ActiveRecord::Associations::Preloader.new.preload(records, association)
+        cache << association
+      end
+    end
+
+
     def populate_data_for_jbuilder(json, memo, source, query)
       return if source.nil?
 

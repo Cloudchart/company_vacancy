@@ -3,7 +3,7 @@ module Featurable
 
   included do
     has_one :feature, as: :featurable
-    alias_method :is_featured?, :is_featured
+    # alias_method :is_featured?, :is_featured
     scope :featured, -> { joins(:feature) }
   end
 
@@ -15,7 +15,11 @@ module Featurable
     end
   end
 
-  def is_featured
-    !!feature
+  def featured?
+    feature.present?
   end
+
+  # def is_featured
+  #   featured?
+  # end
 end

@@ -84,7 +84,7 @@ module.exports = React.createClass
   # Lifecycle methods
   #
   componentWillMount: ->
-    @cursor = 
+    @cursor =
       pin:  PinStore.cursor.items.cursor(@props.uuid)
       user: UserStore.me()
 
@@ -161,14 +161,14 @@ module.exports = React.createClass
   renderCommentAuthor: ->
     return null unless @props.showAuthor
 
-    <Human 
+    <Human
       showLink   = { false }
       isOneLiner = { true }
       type       = "user"
       uuid       = { @cursor.pin.get('user_id') } />
 
   renderComment: ->
-    return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid) || 
+    return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid) ||
       (!@cursor.pin.get('content') && !@props.showAuthor)
 
     <footer>

@@ -77,7 +77,7 @@ class Pinboard < ActiveRecord::Base
   end
 
   def invite_tokens
-    tokens.where(name: :invite)
+    tokens.select { |token| token.name == 'invite' }
   end
 
   def public?
