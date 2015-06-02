@@ -41,8 +41,8 @@ Component = React.createClass
         """
 
   propTypes:
-    ownerId:   React.PropTypes.string.isRequired
-    ownerType: React.PropTypes.string.isRequired
+    ownerId:       React.PropTypes.string.isRequired
+    ownerType:     React.PropTypes.string.isRequired
 
   getInitialState: ->
     isSyncing:   false
@@ -100,9 +100,7 @@ Component = React.createClass
       .then @handleSubmitDone, @handleSubmitFail
 
   handleSubmitDone: ->
-    @setState
-      attributes:  Immutable.Map()
-      isSyncing:   false
+    ModalStack.hide()
 
   handleSubmitFail: (reason) ->
     @setState

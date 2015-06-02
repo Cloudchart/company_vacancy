@@ -40,7 +40,7 @@ module Pinboards
       token.destroy
 
       UserMailer.entity_invite(role, role.user.email).deliver
-      Activity.track(current_user, 'accept_request_access', role.owner, data: {
+      Activity.track(current_user, 'accept_request_access', pinboard, data: {
         user_id: @role.user.id
       })
 
@@ -58,7 +58,7 @@ module Pinboards
       token = pinboard.tokens.find(params[:id])
 
       token.destroy
-      Activity.track(current_user, 'decline_request_access', role.owner, data: {
+      Activity.track(current_user, 'decline_request_access', pinboard, data: {
         user_id: token.target.id
       })
 
