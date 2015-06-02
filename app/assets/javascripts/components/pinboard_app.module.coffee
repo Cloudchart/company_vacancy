@@ -14,7 +14,7 @@ FavoriteStore   = require('stores/favorite_store.cursor')
 # Components
 #
 PinboardSettings = require('components/pinboards/settings')
-PinboardRoles    = require('components/pinboards/roles')
+PinboardAccess   = require('components/pinboards/access_rights')
 PinboardPins     = require('components/pinboards/pins/pinboard')
 PinboardTabs     = require('components/pinboards/tabs')
 SyncButton       = require('components/form/buttons').SyncButton
@@ -174,7 +174,7 @@ module.exports = React.createClass
       when 'settings'
         <PinboardSettings uuid = { @props.uuid } />
       when 'users'
-        <PinboardRoles uuid = { @props.uuid } />
+        <PinboardAccess uuid = { @props.uuid } />
       else
         null
 

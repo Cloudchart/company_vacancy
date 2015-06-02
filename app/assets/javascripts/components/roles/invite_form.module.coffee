@@ -12,7 +12,10 @@ Checkbox          = require('components/form/checkbox')
 
 RoleStore         = require("stores/role_store.cursor")
 UserStore         = require("stores/user_store.cursor")
-PinboardStore     = require('stores/pinboard_store')
+
+OwnerStores =
+  'Company':     require('stores/company_store.cursor')
+  'Pinboard':    require('stores/pinboard_store')
 
 
 # Main
@@ -39,8 +42,19 @@ Component = React.createClass
   getRoleCopy: (value) ->
     RoleMap[@props.ownerType][value]
 
-  getPinboard: ->
-    PinboardStore.cursor.items.get(@props.ownerId)
+  getOwnerStore: ->
+    OwnerStores[@props.ownerType]
+
+  getOwner: ->
+    @getOwnerStore().cursor.items.get(@props.ownerId)
+
+  getOwnerName: ->
+    switch @props.ownerType
+      when 'Pinboard'
+        @getOwner().get('title')
+      when 'Company'
+        @getOwner().get('name')
+
 
   getDefaultAttributes: ->
     Immutable.Map(
@@ -137,7 +151,7 @@ Component = React.createClass
           className = "transparent"
           iconClass = "fa-angle-left"
           onClick   = { @props.onBackClick } />
-        Share <strong>{ @getPinboard().get('title') }</strong> { @getRoleCopy(@state.attributes.get('value')).header }
+        Share <strong>{ @getOwnerName() }</strong> { @getRoleCopy(@state.attributes.get('value')).header }
       </header>
 
       <form onSubmit={ @handleSubmit } >

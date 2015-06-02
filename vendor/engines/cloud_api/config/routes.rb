@@ -22,6 +22,9 @@ CloudApi::Engine.routes.draw do
   get '/pinboards/:id', controller: :pinboards, action: :show
 
 
+  get '/companies/:id', controller: :companies, action: :show
+
+
   get '/posts/:id', controller: :posts, action: :show
 
 

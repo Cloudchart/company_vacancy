@@ -10,7 +10,6 @@ PinStore       = require('stores/pin_store')
 RoleStore      = require('stores/role_store.cursor')
 TaggingStore   = require('stores/tagging_store')
 TagStore       = require('stores/tag_store')
-TokenStore     = require('stores/token_store.cursor')
 FavoriteStore  = require('stores/favorite_store.cursor')
 UserStore      = require('stores/user_store.cursor')
 
@@ -57,7 +56,6 @@ CompanyPreview = React.createClass
         """
           Viewer {
             click_activities,
-            company_invite_tokens,
             roles
           }
         """
@@ -85,7 +83,6 @@ CompanyPreview = React.createClass
     cursor:
       activities: ActivityStore.cursor.items
       roles:      RoleStore.cursor.items
-      tokens:     TokenStore.cursor.items
 
   getInitialState: ->
     sync: Immutable.Map()
@@ -93,9 +90,6 @@ CompanyPreview = React.createClass
 
   # Helpers
   #
-  isLoaded: ->
-    @cursor.tokens.deref(false)
-
   getTagNames: ->
     if (tags = @cursor.company.get('tag_names'))
       Immutable.Seq(tags)
@@ -124,8 +118,11 @@ CompanyPreview = React.createClass
 
     description
 
-  getToken: ->
-    TokenStore.findCompanyInvite(@props.uuid)
+  getRole: ->
+    RoleStore.rolesOnOwnerForUser(@cursor.company, 'Company', @cursor.viewer).first()
+
+  isInvited: ->
+    @getRole() && @getRole().get('pending_value')
 
   getFavorite: ->
     FavoriteStore.filter (favorite) => 
@@ -177,7 +174,7 @@ CompanyPreview = React.createClass
       .size
 
   isUnpublished: ->
-    !@cursor.company.get('is_published') && !@isViewerOwner() && !@getToken()
+    !@cursor.company.get('is_published') && !@isViewerOwner() && !@isInvited()
 
   getPreviewLink: ->
     @cursor.company.get('company_url') unless @isUnpublished()
@@ -207,7 +204,8 @@ CompanyPreview = React.createClass
 
     @setState(sync: @state.sync.set('decline', true))
 
-    CompanySyncApi.cancelInvite(@cursor.company.get('uuid'), @getToken().get('uuid'), @handleInviteDone.bind(@, 'decline'), @handleFail.bind(@, 'decline'))
+    RoleStore.destroy(@getRole().get('uuid')).done =>
+      @handleInviteDone('decline')
 
   handleAcceptClick: (event) ->
     event.preventDefault()
@@ -215,8 +213,8 @@ CompanyPreview = React.createClass
 
     @setState(sync: @state.sync.set('accept', true))
 
-    CompanySyncApi.acceptInvite(@cursor.company.get('uuid'), @getToken().get('uuid'))
-      .then(@handleInviteDone.bind(@, 'accept'), @handleFail.bind(@, 'accept'))
+    RoleStore.accept(@getRole()).done =>
+      @handleInviteDone('accept')
 
   handleFollowDone: ->
     # TODO rewrite with grabbing only needed favorite
@@ -229,7 +227,6 @@ CompanyPreview = React.createClass
     ModalStack.show(<ModalError />)
 
   handleInviteDone: (syncKey) ->
-    @cursor.tokens.remove(@getToken().get('uuid'))
     @setState(sync: @state.sync.set(syncKey, false))
 
   handleFail: (syncKey) ->
@@ -278,11 +275,10 @@ CompanyPreview = React.createClass
       pins:       PinStore.cursor.items
       tags:       TagStore.cursor.items
       taggings:   TaggingStore.cursor.items
-      tokens:     TokenStore.cursor.items
       favorites:  FavoriteStore.cursor.items
       viewer:     UserStore.me()
 
-    @fetchViewer() unless @isLoaded()
+    @fetchViewer()
 
 
   # Renderers
@@ -293,7 +289,7 @@ CompanyPreview = React.createClass
       .toArray()
 
   renderInvitedLabel: ->
-    return null unless @getToken()
+    return null unless @isInvited()
 
     <li className="label">Invited</li>
 
@@ -351,7 +347,7 @@ CompanyPreview = React.createClass
     </header>
 
   renderButtonsOrPeople: ->
-    if @getToken()
+    if @isInvited()
       <div className="buttons">
         <SyncButton 
           className = "cc alert"

@@ -7,9 +7,12 @@ GlobalState      = require('global_state/state')
 RoleStore        = require("stores/role_store.cursor")
 UserStore        = require("stores/user_store.cursor")
 TokenStore       = require("stores/token_store.cursor")
-PinboardStore    = require('stores/pinboard_store')
 
-RoleItem         = require("components/roles/item")
+OwnerStores =
+  'Company':     require('stores/company_store.cursor')
+  'Pinboard':    require('stores/pinboard_store')
+
+AccessItem       = require("components/roles/access_item")
 StandardButton   = require('components/form/buttons').StandardButton
 
 
@@ -17,25 +20,7 @@ StandardButton   = require('components/form/buttons').StandardButton
 #
 Component = React.createClass
 
-  displayName: 'RolesUserList'
-
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
-
-  statics:
-
-    queries:
-
-      pinboard: ->
-        """
-          Pinboard {
-            roles {
-              user
-            },
-            tokens {
-              target
-            }
-          }
-        """
+  displayName: 'RolesAccessList'
 
   propTypes:
     ownerId:       React.PropTypes.string.isRequired
@@ -43,17 +28,13 @@ Component = React.createClass
     onInviteClick: React.PropTypes.func.isRequired
     roleValues:    React.PropTypes.array.isRequired
 
+  mixins: [GlobalState.mixin]
+
   getDefaultProps: ->
     cursor:
       roles:  RoleStore.cursor.items
       tokens: TokenStore.cursor.items
       users:  UserStore.cursor.items
-
-  getInitialState: ->
-    isLoaded: false
-
-  fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.ownerId })
 
 
   # Helpers
@@ -64,46 +45,49 @@ Component = React.createClass
   getTokens: ->
     TokenStore.filterAccessRequestsByOwner(@props.ownerId, @props.ownerType)
 
-  getPinboard: ->
-    PinboardStore.cursor.items.get(@props.ownerId)
+  getOwnerStore: ->
+    OwnerStores[@props.ownerType]
 
-  getUser: ->
-    UserStore.cursor.items.get(@getPinboard().get('user_id'))
+  getOwner: ->
+    @getOwnerStore().cursor.items.get(@props.ownerId)
 
-  isLoaded: ->
-    @state.isLoaded
+  getUserOwner: ->
+    switch @props.ownerType
+      when 'Pinboard'
+        UserStore.cursor.items.get(@getOwner().get('user_id'))
+      when 'Company'
+        role = @getRoles().filter((role) -> role.get('value') == 'owner').first()
 
+        UserStore.cursor.items.get(role.get('user_id'))
 
-  # Lifecyle methods
-  #
-  componentWillMount: ->
-    @fetch().then => @setState isLoaded: true
 
 
   # Renderers
   #
   renderRoles: ->
-    owner = @getUser()
+    owner = @getUserOwner()
 
     Immutable.Seq([
-      <RoleItem
+      <AccessItem
         user        = { owner }
         key         = 'owner'
+        isUserOwner = { true }
         roleValues  = { @props.roleValues }
-        owner       = { @getPinboard() }
+        owner       = { @getOwner() }
         ownerType   = { @props.ownerType } />
     ]).concat(
       @getRoles()
         .sortBy (role) -> role.get('created_at')
-        .map (role, index) => 
+        .filter (role) -> role.get('value') != 'owner'
+        .map (role, index) =>
           user = UserStore.cursor.items.get(role.get('user_id'))
 
-          <RoleItem
+          <AccessItem
             user       = { user }
             role       = { role }
             key        = { role.get('uuid') }
             roleValues = { @props.roleValues }
-            owner      = { @getPinboard() }
+            owner      = { @getOwner() }
             ownerType  = { @props.ownerType } />
         .valueSeq()
     ).concat(
@@ -112,20 +96,18 @@ Component = React.createClass
         .map (token, index) => 
           user = UserStore.cursor.items.get(token.get('target_id'))
 
-          <RoleItem
+          <AccessItem
             user       = { user }
             token      = { token }
             key        = { token.get('uuid') }
             roleValues = { @props.roleValues }
-            owner      = { @getPinboard() }
+            owner      = { @getOwner() }
             ownerType  = { @props.ownerType } />
         .valueSeq()
     )
     .toArray()
 
   render: ->
-    return null unless @isLoaded()
-
     <section className="user-list">
       <ul>
         { @renderRoles() }

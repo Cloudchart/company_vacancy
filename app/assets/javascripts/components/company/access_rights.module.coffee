@@ -2,120 +2,90 @@
 
 # Imports
 #
-CloudFlux = require('cloud_flux')
-GlobalState = require('global_state/state')
+GlobalState      = require('global_state/state')
 
-CompanyStore = require('stores/company')
-RoleStore  = require('stores/role_store')
-UserStore = require('stores/user_store')
-TokenStore = require('stores/token_store')
-
-CompanyActions  = require('actions/company')
-
-CompanyInviteUserForm = require('components/company/access_rights/invite_user_form')
-CompanyUsersList = require('components/company/access_rights/users_list')
+RolesAccessList = require('components/roles/access_list')
+RolesInviteForm = require('components/roles/invite_form')
 
 Modes = 
   VIEW:   'view'
   INVITE: 'invite'
 
+ownerType  = 'Company'
+roleValues = ['editor', 'trusted_reader', 'public_reader']
+
 # Main
 #
 Component = React.createClass
 
-  mixins: [CloudFlux.mixins.Actions]
+  displayName: 'PinboardRoles'
+
+  propTypes:
+    uuid: React.PropTypes.string.isRequired
+
+  mixins: [GlobalState.query.mixin]
+
+  statics:
+
+    queries:
+
+      company: ->
+        """
+          Company {
+            roles {
+              user
+            },
+            tokens {
+              target
+            }
+          }
+        """
 
   propTypes:
     uuid: React.PropTypes.any.isRequired
 
-  # Helpers
-  # 
-  createNewToken: ->
-    TokenStore.create({ owner_id: @props.uuid, owner_type: 'Company' })
-
-  getCloudFluxActions: ->
-    'token:create:done': @handleTokenCreateDone
-    'company:access_rights:fetch:done': @handleAccessRightsDone
-
-  # Handlers
-  # 
-  handleTokenCreateDone: ->
-    @setState({ mode: Modes.VIEW })
-
-  handleAccessRightsDone: -> 
-    @setState isAccessRightsLoaded: true
-
-  onInviteUserButtonClick: (event) ->
-    @setState
-      mode: Modes.INVITE
-      newTokenKey: @createNewToken()
-  
-  onCurrentUsersButtonClick: (event) ->
-    TokenStore.remove(@state.newTokenKey)
-    @setState({ mode: Modes.VIEW })
-
-  # Lifecylce Methods
-  # 
-  componentWillMount: ->
-    isAccessRightsLoaded = !!GlobalState.cursor(['flags', 'companies']).get('isAccessRightsLoaded')
-
-    if isAccessRightsLoaded
-      @setState isAccessRightsLoaded: isAccessRightsLoaded
-    else
-      CompanyActions.fetchAccessRights(@props.uuid)
-
-  componentDidMount: ->
-    CompanyStore.on('change', @refreshStateFromStores)
-    RoleStore.on('change', @refreshStateFromStores)
-    UserStore.on('change', @refreshStateFromStores)
-    TokenStore.on("change", @refreshStateFromStores)
-  
-  componentWillUnmount: ->
-    CompanyStore.off('change', @refreshStateFromStores)
-    RoleStore.off('change', @refreshStateFromStores)
-    UserStore.off('change', @refreshStateFromStores)
-    TokenStore.off("change", @refreshStateFromStores)
-
-  # Component Specifications
-  # 
-  refreshStateFromStores: ->
-    @setState @getStateFromStores()
-
-  getStateFromStores: ->
-    company: CompanyStore.get(@props.uuid)
-
   getInitialState: ->
-    state = @getStateFromStores()
-    state.newTokenKey = null
-    state.mode = Modes.VIEW
-    state.isAccessRightsLoaded = false
-    state.cursor = 
-      constants: GlobalState.cursor(['constants', 'companies'])
-    state
+    mode: Modes.VIEW
+    isLoaded: false
+
+  changeMode: (mode) ->
+    @setState mode: mode
+
+  fetch: ->
+    GlobalState.fetch(@getQuery('company'), { id: @props.uuid })
+
+  isLoaded: ->
+    @state.isLoaded
+
+
+  # Lifecyle methods
+  #
+  componentWillMount: ->
+    @fetch().then => @setState isLoaded: true
+
 
   render: ->
-    return null unless @state.company && @state.isAccessRightsLoaded
+    return null unless @isLoaded()
 
-    <div className="access-rights">
+    <section className="access-rights">
       {
         switch @state.mode
         
           when Modes.VIEW
-            <CompanyUsersList
-              uuid = {@props.uuid}
-              cursor = {@state.cursor}
-              onInviteUserButtonClick = {@onInviteUserButtonClick}
-            />
+            <RolesAccessList
+              ownerId        = { @props.uuid }
+              ownerType      = { ownerType }
+              roleValues     = { roleValues }
+              onInviteClick  = { @changeMode.bind(@, Modes.INVITE) } />
 
           when Modes.INVITE
-            <CompanyInviteUserForm
-              uuid = {@props.uuid}
-              cursor = {@state.cursor}
-              tokenKey = {@state.newTokenKey}
-              onCurrentUsersButtonClick = {@onCurrentUsersButtonClick}
-            />
+            <RolesInviteForm
+              ownerId     = { @props.uuid }
+              ownerType   = { ownerType }
+              roleValues  = { roleValues }
+              onBackClick = { @changeMode.bind(@, Modes.VIEW) } />
       }
-    </div>
+    </section>
 
 # Exports
 #

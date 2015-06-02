@@ -18,7 +18,7 @@ class RolesController < ApplicationController
     })
 
     if params[:email]
-      UserMailer.pinboard_invite(@role, params[:email]).deliver
+      UserMailer.entity_invite(@role, params[:email]).deliver
       Activity.track(current_user, 'email_invite', @role.owner, data: {
         user_id: @role.user.uuid
       })

@@ -1,15 +1,6 @@
 class UserMailer < ActionMailer::Base
   default from: ENV['FROM_EMAIL']
 
-  def company_invite(email, token)
-    @company = token.owner
-    @user = email.try(:user)
-    @token = rfc1751(token.id).parameterize
-    email = email.try(:address) || email
-    
-    mail to: email
-  end
-
   def company_url_verification(token)
     @company = token.owner
     @user = User.find(token.data[:user_id])
@@ -48,15 +39,25 @@ class UserMailer < ActionMailer::Base
     mail to: 'anton@cloudchart.co'
   end
 
-  def pinboard_invite(role, email)
-    @pinboard = role.owner
-    @user = role.user
-    @author = role.author
-
+  def entity_invite(role, email)
     return unless email.present?
 
+    @user = role.user
+    @author = role.author
+    @owner = role.owner
+
+    send("#{role.owner_type.downcase}_invite", email)
+  end
+
+  def company_invite(email)
     mail(to: email) do |format|
-      format.html { render layout: 'user_mailer_' }
+      format.html { render layout: 'user_mailer_', template: 'user_mailer/company_invite' }
+    end
+  end
+
+  def pinboard_invite(email)
+    mail(to: email) do |format|
+      format.html { render layout: 'user_mailer_', template: 'user_mailer/pinboard_invite' }
     end
   end
 

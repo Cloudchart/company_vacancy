@@ -5,7 +5,10 @@
 RoleMap       = require('utils/role_map')
 
 RoleStore     = require('stores/role_store.cursor')
-PinboardStore = require('stores/pinboard_store')
+
+OwnerStores =
+  'Company':     require('stores/company_store.cursor')
+  'Pinboard':    require('stores/pinboard_store')
 
 CancelButton  = require('components/form/buttons').CancelButton
 
@@ -22,9 +25,11 @@ Component = React.createClass
     token:       React.PropTypes.instanceOf(Immutable.Map)
     owner:       React.PropTypes.instanceOf(Immutable.Map).isRequired
     ownerType:   React.PropTypes.string.isRequired
+    isUserOwner: React.PropTypes.bool
 
   getInitialState: ->
-    isSyncing: false
+    isSyncing:   false
+    isUserOwner: false
 
 
   # Helpers
@@ -43,10 +48,8 @@ Component = React.createClass
 
     if @isPending() then @props.role.get('pending_value') else @props.role.get('value')
 
-  isUserOwner: ->
-    return false unless @props.user
-
-    @props.owner.get('user_id') == @props.user.get('uuid')
+  getOwnerStore: ->
+    OwnerStores[@props.ownerType]
 
     
   # Handlers
@@ -57,13 +60,13 @@ Component = React.createClass
     if @props.role
       RoleStore.destroy(@props.role.get('uuid'))
     else if @props.token
-      PinboardStore.denyAccess(@props.owner, @props.token)
+      @getOwnerStore().denyAccess(@props.owner, @props.token)
 
   handleRoleChange: (event) ->
     if @props.role
       RoleStore.update(@props.role.get('uuid'), { value: event.target.value })
     else if @props.token
-      PinboardStore.grantAccess(@props.owner, @props.token, event.target.value)
+      @getOwnerStore().grantAccess(@props.owner, @props.token, event.target.value)
 
 
   # Renderers
@@ -78,21 +81,21 @@ Component = React.createClass
     </article>
 
   renderDeleteButton: ->
-    return null if @isUserOwner()
+    return null if @props.isUserOwner
 
     <CancelButton
       sync      = { @state.isSyncing }
       onClick   = { @handleDeleteButtonClick } />
 
   renderStatus: ->
-    return null if @isUserOwner() || !@isPending()
+    return null if @props.isUserOwner || !@isPending()
 
     <span className="status">
       Pending invite, can only view board.
     </span>
 
   renderRoleChooser: ->
-    return @getRoleCopy('owner').name if @isUserOwner()
+    return @getRoleCopy('owner').name if @props.isUserOwner
 
     @props.roleValues.map (roleValue) =>
       <label key="option-#{roleValue}">

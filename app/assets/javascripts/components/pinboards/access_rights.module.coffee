@@ -2,7 +2,9 @@
 
 # Imports
 #
-RolesUserList   = require('components/roles/user_list')
+GlobalState      = require('global_state/state')
+
+RolesAccessList = require('components/roles/access_list')
 RolesInviteForm = require('components/roles/invite_form')
 
 Modes = 
@@ -19,23 +21,58 @@ Component = React.createClass
   displayName: 'PinboardRoles'
 
   propTypes:
+    uuid: React.PropTypes.string.isRequired
+
+  mixins: [GlobalState.query.mixin]
+
+  statics:
+
+    queries:
+
+      pinboard: ->
+        """
+          Pinboard {
+            roles {
+              user
+            },
+            tokens {
+              target
+            }
+          }
+        """
+
+  propTypes:
     uuid: React.PropTypes.any.isRequired
 
   getInitialState: ->
     mode: Modes.VIEW
-
+    isLoaded: false
 
   changeMode: (mode) ->
     @setState mode: mode
 
+  fetch: ->
+    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid })
+
+  isLoaded: ->
+    @state.isLoaded
+
+
+  # Lifecyle methods
+  #
+  componentWillMount: ->
+    @fetch().then => @setState isLoaded: true
+
 
   render: ->
-    <section className="roles-access">
+    return null unless @isLoaded()
+
+    <section className="access-rights">
       {
         switch @state.mode
         
           when Modes.VIEW
-            <RolesUserList
+            <RolesAccessList
               ownerId        = { @props.uuid }
               ownerType      = { ownerType }
               roleValues     = { roleValues }
