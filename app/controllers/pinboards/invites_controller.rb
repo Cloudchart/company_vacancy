@@ -39,7 +39,7 @@ module Pinboards
       role  = pinboard.roles.create!(user: token.target, author: current_user, value: params[:role])
       token.destroy
 
-      UserMailer.pinboard_invite(role, role.user.email).deliver
+      UserMailer.entity_invite(role, role.user.email).deliver
       Activity.track(current_user, 'accept_request_access', role.owner, data: {
         user_id: @role.user.id
       })
