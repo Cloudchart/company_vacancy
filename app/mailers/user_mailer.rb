@@ -50,13 +50,13 @@ class UserMailer < ActionMailer::Base
   end
 
   def company_invite(email)
-    mail(to: email) do |format|
+    mail(to: email, subject: "Join #{@author.full_name}'s company on CloudChart") do |format|
       format.html { render layout: 'user_mailer_', template: 'user_mailer/company_invite' }
     end
   end
 
   def pinboard_invite(email)
-    mail(to: email) do |format|
+    mail(to: email, subject: "Join #{@author.full_name}'s collection on CloudChart") do |format|
       format.html { render layout: 'user_mailer_', template: 'user_mailer/pinboard_invite' }
     end
   end
