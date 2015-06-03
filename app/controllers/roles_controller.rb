@@ -14,13 +14,13 @@ class RolesController < ApplicationController
     @role.save!
 
     Activity.track(current_user, 'invite', @role.owner, data: {
-      user_id: @role.user.uuid
+      user_id: @role.user.id
     })
 
     if params[:email]
       UserMailer.entity_invite(@role, params[:email]).deliver
       Activity.track(current_user, 'email_invite', @role.owner, data: {
-        user_id: @role.user.uuid
+        user_id: @role.user.id
       })
     end
 
@@ -45,7 +45,7 @@ class RolesController < ApplicationController
     end
 
     Activity.track(current_user, 'accept_invite', @role.owner, data: {
-      author_id: @role.author.id
+      author_id: @role.author.try(:id)
     })
 
     respond_to do |format|
@@ -86,7 +86,7 @@ class RolesController < ApplicationController
     else
       @role.destroy
       Activity.track(current_user, 'decline_invite', @role.owner, data: {
-        author_id: @role.author.id
+        author_id: @role.author.try(:id)
       })
 
       render json: { id: @role.id }

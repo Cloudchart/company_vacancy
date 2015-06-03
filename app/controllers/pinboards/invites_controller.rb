@@ -41,7 +41,7 @@ module Pinboards
 
       UserMailer.entity_invite(role, role.user.email).deliver
       Activity.track(current_user, 'accept_request_access', pinboard, data: {
-        user_id: @role.user.id
+        user_id: role.user.id
       })
 
       respond_to do |format|
@@ -59,7 +59,7 @@ module Pinboards
 
       token.destroy
       Activity.track(current_user, 'decline_request_access', pinboard, data: {
-        user_id: token.target.id
+        user_id: token.target.try(:id)
       })
 
       respond_to do |format|
