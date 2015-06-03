@@ -139,7 +139,7 @@ Post = React.createClass
       .map (pin) -> pin.get('user_id')
 
   getPinnersNumberText: (pinnersNumber) ->
-    if pinnersNumber > 0 then "+ #{pinnersNumber} others pinned this post" else null
+    if pinnersNumber > 0 then "+ #{pinnersNumber} others saved this post" else null
 
   getInsightsNumber: ->
     PinStore.filterInsightsForPost(@props.id).size || 0
