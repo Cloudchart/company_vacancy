@@ -8,12 +8,13 @@ def __prepare(sources, query, data)
   # sources.compact!
   # sources.uniq!
 
-  preloads  = []
-  fields    = (query.try(:keys) || []).map(&:to_sym)
+  cache   = []
+  edges   = (query || {}).delete('edges') { [] }.flatten.compact.uniq.map(&:to_sym)
+  puts query.inspect
 
   sources.each do |source|
     (grouped_sources[source.class] ||= []) << source
-    (data[source.class.name.underscore.pluralize] ||= []) << { model: source, siblings: sources, preloads: preloads, fields: fields }
+    (data[source.class.name.underscore.pluralize] ||= []) << { model: source, siblings: sources, cache: cache, edges: edges }
   end
 
   query.each do |key, value|
@@ -44,6 +45,6 @@ __prepare([@source].flatten, query, data)
 data.each do |key, values|
   name = key.to_s.singularize
   json.set! key, values.flatten.compact.uniq do |value|
-    json.partial! name, :"#{name}" => value[:model], :siblings => value[:siblings], cache: value[:preloads], fields: value[:fields]
+    json.partial! name, :"#{name}" => value[:model], :siblings => value[:siblings], cache: value[:cache], edges: value[:edges]
   end
 end
