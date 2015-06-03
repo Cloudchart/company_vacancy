@@ -143,6 +143,16 @@ Component = React.createClass
       Notify by email
     </Checkbox>
 
+  renderErrors: (key) ->
+    return null unless @state.errors.has(key)
+
+    <ul className="errors">
+      {
+        @state.errors.get(key).map (error) ->
+          <li>{ error }</li>
+      }
+    </ul>    
+
 
   render: ->
     <section className="invite-form">
@@ -162,7 +172,10 @@ Component = React.createClass
         <footer>
           { @renderTwitterInput() }
           { @renderEmailInput() }
-          { @renderEmailCheckbox() }
+          <aside>
+            { @renderEmailCheckbox() }
+            { @renderErrors('base') }
+          </aside>
 
           <SyncButton 
             className = "cc"

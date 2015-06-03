@@ -178,12 +178,22 @@
           }
         }
 
-        > .checkbox {
-          @include position(absolute, 0 0 -25px 0px);
+        > aside {
+          @include position(absolute, 45px 0px 0 0px);
 
-          input {
-            margin-right: $inner-margin-size;
-          }
+          > .checkbox {
+            input {
+              margin-right: $inner-margin-size;
+            }
+          }  
+
+          > .errors {
+            color: $accented-red-color;
+            font-size: $small-font-size;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+          }        
         }
 
         > .cc {
