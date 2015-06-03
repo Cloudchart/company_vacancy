@@ -6,6 +6,7 @@ GlobalState       = require('global_state/state')
 # Stores
 #
 PinboardStore     = require('stores/pinboard_store')
+RoleStore         = require('stores/role_store.cursor')
 
 
 # Components
@@ -56,6 +57,9 @@ module.exports = React.createClass
     showPrivate: React.PropTypes.bool
 
   getDefaultProps: ->
+    cursor:
+      pinboards: PinboardStore.cursor.items
+      roles:     RoleStore.cursor.items
     showPrivate: false
 
   getInitialState: ->
@@ -84,9 +88,6 @@ module.exports = React.createClass
   # Lifecyle methods
   #
   componentWillMount: ->
-    @cursor =
-      pinboards: PinboardStore.cursor.items
-
     @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
 
 
