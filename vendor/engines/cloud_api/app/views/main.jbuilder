@@ -10,7 +10,6 @@ def __prepare(sources, query, data)
 
   cache   = []
   edges   = (query || {}).delete('edges') { [] }.flatten.compact.uniq.map(&:to_sym)
-  puts query.inspect
 
   sources.each do |source|
     (grouped_sources[source.class] ||= []) << source
