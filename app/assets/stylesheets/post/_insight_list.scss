@@ -189,7 +189,6 @@ ul.insight-list,
     font-size: 16px;
     font-weight: $normal-weight;
     line-height: 1.4;
-    margin-bottom: $inner-margin-size;
     width: 100%;
 
     > .origin {
@@ -227,5 +226,9 @@ ul.insight-list,
       font-size: 24px;
       margin-top: -12px;
     }
+  }
+
+  > .round-buttons {
+    margin-top: 5px;
   }
 }

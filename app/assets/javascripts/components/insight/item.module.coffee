@@ -172,6 +172,6 @@ module.exports = React.createClass
         showUnicornIcon = { true }
         type            = "user" />
       { @renderContent() }
-      { @renderButtons() }
       { @renderSuggestion() }  
+      { @renderButtons() }
     </article>
