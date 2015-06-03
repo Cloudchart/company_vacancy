@@ -142,25 +142,46 @@ article.pinboards {
 }
 
 
+@mixin pinboard-card-invite-actions {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+
+  border-top: $card-hr;
+  padding-top: $card-basic-space;
+
+  > p {
+    font-size: $big-font-size;
+    font-weight: 300;
+
+    margin-bottom: $inner-margin-size;
+  }
+
+  > .buttons {
+    @include display(flex);
+    @include justify-content(space-between);
+
+    width: 45%;
+
+    margin: 5px auto;
+  }
+}
+
+
 .pinboards .pinboard.cloud-card {
 
   > a {
     > header {
       @include pinboard-card-header;
     }
-
-    > .buttons {
-      @include display(flex);
-      @include justify-content(space-between);
-
-      width: 50%;
-
-      margin: 10px auto;
-    }
   }
 
   > footer {
     @include pinboard-card-footer;
+  }
+
+  > .invite-actions {
+    @include pinboard-card-invite-actions;
   }
 
 }

@@ -74,8 +74,8 @@ $cc-button-color: hsl(0, 100%, 100%);
 $cc-button-table-background-color: hsl(0, 0%, 98%);
 $cc-button-table-color: hsl(0, 0%, 0%);
 $cc-button-font-size: 15px;
-$cc-button-height: 34px;
-$cc-button-padding: 10px;
+$cc-button-height: 40px;
+$cc-button-padding: 20px;
 $cc-button-wide-padding: 55px;
 
 
@@ -143,7 +143,7 @@ a.cc {
       @include position(absolute, 0px 0 0 0px);
 
       height: 100%;
-      padding: 0 10px;
+      padding: 0 $cc-button-padding;
       width: auto;
     }
   }

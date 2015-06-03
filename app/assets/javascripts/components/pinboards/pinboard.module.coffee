@@ -181,20 +181,21 @@ module.exports = React.createClass
   renderInviteActions: ->
     return null unless @isInvited()
 
-    <div className="buttons">
-      <SyncButton 
-        className = "cc alert"
-        iconClass = "fa-close"
-        onClick   = { @handleDeclineClick }
-        sync      = { @state.sync.get('decline') }
-        text      = "Decline" />
-      <SyncButton 
-        className = "cc"
-        iconClass = "fa-check"
-        onClick   = { @handleAcceptClick }
-        sync      = { @state.sync.get('accept') }
-        text      = "Accept" />
-    </div>
+    <section className="invite-actions">
+      <p>{ @cursor.viewer.get('first_name') }, you've been invited to this collection!</p>
+      <div className="buttons">
+        <SyncButton 
+          className = "cc"
+          onClick   = { @handleAcceptClick }
+          sync      = { @state.sync.get('accept') }
+          text      = "Accept" />
+        <SyncButton 
+          className = "cc alert"
+          onClick   = { @handleDeclineClick }
+          sync      = { @state.sync.get('decline') }
+          text      = "Decline" />
+      </div>
+    </section>
 
 
   render: ->
@@ -203,8 +204,8 @@ module.exports = React.createClass
     <section className="pinboard cloud-card link">
       <a className="for-group" href={ @cursor.pinboard.get('url') } onClick = { @handleLinkClick } >
         { @renderHeader() }
-        { @renderInviteActions() }
         { @renderDescription() }
       </a>
       { @renderFooter() }
+      { @renderInviteActions() }
     </section>
