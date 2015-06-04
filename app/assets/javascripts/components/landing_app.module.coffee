@@ -49,7 +49,7 @@ module.exports = React.createClass
 
     <section className="authorized">
       <p className="cloud-columns cloud-columns-flex">
-        Cloudchart is an educational tool for the next generation of founders. Just like your business, CloudChart evolves everyday, providing you with fresh learning material: new insights and unicorn companies' updates.
+        CloudChart is an educational tool for the next generation of founders. Just like your business, CloudChart evolves everyday, providing you with fresh learning material: new insights and unicorn companies' updates.
       </p>
       <section className="featured-collections">
         <header className="cloud-columns cloud-columns-flex">Featured Collections</header>
