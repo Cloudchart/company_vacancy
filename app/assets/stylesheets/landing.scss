@@ -32,6 +32,12 @@
     }
 
     > .authorized {
+      > p {
+        font-size: $large-font-size;
+        font-weight: 300;
+        margin: $gutter-size/2;
+      }
+
       > section {
         > header, > p {
           font-weight: 300;
@@ -50,10 +56,6 @@
 
       > section > .companies-list {
         margin-top: $gutter-size/2;
-      }
-
-      > .featured-collections {
-        margin-top: $gutter-size;
       }
     }
     
