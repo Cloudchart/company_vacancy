@@ -115,6 +115,14 @@ class User < ActiveRecord::Base
       .limit(6)
   end
 
+  def important_pinboards
+    Pinboard.where(is_important: true, access_rights: :public)
+  end
+
+  def important_companies
+    Company.where(is_important: true, is_published: true)
+  end
+
   def followed_activities
     Activity.followed_by_user(id)
   end

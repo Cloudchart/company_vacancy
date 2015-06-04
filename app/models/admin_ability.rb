@@ -35,6 +35,9 @@ class AdminAbility
       # Pinboard
       # 
       can [:read, :create], Pinboard
+      can [:make_important], Pinboard, is_important: false
+      can [:make_unimportant], Pinboard, is_important: true
+
 
       can [:update, :destroy], Pinboard do |pinboard|
         pinboard.user_id.blank?
