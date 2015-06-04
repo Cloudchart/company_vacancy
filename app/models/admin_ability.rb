@@ -51,6 +51,12 @@ class AdminAbility
         story.company_id.blank?
       end
 
+      # Company
+      # 
+      can [:read], Company
+      can [:make_important], Company, is_important: false
+      can [:make_unimportant], Company, is_important: true
+
     end
   end
 end

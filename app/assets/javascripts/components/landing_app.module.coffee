@@ -3,7 +3,7 @@
 GlobalState        = require('global_state/state')
 
 FeaturedInsights   = require('components/insight/featured')
-RecentCompanies    = require('components/company/lists/recent')
+ImportantCompanies = require('components/company/lists/important')
 ImportantPinboards = require('components/pinboards/lists/important')
 Greeting           = require('components/shared/greeting')
 Guide              = require('components/guide')
@@ -48,9 +48,15 @@ module.exports = React.createClass
     return null unless @props.isAuthorized
 
     <section className="authorized">
-      <section className="featured-insights">
-        <header>Featured Collections</header>
+      <section className="featured-collections">
+        <header className="cloud-columns cloud-columns-flex">Featured Collections</header>
+        <p className="cloud-columns cloud-columns-flex">Explore collections of successful founders, investors and experts advices. Use them to grow your business</p>
         <ImportantPinboards />
+      </section>
+      <section className="featured-companies">
+        <header className="cloud-columns cloud-columns-flex">Featured Companies</header>
+        <p className="cloud-columns cloud-columns-flex">Follow unicorns' timelines. Collect the insights on how they are growing</p>
+        <ImportantCompanies />
       </section>
       <Subscription 
         asBlock   = { true }

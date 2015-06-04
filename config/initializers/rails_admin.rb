@@ -135,25 +135,25 @@ RailsAdmin.config do |config|
     end
 
     member :make_important do
-      only ['Pinboard']
+      only ['Pinboard', 'Company']
       link_icon 'icon-plus-sign'
 
       controller do
         proc do
           @object.update(is_important: true)
-          redirect_to index_path(:pinboard), notice: "#{@object.class.name} has been featured"
+          redirect_to index_path(@object.class.name.downcase.to_sym), notice: "#{@object.class.name} has been featured"
         end
       end
     end
 
     member :make_unimportant do
-      only ['Pinboard']
+      only ['Pinboard', 'Company']
       link_icon 'icon-remove-sign'
 
       controller do
         proc do
           @object.update(is_important: false)
-          redirect_to index_path(:pinboard), notice: "#{@object.class.name} has been unfeatured"
+          redirect_to index_path(@object.class.name.downcase.to_sym), notice: "#{@object.class.name} has been unfeatured"
         end
       end
     end
