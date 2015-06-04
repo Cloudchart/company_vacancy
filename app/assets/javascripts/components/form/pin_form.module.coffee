@@ -323,7 +323,7 @@ module.exports = React.createClass
 
   renderPinboardSelect: ->
     <label className="pinboard">
-      <div className="title">Category</div>
+      <div className="title">Collection</div>
       <div className="select-wrapper">
         <select
           value     = { @state.attributes.get('pinboard_id') }
