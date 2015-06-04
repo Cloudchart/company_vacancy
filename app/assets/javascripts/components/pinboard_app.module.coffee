@@ -22,6 +22,8 @@ SyncButton       = require('components/form/buttons').SyncButton
 SyncApi          = require('sync/pinboard_sync_api')
 
 
+pluralize        = require('utils/pluralize')
+
 
 # Exports
 #
@@ -156,12 +158,10 @@ module.exports = React.createClass
       </h1>
       <ul className="counters">
         <li>
-          { @getPinboard().get('readers_count') }
-          <span className="text">followers</span>
+          { pluralize(@getPinboard().get('readers_count'), "follower", "followers") }
         </li>
         <li>
-          { @getPinboard().get('pins_count') }
-          <span className="text">pins</span>
+          { pluralize(@getPinboard().get('pins_count') || 0, "pin", "pins") }
         </li>
       </ul>
       { @renderFollowButton() }
