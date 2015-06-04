@@ -1,13 +1,13 @@
 # @cjsx React.DOM
 
-GlobalState      = require('global_state/state')
+GlobalState        = require('global_state/state')
 
-FeaturedInsights = require('components/insight/featured')
-RecentCompanies  = require('components/company/lists/recent')
-TopInsights      = require('components/pinboards/pins/top')
-Greeting         = require('components/shared/greeting')
-Guide            = require('components/guide')
-Subscription     = require('components/shared/subscription')
+FeaturedInsights   = require('components/insight/featured')
+ImportantCompanies = require('components/company/lists/important')
+ImportantPinboards = require('components/pinboards/lists/important')
+Greeting           = require('components/shared/greeting')
+Guide              = require('components/guide')
+Subscription       = require('components/shared/subscription')
 
 # Exports
 #
@@ -28,8 +28,8 @@ module.exports = React.createClass
     return null if @props.isAuthorized
 
     <header>
-      <h1>Learn from Unicorns</h1>
-      <h2>Discover how successfull startups are growing</h2>
+      <h1>Bite-size advice for founders</h1>
+      <h2>When in doubt, use CloudChart.</h2>
     </header>
 
   renderGuide: ->
@@ -48,14 +48,19 @@ module.exports = React.createClass
     return null unless @props.isAuthorized
 
     <section className="authorized">
-      <section className="trending-insights">
-        <header>Trending Insights</header>
-        <TopInsights />
+      <section className="featured-collections">
+        <header className="cloud-columns cloud-columns-flex">Featured Collections</header>
+        <p className="cloud-columns cloud-columns-flex">Explore collections of successful founders, investors and experts advices. Use them to grow your business</p>
+        <ImportantPinboards />
       </section>
-      <RecentCompanies />
+      <section className="featured-companies">
+        <header className="cloud-columns cloud-columns-flex">Featured Companies</header>
+        <p className="cloud-columns cloud-columns-flex">Follow unicorns' timelines. Collect the insights on how they are growing</p>
+        <ImportantCompanies />
+      </section>
       <Subscription 
         asBlock   = { true }
-        text      = "Subscribe to our weekly email: we'll keep you posted on new unicorns' timelines, useful insights and new CloudChart features." />
+        text      = "Join our weekly mailing list to get updates on new helpful advices, unicorn timelines and upcoming CloudChart features." />
     </section>
 
 

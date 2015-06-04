@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150525105432) do
+ActiveRecord::Schema.define(version: 20150604115618) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -137,6 +137,7 @@ ActiveRecord::Schema.define(version: 20150525105432) do
     t.string   "slug"
     t.string   "site_url"
     t.boolean  "is_name_in_logo", default: false
+    t.boolean  "is_important",    default: false
   end
 
   add_index "companies", ["slug"], name: "index_companies_on_slug", unique: true, using: :btree
@@ -336,6 +337,7 @@ ActiveRecord::Schema.define(version: 20150525105432) do
     t.text     "description"
     t.text     "welcome"
     t.boolean  "is_featured"
+    t.boolean  "is_important",             default: false
   end
 
   add_index "pinboards", ["access_rights"], name: "index_pinboards_on_access_rights", using: :btree

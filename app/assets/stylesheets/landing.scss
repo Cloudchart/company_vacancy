@@ -32,17 +32,27 @@
     }
 
     > .authorized {
-      > section > header {
-        font-size: $huge-font-size;
-        font-weight: 300;
-        margin-left: $gutter-size;
+      > section {
+        > header, > p {
+          font-weight: 300;
+          margin-left: $gutter-size;
+          padding: 0;
+        }
+
+        > header {
+          font-size: $huge-font-size;
+        }
+
+        > p {
+          font-size: $big-font-size;
+        }
       }
 
       > section > .companies-list {
         margin-top: $gutter-size/2;
       }
 
-      > .trending-insights {
+      > .featured-collections {
         margin-top: $gutter-size;
       }
     }

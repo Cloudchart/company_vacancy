@@ -5,8 +5,12 @@ module Admin::Pinboard
 
     rails_admin do
       list do
-        sort_by :title
-        fields :title, :user, :created_at, :updated_at
+        sort_by :is_important
+        fields :title, :user
+        field :is_important do
+          sort_reverse true
+        end
+        fields :created_at, :updated_at
       end
 
       edit do

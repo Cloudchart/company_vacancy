@@ -35,6 +35,9 @@ class AdminAbility
       # Pinboard
       # 
       can [:read, :create], Pinboard
+      can [:make_important], Pinboard, is_important: false
+      can [:make_unimportant], Pinboard, is_important: true
+
 
       can [:update, :destroy], Pinboard do |pinboard|
         pinboard.user_id.blank?
@@ -47,6 +50,12 @@ class AdminAbility
       can [:update, :destroy], Story do |story|
         story.company_id.blank?
       end
+
+      # Company
+      # 
+      can [:read], Company
+      can [:make_important], Company, is_important: false
+      can [:make_unimportant], Company, is_important: true
 
     end
   end
