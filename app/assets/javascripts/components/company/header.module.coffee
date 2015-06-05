@@ -234,6 +234,8 @@ Component = React.createClass
       { @renderTags() }
       
       { @getFollowButton() }
+
+      <InviteActions ownerId = { @props.uuid } ownerType = 'Company' />
     </header>
 
 

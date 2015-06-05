@@ -58,10 +58,10 @@ module.exports = GlobalState.createStore
   #     item.get('owner_type')  == owner_type         and
   #     item.get('user_id')     == user.get('uuid')
 
-  rolesOnOwnerForUser: (owner, owner_type, user) ->
+  rolesOnOwnerForUser: (owner_id, owner_type, user) ->
     @byFK('user', user.get('uuid'))
       .filter (item) ->
-        item.get('owner_id')    == owner.get('uuid') and
+        item.get('owner_id')    == owner_id and
         item.get('owner_type')  == owner_type
 
   filterUserRoles: (user_id, owner_type=null) ->
@@ -76,8 +76,8 @@ module.exports = GlobalState.createStore
 
     pinboards_ids.map (id) -> PinboardStore.get(id)
 
-  isInvited: (owner, ownerType, user) ->
-    (role = @rolesOnOwnerForUser(owner, ownerType, user)) && role.get('pending_value')
+  isInvited: (owner_id, ownerType, user) ->
+    (role = @rolesOnOwnerForUser(owner_id, ownerType, user)) && role.get('pending_value')
 
   accept: (item) ->
     @syncAPI.accept(item).then @updateDone, @updateFail

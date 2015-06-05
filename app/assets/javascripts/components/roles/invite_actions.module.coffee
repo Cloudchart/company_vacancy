@@ -20,6 +20,16 @@ InviteActions = React.createClass
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
+  statics: 
+
+    queries:
+
+      roles: ->
+        """
+          Viewer {
+            roles
+          }
+        """    
 
   # Component specifications
   #
@@ -42,10 +52,16 @@ InviteActions = React.createClass
     getOwnerStore(@props.ownerType).cursor.items.get(@props.ownerId)
 
   getRole: ->
-    RoleStore.rolesOnOwnerForUser(@getOwner(), @props.ownerType, @props.cursor.viewer).first()
+    RoleStore.rolesOnOwnerForUser(@props.ownerId, @props.ownerType, @props.cursor.viewer).first()
 
   isInvited: ->
     @getRole() && @getRole().get('pending_value')
+
+  fetch: ->
+    GlobalState.fetch(@getQuery('roles'))
+
+  isLoaded: ->
+    @state.isLoaded
 
 
   # Handlers
@@ -79,8 +95,14 @@ InviteActions = React.createClass
     ModalStack.show(<ModalError />)
 
 
+  # Lifecycle methods
+  #
+  componentWillMount: ->
+    @fetch().then => @setState isLoaded: true
+
+
   render: ->
-    return null unless @isInvited()
+    return null unless @isLoaded() && @isInvited()
 
     <section className="invite-actions">
       <p>{ @props.cursor.viewer.get('first_name') }, you've been invited to this { getOwnerName(@props.ownerType) }!</p>

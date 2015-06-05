@@ -121,7 +121,7 @@ CompanyPreview = React.createClass
     description
 
   isInvited: ->
-    RoleStore.isInvited(@cursor.company, 'Company', @cursor.viewer)
+    RoleStore.isInvited(@props.uuid, 'Company', @cursor.viewer)
 
   getFavorite: ->
     FavoriteStore.filter (favorite) => 
