@@ -2,11 +2,8 @@ data  = {}
 query = parse_relations_query(params[:relations])
 
 
-def __prepare(sources, query, data)
+def __prepare(sources, query, data, json)
   grouped_sources = {}
-
-  # sources.compact!
-  # sources.uniq!
 
   cache   = []
   edges   = (query || {}).delete('edges') { [] }.flatten.compact.uniq.map(&:to_sym)
@@ -16,19 +13,23 @@ def __prepare(sources, query, data)
     (data[source.class.name.underscore.pluralize] ||= []) << { model: source, siblings: sources, cache: cache, edges: edges }
   end
 
+  json.ids sources.map(&:id) unless sources.empty?
+
   query.each do |key, value|
 
     grouped_sources.each do |klass, instances|
 
       if klass.present? && klass.reflect_on_association(key)
-        ActiveRecord::Associations::Preloader.new.preload(instances, key)
+        Preloadable::preload(instances, cache, key)
       end
 
     end
 
     children = sources.map { |source| source.try(key) }.flatten.compact.uniq
 
-    __prepare(children, value, data)
+    json.set! key do
+      __prepare(children, value, data, json)
+    end
 
   end if query.present?
 
@@ -37,8 +38,9 @@ end
 
 @source = @source.public_send(*@starter)
 
-
-__prepare([@source].flatten, query, data)
+json.query do
+  __prepare([@source].flatten, query, data, json)
+end
 
 
 data.each do |key, values|
