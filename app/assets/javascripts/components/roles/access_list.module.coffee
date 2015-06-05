@@ -8,9 +8,7 @@ RoleStore        = require("stores/role_store.cursor")
 UserStore        = require("stores/user_store.cursor")
 TokenStore       = require("stores/token_store.cursor")
 
-OwnerStores =
-  'Company':     require('stores/company_store.cursor')
-  'Pinboard':    require('stores/pinboard_store')
+getOwnerStore    = require('utils/owners').getStore
 
 AccessItem       = require("components/roles/access_item")
 StandardButton   = require('components/form/buttons').StandardButton
@@ -45,11 +43,8 @@ Component = React.createClass
   getTokens: ->
     TokenStore.filterAccessRequestsByOwner(@props.ownerId, @props.ownerType)
 
-  getOwnerStore: ->
-    OwnerStores[@props.ownerType]
-
   getOwner: ->
-    @getOwnerStore().cursor.items.get(@props.ownerId)
+    getOwnerStore(@props.ownerType).cursor.items.get(@props.ownerId)
 
   getUserOwner: ->
     switch @props.ownerType

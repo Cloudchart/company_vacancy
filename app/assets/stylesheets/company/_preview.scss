@@ -230,16 +230,6 @@ article.companies,
           }
         }
       }
-
-      .buttons {
-        @include align-items(center);
-        @include display(flex);
-        @include justify-content(space-between);
-
-        margin: auto;
-        margin-bottom: $default-margin-size;
-        width: 230px;
-      }
     }
   }
 }

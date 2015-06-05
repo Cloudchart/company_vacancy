@@ -1,5 +1,6 @@
 .access-rights {
   margin: $default-margin-size auto;
+  padding: $gutter-size;
   width: 600px;
 
   .user-list {
@@ -242,4 +243,28 @@
     }
   }
 
+}
+
+.invite-actions {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+
+  padding-top: $card-basic-space;
+
+  > p {
+    font-size: $big-font-size;
+    font-weight: 300;
+
+    margin-bottom: $inner-margin-size;
+  }
+
+  > .buttons {
+    @include display(flex);
+    @include justify-content(space-between);
+
+    width: 250px;
+
+    margin: 5px auto;
+  }
 }

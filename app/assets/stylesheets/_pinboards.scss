@@ -44,6 +44,7 @@ $pinboard-header-color: hsl(60, 10%, 96%);
     background-color: $pinboard-header-color;
 
     > .cloud-columns {
+      @include align-items(center);
       @include flex-direction(column);
 
       margin: 0 auto;
@@ -79,6 +80,11 @@ $pinboard-header-color: hsl(60, 10%, 96%);
             padding: 20px;
           }
         }
+      }
+
+      > .invite-actions {
+        width: 100%;
+        margin-bottom: $gutter-size;
       }
     }
   }
@@ -142,32 +148,6 @@ article.pinboards {
 }
 
 
-@mixin pinboard-card-invite-actions {
-  @include align-items(center);
-  @include display(flex);
-  @include flex-direction(column);
-
-  border-top: $card-hr;
-  padding-top: $card-basic-space;
-
-  > p {
-    font-size: $big-font-size;
-    font-weight: 300;
-
-    margin-bottom: $inner-margin-size;
-  }
-
-  > .buttons {
-    @include display(flex);
-    @include justify-content(space-between);
-
-    width: 45%;
-
-    margin: 5px auto;
-  }
-}
-
-
 .pinboards .pinboard.cloud-card {
 
   > a {
@@ -181,7 +161,7 @@ article.pinboards {
   }
 
   > .invite-actions {
-    @include pinboard-card-invite-actions;
+    border-top: $card-hr;
   }
 
 }

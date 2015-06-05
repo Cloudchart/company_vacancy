@@ -6,9 +6,8 @@ RoleMap       = require('utils/role_map')
 
 RoleStore     = require('stores/role_store.cursor')
 
-OwnerStores =
-  'Company':     require('stores/company_store.cursor')
-  'Pinboard':    require('stores/pinboard_store')
+getOwnerName   = require('utils/owners').getName
+getOwnerStore  = require('utils/owners').getStore
 
 CancelButton  = require('components/form/buttons').CancelButton
 
@@ -48,9 +47,6 @@ Component = React.createClass
 
     if @isPending() then @props.role.get('pending_value') else @props.role.get('value')
 
-  getOwnerStore: ->
-    OwnerStores[@props.ownerType]
-
     
   # Handlers
   #
@@ -60,13 +56,13 @@ Component = React.createClass
     if @props.role
       RoleStore.destroy(@props.role.get('uuid'))
     else if @props.token
-      @getOwnerStore().denyAccess(@props.owner, @props.token)
+      getOwnerStore(@props.ownerType).denyAccess(@props.owner, @props.token)
 
   handleRoleChange: (event) ->
     if @props.role
       RoleStore.update(@props.role.get('uuid'), { value: event.target.value })
     else if @props.token
-      @getOwnerStore().grantAccess(@props.owner, @props.token, event.target.value)
+      getOwnerStore(@props.ownerType).grantAccess(@props.owner, @props.token, event.target.value)
 
 
   # Renderers
@@ -91,7 +87,7 @@ Component = React.createClass
     return null if @props.isUserOwner || !@isPending()
 
     <span className="status">
-      Pending invite, can only view board.
+      Pending invite, can only view { getOwnerName(@props.ownerType) }.
     </span>
 
   renderRoleChooser: ->

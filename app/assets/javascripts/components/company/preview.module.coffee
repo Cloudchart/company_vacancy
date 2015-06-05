@@ -21,6 +21,8 @@ People         = require('components/pinnable/block/people')
 ModalStack     = require('components/modal_stack')
 ModalError     = require('components/error/modal')
 
+InviteActions  = require('components/roles/invite_actions')
+
 Buttons        = require('components/form/buttons')
 
 pluralize      = require('utils/pluralize')
@@ -118,11 +120,8 @@ CompanyPreview = React.createClass
 
     description
 
-  getRole: ->
-    RoleStore.rolesOnOwnerForUser(@cursor.company, 'Company', @cursor.viewer).first()
-
   isInvited: ->
-    @getRole() && @getRole().get('pending_value')
+    RoleStore.isInvited(@cursor.company, 'Company', @cursor.viewer)
 
   getFavorite: ->
     FavoriteStore.filter (favorite) => 
@@ -198,24 +197,6 @@ CompanyPreview = React.createClass
 
     CompanySyncApi.follow(@cursor.company.get('uuid'), @handleFollowDone, @handleFollowFail)
 
-  handleDeclineClick: (event) ->
-    event.preventDefault()
-    event.stopPropagation()
-
-    @setState(sync: @state.sync.set('decline', true))
-
-    RoleStore.destroy(@getRole().get('uuid')).done =>
-      @handleInviteDone('decline')
-
-  handleAcceptClick: (event) ->
-    event.preventDefault()
-    event.stopPropagation()
-
-    @setState(sync: @state.sync.set('accept', true))
-
-    RoleStore.accept(@getRole()).done =>
-      @handleInviteDone('accept')
-
   handleFollowDone: ->
     # TODO rewrite with grabbing only needed favorite
     @fetchFavorites(force: true).then => 
@@ -225,12 +206,6 @@ CompanyPreview = React.createClass
     @setState(sync: @state.sync.set('follow', false))
 
     ModalStack.show(<ModalError />)
-
-  handleInviteDone: (syncKey) ->
-    @setState(sync: @state.sync.set(syncKey, false))
-
-  handleFail: (syncKey) ->
-    @setState(sync: @state.sync.set(syncKey, false))
 
   handlePreviewClick: ->
     return unless @isUnpublished()
@@ -348,20 +323,7 @@ CompanyPreview = React.createClass
 
   renderButtonsOrPeople: ->
     if @isInvited()
-      <div className="buttons">
-        <SyncButton 
-          className = "cc alert"
-          iconClass = "fa-close"
-          onClick   = { @handleDeclineClick }
-          sync      = { @state.sync.get('decline') }
-          text      = "Decline" />
-        <SyncButton 
-          className = "cc"
-          iconClass = "fa-check"
-          onClick   = { @handleAcceptClick }
-          sync      = { @state.sync.get('accept') }
-          text      = "Accept" />
-      </div>
+      <InviteActions ownerId = { @props.uuid } ownerType = 'Company' />
     else
       <People 
         key            = "people"

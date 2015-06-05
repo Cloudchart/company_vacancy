@@ -13,9 +13,7 @@ Checkbox          = require('components/form/checkbox')
 RoleStore         = require("stores/role_store.cursor")
 UserStore         = require("stores/user_store.cursor")
 
-OwnerStores =
-  'Company':     require('stores/company_store.cursor')
-  'Pinboard':    require('stores/pinboard_store')
+getOwnerStore     = require('utils/owners').getStore
 
 
 # Main
@@ -42,11 +40,8 @@ Component = React.createClass
   getRoleCopy: (value) ->
     RoleMap[@props.ownerType][value]
 
-  getOwnerStore: ->
-    OwnerStores[@props.ownerType]
-
   getOwner: ->
-    @getOwnerStore().cursor.items.get(@props.ownerId)
+    getOwnerStore(@props.ownerType).cursor.items.get(@props.ownerId)
 
   getOwnerName: ->
     switch @props.ownerType

@@ -76,5 +76,8 @@ module.exports = GlobalState.createStore
 
     pinboards_ids.map (id) -> PinboardStore.get(id)
 
+  isInvited: (owner, ownerType, user) ->
+    (role = @rolesOnOwnerForUser(owner, ownerType, user)) && role.get('pending_value')
+
   accept: (item) ->
     @syncAPI.accept(item).then @updateDone, @updateFail

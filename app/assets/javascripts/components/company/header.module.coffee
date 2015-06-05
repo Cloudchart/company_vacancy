@@ -20,6 +20,7 @@ Toggle              = require('components/form/toggle')
 AccessRights        = require('components/company/access_rights')
 TagsComponent       = require('components/company/tags')
 ContentEditableArea = require('components/form/contenteditable_area')
+InviteActions       = require('components/roles/invite_actions')
 
 # Main
 #
@@ -79,7 +80,7 @@ Component = React.createClass
     </a>
 
 
-  getFollowButoon: ->
+  getFollowButton: ->
     return null unless @state.cursor.flags.get('can_follow')
     <FollowComponent uuid={@props.uuid}, is_followed={@state.cursor.flags.get('is_followed')} />
 
@@ -232,7 +233,7 @@ Component = React.createClass
 
       { @renderTags() }
       
-      { @getFollowButoon() }
+      { @getFollowButton() }
     </header>
 
 

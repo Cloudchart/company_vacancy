@@ -4,6 +4,8 @@ GlobalState      = require('global_state/state')
 
 CompanyStore     = require('stores/company_store.cursor')
 
+RoleStore        = require('stores/role_store.cursor')
+
 CompanyList      = require('components/company/list')
 CompanyPreview   = require('components/company/preview')
 
@@ -12,7 +14,7 @@ UserCompanies = React.createClass
 
   displayName: 'CompanyList'
 
-  mixins: [GlobalState.query.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics:
 
@@ -36,6 +38,10 @@ UserCompanies = React.createClass
   #
   propTypes:
     user_id: React.PropTypes.string.isRequired
+
+  getDefaultProps: ->
+    cursor:
+      roles: RoleStore.cursor.items
 
 
   # Helpers

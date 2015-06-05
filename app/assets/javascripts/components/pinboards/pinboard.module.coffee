@@ -10,9 +10,10 @@ PinboardStore     = require('stores/pinboard_store')
 RoleStore         = require('stores/role_store.cursor')
 UserStore         = require('stores/user_store.cursor')
 
-SyncButton        = require('components/form/buttons').SyncButton
 ModalStack        = require('components/modal_stack')
 RoleAccessRequest = require('components/roles/access_request')
+
+InviteActions     = require('components/roles/invite_actions')
 
 # Components
 #
@@ -50,7 +51,8 @@ module.exports = React.createClass
         loaders: @state.loaders.set('pinboard', true)
 
   propTypes:
-    user_id: React.PropTypes.string
+    user_id: React.PropTypes.string.isRequired
+    uuid:    React.PropTypes.string.isRequired
 
   getDefaultProps: ->
     cursor:
@@ -58,7 +60,6 @@ module.exports = React.createClass
 
   getInitialState: ->
     loaders: Immutable.Map()
-    sync:    Immutable.Map()
 
 
   # Helpers
@@ -71,12 +72,6 @@ module.exports = React.createClass
 
   getViewer: ->
     @cursor.viewer.deref(false)
-
-  getRole: ->
-    RoleStore.rolesOnOwnerForUser(@getPinboard(), 'Pinboard', @getViewer()).first()
-
-  isInvited: ->
-    @getRole() && @getRole().get('pending_value')
 
   isProtected: ->
     @getPinboard().get('access_rights') == 'protected' &&
@@ -92,24 +87,6 @@ module.exports = React.createClass
 
   # Handlers
   #
-  handleDeclineClick: (event) ->
-    event.preventDefault()
-    event.stopPropagation()
-
-    @setState(sync: @state.sync.set('decline', true))
-
-    RoleStore.destroy(@getRole().get('uuid')).done =>
-      @setState(sync: @state.sync.set('decline', false))
-
-  handleAcceptClick: (event) ->
-    event.preventDefault()
-    event.stopPropagation()
-
-    @setState(sync: @state.sync.set('accept', true))
-
-    RoleStore.accept(@getRole()).done =>
-      @setState(sync: @state.sync.set('decline', false))
-
   handleLinkClick: ->
     return unless @isProtected()
 
@@ -178,25 +155,6 @@ module.exports = React.createClass
       </ul>
     </footer>
 
-  renderInviteActions: ->
-    return null unless @isInvited()
-
-    <section className="invite-actions">
-      <p>{ @cursor.viewer.get('first_name') }, you've been invited to this collection!</p>
-      <div className="buttons">
-        <SyncButton 
-          className = "cc"
-          onClick   = { @handleAcceptClick }
-          sync      = { @state.sync.get('accept') }
-          text      = "Accept" />
-        <SyncButton 
-          className = "cc alert"
-          onClick   = { @handleDeclineClick }
-          sync      = { @state.sync.get('decline') }
-          text      = "Decline" />
-      </div>
-    </section>
-
 
   render: ->
     return null unless @isLoaded()
@@ -207,5 +165,5 @@ module.exports = React.createClass
         { @renderDescription() }
       </a>
       { @renderFooter() }
-      { @renderInviteActions() }
+      <InviteActions ownerId = { @props.uuid } ownerType = { 'Pinboard' } />
     </section>

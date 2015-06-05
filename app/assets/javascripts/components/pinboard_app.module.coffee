@@ -19,6 +19,9 @@ PinboardPins     = require('components/pinboards/pins/pinboard')
 PinboardTabs     = require('components/pinboards/tabs')
 SyncButton       = require('components/form/buttons').SyncButton
 
+InviteActions    = require('components/roles/invite_actions')
+
+
 SyncApi          = require('sync/pinboard_sync_api')
 
 
@@ -186,6 +189,7 @@ module.exports = React.createClass
       <section className="tab-header">
         <div className="cloud-columns cloud-columns-flex">
           { @renderHeader() }
+          <InviteActions ownerId = { @props.uuid } ownerType = 'Pinboard' />
           <PinboardTabs
             insightsNumber = { @getPinboard().get('pins_count') }
             canEdit        = { @canViewerEdit() }
