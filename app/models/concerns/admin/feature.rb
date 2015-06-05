@@ -23,8 +23,12 @@ module Admin::Feature
 
         field :category
         field :is_active
-        field :is_blurred
-        field :is_darkened
+
+        field :display_types do
+          formatted_value do
+            bindings[:object].display_types.to_sentence
+          end
+        end
       end
 
       edit do
@@ -42,8 +46,10 @@ module Admin::Feature
         field :category
         field :url
         field :is_active
-        field :is_blurred
-        field :is_darkened
+
+        field :display_types do
+          partial :display_types
+        end
       end
 
     end

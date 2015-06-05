@@ -1,0 +1,6 @@
+<%= hidden_field_tag "feature[display_types][]", nil %>
+
+<% Feature::DISPLAY_TYPES.each do |display_type| %>
+  <%= check_box_tag "feature[display_types][]", display_type, @object.display_types.include?(display_type), id: display_type %>
+  <%= label_tag display_type, display_type.to_s.humanize %><br>
+<% end %>
