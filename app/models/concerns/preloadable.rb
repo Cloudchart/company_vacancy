@@ -12,4 +12,12 @@ module Preloadable
   end
 
 
+  module ClassMethods
+
+    def acts_as_preloadable(method_name, *associations)
+    end
+
+  end
+
+
 end
