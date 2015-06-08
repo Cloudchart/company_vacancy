@@ -1,6 +1,4 @@
 Cloudchart::Application.routes.draw do
-  # Root
-  #
   root to: 'welcome#index'
 
   # Engines
@@ -28,10 +26,6 @@ Cloudchart::Application.routes.draw do
     get :download_verification_file, on: :member
     get :finance, on: :member
     get :access_rights, on: :member
-
-    resources :vacancies, except: :edit, shallow: true, concerns: [:statusable] do
-      match :update_reviewers, on: :member, via: [:put, :patch]
-    end
 
     resources :events, shallow: true do
       post :verify, on: :member
@@ -65,43 +59,19 @@ Cloudchart::Application.routes.draw do
     resources :posts_stories, only: :create, as: :post_posts_stories
   end
 
-  scope 'vacancies/:vacancy_id' do
-    resources :vacancy_responses, path: 'responses', only: [:index, :new, :create]
-  end
-
-  resources :vacancy_responses, only: [:show, :destroy], concerns: [:statusable] do
-    post 'vote/:vote', on: :member, action: :vote, as: :vote
-    post :ban_user, on: :member
-  end
-
   resources :interviews, only: [:show] do
     patch :accept, on: :member
   end
 
   resources :pinboards, concerns: [:followable] do
     get :settings, on: :member
-
     resources :roles, only: [:update, :destroy]
-
     resources :invites, only: [:create, :update, :destroy], controller: 'pinboards/invites'
-
-    # resources :invites, only: [:show, :create, :destroy], controller: 'pinboards/invites' do
-    #   match :resend, on: :member, via: [:put, :patch]
-    #   post :accept, on: :member
-    # end
   end
-
-  get '/collections',     to: 'pinboards#index',  as: 'collections'
-  get '/collections/:id', to: 'pinboards#show',   as: 'collection'
-  get '/collections/:id/invite', to: 'pinboards/invites#new', as: 'new_collection_invite'
 
   resources :pins, except: [:index] do
     match :approve, on: :member, via: [:put, :patch]
   end
-
-  resources :posts_stories, only: [:update, :destroy]
-
-  resources :activities, only: [:create]
 
   resources :users, only: [:show, :update], concerns: [:followable] do
     get :settings, on: :member
@@ -119,21 +89,25 @@ Cloudchart::Application.routes.draw do
     match :email, on: :member, via: [:put, :patch]
   end
 
-  resources :quotes, only: [:show]
-  resources :visibilities, only: :update
-  resources :subscriptions, only: [:create, :update, :destroy]
-  resources :comments, only: [:create, :update, :destroy]
-
   resources :roles, only: [:create, :update, :destroy, :show] do
     match :accept, on: :member, via: [:put, :patch]
   end
 
+  resources :posts_stories, only: [:update, :destroy]
+  resources :activities, only: [:create]
+  resources :quotes, only: [:show]
+  resources :visibilities, only: :update
+  resources :subscriptions, only: [:create, :update, :destroy]
   resources :tokens, only: :show
   resources :limbo, only: :index
   resources :landings, only: [:show, :update, :destroy]
 
   # Custom
   #
+  get '/collections', to: 'pinboards#index', as: :collections
+  get '/collections/:id', to: 'pinboards#show', as: :collection
+  get '/collections/:id/invite', to: 'pinboards/invites#new', as: :new_collection_invite
+
   post '/users/:user_id/greeting', to: 'tokens#create_greeting'
   match '/user_greeting/:id', to: 'tokens#update_greeting', via: [:put, :patch]
   delete '/user_greeting/:id', to: 'tokens#destroy_greeting'

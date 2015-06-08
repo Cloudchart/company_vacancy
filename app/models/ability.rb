@@ -11,7 +11,6 @@ class Ability
       # can :read, Event
       # can :read, Tag
       # can :read, Person
-      # can :read, Vacancy
       # can :read, Quote
       # can :show, Pinboard
 
@@ -165,7 +164,7 @@ class Ability
         quote.company && !quote.company.people.include?(quote.person)
       end
 
-      can :manage, [Person, Vacancy, Block, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
+      can :manage, [Person, Block, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
         owner_or_editor?(current_user, resource.company)
       end
 
