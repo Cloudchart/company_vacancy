@@ -1,5 +1,11 @@
 <% title @pinboard.title %>
 
+<% set_meta_tags og: {
+  title: t('meta.pinboard.title', title: @pinboard.title),
+  url: pinboard_url(@pinboard),
+  description: t('meta.pinboard.description', title: @pinboard.title)
+} %>
+
 <%= content_tag :article, nil, data: {
   "react-class" => "components/pinboard_app",
   "react-props" => {
