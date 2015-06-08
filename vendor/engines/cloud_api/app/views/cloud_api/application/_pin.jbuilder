@@ -8,5 +8,5 @@ json.(pin, :created_at, :updated_at)
 json.is_featured begin
   preload_association(siblings, :feature, cache)
 
-  pin.featured?
+  pin.is_featured?
 end
