@@ -13,7 +13,10 @@ def __prepare(sources, query, data, json)
     (data[source.class.name.underscore.pluralize] ||= []) << { model: source, siblings: sources, cache: cache, edges: edges }
   end
 
-  json.ids sources.map(&:id) unless sources.empty?
+  unless sources.empty?
+    json.type sources.first.class.name
+    json.ids sources.map(&:id)
+  end
 
   query.each do |key, value|
 
