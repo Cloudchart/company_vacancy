@@ -88,51 +88,12 @@ cachedPromises = {}
 Storage = Immutable.Map()
 
 
-# Store data
-#
-storeData = (response, endpointKey) ->
-  endpoint  = Endpoints.get(endpointKey)
-
-  if Immutable.Iterable.isKeyed(response)
-
-    unless store = endpoint.get('store')
-      console.error "GlobalState/Fetcher: unknown store for #{endpointKey}"
-      return null
-
-    store   = store() if store instanceof Function
-    record  = Immutable.Map(store.cursor.items.get(response.get('id')))
-
-    record.withMutations (data) ->
-
-      response.forEach (value, key) ->
-        return if key is 'id'
-
-        unless childEndpoint = endpoint.getIn(['relations', key])
-          console.error "GlobalState/Fetcher: unknown reference to #{key} from #{endpointKey}"
-          return null
-
-        childEndpoint = childEndpoint(record) if childEndpoint instanceof Function
-        data.set(key, storeData(value, childEndpoint))
-
-    Storage = Storage.updateIn [endpointKey], (data) ->
-      (data || Immutable.Map()).set(record.get('uuid'), record)
-
-    record
-
-
-  else if Immutable.Iterable.isIndexed(response)
-   response.map (value, index) -> storeData(value, endpointKey)
-
-
-
 # Fetch done
 #
 fetchDone = (response, query, options) ->
   Dispatcher.handleServerAction
     type: 'fetch:done'
     data: [response]
-
-  #storeData(Immutable.fromJS(response.query), query.endpoint)
 
 
 
