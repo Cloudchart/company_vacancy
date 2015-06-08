@@ -19,7 +19,7 @@ cx = React.addons.classSet
 
 
 # Main component
-# 
+#
 MainComponent = React.createClass
 
   displayName: 'LimboApp'
@@ -34,6 +34,9 @@ MainComponent = React.createClass
         """
           Viewer {
             limbo_pins {
+              edges {
+                post
+              },
               #{PinComponent.getQuery('pin')}
             }
           }
@@ -45,7 +48,7 @@ MainComponent = React.createClass
     onItemClick:      React.PropTypes.func
 
   getDefaultProps: ->
-    cursor: 
+    cursor:
       pins: PinStore.cursor.items
     showCreateButton: false
     showSearch:       false
@@ -56,7 +59,7 @@ MainComponent = React.createClass
 
 
   # Helpers
-  # 
+  #
   isLoaded: ->
     @state.isLoaded
 
@@ -66,7 +69,7 @@ MainComponent = React.createClass
   gatherInsights: ->
     @props.cursor.pins
       .filter (pin) =>
-        !pin.get('parent_id') && !pin.get('pinnable_id') && 
+        !pin.get('parent_id') && !pin.get('pinnable_id') &&
         pin.get('author_id') && pin.get('content')
       .filter (pin) =>
         !@state.query ||
@@ -79,7 +82,7 @@ MainComponent = React.createClass
 
 
   # Handlers
-  # 
+  #
   handleCreateButtonClick: ->
     Modal.show(@renderPinForm())
 
@@ -88,16 +91,16 @@ MainComponent = React.createClass
 
 
   # Lifecycle Methods
-  # 
+  #
   componentWillMount: ->
-    @cursor = 
+    @cursor =
       users: UserStore.cursor.items
 
     @fetch().then => @setState isLoaded: true
 
 
   # Renderers
-  # 
+  #
   renderPinForm: ->
     <PinForm
       onDone        = { Modal.hide }
@@ -124,7 +127,7 @@ MainComponent = React.createClass
 
 
   # Main render
-  # 
+  #
   render: ->
     if @isLoaded()
       <section className="limbo">
@@ -146,5 +149,5 @@ MainComponent = React.createClass
 
 
 # Exports
-# 
+#
 module.exports = MainComponent
