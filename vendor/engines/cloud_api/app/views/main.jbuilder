@@ -5,6 +5,7 @@ query = parse_relations_query(params[:relations])
 def __prepare(sources, query, data, json)
   grouped_sources = {}
 
+  scope = { current_user: current_user }
   cache   = []
   edges   = (query || {}).delete('edges') { [] }.flatten.compact.uniq.map(&:to_sym)
 
@@ -20,6 +21,8 @@ def __prepare(sources, query, data, json)
 
   query.each do |key, value|
 
+    children = []
+
     grouped_sources.each do |klass, instances|
 
       if klass.present? && klass.reflect_on_association(key)
@@ -28,12 +31,14 @@ def __prepare(sources, query, data, json)
         klass.public_send(:"preload_#{key}", instances, cache)
       end
 
+      args = []
+      args << scope if (method = klass.instance_method(key)) && method.parameters.size == 1
+
+      children.concat instances.map { |instance| instance.try(key, *args) }.flatten
     end
 
-    children = sources.map { |source| source.try(key) }.flatten.compact.uniq
-
     json.set! key do
-      __prepare(children, value, data, json)
+      __prepare(children.compact.uniq, value, data, json)
     end
 
   end if query.present?
