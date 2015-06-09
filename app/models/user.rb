@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   include Uuidable
   include Fullnameable
   include FriendlyId
+  include Preloadable
   include Admin::User
 
   attr_accessor :current_password
@@ -48,6 +49,7 @@ class User < ActiveRecord::Base
   has_many :favorites, dependent: :destroy
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
   has_many :roles, dependent: :destroy
+  has_many :companies_roles, -> { where(owner_type: Company.name) }, class_name: Role.name
   has_one  :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :people, dependent: :destroy
@@ -66,6 +68,19 @@ class User < ActiveRecord::Base
   validates :full_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
   validates :twitter, twitter_handle: true, uniqueness: { case_sensitive: false }, allow_blank: true
+
+  # Companies
+  #
+
+  acts_as_preloadable :companies_through_roles, companies_roles: :company
+
+  def companies_through_roles(scope = {})
+    ability = Ability.new(scope[:current_user] || self)
+    companies_roles.map(&:company).select { |c| ability.can?(:read, c) }
+  end
+
+  #
+  # /Companies
 
   validate :validate_twitter_handle_for_invite, if: :should_validate_twitter_handle_for_invite?
   # validate :validate_email, on: :create
