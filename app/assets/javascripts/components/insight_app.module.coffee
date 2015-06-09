@@ -4,12 +4,12 @@
 # 
 GlobalState = require('global_state/state')
 PinStore = require('stores/pin_store')
-Insight = require('components/pinboards/pin')
+Insight = require('components/cards/insight_card')
 
 
 # Utils
 #
-cx = React.addons.classSet
+# cx = React.addons.classSet
 
 
 # Main component
@@ -49,8 +49,7 @@ MainComponent = React.createClass
 
   # Handlers
   # 
-  handleInsightClick: (event) ->
-    console.log 'handleInsightClick'
+  # handleThingClick: (event) ->
 
 
   # Renderers
@@ -61,13 +60,7 @@ MainComponent = React.createClass
   # Main render
   # 
   render: ->
-    <article className="insight-container">
-      <Insight
-        uuid = { @props.uuid }
-        onClick = { @handleInsightClick }
-        showAuthor = { false }
-      />
-    </article>
+    <Insight insight = { @props.uuid } />
 
 
 # Exports
