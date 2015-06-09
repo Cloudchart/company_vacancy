@@ -71,7 +71,7 @@ SyncButton = React.createClass
     @updateWidth()
 
     setTimeout =>
-      @addTransition()
+      @addTransition() if @isMounted()
     , 500
 
   componentWillReceiveProps: (nextProps) ->

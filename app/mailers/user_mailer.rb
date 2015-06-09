@@ -69,7 +69,7 @@ class UserMailer < ActionMailer::Base
 
     return unless email = @owner.email
 
-    mail(to: email) do |format|
+    mail(to: email, subject: "Let #{@user.full_name} join your collection on CloudChart") do |format|
       format.html { render layout: 'user_mailer_' }
     end
   end

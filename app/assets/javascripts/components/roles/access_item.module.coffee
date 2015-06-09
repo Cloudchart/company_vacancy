@@ -68,7 +68,7 @@ Component = React.createClass
   # Renderers
   #
   renderInviteMessage: ->
-    return null unless @hasRequestedAccess()
+    return null unless @hasRequestedAccess() && @props.token.get('data').get('message')
 
     <article className="message">
       <p>
