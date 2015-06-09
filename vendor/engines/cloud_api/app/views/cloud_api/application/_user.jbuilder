@@ -4,13 +4,13 @@ json.(user, :created_at, :updated_at)
 
 
 json.email begin
-  preload_association(siblings, :emails, cache)
+  preload_associations(siblings, cache, :emails)
 
   user.email
 end
 
 json.is_editable begin
-  preload_association(siblings, :roles, cache)
+  preload_associations(siblings, cache, :roles)
 
   can?(:update, user)
 end

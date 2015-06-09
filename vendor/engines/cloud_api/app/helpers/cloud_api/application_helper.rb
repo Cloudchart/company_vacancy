@@ -44,11 +44,13 @@ module CloudApi
     end
 
 
-    def preload_association(records, association, cache)
-      unless cache.include?(association)
-        ActiveRecord::Associations::Preloader.new.preload(records, association)
-        cache << association
-      end
+    def preload_associations(records, cache, *associations)
+      Preloadable::preload(records, cache, *associations)
+    end
+
+
+    def json_edge!(json, edge, edges)
+      json.set! edge, yield if block_given? && edges.include?(edge)
     end
 
 

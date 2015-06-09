@@ -6,15 +6,13 @@ json.(pinboard, :created_at, :updated_at)
 #json.readers_count pinboard.readers.size + pinboard.writers.size + pinboard.followers.size
 
 json.readers_count begin
-  preload_association(siblings, :readers, cache)
-  preload_association(siblings, :writers, cache)
-  preload_association(siblings, :followers, cache)
+  preload_associations(siblings, cache, :readers, :writers, :followers)
 
   pinboard.readers.size + pinboard.writers.size + pinboard.followers.size
 end
 
 json.pins_count begin
-  preload_association(siblings, :pins, cache)
+  preload_associations(siblings, cache, :pins)
 
   pinboard.pins.size
 end
@@ -22,13 +20,13 @@ end
 json.url main_app::collection_url(pinboard)
 
 json.users begin
-  preload_association(siblings, :users, cache)
+  preload_associations(siblings, cache, :users)
 
   pinboard.users
 end
 
 json.tokens begin
-  preload_association(siblings, :tokens, cache)
+  preload_associations(siblings, cache, :tokens)
 
   pinboard.invite_tokens
 end
