@@ -173,6 +173,12 @@
       }
     }
 
+    &:hover {
+      h1 {
+        color: $link-color;
+      }
+    }
+
     > a {
       @include display(flex);
       @include flex-direction(column);
