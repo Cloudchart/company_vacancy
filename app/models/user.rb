@@ -46,8 +46,12 @@ class User < ActiveRecord::Base
   has_many :subscriptions, dependent: :destroy
   has_many :vacancies, foreign_key: :author_id
   has_many :vacancy_responses
+
   has_many :favorites, dependent: :destroy
+  has_many :companies_favorites, -> { where(favoritable_type: Company.name) }, class_name: Favorite.name
+
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
+
   has_many :roles, dependent: :destroy
   has_many :companies_roles, -> { where(owner_type: Company.name) }, class_name: Role.name
   has_one  :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
@@ -77,6 +81,13 @@ class User < ActiveRecord::Base
   def companies_through_roles(scope = {})
     ability = Ability.new(scope[:current_user] || self)
     companies_roles.map(&:company).select { |c| ability.can?(:read, c) }
+  end
+
+  acts_as_preloadable :favorite_companies, companies_favorites: :company
+
+  def favorite_companies(scope = {})
+    ability = Ability.new(scope[:current_user] || self)
+    companies_favorites.map(&:company).select { |c| ability.can?(:read, c) }
   end
 
   #
