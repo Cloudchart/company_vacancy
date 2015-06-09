@@ -213,42 +213,6 @@
   }
 }
 
-.access-request-form {
-  background-color: $background-color;
-  padding: 40px;
-  width: 500px;
-
-  > header {
-    font-size: $large-font-size;
-  }
-
-  > form {
-    @include display(flex);
-    @include flex-direction(column);
-
-    margin-top: 20px;
-
-    > button {
-      @include align-self(flex-end);
-    }
-  }
-
-  > section {
-    @include display(flex);
-    @include flex-direction(column);
-
-    p {
-      font-size: $big-font-size;
-      font-weight: 300;
-    }
-
-    > button {
-      @include align-self(flex-end);
-    }
-  }
-
-}
-
 .invite-actions {
   @include align-items(center);
   @include display(flex);

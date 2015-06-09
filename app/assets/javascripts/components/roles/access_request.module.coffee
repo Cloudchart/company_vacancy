@@ -148,7 +148,7 @@ Component = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <section className="access-request-form">
+    <section className="form-modal">
       <header>
         Invite only collection { @cursor.pinboard.get('title') }
       </header>

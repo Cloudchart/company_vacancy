@@ -205,6 +205,41 @@ body ul.modal-stack {
   }
 }
 
+.form-modal {
+  background-color: $background-color;
+  padding: 40px;
+  width: 500px;
+
+  > header {
+    font-size: $large-font-size;
+  }
+
+  > form {
+    @include display(flex);
+    @include flex-direction(column);
+
+    margin-top: 20px;
+
+    > button {
+      @include align-self(flex-end);
+    }
+  }
+
+  > section {
+    @include display(flex);
+    @include flex-direction(column);
+
+    p {
+      font-size: $big-font-size;
+      font-weight: 300;
+    }
+
+    > button {
+      @include align-self(flex-end);
+    }
+  }  
+}
+
 
 @import 'modals/login-form';
 @import 'modals/splash';
