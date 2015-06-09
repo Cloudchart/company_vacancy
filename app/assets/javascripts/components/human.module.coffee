@@ -153,21 +153,19 @@ module.exports = React.createClass
     return null unless @cursor.deref(false) && @props.cursor.currentUser.deref(false)
 
     if @props.isOneLiner
-      <span className="human">
+      wrapper = if (link = @getLink()) then React.DOM.a else React.DOM.span
+
+      <wrapper className="human for-group" href={ link }>
         <strong>
           { @getName() }
           { ", " if @getOccupation() } 
         </strong>
         <span className="occupation">{ @getOccupation() }</span>
-      </span>
+      </wrapper>
     else
-      if (link = @getLink())
-        <a className="human for-group" href={ link }>
-          { @renderAvatar() }
-          { @renderCredentials() }
-        </a>
-      else
-        <div className="human">
-          { @renderAvatar() }
-          { @renderCredentials() }
-        </div>
+      wrapper = if (link = @getLink()) then React.DOM.a else React.DOM.div
+
+      <wrapper className="human for-group" href={ link }>
+        { @renderAvatar() }
+        { @renderCredentials() }
+      </wrapper>

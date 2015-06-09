@@ -25,25 +25,17 @@
     margin-top: $default-margin-size;
   }
 
-  .title {
+  > header {
     font-size: $big-font-size;
     font-weight: 600;
-
-    margin-right: 50px;
 
     .title {
       @extend .cloud-card-header;
     }
 
-    > .date {
-      @include align-items(center);
-      @include display(flex);
-      @include justify-content(center);
-
-      color: $special-link-color;
-      margin-bottom: $inner-margin-size;
-      font-size: $small-font-size;
-      font-weight: 300;
+    .round-buttons {
+      float: right;
+      margin-left: 20px;
     }
   }
 }

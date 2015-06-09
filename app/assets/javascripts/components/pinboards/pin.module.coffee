@@ -162,7 +162,6 @@ module.exports = React.createClass
     return null unless @props.showAuthor
 
     <Human
-      showLink   = { false }
       isOneLiner = { true }
       type       = "user"
       uuid       = { @cursor.pin.get('user_id') } />

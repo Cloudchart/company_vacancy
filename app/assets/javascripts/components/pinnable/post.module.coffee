@@ -158,6 +158,7 @@ module.exports = React.createClass
     return unless @cursor.post.get('title', false)
 
     <header>
+      { @renderControls() }
       <div className="title" dangerouslySetInnerHTML={ __html: @cursor.post.get('title') } />
     </header>
 
@@ -194,7 +195,6 @@ module.exports = React.createClass
     <article className="pinnable post-preview link">
       <a className="for-group" href={ @cursor.post.get('post_url') } >
         { @renderTitle() }
-        { @renderControls() }
         { @renderBlocks() }
         { @renderOwnerHeader() }
         { @renderReadMore() }
