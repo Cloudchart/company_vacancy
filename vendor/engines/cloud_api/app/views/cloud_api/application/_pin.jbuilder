@@ -5,6 +5,8 @@ json.(pin, :pins_count, :weight)
 json.(pin, :is_approved, :is_suggestion)
 json.(pin, :created_at, :updated_at)
 
+json.insight_url  main_app.insight_url(pin)
+
 json.is_featured begin
   preload_associations(siblings, cache, :feature)
   pin.is_featured?

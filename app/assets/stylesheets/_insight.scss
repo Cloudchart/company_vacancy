@@ -1,0 +1,5 @@
+main.insight > div {
+  @include display(flex);
+  @include flex-direction(column);
+  @include align-items(center);
+}
