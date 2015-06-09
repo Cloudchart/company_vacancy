@@ -120,15 +120,6 @@ module.exports = React.createClass
             <a className="for-group" href={ @getFeatureUrl(feature) }>
               <header>
                 <h1><span>{ feature.get('assigned_title') }</span></h1>
-                <div className="info">
-                  <ul className="round-buttons">
-                    <PinButton 
-                      title         = { feature.get('title') }
-                      pinnable_id   = { post.get('uuid') }
-                      pinnable_type = "Post" />
-                  </ul>
-                  <div className="date">{ formatted_date }</div>
-                </div>
                 <div className="spacer"></div>
                 <h2> { feature.get('category') } </h2>
               </header>
