@@ -24,6 +24,8 @@ def __prepare(sources, query, data, json)
 
       if klass.present? && klass.reflect_on_association(key)
         Preloadable::preload(instances, cache, key)
+      elsif klass.present? && klass.respond_to?(:"preload_#{key}")
+        klass.public_send(:"preload_#{key}", instances, cache)
       end
 
     end
