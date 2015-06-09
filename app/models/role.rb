@@ -10,6 +10,7 @@ class Role < ActiveRecord::Base
   belongs_to :owner, polymorphic: true
 
   belongs_to :pinboard, foreign_key: :owner_id, foreign_type: Pinboard
+  belongs_to :company,  foreign_key: :owner_id, foreign_type: Company
 
   validates :value, inclusion: { in: Company::INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Company' }
   validates :value, inclusion: { in: Pinboard::INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Pinboard' }
@@ -37,7 +38,7 @@ private
 
   def check_value
     return unless owner.present?
-    
+
     if new_record? && !should_skip_pending_role?
       self.pending_value  = self.value
       self.value          = owner.class::ACCESS_ROLE
