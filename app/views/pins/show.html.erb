@@ -1,3 +1,10 @@
+<% set_meta_tags og: {
+  title: "#{@pin.post.company.name}, #{@pin.post.title}",
+  image: og_image_url,
+  url: insight_url(@pin),
+  description: @pin.content
+} %>
+
 <% content_for :class_for_main, 'insight' %>
 
 <div data-react-class="components/insight_app" data-react-props="<%= { uuid: @pin.id }.to_json %>"></div>

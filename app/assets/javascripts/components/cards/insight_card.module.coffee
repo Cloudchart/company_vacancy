@@ -34,6 +34,11 @@ module.exports = React.createClass
             user,
             post {
               company
+            },
+            edges {
+              insight_url,
+              facebook_share_url,
+              twitter_share_url
             }
           }
         """
@@ -42,7 +47,9 @@ module.exports = React.createClass
   # Component Specifications
   # 
   # getDefaultProps: ->
-  # getInitialState: ->
+
+  getInitialState: ->
+    display_mode: null
 
   
   # Lifecycle Methods
@@ -50,13 +57,19 @@ module.exports = React.createClass
   componentWillMount: ->
     @fetch()
 
-  componentDidMount: ->
-    new ZeroClipboard(@refs.clip.getDOMNode())
-
+  # componentDidMount: ->
   # componentWillReceiveProps: (nextProps) ->
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
-  # componentDidUpdate: (prevProps, prevState) ->
+
+  componentDidUpdate: (prevProps, prevState) ->
+    if @refs.clip
+      new ZeroClipboard(@refs.clip.getDOMNode())
+
+    if @refs.copy_link_input
+      copy_link_input = @refs.copy_link_input.getDOMNode()
+      copy_link_input.setSelectionRange(0, copy_link_input.value.length)
+
   # componentWillUnmount: ->
 
 
@@ -76,8 +89,8 @@ module.exports = React.createClass
 
     GlobalState.fetch(@getQuery('insight'), id: id)
 
-  isInsightEmpty: ->
-    Object.keys(@getInsight()).length is 0
+  isInsightEmpty: (insight) ->
+    Object.keys(insight).length is 0
 
   gatherPinAttributes: (insight) ->
     uuid: insight.uuid
@@ -86,19 +99,28 @@ module.exports = React.createClass
     pinnable_type: insight.pinnable_type
     title: insight.content
 
+  openShareWindow: (url) ->
+    window.open(url, '_blank', 'location=yes,width=640,height=480,scrollbars=yes,status=yes')
+
 
   # Handlers
   # 
+  handleCopyLinkButtonClick: (event) ->
+    @setState display_mode: 'copy_link'
+
   handleCopyLinkClick: (event) ->
-    console.log 'handleCopyLinkClick'
+    @setState display_mode: null
+
+  handleFacebookLinkClick: (insight, event) ->
+    @openShareWindow(insight.facebook_share_url)
+
+  handleTwitterLinkClick: (insight, event) ->
+    @openShareWindow(insight.twitter_share_url)
 
 
   # Renderers
   # 
-  renderInsight: ->
-    return null if @isInsightEmpty()
-    insight = @getInsight()
-
+  renderInsight: (insight) ->
     <article className="insight">
       <InsightContent
         pinnable_id = { insight.pinnable_id }
@@ -121,14 +143,43 @@ module.exports = React.createClass
       </footer>
     </article>
 
-  renderShareButtons: ->
+  renderShareButtons: (insight) ->
     <section className="share-buttons">
       <ul>
         <li>Share!</li>
-        <li ref="clip" onClick={ @handleCopyLinkClick } data-clipboard-text = 'Test me!' >Copy link</li>
-        <li>Facebook</li>
-        <li>Twitter</li>
-        <li>LinkedIn</li>
+
+        <li>
+          <button className="cc" onClick={ @handleCopyLinkButtonClick }>Copy link</button>
+        </li>
+
+        <li>
+          <button className="cc" onClick={@handleFacebookLinkClick.bind(@, insight)}>
+            <i className="fa fa-facebook"></i>
+          </button>
+        </li>
+
+        <li>
+          <button className="cc" onClick={@handleTwitterLinkClick.bind(@, insight)}>
+            <i className="fa fa-twitter"></i>
+          </button>
+        </li>
+      </ul>
+    </section>
+
+  renderCopyLinkSection: (insight) ->
+    <section className="copy-link">
+      <ul>
+        <li>Copy link</li>
+
+        <li>
+          <input id="copy_link_input" ref="copy_link_input" className="cc-input" value={insight.insight_url} readOnly={true} />
+        </li>
+        
+        <li>
+          <button ref="clip" data-clipboard-target="copy_link_input" className="cc" onClick={@handleCopyLinkClick} title="Copy link to clipboard">
+            <i className="fa fa-check"></i>
+          </button>
+        </li>
       </ul>
     </section>
 
@@ -136,18 +187,27 @@ module.exports = React.createClass
   # Main render
   # 
   render: ->
+    insight = @getInsight()
+    isInsightEmpty = @isInsightEmpty(insight)
+
     card_classes = cx
       pin: true
       'cloud-card': true
-      placeholder: @isInsightEmpty()
+      placeholder: isInsightEmpty
 
     <section className="pins cloud-columns">
       <section className="cloud-column">
 
         <section className={ card_classes }>
-          { @renderInsight() }
+          { @renderInsight(insight) unless isInsightEmpty }
         </section>
 
-        { @renderShareButtons() }
+        {
+          unless isInsightEmpty
+            if @state.display_mode is 'copy_link'
+              @renderCopyLinkSection(insight)
+            else
+              @renderShareButtons(insight)
+        }
       </section>
     </section>

@@ -4,10 +4,20 @@ json.(pin, :content, :origin)
 json.(pin, :pins_count, :weight)
 json.(pin, :is_approved, :is_suggestion)
 json.(pin, :created_at, :updated_at)
-
-json.insight_url  main_app.insight_url(pin)
-
+  
 json.is_featured begin
   preload_associations(siblings, cache, :feature)
   pin.is_featured?
+end
+
+json_edge! json, :insight_url, edges do
+  main_app.insight_url(pin)
+end
+
+json_edge! json, :facebook_share_url, edges do
+  facebook_share_url(main_app.insight_url(pin))
+end
+
+json_edge! json, :twitter_share_url, edges do
+  twitter_share_url(main_app.insight_url(pin))
 end
