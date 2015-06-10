@@ -7,6 +7,9 @@ ViewerQuery   = new GlobalState.query.Query("Viewer")
 RoleStore = require('stores/role_store.cursor')
 
 
+CurrentUserId = null
+
+
 # waiting for shapers \_(@)_/
 findSystemRoleForUser = (user, value) ->
   RoleStore.cursor.items
@@ -36,12 +39,8 @@ module.exports = GlobalState.createStore
 
 
   me: ->
-    me = @cursor.items.cursor('me')
-
-    GlobalState.fetch(ViewerQuery).then (json) =>
-      @cursor.items.set('me', json.users[0]) unless me.deref()
-
-    me
+    CurrentUserId ||= document.querySelector('meta[name="ccu"]').content
+    @cursor.items.cursor(CurrentUserId)
 
 
   unicorns: ->
