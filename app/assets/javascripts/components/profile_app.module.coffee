@@ -62,10 +62,14 @@ module.exports = React.createClass
             followed_activities,
             roles,
             pins,
-            owned_companies,
             #{UserPins.getQuery('pins')},
+            #{UserPinboards.getQuery('pinboards')},
+
             #{UserCompanies.getQuery('companies')},
-            #{UserPinboards.getQuery('pinboards')}
+            edges{
+              companies_through_roles,
+              favorite_companies
+            }
           }
         """
 
@@ -101,8 +105,13 @@ module.exports = React.createClass
       .filterPinsForUser(@props.uuid, onlyInsights: true)
       .size
 
+
   getCompaniesNumber: ->
-    count = CompanyStore.filterForUser(@props.uuid).size
+    companies_through_roles_count   = @cursor.user.get('companies_through_roles').map((item) -> item.get('id')).valueSeq().toSet()
+    favorite_companies_count        = @cursor.user.get('favorite_companies').map((item) -> item.get('id')).valueSeq().toSet()
+
+    companies_through_roles_count.union(favorite_companies_count).size
+
 
   getPinboardsNumber: ->
     PinboardStore.filterUserPinboards(@props.uuid).size
@@ -143,7 +152,7 @@ module.exports = React.createClass
       @renderEmptyTabText("feed")
 
   renderCompanies: ->
-    unless UserCompanies.isEmpty(@props.uuid)
+    unless @getCompaniesNumber() == 0
       <UserCompanies user_id = { @props.uuid } />
     else
       @renderEmptyTabText("companies")

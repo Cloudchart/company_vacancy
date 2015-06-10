@@ -1,11 +1,31 @@
 # @cjsx React.DOM
 
+GlobalState = require('global_state/state')
+
 CompanyPreview   = require('components/company/preview')
 
 
 CompanyList = React.createClass
 
   displayName: 'CompanyList'
+
+
+  mixins: [GlobalState.query.mixin]
+
+
+  statics:
+    queries:
+      companies: ->
+        """
+          Viewer {
+            companies_through_roles {
+              #{CompanyPreview.getQuery('company')}
+            },
+            favorite_companies {
+              #{CompanyPreview.getQuery('company')}
+            }
+          }
+        """
 
 
   # Component specifications
@@ -25,7 +45,7 @@ CompanyList = React.createClass
   renderCompanies: ->
     @props.companies.map (company, index) =>
       <section key={index} className="cloud-column">
-        <CompanyPreview 
+        <CompanyPreview
           key        = { index }
           uuid       = { company.get('uuid') } />
       </section>

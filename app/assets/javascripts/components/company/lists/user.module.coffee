@@ -1,13 +1,15 @@
 # @cjsx React.DOM
 
-GlobalState      = require('global_state/state')
+GlobalState       = require('global_state/state')
 
-CompanyStore     = require('stores/company_store.cursor')
 
-RoleStore        = require('stores/role_store.cursor')
+CompanyStore      = require('stores/company_store.cursor')
+RoleStore         = require('stores/role_store.cursor')
+UserStore         = require('stores/user_store.cursor')
 
-CompanyList      = require('components/company/list')
-CompanyPreview   = require('components/company/preview')
+
+CompanyList       = require('components/company/list')
+CompanyPreview    = require('components/company/preview')
 
 
 UserCompanies = React.createClass
@@ -24,24 +26,19 @@ UserCompanies = React.createClass
         """
           User {
             roles,
-            owned_companies {
+            companies_through_roles {
               #{CompanyPreview.getQuery('company')}
+            },
+            edges {
+              companies_through_roles
             }
           }
         """
-
-    isEmpty: (user_id) ->
-      !CompanyStore.filterForUser(user_id).size
-
 
   # Component specifications
   #
   propTypes:
     user_id: React.PropTypes.string.isRequired
-
-  getDefaultProps: ->
-    cursor:
-      roles: RoleStore.cursor.items
 
 
   # Helpers
@@ -49,10 +46,11 @@ UserCompanies = React.createClass
   isLoaded: ->
     @cursor.companies.deref(false)
 
+
   getCompanies: ->
-    CompanyStore
-      .filterForUser(@props.user_id)
-      .sortBy (company) -> company.get('name')
+    @cursor.user.get('companies_through_roles', Immutable.Seq())
+      .sortBy (item) -> item.get('name')
+      .map (item) -> CompanyStore.get(item.get('id'))
       .toArray()
 
 
@@ -60,14 +58,13 @@ UserCompanies = React.createClass
   #
   componentWillMount: ->
     @cursor =
-      companies: CompanyStore.cursor.items
+      user:       UserStore.cursor.items.cursor(@props.user_id)
+      companies:  CompanyStore.cursor.items
 
 
   # Renderers
   #
   render: ->
-    return null unless @isLoaded()
-
     <CompanyList companies = { @getCompanies() } />
 
 

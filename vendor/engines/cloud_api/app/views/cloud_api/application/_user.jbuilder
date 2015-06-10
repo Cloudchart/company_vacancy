@@ -27,10 +27,23 @@ json_edge! json, :companies_through_roles, edges do
 
   user.companies_through_roles({ current_user: current_user }).map do |c|
     {
-      id:   c.id,
-      name: c.name
+      id:     c.id,
+      name:   c.name
     }
   end
+end
+
+
+json_edge! json, :favorite_companies, edges do
+  User.preload_favorite_companies(siblings, cache)
+
+  user.favorite_companies({ current_user: current_user }).map do |c|
+    {
+      id:     c.id,
+      name:   c.name
+    }
+  end
+
 end
 
 #

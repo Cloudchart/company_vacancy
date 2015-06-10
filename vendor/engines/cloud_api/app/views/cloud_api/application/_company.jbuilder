@@ -11,6 +11,11 @@ def posts(company, siblings, cache)
   company.posts
 end
 
+def staff(company, siblings, cache)
+  Company.preload_staff(siblings, cache)
+  company.staff
+end
+
 #
 # / Helpers
 
@@ -49,6 +54,20 @@ end
 json_edge! json, :is_invited, edges do
   preload_associations(siblings, cache, :roles)
   !!company.roles.find { |r| r.user_id == current_user.id && r.pending_value.present? }
+end
+
+
+json_edge! json, :staff, edges do
+  staff(company, siblings, cache).map do |p|
+    {
+      id:   p.id,
+      name: p.full_name
+    }
+  end
+end
+
+json_edge! json, :staff_ids, edges do
+  staff(company, siblings, cache).map(&:id)
 end
 
 #

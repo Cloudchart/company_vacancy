@@ -8,8 +8,6 @@ BlockStore     = require('stores/block_store.cursor')
 PostStore      = require('stores/post_store.cursor')
 PinStore       = require('stores/pin_store')
 RoleStore      = require('stores/role_store.cursor')
-TaggingStore   = require('stores/tagging_store')
-TagStore       = require('stores/tag_store')
 FavoriteStore  = require('stores/favorite_store.cursor')
 UserStore      = require('stores/user_store.cursor')
 
@@ -45,35 +43,32 @@ CompanyPreview = React.createClass
           Company {
             followers,
             blocks,
-            people,
-            tags,
-            taggings,
-            public_posts {
-              pins
+            staff,
+            edges {
+              posts_count,
+              insights_count,
+              is_followed,
+              is_invited,
+              staff_ids
             }
-          }
-        """
-
-      viewer: ->
-        """
-          Viewer {
-            click_activities,
-            roles
           }
         """
 
       favorites: ->
         """
-          Viewer {
-            favorites
+          Company {
+            edges {
+              favorites
+            }
           }
         """
 
-  fetchViewer: ->
-    GlobalState.fetch(@getQuery('viewer'))
+  fetch: ->
+    GlobalState.fetch(@getQuery('company'), { id: @props.uuid })
 
-  fetchFavorites: (options={}) ->
-    GlobalState.fetch(@getQuery('favorites'), options)
+
+  fetchFavorites: ->
+    GlobalState.fetch(@getQuery('favorites'), { id: @props.uuid, force: true })
 
 
   # Component specifications
@@ -81,10 +76,12 @@ CompanyPreview = React.createClass
   propTypes:
     uuid:             React.PropTypes.string.isRequired
 
+
   getDefaultProps: ->
     cursor:
       activities: ActivityStore.cursor.items
       roles:      RoleStore.cursor.items
+
 
   getInitialState: ->
     sync: Immutable.Map()
@@ -92,23 +89,6 @@ CompanyPreview = React.createClass
 
   # Helpers
   #
-  getTagNames: ->
-    if (tags = @cursor.company.get('tag_names'))
-      Immutable.Seq(tags)
-        .sort (tagA, tagB) -> tagA.localeCompare(tagB)
-        .take(5)
-    else
-      @cursor.tags
-        .filter (tag) => @getTaggingIdSet().contains(tag.get('uuid'))
-        .sort (tagA, tagB) -> tagA.get('name').localeCompare(tagB.get('name'))
-        .take(5)
-        .map (tag) -> tag.get('name')
-
-  getTaggingIdSet: ->
-    @cursor.taggings.deref(Immutable.Seq())
-      .filter (tagging) => tagging.get('taggable_type') is 'Company' && tagging.get('taggable_id') is @props.uuid
-      .map (tagging) -> tagging.get('tag_id')
-      .toSet()
 
   getStrippedDescription: ->
     return "" unless @cursor.company.get('description')
@@ -124,53 +104,34 @@ CompanyPreview = React.createClass
     RoleStore.isInvited(@props.uuid, 'Company', @cursor.viewer)
 
   getFavorite: ->
-    FavoriteStore.filter (favorite) => 
-      favorite.get('favoritable_id') == @props.uuid &&
-      favorite.get('favoritable_type') == 'Company' &&
-      favorite.get('user_id') == @cursor.viewer.get('uuid')
-    .first()
+    @cursor.company.get('is_followed')
+    # FavoriteStore.filter (favorite) =>
+    #   favorite.get('favoritable_id') == @props.uuid &&
+    #   favorite.get('favoritable_type') == 'Company' &&
+    #   favorite.get('user_id') == @cursor.viewer.get('uuid')
+    # .first()
+
 
   getPeopleIds: ->
-    personBlock = BlockStore.filter (block) =>
-      block.get('owner_type') == 'Company' &&
-      block.get('owner_id') == @props.uuid &&
-      block.get('identity_type') == 'Person'
-    .sortBy (block) -> block.get('position')
-    .first()
+    @cursor.company.get('staff_ids')
+      .take(5)
+      .toSeq()
 
-    if personBlock && (peopleIds = personBlock.get('identity_ids'))
-      peopleIds.take(5).toSeq()
-    else
-      Immutable.Seq()
-
-  getPosts: ->
-    @cursor.posts.filter (post) =>
-      post.get('owner_type') == 'Company' &&
-      post.get('owner_id') == @props.uuid
 
   getPostsCount: ->
-    unless pins_count = @cursor.company.get('posts_count')
-      @getPosts().size || 0
-    else
-      pins_count
+    @cursor.company.get('posts_count')
+
 
   getInsightsCount: ->
-    unless insights_count = @cursor.company.get('insights_count')
-      posts = @getPosts()
+    @cursor.company.get('insights_count')
 
-      @cursor.pins.filter (pin) ->
-        pin.get('content') &&
-        !pin.get('parent_id') &&
-        posts.has pin.get('pinnable_id') 
-      .size || 0
-    else
-      insights_count
 
   isViewerOwner: ->
-    !!CompanyStore
-      .filterForUser(@cursor.viewer.get('uuid'))
-      .filter (company) => company.get('uuid') == @props.uuid
-      .size
+    true
+    # !!CompanyStore
+    #   .filterForUser(@cursor.viewer.get('uuid'))
+    #   .filter (company) => company.get('uuid') == @props.uuid
+    #   .size
 
   isUnpublished: ->
     !@cursor.company.get('is_published') && !@isViewerOwner() && !@isInvited()
@@ -180,7 +141,7 @@ CompanyPreview = React.createClass
 
   isClickedByViewer: ->
     !!ActivityStore
-      .filter (activity) => 
+      .filter (activity) =>
         activity.get('user_id') == @cursor.viewer.get('uuid') &&
         activity.get('action') == 'click' &&
         activity.get('trackable_id') == @props.uuid
@@ -197,9 +158,10 @@ CompanyPreview = React.createClass
 
     CompanySyncApi.follow(@cursor.company.get('uuid'), @handleFollowDone, @handleFollowFail)
 
+
   handleFollowDone: ->
     # TODO rewrite with grabbing only needed favorite
-    @fetchFavorites(force: true).then => 
+    @fetchFavorites(force: true).then =>
       @setState(sync: @state.sync.set('follow', false))
 
   handleFollowFail: ->
@@ -217,7 +179,7 @@ CompanyPreview = React.createClass
       trackable_id:   @props.uuid
       trackable_type: 'Company'
     )).then @handleActivityCreateDone, @handleActivityCreateFail
-    
+
   handleActivityCreateDone: (data) ->
     GlobalState.fetch(@getQuery('viewer')).then =>
       @setState sync: @state.sync.set('company_click', false)
@@ -248,20 +210,11 @@ CompanyPreview = React.createClass
       company:    CompanyStore.cursor.items.cursor(@props.uuid)
       posts:      PostStore.cursor.items
       pins:       PinStore.cursor.items
-      tags:       TagStore.cursor.items
-      taggings:   TaggingStore.cursor.items
       favorites:  FavoriteStore.cursor.items
       viewer:     UserStore.me()
 
-    @fetchViewer()
+    @fetch()
 
-
-  # Renderers
-  #
-  renderTags: ->
-    @getTagNames()
-      .map (tag, index) -> <div key={ index } >#{ tag }</div>
-      .toArray()
 
   renderInvitedLabel: ->
     return null unless @isInvited()
@@ -315,7 +268,7 @@ CompanyPreview = React.createClass
     company = @cursor.company
 
     <header>
-      <Logo 
+      <Logo
         logoUrl = { company.get('logotype_url') }
         value   = { company.get('name') } />
       <h1>{ company.get('name') }</h1>
@@ -325,9 +278,9 @@ CompanyPreview = React.createClass
     if @isInvited()
       <InviteActions ownerId = { @props.uuid } ownerType = 'Company' />
     else
-      <People 
+      <People
         key            = "people"
-        ids            = { @getPeopleIds() } 
+        ids            = { @getPeopleIds() }
         showOccupation = { false }
         showLink       = { false } />
 

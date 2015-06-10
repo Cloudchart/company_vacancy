@@ -9,6 +9,7 @@ RoleStore         = require('stores/role_store.cursor')
 UserStore         = require('stores/user_store.cursor')
 
 CompanyList       = require('components/company/list')
+CompanyPreview    = require('components/company/preview')
 Field             = require('components/form/field')
 Subscription      = require('components/shared/subscription')
 
@@ -25,7 +26,17 @@ CompaniesApp = React.createClass
       viewer: ->
         """
           Viewer {
-            system_roles
+            system_roles,
+            companies_through_roles {
+              #{CompanyPreview.getQuery('company')}
+            },
+            favorite_companies {
+              #{CompanyPreview.getQuery('company')}
+            },
+            edges {
+              companies_through_roles,
+              favorite_companies
+            }
           }
         """
 
@@ -46,10 +57,11 @@ CompaniesApp = React.createClass
       isLoaded: false
 
   getStateFromStores: ->
-    myCompaniesIds = @getIds(@sortCompanies(CompanyStore.filterForCurrentUser()))
-
-    myCompaniesIds:       myCompaniesIds
-    searchedCompaniesIds: @getIds(@props.cursor.companies.sortBy((company) -> company.get('name'))).filter((companyId) => !myCompaniesIds.contains(companyId))
+    # myCompaniesIds = @getIds(@sortCompanies(CompanyStore.filterForCurrentUser()))
+    #
+    # myCompaniesIds:       myCompaniesIds
+    # searchedCompaniesIds: @getIds(@props.cursor.companies.sortBy((company) -> company.get('name'))).filter((companyId) => !myCompaniesIds.contains(companyId))
+    {}
 
   onGlobalStateChange: ->
     @setState  @getStateFromStores()
@@ -73,25 +85,32 @@ CompaniesApp = React.createClass
   filterByName: (companies) ->
     companies.filter((company) => (company.get('name') || "").toLowerCase().indexOf(@state.query.toLowerCase()) != -1)
 
-  getIds: (companies) ->
-    companies
-      .map (company) -> company.get('uuid')
-      .toSeq()
+  # getIds: (companies) ->
+  #   companies
+  #     .map (company) -> company.get('uuid')
+  #     .toSeq()
 
   getAllCompanies: ->
-    myCompaniesIds = @state.myCompaniesIds
-    searchedCompaniesIds = @state.searchedCompaniesIds.filter (companyId) -> !myCompaniesIds.contains(companyId)
+    return Immutable.Seq() unless user = UserStore.get(UserStore.me().get('uuid'))
 
-    myCompaniesIds.concat(searchedCompaniesIds).map (id) ->
-      CompanyStore.get(id)
-    .toArray()
+    companies_through_roles = user.get('companies_through_roles', Immutable.Seq()).map((c) -> CompanyStore.get(c.get('id')))
+    favorite_companies = user.get('favorite_companies', Immutable.Seq()).map((c) -> CompanyStore.get(c.get('id')))
+
+    companies_through_roles.concat(favorite_companies)
+
+    # myCompaniesIds = @state.myCompaniesIds
+    # searchedCompaniesIds = @state.searchedCompaniesIds.filter (companyId) -> !myCompaniesIds.contains(companyId)
+    #
+    # myCompaniesIds.concat(searchedCompaniesIds).map (id) ->
+    #   CompanyStore.get(id)
+    # .toArray()
 
   sortCompanies: (companies) ->
     companies.sortBy (company) ->
       id = company.get('uuid')
 
       ((-2 * (+RoleStore.filterForCompanies().map((role) -> role.get('owner_id')).contains(id)) -
-      (+TokenStore.filterCompanyInvites().map((token) -> token.get('owner_id')).contains(id))) + 
+      (+TokenStore.filterCompanyInvites().map((token) -> token.get('owner_id')).contains(id))) +
       company.get('name')).toString()
 
   search: (query) ->
@@ -105,8 +124,8 @@ CompaniesApp = React.createClass
         @props.cursor.companies.removeIn(id)
 
   updateStores: ->
-    CompanyStore.fetchAll().done =>
-      @search()
+    #CompanyStore.fetchAll().done =>
+    #  @search()
 
   # Handlers
   #
@@ -160,16 +179,17 @@ CompaniesApp = React.createClass
     </header>
 
   renderFooter: ->
-    <Subscription 
+    <Subscription
       asBlock   = { true }
       text      = "We're adding new companies every week — join our mailing list to get updates on new unicorns' timelines and useful insights." />
 
   render: ->
-    if @isLoaded()
+    companies = @getAllCompanies()
+
+    unless companies.size == 0
       <section className="cloud-profile-companies">
         { @renderHeader() }
-        <CompanyList
-          companies      = { @getAllCompanies() } />
+        <CompanyList companies = { companies.toArray() } />
         { @renderFooter() }
       </section>
     else

@@ -81,6 +81,19 @@ class Company < ActiveRecord::Base
   # / Insights
 
 
+  # People
+  #
+
+  acts_as_preloadable :staff, blocks: :people
+
+  def staff
+    blocks.map(&:people).flatten.compact.uniq
+  end
+
+  #
+  # / People
+
+
   def to_indexed_json
     to_json(
       include: { tags: { only: [:name] } }
