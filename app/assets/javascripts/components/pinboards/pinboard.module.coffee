@@ -9,9 +9,16 @@ cx          = React.addons.classSet
 PinboardStore     = require('stores/pinboard_store')
 RoleStore         = require('stores/role_store.cursor')
 UserStore         = require('stores/user_store.cursor')
+FavoriteStore     = require('stores/favorite_store.cursor')
+
+SyncApi           = require('sync/pinboard_sync_api')
+
 
 ModalStack        = require('components/modal_stack')
+ModalError        = require('components/error/modal')
 RoleAccessRequest = require('components/roles/access_request')
+SyncButton        = require('components/form/buttons').SyncButton
+
 
 InviteActions     = require('components/roles/invite_actions')
 
@@ -45,13 +52,23 @@ module.exports = React.createClass
           }
         """
 
+      favorites: ->
+        """
+          Viewer {
+            favorites
+          }
+        """
+
   fetch: ->
     GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }).then =>
       @setState
         loaders: @state.loaders.set('pinboard', true)
 
+  fetchFavorites: (options={}) ->
+    GlobalState.fetch(@getQuery('favorites'), options)
+
   propTypes:
-    user_id: React.PropTypes.string.isRequired
+    user_id: React.PropTypes.string
     uuid:    React.PropTypes.string.isRequired
 
   getDefaultProps: ->
@@ -60,6 +77,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     loaders: Immutable.Map()
+    sync:    Immutable.Map()
 
 
   # Helpers
@@ -72,6 +90,18 @@ module.exports = React.createClass
 
   getViewer: ->
     @cursor.viewer.deref(false)
+
+  getOwner: ->
+    UserStore.cursor.items.get(@getPinboard().get('user_id'))
+
+  getFavorite: ->
+    FavoriteStore.findByPinboardForUser(@props.uuid, @cursor.viewer.get('uuid'))
+
+  isViewerOwner: ->
+    @getOwner().get('uuid') == @getViewer().get('uuid')
+
+  viewerHasRole: ->
+    RoleStore.rolesOnOwnerForUser(@props.uuid, 'Pinboard', @cursor.viewer).first()
 
   isProtected: ->
     @getPinboard().get('access_rights') == 'protected' &&
@@ -94,6 +124,26 @@ module.exports = React.createClass
     event.stopPropagation()
     @openRequest()
 
+  handleFollowClick: (event) ->
+    event.preventDefault()
+    event.stopPropagation()
+
+    @setState(sync: @state.sync.set('follow', true))
+
+    SyncApi.follow(@cursor.pinboard.get('uuid'))
+      .then @handleFollowDone
+      .catch @handleFollowFail
+
+  handleFollowDone: ->
+    # TODO rewrite with grabbing only needed favorite
+    @fetchFavorites(force: true).then => 
+      @setState(sync: @state.sync.set('follow', false))
+
+  handleFollowFail: ->
+    @setState(sync: @state.sync.set('follow', false))
+
+    ModalStack.show(<ModalError />)
+
 
   # Lifecycle methods
   #
@@ -107,6 +157,20 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderFollowButton: ->
+    return null unless !@getFavorite() && !@viewerHasRole() && !@isViewerOwner()
+
+    <SyncButton
+      className = "cc follow"
+      onClick   = { @handleFollowClick }
+      sync      = { @state.sync.get('follow') }
+      text      = "Follow" />
+
+  renderFollowedLabel: ->
+    return null unless @getFavorite() && !@viewerHasRole() && !@isViewerOwner()
+
+    <span className="label">Following</span>
+
   renderAccessRightsIcon: ->
     classList = cx
       'fa':           true
@@ -119,6 +183,8 @@ module.exports = React.createClass
     <header>
       { @cursor.pinboard.get('title') }
       { @renderAccessRightsIcon() }
+      { @renderFollowButton() }
+      { @renderFollowedLabel() }
     </header>
 
   renderDescription: ->

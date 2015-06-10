@@ -32,11 +32,7 @@
     }
 
     > .authorized {
-      > p {
-        font-size: $large-font-size;
-        font-weight: 300;
-        margin: $gutter-size/2;
-      }
+      margin-top: $gutter-size;
 
       > section {
         > header, > p {

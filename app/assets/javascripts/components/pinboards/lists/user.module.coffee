@@ -53,7 +53,7 @@ module.exports = React.createClass
       !PinboardStore.filterUserPinboards(user_id, showPrivate: options.showPrivate).size
 
   propTypes:
-    user_id:     React.PropTypes.string.isRequired
+    user_id:     React.PropTypes.string
     showPrivate: React.PropTypes.bool
 
   getDefaultProps: ->

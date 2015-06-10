@@ -26,6 +26,39 @@ $pinboard-header-color: hsl(60, 10%, 96%);
     padding-bottom: 0;
     width: 100%;
   }
+
+  .suggested-insights,
+  .featured-collections {
+    margin: 0 auto;
+    padding: 0;
+
+    > * {
+      margin: 0 auto;  
+    }
+
+    > header {
+      @include align-self(flex-start);
+
+      font-size: $huge-font-size;
+      font-weight: 300;
+      padding-left: $gutter-size;
+      padding-top: 0;
+    }
+
+    > p {
+      @include align-self(flex-start);
+
+      font-size: $big-font-size;
+      font-weight: 300;
+      line-height: 27px;
+      padding-top: 0;
+      padding-left: $gutter-size;
+
+      > i {
+        color: $link-color;
+      }
+    }
+  }
 }
 
 .user-pinboards {
@@ -63,8 +96,6 @@ $pinboard-header-color: hsl(60, 10%, 96%);
           line-height: 44px;
           margin: 0;
           margin-right: 50px;
-
-          max-width: 50%;
         }
 
         > .counters > li > .icon {
@@ -92,32 +123,6 @@ $pinboard-header-color: hsl(60, 10%, 96%);
   }
 }
 
-.suggested-insights {
-  margin: 0 auto;
-  padding: 0;
-
-  > header {
-    @include align-self(flex-start);
-
-    font-size: $huge-font-size;
-    font-weight: 300;
-    padding-left: $gutter-size;
-  }
-
-  > p {
-    @include align-self(flex-start);
-
-    font-size: $big-font-size;
-    font-weight: 300;
-    line-height: 27px;
-    padding-left: $gutter-size;
-
-    > i {
-      color: $link-color;
-    }
-  }
-}
-
 article.pinboard,
 article.pinboards {
   @include display(flex);
@@ -137,6 +142,18 @@ article.pinboards {
     color: hsl(60, 2%, 70%);
     font-size: 15px;
   }
+
+  > .label {
+    display: block;
+    font-size: 15px;
+    margin-left: $inner-margin-size;
+    background-color: transparent;
+    border: 1px solid hsl(60, 2%, 70%);
+    color: hsl(60, 2%, 70%);
+    padding: 0 10px;
+    height: 40px;
+    line-height: 40px;
+  } 
 }
 
 

@@ -29,7 +29,7 @@ module.exports = React.createClass
 
     <header>
       <h1>Bite-size advice for founders</h1>
-      <h2>When in doubt, use CloudChart.</h2>
+      <h2>When in doubt, use CloudChart</h2>
     </header>
 
   renderGuide: ->
@@ -41,26 +41,18 @@ module.exports = React.createClass
     return null if @props.isAuthorized
 
     <footer>
-      <a href="/auth/twitter" className="cc">Start Learning</a>
+      <a href="/auth/twitter" className="cc">Get advice</a>
     </footer>
 
   renderAuthorizedContent: ->
     return null unless @props.isAuthorized
 
     <section className="authorized">
-      <p className="cloud-columns cloud-columns-flex">
-        CloudChart is an educational tool for the next generation of founders. Just like your business, CloudChart evolves everyday, providing you with fresh learning material: new insights and unicorn companies' updates.
-      </p>
-      <section className="featured-collections">
-        <header className="cloud-columns cloud-columns-flex">Featured Collections</header>
-        <p className="cloud-columns cloud-columns-flex">Explore collections of successful founders, investors and experts advices. Use them to grow your business</p>
-        <ImportantPinboards />
-      </section>
-      <section className="featured-companies">
-        <header className="cloud-columns cloud-columns-flex">Featured Companies</header>
-        <p className="cloud-columns cloud-columns-flex">Follow unicorns' timelines. Collect the insights on how they are growing</p>
-        <ImportantCompanies />
-      </section>
+      <ImportantPinboards
+        description = "Explore collections of successful founders, investors and experts' advices. Use them to grow your business" />
+      <ImportantCompanies
+        header = "Featured Companies"
+        description = "Follow unicorns' timelines. Collect the insights on how they are growing" />
       <Subscription
         asBlock   = { true }
         text      = "Join our weekly mailing list to get updates on new helpful advices, unicorn timelines and upcoming CloudChart features." />

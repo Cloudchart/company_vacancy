@@ -54,10 +54,26 @@ UserCompanies = React.createClass
 
   # Renderers
   #
+  renderHeader: ->
+    return null unless @props.header
+
+    <header className="cloud-columns cloud-columns-flex">{ @props.header }</header>
+
+  renderDescription: ->
+    return null unless @props.description
+
+    <p className="cloud-columns cloud-columns-flex">{ @props.description }</p>
+
+  
   render: ->
     return null unless @state.isLoaded
 
-    <CompanyList companies = { @getCompanies() } />
+    <section className="featured-companies">
+      { @renderHeader() }
+      { @renderDescription() }
+      <CompanyList companies = { @getCompanies() } />
+    </section>
+
 
 
 module.exports = UserCompanies
