@@ -100,8 +100,8 @@ store_data = (key, query, data) ->
         storage.mergeDeepIn([type, id], query)
 
       if key == 'Viewer'
-        storage.mergeDeepIn(['Viewer'], query)
-        storage.setIn(['Viewer', 'id'], ids.first())
+        ids.forEach (id) ->
+          storage.mergeDeepIn(['User', id], query)
 
   query.get('children')?.forEach (child_query, child_key) ->
     store_data(child_key, child_query, data?.get(child_key))

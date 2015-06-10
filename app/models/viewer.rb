@@ -1,0 +1,2 @@
+class Viewer < User
+end

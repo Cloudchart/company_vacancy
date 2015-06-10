@@ -30,6 +30,8 @@ module.exports = GlobalState.createStore
   collectionName: 'users'
   instanceName:   'user'
 
+  populateKeys: ['viewers', 'viewer']
+
 
   syncAPI: require('sync/user_sync_api')
 

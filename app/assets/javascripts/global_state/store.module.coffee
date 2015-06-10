@@ -36,6 +36,7 @@ StoreDefaults = Immutable.Seq
   instanceName:     null
   syncAPI:          null
   foreignKeys:      []
+  populateKeys:     []
 
 
 # Pending queries
@@ -63,13 +64,19 @@ class BaseStore
 
     @indices  = @prepareIndices()
 
+    @populateKeys = Immutable.Set(@populateKeys).union([@collectionName, @instanceName])
+
     @empty    = EmptySequence
 
 
   populate: (json) ->
-    return unless json[@collectionName] or json[@instanceName]
+    data = @populateKeys
+      .reduce (memo, key) ->
+        memo.concat(json[key])
+      , []
+      .filter (item) -> item
 
-    Immutable.Seq(json[@collectionName] || [json[@instanceName]]).forEach (item) =>
+    Immutable.Seq(data).forEach (item) =>
       @cleanupIndices(item.uuid)
 
       @indices.forEach (data, name) =>

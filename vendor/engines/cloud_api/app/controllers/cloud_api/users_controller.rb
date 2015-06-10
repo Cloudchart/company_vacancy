@@ -4,7 +4,7 @@ module CloudApi
   class UsersController < CloudApi::ApplicationController
 
     def me
-      @source = User
+      @source = Viewer
       @starter = [:find, current_user.id]
 
       respond_to do |format|
