@@ -2,9 +2,16 @@
 
 GlobalState = require('global_state/state')
 
+# Components
+#
 CompanyPreview   = require('components/company/preview')
 
+# Constants
+#
+ItemQuery = CompanyPreview.getQuery('company')
 
+# Component
+#
 CompanyList = React.createClass
 
   displayName: 'CompanyList'
@@ -14,15 +21,17 @@ CompanyList = React.createClass
 
 
   statics:
+    ItemQuery: ItemQuery
+
     queries:
       companies: ->
         """
           Viewer {
             companies_through_roles {
-              #{CompanyPreview.getQuery('company')}
+              #{ItemQuery}
             },
             favorite_companies {
-              #{CompanyPreview.getQuery('company')}
+              #{ItemQuery}
             }
           }
         """

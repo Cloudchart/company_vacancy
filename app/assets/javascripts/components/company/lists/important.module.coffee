@@ -6,7 +6,6 @@ CompanyStore      = require('stores/company_store.cursor')
 UserStore         = require('stores/user_store.cursor')
 
 CompanyList       = require('components/company/list')
-CompanyPreview    = require('components/company/preview')
 
 
 ImportantCompanies = React.createClass
@@ -22,9 +21,8 @@ ImportantCompanies = React.createClass
       viewer: ->
         """
           Viewer {
-            roles,
             important_companies {
-              #{CompanyPreview.getQuery('company')}
+              #{CompanyList.ItemQuery}
             },
             edges {
               important_companies_ids
