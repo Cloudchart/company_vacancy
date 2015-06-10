@@ -27,10 +27,12 @@ EmptyTabTexts =
     <span>
       Want to see your company on CloudChart? <a href="mailto:team@cloudchart.co?subject=I want to see my company on CloudChart">Let us know</a>
     </span>
-  companiesOther: ->  
+  companiesOther: ->
     <span>
       Does this person have a company you want to see on CloudChart? <a href="mailto:team@cloudchart.co?subject=I want to see a company on CloudChart">Let us know</a>
     </span>
+
+
 
 cx = React.addons.classSet
 
@@ -115,7 +117,7 @@ module.exports = React.createClass
   # Lifecycle methods
   #
   componentWillMount: ->
-    @cursor = 
+    @cursor =
       companies:  CompanyStore.cursor.items
       pins:       PinStore.cursor.items
       viewer:     UserStore.me()
@@ -179,7 +181,7 @@ module.exports = React.createClass
       <header>
         <div className="cloud-columns cloud-columns-flex">
           <ProfileInfo uuid = { @props.uuid } />
-          <Tabs 
+          <Tabs
             companiesNumber = { @getCompaniesNumber() }
             insightsNumber  = { @getInsightsNumber() }
             pinboardsNumber = { @getPinboardsNumber() }

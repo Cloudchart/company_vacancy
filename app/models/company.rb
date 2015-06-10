@@ -3,6 +3,7 @@ class Company < ActiveRecord::Base
   include Blockable
   include Sluggable
   include Taggable
+  include Preloadable
   include Tire::Model::Search
   include Tire::Model::Callbacks
   include Admin::Company
@@ -65,6 +66,20 @@ class Company < ActiveRecord::Base
     end
 
   end # of class methods
+
+
+  # Insights
+  #
+
+  acts_as_preloadable :insights, posts: :pins
+
+  def insights
+    posts.map(&:pins).flatten.select { |p| p.content.present? && p.parent_id.blank? }
+  end
+
+  #
+  # / Insights
+
 
   def to_indexed_json
     to_json(

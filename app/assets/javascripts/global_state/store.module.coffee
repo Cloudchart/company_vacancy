@@ -25,6 +25,7 @@ GlobalState = -> require('global_state/state')
 #
 EmptySequence = Immutable.Seq({})
 EmptySet      = Immutable.Set()
+EmptyMap      = Immutable.Map()
 
 
 # Store default
@@ -75,16 +76,9 @@ class BaseStore
         foreign_key = data.fields.map((name) => item[name]).join("::")
         @cursor.indices.setIn([name, foreign_key], @cursor.indices.getIn([name, foreign_key], EmptySet).add(item.uuid))
 
-      currItem = @cursor.items.get(item.uuid)
+      currItem = @cursor.items.get(item.uuid, Immutable.Map({ id: item.uuid }))
+      @cursor.items.set(item.uuid, currItem.mergeDeep(item))
 
-      unless item['--part--'] is true
-        return @cursor.items.set(item.uuid, item)
-
-      unless currItem
-        return @cursor.items.set(item.uuid, item)
-
-      if currItem.get('--part--') is true
-        return @cursor.items.set(item.uuid, item)
 
   remove: (id) ->
     @cleanupIndices(id)
