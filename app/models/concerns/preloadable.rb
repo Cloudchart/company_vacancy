@@ -9,6 +9,7 @@ module Preloadable
     associations.each do |association|
       unless local_cache.include?(association)
         ActiveRecord::Associations::Preloader.new.preload(records, association)
+        local_cache << association
       end
     end
   end
