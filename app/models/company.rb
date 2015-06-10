@@ -16,6 +16,10 @@ class Company < ActiveRecord::Base
     update(is_name_in_logo: false) if logotype.blank? && is_name_in_logo?
   end
 
+
+  scope :important, -> { where(is_important: true) }
+
+
   dragonfly_accessor :logotype
 
   has_and_belongs_to_many :banned_users, class_name: 'User', join_table: 'companies_banned_users'

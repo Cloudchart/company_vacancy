@@ -83,12 +83,20 @@ class User < ActiveRecord::Base
     companies_roles.map(&:company).select { |c| ability.can?(:read, c) }
   end
 
+
   acts_as_preloadable :favorite_companies, companies_favorites: :company
 
   def favorite_companies(scope = {})
     ability = Ability.new(scope[:current_user] || self)
     companies_favorites.map(&:company).select { |c| ability.can?(:read, c) }
   end
+
+
+  def important_companies(scope = {})
+    ability = Ability.new(scope[:current_user] || self)
+    Company.important.select { |c| ability.can?(:read, c) }
+  end
+
 
   #
   # /Companies
@@ -143,10 +151,6 @@ class User < ActiveRecord::Base
 
   def important_pinboards
     Pinboard.where(is_important: true, access_rights: :public)
-  end
-
-  def important_companies
-    Company.where(is_important: true, is_published: true)
   end
 
   def followed_activities

@@ -1,79 +1,82 @@
 # @cjsx React.DOM
 
-GlobalState      = require('global_state/state')
+GlobalState       = require('global_state/state')
 
-CompanyStore     = require('stores/company_store.cursor')
+CompanyStore      = require('stores/company_store.cursor')
+UserStore         = require('stores/user_store.cursor')
 
-CompanyList      = require('components/company/list')
-CompanyPreview   = require('components/company/preview')
+CompanyList       = require('components/company/list')
+CompanyPreview    = require('components/company/preview')
 
 
-UserCompanies = React.createClass
+ImportantCompanies = React.createClass
 
   displayName: 'ImportantCompanies'
 
-  mixins: [GlobalState.query.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics:
 
     queries:
 
-      companies: ->
+      viewer: ->
         """
           Viewer {
             roles,
             important_companies {
               #{CompanyPreview.getQuery('company')}
+            },
+            edges {
+              important_companies_ids
             }
           }
         """
 
-  getInitialState: ->
-    isLoaded: false
 
   fetch: (id) ->
-    GlobalState.fetch(@getQuery('companies'))
+    GlobalState.fetch(@getQuery('viewer'))
 
 
   # Helpers
   #
   getCompanies: ->
-    CompanyStore
-      .filter (company) -> company.get('is_important')
-      .sortBy (company) -> company.get('created_at')
-      .reverse()
-      .take(4)
-      .toArray()
+    UserStore.me().get('important_companies_ids', Immutable.Seq())
+      .map (id) -> CompanyStore.get(id)
 
 
   # Lifecycle methods
   #
-  componentWillMount: ->   
-    @fetch().then => @setState(isLoaded: true)
+  componentWillMount: ->
+    @cursor =
+      user:       UserStore.me()
+      companies:  CompanyStore.cursor.items
+
+    @fetch()
 
 
   # Renderers
   #
+
   renderHeader: ->
     return null unless @props.header
-
     <header className="cloud-columns cloud-columns-flex">{ @props.header }</header>
+
 
   renderDescription: ->
     return null unless @props.description
-
     <p className="cloud-columns cloud-columns-flex">{ @props.description }</p>
 
-  
+
   render: ->
-    return null unless @state.isLoaded
+    return null unless (companies = @getCompanies()) and companies.size > 0
 
     <section className="featured-companies">
       { @renderHeader() }
       { @renderDescription() }
-      <CompanyList companies = { @getCompanies() } />
+      <CompanyList companies={ companies.toArray() } />
     </section>
 
 
-
-module.exports = UserCompanies
+# Exports
+#
+module.exports = ImportantCompanies
