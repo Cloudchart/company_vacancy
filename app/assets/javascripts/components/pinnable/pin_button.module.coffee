@@ -45,9 +45,11 @@ module.exports = React.createClass
     pinnable_id:   React.PropTypes.string
     pinnable_type: React.PropTypes.string
     asTextButton:  React.PropTypes.bool
+    showHotzone:   React.PropTypes.bool
 
   getDefaultProps: ->
     asTextButton: false
+    showHotzone:  true
     cursor:
       pins:    PinStore.cursor.items
       tokens:  TokenStore.cursor.items
@@ -116,7 +118,7 @@ module.exports = React.createClass
     !!@state.currentUserPin || !!@state.currentUserRepin
 
   shouldShowHotzone: ->
-    (!!TokenStore.findByUserAndName(@props.cursor.user, 'insight_tour') || location.search == '?hotzone=true')
+    @props.showHotzone && (!!TokenStore.findByUserAndName(@props.cursor.user, 'insight_tour') || location.search == '?hotzone=true')
 
   getPinButtonKey: ->
     @props.pinnable_id + @props.uuid

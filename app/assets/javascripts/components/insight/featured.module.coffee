@@ -125,7 +125,10 @@ module.exports = React.createClass
               </header>
             </a>
             <div>
-              <InsightItem cursor = { InsightItem.getCursor(pin.get('uuid')) } uuid = { pin.get('uuid') } />
+              <InsightItem 
+                cursor      = { InsightItem.getCursor(pin.get('uuid')) }
+                showHotzone = { false }
+                uuid        = { pin.get('uuid') } />
             </div> 
           </div>
         </article>

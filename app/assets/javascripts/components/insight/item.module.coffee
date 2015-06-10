@@ -48,6 +48,9 @@ module.exports = React.createClass
           }
         """
 
+  getDefaultProps: ->
+    showHotzone: true
+
   gatherAttributes: ->
     uuid:           @getInsight().get('uuid')
     parent_id:      @getInsight().get('parent_id')
@@ -135,7 +138,7 @@ module.exports = React.createClass
     <ul className="round-buttons">
       { @renderApproveButton() }
       { @renderEditButton() }
-      <PinButton {...@gatherAttributes()} title={ @getInsight().get('content') } />
+      <PinButton {...@gatherAttributes()} title={ @getInsight().get('content') } showHotzone = { @props.showHotzone } />
     </ul>
 
   renderSuggestionDeleteButton: ->
