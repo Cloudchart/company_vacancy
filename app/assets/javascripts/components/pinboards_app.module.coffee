@@ -84,4 +84,13 @@ module.exports = React.createClass
         { @renderSuggestedInsights() }
       </section>
     else
-      null
+       <section className="pinboards-wrapper">
+        <section className="pinboards cloud-columns cloud-columns-flex">
+          <section className="cloud-column">
+            <section className="pinboard cloud-card placeholder" />
+          </section>
+          <section className="cloud-column">
+            <section className="pinboard cloud-card placeholder" />
+          </section>
+        </section>
+      </section>

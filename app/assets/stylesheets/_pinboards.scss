@@ -183,6 +183,12 @@ article.pinboards {
     border-top: $card-hr;
   }
 
+  &.placeholder {
+    background-image: image_url('placeholders/pinboard.png');
+    background-size: cover;
+
+    height: 204px;
+  }
 }
 
 
