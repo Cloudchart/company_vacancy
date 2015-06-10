@@ -25,16 +25,16 @@ def __prepare(sources, query, data, json)
 
     grouped_sources.each do |klass, instances|
 
+      args = []
+
       if klass.present? && klass.reflect_on_association(key)
         Preloadable::preload(instances, cache, key)
       elsif klass.present? && klass.respond_to?(:"preload_#{key}")
         klass.public_send(:"preload_#{key}", instances, cache)
+        args << scope if (method = klass.instance_method(key)) && method.parameters.size == 1
       end
 
-      args = []
-      args << scope if (method = klass.instance_method(key)) && method.parameters.size == 1
-
-      children.concat instances.map { |instance| instance.try(key, *args) }.flatten
+      children.concat instances.map { |instance| instance.public_send(key, *args) }.flatten
     end
 
     json.set! key do
