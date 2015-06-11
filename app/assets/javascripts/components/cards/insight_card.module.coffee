@@ -129,68 +129,41 @@ module.exports = React.createClass
 
   # Renderers
   # 
-  renderInsight: (insight) ->
-    <article className="insight">
-      <InsightContent
-        pinnable_id = { insight.pinnable_id }
-        pin_id = { insight.uuid }
-      />
-
-      <footer>
-        <Human
-          showUnicornIcon = { true }
-          showLink = { true }
-          type = "user"
-          uuid = { insight.user_id }
-        />
-
-        <ul className="round-buttons">
-          <EditPinButton uuid={ insight.uuid } />
-          <PinButton {...@gatherPinAttributes(insight)} />
-        </ul>
-
-      </footer>
-    </article>
-
   renderShareButtons: (insight) ->
-    <section className="share-buttons">
-      <ul>
-        <li>Share!</li>
+    <ul className="share-buttons">
+      <li>Share!</li>
 
-        <li>
-          <button className="cc" onClick={ @handleCopyLinkButtonClick }>Copy link</button>
-        </li>
+      <li>
+        <button className="cc" onClick={ @handleCopyLinkButtonClick }>Copy link</button>
+      </li>
 
-        <li>
-          <button className="cc" onClick={@handleFacebookLinkClick.bind(@, insight)}>
-            <i className="fa fa-facebook"></i>
-          </button>
-        </li>
+      <li>
+        <button className="cc" onClick={@handleFacebookLinkClick.bind(@, insight)}>
+          <i className="fa fa-facebook"></i>
+        </button>
+      </li>
 
-        <li>
-          <button className="cc" onClick={@handleTwitterLinkClick.bind(@, insight)}>
-            <i className="fa fa-twitter"></i>
-          </button>
-        </li>
-      </ul>
-    </section>
+      <li>
+        <button className="cc" onClick={@handleTwitterLinkClick.bind(@, insight)}>
+          <i className="fa fa-twitter"></i>
+        </button>
+      </li>
+    </ul>
 
   renderCopyLinkSection: (insight) ->
-    <section className="copy-link">
-      <ul>
-        <li>Copy link</li>
+    <ul className="copy-link">
+      <li>Copy link</li>
 
-        <li>
-          <input id="copy_link_input" ref="copy_link_input" className="cc-input" value={insight.insight_url} readOnly={true} />
-        </li>
-        
-        <li>
-          <button ref="clip" data-clipboard-target="copy_link_input" className="cc" onClick={@handleCopyLinkClick} title="Copy link to clipboard">
-            <i className="fa fa-check"></i>
-          </button>
-        </li>
-      </ul>
-    </section>
+      <li>
+        <input id="copy_link_input" ref="copy_link_input" className="cc-input" value={insight.insight_url} readOnly={true} />
+      </li>
+      
+      <li>
+        <button ref="clip" data-clipboard-target="copy_link_input" className="cc" onClick={@handleCopyLinkClick} title="Copy link to clipboard">
+          <i className="fa fa-check"></i>
+        </button>
+      </li>
+    </ul>
 
   renderCloseButton: ->
     return null unless @props.renderedInsideModal
@@ -204,27 +177,38 @@ module.exports = React.createClass
   # 
   render: ->
     insight = @getInsight()
-    isInsightEmpty = @isInsightEmpty(insight)
 
-    card_classes = cx
-      pin: true
-      'cloud-card': true
-      placeholder: isInsightEmpty
-
-    <section className="pins cloud-columns">
-      <section className="cloud-column insight-card">
+    if @isInsightEmpty(insight)
+      <article className="insight-card placeholder"/>
+    else
+      <article className="insight-card">
         { @renderCloseButton() }
 
-        <section className={ card_classes }>
-          { @renderInsight(insight) unless isInsightEmpty }
+        <section className="content">
+          <InsightContent
+            pinnable_id = { insight.pinnable_id }
+            pin_id = { insight.uuid }
+          />
+
+          <Human
+            showUnicornIcon = { true }
+            showLink = { true }
+            type = "user"
+            uuid = { insight.user_id }
+          />
+
+          <ul className="round-buttons">
+            <EditPinButton uuid={ insight.uuid } />
+            <PinButton {...@gatherPinAttributes(insight)} />
+          </ul>
         </section>
 
-        {
-          unless isInsightEmpty
+        <footer>
+          {
             if @state.display_mode is 'copy_link'
               @renderCopyLinkSection(insight)
             else
               @renderShareButtons(insight)
-        }
-      </section>
-    </section>
+          }
+        </footer>
+      </article>

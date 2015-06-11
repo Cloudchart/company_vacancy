@@ -87,7 +87,7 @@ private
   def set_pin
     @pin = case action_name
     when 'show'
-      pin_source.includes(:user, parent: :user).find(params[:id])
+      Pin.includes(:user, parent: :user).find(params[:id])
     when 'create'
       pin_source.new(params_for_create)
     else

@@ -6,37 +6,14 @@ ModalStack = require('components/modal_stack')
 InsightCard = require('components/cards/insight_card')
 
 
-# Utils
-#
-# cx = React.addons.classSet
-
-
 # Main component
 # 
 module.exports = React.createClass
 
   displayName: 'InsightShareButton'
-  # mixins: []
-  # statics: {}
+
   propTypes:
     insight: React.PropTypes.object.isRequired
-
-
-  # Component Specifications
-  # 
-  # getDefaultProps: ->
-  # getInitialState: ->
-
-  
-  # Lifecycle Methods
-  # 
-  # componentWillMount: ->
-  # componentDidMount: ->
-  # componentWillReceiveProps: (nextProps) ->
-  # shouldComponentUpdate: (nextProps, nextState) ->
-  # componentWillUpdate: (nextProps, nextState) ->
-  # componentDidUpdate: (prevProps, prevState) ->
-  # componentWillUnmount: ->
 
 
   # Helpers
@@ -51,11 +28,6 @@ module.exports = React.createClass
   handleShareButtonClick: (event) ->
     history.pushState({}, '', @props.insight.insight_url)
     ModalStack.show(<InsightCard insight = { @props.insight.uuid } renderedInsideModal = true />, shouldGetHistoryBack: true)
-
-
-  # Renderers
-  # 
-  # renderSomething: ->
 
 
   # Main render
