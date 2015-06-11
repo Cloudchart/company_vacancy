@@ -181,7 +181,11 @@ module.exports = React.createClass
     if @isInsightEmpty(insight)
       <article className="insight-card placeholder"/>
     else
-      <article className="insight-card">
+      articte_classes = cx
+        'insight-card': true
+        modal: @props.renderedInsideModal
+
+      <article className={articte_classes}>
         { @renderCloseButton() }
 
         <section className="content">

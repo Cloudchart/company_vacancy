@@ -2,11 +2,12 @@ main.insight > div {
   @include display(flex);
   @include flex-direction(column);
   @include align-items(center);
+
+  padding-top: 25px;
 }
 
 article.insight-card {
   width: 600px;
-  margin-top: 25px;
   position: relative;
 
   &.placeholder {
@@ -15,10 +16,32 @@ article.insight-card {
     height: 380px;
   }
 
+  &.modal {
+    &::after {
+      @include position(absolute, 0 0 0 0);
+
+      border: 25px solid #fff;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      display: block;
+      content: '';
+      height: 0;
+      width: 0;
+    }
+
+    > footer {
+      @include position(absolute, 0 0px 0 0);
+
+      > ul > li:first-child {
+        color: white;
+      }
+    }
+  }
+
+
   > button.close {
-    position: absolute;
-    top: 0;
-    right: 0;
+    @include position(absolute, 0px 10px 0 0);
+
     font-size: 36px;
     color: hsl(139, 54%, 51%);
   }
