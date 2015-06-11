@@ -41,8 +41,6 @@ CompanyPreview = React.createClass
       company: ->
         """
           Company {
-            followers,
-            blocks,
             staff,
             edges {
               posts_count,
@@ -100,16 +98,13 @@ CompanyPreview = React.createClass
 
     description
 
+
   isInvited: ->
     RoleStore.isInvited(@props.uuid, 'Company', @cursor.viewer)
 
+
   getFavorite: ->
     @cursor.company.get('is_followed')
-    # FavoriteStore.filter (favorite) =>
-    #   favorite.get('favoritable_id') == @props.uuid &&
-    #   favorite.get('favoritable_type') == 'Company' &&
-    #   favorite.get('user_id') == @cursor.viewer.get('uuid')
-    # .first()
 
 
   getPeopleIds: ->

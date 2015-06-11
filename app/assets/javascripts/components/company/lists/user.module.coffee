@@ -4,13 +4,10 @@ GlobalState       = require('global_state/state')
 
 
 CompanyStore      = require('stores/company_store.cursor')
-RoleStore         = require('stores/role_store.cursor')
 UserStore         = require('stores/user_store.cursor')
 
 
 CompanyList       = require('components/company/list')
-CompanyPreview    = require('components/company/preview')
-
 
 UserCompanies = React.createClass
 
@@ -25,9 +22,8 @@ UserCompanies = React.createClass
       companies: ->
         """
           User {
-            roles,
             companies_through_roles {
-              #{CompanyPreview.getQuery('company')}
+              #{CompanyList.ItemQuery}
             },
             edges {
               companies_through_roles
