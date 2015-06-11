@@ -10,6 +10,7 @@ InsightContent = require('components/pinnable/insight_content')
 Human = require('components/human')
 EditPinButton = require('components/pinnable/edit_pin_button')
 PinButton = require('components/pinnable/pin_button')
+ModalStack = require('components/modal_stack')
 
 
 # Utils
@@ -24,7 +25,9 @@ module.exports = React.createClass
   displayName: 'InsightCard'
   
   mixins: [GlobalState.query.mixin]
-  # propTypes: {}
+
+  propTypes: 
+    renderedInsideModal: React.PropTypes.bool
 
   statics:
     queries:
@@ -46,7 +49,8 @@ module.exports = React.createClass
 
   # Component Specifications
   # 
-  # getDefaultProps: ->
+  getDefaultProps: ->
+    renderedInsideModal: false
 
   getInitialState: ->
     display_mode: null
@@ -117,6 +121,9 @@ module.exports = React.createClass
   handleTwitterLinkClick: (insight, event) ->
     @openShareWindow(insight.twitter_share_url)
 
+  handleCloseButtonClick: ->
+    ModalStack.hide()
+
 
   # Renderers
   # 
@@ -183,6 +190,13 @@ module.exports = React.createClass
       </ul>
     </section>
 
+  renderCloseButton: ->
+    return null unless @props.renderedInsideModal
+
+    <button className="close transparent" onClick={@handleCloseButtonClick}>
+      <i className="fa cc-icon cc-times"></i>
+    </button>
+
 
   # Main render
   # 
@@ -196,7 +210,8 @@ module.exports = React.createClass
       placeholder: isInsightEmpty
 
     <section className="pins cloud-columns">
-      <section className="cloud-column">
+      <section className="cloud-column insight-card">
+        { @renderCloseButton() }
 
         <section className={ card_classes }>
           { @renderInsight(insight) unless isInsightEmpty }

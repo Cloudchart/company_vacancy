@@ -19,12 +19,13 @@ ApprovePinButton  = require('components/pinnable/approve_pin_button')
 Tooltip           = require('components/shared/tooltip')
 StandardButton    = require('components/form/buttons').StandardButton
 
-trimDots          = require('utils/trim_string').trimDots
+ShareInsightButton = require('components/insight/share_button')
 
 
 # Utils
 #
 cx = React.addons.classSet
+trimDots = require('utils/trim_string').trimDots
 
 
 # Exports
@@ -131,11 +132,12 @@ module.exports = React.createClass
 
     <EditPinButton uuid={ @props.uuid } />
 
-  renderButtons: ->
+  renderButtons: (insight) ->
     <ul className="round-buttons">
       { @renderApproveButton() }
       { @renderEditButton() }
-      <PinButton {...@gatherAttributes()} title={ @getInsight().get('content') } />
+      <ShareInsightButton insight = { insight.deref().toJS() } />
+      <PinButton {...@gatherAttributes()} title={ insight.get('content') } />
     </ul>
 
   renderSuggestionDeleteButton: ->
@@ -160,18 +162,20 @@ module.exports = React.createClass
     return null unless @props.cursor.pin.deref(false)
     return null unless @state.user.deref(false)
 
+    insight = @getInsight()
+
     insightClasses = cx
       insight:    true
       item:       true
-      unapproved: !@getInsight().get('is_approved')
+      unapproved: !insight.get('is_approved')
       suggested:  @isSuggested()
 
     <article className = { insightClasses } >
       <Human 
-        uuid            = { @getInsight().get('user_id') }
+        uuid            = { insight.get('user_id') }
         showUnicornIcon = { true }
         type            = "user" />
       { @renderContent() }
       { @renderSuggestion() }  
-      { @renderButtons() }
+      { @renderButtons(insight) }
     </article>

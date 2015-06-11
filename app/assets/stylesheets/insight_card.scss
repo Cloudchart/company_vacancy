@@ -1,0 +1,47 @@
+.insight-card {
+  position: relative;
+
+  > button.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 36px;
+    color: hsl(139, 54%, 51%);
+  }
+
+  > .share-buttons, .copy-link {
+    margin-top: 24px;
+
+    > ul {
+      @include flex-ul;
+      @include justify-content(flex-end);
+
+      > li {
+        &:first-child {
+          line-height: 40px;
+          padding: 0 20px;
+          font-size: 15px;
+          font-weight: bold;
+        }
+
+        &:not(:last-child) {
+          margin-right: 10px;
+        }
+
+        > button {
+          outline: none;
+
+          > i{
+            margin: 0;
+          }
+        }
+
+        > input {
+          width: 250px;
+        }
+      }
+    }
+
+  }
+
+}
