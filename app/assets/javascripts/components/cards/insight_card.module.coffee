@@ -24,7 +24,7 @@ module.exports = React.createClass
 
   displayName: 'InsightCard'
   
-  mixins: [GlobalState.query.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   propTypes: 
     renderedInsideModal: React.PropTypes.bool
@@ -51,6 +51,8 @@ module.exports = React.createClass
   # 
   getDefaultProps: ->
     renderedInsideModal: false
+    cursor:
+      insight: PinStore.cursor.items
 
   getInitialState: ->
     display_mode: null

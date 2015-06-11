@@ -14,7 +14,7 @@ Insight = require('components/cards/insight_card')
 
 # Main component
 # 
-MainComponent = React.createClass
+module.exports = React.createClass
 
   displayName: 'InsightApp'
   mixins: [GlobalState.mixin]
@@ -61,9 +61,3 @@ MainComponent = React.createClass
   # 
   render: ->
     <Insight insight = { @props.uuid } />
-
-
-# Exports
-# 
-module.exports = MainComponent
-

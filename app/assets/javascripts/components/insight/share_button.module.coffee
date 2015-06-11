@@ -50,7 +50,7 @@ module.exports = React.createClass
   # 
   handleShareButtonClick: (event) ->
     history.pushState({}, '', @props.insight.insight_url)
-    ModalStack.show(<InsightCard insight = { @props.insight } renderedInsideModal = true />)
+    ModalStack.show(<InsightCard insight = { @props.insight.uuid } renderedInsideModal = true />, shouldGetHistoryBack: true)
 
 
   # Renderers
