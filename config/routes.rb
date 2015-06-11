@@ -108,13 +108,15 @@ Cloudchart::Application.routes.draw do
   get '/collections/:id', to: 'pinboards#show', as: :collection
   get '/collections/:id/invite', to: 'pinboards/invites#new', as: :new_collection_invite
 
+  get '/insights', to: 'pins#index', as: :insights
+  get '/insights/:id', to: 'pins#show', as: :insight
+
   post '/users/:user_id/greeting', to: 'tokens#create_greeting'
   match '/user_greeting/:id', to: 'tokens#update_greeting', via: [:put, :patch]
   delete '/user_greeting/:id', to: 'tokens#destroy_greeting'
   delete '/user_welcome_tour/:id', to: 'tokens#destroy_welcome_tour'
   delete '/user_insight_tour/:id', to: 'tokens#destroy_insight_tour'
 
-  get '/insights', to: 'pins#index'
   delete '/logout', to: 'cloud_profile/authentications#destroy', as: :logout
   get '/old', to: 'welcome#old_browsers', as: :old_browsers
   get '/sandbox', to: 'sandbox#index' if Rails.env.development?

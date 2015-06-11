@@ -4,3 +4,5 @@ json.(pin, :content, :origin)
 json.(pin, :pins_count, :weight)
 json.(pin, :is_approved, :is_suggestion)
 json.(pin, :created_at, :updated_at)
+
+json.insight_url main_app.insight_url(pin)

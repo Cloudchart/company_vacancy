@@ -1,0 +1,127 @@
+main.insight > div {
+  @include display(flex);
+  @include flex-direction(column);
+  @include align-items(center);
+
+  padding-top: 25px;
+}
+
+article.insight-card {
+  width: 600px;
+  position: relative;
+
+  &.placeholder {
+    background-image: image_url('placeholders/pin.png');
+    background-size: cover;
+    height: 380px;
+  }
+
+  &.modal {
+    &::after {
+      @include position(absolute, 0 0 0 0);
+
+      border: 25px solid #fff;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      display: block;
+      content: '';
+      height: 0;
+      width: 0;
+    }
+
+    > footer {
+      @include position(absolute, 0 0px 0 0);
+
+      > ul > li:first-child {
+        color: white;
+      }
+    }
+  }
+
+
+  > button.close {
+    @include position(absolute, 0px 10px 0 0);
+
+    font-size: 36px;
+    color: hsl(139, 54%, 51%);
+  }
+
+  > section.content {
+    padding: 50px;
+    background-color: white;
+
+    > .insight-content {
+      font-size: 30px;
+      margin-bottom: 60px;
+    }
+
+    .human {
+      @include display(flex);
+      @include align-items(center);
+
+      > .avatar {
+        height: 100px;
+        width: 100px;
+        margin-right: 10px;
+      }
+
+      > .credentials {
+        > .name {
+          font-size: 25px;
+          font-weight: 300;
+          margin-bottom: 5px;
+        }
+
+        > .occupation {
+          font-size: 20px;
+          font-weight: 300;
+          color: $primary-grey-color;
+          margin: 0;
+        }
+      }
+    }
+
+    > .round-buttons {
+      @include display(flex);
+      @include justify-content(flex-end);
+
+      margin-top: 10px;
+    }
+
+  }
+
+  > footer {
+    margin-top: 25px;
+
+    > ul {
+      @include flex-ul;
+      @include justify-content(flex-end);
+
+      > li {
+        &:first-child {
+          line-height: 40px;
+          padding: 0 20px;
+          font-size: 15px;
+          font-weight: bold;
+        }
+
+        &:not(:last-child) {
+          margin-right: 10px;
+        }
+
+        > button {
+          outline: none;
+
+          > i.fa {
+            margin: 0;
+          }
+        }
+
+        > input {
+          width: 300px;
+        }
+      }
+    }
+  }
+
+}

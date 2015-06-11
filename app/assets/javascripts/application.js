@@ -28,6 +28,7 @@
 //= require object_assign
 //= require masonry
 //= require imagesloaded
+//= require zeroclipboard
 
 //= require constants.module
 //= require cloud_flux.module

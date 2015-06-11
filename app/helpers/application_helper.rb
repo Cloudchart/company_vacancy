@@ -57,4 +57,5 @@ module ApplicationHelper
       raw "Cloud<strong>Chart</strong>"
     end
   end
+
 end
