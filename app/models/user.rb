@@ -91,13 +91,6 @@ class User < ActiveRecord::Base
     companies_favorites.map(&:company).select { |c| ability.can?(:read, c) }
   end
 
-
-  def important_companies(scope = {})
-    ability = Ability.new(scope[:current_user] || self)
-    Company.important.select { |c| ability.can?(:read, c) }
-  end
-
-
   #
   # /Companies
 
