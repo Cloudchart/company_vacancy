@@ -5,7 +5,7 @@ class PreviewWorker < ApplicationWorker
     record = class_name.constantize.find(id)
     preview = Tempfile.new(['preview', '.png'])
     begin
-      system("#{ENV['PHANTOMJS_PATH']} #{File.join([Rails.root, 'bin', 'generate_preview.js'])} #{preview_url_for(record)} #{preview.path}")
+      system("#{ENV['PHANTOMJS_PATH']} --ssl-protocol=any #{File.join([Rails.root, 'bin', 'generate_preview.js'])} #{preview_url_for(record)} #{preview.path}")
       record.skip_generate_preview!
       record.update!(preview: preview)
     rescue
