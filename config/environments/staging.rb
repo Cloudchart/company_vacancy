@@ -62,7 +62,7 @@ Cloudchart::Application.configure do
 
   # Precompile additional assets.
   # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
-  config.assets.precompile += %w( guest.css old_browsers.css old_browsers.js )
+  config.assets.precompile += %w( preview.css guest.css old_browsers.css old_browsers.js )
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
@@ -83,10 +83,10 @@ Cloudchart::Application.configure do
 
   # postmark
   config.action_mailer.delivery_method = :postmark
-  config.action_mailer.postmark_settings = { api_key: ENV['POSTMARK_API_KEY'] }  
+  config.action_mailer.postmark_settings = { api_key: ENV['POSTMARK_API_KEY'] }
   config.action_mailer.default_url_options = { host: ENV['APP_HOST'] }
   config.action_mailer.asset_host = "http://#{ENV['APP_HOST']}"
 
   routes.default_url_options = { host: ENV['APP_HOST'] }
-  
+
 end
