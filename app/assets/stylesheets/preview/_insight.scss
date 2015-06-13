@@ -1,0 +1,85 @@
+body > article.insight {
+
+  background-color: white;
+  border: 12px solid hsl(137, 54%, 50%);
+  color: black;
+  padding: 64px;
+
+  > section.content {
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 69px;
+    margin-bottom: 150px;
+  }
+
+  > footer {
+    @include align-items(flex-end);
+    @include display(flex);
+    @include justify-content(space-between);
+
+    > figure.author {
+      @include display(flex);
+      @include align-items(center);
+
+      font-weight: 300;
+
+      .avatar {
+        background-color: #ccc;
+        background-size: contain;
+        border-radius: 50%;
+        color: white;
+        font-size: 58px;
+        font-weight: 300;
+        height: 150px;
+        line-height: 150px;
+        position: relative;
+        text-align: center;
+        width: 150px;
+      }
+
+      figcaption {
+        margin-left: 20px;
+
+        p {
+          margin: 0;
+
+          &.name {
+            font-size: 48px;
+            line-height: 58px;
+          }
+
+          &.occupation {
+            font-size: 32px;
+            line-height: 39px;
+          }
+        }
+      }
+
+    }
+
+    > figure.cloudchart {
+      @include display(flex);
+      @include align-items(center);
+
+      color: hsl(137, 54%, 50%);
+      margin-bottom: -10px;
+
+      img {
+        margin-right: 10px;
+        width: 90px;
+      }
+
+      figcaption {
+        font-size: 38px;
+        font-weight: 300;
+        line-height: 46px;
+
+        strong {
+          font-weight: 700;
+        }
+      }
+    }
+
+  }
+
+}

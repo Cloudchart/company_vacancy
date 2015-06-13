@@ -1,0 +1,22 @@
+<article class="insight">
+  <section class="content">
+    <%= (content = @pin.content.strip).ends_with?('.') ? content.chop : content %>&nbsp;&mdash;
+  </section>
+  <footer>
+    <figure class="author">
+      <div class="avatar" style="background-image: url(<%= @pin.user.avatar_stored? ? @pin.user.avatar.url : 'none' %>);">
+        <%= @pin.user.full_name.split(' ').map { |i| i.chars.first }.take(2).join('').upcase unless @pin.user.avatar_stored? %>
+      </div>
+      <figcaption>
+        <p class="name"><%= @pin.user.full_name %></p>
+        <p class="occupation"><%= [@pin.user.occupation, @pin.user.company].select(&:present?).join(', ') %></p>
+      </figcaption>
+    </figure>
+    <figure class="cloudchart">
+      <img src="<%= asset_url('cloudchart-logo-square.png') %>" />
+      <figcaption>
+        Cloud<strong>Chart</strong>
+      </figcaption>
+    </figure>
+  </footer>
+</article>

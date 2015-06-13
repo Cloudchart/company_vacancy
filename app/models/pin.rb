@@ -22,13 +22,24 @@ class Pin < ActiveRecord::Base
   scope :insights, -> { where(parent: nil).where.not(content: nil, pinnable: nil) }
   scope :limbo, -> { where(parent: nil, pinnable: nil).where.not(content: nil, author: nil) }
 
+
+  before_save :skip_generate_preview!, unless: :insight?
+
+
+  def insight?
+    parent_id.blank? && content.present?
+  end
+
+
   def should_validate_content_presence?
     @update_by.present? && user_id != @update_by.uuid && !is_suggestion
   end
 
+
   def update_by!(update_by)
     @update_by = update_by
   end
+
 
   def destroy
     Pin.transaction do
