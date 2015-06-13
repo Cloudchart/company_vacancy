@@ -17,7 +17,7 @@ module Previewable
   end
 
   def generate_preview
-    return if should_skip_generate_preview?
+    PreviewWorker.perform_async(self.class.name, id) unless should_skip_generate_preview?
   end
 
 

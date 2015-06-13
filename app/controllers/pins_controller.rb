@@ -1,6 +1,7 @@
 class PinsController < ApplicationController
 
   before_filter :set_pin, except: :index
+  skip_before_filter :check_browser, only: :preview
 
   authorize_resource except: [:index, :preview]
   authorize_resource only: :index, class: controller_name.to_sym
@@ -19,13 +20,6 @@ class PinsController < ApplicationController
     respond_to do |format|
       format.html
       format.json
-    end
-  end
-
-
-  def preview
-    respond_to do |format|
-      format.html
     end
   end
 
