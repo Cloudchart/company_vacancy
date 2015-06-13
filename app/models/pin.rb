@@ -27,7 +27,7 @@ class Pin < ActiveRecord::Base
 
 
   def insight?
-    parent_id.blank? && content.present?
+    parent_id.blank? && content.present? && pinnable_id.present?
   end
 
 
