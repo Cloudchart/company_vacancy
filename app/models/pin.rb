@@ -2,6 +2,7 @@ class Pin < ActiveRecord::Base
   include Uuidable
   include Trackable
   include Featurable
+  include Previewable
   include Admin::Pin
 
   nilify_blanks only: [:content]

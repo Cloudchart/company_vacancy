@@ -2,7 +2,7 @@ class PinsController < ApplicationController
 
   before_filter :set_pin, except: :index
 
-  authorize_resource except: :index
+  authorize_resource except: [:index, :preview]
   authorize_resource only: :index, class: controller_name.to_sym
 
   before_action :call_page_visit_to_slack_channel, only: :index
@@ -21,6 +21,14 @@ class PinsController < ApplicationController
       format.json
     end
   end
+
+
+  def preview
+    respond_to do |format|
+      format.html
+    end
+  end
+
 
   def create
     @pin.update_by! current_user
@@ -88,6 +96,8 @@ private
     @pin = case action_name
     when 'show'
       Pin.includes(:user, parent: :user).find(params[:id])
+    when 'preview'
+      Pin.includes(:user).find(params[:id])
     when 'create'
       pin_source.new(params_for_create)
     else
