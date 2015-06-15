@@ -5,7 +5,6 @@
     <figcaption>
       <p class="name">
         <%= @user.full_name %>
-        <span class="twitter">@<%= @user.twitter %></span>
       </p>
       <p class="occupation">
         <%= [@user.occupation, @user.company].select(&:present?).join(', ') %>
