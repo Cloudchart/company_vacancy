@@ -1,4 +1,4 @@
-<article class="insight">
+<article class="preview insight">
   <section class="content">
     <%= (content = @pin.content.strip).ends_with?('.') ? content.chop : content %>&nbsp;&mdash;
   </section>
@@ -12,11 +12,6 @@
         <p class="occupation"><%= [@pin.user.occupation, @pin.user.company].select(&:present?).join(', ') %></p>
       </figcaption>
     </figure>
-    <figure class="cloudchart">
-      <img src="<%= asset_url('cloudchart-logo-square.png') %>" />
-      <figcaption>
-        Cloud<strong>Chart</strong>
-      </figcaption>
-    </figure>
+    <%= render partial: 'cloudchart' %>
   </footer>
 </article>

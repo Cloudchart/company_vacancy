@@ -110,7 +110,6 @@ Cloudchart::Application.routes.draw do
 
   get '/insights', to: 'pins#index', as: :insights
   get '/insights/:id', to: 'pins#show', as: :insight
-  get '/insights/:id/preview', to: 'pins#preview', as: :insight_preview
 
   post '/users/:user_id/greeting', to: 'tokens#create_greeting'
   match '/user_greeting/:id', to: 'tokens#update_greeting', via: [:put, :patch]
@@ -127,6 +126,7 @@ Cloudchart::Application.routes.draw do
   # Preview
   #
 
+  get '/insights/:id/preview', to: 'previews#insight', as: :insight_preview
   get '/companies/:id/preview', to: 'previews#company', as: :company_preview
   get '/collections/:id/preview', to: 'previews#pinboard', as: :pinboard_preview
   get '/users/:id/preview', to: 'previews#user', as: :user_preview

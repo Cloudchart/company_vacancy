@@ -11,6 +11,12 @@ class PreviewsController < ApplicationController
   end
 
 
+  def insight
+    @pin = Pin.insights.find(params[:id])
+    respond(@pin)
+  end
+
+
   def pinboard
     @pinboard = Pinboard.find(params[:id])
     respond(@pinboard)
