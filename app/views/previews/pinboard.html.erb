@@ -1,0 +1,20 @@
+<article class="preview pinboard">
+  <header>
+    <%= @pinboard.title %>
+    <span class="author">by <%= @pinboard.user.full_name %></span>
+  </header>
+  <p class="description">
+    <%= @pinboard.description %>
+  </p>
+  <div class="spacer">
+  </div>
+  <footer>
+    <span></span>
+    <figure class="cloudchart">
+      <img src="<%= asset_url('cloudchart-logo-square.png') %>" />
+      <figcaption>
+        Cloud<strong>Chart</strong>
+      </figcaption>
+    </figure>
+  </footer>
+</article>

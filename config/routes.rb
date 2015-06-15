@@ -123,6 +123,17 @@ Cloudchart::Application.routes.draw do
   get '/sandbox', to: 'sandbox#index' if Rails.env.development?
   get ':id', to: 'pages#show', as: :page
 
+
+  # Preview
+  #
+
+  get '/companies/:id/preview', to: 'previews#company', as: :company_preview
+  get '/collections/:id/preview', to: 'previews#pinboard', as: :pinboard_preview
+
+  #
+  # / Preview
+
+
   # Twitter OAuth
   #
   get '/auth/failure', to: 'auth#failure'
