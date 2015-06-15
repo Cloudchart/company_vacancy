@@ -18,6 +18,8 @@ class PreviewWorker < ApplicationWorker
     case record.class.name
     when 'Pin'
       insight_preview_url(record)
+    when 'Pinboard'
+      pinboard_preview_url(record)
     else
       root_url
     end

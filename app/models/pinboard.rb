@@ -1,5 +1,6 @@
 class Pinboard < ActiveRecord::Base
   include Uuidable
+  include Previewable
   include Tire::Model::Search
   include Tire::Model::Callbacks
   include Admin::Pinboard

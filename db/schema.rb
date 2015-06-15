@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150613120058) do
+ActiveRecord::Schema.define(version: 20150615102943) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -337,6 +337,7 @@ ActiveRecord::Schema.define(version: 20150613120058) do
     t.text     "welcome"
     t.boolean  "is_featured"
     t.boolean  "is_important",             default: false
+    t.string   "preview_uid"
   end
 
   add_index "pinboards", ["access_rights"], name: "index_pinboards_on_access_rights", using: :btree
