@@ -20,6 +20,8 @@ class PreviewWorker < ApplicationWorker
       insight_preview_url(record)
     when 'Pinboard'
       pinboard_preview_url(record)
+    when 'User'
+      user_preview_url(record)
     else
       root_url
     end

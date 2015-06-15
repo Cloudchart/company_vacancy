@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   include Fullnameable
   include FriendlyId
   include Preloadable
+  include Previewable
   include Admin::User
 
   attr_accessor :current_password
@@ -54,6 +55,7 @@ class User < ActiveRecord::Base
 
   has_many :roles, dependent: :destroy
   has_many :companies_roles, -> { where(owner_type: Company.name) }, class_name: Role.name
+  has_many :pinboards_roles, -> { where(owner_type: Pinboard.name) }, class_name: Role.name
   has_one  :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :people, dependent: :destroy
@@ -93,6 +95,19 @@ class User < ActiveRecord::Base
 
   #
   # /Companies
+
+  # Pinboards
+  #
+
+  acts_as_preloadable :pinboards_through_roles, pinboards_roles: :pinboard
+
+  def pinboards_through_roles(scope = {})
+    ability = Ability.new(scope[:current_user] || self)
+    pinboards_roles.map(&:pinboard).select { |c| ability.can?(:read, c) }
+  end
+
+  #
+  # / Pinboards
 
   validate :validate_twitter_handle_for_invite, if: :should_validate_twitter_handle_for_invite?
   # validate :validate_email, on: :create

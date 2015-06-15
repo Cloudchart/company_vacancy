@@ -129,6 +129,7 @@ Cloudchart::Application.routes.draw do
 
   get '/companies/:id/preview', to: 'previews#company', as: :company_preview
   get '/collections/:id/preview', to: 'previews#pinboard', as: :pinboard_preview
+  get '/users/:id/preview', to: 'previews#user', as: :user_preview
 
   #
   # / Preview

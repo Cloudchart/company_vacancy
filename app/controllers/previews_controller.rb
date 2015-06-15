@@ -21,7 +21,23 @@ class PreviewsController < ApplicationController
   end
 
 
+  def user
+    @user = User.friendly.find(params[:id])
+    respond(@user)
+  end
+
+
   private
+
+
+  def respond(record)
+    respond_to do |format|
+      format.html
+      format.png {
+        render_or_generate_preview(record)
+      }
+    end
+  end
 
   def render_or_generate_preview(record)
     if record.preview_stored?
