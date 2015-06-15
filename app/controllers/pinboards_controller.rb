@@ -35,6 +35,7 @@ class PinboardsController < ApplicationController
     @pinboard = pinboard_source.new(params_for_create)
     authorize! :create, @pinboard
 
+    @pinboard.roles.build(user: current_user, value: :owner).should_skip_pending_role!
     @pinboard.save!
 
     respond_to do |format|
@@ -42,8 +43,6 @@ class PinboardsController < ApplicationController
     end
 
   rescue ActiveRecord::RecordInvalid
-
-    Rails.logger.debug @pinboard.errors.inspect
 
     respond_to do |format|
       format.json { render json: :fail, status: 422 }

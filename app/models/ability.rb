@@ -158,6 +158,14 @@ class Ability
 
       can [:update, :destroy], Landing, author_id: current_user.id
 
+      # Role
+      # 
+      can [:read, :accept], Role
+
+      can [:create, :update, :destroy], Role do |role|
+        owner_or_editor?(current_user, role.owner)
+      end
+
       # Miscellaneous
       #
       cannot [:create, :update], Quote do |quote|
@@ -166,10 +174,6 @@ class Ability
 
       can :manage, [Person, Block, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
         owner_or_editor?(current_user, resource.company)
-      end
-
-      can [:update, :destroy], Role do |role|
-        owner_or_editor?(current_user, role.owner)
       end
 
       can :manage, Visibility do |visibility|
