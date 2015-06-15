@@ -14,7 +14,7 @@ module.exports = React.createClass
 
   getDefaultProps: ->
     onClick: ModalStack.hide
-    message: "Your database returned 0 or did not return at all. Please update and/or reboot your device and press any key to cancel."
+    message: "We've been notified about the issue. Try to repeat this action later."
 
 
   render: ->

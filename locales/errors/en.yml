@@ -12,6 +12,7 @@ en:
       twitter_handle_invited_and_logged_in: "This person is already on board."
     roles:
       acceptance: "you can't accept this invitation, because you are already associated with this %{name}"
+      user_blank: "we can't create an invitation without a user"
     authentication:
       email_doesnt_exist: "The email does not belong to any account"
       password_doesnt_match: "The password is incorrect"

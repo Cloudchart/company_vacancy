@@ -4,11 +4,13 @@ class RolesController < ApplicationController
   # authorize_resource except: :create
 
   def create
-    @role         = Role.new(role_create_params)
-    @role.author  = current_user
+    @role = Role.new(role_create_params)
+    @role.author = current_user
 
-    if params[:twitter]
-      @role.user = User.find_or_initialize_by(twitter: params[:twitter])
+    if params[:twitter].present?
+      user = User.new(twitter: params[:twitter])
+      user = User.friendly.find(user.twitter) unless user.valid?
+      @role.user = user
     end
 
     @role.save!
@@ -31,7 +33,7 @@ class RolesController < ApplicationController
   rescue ActiveRecord::RecordInvalid
 
     respond_to do |format|
-      format.json { render json: { errors: @role.errors }, status: 402 }
+      format.json { render json: { errors: @role.errors }, status: 422 }
     end
   end
 
