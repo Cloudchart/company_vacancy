@@ -4,6 +4,7 @@ class Company < ActiveRecord::Base
   include Sluggable
   include Taggable
   include Preloadable
+  include Previewable
   include Tire::Model::Search
   include Tire::Model::Callbacks
   include Admin::Company

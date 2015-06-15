@@ -16,6 +16,8 @@ class PreviewWorker < ApplicationWorker
 
   def preview_url_for(record)
     case record.class.name
+    when 'Company'
+      company_preview_url(record)
     when 'Pin'
       insight_preview_url(record)
     when 'Pinboard'

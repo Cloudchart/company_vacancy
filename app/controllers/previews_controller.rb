@@ -7,17 +7,13 @@ class PreviewsController < ApplicationController
 
   def company
     @company = Company.find(params[:id])
+    respond(@company)
   end
 
 
   def pinboard
     @pinboard = Pinboard.find(params[:id])
-    respond_to do |format|
-      format.html
-      format.png {
-        render_or_generate_preview(@pinboard)
-      }
-    end
+    respond(@pinboard)
   end
 
 
