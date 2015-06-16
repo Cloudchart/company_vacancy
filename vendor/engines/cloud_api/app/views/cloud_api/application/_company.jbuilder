@@ -24,8 +24,8 @@ end
 #
 
 json.(company, :uuid, :name, :description)
-json.(company, :established_on)
-json.(company, :is_name_in_logo, :is_published, :is_important, :site_url, :slug)
+json.(company, :established_on, :site_url, :slug, :created_at, :user_id)
+json.(company, :is_name_in_logo, :is_published, :is_important)
 
 json.logotype_url company.logotype.url if company.logotype_stored?
 
