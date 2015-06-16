@@ -27,6 +27,9 @@ CompaniesApp = React.createClass
         """
           Viewer {
             system_roles,
+            companies {
+              #{CompanyPreview.getQuery('company')}
+            },
             companies_through_roles {
               #{CompanyPreview.getQuery('company')}
             },
@@ -34,8 +37,7 @@ CompaniesApp = React.createClass
               #{CompanyPreview.getQuery('company')}
             },
             edges {
-              companies_through_roles,
-              favorite_companies
+              related_companies
             }
           }
         """
@@ -92,18 +94,8 @@ CompaniesApp = React.createClass
 
   getAllCompanies: ->
     return Immutable.Seq() unless user = UserStore.get(UserStore.me().get('uuid'))
+    user.get('related_companies', Immutable.Seq()).map((c) -> CompanyStore.get(c.get('id')))
 
-    companies_through_roles = user.get('companies_through_roles', Immutable.Seq()).map((c) -> CompanyStore.get(c.get('id')))
-    favorite_companies = user.get('favorite_companies', Immutable.Seq()).map((c) -> CompanyStore.get(c.get('id')))
-
-    companies_through_roles.concat(favorite_companies)
-
-    # myCompaniesIds = @state.myCompaniesIds
-    # searchedCompaniesIds = @state.searchedCompaniesIds.filter (companyId) -> !myCompaniesIds.contains(companyId)
-    #
-    # myCompaniesIds.concat(searchedCompaniesIds).map (id) ->
-    #   CompanyStore.get(id)
-    # .toArray()
 
   sortCompanies: (companies) ->
     companies.sortBy (company) ->

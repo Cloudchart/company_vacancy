@@ -46,21 +46,19 @@ class User < ActiveRecord::Base
   has_many :subscriptions, dependent: :destroy
   has_many :vacancies, foreign_key: :author_id
   has_many :vacancy_responses
-
   has_many :favorites, dependent: :destroy
-  has_many :companies_favorites, -> { where(favoritable_type: Company.name) }, class_name: Favorite.name
-
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
-
   has_many :roles, dependent: :destroy
-  has_many :companies_roles, -> { where(owner_type: Company.name) }, class_name: Role.name
   has_one  :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :people, dependent: :destroy
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
-  has_many :companies, through: :roles, source: :owner, source_type: 'Company'
   has_many :landings, dependent: :destroy
+  # has_many :companies, through: :roles, source: :owner, source_type: 'Company'
+  has_many :companies, dependent: :destroy
+  has_many :companies_roles, -> { where(owner_type: Company.name) }, class_name: Role.name
+  has_many :companies_favorites, -> { where(favoritable_type: Company.name) }, class_name: Favorite.name
 
   # Roles on Pinboards
   #
@@ -79,16 +77,22 @@ class User < ActiveRecord::Base
   acts_as_preloadable :companies_through_roles, companies_roles: :company
 
   def companies_through_roles(scope = {})
-    ability = Ability.new(scope[:current_user] || self)
-    companies_roles.map(&:company).select { |c| ability.can?(:read, c) }
+    companies_roles.map(&:company).select { |c| ability(scope).can?(:read, c) }
   end
 
 
   acts_as_preloadable :favorite_companies, companies_favorites: :company
 
   def favorite_companies(scope = {})
-    ability = Ability.new(scope[:current_user] || self)
-    companies_favorites.map(&:company).select { |c| ability.can?(:read, c) }
+    companies_favorites.map(&:company).select { |c| ability(scope).can?(:read, c) }
+  end
+
+
+  acts_as_preloadable :related_companies, [:companies, companies_roles: :company, companies_favorites: :company]
+
+  def related_companies(scope = {})
+    ability = ability(scope)
+    companies.select { |c| ability.can?(:read, c) }.concat(companies_through_roles(ability: ability)).concat(favorite_companies(ability: ability))
   end
 
   #
@@ -156,10 +160,6 @@ class User < ActiveRecord::Base
 
   def limbo_pins
     Pin.limbo
-  end
-
-  def owned_companies
-    Company.joins(:roles).where(roles: { user_id: id, owner_type: 'Company' })
   end
 
   def published_companies
@@ -283,6 +283,10 @@ private
     elsif errors.added?(:twitter, :taken)
       errors.add(:base, I18n.t('errors.messages.twitter_handle_invited'))
     end
+  end
+
+  def ability(scope)
+    scope[:ability] || Ability.new(scope[:current_user] || self)
   end
 
   # def build_blank_emails

@@ -79,10 +79,7 @@ class Ability
 
       # Company
       #
-      can :manage, Company do |company|
-        owner?(current_user, company)
-      end
-
+      can :manage, Company, user_id: current_user.id
       can [:follow, :unfollow], Company
       can :read, Company, is_published: true
 
@@ -212,7 +209,7 @@ private
   end
 
   def owner_or_editor?(user, object)
-    role_value(user, object) =~ /owner|editor/
+    object.user_id == user.id || editor?(user, object)
   end
 
   def trusted_reader?(user, object)

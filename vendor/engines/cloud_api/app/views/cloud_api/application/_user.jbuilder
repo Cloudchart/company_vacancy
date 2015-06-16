@@ -22,10 +22,10 @@ json.avatar_url  user.avatar.thumb('512x512>').url if user.avatar_stored?
 # Edges
 #
 
-json_edge! json, :companies_through_roles, edges do
-  User.preload_companies_through_roles(siblings, cache)
+json_edge! json, :related_companies, edges do
+  User.preload_related_companies(siblings, cache)
 
-  user.companies_through_roles({ current_user: current_user }).map do |c|
+  user.related_companies({ current_user: current_user }).map do |c|
     {
       id:     c.id,
       name:   c.name
@@ -34,17 +34,29 @@ json_edge! json, :companies_through_roles, edges do
 end
 
 
-json_edge! json, :favorite_companies, edges do
-  User.preload_favorite_companies(siblings, cache)
+# json_edge! json, :companies_through_roles, edges do
+#   User.preload_companies_through_roles(siblings, cache)
 
-  user.favorite_companies({ current_user: current_user }).map do |c|
-    {
-      id:     c.id,
-      name:   c.name
-    }
-  end
+#   user.companies_through_roles({ current_user: current_user }).map do |c|
+#     {
+#       id:     c.id,
+#       name:   c.name
+#     }
+#   end
+# end
 
-end
+
+# json_edge! json, :favorite_companies, edges do
+#   User.preload_favorite_companies(siblings, cache)
+
+#   user.favorite_companies({ current_user: current_user }).map do |c|
+#     {
+#       id:     c.id,
+#       name:   c.name
+#     }
+#   end
+
+# end
 
 
 json_edge! json, :important_companies_ids, edges do
