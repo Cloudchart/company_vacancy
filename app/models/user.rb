@@ -2,8 +2,8 @@ class User < ActiveRecord::Base
   include Uuidable
   include Fullnameable
   include FriendlyId
-  include Preloadable
   include Admin::User
+  include Preloadable::User
 
   attr_accessor :current_password
   attr_reader :should_create_tour_tokens # needed for rails_admin
@@ -56,9 +56,8 @@ class User < ActiveRecord::Base
   has_many :pins, dependent: :destroy
   has_many :landings, dependent: :destroy
   # has_many :companies, through: :roles, source: :owner, source_type: 'Company'
+  # TODO: update old companies association
   has_many :companies, dependent: :destroy
-  has_many :companies_roles, -> { where(owner_type: Company.name) }, class_name: Role.name
-  has_many :companies_favorites, -> { where(favoritable_type: Company.name) }, class_name: Favorite.name
 
   # Roles on Pinboards
   #
@@ -70,33 +69,6 @@ class User < ActiveRecord::Base
   validates :full_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
   validates :twitter, twitter_handle: true, uniqueness: { case_sensitive: false }, allow_blank: true
-
-  # Companies
-  #
-
-  acts_as_preloadable :companies_through_roles, companies_roles: :company
-
-  def companies_through_roles(scope = {})
-    companies_roles.map(&:company).select { |c| ability(scope).can?(:read, c) }
-  end
-
-
-  acts_as_preloadable :favorite_companies, companies_favorites: :company
-
-  def favorite_companies(scope = {})
-    companies_favorites.map(&:company).select { |c| ability(scope).can?(:read, c) }
-  end
-
-
-  acts_as_preloadable :related_companies, [:companies, companies_roles: :company, companies_favorites: :company]
-
-  def related_companies(scope = {})
-    ability = ability(scope)
-    companies.select { |c| ability.can?(:read, c) }.concat(companies_through_roles(ability: ability)).concat(favorite_companies(ability: ability))
-  end
-
-  #
-  # /Companies
 
   validate :validate_twitter_handle_for_invite, if: :should_validate_twitter_handle_for_invite?
   # validate :validate_email, on: :create
@@ -283,10 +255,6 @@ private
     elsif errors.added?(:twitter, :taken)
       errors.add(:base, I18n.t('errors.messages.twitter_handle_invited'))
     end
-  end
-
-  def ability(scope)
-    scope[:ability] || Ability.new(scope[:current_user] || self)
   end
 
   # def build_blank_emails
