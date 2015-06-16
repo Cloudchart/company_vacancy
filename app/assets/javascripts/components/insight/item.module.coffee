@@ -72,7 +72,7 @@ module.exports = React.createClass
 
   getInsight: ->
     if @isSuggested()
-      PinStore.getParentFor(@props.cursor.pin.get('uuid'))
+      PinStore.cursor.items.cursor(@props.cursor.pin.get('parent_id'))
     else
       @props.cursor.pin
 
@@ -113,11 +113,11 @@ module.exports = React.createClass
         { @renderOriginIcon() }
       </a>
     else
-      <Tooltip 
+      <Tooltip
         className      = "origin"
         element        = { @renderOriginIcon() }
         tooltipContent = { origin } />
-      
+
   renderContent: ->
     <section className="content">
       { @getContent() }
@@ -146,7 +146,7 @@ module.exports = React.createClass
   renderSuggestionDeleteButton: ->
     return null unless UserStore.isEditor()
 
-    <StandardButton 
+    <StandardButton
       className = "transparent"
       iconClass = "cc-icon cc-times"
       onClick   = { @destroySuggestion } />
@@ -174,11 +174,11 @@ module.exports = React.createClass
       suggested:  @isSuggested()
 
     <article className = { insightClasses } >
-      <Human 
+      <Human
         uuid            = { insight.get('user_id') }
         showUnicornIcon = { true }
         type            = "user" />
       { @renderContent() }
-      { @renderSuggestion() }  
+      { @renderSuggestion() }
       { @renderButtons(insight) }
     </article>
