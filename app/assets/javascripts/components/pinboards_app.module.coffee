@@ -1,19 +1,17 @@
 # @cjsx React.DOM
 
-
 # Components
 #
-GlobalState       = require('global_state/state')
+GlobalState = require('global_state/state')
 
-UserPinboards  = require('components/pinboards/lists/user')
+PinboardStore = require('stores/pinboard_store')
+FavoriteStore = require('stores/favorite_store.cursor')
+UserStore = require('stores/user_store.cursor')
+
+UserPinboards = require('components/pinboards/lists/user')
 StandardButton = require('components/form/buttons').StandardButton
-
-NewPinboard    = require('components/pinboards/new_pinboard')
-
-ModalStack     = require('components/modal_stack')
-
-PinboardStore      = require('stores/pinboard_store')
-FavoriteStore      = require('stores/favorite_store.cursor')
+NewPinboard = require('components/pinboards/new_pinboard')
+ModalStack = require('components/modal_stack')
 SuggestedPinboards = require('components/pinboards/lists/suggested')
 
 
@@ -56,9 +54,13 @@ module.exports = React.createClass
       <NewPinboard user_id = { @props.user_id } />
     )
 
+
   # Lifecycle methods
   #
   componentWillMount: ->
+    @cursor =
+      user: UserStore.cursor.items.cursor(@props.user_id)
+
     @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
 
 
@@ -69,17 +71,29 @@ module.exports = React.createClass
 
     <SuggestedPinboards />
 
+  renderHeader: ->
+    return null unless @cursor.user.get('twitter')
 
+    title = if @getUserPinboards().size > 0
+      <span>Your collections</span>
+    else
+      <span>Your collections are empty</span>
+
+    <header className="cloud-columns cloud-columns-flex">
+      { title }
+      <StandardButton
+        className = "cc"
+        onClick   = { @handleCreateCollectionClick }
+        text      = "Create collection" />
+    </header>
+
+
+  # Main render
+  # 
   render: ->
     if @isLoaded()
       <section className="pinboards-wrapper">
-        <header className="cloud-columns cloud-columns-flex">
-          Your collections
-          <StandardButton
-            className = "cc"
-            onClick   = { @handleCreateCollectionClick }
-            text      = "Create collection" />
-        </header>
+        { @renderHeader() }
         <UserPinboards user_id = { @props.user_id } showPrivate = { true } />
         { @renderSuggestedInsights() }
       </section>

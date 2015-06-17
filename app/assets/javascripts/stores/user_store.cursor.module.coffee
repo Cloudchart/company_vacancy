@@ -69,3 +69,7 @@ module.exports = GlobalState.createStore
   isUnicorn: (user = null) ->
     user ||= @me()
     !!findSystemRoleForUser(user, 'unicorn')
+
+  isGuest: (user = null) ->
+    user ||= @me()
+    !!findSystemRoleForUser(user, 'guest')
