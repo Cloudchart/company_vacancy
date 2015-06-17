@@ -7,4 +7,11 @@ class Viewer < User
   end
 
 
+
+  def published_companies(scope = {})
+    ability = scope[:current_user_ability] || Ability.new(scope[:current_user] || self)
+    Company.published.select { |c| ability.can?(:read, c) }
+  end
+
+
 end

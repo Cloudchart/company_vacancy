@@ -2,10 +2,16 @@ data  = {}
 query = parse_relations_query(params[:relations])
 
 
+def current_user_ability
+  @current_user_ability ||= Ability.new(current_user)
+end
+
+
 def __prepare(sources, query, data, json)
   grouped_sources = {}
 
-  scope = { current_user: current_user }
+  scope = { current_user: current_user, current_user_ability: current_user_ability }
+
   cache   = []
   edges   = (query || {}).delete('edges') { [] }.flatten.compact.uniq.map(&:to_sym)
 

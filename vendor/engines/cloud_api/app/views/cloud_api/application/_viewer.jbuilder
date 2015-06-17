@@ -10,5 +10,15 @@ json_edge! json, :important_companies_ids, edges do
 end
 
 
+json_edge! json, :published_companies, edges do
+  viewer.published_companies.map do |c|
+    {
+      id:     c.id,
+      name:   c.name
+    }
+  end
+end
+
+
 #
 # / Edges

@@ -63,5 +63,11 @@ json_edge! json, :important_companies_ids, edges do
   user.important_companies.map(&:id)
 end
 
+
+json_edge! json, :is_editor, edges do
+  preload_associations(siblings, cache, :roles)
+  !!user.roles.find { |r| r.owner_id.blank? && r.owner_type.blank? && r.value == 'editor' }
+end
+
 #
 # / Edges

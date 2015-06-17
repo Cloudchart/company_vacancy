@@ -40,6 +40,7 @@ class Company < ActiveRecord::Base
   validate  :publish_check, if: 'is_published? && is_published_changed?'
 
   scope :important, -> { where(is_important: true) }
+  scope :published, -> { where(is_published: true) }
 
   settings ElasticSearchNGramSettings do
     mapping do

@@ -26,17 +26,16 @@ module Preloadable::User
     end
 
     def related_companies(scope = {})
-      ability = ability(scope)
-      companies.select { |c| ability.can?(:read, c) }
-        .concat(companies_through_roles(ability: ability))
-        .concat(favorite_companies(ability: ability))
+      companies.select { |c| ability(scope).can?(:read, c) }
+        .concat(companies_through_roles(scope))
+        .concat(favorite_companies(scope))
         .uniq
     end
 
   private
 
     def ability(scope = {})
-      scope[:ability] || Ability.new(scope[:current_user] || self)
+      scope[:current_user_ability] ||= Ability.new(scope[:current_user] || self)
     end
 
   end
