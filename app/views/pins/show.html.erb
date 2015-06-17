@@ -1,6 +1,6 @@
 <% set_meta_tags og: {
   title: "#{@pin.post.company.name}, #{@pin.post.title}",
-  image: og_image_url,
+  image: insight_preview_url(@pin) + '.png',
   url: insight_url(@pin),
   description: @pin.content
 } %>

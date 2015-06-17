@@ -2,7 +2,7 @@
 title: "#{@user.full_name} @#{@user.twitter}",
 og: {
   title: t('meta.user.title', name: @user.full_name, twitter: @user.twitter),
-  image: og_image_url(@user.avatar.try(:url)),
+  image: user_preview_url(@user) + '.png',
   url: user_url(@user),
   description: t('meta.user.description', name: @user.full_name)
 } 

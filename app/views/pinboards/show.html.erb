@@ -2,6 +2,7 @@
 
 <% set_meta_tags og: {
   title: t('meta.pinboard.title', title: @pinboard.title),
+  image: pinboard_preview_url(@pinboard) + '.png',
   url: pinboard_url(@pinboard),
   description: t('meta.pinboard.description', title: @pinboard.title)
 } %>
