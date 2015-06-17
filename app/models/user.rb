@@ -56,8 +56,7 @@ class User < ActiveRecord::Base
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
   has_many :landings, dependent: :destroy
-  # has_many :companies, through: :roles, source: :owner, source_type: 'Company'
-  # TODO: update old companies association
+  has_many :accessed_companies, through: :roles, source: :owner, source_type: 'Company'
   has_many :companies, dependent: :destroy
 
   # Roles on Pinboards

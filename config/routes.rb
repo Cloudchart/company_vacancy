@@ -25,7 +25,6 @@ Cloudchart::Application.routes.draw do
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
     get :finance, on: :member
-    get :access_rights, on: :member
 
     resources :events, shallow: true do
       post :verify, on: :member

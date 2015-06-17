@@ -95,37 +95,6 @@ class CompaniesController < ApplicationController
     pagescript_params(id: @company.id)
   end
 
-  # GET /companies/1/access_rights
-  def access_rights
-    @company = find_company(Company.includes(:roles, :tokens, users: :emails))
-
-    respond_to do |format|
-      format.html {
-        pagescript_params(id: @company.id)
-      }
-      format.json {
-        companies = current_user.companies
-          .includes(:people, users: :emails)
-          .where(roles: { value: ['owner', 'editor', 'trusted_reader'] })
-
-        @invitable_contacts = %w[users people].inject({}) do |memo, association|
-          companies.each do |company|
-            company.send(association).each do |object|
-              unless object.email.blank?
-                memo[object.email] ||= []
-                unless memo[object.email].include?(object.full_name)
-                  memo[object.email].push(object.full_name)
-                end
-              end
-            end
-          end
-
-          memo
-        end
-      }
-    end
-  end
-
   # GET /companies/1/verify_site_url
   def verify_site_url
     uri = URI.parse(@company.formatted_site_url)

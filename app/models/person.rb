@@ -17,6 +17,8 @@ class Person < ActiveRecord::Base
   has_many :block_identities, as: :identity, inverse_of: :identity, dependent: :restrict_with_error
   has_many :quotes, dependent: :restrict_with_error
 
+  has_should_markers(:should_be_verified)
+
   validates :full_name, presence: true
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
@@ -43,14 +45,6 @@ class Person < ActiveRecord::Base
     as_json(only: [:uuid, :full_name, :first_name, :last_name, :email, :occupation, :salary])
   end
 
-  def should_be_verified!
-    @should_be_verified = true
-  end
-
-  def should_be_verified?
-    !!@should_be_verified
-  end
-
 private
 
   def reset_verification
@@ -66,7 +60,8 @@ private
           self.user = user_found_by_twitter
           self.is_verified = true
 
-          unless user_found_by_twitter.companies.include?(company)
+          unless (user_found_by_twitter.companies + user_found_by_twitter.accessed_companies).include?(company)
+            # TODO: update, we don't use invite tokens anymore
             if invite = user_found_by_twitter.company_invite_tokens.select { |token| token.owner_id == company_id }.first
               value = invite.data[:role]
             else
@@ -76,7 +71,7 @@ private
           end
         else
           self.user = nil
-          # TODO: think about what to with a role here
+          # TODO: think about what to do with a role here
         end
 
       end
