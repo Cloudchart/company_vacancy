@@ -12,6 +12,8 @@ class Role < ActiveRecord::Base
   belongs_to :pinboard, foreign_key: :owner_id, foreign_type: Pinboard
   belongs_to :company,  foreign_key: :owner_id, foreign_type: Company
 
+  has_should_markers(:should_skip_pending_role)
+
   validates :value, inclusion: { in: Company::INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Company' }
   validates :value, inclusion: { in: Pinboard::INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Pinboard' }
   validates :value, inclusion: { in: Cloudchart::ROLES.map(&:to_s) }, on: :create, if: -> { owner_type.blank? }
@@ -20,14 +22,6 @@ class Role < ActiveRecord::Base
 
   def accept!
     update!(value: pending_value, pending_value: nil)
-  end
-
-  def should_skip_pending_role!
-    @should_skip_pending_role = true
-  end
-
-  def should_skip_pending_role?
-    !!@should_skip_pending_role
   end
 
 private

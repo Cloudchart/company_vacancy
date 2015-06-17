@@ -1,10 +1,9 @@
 class RolesController < ApplicationController
-  before_filter :set_role, except: :create
+  before_filter :set_role
 
-  # authorize_resource except: :create
+  load_and_authorize_resource
 
   def create
-    @role = Role.new(role_create_params)
     @role.author = current_user
 
     if params[:twitter].present?
@@ -39,7 +38,6 @@ class RolesController < ApplicationController
 
 
   def accept
-    @role = Role.find(params[:id])
     if @role.user == current_user
       @role.accept!
     else
@@ -106,7 +104,11 @@ private
   end
 
   def set_role
-    @role = Role.find(params[:id])
+    @role = if action_name == 'create'
+      Role.new(role_create_params)
+    else
+      Role.find(params[:id])
+    end
   end
 
 end

@@ -47,14 +47,7 @@ Component = React.createClass
     getOwnerStore(@props.ownerType).cursor.items.get(@props.ownerId)
 
   getUserOwner: ->
-    switch @props.ownerType
-      when 'Pinboard'
-        UserStore.cursor.items.get(@getOwner().get('user_id'))
-      when 'Company'
-        role = @getRoles().filter((role) -> role.get('value') == 'owner').first()
-
-        UserStore.cursor.items.get(role.get('user_id'))
-
+    UserStore.cursor.items.get(@getOwner().get('user_id'))
 
 
   # Renderers

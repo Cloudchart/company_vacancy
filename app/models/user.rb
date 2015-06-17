@@ -2,9 +2,9 @@ class User < ActiveRecord::Base
   include Uuidable
   include Fullnameable
   include FriendlyId
-  include Preloadable
   include Previewable
   include Admin::User
+  include Preloadable::User
 
   attr_accessor :current_password
   attr_reader :should_create_tour_tokens # needed for rails_admin
@@ -37,6 +37,7 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :friends
 
+  has_one :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
   has_many :emails, -> { order(:address) }, dependent: :destroy
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :oauth_providers, dependent: :destroy
@@ -47,22 +48,17 @@ class User < ActiveRecord::Base
   has_many :subscriptions, dependent: :destroy
   has_many :vacancies, foreign_key: :author_id
   has_many :vacancy_responses
-
   has_many :favorites, dependent: :destroy
-  has_many :companies_favorites, -> { where(favoritable_type: Company.name) }, class_name: Favorite.name
-
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
-
   has_many :roles, dependent: :destroy
-  has_many :companies_roles, -> { where(owner_type: Company.name) }, class_name: Role.name
-  has_many :pinboards_roles, -> { where(owner_type: Pinboard.name) }, class_name: Role.name
-  has_one  :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :people, dependent: :destroy
   has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
-  has_many :companies, through: :roles, source: :owner, source_type: 'Company'
   has_many :landings, dependent: :destroy
+  # has_many :companies, through: :roles, source: :owner, source_type: 'Company'
+  # TODO: update old companies association
+  has_many :companies, dependent: :destroy
 
   # Roles on Pinboards
   #
@@ -74,40 +70,6 @@ class User < ActiveRecord::Base
   validates :full_name, presence: true, if: :should_validate_name?
   validates :invite, presence: true, if: :should_validate_invite?
   validates :twitter, twitter_handle: true, uniqueness: { case_sensitive: false }, allow_blank: true
-
-  # Companies
-  #
-
-  acts_as_preloadable :companies_through_roles, companies_roles: :company
-
-  def companies_through_roles(scope = {})
-    ability = Ability.new(scope[:current_user] || self)
-    companies_roles.map(&:company).select { |c| ability.can?(:read, c) }
-  end
-
-
-  acts_as_preloadable :favorite_companies, companies_favorites: :company
-
-  def favorite_companies(scope = {})
-    ability = Ability.new(scope[:current_user] || self)
-    companies_favorites.map(&:company).select { |c| ability.can?(:read, c) }
-  end
-
-  #
-  # /Companies
-
-  # Pinboards
-  #
-
-  acts_as_preloadable :pinboards_through_roles, pinboards_roles: :pinboard
-
-  def pinboards_through_roles(scope = {})
-    ability = Ability.new(scope[:current_user] || self)
-    pinboards_roles.map(&:pinboard).select { |c| ability.can?(:read, c) }
-  end
-
-  #
-  # / Pinboards
 
   validate :validate_twitter_handle_for_invite, if: :should_validate_twitter_handle_for_invite?
   # validate :validate_email, on: :create
@@ -171,10 +133,6 @@ class User < ActiveRecord::Base
 
   def limbo_pins
     Pin.limbo
-  end
-
-  def owned_companies
-    Company.joins(:roles).where(roles: { user_id: id, owner_type: 'Company' })
   end
 
   def published_companies

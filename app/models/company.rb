@@ -17,11 +17,9 @@ class Company < ActiveRecord::Base
     update(is_name_in_logo: false) if logotype.blank? && is_name_in_logo?
   end
 
-
-  scope :important, -> { where(is_important: true) }
-
-
   dragonfly_accessor :logotype
+
+  belongs_to :user
 
   has_and_belongs_to_many :banned_users, class_name: 'User', join_table: 'companies_banned_users'
 
@@ -40,6 +38,8 @@ class Company < ActiveRecord::Base
 
   validates :site_url, url: true, allow_blank: true
   validate  :publish_check, if: 'is_published? && is_published_changed?'
+
+  scope :important, -> { where(is_important: true) }
 
   settings ElasticSearchNGramSettings do
     mapping do
