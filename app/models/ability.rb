@@ -8,18 +8,26 @@ class Ability
     #
     if current_user.guest?
       can :read, Landing
-      # can :read, Event
-      # can :read, Tag
+
+      can [:index, :search], :companies
+      can :read, Company, is_published: true
+      can :index, :pins
+      can :read, Pin, is_approved: true
+
+      can :read, Pinboard do |pinboard|
+        pinboard.public?
+      end
+
+      can :read, User do |user|
+        !user.guest?
+      end
+
+      can :read, Post do |post|
+        post.company.is_published? && post.public?
+      end
+
       # can :read, Person
       # can :read, Quote
-      # can :show, Pinboard
-
-      # can :show, Company, is_public: true
-
-      # can :read, Post do |post|
-      #   company = post.company
-      #   company.is_public? && company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')
-      # end
 
     # Regular user
     #
@@ -58,11 +66,8 @@ class Ability
 
       # Pin
       #
+      can :index, :pins 
       can :create, Pin
-
-      can :index, :pins do
-        true # current_user.admin? || current_user.editor?
-      end
 
       can :read, Pin do |pin|
         pin.content.blank? || pin.is_approved? || pin.user_id == current_user.id ||
@@ -82,10 +87,7 @@ class Ability
       can :manage, Company, user_id: current_user.id
       can [:follow, :unfollow], Company
       can :read, Company, is_published: true
-
-      can [:index, :search], :companies do
-        true # current_user.admin? || current_user.editor?
-      end
+      can [:index, :search], :companies 
 
       can :create, Company do
         current_user.editor?
@@ -109,11 +111,8 @@ class Ability
 
       # Pinboard
       #
-      can :index, :pinboards do
-        true
-      end
-
-      can [:create], Pinboard
+      # can :index, :pinboards
+      can :create, Pinboard
       can [:destroy], Pinboard, user_id: current_user.id
       can [:read, :follow, :unfollow], Pinboard do |pinboard|
         pinboard.public? || current_user.id == pinboard.user_id || reader_or_editor?(current_user, pinboard)
