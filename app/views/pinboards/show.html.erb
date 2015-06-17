@@ -1,11 +1,11 @@
 <% title @pinboard.title %>
 
-<% set_meta_tags og: {
+<% set_meta_tags_for_social_networks(
   title: t('meta.pinboard.title', title: @pinboard.title),
+  description: t('meta.pinboard.description', title: @pinboard.title),
   image: pinboard_preview_url(@pinboard) + '.png',
-  url: pinboard_url(@pinboard),
-  description: t('meta.pinboard.description', title: @pinboard.title)
-} %>
+  url: pinboard_url(@pinboard)
+) %>
 
 <%= content_tag :article, nil, data: {
   "react-class" => "components/pinboard_app",

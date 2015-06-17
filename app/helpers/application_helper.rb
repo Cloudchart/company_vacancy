@@ -1,5 +1,23 @@
 module ApplicationHelper
 
+  def set_meta_tags_for_social_networks(scope = {})
+    set_meta_tags(
+      og: {
+        title: scope[:title],
+        description: scope[:description],
+        image: scope[:image],
+        url: scope[:url]
+      },
+      twitter: {
+        title: scope[:title],
+        description: scope[:description],
+        image: scope[:image],
+        card: 'summary_large_image',
+        site: Cloudchart::TWITTER_USERNAME
+      }
+    )
+  end
+
   def decorate(object, klass=nil)
     klass ||= "#{object.class}Decorator".constantize
     decorator = klass.new(object)
