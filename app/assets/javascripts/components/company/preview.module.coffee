@@ -62,7 +62,10 @@ CompanyPreview = React.createClass
         """
 
   fetch: ->
-    GlobalState.fetch(@getQuery('company'), { id: @props.uuid })
+    GlobalState.fetch(@getQuery('company'), { id: @props.uuid }).then =>
+      @setState
+        fetched: true
+
 
 
   fetchFavorites: ->
@@ -82,7 +85,8 @@ CompanyPreview = React.createClass
 
 
   getInitialState: ->
-    sync: Immutable.Map()
+    sync:     Immutable.Map()
+    fetched:  false
 
 
   # Helpers
@@ -269,6 +273,7 @@ CompanyPreview = React.createClass
       <h1>{ company.get('name') }</h1>
     </header>
 
+
   renderButtonsOrPeople: ->
     if @isInvited()
       <InviteActions ownerId = { @props.uuid } ownerType = 'Company' />
@@ -279,34 +284,21 @@ CompanyPreview = React.createClass
         showOccupation = { false }
         showLink       = { false } />
 
+
   renderFooter: ->
     <footer>
       { @renderButtonsOrPeople() }
     </footer>
 
-  renderOverlay: ->
-    return null unless @isUnpublished()
-
-    text = if @isClickedByViewer() then "We'll notify you when this company appears on CloudChart" else "I'd like to learn from this company on CloudChart"
-
-    <div className="overlay">
-      <SyncButton
-        className = "cc"
-        disabled  = { @isClickedByViewer() }
-        sync      = { @state.sync.get('company_click') }
-        onClick   = { @handlePreviewClick }
-        text      = { text } />
-    </div>
-
 
   render: ->
-    return null unless (company = @cursor.company.deref(false))
+    return null unless @state.fetched
 
     article_classes = cx
       'company-preview': true
       'cloud-card': true
 
-    <article className={ article_classes } onMouseOver = { @handlePreviewMouseOver }>
+    <article className={ article_classes }>
       <a href={ @getPreviewLink() } className="company-preview-link for-group">
         { @renderHeader() }
         { @renderInfo() }
@@ -315,7 +307,6 @@ CompanyPreview = React.createClass
         </p>
         { @renderFooter() }
       </a>
-      { @renderOverlay() }
     </article>
 
 

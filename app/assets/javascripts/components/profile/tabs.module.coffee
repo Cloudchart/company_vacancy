@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
 # Imports
-# 
+#
 Timeline = require('components/company/timeline')
 Tabs     = require('components/shared/tabs')
 
@@ -12,7 +12,7 @@ cx = React.addons.classSet
 
 
 # Main component
-# 
+#
 MainComponent = React.createClass
 
   displayName: 'ProfileTabs'
@@ -26,12 +26,12 @@ MainComponent = React.createClass
 
 
   # Helpers
-  # 
+  #
   getVisibleTabs: ->
     Immutable.OrderedMap(
       collections: true
       insights:    true
-      feed:        true
+      feed:        false
       companies:   true
       settings:    @props.canEdit
     ).filter (visible) -> visible
@@ -56,7 +56,7 @@ MainComponent = React.createClass
     <strong>{ collectionsCount }</strong>
 
   renderTabName: (key) ->
-    switch key      
+    switch key
       when 'collections'
         <span>Collections { @renderCollectionsNumber() }</span>
       when 'insights'
@@ -70,7 +70,7 @@ MainComponent = React.createClass
 
 
   # Main render
-  # 
+  #
   render: ->
     <Tabs
       renderTabName  = { @renderTabName }
@@ -79,5 +79,5 @@ MainComponent = React.createClass
 
 
 # Exports
-# 
+#
 module.exports = MainComponent

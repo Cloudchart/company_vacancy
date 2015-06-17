@@ -1,14 +1,17 @@
 # @cjsx React.DOM
 
-GlobalState = require('global_state/state')
+CompanyStore = require('stores/company_store.cursor')
+
 
 # Components
 #
 CompanyPreview   = require('components/company/preview')
 
+
 # Constants
 #
 ItemQuery = CompanyPreview.getQuery('company')
+
 
 # Component
 #
@@ -17,36 +20,12 @@ CompanyList = React.createClass
   displayName: 'CompanyList'
 
 
-  mixins: [GlobalState.query.mixin]
-
-
   statics:
     ItemQuery: ItemQuery
 
-    queries:
-      companies: ->
-        """
-          Viewer {
-            companies_through_roles {
-              #{ItemQuery}
-            },
-            favorite_companies {
-              #{ItemQuery}
-            }
-          }
-        """
 
-
-  # Component specifications
-  #
   propTypes:
-    companies:      React.PropTypes.array.isRequired
-
-
-  # Helpers
-  #
-  isLoaded: ->
-    @cursor.companies.deref(false)
+    companies: React.PropTypes.array.isRequired
 
 
   # Renderers
@@ -54,9 +33,7 @@ CompanyList = React.createClass
   renderCompanies: ->
     @props.companies.map (company, index) =>
       <section key={index} className="cloud-column">
-        <CompanyPreview
-          key        = { index }
-          uuid       = { company.get('uuid') } />
+        <CompanyPreview uuid = { company.get('uuid') } />
       </section>
 
 

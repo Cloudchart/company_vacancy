@@ -65,11 +65,7 @@ module.exports = React.createClass
             #{UserPins.getQuery('pins')},
             #{UserPinboards.getQuery('pinboards')},
 
-            #{UserCompanies.getQuery('companies')},
-            edges{
-              companies_through_roles,
-              favorite_companies
-            }
+            #{UserCompanies.getQuery('user')}
           }
         """
 
@@ -107,10 +103,7 @@ module.exports = React.createClass
 
 
   getCompaniesNumber: ->
-    companies_through_roles_count   = @cursor.user.get('companies_through_roles').map((item) -> item.get('id')).valueSeq().toSet()
-    favorite_companies_count        = @cursor.user.get('favorite_companies').map((item) -> item.get('id')).valueSeq().toSet()
-
-    companies_through_roles_count.union(favorite_companies_count).size
+    UserCompanies.companiesCount(@props.uuid)
 
 
   getPinboardsNumber: ->
