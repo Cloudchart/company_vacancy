@@ -8,11 +8,11 @@ class Ability
     #
     if current_user.guest?
       can :read, Landing
-
-      can [:index, :search], :companies
-      can :read, Company, is_published: true
-      can :index, :pins
       can :read, Pin, is_approved: true
+      can :read, Company, is_published: true
+      can [:index, :search], :companies
+      can :index, :pins
+      can :index, :pinboards
 
       can :read, Pinboard do |pinboard|
         pinboard.public?
@@ -25,9 +25,6 @@ class Ability
       can :read, Post do |post|
         post.company.is_published? && post.public?
       end
-
-      # can :read, Person
-      # can :read, Quote
 
     # Regular user
     #
@@ -111,7 +108,7 @@ class Ability
 
       # Pinboard
       #
-      # can :index, :pinboards
+      can :index, :pinboards
       can :create, Pinboard
       can [:destroy], Pinboard, user_id: current_user.id
       can [:read, :follow, :unfollow], Pinboard do |pinboard|
