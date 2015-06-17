@@ -3,40 +3,37 @@
 links = []
 user = {}
 
-if user_authenticated?
-
-  if can?(:index, :pinboards)
-    links << {
-      title: 'Collections',
-      url: current_page?(main_app.collections_path) ? nil : main_app.collections_path
-    }
-  end
-
-  if can?(:index, :companies)
-    links << {
-      title: 'Companies',
-      url: current_page?(main_app.companies_path) ? nil : main_app.companies_path
-    }
-  end
-
-  if can?(:manage, :invite)
-    links << {
-      title: 'Invites',
-      icon: 'fa fa-user-plus',
-      url: current_page?(main_app.invites_path) ? nil : main_app.invites_path
-    }
-  end
-
-  if can?(:access, :limbo)
-    links << {
-      title: 'Limbo',
-      icon: 'fa fa-leanpub',
-      url: current_page?(main_app.limbo_index_path) ? nil : main_app.limbo_index_path
-    }
-  end
-
-  user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) }
+if can?(:index, :pinboards)
+  links << {
+    title: 'Collections',
+    url: current_page?(main_app.collections_path) ? nil : main_app.collections_path
+  }
 end
+
+if can?(:index, :companies)
+  links << {
+    title: 'Companies',
+    url: current_page?(main_app.companies_path) ? nil : main_app.companies_path
+  }
+end
+
+if can?(:manage, :invite)
+  links << {
+    title: 'Invites',
+    icon: 'fa fa-user-plus',
+    url: current_page?(main_app.invites_path) ? nil : main_app.invites_path
+  }
+end
+
+if can?(:access, :limbo)
+  links << {
+    title: 'Limbo',
+    icon: 'fa fa-leanpub',
+    url: current_page?(main_app.limbo_index_path) ? nil : main_app.limbo_index_path
+  }
+end
+
+user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) }
 
 %>
 
