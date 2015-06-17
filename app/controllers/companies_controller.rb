@@ -55,8 +55,7 @@ class CompaniesController < ApplicationController
     if blank_company = current_user.blank_company
       @company = blank_company
     else
-      @company = Company.new
-      @company.roles.build(user: current_user, value: :owner).should_skip_pending_role!
+      @company = current_user.companies.build
       @company.should_build_objects!
       @company.save!
     end
