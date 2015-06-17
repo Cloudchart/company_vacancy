@@ -92,10 +92,12 @@ module.exports = React.createClass
 
 
   renderCompanies: ->
-    @props.cursor.user
-      .get('published_companies', EmptyCompanies)
-      .concat(@props.cursor.user.get('related_companies', EmptyCompanies))
-      .toSet()
+    published_companies = @props.cursor.user.get('published_companies', EmptyCompanies)
+    related_companies   = @props.cursor.user.get('related_companies', EmptyCompanies)
+
+    Immutable.Set()
+      .union(published_companies)
+      .union(related_companies)
       .sortBy (i) -> i.get('name')
       .map    @renderCompany
 
