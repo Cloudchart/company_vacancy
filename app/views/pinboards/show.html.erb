@@ -3,7 +3,7 @@
 <% set_meta_tags_for_social_networks(
   title: t('meta.pinboard.title', title: @pinboard.title),
   description: t('meta.pinboard.description', title: @pinboard.title),
-  image: pinboard_preview_url(@pinboard) + '.png',
+  image: @pinboard.preview.try(:url),
   url: pinboard_url(@pinboard)
 ) %>
 

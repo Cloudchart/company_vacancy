@@ -3,7 +3,7 @@
 <% set_meta_tags_for_social_networks(
   title: decorate(@company).og_name,
   description: t('meta.company.description', name: @company.name),
-  image: company_preview_url(@company) + '.png',
+  image: @company.preview.try(:url),
   url: company_url(@company)
 ) %>
 

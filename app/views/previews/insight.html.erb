@@ -1,16 +1,17 @@
-<% 
+<%
   content_size = @pin.content.size
-  class_for_content = if content_size > 140 && content_size < 280
-    ' medium'
-  elsif content_size >= 280
-    ' small'
-  else
-    ''
-  end
+
+  classes_for_content = {
+    content: true,
+    medium: content_size > 140 && content_size < 280,
+    small: content_size >= 280
+  }
+
+  classes_for_content = classes_for_content.select { |k,v| v }.keys.join(' ')
 %>
 
 <article class="preview insight">
-  <section class="content<%= class_for_content %>">
+  <section class="<%= classes_for_content %>">
     <%= (content = @pin.content.strip).ends_with?('.') ? content.chop : content %>&nbsp;&mdash;
   </section>
   <footer>

@@ -1,7 +1,7 @@
 <% set_meta_tags_for_social_networks(
   title: t('meta.user.title', name: @user.full_name, twitter: @user.twitter),
   description: t('meta.user.description', name: @user.full_name),
-  image: user_preview_url(@user) + '.png',
+  image: @user.preview.try(:url),
   url: user_url(@user)
 ) %>
 
