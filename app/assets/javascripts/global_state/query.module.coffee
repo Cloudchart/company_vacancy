@@ -11,7 +11,7 @@ start =
 endpoints =
   first:endpoint ',' rest:endpoints {
     Immutable.Seq(rest).forEach(function(item, key) {
-      first[key] = item
+      first[key] = (Immutable.fromJS(first[key]) || Immutable.Map()).mergeDeep(item).toJS()
     })
     return first
   }

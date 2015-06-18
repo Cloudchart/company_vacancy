@@ -96,12 +96,13 @@ store_data = (key, query, data) ->
       type  = data.get('type')
       ids   = data.get('ids')
 
-      ids.forEach (id) ->
-        storage.mergeDeepIn([type, id], query)
-
       if key == 'Viewer'
         ids.forEach (id) ->
+          storage.mergeDeepIn(['Viewer'], query)
           storage.mergeDeepIn(['User', id], query)
+      else
+        ids.forEach (id) ->
+          storage.mergeDeepIn([type, id], query)
 
   query.get('children')?.forEach (child_query, child_key) ->
     store_data(child_key, child_query, data?.get(child_key))
@@ -151,10 +152,7 @@ fetch = (query, options = {}) ->
 
     if diff_query.size == 0
       store = endpoint.get('store')()
-      item  = if query.endpoint == 'Viewer'
-        store.get(Storage.getIn([query.endpoint, 'id']))
-      else
-        store.get(options.id)
+      item  = store.get(options.id)
       if item
         return new Promise (done, fail) ->
           done(item.toJS())
