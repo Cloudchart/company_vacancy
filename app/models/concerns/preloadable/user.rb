@@ -12,6 +12,7 @@ module Preloadable::User
     acts_as_preloadable :favorite_companies, companies_favorites: :company
     acts_as_preloadable :related_companies, [:companies, companies_roles: :company, companies_favorites: :company]
     acts_as_preloadable :pinboards_through_roles, pinboards_roles: :pinboard
+    acts_as_preloadable :insights, :pins
 
     def companies_through_roles(scope = {})
       companies_roles.map(&:company).select { |c| ability(scope).can?(:read, c) }
@@ -30,6 +31,10 @@ module Preloadable::User
         .concat(companies_through_roles(scope))
         .concat(favorite_companies(scope))
         .uniq
+    end
+
+    def insights
+      pins.select { |p| p.insight? }
     end
 
   private

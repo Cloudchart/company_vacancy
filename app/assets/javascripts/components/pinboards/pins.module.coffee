@@ -35,6 +35,7 @@ module.exports = React.createClass
         showAuthor    = { !@hasOneAuthor() } />
     </section>
 
+
   renderPins: ->
     @props.pins.map(@renderPin)
 
