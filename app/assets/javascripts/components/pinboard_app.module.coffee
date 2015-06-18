@@ -143,6 +143,13 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderOthersLink: ->
+    return null
+    # result = @props.cursor.roles
+    #   .filter (role) => role.get('owner_id') == @props.uuid
+    #   .toArray()
+    # console.log result, @props.uuid
+
   renderFollowButton: ->
     return null if @isViewerOwner() || @isViewerEditor()
 
@@ -157,7 +164,10 @@ module.exports = React.createClass
   renderHeader: ->
     <header>
       <h1>
-        { @getPinboard().get('title') } — <a href={ @getOwner().get('user_url') }>{ @getOwner().get('full_name') }</a>
+        { @getPinboard().get('title') } 
+        <span> by </span>
+        <a href={ @getOwner().get('user_url') }>{ @getOwner().get('full_name') }</a>
+        { @renderOthersLink() }
       </h1>
       <ul className="counters">
         <li>

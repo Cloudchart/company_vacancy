@@ -2,12 +2,11 @@ module CloudApi
   module PinsHelper
 
     def facebook_share_url(url)
-      uri = URI.parse("https://www.facebook.com/dialog/share")
+      uri = URI.parse("https://www.facebook.com/sharer/sharer.php")
 
       params = { 
-        app_id: ENV['FACEBOOK_KEY'],
         display: :popup,
-        href: url,
+        u: url,
         redirect_uri: main_app.root_url
       }
 

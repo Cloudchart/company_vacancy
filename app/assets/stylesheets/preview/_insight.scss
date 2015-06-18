@@ -11,6 +11,17 @@ article.preview.insight {
     font-weight: 600;
     line-height: 69px;
     margin-bottom: 150px;
+
+    &.medium {
+      font-size: 42px;
+      line-height: 56px;
+    }
+
+    &.small {
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 45px;
+    }
   }
 
   > footer {

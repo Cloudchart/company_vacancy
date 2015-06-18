@@ -14,12 +14,14 @@ article.preview {
   @include display(flex);
   @include flex-direction(column);
 
+  box-sizing: border-box;
+  width: 1200px;
+  height: 628px;
   background-color: white;
   border: 12px solid hsl(137, 54%, 50%);
   color: black;
   font-weight: 300;
   padding: 64px;
-
 
   > .spacer {
     @include flex(1);
