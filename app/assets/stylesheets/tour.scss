@@ -21,7 +21,7 @@
 
     strong {
       font-weight: 700;
-    }  
+    }
   }
 
   h1 {
@@ -176,11 +176,11 @@
 
     > .timeline > .container {
       @include transition(transform 1s ease-in-out 1s);
-      
+
       > .posts, > .insight {
         @include transition(transform 1s ease-in-out);
-      } 
-    } 
+      }
+    }
   }
 }
 
@@ -208,7 +208,7 @@
       height: 69px;
       width: 105px;
     }
-    
+
     > .fa {
       font-size: 72px;
 
@@ -325,7 +325,7 @@
   }
 
   > .tour-wrapper {
-    @include box-shadow(0 5px 30px hsla(0, 0%, 0%, .4));
+    box-shadow: 0 5px 30px hsla(0, 0%, 0%, .4);
 
     background-color: $background-color;
     height: 588px;

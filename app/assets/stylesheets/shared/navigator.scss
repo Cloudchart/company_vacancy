@@ -29,11 +29,11 @@
       &.active {
         background-color: $accented-white-color;
       }
-    }      
+    }
   }
 
   > .nav-button {
-    @include box-shadow(0 2px 20px hsla(0, 0%, 0%, 0.2));
+    box-shadow: 0 2px 20px hsla(0, 0%, 0%, 0.2);
     @include position(absolute, 50% 0 0 0);
 
     background-color: $background-color;

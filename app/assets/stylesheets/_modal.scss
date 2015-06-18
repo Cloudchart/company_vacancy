@@ -116,7 +116,7 @@ $modal-form-button-padding: 0 20px;
 
   background-color: $disabled-grey-color;
   position: relative;
-  
+
   > h1 {
     font-size: $large-font-size;
     font-weight: 700;
@@ -178,7 +178,7 @@ body ul.modal-stack {
 }
 
 .modal-stack-item > * {
-  @include box-shadow(0 5px 30px hsla(0, 0%, 0%, .4));
+  box-shadow: 0 5px 30px hsla(0, 0%, 0%, .4);
 
   background-color: hsl(0, 100%, 100%);
 }
@@ -237,7 +237,7 @@ body ul.modal-stack {
     > button {
       @include align-self(flex-end);
     }
-  }  
+  }
 }
 
 

@@ -56,7 +56,7 @@
       > a {
         @include display(flex);
         @include flex(1);
-        
+
         max-width: 800px;
 
         > header {
@@ -84,7 +84,7 @@
             }
 
             > span {
-              @include box-shadow(10px 0 0 $accented-green-color, -10px 0 0 $accented-green-color);
+              box-shadow: 10px 0 0 $accented-green-color, -10px 0 0 $accented-green-color;
 
               background-color: $accented-green-color;
             }
@@ -118,7 +118,7 @@
       }
 
       .insight {
-        @include box-shadow(0 5px 30px hsla(0, 0%, 0%, 0.4));
+        box-shadow: 0 5px 30px hsla(0, 0%, 0%, 0.4);
 
         margin-top: 7px;
         width: 280px;
