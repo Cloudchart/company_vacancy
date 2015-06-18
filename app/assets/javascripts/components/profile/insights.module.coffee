@@ -68,13 +68,16 @@ module.exports = React.createClass
 
   componentDidMount: ->
     @packery = new Packery @getDOMNode(),
-      transitionDuration: '.25s'
-
-    @packery.layout()
+      transitionDuration: '0s'
 
 
   componentDidUpdate: ->
-    @packery.layout()
+    start   = window.requestAnimationFrame ? window.setTimeout
+    cancel  = window.cancelAnimationFrame ? window.clearTimeout
+
+    cancel @timeout_id
+
+    @timeout_id = start => @packery.layout()
 
 
   getInitialState: ->
