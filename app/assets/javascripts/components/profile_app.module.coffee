@@ -4,6 +4,7 @@ GlobalState        = require('global_state/state')
 
 ProfileInfo        = require('components/profile/info')
 UserPins           = require('components/pinboards/pins/user')
+UserInsights        = require('components/profile/insights')
 UserCompanies      = require('components/company/lists/user')
 UserFeed           = require('components/user/feed')
 UserPinboards      = require('components/pinboards/lists/user')
@@ -59,12 +60,8 @@ module.exports = React.createClass
       user: ->
         """
           User {
-            followed_activities,
-            roles,
-            pins,
-            #{UserPins.getQuery('pins')},
+            #{UserInsights.getQuery('user')},
             #{UserPinboards.getQuery('pinboards')},
-
             #{UserCompanies.getQuery('user')}
           }
         """
@@ -96,10 +93,9 @@ module.exports = React.createClass
   isViewerProfile: ->
     @props.uuid == @cursor.viewer.get('uuid')
 
+
   getInsightsNumber: ->
-    count = PinStore
-      .filterPinsForUser(@props.uuid, onlyInsights: true)
-      .size
+    UserInsights.insightsCount(@props.uuid)
 
 
   getCompaniesNumber: ->
@@ -151,8 +147,8 @@ module.exports = React.createClass
       @renderEmptyTabText("companies")
 
   renderInsights: ->
-    unless UserPins.isEmpty(@props.uuid, onlyInsights: true)
-      <UserPins user_id = { @props.uuid } showOnlyInsights = { !@isViewerProfile() } />
+    if @getInsightsNumber() > 0
+      <UserInsights user={ @props.uuid } />
     else
       @renderEmptyTabText("insights")
 
@@ -162,18 +158,24 @@ module.exports = React.createClass
     else
       @renderEmptyTabText("pinboards")
 
+
   renderContent: ->
     switch @state.currentTab
+
       when 'collections'
         @renderPinboards()
+
       when 'insights'
         @renderInsights()
+
       when 'companies'
         @renderCompanies()
-      when 'feed'
-        @renderFeed()
+
       when 'settings'
         <Settings uuid = { @props.uuid } />
+
+      else
+        null
 
 
   render: ->
