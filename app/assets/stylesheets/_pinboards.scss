@@ -79,9 +79,6 @@ $pinboard-header-color: hsl(60, 10%, 96%);
     background-color: $pinboard-header-color;
 
     > .cloud-columns {
-      @include align-items(center);
-      @include flex-direction(column);
-
       margin: 0 auto;
       padding-bottom: 0;
 
@@ -113,6 +110,13 @@ $pinboard-header-color: hsl(60, 10%, 96%);
             padding: 20px;
           }
         }
+      }
+
+      > .description {
+        padding: 12px;
+        width: 50%;
+        font-size: 20px;
+        font-weight: 300;
       }
 
       > .invite-actions {

@@ -18,9 +18,9 @@ PinboardAccess   = require('components/pinboards/access_rights')
 PinboardPins     = require('components/pinboards/pins/pinboard')
 PinboardTabs     = require('components/pinboards/tabs')
 SyncButton       = require('components/form/buttons').SyncButton
-
+ModalStack       = require('components/modal_stack')
 InviteActions    = require('components/roles/invite_actions')
-
+RelatedUsers     = require('components/pinboards/related_users')
 
 SyncApi          = require('sync/pinboard_sync_api')
 
@@ -113,6 +113,9 @@ module.exports = React.createClass
   canViewerEdit: ->
     @isViewerOwner() || @isViewerEditor()
 
+  getUsers: ->
+    @getPinboard().get('users').map (user) -> UserStore.get(user.get('uuid'))
+
 
   # Handlers
   #
@@ -140,15 +143,36 @@ module.exports = React.createClass
       SyncApi.follow(@props.uuid).then =>
         @fetchViewer(force: true).then => @setState(isSyncing: false)
 
+  handleOthersLinkClick: (event) ->
+    event.preventDefault()
+
+    ModalStack.show(
+      <RelatedUsers
+        pinboard = { @getPinboard().toJS() }
+        owner = { @getOwner().toJS() }
+        users = { @getUsers().toJS() }
+      />
+    )
+
 
   # Renderers
   #
   renderOthersLink: ->
-    return null
-    # result = @props.cursor.roles
-    #   .filter (role) => role.get('owner_id') == @props.uuid
-    #   .toArray()
-    # console.log result, @props.uuid
+    users = @getUsers()
+    users_size = users.size
+    return null if users_size == 0
+
+    link = if users_size == 1
+      user = users.first().toJS()
+      <a key=2 href={ user.user_url }>{ user.full_name }</a>
+    else
+      <a key=2 href="" onClick={ @handleOthersLinkClick }>{ "#{users_size} others" }</a>
+
+    [
+      <span key=1> and </span>,
+      { link }
+    ]
+
 
   renderFollowButton: ->
     return null if @isViewerOwner() || @isViewerEditor()
@@ -191,6 +215,12 @@ module.exports = React.createClass
       else
         null
 
+  renderDescription: ->
+    description = @getPinboard().get('description')
+    return null unless description
+    
+    <div className="description">{ description }</div>
+
 
   render: ->
     return null unless @isLoaded()
@@ -199,6 +229,7 @@ module.exports = React.createClass
       <section className="tab-header">
         <div className="cloud-columns cloud-columns-flex">
           { @renderHeader() }
+          { @renderDescription() }
           <InviteActions ownerId = { @props.uuid } ownerType = 'Pinboard' />
           <PinboardTabs
             insightsNumber = { @getPinboard().get('pins_count') }
