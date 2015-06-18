@@ -7,7 +7,9 @@ class PreviewWorker < ApplicationWorker
     begin
       system("#{ENV['PHANTOMJS_PATH']} --ssl-protocol=any #{File.join([Rails.root, 'bin', 'generate_preview.js'])} #{preview_url_for(record)} #{preview.path}")
       record.skip_generate_preview!
-      record.update!(preview: preview)
+      record.preview = preview
+      record.preview.name = 'preview.png'
+      record.save!
     rescue
       preview.close
       preview.unlink
