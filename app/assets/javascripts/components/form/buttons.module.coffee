@@ -5,6 +5,25 @@ joinClasses = (firstClass, secondClass) ->
 
 cx = React.addons.classSet
 
+CloseModalButton = React.createClass
+
+  propTypes:
+    shouldDisplay: React.PropTypes.bool
+
+  getDefaultProps: ->
+    shouldDisplay: true
+
+  handleClick: ->
+    require('components/modal_stack').hide()
+
+  render: ->
+    return null unless @props.shouldDisplay
+
+    <button className="close transparent" onClick={@handleClick}>
+      <i className="fa cc-icon cc-times"></i>
+    </button>
+
+
 StandardButton = React.createClass
  
   propTypes:
@@ -121,6 +140,7 @@ CancelButton = React.createClass
     SyncButton(props)
 
 module.exports = 
-  SyncButton:     SyncButton
-  StandardButton: StandardButton
-  CancelButton:   CancelButton
+  SyncButton:       SyncButton
+  StandardButton:   StandardButton
+  CancelButton:     CancelButton
+  CloseModalButton: CloseModalButton

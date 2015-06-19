@@ -45,6 +45,15 @@
   }
 }
 
+@mixin close-modal-button {
+  > button.close {
+    @include position(absolute, 0px 10px 0 0);
+
+    font-size: 36px;
+    color: hsl(139, 54%, 51%);
+  }
+}
+
 @import 'mixins/button';
 @import 'mixins/form';
 @import 'mixins/form_2';

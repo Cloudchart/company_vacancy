@@ -7,6 +7,8 @@ main.insight > div {
 }
 
 article.insight-card {
+  @include close-modal-button;
+
   width: 600px;
   position: relative;
 
@@ -36,14 +38,6 @@ article.insight-card {
         color: white;
       }
     }
-  }
-
-
-  > button.close {
-    @include position(absolute, 0px 10px 0 0);
-
-    font-size: 36px;
-    color: hsl(139, 54%, 51%);
   }
 
   > section.content {

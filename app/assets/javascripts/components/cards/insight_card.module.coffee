@@ -10,7 +10,7 @@ InsightContent = require('components/pinnable/insight_content')
 Human = require('components/human')
 EditPinButton = require('components/pinnable/edit_pin_button')
 PinButton = require('components/pinnable/pin_button')
-ModalStack = require('components/modal_stack')
+CloseModalButton = require('components/form/buttons').CloseModalButton
 
 
 # Utils
@@ -123,9 +123,6 @@ module.exports = React.createClass
   handleTwitterLinkClick: (insight, event) ->
     @openShareWindow(insight.twitter_share_url)
 
-  handleCloseButtonClick: ->
-    ModalStack.hide()
-
 
   # Renderers
   # 
@@ -165,13 +162,6 @@ module.exports = React.createClass
       </li>
     </ul>
 
-  renderCloseButton: ->
-    return null unless @props.renderedInsideModal
-
-    <button className="close transparent" onClick={@handleCloseButtonClick}>
-      <i className="fa cc-icon cc-times"></i>
-    </button>
-
 
   # Main render
   # 
@@ -186,7 +176,7 @@ module.exports = React.createClass
         modal: @props.renderedInsideModal
 
       <article className={articte_classes}>
-        { @renderCloseButton() }
+        { <CloseModalButton shouldDisplay = { @props.renderedInsideModal } /> }
 
         <section className="content">
           <InsightContent

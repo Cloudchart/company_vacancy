@@ -1,0 +1,80 @@
+@mixin default-human {
+  > .human {
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
+
+    > .avatar {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+
+    > .credentials {
+      > .name {
+        font-size: 20px;
+        font-weight: 300;
+        text-align: center;
+        margin-bottom: 5px;
+      }
+
+      > .occupation {
+        font-size: 15px;
+        font-weight: 300;
+        color: $primary-grey-color;
+        margin: 0;
+        text-align: center;
+      }
+    }
+  }
+}
+
+article.pinboard-related-users {
+  @include display(flex);
+  @include flex-direction(column);
+  @include align-items(center);
+  @include close-modal-button;
+
+  position: relative;
+
+  > header {
+    width: 50%;
+    text-align: center;
+
+    > h1 {
+      font-size: 36px;
+      font-weight: 300;
+    }
+
+    > h2 {
+      font-size: 20px;
+      font-weight: 300;
+    }
+  }
+
+  .owner, .users {
+    > h1 {
+      font-size: 25px;
+      text-align: center;
+    }
+  }
+
+  > .owner {
+    @include default-human;
+  }
+
+  > .users {
+    > ul {
+      @include flex-ul;
+
+      > li {
+        @include default-human;
+
+        &:not(:last-child) {
+          margin-right: 30px;
+        }
+      }
+    }
+  }
+
+}

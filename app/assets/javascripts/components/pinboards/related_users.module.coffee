@@ -3,6 +3,7 @@
 # Imports
 # 
 Human = require('components/human')
+CloseModalButton = require('components/form/buttons').CloseModalButton
 
 
 # Utils
@@ -56,7 +57,7 @@ module.exports = React.createClass
         { <Human type="user" uuid = { user.uuid } /> }
       </li>
 
-    <ul className="users">
+    <ul>
       { users }
     </ul>
 
@@ -66,6 +67,8 @@ module.exports = React.createClass
   render: ->
     # TODO: add query to get pinboard, owner and users; add getters
     <article className="pinboard-related-users">
+      { <CloseModalButton /> }
+
       <header>
         <h1>{ @props.pinboard.title }</h1>
         <h2>{ @props.pinboard.description }</h2>
@@ -76,7 +79,7 @@ module.exports = React.createClass
         <Human type = "user" uuid = { @props.owner.uuid } />
       </section>
 
-      <section className="contributors">
+      <section className="users">
         <h1>Contributors</h1>
         { @renderUsers() }
       </section>
