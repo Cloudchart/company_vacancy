@@ -40,7 +40,19 @@ def __prepare(sources, query, data, json)
         args << scope if (method = klass.instance_method(key)) && method.parameters.size == 1
       end
 
-      children.concat instances.map { |instance| instance.public_send(key, *args) }.flatten
+      child_instances = instances.map do |instance|
+        result = instance.public_send(key, *args)
+        json.set! instance.id do
+          if result.respond_to?(:each)
+            json.set! key, result.uniq.compact.map(&:id)
+          else
+            json.set! key, result.id if result.present?
+          end
+        end
+        result
+      end
+
+      children.concat child_instances.flatten
     end
 
     json.set! key do
