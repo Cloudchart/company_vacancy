@@ -84,7 +84,7 @@ module.exports = React.createClass
       <article className="insight">
         <p className="insight-content">
           { @renderInsightContent() }
-          &mdash;
+          &nbsp;&mdash;&nbsp;
           { @renderInsightContext() }
         </p>
 
