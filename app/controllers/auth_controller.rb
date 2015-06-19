@@ -23,7 +23,7 @@ class AuthController < ApplicationController
   end
 
   def developer
-    if user = User.find_by_email(oauth_hash.info.email)
+    if user = User.find_by(twitter: oauth_hash.info.email)
       authenticate_user!(user)
     else
       redirect_to :back
