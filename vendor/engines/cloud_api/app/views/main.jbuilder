@@ -44,7 +44,7 @@ def __prepare(sources, query, data, json)
         result = instance.public_send(key, *args)
         json.set! instance.id do
           if result.respond_to?(:each)
-            json.set! key, result.uniq.compact.map(&:id)
+            json.set! key, result.map(&:id)
           else
             json.set! key, result.id if result.present?
           end
