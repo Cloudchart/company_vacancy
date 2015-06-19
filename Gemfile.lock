@@ -76,6 +76,10 @@ GEM
     ansi (1.5.0)
     arel (5.0.1.20140414130214)
     awesome_print (1.2.0)
+    babel-source (5.4.7)
+    babel-transpiler (0.7.0)
+      babel-source (>= 4.0, < 6)
+      execjs (~> 2.0)
     bcrypt (3.1.7)
     better_errors (1.1.0)
       coderay (>= 1.0.0)
@@ -353,6 +357,9 @@ GEM
       coffee-script
       sprockets
       tilt
+    sprockets-es6 (0.6.2)
+      babel-transpiler
+      sprockets (>= 3.0.0)
     sprockets-rails (2.3.1)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
@@ -465,6 +472,7 @@ DEPENDENCIES
   sprockets (~> 3.0)
   sprockets-coffee-react
   sprockets-commonjs!
+  sprockets-es6
   squeel
   therubyracer
   tire

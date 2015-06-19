@@ -7,6 +7,7 @@ gem 'mysql2'
 gem 'puma'
 
 gem 'sprockets', '~> 3.0'
+gem 'sprockets-es6'
 gem 'sass-rails', '~> 5.0.0'
 gem 'uglifier', '~> 2.5.0'
 gem 'coffee-rails', '~> 4.0.1'
