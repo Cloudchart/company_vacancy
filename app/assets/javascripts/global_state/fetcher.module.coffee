@@ -14,9 +14,20 @@ Endpoints = Immutable.fromJS
     handle_id:    false
     store:        -> require('stores/user_store.cursor')
 
+
   'Block':
+    url:          '/api/blocks'
     handle_id:    true
+    require_id:   true
     store:        -> require('stores/block_store.cursor')
+
+
+  'Favorite':
+    url:          '/api/favorites'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/favorite_store.cursor')
+
 
   'User':
     url:          '/api/users'
@@ -66,6 +77,20 @@ Endpoints = Immutable.fromJS
     store:        -> require('stores/post_store.cursor')
 
 
+  'Person':
+    url:          '/api/people'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/person_store.cursor')
+
+
+  'Role':
+    url:          '/api/roles'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/role_store.cursor')
+
+
 # Cached promises
 #
 cachedPromises = {}
@@ -106,7 +131,8 @@ store_data = (key, query, data) ->
 
       ids.forEach (id) ->
         data.get(id, Immutable.Map()).forEach (id_or_ids, key) ->
-          storage.setIn(['RELATIONS', id, key], id_or_ids)
+          storage.setIn(['RELATIONS', id, key, 'type'], data.getIn([key, 'type']))
+          storage.setIn(['RELATIONS', id, key, 'ids'], id_or_ids)
 
   query.get('children')?.forEach (child_query, child_key) ->
     store_data(child_key, child_query, data?.get(child_key))
@@ -129,10 +155,24 @@ fetchFail = (response) ->
 
 # Fetch from storage
 #
-fetchFromStorage = (endpoint, query, options = {}) ->
-  getItemFromEndpoint(options.id, endpoint).withMutations (item) ->
+fetchFromStorage = (endpoint, query, id) ->
+  getItemFromEndpoint(id, endpoint).withMutations (item) ->
     query.forEach (values, key) ->
       return if key == 'edges'
+
+      relation = Storage.getIn(['RELATIONS', item.get('uuid'), key])
+      return unless relation
+
+      children_endpoint   = relation.get('type')
+      children_id_or_ids  = relation.get('ids')
+      children_query      = values.get('children', Immutable.Map())
+
+      if Immutable.Iterable.isIterable(children_id_or_ids)
+        children = children_id_or_ids.map (id) ->
+          fetchFromStorage(children_endpoint, children_query, id)
+        item.set(key, children)
+      else
+        item.set(key, fetchFromStorage(children_endpoint, children_query, children_id_or_ids))
 
 
 getItemFromEndpoint = (id, endpoint) ->
@@ -174,6 +214,7 @@ fetch = (query, options = {}) ->
       item  = getItemFromEndpoint(options.id, query.endpoint)
       if item
         return new Promise (done, fail) ->
+          item = fetchFromStorage(query.endpoint, query.query.get('children'), options.id)
           done(item.toJS())
 
 
@@ -193,9 +234,9 @@ fetch = (query, options = {}) ->
       (json) ->
         fetchDone(json, query, options)
 
-        fetchFromStorage(query.endpoint, query.query.get('children'), options)
+        item = fetchFromStorage(query.endpoint, query.query.get('children'), options.id)
+        done(item.toJS())
 
-        done(json)
         delete cachedPromises[cacheKey]
 
     ,
