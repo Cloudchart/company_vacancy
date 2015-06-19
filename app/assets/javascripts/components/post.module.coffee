@@ -38,12 +38,12 @@ LimboApp            = require('components/limbo_app')
 # Main
 #
 Post = React.createClass
-  
+
   displayName: 'Post'
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-  statics: 
+  statics:
     getCursor: (company_id) ->
       pins:   PinStore.cursor.items
       users:  UserStore.cursor.items
@@ -202,7 +202,7 @@ Post = React.createClass
   handleOkClick: (event) ->
     this.refs.okButton.getDOMNode().focus();
     @goToTimeline()
-    
+
     unless @state.visibility
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: 'public' })
 
@@ -292,7 +292,7 @@ Post = React.createClass
   renderEditControl: ->
     return null if @state.readOnly || @state.isInEditMode
 
-    <StandardButton 
+    <StandardButton
       className = "edit-mode transparent"
       onClick   = { => @handleViewModeChange("edit") }
       text      = "edit" />
@@ -301,7 +301,7 @@ Post = React.createClass
     return null unless @state.company
 
     if @state.isInEditMode
-      <StandardButton 
+      <StandardButton
         className = "transparent"
         iconClass = "cc-icon cc-times"
         onClick   = { => @handleViewModeChange("view") } />
@@ -320,7 +320,7 @@ Post = React.createClass
   renderExpandButton: (insightsNumber) ->
     return null if @state.arePinsExpanded || insightsNumber <= 0
 
-    <StandardButton 
+    <StandardButton
       className = "cc show-pins"
       onClick   = { @handleExpandPins }
       text      = "Show All #{@getInsightsNumber()}" />
@@ -333,7 +333,7 @@ Post = React.createClass
     className = cx("post-pins": true, expanded: @state.arePinsExpanded)
 
     <section className={ className }>
-      <InsightList 
+      <InsightList
         limit         = { if @state.arePinsExpanded then 0 else 2 }
         pinnable_id   = { @props.id }
         pinnable_type = "Post" />
@@ -342,7 +342,7 @@ Post = React.createClass
 
   renderPinners: (pinners) ->
     return null if (pinnersIds = @gatherPinnersIds()).size == 0 || @state.isInEditMode
-    
+
     pinners = pinnersIds.take(3).map (pinnerId) => @props.cursor.users.get(pinnerId)
     pinnersNumber = pinnersIds.skip(3).size
 
@@ -362,7 +362,7 @@ Post = React.createClass
   renderSuggestInsightButton: ->
     return null unless @isEditor()
 
-    <StandardButton 
+    <StandardButton
       className = "cc suggest"
       text      = "Suggest Insight"
       onClick   = { @handleSuggestInsightClick } />
@@ -381,10 +381,12 @@ Post = React.createClass
         <div className="spacer"></div>
         { @renderSuggestInsightButton() }
         <ul className="round-buttons">
-          <PinButton 
+          <PinButton
             pinnable_id   = { @props.id }
             pinnable_type = 'Post'
-            title         = { @state.post.title } />
+            title         = { @state.post.title }
+            label         = "Leave Insight"
+          />
         </ul>
       </section>
     else
@@ -479,7 +481,7 @@ Post = React.createClass
 
         { @renderHeaderControls() }
       </header>
-      
+
       { @renderPinInfo() }
 
       <section className="content">

@@ -42,6 +42,7 @@ module.exports = React.createClass
   propTypes:
     uuid:          React.PropTypes.string
     title:         React.PropTypes.string
+    label:         React.PropTypes.string
     pinnable_id:   React.PropTypes.string
     pinnable_type: React.PropTypes.string
     asTextButton:  React.PropTypes.bool
@@ -50,6 +51,7 @@ module.exports = React.createClass
   getDefaultProps: ->
     asTextButton: false
     showHotzone:  true
+    label:        'Save'
     cursor:
       pins:    PinStore.cursor.items
       tokens:  TokenStore.cursor.items
@@ -148,7 +150,7 @@ module.exports = React.createClass
 
     unless @props.cursor.user.get('twitter', false)
       location.href = '/auth/twitter'
-      return null 
+      return null
 
     @setState(clicked: true)
 
@@ -203,7 +205,7 @@ module.exports = React.createClass
   renderText: ->
     return null if @isActive()
 
-    "Save"
+    @props.label
 
   renderHotzone: ->
     return null unless @showHotzone() && !@state.clicked && @isClickable()
