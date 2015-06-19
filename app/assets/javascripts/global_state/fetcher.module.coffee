@@ -29,6 +29,13 @@ Endpoints = Immutable.fromJS
     store:        -> require('stores/favorite_store.cursor')
 
 
+  'Feature':
+    url:          '/api/features'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/feature_store')
+
+
   'User':
     url:          '/api/users'
     handle_id:    true
@@ -129,10 +136,10 @@ store_data = (key, query, data) ->
         ids.forEach (id) ->
           storage.mergeDeepIn([type, id], query)
 
-      ids.forEach (id) ->
-        data.get(id, Immutable.Map()).forEach (id_or_ids, key) ->
-          storage.setIn(['RELATIONS', id, key, 'type'], data.getIn([key, 'type']))
-          storage.setIn(['RELATIONS', id, key, 'ids'], id_or_ids)
+      # ids.forEach (id) ->
+      #   data.get(id, Immutable.Map()).forEach (id_or_ids, key) ->
+      #     storage.setIn(['RELATIONS', id, key, 'type'], data.getIn([key, 'type']))
+      #     storage.setIn(['RELATIONS', id, key, 'ids'], id_or_ids)
 
   query.get('children')?.forEach (child_query, child_key) ->
     store_data(child_key, child_query, data?.get(child_key))
@@ -214,7 +221,7 @@ fetch = (query, options = {}) ->
       item  = getItemFromEndpoint(options.id, query.endpoint)
       if item
         return new Promise (done, fail) ->
-          item = fetchFromStorage(query.endpoint, query.query.get('children'), options.id)
+          #item = fetchFromStorage(query.endpoint, query.query.get('children'), options.id)
           done(item.toJS())
 
 
@@ -234,8 +241,9 @@ fetch = (query, options = {}) ->
       (json) ->
         fetchDone(json, query, options)
 
-        item = fetchFromStorage(query.endpoint, query.query.get('children'), options.id)
-        done(item.toJS())
+        # item = fetchFromStorage(query.endpoint, query.query.get('children'), options.id)
+        # done(item.toJS())
+        done(json)
 
         delete cachedPromises[cacheKey]
 
