@@ -49,10 +49,12 @@ module.exports = React.createClass
 
     <section className="authorized">
       <ImportantPinboards
-        header = "Explore collections of successful founders, investors and experts' advices. Use them to grow your business" />
+        header = "Featured Collections"
+        description = "Explore collections of successful founders, investors and experts' advices. Use them to grow your business" />
 
       <ImportantCompanies
-        header = "Follow unicorns' timelines. Collect the insights on how they are growing" />
+        header = "Featured Companies"
+        description = "Follow unicorns' timelines. Collect the insights on how they are growing" />
 
       <Subscription
         asBlock   = { true }
