@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
 # Imports
-# 
+#
 tag = React.DOM
 cx  = React.addons.classSet
 
@@ -15,7 +15,7 @@ ComboboxOption  = cc.require('plugins/react_tokeninput/option')
 
 
 # Module helpers
-# 
+#
 formatName = (name) ->
   name = name.trim()
   name = name.replace(/[^A-Za-z0-9\-_|\s]+/ig, '')
@@ -24,7 +24,7 @@ formatName = (name) ->
 
 
 # Main
-# 
+#
 MainComponent = React.createClass
 
   mixins: [GlobalState.mixin]
@@ -35,7 +35,7 @@ MainComponent = React.createClass
 
 
   # Helpers
-  # 
+  #
   postsStoriesDeref: ->
     @props.cursor.posts_stories.deref(Immutable.Map())
 
@@ -59,7 +59,7 @@ MainComponent = React.createClass
     storyContent = '#' + story.get('formatted_name')
 
     if story.get('company_id') then storyContent else <strong>{ storyContent }</strong>
-  
+
   gatherStoriesForList: ->
     @filterSelectedStories()
       .sortBy (story) -> +!!story.get('company_id') + story.get('name')
@@ -75,7 +75,7 @@ MainComponent = React.createClass
   filterSelectedStories: ->
     @props.cursor.stories.filter (story) => @state.storyIdSeq.contains(story.get('uuid'))
 
-  
+
   gatherStories: ->
     @filterSelectedStories()
       .map (story) ->
@@ -107,17 +107,17 @@ MainComponent = React.createClass
     @setState storyIdSeq: @state.storyIdSeq.filterNot((id) -> id is story_id)
     id = PostsStoryStore.findByPostAndStoryIds(@props.post_id, story_id).get('uuid')
     PostsStoryStore.destroy(id)
-  
+
 
   # Handlers
-  # 
+  #
   handleInput: (query) ->
     @setState(query: query)
 
   handleSelect: (name_or_uuid) ->
     formattedName = formatName(name_or_uuid) ; return unless formattedName
     existingStory = @props.cursor.stories.get(name_or_uuid, @props.cursor.stories.find((story) -> story.get('formatted_name') is formattedName))
-    
+
     if existingStory
       @createPostsStory(existingStory.get('uuid'))
 
@@ -125,7 +125,7 @@ MainComponent = React.createClass
       StoryStore.createByCompany(@props.company_id, name: formattedName).then(@handleStoryCreateDone)
 
     @setState(query: "")
-        
+
 
   handleRemove: (object) ->
     @destroyPostsStory(object.id)
@@ -135,7 +135,7 @@ MainComponent = React.createClass
 
 
   # Lifecycle Methods
-  # 
+  #
   # componentWillMount: ->
   # componentDidMount: ->
   # componentWillReceiveProps: (nextProps) ->
@@ -146,7 +146,7 @@ MainComponent = React.createClass
 
 
   # Component Specifications
-  # 
+  #
   onGlobalStateChange: ->
     @setState
       refreshed_at: + new Date
@@ -155,7 +155,7 @@ MainComponent = React.createClass
   getDefaultProps: ->
     placeholder: '#category'
 
-    cursor: 
+    cursor:
       stories: StoryStore.cursor.items
       posts_stories: PostsStoryStore.cursor.items
 
@@ -170,5 +170,5 @@ MainComponent = React.createClass
 
 
 # Exports
-# 
+#
 module.exports = MainComponent

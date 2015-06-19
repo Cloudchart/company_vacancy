@@ -265,7 +265,7 @@ create = (descriptor = {}) ->
 
 
   store = new Store
-
+  console.log JSON.stringify Immutable.Seq(BaseStore.prototype).concat(Store.prototype).keySeq()
   Immutable.Seq(BaseStore.prototype).concat(Store.prototype).keySeq().toSet().forEach (name) ->
     store[name] = store[name].bind(store) if store[name] instanceof Function
 
