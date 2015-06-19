@@ -11,25 +11,25 @@ module.exports = CloudFlux.createStore
   onCreate: (key, attributes, token) ->
     @store.start_sync(key, token)
     @store.emitChange()
-  
-  
+
+
   onCreateDone: (key, json, token) ->
     @store.stop_sync(key, token)
     @store.remove(key)
     @store.add(json.picture.uuid, json.picture)
     @store.emitChange()
-  
-  
+
+
   onCreateFail: ->
     @store.stop_sync(key, token)
     @store.emitChange()
-  
-  
+
+
   onUpdate: (key, token) ->
     @store.start_sync(key, token)
     @store.emitChange()
-  
-  
+
+
   onUpdateDone: (key, json, token) ->
     @store.stop_sync(key, token)
     @store.update(key, json.picture)
@@ -44,8 +44,8 @@ module.exports = CloudFlux.createStore
   onDestroy: (key, token) ->
     @store.start_sync(key, token)
     @store.emitChange()
-  
-  
+
+
   onDestroyDone: (key, json, token) ->
     @store.stop_sync(key, token)
     @store.remove(key)
@@ -59,7 +59,7 @@ module.exports = CloudFlux.createStore
 
   getActions: ->
     actions = {}
-    
+
     actions['picture:create']       = @onCreate
     actions['picture:create:done']  = @onCreateDone
     actions['picture:create:fail']  = @onCreateFail
@@ -71,7 +71,7 @@ module.exports = CloudFlux.createStore
     actions['picture:destroy']       = @onDestroy
     actions['picture:destroy:done']  = @onDestroyDone
     actions['picture:destroy:fail']  = @onDestroyFail
-    
+
     actions
 
 
@@ -79,5 +79,5 @@ module.exports = CloudFlux.createStore
     uuid:           ''
     owner_type:     ''
     owner_id:       ''
-    size:           ''
+    size_:           ''
     url:            ''

@@ -46,10 +46,10 @@ Component = React.createClass
 
   getInitialState: ->
     @getStateFromStores()
-    
+
   getStateFromStores: ->
     picture: PictureStore.find (item) => item.owner_id == @props.uuid and item.owner_type == 'Block'
-  
+
   refreshStateFromStores: ->
     @setState(@getStateFromStores())
 
@@ -57,11 +57,11 @@ Component = React.createClass
   # Helpers
   #
   getClass: ->
-    "picture-wrapper " + (if @state.picture then @state.picture.size else "big")
+    "picture-wrapper " + (if @state.picture then @state.picture.size_ else "big")
 
   getResizerIcon: ->
-    if @state.picture.size == "big" then "fa fa-compress" else "fa fa-expand"
- 
+    if @state.picture.size_ == "big" then "fa fa-compress" else "fa fa-expand"
+
 
   # Handlers
   #
@@ -73,11 +73,11 @@ Component = React.createClass
 
   handleResize: (event) ->
     return if @props.readOnly || !@state.picture.uuid
-    
+
     event.preventDefault()
     event.stopPropagation()
 
-    PictureActions.update(@state.picture.uuid, { size: sizeMapper[@state.picture.size] })
+    PictureActions.update(@state.picture.uuid, { size: sizeMapper[@state.picture.size_] })
 
 
 
@@ -85,7 +85,7 @@ Component = React.createClass
   #
   componentDidMount: ->
     PictureStore.on('change', @refreshStateFromStores)
-  
+
   componentWillUnmount: ->
     PictureStore.off('change', @refreshStateFromStores)
 
@@ -96,7 +96,7 @@ Component = React.createClass
     else
       <ImageInput
         onChange    = { @handleChange }
-        readOnly    = { @props.readOnly } 
+        readOnly    = { @props.readOnly }
         placeholder = { <Placeholder /> } />
 
 
