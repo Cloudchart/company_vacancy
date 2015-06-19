@@ -145,6 +145,7 @@ module.exports = React.createClass
     <input
       className   = "cc-input"
       type        = "text"
+      maxLength   = { 100 }
       value       = { @state.attributes.get('title', '') }
       placeholder = "Please name the pinboard"
       onChange    = { @handleChange.bind(null, 'title') }
@@ -156,6 +157,7 @@ module.exports = React.createClass
     <input
       className   = "cc-input"
       type        = "text"
+      maxLength   = { 250 }
       value       = { @state.attributes.get('description', '') }
       placeholder = "What's this collection about?"
       onChange    = { @handleChange.bind(null, 'description') }
