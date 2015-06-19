@@ -104,6 +104,10 @@ store_data = (key, query, data) ->
         ids.forEach (id) ->
           storage.mergeDeepIn([type, id], query)
 
+      ids.forEach (id) ->
+        data.get(id, Immutable.Map()).forEach (id_or_ids, key) ->
+          storage.setIn(['RELATIONS', id, key], id_or_ids)
+
   query.get('children')?.forEach (child_query, child_key) ->
     store_data(child_key, child_query, data?.get(child_key))
 
@@ -122,6 +126,21 @@ fetchDone = (response, query, options) ->
 #
 fetchFail = (response) ->
 
+
+# Fetch from storage
+#
+fetchFromStorage = (endpoint, query, options = {}) ->
+  getItemFromEndpoint(options.id, endpoint).withMutations (item) ->
+    query.forEach (values, key) ->
+      return if key == 'edges'
+
+
+getItemFromEndpoint = (id, endpoint) ->
+  store = Endpoints.getIn([endpoint, 'store'])()
+  if endpoint == 'Viewer'
+    store.me().deref()
+  else
+    store.get(id)
 
 # Build URL
 #
@@ -152,7 +171,7 @@ fetch = (query, options = {}) ->
 
     if diff_query.size == 0
       store = endpoint.get('store')()
-      item  = store.get(options.id)
+      item  = getItemFromEndpoint(options.id, query.endpoint)
       if item
         return new Promise (done, fail) ->
           done(item.toJS())
@@ -162,24 +181,20 @@ fetch = (query, options = {}) ->
   cacheKey  = url + '?' + effective_query
 
 
-  #delete cachedPromises[cacheKey] if options.force == true
-
-
-  # if endpoint.get('handle_id') and options.id
-  #   delete cachedPromises[cacheKey] unless endpoint.get('store')().has(options.id)
-
-
   cachedPromises[cacheKey] ||= new Promise (done, fail) ->
 
     Promise.resolve $.ajax
       url:      url
       dataType: 'json'
       data:
-        relations: effective_query if effective_query #relations if relations
+        relations: effective_query if effective_query
 
     .then(
       (json) ->
         fetchDone(json, query, options)
+
+        fetchFromStorage(query.endpoint, query.query.get('children'), options)
+
         done(json)
         delete cachedPromises[cacheKey]
 
