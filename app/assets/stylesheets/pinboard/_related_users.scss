@@ -30,49 +30,60 @@
 }
 
 article.pinboard-related-users {
-  @include display(flex);
-  @include flex-direction(column);
-  @include align-items(center);
   @include close-modal-button;
 
   position: relative;
-  padding: 20px;
+  width: 800px;
 
   > header {
-    width: 50%;
-    text-align: center;
+    padding: 30px;
 
     > h1 {
+      margin: 0;
       font-size: 36px;
-      font-weight: 300;
-    }
+      line-height: 44px;
 
-    > h2 {
-      font-size: 20px;
-      font-weight: 300;
-    }
-  }
-
-  .owner, .users {
-    > h1 {
-      font-size: 25px;
-      text-align: center;
+      > .description {
+        font-weight: 300;
+      }
     }
   }
 
-  > .owner {
-    @include default-human;
-  }
+  > .content {
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
 
-  > .users {
-    > ul {
-      @include flex-ul;
+    background-color: hsl(300, 9%, 98%);
+    padding: 0 20px 20px 20px;
 
-      > li {
-        @include default-human;
+    .owner, .users {
+      > h1 {
+        font-size: 30px;
+        text-align: center;
+      }
+    }
 
-        &:not(:last-child) {
-          margin-right: 30px;
+    > .owner {
+      @include default-human;
+    }
+
+    > .users {
+      max-width: 680px;
+
+      > ul {
+        @include flex-ul;
+        @include flex-wrap(wrap);
+        @include align-items(center);
+
+        overflow-y: scroll;
+        max-height: 340px;
+
+        > li {
+          @include default-human;
+
+          margin: 0 15px 0 15px;
+          height: 170px;
         }
       }
     }

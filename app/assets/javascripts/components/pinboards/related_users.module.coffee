@@ -67,22 +67,27 @@ module.exports = React.createClass
   # Main render
   # 
   render: ->
-    # TODO: add query to get pinboard, owner and users; add getters
     <article className="pinboard-related-users">
       { <CloseModalButton /> }
 
       <header>
-        <h1>{ @props.pinboard.title }</h1>
-        <h2>{ @props.pinboard.description }</h2>
+        <h1>
+          { @props.pinboard.title }
+          <strong> – </strong>
+          <span className="description">{ @props.pinboard.description }</span>
+        </h1>
       </header>
 
-      <section className="owner">
-        <h1>Collection owner</h1>
-        <Human type = "user" uuid = { @props.owner.uuid } />
+      <section className="content">
+        <section className="owner">
+          <h1>Collection owner</h1>
+          <Human type = "user" uuid = { @props.owner.uuid } />
+        </section>
+
+        <section className="users">
+          <h1>Contributors</h1>
+          { @renderUsers() }
+        </section>
       </section>
 
-      <section className="users">
-        <h1>Contributors</h1>
-        { @renderUsers() }
-      </section>
     </article>
