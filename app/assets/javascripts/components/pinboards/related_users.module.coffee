@@ -21,7 +21,7 @@ module.exports = React.createClass
   propTypes:
     pinboard: React.PropTypes.object.isRequired
     owner: React.PropTypes.object.isRequired
-    users: React.PropTypes.object.isRequired
+    users: React.PropTypes.array.isRequired
 
 
   # Component Specifications

@@ -45,6 +45,7 @@ module.exports = React.createClass
           Pinboard {
             user,
             readers,
+            writers,
             followers,
             pins
           }
@@ -113,8 +114,11 @@ module.exports = React.createClass
   canViewerEdit: ->
     @isViewerOwner() || @isViewerEditor()
 
-  getUsers: ->
-    @getPinboard().get('users').map (user) -> UserStore.get(user.get('uuid'))
+  getEditors: ->
+    result = @props.cursor.roles
+      .filter (role) => role.get('owner_id') == @props.uuid && role.get('value') == 'editor'
+      .map (role) -> UserStore.get(role.get('user_id'))
+      .valueSeq()
 
 
   # Handlers
@@ -150,7 +154,7 @@ module.exports = React.createClass
       <RelatedUsers
         pinboard = { @getPinboard().toJS() }
         owner = { @getOwner().toJS() }
-        users = { @getUsers().toJS() }
+        users = { @getEditors().toJS() }
       />
     )
 
@@ -158,13 +162,13 @@ module.exports = React.createClass
   # Renderers
   #
   renderOthersLink: ->
-    users = @getUsers()
+    users = @getEditors()
     users_size = users.size
     return null if users_size == 0
 
     link = if users_size == 1
-      user = users.first().toJS()
-      <a key=2 href={ user.user_url }>{ user.full_name }</a>
+      user = users.first()
+      <a key=2 href={ user.get('user_url') }>{ user.get('full_name') }</a>
     else
       <a key=2 href="" onClick={ @handleOthersLinkClick }>{ "#{users_size} others" }</a>
 
