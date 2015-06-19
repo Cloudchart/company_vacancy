@@ -18,8 +18,10 @@ module.exports = React.createClass
   displayName: 'PinboardRealtedUsers'
   # mixins: []
   # statics: {}
-  # propTypes:
-    # some_object: React.PropTypes.object.isRequired
+  propTypes:
+    pinboard: React.PropTypes.object.isRequired
+    owner: React.PropTypes.object.isRequired
+    users: React.PropTypes.object.isRequired
 
 
   # Component Specifications
