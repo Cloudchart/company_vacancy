@@ -181,6 +181,21 @@ article.pinboards {
 
   > footer {
     @include pinboard-card-footer;
+
+    > .stats {
+      @include flex-ul;
+      @include justify-content(flex-end);
+
+      color: $auxilary-grey-color;
+      font-size: $small-font-size;
+      font-weight: 600;
+      margin-bottom: $inner-margin-size;
+      text-transform: uppercase;
+
+      li {
+        margin-left: $inner-margin-size;
+      }
+    }
   }
 
   > .invite-actions {

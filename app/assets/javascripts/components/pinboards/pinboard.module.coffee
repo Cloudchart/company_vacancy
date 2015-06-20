@@ -205,18 +205,12 @@ module.exports = React.createClass
     <footer>
       { @renderOwner() }
 
-      <ul className="counters">
+      <ul className="stats">
         <li>
-          { @cursor.pinboard.get('readers_count') }
-          <span className="icon">
-            <i className="fa fa-male" />
-          </span>
+          { @cursor.pinboard.get('readers_count') + ' Followers' }
         </li>
         <li>
-          { @cursor.pinboard.get('pins_count') }
-          <span className="icon">
-            <i className="fa fa-thumb-tack" />
-          </span>
+          { @cursor.pinboard.get('pins_count') + ' Insights' }
         </li>
       </ul>
     </footer>
