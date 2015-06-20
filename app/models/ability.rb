@@ -155,8 +155,12 @@ class Ability
       # 
       can [:read, :accept], Role
 
-      can [:create, :update, :destroy], Role do |role|
+      can [:create, :update], Role do |role|
         owner_or_editor?(current_user, role.owner)
+      end
+
+      can :destroy, Role do |role|
+        role.user_id == current_user.id || owner_or_editor?(current_user, role.owner)
       end
 
       # Miscellaneous

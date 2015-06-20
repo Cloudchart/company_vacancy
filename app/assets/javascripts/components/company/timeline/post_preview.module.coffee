@@ -381,7 +381,10 @@ Component = React.createClass
       <h2>{formatted_date}</h2>
     else null
 
-    <header key="header">
+    header_classes = cx
+      compact: !@isEpochType() && !@isQuote()
+
+    <header key="header" className={ header_classes }>
       {title}
       {date}
     </header>
