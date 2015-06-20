@@ -197,6 +197,9 @@ module.exports = React.createClass
         <a href={ @getOwner().get('user_url') }>{ @getOwner().get('full_name') }</a>
         { @renderOthersLink() }
       </h1>
+
+      { @renderDescription() }
+
       <ul className="counters">
         <li>
           { pluralize(@getPinboard().get('readers_count'), "follower", "followers") }
@@ -233,7 +236,6 @@ module.exports = React.createClass
       <section className="tab-header">
         <div className="cloud-columns cloud-columns-flex">
           { @renderHeader() }
-          { @renderDescription() }
           <InviteActions ownerId = { @props.uuid } ownerType = 'Pinboard' />
           <PinboardTabs
             insightsNumber = { @getPinboard().get('pins_count') }

@@ -83,16 +83,17 @@ $pinboard-header-color: hsl(60, 10%, 96%);
       padding-bottom: 0;
 
       > header {
-        @include align-items(center);
-        @include display(flex);
-        @include justify-content(space-between);
-
         > h1 {
           font-size: $huge-font-size;
           font-weight: 600;
           line-height: 44px;
-          margin: 0;
-          margin-right: 50px;
+          margin: 0 0 10px 0;
+        }
+
+        > .description {
+          margin-bottom: 10px;
+          font-size: 20px;
+          font-weight: 300;
         }
 
         > .counters > li > .icon {
@@ -110,13 +111,6 @@ $pinboard-header-color: hsl(60, 10%, 96%);
             padding: 20px;
           }
         }
-      }
-
-      > .description {
-        padding: 12px;
-        width: 50%;
-        font-size: 20px;
-        font-weight: 300;
       }
 
       > .invite-actions {
