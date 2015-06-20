@@ -217,7 +217,7 @@ module.exports = React.createClass
     return null unless @props.cursor.user.get('uuid') #&& @props.cursor.user.get('twitter')
 
     classList = cx
-      active:         @isActive()
+      active:         false
       'with-content': true
       'pin-button':   true
       'disabled':     !@isClickable()
