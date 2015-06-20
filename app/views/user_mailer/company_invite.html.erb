@@ -3,7 +3,7 @@
 </p>
 
 <p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
-  <%= @author.full_name %> (<%= link_to "@#{@author.twitter}", main_app.user_url(@author), target: "_blank" %>) has invited to join CloudChart as a member of <%= link_to @owner.name, main_app.company_url(@owner) %>. 
+  <%= @author.full_name %> (<%= link_to "@#{@author.twitter}", main_app.user_url(@author), target: "_blank" %>) has invited you to join CloudChart as a member of <%= link_to @owner.name, main_app.company_url(@owner) %>. 
 </p>
 
 <p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
@@ -15,5 +15,5 @@
 </p>
 
 <p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:50px">
-  If you have nothing with Lateral Summer, please ignore this message.
+  If you have nothing with <% @owner.name %>, please ignore this message.
 </p>
