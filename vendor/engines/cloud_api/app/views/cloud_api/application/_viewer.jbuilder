@@ -20,5 +20,10 @@ json_edge! json, :published_companies, edges do
 end
 
 
+json_edge! json, :is_authenticated, edges do
+  user_authenticated?
+end
+
+
 #
 # / Edges

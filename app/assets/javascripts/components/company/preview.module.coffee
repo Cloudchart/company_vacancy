@@ -27,6 +27,7 @@ pluralize      = require('utils/pluralize')
 
 SyncButton     = Buttons.SyncButton
 CancelButton   = Buttons.CancelButton
+AuthButton     = Buttons.AuthButton
 
 CompanyPreview = React.createClass
 
@@ -224,11 +225,14 @@ CompanyPreview = React.createClass
     return null unless !@getFavorite()
 
     <li>
-      <SyncButton
-        className = "cc follow"
-        onClick   = { @handleFollowClick }
-        sync      = { @state.sync.get('follow') }
-        text      = "Follow" />
+      <AuthButton>
+        <SyncButton
+          className = "cc follow"
+          onClick   = { @handleFollowClick }
+          sync      = { @state.sync.get('follow') }
+          text      = "Follow"
+        />
+      </AuthButton>
     </li>
 
   renderFollowedLabel: ->
