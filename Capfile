@@ -11,6 +11,11 @@ require 'capistrano/sidekiq'
 # require 'capistrano/sidekiq/monit' # to require monit tasks
 require 'airbrake/capistrano3'
 
+require 'json'
+
+require 'dotenv'
+Dotenv.load
+
 # Includes tasks from other gems included in your Gemfile
 #
 # For documentation on these, see for example:

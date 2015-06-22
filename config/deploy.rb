@@ -30,24 +30,16 @@ set :linked_dirs,   %w{log tmp/pids tmp/cache tmp/sockets public/uploads public/
 namespace :deploy do
 
   desc 'Sends post request to slack channel when deploy started'
-  task :post_to_slack_channel_when_deploy_started do
+  task :post_to_slack_when_deploy_started do
     on roles :app do
-      within release_path do
-        with rails_env: fetch(:stage) do
-          execute :rake, 'cc:post_to_slack_channel[deploy_started]'
-        end
-      end
+      execute post_to_slack_channel(:started)
     end
   end
 
   desc 'Sends post request to slack channel when deploy finished'
-  task :post_to_slack_channel_when_deploy_finished do
+  task :post_to_slack_when_deploy_finished do
     on roles :app do
-      within release_path do
-        with rails_env: fetch(:stage) do
-          execute :rake, 'cc:post_to_slack_channel[deploy_finished]'
-        end
-      end
+      execute post_to_slack_channel(:finished)
     end
   end
 
@@ -73,9 +65,9 @@ namespace :deploy do
     end
   end
 
-  after :starting, :post_to_slack_channel_when_deploy_started
+  after :starting, :post_to_slack_when_deploy_started
   after :publishing, :generate_error_pages
-  after :finishing, :post_to_slack_channel_when_deploy_finished
+  after :finishing, :post_to_slack_when_deploy_finished
 
 end
 
@@ -134,4 +126,15 @@ namespace :cc do
     end
   end
 
+end
+
+def post_to_slack_channel(action_name)
+  payload = {
+    channel: '#develop',
+    username: 'cloudchart',
+    text: "Deployment #{action_name} in #{fetch(:stage)} environment",
+    icon_emoji: ":cloudchart_#{fetch(:stage)}:"
+  }
+
+  "curl -X POST --data-urlencode 'payload=#{payload.to_json}' #{ENV['SLACK_DEFAULT_WEBHOOK_URL']}"
 end

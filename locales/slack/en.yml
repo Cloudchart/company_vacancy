@@ -1,5 +1,0 @@
-en:
-  slack:
-    webhooks:
-      deploy_started: "Deployment started in %{env} environment"
-      deploy_finished: "Deployment finished in %{env} environment"
