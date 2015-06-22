@@ -29,22 +29,27 @@ set :linked_dirs,   %w{log tmp/pids tmp/cache tmp/sockets public/uploads public/
 
 namespace :deploy do
 
-#   desc 'Restart application'
-#   task :restart do
-#     on roles(:app), in: :sequence, wait: 5 do
-#       # execute :touch, release_path.join('tmp/restart.txt')
-#     end
-#   end
+  desc 'Sends post request to slack channel when deploy started'
+  task :post_to_slack_channel_when_deploy_started do
+    on roles :app do
+      within release_path do
+        with rails_env: fetch(:stage) do
+          execute :rails, 'cc:post_to_slack_channel[deploy_started]'
+        end
+      end
+    end
+  end
 
-#   after :publishing, :restart
-
-#   after :restart, :clear_cache do
-#     on roles(:web), in: :groups, limit: 3, wait: 10 do
-#       within release_path do
-#         # execute :rake, 'cache:clear'
-#       end
-#     end
-#   end
+  desc 'Sends post request to slack channel when deploy finished'
+  task :post_to_slack_channel_when_deploy_finished do
+    on roles :app do
+      within release_path do
+        with rails_env: fetch(:stage) do
+          execute :rails, 'cc:post_to_slack_channel[deploy_finished]'
+        end
+      end
+    end
+  end
 
   desc 'Generates static error pages in public folder'
   task :generate_error_pages do
@@ -68,7 +73,9 @@ namespace :deploy do
     end
   end
 
+  after :starting, :post_to_slack_channel_when_deploy_started
   after :publishing, :generate_error_pages
+  after :finishing, :post_to_slack_channel_when_deploy_finished
 
 end
 
@@ -102,7 +109,6 @@ namespace :tire do
   end
 
 end
-
 
 namespace :cc do
 
