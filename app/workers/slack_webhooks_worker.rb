@@ -1,10 +1,8 @@
 class SlackWebhooksWorker < ApplicationWorker
 
   def perform(event_name, user_id, options={})
-    user = User.find(user_id) if user_id
+    user = User.find(user_id)
     options.symbolize_keys!
-    options[:webhook_url] ||= ENV['SLACK_DEFAULT_WEBHOOK_URL']
-    icon_emoji = Rails.env.staging? ? ':cloudchart_staging:' : ':cloudchart:'
     result = {}
 
     case event_name
@@ -46,16 +44,10 @@ class SlackWebhooksWorker < ApplicationWorker
           ]
         } if user.send(attribute).present?
       end
-    when 'deploy_started'
-      result[:text] = I18n.t('slack.webhooks.deploy_started', env: Rails.env)
-      result[:icon_emoji] = icon_emoji
-    when 'deploy_finished'
-      result[:text] = I18n.t('slack.webhooks.deploy_finished', env: Rails.env)
-      result[:icon_emoji] = icon_emoji
     end
 
     if result[:text].present?
-      Net::HTTP.post_form(URI(options[:webhook_url]), payload: result.to_json)
+      Net::HTTP.post_form(URI(ENV['SLACK_DEFAULT_WEBHOOK_URL']), payload: result.to_json)
     end
     
   end
