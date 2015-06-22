@@ -99,6 +99,7 @@ module.exports = React.createClass
       .union(published_companies)
       .union(related_companies)
       .sortBy (i) -> i.get('name')
+      .toSeq()
       .map    @renderCompany
 
 
