@@ -321,7 +321,7 @@ Component = React.createClass
   renderPinPostItem: ->
     return null if @isEpochType()
 
-    <PinButton pinnable_type='Post' pinnable_id={ @state.post.uuid } title={ @state.post.title } label="Leave Insight" />
+    <PinButton pinnable_type='Post' pinnable_id={ @state.post.uuid } title={ @state.post.title } label="Add Insight" />
 
   renderControls: ->
     <ul className="buttons round-buttons">

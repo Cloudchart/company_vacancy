@@ -234,4 +234,4 @@ module.exports = React.createClass
         className = "cc"
         iconClass = "fa fa-thumb-tack"
         onClick   = { @handleClick }
-        text      = "Be the first to leave an insight" />
+        text      = "Be the first to add an insight" />

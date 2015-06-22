@@ -385,7 +385,7 @@ Post = React.createClass
             pinnable_id   = { @props.id }
             pinnable_type = 'Post'
             title         = { @state.post.title }
-            label         = "Leave Insight"
+            label         = "Add Insight"
           />
         </ul>
       </section>
