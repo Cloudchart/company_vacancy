@@ -16,6 +16,17 @@ class PreviewWorker < ApplicationWorker
     end
   end
 
+
+  def should_generate_preview?(record)
+    case record.class.name
+    when 'User'
+      record.full_name.present?
+    else
+      true
+    end
+  end
+
+
   def preview_url_for(record)
     case record.class.name
     when 'Company'

@@ -13,11 +13,11 @@ class AuthController < ApplicationController
 
     if user && user.last_sign_in_at.blank?
       user.update_with_twitter_omniauth_hash(oauth_hash)
-      SlackWebhooksWorker.perform_async('first_time_logged_in', user.id) if should_perform_sidekiq_worker?
     elsif user.nil?
       user = User.create_with_twitter_omniauth_hash(oauth_hash)
-      SlackWebhooksWorker.perform_async('added_to_queue', user.id) if should_perform_sidekiq_worker?
     end
+
+    SlackWebhooksWorker.perform_async('first_time_logged_in', user.id) if user.last_sign_in_at.blank? && should_perform_sidekiq_worker?
 
     authenticate_user!(user)
   end
@@ -28,11 +28,6 @@ class AuthController < ApplicationController
     else
       redirect_to :back
     end
-  end
-
-  def edit
-    redirect_to main_app.root_path and return unless queued_user
-    @user = queued_user
   end
 
   def update
@@ -70,22 +65,15 @@ class AuthController < ApplicationController
 private
 
   def authenticate_user!(user)
-    warden_scope = user.authorized_at.present? ? :user : :queue
-
-    warden.set_user(user, scope: warden_scope)
-    cookies.signed[:user_id] = { value: user.id, expires: 2.weeks.from_now } if warden_scope == :user
+    warden.set_user(user, scope: :user)
+    cookies.signed[:user_id] = { value: user.id, expires: 2.weeks.from_now }
     current_user.update(last_sign_in_at: Time.now) unless current_user.guest?
 
-    redirect_to warden_scope == :user ? request.env['omniauth.origin'] || main_app.root_path : main_app.queue_path
+    redirect_to request.env['omniauth.origin'] || main_app.root_path
   end
 
   def oauth_hash
     request.env['omniauth.auth']
-  end
-
-  def queued_user
-    user = warden.user(:queue)
-    user.present? && !user.authorized? ? user : nil
   end
 
 end
