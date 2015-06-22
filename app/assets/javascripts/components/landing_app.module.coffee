@@ -33,19 +33,19 @@ module.exports = React.createClass
     </header>
 
   renderGuide: ->
-    return null if @props.isAuthorized
+    return null #if @props.isAuthorized
 
     <Guide />
 
   renderFooter: ->
-    return null if @props.isAuthorized
+    return null #if @props.isAuthorized
 
     <footer>
       <a href="/auth/twitter" className="cc">Get advice</a>
     </footer>
 
   renderAuthorizedContent: ->
-    return null unless @props.isAuthorized
+    #return null unless @props.isAuthorized
 
     <section className="authorized">
       <ImportantPinboards
