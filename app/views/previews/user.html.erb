@@ -1,7 +1,7 @@
 <article class="preview user">
 
   <figure class="user">
-    <div class="avatar" style="background-image: url(<%= @user.avatar.url %>)"></div>
+    <div class="avatar" style="background-image: url(<%= @user.avatar.try(:url) %>)"></div>
     <figcaption>
       <p class="name">
         <%= @user.full_name %>
