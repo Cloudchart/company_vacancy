@@ -4,6 +4,54 @@ joinClasses = (firstClass, secondClass) ->
   (firstClass + " " + secondClass).trim()    
 
 cx = React.addons.classSet
+GlobalState = require('global_state/state')
+
+AuthButton = React.createClass
+
+  displayName: 'AuthButton'
+
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+  statics:
+    queries:
+      viewer: ->
+        """
+          Viewer {
+            edges {
+              is_authenticated
+            }
+          }
+        """
+
+
+  fetch: ->
+    GlobalState.fetch(@getQuery('viewer'))
+
+  getDefaultProps: ->
+    cursor:
+      viewer: require('stores/user_store.cursor').me()
+
+  componentWillMount: ->
+    @fetch()
+
+  handleClick: ->
+    event.preventDefault()
+    event.stopPropagation()
+
+    unless @props.cursor.viewer.get('is_authenticated')
+      location.href = '/auth/twitter'
+      return null
+
+  render: ->
+    component = React.Children.only(@props.children)
+
+    props = if @props.cursor.viewer.get('is_authenticated')
+      component.props
+    else
+      Object.assign(component.props, { onClick: @handleClick })
+
+    React.addons.cloneWithProps(component, props)
+
 
 CloseModalButton = React.createClass
 
@@ -144,3 +192,4 @@ module.exports =
   StandardButton:   StandardButton
   CancelButton:     CancelButton
   CloseModalButton: CloseModalButton
+  AuthButton:       AuthButton

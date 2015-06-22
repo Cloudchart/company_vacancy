@@ -18,6 +18,7 @@ ModalStack        = require('components/modal_stack')
 ModalError        = require('components/error/modal')
 RoleAccessRequest = require('components/roles/access_request')
 SyncButton        = require('components/form/buttons').SyncButton
+AuthButton        = require('components/form/buttons').AuthButton
 
 
 InviteActions     = require('components/roles/invite_actions')
@@ -60,7 +61,7 @@ module.exports = React.createClass
         """
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }).then =>
+    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }).then (pinboard) =>
       @setState
         loaders: @state.loaders.set('pinboard', true)
 
@@ -152,7 +153,7 @@ module.exports = React.createClass
       pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
       viewer:   UserStore.me()
 
-    @fetch() unless @isLoaded()
+    @fetch()
 
 
   # Renderers
@@ -160,11 +161,14 @@ module.exports = React.createClass
   renderFollowButton: ->
     return null unless !@getFavorite() && !@viewerHasRole() && !@isViewerOwner()
 
-    <SyncButton
-      className = "cc follow"
-      onClick   = { @handleFollowClick }
-      sync      = { @state.sync.get('follow') }
-      text      = "Follow" />
+    <AuthButton>
+      <SyncButton
+        className = "cc follow"
+        onClick   = { @handleFollowClick }
+        sync      = { @state.sync.get('follow') }
+        text      = "Follow"
+      />
+    </AuthButton>
 
   renderFollowedLabel: ->
     return null unless @getFavorite() && !@viewerHasRole() && !@isViewerOwner()

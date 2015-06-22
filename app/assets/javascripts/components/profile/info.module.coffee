@@ -16,9 +16,11 @@ pluralize       = require('utils/pluralize')
 AutoSizingInput = require('components/form/autosizing_input')
 PersonAvatar    = require('components/shared/person_avatar')
 
-SyncButton         = require('components/form/buttons').SyncButton
+Buttons = require('components/form/buttons')
+SyncButton = Buttons.SyncButton
+AuthButton = Buttons.AuthButton
 
-SyncApi            = require('sync/user_sync_api')
+SyncApi = require('sync/user_sync_api')
 
 KnownAttributes = Immutable.Seq(['avatar_url'])
 
@@ -154,11 +156,14 @@ module.exports  = React.createClass
 
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
-    <SyncButton
-      className         = "cc follow-button"
-      onClick           = { @handleFollowClick }
-      text              = { text }
-      sync              = { @state.isSyncing } />
+    <AuthButton>
+      <SyncButton
+        className         = "cc follow-button"
+        onClick           = { @handleFollowClick }
+        text              = { text }
+        sync              = { @state.isSyncing }
+      />
+    </AuthButton>
 
   renderOccupation: (item) ->
     strings = []

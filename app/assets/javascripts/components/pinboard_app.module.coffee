@@ -1,6 +1,6 @@
 # @cjsx React.DOM
 
-GlobalState     = require('global_state/state')
+GlobalState = require('global_state/state')
 
 # Stores
 #
@@ -10,22 +10,23 @@ PinStore        = require('stores/pin_store')
 RoleStore       = require('stores/role_store.cursor')
 FavoriteStore   = require('stores/favorite_store.cursor')
 
-
 # Components
 #
 PinboardSettings = require('components/pinboards/settings')
 PinboardAccess   = require('components/pinboards/access_rights')
 PinboardPins     = require('components/pinboards/pins/pinboard')
 PinboardTabs     = require('components/pinboards/tabs')
-SyncButton       = require('components/form/buttons').SyncButton
 ModalStack       = require('components/modal_stack')
 InviteActions    = require('components/roles/invite_actions')
 RelatedUsers     = require('components/pinboards/related_users')
 
-SyncApi          = require('sync/pinboard_sync_api')
+Buttons = require('components/form/buttons')
+SyncButton = Buttons.SyncButton
+AuthButton = Buttons.AuthButton
 
+SyncApi = require('sync/pinboard_sync_api')
 
-pluralize        = require('utils/pluralize')
+pluralize = require('utils/pluralize')
 
 
 # Exports
@@ -183,11 +184,15 @@ module.exports = React.createClass
 
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
-    <SyncButton
-      className         = "cc"
-      onClick           = { @handleFollowClick }
-      text              = { text }
-      sync              = { @state.isSyncing } />
+    <AuthButton>
+      <SyncButton
+        className         = "cc"
+        onClick           = { @handleFollowClick }
+        text              = { text }
+        sync              = { @state.isSyncing }
+      />
+    </AuthButton>
+
 
   renderHeader: ->
     <header>
