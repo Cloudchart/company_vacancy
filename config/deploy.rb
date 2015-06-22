@@ -34,7 +34,7 @@ namespace :deploy do
     on roles :app do
       within release_path do
         with rails_env: fetch(:stage) do
-          execute :rails, 'cc:post_to_slack_channel[deploy_started]'
+          execute :rake, 'cc:post_to_slack_channel[deploy_started]'
         end
       end
     end
@@ -45,7 +45,7 @@ namespace :deploy do
     on roles :app do
       within release_path do
         with rails_env: fetch(:stage) do
-          execute :rails, 'cc:post_to_slack_channel[deploy_finished]'
+          execute :rake, 'cc:post_to_slack_channel[deploy_finished]'
         end
       end
     end
