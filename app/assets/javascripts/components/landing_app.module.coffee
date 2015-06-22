@@ -58,7 +58,7 @@ module.exports = React.createClass
 
       <Subscription
         asBlock   = { true }
-        text      = "Subscribe to our weekly email to stay in the loop: get latest advices and insights, most helpful collections and new CloudChart features." />
+        text      = "Subscribe to our weekly email to stay in the loop: get latest insights, most helpful collections and new CloudChart features." />
     </section>
 
 
