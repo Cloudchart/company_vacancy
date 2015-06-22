@@ -36,7 +36,6 @@ class PinboardsController < ApplicationController
     @pinboard = pinboard_source.new(params_for_create)
     authorize! :create, @pinboard
 
-    @pinboard.roles.build(user: current_user, value: :owner).should_skip_pending_role!
     @pinboard.save!
 
     respond_to do |format|
