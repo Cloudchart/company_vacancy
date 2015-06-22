@@ -117,4 +117,15 @@ namespace :cc do
     end
   end
 
+  desc 'Generate insights previews'
+  task :generate_insights_previews do
+    on roles :app do
+      within release_path do
+        with rails_env: fetch(:stage) do
+          execute :rake, 'cc:generate_insight_preview'
+        end
+      end
+    end
+  end
+
 end
