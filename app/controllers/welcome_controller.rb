@@ -3,7 +3,6 @@ class WelcomeController < ApplicationController
   before_action :call_page_visit_to_slack_channel, only: [:index, :old_browsers]
 
   def index
-    # render layout: 'guest' unless user_authenticated?
   end
 
   def old_browsers

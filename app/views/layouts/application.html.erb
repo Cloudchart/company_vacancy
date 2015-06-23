@@ -33,6 +33,8 @@
       <div data-react-class="components/tour/insight/trigger"></div>
     <%- end %>
 
+    <%= render 'shared/first_time_visit' %>
+
     <%= javascript_include_tag 'application' %>
     <%= pagescript unless controller_name == 'errors' %>
     <%= render 'shared/google_analytics' if Rails.env.production? %>

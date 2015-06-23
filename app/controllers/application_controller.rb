@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :check_browser
-  before_action :store_location
+  after_action :store_location
 
   skip_after_filter :intercom_rails_auto_include, if: -> { current_user.try(:guest?) }
 
@@ -54,7 +54,7 @@ private
   end
 
   def store_location
-    return if user_authenticated? || !request.get? || request.xhr? || main_app.old_browsers_path
+    return if user_authenticated? || !request.get? || request.xhr? || request.path == main_app.old_browsers_path
     session[:previous_path] = request.fullpath
   end
 

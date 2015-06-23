@@ -1,0 +1,4 @@
+<% unless user_authenticated? || session[:previous_path] || 
+  !(request.path =~ /\/companies\/|\/posts\/|\/insights\/|\/collections\/|\/users\//) %>
+  <div data-react-class="components/welcome/first_time_visit"></div>
+<% end %>
