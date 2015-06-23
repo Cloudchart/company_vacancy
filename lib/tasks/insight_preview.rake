@@ -8,7 +8,7 @@ namespace :cc do
         end
       end
 
-      Pin.where(is_suggested: true).find_in_batches do |insights|
+      Pin.where(is_suggestion: true).find_in_batches do |insights|
         insights.each do |insight|
           PreviewWorker.perform_async('Pin', insight.id)
         end
