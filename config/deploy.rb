@@ -133,7 +133,7 @@ def post_to_slack_channel(action_name)
 
   payload = {
     channel: '#develop',
-    username: 'cloudchart',
+    username: ENV['USER'],
     text: "Deployment #{action_name} in #{fetch(:stage)} environment",
     icon_emoji: ":cloudchart_#{fetch(:stage)}:"
   }
