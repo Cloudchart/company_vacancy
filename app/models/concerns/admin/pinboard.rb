@@ -6,10 +6,16 @@ module Admin::Pinboard
     rails_admin do
       list do
         sort_by :is_important
-        fields :title, :user
+        field :title
+
+        field :user do
+          searchable [:first_name, :last_name]
+        end
+
         field :is_important do
           sort_reverse true
         end
+
         fields :created_at, :updated_at
       end
 
