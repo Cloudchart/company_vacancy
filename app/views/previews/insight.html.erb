@@ -1,6 +1,7 @@
 <%
-  @pin = @pin.parent if @pin.parent.present?
-  content_size = @pin.content.size
+  @pin          = @pin.parent if @pin.parent.present?
+  @content      = @pin.content || ""
+  content_size  = @content.size
 
   classes_for_content = {
     content: true,
@@ -13,7 +14,7 @@
 
 <article class="preview insight">
   <section class="<%= classes_for_content %>">
-    <%= (content = @pin.content.strip).ends_with?('.') ? content.chop : content %>&nbsp;&mdash;
+    <%= (content = @content.strip).ends_with?('.') ? content.chop : content %>&nbsp;&mdash;
   </section>
   <footer>
     <figure class="author">
