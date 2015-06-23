@@ -12,8 +12,7 @@ module.exports = React.createClass
   render: ->
     <article className={ "tour-insight-introduction " + @props.className }>
       <p>
-        Looks like you're about to add your first insight. 
-        It's a short actionable comment that you add to posts when saving them to your board.
+        { "Looks like you're about to add your first insight. It's a short actionable comment that you add to posts when saving them to your collection." }
       </p>
       <div className="pin-form-placeholder"></div>
     </article>

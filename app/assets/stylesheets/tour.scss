@@ -245,9 +245,9 @@
 @mixin tour-insight-introduction {
   > .pin-form-placeholder {
     background: image_url('tour/pin-form.png') center center no-repeat;
-    background-size: cover;
+    background-size: contain;
     height: 450px;
-    width: 462px;
+    width: 550px;
   }
 }
 

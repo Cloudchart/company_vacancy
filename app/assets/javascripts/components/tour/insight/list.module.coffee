@@ -38,7 +38,7 @@ module.exports = React.createClass
   render: ->
     <article className={ "tour-insight-list " + @props.className }>
       <p>
-        { "The link to your Insights board is at the top of the page; your insight can also be found next to the post you've commented on." }
+        { "The link to your insights collections is at the top of the page; your insight can also be found next to the post you've added it to." }
       </p>
       <div className="insight-list-placeholder"></div>
       <SyncButton
