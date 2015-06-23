@@ -77,7 +77,7 @@ class Company < ActiveRecord::Base
   # Insights
   #
 
-  acts_as_preloadable :insights, posts: :pins
+  acts_as_preloadable :insights, posts: { pins: :parent } # preload parent because of suggestions. TODO: change this in future versions
 
   def insights
     posts.map(&:pins).flatten.select { |p| p.content.present? && p.parent_id.blank? }

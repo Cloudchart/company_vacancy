@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
 # Imports
-# 
+#
 GlobalState = require('global_state/state')
 
 PinStore = require('stores/pin_store')
@@ -19,14 +19,14 @@ cx = React.addons.classSet
 
 
 # Main component
-# 
+#
 module.exports = React.createClass
 
   displayName: 'InsightCard'
-  
+
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-  propTypes: 
+  propTypes:
     renderedInsideModal: React.PropTypes.bool
 
   statics:
@@ -35,20 +35,22 @@ module.exports = React.createClass
         """
           Pin {
             user,
+            parent,
             post {
               company
             },
             edges {
               insight_url,
               facebook_share_url,
-              twitter_share_url
+              twitter_share_url,
+              context
             }
           }
         """
 
 
   # Component Specifications
-  # 
+  #
   getDefaultProps: ->
     renderedInsideModal: false
     cursor:
@@ -57,9 +59,9 @@ module.exports = React.createClass
   getInitialState: ->
     display_mode: null
 
-  
+
   # Lifecycle Methods
-  # 
+  #
   componentWillMount: ->
     @fetch()
 
@@ -80,7 +82,7 @@ module.exports = React.createClass
 
 
   # Helpers
-  # 
+  #
   getInsight: ->
     if typeof(@props.insight) is 'string'
       PinStore.cursor.items.cursor(@props.insight).deref(Immutable.Map({})).toJS()
@@ -110,7 +112,7 @@ module.exports = React.createClass
 
 
   # Handlers
-  # 
+  #
   handleCopyLinkButtonClick: (event) ->
     @setState display_mode: 'copy_link'
 
@@ -125,7 +127,7 @@ module.exports = React.createClass
 
 
   # Renderers
-  # 
+  #
   renderShareButtons: (insight) ->
     <ul className="share-buttons">
       <li>Share!</li>
@@ -154,7 +156,7 @@ module.exports = React.createClass
       <li>
         <input id="copy_link_input" ref="copy_link_input" className="cc-input" value={insight.insight_url} readOnly={true} />
       </li>
-      
+
       <li>
         <button ref="clip" data-clipboard-target="copy_link_input" className="cc" onClick={@handleCopyLinkClick} title="Copy link to clipboard">
           <i className="fa fa-check"></i>
@@ -164,7 +166,7 @@ module.exports = React.createClass
 
 
   # Main render
-  # 
+  #
   render: ->
     insight = @getInsight()
 

@@ -32,7 +32,7 @@ module.exports = React.createClass
       post: ->
         """
           Post {
-            company 
+            company
           }
         """
 
@@ -59,7 +59,7 @@ module.exports = React.createClass
   # Lifecycle methods
   #
   componentWillMount: ->
-    @cursor = 
+    @cursor =
       pins:      PinStore.cursor.items
       companies: CompanyStore.cursor.items
       posts:     PostStore.cursor.items
@@ -71,22 +71,23 @@ module.exports = React.createClass
     post    = @getPost()
 
     return null unless pin
+    content = pin.get('content')
 
     if post
       if @props.withLinks
         <span>
           <a href={ post.get('post_url') } className="content" >
-            <span dangerouslySetInnerHTML={ __html: pin.get('content') } />
+            <span dangerouslySetInnerHTML={ __html: content } />
           </a>
           { " — " }
-        </span>    
+        </span>
       else
         <span>
-          <span className="content" dangerouslySetInnerHTML={ __html: pin.get('content') } />
+          <span className="content" dangerouslySetInnerHTML={ __html: content } />
           { " — " }
         </span>
     else
-      <span className="content" dangerouslySetInnerHTML={ __html: pin.get('content') } />
+      <span className="content" dangerouslySetInnerHTML={ __html: content } />
 
   renderInsightContext: ->
     post    = @getPost()
@@ -99,7 +100,7 @@ module.exports = React.createClass
         <a href= { company.get('company_url') } className="company">
           { company.get('name') }
         </a>
-        <strong>, </strong> 
+        <strong>, </strong>
         <a href={ post.get('post_url') } className="post">
           { post.get('title') }
         </a>
@@ -107,7 +108,7 @@ module.exports = React.createClass
     else
       <span>
         <span className="company">{ company.get('name') }</span>
-        <strong>, </strong> 
+        <strong>, </strong>
         <span className="post">{ post.get('title') }</span>
       </span>
 
@@ -119,4 +120,3 @@ module.exports = React.createClass
       { @renderInsight() }
       { @renderInsightContext() }
     </p>
-

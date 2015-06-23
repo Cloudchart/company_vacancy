@@ -12,7 +12,7 @@ class PreviewsController < ApplicationController
 
 
   def insight
-    @pin = Pin.insights.find(params[:id])
+    @pin = Pin.find(params[:id])
     respond(@pin)
   end
 
