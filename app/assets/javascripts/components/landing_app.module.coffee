@@ -25,12 +25,44 @@ module.exports = React.createClass
   # Renderers
   #
   renderHeader: ->
+    return null if @props.isProductHunt
     return null if @props.isAuthorized
 
     <header>
-      <h1>Bite-size advice for founders</h1>
-      <h2>When in doubt, use CloudChart</h2>
+      <h1>Bite-size insights for founders</h1>
+      <h2>Discover relevant insights by successful founders, investors, and experts. Create your own collections. Share with your team and the community.</h2>
     </header>
+
+
+  renderFeaturedInsights: ->
+    return null if @props.isProductHunt
+    <FeaturedInsights />
+
+
+  renderProductHuntHeader: ->
+    return null unless @props.isProductHunt
+
+    <section className="producthunt">
+      <a href="/" className="close">×</a>
+
+      <header>
+        Hello Producthunters!
+      </header>
+
+      <p>
+        We created CloudChart to help founders solve problems they face everyday.
+        We have found valuable insights by founders, investors and experts, and
+        put them toghether into relevant collections.
+      </p>
+
+      <div className="ph-logo" />
+
+      <a href="/collections" className="button">
+        Open Collections
+      </a>
+    </section>
+
+
 
   renderGuide: ->
     return null #if @props.isAuthorized
@@ -66,7 +98,8 @@ module.exports = React.createClass
     <section className="landing">
       <Greeting />
       { @renderHeader() }
-      <FeaturedInsights />
+      { @renderFeaturedInsights() }
+      { @renderProductHuntHeader() }
       { @renderAuthorizedContent() }
       { @renderFooter() }
       { @renderGuide() }
