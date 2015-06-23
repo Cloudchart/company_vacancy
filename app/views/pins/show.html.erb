@@ -1,5 +1,5 @@
 <% set_meta_tags_for_social_networks(
-  title: "#{@pin.post.company.name}, #{@pin.post.title}",
+  title: @pin.post.present? ? "#{@pin.post.company.name}, #{@pin.post.title}" : "Insight by #{@pin.user.full_name}",
   description: @pin.content,
   image: @pin.preview.try(:url),
   url: insight_url(@pin)
