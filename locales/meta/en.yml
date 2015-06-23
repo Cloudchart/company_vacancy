@@ -1,11 +1,11 @@
 en:
   meta: 
-    app_description: "Bite-size advice for founders. Collect advices by successful founders, investors and experts. Use them to grow your business."
+    app_description: "Bite-size insights for founders. Collect insights by successful founders, investors and experts. Use them to solve problems you face every day."
     company:
-      description: "Explore %{name}'s timeline on CloudChart to find out advices on how it's growing. Collect successful founers' advices and use them to grow your own business."
+      description: "Explore %{name}'s timeline on CloudChart to find out insights on how it's growing. Collect insights by successful founders and use them to solve problems you face every day."
     pinboard:
       title: "%{title} on CloudChart"
-      description: "%{title} is a collection of bite-size advices for founders created on CloudChart. Discover more collections, create your own and use them to grow your business."
+      description: "%{title} is a collection of insights for founders created on CloudChart. Discover more collections, create your own, share with your team and the community."
     user: 
       title: "%{name} @%{twitter} at CloudChart"
-      description: "%{name} is growing their business using advices for founders on CloudChart. Explore the collections and join to create your own."
+      description: "%{name} uses insights for founders on CloudChart. Explore helpful insight collections and join to create your own."
