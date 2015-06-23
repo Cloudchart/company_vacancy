@@ -165,6 +165,7 @@ module.exports = React.createClass
   renderOthersLink: ->
     users = @getEditors()
     users_size = users.size
+    return null unless users_size
     return null if users_size == 0
 
     link = if users_size == 1
@@ -197,7 +198,7 @@ module.exports = React.createClass
   renderHeader: ->
     <header>
       <h1>
-        { @getPinboard().get('title') } 
+        { @getPinboard().get('title') }
         <span> by </span>
         <a href={ @getOwner().get('user_url') }>{ @getOwner().get('full_name') }</a>
         { @renderOthersLink() }
@@ -230,7 +231,7 @@ module.exports = React.createClass
   renderDescription: ->
     description = @getPinboard().get('description')
     return null unless description
-    
+
     <div className="description">{ description }</div>
 
 
