@@ -135,5 +135,6 @@ $card-hr: 1px solid whitesmoke;
 
   .human {
     @extend .cloud-card-human;
+    width: 50%;
   }
 }
