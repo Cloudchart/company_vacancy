@@ -19,11 +19,10 @@ module.exports = React.createClass
   # Helpers
   #
   shouldRenderShareButton: ->
-    @props.insight.is_suggestion ||
-    (
-      @props.insight.parent_id is null and @props.insight.pinnable_id and
-      @props.insight.content and @props.insight.is_approved
-    )
+    return true
+
+    @props.insight.parent_id is null and @props.insight.pinnable_id and
+    @props.insight.content and @props.insight.is_approved
 
 
   # Handlers

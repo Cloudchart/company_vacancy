@@ -136,12 +136,10 @@ module.exports = React.createClass
     <EditPinButton uuid={ @props.uuid } />
 
   renderButtons: (insight) ->
-    effective_insight = if @isSuggested() then @props.cursor.pin else insight # TODO: change in future versions for siggested insight
-
     <ul className="round-buttons">
       { @renderApproveButton() }
       { @renderEditButton() }
-      <ShareInsightButton insight = { effective_insight.deref().toJS() } />
+      <ShareInsightButton insight = { @props.cursor.pin.deref().toJS() } />
       <PinButton {...@gatherAttributes()} title={ insight.get('content') } showHotzone = { @props.showHotzone } />
     </ul>
 

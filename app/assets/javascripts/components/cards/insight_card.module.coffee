@@ -100,12 +100,12 @@ module.exports = React.createClass
   isInsightEmpty: (insight) ->
     Object.keys(insight).length is 0
 
-  gatherPinAttributes: (insight) ->
-    uuid: insight.uuid
-    parent_id: insight.parent_id
-    pinnable_id: insight.pinnable_id
-    pinnable_type: insight.pinnable_type
-    title: insight.content
+  gatherPinAttributes: (pin, insight) ->
+    uuid:           insight.uuid
+    parent_id:      insight.parent_id
+    pinnable_id:    pin.pinnable_id
+    pinnable_type:  pin.pinnable_type
+    title:          insight.content
 
   openShareWindow: (url) ->
     window.open(url, '_blank', 'location=yes,width=640,height=480,scrollbars=yes,status=yes')
@@ -168,21 +168,25 @@ module.exports = React.createClass
   # Main render
   #
   render: ->
-    insight = @getInsight()
+    pin     = @getInsight()
 
-    if @isInsightEmpty(insight)
+    if @isInsightEmpty(pin)
       <article className="insight-card placeholder"/>
     else
+      insight = if pin.parent_id then PinStore.get(pin.parent_id).toJS() else pin
+
       articte_classes = cx
         'insight-card': true
         modal: @props.renderedInsideModal
+
+      attributes = @gatherPinAttributes(pin, insight)
 
       <article className={articte_classes}>
         { <CloseModalButton shouldDisplay = { @props.renderedInsideModal } /> }
 
         <section className="content">
           <InsightContent
-            pinnable_id = { insight.pinnable_id }
+            pinnable_id = { pin.pinnable_id }
             pin_id = { insight.uuid }
           />
 
@@ -195,7 +199,7 @@ module.exports = React.createClass
 
           <ul className="round-buttons">
             <EditPinButton uuid={ insight.uuid } />
-            <PinButton {...@gatherPinAttributes(insight)} />
+            <PinButton {...attributes} />
           </ul>
         </section>
 

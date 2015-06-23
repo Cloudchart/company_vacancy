@@ -1,4 +1,5 @@
 <%
+  @pin = @pin.parent if @pin.parent.present?
   content_size = @pin.content.size
 
   classes_for_content = {
