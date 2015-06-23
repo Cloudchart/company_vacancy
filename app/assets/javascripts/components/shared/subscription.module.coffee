@@ -141,6 +141,7 @@ module.exports = React.createClass
 
   render: ->
     return null unless @isLoaded()
+    return null unless @props.cursor.user.get('twitter')
 
     if @isSubscribed()
       @renderPlaceholder()
