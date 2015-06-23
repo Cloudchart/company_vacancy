@@ -100,6 +100,16 @@ module.exports = React.createClass
     else if @cursor.pin.get('content')
       @cursor.pin
 
+  getInsightForShare: ->
+    if @cursor.pin.get('parent_id')
+      if @cursor.pin.get('is_suggestion', false)
+        @cursor.pin
+      else
+        PinStore.cursor.items.cursor(@cursor.pin.get('parent_id'))
+    else if @cursor.pin.get('content')
+      @cursor.pin
+
+
   isClickable: ->
     _.isFunction(@props.onClick)
 
@@ -121,9 +131,7 @@ module.exports = React.createClass
 
 
   renderShareButton: ->
-    return null
-
-    return null unless insight = @getInsight()
+    return null unless insight = @getInsightForShare()
 
     <ShareInsightButton insight = { insight.deref().toJS() } />
 
