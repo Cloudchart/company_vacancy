@@ -2,15 +2,9 @@ namespace :cc do
 
   task generate_insight_preview: :environment do
     Pin.transaction do
-      Pin.insights.find_in_batches do |insights|
-        insights.each do |insight|
-          PreviewWorker.perform_async('Pin', insight.id)
-        end
-      end
-
-      Pin.where(is_suggestion: true).find_in_batches do |insights|
-        insights.each do |insight|
-          PreviewWorker.perform_async('Pin', insight.id)
+      Pin.find_in_batches do |pins|
+        pins.each do |pin|
+          PreviewWorker.perform_async('Pin', pin.id)
         end
       end
     end
