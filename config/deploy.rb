@@ -129,6 +129,8 @@ namespace :cc do
 end
 
 def post_to_slack_channel(action_name)
+  return unless webhook_url = ENV['SLACK_DEFAULT_WEBHOOK_URL']
+
   payload = {
     channel: '#develop',
     username: 'cloudchart',
@@ -136,5 +138,5 @@ def post_to_slack_channel(action_name)
     icon_emoji: ":cloudchart_#{fetch(:stage)}:"
   }
 
-  "curl -X POST --data-urlencode 'payload=#{payload.to_json}' #{ENV['SLACK_DEFAULT_WEBHOOK_URL']}"
+  "curl -s -X POST --data-urlencode 'payload=#{payload.to_json}' #{webhook_url}"
 end
