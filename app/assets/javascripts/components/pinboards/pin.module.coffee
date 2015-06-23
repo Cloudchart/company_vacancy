@@ -19,6 +19,7 @@ PinnablePost    = require('components/pinnable/post')
 PinButton       = require('components/pinnable/pin_button')
 EditPinButton   = require('components/pinnable/edit_pin_button')
 InsightContent  = require('components/pinnable/insight_content')
+ShareInsightButton = require('components/insight/share_button')
 
 
 # Utils
@@ -95,7 +96,7 @@ module.exports = React.createClass
   #
   getInsight: ->
     if @cursor.pin.get('parent_id')
-      PinStore.getParentFor(@props.uuid)
+      PinStore.cursor.items.cursor(@cursor.pin.get('parent_id'))#getParentFor(@props.uuid)
     else if @cursor.pin.get('content')
       @cursor.pin
 
@@ -118,6 +119,12 @@ module.exports = React.createClass
 
     <EditPinButton uuid={ @getInsight().get('uuid') } />
 
+
+  renderShareButton: ->
+    return null unless insight = @getInsight()
+
+    <ShareInsightButton insight = { insight.deref().toJS() } />
+
   renderPinButton: ->
     return null unless insight = @getInsight()
 
@@ -126,6 +133,7 @@ module.exports = React.createClass
   renderInsightControls: (insight) ->
     <ul className="round-buttons">
       { @renderEditButton() }
+      { @renderShareButton() }
       { @renderPinButton() }
     </ul>
 
