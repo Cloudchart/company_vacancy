@@ -1,4 +1,4 @@
-json.(feature, :uuid, :assigned_title, :category)
+json.(feature, :uuid, :assigned_title, :category, :position)
 json.(feature, :featurable_id, :featurable_type)
 json.(feature, :created_at)
 

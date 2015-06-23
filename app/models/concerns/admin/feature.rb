@@ -29,6 +29,8 @@ module Admin::Feature
             bindings[:object].display_types.to_sentence
           end
         end
+
+        field :position
       end
 
       edit do
@@ -50,6 +52,8 @@ module Admin::Feature
         field :display_types do
           partial :display_types
         end
+
+        field :position
       end
 
     end

@@ -98,7 +98,7 @@ module.exports = React.createClass
 
   renderPosts: ->
     @cursor.features
-      .sortBy (feature) -> - +feature.get('created_at')
+      .sortBy (feature) -> feature.get('position')
       .map (feature, index) =>
         pin = PinStore.cursor.items.filter (pin) ->
           pin.get('uuid') == feature.get('featurable_id')
