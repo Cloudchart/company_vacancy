@@ -25,16 +25,20 @@ end
 json_edge! json, :context, edges do
   preload_associations(siblings, cache, post: :company)
 
-  {
-    post: {
-      id:     pin.post.id,
-      title:  pin.post.title,
-      url:    main_app.post_url(pin.post)
-    },
-    company: {
-      id:     pin.post.company.id,
-      title:  pin.post.company.name,
-      url:    main_app.company_url(pin.post.company)
+  if pin.post.present? && pin.post.company.present?
+    {
+      post: {
+        id:     pin.post.id,
+        title:  pin.post.title,
+        url:    main_app.post_url(pin.post)
+      },
+      company: {
+        id:     pin.post.company.id,
+        title:  pin.post.company.name,
+        url:    main_app.company_url(pin.post.company)
+      }
     }
-  }
+  else
+    {}
+  end
 end
