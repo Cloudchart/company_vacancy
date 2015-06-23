@@ -121,6 +121,8 @@ module.exports = React.createClass
 
 
   renderShareButton: ->
+    return null
+
     return null unless insight = @getInsight()
 
     <ShareInsightButton insight = { insight.deref().toJS() } />
