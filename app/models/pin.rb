@@ -37,7 +37,7 @@ class Pin < ActiveRecord::Base
 
 
   def should_validate_content_presence?
-    @update_by.present? && user_id != @update_by.uuid && !is_suggestion
+    parent.blank? || ( @update_by.present? && user_id != @update_by.uuid && !is_suggestion )
   end
 
 
