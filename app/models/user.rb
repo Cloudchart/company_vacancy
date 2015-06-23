@@ -242,7 +242,7 @@ private
   end
 
   def create_tour_tokens
-    tokens << [Token.new(name: :welcome_tour), Token.new(name: :insight_tour)]
+    tokens.create(name: :insight_tour)
   end
 
   def create_unicorn_role
