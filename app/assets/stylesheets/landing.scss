@@ -20,11 +20,15 @@
 
       > h1 {
         font-size: $great-font-size;
+        margin-left: 25px;
+        margin-right: 25px;
       }
 
       > h2 {
         font-size: 30px;
-        width: 1000px;
+        max-width: 1000px;
+        margin-left: 25px;
+        margin-right: 25px;
       }
     }
 
@@ -36,7 +40,7 @@
       padding: 24px 32px;
       position: relative;
       text-align: center;
-      width: 1000px;
+      max-width: 1000px;
 
       > header {
         font-size: 54px;

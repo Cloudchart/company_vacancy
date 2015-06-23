@@ -57,7 +57,7 @@ module.exports = React.createClass
 
       <div className="ph-logo" />
 
-      <a href="/collections" className="button">
+      <a href={ @props.productHuntURL } className="button">
         Open Collections
       </a>
     </section>
