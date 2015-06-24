@@ -30,7 +30,7 @@ module.exports = React.createClass
 
     <header>
       <h1>Bite-size insights for founders</h1>
-      <h2>Discover relevant insights by successful founders, investors, and experts. Create your own collections. Share with your team and the community.</h2>
+      <h2>Discover helpful insights by successful founders, investors, and experts. Create your own collections. Share with your team and the community.</h2>
     </header>
 
 
