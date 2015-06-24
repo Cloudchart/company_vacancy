@@ -49,9 +49,9 @@ module.exports = React.createClass
   #
   renderTitleInput: ->
     <label className="cc-input-label">
-      <input 
+      <input
         className   = 'cc-input'
-        placeholder = 'Enter title here'
+        placeholder = 'Collection name'
         onChange    = { @handleInputChange.bind(@, 'title') }
         value       = { @state.attributes.get('title', '') }  />
     </label>
@@ -60,7 +60,7 @@ module.exports = React.createClass
     <form onSubmit={ @handleSubmit } >
       { @renderTitleInput() }
 
-      <SyncButton 
+      <SyncButton
         className = "cc"
         text      = "Create"
         sync      = { @state.isSyncing } />
@@ -72,7 +72,7 @@ module.exports = React.createClass
   render: ->
     <section className="form-modal">
       <header>
-        Please, enter collection title
+        Name your collection
       </header>
       { @renderForm() }
     </section>

@@ -330,7 +330,7 @@ module.exports = React.createClass
       .valueSeq()
 
     if @isCurrentUserSystemEditor()
-      pinboards = pinboards.concat [<option key="new" value="new">Create Category</option>]
+      pinboards = pinboards.concat [<option key="new" value="new">Create collection</option>]
 
     pinboards
 
@@ -361,7 +361,7 @@ module.exports = React.createClass
           autoFocus   = "true"
           value       = { @state.attributes.get('pinboard_title') }
           onChange    = { @handleChange.bind(@, 'pinboard_title') }
-          placeholder = "Pick a name"
+          placeholder = "Enter collection name"
         />
       </div>
     </label>
