@@ -115,10 +115,24 @@ module.exports = React.createClass
     @state.fetchDone == true
 
 
+  highlightContent: ->
+    textarea = @getDOMNode().querySelector('label.comment')
+    snabbt(textarea, 'attention', {
+      position: [50, 0, 0],
+      springConstant: 2.4,
+      springDeceleration: 0.9
+    })
+
   handleSubmit: (event) ->
     event.preventDefault()
 
     return unless @state.attributes.get('user_id', false)
+
+    unless @state.attributes.get('parent_id')
+      unless @state.attributes.get('content')
+        @highlightContent()
+        return false
+
 
     system_pinboard_ids = PinboardStore.system().keySeq()
     pinboard_id         = @state.attributes.get('pinboard_id')
