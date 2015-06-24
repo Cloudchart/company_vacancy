@@ -18,12 +18,12 @@ CompanyStore       = require('stores/company_store.cursor')
 
 
 EmptyTabTexts =
-  feedOwn:        "Follow people and companies you're interested in to learn from them"
-  feedOther:      "This person doesn't follow any people and companies yet"
-  insightsOwn:    "Collect successful founders' insights and put them to action"
-  insightsOther:  "This person hasn't added any insights yet"
-  pinboardsOwn:   "Follow our most popular collections to start, or, create your own"
-  pinboardsOther: "This person has no collections yet"
+  feedOwn:        "Follow people and companies you're interested in to learn from them."
+  feedOther:      "This person doesn't follow any people and companies yet."
+  insightsOwn:    "Add helpful insights. Share with your team and the community."
+  insightsOther:  "This person hasn't added any insights yet."
+  pinboardsOwn:   "Follow our most popular collections to start, or, create your own."
+  pinboardsOther: "This person has no collections yet."
   companiesOwn:   ->
     <span>
       Want to see your company on CloudChart? <a href="mailto:team@cloudchart.co?subject=I want to see my company on CloudChart">Let us know</a>
