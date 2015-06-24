@@ -4,6 +4,7 @@ class UrlValidator < ActiveModel::EachValidator
   end
 
   def url_valid?(url)
+    url = url.to_s
     url = 'http://' + url unless url.match(/http:\/\/|https:\/\//)
     uri = URI.parse(url) rescue false
     uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS)
