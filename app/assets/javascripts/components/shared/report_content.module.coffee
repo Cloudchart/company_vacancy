@@ -29,6 +29,7 @@ module.exports = React.createClass
   getInitialState: ->
     url: location.href
     reason: ''
+    errors: {}
 
 
   # Lifecycle Methods
@@ -51,13 +52,16 @@ module.exports = React.createClass
   # 
   handleSubmit: (event) ->
     event.preventDefault()
-    NotificationsPushApi.report_content(url: @state.url, reason: @state.reason).then(@handleSubmitDone, @handleSubmitFail)
+
+    NotificationsPushApi
+      .report_content(url: @state.url, reason: @state.reason)
+      .then(@handleSubmitDone, @handleSubmitFail)
 
   handleSubmitDone: ->
     console.log 'handleSubmitDone'
 
-  handleSubmitFail: ->
-    console.log 'handleSubmitFail'
+  handleSubmitFail: (xhr) ->
+    @setState errors: xhr.responseJSON.errors
 
   handleUrlChange: (event) ->
     @setState url: event.target.value
@@ -71,7 +75,9 @@ module.exports = React.createClass
 
   # Renderers
   # 
-  # renderSomething: ->
+  renderErrors: (attribute) ->
+    return null unless errors = @state.errors[attribute]
+    <span className="error">{ errors.join(', ') }</span>
 
 
   # Main render
@@ -92,6 +98,7 @@ module.exports = React.createClass
             placeholder = "Tap to add URL"
             onChange = { @handleUrlChange }
           />
+          { @renderErrors('url') }
         </label>
 
         <label>
@@ -102,6 +109,7 @@ module.exports = React.createClass
             placeholder = "Tap to add reporting reason"
             onChange = { @handleReasonChange }
           />
+          { @renderErrors('reason') }
         </label>
       </fieldset>
 
