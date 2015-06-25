@@ -6,7 +6,7 @@ UserStore         = require('stores/user_store.cursor')
 CompanyStore      = require('stores/company_store.cursor')
 
 CompanyPreview    = require('components/company/preview')
-PinboardPreview   = require('components/pinboards/pinboard')
+PinboardPreview   = require('components/cards/pinboard_card')
 FeaturedPinboard  = require('components/landing/featured_pinboard')
 
 
@@ -71,7 +71,7 @@ module.exports = React.createClass
 
   renderPinboard: (pinboard) ->
     <div className="item" key={ pinboard.get('id') }>
-      <PinboardPreview uuid={ pinboard.get('id') } />
+      <PinboardPreview pinboard={ pinboard.get('id') } />
     </div>
 
 

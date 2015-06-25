@@ -36,3 +36,21 @@ json_edge! json, :pins_ids, edges do
   preload_associations(siblings, cache, :pins)
   pinboard.pins.map(&:id)
 end
+
+
+json_edge! json, :pins_count, edges do
+  preload_associations(siblings, cache, :pins)
+  pinboard.pins.size
+end
+
+
+json_edge! json, :readers_count, edges do
+  preload_associations(siblings, cache, :readers, :writers, :followers)
+  pinboard.readers.size + pinboard.writers.size + pinboard.followers.size
+end
+
+
+json_edge! json, :is_followed, edges do
+  preload_associations(siblings, cache, :followers)
+  pinboard.followers.map(&:user_id).include?(current_user.id)
+end
