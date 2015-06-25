@@ -1,7 +1,12 @@
 $modal-splash-width: 480px;
 
 .modal-container > .splash {
-  @include close-modal-button;
+  > button.close {
+    @include position(absolute, 0px 10px 0 0);
+
+    font-size: 36px;
+    color: hsl(139, 54%, 51%);
+  }
 
   position: relative;
   font-size: 20px;
