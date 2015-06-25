@@ -30,3 +30,9 @@ json.tokens begin
 
   pinboard.invite_tokens
 end
+
+
+json_edge! json, :pins_ids, edges do
+  preload_associations(siblings, cache, :pins)
+  pinboard.pins.map(&:id)
+end

@@ -1,6 +1,7 @@
 class Pinboard < ActiveRecord::Base
   include Uuidable
   include Previewable
+  include Preloadable
   include Tire::Model::Search
   include Tire::Model::Callbacks
   include Admin::Pinboard
@@ -20,6 +21,8 @@ class Pinboard < ActiveRecord::Base
   has_many :users, through: :roles
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
+
+  scope :important, -> { where(is_important: true) }
 
   # Roles on Users
   #

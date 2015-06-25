@@ -1,0 +1,112 @@
+$cc-container-common-content-width: 1024px;
+
+.cc-container-common {
+  margin-bottom: 24px;
+
+  > * {
+    margin: auto;
+    padding: 0 24px;
+    width: $cc-container-common-content-width;
+  }
+
+  > .full-width {
+    width: 100%;
+
+    > .content {
+      margin: auto;
+      padding: 0 24px;
+      width: $cc-container-common-content-width;
+
+      &.columns {
+        @include display(flex);
+
+        padding-right: 12px;
+        padding-bottom: 24px;
+        padding-left: 12px;
+
+        > .item {
+          @include flex(1);
+
+          padding: 24px 12px 0;
+
+          > .stack {
+            @include position(relative);
+
+            > * {
+              @include position(absolute, 0px null null 0px);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  > .flow {
+    @include display(flex);
+    @include flex-wrap(wrap);
+
+    padding-right: 12px;
+    padding-left: 12px;
+
+    > .item {
+      padding: 24px 12px 0;
+      width: 50%;
+    }
+  }
+
+  > header {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-wrap(wrap);
+
+    font-weight: 300;
+    position: relative;
+
+    &.padded {
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+
+    h1, h2 {
+      @include flex-grow(1);
+
+      font-weight: inherit;
+      margin: 0;
+    }
+
+    h1 ~ h2 {
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 100;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    > button.close {
+      @include position(absolute, 0px 0px null null);
+    }
+  }
+}
+
+// Product Hunt Full Width Content
+
+.cc-container-common.producthunt {
+  > header h1 {
+    font-size: 36px;
+    font-weight: 600;
+  }
+}
+
+.cc-container-common.producthunt  > section.full-width {
+  background: asset_url('ph-feature.jpg') no-repeat bottom center;
+  background-size: cover;
+
+  .item {
+    @include transition(opacity 1s ease-in-out);
+  }
+}
