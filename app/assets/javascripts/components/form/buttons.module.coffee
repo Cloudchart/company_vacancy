@@ -61,7 +61,8 @@ CloseModalButton = React.createClass
   getDefaultProps: ->
     shouldDisplay: true
 
-  handleClick: ->
+  handleClick: (event) ->
+    event.preventDefault()
     require('components/modal_stack').hide()
 
   render: ->

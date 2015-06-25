@@ -1,8 +1,10 @@
 $modal-splash-width: 480px;
 
 .modal-container > .splash {
+  @include close-modal-button;
 
-  font-size: $modal-form-font-size * 1.25;
+  position: relative;
+  font-size: 20px;
   padding: 20px;
   text-align: center;
   width: $modal-splash-width;
@@ -24,10 +26,6 @@ $modal-splash-width: 480px;
   
   a {
     text-decoration: none;
-  }
-  
-  button {
-    @include modal-form-button;
   }
   
 }

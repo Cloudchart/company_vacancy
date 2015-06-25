@@ -30,5 +30,6 @@ CloudApi::Engine.routes.draw do
 
   get '/search', controller: :search, action: :index
 
+  post :report_content, controller: :notifications, action: :report_content
 
 end

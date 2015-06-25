@@ -14,3 +14,4 @@ en:
       first_time_logged_in: "%{name} <https://twitter.com/%{twitter}|@%{twitter}> logged in for the first time"
       invited_user_to_app: "%{name} <%{twitter_url}|@%{twitter}> invited <%{invitee_twitter_url}|@%{invitee_twitter}> to join CloudChart as %{roles}"
       visited_page: "%{name} <%{twitter_url}|@%{twitter}> visited <%{page_url}|%{page_title}>"
+      reported_content: "%{name} <%{twitter_url}|@%{twitter}> reported content on <%{reported_url}|%{reported_url}> with the following reason: %{reason}"
