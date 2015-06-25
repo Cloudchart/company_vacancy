@@ -4,6 +4,7 @@
 # 
 CloseModalButton = require('components/form/buttons').CloseModalButton
 ModalStack = require('components/modal_stack')
+ModalSplash = require('components/shared/modal_splash')
 NotificationsPushApi = require('push_api/notifications_push_api')
 
 # Utils
@@ -31,6 +32,7 @@ module.exports = React.createClass
     reason: ''
     errors: {}
     isSyncing: false
+    isSubmitSuccessful: false
 
 
   # Lifecycle Methods
@@ -62,10 +64,7 @@ module.exports = React.createClass
 
   handleSubmitDone: ->
     @setState
-      isSyncing: false
-      errors: {}
-
-    # TODO: render text about success
+      isSubmitSuccessful: true
 
   handleSubmitFail: (xhr) ->
     @setState
@@ -103,6 +102,9 @@ module.exports = React.createClass
   # Main render
   # 
   render: ->
+    if @state.isSubmitSuccessful
+      return <ModalSplash message = { "Thank you! We've received your report and will review it shortly." } />
+
     <form className="cc modal report-content" onSubmit={ @handleSubmit }>
       <CloseModalButton/>
 
