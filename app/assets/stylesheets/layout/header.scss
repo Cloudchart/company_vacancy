@@ -30,7 +30,7 @@ $header-button-height: 50px - $header-padding * 2;
   // background-color: #000;
   background-repeat: no-repeat;
   background-position: center top;
-  background-size: cover;
+  background-size: contain;
   height: $header-logo-height;
   margin: $header-logo-margins;
   margin-right: $header-padding;
@@ -249,11 +249,11 @@ body > header.inverse {
     > header {
 
       &.inverse .logo {
-        background-image: image-url('#{$env}/cloudchart-logo-neg.svg');
+        background-image: image-url('#{$env}/insights-neg.svg');
       }
 
       .logo {
-        background-image: image-url('#{$env}/cloudchart-logo.svg');
+        background-image: image-url('#{$env}/insights.svg');
       }
 
       .title, .auth, .company-name {
