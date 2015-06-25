@@ -45,7 +45,9 @@ module.exports = React.createClass
 
   switchInsight: ->
     stackIndex    = parseInt(Math.random() * 10 % StacksCount)
-    stackNode     = @refs['stack-' + stackIndex].getDOMNode()
+    stackRef      = @refs['stack-' + stackIndex]
+    return unless stackRef
+    stackNode     = stackRef.getDOMNode()
     insightIndex  = parseInt(Math.random() * 10 % stackNode.childNodes.length) || 0
 
     @setState
