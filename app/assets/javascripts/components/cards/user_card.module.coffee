@@ -21,7 +21,11 @@ module.exports = React.createClass
     queries:
       user: ->
         """
-          User {}
+          User {
+            edges {
+              nothing
+            }
+          }
         """
 
   fetch: ->

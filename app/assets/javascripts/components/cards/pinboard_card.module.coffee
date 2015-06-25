@@ -30,7 +30,9 @@ module.exports = React.createClass
       pinboard: ->
         """
           Pinboard {
-            user,
+            user {
+              #{UserCard.getQuery('user')}
+            },
             edges {
               readers_count,
               pins_count,
