@@ -103,11 +103,11 @@ module.exports = React.createClass
 
 
   renderInsight: (stackIndex, insight, i) ->
-    id        = insight.get('parent_id') || insight.get('uuid')
+    id        = insight.get('uuid')
     opacity   = if (@state.opacityIndices.get(stackIndex) || 0) == i then 1 else 0
 
     <div key={ id } className="item" style={ opacity: opacity }>
-      <InsightPreview uuid={ id } />
+      <InsightPreview uuid={ id } skipRenderComment={ true } />
     </div>
 
 

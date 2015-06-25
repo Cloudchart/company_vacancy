@@ -176,6 +176,7 @@ module.exports = React.createClass
       uuid       = { @cursor.pin.get('user_id') } />
 
   renderComment: ->
+    return null if @props.skipRenderComment
     return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid) ||
       (!@cursor.pin.get('content') && !@props.showAuthor)
 
