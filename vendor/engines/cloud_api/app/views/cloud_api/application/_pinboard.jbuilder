@@ -37,6 +37,7 @@ end
 
 json_edge! json, :twitter_share_url, edges do
   twitter_share_url(main_app.collection_url(pinboard))
+end
 
 json_edge! json, :pins_ids, edges do
   preload_associations(siblings, cache, :pins)
