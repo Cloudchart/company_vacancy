@@ -5,6 +5,7 @@ GlobalState     = require('global_state/state')
 PinboardStore   = require('stores/pinboard_store')
 PinStore        = require('stores/pin_store')
 
+FollowButton    = require('components/pinboards/follow_button')
 InsightPreview  = require('components/pinboards/pin')
 
 StacksCount               = 3
@@ -24,9 +25,12 @@ module.exports = React.createClass
       pinboard: -> # TODO: Rewrite Insight
         """
           Pinboard {
+            #{FollowButton.getQuery('pinboard')},
+
             pins {
               #{InsightPreview.getQuery('pin')}
             },
+
             edges {
               pins_ids
             }
@@ -97,8 +101,12 @@ module.exports = React.createClass
     return null unless @cursor.pinboard.deref(false)
 
     <header className="padded">
-      <h1>{ @cursor.pinboard.get('title') } &mdash;</h1>
-      <button className="cc follow">Follow</button>
+      <h1>
+        <a href={ @cursor.pinboard.get('url') } className="see-through">
+          { @cursor.pinboard.get('title') } &mdash;
+        </a>
+      </h1>
+      <FollowButton pinboard={ @props.pinboard } />
     </header>
 
 

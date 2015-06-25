@@ -4,14 +4,10 @@
 GlobalState     = require('global_state/state')
 cx              = React.addons.classSet
 
-SyncApi         = require('sync/pinboard_sync_api')
-
 PinboardStore   = require('stores/pinboard_store')
 
 UserCard        = require('components/cards/user_card')
-Buttons         = require('components/form/buttons')
-AuthButton      = Buttons.AuthButton
-SyncButton      = Buttons.SyncButton
+FollowButton    = require('components/pinboards/follow_button')
 
 pluralize       = require('utils/pluralize')
 
@@ -43,16 +39,6 @@ module.exports = React.createClass
           }
         """
 
-      pinboard_follow_state: ->
-        """
-          Pinboard {
-            edges {
-              is_followed
-            }
-          }
-        """
-
-
   fetch: ->
     GlobalState.fetch(@getQuery('pinboard'), { id: @props.pinboard }).done =>
       @setState
@@ -70,21 +56,7 @@ module.exports = React.createClass
 
 
   getInitialState: ->
-    ready:        false
-    followSync:   false
-
-
-  # Events
-  #
-
-  handleFollowClick: ->
-    @setState
-      followSync: true
-
-    SyncApi.follow(@props.pinboard).done =>
-      GlobalState.fetch(@getQuery('pinboard_follow_state'), { id: @props.pinboard, force: true }).done =>
-        @setState
-          followSync: false
+    ready: false
 
 
   # Renderers
@@ -99,24 +71,6 @@ module.exports = React.createClass
     <i className={ className } />
 
 
-  renderFollowButton: ->
-    is_followed = @cursor.pinboard.get('is_followed')
-
-    className = cx
-      'cc follow':    true
-      'is_followed':  is_followed
-
-    <AuthButton>
-      <SyncButton
-        className   = className
-        text        = { if is_followed then "Following" else "Follow" }
-        onClick     = { @handleFollowClick }
-        sync        = { @state.followSync }
-        disabled    = is_followed
-      />
-    </AuthButton>
-
-
   renderHeader: ->
     url = @cursor.pinboard.get('url')
 
@@ -126,7 +80,7 @@ module.exports = React.createClass
           { @cursor.pinboard.get('title') }
           { @renderAccessRightsIcon() }
         </a>
-        { @renderFollowButton() }
+        <FollowButton pinboard={ @props.pinboard } />
       </h1>
       <h2>
         <a href={ url } className="see-through">
