@@ -52,7 +52,7 @@ module.exports = React.createClass
         """
 
   getDefaultProps: ->
-    cursor: 
+    cursor:
       modal: ModalStackCursor
       user:  UserStore.me()
 
@@ -112,7 +112,7 @@ module.exports = React.createClass
 
         formatted_date = FuzzyDate.format(post.get('effective_from'), post.get('effective_till'))
 
-        <article 
+        <article
           className = "featured-post-preview"
           key       = { index } >
           { @renderBackgroundImage(feature) }
@@ -125,11 +125,11 @@ module.exports = React.createClass
               </header>
             </a>
             <div>
-              <InsightItem 
+              <InsightItem
                 cursor      = { InsightItem.getCursor(pin.get('uuid')) }
                 showHotzone = { false }
                 uuid        = { pin.get('uuid') } />
-            </div> 
+            </div>
           </div>
         </article>
       .toArray()
@@ -138,11 +138,9 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
 
-    <Carousel 
+    <Carousel
       className         = "featured-insights"
       withSlideshow     = { true }
       isSlideshowPaused = { !!ModalStackCursor.deref(Immutable.List()).size } >
       { @renderPosts() }
     </Carousel>
-    
-    

@@ -13,9 +13,21 @@
   > footer {
     @include align-items(flex-end);
     @include display(flex);
+    @include flex-wrap(wrap);
     @include justify-content(space-between);
 
     width: 100%;
+
+    > .human {
+      @include flex-grow(1);
+    }
+
+    > ul.round-buttons {
+      margin-top: 12px;
+      text-align: right;
+      white-space: nowrap;
+      width: 100%;
+    }
   }
 
 }

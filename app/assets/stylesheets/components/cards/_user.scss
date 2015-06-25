@@ -1,0 +1,41 @@
+.user-card {
+  @include align-items(center);
+  @include display(flex);
+
+  > a > figure {
+    background-color: hsl(137, 54%, 50%);
+    background-position: center center;
+    background-size: cover;
+    border-radius: 50%;
+    color: white;
+    height: 50px;
+    line-height: 50px;
+    margin-right: 10px;
+    overflow: hidden;
+    text-align: center;
+    width: 50px;
+
+    > figcaption {
+      font-size: 25px;
+      font-weight: 100;
+    }
+  }
+
+  > section {
+    font-weight: 300;
+
+    > p {
+      margin: 0;
+
+      &.name {
+        font-size: 16px;
+      }
+
+      &.occupation {
+        color: hsl(0, 0%, 53%);
+        font-size: 12px;
+      }
+    }
+  }
+
+}

@@ -137,7 +137,7 @@ module.exports = React.createClass
 
   handleFollowDone: ->
     # TODO rewrite with grabbing only needed favorite
-    @fetchFavorites(force: true).then => 
+    @fetchFavorites(force: true).then =>
       @setState(sync: @state.sync.set('follow', false))
 
   handleFollowFail: ->
@@ -201,7 +201,7 @@ module.exports = React.createClass
   renderOwner: ->
     return <div /> if @cursor.pinboard.get('user_id') == @props.user_id
 
-    <Human 
+    <Human
       type = "user"
       uuid = { @cursor.pinboard.get('user_id') } />
 

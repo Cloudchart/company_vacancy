@@ -134,6 +134,17 @@ a {
     outline: 0;
   }
 
+  &.see-through {
+    @include transition(color 250ms ease-out);
+
+    color: inherit;
+    cursor: pointer;
+
+    &:hover {
+      color: $link-color;
+    }
+  }
+
   &.disabled {
     color: $black-color;
     opacity: 0.25;

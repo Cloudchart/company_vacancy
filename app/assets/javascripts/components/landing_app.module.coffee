@@ -1,6 +1,14 @@
 # @cjsx React.DOM
 
-GlobalState        = require('global_state/state')
+GlobalState       = require('global_state/state')
+
+UserStore         = require('stores/user_store.cursor')
+CompanyStore      = require('stores/company_store.cursor')
+
+CompanyPreview    = require('components/company/preview')
+PinboardPreview   = require('components/cards/pinboard_card')
+FeaturedPinboard  = require('components/landing/featured_pinboard')
+
 
 FeaturedInsights   = require('components/insight/featured')
 ImportantCompanies = require('components/company/lists/important')
@@ -18,89 +26,100 @@ module.exports = React.createClass
   propTypes:
     isAuthorized: React.PropTypes.bool
 
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+  statics:
+    queries:
+      viewer: ->
+        """
+          Viewer {
+            important_pinboards {
+              #{PinboardPreview.getQuery('pinboard')}
+            },
+            important_companies {
+              #{CompanyPreview.getQuery('company')}
+            },
+            edges {
+              important_pinboards,
+              important_companies
+            }
+          }
+        """
+
+
+  fetch: ->
+    GlobalState.fetch(@getQuery('viewer'))
+
+
   getDefaultProps: ->
+    cursor:
+      me:         UserStore.me()
+      companies:  CompanyStore.cursor.items
+
     isAuthorized: false
+
+
+  componentWillMount: ->
+    @fetch()
 
 
   # Renderers
   #
-  renderHeader: ->
-    return null if @props.isProductHunt
-    return null if @props.isAuthorized
-
-    <header>
-      <h1>Bite-size insights for founders</h1>
-      <h2>Discover helpful insights by successful founders, investors, and experts. Create your own collections. Share with your team and the community.</h2>
-    </header>
+  renderFeaturedPinboard: ->
+    <FeaturedPinboard pinboard={ @props.featured_pinboard } />
 
 
-  renderFeaturedInsights: ->
-    return null if @props.isProductHunt
-    <FeaturedInsights />
+  renderPinboard: (pinboard) ->
+    <div className="item" key={ pinboard.get('id') }>
+      <PinboardPreview pinboard={ pinboard.get('id') } />
+    </div>
 
 
-  renderProductHuntHeader: ->
-    return null unless @props.isProductHunt
-
-    <section className="producthunt">
-      <a href="/" className="close">×</a>
-
+  renderFeaturedPinboards: ->
+    <section className="cc-container-common">
       <header>
-        Hello Producthunters!
+        <h1>Featured Collections</h1>
+        <h2>Collect insights. Create your own collections. Share with your team and the community.</h2>
       </header>
 
-      <p>
-        We created CloudChart to help founders solve problems they face everyday.
-        We have found valuable insights by founders, investors and experts, and
-        put them toghether into relevant collections.
-      </p>
-
-      <div className="ph-logo" />
-
-      <a href={ @props.productHuntURL } className="button">
-        Open Collections
-      </a>
+      <section className="flow">
+        {
+          @props.cursor.me.get('important_pinboards', Immutable.Seq())
+            .sortBy (c) -> c.get('title')
+            .map @renderPinboard
+            .toArray()
+        }
+      </section>
     </section>
 
 
+  renderCompany: (company) ->
+    <div className="item" key={ company.get('id') }>
+      <CompanyPreview uuid={ company.get('id') } />
+    </div>
 
-  renderGuide: ->
-    return null #if @props.isAuthorized
 
-    <Guide />
+  renderFeaturedCompanies: ->
+    <section className="cc-container-common">
+      <header>
+        <h1>Featured Companies</h1>
+        <h2>Follow unicorns and learn how they are growing.</h2>
+      </header>
 
-  renderFooter: ->
-    return null #if @props.isAuthorized
-
-    <footer>
-      <a href="/auth/twitter" className="cc">Get advice</a>
-    </footer>
-
-  renderAuthorizedContent: ->
-    #return null unless @props.isAuthorized
-
-    <section className="authorized">
-      <ImportantPinboards
-        header = "Featured Collections"
-        description = "Explore collections of successful founders, investors and experts' advices. Use them to grow your business" />
-
-      <ImportantCompanies
-        header = "Featured Companies"
-        description = "Follow unicorns' timelines. Collect the insights on how they are growing" />
-
-      <Subscription
-        asBlock   = { true }
-        text      = "Subscribe to our weekly email to stay in the loop: get latest insights, most helpful collections and new CloudChart features." />
+      <section className="flow">
+        {
+          @props.cursor.me.get('important_companies', Immutable.Seq())
+            .sortBy (c) -> c.get('name')
+            .map @renderCompany
+            .toArray()
+        }
+      </section>
     </section>
 
 
   render: ->
-    <section className="landing">
-      <Greeting />
-      { @renderHeader() }
-      { @renderFeaturedInsights() }
-      { @renderProductHuntHeader() }
-      { @renderAuthorizedContent() }
-      { @renderFooter() }
-      { @renderGuide() }
-    </section>
+    <article className="landing">
+      { @renderFeaturedPinboard() }
+      { @renderFeaturedPinboards() }
+      { @renderFeaturedCompanies() }
+    </article>

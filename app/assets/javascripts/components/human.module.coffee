@@ -68,7 +68,7 @@ module.exports = React.createClass
   getLink: ->
     return null unless @props.showLink && @props.cursor.currentUser.get('twitter')
 
-    if @props.type == 'user' 
+    if @props.type == 'user'
       @cursor.get('user_url')
     else if @props.type == "person" && @cursor.get('is_verified')
       "/users/#{@cursor.get('twitter')}"
@@ -104,7 +104,7 @@ module.exports = React.createClass
 
   componentWillReceiveProps: (newProps) ->
     if !@props.uuid != newProps.uuid
-      @updateCursor(newProps)   
+      @updateCursor(newProps)
 
 
   # Renderers
@@ -158,7 +158,7 @@ module.exports = React.createClass
       <wrapper className="human for-group" href={ link }>
         <strong>
           { @getName() }
-          { ", " if @getOccupation() } 
+          { ", " if @getOccupation() }
         </strong>
         <span className="occupation">{ @getOccupation() }</span>
       </wrapper>

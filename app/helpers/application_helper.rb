@@ -28,7 +28,7 @@ module ApplicationHelper
   def link_with_class_for_current(name, path, class_name='')
     link_to name, path, class: "#{class_name}#{current_page?(path) ? ' current' : ''}"
   end
-  
+
   def class_for_main(content = nil)
     if content
       @view_flow.set(:class_for_main, content.to_s)
@@ -42,7 +42,7 @@ module ApplicationHelper
       @view_flow.set(:"class_for_#{name}", value.to_s)
     end
   end
-  
+
   def font_awesome(class_names, content = nil)
     class_names = class_names.split(' ').map { |class_name| "fa-#{class_name}"}.join(' ')
     content_tag(:i, content, class: "fa #{class_names}")
@@ -72,7 +72,7 @@ module ApplicationHelper
     if Rails.env.staging?
       raw "Soviet <strong>Union</strong>"
     else
-      raw "Cloud<strong>Chart</strong>"
+      raw "Insights.<strong>VC</strong>"
     end
   end
 

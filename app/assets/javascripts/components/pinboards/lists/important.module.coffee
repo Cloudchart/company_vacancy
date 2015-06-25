@@ -65,7 +65,7 @@ module.exports = React.createClass
     pinboardIds = PinboardStore.filterUserPinboards(@cursor.user.get('uuid')).map (pinboard) -> pinboard.get('uuid')
 
     PinboardStore
-      .filter (pinboard) => 
+      .filter (pinboard) =>
         pinboard.get('is_important') &&
         (!@props.filterSaved || !pinboardIds.contains(pinboard.get('uuid')))
       .sortBy (item) -> item.get('created_at')
@@ -103,6 +103,6 @@ module.exports = React.createClass
     <section className="featured-collections">
       { @renderHeader() }
       { @renderDescription() }
-      <PinboardsList 
+      <PinboardsList
         pinboards = { @gatherPinboards() } />
     </section>

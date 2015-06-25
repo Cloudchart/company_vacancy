@@ -6,9 +6,13 @@ class Viewer < User
   end
 
 
-
   def published_companies(scope = {})
     Company.published.select { |c| ability(scope).can?(:read, c) }
+  end
+
+
+  def important_pinboards(scope = {})
+    Pinboard.important.select { |p| ability(scope).can?(:read, p) }
   end
 
 
