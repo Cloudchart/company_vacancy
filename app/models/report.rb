@@ -4,7 +4,7 @@ class Report
   attribute :url
   attribute :reason
 
-  validates :url, url: :true, presence: true
+  validates :url, app_url: :true, presence: true
   validates :reason, presence: true
 
 end

@@ -77,6 +77,11 @@ module.exports = React.createClass
   handleReasonChange: (event) ->
     @setState reason: event.target.value
 
+  handleInputKeyDown: (event) ->
+    if event.key == 'Enter'
+      event.preventDefault()
+      @refs.submit.getDOMNode().click()
+
   handleCancelClick: (event) ->
     ModalStack.hide()
 
@@ -93,7 +98,7 @@ module.exports = React.createClass
     else
       null
 
-    <button className="cc" type="submit" disabled={ @state.isSyncing }>
+    <button ref="submit" className="cc" type="submit" disabled={ @state.isSyncing }>
       <span>Report content</span>
       { icon }
     </button>
@@ -119,11 +124,12 @@ module.exports = React.createClass
             value = { @state.url }
             placeholder = "Tap to add URL"
             onChange = { @handleUrlChange }
+            onKeyDown = { @handleInputKeyDown }
           />
           { @renderErrors('url') }
         </label>
 
-        <label>
+        <label className="with-textarea">
           <span>Reporting reason</span>
           <textarea
             autoFocus = "true"

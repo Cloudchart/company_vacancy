@@ -18,6 +18,7 @@ en:
     validations:
       invalid_email: "must be a valid email"
       invalid_url: "must be a valid URL"
+      invalid_app_url: "must be a valid URL within %{host}"
       invalid_twitter_hanlde: "is not a valid Twitter handle"
     invitation_completed: "Now you are a part of this company."
     company_invite: 
