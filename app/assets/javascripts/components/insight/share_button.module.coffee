@@ -29,8 +29,8 @@ module.exports = React.createClass
   #
   handleShareButtonClick: (event) ->
     setTimeout =>
-      history.pushState({}, '', @props.insight.insight_url)
-    , 200
+      history.pushState({}, '', @props.insight.url)
+    , 250
 
     ModalStack.show(<InsightCard insight = { @props.insight.uuid } renderedInsideModal = true />, shouldGetHistoryBack: true)
 

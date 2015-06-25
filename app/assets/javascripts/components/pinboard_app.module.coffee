@@ -20,6 +20,7 @@ ModalStack       = require('components/modal_stack')
 InviteActions    = require('components/roles/invite_actions')
 RelatedUsers     = require('components/pinboards/related_users')
 
+ShareButtons = require('components/shared/share_buttons')
 Buttons = require('components/form/buttons')
 SyncButton = Buttons.SyncButton
 AuthButton = Buttons.AuthButton
@@ -48,7 +49,12 @@ module.exports = React.createClass
             readers,
             writers,
             followers,
-            pins
+            pins,
+            edges {
+              pinboard_url,
+              facebook_share_url,
+              twitter_share_url
+            }
           }
         """
 
@@ -196,6 +202,8 @@ module.exports = React.createClass
 
 
   renderHeader: ->
+    pinboard = @getPinboard()
+
     <header>
       <h1>
         { @getPinboard().get('title') }
@@ -208,13 +216,18 @@ module.exports = React.createClass
 
       <ul className="counters">
         <li>
-          { pluralize(@getPinboard().get('readers_count'), "follower", "followers") }
+          { pluralize(pinboard.get('readers_count'), "follower", "followers") }
         </li>
         <li>
-          { pluralize(@getPinboard().get('pins_count') || 0, "pin", "pins") }
+          { pluralize(pinboard.get('pins_count') || 0, "pin", "pins") }
         </li>
       </ul>
-      { @renderFollowButton() }
+
+      <div className="buttons">
+        { @renderFollowButton() }
+        <ShareButtons object = pinboard.toJS() />
+      </div>
+
     </header>
 
   renderContent: ->

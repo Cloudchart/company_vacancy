@@ -87,34 +87,8 @@ article.insight-card {
   > footer {
     margin-top: 25px;
 
-    > ul {
-      @include flex-ul;
+    > .share-buttons {
       @include justify-content(flex-end);
-
-      > li {
-        &:first-child {
-          line-height: 40px;
-          padding: 0 20px;
-          font-size: 15px;
-          font-weight: bold;
-        }
-
-        &:not(:last-child) {
-          margin-right: 10px;
-        }
-
-        > button {
-          outline: none;
-
-          > i.fa {
-            margin: 0;
-          }
-        }
-
-        > input {
-          width: 300px;
-        }
-      }
     }
   }
 

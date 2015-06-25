@@ -10,7 +10,7 @@ json.is_featured begin
   pin.is_featured?
 end
 
-json_edge! json, :insight_url, edges do
+json_edge! json, :url, edges do
   main_app.insight_url(pin)
 end
 

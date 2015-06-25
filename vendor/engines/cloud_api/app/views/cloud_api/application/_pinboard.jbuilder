@@ -17,7 +17,7 @@ json.pins_count begin
   pinboard.pins.size
 end
 
-json.url main_app::collection_url(pinboard)
+json.url main_app.collection_url(pinboard)
 
 json.users begin
   preload_associations(siblings, cache, :users)
@@ -29,4 +29,12 @@ json.tokens begin
   preload_associations(siblings, cache, :tokens)
 
   pinboard.invite_tokens
+end
+
+json_edge! json, :facebook_share_url, edges do
+  facebook_share_url(main_app.collection_url(pinboard))
+end
+
+json_edge! json, :twitter_share_url, edges do
+  twitter_share_url(main_app.collection_url(pinboard))
 end

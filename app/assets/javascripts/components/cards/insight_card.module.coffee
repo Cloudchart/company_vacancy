@@ -11,6 +11,7 @@ Human = require('components/human')
 EditPinButton = require('components/pinnable/edit_pin_button')
 PinButton = require('components/pinnable/pin_button')
 CloseModalButton = require('components/form/buttons').CloseModalButton
+ShareButtons = require('components/shared/share_buttons')
 
 
 # Utils
@@ -35,12 +36,18 @@ module.exports = React.createClass
         """
           Pin {
             user,
-            parent,
+            parent {
+              edges {
+                url,
+                facebook_share_url,
+                twitter_share_url
+              }
+            },
             post {
               company
             },
             edges {
-              insight_url,
+              url,
               facebook_share_url,
               twitter_share_url,
               context
@@ -56,29 +63,13 @@ module.exports = React.createClass
     cursor:
       insight: PinStore.cursor.items
 
-  getInitialState: ->
-    display_mode: null
+  # getInitialState: ->
 
 
   # Lifecycle Methods
   #
   componentWillMount: ->
     @fetch()
-
-  # componentDidMount: ->
-  # componentWillReceiveProps: (nextProps) ->
-  # shouldComponentUpdate: (nextProps, nextState) ->
-  # componentWillUpdate: (nextProps, nextState) ->
-
-  componentDidUpdate: (prevProps, prevState) ->
-    if @refs.clip
-      new ZeroClipboard(@refs.clip.getDOMNode())
-
-    if @refs.copy_link_input
-      copy_link_input = @refs.copy_link_input.getDOMNode()
-      copy_link_input.setSelectionRange(0, copy_link_input.value.length)
-
-  # componentWillUnmount: ->
 
 
   # Helpers
@@ -107,62 +98,15 @@ module.exports = React.createClass
     pinnable_type:  pin.pinnable_type
     title:          insight.content
 
-  openShareWindow: (url) ->
-    window.open(url, '_blank', 'location=yes,width=640,height=480,scrollbars=yes,status=yes')
-
 
   # Handlers
   #
-  handleCopyLinkButtonClick: (event) ->
-    @setState display_mode: 'copy_link'
-
-  handleCopyLinkClick: (event) ->
-    @setState display_mode: null
-
-  handleFacebookLinkClick: (insight, event) ->
-    @openShareWindow(insight.facebook_share_url)
-
-  handleTwitterLinkClick: (insight, event) ->
-    @openShareWindow(insight.twitter_share_url)
+  # handleThingClick: (event) ->
 
 
   # Renderers
   #
-  renderShareButtons: (insight) ->
-    <ul className="share-buttons">
-      <li>Share!</li>
-
-      <li>
-        <button className="cc" onClick={ @handleCopyLinkButtonClick }>Copy link</button>
-      </li>
-
-      <li>
-        <button className="cc" onClick={@handleFacebookLinkClick.bind(@, insight)}>
-          <i className="fa fa-facebook"></i>
-        </button>
-      </li>
-
-      <li>
-        <button className="cc" onClick={@handleTwitterLinkClick.bind(@, insight)}>
-          <i className="fa fa-twitter"></i>
-        </button>
-      </li>
-    </ul>
-
-  renderCopyLinkSection: (insight) ->
-    <ul className="copy-link">
-      <li>Copy link</li>
-
-      <li>
-        <input id="copy_link_input" ref="copy_link_input" className="cc-input" value={insight.insight_url} readOnly={true} />
-      </li>
-
-      <li>
-        <button ref="clip" data-clipboard-target="copy_link_input" className="cc" onClick={@handleCopyLinkClick} title="Copy link to clipboard">
-          <i className="fa fa-check"></i>
-        </button>
-      </li>
-    </ul>
+  # renderSomething: ->
 
 
   # Main render
@@ -204,11 +148,6 @@ module.exports = React.createClass
         </section>
 
         <footer>
-          {
-            if @state.display_mode is 'copy_link'
-              @renderCopyLinkSection(insight)
-            else
-              @renderShareButtons(insight)
-          }
+          <ShareButtons object = { insight } renderedInsideModal = { @props.renderedInsideModal } />
         </footer>
       </article>

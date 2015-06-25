@@ -83,6 +83,8 @@ $pinboard-header-color: hsl(60, 10%, 96%);
       padding-bottom: 0;
 
       > header {
+        font-size: inherit;
+
         > h1 {
           font-size: $huge-font-size;
           font-weight: 600;
@@ -96,21 +98,27 @@ $pinboard-header-color: hsl(60, 10%, 96%);
           font-weight: 300;
         }
 
-        > .counters > li > .icon {
-          background-color: transparent;
+        > .counters {
+          margin-bottom: 10px;
 
-          > i {
-            color: $round-button-background-color;
+          > li > .icon {
+            background-color: transparent;
+
+            > i {
+              color: $round-button-background-color;
+            }
           }
         }
 
-        > .cc {
-          height: 40px;
+        > .buttons {
+          @include display(flex);
+          @include align-items(center);
 
-          > div {
-            padding: 20px;
+          > button.cc {
+            margin-right: 10px;
           }
         }
+
       }
 
       > .invite-actions {
