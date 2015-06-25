@@ -168,7 +168,7 @@ module.exports = React.createClass
   # Main render
   #
   render: ->
-    pin     = @getInsight()
+    pin = @getInsight()
 
     if @isInsightEmpty(pin)
       <article className="insight-card placeholder"/>

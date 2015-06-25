@@ -19,16 +19,19 @@ module.exports = React.createClass
   # Helpers
   #
   shouldRenderShareButton: ->
-    return true
+    @props.insight.is_approved
 
-    @props.insight.parent_id is null and @props.insight.pinnable_id and
-    @props.insight.content and @props.insight.is_approved
+    # @props.insight.parent_id is null and @props.insight.pinnable_id and
+    # @props.insight.content and @props.insight.is_approved
 
 
   # Handlers
   #
   handleShareButtonClick: (event) ->
-    history.pushState({}, '', @props.insight.insight_url)
+    setTimeout =>
+      history.pushState({}, '', @props.insight.insight_url)
+    , 200
+
     ModalStack.show(<InsightCard insight = { @props.insight.uuid } renderedInsideModal = true />, shouldGetHistoryBack: true)
 
 
