@@ -7,7 +7,9 @@ module CloudApi
       report = Report.new(report_content_params)
 
       if report.valid?
-        SlackWebhooksWorker.perform_async('reported_content', current_user.id, report.attributes)
+        if should_perform_sidekiq_worker?
+          SlackWebhooksWorker.perform_async('reported_content', current_user.id, report.attributes)
+        end
 
         respond_to do |format|
           format.json { render json: :ok, status: 200 }

@@ -30,6 +30,7 @@ module.exports = React.createClass
     url: location.href
     reason: ''
     errors: {}
+    isSyncing: false
 
 
   # Lifecycle Methods
@@ -53,15 +54,23 @@ module.exports = React.createClass
   handleSubmit: (event) ->
     event.preventDefault()
 
+    @setState isSyncing: true
+
     NotificationsPushApi
       .report_content(url: @state.url, reason: @state.reason)
       .then(@handleSubmitDone, @handleSubmitFail)
 
   handleSubmitDone: ->
-    console.log 'handleSubmitDone'
+    @setState
+      isSyncing: false
+      errors: {}
+
+    # TODO: render text about success
 
   handleSubmitFail: (xhr) ->
-    @setState errors: xhr.responseJSON.errors
+    @setState
+      isSyncing: false
+      errors: xhr.responseJSON.errors
 
   handleUrlChange: (event) ->
     @setState url: event.target.value
@@ -79,11 +88,22 @@ module.exports = React.createClass
     return null unless errors = @state.errors[attribute]
     <span className="error">{ errors.join(', ') }</span>
 
+  renderSubmitButton: ->
+    icon = if @state.isSyncing
+      <i className="fa fa-spin fa-spinner"></i>
+    else
+      null
+
+    <button className="cc" type="submit" disabled={ @state.isSyncing }>
+      <span>Report content</span>
+      { icon }
+    </button>
+
 
   # Main render
   # 
   render: ->
-    <form className="report-content" onSubmit={ @handleSubmit }>
+    <form className="cc modal report-content" onSubmit={ @handleSubmit }>
       <CloseModalButton/>
 
       <header>
@@ -106,7 +126,6 @@ module.exports = React.createClass
           <textarea
             autoFocus = "true"
             value = { @state.reason }
-            placeholder = "Tap to add reporting reason"
             onChange = { @handleReasonChange }
           />
           { @renderErrors('reason') }
@@ -115,7 +134,7 @@ module.exports = React.createClass
 
       <footer>
         <button className="cc cancel" type="button" onClick={@handleCancelClick}>Cancel</button>
-        <button className="cc" type="submit">Report content</button>
+        { @renderSubmitButton() }
       </footer>
 
     </form>

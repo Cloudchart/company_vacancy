@@ -44,6 +44,14 @@ class SlackWebhooksWorker < ApplicationWorker
           ]
         } if user.send(attribute).present?
       end
+    when 'reported_content'
+      result[:text] = I18n.t('user.activities.reported_content',
+        name: user.full_name,
+        twitter: user.twitter,
+        twitter_url: user.twitter_url,
+        reported_url: options[:url],
+        reason: options[:reason]
+      )
     end
 
     if result[:text].present?
