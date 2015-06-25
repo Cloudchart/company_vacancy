@@ -4,12 +4,12 @@
   'user-id' => current_user.try(:id),
   'google-site-verification' => 'BiiA-L9LRx9R-zVP5mRMM_Hhf6C-fI6s_h_qcEJV_jo',
   og: {
-    site_name: 'CloudChart'
+    site_name: 'Insights.VC'
   },
   fb: {
     app_id: ENV['FACEBOOK_KEY']
   },
   ccu: current_user.id
 ) %>
-<%= display_meta_tags site: 'CloudChart', separator: '—', reverse: true %>
+<%= display_meta_tags site: 'Insights.VC', separator: '—', reverse: true %>
 <%= csrf_meta_tags %>
