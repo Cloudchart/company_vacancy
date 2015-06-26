@@ -10,7 +10,7 @@ module.exports = React.createClass
     <section className="cc-container-common producthunt-mobile">
       <header>
         <h1>
-          Hello Producthunters!
+          Hello Producthunter!
         </h1>
         <h2>
           We created Insights.VC to help founders solve problems they face every day.
