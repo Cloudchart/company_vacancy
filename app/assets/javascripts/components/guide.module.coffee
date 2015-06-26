@@ -6,7 +6,6 @@ FeaturedInsights = require('components/insight/featured')
 RecentCompanies  = require('components/company/lists/recent')
 TopInsights      = require('components/pinboards/pins/top')
 Greeting         = require('components/shared/greeting')
-Guide            = require('components/guide')
 
 # Exports
 #

@@ -29,6 +29,8 @@ SyncButton     = Buttons.SyncButton
 CancelButton   = Buttons.CancelButton
 AuthButton     = Buttons.AuthButton
 
+Constants      = require('constants')
+
 CompanyPreview = React.createClass
 
   displayName: 'CompanyPreview'
@@ -187,7 +189,7 @@ CompanyPreview = React.createClass
       ModalStack.show(
         <section className="info-modal">
           <header>{ @cursor.company.get('name') }</header>
-          <p>This company is not on Cloudchart yet. But we've recorded, that you've been interested and will inform you when it will appear.</p>
+          <p>This company is not on { Constants.SITE_NAME } yet. But we've recorded, that you've been interested and will inform you when it will appear.</p>
           <button className="cc" onClick={ ModalStack.hide }>
             Got it
           </button>

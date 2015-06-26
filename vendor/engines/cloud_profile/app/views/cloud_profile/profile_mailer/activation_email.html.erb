@@ -5,10 +5,10 @@
   </head>
   <body>
     <p>
-      Hello from CloudChart! Thanks for signing up. Please click the link below to set up your first chart.
+      Hello from <%= ENV['SITE_NAME'] %>! Thanks for signing up. Please click the link below to set up your first chart.
     </p>
     <p>
-      <%= link_to "Verify Your Email and Enter CloudChart", profile_activation_url(token: @token.to_param) %>
+      <%= link_to "Verify Your Email and Enter #{ENV['SITE_NAME']}", profile_activation_url(token: @token.to_param) %>
     </p>
     
     <%= render 'shared/mailer_signature' %>

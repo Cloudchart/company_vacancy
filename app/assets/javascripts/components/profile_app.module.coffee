@@ -4,7 +4,7 @@ GlobalState        = require('global_state/state')
 
 ProfileInfo        = require('components/profile/info')
 UserPins           = require('components/pinboards/pins/user')
-UserInsights        = require('components/profile/insights')
+UserInsights       = require('components/profile/insights')
 UserCompanies      = require('components/company/lists/user')
 UserFeed           = require('components/user/feed')
 UserPinboards      = require('components/pinboards/lists/user')
@@ -16,6 +16,8 @@ PinStore           = require('stores/pin_store')
 PinboardStore      = require('stores/pinboard_store')
 CompanyStore       = require('stores/company_store.cursor')
 
+Constants          = require('constants')
+
 
 EmptyTabTexts =
   feedOwn:        "Follow people and companies you're interested in to learn from them."
@@ -26,13 +28,12 @@ EmptyTabTexts =
   pinboardsOther: "This person has no collections yet."
   companiesOwn:   ->
     <span>
-      Want to see your company on CloudChart? <a href="mailto:team@cloudchart.co?subject=I want to see my company on CloudChart">Let us know</a>
+      Want to see your company on { Constants.SITE_NAME }? <a href="mailto:#{Constants.REPLY_TO_EMAIL}?subject=I want to see my company on #{Constants.SITE_NAME}">Let us know</a>
     </span>
   companiesOther: ->
     <span>
-      Does this person have a company you want to see on CloudChart? <a href="mailto:team@cloudchart.co?subject=I want to see a company on CloudChart">Let us know</a>
+      Does this person have a company you want to see on { Constants.SITE_NAME }? <a href="mailto:#{Constants.REPLY_TO_EMAIL}?subject=I want to see a company on #{Constants.SITE_NAME}">Let us know</a>
     </span>
-
 
 
 cx = React.addons.classSet

@@ -10,6 +10,8 @@ SyncButton     = require('components/form/buttons').SyncButton
 
 Checkbox       = require('components/form/checkbox')
 
+Constants      = require('constants')
+
 # Exports
 #
 module.exports = React.createClass
@@ -60,7 +62,7 @@ module.exports = React.createClass
 
   getDefaultEmailAttributes: (user=null) ->
     Immutable.Map(
-      subject: "#{@props.cursor.get('first_name')} invited you to CloudChart"
+      subject: "#{@props.cursor.get('first_name')} invited you to #{Constants.SITE_NAME}"
       body:    "Hi, @#{user.get('twitter')}" if user
     )
 
@@ -169,7 +171,7 @@ module.exports = React.createClass
     switch @state.progress
       when "invite_sent"
         <section>
-          <p>Great, now @{ @state.invitedUser.get('twitter') } has access to CloudChart. { @renderEditorText() } You can let them know yourself or send them an email:</p>
+          <p>Great, now @{ @state.invitedUser.get('twitter') } has access to { Constants.SITE_NAME }. { @renderEditorText() } You can let them know yourself or send them an email:</p>
         </section>
       when "email_skipped", "email_sent"
         <section>
@@ -178,7 +180,7 @@ module.exports = React.createClass
         </section>
       else
         <section>
-          <p>We welcome fellow founders and unicorns to CloudChart community. If you know someone who's seeking knowledge or is eager to share it — feel free to send them an invite.</p>
+          <p>We welcome fellow founders and unicorns to { Constants.SITE_NAME } community. If you know someone who's seeking knowledge or is eager to share it — feel free to send them an invite.</p>
           <p>Simply enter that person's Twitter handle and we'll send them an invitation.</p>
         </section>
 
@@ -245,7 +247,7 @@ module.exports = React.createClass
           <li>{ @props.email_copy.second_item }</li>
           <li>{ @props.email_copy.third_item }</li>
         </ul>
-        <p>Have questions? Suggestions? Doughnuts? Simply reply to this email or chat with <a href="https://twitter.com/cloudchartapp" target="_blank">@CloudChartApp</a> on Twitter.</p>
+        <p>Have questions? Suggestions? Doughnuts? Simply reply to this email or chat with <a href="https://twitter.com/#{Constants.TWITTER_APP_NAME}" target="_blank">{ "@#{Constants.TWITTER_APP_NAME}" }</a> on Twitter.</p>
       </section>
       <section className="controls">
         <SyncButton

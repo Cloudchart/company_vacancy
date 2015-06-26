@@ -2,8 +2,8 @@ en:
   cloud_profile:
     profile_mailer:
       activation_email:
-        subject: "Invitation to CloudChart"
+        subject: "Invitation to Insights.VC"
       password_reset:
-        subject: "Reset your CloudChart password"
+        subject: "Reset your Insights.VC password"
       verification_email:
-        subject: "Verify your CloudChart email"
+        subject: "Verify your Insights.VC email"

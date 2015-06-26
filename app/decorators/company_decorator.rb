@@ -6,7 +6,7 @@ class CompanyDecorator < ApplicationDecorator
   end
 
   def og_name
-    prefix = company.name == 'CloudChart' ? '' : 'CloudChart: '
+    prefix = company.name == ENV['SITE_NAME'] ? '' : "#{ENV['SITE_NAME']}: "
     "#{prefix}#{company.name}"
   end
 

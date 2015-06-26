@@ -26,6 +26,7 @@ ShareInsightButton = require('components/insight/share_button')
 #
 cx = React.addons.classSet
 trimDots = require('utils/trim_string').trimDots
+Constants = require('constants')
 
 
 # Exports
@@ -148,7 +149,7 @@ module.exports = React.createClass
 
     <section className="suggestion">
       <i className="svg-icon svg-cloudchart-logo" />
-      Suggested by CloudChart
+      Suggested by { Constants.SITE_NAME }
       { @renderSuggestionDeleteButton() }
     </section>
 

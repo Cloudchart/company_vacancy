@@ -15,7 +15,7 @@ FeaturedInsights    = require('components/insight/featured')
 ImportantCompanies  = require('components/company/lists/important')
 ImportantPinboards  = require('components/pinboards/lists/important')
 Greeting            = require('components/shared/greeting')
-Guide               = require('components/guide')
+# Guide               = require('components/guide')
 Subscription        = require('components/shared/subscription')
 
 is_iphone           = window.matchMedia('only screen and (min-device-width: 320px) and (max-device-width: 736px)').matches

@@ -3,7 +3,7 @@
 </p>
 
 <p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
-  <%= @user.full_name %> (<%= link_to "@#{@user.twitter}", main_app.user_url(@user), target: "_blank" %>) would like to join your <%= link_to @pinboard.title, main_app.collection_url(@pinboard) %> collection on Cloudchart.
+  <%= @user.full_name %> (<%= link_to "@#{@user.twitter}", main_app.user_url(@user), target: "_blank" %>) would like to join your <%= link_to @pinboard.title, main_app.collection_url(@pinboard) %> collection on <%= ENV['SITE_NAME'] %>.
 </p>
 
 <%- if @message.present? %>
