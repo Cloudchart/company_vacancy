@@ -10,9 +10,9 @@ Dragonfly.app.configure do
   url_format "/media/:job/:name"
 
   if Rails.env.production?
-    url_host '//i.cloudchart.co'
+    url_host ENV['ASSET_HOST']
   elsif Rails.env.staging?
-    url_host "https://#{ENV['APP_HOST']}"
+    url_host ENV['ASSET_HOST']
   else
     url_host "http://#{ENV['APP_HOST']}"
   end
