@@ -25,3 +25,8 @@ _.each document.querySelectorAll('[data-react-class]'), (node) ->
 
   # catch
   #   _.noop
+
+
+#
+#
+window.onunload = ->
