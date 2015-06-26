@@ -1,13 +1,25 @@
+@mixin iphone {
+  @media only screen and (min-device-width: 320px) and (max-device-width: 736px) {
+    @content;
+  }
+}
+
 .first-time-visit {
   background-color: hsl(146, 95%, 75%);
+
   position: fixed;
   right: 0;
-  bottom: 100px;
+  bottom: 24px;
   left: 0;
   padding: 30px 60px;
   margin: 0 auto;
   z-index: 1;
   width: 800px;
+
+  @include iphone {
+    bottom: 0;
+    width: 100%;
+  }
 
   > button.close {
     @include position(absolute, 10px 10px 0 0);
@@ -15,7 +27,7 @@
   }
 
   > p {
-    font-size: 20px; 
+    font-size: 20px;
   }
 
   > footer {

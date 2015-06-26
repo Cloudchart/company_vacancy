@@ -12,7 +12,8 @@ class PreviewsController < ApplicationController
 
 
   def insight
-    @pin = Pin.find(params[:id])
+    @pin = Pin.includes(:parent).find(params[:id])
+    @pin = @pin.parent if @pin.parent.present?
     respond(@pin)
   end
 
@@ -42,8 +43,6 @@ class PreviewsController < ApplicationController
   end
 
   def render_or_generate_preview(record)
-    record = record.parent if record.class == Pin && record.parent_id.present?
-
     if record.preview_stored?
       send_data record.preview.data, type: :png, disposition: :inline
     else

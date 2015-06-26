@@ -3,6 +3,7 @@ class PreviewWorker < ApplicationWorker
 
   def perform(class_name, id)
     record = class_name.constantize.find(id)
+    Rails.logger.info should_generate_preview?(record)
     return unless should_generate_preview?(record)
     preview = Tempfile.new(['preview', '.png'])
     begin
