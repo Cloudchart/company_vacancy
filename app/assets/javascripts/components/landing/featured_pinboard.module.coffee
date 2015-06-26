@@ -116,7 +116,7 @@ module.exports = React.createClass
     id        = insight.get('uuid')
     opacity   = if (@state.opacityIndices.get(stackIndex) || 0) == i then 1 else 0
 
-    <div key={ id } className="item" style={ opacity: opacity }>
+    <div key={ id } className="item" style={ opacity: opacity, pointerEvents: if opacity == 1 then 'auto' else 'none' }>
       <InsightPreview uuid={ id } skipRenderComment={ true } />
     </div>
 
