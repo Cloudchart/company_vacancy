@@ -25,6 +25,7 @@ module.exports = React.createClass
         """
           Pinboard {
             edges {
+              readers_count,
               is_followed
             }
           }
@@ -43,7 +44,9 @@ module.exports = React.createClass
     @setState
       sync: true
 
-    SyncApi.follow(@props.pinboard).done =>
+    action = if @cursor.pinboard.get('is_followed', false) then 'unfollow' else 'follow'
+
+    SyncApi[action](@props.pinboard).done =>
       GlobalState.fetch(@getQuery('pinboard'), { id: @props.pinboard, force: true }).done =>
         @setState
           sync: false
@@ -57,6 +60,11 @@ module.exports = React.createClass
       pinboard: PinboardStore.cursor.items.cursor(@props.pinboard)
 
     @fetch()
+
+
+  getDefaultProps: ->
+    canUnfollow: false
+
 
   getInitialState: ->
     ready:  false
@@ -74,12 +82,17 @@ module.exports = React.createClass
       'cc follow':    true
       'is_followed':  is_followed
 
+    title = if is_followed
+      if @props.canUnfollow then 'Unfollow' else 'Following'
+    else
+      'Follow'
+
     <AuthButton>
       <SyncButton
         className   = className
-        text        = { if is_followed then "Following" else "Follow" }
+        text        = { title }
         onClick     = { @handleFollowClick }
         sync        = { @state.followSync }
-        disabled    = is_followed
+        disabled    = { is_followed and !@props.canUnfollow }
       />
     </AuthButton>

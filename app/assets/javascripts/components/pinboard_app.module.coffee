@@ -25,6 +25,8 @@ Buttons = require('components/form/buttons')
 SyncButton = Buttons.SyncButton
 AuthButton = Buttons.AuthButton
 
+FollowButton      = require('components/pinboards/follow_button')
+
 SyncApi = require('sync/pinboard_sync_api')
 
 pluralize = require('utils/pluralize')
@@ -45,6 +47,7 @@ module.exports = React.createClass
       pinboard: ->
         """
           Pinboard {
+            #{FollowButton.getQuery('pinboard')},
             user,
             readers,
             writers,
@@ -224,7 +227,7 @@ module.exports = React.createClass
       </ul>
 
       <div className="buttons">
-        { @renderFollowButton() }
+        <FollowButton pinboard={ @props.uuid } canUnfollow={ true } />
         <ShareButtons object = pinboard.toJS() />
       </div>
 
