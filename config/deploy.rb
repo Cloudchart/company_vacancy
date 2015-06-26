@@ -117,7 +117,7 @@ namespace :cc do
 
   [:pin, :company, :user, :pinboard].each do |name|
 
-    desc "Generate #{name.pluralize} preview"
+    desc "Generate #{name.to_s.pluralize} preview"
     task :"generate_#{name}_preview" do
       on roles :app do
         within_release_path do
