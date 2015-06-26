@@ -13,7 +13,8 @@
 }
 
 .cc-container-common {
-  margin-bottom: 24px;
+  margin-top: 24px;
+  position: relative;
 
   > * {
     @include cc-container-common-content-width;
@@ -113,6 +114,8 @@
 // Product Hunt Full Width Content
 
 .cc-container-common.producthunt {
+  margin-top: 0;
+
   > header h1 {
     font-size: 36px;
     font-weight: 600;
@@ -126,4 +129,71 @@
   .item {
     @include transition(opacity 1s ease-in-out);
   }
+}
+
+
+.cc-container-common.producthunt-mobile {
+  @include display(flex);
+  @include flex-wrap(wrap);
+
+  margin-right: auto;
+  margin-left: auto;
+
+  width: 1024px - 2 * 24px;
+
+  @include iphone {
+    @include flex-direction(column);
+
+    width: 100%;
+  }
+
+  background-color: hsl(12, 67%, 53%);
+  color: white;
+  margin-top: 0;
+  padding-top: 24px;
+  padding-bottom: 24px;
+
+  > header {
+    @include flex(1);
+
+    font-size: 14px;
+
+    h1 {
+      font-weight: 600;
+    }
+
+    h2 {
+      font-weight: 300;
+      margin-top: .5em;
+    }
+  }
+
+  > section {
+    width: auto;
+
+    > figure {
+      background: asset_url('producthunt.png') no-repeat center center;
+      background-size: contain;
+      height: 70px;
+      width: 70px;
+    }
+  }
+
+  > footer {
+
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
+
+    > a {
+      background-color: white;
+      color: hsl(12, 67%, 53%);
+      display: inline-block;
+      font-size: 18px;
+      font-weight: 300;
+      padding: 10px;
+    }
+
+  }
+
 }

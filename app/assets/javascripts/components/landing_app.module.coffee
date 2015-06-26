@@ -8,6 +8,7 @@ CompanyStore        = require('stores/company_store.cursor')
 CompanyPreview      = require('components/company/preview')
 PinboardPreview     = require('components/cards/pinboard_card')
 FeaturedPinboard    = require('components/landing/featured_pinboard')
+ProductHuntMobile   = require('components/landing/product_hunt_mobile')
 
 
 FeaturedInsights    = require('components/insight/featured')
@@ -67,6 +68,11 @@ module.exports = React.createClass
 
   # Renderers
   #
+
+  renderProducthuntBanner: ->
+    return unless @props.isProductHunt
+    <ProductHuntMobile url={ @props.productHuntURL } />
+
   renderFeaturedPinboard: ->
     return null if is_iphone
     <FeaturedPinboard pinboard={ @props.featured_pinboard } />
@@ -122,6 +128,7 @@ module.exports = React.createClass
 
   render: ->
     <article className="landing">
+      { @renderProducthuntBanner() }
       { @renderFeaturedPinboard() }
       { @renderFeaturedPinboards() }
       { @renderFeaturedCompanies() }

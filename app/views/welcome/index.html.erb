@@ -8,6 +8,7 @@
 <section data-react-class="components/landing_app" data-react-props="<%= {
     isAuthorized: current_user.twitter.present?,
     isProductHunt: params[:ref] == 'producthunt',
+    productHuntURL: collection_url(ENV['PH_COLLECTION_ID']),
     featured_pinboard: ENV['PH_COLLECTION_ID']
   }.to_json %>"
 >
