@@ -75,6 +75,7 @@ module.exports = React.createClass
   #
 
   renderWelcomeBanner: ->
+    return null if @props.isProductHunt
     return null if Cookies.get('bite-size-banner') == 'done'
 
     <section className="cc-container-common banner">
