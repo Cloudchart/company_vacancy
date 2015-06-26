@@ -12,6 +12,6 @@
 //
 
 //= require jquery
-//= require jquery.cookie
+//= require js_cookie
 
 //= require old_browsers_base

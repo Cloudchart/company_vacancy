@@ -111,6 +111,38 @@
   }
 }
 
+
+.cc-container-common.banner {
+  background-color: hsl(137, 54%, 50%);
+  color: white;
+  font-size: 24px;
+  padding: 12px 0 24px;
+  text-align: center;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  > header {
+
+    h1 {
+      font-size: 48px;
+    }
+
+    h2 {
+      font-size: inherit;
+    }
+
+    button {
+      background-color: inherit;
+      border: none;
+      color: inherit;
+      font-size: inherit;
+      line-height: .5em;
+    }
+  }
+}
+
 // Product Hunt Full Width Content
 
 .cc-container-common.producthunt {
