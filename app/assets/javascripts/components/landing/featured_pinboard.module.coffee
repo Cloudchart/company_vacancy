@@ -141,7 +141,8 @@ module.exports = React.createClass
       .sortBy   (pin)     -> pin.get('created_at')
       .filter   (pin)     ->
         insight = if parent_id = pin.get('parent_id') then PinStore.get(parent_id) else pin
-        insight.get('content').length < MaxInsightContentLength
+        content = insight.get('content') || ''
+        content.length < MaxInsightContentLength
       .groupBy  (pin, i)  -> i % StacksCount
       .map      @renderStack
       .toArray()

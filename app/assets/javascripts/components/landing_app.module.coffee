@@ -1,21 +1,23 @@
 # @cjsx React.DOM
 
-GlobalState       = require('global_state/state')
+GlobalState         = require('global_state/state')
 
-UserStore         = require('stores/user_store.cursor')
-CompanyStore      = require('stores/company_store.cursor')
+UserStore           = require('stores/user_store.cursor')
+CompanyStore        = require('stores/company_store.cursor')
 
-CompanyPreview    = require('components/company/preview')
-PinboardPreview   = require('components/cards/pinboard_card')
-FeaturedPinboard  = require('components/landing/featured_pinboard')
+CompanyPreview      = require('components/company/preview')
+PinboardPreview     = require('components/cards/pinboard_card')
+FeaturedPinboard    = require('components/landing/featured_pinboard')
 
 
-FeaturedInsights   = require('components/insight/featured')
-ImportantCompanies = require('components/company/lists/important')
-ImportantPinboards = require('components/pinboards/lists/important')
-Greeting           = require('components/shared/greeting')
-Guide              = require('components/guide')
-Subscription       = require('components/shared/subscription')
+FeaturedInsights    = require('components/insight/featured')
+ImportantCompanies  = require('components/company/lists/important')
+ImportantPinboards  = require('components/pinboards/lists/important')
+Greeting            = require('components/shared/greeting')
+Guide               = require('components/guide')
+Subscription        = require('components/shared/subscription')
+
+is_iphone           = window.matchMedia('only screen and (min-device-width: 320px) and (max-device-width: 736px)').matches
 
 # Exports
 #
@@ -66,6 +68,7 @@ module.exports = React.createClass
   # Renderers
   #
   renderFeaturedPinboard: ->
+    return null if is_iphone
     <FeaturedPinboard pinboard={ @props.featured_pinboard } />
 
 

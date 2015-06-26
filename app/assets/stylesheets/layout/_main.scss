@@ -1,21 +1,35 @@
-$cc-container-common-content-width: 1024px;
+@mixin iphone {
+  @media only screen and (min-device-width: 320px) and (max-device-width: 736px) {
+    @content;
+  }
+}
+
+@mixin cc-container-common-content-width {
+  width: 1024px;
+
+  @include iphone {
+    width: 100%;
+  }
+}
 
 .cc-container-common {
   margin-bottom: 24px;
 
   > * {
+    @include cc-container-common-content-width;
+
     margin: auto;
     padding: 0 24px;
-    width: $cc-container-common-content-width;
   }
 
   > .full-width {
     width: 100%;
 
     > .content {
+      @include cc-container-common-content-width;
+
       margin: auto;
       padding: 0 24px;
-      width: $cc-container-common-content-width;
 
       &.columns {
         @include display(flex);
@@ -51,6 +65,9 @@ $cc-container-common-content-width: 1024px;
     > .item {
       padding: 24px 12px 0;
       width: 50%;
+      @include iphone {
+        width: 100%;
+      }
     }
   }
 
