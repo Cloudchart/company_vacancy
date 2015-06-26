@@ -34,20 +34,13 @@ module.exports = React.createClass
 
   displayName: 'InsightItem'
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+  mixins: [GlobalState.mixin]
 
   statics:
     getCursor: (id) ->
       pin:    PinStore.cursor.items.cursor(id)
       users:  UserStore.cursor.items
 
-    queries:
-      system_roles: ->
-        """
-          Viewer {
-            system_roles
-          }
-        """
 
   getDefaultProps: ->
     showHotzone: true
@@ -96,8 +89,7 @@ module.exports = React.createClass
 
   # Lifecycle methods
   #
-  componentWillMount: ->
-    GlobalState.fetch(@getQuery('system_roles'))
+  # componentWillMount: ->
 
 
   # Renderers
@@ -139,7 +131,7 @@ module.exports = React.createClass
     <ul className="round-buttons">
       { @renderApproveButton() }
       { @renderEditButton() }
-      <ShareInsightButton insight = { @props.cursor.pin.deref().toJS() } />
+      <ShareInsightButton pin = { @props.cursor.pin.deref().toJS() } shouldFetch = false />
       <PinButton {...@gatherAttributes()} title={ insight.get('content') } showHotzone = { @props.showHotzone } />
     </ul>
 

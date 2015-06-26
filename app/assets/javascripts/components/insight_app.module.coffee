@@ -60,4 +60,4 @@ module.exports = React.createClass
   # Main render
   # 
   render: ->
-    <Insight insight = { @props.uuid } />
+    <Insight pin = { @props.uuid } />

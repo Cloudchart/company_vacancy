@@ -28,11 +28,12 @@ module.exports = React.createClass
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   propTypes:
+    pin: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.object])
     renderedInsideModal: React.PropTypes.bool
 
   statics:
     queries:
-      insight: ->
+      pin: ->
         """
           Pin {
             user,
@@ -61,7 +62,7 @@ module.exports = React.createClass
   getDefaultProps: ->
     renderedInsideModal: false
     cursor:
-      insight: PinStore.cursor.items
+      pin: PinStore.cursor.items
 
   # getInitialState: ->
 
@@ -71,25 +72,30 @@ module.exports = React.createClass
   componentWillMount: ->
     @fetch()
 
+  componentDidMount: ->
+    setTimeout =>
+      history.pushState({}, '', @getPin().url)
+    , 250
+
 
   # Helpers
   #
-  getInsight: ->
-    if typeof(@props.insight) is 'string'
-      PinStore.cursor.items.cursor(@props.insight).deref(Immutable.Map({})).toJS()
-    else if typeof(@props.insight) is 'object'
-      @props.insight
+  getPin: ->
+    if typeof(@props.pin) is 'string'
+      PinStore.cursor.items.cursor(@props.pin).deref(Immutable.Map({})).toJS()
+    else if typeof(@props.pin) is 'object'
+      @props.pin
 
   fetch: ->
-    id = if typeof(@props.insight) is 'string'
-      @props.insight
-    else if typeof(@props.insight) is 'object'
-      @props.insight.uuid
+    id = if typeof(@props.pin) is 'string'
+      @props.pin
+    else if typeof(@props.pin) is 'object'
+      @props.pin.uuid
 
-    GlobalState.fetch(@getQuery('insight'), id: id)
+    GlobalState.fetch(@getQuery('pin'), id: id)
 
-  isInsightEmpty: (insight) ->
-    Object.keys(insight).length is 0
+  isInsightEmpty: (pin) ->
+    Object.keys(pin).length is 0
 
   gatherPinAttributes: (pin, insight) ->
     uuid:           insight.uuid
@@ -112,7 +118,7 @@ module.exports = React.createClass
   # Main render
   #
   render: ->
-    pin = @getInsight()
+    pin = @getPin()
 
     if @isInsightEmpty(pin)
       <article className="insight-card placeholder"/>

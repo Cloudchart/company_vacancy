@@ -25,6 +25,7 @@ module.exports = React.createClass
       insight: ->
         """
           Pin {
+            #{SharePinButton.getQuery('pin')},
             user,
             edges {
               context
@@ -92,7 +93,7 @@ module.exports = React.createClass
           <span />
           <ul className="round-buttons">
             <EditPinButton uuid={ @cursor.insight.get('uuid') } />
-            <SharePinButton insight={ @cursor.insight.deref().toJS() } />
+            <SharePinButton pin={ @cursor.insight.deref().toJS() } />
             <PinButton {...@gatherAttributes(@cursor.insight)} />
           </ul>
         </footer>

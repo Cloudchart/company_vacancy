@@ -2,6 +2,10 @@
 
 # Imports
 #
+GlobalState = require('global_state/state')
+
+PinStore = require('stores/pin_store')
+
 ModalStack = require('components/modal_stack')
 InsightCard = require('components/cards/insight_card')
 
@@ -13,26 +17,46 @@ module.exports = React.createClass
   displayName: 'InsightShareButton'
 
   propTypes:
-    insight: React.PropTypes.object.isRequired
+    pin: React.PropTypes.object.isRequired
+
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+  statics:
+    queries:
+      pin: ->
+        """
+          Pin {
+            parent
+          }
+        """
+
+
+  # Component Specifications
+  #
+  getDefaultProps: ->
+    shouldFetch: true
+
+
+  # Lifecycle Methods
+  #
+  componentWillMount: ->
+    @fetch() if @props.shouldFetch
 
 
   # Helpers
   #
-  shouldRenderShareButton: ->
-    @props.insight.is_approved
+  fetch: ->
+    GlobalState.fetch(@getQuery('pin'), id: @props.pin.uuid)
 
-    # @props.insight.parent_id is null and @props.insight.pinnable_id and
-    # @props.insight.content and @props.insight.is_approved
+  shouldRenderShareButton: ->
+    insight = if @props.pin.parent_id then PinStore.get(@props.pin.parent_id).toJS() else @props.pin
+    insight.is_approved
 
 
   # Handlers
   #
   handleShareButtonClick: (event) ->
-    setTimeout =>
-      history.pushState({}, '', @props.insight.url)
-    , 250
-
-    ModalStack.show(<InsightCard insight = { @props.insight.uuid } renderedInsideModal = true />, shouldGetHistoryBack: true)
+    ModalStack.show(<InsightCard pin = { @props.pin.uuid } renderedInsideModal = true />, shouldGetHistoryBack: true)
 
 
   # Main render
@@ -40,7 +64,7 @@ module.exports = React.createClass
   render: ->
     return null unless @shouldRenderShareButton()
 
-    <li className="round-button with-content share" onClick={@handleShareButtonClick}>
+    <li className="round-button with-content share" onClick={ @handleShareButtonClick }>
       <i className="fa fa-share"></i>
       <span>Share</span>
     </li>

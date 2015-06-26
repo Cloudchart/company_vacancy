@@ -47,6 +47,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            #{ShareInsightButton.getQuery('pin')},
             pinboard,
             post {
               #{PinnablePost.getQuery('post')}
@@ -124,7 +125,7 @@ module.exports = React.createClass
   renderShareButton: ->
     return null unless @cursor.pin.deref(false)
 
-    <ShareInsightButton insight = { @cursor.pin.deref().toJS() } />
+    <ShareInsightButton pin = { @cursor.pin.deref().toJS() } />
 
   renderPinButton: ->
     return null unless insight = @getInsight()
