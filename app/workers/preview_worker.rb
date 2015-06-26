@@ -3,6 +3,7 @@ class PreviewWorker < ApplicationWorker
 
   def perform(class_name, id)
     record = class_name.constantize.find(id)
+    return unless should_generate_preview?(record)
     preview = Tempfile.new(['preview', '.png'])
     begin
       system("#{ENV['PHANTOMJS_PATH']} --ssl-protocol=any #{File.join([Rails.root, 'bin', 'generate_preview.js'])} #{preview_url_for(record)} #{preview.path}")
@@ -21,6 +22,8 @@ class PreviewWorker < ApplicationWorker
     case record.class.name
     when 'User'
       record.full_name.present?
+    when 'Pin'
+      record.content.present? && record.parent_id.blank?
     else
       true
     end
