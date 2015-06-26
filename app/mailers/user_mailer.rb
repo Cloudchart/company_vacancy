@@ -36,7 +36,7 @@ class UserMailer < ActionMailer::Base
   def interview_acceptance(interview)
     @interview = interview
 
-    mail to: 'anton@cloudchart.co'
+    mail to: ENV['REPLY_TO_EMAIL']
   end
 
   def entity_invite(role, email)

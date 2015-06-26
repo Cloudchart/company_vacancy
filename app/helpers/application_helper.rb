@@ -13,7 +13,7 @@ module ApplicationHelper
         description: scope[:description],
         image: scope[:image],
         card: 'summary_large_image',
-        site: Cloudchart::TWITTER_USERNAME
+        site: "@#{ENV['TWITTER_APP_NAME']}"
       }
     )
   end
@@ -61,11 +61,7 @@ module ApplicationHelper
   end
 
   def app_logo_for_header(options={})
-    unless options[:old]
-      image_tag "#{Rails.env}/cloudchart-logo-neg.svg"
-    else
-      image_tag "cloudchart-logo-header.png"
-    end
+    image_tag "#{Rails.env}/insights-neg.svg"
   end
 
   def app_name_for_header

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= @error_name.to_s.humanize %> — CloudChart</title>
+    <title><%= @error_name.to_s.humanize %> — <%= ENV['SITE_NAME'] %></title>
     <%= favicon_link_tag "#{Rails.env}/favicon.ico" %>
     <%= stylesheet_link_tag 'application', media: 'all' %>
   </head>
@@ -11,7 +11,7 @@
       <div class="header-content">
         <div class="local-menu">
           <%= link_to '', root_path, class: 'logo' %>
-          <a class="title" href="<%= root_path %>">Cloud<strong>Chart</strong></a>
+          <a class="title" href="<%= root_path %>"><%= app_name_for_header %></a>
         </div>
       </div>
     </header>

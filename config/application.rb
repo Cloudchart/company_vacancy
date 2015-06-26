@@ -16,6 +16,12 @@ module Cloudchart
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     # config.time_zone = 'Central Time (US & Canada)'
 
+    config.generators do |generator|
+      generator.helper = false
+      generator.stylesheets = false
+      generator.javascripts = false
+    end
+
     # locales
     config.i18n.load_path += Dir[Rails.root.join('locales', '**', '*.{rb,yml}')] # translations
     I18n.config.enforce_available_locales = true

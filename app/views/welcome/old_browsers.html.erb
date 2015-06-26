@@ -2,7 +2,7 @@
   <div class="header">
     <table>
       <td class="logo">
-        <%= app_logo_for_header(old: true) %>
+        <%= image_tag('logo-header.png') %>
       </td>
       <td class="title">
         <%= app_name_for_header %>
@@ -21,7 +21,7 @@
           </tr>
           <tr>
             <td class="button">
-              <a href="<%= session[:previous_path] %>">I'll do it my way, let me in!</a>
+              <%= link_to "I'll do it my way, let me in!", main_app.root_url %>
             </td>
           </tr>
         </table>

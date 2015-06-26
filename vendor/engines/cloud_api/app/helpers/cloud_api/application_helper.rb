@@ -20,7 +20,7 @@ module CloudApi
       params = {
         url: url,
         original_referer: main_app.root_url,
-        via: :cloudchartapp
+        via: ENV['TWITTER_APP_NAME']
       }
 
       uri.query = params.to_query

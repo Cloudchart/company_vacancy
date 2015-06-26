@@ -16,6 +16,8 @@ private
       self.send(method_name, *args, &block)
     elsif ActionController::Base.helpers.respond_to?(method_name)
       ActionController::Base.helpers.send(method_name, *args, &block)
+    elsif ApplicationController.helpers.respond_to?(method_name)
+      ApplicationController.helpers.send(method_name, *args, &block)
     else
       super
     end

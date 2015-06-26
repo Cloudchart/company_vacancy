@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
   s.name        = "cloud_api"
   s.version     = CloudApi::VERSION
   s.authors     = ["Eugene Kovalev"]
-  s.email       = ["seanchas@cloudchart.co"]
-  s.homepage    = "http://cloudchart.co"
-  s.summary     = "CloudChart API endpoint"
-  s.description = "CloudChart API endpoint"
+  s.email       = ["seanchas@insights.vc"]
+  s.homepage    = "http://insights.vc"
+  s.summary     = "Insights.VC API endpoint"
+  s.description = "Insights.VC API endpoint"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]

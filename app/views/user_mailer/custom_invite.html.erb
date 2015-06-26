@@ -19,9 +19,9 @@
 </ul>
 
 <p style="margin:0;padding:0;padding:0 50px;width:85%">
-  <%= link_to 'Join CloudChart', cloud_profile.login_url, style: 'color:#3bc462;font-weight:600;text-decoration:none;background-color:#3bc462;color:white;display:block;line-height:55px;margin:30px auto;height:55px;padding:0 30px;font-weight:300;font-size:24px;text-align:center;width:200px;' %>
+  <%= link_to "Join #{ENV['SITE_NAME']}", cloud_profile.login_url, style: 'color:#3bc462;font-weight:600;text-decoration:none;background-color:#3bc462;color:white;display:block;line-height:55px;margin:30px auto;height:55px;padding:0 30px;font-weight:300;font-size:24px;text-align:center;width:200px;' %>
 </p>
 
 <p style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:50px">
-  Have questions? Suggestions? Doughnuts? Simply reply to this email or chat with <a href="https://twitter.com/cloudchartapp" target="_blank" style="color:#3bc462;font-weight:600;text-decoration:none">@CloudChartApp</a> on Twitter.
+  Have questions? Suggestions? Doughnuts? Simply reply to this email or chat with <a href="https://twitter.com/<%= ENV['TWITTER_APP_NAME'] %>" target="_blank" style="color:#3bc462;font-weight:600;text-decoration:none"><%= "@#{ENV['SITE_NAME']}" %></a> on Twitter.
 </p>

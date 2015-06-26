@@ -11,5 +11,4 @@ module Cloudchart
     OpenStruct.new(browser: 'Internet Explorer', version: '11.0')
   ]
 
-  TWITTER_USERNAME = '@cloudchartapp'
 end

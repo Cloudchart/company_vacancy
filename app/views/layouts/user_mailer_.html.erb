@@ -47,10 +47,10 @@
                     <table class="social" cellpadding="0">
                       <tbody><tr>
                         <td style="padding-right:15px">
-                            <a href="https://www.facebook.com/cloudchartapp" style="color:#3bc462;font-weight:600;text-decoration:none"><img alt="727y3l" src="https://staging.cloudchart.co/images/facebook.png" width="32"></a>
+                            <a href="https://www.facebook.com/<%= ENV['FACEBOOK_APP_NAME'] %>" style="color:#3bc462;font-weight:600;text-decoration:none"><img alt="727y3l" src="<%= image_url('facebook.png') %>" width="32"></a>
                         </td>
                         <td>
-                          <a href="https://www.twitter.com/cloudchartapp" style="color:#3bc462;font-weight:600;text-decoration:none"><img alt="8y82t5" src="https://staging.cloudchart.co/images/twitter.png" width="32"></a>
+                          <a href="https://www.twitter.com/<%= ENV['TWITTER_APP_NAME'] %>" style="color:#3bc462;font-weight:600;text-decoration:none"><img alt="8y82t5" src="<%= image_url('twitter.png') %>" width="32"></a>
                         </td>
                       </tr>
                     </tbody></table>
@@ -61,7 +61,7 @@
                         <tr>
                           <% if false #TODO: logic for guest user is needed %>
                             <td style="padding-right:15px">
-                              <%= link_to 'About CloudChart', main_app.company_url(ENV['ABOUT_US_COMPANY_ID']), style: 'color:#3bc462;font-weight:600;text-decoration:none;' %>
+                              <%= link_to "About #{ENV['SITE_NAME']}", main_app.company_url(ENV['ABOUT_US_COMPANY_ID']), style: 'color:#3bc462;font-weight:600;text-decoration:none;' %>
                             </td>
                           <% end %>
                           <td>
@@ -76,7 +76,7 @@
                   <% if false # TODO: users#unsubscribe GET needed %>
                     <td colspan="2" class="subscription">
                       <p style="margin:0;padding:0;padding-top:25px;padding-bottom:25px">
-                        This email was sent because you were invited to Cloudchart. If you don't want to receive further mail from us, please <%= link_to 'unsubscribe', main_app.unsubscribe_user_url(@user), style: 'color:#3bc462;font-weight:600;text-decoration:none;' %>
+                        This email was sent because you were invited to <%= ENV['SITE_NAME'] %>. If you don't want to receive further mail from us, please <%= link_to 'unsubscribe', main_app.unsubscribe_user_url(@user), style: 'color:#3bc462;font-weight:600;text-decoration:none;' %>
                       </p>
                     </td>
                   <% end %>
