@@ -1,5 +1,9 @@
 article.preview.insight {
 
+  @include display(flex);
+  @include flex-direction(column);
+  @include justify-content(space-between);
+
   background-color: white;
   border: 12px solid hsl(137, 54%, 50%);
   color: black;
@@ -10,7 +14,6 @@ article.preview.insight {
     font-size: 56px;
     font-weight: 600;
     line-height: 69px;
-    margin-bottom: 150px;
 
     &.medium {
       font-size: 42px;
