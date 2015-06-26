@@ -88,7 +88,7 @@ module.exports = React.createClass
     <section className="cc-container-common">
       <header>
         <h1>Featured Collections</h1>
-        <h2>Collect insights. Create your own collections. Share with your team and the community.</h2>
+        <h2>Collect insights. Add your own. Share with your team and the community.</h2>
       </header>
 
       <section className="flow">
