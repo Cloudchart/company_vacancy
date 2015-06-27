@@ -13,6 +13,7 @@ Hotzone         = require('components/shared/hotzone')
 
 HotzoneCursor   = GlobalState.cursor(['meta', 'insight', 'hotzone'])
 
+Automated = false
 
 # Utils
 #
@@ -75,6 +76,15 @@ module.exports = React.createClass
 
   # Helpers
   #
+
+  performAutomation: ->
+    uuid = Cookies.get('action-pin')
+    if uuid == @props.uuid
+      return if Automated
+      Automated = true
+      Cookies.remove('action-pin')
+      @showModal()
+
   currentUserPin: ->
     if @props.uuid
       PinStore.cursor.items
@@ -149,9 +159,15 @@ module.exports = React.createClass
     event.stopPropagation()
 
     unless @props.cursor.user.get('twitter', false)
+      Cookies.set('action-pin', @props.uuid)
       location.href = '/auth/twitter'
       return null
 
+    @showModal()
+
+
+
+  showModal: ->
     @setState(clicked: true)
 
     if @state.currentUserPin
@@ -160,6 +176,7 @@ module.exports = React.createClass
       Modal.show(@renderEditPinForm(@state.currentUserRepin.get('uuid')))
     else
       Modal.show(@renderPinForm())
+
 
 
   # Lifecycle methods
@@ -174,6 +191,8 @@ module.exports = React.createClass
 
     window.addEventListener "scroll", @checkVisibility
     window.addEventListener "resize", @checkVisibility
+
+    @performAutomation()
 
   componentWillUnmount: ->
     window.removeEventListener "scroll", @checkVisibility
