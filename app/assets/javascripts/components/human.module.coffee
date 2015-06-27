@@ -133,7 +133,7 @@ module.exports = React.createClass
 
   renderName: ->
     <p className="name">
-      { @renderTextWithIcon(@getName(), @renderUnicornIcon()) }
+      { @renderTextWithIcon(@getName()) }
     </p>
 
   renderOccupation: ->
