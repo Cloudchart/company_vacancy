@@ -27,7 +27,7 @@ stripDescription = (description) ->
   description
 
 
-# Component
+# Component 
 #
 module.exports = React.createClass
 
@@ -116,7 +116,7 @@ module.exports = React.createClass
 
   renderFooter: (company) ->
     <footer>
-      
+
     </footer>
 
 

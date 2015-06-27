@@ -1,20 +1,20 @@
 # Imports
-# 
+#
 tag = React.DOM
 
 CompanyActions = require('actions/company')
 CompanyStore = require('stores/company')
 
 # Main Component
-# 
+#
 MainComponent = React.createClass
 
   # Helpers
-  # 
+  #
   # gatherSomething: ->
 
   # Handlers
-  # 
+  #
   handleFollowClick: (event) ->
     event.preventDefault()
 
@@ -24,7 +24,7 @@ MainComponent = React.createClass
       CompanyActions.follow(@props.uuid)
 
   # Lifecycle Methods
-  # 
+  #
   # componentWillMount: ->
   # componentDidMount: ->
   # componentWillReceiveProps: (nextProps) ->
@@ -34,12 +34,12 @@ MainComponent = React.createClass
   # componentWillUnmount: ->
 
   # Component Specifications
-  # 
+  #
   # getDefaultProps: ->
   # getInitialState: ->
 
   render: ->
-    (tag.button { 
+    (tag.button {
       className: 'orgpad'
       disabled: /follow|unfollow/.test(CompanyStore.getSync(@props.uuid))
       onClick: @handleFollowClick
@@ -48,5 +48,5 @@ MainComponent = React.createClass
     )
 
 # Exports
-# 
+#
 module.exports = MainComponent

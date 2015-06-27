@@ -84,7 +84,7 @@ module.exports = React.createClass
   performAutomation: ->
     return unless data = Cookies.get('action-pin')
     data = JSON.parse(data)
-    if data.uuid == @props.uuid and data.pinnable_id == @props.pinnable_id
+    if data.uuid == (@props.uuid || '') and data.pinnable_id == (@props.pinnable_id || '')
       Cookies.remove('action-pin')
       return unless @props.cursor.user.get('is_authenticated', true)
       return if Automated
@@ -165,16 +165,17 @@ module.exports = React.createClass
     event.stopPropagation()
 
     unless @props.cursor.user.get('twitter', false)
-      Cookies.set('action-pin', JSON.stringify({ uuid: @props.uuid, pinnable_id: @props.pinnable_id }))
+      Cookies.set('action-pin', JSON.stringify({ uuid: @props.uuid || '', pinnable_id: @props.pinnable_id || '' }))
       location.href = '/auth/twitter'
       return null
+
+    @setState(clicked: true)
 
     @showModal()
 
 
 
   showModal: ->
-    @setState(clicked: true)
 
     if @state.currentUserPin
       Modal.show(@renderEditPinForm(@state.currentUserPin.get('uuid')))
