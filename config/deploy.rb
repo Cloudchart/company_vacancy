@@ -120,7 +120,7 @@ namespace :cc do
     desc "Generate #{name} preview"
     task :"generate_#{name}_preview" do
       on roles :app do
-        within_release_path do
+        within release_path do
           with rails_env: fetch(:stage) do
             execute :rake, "cc:generate_#{name}_preview"
           end
