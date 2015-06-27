@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
 joinClasses = (firstClass, secondClass) ->
-  (firstClass + " " + secondClass).trim()    
+  (firstClass + " " + secondClass).trim()
 
 cx = React.addons.classSet
 GlobalState = require('global_state/state')
@@ -39,6 +39,7 @@ AuthButton = React.createClass
     event.stopPropagation()
 
     unless @props.cursor.viewer.get('is_authenticated')
+      @props.onAuthClick() if typeof @props.onAuthClick if 'function'
       location.href = '/auth/twitter'
       return null
 
@@ -74,7 +75,7 @@ CloseModalButton = React.createClass
 
 
 StandardButton = React.createClass
- 
+
   propTypes:
     iconClass:    React.PropTypes.string
     text:         React.PropTypes.string
@@ -93,7 +94,7 @@ StandardButton = React.createClass
     if @props.wrapChildren then <div className="wrapper">{children}</div> else children
 
   render: ->
-    <button 
+    <button
       className = { @props.className }
       disabled  = { @props.disabled }
       onClick   = { @props.onClick }
@@ -103,7 +104,7 @@ StandardButton = React.createClass
 
 
 SyncButton = React.createClass
- 
+
   propTypes:
     sync:              React.PropTypes.bool
     syncDelay:         React.PropTypes.number
@@ -164,7 +165,7 @@ SyncButton = React.createClass
 
 
   render: ->
-    props = _.extend @props, 
+    props = _.extend @props,
                     className:    joinClasses(@props.className, cx(sync: true, "no-transition": !@state.transition))
                     iconClass:    @state.iconClass
                     text:         @state.text
@@ -188,7 +189,7 @@ CancelButton = React.createClass
 
     SyncButton(props)
 
-module.exports = 
+module.exports =
   SyncButton:       SyncButton
   StandardButton:   StandardButton
   CancelButton:     CancelButton

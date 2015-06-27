@@ -79,7 +79,7 @@ module.exports = React.createClass
 
   performAutomation: ->
     uuid = Cookies.get('action-pin')
-    if uuid == @props.uuid
+    if uuid and uuid == @props.uuid
       return if Automated
       Automated = true
       Cookies.remove('action-pin')
