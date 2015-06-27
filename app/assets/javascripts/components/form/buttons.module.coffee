@@ -25,11 +25,16 @@ AuthButton = React.createClass
 
 
   fetch: ->
-    GlobalState.fetch(@getQuery('viewer'))
+    GlobalState.fetch(@getQuery('viewer')).done =>
+      @setState
+        ready: true
 
   getDefaultProps: ->
     cursor:
       viewer: require('stores/user_store.cursor').me()
+
+  getInitialState: ->
+    ready: false
 
   componentWillMount: ->
     @fetch()
@@ -39,14 +44,16 @@ AuthButton = React.createClass
     event.stopPropagation()
 
     unless @props.cursor.viewer.get('is_authenticated')
-      @props.onAuthClick() if typeof @props.onAuthClick if 'function'
+      @props.onAuthClick() if typeof @props.onAuthClick is 'function'
       location.href = '/auth/twitter'
       return null
 
   render: ->
+    return null unless @state.ready
+
     component = React.Children.only(@props.children)
 
-    props = if @props.cursor.viewer.get('is_authenticated')
+    props = if @props.cursor.viewer.get('is_authenticated', false)
       component.props
     else
       Object.assign(component.props, { onClick: @handleClick })

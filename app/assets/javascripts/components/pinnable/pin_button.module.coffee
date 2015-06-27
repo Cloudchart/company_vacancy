@@ -36,7 +36,10 @@ module.exports = React.createClass
 
         """
           Viewer {
-            tokens
+            tokens,
+            edges {
+              is_authenticated
+            }
           }
         """
 
@@ -60,7 +63,7 @@ module.exports = React.createClass
       user:    UserStore.me()
 
   getInitialState: ->
-    _.extend loaders: Immutable.Map(), clicked: false,
+    _.extend loaders: Immutable.Map(), clicked: false, ready: false,
       @getStateFromStores()
 
   onGlobalStateChange: ->
@@ -71,18 +74,21 @@ module.exports = React.createClass
     currentUserRepin:   @currentUserRepin()
 
   fetch: (id) ->
-    GlobalState.fetch(@getQuery('viewer'))
+    GlobalState.fetch(@getQuery('viewer')).done =>
+      @performAutomation()
 
 
   # Helpers
   #
 
   performAutomation: ->
-    uuid = Cookies.get('action-pin')
-    if uuid and uuid == @props.uuid
+    return unless data = Cookies.get('action-pin')
+    data = JSON.parse(data)
+    if data.uuid == @props.uuid and data.pinnable_id == @props.pinnable_id
+      Cookies.remove('action-pin')
+      return unless @props.cursor.user.get('is_authenticated', true)
       return if Automated
       Automated = true
-      Cookies.remove('action-pin')
       @showModal()
 
   currentUserPin: ->
@@ -159,7 +165,7 @@ module.exports = React.createClass
     event.stopPropagation()
 
     unless @props.cursor.user.get('twitter', false)
-      Cookies.set('action-pin', @props.uuid)
+      Cookies.set('action-pin', JSON.stringify({ uuid: @props.uuid, pinnable_id: @props.pinnable_id }))
       location.href = '/auth/twitter'
       return null
 
@@ -184,6 +190,7 @@ module.exports = React.createClass
   componentWillMount: ->
     @fetch()
 
+
   componentDidMount: ->
     @timer = false
 
@@ -191,8 +198,6 @@ module.exports = React.createClass
 
     window.addEventListener "scroll", @checkVisibility
     window.addEventListener "resize", @checkVisibility
-
-    @performAutomation()
 
   componentWillUnmount: ->
     window.removeEventListener "scroll", @checkVisibility
