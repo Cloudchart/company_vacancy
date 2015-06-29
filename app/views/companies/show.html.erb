@@ -1,7 +1,7 @@
 <% title @company.name %>
 
 <% set_meta_tags_for_social_networks(
-  title: decorate(@company).og_name,
+  title: t('meta.company.title', name: @company.name),
   description: t('meta.company.description', name: @company.name),
   image: @company.preview.try(:url),
   url: company_url(@company)
