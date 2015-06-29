@@ -329,8 +329,7 @@ module.exports = React.createClass
         <option key={ uuid } value={ uuid }>{ pinboard.get('title') }</option>
       .valueSeq()
 
-    if @isCurrentUserSystemEditor()
-      pinboards = pinboards.concat [<option key="new" value="new">Create collection</option>]
+    pinboards = pinboards.concat [<option key="new" value="new">Create collection</option>]
 
     pinboards
 
