@@ -23,6 +23,9 @@ AuthButton        = require('components/form/buttons').AuthButton
 
 InviteActions     = require('components/roles/invite_actions')
 
+pluralize         = require('utils/pluralize')
+
+
 # Components
 #
 Human = require('components/human')
@@ -211,10 +214,10 @@ module.exports = React.createClass
 
       <ul className="stats">
         <li>
-          { @cursor.pinboard.get('readers_count') + ' Followers' }
+          { pluralize(@cursor.pinboard.get('readers_count', 0), ' Follower', ' Followers') }
         </li>
         <li>
-          { @cursor.pinboard.get('pins_count') + ' Insights' }
+          { pluralize(@cursor.pinboard.get('pins_count', 0), ' Insight', ' Insights') }
         </li>
       </ul>
     </footer>
