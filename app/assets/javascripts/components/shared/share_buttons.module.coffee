@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
 # Imports
-# 
+#
 # SomeComponent = require('')
 
 
@@ -11,7 +11,7 @@
 
 
 # Main component
-# 
+#
 module.exports = React.createClass
 
   displayName: 'ShareButtons'
@@ -25,16 +25,16 @@ module.exports = React.createClass
 
 
   # Component Specifications
-  # 
+  #
   getDefaultProps: ->
     renderedInsideModal: false
 
   getInitialState: ->
     display_mode: null
 
-  
+
   # Lifecycle Methods
-  # 
+  #
   # componentWillMount: ->
   # componentDidMount: ->
   # componentWillReceiveProps: (nextProps) ->
@@ -53,13 +53,13 @@ module.exports = React.createClass
 
 
   # Helpers
-  # 
+  #
   openShareWindow: (url) ->
     window.open(url, '_blank', 'location=yes,width=640,height=480,scrollbars=yes,status=yes')
 
 
   # Handlers
-  # 
+  #
   handleCopyLinkButtonClick: (event) ->
     @setState display_mode: 'copy_link'
 
@@ -74,7 +74,7 @@ module.exports = React.createClass
 
 
   # Renderers
-  # 
+  #
   renderShareButtons: (object) ->
     <ul className="share-buttons">
       <li>
@@ -97,7 +97,7 @@ module.exports = React.createClass
   renderCopyLinkSection: (object) ->
     <ul className="share-buttons">
       <li>
-        <input id="copy_link_input" ref="copy_link_input" className="cc-input" value={ object.url } readOnly={true} />
+        <input id="copy_link_input" autoFocus={ true } ref="copy_link_input" className="cc-input" value={ object.url } readOnly={true} />
       </li>
 
       <li>
@@ -109,7 +109,7 @@ module.exports = React.createClass
 
 
   # Main render
-  # 
+  #
   render: ->
     if @state.display_mode is 'copy_link'
       @renderCopyLinkSection(@props.object)
