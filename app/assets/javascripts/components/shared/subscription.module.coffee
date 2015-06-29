@@ -39,8 +39,8 @@ module.exports = React.createClass
     text:               null
     asBlock:            false
     onSubscriptionDone: ->
-    cursor:           
-      tokens:  TokenStore.cursor.items 
+    cursor:
+      tokens:  TokenStore.cursor.items
       user:    UserStore.me()
 
   getInitialState: ->
@@ -131,7 +131,7 @@ module.exports = React.createClass
   renderEmail: ->
     return null if @props.cursor.user.get('email')
 
-    <input 
+    <input
       className   = { if @state.errors.contains('email') then 'cc-input error' else 'cc-input' }
       onChange    = { @handleChange.bind(@, 'email') }
       placeholder = { "Please enter your email" }
@@ -157,4 +157,3 @@ module.exports = React.createClass
             type      = "submit" />
         </form>
       </section>
-    
