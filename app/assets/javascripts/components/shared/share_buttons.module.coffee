@@ -41,13 +41,14 @@ module.exports = React.createClass
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
 
+
+  handleChange: ->
+    false
+
+
   componentDidUpdate: (prevProps, prevState) ->
     if @refs.clip
       new ZeroClipboard(@refs.clip.getDOMNode())
-
-    if @refs.copy_link_input
-      copy_link_input = @refs.copy_link_input.getDOMNode()
-      copy_link_input.setSelectionRange(0, copy_link_input.value.length)
 
   # componentWillUnmount: ->
 
@@ -97,7 +98,7 @@ module.exports = React.createClass
   renderCopyLinkSection: (object) ->
     <ul className="share-buttons">
       <li>
-        <input id="copy_link_input" autoFocus={ true } ref="copy_link_input" className="cc-input" value={ object.url } readOnly={true} />
+        <input id="copy_link_input" autoFocus={ true } onChange={ @handleChange } ref="copy_link_input" className="cc-input" value={ object.url } />
       </li>
 
       <li>

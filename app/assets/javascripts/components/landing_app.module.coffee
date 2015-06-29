@@ -17,8 +17,11 @@ ImportantPinboards  = require('components/pinboards/lists/important')
 Greeting            = require('components/shared/greeting')
 # Guide               = require('components/guide')
 Subscription        = require('components/shared/subscription')
+GuestSubscription        = require('components/shared/guest_subscription')
 
 is_iphone           = window.matchMedia('only screen and (min-device-width: 320px) and (max-device-width: 736px)').matches
+
+TextForSubscription = "Subscribe to our weekly email to stay in the loop: get latest insights, most helpful collections and new Insights.VC features."
 
 # Exports
 #
@@ -44,7 +47,8 @@ module.exports = React.createClass
             },
             edges {
               important_pinboards,
-              important_companies
+              important_companies,
+              is_authenticated
             }
           }
         """
@@ -150,11 +154,16 @@ module.exports = React.createClass
 
 
   renderSubscription: ->
-    <section className="cc-container-common">
-      <Subscription
-        text = "Subscribe to our weekly email to stay in the loop: get latest insights, most helpful collections and new Insights.VC features."
-      />
-    </section>
+    if @props.cursor.me.get('is_authorized', false)
+      <section className="cc-container-common">
+        <Subscription
+          text = { TextForSubscription }
+        />
+      </section>
+    else
+      <section className="cc-container-common">
+        <GuestSubscription text={ TextForSubscription } />
+      </section>
 
 
   render: ->

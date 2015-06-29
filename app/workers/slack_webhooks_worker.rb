@@ -52,6 +52,10 @@ class SlackWebhooksWorker < ApplicationWorker
         reported_url: options[:url],
         reason: options[:reason]
       )
+    when 'guest_subscribed'
+      result[:text] = I18n.t('user.activities.guest_subscribed',
+        email: options[:email]
+      )
     end
 
     if result[:text].present?
