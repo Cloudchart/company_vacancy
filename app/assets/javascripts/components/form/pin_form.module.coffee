@@ -17,6 +17,8 @@ InsightContent  = require('components/pinnable/insight_content')
 UnicornChooser  = require('components/unicorn_chooser')
 StandardButton  = require('components/form/buttons').StandardButton
 
+Constants       = require('constants')
+
 KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title', 'pinboard_description', 'origin'])
 
 
@@ -57,7 +59,9 @@ module.exports = React.createClass
           User {
             roles,
             pinboards,
-            writable_pinboards
+            writable_pinboards {
+              user
+            }
           }
         """
 
@@ -319,12 +323,17 @@ module.exports = React.createClass
     </label>
 
   renderPinboardSelectOptions: ->
+    current_user_id = @props.cursor.me.get('uuid')
     pinboards = @gatherPinboards()
       .map (pinboard, uuid) ->
-        <option key={ uuid } value={ uuid }>{ pinboard.get('title') }</option>
+        pinboard_user = UserStore.get(pinboard.get('user_id'))
+        title         = pinboard.get('title')
+        title         = title + " by #{Constants.SITE_NAME}" unless pinboard_user
+        title         = title + " by #{pinboard_user.get('full_name')}" if pinboard_user and pinboard_user.get('uuid') != current_user_id
+        <option key={ uuid } value={ uuid }>{ title }</option>
       .valueSeq()
 
-    pinboards = pinboards.concat [<option key="new" value="new">Create collection</option>]
+    pinboards = Immutable.Seq([<option key="new" value="new">Create collection</option>]).concat(pinboards)
 
     pinboards
 
@@ -371,7 +380,7 @@ module.exports = React.createClass
           className   = "form-control"
           value       = { @state.attributes.get('pinboard_description') }
           onChange    = { @handleChange.bind(@, 'pinboard_description') }
-          placeholder = "Enter collection description"
+          placeholder = "What is this collection about?"
         />
       </div>
     </label>
