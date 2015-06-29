@@ -399,6 +399,9 @@ module.exports = React.createClass
       <p>{ content }</p>
 
   renderPinComment: ->
+    content = @state.attributes.get('content') || ''
+    return null if @props.uuid and content.length == 0 && !@isCurrentUserSystemEditor()
+
     <label className="comment">
       <div className="title">
         { if @props.parent_id then "Note" else "Insight" }
