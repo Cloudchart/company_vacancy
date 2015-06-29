@@ -17,8 +17,6 @@ InsightContent  = require('components/pinnable/insight_content')
 UnicornChooser  = require('components/unicorn_chooser')
 StandardButton  = require('components/form/buttons').StandardButton
 
-InsightTourApp  = require('components/tour/insight/app')
-
 KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title', 'pinboard_description', 'origin'])
 
 
@@ -101,7 +99,6 @@ module.exports = React.createClass
 
   fetch: ->
     Promise.all([@fetchSystemPinboards(), @fetchPin()]).then =>
-      ModalStack.show(<InsightTourApp />) if @shouldShowTour()
       @handleFetchDone()
 
 
@@ -261,8 +258,6 @@ module.exports = React.createClass
         role.get('owner_type',  null)   is null     and
         role.get('value')               is roleValue
 
-  shouldShowTour: ->
-    !!TokenStore.findByUserAndName(@props.cursor.me, 'insight_tour')
 
   isCurrentUserSystemEditor: ->
     @isUserWithRole(UserStore.me().get('uuid'), 'editor')
