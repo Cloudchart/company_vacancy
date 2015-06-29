@@ -4,6 +4,14 @@ API         = require('push_api/subscription_push_api')
 SyncButton  = require('components/form/buttons').SyncButton
 cx          = React.addons.classSet
 
+
+isGuestSubscribed = ->
+  Cookies.get('guest-subscription') == 'done'
+
+subscribeGuest = ->
+  Cookies.set('guest-subscription', 'done')
+
+
 # Exports
 #
 module.exports = React.createClass
@@ -30,6 +38,8 @@ module.exports = React.createClass
     @setState
       is_subscribed: true
 
+    subscribeGuest()
+
     null
 
 
@@ -49,11 +59,15 @@ module.exports = React.createClass
     null
 
 
+  getDefaultProps: ->
+    is_subscribed:  isGuestSubscribed()
+
+
   getInitialState: ->
     email:          ''
     sync:           false
     error:          false
-    is_subscribed:  false
+    is_subscribed:  @props.is_subscribed
 
 
   renderText: ->
@@ -81,6 +95,8 @@ module.exports = React.createClass
 
 
   render: ->
+    return null if @props.is_subscribed
+
     <section className="subscription">
       { @renderText() }
       { @renderForm() }
