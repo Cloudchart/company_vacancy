@@ -51,7 +51,9 @@ module.exports = React.createClass
 
 
   fetch: ->
-    GlobalState.fetch(@getQuery('viewer'))
+    GlobalState.fetch(@getQuery('viewer')).done =>
+      @setState
+        ready: true
 
 
   getDefaultProps: ->
@@ -60,6 +62,10 @@ module.exports = React.createClass
       companies:  CompanyStore.cursor.items
 
     isAuthorized: false
+
+
+  getInitialState: ->
+    ready: false
 
 
   componentWillMount: ->
@@ -152,6 +158,8 @@ module.exports = React.createClass
 
 
   render: ->
+    return null unless @state.ready
+
     <article className="landing">
       { @renderWelcomeBanner() }
       { @renderProducthuntBanner() }
