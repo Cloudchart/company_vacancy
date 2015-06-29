@@ -15,8 +15,9 @@ json.is_editable begin
   can?(:update, user)
 end
 
-json.user_url    main_app.user_path(user)
-json.avatar_url  user.avatar.thumb('512x512>').url if user.avatar_stored?
+json.user_url     main_app.user_path(user)
+json.url          main_app.user_path(user)
+json.avatar_url   user.avatar.thumb('512x512>').url if user.avatar_stored?
 
 
 # Edges
