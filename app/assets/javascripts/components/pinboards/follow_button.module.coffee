@@ -11,6 +11,8 @@ SyncButton      = Buttons.SyncButton
 
 SyncApi         = require('sync/pinboard_sync_api')
 
+isDelayedTaskPerformed = false
+
 # Exports
 #
 module.exports = React.createClass
@@ -31,10 +33,39 @@ module.exports = React.createClass
           }
         """
 
+      viewer: ->
+        """
+          Viewer {
+            #{AuthButton.getQuery('viewer')}
+          }
+        """
+
+
+  fetchPinboard: (options = {}) ->
+    GlobalState.fetch(@getQuery('pinboard'), Object.assign({ id: @props.pinboard }, options))
+
+
+  fetchViewer: (options = {}) ->
+    GlobalState.fetch(@getQuery('viewer'), options)
+
+
   fetch: (options = {}) ->
-    GlobalState.fetch(@getQuery('pinboard'), Object.assign({ id: @props.pinboard }, options)).done =>
+    Promise.all([@fetchPinboard(options), @fetchViewer(options)]).done =>
       @setState
         ready: true
+      @performDelayedTask()
+
+
+  # Utils
+  #
+
+  performDelayedTask: ->
+    return unless cookie = Cookies.get('delayed-task')
+    cookie = JSON.parse(cookie)
+    if !isDelayedTaskPerformed and cookie.name == 'follow-pinboard' and cookie.pinboard == @props.pinboard
+      isDelayedTaskPerformed = true
+      Cookies.remove('delayed-task')
+      @syncData() unless @cursor.pinboard.get('is_followed', false)
 
 
   # Events
@@ -44,12 +75,23 @@ module.exports = React.createClass
     @setState
       sync: true
 
+    @syncData()
+
+
+  syncData: ->
     action = if @cursor.pinboard.get('is_followed', false) then 'unfollow' else 'follow'
 
     SyncApi[action](@props.pinboard).done =>
       GlobalState.fetch(@getQuery('pinboard'), { id: @props.pinboard, force: true }).done =>
         @setState
           sync: false
+
+
+  handleAuthClick: ->
+    Cookies.set('delayed-task', JSON.stringify({
+      name:     'follow-pinboard',
+      pinboard: @props.pinboard
+    }))
 
 
   # Lifecycle
@@ -87,7 +129,7 @@ module.exports = React.createClass
     else
       'Follow'
 
-    <AuthButton>
+    <AuthButton onAuthClick={ @handleAuthClick }>
       <SyncButton
         className   = className
         text        = { title }
