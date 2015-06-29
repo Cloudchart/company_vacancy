@@ -41,7 +41,7 @@
         }
       }
     }
-    
+
   }
 }
 
@@ -51,6 +51,12 @@
 
     font-size: 36px;
     color: hsl(139, 54%, 51%);
+  }
+}
+
+@mixin iphone {
+  @media only screen and (min-device-width: 320px) and (max-device-width: 736px) {
+    @content;
   }
 }
 

@@ -1,9 +1,3 @@
-@mixin iphone {
-  @media only screen and (min-device-width: 320px) and (max-device-width: 736px) {
-    @content;
-  }
-}
-
 .first-time-visit {
   background-color: hsl(146, 95%, 75%);
 
