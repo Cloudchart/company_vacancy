@@ -131,29 +131,32 @@ module.exports = React.createClass
 
       attributes = @gatherPinAttributes(pin, insight)
 
-      <article className={articte_classes}>
-        { <CloseModalButton shouldDisplay = { @props.renderedInsideModal } /> }
+      <div className="insight-card wrapper">
+        <article className={articte_classes}>
+          { <CloseModalButton shouldDisplay = { @props.renderedInsideModal } /> }
 
-        <section className="content">
-          <InsightContent
-            pinnable_id = { pin.pinnable_id }
-            pin_id = { insight.uuid }
-          />
+          <section className="content">
+            <InsightContent
+              pinnable_id = { pin.pinnable_id }
+              pin_id = { insight.uuid }
+            />
 
-          <Human
-            showUnicornIcon = { true }
-            showLink = { true }
-            type = "user"
-            uuid = { insight.user_id }
-          />
+            <Human
+              showUnicornIcon = { true }
+              showLink = { true }
+              type = "user"
+              uuid = { insight.user_id }
+            />
 
-          <ul className="round-buttons">
-            <EditPinButton uuid={ insight.uuid } />
-            <PinButton {...attributes} />
-          </ul>
-        </section>
+            <ul className="round-buttons">
+              <EditPinButton uuid={ insight.uuid } />
+              <PinButton {...attributes} />
+            </ul>
+          </section>
+
+        </article>
 
         <footer>
           <ShareButtons object = { insight } renderedInsideModal = { @props.renderedInsideModal } />
         </footer>
-      </article>
+      </div>

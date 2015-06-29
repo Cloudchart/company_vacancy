@@ -6,6 +6,19 @@ main.insight > div {
   padding-top: 25px;
 }
 
+div.insight-card.wrapper {
+  background: none;
+  box-shadow: none;
+
+  > footer {
+    margin-top: 25px;
+
+    > .share-buttons {
+      @include justify-content(flex-end);
+    }
+  }
+}
+
 article.insight-card {
   @include close-modal-button;
 
@@ -82,14 +95,6 @@ article.insight-card {
       margin-top: 10px;
     }
 
-  }
-
-  > footer {
-    margin-top: 25px;
-
-    > .share-buttons {
-      @include justify-content(flex-end);
-    }
   }
 
 }

@@ -150,20 +150,21 @@ body ul.modal-stack {
   z-index: $zindex-modal;
 
   > li.modal-stack-item {
-    @include align-items(center);
     @include display(flex);
     @include justify-content(center);
     @include position(fixed, 0px 0px 0px 0px);
 
-    overflow: scroll;
-
     background-color: $modal-overlay-background-color;
+    overflow: scroll;
+    padding: 20px 0;
 
     .modal-header {
       @include modal-header();
     }
 
     > * {
+      margin: auto;
+
       &.post-container {
         @include align-self(flex-start);
 
