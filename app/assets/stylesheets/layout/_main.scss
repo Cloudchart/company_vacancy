@@ -1,6 +1,10 @@
 @mixin cc-container-common-content-width {
   width: 1024px;
 
+  @include ipad {
+    width: 100%;
+  }
+
   @include iphone {
     width: 100%;
   }
@@ -167,6 +171,11 @@
 
   width: 1024px - 2 * 24px;
 
+  @include ipad {
+    width: 100%;
+  }
+
+
   @include iphone {
     @include flex-direction(column);
 
@@ -231,6 +240,14 @@
   text-align: center;
 
   width: 1024px - 2 * 24px;
+
+  @include ipad {
+    width: 100%;
+  }
+
+  @include iphone {
+    width: 100%;
+  }
 
   p {
     margin: 0;

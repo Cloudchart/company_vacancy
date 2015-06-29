@@ -4,6 +4,7 @@
   @include align-items(flex-start);
   @include display(flex);
   @include flex-wrap(wrap);
+  @include justify-content(center);
 
   &.cloud-columns-flex {
     @for $i from 1 through 5 {
