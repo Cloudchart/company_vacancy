@@ -54,11 +54,6 @@ module.exports = React.createClass
     GlobalState.fetch(@getQuery('viewer'))
 
 
-  handleWelcomeBannerClick: ->
-    Cookies.set('bite-size-banner', 'done')
-    @setState {}
-
-
   getDefaultProps: ->
     cursor:
       me:         UserStore.me()
@@ -76,11 +71,9 @@ module.exports = React.createClass
 
   renderWelcomeBanner: ->
     return null if @props.isProductHunt
-    return null if Cookies.get('bite-size-banner') == 'done'
 
     <section className="cc-container-common banner">
       <header>
-        <button className="close" onClick={ @handleWelcomeBannerClick }>×</button>
         <h1>
           Bite-size insights for&nbsp;founders
         </h1>
@@ -93,6 +86,7 @@ module.exports = React.createClass
 
   renderProducthuntBanner: ->
     return unless @props.isProductHunt
+
     <ProductHuntMobile url={ @props.productHuntURL } />
 
 
