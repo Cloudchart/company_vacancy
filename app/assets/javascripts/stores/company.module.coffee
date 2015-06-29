@@ -113,11 +113,13 @@ module.exports = CloudFlux.createStore
     slug:            ''
     logotype_url:    null
     company_url:     null
+    url:             null
     is_name_in_logo: false
     tag_names:       []
     post_ids:        []
-    #meta:           {}
-    #flags:          {}
+    facebook_share_url: ''
+    twitter_share_url: ''
+
 
   getActions: ->
     actions = {}

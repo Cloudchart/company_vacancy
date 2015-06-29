@@ -148,6 +148,14 @@
     }
   }
 
+  > .buttons {
+    @include display(flex);
+
+    > button.cc {
+      margin-right: 10px;
+    }
+  }
+
   .is-name-in-logo {
     @include transition(margin .1s ease-out);
   }

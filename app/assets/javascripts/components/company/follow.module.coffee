@@ -40,7 +40,7 @@ MainComponent = React.createClass
 
   render: ->
     (tag.button {
-      className: 'orgpad'
+      className: 'cc'
       disabled: /follow|unfollow/.test(CompanyStore.getSync(@props.uuid))
       onClick: @handleFollowClick
     },

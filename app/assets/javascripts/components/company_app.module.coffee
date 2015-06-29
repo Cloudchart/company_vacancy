@@ -21,10 +21,9 @@ CompanyTabs     = require('components/company/tabs')
 #
 Component = React.createClass
 
-  # mixins: []
-  mixins: [GlobalState.mixin]
   # propTypes: {}
-  displayName: 'Company app'
+  displayName: 'CompanyApp'
+  mixins: [GlobalState.mixin]
 
   getDefaultProps: ->
     cursor:

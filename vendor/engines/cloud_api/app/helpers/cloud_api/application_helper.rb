@@ -2,12 +2,12 @@ module CloudApi
   module ApplicationHelper
 
     def facebook_share_url(url)
-      uri = URI.parse("https://www.facebook.com/sharer/sharer.php")
+      uri = URI.parse('https://www.facebook.com/sharer/sharer.php')
 
       params = {
         display: :popup,
         u: url,
-        redirect_uri: main_app.root_url
+        redirect_uri: "http://#{ENV['APP_HOST']}/"
       }
 
       uri.query = params.to_query
@@ -15,11 +15,11 @@ module CloudApi
     end
 
     def twitter_share_url(url)
-      uri = URI.parse("https://twitter.com/intent/tweet")
+      uri = URI.parse('https://twitter.com/intent/tweet')
 
       params = {
         url: url,
-        original_referer: main_app.root_url,
+        original_referer: "http://#{ENV['APP_HOST']}/",
         via: ENV['TWITTER_APP_NAME']
       }
 

@@ -1,8 +1,10 @@
 class CompanySerializer < ActiveModel::Serializer
 
-  attributes  :uuid, :name, :established_on, :description
-  attributes  :logotype_url, :is_published, :site_url, :slug, :tag_names, :is_name_in_logo, :company_url
-  attributes  :meta, :flags, :post_ids
+  attributes :uuid, :name, :established_on, :description
+  attributes :is_published, :slug, :tag_names, :is_name_in_logo
+  attributes :site_url, :logotype_url, :company_url
+  attributes :url, :facebook_share_url, :twitter_share_url
+  attributes :meta, :flags, :post_ids
   
   alias_method :current_user, :scope
   alias_method :company, :object
@@ -13,6 +15,18 @@ class CompanySerializer < ActiveModel::Serializer
 
   def company_url
     company_path(company)
+  end
+
+  def url
+    main_app.company_url(company)
+  end
+
+  def facebook_share_url
+    CloudApi::ApplicationController.helpers.facebook_share_url(url)
+  end
+
+  def twitter_share_url
+    CloudApi::ApplicationController.helpers.twitter_share_url(url)
   end
 
   def meta

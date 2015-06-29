@@ -4,7 +4,7 @@ json.(company, :is_name_in_logo, :is_published, :is_important)
 
 json.logotype_url company.logotype.url if company.logotype_stored?
 
-json.company_url  main_app.company_path(company)
+json.company_url main_app.company_path(company)
 
 if with_count
   public_posts = company.posts.select { |post| post.visibility.try(:value) == 'public' }

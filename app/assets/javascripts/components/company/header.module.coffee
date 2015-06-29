@@ -22,6 +22,8 @@ TagsComponent       = require('components/company/tags')
 ContentEditableArea = require('components/form/contenteditable_area')
 InviteActions       = require('components/roles/invite_actions')
 
+ShareButtons        = require('components/shared/share_buttons')
+
 # Main
 #
 Component = React.createClass
@@ -233,7 +235,10 @@ Component = React.createClass
 
       { @renderTags() }
       
-      { @getFollowButton() }
+      <div className="buttons">
+        { @getFollowButton() }
+        <ShareButtons object = @state.company.toJS() />
+      </div>
 
       <InviteActions ownerId = { @props.uuid } ownerType = 'Company' />
     </header>
