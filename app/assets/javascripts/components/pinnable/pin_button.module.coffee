@@ -253,7 +253,6 @@ module.exports = React.createClass
         <i className="fa fa-thumb-tack" />
         { @renderCounter() }
         { @renderText() }
-        { @renderHotzone() }
       </li>
     else
       <StandardButton
