@@ -129,7 +129,6 @@ module.exports = React.createClass
     else
       'Follow'
 
-    console.log 'Pinboard', (is_followed and !@props.canUnfollow)
     <AuthButton onAuthClick={ @handleAuthClick }>
       <SyncButton
         className   = className

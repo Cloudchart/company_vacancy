@@ -229,3 +229,26 @@
   }
 
 }
+
+.cc-container-common .subscription {
+  background-color: hsl(145, 92%, 75%);
+  font-size: 20px;
+  padding: 24px;
+  text-align: center;
+
+  width: 1024px - 2 * 24px;
+
+  p {
+    padding: 0 12%;
+  }
+
+  form {
+    @include display(flex);
+    @include justify-content(center);
+    margin: 24px auto 0;
+  }
+
+  @include iphone {
+    width: 100%;
+  }
+}

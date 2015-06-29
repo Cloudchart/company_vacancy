@@ -143,6 +143,14 @@ module.exports = React.createClass
     </section>
 
 
+  renderSubscription: ->
+    <section className="cc-container-common">
+      <Subscription
+        text = "Subscribe to our weekly email to stay in the loop: get latest insights, most helpful collections and new Insights.VC features."
+      />
+    </section>
+
+
   render: ->
     <article className="landing">
       { @renderWelcomeBanner() }
@@ -150,4 +158,5 @@ module.exports = React.createClass
       { @renderFeaturedPinboard() }
       { @renderFeaturedPinboards() }
       { @renderFeaturedCompanies() }
+      { @renderSubscription() }
     </article>

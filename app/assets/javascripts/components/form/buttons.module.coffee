@@ -183,15 +183,11 @@ SyncButton = React.createClass
                     disabled:     @state.disabled
                     wrapChildren: true
 
-    console.log @state.sync, props.disabled
-
     if @state.sync
       props = _.extend props,
                 className: joinClasses(@props.className, "syncing")
                 disabled:  true
                 iconClass: joinClasses(@props.syncIconClass, "fa-spin")
-
-    console.log @state.sync, props.disabled
 
     StandardButton(props)
 
