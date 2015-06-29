@@ -5,7 +5,6 @@
 tag = React.DOM
 cx  = React.addons.classSet
 
-CloudFlux           = require('cloud_flux')
 GlobalState         = require('global_state/state')
 
 CompanyStore        = require('stores/company')
@@ -17,7 +16,6 @@ AutoSizingInput     = require('components/form/autosizing_input')
 FollowComponent     = require('components/company/follow')
 Checkbox            = require('components/form/checkbox')
 Toggle              = require('components/form/toggle')
-AccessRights        = require('components/company/access_rights')
 TagsComponent       = require('components/company/tags')
 ContentEditableArea = require('components/form/contenteditable_area')
 InviteActions       = require('components/roles/invite_actions')
@@ -27,8 +25,6 @@ ShareButtons        = require('components/shared/share_buttons')
 # Main
 #
 Component = React.createClass
-
-  mixins: [CloudFlux.mixins.Actions]
 
   # Helpers
   #
@@ -69,19 +65,6 @@ Component = React.createClass
   getNameClass: ->
     cx(name: true, inactive: @state.company.is_name_in_logo)
 
-  getShareLink: ->
-    return null if @props.readOnly
-
-    <a href="" className="share-link" onClick={@handleShareClick}>
-      {
-        if !@state.shareLoading
-          <i className="fa fa-send-o"></i>
-        else
-          <i className="fa fa-spinner fa-spin"></i>
-      }
-    </a>
-
-
   getFollowButton: ->
     return null unless @state.cursor.flags.get('can_follow')
     <FollowComponent uuid={@props.uuid}, is_followed={@state.cursor.flags.get('is_followed')} />
@@ -100,28 +83,11 @@ Component = React.createClass
     CompanyActions.update(@props.uuid, { logotype: file })
 
 
-  getCloudFluxActions: ->
-    'company:access_rights:fetch:done': @handleAccessRightsDone
-
-
   # Handlers
   # 
-  handleAccessRightsDone: -> 
-    setTimeout =>
-      @setState(shareLoading: false)    
-
   handleRemoveLogotype: ->
     return if @props.readOnly
     CompanyActions.update(@props.uuid, { logotype_url: null, remove_logotype: true })
-
-  handleShareClick: (event) ->
-    event.preventDefault()
-
-    if GlobalState.cursor(['flags', 'companies']).get('isAccessRightsLoaded')
-      ModalActions.show(<AccessRights uuid={@props.uuid} />)
-    else
-      @setState(shareLoading: true)
-      CompanyActions.fetchAccessRights(@props.uuid)
 
   handleFieldBlur: (attr_name, event) ->
     @update(attr_name) unless @state[attr_name] == @state.company[attr_name]
@@ -155,10 +121,6 @@ Component = React.createClass
   componentWillReceiveProps: (nextProps) ->
     URL.revokeObjectURL(@state.logotype_url)
     @setState(@getStateFromStores(nextProps))
-
-  componentWillUpdate: (nextProps, nextState) ->
-    if @state.shareLoading && !nextState.shareLoading
-      ModalActions.show(<AccessRights uuid={@props.uuid} />)
 
   componentWillUnmount: ->
     CompanyStore.off('change', @refreshStateFromStores)
@@ -219,8 +181,6 @@ Component = React.createClass
                 placeholder = 'Company name'
                 readOnly = { @props.readOnly }
               />
-
-            { @getShareLink() }
           </label>
       }
 
