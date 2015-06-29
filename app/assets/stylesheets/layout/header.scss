@@ -220,6 +220,16 @@ body > header {
 
     .auth {
       margin-left: $header-padding;
+
+      &.profile {
+        @include iphone {
+          display: inline-block;
+          max-width: 150px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
     }
 
     .sign-out {
