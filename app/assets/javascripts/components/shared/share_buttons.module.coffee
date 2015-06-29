@@ -40,6 +40,7 @@ module.exports = React.createClass
   # componentWillReceiveProps: (nextProps) ->
   # shouldComponentUpdate: (nextProps, nextState) ->
   # componentWillUpdate: (nextProps, nextState) ->
+
   componentDidUpdate: (prevProps, prevState) ->
     if @refs.clip
       new ZeroClipboard(@refs.clip.getDOMNode())
@@ -75,15 +76,10 @@ module.exports = React.createClass
   # Renderers
   # 
   renderShareButtons: (object) ->
-    copy_link = if @props.renderedInsideModal
+    <ul className="share-buttons">
       <li>
         <button className="cc" onClick={ @handleCopyLinkButtonClick }>Copy link</button>
       </li>
-    else
-      null
-
-    <ul className="share-buttons">
-      { copy_link }
 
       <li>
         <button className="cc" onClick={@handleFacebookLinkClick.bind(@, object)}>
@@ -100,8 +96,6 @@ module.exports = React.createClass
 
   renderCopyLinkSection: (object) ->
     <ul className="share-buttons">
-      <li className="copy-link">Copy link</li>
-
       <li>
         <input id="copy_link_input" ref="copy_link_input" className="cc-input" value={ object.url } readOnly={true} />
       </li>

@@ -4,28 +4,26 @@ GlobalState = require('global_state/state')
 
 # Stores
 #
-PinboardStore   = require('stores/pinboard_store')
-UserStore       = require('stores/user_store.cursor')
-PinStore        = require('stores/pin_store')
-RoleStore       = require('stores/role_store.cursor')
-FavoriteStore   = require('stores/favorite_store.cursor')
+PinboardStore = require('stores/pinboard_store')
+UserStore = require('stores/user_store.cursor')
+PinStore = require('stores/pin_store')
+RoleStore = require('stores/role_store.cursor')
+FavoriteStore = require('stores/favorite_store.cursor')
 
 # Components
 #
 PinboardSettings = require('components/pinboards/settings')
-PinboardAccess   = require('components/pinboards/access_rights')
-PinboardPins     = require('components/pinboards/pins/pinboard')
-PinboardTabs     = require('components/pinboards/tabs')
-ModalStack       = require('components/modal_stack')
-InviteActions    = require('components/roles/invite_actions')
-RelatedUsers     = require('components/pinboards/related_users')
-
+PinboardAccess = require('components/pinboards/access_rights')
+PinboardPins = require('components/pinboards/pins/pinboard')
+PinboardTabs = require('components/pinboards/tabs')
+ModalStack = require('components/modal_stack')
+InviteActions = require('components/roles/invite_actions')
+RelatedUsers = require('components/pinboards/related_users')
+FollowButton = require('components/pinboards/follow_button')
 ShareButtons = require('components/shared/share_buttons')
 Buttons = require('components/form/buttons')
 SyncButton = Buttons.SyncButton
 AuthButton = Buttons.AuthButton
-
-FollowButton      = require('components/pinboards/follow_button')
 
 SyncApi = require('sync/pinboard_sync_api')
 
@@ -37,6 +35,9 @@ pluralize = require('utils/pluralize')
 module.exports = React.createClass
 
   displayName: 'PinboardApp'
+
+  propTypes:
+    uuid: React.PropTypes.string.isRequired
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
@@ -68,9 +69,6 @@ module.exports = React.createClass
             favorites
           }
         """
-
-  propTypes:
-    uuid: React.PropTypes.string.isRequired
 
   getDefaultProps: ->
     cursor:
