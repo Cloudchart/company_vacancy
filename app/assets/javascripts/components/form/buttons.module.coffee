@@ -93,6 +93,7 @@ StandardButton = React.createClass
     iconClass:    ""
     text:         null
     wrapChildren: false
+    disabled:     false
 
   renderChildren: ->
     children = []
@@ -122,12 +123,14 @@ SyncButton = React.createClass
     sync:            false
     syncDelay:       500
     syncIconClass:   "fa-spinner"
+    disabled:        false
 
   getInitialState: ->
     iconClass:   @props.iconClass
     sync:        @props.sync
     text:        @props.text
     transition:  false
+    disabled:    @props.disabled
 
 
   # Helpers
@@ -152,7 +155,7 @@ SyncButton = React.createClass
     , 500
 
   componentWillReceiveProps: (nextProps) ->
-    nextState = _.pick nextProps, ["iconClass", "sync", "text"]
+    nextState = _.pick nextProps, ["iconClass", "sync", "text", "disabled"]
 
     if @isAnimating
       @nextState = _.extend @nextState, nextState
@@ -177,13 +180,18 @@ SyncButton = React.createClass
                     className:    joinClasses(@props.className, cx(sync: true, "no-transition": !@state.transition))
                     iconClass:    @state.iconClass
                     text:         @state.text
+                    disabled:     @state.disabled
                     wrapChildren: true
+
+    console.log @state.sync, props.disabled
 
     if @state.sync
       props = _.extend props,
                 className: joinClasses(@props.className, "syncing")
                 disabled:  true
                 iconClass: joinClasses(@props.syncIconClass, "fa-spin")
+
+    console.log @state.sync, props.disabled
 
     StandardButton(props)
 
