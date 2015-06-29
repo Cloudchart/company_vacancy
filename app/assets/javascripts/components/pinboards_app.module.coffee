@@ -61,13 +61,13 @@ module.exports = React.createClass
     @cursor =
       user: UserStore.cursor.items.cursor(@props.user_id)
 
-    @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
+    @fetch().then(=> @setState isLoaded: true, initialUserPinboardsCount: @getUserPinboards().size) unless @isLoaded()
 
 
   # Renderers
   #
   renderSuggestedInsights: ->
-    return null if @getUserPinboards().size >= 3
+    return null if @state.initialUserPinboardsCount and @state.initialUserPinboardsCount > 0
 
     <SuggestedPinboards />
 
@@ -89,7 +89,7 @@ module.exports = React.createClass
 
 
   # Main render
-  # 
+  #
   render: ->
     if @isLoaded()
       <section className="pinboards-wrapper">
