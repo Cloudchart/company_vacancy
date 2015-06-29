@@ -1,7 +1,7 @@
 en:
   lexicon:
     destroy: "Destroy"
-    login: "Login"
+    login: "Sign in with Twitter"
     logout: "Logout"
     sign_up: "Sign up"
     email: "Email"
@@ -20,4 +20,3 @@ en:
     add: "Add"
     comment: "Comment"
     parent: "Parent"
-    

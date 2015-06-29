@@ -45,11 +45,11 @@ LoginForm = React.createClass
 
 
   render: ->
-    <form 
+    <form
       ref       = "form"
       className = "login form-2"
       onSubmit  = { @handleSubmit } >
-    
+
       <header>Log In</header>
 
       <fieldset>
@@ -66,13 +66,13 @@ LoginForm = React.createClass
         <Field
           errors       = { @props.errors.password }
           name         = "password"
-          onChange     = { @getChangeHandler("password") } 
+          onChange     = { @getChangeHandler("password") }
           placeholder  = "Password"
           ref          = "password"
           title        = "Password"
           type         = "password" />
       </fieldset>
-      
+
       <footer>
 
         {
@@ -100,7 +100,7 @@ LoginForm = React.createClass
           iconClass = "fa-check"
           sync      = { @props.isSyncing }
           onClick   = { @props.handleSubmit }
-          text      = "Login"
+          text      = "Sign in with Twitter"
           type      = "submit" />
       </footer>
     </form>

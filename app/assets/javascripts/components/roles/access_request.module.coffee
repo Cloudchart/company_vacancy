@@ -8,7 +8,7 @@ PinboardStore     = require('stores/pinboard_store')
 TokenStore        = require('stores/token_store.cursor')
 UserStore         = require('stores/user_store.cursor')
 
-Buttons           = require('components/form/buttons') 
+Buttons           = require('components/form/buttons')
 SyncButton        = Buttons.SyncButton
 StandardButton    = Buttons.StandardButton
 
@@ -112,7 +112,7 @@ Component = React.createClass
   #
   renderMessageInput: ->
     <label className="cc-input-label">
-      <input 
+      <input
         className   = 'cc-input'
         placeholder = 'Tell us why should we let you in'
         onChange    = { @handleInputChange.bind(@, 'message') }
@@ -126,7 +126,7 @@ Component = React.createClass
       <p>
         You've already requested invite for this collection, please wait for collection's owner response.
       </p>
-      <StandardButton 
+      <StandardButton
         className = "cc"
         text      = "Got it!"
         onClick   = { ModalStack.hide } />
@@ -138,7 +138,7 @@ Component = React.createClass
     <form onSubmit={ @handleSubmit } >
       { @renderMessageInput() }
 
-      <SyncButton 
+      <SyncButton
         className = "cc"
         text      = "Send"
         sync      = { @state.isSyncing } />
@@ -150,7 +150,7 @@ Component = React.createClass
 
     <section className="form-modal">
       <header>
-        Invite only collection { @cursor.pinboard.get('title') }
+        Request to join this invite-only collection
       </header>
       { @renderSentMessage() }
       { @renderInviteForm() }

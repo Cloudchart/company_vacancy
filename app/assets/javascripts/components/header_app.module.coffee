@@ -47,7 +47,7 @@ module.exports = React.createClass
       profile:  <a href={ @props.user.url } className="profile auth">{ @props.user.name }</a>
       logout:   <a href={ @props.logout_url } className="sign-out header square auth"><i className="fa fa-sign-out" /></a>
     else
-      login:    <a href={ @props.login_url }>Login</a>
+      login:    <a href={ @props.login_url }>Sign in with Twitter</a>
 
 
   render: ->

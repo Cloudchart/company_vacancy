@@ -20,7 +20,7 @@ InviteActions = React.createClass
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-  statics: 
+  statics:
 
     queries:
 
@@ -29,7 +29,7 @@ InviteActions = React.createClass
           Viewer {
             roles
           }
-        """    
+        """
 
   # Component specifications
   #
@@ -105,14 +105,14 @@ InviteActions = React.createClass
     return null unless @isLoaded() && @isInvited()
 
     <section className="invite-actions">
-      <p>{ @props.cursor.viewer.get('first_name') }, you've been invited to this { getOwnerName(@props.ownerType) }!</p>
+      <p>{ @props.cursor.viewer.get('first_name') }, you've been invited to this { getOwnerName(@props.ownerType) }</p>
       <div className="buttons">
-        <SyncButton 
+        <SyncButton
           className = "cc"
           onClick   = { @handleAcceptClick }
           sync      = { @state.sync.get('accept') }
           text      = "Accept" />
-        <SyncButton 
+        <SyncButton
           className = "cc alert"
           onClick   = { @handleDeclineClick }
           sync      = { @state.sync.get('decline') }

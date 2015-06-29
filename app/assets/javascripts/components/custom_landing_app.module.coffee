@@ -47,7 +47,7 @@ module.exports = React.createClass
     user_id: React.PropTypes.string.isRequired
 
   getDefaultProps: ->
-    cursor: 
+    cursor:
       viewer:   UserStore.me()
       landings: LandingStore.cursor.items
 
@@ -59,7 +59,7 @@ module.exports = React.createClass
       GlobalState.fetch(@getQuery('user'), id: @props.user_id),
       GlobalState.fetch(@getQuery('viewer'))
     ]).then =>
-      @setState 
+      @setState
         attributes: @getAttributesFromCursor()
         isLoaded:   true
 
@@ -146,7 +146,7 @@ module.exports = React.createClass
   renderUserLoginControls: ->
     <section className="login-controls">
       <a className = { cx(cc: true, disabled: @isDisabled()) } href={ @getLoginLink() }>
-        Login
+        Sign in with Twitter
       </a>
       <a className = { cx(disabled: @isDisabled()) } href={ @getMainPageLink() }>
         Skip to the main page
