@@ -1,6 +1,14 @@
 class UserMailer < ActionMailer::Base
   default from: ENV['FROM_EMAIL']
 
+  def guest_subscription(guest_subscription)
+    @guest_subscription = guest_subscription
+
+    mail(to: @guest_subscription.email) do |format|
+      format.html { render layout: 'user_mailer_' }
+    end
+  end
+
   def company_url_verification(token)
     @company = token.owner
     @user = User.find(token.data[:user_id])

@@ -1,0 +1,19 @@
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-top:50px;padding-bottom:10px">
+  Hi,
+</p>
+
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  You have subscribed to <%= ENV['SITE_NAME'] %> weekly email.
+</p>
+
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  Please click the following link to confirm your email:
+</p>
+
+<p style="margin:0;padding:0;padding:0 50px;width:85%">
+  <%= link_to 'Confirm e-mail', main_app.verify_guest_subscription_url(@guest_subscription), style: 'color:#3bc462;font-weight:600;text-decoration:none;background-color:#3bc462;color:white;display:block;line-height:55px;margin:30px auto;height:55px;padding:0 30px;font-weight:300;font-size:24px;text-align:center;width:200px;' %>
+</p>
+
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:50px">
+  If you have nothing with <%= ENV['SITE_NAME'] %>, please ignore this message.
+</p>

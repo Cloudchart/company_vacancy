@@ -1,9 +1,17 @@
 class GuestSubscriptionsController < ApplicationController
 
+  load_and_authorize_resource
+
   def create
     @guest_subscription = GuestSubscription.find_or_initialize_by(guest_subscription_params)
 
     if @guest_subscription.persisted? || @guest_subscription.save
+      UserMailer.guest_subscription(@guest_subscription).deliver
+
+      if should_perform_sidekiq_worker?
+        SlackWebhooksWorker.perform_async('guest_subscribed', current_user.id, email: @guest_subscription.email)
+      end
+
       respond_to do |format|
         format.json { render json: :ok, status: 200 }
       end
@@ -15,12 +23,9 @@ class GuestSubscriptionsController < ApplicationController
   end
 
   def verify
-    @guest_subscription = GuestSubscription.find(params[:id])
     @guest_subscription.update(is_verified: true)
 
-    respond_to do |format|
-      format.json { render json: :ok, status: 200 }
-    end
+    redirect_to main_app.root_url
   end
 
 private

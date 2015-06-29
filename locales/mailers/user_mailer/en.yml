@@ -22,3 +22,5 @@ en:
       first_item: "browse unicorns' timelines to see how they came to life and grew."
       second_item: "discover actionable insights by founders, investors, and experts and use them to grow your business."
       third_item: "follow companies you're interested in to get their updates and learn from their successes and failures."
+    guest_subscription:
+      subject: "Confirm your subscription on Insights.VC"
