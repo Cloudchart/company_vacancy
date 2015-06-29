@@ -5,6 +5,7 @@ joinClasses = (firstClass, secondClass) ->
 
 cx = React.addons.classSet
 GlobalState = require('global_state/state')
+Constants = require('constants')
 
 AuthButton = React.createClass
 
@@ -45,7 +46,7 @@ AuthButton = React.createClass
 
     unless @props.cursor.viewer.get('is_authenticated')
       @props.onAuthClick() if typeof @props.onAuthClick is 'function'
-      location.href = '/auth/twitter'
+      location.href = Constants.TWITTER_AUTH_PATH
       return null
 
   render: ->
