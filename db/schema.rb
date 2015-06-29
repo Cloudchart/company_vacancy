@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150623161952) do
+ActiveRecord::Schema.define(version: 20150629164648) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -210,6 +210,13 @@ ActiveRecord::Schema.define(version: 20150623161952) do
   end
 
   add_index "friends_users", ["friend_id", "user_id"], name: "index_friends_users_on_friend_id_and_user_id", unique: true, using: :btree
+
+  create_table "guest_subscriptions", primary_key: "uuid", force: true do |t|
+    t.string   "email"
+    t.boolean  "is_verified", default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "impressions", force: true do |t|
     t.string   "impressionable_type"
