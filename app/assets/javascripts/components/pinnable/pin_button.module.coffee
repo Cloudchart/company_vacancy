@@ -1,7 +1,8 @@
 # @cjsx React.DOM
 
-
 GlobalState     = require('global_state/state')
+Constants       = require('constants')
+
 PinStore        = require('stores/pin_store')
 UserStore       = require('stores/user_store.cursor')
 TokenStore      = require('stores/token_store.cursor')
@@ -166,7 +167,7 @@ module.exports = React.createClass
 
     unless @props.cursor.user.get('twitter', false)
       Cookies.set('action-pin', JSON.stringify({ uuid: @props.uuid || '', pinnable_id: @props.pinnable_id || '' }))
-      location.href = '/auth/twitter'
+      location.href = Constants.TWITTER_AUTH_PATH
       return null
 
     @setState(clicked: true)

@@ -11,6 +11,8 @@ ContentEditableArea = require('components/form/contenteditable_area')
 PersonAvatar        = require('components/shared/person_avatar')
 StandardButton      = require('components/form/buttons').StandardButton
 
+Constants = require('constants')
+
 KnownAttributes = Immutable.Seq(['body', 'image_url'])
 
 # Exports
@@ -95,13 +97,11 @@ module.exports = React.createClass
 
   getLoginLink: ->
     return null if @isDisabled()
-
-    "/auth/twitter"
+    Constants.TWITTER_AUTH_PATH
 
   getMainPageLink: ->
     return null if @isDisabled()
-
-    "/"
+    '/'
 
 
   # Handlers

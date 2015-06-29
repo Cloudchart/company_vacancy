@@ -3,6 +3,7 @@
 # Imports
 # 
 GlobalState = require('global_state/state')
+Constants = require('constants')
 UserStore = require('stores/user_store.cursor')
 ModalStack = require('components/modal_stack')
 ReportContent = require('components/shared/report_content')
@@ -75,7 +76,7 @@ module.exports = React.createClass
         if @props.cursor.viewer.get('is_authenticated')
           ModalStack.show(<ReportContent/>)
         else
-          location.href = '/auth/twitter'
+          location.href = Constants.TWITTER_AUTH_PATH
           return null
 
 
