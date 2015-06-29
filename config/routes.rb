@@ -92,6 +92,10 @@ Cloudchart::Application.routes.draw do
     match :accept, on: :member, via: [:put, :patch]
   end
 
+  resources :guest_subscriptions, only: :create do
+    match :verify, on: :member, via: [:put, :patch]
+  end
+
   resources :posts_stories, only: [:update, :destroy]
   resources :activities, only: [:create]
   resources :quotes, only: [:show]
