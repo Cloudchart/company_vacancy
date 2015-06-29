@@ -19,7 +19,7 @@ StandardButton  = require('components/form/buttons').StandardButton
 
 InsightTourApp  = require('components/tour/insight/app')
 
-KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title', 'origin'])
+KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title', 'pinboard_description', 'origin'])
 
 
 # Utils
@@ -139,7 +139,7 @@ module.exports = React.createClass
     user_id             = @state.attributes.get('user_id')
 
     if (pinboard_id == 'new')
-      PinboardStore.create({ title: @state.attributes.get('pinboard_title'), user_id: user_id })
+      PinboardStore.create({ title: @state.attributes.get('pinboard_title'), description: @state.attributes.get('pinboard_description'), user_id: user_id })
         .then(@handlePinboardSave, @handleSaveFail)
 
     else if system_pinboard_ids.contains(pinboard_id)
@@ -365,6 +365,23 @@ module.exports = React.createClass
       </div>
     </label>
 
+
+  renderPinboardDescriptionInput: ->
+    return null unless @state.attributes.get('pinboard_id') == 'new'
+
+    <label className="pinboard">
+      <div className="title" />
+      <div className="input-wrapper">
+        <input
+          className   = "form-control"
+          value       = { @state.attributes.get('pinboard_description') }
+          onChange    = { @handleChange.bind(@, 'pinboard_description') }
+          placeholder = "Enter collection description"
+        />
+      </div>
+    </label>
+
+
   renderPinOrigin: ->
     return null if !@isCurrentUserSystemEditor() || @props.parent_id
 
@@ -449,6 +466,7 @@ module.exports = React.createClass
         { @renderUserSelect() }
         { @renderPinboardSelect() }
         { @renderPinboardInput() }
+        { @renderPinboardDescriptionInput() }
         { @renderPinComment() }
         { @renderPinOrigin() }
       </fieldset>
