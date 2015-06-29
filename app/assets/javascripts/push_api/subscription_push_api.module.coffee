@@ -2,8 +2,9 @@ module.exports =
 
   subscribe_guest: (email, options = {}) ->
     Promise.resolve $.ajax
-      url: '/'
+      url: '/guest_subscriptions'
       type:     'POST'
       dataType: 'json'
       data:
-        email:  email
+        guest_subscription:
+          email:  email
