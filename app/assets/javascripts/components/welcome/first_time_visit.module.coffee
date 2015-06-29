@@ -71,7 +71,7 @@ module.exports = React.createClass
       </button>
 
       <p>
-        { "First time on #{ Constants.SITE_NAME }? We created it to help founders solve problems they face everyday. Discover helpful insights by successful founders, investors and experts. Create your own insight collections. Share with your team and the community!" }
+        { "First time on #{Constants.SITE_NAME}? We created it to help founders solve problems they face everyday. Discover helpful insights by successful founders, investors and experts. Create your own insight collections. Share with your team and the community!" }
       </p>
 
       <footer>

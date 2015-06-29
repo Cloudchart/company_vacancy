@@ -50,13 +50,13 @@ class UserMailer < ActionMailer::Base
   end
 
   def company_invite(email)
-    mail(to: email, subject: "Join #{@author.full_name}'s company on #{ENV['SITE_NAME']}") do |format|
+    mail(to: email, subject: t('user_mailer.company_invite.subject', name: @author.full_name)) do |format|
       format.html { render layout: 'user_mailer_', template: 'user_mailer/company_invite' }
     end
   end
 
   def pinboard_invite(email)
-    mail(to: email, subject: "Join #{@author.full_name}'s collection on #{ENV['SITE_NAME']}") do |format|
+    mail(to: email, subject: t('user_mailer.pinboard_invite.subject', name: @author.full_name)) do |format|
       format.html { render layout: 'user_mailer_', template: 'user_mailer/pinboard_invite' }
     end
   end
@@ -69,7 +69,7 @@ class UserMailer < ActionMailer::Base
 
     return unless email = @owner.email
 
-    mail(to: email, subject: "Let #{@user.full_name} join your collection on #{ENV['SITE_NAME']}") do |format|
+    mail(to: email, subject: t('user_mailer.request_pinboard_invite.subject', name: @user.full_name)) do |format|
       format.html { render layout: 'user_mailer_' }
     end
   end
