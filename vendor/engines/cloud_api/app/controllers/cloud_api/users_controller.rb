@@ -8,7 +8,9 @@ module CloudApi
       @starter = [:find, current_user.id]
 
       respond_to do |format|
-        format.json { render '/main' }
+        format.json do
+          render_cached_main_json(expires_in: 1.minute)
+        end
       end
     end
 
@@ -26,7 +28,9 @@ module CloudApi
       @starter = [:find, params[:id]]
 
       respond_to do |format|
-        format.json { render '/main' }
+        format.json do
+          render_cached_main_json(expires_in: 1.minute)
+        end
       end
     end
 

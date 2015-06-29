@@ -100,6 +100,5 @@ module CloudApi
       end
     end
 
-
   end
 end
