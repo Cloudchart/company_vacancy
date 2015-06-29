@@ -135,7 +135,7 @@ module.exports = React.createClass
     <section className="cc-container-common">
       <header>
         <h1>Featured Companies</h1>
-        <h2>Follow unicorns and learn how they are growing.</h2>
+        <h2>Follow unicorns and other startups and learn how they are growing.</h2>
       </header>
 
       <section className="flow">
