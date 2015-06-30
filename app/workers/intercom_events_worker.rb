@@ -45,7 +45,7 @@ private
       result[:post_url] = post_url(options[:pin].pinnable)
       result[:pin_content] = options[:pin].content if options[:pin].content.present?
     when 'created-pinboard'
-      result[:pinboard_url] = pinboard_url(options[:pinboard])
+      result[:collection_url] = collection_url(options[:pinboard])
     when 'invited-person'
       result[:company_url] = company_url(options[:token].owner)
       result[:invitee_email] = options[:token].data[:email]
@@ -62,6 +62,10 @@ private
     when 'invited-user-to-app'
       result[:invitee_twitter] = options[:user].twitter
       result[:is_invitee_unicorn] = options[:user].unicorn?
+    when /followed-pinboard|unfollowed-pinboard/
+      result[:collection_url] = collection_url(options[:pinboard])
+    when /followed-company|unfollowed-company/
+      result[:company_url] = company_url(options[:company])
     end
 
     result
@@ -162,7 +166,7 @@ private
         name: user.full_name,
         email: user.email,
         pinboard_title: pinboard.title,
-        pinboard_url: pinboard_url(pinboard)
+        collection_url: collection_url(pinboard)
       )
 
     # Created post
@@ -211,6 +215,29 @@ private
         company_url: company_url(company),
         invitee: invitee,
         role: token.data[:role].gsub(/_/, ' ')
+      )
+
+    # Followed/Unfollowed object
+    #
+    when /followed-pinboard|unfollowed-pinboard/
+      pinboard = options[:pinboard]
+
+      result[:text] = I18n.t("user.activities.#{event_name.underscore}",
+        name: user.full_name,
+        twitter: user.twitter,
+        twitter_url: user.twitter_url,
+        collection_title: pinboard.title,
+        collection_url: collection_url(pinboard)
+      )
+    when /followed-company|unfollowed-company/
+      company = options[:company]
+
+      result[:text] = I18n.t("user.activities.#{event_name.underscore}",
+        name: user.full_name,
+        twitter: user.twitter,
+        twitter_url: user.twitter_url,
+        company_name: company.name,
+        company_url: company_url(company)
       )
     end
 

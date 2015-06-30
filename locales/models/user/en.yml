@@ -16,3 +16,7 @@ en:
       visited_page: "%{name} <%{twitter_url}|@%{twitter}> visited <%{page_url}|%{page_title}>"
       reported_content: "%{name} <%{twitter_url}|@%{twitter}> reported content on <%{reported_url}|%{reported_url}> with the following reason: %{reason}"
       guest_subscribed: "Guest user <%{email}> subscribed"
+      followed_pinboard: "%{name} <%{twitter_url}|@%{twitter}> followed <%{collection_url}|%{collection_title}> collection"
+      unfollowed_pinboard: "%{name} <%{twitter_url}|@%{twitter}> unfollowed <%{collection_url}|%{collection_title}> collection"
+      followed_company: "%{name} <%{twitter_url}|@%{twitter}> followed <%{company_url}|%{company_name}> company"
+      unfollowed_company: "%{name} <%{twitter_url}|@%{twitter}> unfollowed <%{company_url}|%{company_name}> company"
