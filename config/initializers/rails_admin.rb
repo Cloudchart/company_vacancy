@@ -1,7 +1,7 @@
 RailsAdmin.config do |config|
   # Main config
   #
-  config.main_app_name = ['CloudChart', 'Admin']
+  config.main_app_name = [ENV['SITE_NAME'], 'Admin']
   config.included_models = Cloudchart::RAILS_ADMIN_INCLUDED_MODELS
 
   config.authenticate_with do
