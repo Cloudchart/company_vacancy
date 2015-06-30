@@ -59,7 +59,8 @@ CompanyPreview = React.createClass
         """
           Company {
             edges {
-              favorites
+              favorites,
+              is_followed
             }
           }
         """
