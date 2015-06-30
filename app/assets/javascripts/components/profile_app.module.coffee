@@ -18,6 +18,7 @@ CompanyStore       = require('stores/company_store.cursor')
 
 Constants          = require('constants')
 
+EmptyMap = Immutable.Map({})
 
 EmptyTabTexts =
   feedOwn:        "Follow people and companies you're interested in to learn from them."
@@ -191,7 +192,10 @@ module.exports = React.createClass
             insightsNumber  = { @getInsightsNumber() }
             pinboardsNumber = { @getPinboardsNumber() }
             canEdit         = { @cursor.user.get('is_editable') }
-            onChange        = { @handleTabChange } />
+            onChange        = { @handleTabChange }
+            user            = { @cursor.user.deref(EmptyMap).toJS() }
+            viewer          = { @cursor.viewer.deref(EmptyMap).toJS() }
+          />
         </div>
       </header>
       { @renderContent() }

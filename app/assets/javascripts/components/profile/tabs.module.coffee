@@ -3,7 +3,7 @@
 # Imports
 #
 Timeline = require('components/company/timeline')
-Tabs     = require('components/shared/tabs')
+Tabs = require('components/shared/tabs')
 
 
 # Utils
@@ -19,23 +19,28 @@ MainComponent = React.createClass
 
   propTypes:
     collectionsNumber: React.PropTypes.number
-    pinboardsNumber:   React.PropTypes.number
-    insightsNumber:    React.PropTypes.number
-    onChange:          React.PropTypes.func.isRequired
-    canEdit:           React.PropTypes.bool.isRequired
+    pinboardsNumber: React.PropTypes.number
+    insightsNumber: React.PropTypes.number
+    onChange: React.PropTypes.func.isRequired
+    canEdit: React.PropTypes.bool.isRequired
+    user: React.PropTypes.object
+    viewer: React.PropTypes.object
 
 
   # Helpers
   #
   getVisibleTabs: ->
     Immutable.OrderedMap(
-      collections: true
-      insights:    true
+      collections: @shouldDisplayTab('collections')
+      insights:    @shouldDisplayTab('insights')
       feed:        false
-      companies:   true
+      companies:   @shouldDisplayTab('companies')
       settings:    @props.canEdit
     ).filter (visible) -> visible
     .keySeq()
+
+  shouldDisplayTab: (name) ->
+    !(@props["#{name}Number"] == 0 && @props.viewer.id != @props.user.id)
 
 
   # Renderers
