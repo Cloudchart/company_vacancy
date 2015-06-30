@@ -66,6 +66,8 @@ private
       result[:collection_url] = collection_url(options[:pinboard])
     when /followed-company|unfollowed-company/
       result[:company_url] = company_url(options[:company])
+    when /followed-user|unfollowed-user/
+      result[:user_url] = user_url(options[:user])
     end
 
     result
@@ -238,6 +240,16 @@ private
         twitter_url: user.twitter_url,
         company_name: company.name,
         company_url: company_url(company)
+      )
+    when /followed-user|unfollowed-user/
+      followed_user = options[:user]
+
+      result[:text] = I18n.t("user.activities.#{event_name.underscore}",
+        name: user.full_name,
+        twitter: user.twitter,
+        twitter_url: user.twitter_url,
+        user_name: followed_user.full_name,
+        user_url: user_url(followed_user)
       )
     end
 

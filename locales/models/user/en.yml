@@ -20,3 +20,5 @@ en:
       unfollowed_pinboard: "%{name} <%{twitter_url}|@%{twitter}> unfollowed <%{collection_url}|%{collection_title}> collection"
       followed_company: "%{name} <%{twitter_url}|@%{twitter}> followed <%{company_url}|%{company_name}> company"
       unfollowed_company: "%{name} <%{twitter_url}|@%{twitter}> unfollowed <%{company_url}|%{company_name}> company"
+      followed_user: "%{name} <%{twitter_url}|@%{twitter}> followed <%{user_url}|%{user_name}> user"
+      unfollowed_user: "%{name} <%{twitter_url}|@%{twitter}> unfollowed <%{user_url}|%{user_name}> user"
