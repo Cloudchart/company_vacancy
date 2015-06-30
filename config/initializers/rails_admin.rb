@@ -15,8 +15,20 @@ RailsAdmin.config do |config|
   # Actions
   #
   config.actions do
+
+    # default
+    #
     dashboard # mandatory
     index # mandatory
+    new
+    export
+    bulk_delete
+    show
+    edit
+    delete
+    show_in_app
+    history_index
+    history_show
 
     # custom
     #
@@ -211,34 +223,6 @@ RailsAdmin.config do |config|
           end
         end
       end
-    end
-
-    # default
-    #
-    new do
-      except ['Token', 'Person']
-    end
-    export do
-      except ['Token', 'Interview']
-    end
-    bulk_delete
-    show do
-      only ['Page']
-    end
-    edit do
-      except ['Token', 'Person']
-    end
-    delete do
-      except ['Person']
-    end
-    show_in_app do
-      except ['User', 'Token', 'Person', 'Tag', 'Story', 'Pinboard', 'Feature']
-    end
-    history_index do
-      except ['User', 'Token', 'Person', 'Story', 'Pinboard', 'Feature']
-    end
-    history_show do
-      except ['User', 'Token', 'Person', 'Story', 'Pinboard', 'Feature']
     end
 
   end

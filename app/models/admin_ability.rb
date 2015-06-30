@@ -8,12 +8,18 @@ class AdminAbility
       can :access, :rails_admin
       can :dashboard
 
-      can :read, Person
-      can :manage, [Interview, Page, Tag, Token, Feature]
+      can :index, Person
+      can [:index, :update, :destroy, :export], GuestSubscription
+      can [:index, :destroy, :invite, :accept_invite], Token
+      can :manage, [Interview, Page, Tag, Feature]
+
+      cannot :export, Interview
+      cannot :history, Feature
+      cannot :show, [Interview, Page, Tag, Feature]
 
       # Pin
       # 
-      can [:read, :update], Pin
+      can [:index, :update], Pin
 
       can :approve, Pin do |pin|
         !pin.is_approved?
@@ -21,7 +27,7 @@ class AdminAbility
 
       # User
       # 
-      can [:read, :create, :update, :make_unicorns], User
+      can [:index, :create, :update, :make_unicorns], User
       can [:authorize, :destroy], User, authorized_at: nil
 
       can :merge, User do |user|
@@ -34,7 +40,7 @@ class AdminAbility
       
       # Pinboard
       # 
-      can [:read, :create], Pinboard
+      can [:index, :create], Pinboard
       can [:make_important], Pinboard, is_important: false
       can [:make_unimportant], Pinboard, is_important: true
 
@@ -45,7 +51,7 @@ class AdminAbility
 
       # Story
       # 
-      can [:read, :create], Story
+      can [:index, :create], Story
 
       can [:update, :destroy], Story do |story|
         story.company_id.blank?
@@ -53,7 +59,7 @@ class AdminAbility
 
       # Company
       # 
-      can [:read], Company
+      can [:index, :show_in_app], Company
       can [:make_important], Company, is_important: false
       can [:make_unimportant], Company, is_important: true
 

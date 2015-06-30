@@ -1,7 +1,10 @@
 module Cloudchart
   ROLES = [:admin, :editor, :unicorn, :trustee, :inviter].freeze
-  RAILS_ADMIN_INCLUDED_MODELS = %w(Company Feature User Token Page Person Tag Interview Story Pinboard Role Pin)
-  
+
+  RAILS_ADMIN_INCLUDED_MODELS = %w(
+    Company Feature User Token Page Person Tag Interview Story Pinboard Role Pin GuestSubscription
+  )
+
   BROWSERS_WHITELIST = [
     OpenStruct.new(browser: 'Android', version: '4.4'),
     OpenStruct.new(browser: 'Chrome', version: '21.0'),
