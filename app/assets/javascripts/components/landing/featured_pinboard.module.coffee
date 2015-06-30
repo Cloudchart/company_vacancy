@@ -45,8 +45,11 @@ module.exports = React.createClass
 
   switchInsight: ->
     stackIndex    = parseInt(Math.random() * 10 % StacksCount)
+    return if stackIndex == @state.hoverStackIndex
+
     stackRef      = @refs['stack-' + stackIndex]
     return unless stackRef
+
     stackNode     = stackRef.getDOMNode()
     insightIndex  = parseInt(Math.random() * 10 % stackNode.childNodes.length) || 0
 
@@ -66,6 +69,16 @@ module.exports = React.createClass
       node.style.height = maxHeight + 'px'
 
       @__heights_calculated = true
+
+
+  handleStackMouseEnter: (index, e) ->
+    @setState
+      hoverStackIndex: index
+
+
+  handleStackMouseLeave: (index, e) ->
+    @setState
+      hoverStackIndex: null
 
 
 
@@ -123,7 +136,7 @@ module.exports = React.createClass
 
   renderStack: (items, i) ->
     <div className="item" key={ i }>
-      <div className="stack" ref={ 'stack-' + i }>
+      <div className="stack" ref={ 'stack-' + i } onMouseEnter={ @handleStackMouseEnter.bind(@, i) } onMouseLeave={ @handleStackMouseLeave.bind(@, i) }>
         {
           items
             .map @renderInsight.bind(@, i)
