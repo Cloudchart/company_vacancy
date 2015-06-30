@@ -15,7 +15,10 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     if session[:after_logout]
       session[:after_logout] = nil
-      redirect_to main_app.root_path
+      respond_to do |format|
+        format.html { redirect_to main_app.root_path }
+        format.json { render json: { message: exception.message }, status: 404 }
+      end
     else
       respond_to do |format|
         format.html { render_not_found }
