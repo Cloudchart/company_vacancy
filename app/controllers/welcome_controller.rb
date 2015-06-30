@@ -1,6 +1,6 @@
 class WelcomeController < ApplicationController
 
-  before_action :call_page_visit_to_slack_channel, only: [:index, :old_browsers]
+  after_action :call_page_visit_to_slack_channel, only: [:index, :old_browsers]
 
   def index
   end

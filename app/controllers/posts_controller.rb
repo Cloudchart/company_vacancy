@@ -5,7 +5,7 @@ class PostsController < ApplicationController
 
   load_and_authorize_resource except: [:create]
 
-  before_action :call_page_visit_to_slack_channel, only: :show
+  after_action :call_page_visit_to_slack_channel, only: :show
   after_action :create_intercom_event, only: :create
 
   def index

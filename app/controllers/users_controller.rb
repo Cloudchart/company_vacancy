@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 
   authorize_resource
 
-  before_action :call_page_visit_to_slack_channel, only: :show
+  after_action :call_page_visit_to_slack_channel, only: :show
 
   def show
     respond_to do |format|

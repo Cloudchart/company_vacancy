@@ -1,7 +1,7 @@
 class PagesController < ApplicationController
 
   before_action :set_page, only: :show
-  before_action :call_page_visit_to_slack_channel, only: :show
+  after_action :call_page_visit_to_slack_channel, only: :show
 
   def show
     respond_to do |format|

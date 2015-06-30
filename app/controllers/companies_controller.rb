@@ -14,7 +14,7 @@ class CompaniesController < ApplicationController
   load_and_authorize_resource except: [:index, :search]
   authorize_resource only: [:index, :search], class: controller_name.to_sym
 
-  before_action :call_page_visit_to_slack_channel, only: [:index, :show]
+  after_action :call_page_visit_to_slack_channel, only: [:index, :show]
   after_action :create_intercom_event, only: [:new, :update]
 
   # GET /companies

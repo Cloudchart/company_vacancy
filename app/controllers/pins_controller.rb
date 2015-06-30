@@ -1,19 +1,11 @@
 class PinsController < ApplicationController
 
-  before_filter :set_pin, except: :index
+  before_filter :set_pin
 
-  authorize_resource except: [:index]
-  authorize_resource only: :index, class: controller_name.to_sym
+  authorize_resource
 
-  before_action :call_page_visit_to_slack_channel, only: :index
+  after_action :call_page_visit_to_slack_channel, only: :show
   after_action :create_intercom_event, only: :create
-
-  def index
-    respond_to do |format|
-      format.html
-      format.json
-    end
-  end
 
   def show
     respond_to do |format|
@@ -137,7 +129,7 @@ private
   end
 
   def call_page_visit_to_slack_channel
-    post_page_visit_to_slack_channel('insights list', main_app.pins_url)
+    post_page_visit_to_slack_channel('Insight page', main_app.insight_url(@pin))
   end
 
 end

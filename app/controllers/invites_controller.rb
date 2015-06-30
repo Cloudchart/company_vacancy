@@ -1,7 +1,7 @@
 class InvitesController < ApplicationController
 
   authorize_resource class: :invite
-  before_action :call_page_visit_to_slack_channel, only: :index
+  after_action :call_page_visit_to_slack_channel, only: :index
   after_action :create_intercom_event, only: :create
 
   def index

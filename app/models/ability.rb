@@ -11,7 +11,6 @@ class Ability
       can :read, Pin, is_approved: true
       can :read, Company, is_published: true
       can [:index, :search], :companies
-      can :index, :pins
       can :index, :pinboards
       can [:create, :verify], GuestSubscription
 
@@ -64,7 +63,6 @@ class Ability
 
       # Pin
       #
-      can :index, :pins 
       can :create, Pin
 
       can :read, Pin do |pin|
@@ -192,10 +190,6 @@ class Ability
   end
 
 private
-
-  def owner?(user, object)
-    role_value(user, object) == 'owner'
-  end
 
   def editor?(user, object)
     role_value(user, object) == 'editor'
