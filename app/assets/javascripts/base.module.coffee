@@ -30,3 +30,14 @@ _.each document.querySelectorAll('[data-react-class]'), (node) ->
 #
 #
 window.onunload = ->
+
+
+#
+#
+
+device = require('utils/device')
+if device.is_iphone
+  meta          = document.createElement('meta')
+  meta.name     = "viewport"
+  meta.content  = "width=600, user-scalable=no"
+  document.getElementsByTagName('head')[0].appendChild(meta);
