@@ -13,9 +13,14 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
 
   rescue_from CanCan::AccessDenied do |exception|
-    respond_to do |format|
-      format.html { render_not_found }
-      format.json { render json: { message: exception.message }, status: 404 }
+    if session[:after_logout]
+      session[:after_logout] = nil
+      redirect_to main_app.root_path
+    else
+      respond_to do |format|
+        format.html { render_not_found }
+        format.json { render json: { message: exception.message }, status: 404 }
+      end
     end
   end
 
