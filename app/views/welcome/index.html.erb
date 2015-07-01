@@ -5,6 +5,11 @@
   description: t('meta.app_description')
 } %>
 
+
+<section class="cc-container-common glued" data-react-class="components/shared/subscription">
+</section>
+
+
 <section data-react-class="components/landing_app" data-react-props="<%= {
     isAuthorized: current_user.twitter.present?,
     isProductHunt: params[:ref] == 'producthunt',
@@ -12,6 +17,7 @@
     featured_pinboard: ENV['PH_COLLECTION_ID']
   }.to_json %>"
 >
+
 
 <noscript>
   <section class="cc-container-common">

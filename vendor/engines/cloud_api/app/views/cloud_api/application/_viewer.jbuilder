@@ -45,5 +45,13 @@ json_edge! json, :is_authenticated, edges do
 end
 
 
+json_edge! json, :has_email, edges do
+  viewer.emails.size > 0
+end
+
+json_edge! json, :has_email_token, edges do
+  !!viewer.tokens.find { |t| t.name == 'email_verification' }
+end
+
 #
 # / Edges

@@ -15,11 +15,9 @@ FeaturedInsights    = require('components/insight/featured')
 ImportantCompanies  = require('components/company/lists/important')
 ImportantPinboards  = require('components/pinboards/lists/important')
 Greeting            = require('components/shared/greeting')
-# Guide               = require('components/guide')
-Subscription        = require('components/shared/subscription')
-GuestSubscription        = require('components/shared/guest_subscription')
+GuestSubscription   = require('components/shared/guest_subscription')
 
-is_iphone           = window.matchMedia('only screen and (min-device-width: 320px) and (max-device-width: 736px)').matches
+device              = require('utils/device')
 
 TextForSubscription = "Subscribe to our weekly email to stay in the loop: get latest insights, most helpful collections and new Insights.VC features."
 
@@ -80,6 +78,7 @@ module.exports = React.createClass
   #
 
   renderWelcomeBanner: ->
+    return null if @props.cursor.me.get('is_authenticated', false)
     return null if @props.isProductHunt
 
     <section className="cc-container-common banner">
@@ -101,7 +100,7 @@ module.exports = React.createClass
 
 
   renderFeaturedPinboard: ->
-    return null if is_iphone
+    return null if device.is_iphone
     <FeaturedPinboard pinboard={ @props.featured_pinboard } />
 
 
@@ -154,16 +153,11 @@ module.exports = React.createClass
 
 
   renderSubscription: ->
-    if @props.cursor.me.get('is_authenticated', false)
-      <section className="cc-container-common">
-        <Subscription
-          text = { TextForSubscription }
-        />
-      </section>
-    else
-      <section className="cc-container-common">
-        <GuestSubscription text={ TextForSubscription } />
-      </section>
+    return null if @props.cursor.me.get('is_authenticated', false)
+
+    <section className="cc-container-common">
+      <GuestSubscription text={ TextForSubscription } />
+    </section>
 
 
   render: ->

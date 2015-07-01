@@ -1,159 +1,144 @@
 # @cjsx React.DOM
 
-GlobalState    = require('global_state/state')
-UserSyncApi    = require('sync/user_sync_api')
+GlobalState     = require('global_state/state')
+UserSyncApi     = require('sync/user_sync_api')
 
-TokenStore     = require('stores/token_store.cursor')
-UserStore      = require('stores/user_store.cursor')
+TokenStore      = require('stores/token_store.cursor')
+UserStore       = require('stores/user_store.cursor')
 
-SyncButton     = require("components/form/buttons").SyncButton
+SyncButton      = require("components/form/buttons").SyncButton
 
+cx              = React.addons.classSet
 
 # Exports
 #
 module.exports = React.createClass
 
-  displayName: 'Subscription'
+  displayName: "Subscription"
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics:
-
     queries:
-
-      tokens: ->
+      viewer: ->
         """
           Viewer {
-            tokens
+            edges {
+              has_email,
+              has_email_token,
+              is_authenticated
+            }
           }
         """
 
-  propTypes:
-    asBlock:               React.PropTypes.bool
-    buttonText:            React.PropTypes.string
-    onSubscriptionDone:    React.PropTypes.func
-    text:                  React.PropTypes.string
-
-  getDefaultProps: ->
-    buttonText:         "Sign me up"
-    text:               null
-    asBlock:            false
-    onSubscriptionDone: ->
-    cursor:
-      tokens:  TokenStore.cursor.items
-      user:    UserStore.me()
-
-  getInitialState: ->
-    attributes:         @getAttributesFromCursor()
-    errors:             Immutable.List()
-    isLoaded:           false
-    isSyncing:          false
-
-  onGlobalStateChange: ->
-    @setState attributes: @getAttributesFromCursor()
-
   fetch: ->
-    GlobalState.fetch(@getQuery('tokens'))
+    GlobalState.fetch(@getQuery('viewer')).done =>
+      @setState
+        ready: true
 
 
-  # Helpers
+  # Events
   #
-  isLoaded: ->
-    @props.cursor.user.deref(false) && @state.isLoaded
 
-  getEmailFromTokens: ->
-    token = @props.cursor.tokens.filter (token) =>
-      token.get('owner_id') == @props.cursor.user.get('uuid') &&
-      token.get('name') == 'email_verification'
-    .first()
-
-    return null unless token
-    token.get('data').get('address')
-
-  getUserEmail: ->
-    @props.cursor.user.get('email') || @getEmailFromTokens() || ''
-
-  getAttributesFromCursor: ->
-    Immutable.Map({}).set('email', @getUserEmail())
-
-  subscribe: (event) ->
+  handleSubmit: (event) ->
     event.preventDefault()
 
-    @setState isSyncing: true
-
-    UserSyncApi.subscribe(@props.cursor.user, @state.attributes)
-      .then =>
-        GlobalState.fetch(new GlobalState.query.Query("Viewer{tokens,emails}"), { force: true })
-        @props.onSubscriptionDone()
-      , (xhr) =>
-        @setState
-          errors: Immutable.List(xhr.responseJSON.errors)
-          isSyncing: false
-
-  isSubscribed: ->
-    !!@props.cursor.tokens.filter (token) =>
-      token.get('owner_id') == @props.cursor.user.get('uuid') &&
-      token.get('name') == 'subscription'
-    .size
-
-  getClassName: ->
-    if @props.asBlock then "subscription standalone" else "subscription"
-
-
-  # Handlers
-  #
-  handleChange: (name, event) ->
     @setState
-      attributes: @state.attributes.set(name, event.target.value)
-      errors:     @state.errors.remove(@state.errors.indexOf(name))
+      sync: true
+
+    UserSyncApi.subscribe(@cursor.me, Immutable.Seq({ email: @state.email })).then(@subscribeDone, @subscribeFail)
 
 
-  # Lifecycle methods
+  subscribeDone: ->
+    GlobalState.fetch(@getQuery('viewer'), { force: true }).done =>
+      @setState
+        sync:               false
+        shouldRenderThank:  true
+
+    null
+
+
+  subscribeFail: ->
+    @setState
+      sync:   false
+      error:  true
+
+    snabbt(@refs['form'].getDOMNode(), 'attention', {
+      position: [50, 0, 0],
+      springConstant: 2.4,
+      springDeceleration: 0.9
+    })
+
+    null
+
+
+  handleChange: (event) ->
+    @setState
+      email:  event.target.value
+      error:  false
+
+
+  # Lifecycle
   #
+  getInitialState: ->
+    email:  ''
+    error:              false
+    ready:              false
+    sync:               false
+    shouldRenderThank:  false
+
+
   componentWillMount: ->
-    @fetch().then => @setState(isLoaded: true) unless @isLoaded()
+    @cursor =
+      me: UserStore.me()
+
+    @fetch()
 
 
-  # Renderers
+  # Renders
   #
-  renderPlaceholder: ->
-    return null unless @props.children
-
-    <section className="subscription">
-      { @props.children }
+  renderThank: ->
+    <section className="subscription one-line">
+      <header>
+        Thanks! We’ll keep you posted.
+      </header>
     </section>
 
-  renderText: ->
-    return null unless @props.text
 
-    <p>{ @props.text }</p>
-
-  renderEmail: ->
-    return null if @props.cursor.user.get('email')
-
-    <input
-      className   = { if @state.errors.contains('email') then 'cc-input error' else 'cc-input' }
-      onChange    = { @handleChange.bind(@, 'email') }
-      placeholder = { "Please enter your email" }
-      type        = "email"
-      value       = { @state.attributes.get('email') } />
-
-
+  # Main Render
+  #
   render: ->
-    return null unless @isLoaded()
-    return null unless @props.cursor.user.get('twitter')
+    return @renderThank() if @state.shouldRenderThank
 
-    if @isSubscribed()
-      @renderPlaceholder()
-    else
-      <section className={ @getClassName() }>
-        { @renderText() }
-        <form onSubmit={ @subscribe }>
-          { @renderEmail() }
-          <SyncButton
-            className = "cc"
-            sync      = { @state.isSyncing }
-            text      = { @props.buttonText }
-            type      = "submit" />
-        </form>
-      </section>
+    return null unless  @state.ready
+    return null unless  @cursor.me.get('is_authenticated', false)
+    return null if      @cursor.me.get('has_email', false)
+    return null if      @cursor.me.get('has_email_token', false)
+
+    inputClassName = cx
+      'cc-input':   true
+      'error':      @state.error
+
+    <section className="subscription one-line">
+      <header>
+        New features and best insights weekly
+      </header>
+
+      <form ref="form" onSubmit={ @handleSubmit }>
+        <input
+          autoFocus   = { true }
+          className   = { inputClassName }
+          value       = { @state.email }
+          onChange    = { @handleChange }
+          placeholder = "user@example.com"
+          disabled    = { @state.sync }
+        />
+
+        <SyncButton
+          className   = "cc"
+          text        = "Subscribe"
+          sync        = { @state.sync }
+          type        = "submit"
+        />
+      </form>
+    </section>

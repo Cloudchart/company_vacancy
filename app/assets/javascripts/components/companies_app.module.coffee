@@ -6,7 +6,6 @@ CompanyStore      = require('stores/company_store.cursor')
 UserStore         = require('stores/user_store.cursor')
 
 CompanyPreview    = require('components/company/preview')
-Subscription      = require('components/shared/subscription')
 
 
 EmptyCompanies    = Immutable.fromJS([{ id: 'dummy-1', name: '' }, { id: 'dummy-2', name: '' }])
@@ -103,21 +102,10 @@ module.exports = React.createClass
       .map    @renderCompany
 
 
-  renderSubscription: ->
-    <Subscription
-      asBlock   = { true }
-      text      = "We're adding new companies every week — join our mailing list to get updates on new unicorns' timelines and useful insights." />
-
-
-  renderFooter: ->
-    @renderSubscription()
-
-
   render: ->
     <section className="cloud-profile-companies">
       { @renderHeader() }
       <section className="companies-list cloud-columns cloud-columns-flex">
         { @renderCompanies().toArray() }
       </section>
-      { @renderFooter() }
     </section>
