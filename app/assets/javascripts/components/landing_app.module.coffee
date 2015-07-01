@@ -154,7 +154,7 @@ module.exports = React.createClass
 
 
   renderSubscription: ->
-    if @props.cursor.me.get('is_authorized', false)
+    if @props.cursor.me.get('is_authenticated', false)
       <section className="cc-container-common">
         <Subscription
           text = { TextForSubscription }
