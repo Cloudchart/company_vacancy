@@ -139,7 +139,7 @@ def post_to_slack_channel(action_name)
     channel: '#develop',
     username: ENV['USER'],
     text: "Deployment #{action_name} in #{fetch(:stage)} environment",
-    icon_emoji: ":cloudchart_#{fetch(:stage)}:"
+    icon_emoji: ":insightsvc_#{fetch(:stage)}:"
   }
 
   "curl -s -X POST --data-urlencode 'payload=#{payload.to_json}' #{webhook_url}"
