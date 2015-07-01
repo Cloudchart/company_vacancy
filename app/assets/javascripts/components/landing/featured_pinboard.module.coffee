@@ -93,7 +93,7 @@ module.exports = React.createClass
 
   componentDidMount: ->
     @recalculateHeight()
-    @switchInsightInterval = setInterval @switchInsight, 5 * 1000
+    @switchInsightInterval = setInterval @switchInsight, 8 * 1000
 
 
   componentWillUnmount: ->
