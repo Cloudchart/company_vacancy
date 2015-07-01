@@ -168,7 +168,7 @@ private
         name: user.full_name,
         email: user.email,
         pinboard_title: pinboard.title,
-        collection_url: collection_url(pinboard)
+        pinboard_url: collection_url(pinboard)
       )
 
     # Created post
