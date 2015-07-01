@@ -387,10 +387,13 @@ module.exports = React.createClass
 
 
   renderPinOrigin: ->
-    return null if !@isCurrentUserSystemEditor() || @props.parent_id
+    return null if @props.parent_id
+
+    title = if @isCurrentUserSystemEditor() then "Origin" else "Story link"
+    #return null if !@isCurrentUserSystemEditor() || @props.parent_id
 
     <label className="origin">
-      <div className="title">Origin</div>
+      <div className="title">{ title }</div>
       <div className="input-wrapper">
         <input
           onChange  = { @handleChange.bind(@, 'origin') }
