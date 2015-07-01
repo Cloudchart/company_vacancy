@@ -45,7 +45,7 @@ private
       result[:post_url] = post_url(options[:pin].pinnable)
       result[:pin_content] = options[:pin].content if options[:pin].content.present?
     when 'created-pinboard'
-      result[:collection_url] = collection_url(options[:pinboard])
+      result[:pinboard_url] = collection_url(options[:pinboard])
     when 'invited-person'
       result[:company_url] = company_url(options[:token].owner)
       result[:invitee_email] = options[:token].data[:email]
@@ -63,7 +63,7 @@ private
       result[:invitee_twitter] = options[:user].twitter
       result[:is_invitee_unicorn] = options[:user].unicorn?
     when /followed-pinboard|unfollowed-pinboard/
-      result[:collection_url] = collection_url(options[:pinboard])
+      result[:pinboard_url] = collection_url(options[:pinboard])
     when /followed-company|unfollowed-company/
       result[:company_url] = company_url(options[:company])
     when /followed-user|unfollowed-user/
@@ -228,8 +228,8 @@ private
         name: user.full_name,
         twitter: user.twitter,
         twitter_url: user.twitter_url,
-        collection_title: pinboard.title,
-        collection_url: collection_url(pinboard)
+        pinboard_title: pinboard.title,
+        pinboard_url: collection_url(pinboard)
       )
     when /followed-company|unfollowed-company/
       company = options[:company]
