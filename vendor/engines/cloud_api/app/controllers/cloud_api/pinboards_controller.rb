@@ -13,7 +13,7 @@ module CloudApi
 
       respond_to do |format|
         format.json do
-          render_cached_main_json(expires_in: 1.minute)
+          render_cached_main_json(expires_in: 10.minutes)
         end
       end
     end
