@@ -4,7 +4,7 @@
   title: t('meta.pinboard.title', title: @pinboard.title),
   description: t('meta.pinboard.description', title: @pinboard.title),
   image: @pinboard.preview.try(:url),
-  url: pinboard_url(@pinboard)
+  url: collection_url(@pinboard)
 ) %>
 
 <%= content_tag :article, nil, data: {
