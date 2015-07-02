@@ -9,9 +9,7 @@ Dragonfly.app.configure do
 
   url_format "/media/:job/:name"
 
-  if Rails.env.production?
-    url_host ENV['ASSET_HOST']
-  elsif Rails.env.staging?
+  if %(staging production).include?(Rails.env)
     url_host ENV['ASSET_HOST']
   else
     url_host "http://#{ENV['APP_HOST']}"
