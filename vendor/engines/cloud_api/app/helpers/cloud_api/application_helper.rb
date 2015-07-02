@@ -14,10 +14,12 @@ module CloudApi
       uri.to_s
     end
 
-    def twitter_share_url(url)
+    def twitter_share_url(url, text = '')
       uri = URI.parse('https://twitter.com/intent/tweet')
+      text = truncate(text, length: 90, separator: ' ')
 
       params = {
+        text: text,
         url: url,
         original_referer: "http://#{ENV['APP_HOST']}/",
         via: ENV['TWITTER_APP_NAME']

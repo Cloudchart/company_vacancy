@@ -19,7 +19,8 @@ json_edge! json, :facebook_share_url, edges do
 end
 
 json_edge! json, :twitter_share_url, edges do
-  twitter_share_url(main_app.insight_url(pin))
+  content = pin.parent ? pin.parent.content : pin.content
+  twitter_share_url(main_app.insight_url(pin), content)
 end
 
 json_edge! json, :context, edges do
