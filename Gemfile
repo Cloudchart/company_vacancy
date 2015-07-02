@@ -44,6 +44,7 @@ gem 'nilify_blanks', '~> 1.2.0'
 gem 'libv8', '~> 3.16'
 gem 'zeroclipboard-rails'
 gem 'yajl-ruby'
+gem 'sinatra', require: nil
 
 # Engines
 #

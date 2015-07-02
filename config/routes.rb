@@ -7,6 +7,9 @@ Cloudchart::Application.routes.draw do
   mount CloudProfile::Engine, at: '/'
   mount CloudApi::Engine, at: '/api'
 
+  require 'sidekiq/web'
+  mount Sidekiq::Web, at: '/sidekiq', constraints: Cloudchart::AdminConstraint.new
+
   # Concerns
   #
   concern :statusable do
