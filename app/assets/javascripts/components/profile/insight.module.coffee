@@ -69,7 +69,10 @@ module.exports = React.createClass
 
 
   renderInsightContext: ->
+    return null if @cursor.insight.get('context').size == 0
+
     [
+      <span key="dash">&mdash;</span>
       <a key="company" href={ @cursor.insight.getIn(['context', 'company', 'url']) } className="company">
         { @cursor.insight.getIn(['context', 'company', 'title']) }
       </a>
@@ -85,7 +88,6 @@ module.exports = React.createClass
       <article className="insight">
         <p className="insight-content">
           { @renderInsightContent() }
-          &nbsp;&mdash;&nbsp;
           { @renderInsightContext() }
         </p>
 

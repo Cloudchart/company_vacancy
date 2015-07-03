@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150629164648) do
+ActiveRecord::Schema.define(version: 20150703140211) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -25,8 +25,10 @@ ActiveRecord::Schema.define(version: 20150629164648) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "data"
+    t.datetime "deleted_at"
   end
 
+  add_index "activities", ["deleted_at"], name: "index_activities_on_deleted_at", using: :btree
   add_index "activities", ["source_id", "source_type"], name: "index_activities_on_source_id_and_source_type", using: :btree
   add_index "activities", ["subscriber_id"], name: "index_activities_on_subscriber_id", using: :btree
   add_index "activities", ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type", using: :btree
@@ -370,9 +372,11 @@ ActiveRecord::Schema.define(version: 20150629164648) do
     t.string   "author_id"
     t.integer  "weight"
     t.string   "preview_uid"
+    t.datetime "deleted_at"
   end
 
   add_index "pins", ["author_id"], name: "index_pins_on_author_id", using: :btree
+  add_index "pins", ["deleted_at"], name: "index_pins_on_deleted_at", using: :btree
   add_index "pins", ["parent_id"], name: "index_pins_on_parent_id", using: :btree
   add_index "pins", ["pinboard_id"], name: "index_pins_on_pinboard_id", using: :btree
   add_index "pins", ["pinnable_id", "pinnable_type"], name: "index_pins_on_pinnable_id_and_pinnable_type", using: :btree

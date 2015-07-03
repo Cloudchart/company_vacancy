@@ -45,6 +45,7 @@ gem 'libv8', '~> 3.16'
 gem 'zeroclipboard-rails'
 gem 'yajl-ruby'
 gem 'sinatra', require: nil
+gem 'paranoia', '~> 2.0'
 
 # Engines
 #

@@ -437,7 +437,7 @@ module.exports = React.createClass
 
   renderDeleteButton: ->
     return null unless @props.uuid
-    return null if !@state.attributes.get('pinnable_id') && @hasRepins(@props.uuid)
+    # return null if !@state.attributes.get('pinnable_id') && @hasRepins(@props.uuid)
 
     <button key="delete" type="button" className="cc alert" onClick={ @handleDelete }>Delete</button>
 

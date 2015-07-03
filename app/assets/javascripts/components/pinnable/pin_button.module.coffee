@@ -131,7 +131,8 @@ module.exports = React.createClass
     if @props.uuid then @getRepinsCount() else @getPinsCount()
 
   isClickable: ->
-    @props.pinnable_id || @currentUserRepin() || @currentUserPin()
+    # @props.pinnable_id || @currentUserRepin() || @currentUserPin()
+    true
 
   isActive: ->
     !!@state.currentUserPin || !!@state.currentUserRepin
