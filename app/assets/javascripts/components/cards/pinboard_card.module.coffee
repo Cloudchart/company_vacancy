@@ -22,6 +22,13 @@ module.exports = React.createClass
   displayName: 'PinboardCard'
 
 
+  propTypes:
+    pinboard:                   React.PropTypes.string.isRequired
+    shouldRenderFollowButton:   React.PropTypes.bool
+    onClick:                    React.PropTypes.func
+    onUserClick:                React.PropTypes.func
+
+
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
 
@@ -57,6 +64,10 @@ module.exports = React.createClass
     @fetch()
 
 
+  getDefaultProps: ->
+    shouldRenderFollowButton: true
+
+
   getInitialState: ->
     ready: false
 
@@ -73,19 +84,25 @@ module.exports = React.createClass
     <i className={ className } />
 
 
+  renderFollowButton: ->
+    return null unless @props.shouldRenderFollowButton
+
+    <FollowButton pinboard={ @props.pinboard } />
+
+
   renderHeader: ->
     url = @cursor.pinboard.get('url')
 
     <header>
       <h1>
-        <a href={ url } className="see-through">
+        <a href={ url } onClick={ @props.onClick } className="see-through">
           { @cursor.pinboard.get('title') }
           { @renderAccessRightsIcon() }
         </a>
-        <FollowButton pinboard={ @props.pinboard } />
+        { @renderFollowButton() }
       </h1>
       <h2>
-        <a href={ url } className="see-through">
+        <a href={ url } onClick={ @props.onClick } className="see-through">
           { @cursor.pinboard.get('description') }
         </a>
       </h2>
@@ -105,7 +122,7 @@ module.exports = React.createClass
 
   renderFooter: ->
     <footer>
-      <UserCard user={ @cursor.pinboard.get('user_id') } />
+      <UserCard user={ @cursor.pinboard.get('user_id') } onClick={ @props.onUserClick } />
       { @renderCounters() }
     </footer>
 
