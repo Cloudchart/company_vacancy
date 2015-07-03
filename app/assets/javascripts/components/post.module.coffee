@@ -388,6 +388,7 @@ Post = React.createClass
             pinnable_type = 'Post'
             title         = { @state.post.title }
             label         = "Add Insight"
+            alwaysAdd     = { true }
           />
         </ul>
       </section>
@@ -398,7 +399,9 @@ Post = React.createClass
           asTextButton   = { true }
           pinnable_id    = { @props.id }
           pinnable_type  = 'Post'
-          title          = { @state.post.title } />
+          title          = { @state.post.title }
+          alwaysAdd      = { true }
+        />
       </section>
 
   renderFooter: ->
