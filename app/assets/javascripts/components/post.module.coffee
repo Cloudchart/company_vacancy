@@ -201,10 +201,12 @@ Post = React.createClass
 
   handleOkClick: (event) ->
     this.refs.okButton.getDOMNode().focus();
-    @goToTimeline()
+    #@goToTimeline()
 
     unless @state.visibility
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: 'public' })
+
+    setTimeout @goToTimeline, 250
 
   handleKeydown: (event) ->
     if $(@refs.container.getDOMNode()).find(':focus').length > 0
