@@ -14,21 +14,30 @@ module.exports = React.createClass
       <a href={ @props.root_url } className="title" dangerouslySetInnerHTML={ __html: @props.title } />
     </div>
 
+  renderBetaIcon: (link) ->
+    return null unless link.is_beta
+    <i className="beta">&beta;</i>
+
   renderLinkIcon: (link) ->
     return null unless link.icon
-
     <i className={ link.icon } />
+
+  renderLinkContent: (link) ->
+    <span>
+      { link.title }
+      { @renderBetaIcon(link) }
+    </span>
 
   renderLink: (link) ->
     if link.url
       <a href={ link.url }>
         { @renderLinkIcon(link) }
-        <span>{ link.title }</span>
+        { @renderLinkContent(link) }
       </a>
     else
       <span>
         { @renderLinkIcon(link) }
-        <span>{ link.title }</span>
+        { @renderLinkContent(link) }
       </span>
 
   renderLinks: ->

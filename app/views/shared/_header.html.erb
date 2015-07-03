@@ -13,6 +13,7 @@ end
 if can?(:index, :companies)
   links << {
     title: 'Companies',
+    is_beta: true,
     url: current_page?(main_app.companies_path) ? nil : main_app.companies_path
   }
 end

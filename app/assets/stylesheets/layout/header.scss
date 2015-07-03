@@ -208,6 +208,10 @@ body > header {
       @include header-title;
     }
 
+    i.beta {
+      padding-left: 5px;
+    }
+
     button.cc {
       height: $header-button-height;
       font-size: $header-button-font-size;
