@@ -57,7 +57,6 @@ module.exports = React.createClass
     asTextButton: false
     showHotzone:  true
     label:        'Save'
-    alwaysAdd:    false
     cursor:
       pins:    PinStore.cursor.items
       tokens:  TokenStore.cursor.items
@@ -179,7 +178,7 @@ module.exports = React.createClass
 
   showModal: ->
 
-    if @props.alwaysAdd
+    unless @props.uuid
       Modal.show(@renderPinForm())
     else
       if @state.currentUserPin
@@ -215,7 +214,7 @@ module.exports = React.createClass
   renderPinForm: ->
     <PinForm
       title         = { @props.title }
-      parent_id     = { if @props.alwaysAdd then null else @props.uuid }
+      parent_id     = { @props.uuid }
       pinnable_id   = { @props.pinnable_id }
       pinnable_type = { @props.pinnable_type }
       onDone        = { Modal.hide }

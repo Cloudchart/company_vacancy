@@ -388,7 +388,6 @@ Post = React.createClass
             pinnable_type = 'Post'
             title         = { @state.post.title }
             label         = "Add Insight"
-            alwaysAdd     = { true }
           />
         </ul>
       </section>
@@ -400,7 +399,6 @@ Post = React.createClass
           pinnable_id    = { @props.id }
           pinnable_type  = 'Post'
           title          = { @state.post.title }
-          alwaysAdd      = { true }
         />
       </section>
 
