@@ -15,7 +15,14 @@ module.exports = React.createClass
 
   displayName: 'UserCard'
 
+
+  propTypes:
+    user:     React.PropTypes.string.isRequired
+    onClick:  React.PropTypes.func
+
+
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
 
   statics:
     queries:
@@ -63,7 +70,7 @@ module.exports = React.createClass
     style       =
       backgroundImage: if avatar_url then "url(#{avatar_url})" else "none"
 
-    <a href={ url } className="see-through">
+    <a href={ url } onClick={ @props.onClick } className="see-through">
       <figure style={ style }>
         <figcaption>
           { Letters(@cursor.user.get('full_name')) unless avatar_url }
@@ -77,12 +84,12 @@ module.exports = React.createClass
 
     <section>
       <p className="name">
-        <a href={ url } className="see-through">
+        <a href={ url } onClick={ @props.onClick } className="see-through">
           { @cursor.user.get('full_name') }
         </a>
       </p>
       <p className="occupation">
-        <a href={ url } className="see-through">
+        <a href={ url } onClick={ @props.onClick } className="see-through">
           { @getOccupation() }
         </a>
       </p>
