@@ -11,5 +11,8 @@
   },
   ccu: current_user.id
 ) %>
-<%= display_meta_tags site: ENV['SITE_NAME'], separator: '—', reverse: true %>
+
+<% site = request.path == main_app.root_path ? "#{ENV['SITE_NAME']} — #{t('meta.slogan')}" : ENV['SITE_NAME'] %>
+
+<%= display_meta_tags site: site, separator: '—', reverse: true %>
 <%= csrf_meta_tags %>
