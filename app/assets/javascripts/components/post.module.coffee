@@ -399,6 +399,7 @@ Post = React.createClass
           pinnable_id    = { @props.id }
           pinnable_type  = 'Post'
           title          = { @state.post.title }
+          label          = 'Be the first to add an insight'
         />
       </section>
 

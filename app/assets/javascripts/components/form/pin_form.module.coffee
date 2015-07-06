@@ -75,7 +75,6 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {}
-
         """
 
 
@@ -339,6 +338,8 @@ module.exports = React.createClass
 
 
   renderPinboardSelect: ->
+    return null if @props.pinboard_id
+
     <label className="pinboard">
       <div className="title">Collection</div>
       <div className="select-wrapper">
@@ -437,10 +438,27 @@ module.exports = React.createClass
 
   renderDeleteButton: ->
     return null unless @props.uuid
-    # return null if !@state.attributes.get('pinnable_id') && @hasRepins(@props.uuid)
-
     <button key="delete" type="button" className="cc alert" onClick={ @handleDelete }>Delete</button>
 
+  renderHeader: ->
+    if @state.attributes.get('pinnable_id')
+      <InsightContent
+        withLinks   = { false }
+        pin_id      = { @state.attributes.get('parent_id') }
+        pinnable_id = { @state.attributes.get('pinnable_id') }
+      />
+    else
+      <ModalHeader text = { @props.title } />
+
+  renderCloseButton: ->
+    return null unless @state.attributes.get('pinnable_id')
+
+    <StandardButton
+      className = "close transparent"
+      iconClass = "cc-icon cc-times"
+      type      = "button"
+      onClick   = { @props.onCancel }
+    />
 
   renderFooter: ->
     submitButtonTitle = if @props.uuid then 'Update' else 'Save It'
@@ -454,20 +472,14 @@ module.exports = React.createClass
     </footer>
 
 
+  # Main render
+  #
   render: ->
     return null unless @fetchDone()
 
     <form className="pin" onSubmit={ @handleSubmit }>
-      <StandardButton
-        className = "close transparent"
-        iconClass = "cc-icon cc-times"
-        type      = "button"
-        onClick   = { @props.onCancel }/>
-
-      <InsightContent
-        withLinks   = { false }
-        pin_id      = { @state.attributes.get('parent_id') }
-        pinnable_id = { @state.attributes.get('pinnable_id') } />
+      { @renderCloseButton() }
+      { @renderHeader() }
 
       <fieldset>
         { @renderUserSelect() }

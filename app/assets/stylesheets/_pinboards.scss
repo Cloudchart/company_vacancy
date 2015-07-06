@@ -114,8 +114,12 @@ $pinboard-header-color: hsl(60, 10%, 96%);
           @include display(flex);
           @include align-items(center);
 
-          > button.cc {
+          > button.follow {
             margin-right: 10px;
+          }
+
+          > .separator {
+            @include flex(1);
           }
         }
 

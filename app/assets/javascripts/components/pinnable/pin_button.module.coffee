@@ -27,6 +27,17 @@ module.exports = React.createClass
 
   displayName: 'PinButton'
 
+  propTypes:
+    uuid: React.PropTypes.string
+    title: React.PropTypes.string
+    label: React.PropTypes.string
+    pinboard_id: React.PropTypes.string
+    pinnable_id: React.PropTypes.string
+    pinnable_type: React.PropTypes.string
+    asTextButton: React.PropTypes.bool
+    showHotzone: React.PropTypes.bool
+    iconClass: React.PropTypes.string
+
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics:
@@ -44,24 +55,19 @@ module.exports = React.createClass
           }
         """
 
-  propTypes:
-    uuid:          React.PropTypes.string
-    title:         React.PropTypes.string
-    label:         React.PropTypes.string
-    pinnable_id:   React.PropTypes.string
-    pinnable_type: React.PropTypes.string
-    asTextButton:  React.PropTypes.bool
-    showHotzone:   React.PropTypes.bool
 
+  # Component specifications
+  #
   getDefaultProps: ->
     asTextButton: false
-    showHotzone:  true
-    label:        'Save'
+    showHotzone: true
+    label: 'Save'
+    iconClass: 'fa fa-thumb-tack'
     cursor:
-      pins:    PinStore.cursor.items
-      tokens:  TokenStore.cursor.items
+      pins: PinStore.cursor.items
+      tokens: TokenStore.cursor.items
       hotzone: HotzoneCursor
-      user:    UserStore.me()
+      user: UserStore.me()
 
   getInitialState: ->
     _.extend loaders: Immutable.Map(), clicked: false, ready: false,
@@ -81,7 +87,6 @@ module.exports = React.createClass
 
   # Helpers
   #
-
   performAutomation: ->
     return unless data = Cookies.get('action-pin')
     data = JSON.parse(data)
@@ -130,10 +135,6 @@ module.exports = React.createClass
   getCount: ->
     if @props.uuid then @getRepinsCount() else @getPinsCount()
 
-  isClickable: ->
-    # @props.pinnable_id || @currentUserRepin() || @currentUserPin()
-    true
-
   isActive: ->
     !!@state.currentUserPin || !!@state.currentUserRepin
 
@@ -161,8 +162,6 @@ module.exports = React.createClass
   # Handlers
   #
   handleClick: (event) ->
-    return null unless @isClickable()
-
     event.preventDefault()
     event.stopPropagation()
 
@@ -176,19 +175,16 @@ module.exports = React.createClass
     @showModal()
 
 
-
   showModal: ->
-
-    unless @props.uuid
-      Modal.show(@renderPinForm())
-    else
+    if @props.uuid
       if @state.currentUserPin
         Modal.show(@renderEditPinForm(@state.currentUserPin.get('uuid')))
       else if @state.currentUserRepin
         Modal.show(@renderEditPinForm(@state.currentUserRepin.get('uuid')))
       else
         Modal.show(@renderPinForm())
-
+    else
+      Modal.show(@renderPinForm())
 
 
   # Lifecycle methods
@@ -216,16 +212,19 @@ module.exports = React.createClass
     <PinForm
       title         = { @props.title }
       parent_id     = { @props.uuid }
+      pinboard_id   = { @props.pinboard_id }
       pinnable_id   = { @props.pinnable_id }
       pinnable_type = { @props.pinnable_type }
       onDone        = { Modal.hide }
-      onCancel      = { Modal.hide } />
+      onCancel      = { Modal.hide }
+    />
 
   renderEditPinForm: (uuid) ->
     <PinForm
       uuid          = { uuid }
       onDone        = { Modal.hide }
-      onCancel      = { Modal.hide } />
+      onCancel      = { Modal.hide }
+    />
 
   renderCounter: ->
     return null unless (count = @getCount()) > 0 && @isActive()
@@ -238,29 +237,31 @@ module.exports = React.createClass
     @props.label
 
   renderHotzone: ->
-    return null unless @showHotzone() && !@state.clicked && @isClickable()
+    return null unless @showHotzone() && !@state.clicked
 
     <Hotzone />
 
 
+  # Main render
+  #
   render: ->
-    return null unless @props.cursor.user.get('uuid') #&& @props.cursor.user.get('twitter')
+    return null unless @props.cursor.user.get('uuid')
 
     classList = cx
-      active:         false
+      active: false
       'with-content': true
-      'pin-button':   true
-      'disabled':     !@isClickable()
+      'pin-button': true
 
-    unless @props.asTextButton
+    if @props.asTextButton
+      <StandardButton
+        className = "cc"
+        iconClass = @props.iconClass
+        onClick = { @handleClick }
+        text = @props.label
+      />
+    else
       <li className={ classList } onClick={ @handleClick }>
-        <i className="fa fa-thumb-tack" />
+        <i className={ @props.iconClass } />
         { @renderCounter() }
         { @renderText() }
       </li>
-    else
-      <StandardButton
-        className = "cc"
-        iconClass = "fa fa-thumb-tack"
-        onClick   = { @handleClick }
-        text      = "Be the first to add an insight" />

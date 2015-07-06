@@ -19,6 +19,8 @@ PinboardTabs = require('components/pinboards/tabs')
 ModalStack = require('components/modal_stack')
 InviteActions = require('components/roles/invite_actions')
 RelatedUsers = require('components/pinboards/related_users')
+
+PinButton = require('components/pinnable/pin_button')
 FollowButton = require('components/pinboards/follow_button')
 ShareButtons = require('components/shared/share_buttons')
 Buttons = require('components/form/buttons')
@@ -70,6 +72,9 @@ module.exports = React.createClass
           }
         """
 
+
+  # Component specifications
+  #
   getDefaultProps: ->
     cursor:
       pinboards: PinboardStore.cursor.items
@@ -227,6 +232,16 @@ module.exports = React.createClass
       <div className="buttons">
         <FollowButton pinboard={ @props.uuid } canUnfollow={ true } />
         <ShareButtons object = pinboard.toJS() />
+
+        <div className="separator"/>
+
+        <PinButton
+          asTextButton = true
+          title = { @getPinboard().get('title') }
+          label = 'Create insight'
+          iconClass = ''
+          pinboard_id = { @props.uuid }
+        />
       </div>
 
     </header>
@@ -249,6 +264,8 @@ module.exports = React.createClass
     <div className="description">{ description }</div>
 
 
+  # Main render
+  #
   render: ->
     return null unless @isLoaded()
 
