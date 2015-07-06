@@ -149,7 +149,7 @@ module.exports = React.createClass
             />
 
             <ul className="round-buttons">
-              <EditPinButton uuid={ insight.uuid } />
+              <EditPinButton uuid = { insight.uuid } />
               <PinButton {...attributes} />
             </ul>
           </section>

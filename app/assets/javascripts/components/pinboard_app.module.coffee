@@ -84,9 +84,9 @@ module.exports = React.createClass
       viewer:    UserStore.me()
 
   getInitialState: ->
-    uuid:       @props.uuid
+    uuid: @props.uuid
     currentTab: null
-    isSyncing:  false
+    isSyncing: false
 
   fetch: ->
     Promise.all([
@@ -276,8 +276,9 @@ module.exports = React.createClass
           <InviteActions ownerId = { @props.uuid } ownerType = 'Pinboard' />
           <PinboardTabs
             insightsNumber = { @getPinboard().get('pins_count') }
-            canEdit        = { @canViewerEdit() }
-            onChange       = { @handleTabChange } />
+            canEdit = { @canViewerEdit() }
+            onChange = { @handleTabChange }
+          />
         </div>
       </section>
       { @renderContent() }
