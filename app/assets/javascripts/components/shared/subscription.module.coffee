@@ -97,10 +97,12 @@ module.exports = React.createClass
 
   # Renders
   #
-  renderThank: ->
+  renderThank: (message = null) ->
+    message ||= 'Thanks! We’ll keep you posted.'
+
     <section className="subscription one-line">
       <header>
-        Thanks! We’ll keep you posted.
+        { message }
       </header>
     </section>
 
@@ -117,10 +119,14 @@ module.exports = React.createClass
   render: ->
     return @renderThank() if @state.shouldRenderThank
 
-    return null unless  @state.ready
-    return null unless  @cursor.me.get('is_authenticated', false)
-    return null if      @cursor.me.get('has_email', false)
-    return null if      @cursor.me.get('has_email_token', false)
+    return null unless @state.ready
+    return null unless @cursor.me.get('is_authenticated', false)
+
+    if @cursor.me.get('has_email', false) or @cursor.me.get('has_email_token', false)
+      if @props.displaySubscribedMessage
+        return @renderThank('You’re already subscribed!')
+      else
+        return null
 
     inputClassName = cx
       'cc-input':   true

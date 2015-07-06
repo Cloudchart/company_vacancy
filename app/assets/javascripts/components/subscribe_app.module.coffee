@@ -78,7 +78,7 @@ module.exports = React.createClass
 
   renderSubscription: ->
     if @props.isUserAuthenticated
-      <Subscription/>
+      <Subscription displaySubscribedMessage = true />
     else
       <GuestSubscription is_subscribed = false />
 
