@@ -63,7 +63,13 @@ class Ability
 
       # Pin
       #
-      can :create, Pin
+      can :create, Pin do |pin|
+        if pin.pinboard
+          owner_or_editor?(current_user, pin.pinboard) || owner_or_editor?(pin.user, pin.pinboard)
+        else
+          pin.is_suggestion?
+        end
+      end
 
       can :read, Pin do |pin|
         pin.content.blank? || pin.is_approved? || pin.user_id == current_user.id ||

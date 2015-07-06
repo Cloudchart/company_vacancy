@@ -286,10 +286,10 @@ module.exports = React.createClass
     value       = event.target.value
     attributes  = @state.attributes
 
-    if name == 'content' and value.length > (contentMaxLength = @getContentMaxLength())
+    if name == 'content' && value.length > (contentMaxLength = @getContentMaxLength())
       value = value.substring(0, contentMaxLength)
 
-    if name == 'user_id'
+    if name == 'user_id' && !@props.pinboard_id
       attributes = attributes.set('pinboard_id', @getDefaultPinboardId(value))
 
     @setState

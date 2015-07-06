@@ -101,8 +101,8 @@ private
   end
 
   def fields_for_create
-    params = default_fields << [:user_id, :content, :pinnable_id, :pinnable_type, :parent_id, :origin]
-    params << [:is_suggestion] if current_user.editor?
+    params = default_fields << [:content, :pinnable_id, :pinnable_type, :parent_id, :origin]
+    params << [:user_id, :is_suggestion] if current_user.editor?
     params
   end
 

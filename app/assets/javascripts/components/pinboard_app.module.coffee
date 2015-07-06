@@ -51,11 +51,14 @@ module.exports = React.createClass
         """
           Pinboard {
             #{FollowButton.getQuery('pinboard')},
-            user,
+            user {
+              roles
+            },
             readers,
             writers,
             followers,
             pins,
+            roles,
             edges {
               pinboard_url,
               facebook_share_url,
@@ -88,6 +91,9 @@ module.exports = React.createClass
     currentTab: null
     isSyncing: false
 
+
+  # Fetchers
+  #
   fetch: ->
     Promise.all([
       GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }),
@@ -96,6 +102,12 @@ module.exports = React.createClass
 
   fetchViewer: (options={}) ->
     GlobalState.fetch(@getQuery('viewer'), options)
+
+
+  # Lifecycle methods
+  #
+  componentWillMount: ->
+    @fetch() unless @isLoaded()
 
 
   # Helpers
@@ -133,17 +145,14 @@ module.exports = React.createClass
       .map (role) -> UserStore.get(role.get('user_id'))
       .valueSeq()
 
+  canViewerCreateInsight: ->
+    @canViewerEdit() || (UserStore.isEditor() && UserStore.isUnicorn(@getOwner()))
+
 
   # Handlers
   #
   handleTabChange: (tab) ->
     @setState currentTab: tab
-
-
-  # Lifecycle methods
-  #
-  componentWillMount: ->
-    @fetch() unless @isLoaded()
 
   handleFollowClick: ->
     # TODO
@@ -235,13 +244,7 @@ module.exports = React.createClass
 
         <div className="separator"/>
 
-        <PinButton
-          asTextButton = true
-          title = { @getPinboard().get('title') }
-          label = 'Create insight'
-          iconClass = ''
-          pinboard_id = { @props.uuid }
-        />
+        { @renderCreateInsightButton() }
       </div>
 
     </header>
@@ -262,6 +265,17 @@ module.exports = React.createClass
     return null unless description
 
     <div className="description">{ description }</div>
+
+  renderCreateInsightButton: ->
+    return null unless @canViewerCreateInsight()
+
+    <PinButton
+      asTextButton = true
+      title = { @getPinboard().get('title') }
+      label = 'Add an insight'
+      iconClass = ''
+      pinboard_id = { @props.uuid }
+    />
 
 
   # Main render
