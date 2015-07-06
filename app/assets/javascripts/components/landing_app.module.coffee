@@ -16,6 +16,7 @@ ImportantCompanies  = require('components/company/lists/important')
 ImportantPinboards  = require('components/pinboards/lists/important')
 Greeting            = require('components/shared/greeting')
 GuestSubscription   = require('components/shared/guest_subscription')
+MainBanner          = require('components/welcome/main_banner')
 
 device              = require('utils/device')
 
@@ -78,19 +79,12 @@ module.exports = React.createClass
   #
 
   renderWelcomeBanner: ->
-    return null if @props.cursor.me.get('is_authenticated', false)
-    return null if @props.isProductHunt
+    shouldDisplay = !(
+      @props.cursor.me.get('is_authenticated', false) ||
+      @props.isProductHunt
+    )
 
-    <section className="cc-container-common banner">
-      <header>
-        <h1>
-          Bite-size insights for&nbsp;founders
-        </h1>
-        <h2>
-          Get valuable insights by successful founders and&nbsp;investors. Share your own.
-        </h2>
-      </header>
-    </section>
+    <MainBanner shouldDisplay = { shouldDisplay } />
 
 
   renderProducthuntBanner: ->

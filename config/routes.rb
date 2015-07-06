@@ -124,6 +124,7 @@ Cloudchart::Application.routes.draw do
 
   delete '/logout', to: 'cloud_profile/authentications#destroy', as: :logout
   get '/old', to: 'welcome#old_browsers', as: :old_browsers
+  get '/subscribe', to: 'welcome#subscribe', as: :subscribe
   get '/sandbox', to: 'sandbox#index' if Rails.env.development?
 
   # Preview

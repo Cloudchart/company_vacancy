@@ -9,6 +9,9 @@ class WelcomeController < ApplicationController
     render layout: 'old_browsers'
   end
 
+  def subscribe
+  end
+
 private
 
   def call_page_visit_to_slack_channel

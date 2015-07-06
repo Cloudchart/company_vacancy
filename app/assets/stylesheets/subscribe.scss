@@ -1,0 +1,38 @@
+main > .subscribe-container > article.subscribe {
+
+  .benefits {
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
+    > .container {
+
+      > h1 {
+        margin-left: 20px;
+        font-size: 36px;
+        font-weight: 100;
+      }
+
+      > ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 20px;
+        font-weight: 300;
+
+        > li {
+          > i.fa {
+            color: hsl(139, 51%, 52%);
+            margin-right: 10px;
+            font-size: 15px;
+          }
+        }
+      }
+
+    }
+  }
+
+  .subscription {
+    background: none;
+  }
+
+}

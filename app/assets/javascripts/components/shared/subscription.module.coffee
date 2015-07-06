@@ -104,6 +104,13 @@ module.exports = React.createClass
       </header>
     </section>
 
+  renderHeader: ->
+    return null unless @props.text
+
+    <header>
+      { @props.text }
+    </header>
+
 
   # Main Render
   #
@@ -119,10 +126,12 @@ module.exports = React.createClass
       'cc-input':   true
       'error':      @state.error
 
-    <section className="subscription one-line">
-      <header>
-        New features and best insights weekly
-      </header>
+    subscriptionClasses = cx
+      'subscription': true
+      'one-line': @props.text
+
+    <section className = { subscriptionClasses }>
+      { @renderHeader() }
 
       <form ref="form" onSubmit={ @handleSubmit }>
         <input
@@ -130,7 +139,7 @@ module.exports = React.createClass
           className   = { inputClassName }
           value       = { @state.email }
           onChange    = { @handleChange }
-          placeholder = "user@example.com"
+          placeholder = "Please enter your email"
           disabled    = { @state.sync }
         />
 
