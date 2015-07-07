@@ -36,7 +36,6 @@ class UsersController < ApplicationController
 
   def subscribe
     errors = []
-    errors << :subscribed if @user.tokens.find_by(name: :subscription)
 
     if should_verify_email?(@user) && errors.empty?
       email = Email.new(address: params_for_subscribe[:email])
@@ -53,7 +52,7 @@ class UsersController < ApplicationController
 
     raise ActiveRecord::RecordInvalid.new(@user) unless errors.empty?
 
-    @user.tokens.create! name: :subscription
+    @user.tokens.find_or_create_by!(name: :subscription)
 
     render json: :ok
 
