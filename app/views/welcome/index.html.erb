@@ -11,7 +11,7 @@
     isAuthorized: current_user.twitter.present?,
     isProductHunt: params[:ref] == 'producthunt',
     productHuntURL: collection_url(ENV['PH_COLLECTION_ID']),
-    featured_pinboard: ENV['PH_COLLECTION_ID']
+    featured_pinboard: ENV['FEATURED_COLLECTION_ID']
   }.to_json %>" >
 </section>
 

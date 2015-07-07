@@ -166,7 +166,7 @@ module.exports = React.createClass
   render: ->
     return null unless @state.ready
 
-    <section className="cc-container-common producthunt">
+    <section className="cc-container-common featured-pinboard">
       { @renderHeader() }
 
       <section className="full-width">

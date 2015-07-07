@@ -147,7 +147,7 @@
 
 // Product Hunt Full Width Content
 
-.cc-container-common.producthunt {
+.cc-container-common.featured-pinboard {
   margin-top: 0;
 
   > header h1 {
@@ -156,8 +156,8 @@
   }
 }
 
-.cc-container-common.producthunt  > section.full-width {
-  background: asset_url('ph-feature.jpg') no-repeat bottom center;
+.cc-container-common.featured-pinboard  > section.full-width {
+  background: asset_url('featured-pinboard.jpg') no-repeat center center;
   background-size: cover;
 
   .item {
