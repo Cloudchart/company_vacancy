@@ -11,11 +11,11 @@ class AdminAbility
       can :index, Person
       can [:index, :update, :destroy, :export], GuestSubscription
       can [:index, :destroy, :invite, :accept_invite], Token
-      can :manage, [Interview, Page, Tag, Feature]
+      can :manage, [Interview, Page, Tag, Feature, Domain]
 
       cannot :export, Interview
-      cannot :history, Feature
-      cannot :show, [Interview, Page, Tag, Feature]
+      cannot :history, [Feature, Domain]
+      cannot :show, [Interview, Page, Tag, Feature, Domain]
 
       # Pin
       # 
