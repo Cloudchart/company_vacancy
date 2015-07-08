@@ -115,7 +115,7 @@ class Company < ActiveRecord::Base
   end
 
   def formatted_site_url
-    site_url.match(/http:\/\/|https:\/\//) ? site_url : "http://#{site_url}"
+    site_url.match(/https?:\/\//) ? site_url : "http://#{site_url}"
   end
 
   def owner

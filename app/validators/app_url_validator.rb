@@ -8,8 +8,6 @@ class AppUrlValidator < ActiveModel::EachValidator
   def url_valid?(url)
     url = url.to_s
     return false unless url.match(ENV['APP_HOST'])
-
-    url = 'http://' + url unless url.match(/http:\/\/|https:\/\//)
     uri = URI.parse(url) rescue false
     uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS)
   end

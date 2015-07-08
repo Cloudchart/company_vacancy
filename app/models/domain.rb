@@ -11,7 +11,7 @@ class Domain < ActiveRecord::Base
 private
 
   def remove_protocol_from_name
-    self.name = name.gsub(/http:\/\/|https:\/\//, '')
+    self.name = name.gsub(/https?:\/\//, '')
   end
 
 end

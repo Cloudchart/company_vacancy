@@ -37,7 +37,7 @@ class Feature < ActiveRecord::Base
   end
 
   def formatted_url
-    url.match(/http:\/\/|https:\/\//) ? url : "http://#{url}"
+    url.match(/https?:\/\//) ? url : "http://#{url}"
   end
 
 end

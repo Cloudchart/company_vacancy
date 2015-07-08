@@ -2,8 +2,8 @@
 
 GlobalState = require('global_state/state')
 
-# Stores
-#
+InsightOrigin = require('components/insight/origin')
+
 CompanyStore = require('stores/company_store.cursor')
 PinStore     = require('stores/pin_store')
 PostStore    = require('stores/post_store.cursor')
@@ -112,6 +112,10 @@ module.exports = React.createClass
         <span className="post">{ post.get('title') }</span>
       </span>
 
+  renderInsightOrigin: ->
+    return null unless pin = @getPin()
+    <InsightOrigin pin = { pin.deref().toJS() } />
+
 
   render: ->
     return null unless @isLoaded() && (@getPost() || @getPin())
@@ -119,4 +123,5 @@ module.exports = React.createClass
     <p className="insight-content">
       { @renderInsight() }
       { @renderInsightContext() }
+      { @renderInsightOrigin() }
     </p>

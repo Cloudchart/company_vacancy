@@ -45,18 +45,24 @@ class Pin < ActiveRecord::Base
     @update_by = update_by
   end
 
+  def origin_uri
+    uri = URI.parse(origin) rescue false
+    uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS) ? uri : nil
+  end
+
+  def is_origin_domain_allowed
+    insight = parent ? parent : self
+    (uri = insight.origin_uri) && Domain.find_by(name: uri.host).try(:allowed?)
+  end
+
 private
 
   def check_domain_from_origin
-    if origin_changed? && origin.present? && origin.match(/http:\/\/|https:\/\//)
-      uri = URI.parse(origin) rescue false
-
-      if uri
-        domain = Domain.find_by(name: uri.host)
-        unless domain
-          status = should_allow_domain_name? ? :allowed : :pending
-          Domain.create(name: uri.host, status: status)
-        end
+    if origin_changed? && origin.present? && (uri = origin_uri)
+      domain = Domain.find_by(name: uri.host)
+      unless domain
+        status = should_allow_domain_name? ? :allowed : :pending
+        Domain.create(name: uri.host, status: status)
       end
     end
   end

@@ -20,4 +20,16 @@
   .post {
     color: black;
   }
+
+  > .origin {
+    color: $link-color;
+    margin-left: 5px;
+    font-weight: normal;
+    line-height: normal;
+
+    > .tooltip {
+      left: -6px;
+      top: 100%;
+    }
+  }
 }

@@ -19,6 +19,7 @@ PinboardTabs = require('components/pinboards/tabs')
 ModalStack = require('components/modal_stack')
 InviteActions = require('components/roles/invite_actions')
 RelatedUsers = require('components/pinboards/related_users')
+InsightOrigin = require('components/insight/origin')
 
 PinButton = require('components/pinnable/pin_button')
 FollowButton = require('components/pinboards/follow_button')
@@ -57,7 +58,9 @@ module.exports = React.createClass
             readers,
             writers,
             followers,
-            pins,
+            pins {
+              #{InsightOrigin.getQuery('pin')}
+            },
             roles,
             edges {
               pinboard_url,

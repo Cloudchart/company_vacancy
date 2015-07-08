@@ -43,3 +43,7 @@ json_edge! json, :context, edges do
     {}
   end
 end
+
+json_edge! json, :is_origin_domain_allowed, edges do
+  pin.is_origin_domain_allowed
+end
