@@ -6,7 +6,7 @@ class Domain < ActiveRecord::Base
 
   enum status: [:pending, :allowed, :forbidden]
 
-  validates :name, url: true, presence: true, uniqueness: true
+  validates :name, domain: true, presence: true, uniqueness: true
 
 private
 

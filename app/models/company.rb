@@ -36,7 +36,7 @@ class Company < ActiveRecord::Base
   has_many :posts, as: :owner, dependent: :destroy
   has_many :stories, dependent: :destroy
 
-  validates :site_url, url: true, allow_blank: true
+  validates :site_url, domain: true, allow_blank: true
   validate  :publish_check, if: 'is_published? && is_published_changed?'
 
   scope :important, -> { where(is_important: true) }
@@ -115,11 +115,7 @@ class Company < ActiveRecord::Base
   end
 
   def formatted_site_url
-    if site_url.match(/http:\/\/|https:\/\//)
-      site_url
-    else
-      'http://' + site_url
-    end
+    site_url.match(/http:\/\/|https:\/\//) ? site_url : "http://#{site_url}"
   end
 
   def owner

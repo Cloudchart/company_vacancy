@@ -1,6 +1,5 @@
 class Feature < ActiveRecord::Base
   include Uuidable
-  include Urlable
   include Admin::Feature
 
   DISPLAY_TYPES = [:blurred, :darkened]
@@ -15,6 +14,7 @@ class Feature < ActiveRecord::Base
   belongs_to :insight, class_name: 'Pin', foreign_key: :featurable_id, inverse_of: :features
 
   validates :insight, presence: true
+  validates :url, url: true, allow_blank: true
 
   scope :insights, -> { where(featurable_type: 'Pin') }
   scope :only_active, -> { where(is_active: true) }
@@ -34,6 +34,10 @@ class Feature < ActiveRecord::Base
 
   def assigned_title
     title.present? ? title : insight.post.title
+  end
+
+  def formatted_url
+    url.match(/http:\/\/|https:\/\//) ? url : "http://#{url}"
   end
 
 end
