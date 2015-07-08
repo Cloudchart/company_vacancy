@@ -28,6 +28,10 @@ module Admin::User
           end
         end
 
+        field :subscribed?, :boolean do
+          label 'Subscribed'
+        end
+
         field :twitter do
           formatted_value do 
             if bindings[:object].twitter
@@ -92,6 +96,31 @@ module Admin::User
           end
         end
       end
+
+      # Export
+      #
+      export do
+        field :email do
+          formatted_value do
+            bindings[:object].email || bindings[:object].unverified_email
+          end
+        end
+
+        field :first_name
+        field :last_name
+        field :full_name
+
+        field :subscribed?, :boolean do
+          label 'Subscribed'
+        end
+
+        field :confirmed do
+          formatted_value do
+            !!bindings[:object].email
+          end
+        end
+      end
+
     end
     
   end

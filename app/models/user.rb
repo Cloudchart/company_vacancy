@@ -219,6 +219,10 @@ class User < ActiveRecord::Base
     "https://twitter.com/#{twitter}"
   end
 
+  def subscribed?
+    !!tokens.find_by(name: :subscription)
+  end
+
 private
 
   def mark_emails_for_destruction

@@ -27,7 +27,7 @@ class AdminAbility
 
       # User
       # 
-      can [:index, :create, :update, :make_unicorns], User
+      can [:index, :create, :update, :export, :make_unicorns], User
       can [:authorize, :destroy], User, authorized_at: nil
 
       can :merge, User do |user|
