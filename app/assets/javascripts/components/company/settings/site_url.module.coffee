@@ -155,7 +155,7 @@ UrlComponent = React.createClass
   # Helpers
   # 
   formatSiteUrl: (site_url) ->
-    if /http:\/\/|https:\/\//.test(site_url)
+    if /https?:\/\//.test(site_url)
       formatted_site_url = site_url
     else
       formatted_site_url = "http://" + site_url

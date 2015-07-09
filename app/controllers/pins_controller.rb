@@ -20,6 +20,7 @@ class PinsController < ApplicationController
     @pin.is_approved = true if autoapproval_granted?
     @pin.author = current_user if should_assign_author?
     @pin.user = @pin.parent.user if @pin.is_suggestion
+    @pin.should_allow_domain_name! if current_user.editor?
     @pin.save!
 
     Activity.track(current_user, params[:action], @pin, { source: @pin.user })
@@ -37,6 +38,7 @@ class PinsController < ApplicationController
 
   def update
     @pin.update_by! current_user
+    @pin.should_allow_domain_name! if current_user.editor?
     @pin.update!(params_for_update)
 
     respond_to do |format|

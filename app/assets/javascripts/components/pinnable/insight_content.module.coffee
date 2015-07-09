@@ -2,8 +2,8 @@
 
 GlobalState = require('global_state/state')
 
-# Stores
-#
+InsightOrigin = require('components/insight/origin')
+
 CompanyStore = require('stores/company_store.cursor')
 PinStore     = require('stores/pin_store')
 PostStore    = require('stores/post_store.cursor')
@@ -79,12 +79,12 @@ module.exports = React.createClass
           <a href={ post.get('post_url') } className="content" >
             <span dangerouslySetInnerHTML={ __html: content } />
           </a>
-          { " — " }
+          <span> &mdash; </span>
         </span>
       else
         <span>
           <span className="content" dangerouslySetInnerHTML={ __html: content } />
-          { " — " }
+            <span> &mdash; </span>
         </span>
     else
       <span className="content" dangerouslySetInnerHTML={ __html: content } />
@@ -112,6 +112,10 @@ module.exports = React.createClass
         <span className="post">{ post.get('title') }</span>
       </span>
 
+  renderInsightOrigin: ->
+    return null unless pin = @getPin()
+    <InsightOrigin pin = { pin.deref().toJS() } />
+
 
   render: ->
     return null unless @isLoaded() && (@getPost() || @getPin())
@@ -119,4 +123,5 @@ module.exports = React.createClass
     <p className="insight-content">
       { @renderInsight() }
       { @renderInsightContext() }
+      { @renderInsightOrigin() }
     </p>

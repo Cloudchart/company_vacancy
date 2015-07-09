@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150703140211) do
+ActiveRecord::Schema.define(version: 20150709133306) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -153,6 +153,13 @@ ActiveRecord::Schema.define(version: 20150703140211) do
   end
 
   add_index "companies_banned_users", ["company_id", "user_id"], name: "index_companies_banned_users_on_company_id_and_user_id", unique: true, using: :btree
+
+  create_table "domains", primary_key: "uuid", force: true do |t|
+    t.string   "name"
+    t.integer  "status",     default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "events", primary_key: "uuid", force: true do |t|
     t.string   "name",                  null: false

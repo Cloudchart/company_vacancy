@@ -7,9 +7,12 @@ class Pin < ActiveRecord::Base
 
   acts_as_paranoid
 
-  nilify_blanks only: [:content]
+  nilify_blanks only: [:content, :origin]
+
+  has_should_markers :should_allow_domain_name
 
   before_save :skip_generate_preview!, unless: :insight?
+  after_save :check_domain_from_origin
 
   belongs_to :user
   belongs_to :parent, -> { with_deleted }, class_name: 'Pin', counter_cache: true
@@ -40,6 +43,28 @@ class Pin < ActiveRecord::Base
 
   def update_by!(update_by)
     @update_by = update_by
+  end
+
+  def origin_uri
+    uri = URI.parse(origin) rescue false
+    uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS) ? uri : nil
+  end
+
+  def is_origin_domain_allowed
+    insight = parent ? parent : self
+    (uri = insight.origin_uri) && Domain.find_by(name: uri.host).try(:allowed?)
+  end
+
+private
+
+  def check_domain_from_origin
+    if origin_changed? && origin.present? && (uri = origin_uri)
+      domain = Domain.find_by(name: uri.host)
+      unless domain
+        status = should_allow_domain_name? ? :allowed : :pending
+        Domain.create(name: uri.host, status: status)
+      end
+    end
   end
 
 end

@@ -6,6 +6,7 @@ GlobalState = require('global_state/state')
 
 PinStore = require('stores/pin_store')
 
+InsightOrigin = require('components/insight/origin')
 InsightContent = require('components/pinnable/insight_content')
 Human = require('components/human')
 EditPinButton = require('components/pinnable/edit_pin_button')
@@ -36,6 +37,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            #{InsightOrigin.getQuery('pin')},
             user,
             parent {
               edges {

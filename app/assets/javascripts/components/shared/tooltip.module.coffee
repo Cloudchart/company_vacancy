@@ -14,7 +14,7 @@ module.exports = React.createClass
   render: ->
     <span className = "tooltip-wrapper #{@props.className}">
       { @props.element }
-      <div className='tooltip'>
+      <span className='tooltip'>
         { @props.tooltipContent }
-      </div>
+      </span>
     </span>
