@@ -12,6 +12,7 @@ FavoriteStore = require('stores/favorite_store.cursor')
 
 # Components
 #
+SuggestionApp = require('components/suggestion_app')
 PinboardSettings = require('components/pinboards/settings')
 PinboardAccess = require('components/pinboards/access_rights')
 PinboardPins = require('components/pinboards/pins/pinboard')
@@ -180,6 +181,11 @@ module.exports = React.createClass
       />
     )
 
+  handleSuggestionClick: (event) ->
+    ModalStack.show(
+      <SuggestionApp uuid = { @props.uuid } type = { 'Pinboard' } />
+    )
+
 
   # Renderers
   #
@@ -216,6 +222,12 @@ module.exports = React.createClass
     </AuthButton>
 
 
+  renderSuggestionButton: ->
+    <button className="cc" onClick={@handleSuggestionClick}>
+      Suggest an insight
+    </button>
+
+
   renderHeader: ->
     pinboard = @getPinboard()
 
@@ -245,6 +257,7 @@ module.exports = React.createClass
         <div className="separator"/>
 
         { @renderCreateInsightButton() }
+        { @renderSuggestionButton() }
       </div>
 
     </header>
