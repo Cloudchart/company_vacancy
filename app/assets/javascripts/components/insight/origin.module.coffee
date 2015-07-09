@@ -46,22 +46,19 @@ module.exports = React.createClass
   # Component Specifications
   # 
   # getDefaultProps: ->
-  #   cursor:
-  #     pins: PinStore.cursor.items
-
   # getInitialState: ->
 
 
   # Lifecycle Methods
   # 
   # componentWillMount: ->
-  #   @fetch()
+    # @fetch()
 
 
   # Fetchers
   #
   # fetch: ->
-  #   GlobalState.fetch(@getQuery('pin'), { id: @props.pin.uuid })
+    # GlobalState.fetch(@getQuery('pin'), { id: @props.pin.uuid })
 
 
   # Helpers

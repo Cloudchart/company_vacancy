@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
-
 GlobalState = require('global_state/state')
+Constants = require('constants')
 
 
 # Stores
@@ -12,12 +12,12 @@ UserStore   = require('stores/user_store.cursor')
 
 # Components
 #
-Human             = require('components/human')
-PinButton         = require('components/pinnable/pin_button')
-EditPinButton     = require('components/pinnable/edit_pin_button')
-ApprovePinButton  = require('components/pinnable/approve_pin_button')
-Tooltip           = require('components/shared/tooltip')
-StandardButton    = require('components/form/buttons').StandardButton
+Human = require('components/human')
+InsightOrigin = require('components/insight/origin')
+PinButton = require('components/pinnable/pin_button')
+EditPinButton = require('components/pinnable/edit_pin_button')
+ApprovePinButton = require('components/pinnable/approve_pin_button')
+StandardButton = require('components/form/buttons').StandardButton
 
 ShareInsightButton = require('components/insight/share_button')
 
@@ -26,7 +26,6 @@ ShareInsightButton = require('components/insight/share_button')
 #
 cx = React.addons.classSet
 trimDots = require('utils/trim_string').trimDots
-Constants = require('constants')
 
 
 # Exports
@@ -84,8 +83,7 @@ module.exports = React.createClass
 
   # Helpers
   #
-  isLink: (string) ->
-    /^https?:\/\/.*/.test(string)
+  # getSomathing: ->
 
 
   # Lifecycle methods
@@ -95,37 +93,22 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderOriginIcon: ->
-    <i className="fa fa-code" />
-
   renderOrigin: ->
-    return null unless (origin = @getOrigin())
-
-    if @isLink(origin)
-      <a className="origin" href={ origin } target="_blank">
-        { @renderOriginIcon() }
-      </a>
-    else
-      <Tooltip
-        className      = "origin"
-        element        = { @renderOriginIcon() }
-        tooltipContent = { origin } />
+    return null unless (pin = @getInsight())
+    <InsightOrigin pin = { pin.deref().toJS() } />
 
   renderContent: ->
     <section className="content">
       { @getContent() }
-      { " " }
       { @renderOrigin() }
     </section>
 
   renderApproveButton: ->
     return null if @isSuggested()
-
     <ApprovePinButton uuid = { @props.uuid } />
 
   renderEditButton: ->
     return null if @isSuggested()
-
     <EditPinButton uuid={ @props.uuid } />
 
   renderButtons: (insight) ->
@@ -142,7 +125,8 @@ module.exports = React.createClass
     <StandardButton
       className = "transparent"
       iconClass = "cc-icon cc-times"
-      onClick   = { @destroySuggestion } />
+      onClick   = { @destroySuggestion }
+    />
 
   renderSuggestion: ->
     return null unless @isSuggested()

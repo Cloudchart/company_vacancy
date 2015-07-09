@@ -13,13 +13,14 @@ PostStore = require('stores/post_store.cursor')
 
 # Components
 #
-Human           = require('components/human')
+Human = require('components/human')
 PinnablePreview = require('components/pinnable/preview')
-PinnablePost    = require('components/pinnable/post')
-PinButton       = require('components/pinnable/pin_button')
-EditPinButton   = require('components/pinnable/edit_pin_button')
-InsightContent  = require('components/pinnable/insight_content')
+PinnablePost = require('components/pinnable/post')
+PinButton = require('components/pinnable/pin_button')
+EditPinButton = require('components/pinnable/edit_pin_button')
+InsightContent = require('components/pinnable/insight_content')
 ShareInsightButton = require('components/insight/share_button')
+InsightOrigin = require('components/insight/origin')
 
 
 # Utils
@@ -47,6 +48,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            #{InsightOrigin.getQuery('pin')},
             #{ShareInsightButton.getQuery('pin')},
             pinboard,
             post {
