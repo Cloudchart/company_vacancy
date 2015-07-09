@@ -3,11 +3,12 @@
 
 GlobalState = require('global_state/state')
 
-PinStore    = require('stores/pin_store')
+PinStore = require('stores/pin_store')
 
-PinButton       = require('components/pinnable/pin_button')
-EditPinButton   = require('components/pinnable/edit_pin_button')
-SharePinButton  = require('components/insight/share_button')
+InsightOrigin = require('components/insight/origin')
+PinButton = require('components/pinnable/pin_button')
+EditPinButton = require('components/pinnable/edit_pin_button')
+SharePinButton = require('components/insight/share_button')
 
 
 # Exports
@@ -25,6 +26,7 @@ module.exports = React.createClass
       insight: ->
         """
           Pin {
+            #{InsightOrigin.getQuery('pin')},
             #{SharePinButton.getQuery('pin')},
             user,
             edges {
@@ -72,7 +74,7 @@ module.exports = React.createClass
     return null if @cursor.insight.get('context').size == 0
 
     [
-      <span key="dash">&mdash;</span>
+      <span key="dash"> &mdash; </span>
       <a key="company" href={ @cursor.insight.getIn(['context', 'company', 'url']) } className="company">
         { @cursor.insight.getIn(['context', 'company', 'title']) }
       </a>
@@ -82,6 +84,9 @@ module.exports = React.createClass
       </a>
     ]
 
+  renderInsightOrigin: ->
+    <InsightOrigin pin = { @cursor.insight.deref().toJS() } />
+
 
   renderInsight: ->
     <section className="pin cloud-card">
@@ -89,6 +94,7 @@ module.exports = React.createClass
         <p className="insight-content">
           { @renderInsightContent() }
           { @renderInsightContext() }
+          { @renderInsightOrigin() }
         </p>
 
         <footer>

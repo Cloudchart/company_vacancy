@@ -79,12 +79,12 @@ module.exports = React.createClass
           <a href={ post.get('post_url') } className="content" >
             <span dangerouslySetInnerHTML={ __html: content } />
           </a>
-          { " — " }
+          <span> &mdash; </span>
         </span>
       else
         <span>
           <span className="content" dangerouslySetInnerHTML={ __html: content } />
-          { " — " }
+            <span> &mdash; </span>
         </span>
     else
       <span className="content" dangerouslySetInnerHTML={ __html: content } />
