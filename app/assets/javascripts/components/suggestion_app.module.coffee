@@ -8,7 +8,9 @@ UserStore = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
 
 UserPinboards = require('components/pinboards/lists/user')
-PinboardsList = require('components/pinboards/pinboards')
+PinboardComponent = require('components/pinboards/pinboard')
+PinboardPins = require('components/pinboards/pins/pinboard')
+ModalStack = require('components/modal_stack')
 
 # Utils
 #
@@ -65,26 +67,45 @@ module.exports = React.createClass
   # Helpers
   # 
   getPinboards: ->
-    # PinboardStore
-    #   .filterUserPinboards(@props.user_id, showPrivate: @props.showPrivate)
-    #   .sortBy (item) -> item.get('title')
-    #   .valueSeq()
-    #   .toArray()
-
-    @props.cursor.pinboards
-      .sortBy (pinboard) -> pinboard.get('title')
+    PinboardStore
+      .filterUserPinboards(@props.cursor.viewer.get('uuid'))
+      .sortBy (item) -> item.get('title')
       .valueSeq()
       .toArray()
 
 
   # Handlers
   # 
-  # handleThingClick: (event) ->
+  handlePinboardClick: (uuid, event) ->
+    event.preventDefault()
+
+    ModalStack.hide()
+    ModalStack.show(@renderSuggestions(uuid))
+
+  handlePinClick: (event) ->
+    ModalStack.hide()
 
 
   # Renderers
   # 
-  # renderSomething: ->
+  renderPinboards: ->
+    @getPinboards().map (pinboard) =>
+      <section className="cloud-column" key={ pinboard.get('uuid') }>
+        <PinboardComponent
+          uuid = { pinboard.get('uuid') }
+          user_id = { @props.cursor.viewer.get('uuid') }
+          onClick = { @handlePinboardClick }
+        />
+      </section>
+
+  renderSuggestions: (uuid) ->
+    component = switch @props.type
+      when 'Pinboard'
+        <PinboardPins pinboard_id = { uuid } onItemClick = { @handlePinClick } />
+
+    <div className="suggestion-container">
+      { component }
+    </div>
 
 
   # Main render
@@ -92,7 +113,6 @@ module.exports = React.createClass
   render: ->
     return null unless @state.fetchDone
 
-    <PinboardsList 
-      pinboards = { @getPinboards() }
-      user_id = { @props.cursor.viewer.get('uuid') }
-    />
+    <section className="pinboards cloud-columns cloud-columns-flex">
+      { @renderPinboards() }
+    </section>

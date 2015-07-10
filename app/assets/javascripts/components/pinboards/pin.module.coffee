@@ -99,7 +99,7 @@ module.exports = React.createClass
   #
   getInsight: ->
     if @cursor.pin.get('parent_id')
-      PinStore.cursor.items.cursor(@cursor.pin.get('parent_id'))#getParentFor(@props.uuid)
+      PinStore.cursor.items.cursor(@cursor.pin.get('parent_id'))
     else if @cursor.pin.get('content')
       @cursor.pin
 

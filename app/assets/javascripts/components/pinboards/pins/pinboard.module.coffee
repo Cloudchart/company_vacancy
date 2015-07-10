@@ -1,19 +1,13 @@
 # @cjsx React.DOM
 
 
-GlobalState     = require('global_state/state')
+GlobalState = require('global_state/state')
 
+PinStore = require('stores/pin_store')
+UserStore = require('stores/user_store.cursor')
 
-# Stores
-#
-PinStore        = require('stores/pin_store')
-UserStore       = require('stores/user_store.cursor')
-
-
-# Components
-#
-PinsList         = require('components/pinboards/pins')
-PinComponent     = require('components/pinboards/pin')
+PinsList = require('components/pinboards/pins')
+PinComponent = require('components/pinboards/pin')
 
 
 # Exports
@@ -21,7 +15,6 @@ PinComponent     = require('components/pinboards/pin')
 module.exports = React.createClass
 
   displayName: 'PinboardPins'
-
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
@@ -39,7 +32,13 @@ module.exports = React.createClass
         """
 
   propTypes:
-    pinboard_id:     React.PropTypes.string.isRequired
+    pinboard_id: React.PropTypes.string.isRequired
+
+
+  # Component Specifications
+  #
+  getDefaultProps: ->
+    onItemClick: null
 
   getInitialState: ->
     isLoaded: false
@@ -75,4 +74,4 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
     
-    <PinsList pins = { @gatherPins() } />
+    <PinsList pins = { @gatherPins() } onItemClick = { @props.onItemClick } />
