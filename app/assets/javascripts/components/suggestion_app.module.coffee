@@ -55,10 +55,13 @@ module.exports = React.createClass
   getDefaultProps: ->
     cursor:
       viewer: UserStore.me()
+      users: UserStore.cursor.items
+      pins: PinStore.cursor.items
 
   getInitialState: ->
     fetchDone: false
     pinboard_id: null
+    query: ''
 
 
   # Lifecycle Methods
@@ -80,30 +83,39 @@ module.exports = React.createClass
 
 
   # Helpers
-  # 
+  #
   gatherPinboards: ->
-    # TODO: don't filter store, user edge
+    # TODO: don't filter store, use edge
     PinboardStore
       .filterUserPinboards(@props.cursor.viewer.get('uuid'))
-      .filter (item) -> item.get('pins_count') > 0
-      .sortBy (item) -> item.get('title')
+      .filter (pinboard) -> pinboard.get('pins_count') > 0
+      .sortBy (pinboard) -> pinboard.get('title')
       .valueSeq()
       .toArray()
 
   gatherPins: ->
-    # TODO: don't filter store, user edge
-    PinStore.filterByPinboardId(@state.pinboard_id)
-      .valueSeq()
+    # TODO: don't filter store, use edge
+    PinStore
+      .filterByPinboardId(@state.pinboard_id)
+      .filter (pin) => @filterByContentOrOwner(pin.toJS())
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
+      .valueSeq()
       .toArray()
+
+  filterByContentOrOwner: (pin) ->
+    return true unless @state.query
+
+    insight = if pin.parent_id then @props.cursor.pins.get(pin.parent_id).toJS() else pin
+
+    insight.content.toLowerCase().indexOf(@state.query.toLowerCase()) != -1 ||
+    @props.cursor.users.get(insight.user_id).get('full_name').toLowerCase().indexOf(@state.query.toLowerCase()) != -1
 
 
   # Handlers
   # 
   handlePinboardClick: (uuid, event) ->
     event.preventDefault()
-
     @fetchPins(uuid).then => @setState pinboard_id: uuid
 
   handlePinClick: (uuid, event) ->
@@ -120,6 +132,9 @@ module.exports = React.createClass
 
   handleBackButtonClick: (event) ->
     @setState pinboard_id: null
+
+  handleQueryChange: (event) ->
+    @setState query: event.target.value
 
 
   # Renderers
@@ -155,6 +170,16 @@ module.exports = React.createClass
           <i className="fa fa-angle-left" />
         </button>
         <CloseModalButton />
+
+        <header>
+          <input
+            autoFocus =  { true }
+            value =  { @state.query }
+            onChange =  { @handleQueryChange }
+            placeholder = 'Search by content or author'
+          />
+        </header>
+
         { @renderPins() }
       </section>
     else

@@ -76,7 +76,7 @@ module.exports = React.createClass
     uuid:    React.PropTypes.string.isRequired
 
   getDefaultProps: ->
-    onClick: @handleLinkClick
+    onClick: -> @handleLinkClick()
     cursor:
       roles: RoleStore.cursor.items
 
