@@ -113,7 +113,8 @@ module.exports = React.createClass
   handleClick: (event) ->
     return unless @isClickable()
 
-    @props.onClick(@cursor.pin)
+    @props.onClick(@cursor.pin, event)
+    # @props.onClick
 
 
   # Renderers

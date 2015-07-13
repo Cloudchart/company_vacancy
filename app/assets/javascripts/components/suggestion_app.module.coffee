@@ -6,11 +6,13 @@ GlobalState = require('global_state/state')
 
 UserStore = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
+PinStore = require('stores/pin_store')
 
 UserPinboards = require('components/pinboards/lists/user')
 PinboardComponent = require('components/pinboards/pinboard')
-PinboardPins = require('components/pinboards/pins/pinboard')
+PinComponent = require('components/pinboards/pin')
 ModalStack = require('components/modal_stack')
+CloseModalButton = require('components/form/buttons').CloseModalButton
 
 # Utils
 #
@@ -38,15 +40,25 @@ module.exports = React.createClass
           }
         """
 
+      pins: ->
+        """
+          Pinboard {
+            pins {
+              #{PinComponent.getQuery('pin')}
+            }
+          }
+        """
+
+
   # Component Specifications
   # 
   getDefaultProps: ->
     cursor:
-      pinboards: PinboardStore.cursor.items
       viewer: UserStore.me()
 
   getInitialState: ->
     fetchDone: false
+    pinboard_id: null
 
 
   # Lifecycle Methods
@@ -63,14 +75,25 @@ module.exports = React.createClass
   fetch: ->
     GlobalState.fetch(@getQuery('viewer'))
 
+  fetchPins: (pinboard_id) ->
+    GlobalState.fetch(@getQuery('pins'), id: pinboard_id)
+
 
   # Helpers
   # 
-  getPinboards: ->
+  gatherPinboards: ->
     PinboardStore
       .filterUserPinboards(@props.cursor.viewer.get('uuid'))
+      .filter (item) -> item.get('pins_count') > 0
       .sortBy (item) -> item.get('title')
       .valueSeq()
+      .toArray()
+
+  gatherPins: ->
+    PinStore.filterByPinboardId(@state.pinboard_id)
+      .valueSeq()
+      .sortBy (pin) -> pin.get('created_at')
+      .reverse()
       .toArray()
 
 
@@ -78,18 +101,20 @@ module.exports = React.createClass
   # 
   handlePinboardClick: (uuid, event) ->
     event.preventDefault()
+    @fetchPins(uuid).then => @setState pinboard_id: uuid
 
+  handlePinClick: (pin, event) ->
+    event.preventDefault()
     ModalStack.hide()
-    ModalStack.show(@renderSuggestions(uuid))
 
-  handlePinClick: (event) ->
-    ModalStack.hide()
+  handleBackButtonClick: (event) ->
+    @setState pinboard_id: null
 
 
   # Renderers
   # 
   renderPinboards: ->
-    @getPinboards().map (pinboard) =>
+    @gatherPinboards().map (pinboard) =>
       <section className="cloud-column" key={ pinboard.get('uuid') }>
         <PinboardComponent
           uuid = { pinboard.get('uuid') }
@@ -98,14 +123,14 @@ module.exports = React.createClass
         />
       </section>
 
-  renderSuggestions: (uuid) ->
-    component = switch @props.type
-      when 'Pinboard'
-        <PinboardPins pinboard_id = { uuid } onItemClick = { @handlePinClick } />
-
-    <div className="suggestion-container">
-      { component }
-    </div>
+  renderPins: ->
+    @gatherPins().map (pin) =>
+      <section className="cloud-column" key={ pin.get('uuid') }>
+        <PinComponent
+          uuid = { pin.get('uuid') }
+          onClick = { @handlePinClick }
+        />
+      </section>
 
 
   # Main render
@@ -113,6 +138,16 @@ module.exports = React.createClass
   render: ->
     return null unless @state.fetchDone
 
-    <section className="pinboards cloud-columns cloud-columns-flex">
-      { @renderPinboards() }
-    </section>
+    if @state.pinboard_id
+      <section className="pins cloud-columns cloud-columns-flex">
+        <button className="transparent" onClick={ @handleBackButtonClick }>
+          <i className="fa fa-angle-left" />
+        </button>
+        <CloseModalButton />
+        { @renderPins() }
+      </section>
+    else
+      <section className="pinboards cloud-columns cloud-columns-flex">
+        <CloseModalButton />
+        { @renderPinboards() }
+      </section>

@@ -56,6 +56,9 @@ module.exports = React.createClass
   # Handlers
   #
   handleShareButtonClick: (event) ->
+    event.stopPropagation()
+    event.preventDefault()
+
     ModalStack.show(<InsightCard pin = { @props.pin.uuid } renderedInsideModal = true />, shouldGetHistoryBack: true)
 
 
