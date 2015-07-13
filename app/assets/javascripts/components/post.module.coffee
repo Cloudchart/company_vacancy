@@ -162,12 +162,12 @@ Post = React.createClass
   goToTimeline: ->
     location.href = @getTimelineUrl()
 
-  suggestPost: (insight) ->
+  suggestPost: (uuid) ->
     attributes = Immutable.Map(
       is_suggestion: true
       pinnable_id:   @props.id
       pinnable_type: 'Post'
-      parent_id:     insight.get('uuid')
+      parent_id:     uuid
     ).toJSON()
 
     PinStore.create(attributes).then(ModalActions.hide, ModalActions.hide)

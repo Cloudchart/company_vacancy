@@ -82,6 +82,7 @@ module.exports = React.createClass
   # Helpers
   # 
   gatherPinboards: ->
+    # TODO: don't filter store, user edge
     PinboardStore
       .filterUserPinboards(@props.cursor.viewer.get('uuid'))
       .filter (item) -> item.get('pins_count') > 0
@@ -90,6 +91,7 @@ module.exports = React.createClass
       .toArray()
 
   gatherPins: ->
+    # TODO: don't filter store, user edge
     PinStore.filterByPinboardId(@state.pinboard_id)
       .valueSeq()
       .sortBy (pin) -> pin.get('created_at')
@@ -101,11 +103,20 @@ module.exports = React.createClass
   # 
   handlePinboardClick: (uuid, event) ->
     event.preventDefault()
+
     @fetchPins(uuid).then => @setState pinboard_id: uuid
 
-  handlePinClick: (pin, event) ->
+  handlePinClick: (uuid, event) ->
     event.preventDefault()
-    ModalStack.hide()
+
+    attributes =
+      parent_id: uuid
+      pinboard_id: @props.uuid if @props.type == 'Pinboard'
+      pinnable_id: @props.uuid if @props.type != 'Pinboard'
+      pinnable_type: @props.type if @props.type != 'Pinboard'
+      is_suggestion: true
+
+    PinStore.create(attributes).then(ModalStack.hide, ModalStack.hide)
 
   handleBackButtonClick: (event) ->
     @setState pinboard_id: null

@@ -34,11 +34,11 @@ class Pin < ActiveRecord::Base
   end
 
   def content
-    is_suggestion ? parent.content : read_attribute(:content)
+    is_suggestion? ? parent.content : read_attribute(:content)
   end
 
   def should_validate_content_presence?
-    parent.blank? || ( @update_by.present? && user_id != @update_by.uuid && !is_suggestion )
+    parent.blank? || (@update_by.present? && user_id != @update_by.uuid && !is_suggestion?)
   end
 
   def update_by!(update_by)
