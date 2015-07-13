@@ -21,6 +21,7 @@ EditPinButton = require('components/pinnable/edit_pin_button')
 InsightContent = require('components/pinnable/insight_content')
 ShareInsightButton = require('components/insight/share_button')
 InsightOrigin = require('components/insight/origin')
+InsightSuggestion = require('components/insight/suggestion')
 
 
 # Utils
@@ -146,14 +147,19 @@ module.exports = React.createClass
     <article className="insight">
       <InsightContent
         pinnable_id = { @cursor.pin.get('pinnable_id') }
-        pin_id      = { insight.get('uuid') }  />
+        pin_id = { insight.get('uuid') }
+      />
 
       <footer>
         <Human
           showUnicornIcon = { true }
-          showLink        = { !@isClickable() }
-          type            = "user"
-          uuid            = { insight.get('user_id') } />
+          showLink = { !@isClickable() }
+          type = "user"
+          uuid = { insight.get('user_id') }
+        />
+
+        <InsightSuggestion pin = { @cursor.pin.deref().toJS() } />
+
         { @renderInsightControls(insight) }
       </footer>
     </article>
