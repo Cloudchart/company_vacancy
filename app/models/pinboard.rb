@@ -6,9 +6,11 @@ class Pinboard < ActiveRecord::Base
   include Tire::Model::Callbacks
   include Admin::Pinboard
 
-  ACCESS_RIGHTS     = [:public, :protected, :private].freeze
-  INVITABLE_ROLES   = [:editor, :reader].freeze
-  ACCESS_ROLE       = :reader
+  ACCESS_RIGHTS = [:public, :protected, :private].freeze
+  INVITABLE_ROLES = [:editor, :reader].freeze
+  ACCESS_ROLE = :reader
+
+  enum suggestion_rights: { anyone: 0, editors: 1 }
 
   validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
   validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }

@@ -1,34 +1,24 @@
 # @cjsx React.DOM
 
-
 GlobalState = require('global_state/state')
 
-
-# Stores
-#
 PinboardStore = require('stores/pinboard_store')
 UserStore     = require('stores/user_store.cursor')
 RoleStore     = require('stores/role_store.cursor')
 
-
-# Components
-#
 ModalStack = require('components/modal_stack')
 InviteForm = require('components/pinboards/invite_form')
-# Security = require('')
 
+Fields = Immutable.Seq(['title', 'description', 'access_rights', 'suggestion_rights'])
 
-# Fields
-#
-Fields = Immutable.Seq(['title', 'description', 'access_rights'])
-
-
-# Access rights
-#
 AccessRights = Immutable.Seq
   public:     'Open to everyone'
   protected:  'Invite-only'
   private:    'Private'
+
+SuggestionRights = Immutable.Seq
+  anyone: 'Anyone'
+  editors: 'Only editors'
 
 
 # Exports
@@ -37,9 +27,7 @@ module.exports = React.createClass
 
   displayName: 'PinboardSettings'
 
-
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
-
 
   statics:
 
@@ -56,72 +44,13 @@ module.exports = React.createClass
         """
 
 
-  fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }).then =>
-      @setState @getStateFromStores()
-
-
-  save: ->
-    return unless Fields.some (name) =>
-      @state.attributes.get(name) isnt @cursor.pinboard.get(name)
-
-    PinboardStore.update(@props.uuid, @state.attributes.toJS())
-
-
-  handleSubmit: (event) ->
-    event.preventDefault()
-    @save()
-
-
-  handleChange: (name, event) ->
-    @setState
-      attributes: @state.attributes.set(name, event.target.value)
-
-
-  handleAccessRightsChange: (event) ->
-    @setState
-      attributes: @state.attributes.set('access_rights', event.target.value)
-
-    clearTimeout @__accessRightsSaveTimeout
-    @__accessRightsSaveTimeout = setTimeout @save, 250
-
-
-  handleBlur: (event) ->
-    @save()
-
-
-  handleKeyDown: (event) ->
-    return unless event.key == 'Enter'
-    event.target.blur()
-
-
-  handleinviteClick: (event) ->
-    # TODO: get invitable roles and contacts from server
-    ModalStack.show <InviteForm pinboard={@cursor.pinboard} />
-
-
-  getAttributesFromCursor: ->
-    Fields
-
-      .reduce (memo, name) =>
-        memo.set(name, @cursor.pinboard.get(name)) if @cursor
-        memo
-      , Immutable.Map().asMutable()
-
-      .asImmutable()
-
-
-
-  componentWillMount: ->
-    @cursor =
-      pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
-
-    @fetch()
-
+  # Component Specifications
+  #
+  getInitialState: ->
+    @getStateFromStores()
 
   onGlobalStateChange: ->
     @setState @getStateFromStores()
-
 
   getStateFromStores: ->
     attributes:   @getAttributesFromCursor()
@@ -131,15 +60,74 @@ module.exports = React.createClass
     roles:        RoleStore.rolesOn(@props.uuid, 'Pinboard')
     owner:        PinboardStore.userCursorFor(@props.uuid)
 
-  getInitialState: ->
-    @getStateFromStores()
+
+  # Lifecycle Methods
+  #
+  componentWillMount: ->
+    @cursor =
+      pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
+
+    @fetch()
 
 
+  # Fetchers
+  #
+  fetch: ->
+    GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }).then =>
+      @setState @getStateFromStores()
+
+
+  # Helpers
+  #
+  save: ->
+    return unless Fields.some (name) =>
+      @state.attributes.get(name) isnt @cursor.pinboard.get(name)
+
+    PinboardStore.update(@props.uuid, @state.attributes.toJS())
+
+  getAttributesFromCursor: ->
+    Fields
+      .reduce (memo, name) =>
+        memo.set(name, @cursor.pinboard.get(name)) if @cursor
+        memo
+      , Immutable.Map().asMutable()
+      .asImmutable()
+
+  saveWithTimeout: ->
+
+
+
+  # Handlers
+  #
+  handleSubmit: (event) ->
+    event.preventDefault()
+    @save()
+
+  handleChange: (name, event) ->
+    @setState
+      attributes: @state.attributes.set(name, event.target.value)
+
+  handleBlur: (event) ->
+    @save()
+
+  handleKeyDown: (event) ->
+    return unless event.key == 'Enter'
+    event.target.blur()
+
+  handleRightsChange: (name, event) ->
+    @setState
+      attributes: @state.attributes.set(name, event.target.value)
+
+    clearTimeout @__rightsSyncTimeout
+    @__rightsSyncTimeout = setTimeout @save, 250
+
+
+  # Renderers
+  #
   renderHeader: (title) ->
     <header>
       { title }
     </header>
-
 
   renderName: ->
     <input
@@ -152,7 +140,6 @@ module.exports = React.createClass
       onBlur      = { @handleBlur }
       onKeyDown   = { @handleKeyDown } />
 
-
   renderDescription: ->
     <input
       className   = "cc-input"
@@ -163,7 +150,6 @@ module.exports = React.createClass
       onChange    = { @handleChange.bind(null, 'description') }
       onBlur      = { @handleBlur }
       onKeyDown   = { @handleKeyDown } />
-
 
   renderInputs: ->
     <fieldset className="settings">
@@ -178,10 +164,13 @@ module.exports = React.createClass
         <li className="access-rights">
           { AccessRights.map(@renderAccessRightsItem).toArray() }
         </li>
+        <li className="suggestion-rights">
+          <h1>Who can suggest insights</h1>
+          { SuggestionRights.map(@renderSuggestionRightsItem).toArray() }
+        </li>
       </ul>
 
     </fieldset>
-
 
   renderAccessRightsItem: (title, key) ->
     <label key={ key }>
@@ -189,20 +178,29 @@ module.exports = React.createClass
         name      = "access_rights"
         type      = "radio"
         value     = { key }
-        onChange  = { @handleAccessRightsChange }
+        onChange  = { @handleRightsChange.bind(@, 'access_rights') }
         checked   = { @state.attributes.get('access_rights') == key } />
       <span>
         { title }
       </span>
     </label>
 
+  renderSuggestionRightsItem: (title, key) ->
+    <label key={ key }>
+      <input
+        name      = "suggestion_rights"
+        type      = "radio"
+        value     = { key }
+        onChange  = { @handleRightsChange.bind(@, 'suggestion_rights') }
+        checked   = { @state.attributes.get('suggestion_rights') == key } />
+      <span>
+        { title }
+      </span>
+    </label>
 
-  renderAccessRights: ->
-    <fieldset>
-      { AccessRights.map(@renderAccessRightsItem).toArray() }
-    </fieldset>
 
-
+  # Main render
+  #
   render: ->
     return null unless @cursor.pinboard.deref(false)
 
