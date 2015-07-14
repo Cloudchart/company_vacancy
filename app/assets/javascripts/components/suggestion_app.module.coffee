@@ -121,8 +121,10 @@ module.exports = React.createClass
   handlePinClick: (uuid, event) ->
     event.preventDefault()
 
+    insight_id = @props.cursor.pins.cursor(uuid).get('parent_id') || uuid
+
     attributes =
-      parent_id: uuid
+      parent_id: insight_id
       pinboard_id: @props.uuid if @props.type == 'Pinboard'
       pinnable_id: @props.uuid if @props.type != 'Pinboard'
       pinnable_type: @props.type if @props.type != 'Pinboard'
