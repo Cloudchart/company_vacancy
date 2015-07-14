@@ -88,7 +88,7 @@ module.exports = React.createClass
     # TODO: don't filter store, use edge
     PinboardStore
       .filterUserPinboards(@props.cursor.viewer.get('uuid'))
-      .filter (pinboard) -> pinboard.get('pins_count') > 0
+      .filter (pinboard) => pinboard.get('uuid') != @props.uuid && pinboard.get('pins_count') > 0
       .sortBy (pinboard) -> pinboard.get('title')
       .valueSeq()
       .toArray()
@@ -97,7 +97,7 @@ module.exports = React.createClass
     # TODO: don't filter store, use edge
     PinStore
       .filterByPinboardId(@state.pinboard_id)
-      .filter (pin) => @filterByContentOrOwner(pin.toJS())
+      .filter (pin) => @filterByContentOrOwner(pin)
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
       .valueSeq()
@@ -106,10 +106,10 @@ module.exports = React.createClass
   filterByContentOrOwner: (pin) ->
     return true unless @state.query
 
-    insight = if pin.parent_id then @props.cursor.pins.get(pin.parent_id).toJS() else pin
+    insight = if pin.get('parent_id') then @props.cursor.pins.get(pin.get('parent_id')) else pin
 
-    insight.content.toLowerCase().indexOf(@state.query.toLowerCase()) != -1 ||
-    @props.cursor.users.get(insight.user_id).get('full_name').toLowerCase().indexOf(@state.query.toLowerCase()) != -1
+    insight.get('content').toLowerCase().indexOf(@state.query.toLowerCase()) != -1 ||
+    @props.cursor.users.get(insight.get('user_id')).get('full_name').toLowerCase().indexOf(@state.query.toLowerCase()) != -1
 
 
   # Handlers
