@@ -63,7 +63,8 @@ module.exports = React.createClass
             edges {
               pinboard_url,
               facebook_share_url,
-              twitter_share_url
+              twitter_share_url,
+              is_editable
             }
           }
         """
@@ -222,7 +223,9 @@ module.exports = React.createClass
     </AuthButton>
 
 
-  renderSuggestionButton: ->
+  renderSuggestionButton: (pinboard) ->
+    return null unless pinboard.suggestion_rights == 'anyone' || pinboard.is_editable
+
     <button className="cc" onClick={@handleSuggestionClick}>
       Suggest an insight
     </button>
@@ -257,7 +260,7 @@ module.exports = React.createClass
         <div className="separator"/>
 
         { @renderCreateInsightButton() }
-        { @renderSuggestionButton() }
+        { @renderSuggestionButton(pinboard.toJS()) }
       </div>
 
     </header>

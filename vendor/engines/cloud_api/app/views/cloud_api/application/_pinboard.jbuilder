@@ -57,3 +57,7 @@ json_edge! json, :is_followed, edges do
   preload_associations(siblings, cache, :followers)
   pinboard.followers.map(&:user_id).include?(current_user.id)
 end
+
+json_edge! json, :is_editable, edges do
+  can?(:update, pinboard)
+end
