@@ -14,7 +14,6 @@ class PinsController < ApplicationController
     end
   end
 
-
   def create
     @pin.update_by! current_user
     @pin.is_approved = true if autoapproval_granted?

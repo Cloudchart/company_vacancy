@@ -150,7 +150,14 @@ module.exports = React.createClass
       pinnable_type: @props.type if @props.type != 'Pinboard'
       is_suggestion: true
 
-    PinStore.create(attributes).then(ModalStack.hide, ModalStack.hide)
+    existing_suggestion = @props.cursor.pins
+      .filter (pin) -> pin.get('is_suggestion') && pin.get('parent_id') == attributes.parent_id && pin.get('pinboard_id') == attributes.pinboard_id
+      .first()
+
+    if existing_suggestion
+      ModalStack.hide()
+    else
+      PinStore.create(attributes).then(ModalStack.hide, ModalStack.hide)
 
   handleBackButtonClick: (event) ->
     @setState pinboard_id: null
