@@ -36,6 +36,15 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
+            edges {
+              related_pinboards
+            }
+          }
+        """
+
+      pinboards: ->
+        """
+          Viewer {
             #{UserPinboards.getQuery('pinboards')}
           }
         """
@@ -57,9 +66,10 @@ module.exports = React.createClass
       viewer: UserStore.me()
       users: UserStore.cursor.items
       pins: PinStore.cursor.items
+      pinboards: PinboardStore.cursor.items
 
   getInitialState: ->
-    fetchDone: false
+    fetched: false
     pinboard_id: null
     query: ''
 
@@ -67,7 +77,7 @@ module.exports = React.createClass
   # Lifecycle Methods
   # 
   componentWillMount: ->
-    @fetch().then => @setState fetchDone: true
+    @fetch()
 
   # componentDidMount: ->
   # componentWillUnmount: ->
@@ -76,7 +86,10 @@ module.exports = React.createClass
   # Fetchers
   #
   fetch: ->
-    GlobalState.fetch(@getQuery('viewer'))
+    GlobalState.fetch(@getQuery('viewer')).then @fetchPinboards
+
+  fetchPinboards: ->
+    GlobalState.fetch(@getQuery('pinboards')).then => @setState fetched: true
 
   fetchPins: (pinboard_id) ->
     GlobalState.fetch(@getQuery('pins'), id: pinboard_id)
@@ -84,11 +97,16 @@ module.exports = React.createClass
 
   # Helpers
   #
+  pinboardsIds: ->
+    @props.cursor.viewer.get('related_pinboards', Immutable.Seq())
+      .filter @finterByCurrentPinboardAndPinsCount
+      .map (i) -> i.get('uuid')
+      .valueSeq()
+
   gatherPinboards: ->
-    # TODO: don't filter store, use edge
-    PinboardStore
-      .filterUserPinboards(@props.cursor.viewer.get('uuid'))
-      .filter (pinboard) => pinboard.get('uuid') != @props.uuid && pinboard.get('pins_count') > 0
+    @props.cursor.viewer.get('related_pinboards')
+      .map (pinboard) => @props.cursor.pinboards.get(pinboard.get('uuid'))
+      .filter @finterByCurrentPinboardAndPinsCount
       .sortBy (pinboard) -> pinboard.get('title')
       .valueSeq()
       .toArray()
@@ -97,7 +115,7 @@ module.exports = React.createClass
     # TODO: don't filter store, use edge
     PinStore
       .filterByPinboardId(@state.pinboard_id)
-      .filter (pin) => @filterByContentOrOwner(pin)
+      .filter @filterByContentOrOwner
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
       .valueSeq()
@@ -111,6 +129,8 @@ module.exports = React.createClass
     insight.get('content').toLowerCase().indexOf(@state.query.toLowerCase()) != -1 ||
     @props.cursor.users.get(insight.get('user_id')).get('full_name').toLowerCase().indexOf(@state.query.toLowerCase()) != -1
 
+  finterByCurrentPinboardAndPinsCount: (pinboard) ->
+    pinboard.get('uuid') != @props.uuid && pinboard.get('pins_count') > 0
 
   # Handlers
   # 
@@ -140,7 +160,17 @@ module.exports = React.createClass
 
 
   # Renderers
-  # 
+  #
+  renderPlaceholders: ->
+    placeholders = Immutable.Repeat('dummy', @pinboardsIds().size || 2).map (_, i) ->
+      <section key={ i } className="cloud-column">
+        <section className="pinboard cloud-card placeholder" />
+      </section>
+
+    <section className="pinboards cloud-columns cloud-columns-flex">
+      { placeholders.toArray() }
+    </section>
+
   renderPinboards: ->
     @gatherPinboards().map (pinboard) =>
       <section className="cloud-column" key={ pinboard.get('uuid') }>
@@ -164,7 +194,7 @@ module.exports = React.createClass
   # Main render
   # 
   render: ->
-    return null unless @state.fetchDone
+    return @renderPlaceholders() unless @state.fetched
 
     if @state.pinboard_id
       <section className="pins cloud-columns cloud-columns-flex">
