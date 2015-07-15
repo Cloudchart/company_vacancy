@@ -217,10 +217,22 @@ class User < ActiveRecord::Base
   end
 
   def assign_avatar_from_twitter_hash!(hash)
-    url = hash.info.image.present? ? hash.info.image.sub('_normal', '') : nil
-    self.avatar_url = url
-  rescue Dragonfly::Job::FetchUrl::ErrorResponse
-    self.avatar_url = nil
+    begin
+      image_format_replacement ||= ''
+      retries_count ||= 0
+
+      url = hash.info.image.present? ? hash.info.image.sub('_normal', image_format_replacement) : nil
+      self.avatar_url = url
+
+    rescue Dragonfly::Job::FetchUrl::ErrorResponse
+      if retries_count == 0
+        image_format_replacement = '_400x400'
+        retries_count += 1
+        retry
+      else
+        self.avatar_url = nil
+      end
+    end
   end
 
 private
