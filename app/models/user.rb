@@ -81,14 +81,8 @@ class User < ActiveRecord::Base
 
   class << self
     def create_with_twitter_omniauth_hash(hash)
-      avatar_url = hash.info.image.present? ? hash.info.image.sub('_normal', '') : nil
-
-      user = new(
-        full_name:    hash.info.name,
-        twitter:      hash.info.nickname,
-        avatar_url:   avatar_url
-      )
-
+      user = new(full_name: hash.info.name, twitter: hash.info.nickname)
+      user.assign_avatar_from_twitter_hash!(hash)
       user.should_create_tour_tokens!
       user.save!
       user
@@ -100,10 +94,9 @@ class User < ActiveRecord::Base
   end # of class methods
 
   def update_with_twitter_omniauth_hash(hash)
-    # TODO: share this line with self.create_with_twitter_omniauth_hash
-    avatar_url = hash.info.image.present? ? hash.info.image.sub('_normal', '') : nil
-
-    update(full_name: hash.info.name, avatar_url: avatar_url)
+    self.full_name = hash.info.name
+    self.assign_avatar_from_twitter_hash!(hash)
+    save!
   end
 
   def insight_features
@@ -221,6 +214,13 @@ class User < ActiveRecord::Base
 
   def subscribed?
     !!tokens.find_by(name: :subscription)
+  end
+
+  def assign_avatar_from_twitter_hash!(hash)
+    url = hash.info.image.present? ? hash.info.image.sub('_normal', '') : nil
+    self.avatar_url = url
+  rescue Dragonfly::Job::FetchUrl::ErrorResponse
+    self.avatar_url = nil
   end
 
 private
