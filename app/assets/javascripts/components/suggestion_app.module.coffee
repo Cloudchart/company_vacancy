@@ -202,6 +202,7 @@ module.exports = React.createClass
   # 
   render: ->
     return @renderPlaceholders() unless @state.fetched
+    return <div>Your collections are empty</div> if @props.cursor.viewer.get('related_pinboards').size == 0
 
     if @state.pinboard_id
       <section className="pins cloud-columns cloud-columns-flex">

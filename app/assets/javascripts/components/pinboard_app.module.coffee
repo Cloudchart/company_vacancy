@@ -73,7 +73,10 @@ module.exports = React.createClass
         """
           Viewer {
             roles,
-            favorites
+            favorites,
+            edges {
+              is_authenticated
+            }
           }
         """
 
@@ -224,7 +227,7 @@ module.exports = React.createClass
 
 
   renderSuggestionButton: (pinboard) ->
-    return null unless pinboard.suggestion_rights == 'anyone' || pinboard.is_editable
+    return null unless @props.cursor.viewer.get('is_authenticated') && (pinboard.suggestion_rights == 'anyone' || pinboard.is_editable)
 
     <button className="cc" onClick={@handleSuggestionClick}>
       Suggest an insight

@@ -5,6 +5,7 @@ GlobalState = require('global_state/state')
 
 PinStore = require('stores/pin_store')
 UserStore = require('stores/user_store.cursor')
+PinboardStore = require('stores/pinboard_store')
 
 PinsList = require('components/pinboards/pins')
 PinComponent = require('components/pinboards/pin')
@@ -52,11 +53,15 @@ module.exports = React.createClass
   isLoaded: ->
     @state.isLoaded
 
+  filterUnapprovedSuggestions: (pin) ->
+    pin.get('is_suggestion') && !@cursor.pinboard.get('is_editable') && !pin.get('is_approved') && @cursor.user.get('uuid') != pin.get('user_id')
+
   gatherPins: ->
     PinStore.filterByPinboardId(@props.pinboard_id)
-      .valueSeq()
+      .filterNot @filterUnapprovedSuggestions
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
+      .valueSeq()
       .toArray()
 
 
@@ -65,6 +70,8 @@ module.exports = React.createClass
   componentWillMount: ->
     @cursor =
       pins: PinStore.cursor.items
+      pinboard: PinboardStore.cursor.items.get(@props.pinboard_id)
+      user: UserStore.me()
 
     @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
 

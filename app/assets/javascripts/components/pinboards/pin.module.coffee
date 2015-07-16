@@ -215,22 +215,28 @@ module.exports = React.createClass
       <span> – </span>
 
   renderSuggestionControls: ->
-    return null unless @cursor.pin.get('is_suggestion') && @cursor.pinboard.get('is_editable')
+    return null unless @cursor.pin.get('is_suggestion')
 
-    approve_element = if @cursor.pin.get('is_approved')
-      null
+    if @cursor.pinboard.get('is_editable')
+      approve_element = if @cursor.pin.get('is_approved')
+        null
+      else
+        <li>
+          <i className="fa fa-check" onClick = { @handleApproveSuggestionClick } />
+        </li>
+
+      <ul className="suggestion-controls" >
+        { approve_element }
+
+        <li>
+          <i className="cc-icon cc-times" onClick={ @handleDeleteSuggestionClick } />
+        </li>
+      </ul>
+    else if @cursor.pin.get('user_id') == @cursor.user.get('uuid') && !@cursor.pin.get('is_approved')
+      <span>Awaiting moderation</span>
     else
-      <li>
-        <i className="fa fa-check" onClick = { @handleApproveSuggestionClick } />
-      </li>
+      null
 
-    <ul className="suggestion-controls" >
-      { approve_element }
-
-      <li>
-        <i className="cc-icon cc-times" onClick={ @handleDeleteSuggestionClick } />
-      </li>
-    </ul>
 
   # Main render
   #
