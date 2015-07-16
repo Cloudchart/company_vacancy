@@ -9,6 +9,7 @@ GlobalState = require('global_state/state')
 PinStore  = require('stores/pin_store')
 UserStore = require('stores/user_store.cursor')
 PostStore = require('stores/post_store.cursor')
+PinboardStore = require('stores/pinboard_store')
 
 
 # Components
@@ -89,8 +90,11 @@ module.exports = React.createClass
   # Lifecycle methods
   #
   componentWillMount: ->
+    pin = PinStore.cursor.items.cursor(@props.uuid)
+
     @cursor =
-      pin:  PinStore.cursor.items.cursor(@props.uuid)
+      pin: pin
+      pinboard: PinboardStore.cursor.items.get(pin.get('pinboard_id'))
       user: UserStore.me()
 
     @fetch() unless @isLoaded()
@@ -104,7 +108,6 @@ module.exports = React.createClass
     else if @cursor.pin.get('content')
       @cursor.pin
 
-
   isClickable: ->
     _.isFunction(@props.onClick)
 
@@ -114,6 +117,12 @@ module.exports = React.createClass
   handleClick: (event) ->
     return unless @isClickable()
     @props.onClick(@cursor.pin.get('uuid'), event)
+
+  handleDeleteSuggestionClick: (event) ->
+    console.log 'handleDeleteSuggestionClick'
+
+  handleApproveSuggestionClick: (event) ->
+    console.log 'handleApproveSuggestionClick'
 
 
   # Renderers
@@ -158,8 +167,6 @@ module.exports = React.createClass
           uuid = { insight.get('user_id') }
         />
 
-        <InsightSuggestion pin = { @cursor.pin.deref().toJS() } />
-
         { @renderInsightControls(insight) }
       </footer>
     </article>
@@ -173,7 +180,10 @@ module.exports = React.createClass
   renderCommentContent: ->
     return null unless content = @cursor.pin.get('content')
 
-    <span dangerouslySetInnerHTML={ __html: content } />
+    if @cursor.pin.get('is_suggestion')
+      <span>Suggested by</span>
+    else
+      <span dangerouslySetInnerHTML={ __html: content } />
 
   renderCommentAuthor: ->
     return null unless @props.showAuthor
@@ -192,12 +202,38 @@ module.exports = React.createClass
       <i className="fa fa-share" />
       <p>
         { @renderCommentContent() }
-        { " — " if @renderCommentContent() && @renderCommentAuthor() }
+        { @renderSeparator() }
         { @renderCommentAuthor() }
       </p>
+      { @renderSuggestionControls() }
     </footer>
 
+  renderSeparator: ->
+    if @cursor.pin.get('is_suggestion')
+      <span> </span>
+    else if @cursor.pin.get('content') && @props.showAuthor
+      <span> – </span>
 
+  renderSuggestionControls: ->
+    return null unless @cursor.pin.get('is_suggestion') && @cursor.pinboard.get('is_editable')
+
+    approve_element = if @cursor.pin.get('is_approved')
+      null
+    else
+      <li>
+        <i className="fa fa-check" onClick = { @handleApproveSuggestionClick } />
+      </li>
+
+    <ul className="suggestion-controls" >
+      { approve_element }
+
+      <li>
+        <i className="cc-icon cc-times" onClick={ @handleDeleteSuggestionClick } />
+      </li>
+    </ul>
+
+  # Main render
+  #
   render: ->
     return null unless @cursor.pin.deref(false) && @cursor.user.deref(false)
 
