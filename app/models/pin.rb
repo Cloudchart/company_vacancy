@@ -12,6 +12,7 @@ class Pin < ActiveRecord::Base
   has_should_markers :should_allow_domain_name
 
   before_save :skip_generate_preview!, unless: :insight?
+  before_save :squish_origin, if: -> { origin_changed? && origin.present? }
   after_save :check_domain_from_origin
 
   belongs_to :user
@@ -65,6 +66,10 @@ private
         Domain.create(name: uri.host, status: status)
       end
     end
+  end
+
+  def squish_origin
+    self.origin = origin.squish
   end
 
 end
