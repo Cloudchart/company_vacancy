@@ -16,7 +16,7 @@ CloseModalButton = require('components/form/buttons').CloseModalButton
 
 # Utils
 #
-# cx = React.addons.classSet
+cx = React.addons.classSet
 
 
 # Main component
@@ -72,6 +72,7 @@ module.exports = React.createClass
     fetched: false
     pinboard_id: null
     query: ''
+    fetchingPins: false
 
 
   # Lifecycle Methods
@@ -136,7 +137,13 @@ module.exports = React.createClass
   # 
   handlePinboardClick: (uuid, event) ->
     event.preventDefault()
-    @fetchPins(uuid).then => @setState pinboard_id: uuid
+    @setState fetchingPins: true
+
+    @fetchPins(uuid).then =>
+      @setState
+        pinboard_id: uuid
+        fetchingPins: false
+        query: ''
 
   handlePinClick: (uuid, event) ->
     event.preventDefault()
@@ -168,13 +175,28 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderPlaceholders: ->
-    placeholders = Immutable.Repeat('dummy', @pinboardsIds().size || 2).map (_, i) ->
+  renderPlaceholders: (type) ->
+    container_classes = cx
+      pinboards: type == 'pinboard'
+      pins: type == 'pin'
+      'cloud-columns': true
+      'cloud-columns-flex': true
+
+    item_classes = cx
+      pinboard: type == 'pinboard'
+      pin: type == 'pin'
+      'cloud-card': true
+      'placeholder': true
+
+    # TODO: speed up related pinboards request
+    # placeholders = Immutable.Repeat('dummy', @pinboardsIds().size || 2).map (_, i) ->
+    placeholders = Immutable.Repeat('dummy', 2).map (_, i) ->
       <section key={ i } className="cloud-column">
-        <section className="pinboard cloud-card placeholder" />
+        <section className={ item_classes } />
       </section>
 
-    <section className="pinboards cloud-columns cloud-columns-flex">
+    <section className={ container_classes }>
+      <CloseModalButton />
       { placeholders.toArray() }
     </section>
 
@@ -201,22 +223,23 @@ module.exports = React.createClass
   # Main render
   # 
   render: ->
-    return @renderPlaceholders() unless @state.fetched
+    return @renderPlaceholders('pinboard') unless @state.fetched
+    return @renderPlaceholders('pin') if @state.fetchingPins
     return <div>Your collections are empty</div> if @props.cursor.viewer.get('related_pinboards').size == 0
 
     if @state.pinboard_id
       <section className="pins cloud-columns cloud-columns-flex">
-        <button className="transparent" onClick={ @handleBackButtonClick }>
+        <button className="back transparent" onClick={ @handleBackButtonClick }>
           <i className="fa fa-angle-left" />
         </button>
         <CloseModalButton />
 
         <header>
           <input
-            autoFocus =  { true }
-            value =  { @state.query }
-            onChange =  { @handleQueryChange }
-            placeholder = 'Search by content or author'
+            autoFocus = true
+            value = { @state.query }
+            onChange = { @handleQueryChange }
+            placeholder = "Search by content or author"
           />
         </header>
 
