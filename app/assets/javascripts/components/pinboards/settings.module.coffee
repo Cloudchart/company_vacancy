@@ -17,8 +17,8 @@ AccessRights = Immutable.Seq
   private:    'Private'
 
 SuggestionRights = Immutable.Seq
-  anyone: 'Anyone'
-  editors: 'Only editors'
+  anyone: 'Anyone can suggest'
+  editors: 'Only editors can suggest'
 
 
 # Exports
@@ -164,8 +164,7 @@ module.exports = React.createClass
         <li className="access-rights">
           { AccessRights.map(@renderAccessRightsItem).toArray() }
         </li>
-        <li className="suggestion-rights">
-          <h1>Who can suggest insights</h1>
+        <li className="access-rights">
           { SuggestionRights.map(@renderSuggestionRightsItem).toArray() }
         </li>
       </ul>

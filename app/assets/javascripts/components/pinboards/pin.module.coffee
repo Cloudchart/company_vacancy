@@ -196,15 +196,17 @@ module.exports = React.createClass
   renderComment: ->
     return null if @props.skipRenderComment
     return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid) ||
-      (!@cursor.pin.get('content') && !@props.showAuthor)
+      (!@cursor.pin.get('content') && !@props.showAuthor) || (@cursor.pin.get('is_suggestion') && @cursor.pin.get('is_approved'))
 
     <footer>
-      <i className="fa fa-share" />
-      <p>
-        { @renderCommentContent() }
-        { @renderSeparator() }
-        { @renderCommentAuthor() }
-      </p>
+      <div className="comment-container">
+        <i className="fa fa-share" />
+        <p>
+          { @renderCommentContent() }
+          { @renderSeparator() }
+          { @renderCommentAuthor() }
+        </p>
+      </div>
       { @renderSuggestionControls() }
     </footer>
 
@@ -215,25 +217,22 @@ module.exports = React.createClass
       <span> – </span>
 
   renderSuggestionControls: ->
-    return null unless @cursor.pin.get('is_suggestion')
+    return null unless @cursor.pin.get('is_suggestion') && !@cursor.pin.get('is_approved')
 
     if @cursor.pinboard.get('is_editable')
       approve_element = if @cursor.pin.get('is_approved')
         null
       else
-        <li>
-          <i className="fa fa-check" onClick = { @handleApproveSuggestionClick } />
+        <li className="approve">
+          <button className="cc" onClick={@handleApproveSuggestionClick}>Approve</button>
         </li>
 
       <ul className="suggestion-controls" >
-        { approve_element }
-
-        <li>
-          <i className="cc-icon cc-times" onClick={ @handleDeleteSuggestionClick } />
+        <li className="delete">
+          <button className="cc alert" onClick={@handleDeleteSuggestionClick}>Decline</button>
         </li>
+        { approve_element }
       </ul>
-    else if @cursor.pin.get('user_id') == @cursor.user.get('uuid') && !@cursor.pin.get('is_approved')
-      <span>Awaiting moderation</span>
     else
       null
 
