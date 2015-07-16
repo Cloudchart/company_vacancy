@@ -119,10 +119,10 @@ module.exports = React.createClass
     @props.onClick(@cursor.pin.get('uuid'), event)
 
   handleDeleteSuggestionClick: (event) ->
-    console.log 'handleDeleteSuggestionClick'
+    PinStore.destroy(@props.uuid) if confirm('Are you sure?')
 
   handleApproveSuggestionClick: (event) ->
-    console.log 'handleApproveSuggestionClick'
+    PinStore.approve(@props.uuid) if confirm('Are you sure?')
 
 
   # Renderers
