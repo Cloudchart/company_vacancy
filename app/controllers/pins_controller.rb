@@ -29,7 +29,7 @@ class PinsController < ApplicationController
   rescue ActiveRecord::RecordInvalid
 
     respond_to do |format|
-      format.json { render json: :nok, status: 412 }
+      format.json { render json: { errors: @pin.errors }, status: 422 }
     end
   end
 

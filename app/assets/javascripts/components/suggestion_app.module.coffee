@@ -148,23 +148,17 @@ module.exports = React.createClass
   handlePinClick: (uuid, event) ->
     event.preventDefault()
 
+    pin = @props.cursor.pins.get(uuid)
     insight_id = @props.cursor.pins.cursor(uuid).get('parent_id') || uuid
 
     attributes =
       parent_id: insight_id
       pinboard_id: @props.uuid if @props.type == 'Pinboard'
-      pinnable_id: @props.uuid if @props.type != 'Pinboard'
-      pinnable_type: @props.type if @props.type != 'Pinboard'
+      pinnable_id: if @props.type == 'Post' then @props.uuid else pin.get('pinnable_id')
+      pinnable_type: if @props.type == 'Post' then @props.type else pin.get('pinnable_type')
       is_suggestion: true
 
-    existing_suggestion = @props.cursor.pins
-      .filter (pin) -> pin.get('is_suggestion') && pin.get('parent_id') == attributes.parent_id && pin.get('pinboard_id') == attributes.pinboard_id
-      .first()
-
-    if existing_suggestion
-      ModalStack.hide()
-    else
-      PinStore.create(attributes).then(ModalStack.hide, ModalStack.hide)
+    PinStore.create(attributes).then(ModalStack.hide, ModalStack.hide)
 
   handleBackButtonClick: (event) ->
     @setState pinboard_id: null
