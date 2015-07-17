@@ -60,7 +60,7 @@ MainComponent = React.createClass
         BlockComponent = BlockComponents[block.identity_type]
         block_key = block.getKey()
 
-        <SortableListItem key={block_key}>
+        <SortableListItem uuid={block_key} key={block_key}>
           <section key={block_key} className={SectionClassNames[block.kind || block.identity_type]}>
             {@getDestroyLink(block.uuid)}
             <Wrapper className="editor" isWrapped={ !@props.readOnly } >
@@ -90,8 +90,8 @@ MainComponent = React.createClass
         <i className="fa fa-times-circle" onClick={@handleCancelBlockCreateClick.bind(@, position)} />
       </li>
     
-    item = (name, key) =>
-      <li key={key} onClick={@handleChooseBlockTypeClick.bind(@, key)}>{name}</li>
+    item = (name, uuid) =>
+      <li uuid={uuid} key={uuid} onClick={@handleChooseBlockTypeClick.bind(@, uuid)}>{name}</li>
     
     content = unless @props.readOnly
       if @state.position == position

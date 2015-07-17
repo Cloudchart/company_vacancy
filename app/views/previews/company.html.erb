@@ -1,0 +1,20 @@
+<article class="preview company">
+  <%- if @company.logotype_stored? -%>
+    <%= image_tag @company.logotype.url, class: :logo -%>
+  <%- end -%>
+
+  <header>
+    <%= @company.name %>
+  </header>
+
+  <p class="description">
+    <%= strip_tags @company.description %>
+  </p>
+
+  <div class="spacer"></div>
+
+  <footer>
+    <span></span>
+    <%= render partial: 'cloudchart' %>
+  </footer>
+</article>

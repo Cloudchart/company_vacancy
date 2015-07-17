@@ -5,17 +5,11 @@ class PostsController < ApplicationController
 
   load_and_authorize_resource except: [:create]
 
+  after_action :call_page_visit_to_slack_channel, only: :show
   after_action :create_intercom_event, only: :create
 
   def index
     respond_to do |format|
-      format.html {
-        pagescript_params(
-          company_id: @company.id,
-          story_id: Story.cc_plus_company(@company.id).find_by(name: params[:story_name]).try(:id)
-        )
-      }
-
       format.json
     end
   end
@@ -93,8 +87,11 @@ private
 
   def create_intercom_event
     return unless should_perform_sidekiq_worker? && @post.try(:valid?)
-
     IntercomEventsWorker.perform_async('created-post', current_user.id, post_id: @post.id)
+  end
+
+  def call_page_visit_to_slack_channel
+    post_page_visit_to_slack_channel("post: #{@post.title}", main_app.post_url(@post))
   end
 
 end

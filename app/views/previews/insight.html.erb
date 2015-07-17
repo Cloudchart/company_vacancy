@@ -1,0 +1,31 @@
+<%
+  @pin          = @pin.parent if @pin.parent.present?
+  @content      = @pin.content || ""
+  content_size  = @content.size
+
+  classes_for_content = {
+    content: true,
+    medium: content_size > 140 && content_size < 280,
+    small: content_size >= 280
+  }
+
+  classes_for_content = classes_for_content.select { |k,v| v }.keys.join(' ')
+%>
+
+<article class="preview insight">
+  <section class="<%= classes_for_content %>">
+    <%= (content = @content.strip).ends_with?('.') ? content.chop : content %>&nbsp;&mdash;
+  </section>
+  <footer>
+    <figure class="author">
+      <div class="avatar" style="background-image: url(<%= @pin.user.avatar_stored? ? @pin.user.avatar.url : 'none' %>);">
+        <%= @pin.user.full_name.split(' ').map { |i| i.chars.first }.take(2).join('').upcase unless @pin.user.avatar_stored? %>
+      </div>
+      <figcaption>
+        <p class="name"><%= @pin.user.full_name %></p>
+        <p class="occupation"><%= [@pin.user.occupation, @pin.user.company].select(&:present?).join(', ') %></p>
+      </figcaption>
+    </figure>
+    <%= render partial: 'cloudchart' %>
+  </footer>
+</article>

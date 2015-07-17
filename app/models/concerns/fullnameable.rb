@@ -6,9 +6,10 @@ module Fullnameable
   end
   
   def full_name=(full_name)
-    parts             = full_name.split(/\s+/).select { |part| part.present? }
-    self.first_name   = parts.first
-    self.last_name    = parts.drop(1).join(' ')
+    full_name = full_name.to_s
+    parts = full_name.split(/\s+/).select { |part| part.present? }
+    self.first_name = parts.first
+    self.last_name = parts.any? ? parts.drop(1).join(' ') : nil
   end
 
 end

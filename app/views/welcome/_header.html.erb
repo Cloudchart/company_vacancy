@@ -5,6 +5,15 @@
   </figcaption>
 </figure>
 
+<ul class="main-menu">
+  <% if can?(:index, :pinboards) %>
+    <li><%= link_to 'Collections', main_app.collections_path %></li>
+  <% end %>
+  <% if can?(:index, :companies) %>
+    <li><%= link_to 'Companies', main_app.companies_path %></li>
+  <% end %>
+</ul>
+
 <div class="auth">
   <%= link_to "Log In", cloud_profile.login_path %>
 </div>

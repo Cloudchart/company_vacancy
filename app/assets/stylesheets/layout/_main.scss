@@ -1,0 +1,297 @@
+@mixin cc-container-common-content-width {
+  width: 1024px;
+
+  @include ipad {
+    width: 100%;
+  }
+
+  @include iphone {
+    width: 100%;
+  }
+}
+
+.cc-container-common {
+  margin-top: 24px;
+  position: relative;
+
+  &.glued {
+    margin-top: 0;
+  }
+
+  > * {
+    @include cc-container-common-content-width;
+
+    margin: auto;
+    padding: 0 24px;
+  }
+
+  > .full-width {
+    width: 100%;
+
+    > .content {
+      @include cc-container-common-content-width;
+
+      margin: auto;
+      padding: 0 24px;
+
+      &.columns {
+        @include display(flex);
+
+        padding-right: 12px;
+        padding-bottom: 24px;
+        padding-left: 12px;
+
+        > .item {
+          @include flex(1);
+
+          padding: 24px 12px 0;
+
+          > .stack {
+            @include position(relative);
+
+            > * {
+              @include position(absolute, 0px null null 0px);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  > .flow {
+    @include display(flex);
+    @include flex-wrap(wrap);
+
+    padding-right: 12px;
+    padding-left: 12px;
+
+    > .item {
+      padding: 24px 12px 0;
+      width: 50%;
+      @include iphone {
+        width: 100%;
+      }
+    }
+  }
+
+  > header {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-wrap(wrap);
+
+    font-weight: 300;
+    position: relative;
+
+    &.padded {
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+
+    h1, h2 {
+      @include flex-grow(1);
+
+      font-weight: inherit;
+      margin: 0;
+    }
+
+    h1 ~ h2 {
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 100;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    > button.close {
+      @include position(absolute, 0px 0px null null);
+    }
+  }
+}
+
+
+.cc-container-common.banner {
+  background-color: hsl(137, 54%, 50%);
+  color: white;
+  font-size: 24px;
+  padding: 12px 0 24px;
+  text-align: center;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  > header {
+
+    h1 {
+      font-size: 48px;
+    }
+
+    h2 {
+      font-size: inherit;
+    }
+
+    button {
+      background-color: inherit;
+      border: none;
+      color: inherit;
+      font-size: inherit;
+      line-height: .5em;
+    }
+  }
+}
+
+// Product Hunt Full Width Content
+
+.cc-container-common.featured-pinboard {
+  margin-top: 0;
+
+  > header h1 {
+    font-size: 36px;
+    font-weight: 600;
+  }
+}
+
+.cc-container-common.featured-pinboard  > section.full-width {
+  background: asset_url('featured-pinboard.jpg') no-repeat center center;
+  background-size: cover;
+
+  .item {
+    @include transition(opacity 1s ease-in-out);
+  }
+}
+
+
+.cc-container-common.producthunt-mobile {
+  @include display(flex);
+  @include flex-wrap(wrap);
+
+  margin-right: auto;
+  margin-left: auto;
+
+  width: 1024px - 2 * 24px;
+
+  @include ipad {
+    width: 100%;
+  }
+
+
+  @include iphone {
+    @include flex-direction(column);
+
+    width: 100%;
+  }
+
+  background-color: hsl(12, 67%, 53%);
+  color: white;
+  margin-top: 0;
+  padding-top: 24px;
+  padding-bottom: 24px;
+
+  > header {
+    @include flex(1);
+
+    font-size: 14px;
+
+    h1 {
+      font-weight: 600;
+    }
+
+    h2 {
+      font-weight: 300;
+      margin-top: .5em;
+    }
+  }
+
+  > section {
+    width: auto;
+
+    > figure {
+      background: asset_url('producthunt.png') no-repeat center center;
+      background-size: contain;
+      height: 70px;
+      width: 70px;
+    }
+  }
+
+  > footer {
+
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
+
+    > a {
+      background-color: white;
+      color: hsl(12, 67%, 53%);
+      display: inline-block;
+      font-size: 18px;
+      font-weight: 300;
+      padding: 10px;
+    }
+
+  }
+
+}
+
+.cc-container-common .subscription {
+  background-color: hsl(145, 92%, 75%);
+  font-size: 20px;
+  padding: 24px;
+  text-align: center;
+
+  width: 1024px - 2 * 24px;
+
+  @include ipad {
+    width: 100%;
+  }
+
+  @include iphone {
+    width: 100%;
+  }
+
+  p {
+    margin: 0;
+    padding: 0 12%;
+  }
+
+  form {
+    @include display(flex);
+    @include justify-content(center);
+    margin: 24px auto 0;
+  }
+
+  @include iphone {
+    width: 100%;
+  }
+
+  &.one-line {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+
+    margin-top: 0;
+
+    form {
+      margin: 0;
+      margin-left: 24px;
+
+      input {
+        margin: 0;
+      }
+    }
+
+    @include iphone {
+      @include flex-direction(column);
+
+      form {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+    }
+
+  }
+}

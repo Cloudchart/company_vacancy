@@ -19,4 +19,8 @@ class Post < ActiveRecord::Base
     visibilities.first
   end
 
+  def public?
+    visibility.try(:value) == 'public'
+  end
+
 end

@@ -26,6 +26,9 @@
 //= require moment
 //= require numeral
 //= require object_assign
+//= require masonry
+//= require imagesloaded
+//= require zeroclipboard
 
 //= require constants.module
 //= require cloud_flux.module
@@ -34,6 +37,5 @@
 //= require_tree .
 
 //= require cloud_profile/application
-//= require cloud_blueprint/application
 
 require('base')

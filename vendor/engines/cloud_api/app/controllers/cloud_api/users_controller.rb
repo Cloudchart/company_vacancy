@@ -4,11 +4,13 @@ module CloudApi
   class UsersController < CloudApi::ApplicationController
 
     def me
-      @source = User
+      @source = Viewer
       @starter = [:find, current_user.id]
 
       respond_to do |format|
-        format.json { render '/main' }
+        format.json do
+          render_cached_main_json(expires_in: 10.minutes)
+        end
       end
     end
 
@@ -26,9 +28,21 @@ module CloudApi
       @starter = [:find, params[:id]]
 
       respond_to do |format|
-        format.json { render '/main' }
-      end      
+        format.json do
+          render_cached_main_json(expires_in: 10.minutes)
+        end
+      end
     end
+
+
+    def create_unicorn
+      user = User.new(full_name: params[:unicorn][:full_name])
+      user.roles << Role.new(value: 'unicorn')
+      user.save!
+
+      render json: { id: user.id }
+    end
+
 
   end
 end

@@ -45,7 +45,7 @@ private
       result[:post_url] = post_url(options[:pin].pinnable)
       result[:pin_content] = options[:pin].content if options[:pin].content.present?
     when 'created-pinboard'
-      result[:pinboard_url] = pinboard_url(options[:pinboard])
+      result[:pinboard_url] = collection_url(options[:pinboard])
     when 'invited-person'
       result[:company_url] = company_url(options[:token].owner)
       result[:invitee_email] = options[:token].data[:email]
@@ -59,6 +59,15 @@ private
       result[:post_url] = post_url(options[:pin].pinnable)
       result[:parent_id] = options[:pin].parent_id
       result[:pin_content] = options[:pin].content if options[:pin].content.present?
+    when 'invited-user-to-app'
+      result[:invitee_twitter] = options[:user].twitter
+      result[:is_invitee_unicorn] = options[:user].unicorn?
+    when /followed-pinboard|unfollowed-pinboard/
+      result[:pinboard_url] = collection_url(options[:pinboard])
+    when /followed-company|unfollowed-company/
+      result[:company_url] = company_url(options[:company])
+    when /followed-user|unfollowed-user/
+      result[:user_url] = user_url(options[:user])
     end
 
     result
@@ -159,7 +168,7 @@ private
         name: user.full_name,
         email: user.email,
         pinboard_title: pinboard.title,
-        pinboard_url: pinboard_url(pinboard)
+        pinboard_url: collection_url(pinboard)
       )
 
     # Created post
@@ -171,6 +180,21 @@ private
         name: user.full_name,
         email: user.email,
         post_url: post_url(post)
+      )
+
+    # Invited user to app
+    # 
+    when 'invited-user-to-app'
+      roles = options[:user].system_roles.map(&:value).to_sentence
+      roles = 'regular user' if roles.blank?
+
+      result[:text] = I18n.t('user.activities.invited_user_to_app',
+        name: user.full_name,
+        twitter: user.twitter,
+        twitter_url: user.twitter_url,
+        invitee_twitter: options[:user].twitter,
+        invitee_twitter_url: options[:user].twitter_url,
+        roles: roles
       )
 
     # Invited person
@@ -195,6 +219,38 @@ private
         role: token.data[:role].gsub(/_/, ' ')
       )
 
+    # Followed/Unfollowed object
+    #
+    when /followed-pinboard|unfollowed-pinboard/
+      pinboard = options[:pinboard]
+
+      result[:text] = I18n.t("user.activities.#{event_name.underscore}",
+        name: user.full_name,
+        twitter: user.twitter,
+        twitter_url: user.twitter_url,
+        pinboard_title: pinboard.title,
+        pinboard_url: collection_url(pinboard)
+      )
+    when /followed-company|unfollowed-company/
+      company = options[:company]
+
+      result[:text] = I18n.t("user.activities.#{event_name.underscore}",
+        name: user.full_name,
+        twitter: user.twitter,
+        twitter_url: user.twitter_url,
+        company_name: company.name,
+        company_url: company_url(company)
+      )
+    when /followed-user|unfollowed-user/
+      followed_user = options[:user]
+
+      result[:text] = I18n.t("user.activities.#{event_name.underscore}",
+        name: user.full_name,
+        twitter: user.twitter,
+        twitter_url: user.twitter_url,
+        user_name: followed_user.full_name,
+        user_url: user_url(followed_user)
+      )
     end
 
     result.to_json

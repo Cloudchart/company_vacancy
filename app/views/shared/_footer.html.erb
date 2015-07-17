@@ -1,21 +1,45 @@
-<ul>
-  <li>
-    <%= link_to t('.about_us', default: 'About us'), main_app.company_path(ENV['ABOUT_US_COMPANY_ID']) %>
-  </li>
+<%
 
-  <li>
-    <%= mail_to ENV['SUPPORT_EMAIL'], t('.support', default: 'Support') %>
-  </li>
-  
-  <li>
-    <%= mail_to ENV['REPLY_TO_EMAIL'], t('.contacts', default: 'Contacts') %>
-  </li>
+links = []
 
-  <li>
-    <%= link_to t('.legal', default: 'Legal'), main_app.page_path(:legal) %>
-  </li>
+if user_authenticated?
+  links << {
+    name: 'About us',
+    href: main_app.company_path(ENV['ABOUT_US_COMPANY_ID'])
+  }
+end
 
-  <li>
-    <%= link_to t('.privacy', default: 'Privacy'), main_app.page_path(:privacy) %>
-  </li>
-</ul>
+links << {
+  name: 'Support',
+  href: "mailto:#{ENV['SUPPORT_EMAIL']}"
+}
+
+links << {
+  name: 'Contacts',
+  href: "mailto:#{ENV['REPLY_TO_EMAIL']}"
+}
+
+links << {
+  name: 'Legal',
+  href: main_app.page_path(:legal)
+}
+
+links << {
+  name: 'Privacy',
+  href: main_app.page_path(:privacy)
+}
+
+links << {
+  name: 'Report content',
+  href: '',
+  id: 'report-content'
+}
+
+%>
+
+<%= content_tag :footer, nil, data: {
+  "react-class" => "components/footer_app",
+  "react-props" => {
+    links: links
+  }
+} %>

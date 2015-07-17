@@ -4,16 +4,15 @@ class Vacancy < ActiveRecord::Base
   include Trackable
 
   before_create :set_default_status
-  
+
   is_impressionable counter_cache: true, unique: true
 
   serialize :settings, VacancySetting
-  
+
   belongs_to :company
   belongs_to :author, class_name: 'User'
 
   has_one :block_identity, as: :identity, inverse_of: :identity
-  has_many :node_identities, as: :identity, dependent: :destroy, class_name: CloudBlueprint::Identity
   has_many :responses, class_name: 'VacancyResponse'
   has_many :responded_users, through: :responses, source: :user
   has_and_belongs_to_many :reviewers, class_name: 'Person', join_table: 'vacancy_reviewers'

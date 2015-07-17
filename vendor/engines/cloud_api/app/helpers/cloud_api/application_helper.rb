@@ -1,6 +1,34 @@
 module CloudApi
   module ApplicationHelper
 
+    def facebook_share_url(url)
+      uri = URI.parse('https://www.facebook.com/sharer/sharer.php')
+
+      params = {
+        display: :popup,
+        u: url,
+        redirect_uri: "http://#{ENV['APP_HOST']}/"
+      }
+
+      uri.query = params.to_query
+      uri.to_s
+    end
+
+    def twitter_share_url(url, text = '')
+      uri = URI.parse('https://twitter.com/intent/tweet')
+      text = truncate(text, length: 90, separator: ' ')
+
+      params = {
+        text: text,
+        url: url,
+        original_referer: "http://#{ENV['APP_HOST']}/",
+        via: ENV['TWITTER_APP_NAME']
+      }
+
+      uri.query = params.to_query
+      uri.to_s
+    end
+
     def parse_relations_query(query)
       return {} if query.nil? or query.blank?
 
@@ -44,6 +72,16 @@ module CloudApi
     end
 
 
+    def preload_associations(records, cache, *associations)
+      Preloadable::preload(records, cache, *associations)
+    end
+
+
+    def json_edge!(json, edge, edges)
+      json.set! edge, yield if block_given? && edges.include?(edge)
+    end
+
+
     def populate_data_for_jbuilder(json, memo, source, query)
       return if source.nil?
 
@@ -63,7 +101,6 @@ module CloudApi
         end unless query.nil?
       end
     end
-
 
   end
 end

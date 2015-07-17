@@ -21,8 +21,14 @@ $editor-placeholder-section-figure-size: 50px;
 // Editor
 //
 article.editor {
+  background-color: $card-color;
   margin: 0 auto;
+  padding: $default-margin-size;
   width: $editor-width;
+
+  @include respond-to(medium) {
+    width: 550px;
+  }
   
   > section {
     position: relative;
@@ -51,15 +57,13 @@ article.editor {
 // Post editor
 // 
 article.editor.post {
+  padding: 0;
+
   > section.placeholder {
     > figure {
       opacity: 1;
     }
   }
-}
-
-.editor.company {
-  padding-bottom: $default-margin-size;
 }
 
 // Draggable
@@ -168,9 +172,11 @@ article.editor > section.placeholder {
 
 @import 'people';
 @import 'paragraph';
+@import 'vacancies';
 @import 'picture';
 @import 'chooser';
 @import 'person_form';
+@import 'vacancy_form';
 @import 'quote';
 @import 'kpi';
 @import 'wrapper';

@@ -1,5 +1,6 @@
 class Tag < ActiveRecord::Base
   include Uuidable
+  include Admin::Tag
 
   before_validation do
     self.name = name.parameterize
@@ -20,7 +21,7 @@ class Tag < ActiveRecord::Base
   scope :available_for_user, -> user do
     return [] unless user.present?
 
-    company_ids = user.companies.select(:uuid).joins(:roles).where{ roles.value.in ['owner', 'editor'] }
+    company_ids = (user.companies + user.accessed_companies.where(roles: {value: 'editor'})).map(&:id)
 
     joins { companies.outer }
     .where { 

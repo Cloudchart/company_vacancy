@@ -11,7 +11,7 @@ Component = React.createClass
   # Component specifications
   #
   propTypes:
-    key:   React.PropTypes.string.isRequired
+    uuid:  React.PropTypes.string.isRequired
     value: React.PropTypes.string
     url:   React.PropTypes.string
 
@@ -22,7 +22,7 @@ Component = React.createClass
     @setState(@getStateFromStores())
 
   getStateFromStores: ->
-    company: CompanyStore.get(@props.key) || {}
+    company: CompanyStore.get(@props.uuid) || {}
 
   # Helpers
   #

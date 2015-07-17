@@ -1,5 +1,5 @@
 # config valid only for Capistrano 3.1
-lock '3.2.0'
+lock '3.2.1'
 
 set :application,   'cloudchart'
 set :repo_url,      'git@github.com:Cloudchart/company_vacancy.git'
@@ -29,22 +29,30 @@ set :linked_dirs,   %w{log tmp/pids tmp/cache tmp/sockets public/uploads public/
 
 namespace :deploy do
 
-#   desc 'Restart application'
-#   task :restart do
-#     on roles(:app), in: :sequence, wait: 5 do
-#       # execute :touch, release_path.join('tmp/restart.txt')
-#     end
-#   end
+  desc 'Sends post request to slack channel when deploy started'
+  task :post_to_slack_when_deploy_started do
+    on roles :app do
+      execute post_to_slack_channel(:started)
+    end
+  end
 
-#   after :publishing, :restart
+  desc 'Sends post request to slack channel when deploy finished'
+  task :post_to_slack_when_deploy_finished do
+    on roles :app do
+      execute post_to_slack_channel(:finished)
+    end
+  end
 
-#   after :restart, :clear_cache do
-#     on roles(:web), in: :groups, limit: 3, wait: 10 do
-#       within release_path do
-#         # execute :rake, 'cache:clear'
-#       end
-#     end
-#   end
+  desc 'Generates static error pages in public folder'
+  task :generate_error_pages do
+    on roles :app do
+      within release_path do
+        with rails_env: fetch(:stage) do
+          execute :rails, 'generate static_error_pages -f'
+        end
+      end
+    end
+  end
 
   desc 'Runs rake db:seed'
   task :seed do
@@ -56,6 +64,10 @@ namespace :deploy do
       end
     end
   end
+
+  after :starting, :post_to_slack_when_deploy_started
+  after :publishing, :generate_error_pages
+  after :finishing, :post_to_slack_when_deploy_finished
 
 end
 
@@ -83,9 +95,52 @@ namespace :tire do
       within release_path do
         with rails_env: fetch(:stage) do
           execute :rake, 'environment tire:import:all FORCE=true'
-        end 
-      end     
+        end
+      end
     end
   end
-  
+
+end
+
+namespace :cc do
+
+  desc 'Calculate insights weights'
+  task :calculate_insight_weight do
+    on roles :app do
+      within release_path do
+        with rails_env: fetch(:stage) do
+          execute :rake, 'cc:calculate_insight_weight'
+        end
+      end
+    end
+  end
+
+  [:pin, :company, :user, :pinboard].each do |name|
+
+    desc "Generate #{name} preview"
+    task :"generate_#{name}_preview" do
+      on roles :app do
+        within release_path do
+          with rails_env: fetch(:stage) do
+            execute :rake, "cc:generate_#{name}_preview"
+          end
+        end
+      end
+    end
+
+  end
+
+end
+
+def post_to_slack_channel(action_name)
+  return unless webhook_url = ENV['SLACK_DEFAULT_WEBHOOK_URL']
+
+  payload = {
+    channel: '#develop',
+    username: ENV['USER'],
+    text: "Deployment #{action_name} in #{fetch(:stage)} environment",
+    icon_emoji: ":insightsvc_#{fetch(:stage)}:"
+  }
+
+  "curl -s -X POST --data-urlencode 'payload=#{payload.to_json}' #{webhook_url}"
 end

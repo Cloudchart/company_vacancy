@@ -1,0 +1,21 @@
+<p class="greeting" style="margin:0;padding:0;padding:0 50px;width:85%;padding-top:50px;padding-bottom:10px;">
+  Hello, <b style="font-weight:600"><%= @user.full_name %></b>,
+</p>
+
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:24px;">
+  You have been invited to <%= ENV['SITE_NAME'] %>. To start learning from unicorns, log in with your Twitter account. Take our really short and helpful tour to unleash the whole power of <%= ENV['SITE_NAME'] %>, or start using it right away:
+</p>
+
+<ul style="margin:0;padding:0 50px 0 70px;">
+  <li>browse unicorns' timelines to see how they came to life and are growing</li>
+  <li>discover actionable insights by founders, investors, and experts and use them to grow your business</li>
+  <li>follow companies you're interested in to get their updates and learn from their successes and failures</li>
+</ul>
+
+<p style="margin:0;padding:0;padding:0 50px;width:85%">
+  <%= link_to "Join <%= ENV['SITE_NAME'] %>", cloud_profile.login_url, style: 'color:#3bc462;font-weight:600;text-decoration:none;background-color:#3bc462;color:white;display:block;line-height:55px;margin:30px auto;height:55px;padding:0 30px;font-weight:300;font-size:24px;text-align:center;width:200px;' %>
+</p>
+
+<p style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:50px">
+  Have questions? Suggestions? Doughnuts? Simply reply to this email or chat with <a href="https://twitter.com/<%= ENV['TWITTER_APP_NAME'] %>" target="_blank" style="color:#3bc462;font-weight:600;text-decoration:none"><%= "@#{ENV['TWITTER_APP_NAME']}" %></a> on Twitter.
+</p>

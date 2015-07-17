@@ -30,6 +30,9 @@ Blocks =
 #
 fuzzyDate = require('utils/fuzzy_date')
 
+trimDots    = require('utils/trim_string').trimDots
+trimBreak   = require('utils/trim_string').trimBreak
+
 
 # Exports
 #
@@ -86,6 +89,34 @@ module.exports = React.createClass
       .sortBy (block) -> block.get('position')
       .take(2)
 
+  isPostTruncated: ->
+    @cursor.blocks.deref([]).size > 2 || 
+    @gatherBlocks().some (block) => @isBlockTruncated(block)
+
+  isBlockTruncated: (block) ->
+    return false if block.get('identity_type') != 'Paragraph'
+    return false unless (paragraph = @getParagraphByBlock(block))
+
+    paragraph.get('content').match(/<div>(.*?)<\/div>/ig).length > 1
+
+  trimDotsInParagraph: (content) ->
+    trimDots(trimBreak(content))
+
+  getTruncatedParagraph: (block) ->
+    return null unless (paragraph = @getParagraphByBlock(block))
+
+    content = paragraph.get('content').match(/<div>(.*?)<\/div>/i)[1].trim()
+
+    content = if @isPostTruncated() then @trimDotsInParagraph(content) else content
+
+    "<span>#{content}</span>"
+
+  getParagraphByBlock: (block) ->
+    ParagraphStore.findByOwner(type: 'Block', id: block.get('uuid'))
+
+  isPostPreviewWithParagraphs: ->
+    @gatherBlocks().some (block) => block.get('identity_type') == 'Paragraph'
+
 
   # Lifecycle methods
   #
@@ -99,6 +130,11 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderReadMore: ->
+    return null unless @isPostTruncated() && !@isPostPreviewWithParagraphs()
+
+    <span className="read-more">More</span>
+
   renderDate: ->
     return unless date = fuzzyDate.format(@cursor.post.get('effective_from'), @cursor.post.get('effective_till'))
 
@@ -118,28 +154,19 @@ module.exports = React.createClass
       else
         throw new Error("Pinnable Header: Unknown owner type '#{@cursor.post.get('owner_type')}' for pinnable type 'Post'")
 
-  renderHeader: ->
-    <header>
-      { @renderOwnerHeader() }
-      { @renderDateAndTitle() }
-    </header>
-
   renderTitle: ->
     return unless @cursor.post.get('title', false)
 
-    <div className="title" dangerouslySetInnerHTML={ __html: @cursor.post.get('title') } />
-
-  renderDateAndTitle: ->
-    <section className="title">
-      { @renderDate() }
-      { @renderTitle() }
-    </section>
+    <header>
+      { @renderControls() }
+      <div className="title" dangerouslySetInnerHTML={ __html: @cursor.post.get('title') } />
+    </header>
 
   renderBlock: (block) ->
     switch block.get('identity_type')
       when 'Paragraph'
-        paragraph = ParagraphStore.findByOwner(type: 'Block', id: block.get('uuid'))
-        <Blocks.Paragraph key={ block.get('uuid') } item={ paragraph } />
+        paragraph = @getParagraphByBlock(block)
+        <Blocks.Paragraph key={ block.get('uuid') } text={ @getTruncatedParagraph(block) } truncated = { @isPostTruncated() } />
 
       when 'Picture'
         picture = PictureStore.findByOwner(type: 'Block', id: block.get('uuid'))
@@ -147,7 +174,7 @@ module.exports = React.createClass
 
       when 'Person'
         peopleIds = PersonStore.filterForBlock(block.get('uuid')).map((person) -> person.get('uuid')).toSeq()
-        <Blocks.People key={ block.get('uuid') } ids={ peopleIds } />
+        <Blocks.People key={ block.get('uuid') } ids={ peopleIds } showLink={ false } />
 
       when 'Quote'
         quote = QuoteStore.findByOwner(type: 'Block', id: block.get('uuid'))
@@ -166,9 +193,10 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     <article className="pinnable post-preview link">
-      <a className="for-group" href={ @cursor.post.get('url') } >
-        { @renderHeader() }
-        { @renderControls() }
+      <a className="for-group" href={ @cursor.post.get('post_url') } >
+        { @renderTitle() }
         { @renderBlocks() }
+        { @renderOwnerHeader() }
+        { @renderReadMore() }
       </a>
     </article>

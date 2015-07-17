@@ -1,0 +1,36 @@
+$modal-splash-width: 480px;
+
+.modal-container > .splash {
+  > button.close {
+    @include position(absolute, 0px 10px 0 0);
+
+    font-size: 36px;
+    color: hsl(139, 54%, 51%);
+  }
+
+  position: relative;
+  font-size: 20px;
+  padding: 20px;
+  text-align: center;
+  width: $modal-splash-width;
+  
+  > header {
+    font-size: $modal-form-header-font-size;
+    font-weight: $modal-form-header-font-weight;
+  }
+  
+  > figure.cloud-chart {
+    
+    background-image: image-url('logo-square.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    display: block;
+    height: 100px;
+  }
+  
+  a {
+    text-decoration: none;
+  }
+  
+}

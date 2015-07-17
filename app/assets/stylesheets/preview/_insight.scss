@@ -1,0 +1,100 @@
+article.preview.insight {
+
+  @include display(flex);
+  @include flex-direction(column);
+  @include justify-content(space-between);
+
+  background-color: white;
+  border: 12px solid hsl(137, 54%, 50%);
+  color: black;
+  font-weight: 300;
+  padding: 64px;
+
+  > section.content {
+    font-size: 56px;
+    font-weight: 600;
+    line-height: 69px;
+
+    &.medium {
+      font-size: 42px;
+      line-height: 56px;
+    }
+
+    &.small {
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 45px;
+    }
+  }
+
+  > footer {
+    @include align-items(flex-end);
+    @include display(flex);
+    @include justify-content(space-between);
+
+    > figure.author {
+      @include display(flex);
+      @include align-items(center);
+
+      margin: 0;
+
+      .avatar {
+        background-color: #ccc;
+        background-repeat: no-repeat;
+        background-size: cover;
+        border-radius: 50%;
+        color: white;
+        font-size: 58px;
+        height: 150px;
+        line-height: 150px;
+        position: relative;
+        text-align: center;
+        width: 150px;
+      }
+
+      figcaption {
+        margin-left: 20px;
+
+        p {
+          margin: 0;
+
+          &.name {
+            font-size: 48px;
+            line-height: 58px;
+          }
+
+          &.occupation {
+            font-size: 32px;
+            line-height: 39px;
+          }
+        }
+      }
+
+    }
+
+    > figure.cloudchart {
+      @include display(flex);
+      @include align-items(center);
+
+      color: hsl(137, 54%, 50%);
+      margin: 0;
+      margin-bottom: -10px;
+
+      img {
+        margin-right: 10px;
+        width: 90px;
+      }
+
+      figcaption {
+        font-size: 38px;
+        line-height: 46px;
+
+        strong {
+          font-weight: 600;
+        }
+      }
+    }
+
+  }
+
+}

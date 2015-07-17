@@ -1,85 +1,88 @@
-main.user-profile {
-  .settings {
-    margin: $gutter-size auto;
-    width: 500px;
+.user-profile .settings {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
 
-    fieldset {
-      margin: 0;
-      margin-bottom: $gutter-size;
+  margin-bottom: 30px;
+  width: 100%;
 
-      > label {
-        @include flex-wrap(wrap);
-        @include justify-content(flex-end);
+  > section, > form {
+    width: 476px;
+  }
 
-        .title {
-          width: 25%;
-        }
+  > section > h2,
+  > form > h2 {
+    font-size: $huge-font-size;
+    font-weight: 100;
+    margin-bottom: $default-margin-size;
+    width: 100%;
+  }
 
-        .input,
-        .error {
-          @include flex(0 1 auto);
-          width: 100%;
-        }
-        
-        .title ~ .input,
-        .title ~ .error {
-          width: 75%;
-        }
+  @mixin settings-form {
+    @include align-items(stretch);
+    @include display(flex);
+    @include flex-direction(column);
+
+    > input {
+      width: 100%;
+    }
+
+    > footer {
+      @include display(flex);
+
+      > div {
+        @include flex(1);
       }
+    }
+  }
 
-      > aside {
-        background-color: hsl(0, 0%, 96%);
-        background-repeat: no-repeat;
-        background-size: cover;
-        border-radius: 100%;
-        height: 150px;
-        margin: 0 auto;
-        position: relative;
-        width: 150px;
-        
-        > i.fa {
-          @include position(absolute, 5px 5px 0 0);
-          
-          color: hsl(0, 75%, 55%);
-          cursor: pointer;
-          font-size: 20px;
-          visibility: hidden;
-        }
-        
-        &:hover > i.fa {
-          visibility: visible;
-        }
-        
-        > figure {
-          font-size: 30px;
-          font-weight: 100;
-          line-height: 150px;
-          text-align: center;
-          width: 100%;
-        }
-        
-        > label {
-          @include position(absolute, 0px 0px 0px 0px);
-          cursor: pointer;
-          
-          input {
-            height: 0;
-            overflow: hidden;
-            position: absolute;
-            visibility: hidden;
-            width: 0;
-          }
-        }
-        
+  @mixin settings-subscription {
+    > label {
+      font-size: $basic-font-size;
+      font-weight: 400;
+
+      > input {
+        font-weight: 300;
+        margin-right: $inner-margin-size;
+      }
+    }
+  }
+
+  > form {
+    @include settings-form;
+  }
+
+  > .invitation-form {
+    .landings {
+      ul {
+        @include display(flex);
+        @include flex-direction(column);
+
+        font-size: $basic-font-size;
+        list-style: none; 
+        margin: 0;
+        margin-bottom: $inner-margin-size;
+        padding: 0;
       }
     }
 
-    footer {
-      margin: 0;
-    }
+    [contenteditable] {
+      background-color: hsl(145, 92%, 75%);
+      font-size: $basic-font-size;
+      margin-bottom: $default-margin-size;
+      outline: none;
+      padding: $default-margin-size;
 
-    button {
-      width: auto;
+      &:empty::before {
+        color: black;
+        content: attr(data-placeholder);
+        opacity: .25;
+        outline: none;
+      }
     }
+  }
+
+  > .subscription {
+    @include settings-subscription;
   }
 }

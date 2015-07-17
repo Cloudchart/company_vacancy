@@ -1,113 +1,194 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user)
-    return unless user
+  def initialize(current_user)
+    return unless current_user
 
     # Anyone
     #
-    if user.guest?
-      # can :read, :invite
+    if current_user.guest?
+      can :read, Landing
+      can :read, Pin, is_approved: true
+      can :read, Company, is_published: true
+      can [:index, :search], :companies
+      can :index, :pinboards
+      can [:create, :verify], GuestSubscription
 
-      # can :read, Event
-      # can :read, Feature
-      # can :read, Event
-      # can :read, Tag
-      # can :read, Person
-      # can :read, Vacancy
-      # can :read, Quote
-      # can :show, Pinboard
-      
-      # can [:preview, :read, :pull], CloudBlueprint::Chart, is_public: true
-      # can :show, Company, is_public: true
+      can :read, Pinboard do |pinboard|
+        pinboard.public?
+      end
 
-      # can :read, Post do |post|
-      #   company = post.company
-      #   company.is_public? && company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')
-      # end
-      
+      can :read, User do |user|
+        !user.guest?
+      end
+
+      can :read, Post do |post|
+        post.company.is_published? && post.public?
+      end
+
     # Regular user
     #
     else
-      can [:create, :verify, :resend_verification], Email
       can :manage, :cloud_profile_main
       can :update, :cloud_profile_user
-      can [:read, :accept, :destroy], :invite
+      can [:read, :accept, :destroy], :company_invite
 
-      # can :vote, Feature
-      # can :manage, Subscription
-      can :unfollow, Company
-      can [:preview, :read, :pull], CloudBlueprint::Chart
       can :create, Tag
-      can [:read, :create], Pinboard
-      can [:read, :create], Pin
-      can :read, User
+      can :create, Activity
+      can [:create, :verify, :resend_verification], Email
+      can :destroy, Email, user_id: current_user.id
 
-      can [:read, :search], Company, is_published: true
-      can [:update, :settings], User, uuid: user.id
-      can [:update, :destroy, :settings], Pinboard, user_id: user.id
-      can :destroy, Email, user_id: user.id
+      can :manage, :invite do
+        current_user.inviter?
+      end
+
+      # User
+      #
+      can :read, User do |user|
+        !user.guest?
+      end
+
+      can [:update, :settings], User do |user|
+        user.id == current_user.id ||
+        (current_user.editor? && user.unicorn? && user.last_sign_in_at.blank?)
+      end
+
+      can [:follow, :unfollow], User do |user|
+        current_user != user
+      end
+
+      can [:subscribe, :unsubscribe], User do |user|
+        current_user == user
+      end
+
+      # Pin
+      #
+      can :create, Pin do |pin|
+        if pin.pinboard
+          owner_or_editor?(current_user, pin.pinboard) || owner_or_editor?(pin.user, pin.pinboard)
+        else
+          pin.is_suggestion?
+        end
+      end
+
+      can :read, Pin do |pin|
+        pin.content.blank? || pin.is_approved? || pin.user_id == current_user.id ||
+        (current_user.admin? || current_user.editor?)
+      end
+
+      can :approve, Pin do |pin|
+        (current_user.admin? || current_user.editor?) && pin.content.present? && !pin.is_approved?
+      end
 
       can [:update, :destroy], Pin do |pin|
-        pin.user_id == user.id || user.editor?
-      end
-      
-      can :create, Company do |company| 
-        user.editor?
+        pin.user_id == current_user.id || current_user.editor?
       end
 
-      can :manage, Company do |company|
-        owner?(user, company)
+      # Company
+      #
+      can :manage, Company, user_id: current_user.id
+      can [:follow, :unfollow], Company
+      can :read, Company, is_published: true
+      can [:index, :search], :companies 
+
+      can :create, Company do
+        current_user.editor?
       end
 
       can [:read, :update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file, :reposition_blocks], Company do |company|
-        editor?(user, company)
+        editor?(current_user, company)
       end
 
       can [:read, :finance], Company do |company|
-        trusted_reader?(user, company)
+        trusted_reader?(current_user, company)
       end
 
-      cannot :follow, Company do |company|
-        user.companies.map(&:id).include?(company.id)
+      can :read, Company do |company|
+        public_reader?(current_user, company)
       end
 
-      can :follow, Company do |company|
-        !user.companies.map(&:id).include?(company.id)
+      can :manage_company_invites, Company do |company|
+        owner_or_editor?(current_user, company)
       end
 
-      can [:follow, :unfollow], User do |followable_user|
-        user != followable_user
+      # Pinboard
+      #
+      can :index, :pinboards
+      can :create, Pinboard
+      can [:destroy], Pinboard, user_id: current_user.id
+      can [:read, :follow, :unfollow], Pinboard do |pinboard|
+        pinboard.public? || current_user.id == pinboard.user_id || reader_or_editor?(current_user, pinboard)
+      end
+      can [:request_access], Pinboard do |pinboard|
+        !can?(:read, pinboard) && pinboard.protected?
+      end
+      can [:update, :settings, :manage_pinboard_invites], Pinboard do |pinboard|
+        current_user.id == pinboard.user_id || editor?(current_user, pinboard)
       end
 
-      # TODO: test this
+      # Token
+      #
+      can :read, Token
+
+      can :create_greeting, User do |user|
+        user != current_user && current_user.editor? && user.unicorn?
+      end
+
+      can [:update_greeting], Token do |token|
+        current_user.editor?
+      end
+
+      can :destroy_greeting, Token do |token|
+        current_user.editor? || token.owner == current_user
+      end
+
+      can [:destroy_welcome_tour, :destroy_insight_tour], Token do |token|
+        token.owner == current_user
+      end
+
+      # Landing
+      #
+      can :read, Landing
+
+      can :create, Landing do |landing|
+        current_user.editor?
+      end
+
+      can [:update, :destroy], Landing, author_id: current_user.id
+
+      # Role
+      # 
+      can [:read, :accept], Role
+
+      can [:create, :update], Role do |role|
+        owner_or_editor?(current_user, role.owner)
+      end
+
+      can :destroy, Role do |role|
+        role.user_id == current_user.id || owner_or_editor?(current_user, role.owner)
+      end
+
+      # Miscellaneous
+      #
       cannot [:create, :update], Quote do |quote|
         quote.company && !quote.company.people.include?(quote.person)
       end
 
-      can :manage, [Person, Vacancy, Block, CloudBlueprint::Chart, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
-        owner_or_editor?(user, resource.company)
-      end
-
-      can :manage_company_invites, Company do |company|
-        owner_or_editor?(user, company)
-      end
-
-      can [:update, :destroy], Role do |role|
-        owner_or_editor?(user, role.owner)
+      can :manage, [Person, Block, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
+        owner_or_editor?(current_user, resource.company)
       end
 
       can :manage, Visibility do |visibility|
-        owner?(user, visibility.owner.try(:owner))
+        owner_or_editor?(current_user, visibility.owner.try(:owner))
       end
 
       can :read, Post do |post|
-        (post.company.is_published? && (post.visibilities.blank? || post.visibility.value == 'public')) ||
-        (post.visibility.try(:value) == 'trusted' && trusted_reader?(user, post.company))
+        ((post.company.is_published? || public_reader?(current_user, post.company)) && (post.visibilities.blank? || post.visibility.value == 'public')) ||
+        (post.visibility.try(:value) == 'trusted' && trusted_reader?(current_user, post.company))
       end
 
-      can :manage_pinboard_invites, Pinboard do |pinboard|
-        user.id == pinboard.user_id || editor?(user, pinboard)
+      can :access, :limbo do
+        current_user.editor?
       end
 
     end
@@ -116,20 +197,28 @@ class Ability
 
 private
 
-  def owner?(user, object)
-    role_value(user, object) == 'owner'
-  end
-
   def editor?(user, object)
     role_value(user, object) == 'editor'
   end
 
+  def reader?(user, object)
+    role_value(user, object) == 'reader'
+  end
+
+  def reader_or_editor?(user, object)
+    role_value(user, object) =~ /reader|editor/
+  end
+
   def owner_or_editor?(user, object)
-    role_value(user, object) =~ /owner|editor/
+    object.user_id == user.id || editor?(user, object)
   end
 
   def trusted_reader?(user, object)
     role_value(user, object) == 'trusted_reader'
+  end
+
+  def public_reader?(user, object)
+    role_value(user, object) == 'public_reader'
   end
 
   def role_value(user, object)

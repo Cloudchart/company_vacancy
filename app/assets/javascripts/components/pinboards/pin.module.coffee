@@ -13,10 +13,14 @@ PostStore = require('stores/post_store.cursor')
 
 # Components
 #
-Human           = require('components/human')
+Human = require('components/human')
 PinnablePreview = require('components/pinnable/preview')
-PinnablePost    = require('components/pinnable/post')
-PinButton       = require('components/pinnable/pin_button')
+PinnablePost = require('components/pinnable/post')
+PinButton = require('components/pinnable/pin_button')
+EditPinButton = require('components/pinnable/edit_pin_button')
+InsightContent = require('components/pinnable/insight_content')
+ShareInsightButton = require('components/insight/share_button')
+InsightOrigin = require('components/insight/origin')
 
 
 # Utils
@@ -30,10 +34,12 @@ module.exports = React.createClass
 
   displayName: 'Pin'
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+  mixins: [GlobalState.query.mixin]
 
   propTypes:
-    uuid: React.PropTypes.string.isRequired
+    uuid:          React.PropTypes.string.isRequired
+    onClick:       React.PropTypes.func
+    showAuthor:    React.PropTypes.bool
 
   statics:
 
@@ -42,17 +48,28 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            #{InsightOrigin.getQuery('pin')},
+            #{ShareInsightButton.getQuery('pin')},
+            pinboard,
             post {
               #{PinnablePost.getQuery('post')}
             },
-            user,
+            user {
+              unicorn_role
+            },
             children,
             parent {
-              user,
+              pinboard,
+              user {
+                unicorn_role
+              },
               children
             }
           }
         """
+
+  getDefaultProps: ->
+    showAuthor:  true
 
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.uuid })
@@ -63,15 +80,15 @@ module.exports = React.createClass
   gatherPinAttributes: (insight) ->
     uuid:           insight.get('uuid')
     parent_id:      insight.get('parent_id')
-    pinnable_id:    insight.get('pinnable_id')
-    pinnable_type:  insight.get('pinnable_type')
+    pinnable_id:    @cursor.pin.get('pinnable_id')
+    pinnable_type:  @cursor.pin.get('pinnable_type')
     title:          insight.get('content')
 
 
   # Lifecycle methods
   #
   componentWillMount: ->
-    @cursor = 
+    @cursor =
       pin:  PinStore.cursor.items.cursor(@props.uuid)
       user: UserStore.me()
 
@@ -82,48 +99,110 @@ module.exports = React.createClass
   #
   getInsight: ->
     if @cursor.pin.get('parent_id')
-      PinStore.getParentFor(@props.uuid)
+      PinStore.cursor.items.cursor(@cursor.pin.get('parent_id'))#getParentFor(@props.uuid)
     else if @cursor.pin.get('content')
       @cursor.pin
 
 
+  isClickable: ->
+    _.isFunction(@props.onClick)
+
+
+  # Handlers
+  #
+  handleClick: (event) ->
+    return unless @isClickable()
+
+    @props.onClick(@cursor.pin)
+
+
   # Renderers
   #
+  renderEditButton: ->
+    return null unless @getInsight()
+
+    <EditPinButton uuid={ @getInsight().get('uuid') } />
+
+
+  renderShareButton: ->
+    return null unless @cursor.pin.deref(false)
+
+    <ShareInsightButton pin = { @cursor.pin.deref().toJS() } />
+
+  renderPinButton: ->
+    return null unless insight = @getInsight()
+
+    <PinButton {...@gatherPinAttributes(insight)} />
+
   renderInsightControls: (insight) ->
     <ul className="round-buttons">
-      <PinButton {...@gatherPinAttributes(insight)} />
+      { @renderEditButton() }
+      { @renderShareButton() }
+      { @renderPinButton() }
     </ul>
-
-  renderPinContent: (content, className = 'paragraph') ->
-    return null unless content
-
-    <p className={ className } dangerouslySetInnerHTML={ __html: content } />
 
   renderInsight: ->
     return unless insight = @getInsight()
 
     <article className="insight">
-      { @renderPinContent(insight.get('content'), 'quote') }
+      <InsightContent
+        pinnable_id = { @cursor.pin.get('pinnable_id') }
+        pin_id      = { insight.get('uuid') }  />
 
-      <Human type="user" uuid={ insight.get('user_id') } />
-
-      { @renderInsightControls(insight) }
+      <footer>
+        <Human
+          showUnicornIcon = { true }
+          showLink        = { !@isClickable() }
+          type            = "user"
+          uuid            = { insight.get('user_id') } />
+        { @renderInsightControls(insight) }
+      </footer>
     </article>
 
+  renderPinnablePreviewOrInsight: ->
+    if insight = @getInsight()
+      @renderInsight()
+    else
+      <PinnablePreview uuid={ @props.uuid } />
+
+  renderCommentContent: ->
+    return null unless content = @cursor.pin.get('content')
+
+    <span dangerouslySetInnerHTML={ __html: content } />
+
+  renderCommentAuthor: ->
+    return null unless @props.showAuthor
+
+    <Human
+      isOneLiner = { true }
+      type       = "user"
+      uuid       = { @cursor.pin.get('user_id') } />
+
   renderComment: ->
-    return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid)
+    return null if @props.skipRenderComment
+    return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid) ||
+      (!@cursor.pin.get('content') && !@props.showAuthor)
 
     <footer>
-      { @renderPinContent(@cursor.pin.get('content')) }
       <i className="fa fa-share" />
-      <Human type="user" uuid={ @cursor.pin.get('user_id') } />
+      <p>
+        { @renderCommentContent() }
+        { " — " if @renderCommentContent() && @renderCommentAuthor() }
+        { @renderCommentAuthor() }
+      </p>
     </footer>
+
 
   render: ->
     return null unless @cursor.pin.deref(false) && @cursor.user.deref(false)
 
-    <section className="pin cloud-card">
-      { @renderInsight() }
-      <PinnablePreview uuid={ @props.uuid } />
+    classes = cx(
+      pin:        true
+      "cloud-card": true
+      clickable:  @isClickable()
+    )
+
+    <section className={ classes } onClick={ @handleClick }>
+      { @renderPinnablePreviewOrInsight() }
       { @renderComment() }
     </section>

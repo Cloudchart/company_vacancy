@@ -3,9 +3,8 @@ class PicturesController < ApplicationController
   before_action :find_owner
   before_action :set_picture
   
-  authorize_resource
-
   def create
+    authorize! :create, @picture
     if @picture.save
       respond_to do |format|
         format.json { render json: @picture, root: :picture }
@@ -19,6 +18,7 @@ class PicturesController < ApplicationController
   end
   
   def update
+    authorize! :update, @picture
     if @picture.update(picture_params)
       respond_to do |format|
         format.json { render json: @picture, root: :picture }
@@ -31,6 +31,7 @@ class PicturesController < ApplicationController
   end
   
   def destroy
+    authorize! :destroy, @picture
     @picture.destroy
     
     respond_to do |format|
@@ -58,7 +59,7 @@ private
   end
   
   def picture_params
-    params.require(:picture).permit(:image)
+    params.require(:picture).permit(:image, :size)
   end
 
 end

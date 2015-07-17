@@ -1,7 +1,8 @@
 json.(person, :uuid, :user_id, :company_id)
-json.(person, :full_name, :first_name, :last_name, :birthday, :bio)
+json.(person, :full_name, :first_name, :last_name, :twitter, :birthday, :bio)
 json.(person, :email, :phone, :int_phone, :skype, :occupation)
 json.(person, :created_at, :updated_at)
+json.(person, :is_verified)
 
 json.(person, :hired_on, :fired_on)
 

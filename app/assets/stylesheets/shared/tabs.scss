@@ -1,0 +1,79 @@
+$tabs-color: hsl(60, 10%, 96%);
+$tabs-active-color: $background-color;
+$tabs-text-color: $black-color;
+$tabs-height: 75px;
+
+nav.tabs {
+  width: 100%;
+
+  ul {
+    @include display(flex);
+    @include justify-content(center);
+
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @include respond-to(medium) {
+      display: none;
+    }
+  }
+
+  .select {
+    display: none;
+
+    @include respond-to(medium) {
+      display: block;
+
+      background-color: $background-color;
+      height: 70px;
+      margin: 0 auto;
+      width: 200px;
+
+      select {
+        font-size: $large-font-size;
+        padding-left: 20px;
+        text-transform: capitalize;
+      }
+
+      .fa {
+        font-size: $large-font-size;
+        top: 24px;
+      }
+    }
+  }
+
+  li {
+    background-color: $tabs-color;
+    color: $tabs-text-color;
+    cursor: pointer;
+    font-size: $large-font-size;
+    font-weight: 300;
+    height: $tabs-height;
+    text-transform: capitalize;
+    width: 245px;
+
+    &.active {
+      background-color: $tabs-active-color;
+      font-weight: 600;
+    }
+
+    &:hover {
+      color: $link-color;
+    }
+
+    > a {
+      height: 100%;
+      line-height: $tabs-height;
+      text-align: center;
+      width: 100%;
+
+      strong {
+        color: $link-color;
+        font-size: 17.5px;
+        font-weight: 300;
+        margin-left: 5px;
+      }
+    }
+  }
+}

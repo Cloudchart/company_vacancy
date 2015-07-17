@@ -1,0 +1,21 @@
+article.preview.pinboard {
+
+  > header {
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 78px;
+
+    > span.author {
+      color: hsl(137, 54%, 50%);
+      font-weight: 400;
+    }
+  }
+
+  > p.description {
+    font-size: 44px;
+    font-weight: 400;
+    line-height: 53px;
+    margin: 20px 0;
+  }
+
+}

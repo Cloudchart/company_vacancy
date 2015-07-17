@@ -11,8 +11,10 @@ class CompaniesController < ApplicationController
     :settings
   ]
 
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:index, :search]
+  authorize_resource only: [:index, :search], class: controller_name.to_sym
 
+  after_action :call_page_visit_to_slack_channel, only: [:index, :show]
   after_action :create_intercom_event, only: [:new, :update]
 
   # GET /companies
@@ -23,9 +25,9 @@ class CompaniesController < ApplicationController
   def search
     respond_to do |format|
       format.html { render :index }
-      format.json { 
+      format.json {
         @companies = Company.search(params)
-        render :index 
+        render :index
       }
     end
   end
@@ -53,8 +55,7 @@ class CompaniesController < ApplicationController
     if blank_company = current_user.blank_company
       @company = blank_company
     else
-      @company = Company.new
-      @company.roles.build(user: current_user, value: :owner)
+      @company = current_user.companies.build
       @company.should_build_objects!
       @company.save!
     end
@@ -94,37 +95,6 @@ class CompaniesController < ApplicationController
     pagescript_params(id: @company.id)
   end
 
-  # GET /companies/1/access_rights
-  def access_rights
-    @company = find_company(Company.includes(:roles, :tokens, users: :emails))
-
-    respond_to do |format|
-      format.html {
-        pagescript_params(id: @company.id)
-      }
-      format.json {
-        companies = current_user.companies
-          .includes(:people, users: :emails)
-          .where(roles: { value: ['owner', 'editor', 'trusted_reader'] })
-
-        @invitable_contacts = %w[users people].inject({}) do |memo, association|
-          companies.each do |company|
-            company.send(association).each do |object|
-              unless object.email.blank?
-                memo[object.email] ||= []
-                unless memo[object.email].include?(object.full_name)
-                  memo[object.email].push(object.full_name)
-                end
-              end
-            end
-          end
-
-          memo
-        end
-      }
-    end
-  end
-
   # GET /companies/1/verify_site_url
   def verify_site_url
     uri = URI.parse(@company.formatted_site_url)
@@ -161,7 +131,7 @@ private
 
   def update_site_url_verification(company)
     return if current_user.editor?
-    
+
     if company_params[:site_url] == ''
       company.tokens.where(name: :site_url_verification).destroy_all
     else
@@ -170,7 +140,7 @@ private
       file_location = File.join(dir_location, "#{company.humanized_id}.txt")
       unless File.exists?(file_location)
         FileUtils.mkdir_p(dir_location)
-        File.open(file_location, 'w') { |f| f.write('Good luck using CloudChart!') }
+        File.open(file_location, 'w') { |f| f.write("Good luck using #{ENV['SITE_NAME']}!") }
       end
 
       UserMailer.company_url_verification(token).deliver
@@ -216,6 +186,19 @@ private
     if event_name
       IntercomEventsWorker.perform_async(event_name, current_user.id, company_id: @company.id)
     end
+  end
+
+  def call_page_visit_to_slack_channel
+    case action_name
+    when 'index'
+      page_title = 'companies list'
+      page_url = main_app.companies_url
+    when 'show'
+      page_title = "#{@company.name}'s page"
+      page_url = main_app.company_url(@company)
+    end
+
+    post_page_visit_to_slack_channel(page_title, page_url)
   end
 
 end

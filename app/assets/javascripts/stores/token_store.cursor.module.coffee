@@ -9,9 +9,15 @@ module.exports = GlobalState.createStore
   collectionName: 'tokens'
   instanceName:   'token'
 
+  syncAPI: require('sync/token_sync_api')
+
+  foreignKeys:
+    'owner':
+      fields: ['owner_id', 'owner_type']
+
   filterInvites: (type) ->
     @cursor.items.filter (token) ->
-      token.get('owner_type') == type && 
+      token.get('owner_type') == type &&
       token.get('name') == 'invite'
 
   filterCompanyInvites: ->
@@ -20,3 +26,52 @@ module.exports = GlobalState.createStore
   findCompanyInvite: (company_id) ->
     @filterCompanyInvites().
       filter((token) => token.get('owner_id') == company_id).first()
+
+  findByUserAndName: (user, name) ->
+    @cursor.items.filter (token) ->
+      token.get('owner_id') is user.get('uuid') and
+      token.get('name') is name
+    .first()
+
+  createGreeting: (user, params = {}, options = {}) ->
+    promise = @syncAPI.createGreeting(user, params, options)
+    promise.then(@createDone, @createFail)
+    promise
+
+  createDone: (json) ->
+    @fetchOne(json.id)
+
+  updateGreeting: (id, params = {}, options = {}) ->
+    promise = @syncAPI.updateGreeting(id, params, options)
+    promise.then(@updateDone, @updateFail)
+    promise
+
+  updateDone: (json) ->
+    @fetchOne(json.id, null, { force: true })
+
+  destroyGreeting: (id, params = {}, options = {}) ->
+    promise = @syncAPI.destroyGreeting(id, params, options)
+    promise.then(@destroyDone, @destroyFail)
+    promise
+
+  destroyWelcomeTour: (id, params = {}, options = {}) ->
+    promise = @syncAPI.destroyWelcomeTour(id, params, options)
+    promise.then(@destroyDone, @destroyFail)
+    promise
+
+  destroyInsightTour: (id, params = {}, options = {}) ->
+    promise = @syncAPI.destroyInsightTour(id, params, options)
+    promise.then(@destroyDone, @destroyFail)
+    promise
+
+  destroyDone: (json) ->
+    @remove(json.id)
+
+  filterAccessRequestsByOwner: (id, type) ->
+    @byFK('owner', id, type).filter (token) ->
+      token.get('name') == 'access_request'
+
+  findAccessRequestByOwnerAndUser: (id, type, user_id) ->
+    @filterAccessRequestsByOwner(id, type).filter (token) ->
+      token.get('target_id') == user_id && token.get('target_type') == 'User'
+    .first()

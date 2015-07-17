@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
 # Imports
-# 
+#
 
 GlobalState     = require('global_state/state')
 
@@ -12,7 +12,7 @@ IdentityStores =
   Company:  require('stores/company')
   Post:     require('stores/post_store')
 
-IdentityActions = 
+IdentityActions =
   Company:  require('actions/company')
   Post:     require('actions/post_actions')
 
@@ -30,7 +30,7 @@ formatName = (name) ->
 
 
 # Component
-# 
+#
 Component = React.createClass
 
 
@@ -44,33 +44,26 @@ Component = React.createClass
       .map (tag) ->
         id:   tag
         name: '#' + tag
-  
-  
-  getTagForList: (tag) ->
-    if @props.taggable_type is 'Company'
-      <a href="/companies/search?query=#{tag}">{'#' + tag}</a>
-    else
-      <span>{'#' + tag}</span>
-  
 
   gatherTagsForList: ->
-    @state.identityTagNameSeq.map (tag) => <li key={tag}>{@getTagForList(tag)}</li>
-
+    @gatherTags()
+      .map (tag) => <li key={ tag.id }>{ tag.name }</li>
+      .toArray()
 
   gatherTagsForSelect: ->
     query = formatName(@state.query)
-      
+
     @state.tagSeq
       .filter (tag) => not @state.identityTagNameSeq.contains(tag.get('name'))
       .filter (tag) -> tag.get('name').indexOf(query) == 0 && query.length > 0
       .sort   (tagA, tagB) -> tagA.get('name').localeCompare(tagB.get('name'))
       .map    (tag) -> <ComboboxOption key={tag.get('name')} value={tag.get('name')}>{'#' + tag.get("name")}</ComboboxOption>
-  
-  
+
+
   getComponentChild: ->
     if @props.readOnly
       <ul>
-        {@gatherTagsForList().toArray()}
+        { @gatherTagsForList() }
       </ul>
     else
       <TokenInput
@@ -88,7 +81,6 @@ Component = React.createClass
 
 
   onSelect: (name) ->
-    console.log 123
     name = formatName(name) ; return if name.length == 0
 
     unless @state.tagNameSeq.contains(name)
@@ -102,12 +94,12 @@ Component = React.createClass
   onRemove: (object) ->
     tag_names = @state.identityTagNameSeq.toSet().remove(object.id)
     @syncIdentityTagNames(tag_names.toArray())
-  
-  
+
+
   getStateFromProps: (props) ->
     tagSeq              = Immutable.Seq(@props.cursor.deref({}))
     identityTagNameSeq  = Immutable.Seq(IdentityStores[props.taggable_type].get(props.taggable_id).tag_names)
-    
+
     query:              ''
     tagSeq:             tagSeq
     tagNameSeq:         tagSeq.map((tag) -> tag.get('name'))
@@ -116,8 +108,8 @@ Component = React.createClass
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromProps(nextProps))
-  
-  
+
+
   getDefaultProps: ->
     placeholder: "#hashtag"
     cursor: GlobalState.cursor(['stores', 'tags', 'items'])
@@ -129,10 +121,10 @@ Component = React.createClass
 
   render: ->
     return null if @props.readOnly and @state.identityTagNameSeq.size == 0
-    
+
     <div className="cc-hashtag-list">{@getComponentChild()}</div>
 
 
 # Exports
-# 
+#
 module.exports = Component

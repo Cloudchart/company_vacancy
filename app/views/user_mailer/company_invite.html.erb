@@ -1,17 +1,19 @@
-<p>
-  Hello<%= @user.present? ? " #{@user.full_name_or_email}" : '' %>, this is your captain speaking.
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-top:50px;padding-bottom:10px">
+  Hi, <%= @user.first_name %>,
 </p>
 
-<p>
-  You have been invited to join CloudChart as a member of <%= @company.name %>. Please click the following link to continue:
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  <%= @author.full_name %> (<%= link_to "@#{@author.twitter}", main_app.user_url(@author), target: "_blank" %>) has invited you to join <%= ENV['SITE_NAME'] %> as a member of <%= link_to @owner.name, main_app.company_url(@owner) %>.
 </p>
 
-<p>
-  <%= link_to "Review Invitation From #{@company.name}", company_invite_url(@company, @token) %>
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:10px">
+  Please click the following link to continue:
 </p>
 
-<p>
-  If you have nothing with <%= @company.name %>, please ignore this message.
+<p style="margin:0;padding:0;padding:0 50px;width:85%">
+  <%= link_to "Review invitation", main_app.company_url(@owner), style: 'color:#3bc462;font-weight:600;text-decoration:none;background-color:#3bc462;color:white;display:block;line-height:55px;margin:30px auto;height:55px;padding:0 30px;font-weight:300;font-size:24px;text-align:center;width:200px;' %>
 </p>
 
-<%= render 'shared/mailer_signature' %>
+<p class="text" style="margin:0;padding:0;padding:0 50px;width:85%;padding-bottom:50px">
+  If you have nothing with <% @owner.name %>, please ignore this message.
+</p>

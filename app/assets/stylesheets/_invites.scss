@@ -1,0 +1,110 @@
+$input-height: 40px;
+
+.invites-wrapper {
+  @include flex(1);
+
+  background-color: $background-color;
+
+  .invites {
+    @include display(flex);
+    @include flex-direction(column);
+
+    font-size: $big-font-size;
+    font-weight: 300;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: $gutter-size;
+
+    button.cc,
+    button.skip {
+      font-size: $big-font-size;
+      height: $input-height;
+      line-height: $input-height;
+      padding: 0 20px;
+    }
+
+    form.invite {
+      @include display(flex);
+
+      position: relative;
+
+      label {
+        position: relative;
+
+        .errors {
+          @include position(absolute, 0 0 0px 10px);
+
+          color: $accented-red-color;
+          font-size: $small-font-size;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
+      }
+
+      .cc-input {
+        margin-right: $inner-margin-size;
+      }
+
+      label.checkbox {
+        @include position(absolute, 0 0 -25px 0px);
+
+        input {
+          margin-right: $inner-margin-size;
+        }
+      }
+    }
+
+    form.email {
+      @include display(flex);
+      @include flex-direction(column);
+
+      label {
+        @include display(flex);
+
+        line-height: $input-height;
+
+        span {
+          width: 70px;
+        }
+
+        input {
+          margin-left: $inner-margin-size;
+        }
+      }
+
+      .content {
+        background-color: white;
+        padding: $default-margin-size;
+        margin-bottom: $gutter-size;
+
+        textarea {
+          border: none;
+          border-bottom: 2px solid $accented-green-color;
+          margin-bottom: $default-margin-size;
+          padding: 10px;
+          width: 100%;
+
+          &.error {
+            border-bottom-color: $accented-red-color;
+          }
+        }
+      }
+
+      .controls {
+        @include display(flex);
+        @include justify-content(center);
+
+        position: relative;
+        width: 100%;
+      }
+
+      .skip {
+        @include position(absolute, 0 0px 0 0);
+
+        font-weight: 300;
+        text-decoration: underline;
+      }
+    }
+  }
+}

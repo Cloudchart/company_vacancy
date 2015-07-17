@@ -1,6 +1,7 @@
 # Dispatcher
 #
-Dispatcher = require('dispatcher/dispatcher')
+Dispatcher  = require('dispatcher/dispatcher')
+Query       = require('global_state/query')
 
 
 # Endpoints
@@ -8,17 +9,32 @@ Dispatcher = require('dispatcher/dispatcher')
 Endpoints = Immutable.fromJS
 
 
-  Block:
-    handle_id:    true
-    store:        -> require('stores/block_store.cursor')
-
   'Viewer':
     url:          '/api/me'
     handle_id:    false
     store:        -> require('stores/user_store.cursor')
-    relations:
-      'readable_pinboards':   'Pinboard'
-      'writable_pinboards':   'Pinboard'
+
+
+  'Block':
+    url:          '/api/blocks'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/block_store.cursor')
+
+
+  'Favorite':
+    url:          '/api/favorites'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/favorite_store.cursor')
+
+
+  'Feature':
+    url:          '/api/features'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/feature_store')
+
 
   'User':
     url:          '/api/users'
@@ -45,10 +61,6 @@ Endpoints = Immutable.fromJS
     handle_id:    true
     require_id:   true
     store:        -> require('stores/pinboard_store')
-    relations:
-      'pins':     'Pin'
-      'posts':    'Post'
-      'user':     'User'
 
 
   'SystemPinboards':
@@ -63,9 +75,6 @@ Endpoints = Immutable.fromJS
     handle_id:    true
     require_id:   true
     store:        -> require('stores/pin_store')
-    relations:
-      'parent':   'Pin'
-      'user':     'User'
 
 
   'Post':
@@ -73,9 +82,20 @@ Endpoints = Immutable.fromJS
     handle_id:    true
     require_id:   true
     store:        -> require('stores/post_store.cursor')
-    relations:
-      'blocks':   'Block'
-      'owner':    -> 'Company'
+
+
+  'Person':
+    url:          '/api/people'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/person_store.cursor')
+
+
+  'Role':
+    url:          '/api/roles'
+    handle_id:    true
+    require_id:   true
+    store:        -> require('stores/role_store.cursor')
 
 
 # Cached promises
@@ -85,61 +105,89 @@ cachedPromises = {}
 
 # Storage
 #
+EmptyMap = Immutable.Map()
 Storage = Immutable.Map()
+
+diff = (lq, rq) ->
+  Immutable.Map().withMutations (difference) ->
+    rq.forEach (children, key) ->
+      unless lq?.has(key)
+        difference.set(key, children)
+      else if children?
+        children_difference = diff(lq.get(key), rq.get(key))
+        difference.set(key, children_difference) if children_difference.size > 0
 
 
 # Store data
 #
-storeData = (response, endpointKey) ->
-  endpoint  = Endpoints.get(endpointKey)
+store_data = (key, query, data) ->
+  return if key == 'edges'
 
-  if Immutable.Iterable.isKeyed(response)
+  Storage = Storage.withMutations (storage) ->
+    if data
+      type  = data.get('type')
+      ids   = data.get('ids')
 
-    unless store = endpoint.get('store')
-      console.error "GlobalState/Fetcher: unknown store for #{endpointKey}"
-      return null
+      if key == 'Viewer'
+        ids.forEach (id) ->
+          storage.mergeDeepIn(['Viewer'], query)
+          storage.mergeDeepIn(['User', id], query)
+      else
+        ids.forEach (id) ->
+          storage.mergeDeepIn([type, id], query)
 
-    store   = store() if store instanceof Function
-    record  = Immutable.Map(store.cursor.items.get(response.get('id')))
+      # ids.forEach (id) ->
+      #   data.get(id, Immutable.Map()).forEach (id_or_ids, key) ->
+      #     storage.setIn(['RELATIONS', id, key, 'type'], data.getIn([key, 'type']))
+      #     storage.setIn(['RELATIONS', id, key, 'ids'], id_or_ids)
 
-    record.withMutations (data) ->
-
-      response.forEach (value, key) ->
-        return if key is 'id'
-
-        unless childEndpoint = endpoint.getIn(['relations', key])
-          console.error "GlobalState/Fetcher: unknown reference to #{key} from #{endpointKey}"
-          return null
-
-        childEndpoint = childEndpoint(record) if childEndpoint instanceof Function
-        data.set(key, storeData(value, childEndpoint))
-
-    Storage = Storage.updateIn [endpointKey], (data) ->
-      (data || Immutable.Map()).set(record.get('uuid'), record)
-
-    record
-
-
-  else if Immutable.Iterable.isIndexed(response)
-   response.map (value, index) -> storeData(value, endpointKey)
-
+  query.get('children')?.forEach (child_query, child_key) ->
+    store_data(child_key, child_query, data?.get(child_key))
 
 
 # Fetch done
 #
 fetchDone = (response, query, options) ->
+  store_data(query.endpoint, query.query, Immutable.fromJS(response.query))
+
   Dispatcher.handleServerAction
     type: 'fetch:done'
     data: [response]
-
-  #storeData(Immutable.fromJS(response.query), query.endpoint)
-
 
 
 # Fetch fail
 #
 fetchFail = (response) ->
 
+
+# Fetch from storage
+#
+fetchFromStorage = (endpoint, query, id) ->
+  getItemFromEndpoint(id, endpoint).withMutations (item) ->
+    query.forEach (values, key) ->
+      return if key == 'edges'
+
+      relation = Storage.getIn(['RELATIONS', item.get('uuid'), key])
+      return unless relation
+
+      children_endpoint   = relation.get('type')
+      children_id_or_ids  = relation.get('ids')
+      children_query      = values.get('children', Immutable.Map())
+
+      if Immutable.Iterable.isIterable(children_id_or_ids)
+        children = children_id_or_ids.map (id) ->
+          fetchFromStorage(children_endpoint, children_query, id)
+        item.set(key, children)
+      else
+        item.set(key, fetchFromStorage(children_endpoint, children_query, children_id_or_ids))
+
+
+getItemFromEndpoint = (id, endpoint) ->
+  store = Endpoints.getIn([endpoint, 'store'])()
+  if endpoint == 'Viewer'
+    store.me().deref()
+  else
+    store.get(id)
 
 # Build URL
 #
@@ -158,17 +206,27 @@ fetch = (query, options = {}) ->
   if endpoint.get('require_id') and not options.id
     throw new Error("GlobalState/Fetcher: no id provided for #{query.endpoint} endpoint")
 
+  effective_query = query.toString()
+
+  unless options.force == true
+
+    stored_query  = Storage.get(query.endpoint)
+    stored_query  = stored_query?.get(options.id) if options.id
+    diff_query    = diff(stored_query, query.query)
+
+    effective_query = Query.Query.stringify(diff_query)
+
+    if diff_query.size == 0
+      store = endpoint.get('store')()
+      item  = getItemFromEndpoint(options.id, query.endpoint)
+      if item
+        return new Promise (done, fail) ->
+          #item = fetchFromStorage(query.endpoint, query.query.get('children'), options.id)
+          done(item.toJS())
+
 
   url       = buildURL(endpoint, options)
-  relations = query.toString()
-  cacheKey  = url + '?' + relations
-
-
-  delete cachedPromises[cacheKey] if options.force == true
-
-
-  if endpoint.get('handle_id') and options.id
-    delete cachedPromises[cacheKey] unless endpoint.get('store')().has(options.id)
+  cacheKey  = url + '?' + effective_query
 
 
   cachedPromises[cacheKey] ||= new Promise (done, fail) ->
@@ -177,17 +235,23 @@ fetch = (query, options = {}) ->
       url:      url
       dataType: 'json'
       data:
-        relations: relations if relations
+        relations: effective_query if effective_query
 
     .then(
       (json) ->
         fetchDone(json, query, options)
+
+        # item = fetchFromStorage(query.endpoint, query.query.get('children'), options.id)
+        # done(item.toJS())
         done(json)
+
+        delete cachedPromises[cacheKey]
+
     ,
       (xhr) ->
-        delete cachedPromises[cacheKey]
         fetchFail(xhr, query, options)
         fail(xhr)
+        delete cachedPromises[cacheKey]
     )
 
 

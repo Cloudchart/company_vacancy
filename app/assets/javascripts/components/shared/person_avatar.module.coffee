@@ -13,6 +13,16 @@ acceptableFileSize  = 1024 * 1024 * 3
 #
 Component = React.createClass
 
+  propTypes:
+    avatarURL:  React.PropTypes.string
+    onChange:   React.PropTypes.func
+    onRemove:   React.PropTypes.func
+    readOnly:   React.PropTypes.bool
+    value:      React.PropTypes.string
+    withCamera: React.PropTypes.bool
+
+  getDefaultProps: ->
+    withCamera: false
 
   # On Avatar Change
   #
@@ -44,7 +54,7 @@ Component = React.createClass
   render: ->
     personInitials = initials(@props.value)
 
-    (tag.aside {
+    (tag.figure {
       className:  'avatar'
       onClick:    @props.onClick
       style:
@@ -60,14 +70,18 @@ Component = React.createClass
           value:    ''
         })
 
+        (tag.i {
+          className: 'fa fa-camera'
+        }) if @props.withCamera
+
       ) unless @props.readOnly or @props.onClick
 
       (tag.i {
         className:  'fa fa-times remove'
         onClick:    @onAvatarRemove
-      }) if @props.avatarURL and !@props.readOnly
+      }) if @props.avatarURL and !@props.readOnly and @props.onRemove
 
-      (tag.figure null, personInitials) unless @props.avatarURL
+      (tag.figcaption null, personInitials) unless @props.avatarURL
     )
 
 

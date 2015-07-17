@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= render 'shared/meta' %>
+    <%= favicon_link_tag "#{Rails.env}/favicon.ico" %>
+    <%= stylesheet_link_tag 'guest', media: 'all' %>
+  </head>
+
+  <body class="<%= Rails.env %>">
+    <header class="guest">
+      <%= render 'welcome/header' %>
+    </header>
+
+    <%= render 'shared/flash' %>
+
+    <main class="guest">
+      <%= yield %>
+    </main>
+
+    <footer class="guest">
+      <%= render 'welcome/footer' %>
+    </footer>
+
+    <div data-react-class="components/modal_stack"></div>
+
+    <%= javascript_include_tag 'application' %>
+    <%= pagescript %>
+    <%= render 'shared/google_analytics' if Rails.env.production? %>
+  </body>
+
+</html>

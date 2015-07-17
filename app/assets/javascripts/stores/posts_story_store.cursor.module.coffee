@@ -11,3 +11,6 @@ module.exports = GlobalState.createStore
 
   collectionName: 'posts_stories'
   instanceName:   'posts_story'
+
+  serverActions: ->
+    'post:fetch-all:done': @populate

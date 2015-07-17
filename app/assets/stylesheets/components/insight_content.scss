@@ -1,0 +1,36 @@
+.insight-content {
+  background-color: $accented-white-color;
+  font-size: 20px;
+  font-weight: 100;
+  line-height: 1.4em;
+  white-space: pre-wrap;
+
+  .content {
+    color: black;
+  }
+
+  .company, .post {
+    font-weight: 400;
+  }
+
+  .company {
+    color: $link-color;
+  }
+
+  .post {
+    color: black;
+  }
+
+  > .origin {
+    color: $link-color;
+    margin-left: 5px;
+    font-weight: normal;
+    line-height: normal;
+
+    > .tooltip {
+      left: -6px;
+      top: 100%;
+      z-index: 1;
+    }
+  }
+}

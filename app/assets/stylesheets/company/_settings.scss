@@ -1,5 +1,8 @@
 article.settings {
-  margin: 30px auto;
+  background-color: $card-color;
+  margin: 0 auto;
+  padding: $default-margin-size;
+  position: relative;
   width: 900px;
 
   > section {
@@ -11,7 +14,10 @@ article.settings {
     }
 
     font-size: 15pt;
-    padding-bottom: $base-unit * 2;
+
+    &:not(:last-child) {
+      padding-bottom: $default-margin-size;
+    }
     
     select {
       font-size: 15pt;
@@ -70,9 +76,9 @@ article.settings {
             }
 
             > input {
+              border: 3pt solid $white-smoke;
               padding: 4px;
               width: 300px;
-              border: 3pt solid $white-smoke;
               outline: none;
               font-weight: 300;
 

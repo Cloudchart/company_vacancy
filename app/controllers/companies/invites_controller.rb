@@ -4,7 +4,7 @@ module Companies
     before_action :set_company, only: [:create]
     before_action :set_token, only: [:show, :accept, :destroy, :resend]
 
-    authorize_resource class: :invite, except: [:create, :resend]
+    authorize_resource class: :company_invite, except: [:create, :resend]
 
     after_action :create_intercom_event, only: :create
 
@@ -66,14 +66,13 @@ module Companies
     # Accept
     # 
     def accept
+      favorite = current_user.favorites.find_by(favoritable_id: @token.owner_id)
       role = current_user.roles.create!(value: @token.data[:role], owner: @token.owner)
-      favorite = current_user.favorites.find_by(favoritable_id: @token.owner_id).try(:delete)
-      @token.destroy
 
       respond_to do |format|
-        format.html { redirect_to main_app.companies_path }
-        format.json { 
-          render json: { 
+        format.html { redirect_to main_app.company_path(@token.owner) }
+        format.json {
+          render json: {
             role: role,
             favorite: favorite,
             company: CompanySerializer.new(@token.owner, scope: current_user)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150402144123) do
+ActiveRecord::Schema.define(version: 20150709133306) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -24,8 +24,11 @@ ActiveRecord::Schema.define(version: 20150402144123) do
     t.string   "subscriber_id",  limit: 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "data"
+    t.datetime "deleted_at"
   end
 
+  add_index "activities", ["deleted_at"], name: "index_activities_on_deleted_at", using: :btree
   add_index "activities", ["source_id", "source_type"], name: "index_activities_on_source_id_and_source_type", using: :btree
   add_index "activities", ["subscriber_id"], name: "index_activities_on_subscriber_id", using: :btree
   add_index "activities", ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type", using: :btree
@@ -131,14 +134,18 @@ ActiveRecord::Schema.define(version: 20150402144123) do
     t.datetime "updated_at"
     t.date     "established_on"
     t.string   "logotype_uid"
-    t.boolean  "is_published",    default: false
-    t.boolean  "is_public",       default: false
+    t.boolean  "is_published",               default: false
+    t.boolean  "is_public",                  default: false
     t.string   "slug"
     t.string   "site_url"
-    t.boolean  "is_name_in_logo", default: false
+    t.boolean  "is_name_in_logo",            default: false
+    t.boolean  "is_important",               default: false
+    t.string   "preview_uid"
+    t.string   "user_id",         limit: 36
   end
 
   add_index "companies", ["slug"], name: "index_companies_on_slug", unique: true, using: :btree
+  add_index "companies", ["user_id"], name: "index_companies_on_user_id", using: :btree
 
   create_table "companies_banned_users", id: false, force: true do |t|
     t.string "company_id", limit: 36, null: false
@@ -146,6 +153,13 @@ ActiveRecord::Schema.define(version: 20150402144123) do
   end
 
   add_index "companies_banned_users", ["company_id", "user_id"], name: "index_companies_banned_users_on_company_id_and_user_id", unique: true, using: :btree
+
+  create_table "domains", primary_key: "uuid", force: true do |t|
+    t.string   "name"
+    t.integer  "status",     default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "events", primary_key: "uuid", force: true do |t|
     t.string   "name",                  null: false
@@ -175,12 +189,21 @@ ActiveRecord::Schema.define(version: 20150402144123) do
   add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
 
   create_table "features", primary_key: "uuid", force: true do |t|
-    t.string   "name",        null: false
-    t.text     "description"
-    t.integer  "votes_total"
+    t.string   "featurable_id",      limit: 36,                 null: false
+    t.string   "featurable_type",                               null: false
+    t.string   "scope"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "title"
+    t.string   "category"
+    t.string   "image_uid"
+    t.boolean  "is_active",                     default: false
+    t.string   "url"
+    t.integer  "display_types_mask"
+    t.integer  "position",                      default: 0
   end
+
+  add_index "features", ["featurable_id", "featurable_type"], name: "index_features_on_featurable_id_and_featurable_type", using: :btree
 
   create_table "friends", primary_key: "uuid", force: true do |t|
     t.string   "provider",    null: false
@@ -196,6 +219,13 @@ ActiveRecord::Schema.define(version: 20150402144123) do
   end
 
   add_index "friends_users", ["friend_id", "user_id"], name: "index_friends_users_on_friend_id_and_user_id", unique: true, using: :btree
+
+  create_table "guest_subscriptions", primary_key: "uuid", force: true do |t|
+    t.string   "email"
+    t.boolean  "is_verified", default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "impressions", force: true do |t|
     t.string   "impressionable_type"
@@ -234,6 +264,20 @@ ActiveRecord::Schema.define(version: 20150402144123) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "landings", primary_key: "uuid", force: true do |t|
+    t.string   "title"
+    t.string   "image_uid"
+    t.text     "body"
+    t.string   "slug"
+    t.string   "user_id",    limit: 36
+    t.string   "author_id",  limit: 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "landings", ["author_id"], name: "index_landings_on_author_id", using: :btree
+  add_index "landings", ["user_id"], name: "index_landings_on_user_id", using: :btree
 
   create_table "oauth_providers", primary_key: "uuid", force: true do |t|
     t.string   "user_id",     limit: 36
@@ -297,6 +341,7 @@ ActiveRecord::Schema.define(version: 20150402144123) do
     t.string   "image_uid"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "size",                  default: 0
   end
 
   add_index "pictures", ["owner_id", "owner_type"], name: "index_pictures_on_owner_id_and_owner_type", using: :btree
@@ -311,13 +356,15 @@ ActiveRecord::Schema.define(version: 20150402144123) do
     t.text     "description"
     t.text     "welcome"
     t.boolean  "is_featured"
+    t.boolean  "is_important",             default: false
+    t.string   "preview_uid"
   end
 
   add_index "pinboards", ["access_rights"], name: "index_pinboards_on_access_rights", using: :btree
   add_index "pinboards", ["user_id"], name: "index_pinboards_on_user_id", using: :btree
 
   create_table "pins", primary_key: "uuid", force: true do |t|
-    t.string   "user_id",       limit: 36, null: false
+    t.string   "user_id",       limit: 36,                 null: false
     t.string   "parent_id",     limit: 36
     t.string   "pinboard_id",   limit: 36
     t.string   "pinnable_id",   limit: 36
@@ -325,8 +372,18 @@ ActiveRecord::Schema.define(version: 20150402144123) do
     t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_approved",              default: false
+    t.string   "origin"
+    t.integer  "pins_count",               default: 0
+    t.boolean  "is_suggestion",            default: false
+    t.string   "author_id"
+    t.integer  "weight"
+    t.string   "preview_uid"
+    t.datetime "deleted_at"
   end
 
+  add_index "pins", ["author_id"], name: "index_pins_on_author_id", using: :btree
+  add_index "pins", ["deleted_at"], name: "index_pins_on_deleted_at", using: :btree
   add_index "pins", ["parent_id"], name: "index_pins_on_parent_id", using: :btree
   add_index "pins", ["pinboard_id"], name: "index_pins_on_pinboard_id", using: :btree
   add_index "pins", ["pinnable_id", "pinnable_type"], name: "index_pins_on_pinnable_id_and_pinnable_type", using: :btree
@@ -367,14 +424,17 @@ ActiveRecord::Schema.define(version: 20150402144123) do
   add_index "quotes", ["owner_id", "owner_type"], name: "index_quotes_on_owner_id_and_owner_type", using: :btree
 
   create_table "roles", primary_key: "uuid", force: true do |t|
-    t.string   "value",                 null: false
-    t.string   "user_id",    limit: 36, null: false
-    t.string   "owner_id",   limit: 36
+    t.string   "value",                    null: false
+    t.string   "user_id",       limit: 36, null: false
+    t.string   "owner_id",      limit: 36
     t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "author_id",     limit: 36
+    t.string   "pending_value"
   end
 
+  add_index "roles", ["author_id"], name: "index_roles_on_author_id", using: :btree
   add_index "roles", ["owner_id", "owner_type"], name: "index_roles_on_owner_id_and_owner_type", using: :btree
   add_index "roles", ["user_id", "owner_id"], name: "index_roles_on_user_id_and_owner_id", unique: true, using: :btree
   add_index "roles", ["user_id"], name: "index_roles_on_user_id", using: :btree
@@ -426,15 +486,18 @@ ActiveRecord::Schema.define(version: 20150402144123) do
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "tokens", primary_key: "uuid", force: true do |t|
-    t.string   "name",                  null: false
+    t.string   "name",                   null: false
     t.text     "data"
-    t.string   "owner_id",   limit: 36
+    t.string   "owner_id",    limit: 36
     t.string   "owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "target_id",   limit: 36
+    t.string   "target_type"
   end
 
   add_index "tokens", ["owner_id", "owner_type"], name: "index_tokens_on_owner_id_and_owner_type", using: :btree
+  add_index "tokens", ["target_id", "target_type"], name: "index_tokens_on_target_id_and_target_type", using: :btree
 
   create_table "users", primary_key: "uuid", force: true do |t|
     t.string   "password_digest"
@@ -449,6 +512,8 @@ ActiveRecord::Schema.define(version: 20150402144123) do
     t.string   "company"
     t.datetime "authorized_at"
     t.string   "slug"
+    t.datetime "last_sign_in_at"
+    t.string   "preview_uid"
   end
 
   add_index "users", ["slug"], name: "index_users_on_slug", unique: true, using: :btree

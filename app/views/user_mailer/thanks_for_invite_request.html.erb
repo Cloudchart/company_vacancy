@@ -2,15 +2,15 @@
   Hello <%= @name %>,
 </p>
 <p>
-  Thank you for requesting an invitation to CloudChart.
+  Thank you for requesting an invitation to <%= ENV['SITE_NAME'] %>.
 </p>
 <p>
   Hold on tight, we’re processing your request and we’ll get back to you when we’re done. This might take some time. If you feel you’re missing out, do not hesitate to contact us directly at <%= mail_to ENV['FRIENDS_EMAIL'] %>
 </p>
 <p>
-  CloudChart is a convenient tool to chart and profile your company. Use it to clarify your team structure, your products, your goals, and become transparent. Transparency benefits your teams, your partners, and your investors.
+  <%= ENV['SITE_NAME'] %> is a convenient tool to chart and profile your company. Use it to clarify your team structure, your products, your goals, and become transparent. Transparency benefits your teams, your partners, and your investors.
 </p>
 <p>
   Can’t wait to open up for you! <br>
-  — Team CloudChart
+  — Team <%= ENV['SITE_NAME'] %>
 </p>

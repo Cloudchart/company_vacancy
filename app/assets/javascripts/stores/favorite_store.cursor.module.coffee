@@ -9,14 +9,34 @@ module.exports = GlobalState.createStore
   collectionName: 'favorites'
   instanceName:   'favorite'
 
-  findByCompany: (company_id) ->
-    @findByFavoritable(company_id, 'Company')
+  foreignKeys:
+    'user':
+      fields: 'user_id'
 
-  findByUser: (user_id) ->
-    @findByFavoritable(user_id, 'User')
+    'favoritable':
+      fields: ['favoritable_id', 'favoritable_type']
 
-  findByFavoritable: (favoritable_id, favoritable_type) ->
-    @filter (favorite) => 
-      favorite.get('favoritable_id') == favoritable_id &&
-      favorite.get('favoritable_type') == favoritable_type
+  findByCompanyForUser: (company_id, follower_id) ->
+    @findByFavoritableAndFollower(company_id, 'Company', follower_id)
+
+  findByUserForUser: (user_id, follower_id) ->
+    @findByFavoritableAndFollower(user_id, 'User', follower_id)
+
+  findByPinboardForUser: (pinboard_id, follower_id) ->
+    @findByFavoritableAndFollower(pinboard_id, 'Pinboard', follower_id)
+
+  findByFavoritableAndFollower: (id, type, follower_id) ->
+    @byFK('favoritable', id, type).filter (favorite) ->
+      favorite.get('user_id') == follower_id
     .first()
+
+  filterUserFavorites: (user_id, favoritable_type=null) ->
+    @byFK('user', user_id).filter (favorite) ->
+      !favoritable_type || favorite.get('favoritable_type') == favoritable_type
+
+  filterUserFavoritePinboards: (user_id) ->
+    pinboards_ids = @filterUserFavorites(user_id, 'Pinboard')
+      .map (item) -> item.get('favoritable_id')
+
+    require('stores/pinboard_store').filter (item) ->
+      pinboards_ids.contains(item.get('uuid'))

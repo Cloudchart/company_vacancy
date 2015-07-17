@@ -1,0 +1,424 @@
+@mixin tour-header {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+
+  width: 577px;
+
+  h1, h2, .logo {
+    font-weight: 300;
+    text-align: center;
+  }
+
+  .logo {
+    color: $link-color;
+    font-size: $large-font-size;
+
+    i {
+      margin-right: $inner-margin-size;
+      vertical-align: bottom;
+    }
+
+    strong {
+      font-weight: 700;
+    }
+  }
+
+  h1 {
+    font-size: $huge-font-size;
+    margin: 0;
+    margin-top: $default-margin-size;
+    text-transform: capitalize;
+  }
+
+  h2 {
+    font-size: $large-font-size;
+    margin: 0;
+    margin-top: $inner-margin-size;
+  }
+}
+
+@mixin tour-introduction {
+  padding: 50px 135px;
+
+  p {
+    font-size: $big-font-size;
+    font-weight: 300;
+    line-height: 27px;
+    width: 100%;
+  }
+}
+
+@mixin tour-companies {
+  @include align-items(flex-start);
+
+  overflow: hidden;
+
+  .companies-list {
+    @include display(flex);
+    @include justify-content(flex-start);
+
+    > .company-preview {
+      height: 426px;
+      margin-right: 24px;
+      width: 370px;
+
+      .human:nth-child(3) ~ .human {
+        display: none;
+      }
+
+      &.company-leave {
+        transition: opacity .5s ease-in-out;
+
+        &.company-leave-active {
+          opacity: 0;
+        }
+      }
+    }
+  }
+
+  > .placeholder {
+    @include position(absolute, 0 0px 0px 0px);
+
+    width: 100%;
+
+    > p {
+      line-height: 34px;
+      margin: 0 auto;
+      margin-bottom: 250px;
+      text-align: center;
+      width: 300px;
+    }
+  }
+}
+
+@mixin tour-timeline {
+  @include display(flex);
+  @include justify-content(space-between);
+
+  padding-bottom: 70px;
+
+  > .texts {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 32px;
+    position: relative;
+    width: 100%;
+
+    > p {
+      @include position(absolute, 0px 0 0 0px);
+
+      opacity: 0;
+
+      &:first-child {
+        opacity: 1;
+      }
+    }
+  }
+
+  > .timeline {
+    overflow: hidden;
+    position: relative;
+    height: 380px;
+    width: 100%;
+
+    .container {
+      position: relative;
+
+      > .posts {
+        background: image_url('tour/posts.png') center center no-repeat;
+        background-size: cover;
+        height: 1397px;
+        width: 762px;
+      }
+
+      > .insight {
+        @include position(absolute, 0 0px 207px 0);
+
+        background: image_url('tour/insight-timeline.png') center center no-repeat;
+        background-size: cover;
+        height: 155px;
+        width: 235px;
+      }
+    }
+  }
+
+  &.scrolled {
+    > .timeline > .container {
+      @include transform(translateY(calc(-100% + 375px)));
+    }
+  }
+
+  &.insight-focused {
+    > .texts > p {
+      opacity: 1;
+
+      &:first-child {
+        opacity: 0;
+      }
+    }
+
+    > .timeline > .container {
+      > .posts {
+        @include transform(translateX(calc(-100%)));
+      }
+
+      > .insight {
+        @include transform(translate(-270px, 115px) scale(1.8));
+      }
+    }
+  }
+
+  &.with-transition {
+    > .texts > p {
+      @include transition(opacity .5s ease-in-out);
+    }
+
+    > .timeline > .container {
+      @include transition(transform 1s ease-in-out 1s);
+
+      > .posts, > .insight {
+        @include transition(transform 1s ease-in-out);
+      }
+    }
+  }
+}
+
+@mixin tour-subscription {
+  padding: 50px;
+  position: relative;
+
+  > .equation {
+    @include align-items(center);
+    @include display(flex);
+
+    font-size: 36px;
+
+    > * {
+      margin-right: $inner-margin-size;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    > .svg-icon {
+      background-size: 105px 69px;
+
+      height: 69px;
+      width: 105px;
+    }
+
+    > .fa {
+      font-size: 72px;
+
+      &.fa-heart {
+        color: $accented-red-color;
+      }
+    }
+  }
+
+  > .subscription  {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+
+    > p {
+      font-size: 24px;
+      font-weight: 300;
+      text-align: center;
+      width: 400px;
+    }
+
+    > form {
+      @include align-items(center);
+      @include display(flex);
+      @include flex-direction(column);
+
+      > input {
+        width: 330px;
+      }
+    }
+  }
+}
+
+@mixin tour-insight-introduction {
+  > .pin-form-placeholder {
+    background: image_url('tour/pin-form.png') center center no-repeat;
+    background-size: contain;
+    height: 450px;
+    width: 550px;
+  }
+}
+
+@mixin tour-insight-list {
+  > .insight-list-placeholder {
+    background: image_url('tour/insight-list.png') top center no-repeat;
+    background-size: cover;
+    height: 360px;
+    width: 500px;
+  }
+}
+
+@mixin tour-insight-lesson {
+  > p {
+    width: 100%;
+  }
+
+  > .insight-guide {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 32px;
+
+    > .insight {
+      background: image_url('tour/insight-schematic.png') center center no-repeat;
+      height: 268px;
+      margin-bottom: 20px;
+      width: 406px;
+    }
+
+    > .valid, .invalid {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: center;
+      width: 320px;
+
+      > hr {
+        @include position(absolute);
+
+        background-color: $accented-red-color;
+        border: none;
+        height: 2px;
+        top: 50%;
+        margin-top: -1px;
+        width: 100%;
+      }
+
+      > .fa-check {
+        color: $link-color;
+        padding-left: $inner-margin-size;
+      }
+    }
+  }
+}
+
+.modal-stack-item > .tour {
+  @include align-items(center);
+  @include justify-content(center);
+
+  background-color: transparent;
+  box-shadow: none;
+  height: 100%;
+  position: relative;
+  width: 100%;
+
+  @media (max-height: 650px) {
+    @include transform(scale(0.7));
+  }
+
+  > .navigation {
+    margin-top: 24px;
+  }
+
+  > .tour-wrapper {
+    box-shadow: 0 5px 30px hsla(0, 0%, 0%, .4);
+
+    background-color: $background-color;
+    height: 588px;
+    min-height: 588px;
+    position: relative;
+    width: 810px;
+
+    > .slide {
+      @include align-items(center);
+      @include display(flex);
+      @include flex-direction(column);
+      @include justify-content(space-between);
+      @include position(absolute);
+
+      height: 100%;
+      opacity: 0;
+      padding: $gutter-size;
+      width: 100%;
+
+      &.active {
+        opacity: 1;
+        z-index: 1;
+      }
+
+      &.with-transition {
+        @include transition(opacity .5s ease-in-out);
+      }
+
+      > header {
+        @include tour-header();
+      }
+
+      &.tour-introduction {
+        @include tour-introduction();
+      }
+
+      &.tour-companies {
+        @include tour-companies();
+      }
+
+      &.tour-timeline {
+        @include tour-timeline();
+      }
+
+      &.tour-subscription {
+        @include tour-subscription();
+      }
+
+      &.tour-insight-introduction {
+        @include tour-insight-introduction();
+      }
+
+      &.tour-insight-lesson {
+        @include tour-insight-lesson();
+      }
+
+      &.tour-insight-list {
+        @include tour-insight-list();
+      }
+
+      > p, > div {
+        font-size: 24px;
+        font-weight: 300;
+        line-height: 32px;
+      }
+
+      > button.cc,
+      > .subscription button {
+        font-size: $large-font-size;
+        font-weight: 300;
+        height: 55px;
+
+        > .wrapper {
+          padding: 0 40px;
+        }
+      }
+
+      > .close {
+        @include align-items(center);
+        @include display(flex);
+        @include justify-content(center);
+        @include position(absolute, 20px 20px 0 0);
+
+        color: $accented-red-color;
+        height: 20px;
+        width: 20px;
+        font-size: 48px;
+
+        > .cc-icon {
+          position: relative;
+          top: -10px;
+        }
+      }
+    }
+  }
+}

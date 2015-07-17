@@ -1,0 +1,92 @@
+@mixin default-human {
+  > .human {
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
+
+    > .avatar {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+
+    > .credentials {
+      > .name {
+        font-size: 20px;
+        font-weight: 300;
+        text-align: center;
+        margin-bottom: 5px;
+      }
+
+      > .occupation {
+        font-size: 15px;
+        font-weight: 300;
+        color: $primary-grey-color;
+        margin: 0;
+        text-align: center;
+      }
+    }
+  }
+}
+
+article.pinboard-related-users {
+  @include close-modal-button;
+
+  position: relative;
+  width: 800px;
+
+  > header {
+    padding: 30px;
+
+    > h1 {
+      margin: 0;
+      font-size: 36px;
+      line-height: 44px;
+
+      > .description {
+        font-weight: 300;
+      }
+    }
+  }
+
+  > .content {
+    @include display(flex);
+    @include flex-direction(column);
+    @include align-items(center);
+
+    background-color: hsl(300, 9%, 98%);
+    padding: 0 20px 20px 20px;
+
+    .owner, .users {
+      > h1 {
+        font-size: 30px;
+        text-align: center;
+      }
+    }
+
+    > .owner {
+      @include default-human;
+    }
+
+    > .users {
+      max-width: 680px;
+
+      > ul {
+        @include flex-ul;
+        @include flex-wrap(wrap);
+        @include align-items(center);
+
+        overflow-y: scroll;
+        max-height: 340px;
+
+        > li {
+          @include default-human;
+
+          margin: 0 15px 0 15px;
+          height: 170px;
+        }
+      }
+    }
+  }
+
+}

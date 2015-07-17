@@ -1,23 +1,21 @@
-<article class="pinboard" data-react-class="components/pinboards_app" data-react-props="<%= { uuid: params[:id] }.to_json %>">
-</article>
+<% title @pinboard.title %>
 
+<% set_meta_tags_for_social_networks(
+  title: t('meta.pinboard.title', title: @pinboard.title),
+  description: t('meta.pinboard.description', title: @pinboard.title),
+  image: @pinboard.preview.try(:url),
+  url: collection_url(@pinboard)
+) %>
+
+<%= content_tag :article, nil, data: {
+  "react-class" => "components/pinboard_app",
+  "react-props" => {
+    uuid: params[:id]
+  }
+} %>
 
 <% content_for :header_menu do %>
   <%= render 'shared/header_menu' %>
-<% end %>
-
-<% content_for :header_breadcrumbs do %>
-  <div class="breadcrumbs">
-    <%= link_to main_app.pinboards_path, class: 'back-link' do -%>
-      <i class="fa fa-chevron-left"></i>
-    <% end %>
-
-    <div class="company-name">
-      <span>
-        <%= @pinboard.title %>
-      </span>
-    </div>
-  </div>
 <% end %>
 
 <%= content_for :class_for_main, 'pinboards' %>

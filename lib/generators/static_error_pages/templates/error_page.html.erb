@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= @error_name.to_s.humanize %> — <%= ENV['SITE_NAME'] %></title>
+    <%= favicon_link_tag "#{Rails.env}/favicon.ico" %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+  </head>
+
+  <body class="<%= Rails.env %>">
+    <header>
+      <div class="header-content">
+        <div class="local-menu">
+          <%= link_to '', root_path, class: 'logo' %>
+          <a class="title" href="<%= root_path %>"><%= app_name_for_header %></a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="error">
+        <header>
+          <h1><%= t("errors.pages.#{@error_name}.title") %></h1>
+          <h2><%= t("errors.pages.#{@error_name}.description") %></h2>
+        </header>
+        <%= image_tag 'error.svg' %>
+        <%= link_to 'Okay', root_path, class: 'cc' %>
+      </section>
+    </main>
+
+    <footer>
+      <ul>
+        <li>
+          <%= mail_to ENV['SUPPORT_EMAIL'], t('shared/footer/support', default: 'Support') %>
+        </li>
+        
+        <li>
+          <%= mail_to ENV['REPLY_TO_EMAIL'], t('shared/footer/contacts', default: 'Contacts') %>
+        </li>
+
+        <li>
+          <%= link_to t('shared/footer/legal', default: 'Legal'), page_path(:legal) %>
+        </li>
+
+        <li>
+          <%= link_to t('shared/footer/privacy', default: 'Privacy'), page_path(:privacy) %>
+        </li>
+      </ul>
+    </footer>
+  </body>
+</html>

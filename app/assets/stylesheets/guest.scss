@@ -1,0 +1,183 @@
+@import 'bourbon';
+@import 'normialize';
+@import 'proxima-nova';
+@import 'font-awesome';
+@import 'variables';
+@import 'modal';
+@import 'mixins/guest';
+@import 'mixins';
+@import 'icons';
+@import 'shared/avatar';
+@import 'shared/navigator';
+@import 'shared/carousel';
+@import 'layout/card';
+@import 'company/preview';
+@import 'invite_queue';
+@import 'landing';
+@import 'landings';
+@import 'errors';
+@import 'layout/card';
+@import 'layout/columns';
+@import 'components';
+@import 'insight';
+
+$base-unit: 20px;
+$base-font-size: 15px;
+$base-font-family: 'proxima-nova';
+
+
+*,
+*::before,
+*::after {
+  @include box-sizing(inherit);
+}
+
+
+html {
+  @include box-sizing(border-box);
+
+  height: 100%;
+}
+
+
+body {
+  @include display(flex);
+  @include flex-direction(column);
+
+  font-family: $base-font-family;
+  font-size: $base-font-size;
+  min-height: 100%;
+  min-width: $min-page-width;
+
+  > header,
+  > footer { 
+    @include align-items(center);
+    @include display(flex);
+    @include flex(1);
+
+    background-color: $accented-green-color;    
+    color: $accented-white-color;     
+  }
+
+  > header { 
+    @include justify-content(space-between);
+
+    height: 75px;
+  }
+
+  > footer {    
+    @include justify-content(center); 
+
+    height: 90px;    
+  } 
+
+  > main {
+    @include display(flex);
+    @include flex-direction(column);
+    @include flex(1);
+
+    position: relative;
+  }
+}
+
+a {
+  color: hsl(138, 63%, 37%);
+  text-decoration: none;
+}
+
+// Header
+//
+body > header {
+  background-color: hsl(136, 52%, 51%);
+  color: hsl(0, 0%, 100%);
+  height: $base-unit * 4;
+  padding: 0 $base-unit * 2;
+
+  > figure {
+    @include align-items(center);
+    @include display(flex);
+
+    font-size: $large-font-size;
+    font-weight: 300;
+    height: 37px;
+
+    > img {
+      height: 100%;
+      width: 55px;
+    }
+
+    > figcaption {
+      font-weight: 300;
+      margin-left: $inner-margin-size;
+
+      > strong {
+        font-weight: 700;
+      }
+    }
+  }
+
+  > .main-menu {
+    @include flex-ul;
+
+    > li {
+      margin-right: 20px;
+
+      > a {
+        color: $accented-white-color;
+        font-size: $basic-font-size;
+        font-weight: 700;
+      }
+    }
+  }
+
+  > .auth a {     
+    color: $accented-white-color;     
+    font-size: $basic-font-size;    
+    font-weight: 700;     
+  } 
+}
+
+// Footer
+//
+body > footer > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 $gutter-size;
+
+  > li {
+    display: inline-block;
+    margin: 0 $default-margin-size/2;
+    padding: 0;
+  }
+
+  a {
+    color: $accented-white-color;
+    font-size: $large-font-size;
+    font-weight: 300;
+    text-decoration: none;
+  }
+}
+
+
+// Main
+//
+body > main {
+  min-height: 100%;
+}
+
+// Env dependent
+//
+@each $env, $color in (development, hsl(136, 52%, 51%)),
+                      (staging, hsl(356, 82%, 65%)),
+                      (production, hsl(136, 52%, 51%)) {
+  body.#{$env} {
+    > header {
+      background-color: $color;
+    }
+  }
+}
+
+
+@import 'interviews';
+@import 'post/insight_list';
+@import 'post/featured';

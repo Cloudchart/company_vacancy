@@ -37,6 +37,15 @@ Person = React.createClass
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
 
+  getWrapper: ->
+    unless @getLink()
+      React.DOM.div
+    else
+      React.DOM.a
+
+  getLink: ->
+    if @props.readOnly && @state.person.is_verified && @state.person.twitter
+      "/users/" + @state.person.twitter
 
   # Handlers
   #
@@ -79,7 +88,14 @@ Person = React.createClass
   render: ->
     return null unless person = @state.person
 
-    <div key={ person.uuid } className={cx({ person: true, editable: !@props.readOnly })}>
+    WrapperComponent = @getWrapper()
+
+    className = cx
+      person: true
+      editable: !@props.readOnly
+      "for-group": !!@getLink()
+
+    <WrapperComponent key={ person.uuid } className={ className } href={ @getLink() } >
       { @renderRemoveButton() }
       
       <PersonAvatar
@@ -93,7 +109,7 @@ Person = React.createClass
         <p className="name">{ person.full_name }</p>
         <p className="occupation">{ person.occupation }</p>
       </footer>
-    </div>
+    </WrapperComponent>
 
 
 # Exports

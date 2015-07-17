@@ -1,5 +1,3 @@
 <% flash.each do |key, message| %>
-  <div id="flash" class="<%= key %>">
-    <%= message %>
-  </div>
+  <div data-react-class="components/error/trigger" data-react-props='{ "message": "<%= message %>" }'></div>
 <% end %>

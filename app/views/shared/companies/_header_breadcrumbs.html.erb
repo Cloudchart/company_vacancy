@@ -5,7 +5,7 @@
     <i class="fa fa-chevron-left"></i>
   <%- end -%>
 
-  <div class="company-name" data-react-class="components/company/name" data-react-props="<%= { key: @company.uuid, value: decorate(@company).name, url: company_path(@company) }.to_json %>">
+  <div class="company-name" data-react-class="components/company/name" data-react-props="<%= { uuid: @company.uuid, value: decorate(@company).name, url: company_path(@company) }.to_json %>">
     <%= link_to_unless_current decorate(@company).name, company_path(@company) %>
   </div>
 </div>

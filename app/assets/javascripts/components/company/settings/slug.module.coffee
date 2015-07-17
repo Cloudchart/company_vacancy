@@ -24,7 +24,7 @@ Component = React.createClass
     actions
 
   onUpdateDone: (key, json, token) ->
-    window.location.href = json.meta.settings_url if token == 'slug'
+    window.location.href = (json.meta.settings_url + "#settings") if token == 'slug'
 
   # Helpers
   #     

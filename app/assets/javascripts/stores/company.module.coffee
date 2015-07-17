@@ -17,11 +17,11 @@ Dispatcher.register (payload) ->
   switch payload.action.type
 
 
-    when 'post:fetch-one:done'
-      [post_id, json] = payload.action.data
-      if json.post.owner_type == 'Company' and json.owner
-        CompanyMetaCursor.set(json.owner.uuid, json.owner.meta)
-        CompanyFlagsCursor.set(json.owner.uuid, json.owner.flags)
+    # when 'post:fetch-one:done'
+    #   [post_id, json] = payload.action.data
+    #   if json.post.owner_type == 'Company' and json.owner
+    #     CompanyMetaCursor.set(json.owner.uuid, json.owner.meta)
+    #     CompanyFlagsCursor.set(json.owner.uuid, json.owner.flags)
 
 
     when 'company:fetch:done'
@@ -59,10 +59,10 @@ Dispatcher.register (payload) ->
 module.exports = CloudFlux.createStore
 
 
-  onPostFetchOneDone: (post_id, json) ->
-    if json.post.owner_type == 'Company' and json.owner
-      @store.add_or_update(json.owner.uuid, json.owner)
-      @store.emitChange()
+  # onPostFetchOneDone: (post_id, json) ->
+  #   if json.post.owner_type == 'Company' and json.owner
+  #     @store.add_or_update(json.owner.uuid, json.owner)
+  #     @store.emitChange()
 
 
   onVerifySiteUrl: (key, token) ->
@@ -113,15 +113,18 @@ module.exports = CloudFlux.createStore
     slug:            ''
     logotype_url:    null
     company_url:     null
+    url:             null
     is_name_in_logo: false
     tag_names:       []
-    #meta:           {}
-    #flags:          {}
+    post_ids:        []
+    facebook_share_url: ''
+    twitter_share_url: ''
+
 
   getActions: ->
     actions = {}
 
-    actions['post:fetch-one:done'] = @onPostFetchOneDone
+    # actions['post:fetch-one:done'] = @onPostFetchOneDone
 
     actions[Constants.Company.VERIFY_SITE_URL]      = @onVerifySiteUrl
     actions[Constants.Company.VERIFY_SITE_URL_DONE] = @onVerifySiteUrlDone

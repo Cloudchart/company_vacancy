@@ -1,39 +1,106 @@
 <% set_meta_tags og: {
-  title: 'CloudChart',
+  title: ENV['SITE_NAME'],
   image: og_image_url,
-  url: root_url,
-  description: 'CloudChart is a convenient tool to chart and profile your company. Use it to clarify your team structure, your products, your goals, and become transparent. Transparency benefits your teams, your partners, and your investors.'
+  url: main_app.root_url,
+  description: t('meta.app_description')
 } %>
 
-<section class="about">
-  <header>
-    Get your growth into the groove
-  </header>
-  
-  <p>
-    Learn how successful startups came to life.
-    <br />
-    Build a timeline of major milestones in your company's growth.
-  </p>
+<%= render 'shared/subscription' %>
+
+<section data-react-class="components/landing_app" data-react-props="<%= {
+    isAuthorized: current_user.twitter.present?,
+    isProductHunt: params[:ref] == 'producthunt',
+    productHuntURL: collection_url(ENV['PH_COLLECTION_ID']),
+    featured_pinboard: ENV['FEATURED_COLLECTION_ID']
+  }.to_json %>" >
 </section>
 
-<section class="picture">
-  <figure>
-    <%= image_tag('landing-timeline.svg') %>
-  </figure>
-</section>
 
-<section class="tentative">
-  <p>
-    We’re building a collection of successful founder stories
-    <br />
-    into a very visual and informative guide for first-time founders.
-  </p>
-  <p>
-    Excited?
-  </p>
-</section>
+<noscript>
+  <section class="cc-container-common">
+    <header>
+      <button class="close">×</button>
+      <h1>Bite-size insights for founders</h1>
+      <h2>Get valuable insights by successful founders and investors. Share your own.</h2>
+    </header>
+  </section>
 
-<section class="invite" data-react-class="components/landing/invite" data-react-props="<%= { value: 'Get Invited' }.to_json %>">
-  <button>Get Invited</button>
-</section>
+  <section class="cc-container-common">
+    <header>
+      <h1>How to launch on Product Hunt &mdash;</h1>
+      <button class="follow">Follow</button>
+    </header>
+
+    <section class="full-width">
+      <section class="content columns">
+        <div class="item">
+          <div>
+            1
+          </div>
+        </div>
+        <div class="item">
+          <div>
+            1
+          </div>
+        </div>
+        <div class="item">
+          <div>
+            1
+          </div>
+        </div>
+      </section>
+    </section>
+  </section>
+
+
+  <section class="cc-container-common">
+    <header>
+      <h1>Featured collections</h1>
+      <h2>Collect insights. Create your own collections. Share with your team and the community.</h2>
+    </header>
+
+    <section class="flow">
+      <div class="item">
+        <div class="pinboard">
+          1
+        </div>
+      </div>
+      <div class="item">
+        <div class="pinboard">
+          2
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section class="cc-container-common">
+    <header>
+      <h1>Featured companies</h1>
+      <h2>Follow unicorns and learn how they are growing.</h2>
+    </header>
+
+    <section class="flow">
+      <div class="item">
+        <div class="company">
+          1
+        </div>
+      </div>
+      <div class="item">
+        <div class="company">
+          2
+        </div>
+      </div>
+      <div class="item">
+        <div class="company">
+          3
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section class="cc-container-common">
+    <section>
+      Subscription
+    </section>
+  </section>
+</noscript>

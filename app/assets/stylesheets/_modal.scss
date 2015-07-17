@@ -1,4 +1,4 @@
-$modal-overlay-background-color: hsla(0, 0%, 75%, .25);
+$modal-overlay-background-color: hsla(0, 0%, 0%, 0.5);;
 $modal-container-background-color: hsl(0, 100%, 100%);
 
 // Modal form
@@ -111,6 +111,35 @@ $modal-form-button-padding: 0 20px;
   }
 }
 
+@mixin modal-header {
+  @include display(flex);
+
+  background-color: $disabled-grey-color;
+  position: relative;
+
+  > h1 {
+    font-size: $large-font-size;
+    font-weight: 700;
+    margin: 0;
+    padding: $default-margin-size;
+    text-align: center;
+    width: 100%;
+  }
+
+  > .close-button {
+    @include position(absolute, 50% 0px 0 0);
+    height: 36px;
+    margin-top: -18px;
+
+    i {
+      color: $accented-white-color;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 36px;
+    }
+  }
+}
+
 
 body ul.modal-stack {
   @include position(fixed, 0px 0px 0px 0px);
@@ -121,23 +150,93 @@ body ul.modal-stack {
   z-index: $zindex-modal;
 
   > li.modal-stack-item {
-    @include align-items(center);
     @include display(flex);
     @include justify-content(center);
     @include position(fixed, 0px 0px 0px 0px);
 
-    overflow: scroll;
-
     background-color: $modal-overlay-background-color;
+    overflow: scroll;
+    padding: 20px 0;
+
+    .modal-header {
+      @include modal-header();
+    }
 
     > * {
-      background-color: hsl(0, 100%, 100%);
+      margin: auto;
 
       &.post-container {
         @include align-self(flex-start);
 
         min-height: 100%;
       }
+    }
+
+    > .pins {
+      background-color: $background-color;
+    }
+  }
+}
+
+.modal-stack-item > * {
+  box-shadow: 0 5px 30px hsla(0, 0%, 0%, .4);
+
+  background-color: hsl(0, 100%, 100%);
+}
+
+.info-modal {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+
+  padding: $gutter-size;
+  width: 400px;
+
+  > header {
+    font-size: $large-font-size;
+    font-weight: 700;
+    width: 100%;
+  }
+
+  > p {
+    font-size: $basic-font-size;
+    font-weight: 300;
+    line-height: 1.4;
+    margin: $default-margin-size 0;
+  }
+}
+
+.form-modal {
+  background-color: $background-color;
+  padding: 40px;
+  width: 500px;
+
+  > header {
+    font-size: $large-font-size;
+  }
+
+  > form {
+    @include display(flex);
+    @include flex-direction(column);
+
+    margin-top: 20px;
+
+    > button {
+      @include align-self(flex-end);
+    }
+  }
+
+  > section {
+    @include display(flex);
+    @include flex-direction(column);
+
+    p {
+      font-size: $big-font-size;
+      font-weight: 300;
+    }
+
+    > button {
+      @include align-self(flex-end);
     }
   }
 }

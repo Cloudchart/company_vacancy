@@ -44,22 +44,13 @@ module.exports = React.createClass
 
   componentWillMount: ->
     GlobalState.fetch(@getQuery('system_roles')).then =>
-      setTimeout =>
+      if @isMounted()
         @setState
           loaders: @state.loaders.set('system_roles', true)
 
 
   isLoaded: ->
     @state.loaders.get('system_roles') == true
-
-
-  isEditor: ->
-    !!RoleStore.cursor.items
-      .find (role) =>
-        role.get('owner_id', null)    is null     and
-        role.get('owner_type', null)  is null     and
-        role.get('value')             is 'editor' and
-        role.get('user_id')           is @state.user.get('uuid')
 
 
   isUnicornPin: ->
@@ -77,9 +68,9 @@ module.exports = React.createClass
 
   render: ->
     return null unless @isLoaded()
-    return null unless @isEditor()
+    return null unless UserStore.isEditor()
     return null unless @isUnicornPin()
 
-    <li onClick={ @handleClick }>
+    <li onClick={ @handleClick } className="edit-pin-button" >
       <i className="fa fa-pencil" />
     </li>

@@ -81,3 +81,89 @@ $cloud-input-with-image-image-size: $base-unit * 4;
   }
   
 }
+
+form.cc {
+  background-color: hsl(0, 0%, 98%);
+
+  &.modal {
+    @include close-modal-button;
+    position: relative;
+    width: 600px;
+  }
+
+  > header {
+    padding: 20px 40px 20px 20px;
+    font-size: 20px;
+    font-weight: 100;
+    background-color: white;
+  }
+
+  > fieldset {
+    margin: 0;
+    padding: 20px;
+    border: none;
+
+    > label {
+      @include display(flex);
+      @include align-items(center);
+
+      position: relative;
+
+      &:not(:last-child) {
+        margin-bottom: 30px;
+      }
+
+      &.with-textarea {
+        > span:first-child {
+          @include align-self(flex-start);
+        }
+      }
+
+      > span {
+        width: 90px;
+        font-size: 16px;
+        font-weight: 400;
+
+        &.error {
+          position: absolute;
+          bottom: -20px;
+          left: 76px;
+          width: 100%;
+          color: $accented-red-color;
+          font-size: 12px;
+        }
+      }
+
+      > input {
+        width: 100%;
+        height: 40px;
+        margin: 0;
+        padding: 0 20px;
+        background-color: white;
+        font-size: 20px;
+        font-weight: 400;
+        border: none;
+        border-radius: 0;
+        outline: none;
+      }
+
+      > textarea {
+        width: 100%;
+        height: 160px;
+        padding: 10px;
+        background-color: white;
+        font-size: 16px;
+        border: none;
+        outline: none;
+        resize: none;
+      }
+    }
+  }
+
+  > footer {
+    @include display(flex);
+    @include justify-content(space-between);
+
+    padding: 20px;
+  }
+}

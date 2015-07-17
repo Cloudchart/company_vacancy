@@ -34,51 +34,61 @@ main.user-profile .emails-wrapper {
     @include flex-ul;
     @include flex-direction(column);
 
+    width: 100%;
+
     > li {
       @include display(flex);
 
       margin-bottom: $base-unit / 1.5;
+      width: 100%;
 
       > div.address {
 
         &.green {
-          color: $north-texas-green;
+          color: $accented-green-color;
         }
 
         &.grey {
-          color: $jumbo;
+          color: hsl(0, 0%, 53%);
         }
       }
 
       > button.orgpad {
         @include profile-settings-fixed-width-button;
 
-        &.resend, &.verify {
-          margin-right: $base-unit / 2;
+        background-color: $accented-green-color;
+
+        &.alert {
+          background-color: $accented-red-color;
         }
-      }
 
-      > a.delete-link {
-        color: $cg-red;
-        padding-top: 8px;
-        margin-left: $base-unit / 2;
-      }
-
-      > input[type='email'] {
-        background-color: $white-smoke;
-        border: none;
-        outline: none;
-        height: $orgpad-button-height;
-
-        &.error {
-          background-color: $baby-pink;
+        + * {
+          margin-left: $inner-margin-size;
         }
       }
 
       > div.address, input[type='email'] {
-        font-size: $basic-font-size;
+        @include flex(1);
+
+        height: 40px;
+        font-size: $big-font-size;
+        font-weight: 300;
+        margin: 0;
         padding: 8px 10px;
-        width: $base-unit * 12;
+        position: relative;
+
+        + * {
+          margin-left: $inner-margin-size;
+        }
+
+        > a.delete-link {
+          color: $accented-red-color;
+          font-size: 24px;
+          font-weight: 400;
+          margin-left: $base-unit / 2;
+          position: relative;
+          top: 3px;
+        }
       }
 
     }

@@ -1,5 +1,6 @@
 class Story < ActiveRecord::Base
   include Uuidable
+  include Admin::Story
 
   before_validation do
     self.name = name.gsub(/[^A-Za-z0-9\-_|\s]+/i, '').squish.gsub(/\s/, '_')

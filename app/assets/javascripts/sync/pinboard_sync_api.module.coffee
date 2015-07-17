@@ -53,10 +53,47 @@ module.exports =
       dataType: 'json'
 
 
+  request_access: (item, message) ->
+    Promise.resolve $.ajax
+      url:        "/pinboards/#{item.get('uuid')}/invites"
+      type:       "POST"
+      dataType:   "json"
+      data:
+        message: message
+
+
+  grant_access: (item, token, role) ->
+    Promise.resolve $.ajax
+      url:        "/pinboards/#{item.get('uuid')}/invites/#{token.get('uuid')}"
+      type:       "PATCH"
+      dataType:   "json"
+      data:
+        role:     role
+
+
+  deny_access: (item, token) ->
+    Promise.resolve $.ajax
+      url:        "/pinboards/#{item.get('uuid')}/invites/#{token.get('uuid')}"
+      type:       "DELETE"
+      dataType:   "json"
+
+
   sendInvite: (item, attributes, options) ->
     Promise.resolve $.ajax
       url: "/pinboards/#{item.get('uuid')}/invites"
       type: 'POST'
       dataType: 'json'
-      data: 
+      data:
         token: attributes
+
+  follow: (key) ->
+    Promise.resolve $.ajax
+      url: "/pinboards/#{key}/follow"
+      type: 'POST'
+      dataType: 'json'
+
+  unfollow: (key) ->
+    Promise.resolve $.ajax
+      url: "/pinboards/#{key}/unfollow"
+      type: 'DELETE'
+      dataType: 'json'

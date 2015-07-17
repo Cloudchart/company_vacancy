@@ -1,0 +1,30 @@
+<article class="preview user">
+
+  <figure class="user">
+    <div class="avatar" style="background-image: <%= @user.avatar_stored? ? "url(#{@user.avatar.url})" : "none" %>"></div>
+    <figcaption>
+      <p class="name">
+        <%= @user.full_name %>
+      </p>
+      <p class="occupation">
+        <%= [@user.occupation, @user.company].select(&:present?).join(', ') %>
+      </p>
+      <p class="counters">
+        <%=
+          {
+            collection: @user.pinboards.count + @user.pinboards_through_roles.size,
+            insight:    @user.pins.insights.count,
+            company:    @user.companies_through_roles.size
+          }.select { |k, v| v > 0 }.map { |k, v| pluralize(v, k.to_s) }.join(', ')
+        %>
+      </p>
+    </figcaption>
+  </figure>
+
+  <div class="spacer"></div>
+
+  <footer>
+    <span></span>
+    <%= render partial: 'cloudchart' %>
+  </footer>
+</article>

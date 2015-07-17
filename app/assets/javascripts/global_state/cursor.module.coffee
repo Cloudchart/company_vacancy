@@ -41,9 +41,7 @@ CursorFactory = (data, callback) ->
         CurrData.removeIn(path)
 
     clearTimeout updateTimer
-    updateTime = setTimeout -> callback(CurrData)
-
-
+    updateTimer = setTimeout -> callback(CurrData)
 
 
   # Cursor class

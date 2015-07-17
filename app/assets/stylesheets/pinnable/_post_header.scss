@@ -1,6 +1,5 @@
-.pinnable.post-preview > a > header {
-
-  > figure {
+.pinnable.post-preview > a {
+  figure.company-header {
     @include align-items(center);
     @include display(flex);
 
@@ -22,22 +21,21 @@
     }
   }
 
-  > section.title {
-    padding-top: $inner-margin-size;
+  section + figure {
+    margin-top: $default-margin-size;
+  }
+
+  > header {
+    font-size: $big-font-size;
+    font-weight: 600;
 
     .title {
       @extend .cloud-card-header;
     }
 
-    > .date {
-      @include align-items(center);
-      @include display(flex);
-      @include justify-content(center);
-
-      color: $special-link-color;
-      margin-bottom: $inner-margin-size;
-      font-size: $small-font-size;
-      font-weight: 300;
+    .round-buttons {
+      float: right;
+      margin-left: 20px;
     }
   }
 }

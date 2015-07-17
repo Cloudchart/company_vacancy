@@ -22,12 +22,12 @@ Component = React.createClass
   mixins: [CloudFlux.mixins.Actions]
   
   
-  onCreateDone: (key) ->
-    @props.onCreate() if key is @props.key and _.isFunction(@props.onCreate)
+  onCreateDone: (uuid) ->
+    @props.onCreate() if uuid is @props.uuid and _.isFunction(@props.onCreate)
   
   
-  onUpdateDone: (key) ->
-    @props.onUpdate() if key is @props.key and _.isFunction(@props.onUpdate)
+  onUpdateDone: (uuid) ->
+    @props.onUpdate() if uuid is @props.uuid and _.isFunction(@props.onUpdate)
   
   
   getCloudFluxActions: ->
@@ -38,12 +38,12 @@ Component = React.createClass
   onSubmit: (event) ->
     event.preventDefault()
     
-    return if VacancyStore.getSync(@props.key)
+    return if VacancyStore.getSync(@props.uuid)
     
     if @state.attributes.get('uuid')
-      VacancyActions.update(@props.key, @state.attributes.toJSON())
+      VacancyActions.update(@props.uuid, @state.attributes.toJSON())
     else
-      VacancyActions.create(@props.key, @state.attributes.toJSON())
+      VacancyActions.create(@props.uuid, @state.attributes.toJSON())
 
 
   onFieldChange: (name, event) ->
@@ -67,7 +67,7 @@ Component = React.createClass
   
   
   getStateFromStores: ->
-    attributes: VacancyStore.get(@props.key).toMap()
+    attributes: VacancyStore.get(@props.uuid).toMap()
   
   
   getInitialState: ->
@@ -75,7 +75,7 @@ Component = React.createClass
 
 
   render: ->
-    sync = VacancyStore.getSync(@props.key)
+    sync = VacancyStore.getSync(@props.uuid)
 
     (tag.form {
       className:  'vacancy'

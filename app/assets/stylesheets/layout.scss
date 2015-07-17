@@ -1,10 +1,12 @@
 *,
 *::before,
 *::after {
-  @include box-sizing(border-box);
+  @include box-sizing(inherit);
 }
 
 html {
+  @include box-sizing(border-box);
+
   height: 100%;
 }
 
@@ -12,6 +14,7 @@ body {
   @include display(flex);
   @include flex-direction(column);
 
+  background-color: $background-color;
   min-width: $min-page-width;
   min-height: 100%;
   font-family: $base-font-family;
@@ -19,9 +22,20 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizelegibility;
 
+  &.company-body {
+    background-color: $accented-white-color;
+  }
+
+  &.user-profile-body {
+    background-color: hsl(60, 10%, 96%);
+  }
+
   > main {
+    @include display(flex);
+    @include flex-direction(column);
     @include flex(1);
-    padding: 0 $base-unit;
+
+    margin-bottom: 24px;
     position: relative;
   }
 
@@ -49,3 +63,4 @@ body {
 @import 'layout/grid';
 @import 'layout/columns';
 @import 'layout/card';
+@import 'layout/first_time_visit';

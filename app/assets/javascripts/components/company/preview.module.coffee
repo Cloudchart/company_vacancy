@@ -2,19 +2,24 @@
 
 GlobalState    = require('global_state/state')
 
+ActivityStore  = require('stores/activity_store')
 CompanyStore   = require('stores/company_store.cursor')
 BlockStore     = require('stores/block_store.cursor')
 PostStore      = require('stores/post_store.cursor')
 PinStore       = require('stores/pin_store')
-TaggingStore   = require('stores/tagging_store')
-TagStore       = require('stores/tag_store')
-TokenStore     = require('stores/token_store.cursor')
+RoleStore      = require('stores/role_store.cursor')
 FavoriteStore  = require('stores/favorite_store.cursor')
+UserStore      = require('stores/user_store.cursor')
 
-CompanySyncApi = require('sync/company')
+ActivitySyncApi = require('sync/activity_sync_api')
+CompanySyncApi  = require('sync/company')
 
 Logo           = require('components/company/logo')
 People         = require('components/pinnable/block/people')
+ModalStack     = require('components/modal_stack')
+ModalError     = require('components/error/modal')
+
+InviteActions  = require('components/roles/invite_actions')
 
 Buttons        = require('components/form/buttons')
 
@@ -22,6 +27,9 @@ pluralize      = require('utils/pluralize')
 
 SyncButton     = Buttons.SyncButton
 CancelButton   = Buttons.CancelButton
+AuthButton     = Buttons.AuthButton
+
+Constants      = require('constants')
 
 CompanyPreview = React.createClass
 
@@ -36,36 +44,57 @@ CompanyPreview = React.createClass
       company: ->
         """
           Company {
-            blocks,
-            people,
-            tags,
-            taggings,
-            public_posts {
-              pins
+            staff,
+            edges {
+              posts_count,
+              insights_count,
+              is_followed,
+              is_invited,
+              staff_ids
             }
           }
-        """  
+        """
+
+      favorites: ->
+        """
+          Company {
+            edges {
+              favorites,
+              is_followed
+            }
+          }
+        """
+
+  fetch: ->
+    GlobalState.fetch(@getQuery('company'), { id: @props.uuid }).then =>
+      @setState
+        fetched: true
+
+
+
+  fetchFavorites: ->
+    GlobalState.fetch(@getQuery('favorites'), { id: @props.uuid, force: true })
+
 
   # Component specifications
   #
   propTypes:
-    onSyncDone: React.PropTypes.func
-    uuid:       React.PropTypes.string.isRequired
+    uuid:             React.PropTypes.string.isRequired
+
 
   getDefaultProps: ->
-    onSyncDone: ->
+    cursor:
+      activities: ActivityStore.cursor.items
+      roles:      RoleStore.cursor.items
+
 
   getInitialState: ->
-    sync: false
+    sync:     Immutable.Map()
+    fetched:  false
 
 
   # Helpers
   #
-  getTaggingIdSet: ->
-    @cursor.taggings.deref(Immutable.Seq())
-      .filter (tagging) => tagging.get('taggable_type') is 'Company' && tagging.get('taggable_id') is @props.uuid
-      .map (tagging) -> tagging.get('tag_id')
-      .toSet()
 
   getStrippedDescription: ->
     return "" unless @cursor.company.get('description')
@@ -77,101 +106,142 @@ CompanyPreview = React.createClass
 
     description
 
-  getToken: ->
-    TokenStore.findCompanyInvite(@props.uuid)
+
+  isInvited: ->
+    RoleStore.isInvited(@props.uuid, 'Company', @cursor.viewer)
+
 
   getFavorite: ->
-    FavoriteStore.findByCompany(@props.uuid)
+    @cursor.company.get('is_followed')
+
 
   getPeopleIds: ->
-    personBlock = BlockStore.filter (block) =>
-      block.get('owner_type') == 'Company' &&
-      block.get('owner_id') == @props.uuid &&
-      block.get('identity_type') == 'Person'
-    .sortBy (block) -> block.get('position')
-    .first()
+    @cursor.company.get('staff_ids')
+      .take(5)
+      .toSeq()
 
-    if personBlock && (peopleIds = personBlock.get('identity_ids'))
-      peopleIds.take(5).toSeq()
-    else
-      Immutable.Seq()
-
-  getPosts: ->
-    @cursor.posts.filter (post) =>
-      post.get('owner_type') == 'Company' &&
-      post.get('owner_id') == @props.uuid
 
   getPostsCount: ->
-    @getPosts().size || 0
+    @cursor.company.get('posts_count')
+
 
   getInsightsCount: ->
-    posts = @getPosts()
+    @cursor.company.get('insights_count')
 
-    @cursor.pins.filter (pin) ->
-      pin.get('content') &&
-      !pin.get('parent_id') &&
-      posts.has pin.get('pinnable_id') 
-    .size || 0
+
+  isViewerOwner: ->
+    true
+    # !!CompanyStore
+    #   .filterForUser(@cursor.viewer.get('uuid'))
+    #   .filter (company) => company.get('uuid') == @props.uuid
+    #   .size
+
+  isUnpublished: ->
+    !@cursor.company.get('is_published') && !@isViewerOwner() && !@isInvited()
+
+  getPreviewLink: ->
+    @cursor.company.get('company_url') unless @isUnpublished()
+
+  isClickedByViewer: ->
+    !!ActivityStore
+      .filter (activity) =>
+        activity.get('user_id') == @cursor.viewer.get('uuid') &&
+        activity.get('action') == 'click' &&
+        activity.get('trackable_id') == @props.uuid
+      .size
 
 
   # Handlers
   #
-  handleDeclineClick: (event) ->
+  handleFollowClick: (event) ->
     event.preventDefault()
     event.stopPropagation()
 
-    @setState(sync: true)
+    @setState(sync: @state.sync.set('follow', true))
 
-    CompanySyncApi.cancelInvite(@cursor.company.get('uuid'), @getToken().get('uuid'), @handleDone, @handleFail)
+    CompanySyncApi.follow(@cursor.company.get('uuid'), @handleFollowDone, @handleFollowFail)
 
-  handleAcceptClick: (event) ->
-    event.preventDefault()
-    event.stopPropagation()
 
-    @setState(sync: true)
+  handleFollowDone: ->
+    # TODO rewrite with grabbing only needed favorite
+    @fetchFavorites(force: true).then =>
+      @setState(sync: @state.sync.set('follow', false))
 
-    CompanySyncApi.acceptInvite(@cursor.company.get('uuid'), @getToken().get('uuid'))
-      .then(@handleDone, @handleFail)
+  handleFollowFail: ->
+    @setState(sync: @state.sync.set('follow', false))
 
-  handleDone: ->
-    @props.onSyncDone()
+    ModalStack.show(<ModalError />)
 
-  handleFail: ->
-    @setState(sync: false)
+  handlePreviewClick: ->
+    return unless @isUnpublished()
+
+    @setState sync: @state.sync.set('company_click', true)
+
+    ActivitySyncApi.create(Immutable.Map(
+      action:         'click'
+      trackable_id:   @props.uuid
+      trackable_type: 'Company'
+    )).then @handleActivityCreateDone, @handleActivityCreateFail
+
+  handleActivityCreateDone: (data) ->
+    GlobalState.fetch(@getQuery('viewer')).then =>
+      @setState sync: @state.sync.set('company_click', false)
+
+      ModalStack.show(
+        <section className="info-modal">
+          <header>{ @cursor.company.get('name') }</header>
+          <p>This company is not on { Constants.SITE_NAME } yet. But we've recorded, that you've been interested and will inform you when it will appear.</p>
+          <button className="cc" onClick={ ModalStack.hide }>
+            Got it
+          </button>
+        </section>
+      )
+
+  handleActivityCreateFail: ->
+    @setState sync: @state.sync.set('company_click', false)
+
+    ModalStack.show(<ModalError />)
+
 
 
   # Lifecycle methods
   #
   componentWillMount: ->
     @cursor =
-      blocks:    BlockStore.cursor.items
-      company:   CompanyStore.cursor.items.cursor(@props.uuid)
-      posts:     PostStore.cursor.items
-      pins:      PinStore.cursor.items
-      tags:      TagStore.cursor.items
-      taggings:  TaggingStore.cursor.items
-      tokens:    TokenStore.cursor.items
-      favorites: FavoriteStore.cursor.items
+      activities: ActivityStore.cursor.items
+      blocks:     BlockStore.cursor.items
+      company:    CompanyStore.cursor.items.cursor(@props.uuid)
+      posts:      PostStore.cursor.items
+      pins:       PinStore.cursor.items
+      favorites:  FavoriteStore.cursor.items
+      viewer:     UserStore.me()
 
+    @fetch()
 
-  # Renderers
-  #
-  renderTags: ->
-    @cursor.tags
-      .filter (tag) => @getTaggingIdSet().contains(tag.get('uuid'))
-      .sort (tagA, tagB) -> tagA.get('name').localeCompare(tagB.get('name'))
-      .map (tag, index) -> <div key={ index } >#{ tag.get('name') }</div>
-      .toArray()
 
   renderInvitedLabel: ->
-    return null unless @getToken()
+    return null unless @isInvited()
 
     <li className="label">Invited</li>
+
+  renderFollowButton: ->
+    return null unless !@getFavorite()
+
+    <li>
+      <AuthButton>
+        <SyncButton
+          className = "cc follow"
+          onClick   = { @handleFollowClick }
+          sync      = { @state.sync.get('follow') }
+          text      = "Follow"
+        />
+      </AuthButton>
+    </li>
 
   renderFollowedLabel: ->
     return null unless @getFavorite()
 
-    <li className="label">Followed</li>
+    <li className="label">Following</li>
 
   renderPostsCount: ->
     return null if (count = @getPostsCount()) == 0
@@ -195,6 +265,7 @@ CompanyPreview = React.createClass
       </ul>
       <ul className="labels">
         { @renderInvitedLabel() }
+        { @renderFollowButton() }
         { @renderFollowedLabel() }
       </ul>
     </div>
@@ -203,48 +274,39 @@ CompanyPreview = React.createClass
     company = @cursor.company
 
     <header>
-      <figure>
-        <Logo 
-          logoUrl = { company.get('logotype_url') }
-          value   = { company.get('name') } />
-      </figure>
+      <Logo
+        logoUrl = { company.get('logotype_url') }
+        value   = { company.get('name') } />
       <h1>{ company.get('name') }</h1>
     </header>
 
+
   renderButtonsOrPeople: ->
-    if @getToken()
-      <div className="buttons">
-        <SyncButton 
-          className = "cc alert"
-          iconClass = "fa-close"
-          onClick   = { @handleDeclineClick }
-          sync      = { @state.sync }
-          text      = "Decline" />
-        <SyncButton 
-          className = "cc"
-          iconClass = "fa-check"
-          onClick   = { @handleAcceptClick }
-          sync      = { @state.sync }
-          text      = "Accept" />
-      </div>
+    if @isInvited()
+      <InviteActions ownerId = { @props.uuid } ownerType = 'Company' />
     else
-      <People 
+      <People
         key            = "people"
-        ids            = { @getPeopleIds() } 
-        showOccupation = { false } />
+        ids            = { @getPeopleIds() }
+        showOccupation = { false }
+        showLink       = { false } />
+
 
   renderFooter: ->
     <footer>
       { @renderButtonsOrPeople() }
-      <section key="tags" className="tags">{ @renderTags() }</section>
     </footer>
 
 
   render: ->
-    return null unless (company = @cursor.company.deref(false))
+    return null unless @state.fetched
 
-    <article className="company-preview cloud-card">
-      <a href={ company.get('company_url') } className="company-preview-link">
+    article_classes = cx
+      'company-preview': true
+      'cloud-card': true
+
+    <article className={ article_classes }>
+      <a href={ @getPreviewLink() } className="company-preview-link for-group">
         { @renderHeader() }
         { @renderInfo() }
         <p className="description">

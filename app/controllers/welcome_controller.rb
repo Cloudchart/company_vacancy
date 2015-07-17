@@ -1,18 +1,30 @@
-class WelcomeController < ApplicationController  
-  before_action :redirect_to_profile, only: :index, if: :user_authenticated?
-  
-  layout 'landing'
+class WelcomeController < ApplicationController
+
+  after_action :call_page_visit_to_slack_channel, only: [:index, :old_browsers]
 
   def index
-    pagescript_params(
-      token: TokenSerializer.new(( Token.find(params[:token]) rescue Token.find_by_rfc1751(params[:token]) rescue nil )).as_json
-    )
   end
-  
+
+  def old_browsers
+    render layout: 'old_browsers'
+  end
+
+  def subscribe
+  end
+
 private
-  
-  def redirect_to_profile
-    redirect_to main_app.companies_path
+
+  def call_page_visit_to_slack_channel
+    case action_name
+    when 'index'
+      page_title = 'Welcome page'
+      page_url = main_app.root_url
+    when 'old_browsers'
+      page_title = 'Old browsers page'
+      page_url = main_app.old_browsers_url
+    end
+
+    post_page_visit_to_slack_channel(page_title, page_url)
   end
-  
+
 end

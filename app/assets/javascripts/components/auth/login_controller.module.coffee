@@ -4,7 +4,6 @@ LoginForm   = require("components/auth/login_form")
 
 ModalStack  = require("components/modal_stack")
 
-ResetSplash = require("components/auth/reset_splash")
 InviteForm  = require("components/auth/invite_form")
 
 email_re = /.+@.+\..+/i
@@ -119,7 +118,7 @@ LoginController = React.createClass
       isResetShown: @isPasswordInvalid(errors)
 
   handleResetPasswordRequestDone: (json) ->
-    ModalStack.show(<ResetSplash />)
+    console.log 'handleResetPasswordRequestDone'
 
   handleFormChange: (name, value) ->
     errors = {}

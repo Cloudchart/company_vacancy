@@ -16,6 +16,12 @@ module Cloudchart
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     # config.time_zone = 'Central Time (US & Canada)'
 
+    config.generators do |generator|
+      generator.helper = false
+      generator.stylesheets = false
+      generator.javascripts = false
+    end
+
     # locales
     config.i18n.load_path += Dir[Rails.root.join('locales', '**', '*.{rb,yml}')] # translations
     I18n.config.enforce_available_locales = true
@@ -23,7 +29,9 @@ module Cloudchart
 
     config.autoload_paths += %W(#{config.root}/lib/cloudchart)
     config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/serializers)
-    
+    config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/mutations)
+    config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/nodes)
+
     # Handle exceptions
     #
     config.exceptions_app = self.routes

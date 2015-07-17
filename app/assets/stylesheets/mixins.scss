@@ -41,7 +41,28 @@
         }
       }
     }
-    
+
+  }
+}
+
+@mixin close-modal-button {
+  > button.close {
+    @include position(absolute, 0px 10px 0 0);
+
+    font-size: 36px;
+    color: hsl(139, 54%, 51%);
+  }
+}
+
+@mixin iphone {
+  @media only screen and (min-device-width: 320px) and (max-device-width: 736px) {
+    @content;
+  }
+}
+
+@mixin ipad {
+  @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    @content;
   }
 }
 
@@ -50,4 +71,5 @@
 @import 'mixins/form_2';
 @import 'mixins/companies/index';
 @import 'mixins/editor';
+@import 'mixins/breaks';
 @import 'mixins/hashtag_list';

@@ -1,16 +1,25 @@
-$profile-header-color: hsl(0, 0%, 93%);
-$menu-color: $profile-header-color;
-$menu-active-color: $white-color;
-$menu-text-color: $black-color;
-$menu-height: 75px;
+$profile-header-color: hsl(60, 10%, 96%);
 
 main.user-profile {
+  @include display(flex);
+  @include flex-direction(column);
+  @include justify-content(stretch);
   background-color: $background-color;
 
   padding: 0;
+
+  > div {
+    @include display(flex);
+    @include flex-direction(column);
+    @include justify-content(stretch);
+  }
 }
 
 section.user-profile {
+  @include display(flex);
+  @include flex-direction(column);
+  @include justify-content(stretch);
+
   width: 100%;
 
   > header {
@@ -26,43 +35,10 @@ section.user-profile {
   }
 
   > header .follow-button {
-    @include position(absolute, 50% $gutter-size 0 0);
+    height: 40px;
 
-    margin-top: -17px - $menu-height/2;
-  }
-
-  > header nav {
-    width: 100%;
-
-    ul {
-      @include display(flex);
-      @include justify-content(center);
-
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    li {
-      @include align-items(center);
-      @include display(flex);
-      @include justify-content(center);
-
-      background-color: $menu-color;
-      color: $menu-text-color;
-      cursor: pointer;
-      font-size: $big-font-size;
-      height: $menu-height;
-      text-transform: capitalize;
-      width: 245px;
-
-      &.active {
-        background-color: $menu-active-color;
-      }
-
-      &:hover {
-        color: $link-color;
-      }
+    > div {
+      padding: 20px;
     }
   }
 
@@ -71,29 +47,19 @@ section.user-profile {
 
     padding: $gutter-size;
 
-    > aside {
-      > figure {
-        border-radius: 100%;
-        background-position: center center;
-        background-size: cover;
-        height: 150px;
-        position: relative;
-        width: 150px;
-
-        > figcaption {
-          @include position(absolute, 50% null null 50%);
-          @include transform(translateX(-50%) translateY(-50%));
-
-          font-size: $huge-font-size;
-          font-weight: 300;
-        }
-      }
+    > .avatar {
+      font-size: 30px;
+      font-weight: 100;
+      height: 150px;
+      margin: 0 auto;
+      width: 150px;     
     }
 
     > .personal {
       @include display(flex);
       @include flex-direction(column);
       @include justify-content(space-between);
+      @include flex(1);
 
       font-size: $basic-font-size;
       font-weight: 400;
@@ -103,15 +69,33 @@ section.user-profile {
         font-size: $huge-font-size;
         font-weight: 300;
         margin: 0;
+
+        > .twitter {
+          font-size: $big-font-size;
+          font-weight: 400;
+        }
       }
 
       .stats {
         margin: 0;
       }
 
-      .occupation,
+      .occupations {
+        @include display(flex);
+        @include flex-wrap(wrap);
+
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        > li {
+          margin-right: $default-margin-size;
+        }
+      }
+
+      .occupations,
       .twitter {
-        color: $secondary-link-color;
+        color: $accented-green-color;
       }
 
       .spacer {
@@ -122,9 +106,23 @@ section.user-profile {
 
   .pins,
   .companies-list,
-  .feed {
+  .feed,
+  .pinboards,
+  .empty {
     padding: $gutter-size/2;
     margin: 0 auto;
+  }
+
+  .empty {
+    @include display(flex);
+    @include flex-direction(column);
+    @include flex(1);
+    @include justify-content(center);
+
+    font-size: $large-font-size;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    text-align: center;
   }
 }
 

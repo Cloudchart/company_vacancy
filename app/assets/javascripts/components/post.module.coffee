@@ -12,6 +12,7 @@ PostsStoryStore     = require('stores/posts_story_store')
 VisibilityStore     = require('stores/visibility_store')
 PinStore            = require('stores/pin_store')
 UserStore           = require('stores/user_store.cursor')
+RoleStore           = require('stores/role_store.cursor')
 
 PostActions         = require('actions/post_actions')
 VisibilityActions   = require('actions/visibility_actions')
@@ -32,21 +33,29 @@ Toggle              = require('components/form/toggle')
 PinButton           = require('components/pinnable/pin_button')
 StandardButton      = require('components/form/buttons').StandardButton
 UserPreview         = require('components/user/preview')
+LimboApp            = require('components/limbo_app')
 
 # Main
 #
 Post = React.createClass
-  
+
   displayName: 'Post'
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-  statics: 
+  statics:
     getCursor: (company_id) ->
       pins:   PinStore.cursor.items
       users:  UserStore.cursor.items
       flags:  GlobalState.cursor(['stores', 'companies', 'flags', company_id])
 
+    queries:
+      system_roles: ->
+        """
+          Viewer {
+            system_roles
+          }
+        """
 
   # Component specifications
   #
@@ -66,12 +75,7 @@ Post = React.createClass
       isInEditMode:    !storeData.visibility
       arePinsExpanded: location.hash.slice(1) == 'expanded'
       titleFocused:    false
-
-  onGlobalStateChange: ->
-    readOnly = @props.cursor.flags.get('is_read_only')
-    isInEditMode = @state.isInEditMode && !readOnly
-
-    @setState(readOnly: readOnly, isInEditMode: isInEditMode)
+      user:            UserStore.me()
 
   refreshStateFromStores: ->
     @setState(@getStateFromStores(@props))
@@ -92,6 +96,12 @@ Post = React.createClass
     else
       post: null
 
+  fetchViewer: ->
+    GlobalState.fetch(new GlobalState.query.Query("Viewer"))
+
+  fetchSystemRoles: ->
+    GlobalState.fetch(@getQuery('system_roles'))
+
 
   # Helpers
   #
@@ -103,6 +113,13 @@ Post = React.createClass
     options.only_me = 'Only me'
     options
 
+  isEditor: ->
+    !!RoleStore.cursor.items
+      .find (role) =>
+        role.get('owner_id', null)    is null     and
+        role.get('owner_type', null)  is null     and
+        role.get('value')             is 'editor' and
+        role.get('user_id')           is @state.user.get('uuid')
 
   getViewModeOptions: ->
     view: 'View'
@@ -122,10 +139,10 @@ Post = React.createClass
       .map (pin) -> pin.get('user_id')
 
   getPinnersNumberText: (pinnersNumber) ->
-    if pinnersNumber > 0 then "+ #{pinnersNumber} others pinned this post" else null
+    if pinnersNumber > 0 then "+ #{pinnersNumber} others saved this post" else null
 
   getInsightsNumber: ->
-    PinStore.filterInsightsForPost(@props.id).size
+    PinStore.filterInsightsForPost(@props.id).size || 0
 
   update: (attributes) ->
     PostActions.update(@state.post.uuid, attributes)
@@ -138,6 +155,22 @@ Post = React.createClass
         ''
     else
       ''
+
+  getTimelineUrl: ->
+    @state.company.get('company_url') + "#" + @props.id
+
+  goToTimeline: ->
+    location.href = @getTimelineUrl()
+
+  suggestPost: (insight) ->
+    attributes = Immutable.Map(
+      is_suggestion: true
+      pinnable_id:   @props.id
+      pinnable_type: 'Post'
+      parent_id:     insight.get('uuid')
+    ).toJSON()
+
+    PinStore.create(attributes).then(ModalActions.hide, ModalActions.hide)
 
 
   # Handlers
@@ -168,16 +201,23 @@ Post = React.createClass
 
   handleOkClick: (event) ->
     this.refs.okButton.getDOMNode().focus();
-    location.href = @state.company.company_url + "#" + @props.id
-    
+    #@goToTimeline()
+
     unless @state.visibility
       VisibilityActions.create(VisibilityStore.create(), { owner_id: @props.id, value: 'public' })
+
+    setTimeout @goToTimeline, 250
 
   handleKeydown: (event) ->
     if $(@refs.container.getDOMNode()).find(':focus').length > 0
       if event.metaKey && event.keyCode == 13
         event.preventDefault()
-        @handleOkClick()
+        @goToTimeline()
+
+    if $(@refs.container.getDOMNode()).find(':focus').length == 0
+      if event.keyCode == 27
+        event.preventDefault()
+        @goToTimeline()
 
   handleVisibilityChange: (value) ->
     if @state.visibility and @state.visibility.value isnt value
@@ -195,9 +235,21 @@ Post = React.createClass
       $('html,body').animate({ scrollTop: $(".post-pins").offset().top - 30 }, 'slow')
     , 10
 
+  handleSuggestInsightClick: ->
+    ModalActions.show(@renderSuggestChooser())
+
 
   # Lifecycle Methods
   #
+  componentWillMount: ->
+    Promise.all([@fetchSystemRoles(), @fetchViewer()]).then =>
+      if @isEditor() && !@props.cursor.flags.get('is_read_only')
+        @setState readOnly: false, isInEditMode: true
+      else if !@props.cursor.flags.get('is_read_only')
+        @setState readOnly: false, isInEditMode: false
+      else
+        @setState readOnly: true, isInEditMode: false
+
   componentDidMount: ->
     $(document).on 'keydown', @handleKeydown
     PostStore.on('change', @refreshStateFromStores)
@@ -226,7 +278,9 @@ Post = React.createClass
   renderCompanyName: ->
     return null unless @state.company
 
-    <div className="company-name">{ @state.company.name }</div>
+    <div className="company-name">
+      <a href={ @getTimelineUrl() }>Explore { @state.company.name } timeline</a>
+    </div>
 
   renderVisibilityDropdown: ->
     return null unless @state.isInEditMode
@@ -240,7 +294,7 @@ Post = React.createClass
   renderEditControl: ->
     return null if @state.readOnly || @state.isInEditMode
 
-    <StandardButton 
+    <StandardButton
       className = "edit-mode transparent"
       onClick   = { => @handleViewModeChange("edit") }
       text      = "edit" />
@@ -249,12 +303,12 @@ Post = React.createClass
     return null unless @state.company
 
     if @state.isInEditMode
-      <StandardButton 
+      <StandardButton
         className = "transparent"
         iconClass = "cc-icon cc-times"
         onClick   = { => @handleViewModeChange("view") } />
     else
-      <a href={ @state.company.get('company_url') + "#" + @props.id }>
+      <a href={ @getTimelineUrl() }>
         <i className="cc-icon cc-times"></i>
       </a>
 
@@ -268,19 +322,20 @@ Post = React.createClass
   renderExpandButton: (insightsNumber) ->
     return null if @state.arePinsExpanded || insightsNumber <= 0
 
-    <StandardButton 
+    <StandardButton
       className = "cc show-pins"
       onClick   = { @handleExpandPins }
       text      = "Show All #{@getInsightsNumber()}" />
 
   renderPins: ->
-    insightsNumber = @getInsightsNumber() || 0
+    insightsNumber = @getInsightsNumber()
+
     return null if (insightsNumber == 0 || @state.isInEditMode)
 
     className = cx("post-pins": true, expanded: @state.arePinsExpanded)
 
     <section className={ className }>
-      <InsightList 
+      <InsightList
         limit         = { if @state.arePinsExpanded then 0 else 2 }
         pinnable_id   = { @props.id }
         pinnable_type = "Post" />
@@ -288,10 +343,8 @@ Post = React.createClass
     </section>
 
   renderPinners: (pinners) ->
-    return null if @getInsightsNumber() == 0 || @state.isInEditMode
+    return null if (pinnersIds = @gatherPinnersIds()).size == 0 || @state.isInEditMode
 
-    pinnersIds = @gatherPinnersIds()
-    
     pinners = pinnersIds.take(3).map (pinnerId) => @props.cursor.users.get(pinnerId)
     pinnersNumber = pinnersIds.skip(3).size
 
@@ -308,19 +361,47 @@ Post = React.createClass
       { @getPinnersNumberText(pinnersNumber) }
     </section>
 
+  renderSuggestInsightButton: ->
+    return null unless @isEditor()
+
+    <StandardButton
+      className = "cc suggest"
+      text      = "Suggest Insight"
+      onClick   = { @handleSuggestInsightClick } />
+
+  renderSuggestChooser: ->
+    <LimboApp
+      showSearch  = { true }
+      onItemClick = { @suggestPost } />
+
   renderPinInfo: ->
     return null if @state.isInEditMode
 
-    <section className="post-pin-info">
-      { @renderPinners() }
-      <div className="spacer"></div>
-      <ul className="round-buttons">
-        <PinButton 
-          pinnable_id   = { @props.id }
-          pinnable_type = 'Post'
-          title         = { @state.post.title } />
-      </ul>
-    </section>
+    if @gatherPinnersIds().size > 0
+      <section className="post-pin-info">
+        { @renderPinners() }
+        <div className="spacer"></div>
+        { @renderSuggestInsightButton() }
+        <ul className="round-buttons">
+          <PinButton
+            pinnable_id   = { @props.id }
+            pinnable_type = 'Post'
+            title         = { @state.post.title }
+            label         = "Add Insight"
+          />
+        </ul>
+      </section>
+    else
+      <section className="post-pin-info">
+        { @renderSuggestInsightButton() }
+        <PinButton
+          asTextButton   = { true }
+          pinnable_id    = { @props.id }
+          pinnable_type  = 'Post'
+          title          = { @state.post.title }
+          label          = 'Be the first to add an insight'
+        />
+      </section>
 
   renderFooter: ->
     return null unless @state.isInEditMode
@@ -351,7 +432,7 @@ Post = React.createClass
   # Main render
   #
   render: ->
-    return null unless @state.post
+    return null unless @state.post && @state.company
 
     className = cx({
       "post-container": true,
@@ -394,6 +475,7 @@ Post = React.createClass
         <Wrapper className="editor" isWrapped={@state.isInEditMode}>
           <PostsStories
             post_id     = { @state.post.uuid }
+            company_url = { @state.company.company_url }
             company_id  = { @props.company_id }
             readOnly    = { !@state.isInEditMode } />
           <Hint
@@ -403,7 +485,7 @@ Post = React.createClass
 
         { @renderHeaderControls() }
       </header>
-      
+
       { @renderPinInfo() }
 
       <section className="content">

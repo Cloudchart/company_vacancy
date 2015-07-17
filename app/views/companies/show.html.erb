@@ -1,11 +1,11 @@
 <% title @company.name %>
 
-<% set_meta_tags og: {
-  title: decorate(@company).og_name,
-  image: og_image_url(@company.logotype.try(:url)),
-  url: company_url(@company),
-  description: @company.description
-} %>
+<% set_meta_tags_for_social_networks(
+  title: t('meta.company.title', name: @company.name),
+  description: t('meta.company.description', name: @company.name),
+  image: @company.preview.try(:url),
+  url: company_url(@company)
+) %>
 
 <% content_for :header_breadcrumbs do %>
   <%= render 'shared/companies/header_breadcrumbs' %>
@@ -16,3 +16,5 @@
 <% end %>
 
 <% content_for :class_for_main, 'company' %>
+
+<% content_for :class_for_body, 'company-body' %>

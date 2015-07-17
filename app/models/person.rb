@@ -3,6 +3,10 @@ class Person < ActiveRecord::Base
   include Fullnameable
   include Tire::Model::Search
   include Tire::Model::Callbacks
+  include Admin::Person
+
+  before_save :reset_verification, if: :twitter_changed?
+  before_save :verify, if: :should_be_verified?
 
   dragonfly_accessor :avatar
 
@@ -12,15 +16,12 @@ class Person < ActiveRecord::Base
   has_and_belongs_to_many :vacancy_reviews, class_name: 'Vacancy', join_table: 'vacancy_reviewers'
   has_many :block_identities, as: :identity, inverse_of: :identity, dependent: :restrict_with_error
   has_many :quotes, dependent: :restrict_with_error
-  has_many :node_identities, as: :identity, class_name: CloudBlueprint::Identity, dependent: :restrict_with_error
+
+  has_should_markers(:should_be_verified)
 
   validates :full_name, presence: true
 
   scope :later_then, -> (date) { where arel_table[:updated_at].gteq(date) }
-
-
-  before_save :invalidate_verification!
-
 
   settings ElasticSearchNGramSettings do
     mapping do
@@ -44,13 +45,37 @@ class Person < ActiveRecord::Base
     as_json(only: [:uuid, :full_name, :first_name, :last_name, :email, :occupation, :salary])
   end
 
-  private
+private
 
-  def invalidate_verification!
-    if twitter_changed?
-      self.is_verified = false
-    end
+  def reset_verification
+    self.is_verified = false
     true
+  end
+
+  def verify
+    if twitter_changed? && twitter.present?
+      self.transaction do
+        
+        if user_found_by_twitter = User.find_by(twitter: twitter)
+          self.user = user_found_by_twitter
+          self.is_verified = true
+
+          unless (user_found_by_twitter.companies + user_found_by_twitter.accessed_companies).include?(company)
+            # TODO: update, we don't use invite tokens anymore
+            if invite = user_found_by_twitter.company_invite_tokens.select { |token| token.owner_id == company_id }.first
+              value = invite.data[:role]
+            else
+              value = 'public_reader'
+            end
+            user_found_by_twitter.roles.create!(value: value, owner: company)
+          end
+        else
+          self.user = nil
+          # TODO: think about what to do with a role here
+        end
+
+      end
+    end
   end
 
 end

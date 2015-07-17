@@ -1,0 +1,31 @@
+.first-time-visit {
+  background-color: hsl(146, 95%, 75%);
+
+  position: fixed;
+  right: 0;
+  bottom: 24px;
+  left: 0;
+  padding: 30px 60px;
+  margin: 0 auto;
+  z-index: 10;
+  width: 800px;
+
+  @include iphone {
+    bottom: 0;
+    width: 100%;
+  }
+
+  > button.close {
+    @include position(absolute, 10px 10px 0 0);
+    font-size: 20px;
+  }
+
+  > p {
+    font-size: 20px;
+  }
+
+  > footer {
+    @include display(flex);
+    @include justify-content(center);
+  }
+}

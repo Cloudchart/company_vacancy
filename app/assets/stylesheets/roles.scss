@@ -1,0 +1,238 @@
+.access-rights {
+  margin: $default-margin-size auto;
+  padding: $gutter-size;
+  width: 600px;
+
+  .user-list {
+    > ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      > li {
+        @include align-items(center);
+        @include display(flex);
+        @include flex-wrap(wrap);
+
+        padding: $inner-margin-size 0;
+        position: relative;
+
+        > .message {
+          @include display(flex);
+
+          width: 100%;
+
+          p {
+            background-color: $card-color;
+            font-size: $basic-font-size;
+            font-weight: 300;
+            margin-left: 100px;
+            margin-bottom: 10px;
+            padding: $inner-margin-size;
+            position: relative;
+
+            &::before {
+              @include position(absolute, null null -10px 0px);
+
+              border: 5px solid transparent;
+              border-top-color: $card-color;
+              border-left-color: $card-color;
+              content: '';
+              display: block;
+              z-index: 1;  
+            }
+          }
+        }
+
+        > button {
+          @include position(absolute, 0 0 10px -30px);
+
+          height: 25px;
+          text-align: center;
+          width: 25px;
+
+          &.cancel {
+            color: $accented-red-color;
+
+            &:disabled {
+              color: $cloud-button-background-color-disabled;
+            }
+          }
+
+          .cc-icon {
+            font-size: 24px;
+          }
+
+          .fa {
+            position: relative;
+          }
+        }
+
+        > .name {
+          font-size: $big-font-size;
+          max-width: 260px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 260px;
+
+          > .twitter, .status {
+            color: $primary-grey-color;
+            display: block;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+
+        > .role-chooser {
+          font-size: $basic-font-size;
+          position: relative;
+          text-align: left;
+
+          > label {
+            cursor: pointer;
+            margin-right: 10px;
+            position: relative;
+
+            > input {
+              left: -9999px;
+              opacity: 0;
+              position: absolute;
+            }
+
+            > span {
+              color: hsl(60, 2%, 70%);
+            }
+
+            > input:checked + span,
+            > span:hover {
+              color: black;
+            }
+          }
+        }
+      }
+    }
+
+    > button {
+      margin-top: 20px;
+    }
+  }
+
+  > .invite-form {
+    font-size: $basic-font-size;
+
+    > * {
+      padding: 20px 0 0 95px;
+    }
+
+    > header {
+      font-size: $large-font-size;
+      margin-bottom: $default-margin-size;
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+
+      > button {
+        @include position(absolute, 50% 0 0 0px);
+
+        color: $link-color;
+        font-size: 60px;
+        margin-top: -30px;
+      }
+    }
+
+    > form {
+      > fieldset {
+        border: none;
+        padding: 0;
+        margin: 0;
+        margin-top: 5px;
+      }
+
+      > .roles {
+        font-size: 20px;
+        margin-bottom: 15px;
+        width: 320px;
+
+        label {
+          @include display(flex);
+          margin-bottom: 25px;
+        }
+
+        .hint {
+          color: hsl(60, 1%, 61%);
+          font-size: 14px;
+        }
+      }
+
+      > footer {
+        @include display(flex);
+        @include justify-content(space-between);
+
+        padding-left: 0;
+        position: relative;
+
+        > .cc-input-label {
+          @include flex(1);
+
+          margin-right: $inner-margin-size;
+
+          > .cc-input {
+            width: 100%;
+          }
+        }
+
+        > aside {
+          @include position(absolute, 45px 0px 0 0px);
+
+          > .checkbox {
+            input {
+              margin-right: $inner-margin-size;
+            }
+          }  
+
+          > .errors {
+            color: $accented-red-color;
+            font-size: $small-font-size;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+          }        
+        }
+
+        > .cc {
+          height: 40px;
+
+          > div {
+            padding: 0 40px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.invite-actions {
+  @include align-items(center);
+  @include display(flex);
+  @include flex-direction(column);
+
+  padding-top: $card-basic-space;
+
+  > p {
+    font-size: $big-font-size;
+    font-weight: 300;
+
+    margin-bottom: $inner-margin-size;
+  }
+
+  > .buttons {
+    @include display(flex);
+    @include justify-content(space-between);
+
+    width: 250px;
+
+    margin: 5px auto;
+  }
+}

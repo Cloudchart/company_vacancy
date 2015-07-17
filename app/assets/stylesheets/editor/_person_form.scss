@@ -27,13 +27,12 @@
     max-height: 300px;
     overflow: scroll;
     
-    > aside {
-      background-color: hsl(0, 0%, 96%);
-      background-repeat: no-repeat;
+    > .avatar {
       background-size: contain;
+      font-size: 30px;
+      font-weight: 100;
       height: 150px;
       margin-right: 20px;
-      position: relative;
       width: 150px;
       
       > i.fa {
@@ -47,14 +46,6 @@
       
       &:hover > i.fa {
         visibility: visible;
-      }
-      
-      > figure {
-        font-size: 30px;
-        font-weight: 100;
-        line-height: 150px;
-        text-align: center;
-        width: 100%;
       }
       
       > label {

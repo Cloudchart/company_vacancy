@@ -4,21 +4,13 @@ module CloudApi
   class PinsController < CloudApi::ApplicationController
 
     def show
-      @source   = pin_source
+      @source   = Pin
       @starter  = [:find, params[:id]]
 
       respond_to do |format|
-        format.json { render '/main' }
-      end
-    end
-
-    private
-
-    def pin_source
-      if current_user.editor?
-        Pin
-      else
-        current_user.pins
+        format.json do
+          render_cached_main_json(expires_in: 10.minutes)
+        end
       end
     end
 

@@ -1,0 +1,18 @@
+<article class="preview pinboard">
+  <header>
+    <%= @pinboard.title %>
+    &mdash;
+    <span class="author"><%= @pinboard.user.full_name %></span>
+  </header>
+
+  <p class="description">
+    <%= @pinboard.description %>
+  </p>
+
+  <div class="spacer"></div>
+
+  <footer>
+    <span></span>
+    <%= render partial: 'cloudchart' %>
+  </footer>
+</article>

@@ -1,19 +1,28 @@
 class PinboardsController < ApplicationController
+  include FollowableController
 
   before_action :set_pinboard, only: [:show, :settings, :update, :destroy]
 
-  load_and_authorize_resource except: :create
+  load_and_authorize_resource except: [:create, :show, :index]
+  authorize_resource only: :index, class: controller_name.to_sym
 
   after_action :create_intercom_event, only: :create
+  after_action :call_page_visit_to_slack_channel, only: [:show, :index]
 
   def index
     respond_to do |format|
+      format.html
       format.json
     end
   end
 
   def show
+    redirect_to new_collection_invite_path and return if can?(:request_access, @pinboard)
+
+    authorize! :read, @pinboard
+
     respond_to do |format|
+      format.html
       format.json
     end
   end
@@ -89,6 +98,19 @@ private
     return unless should_perform_sidekiq_worker? && @pinboard.valid?
 
     IntercomEventsWorker.perform_async('created-pinboard', current_user.id, pinboard_id: @pinboard.id)
+  end
+
+  def call_page_visit_to_slack_channel
+    case action_name
+    when 'index'
+      page_title = 'collections list'
+      page_url = main_app.collections_url
+    when 'show'
+      page_title = "#{@pinboard.title}'s page"
+      page_url = main_app.collection_url(@pinboard)
+    end
+
+    post_page_visit_to_slack_channel(page_title, page_url)
   end
 
 end

@@ -25,41 +25,41 @@ $cloud-button-icon-margin: $base-unit / 4;
   background-color: $cloud-button-background-color;
   border: $cloud-button-border-width solid $cloud-button-border-color;
   border-radius: $cloud-button-border-radius;
-  
+
   display: inline-block;
-  
+
   color: $cloud-button-color;
   text-decoration: none;
-  
+
   cursor: pointer;
-  
+
   height: $cloud-button-height;
-  
+
   font-size: $cloud-button-font-size;
   font-weight: $cloud-button-font-weight;
   line-height: $cloud-button-height;
-  
+
   padding: $cloud-button-padding;
-  
+
   text-align: center;
   white-space: nowrap;
-  
+
   &.alert {
     background-color: $cloud-button-background-color-alert;
     border-color: $cloud-button-border-color-alert;
   }
-  
+
   &.disabled,
   &[disabled] {
     background-color: $cloud-button-background-color-disabled;
     border-color: $cloud-button-border-color-disabled;
     cursor: not-allowed;
   }
-  
+
   > i {
     line-height: inherit;
   }
-  
+
 }
 
 button.cloud {
@@ -74,8 +74,8 @@ $cc-button-color: hsl(0, 100%, 100%);
 $cc-button-table-background-color: hsl(0, 0%, 98%);
 $cc-button-table-color: hsl(0, 0%, 0%);
 $cc-button-font-size: 15px;
-$cc-button-height: 34px;
-$cc-button-padding: 10px;
+$cc-button-height: 40px;
+$cc-button-padding: 20px;
 $cc-button-wide-padding: 55px;
 
 
@@ -85,21 +85,31 @@ $cc-button-wide-padding: 55px;
   color: $cc-button-color;
   font-size: $cc-button-font-size;
   height: $cc-button-height;
+  line-height: $cc-button-height;
   padding: 0 $cc-button-padding;
   white-space: nowrap;
-  
-  > i.fa {
+
+  i.fa {
     margin-left: 5px;
   }
-  
+
   &.alert {
     background-color: $cc-button-background-color-alert;
   }
 
-  &[disabled] {
+  &[disabled],
+  &.disabled {
     background-color: $cc-button-background-color-disabled;
+    color: $cc-button-color;
+    opacity: 1;
+
+    &.is_followed {
+      background-color: inherit;
+      border: 1px solid #b4b4b1;
+      color: #b4b4b1;
+    }
   }
-  
+
 }
 
 @mixin transparent-button {
@@ -119,8 +129,30 @@ button.transparent {
   }
 }
 
-button.cc {
+button.cc,
+a.cc {
   @include cc-button;
+
+  &.sync {
+    @include transition(width .2s ease-in-out);
+
+    overflow: hidden;
+    position: relative;
+
+    &.no-transition {
+      @include transition(none);
+    }
+
+    > div {
+      @include align-items(center);
+      @include display(flex);
+      @include position(absolute, 0px 0 0 0px);
+
+      height: 100%;
+      padding: 0 $cc-button-padding;
+      width: auto;
+    }
+  }
 
   &.cc-wide {
     padding: 0 $cc-button-wide-padding;
@@ -131,7 +163,7 @@ button.cc {
   }
 
   &.cancel {
-    background-color: hsl(0, 0%, 95%);
+    background-color: $disabled-grey-color;
     color: hsl(0, 0%, 0%);
   }
 
@@ -139,6 +171,11 @@ button.cc {
     i.fa {
       color: hsl(355, 87%, 47%);
     }
+  }
+
+  &.black {
+    background-color: hsl(60, 4%, 11%);
+    color: hsl(146, 95%, 75%);
   }
 }
 
@@ -163,13 +200,13 @@ $orgpad-button-padding-small: 0 10pt;
 @mixin orgpad-button {
   background-color: $orgpad-button-background-color;
   color: $orgpad-button-color;
-  
+
   border: none;
-  
+
   @include display(inline-flex);
   @include justify-content(center);
   @include align-items(center);
-  
+
   font-size: $orgpad-button-font-size;
   font-weight: $orgpad-button-font-weight;
   height: $orgpad-button-height;
@@ -179,16 +216,16 @@ $orgpad-button-padding-small: 0 10pt;
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
-  
-  
+
+
   > * {
     line-height: 1em;
   }
-  
+
   &.square {
     width: $orgpad-button-height;
     padding: 0;
-    
+
     > i {
       margin: 0 auto;
     }
@@ -199,41 +236,41 @@ $orgpad-button-padding-small: 0 10pt;
     background-color: $orgpad-button-color;
     color: $orgpad-button-color-inverse;
   }
-  
+
   &.alert {
     background-color: $orgpad-button-background-color-alert;
-    
+
     &.inverse {
       background-color: $orgpad-button-color;
     }
   }
-  
+
 
   &:disabled {
     background-color: desaturate($orgpad-button-background-color, 100%);
-    
+
     &.alert {
       background-color: desaturate($orgpad-button-background-color-alert, 100%);
     }
   }
-  
+
   &.small {
     font-size: $orgpad-button-font-size-small;
     font-weight: $orgpad-button-font-weight-small;
     height: $orgpad-button-height-small;
     padding: $orgpad-button-padding-small;
     text-transform: uppercase;
-    
+
     &.square {
       width: $orgpad-button-height-small;
       padding: 0;
     }
   }
-  
+
   > i.fa + * {
     margin-left: $orgpad-button-icon-margin;
   }
-  
+
   > * + i.fa {
     margin-left: $orgpad-button-icon-margin;
   }
@@ -253,10 +290,10 @@ div.button {
     height: $orgpad-button-height;
     border: none;
     overflow: hidden;
-    white-space: nowrap;    
+    white-space: nowrap;
     text-align: center;
     line-height: $orgpad-button-height;
-    
+
     > a {
       font-size: $orgpad-button-font-size;
       font-weight: $orgpad-button-font-weight;
@@ -272,25 +309,27 @@ div.button {
 // Round buttons
 //
 
-$round-button-background-color: $disabled-grey-color;
+$round-button-background-color: hsl(60, 2%, 70%);
 $round-button-background-color-active: $accented-green-color;
-$round-button-background-color-disabled: hsla(0, 0%, 93%, .5);
+$round-button-background-color-disabled: hsla(60, 2%, 70%, .5);
 $round-button-color: $accented-white-color;
 $round-button-spacer-size: $inner-margin-size;
 $round-button-size: 24px;
 
-ul.round-buttons {
+.round-buttons,
+.counters {
   list-style: none;
   margin: 0;
   padding: 0;
-  
+
   > li ~ li {
     margin-left: $round-button-spacer-size;
   }
 }
 
 .round-button,
-.round-buttons > li {
+.round-buttons > li,
+.counters > li > .icon {
   background-color: $round-button-background-color;
   color: $round-button-color;
   cursor: pointer;
@@ -298,25 +337,42 @@ ul.round-buttons {
   border-radius: 100%;
   width: $round-button-size;
   height: $round-button-size;
+  position: relative;
   text-align: center;
 
-  &.with-counter {
+  &.with-content {
     border-radius: $round-button-size;
     min-width: $round-button-size;
     padding: 0 7px;
+    text-transform: uppercase;
     width: auto;
   }
 
-  &.active {
+  &.disabled {
+    cursor: default;
+  }
+
+  &.pin-button {
     background-color: $round-button-background-color-active;
   }
-  
+
+  &.active {
+    background-color: transparent;
+    color: $round-button-background-color-active;
+
+    > i {
+      color: $round-button-background-color-active;
+    }
+  }
+
   &.disabled {
     background-color: $round-button-background-color-disabled;
     cursor: default;
   }
-  
-  > i {
+
+  i,
+  > button i {
+    color: $round-button-color;
     font-size: 14px;
     line-height: $round-button-size;
 
@@ -325,5 +381,22 @@ ul.round-buttons {
       font-weight: 700;
       margin-left: 5px;
     }
+  }
+}
+
+.counters > li {
+  color: $round-button-background-color;
+  display: inline-block;
+  font-size: $basic-font-size;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  > .icon {
+    cursor: default;
+    margin-left: 5px;
+  }
+
+  > .text {
+    margin-left: 5px;
   }
 }

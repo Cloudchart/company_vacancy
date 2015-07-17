@@ -1,0 +1,132 @@
+.featured-insights {
+
+  .navigation {
+    position: absolute;
+    bottom: $inner-margin-size;
+  }
+
+  .carousel > .container > li {
+    @include align-items(stretch);
+  }
+
+  .featured-post-preview {
+    @include display(flex);
+
+    background-color: transparent;
+    min-height: 500px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+
+    > .background {
+      @include position(absolute, 0px 0px 0px 0px);
+
+      overflow: hidden;
+
+      > div {
+        @include position(absolute, -10px -15px -15px -10px);
+
+        background-size: cover;
+
+        &.blurred {
+          @include filter(blur(10px));
+        }
+
+        &.darkened::after {
+          @include position(absolute, 0px 0px 0px 0px);
+
+          background-color: $black-color;
+          opacity: 0.2;
+          content: '';
+          z-index: 1;
+        }
+      }
+    }
+
+    > .wrapper {
+      @include align-items(stretch);
+      @include display(flex);
+      @include flex(1);
+
+      margin: 0 auto;
+      max-width: 1024px;
+      padding: 45px;
+      z-index: 1;
+
+      > a {
+        @include display(flex);
+        @include flex(1);
+
+        max-width: 800px;
+
+        > header {
+          @include display(flex);
+          @include flex(1);
+          @include flex-direction(column);
+
+          color: $accented-white-color;
+          margin-right: 60px;
+          z-index: 1;
+
+          > h1, > h2 {
+            margin: 0;
+          }
+
+          > h1 {
+            font-size: $great-font-size;
+            font-weight: 600;
+            line-height: 78px;
+            margin-left: 10px;
+
+            @include respond-to(small) {
+              font-size: $huge-font-size;
+              line-height: 50px;
+            }
+
+            > span {
+              box-shadow: 10px 0 0 $accented-green-color, -10px 0 0 $accented-green-color;
+
+              background-color: $accented-green-color;
+            }
+          }
+
+          > .info {
+            @include display(flex);
+
+            margin-top: 35px;
+
+            .round-buttons > li {
+              margin-right: $inner-margin-size;
+            }
+
+            > .date {
+              font-size: $big-font-size;
+              font-weight: 300;
+            }
+          }
+
+          > .spacer {
+            @include flex(1);
+          }
+
+          > h2 {
+            font-size: $large-font-size;
+            font-weight: 300;
+            text-transform: uppercase;
+          }
+        }
+      }
+
+      .insight {
+        box-shadow: 0 5px 30px hsla(0, 0%, 0%, 0.4);
+
+        margin-top: 7px;
+        width: 280px;
+
+        @include respond-to(small) {
+          width: 230px;
+        }
+      }
+    }
+  }
+}

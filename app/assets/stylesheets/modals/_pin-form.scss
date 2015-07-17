@@ -1,36 +1,27 @@
-.modal-container form.pin,
-.user-profile .settings {
+body ul.modal-stack > li.modal-stack-item > form.pin {
 
-  $pin-form-width: 600px;
+  $pin-form-width: 476px;
 
-  $pin-form-header-background-color: hsl(60, 10%, 95%);
-  $pin-form-header-font-size: 28px;
-  $pin-form-header-title-color: hsl(0, 0%, 60%);
-
-
+  background-color: $white-color;
+  position: relative;
   width: $pin-form-width;
 
-
-  @mixin pin-form-header {
+  > .close {
+    @include align-items(center);
     @include display(flex);
+    @include justify-content(center);
+    @include position(absolute, 20px 20px 0 0);
 
-    background-color: $pin-form-header-background-color;
-    font-size: $pin-form-header-font-size;
-    font-weight: 300;
-    padding: 20px 30px;
+    color: $accented-red-color;
+    height: 20px;
+    width: 20px;
+    font-size: 36px;
 
-    > .title {
-      @include flex(1);
-
-      color: $pin-form-header-title-color;
-      font-weight: 300;
-      margin-left: 20px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    > .cc-icon {
+      position: relative;
+      top: -10px;
     }
   }
-
 
   @mixin pin-form-select-wrapper {
     position: relative;
@@ -44,25 +35,29 @@
     }
   }
 
-
   @mixin pin-form-fieldset {
     border: none;
-    margin: 20px 30px;
+    margin: $default-margin-size;
     padding: 0;
 
     > label {
       @include align-items(center);
       @include display(flex);
 
-      margin-top: 20px;
+      margin-bottom: $default-margin-size;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
 
       > *:not(.title) {
         @include flex(1);
       }
 
       > .title {
-        font-size: 20px;
-        width: 40%;
+        font-size: $basic-font-size;
+        font-weight: 400;
+        width: 90px;
       }
 
       &.comment > .title {
@@ -79,10 +74,12 @@
     }
 
     .user select,
-    .pinboard select {
+    .pinboard select,
+    .cc-typeahead input,
+    .input-wrapper input {
       @include appearance(none);
 
-      background-color: hsl(0, 0%, 95%);
+      background-color: white;
       border: none;
       border-radius: 0;
       font-size: 20px;
@@ -94,8 +91,13 @@
       width: 100%;
     }
 
+    .input-wrapper input {
+      padding: 10px;
+      font-size: 16px;
+    }
+
     .comment textarea {
-      background-color: hsl(0, 0%, 95%);
+      background-color: white;
       border: none;
       font-size: 16px;
       outline: none;
@@ -104,28 +106,42 @@
       width: 100%;
     }
 
-    .comment .counter {
-      @include position(absolute, null null -20px 540px * 0.4);
+    .comment p {
+      font-size: $basic-font-size;
+    }
 
-      color: hsl(145, 60%, 60%);
-      font-size: 12px;
-      font-weight: 600;
+    .comment .counter {
+      color: $link-color;
+      font-size: $basic-font-size;
+      font-weight: 700;
+      margin-top: $inner-margin-size;
+    }
+
+    .unicorn-chooser {
+      position: relative;
+
+      .create-button {
+        @include position(absolute, 0px 10px null null);
+
+        color: $green-color;
+        font-size: $big-font-size;
+        line-height: 40px;
+        height: 40px;
+      }
     }
 
   }
-
 
   @mixin pin-form-footer {
     @include display(flex);
     @include justify-content(space-between);
 
-    margin: 20px 30px;
-    padding: 0 0 20px;
+    margin: $default-margin-size;
   }
 
-
-  > header {
-    @include pin-form-header;
+  > .insight-content {
+    padding: $default-margin-size;
+    padding-right: 40px;
   }
 
   > fieldset {
@@ -145,3 +161,4 @@
   }
 
 }
+

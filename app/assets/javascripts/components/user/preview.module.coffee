@@ -3,8 +3,8 @@
 GlobalState = require('global_state/state')
 
 UserStore   = require('stores/user_store.cursor')
-
 Avatar      = require('components/avatar')
+Tooltip     = require('components/shared/tooltip')
 
 cx          = React.addons.classSet
 
@@ -20,21 +20,27 @@ module.exports = React.createClass
     getCursor: (id) ->
       user:      UserStore.cursor.items.cursor(id)
 
+
+  # Renderers
+  #
+  renderInfo: ->
+    user = @props.cursor.user
+
+    <header>{ user.get('full_name') }</header>
+
+  renderAvatar: ->
+    user = @props.cursor.user
+
+    <Avatar
+      avatarURL  = { user.get('avatar_url') }
+      value      = { user.get('full_name') } />
+
+
   render: ->
     return null unless @props.cursor.user.deref()
 
-    user = @props.cursor.user
-
-    <article 
-      className    = "user-preview"
-      onMouserOver = @handleMouseOver
-      onMouseLeave = @handleMouseLeave >
-      <Avatar
-        avatarURL  = { user.get('avatar_url') }
-        value      = { user.get('full_name') } />
-      <section className='info'>
-        <a href={ user.get('user_url') } className="for-group">
-          <header>{ user.get('full_name') }</header>
-        </a>
-      </section>
-    </article>
+    <a href={ @props.cursor.user.get('user_url') } className="for-group">
+      <Tooltip 
+        element        = { @renderAvatar() }
+        tooltipContent = { @renderInfo() } />
+    </a>

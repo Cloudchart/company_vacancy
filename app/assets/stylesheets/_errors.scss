@@ -1,25 +1,57 @@
-main > article.error {
+main > .error {
   @include display(flex);
+  @include flex(1);
   @include flex-direction(column);
   @include align-items(center);
-  max-width: 100%;
-  margin: $base-unit * 2 0 0 0;
 
-  > section {
-    
-    > h1 {
-      @include cloud-profile-section-header;
-    }
-    
-    > p {
-      font-size: 20pt;
+  background-color: $background-color;
+  height: 100%;
+  padding: 50px 0 50px;
+  width: 100%;
+  
+  > header {
+    > h1, > h2 {
       font-weight: 300;
-      margin: $base-unit * 2 0;
+      margin: 0;
+      text-align: center;
     }
-    
-    > button {
-      @include cloud-button;
+
+    > h1 {
+      font-size: $great-font-size;
+    }
+
+    > h2 {
+      font-size: $huge-font-size;
     }
   }
 
+  > img {
+    margin: 60px 0 45px;
+    height: 190px;
+  }
+}
+
+.modal-stack-item > .error {
+  width: 476px;
+
+  > .content {
+    @include align-items(center);
+    @include display(flex);
+    @include flex-direction(column);
+
+    padding: $default-margin-size;
+    width: 100%;
+
+    > p {
+      font-size: $big-font-size;
+    }
+
+    > figure {
+      background: image_url("error.svg") center center no-repeat;
+      background-size: contain;
+      height: 172px;
+      margin: 40px 0;
+      width: 265px;
+    }
+  }
 }

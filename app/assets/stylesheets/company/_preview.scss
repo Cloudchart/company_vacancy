@@ -12,6 +12,7 @@ div.companies {
 }
 
 .cloud-profile-companies {
+  @include align-items(center);
   @include flex-direction(column);
 
   font-size: $basic-font-size;
@@ -74,6 +75,25 @@ article.companies,
 .company-preview {
   position: relative;
 
+  &.placeholder {
+    background-image: image_url('placeholders/company.png');
+    background-size: cover;
+  }
+
+  > .overlay {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(center);
+    @include position(absolute, 0px 0px 0px 0px);
+
+    background-color: hsla(0, 0%, 0%, 0.5);
+    visibility: hidden;
+  }
+
+  &:hover > .overlay {
+    visibility: visible;
+  }
+
   > a {
     @include display(flex);
     @include flex-direction(column);
@@ -82,7 +102,7 @@ article.companies,
     margin-top: 0;
     outline: none;
     text-decoration: none;
-    width: 100%; 
+    width: 100%;
 
     > .info {
       @include position(absolute, $default-margin-size $default-margin-size 0 0);
@@ -114,11 +134,17 @@ article.companies,
 
         li {
           display: block;
-
-          background-color: $label-color;
-          color: $label-text-color;
+          font-size: 15px;
           margin-left: $inner-margin-size;
-          padding: 5px;
+
+          &.label {
+            background-color: transparent;
+            border: 1px solid hsl(60, 2%, 70%);
+            color: hsl(60, 2%, 70%);
+            padding: 0 10px;
+            height: 40px;
+            line-height: 40px;
+          }
         }
       }
     }
@@ -132,16 +158,11 @@ article.companies,
       width: 100%;
 
       > figure {
+        background-size: contain;
+        background-repeat: no-repeat;
         height: 80px;
-        margin-bottom: $default-margin-size;
-
-        > img {
-          display: block;
-          max-height: 80px;
-          max-width: 80px;
-          height: auto;
-          width: auto;
-        }        
+        width: 80px;
+        margin-bottom: $default-margin-size;     
       }
 
       > h1 {
@@ -208,16 +229,6 @@ article.companies,
             font-weight: 300;
           }
         }
-      }
-
-      .buttons {
-        @include align-items(center);
-        @include display(flex);
-        @include justify-content(space-between);
-
-        margin: auto;
-        margin-bottom: $default-margin-size;
-        width: 230px;
       }
     }
   }

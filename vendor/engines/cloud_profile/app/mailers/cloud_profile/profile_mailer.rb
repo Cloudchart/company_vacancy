@@ -11,7 +11,10 @@ module CloudProfile
     
     def verification_email(token)
       @token = token
-      mail to: token.data[:address]
+      @user  = token.owner
+      mail(to: token.data[:address]) do |format|
+        format.html { render layout: 'user_mailer_' }
+      end
     end
     
     

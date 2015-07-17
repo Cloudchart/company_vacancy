@@ -1,7 +1,5 @@
 tag = React.DOM
 
-SplashComponent = require('components/auth/invite_splash')
-
 email_re = /.+@.+\..+/i
 
 ModalStack  = require("components/modal_stack")
@@ -29,7 +27,6 @@ Component = React.createClass
   
   onInviteDone: (json) ->
     ModalStack.hide()
-    ModalStack.show(SplashComponent({}))
   
   
   onInviteFail: (xhr) ->

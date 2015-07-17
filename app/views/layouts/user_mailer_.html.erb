@@ -1,0 +1,98 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" id="main" style="background-color:#f2f2f2;background-image:linear-gradient(to bottom,#f2f2f2, #fafafa);font-family:'Helvetica Neue', 'Helvetica', sans-serif;font-weight:300;padding-bottom:50px">
+      <tbody>
+        <tr>
+          <td align="center" valign="top">
+            <table border="0" cellpadding="0" cellspacing="0" id="header" style="padding:45px 0;font-weight:300;max-width:650px;min-width:400px;width:90%">
+              <tbody><tr>
+                <td class="logo" align="center" style="padding-bottom:10px">
+                  <a href="<%= main_app.root_url %>" target="_blank">
+                    <img src="<%= main_app.root_url + 'images/logo.png' %>" alt="<%= ENV['SITE_NAME'] %> logo" width="190">
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td class="h1" align="center" style="font-size:36px;padding-bottom:5px">
+                  Bite-size insights for founders
+                </td>
+              </tr>
+              <tr>
+                <td class="h2" align="center" style="font-size:20px">
+                  Get valuable insights by successful founders and investors. Share your own.
+                </td>
+              </tr>
+            </tbody></table>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" valign="top">
+            <table border="0" cellpadding="0" cellspacing="0" id="content" style="background-color:white;font-size:20px;font-weight:300;line-height:26px;max-width:650px;min-width:400px;width:90%">
+              <tbody><tr>
+                <td align="left" mc:edit="content">
+                  <%= yield %>
+                </td>
+              </tr>
+            </tbody></table>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <table border="0" cellpadding="0" cellspacing="0" id="footer" style="font-weight:300;font-size:20px;line-height:26px;max-width:650px;min-width:400px;padding-top:25px;width:90%">
+              <tbody>
+                <tr>
+                  <td>
+                    <table class="social" cellpadding="0">
+                      <tbody><tr>
+                        <td style="padding-right:15px">
+                          <a href="https://www.facebook.com/<%= ENV['FACEBOOK_APP_NAME'] %>" style="color:#3bc462;font-weight:600;text-decoration:none" target="_blank">
+                            <img src="<%= main_app.root_url + 'images/facebook.png' %>" alt="Facebook logo" width="32">
+                          </a>
+                        </td>
+                        <td>
+                          <a href="https://www.twitter.com/<%= ENV['TWITTER_APP_NAME'] %>" style="color:#3bc462;font-weight:600;text-decoration:none" target="_blank">
+                            <img src="<%= main_app.root_url + 'images/twitter.png' %>" alt="Twitter logo" width="32">
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody></table>
+                  </td>
+                  <td align="right">
+                    <table class="links" cellpadding="0" style="font-size:20px">
+                      <tbody>
+                        <tr>
+                          <% if false #TODO: logic for guest user is needed %>
+                            <td style="padding-right:15px">
+                              <%= link_to "About #{ENV['SITE_NAME']}", main_app.company_url(ENV['ABOUT_US_COMPANY_ID']), style: 'color:#3bc462;font-weight:600;text-decoration:none;' %>
+                            </td>
+                          <% end %>
+                          <td>
+                            <%= link_to 'Privacy Policy', main_app.page_url(:privacy), style: 'color:#3bc462;font-weight:600;text-decoration:none;' %>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <% if false # TODO: users#unsubscribe GET needed %>
+                    <td colspan="2" class="subscription">
+                      <p style="margin:0;padding:0;padding-top:25px;padding-bottom:25px">
+                        This email was sent because you were invited to <%= ENV['SITE_NAME'] %>. If you don't want to receive further mail from us, please <%= link_to 'unsubscribe', main_app.unsubscribe_user_url(@user), style: 'color:#3bc462;font-weight:600;text-decoration:none;' %>
+                      </p>
+                    </td>
+                  <% end %>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </body>
+</html>

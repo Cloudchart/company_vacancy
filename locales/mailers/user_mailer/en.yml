@@ -1,12 +1,26 @@
 en:
   user_mailer:
     company_invite:
-      subject: "Invitation from company"
+      subject: "Join %{name}'s company on Insights.VC"
+    pinboard_invite:
+      subject: "Join %{name}'s collection on Insights.VC"
+    request_pinboard_invite:
+      subject: "%{name} would like to join your collection on Insights.VC"
     vacancy_response:
       subject: "Vacancy response"
     app_invite:
-      subject: "Invitation to CloudChart"
+      subject: "Invitation to Insights.VC"
     thanks_for_invite_request:
-      subject: "Thank you for requesting an invitation to CloudChart!"
+      subject: "Thank you for requesting an invitation to Insights.VC"
     company_url_verification:
-      subject: "CloudChart company site URL changed"
+      subject: "Insights.VC company site URL changed"
+    app_invite_:
+      subject: "You're invited to Insights.VC"
+    custom_invite:
+      first_paragraph: "%{inviter_name} have invited you to Insights.VC, an educational tool designed for founders. At Insights.VC, we create unicorn companies' timelines that contain actionable insights by successful founders, investors and experts. Explore their success stories, and use the insights to grow your own business."
+      second_paragraph: "Log in with your Twitter account. Take a really short and helpful tour to unleash the whole power of Insights.VC, or start using it right away:"
+      first_item: "browse unicorns' timelines to see how they came to life and grew."
+      second_item: "discover actionable insights by founders, investors, and experts and use them to grow your business."
+      third_item: "follow companies you're interested in to get their updates and learn from their successes and failures."
+    guest_subscription:
+      subject: "Confirm your subscription on Insights.VC"

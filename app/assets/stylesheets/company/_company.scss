@@ -9,6 +9,10 @@
   padding: $gutter-size 0 $default-margin-size 0;
   position: relative;
 
+  @include respond-to(medium) {
+    width: 600px;
+  }
+
   // Controls
   // 
   > .controls {
@@ -144,6 +148,14 @@
     }
   }
 
+  > .buttons {
+    @include display(flex);
+
+    > button.cc {
+      margin-right: 10px;
+    }
+  }
+
   .is-name-in-logo {
     @include transition(margin .1s ease-out);
   }
@@ -266,10 +278,75 @@
 }
 
 main.company {
+  @include display(flex);
+  @include flex-direction(column);
+  @include flex(1);
+
   background-color: $card-color;
   padding: 0;
 
-  > .wrapper > header {
-    @include company-article-header-2_0;
+  > .wrapper {
+    @include display(flex);
+    @include flex-direction(column);
+    @include flex(1);
+
+    height: 100%;
+
+    > header {
+      @include company-article-header-2_0;
+    }
+
+    > .tabs {
+      li {
+        background-color: $card-color;
+
+        &.active {
+          background-color: $tabs-active-color;
+        }
+      }
+    }
+
+    > .content {
+      @include flex(1);
+
+      background-color: $background-color;
+      padding: $gutter-size;
+      position: relative;
+      width: 100%;
+
+      > .about {
+        background-color: $card-color;
+        position: relative;
+        margin: 0 auto;
+        width: 800px;
+
+        @include respond-to(medium) {
+          width: 550px;
+        }
+
+        > button:first-of-type {
+          @include position(absolute, 10px 10px 0 0);
+        
+          &.edit-mode {
+            color: $link-color;
+            font-size: $small-font-size;
+            text-transform: uppercase;
+          }
+
+          > .cc-times {
+            color: $link-color;
+            font-size: $huge-font-size;
+            width: 20px;
+          }
+        }
+
+        > button.cc {
+          margin-bottom: $default-margin-size;
+          padding: 0 20px;
+          position: relative;
+          left: calc(100% - 80px);
+        }
+      }
+    }
   }
 }

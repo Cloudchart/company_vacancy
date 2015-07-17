@@ -6,11 +6,13 @@ gem 'rails', '~> 4.1.0'
 gem 'mysql2'
 gem 'puma'
 
+gem 'sprockets', '~> 3.0'
+gem 'sprockets-es6'
 gem 'sass-rails', '~> 5.0.0'
 gem 'uglifier', '~> 2.5.0'
 gem 'coffee-rails', '~> 4.0.1'
 gem 'jquery-rails'
-gem 'bourbon'
+gem 'bourbon', '~> 3.0'
 gem 'font-awesome-rails'
 gem 'mini_magick'
 gem 'bcrypt', '~> 3.1.7'
@@ -18,7 +20,7 @@ gem 'oauth2'
 gem 'active_attr'
 gem 'cancancan'
 gem 'tire'
-gem 'rails_admin', '= 0.6.6'
+gem 'rails_admin', '= 0.6.7'
 gem 'warden'
 gem 'kaminari'
 gem 'paper_trail' # tracks changes to model's data
@@ -27,7 +29,7 @@ gem 'dotenv-rails' # loads environment variables from .env
 gem 'sidekiq' # background processing using redis
 gem 'active_model_serializers', '= 0.8.1'
 gem 'dragonfly', '~> 1.0'
-gem 'sprockets-commonjs', git: 'git@github.com:maccman/sprockets-commonjs.git'
+gem 'sprockets-commonjs', git: 'git@github.com:Cloudchart/sprockets-commonjs.git'
 gem 'sprockets-coffee-react'
 gem 'redis-rails'
 gem 'jbuilder'
@@ -38,11 +40,16 @@ gem 'omniauth-twitter'
 gem 'useragent'
 gem 'meta-tags', '~> 2.0.0'
 gem 'friendly_id', '~> 5.1.0'
+gem 'nilify_blanks', '~> 1.2.0'
+gem 'libv8', '~> 3.16'
+gem 'zeroclipboard-rails'
+gem 'yajl-ruby'
+gem 'sinatra', require: nil
+gem 'paranoia', '~> 2.0'
 
 # Engines
 #
 gem 'cloud_profile', path: 'vendor/engines/cloud_profile'
-gem 'cloud_blueprint', path: 'vendor/engines/cloud_blueprint'
 gem 'cloud_api', path: 'vendor/engines/cloud_api'
 
 # Cloudchart Gems

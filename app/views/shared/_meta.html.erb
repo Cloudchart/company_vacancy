@@ -1,7 +1,18 @@
-<%= display_meta_tags site: 'CloudChart', separator: '—', reverse: true %>
+<% set_meta_tags(
+  description: t('meta.app_description'),
+  viewport: 'width=device-width, user-scalable=no',
+  'user-id' => current_user.try(:id),
+  'google-site-verification' => 'BiiA-L9LRx9R-zVP5mRMM_Hhf6C-fI6s_h_qcEJV_jo',
+  og: {
+    site_name: ENV['SITE_NAME']
+  },
+  fb: {
+    app_id: ENV['FACEBOOK_KEY']
+  },
+  ccu: current_user.id
+) %>
+
+<% site = request.path == main_app.root_path ? "#{ENV['SITE_NAME']} — #{t('meta.slogan')}" : ENV['SITE_NAME'] %>
+
+<%= display_meta_tags site: site, separator: '—', reverse: true %>
 <%= csrf_meta_tags %>
-<meta property="og:site_name" content="CloudChart"/>
-<meta property="fb:app_id" content="<%= ENV['FACEBOOK_KEY'] %>" />
-<meta name="viewport" content="width=1200">
-<meta name="user-id" content="<%= current_user.try(:id) %>" />
-<meta name="google-site-verification" content="BiiA-L9LRx9R-zVP5mRMM_Hhf6C-fI6s_h_qcEJV_jo" />

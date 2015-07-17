@@ -5,7 +5,6 @@
 tag = React.DOM
 cx  = React.addons.classSet
 
-CloudFlux           = require('cloud_flux')
 GlobalState         = require('global_state/state')
 
 CompanyStore        = require('stores/company')
@@ -17,31 +16,18 @@ AutoSizingInput     = require('components/form/autosizing_input')
 FollowComponent     = require('components/company/follow')
 Checkbox            = require('components/form/checkbox')
 Toggle              = require('components/form/toggle')
-AccessRights        = require('components/company/access_rights')
 TagsComponent       = require('components/company/tags')
 ContentEditableArea = require('components/form/contenteditable_area')
+InviteActions       = require('components/roles/invite_actions')
+
+ShareButtons        = require('components/shared/share_buttons')
 
 # Main
 #
 Component = React.createClass
 
-  mixins: [CloudFlux.mixins.Actions]
-
   # Helpers
-  # 
-  getViewModeSelect: ->
-    return null unless @props.shouldDisplayViewMode
-
-    <div className="controls">
-      <Toggle
-        checked     = {not @props.readOnly}
-        customClass = "cc-toggle view-mode"
-        onText      = "Edit"
-        offText     = "View"
-        onChange    = {@handleViewModeChange} />
-    </div>
-
-  
+  #
   getLogoBackgroundImage: ->
     if @state.logotype_url then "url(#{@state.logotype_url})" else "none"
   
@@ -79,22 +65,9 @@ Component = React.createClass
   getNameClass: ->
     cx(name: true, inactive: @state.company.is_name_in_logo)
 
-  getShareLink: ->
-    return null if @props.readOnly
-
-    <a href="" className="share-link" onClick={@handleShareClick}>
-      {
-        if !@state.shareLoading
-          <i className="fa fa-send-o"></i>
-        else
-          <i className="fa fa-spinner fa-spin"></i>
-      }
-    </a>
-
-
-  getFollowButoon: ->
+  getFollowButton: ->
     return null unless @state.cursor.flags.get('can_follow')
-    <FollowComponent key={@props.uuid}, is_followed={@state.cursor.flags.get('is_followed')} />
+    <FollowComponent uuid={@props.uuid}, is_followed={@state.cursor.flags.get('is_followed')} />
 
   update: (attr_name) ->
     return if @props.readOnly
@@ -110,32 +83,11 @@ Component = React.createClass
     CompanyActions.update(@props.uuid, { logotype: file })
 
 
-  getCloudFluxActions: ->
-    'company:access_rights:fetch:done': @handleAccessRightsDone
-
-
   # Handlers
   # 
-  handleAccessRightsDone: -> 
-    setTimeout =>
-      @setState(shareLoading: false)
-      ModalActions.show(<AccessRights uuid={@props.uuid} />)
-    
-
   handleRemoveLogotype: ->
     return if @props.readOnly
     CompanyActions.update(@props.uuid, { logotype_url: null, remove_logotype: true })
-
-
-  handleShareClick: (event) ->
-    event.preventDefault()
-
-    if GlobalState.cursor(['flags', 'companies']).get('isAccessRightsLoaded')
-      ModalActions.show(<AccessRights uuid={@props.uuid} />)
-    else
-      @setState(shareLoading: true)
-      CompanyActions.fetchAccessRights(@props.uuid)
-
 
   handleFieldBlur: (attr_name, event) ->
     @update(attr_name) unless @state[attr_name] == @state.company[attr_name]
@@ -149,9 +101,6 @@ Component = React.createClass
     file = event.target.files[0]
     @setState({ logotype_url: URL.createObjectURL(file) })
     @updateLogotype(file)
-
-  handleViewModeChange: (checked) ->
-    @props.onChange({ readOnly: !checked })
   
   handleFieldKeyUp: (event) ->
     event.target.blur() if event.key == 'Enter'
@@ -163,21 +112,31 @@ Component = React.createClass
   onIsNameInLogoChange: (value) ->
     CompanyActions.update(@props.uuid, { is_name_in_logo: value })
 
+
   # Lifecycle Methods
   # 
+  componentDidMount: ->
+    CompanyStore.on('change', @refreshStateFromStores)
+
   componentWillReceiveProps: (nextProps) ->
     URL.revokeObjectURL(@state.logotype_url)
     @setState(@getStateFromStores(nextProps))
 
+  componentWillUnmount: ->
+    CompanyStore.off('change', @refreshStateFromStores)
+
 
   # Component Specifications
   # 
+  refreshStateFromStores: ->
+    @setState(@getStateFromStores(@props))
+
   getStateFromStores: (props) ->
     company = CompanyStore.get(props.uuid)
 
     company: company
-    name: company.name
-    logotype_url: company.logotype_url
+    name: company.name if company
+    logotype_url: company.logotype_url if company
 
   getInitialState: ->
     _.extend @getStateFromStores(@props),
@@ -185,9 +144,19 @@ Component = React.createClass
       cursor:
         flags: GlobalState.cursor(['stores', 'companies', 'flags', @props.uuid])
 
+
+  renderTags: ->
+    return null if @props.readOnly
+
+    <TagsComponent 
+      taggable_id = { @props.uuid }
+      taggable_type = 'Company'
+      readOnly = { @props.readOnly } />
+
   render: ->
+    return null unless @state.company
+
     <header>
-      { @getViewModeSelect() }
       { @getLogo() }
 
       {
@@ -212,8 +181,6 @@ Component = React.createClass
                 placeholder = 'Company name'
                 readOnly = { @props.readOnly }
               />
-
-            { @getShareLink() }
           </label>
       }
 
@@ -226,13 +193,14 @@ Component = React.createClass
         />
       </label>
 
-      <TagsComponent 
-        taggable_id = { @props.uuid }
-        taggable_type = 'Company'
-        readOnly = { @props.readOnly }
-      />
+      { @renderTags() }
       
-      { @getFollowButoon() }
+      <div className="buttons">
+        { @getFollowButton() }
+        <ShareButtons object = @state.company.toJS() />
+      </div>
+
+      <InviteActions ownerId = { @props.uuid } ownerType = 'Company' />
     </header>
 
 

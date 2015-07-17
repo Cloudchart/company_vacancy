@@ -1,0 +1,10 @@
+<% set_meta_tags_for_social_networks(
+  title:@pin.post.present? ? "#{@pin.post.company.name}, #{@pin.post.title}" : "Insight by #{@pin.user.full_name}",
+  description: @pin.parent.present? ? @pin.parent.content : @pin.content,
+  image: @pin.parent.present? ? @pin.parent.preview.try(:url) : @pin.preview.try(:url),
+  url: insight_url(@pin)
+) %>
+
+<% content_for :class_for_main, 'insight' %>
+
+<div data-react-class="components/insight_app" data-react-props="<%= { uuid: @pin.id }.to_json %>"></div>

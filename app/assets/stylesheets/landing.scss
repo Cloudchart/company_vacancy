@@ -1,204 +1,234 @@
-@import 'bourbon';
-@import 'normialize';
-@import 'proxima-nova';
-@import 'font-awesome';
-@import 'variables';
-@import 'modal';
-@import 'mixins/landing';
-@import 'mixins/form_2';
-@import 'mixins/button';
-@import 'invite_queue';
-
-$base-unit: 20px;
-$base-font-size: 15px;
-$base-font-family: 'proxima-nova';
-
-
-*,
-*::before,
-*::after {
-  @include box-sizing(inherit);
-}
-
-
-html {
-  @include box-sizing(border-box);
-
-  height: 100%;
-  min-width: 1024px;
-}
-
-
-body {
-  @include display(flex);
-  @include flex-direction(column);
-
-  font-family: $base-font-family;
-  font-size: $base-font-size;
+.landing-wrapper {
   min-height: 100%;
 
-
-  > header {
+  > .landing {
     @include align-items(center);
     @include display(flex);
-    @include justify-content(space-between);
-  }
+    @include flex-direction(column);
 
+    background-color: $background-color;
 
-  > main {
-    @include flex(1);
+    > header {
+      @include linear-gradient(to bottom, hsla(0, 0%, 95%, 0), #{$background-color});
+      padding: 25px 0;
 
-    position: relative;
-  }
+      > h1, > h2 {
+        font-weight: 300;
+        margin: 0;
+        text-align: center;
+      }
 
+      > h1 {
+        font-size: $great-font-size;
+        margin-left: 25px;
+        margin-right: 25px;
+      }
 
-  > footer {
-    @include align-items(center);
-    @include display(flex);
-    @include justify-content(center);
-  }
-}
-
-
-a {
-  color: hsl(138, 63%, 37%);
-  text-decoration: none;
-}
-
-
-// Header
-//
-body > header {
-  background-color: hsl(136, 52%, 51%);
-  color: hsl(0, 0%, 100%);
-  height: $base-unit * 4;
-  padding: 0 $base-unit * 2;
-
-  > figure {
-    @include align-items(center);
-    @include display(flex);
-
-    font-size: $large-font-size;
-    font-weight: 300;
-    height: 37px;
-
-    > img {
-      height: 100%;
-      width: 55px;
+      > h2 {
+        font-size: 30px;
+        max-width: 1000px;
+        margin-left: 25px;
+        margin-right: 25px;
+      }
     }
 
-    > figcaption {
-      margin-left: $inner-margin-size;
+    > .producthunt {
+      background-color: hsl(12, 67%, 53%);
+      color: white;
+      font-weight: 300;
+      margin: 24px 0 0;
+      padding: 24px 32px;
+      position: relative;
+      text-align: center;
+      max-width: 1000px;
 
-      > strong {
-        font-weight: 700;
+      > header {
+        font-size: 54px;
+        text-align: left;
+      }
+
+      > p {
+        font-size: 36px;
+        line-height: 44px;
+        margin-bottom: 25px;
+        text-align: left;
+      }
+
+      > .ph-logo {
+        background: asset_url('producthunt.png') no-repeat center center;
+        background-size: contain;
+        display: block;
+        margin: 25px auto;
+        height: 130px;
+        width: 130px
+      }
+
+      > a.close {
+        @include position(absolute, 15px 15px 0 0);
+        color: white;
+        font-size: 24px;
+        line-height: 18px;
+      }
+
+      > a.button {
+        background-color: white;
+        color: hsl(12, 67%, 53%);
+        display: inline-block;
+        font-size: 36px;
+        margin: 0 auto;
+        padding: 20px 25px;
+      }
+    }
+
+    > .featured-insights {
+      @include flex(1);
+    }
+
+    > .authorized {
+      margin-top: $gutter-size;
+
+      > section {
+        > header, > p {
+          font-weight: 300;
+          margin-left: $gutter-size;
+          padding: 0;
+        }
+
+        > header {
+          font-size: $huge-font-size;
+        }
+
+        > p {
+          font-size: $big-font-size;
+        }
+      }
+
+      > section > .companies-list {
+        margin-top: $gutter-size/2;
+      }
+    }
+
+    > footer,
+    > .guide > footer {
+      margin: 45px 0;
+      text-align: center;
+
+      > a.cc {
+        background-color: $accented-green-color;
+        border: none;
+        color: $accented-white-color;
+        display: inline-block;
+        font-size: $huge-font-size;
+        font-weight: 300;
+        height: 82px;
+        line-height: 82px;
+        padding: 0 34px;
+      }
+    }
+
+    > .guide {
+      @include align-items(stretch);
+      @include display(flex);
+      @include flex-direction(column);
+
+      width: 100%;
+
+      > footer {
+        margin-top: 5px;
+      }
+
+      > section {
+        @include align-items(center);
+        @include display(flex);
+        @include flex-direction(column);
+
+        padding: 40px;
+
+        &:first-child {
+          background-color: hsl(60, 9%, 98%);
+        }
+
+        > header {
+          font-size: $huge-font-size;
+          font-weight: 300;
+          line-height: 50px;
+        }
+
+        > p,
+        .insight-guide > p {
+          font-size: $large-font-size;
+          font-weight: 300;
+          line-height: 32px;
+          margin: 0;
+          max-width: 800px;
+          padding: 0;
+          text-align: center;
+        }
+
+        > .insight-guide {
+          @include align-items(center);
+          @include display(flex);
+          @include justify-content(space-between);
+
+          margin-top: 40px;
+          max-width: 1024px;
+          width: 100%;
+
+          > p {
+            max-width: 450px;
+            text-align: left;
+          }
+        }
+
+        .insight {
+          .shervin-pishevar figure {
+            background-image: image_url('guide/shervin_pishevar.png');
+          }
+
+          .round-buttons .active {
+            cursor: default;
+          }
+        }
+
+        > .companies-list {
+          @include display(flex);
+
+          margin-top: 40px;
+
+          > .cloud-column > .company-preview {
+            height: 426px;
+            margin-right: 24px;
+
+            &.tesla {
+              .logo {
+                background-image: image_url('guide/tesla_logo.png');
+              }
+
+              .elon-musk figure {
+                background-image: image_url('guide/elon_musk.jpg');
+              }
+            }
+
+            &.opsware {
+              .logo {
+                background-image: image_url('guide/opsware_logo.jpg');
+              }
+
+              .ben-horowitz figure {
+                background-image: image_url('guide/ben_horowitz.png');
+              }
+
+              .tim-howes figure {
+                background-image: image_url('guide/tim_howes.png');
+              }
+            }
+
+            &:last-child {
+              margin-right: 0;
+            }
+          }
+        }
       }
     }
   }
-
-  > .auth a {
-    color: hsl(0, 0%, 100%);
-    font-size: $base-unit * .9;
-    font-weight: 600;
-  }
 }
-
-
-// Main
-//
-body > main {
-
-  > section.about {
-    background-color: hsl(0, 0%, 96%);
-    font-size: $base-unit;
-    font-weight: 300;
-    padding: $base-unit * 3 0;
-    text-align: center;
-
-    > header {
-      font-size: 2em;
-      font-weight: 400;
-    }
-
-    > p {
-      font-size: 1.2em;
-      line-height: 1.25em;
-      margin: $base-unit * 1.5 0 0;
-    }
-  }
-
-  > section.picture {
-    margin: $base-unit * 3 0;
-
-    > figure {
-      margin: 0 auto;
-      width: 700px;
-    }
-  }
-
-  > section.tentative {
-    font-size: $base-unit;
-    font-weight: 300;
-    padding: 0;
-    text-align: center;
-
-    > p {
-      font-size: 1.2em;
-      line-height: 1.25em;
-      margin: $base-unit auto 0;
-    }
-  }
-
-
-  > section.invite {
-    margin: $base-unit * 2 0 0;
-    text-align: center;
-
-    > button {
-      background-color: hsl(136, 52%, 51%);
-      border: none;
-      color: hsl(0, 100%, 100%);
-      font-size: $base-unit * 1.5;
-      font-weight: 300;
-      height: 60px;
-      padding: 0 60px;
-    }
-  }
-
-}
-
-// Footer
-//
-body > footer > ul {
-  list-style: none;
-  margin: 0;
-  padding: $base-unit * 2 0;
-
-  > li {
-    display: inline-block;
-    margin: 0 $base-unit / 1.5;
-    padding: 0;
-  }
-
-  a {
-    color: hsl(0, 0%, 78%);
-    font-size: $base-font-size * 1.25;
-    font-weight: 300;
-    text-decoration: none;
-  }
-}
-
-// Env dependent
-//
-@each $env, $color in (development, hsl(136, 52%, 51%)),
-                      (staging, hsl(356, 82%, 65%)),
-                      (production, hsl(136, 52%, 51%)) {
-  body.#{$env} {
-    > header {
-      background-color: $color;
-    }
-  }
-}
-
-
-@import 'interviews';

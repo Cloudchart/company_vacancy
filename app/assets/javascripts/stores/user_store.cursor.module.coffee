@@ -4,6 +4,22 @@
 GlobalState   = require('global_state/state')
 ViewerQuery   = new GlobalState.query.Query("Viewer")
 
+RoleStore = require('stores/role_store.cursor')
+
+
+CurrentUserId = null
+
+
+# waiting for shapers \_(@)_/
+findSystemRoleForUser = (user, value) ->
+  RoleStore.cursor.items
+    .find (role) ->
+      role.get('owner_id', null) is null and
+      role.get('owner_type', null) is null and
+      role.get('user_id') is user.get('uuid') and
+      role.get('value') is value
+
+
 # Exports
 #
 module.exports = GlobalState.createStore
@@ -14,6 +30,8 @@ module.exports = GlobalState.createStore
   collectionName: 'users'
   instanceName:   'user'
 
+  populateKeys: ['viewers', 'viewer']
+
 
   syncAPI: require('sync/user_sync_api')
 
@@ -23,16 +41,12 @@ module.exports = GlobalState.createStore
 
 
   me: ->
-    me = @cursor.items.cursor('me')
-
-    GlobalState.fetch(ViewerQuery).then (json) =>
-      @cursor.items.set('me', json.users[0]) unless me.deref()
-
-    me
+    CurrentUserId ||= document.querySelector('meta[name="ccu"]').content
+    @cursor.items.cursor(CurrentUserId)
 
 
   unicorns: ->
-    roles = require('stores/role_store.cursor').cursor.items
+    roles = RoleStore.cursor.items
 
     @cursor.items
 
@@ -42,3 +56,20 @@ module.exports = GlobalState.createStore
           role.get('owner_id',   null)  is null       and
           role.get('value')             is 'unicorn'  and
           role.get('user_id')           is user.get('uuid')
+
+
+  isAdmin: (user = null) ->
+    user ||= @me()
+    !!findSystemRoleForUser(user, 'admin')
+
+  isEditor: (user = null) ->
+    user ||= @me()
+    !!findSystemRoleForUser(user, 'editor')
+
+  isUnicorn: (user = null) ->
+    user ||= @me()
+    !!findSystemRoleForUser(user, 'unicorn')
+
+  isGuest: (user = null) ->
+    user ||= @me()
+    !!findSystemRoleForUser(user, 'guest')

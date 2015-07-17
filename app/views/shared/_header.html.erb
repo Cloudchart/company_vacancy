@@ -1,29 +1,53 @@
-<div class="local-menu">
-  <% if content_for(:header_breadcrumbs).present? %>
-    <%= yield :header_breadcrumbs %>
-  <% else %>
-    <%= link_to "", main_app.root_path, class: 'logo' %>
-    <div data-header-react-mount-point>
-      <%= link_to main_app.root_path, class: 'title' do %>
-        <%= app_name_for_header %>
-      <% end %>
-    </div>
-  <% end %>
+<%
 
-  <%= yield :header_menu %>
-</div>
+links = []
+user = {}
 
-<div class="spacer"></div>
+if can?(:index, :pinboards)
+  links << {
+    title: 'Collections',
+    url: current_page?(main_app.collections_path) ? nil : main_app.collections_path
+  }
+end
 
-<% if user_authenticated? %>
-  <ul class="main-menu">
-    <li>
-      <%= link_to_unless_current 'Companies', main_app.companies_path %>
-    </li>
-    <li>
-      <%= link_to_unless_current 'Insights', main_app.insights_path %>
-    </li>
-  </ul>
-<% end %>
+if can?(:index, :companies)
+  links << {
+    title: 'Companies',
+    is_beta: true,
+    url: current_page?(main_app.companies_path) ? nil : main_app.companies_path
+  }
+end
 
-<%= render partial: 'shared/header_authentication' %>
+if can?(:manage, :invite)
+  links << {
+    title: 'Invites',
+    icon: 'fa fa-user-plus',
+    url: current_page?(main_app.invites_path) ? nil : main_app.invites_path
+  }
+end
+
+if can?(:access, :limbo)
+  links << {
+    title: 'Limbo',
+    icon: 'fa fa-leanpub',
+    url: current_page?(main_app.limbo_index_path) ? nil : main_app.limbo_index_path
+  }
+end
+
+if user_authenticated?
+  user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) }
+end
+
+%>
+
+<%= content_tag :header, nil, data: {
+  "react-class" => "components/header_app",
+  "react-props" => {
+    title: app_name_for_header,
+    root_url: main_app.root_path,
+    login_url: cloud_profile.login_path,
+    logout_url: cloud_profile.logout_path,
+    links: links,
+    user: user
+  }
+} %>

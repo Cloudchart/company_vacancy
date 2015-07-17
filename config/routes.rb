@@ -1,20 +1,14 @@
 Cloudchart::Application.routes.draw do
-  # Root
-  #
   root to: 'welcome#index'
-
-  # Errors
-  #
-  match '/404', to: 'errors#not_found', via: [:get, :post]
-  match '/500', to: 'errors#internal_error', via: :all
-  match '/old', to: 'errors#old_browsers', via: [:get], as: :old_browsers
 
   # Engines
   #
   mount RailsAdmin::Engine, at: '/admin'
   mount CloudProfile::Engine, at: '/'
-  mount CloudBlueprint::Engine, at: '/'
   mount CloudApi::Engine, at: '/api'
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web, at: '/sidekiq', constraints: Cloudchart::AdminConstraint.new
 
   # Concerns
   #
@@ -34,12 +28,6 @@ Cloudchart::Application.routes.draw do
     get :verify_site_url, on: :member
     get :download_verification_file, on: :member
     get :finance, on: :member
-    get :settings, on: :member
-    get :access_rights, on: :member
-
-    resources :vacancies, except: :edit, shallow: true, concerns: [:statusable] do
-      match :update_reviewers, on: :member, via: [:put, :patch]
-    end
 
     resources :events, shallow: true do
       post :verify, on: :member
@@ -54,7 +42,6 @@ Cloudchart::Application.routes.draw do
     resources :people, except: [:new, :edit], shallow: true
     resources :blocks, only: :create, type: :company
     resources :stories, only: [:show, :index, :create, :update], shallow: true
-    get 'stories/:story_name', to: 'posts#index', as: :story
   end
 
   resources :blocks, only: [:update, :destroy] do
@@ -74,38 +61,25 @@ Cloudchart::Application.routes.draw do
     resources :posts_stories, only: :create, as: :post_posts_stories
   end
 
-  scope 'vacancies/:vacancy_id' do
-    resources :vacancy_responses, path: 'responses', only: [:index, :new, :create]
-  end
-
-  resources :vacancy_responses, only: [:show, :destroy], concerns: [:statusable] do
-    post 'vote/:vote', on: :member, action: :vote, as: :vote
-    post :ban_user, on: :member
-  end
-
-  resources :features do
-    post :vote, on: :member
-  end
-
   resources :interviews, only: [:show] do
     patch :accept, on: :member
   end
 
-  resources :pinboards do
+  resources :pinboards, concerns: [:followable] do
     get :settings, on: :member
     resources :roles, only: [:update, :destroy]
-
-    resources :invites, only: [:show, :create, :destroy], controller: 'pinboards/invites' do
-      match :resend, on: :member, via: [:put, :patch]
-      post :accept, on: :member
-    end
+    resources :invites, only: [:create, :update, :destroy], controller: 'pinboards/invites'
   end
 
-  resources :pins, except: [:index]
-  resources :posts_stories, only: [:update, :destroy]
+  resources :pins, except: [:index] do
+    match :approve, on: :member, via: [:put, :patch]
+  end
 
   resources :users, only: [:show, :update], concerns: [:followable] do
     get :settings, on: :member
+    patch :subscribe, on: :member
+    delete :unsubscribe, on: :member
+    resources :landings, only: :create
   end
 
   resources :emails, only: [:create, :destroy] do
@@ -113,20 +87,57 @@ Cloudchart::Application.routes.draw do
     match :resend_verification, on: :member, via: [:put, :patch]
   end
 
+  resources :invites, only: [:index, :create] do
+    match :email, on: :member, via: [:put, :patch]
+  end
+
+  resources :roles, only: [:create, :update, :destroy, :show] do
+    match :accept, on: :member, via: [:put, :patch]
+  end
+
+  resources :guest_subscriptions, only: :create do
+    get :verify, on: :member
+  end
+
+  resources :posts_stories, only: [:update, :destroy]
+  resources :activities, only: [:create]
   resources :quotes, only: [:show]
   resources :visibilities, only: :update
   resources :subscriptions, only: [:create, :update, :destroy]
-  resources :comments, only: [:create, :update, :destroy]
-  resources :roles, only: [:update, :destroy]
+  resources :tokens, only: :show
+  resources :limbo, only: :index
+  resources :landings, only: [:show, :update, :destroy]
 
   # Custom
   #
-  get '/insights', to: "pins#index"
-  get ':id', to: 'pages#show', as: :page
-  delete 'logout', to: 'cloud_profile/authentications#destroy', as: 'logout'
+  get '/collections', to: 'pinboards#index', as: :collections
+  get '/collections/:id', to: 'pinboards#show', as: :collection
+  get '/collections/:id/invite', to: 'pinboards/invites#new', as: :new_collection_invite
+
+  get '/insights/:id', to: 'pins#show', as: :insight
+
+  post '/users/:user_id/greeting', to: 'tokens#create_greeting'
+  match '/user_greeting/:id', to: 'tokens#update_greeting', via: [:put, :patch]
+  delete '/user_greeting/:id', to: 'tokens#destroy_greeting'
+  delete '/user_welcome_tour/:id', to: 'tokens#destroy_welcome_tour'
+  delete '/user_insight_tour/:id', to: 'tokens#destroy_insight_tour'
+
+  delete '/logout', to: 'cloud_profile/authentications#destroy', as: :logout
+  get '/old', to: 'welcome#old_browsers', as: :old_browsers
+  get '/subscribe', to: 'welcome#subscribe', as: :subscribe
+  get '/sandbox', to: 'sandbox#index' if Rails.env.development?
+
+  # Preview
+  #
+  get '/insights/:id/preview', to: 'previews#insight', as: :insight_preview
+  get '/companies/:id/preview', to: 'previews#company', as: :company_preview
+  get '/collections/:id/preview', to: 'previews#pinboard', as: :pinboard_preview
+  get '/users/:id/preview', to: 'previews#user', as: :user_preview
 
   # Twitter OAuth
   #
+  get '/auth/failure', to: 'auth#failure'
+
   get '/auth/twitter', as: :twitter_auth
   get '/auth/twitter/callback', to: 'auth#twitter'
 
@@ -134,5 +145,9 @@ Cloudchart::Application.routes.draw do
   put '/auth/queue', to: 'auth#update'
 
   post '/auth/developer/callback', to: 'auth#developer'
+
+  # Should be at the end
+  # 
+  get ':id', to: 'pages#show', as: :page
 
 end

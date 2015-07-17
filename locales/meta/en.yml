@@ -1,0 +1,13 @@
+en:
+  meta:
+    slogan: "Bite-size insights for founders"
+    app_description: "Bite-size insights for founders. Collect insights by successful founders, investors and experts. Add your own. Share with your team and the community."
+    company:
+      title: "%{name}'s timeline on Insights.VC"
+      description: "Explore %{name}'s timeline on Insights.VC to find out insights on how it's growing. Collect insights by successful founders and use them to solve problems you face every day."
+    pinboard:
+      title: "“%{title}” on Insights.VC"
+      description: "%{title} is a collection of insights for founders created on Insights.VC. Discover more collections, create your own, share with your team and the community."
+    user: 
+      title: "%{name} @%{twitter} at Insights.VC"
+      description: "%{name} collects insights for founders on Insights.VC. Explore helpful insight collections and join to create your own."

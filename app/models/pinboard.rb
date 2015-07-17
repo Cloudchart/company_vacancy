@@ -1,10 +1,14 @@
 class Pinboard < ActiveRecord::Base
   include Uuidable
+  include Previewable
+  include Preloadable
   include Tire::Model::Search
   include Tire::Model::Callbacks
+  include Admin::Pinboard
 
-  ACCESS_RIGHTS = [:public, :protected, :private].freeze
-  INVITABLE_ROLES = [:editor, :reader, :follower].freeze
+  ACCESS_RIGHTS     = [:public, :protected, :private].freeze
+  INVITABLE_ROLES   = [:editor, :reader].freeze
+  ACCESS_ROLE       = :reader
 
   validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
   validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }
@@ -16,10 +20,13 @@ class Pinboard < ActiveRecord::Base
   has_many :posts, through: :pins, source: :pinnable, source_type: 'Post'
   has_many :users, through: :roles
   has_many :tokens, as: :owner, dependent: :destroy
+  has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
+
+  scope :important, -> { where(is_important: true) }
 
   # Roles on Users
   #
-  { readers: [:reader, :editor], writers: :editor, followers: :follower }.each do |scope, role|
+  { readers: [:reader, :editor], writers: :editor }.each do |scope, role|
     has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, as: :owner, class_name: Role
     has_many :"#{scope}", through: :"#{scope}_pinboards_roles", source: :user
   end
@@ -47,7 +54,7 @@ class Pinboard < ActiveRecord::Base
         size 50
       end
     end
-    
+
   end # of class methods
 
   sifter :system do
@@ -64,6 +71,7 @@ class Pinboard < ActiveRecord::Base
     where access_rights: :public, user_id: nil
   end
 
+
   scope :readable, -> do
     joins { roles.outer }.where { roles.value.eq('reader') }
   end
@@ -73,7 +81,15 @@ class Pinboard < ActiveRecord::Base
   end
 
   def invite_tokens
-    tokens.where(name: :invite)
+    tokens.select { |token| token.name == 'invite' }
+  end
+
+  def public?
+    access_rights == 'public'
+  end
+
+  def protected?
+    access_rights == 'protected'
   end
 
 end

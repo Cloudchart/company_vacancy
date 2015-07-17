@@ -1,6 +1,6 @@
 json.(post, :uuid)
 json.(post, :owner_id, :owner_type)
-json.(post, :title)
+json.(post, :title, :story_ids)
 json.(post, :created_at, :updated_at)
 
 json.effective_from post.effective_from.try(:to_date)

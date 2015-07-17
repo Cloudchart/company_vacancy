@@ -28,7 +28,8 @@ module CloudProfile
     def destroy
       warden.logout(:user)
       cookies.delete :user_id
-      redirect_to main_app.root_path
+      session[:after_logout] = true
+      redirect_to :back
     end
 
   end

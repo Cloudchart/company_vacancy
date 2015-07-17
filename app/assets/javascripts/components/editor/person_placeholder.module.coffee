@@ -52,12 +52,12 @@ PersonPlaceholder = React.createClass
 
   render: ->
     <div className="person placeholder-wrapper editable">
-      <aside className="avatar">
-        <figure onClick={ @handleAddButtonClick }>
+      <figure className="avatar">
+        <figcaption onClick={ @handleAddButtonClick }>
           <i className="cc-icon cc-plus" />
           <i className="hint">Add person</i>
-        </figure>
-      </aside>
+        </figcaption>
+      </figure>
     </div>
 
 

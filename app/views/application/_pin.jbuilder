@@ -1,4 +1,9 @@
-json.(pin, :uuid, :user_id, :parent_id, :pinboard_id)
+json.(pin, :uuid, :user_id, :parent_id, :pinboard_id, :author_id)
 json.(pin, :pinnable_id, :pinnable_type)
-json.(pin, :content)
+json.(pin, :content, :origin)
+json.(pin, :pins_count, :weight)
+json.(pin, :is_approved, :is_suggestion)
 json.(pin, :created_at, :updated_at)
+json.(pin, :is_origin_domain_allowed)
+
+json.url main_app.insight_url(pin)

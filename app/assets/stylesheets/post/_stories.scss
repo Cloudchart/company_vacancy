@@ -1,0 +1,51 @@
+main.company .stories {
+  margin: 0 auto;
+  width: 1024px;
+
+  ul.stories.list {
+    @include flex-ul;
+    @include display(flex);
+    @include flex-wrap(wrap);
+
+    > li {
+      @include display(flex);
+      @include flex-direction(column);
+
+      background-color: white;
+      border: 1px solid hsl(0, 0%, 96%);
+      margin: 0 20px 20px 0;
+      padding: 20px;
+      cursor: pointer;
+      width: 320px;
+      height: 190px;
+
+      &.inactive {
+        opacity: 0.5;
+      }
+
+      > header {
+        @include display(flex);
+
+        margin-bottom: 20px;
+
+        > h3 {
+          color: $link-color;
+          font-size: 20px;
+          font-weight: 600;
+          margin: 0;
+        }
+      }
+
+      > div.content {
+        @include flex(1);
+        font-size: 15px;
+      }
+
+      > footer {
+        font-size: 15px;
+      }
+
+    }
+  }
+
+}

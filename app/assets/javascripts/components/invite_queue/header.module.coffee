@@ -25,7 +25,7 @@ module.exports = React.createClass
         <strong>
           { "Hello," }
           <br />
-          { @props.user.full_name },
+          { @props.user.first_name },
         </strong>
         { " and welcome to the CloudChart invite queue." }
         <br />
@@ -41,16 +41,16 @@ module.exports = React.createClass
 
   renderOldHeader: ->
     <header>
-      <p>
+      <p> 
+        { "Well done, " }
         <strong>
-          { @props.user.full_name },
+          { @props.user.first_name },
         </strong>
-        <br />
-        { "you're in CloudChart invite queue. Thank you for providing additional information, we'll contact you when your invite is ready." }
+        { " you've been added to our invite queue." }
       </p>
 
       <p>
-        { "Feel free to check this page to see if you've got invite already." }
+        { "CloudChart is a brand new tool evolving every day, so it's open to a limited amount of founders for a while. We carefully review each founder's request, and will get in touch as soon as your invite is ready." }
       </p>
     </header>
 

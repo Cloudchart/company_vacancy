@@ -1,29 +1,29 @@
 class PinsController < ApplicationController
 
-  before_filter :set_pin, except: :index
+  before_filter :set_pin
 
   authorize_resource
 
+  after_action :call_page_visit_to_slack_channel, only: :show
   after_action :create_intercom_event, only: :create
 
-  def index
+  def show
     respond_to do |format|
       format.html
       format.json
     end
   end
 
-  def show
-    respond_to do |format|
-      format.json
-    end
-  end
 
   def create
     @pin.update_by! current_user
+    @pin.is_approved = true if autoapproval_granted?
+    @pin.author = current_user if should_assign_author?
+    @pin.user = @pin.parent.user if @pin.is_suggestion
+    @pin.should_allow_domain_name! if current_user.editor?
     @pin.save!
 
-    Activity.track(current_user, params[:action], @pin, @pin.user)
+    Activity.track(current_user, params[:action], @pin, { source: @pin.user })
 
     respond_to do |format|
       format.json { render json: { id: @pin.uuid } }
@@ -38,6 +38,7 @@ class PinsController < ApplicationController
 
   def update
     @pin.update_by! current_user
+    @pin.should_allow_domain_name! if current_user.editor?
     @pin.update!(params_for_update)
 
     respond_to do |format|
@@ -59,7 +60,20 @@ class PinsController < ApplicationController
     end
   end
 
+  def approve
+    @pin.update(is_approved: true)
+
+    respond_to do |format|
+      format.json { render json: { id: @pin.id }}
+    end
+  end
+
 private
+
+  def autoapproval_granted?
+    @pin.content.present? &&
+    (current_user.roles.reject(&:owner_id).map(&:value) & %w(admin editor unicorn trustee)).any?
+  end
 
   def pin_source
     current_user.editor? ? Pin : current_user.pins
@@ -68,7 +82,7 @@ private
   def set_pin
     @pin = case action_name
     when 'show'
-      pin_source.includes(:user, parent: :user).find(params[:id])
+      Pin.includes(:user, parent: :user).find(params[:id])
     when 'create'
       pin_source.new(params_for_create)
     else
@@ -84,16 +98,24 @@ private
     params.require(:pin).permit(fields_for_update)
   end
 
+  def default_fields
+    params = [:pinboard_id]
+  end
+
   def fields_for_create
-    [:user_id, :pinnable_id, :pinnable_type, :pinboard_id, :content, :parent_id]
+    params = default_fields << [:content, :pinnable_id, :pinnable_type, :parent_id, :origin]
+    params << [:user_id, :is_suggestion] if current_user.editor?
+    params
   end
 
   def fields_for_update
-    if current_user.editor?
-      fields_for_create
-    else
-      fields_for_create - [:user_id] 
-    end
+    params = default_fields << [:origin]
+    params << [:user_id, :content] if current_user.editor?
+    params
+  end
+
+  def should_assign_author?
+    current_user.editor? && (@pin.pinnable.blank? || @pin.is_suggestion)
   end
 
   def create_intercom_event
@@ -106,6 +128,10 @@ private
     end
 
     IntercomEventsWorker.perform_async(event_name, current_user.id, pin_id: @pin.id)
+  end
+
+  def call_page_visit_to_slack_channel
+    post_page_visit_to_slack_channel('Insight page', main_app.insight_url(@pin))
   end
 
 end

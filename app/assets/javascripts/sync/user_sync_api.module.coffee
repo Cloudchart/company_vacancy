@@ -45,3 +45,23 @@ module.exports =
       url: "/users/#{key}/unfollow"
       type: 'DELETE'
       dataType: 'json'
+
+  subscribe: (user, attributes=null) ->
+    if attributes
+      data = attributes.reduce (memo, value, name) ->
+        memo.append("user[#{name}]", value); memo
+      , new FormData
+
+    Promise.resolve $.ajax
+      url: "#{user.get('user_url')}/subscribe"
+      type: 'PATCH'
+      dataType: 'json'
+      processData: false
+      contentType: false
+      data: data
+
+  unsubscribe: (user, attributes={}) ->
+    Promise.resolve $.ajax
+      url: "#{user.get('user_url')}/unsubscribe"
+      type: 'DELETE'
+      dataType: 'json'

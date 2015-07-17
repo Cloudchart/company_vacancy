@@ -1,7 +1,7 @@
 RailsAdmin.config do |config|
   # Main config
   #
-  config.main_app_name = ['CloudChart', 'Admin']
+  config.main_app_name = [ENV['SITE_NAME'], 'Admin']
   config.included_models = Cloudchart::RAILS_ADMIN_INCLUDED_MODELS
 
   config.authenticate_with do
@@ -12,233 +12,29 @@ RailsAdmin.config do |config|
   config.authorize_with :cancan, AdminAbility
   config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail >= 3.0.0
 
-  # Compamy
-  #
-  config.model 'Company' do
-    visible false
-  end
-
-  # Feature
-  #
-  config.model 'Feature' do
-    list do
-      exclude_fields :uuid
-    end
-
-    edit do
-      exclude_fields :uuid, :votes_total
-    end
-  end
-
-  # Interview
-  #
-  config.model 'Interview' do
-    list do
-      exclude_fields :uuid, :email, :ref_email, :slug, :whosaid
-      sort_by :created_at
-
-      field :name do
-        pretty_value { bindings[:view].mail_to bindings[:object].email, value }
-      end
-
-      field :ref_name do
-        pretty_value { bindings[:view].mail_to bindings[:object].ref_email, value }
-      end
-    end
-
-    edit do
-      exclude_fields :uuid, :slug
-    end
-  end
-
-  # Page
-  #
-  config.model 'Page' do
-    field :title
-    field :body, :wysihtml5 do
-      config_options html: true
-    end
-  end
-
-  # Person
-  #
-  config.model 'Person' do
-    object_label_method :full_name
-
-    list do
-      exclude_fields :uuid, :phone, :email
-
-      field :user do
-        pretty_value { bindings[:view].mail_to value.email, value.full_name if value }
-      end
-
-      field :company do
-        pretty_value { bindings[:view].link_to(value.name, bindings[:view].main_app.company_path(value)) }
-      end
-    end
-  end
-
-  # Pinboard
-  #
-  config.model 'Pinboard' do |variable|
-    list do
-      sort_by :title
-      fields :title, :user, :created_at, :updated_at
-    end
-
-    edit do
-      fields :title
-
-      field :title do
-        html_attributes do
-          { autofocus: true }
-        end
-      end
-    end
-  end
-
-  # Role
-  #
-  config.model 'Role' do
-    visible false
-    object_label_method :value
-  end
-
-  # Story
-  #
-  config.model 'Story' do
-    list do
-      sort_by :posts_stories_count
-      fields :name, :company, :posts_stories_count, :created_at
-
-      field :posts_stories_count do
-        sort_reverse true
-      end
-    end
-
-    edit do
-      fields :name
-
-      field :name do
-        html_attributes do
-          { autofocus: true }
-        end
-      end
-    end
-  end
-
-  # Tag
-  #
-  config.model 'Tag' do
-    list do
-      sort_by :taggings_count
-      fields :name, :is_acceptable, :taggings_count, :created_at
-
-      field :taggings_count do
-        sort_reverse true
-      end
-    end
-
-    edit do
-      fields :name, :is_acceptable
-
-      field :name do
-        html_attributes do
-          { autofocus: true }
-        end
-      end
-
-      field :is_acceptable do
-        html_attributes do
-          { checked:  bindings[:object].new_record? ? 'checked' : bindings[:object].is_acceptable }
-        end
-
-        default_value do
-          '1' if bindings[:object].new_record?
-        end
-      end
-    end
-
-  end
-
-  # Token
-  #
-  config.model 'Token' do
-    label 'Invite'
-    label_plural 'Invites'
-
-    list do
-      exclude_fields :owner, :updated_at
-      sort_by :created_at
-      scopes { [:admin_invites] }
-
-      field :uuid do
-        formatted_value { Cloudchart::RFC1751.encode(value) }
-        column_width 500
-        filterable false
-      end
-
-      field :name do
-        column_width 50
-      end
-
-      field :data do
-        # column_width 200
-        formatted_value { value ? [value[:full_name], value[:email]].join(' – ') : nil }
-        filterable false
-      end
-
-      field :created_at do
-        column_width 50
-      end
-    end
-
-  end
-
-  # User
-  #
-  config.model 'User' do
-    object_label_method :full_name
-
-    list do
-      include_fields :first_name, :last_name, :system_roles, :twitter, :companies, :created_at, :authorized_at
-      sort_by :created_at
-
-      field :first_name do
-        label 'Full name'
-        formatted_value { bindings[:view].mail_to bindings[:object].email, bindings[:object].full_name }
-      end
-
-      field :companies do
-        pretty_value { value.map { |company| bindings[:view].link_to(company.name, bindings[:view].main_app.company_path(company)) }.join(', ').html_safe }
-      end
-
-      field :last_name do
-        visible false
-      end
-
-    end
-
-    edit do
-      include_fields :system_roles, :twitter, :authorized_at
-
-      field :system_roles do
-        partial :system_roles
-      end
-    end
-  end
-
   # Actions
   #
   config.actions do
+
+    # default
+    #
     dashboard # mandatory
     index # mandatory
+    new
+    export
+    bulk_delete
+    show
+    edit
+    delete
+    show_in_app
+    history_index
+    history_show
 
     # custom
     #
     member :make_acceptable do
       only ['Tag']
-      http_methods { [:put, :patch] }
+      http_methods { [:post] }
       register_instance_option :bulkable? do
         true
       end
@@ -252,7 +48,7 @@ RailsAdmin.config do |config|
 
     member :make_unicorns do
       only ['User']
-      http_methods { [:put, :patch] }
+      http_methods { [:post] }
       register_instance_option :bulkable? do
         true
       end
@@ -263,6 +59,20 @@ RailsAdmin.config do |config|
         end
       end
     end
+
+    member :make_active do
+      only ['Feature']
+      http_methods { [:post] }
+      register_instance_option :bulkable? do
+        true
+      end
+      controller do
+        proc do
+          Feature.find(params[:bulk_ids]).each { |feature| feature.update(is_active: true) }
+          redirect_to index_path(:feature), notice: 'All selected features became active'
+        end
+      end
+    end    
 
     collection :invite do
       only ['Token']
@@ -330,39 +140,91 @@ RailsAdmin.config do |config|
       controller do
         proc do
           @object.update(authorized_at: Time.now)
-          # TODO: add mailer
+          UserMailer.app_invite_(@object).deliver
           redirect_to index_path(:user), notice: 'User has been authorized'
         end
       end
     end
 
-    # default
-    #
-    new do
-      except ['User', 'Token', 'Person']
+    member :make_important do
+      only ['Pinboard', 'Company']
+      link_icon 'icon-plus-sign'
+
+      controller do
+        proc do
+          @object.update(is_important: true)
+          redirect_to index_path(@object.class.name.downcase.to_sym), notice: "#{@object.class.name} has been featured"
+        end
+      end
     end
-    export do
-      except ['Token', 'Interview']
+
+    member :make_unimportant do
+      only ['Pinboard', 'Company']
+      link_icon 'icon-remove-sign'
+
+      controller do
+        proc do
+          @object.update(is_important: false)
+          redirect_to index_path(@object.class.name.downcase.to_sym), notice: "#{@object.class.name} has been unfeatured"
+        end
+      end
     end
-    bulk_delete
-    show do
-      except ['User', 'Token', 'Person', 'Tag', 'Interview', 'Story', 'Pinboard']
+
+    member :merge do
+      only ['User']
+      link_icon 'icon-user'
+      http_methods { [:get, :post] }
+
+      controller do
+        proc do
+
+          if request.get?
+            @users = User.available_for_merge(@object)
+          elsif request.post?
+            user = User.find(params[:user_id])
+
+            User.transaction do
+              [:full_name, :twitter, :avatar, :occupation, :company].each do |attribute|
+                user.send(:"#{attribute}=", @object.send(attribute))
+              end
+              user.authorized_at = Time.now
+              @object.emails.first.update(user: user) if @object.email
+              @object.update(twitter: nil)
+
+              user.save!
+              UserMailer.app_invite_(user).deliver
+              @object.destroy
+            end
+
+            redirect_to edit_path(:user, user.id), notice: 'User has been merged'
+          end
+
+        end
+      end
     end
-    edit do
-      except ['Token', 'Person']
+
+    member :approve do
+      only ['Pin']
+      link_icon 'icon-ok'
+      http_methods { [:post, :get] }
+
+      register_instance_option :bulkable? do
+        true
+      end
+
+      controller do
+        proc do
+          if request.get?
+            @object.update(is_approved: true)
+            redirect_to index_path(:pin), notice: 'Insight has been approved'
+          elsif request.post?
+            Pin.find(params[:bulk_ids]).each { |pin| pin.update(is_approved: true) }
+            redirect_to index_path(:pin), notice: 'All selected insights approved'
+          end
+        end
+      end
     end
-    delete do
-      except ['Person']
-    end
-    show_in_app do
-      except ['User', 'Token', 'Person', 'Tag', 'Story', 'Pinboard']
-    end
-    history_index do
-      except ['User', 'Token', 'Person', 'Story', 'Pinboard']
-    end
-    history_show do
-      except ['User', 'Token', 'Person', 'Story', 'Pinboard']
-    end
+
   end
 
 end

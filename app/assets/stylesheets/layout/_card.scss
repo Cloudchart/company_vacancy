@@ -36,27 +36,8 @@ $card-hr: 1px solid whitesmoke;
   @include align-items(center);
   @include display(flex);
 
-  figure {
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    border-radius: 50%;
-    height: 50px;
+  .avatar {
     margin-right: 10px;
-    position: relative;
-    width: 50px;
-
-    figcaption {
-      @include position(absolute, 50% null null 0);
-
-      color: hsl(0, 0%, 100%);
-      font-size: 25px;
-      font-weight: 300;
-      line-height: 25px;
-      margin-top: -12px;
-      text-align: center;
-      width: 100%;
-    }
   }
 
   .credentials {
@@ -69,6 +50,19 @@ $card-hr: 1px solid whitesmoke;
 
   p {
     margin: 0;
+
+    &.name {
+      .last-part {
+        display: inline-block;
+      }
+
+      .svg-icon {
+        background-size: 16px 16px;
+        height: 16px;
+        margin-left: 3px;
+        width: 16px;
+      }
+    }
 
     &.occupation {
       color: hsl(0, 0%, 53%);
@@ -101,45 +95,11 @@ $card-hr: 1px solid whitesmoke;
 }
 
 
-// Counters
-//
-@mixin cloud-card-counters {
-  @include align-items(center);
-  @include display(flex);
-
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  > li {
-
-    color: hsl(0, 0%, 93%);
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 12px;
-
-    i {
-      background-color: hsl(0, 0%, 93%);
-      color: hsl(0, 100%, 100%);
-      border-radius: 50%;
-      height: 24px;
-      line-height: 24px;
-      margin-left: 6px;
-      text-align: center;
-      width: 24px;
-    }
-  }
-
-  > li ~ li {
-    margin-left: 12px;
-  }
-}
-
-
 // Cloud Card
 //
 .cloud-card {
-  background-color: white;
+  background-color: $accented-white-color;
+  border: 1px solid $border-color;
   padding: $card-basic-space;
 
   > header,
@@ -175,10 +135,6 @@ $card-hr: 1px solid whitesmoke;
 
   .human {
     @extend .cloud-card-human;
-  }
-
-
-  ul.counters {
-    @include cloud-card-counters;
+    width: 50%;
   }
 }

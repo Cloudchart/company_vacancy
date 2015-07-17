@@ -57,12 +57,30 @@ Quote = React.createClass
   getSeq: (person_id) ->
     if person_id then Immutable.Seq([person_id]) else Immutable.Seq([])
 
+  addCommas: (quote) ->
+    quote = quote.trim().replace(/^(<div><br \/><\/div>)+|(<div><br \/><\/div>)+$/g, '')
+    parts = quote.match(/(<div>.*?<\/div>)+?/ig)
+
+    return quote unless parts
+
+    parts = parts.map (part) -> part.replace(/^<div>|<\/div>$/ig, '')
+
+    [first, ..., last] = parts
+
+    if first[0] != "“" && last[last.length - 1] != "”"
+      parts[0] = "“" + parts[0]
+      parts[parts.length-1] += "”"
+      "<div>" + parts.join("</div><div>") + "</div>"
+    else
+      quote
+
 
   # Handlers
   #
   handleTextChange: (text) ->
     return if @props.readOnly
 
+    text = @addCommas(text)
     @updateOrCreateQuote(text: text)
 
   handlePersonSelect: (person_id) ->

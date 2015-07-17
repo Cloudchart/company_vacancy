@@ -1,27 +1,52 @@
 # @cjsx React.DOM
 #
+NavigatorMixin = require('components/mixins/navigator')
+
 
 module.exports = React.createClass
   
   displayName: "Carousel"
 
+  mixins: [NavigatorMixin]
+
   # Component Specifications
   # 
   propTypes:
-    className:      React.PropTypes.string
+    className:          React.PropTypes.string
+    delay:              React.PropTypes.number
+    withSlideshow:      React.PropTypes.bool
+    isSlideshowPaused:  React.PropTypes.bool
 
   getDefaultProps: ->
-    className:      ""
+    className:           ""
+    delay:               7000
+    withSlideshow:       false
+    isSlideshowPaused:   true
 
   getInitialState: ->
-    position:      0
-    isAnimating:   false
+    isTransitionOn:     true
+    isSlideshowStopped: !@props.withSlideshow
+    isSlideshowPaused:  !@props.withSlideshow || @props.isSlideshowPaused
 
 
   # Helpers
   #
+  adjustOffset: ->
+    if @state.position == -1 || @state.position == @getPositionsNumber()
+      @setState
+        isTransitionOn: false
+        position:       (@state.position + @getPositionsNumber()) % @getPositionsNumber()
+      setTimeout =>
+        @setState(isTransitionOn: true)
+      , 10
+
+  showSlideshow: ->
+    @props.withSlideshow && @getPositionsNumber() > 1
+
   getContainerLeft: ->
-    -@state.position * 100/@getSlidesNumber()
+    slideOffset = if @showSlideshow() then 1 else 0
+
+    -(@state.position + slideOffset) * 100/@getSlidesNumber()
 
   getContainerCSS: ->
     transform = "translate3d(#{@getContainerLeft()}%, 0px, 0px)"
@@ -31,59 +56,80 @@ module.exports = React.createClass
       width:               "#{(@getSlidesNumber()) * 100}%"
 
   getSlidesNumber: ->
+    @props.children.length + (if @showSlideshow() then 2 else 0)
+
+  getPositionsNumber: ->
     @props.children.length
 
-  goToPosition: (newPosition) ->
-    return null if @state.isAnimating || newPosition == @state.position
+  getSlides: ->
+    if @showSlideshow()
+      preSlide = React.addons.cloneWithProps(@props.children[@getPositionsNumber() - 1])
+      postSlide = React.addons.cloneWithProps(@props.children[0])
 
-    @setState
-      isAnimating: true
-      position:    newPosition
+      [preSlide].concat(@props.children, postSlide)
+    else
+      @props.children
+
 
   # Handlers
   #
-  handleClick: (index) ->
-    @goToPosition(index)
+  getNavigationClickState: ->
+    isNavigating:       true
+    isSlideshowStopped: true
+
+  handleMouseOver: ->
+    if !@props.isSlideshowPaused
+      @setState(isSlideshowPaused: true)
+
+  handleMouseOut: ->
+    if !@props.isSlideshowPaused
+      @setState(isSlideshowPaused: false)
+
 
   # Lifecycle methods
   #
   componentDidMount: ->
     $(@refs.container.getDOMNode()).on 'transitionend webkitTransitionEnd oTransitionEnd', =>
-      @setState(isAnimating: false)
+      @setState(isNavigating: false)
+
+      @adjustOffset()
+
+    startSlideshow = =>
+      setTimeout => 
+        @goToNext(isNavigating: true, cycle: true) unless @state.isSlideshowPaused || @state.isSlideshowStopped
+        startSlideshow() unless @state.isSlideshowStopped
+      , @props.delay
+
+    if @showSlideshow()
+      startSlideshow()
+
+  componentWillReceiveProps: (nextProps) ->
+    @setState(isSlideshowPaused: nextProps.isSlideshowPaused)
 
 
   # Renderers
   #
-  renderNavigation: ->
-    return null unless @props.children.length > 1
-
-    <ul className="navigation">
-      { @renderSlideLinks() }
-    </ul>
-
-  renderSlideLinks: ->
-    @props.children.map (child, index) =>
-      linkClassName = cx(active: index == @state.position)
-
-      <li key={ index } >
-        <button className={ linkClassName } onClick={ @handleClick.bind(@, index) } />
-      </li>
-
   renderSlides: ->
     slideStyle =
       width: "#{100/@getSlidesNumber()}%"
 
-    @props.children.map (child, index) ->
+    @getSlides().map (child, index) ->
       <li key={index} style={ slideStyle }>
         { child }
       </li>
 
 
   render: ->
-    className = "carousel #{@props.className}".trim()
+    className = "carousel navigator #{@props.className}".trim()
+
+    className += ' no-transition' unless @state.isTransitionOn
 
     <div className={ className }>
-      <ul className="container" ref="container" style={ @getContainerCSS() }>
+      <ul className   = "container" 
+          ref         = "container"
+          style       = { @getContainerCSS() }
+          onMouseOver = { @handleMouseOver }
+          onMouseOut  = { @handleMouseOut } >
         { @renderSlides() }
       </ul>
       { @renderNavigation() }

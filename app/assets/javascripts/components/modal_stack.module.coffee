@@ -83,9 +83,10 @@ ModalStack = React.createClass
           options: options
 
     hide: ->
-      ModalStackCursor.update (data) -> data.pop()
-
-    close: ->
+      modal_stack = ModalStackCursor.deref()
+      return unless modal_stack.size > 0
+      
+      history.back() if modal_stack.last().options.shouldGetHistoryBack
       ModalStackCursor.update (data) -> data.pop()
 
 

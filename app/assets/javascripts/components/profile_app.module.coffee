@@ -3,18 +3,39 @@
 GlobalState        = require('global_state/state')
 
 ProfileInfo        = require('components/profile/info')
-PinsComponent      = require('components/pinboards/pins')
-CompaniesList      = require('components/company/list')
+UserPins           = require('components/pinboards/pins/user')
+UserInsights       = require('components/profile/insights')
+UserCompanies      = require('components/company/lists/user')
 UserFeed           = require('components/user/feed')
+UserPinboards      = require('components/pinboards/lists/user')
+Settings           = require('components/profile/settings')
+Tabs               = require('components/profile/tabs')
 
 UserStore          = require('stores/user_store.cursor')
 PinStore           = require('stores/pin_store')
+PinboardStore      = require('stores/pinboard_store')
 CompanyStore       = require('stores/company_store.cursor')
-FavoriteStore      = require('stores/favorite_store.cursor')
 
-Button             = require('components/form/buttons').SyncButton
+Constants          = require('constants')
 
-SyncApi            = require('sync/user_sync_api')
+EmptyMap = Immutable.Map({})
+
+EmptyTabTexts =
+  feedOwn:        "Follow people and companies you're interested in to learn from them."
+  feedOther:      "This person doesn't follow any people and companies yet."
+  insightsOwn:    "Add helpful insights. Share with your team and the community."
+  insightsOther:  "This person hasn't added any insights yet."
+  pinboardsOwn:   "Follow our most popular collections to start, or, create your own."
+  pinboardsOther: "This person has no collections yet."
+  companiesOwn:   ->
+    <span>
+      Want to see your company on { Constants.SITE_NAME }? <a href="mailto:#{Constants.REPLY_TO_EMAIL}?subject=I want to see my company on #{Constants.SITE_NAME}">Let us know</a>
+    </span>
+  companiesOther: ->
+    <span>
+      Does this person have a company you want to see on { Constants.SITE_NAME }? <a href="mailto:#{Constants.REPLY_TO_EMAIL}?subject=I want to see a company on #{Constants.SITE_NAME}">Let us know</a>
+    </span>
+
 
 cx = React.addons.classSet
 
@@ -32,31 +53,27 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
-            favorites
+            favorites,
+            system_roles,
+            roles
           }
         """
 
       user: ->
         """
           User {
-            followed_activities,
-            #{ProfileInfo.getQuery('user')},
-            #{PinsComponent.getQuery('pins')},
-            #{CompaniesList.getQuery('companies')}
+            #{UserInsights.getQuery('user')},
+            #{UserPinboards.getQuery('pinboards')},
+            #{UserCompanies.getQuery('user')}
           }
         """
-        
 
   propTypes:
-    uuid:     React.PropTypes.string.isRequired
-
-  getDefaultProps: ->
-    cursor: FavoriteStore.cursor.items
+    uuid:   React.PropTypes.string.isRequired
 
   getInitialState: ->
-    fetchDone:  false
-    selected:   location.hash.substr(1) || null
-    isSyncing:  false
+    fetchDone:   false
+    currentTab:  null
 
   fetchViewer: (options={}) ->
     GlobalState.fetch(@getQuery('viewer'), options)
@@ -67,14 +84,7 @@ module.exports = React.createClass
   fetch: ->
     Promise.all([@fetchUser(), @fetchViewer()]).then =>
       @setState
-        fetchDone: true
-        selected:  @getInitialTab()
-
-  getStateFromStores: ->
-    favorite: FavoriteStore.findByUser(@props.uuid)
-
-  onGlobalStateChange: ->
-    @setState @getStateFromStores()
+        fetchDone:   true
 
 
   # Helpers
@@ -82,52 +92,32 @@ module.exports = React.createClass
   isLoaded: ->
     @state.fetchDone
 
-  getMenuOptionClassName: (option) ->
-    cx(active: @state.selected == option)
+  isViewerProfile: ->
+    @props.uuid == @cursor.viewer.get('uuid')
 
-  getFavorite: ->
-    @state.favorite
 
-  getVisibleTabs: ->
-    Immutable.OrderedMap({
-      activity: UserFeed.isEmpty(),
-      insights: PinsComponent.isEmpty(@props.uuid),
-      companies: PinsComponent.isEmpty(@props.uuid)
-    }).filterNot (isEmpty) -> isEmpty
-    .keySeq()
+  getInsightsNumber: ->
+    UserInsights.insightsCount(@props.uuid)
 
-  getInitialTab: ->
-    visibleTabs = @getVisibleTabs()
 
-    if !@state.selected || !visibleTabs.contains(@state.selected)
-      visibleTabs.first()
-    else
-      @state.selected
+  getCompaniesNumber: ->
+    UserCompanies.companiesCount(@props.uuid)
+
+
+  getPinboardsNumber: ->
+    PinboardStore.filterUserPinboards(@props.uuid).size
 
 
   # Handlers
   #
-  handleMenuClick: (selected) ->
-    @setState selected: selected
-    location.hash = selected
-
-  handleFollowClick: ->
-    @setState(isSyncing: true)
-
-    if favorite = @getFavorite()
-      SyncApi.unfollow(@props.uuid).then =>
-        FavoriteStore.cursor.items.remove(favorite.get('uuid'))
-        @setState(isSyncing: false)
-    else
-      SyncApi.follow(@props.uuid).then => 
-        # TODO rewrite with grabbing only needed favorite
-        @fetchViewer(force: true).then => @setState(isSyncing: false)
+  handleTabChange: (tab) ->
+    @setState currentTab: tab
 
 
   # Lifecycle methods
   #
   componentWillMount: ->
-    @cursor = 
+    @cursor =
       companies:  CompanyStore.cursor.items
       pins:       PinStore.cursor.items
       viewer:     UserStore.me()
@@ -138,38 +128,56 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderTabs: ->
-    @getVisibleTabs().map (tabName) =>
-      <li key = { tabName } className = { @getMenuOptionClassName(tabName) } onClick = { @handleMenuClick.bind(@, tabName) } >{ tabName }</li>
-    .toArray()
+  renderEmptyTabText: (key) ->
+    emptyTextKey = key + (if @isViewerProfile() then "Own" else "Other")
+    renderedText = if _.isFunction(text = EmptyTabTexts[emptyTextKey]) then text() else text
 
-  renderMenu: ->
-    <nav>
-      <ul>
-        { @renderTabs() }
-      </ul>
-    </nav>
+    <p className="empty">
+      { renderedText }
+    </p>
 
-  renderFollowButton: ->
-    return null if @cursor.user.get('uuid') == @cursor.viewer.get('uuid')
+  renderFeed: ->
+    unless UserFeed.isEmpty()
+      <UserFeed />
+    else
+      @renderEmptyTabText("feed")
 
-    text = if @getFavorite() then 'Unfollow' else 'Follow'
+  renderCompanies: ->
+    unless @getCompaniesNumber() == 0
+      <UserCompanies user_id = { @props.uuid } />
+    else
+      @renderEmptyTabText("companies")
 
-    <Button 
-      className         = "cc follow-button"
-      onClick           = { @handleFollowClick }
-      text              = { text }
-      sync              = { @state.isSyncing }
-      showSyncAnimation = { false } />
+  renderInsights: ->
+    if @getInsightsNumber() > 0
+      <UserInsights user={ @props.uuid } />
+    else
+      @renderEmptyTabText("insights")
+
+  renderPinboards: ->
+    unless UserPinboards.isEmpty(@props.uuid)
+      <UserPinboards user_id = { @props.uuid } />
+    else
+      @renderEmptyTabText("pinboards")
+
 
   renderContent: ->
-    switch @state.selected
+    switch @state.currentTab
+
+      when 'collections'
+        @renderPinboards()
+
       when 'insights'
-        <PinsComponent user_id = { @props.uuid } showOnlyInsights = { true } />
+        @renderInsights()
+
       when 'companies'
-        <CompaniesList user_id = { @props.uuid } />
-      when 'activity'
-        <UserFeed />
+        @renderCompanies()
+
+      when 'settings'
+        <Settings uuid = { @props.uuid } />
+
+      else
+        null
 
 
   render: ->
@@ -179,8 +187,15 @@ module.exports = React.createClass
       <header>
         <div className="cloud-columns cloud-columns-flex">
           <ProfileInfo uuid = { @props.uuid } />
-          { @renderMenu() }
-          { @renderFollowButton() }
+          <Tabs
+            companiesNumber = { @getCompaniesNumber() }
+            insightsNumber  = { @getInsightsNumber() }
+            pinboardsNumber = { @getPinboardsNumber() }
+            canEdit         = { @cursor.user.get('is_editable') }
+            onChange        = { @handleTabChange }
+            user            = { @cursor.user.deref(EmptyMap).toJS() }
+            viewer          = { @cursor.viewer.deref(EmptyMap).toJS() }
+          />
         </div>
       </header>
       { @renderContent() }

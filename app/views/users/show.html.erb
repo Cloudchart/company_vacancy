@@ -1,13 +1,18 @@
-<% set_meta_tags og: {
-  title: title(@user.full_name),
-  image: og_image_url(@user.avatar.try(:url)),
+<% title "#{@user.full_name} @#{@user.twitter}" %>
+
+<% set_meta_tags_for_social_networks(
+  title: t('meta.user.title', name: @user.full_name, twitter: @user.twitter),
+  description: t('meta.user.description', name: @user.full_name),
+  image: @user.preview.try(:url),
   url: user_url(@user)
-} %>
+) %>
 
 <% content_for :header_menu do %>
   <%= render 'shared/users/header_menu' %>
 <% end %>
 
-<%= content_for :class_for_main, 'user-profile' %>
+<% content_for :class_for_main, 'user-profile' %>
+
+<% content_for :class_for_body, 'user-profile-body' %>
 
 <div data-react-class="components/profile_app" data-react-props="<%= { uuid: @user.id }.to_json %>"></div>

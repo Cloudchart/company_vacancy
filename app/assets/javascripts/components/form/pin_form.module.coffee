@@ -1,19 +1,25 @@
 # @cjsx React.DOM
 
 
-GlobalState   = require('global_state/state')
+GlobalState     = require('global_state/state')
 
 
-PinboardStore = require('stores/pinboard_store')
-RoleStore     = require('stores/role_store.cursor')
-PinStore      = require('stores/pin_store')
-UserStore     = require('stores/user_store.cursor')
+PinboardStore   = require('stores/pinboard_store')
+RoleStore       = require('stores/role_store.cursor')
+PinStore        = require('stores/pin_store')
+UserStore       = require('stores/user_store.cursor')
+TokenStore      = require('stores/token_store.cursor')
 
 
-ModalActions  = require('actions/modal_actions')
+ModalHeader     = require('components/shared/modal_header')
+ModalStack      = require('components/modal_stack')
+InsightContent  = require('components/pinnable/insight_content')
+UnicornChooser  = require('components/unicorn_chooser')
+StandardButton  = require('components/form/buttons').StandardButton
 
+Constants       = require('constants')
 
-KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title'])
+KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnable_id', 'pinnable_type', 'content', 'pinboard_title', 'pinboard_description', 'origin'])
 
 
 # Utils
@@ -40,129 +46,110 @@ module.exports = React.createClass
         """
           Viewer {
             roles,
+            tokens,
             pinboards,
             writable_pinboards
           }
 
         """
 
-      unicorns: ->
+
+      user: ->
         """
-          Unicorns {
+          User {
             roles,
             pinboards,
-            writable_pinboards
+            writable_pinboards {
+              user
+            }
           }
-
         """
+
 
       system_pinboards: ->
         """
           SystemPinboards {}
         """
 
+
       pin: ->
         """
           Pin {}
-
         """
 
 
+  # Component specifications
+  #
+  getDefaultProps: ->
+    title: ''
+    cursor:
+      pinboards: PinboardStore.cursor.items
+      users: UserStore.cursor.items
+      roles: RoleStore.cursor.items
+      pins: PinStore.cursor.items
+      me: UserStore.me()
+
+  getInitialState: ->
+    loaders: Immutable.Map()
+    attributes: @getAttributesFromProps()
+
+
+  # Lifecycle methods
+  #
+  componentDidMount: ->
+    @fetch()
+
+
+  # Fetchers
+  #
   fetchViewer: ->
     GlobalState.fetch(@getQuery('viewer'))
-
 
   fetchSystemPinboards: ->
     GlobalState.fetch(@getQuery('system_pinboards'))
 
+  fetchUser: (id) ->
+    if id
+      GlobalState.fetch(@getQuery('user'), id: id).then => @setState({})
+    else
+      GlobalState.fetch(@getQuery('viewer')).then => @setState({})
 
   fetchPin: ->
     if @props.uuid
-      GlobalState.fetch(@getQuery('pin'), id: @props.uuid)
+      promise = GlobalState.fetch(@getQuery('pin'), id: @props.uuid).then =>
+        @fetchUser(@props.cursor.pins.getIn([@props.uuid, 'user_id']))
     else
-      true
-
-
-  fetchUnicorns: ->
-    GlobalState.fetch(@getQuery('unicorns'))
-
+      @fetchUser()
 
   fetch: ->
-    Promise.all([@fetchViewer(), @fetchSystemPinboards(), @fetchUnicorns(), @fetchPin()]).then =>
+    Promise.all([@fetchSystemPinboards(), @fetchPin()]).then =>
       @handleFetchDone()
 
 
-  handleFetchDone: ->
-    @setState
-      fetchDone:  true
-      attributes: @getAttributesFromCursor()
-
-
+  # Helpers
+  #
   fetchDone: ->
     @state.fetchDone == true
 
-
-  handleSubmit: (event) ->
-    event.preventDefault()
-    system_pinboard_ids = PinboardStore.system().keySeq()
-    pinboard_id         = @state.attributes.get('pinboard_id')
-    user_id             = @state.attributes.get('user_id')
-
-
-    if (pinboard_id == 'new')
-      PinboardStore.create({ title: @state.attributes.get('pinboard_title'), user_id: user_id })
-        .then(@handlePinboardSave, @handleSaveFail)
-
-    else if system_pinboard_ids.contains(pinboard_id)
-      PinboardStore.create({ title: @props.cursor.pinboards.getIn([pinboard_id, 'title']), user_id: user_id })
-        .then(@handlePinboardSave, @handleSaveFail)
-
-    else
-      attributes = @state.attributes.remove('pinboard_title').toJSON()
-      @savePin(attributes)
-
-
-  handleDelete: (event) ->
-    event.preventDefault()
-
-    if confirm('Are you really sure?')
-      PinStore.destroy(@props.uuid).then(@props.onDone, @handleSaveFail)
-
+  highlightContent: ->
+    textarea = @getDOMNode().querySelector('label.comment')
+    snabbt(textarea, 'attention', {
+      position: [50, 0, 0],
+      springConstant: 2.4,
+      springDeceleration: 0.9
+    })
 
   savePin: (attributes) ->
     delete attributes['pinboard_title']
     delete attributes['parent_id'] unless attributes['parent_id']
+    delete attributes['pinboard_id'] unless attributes['pinboard_id']
+    delete attributes['pinnable_id'] unless attributes['pinnable_id']
+    delete attributes['pinnable_type'] unless attributes['pinnable_type']
 
     if @props.uuid
       PinStore.update(@props.uuid, attributes).then(@props.onDone, @handleSaveFail)
     else
       PinStore.create(attributes).then(@props.onDone, @handleSaveFail)
-
-
-  handlePinboardSave: (json) ->
-    attributes = @state.attributes
-      .remove('pinboard_title')
-      .set('pinboard_id', json.id)
-      .toJSON()
-
-    @savePin(attributes)
-
-
-  handleSaveFail: ->
-
-
-  handleChange: (name, event) ->
-    value       = event.target.value
-    attributes  = @state.attributes
-
-    if name == 'content' and value.length > (contentMaxLength = @getContentMaxLength())
-      value = value.substring(0, contentMaxLength)
-
-    if name == 'user_id'
-      attributes = attributes.set('pinboard_id', @getDefaultPinboardId(value))
-
-    @setState
-      attributes: attributes.set(name, value)
 
 
   gatherPinboards: (id = @state.attributes.get('user_id')) ->
@@ -183,12 +170,14 @@ module.exports = React.createClass
 
 
   getDefaultPinboardId: (id) ->
-    pinboard = @gatherPinboards(id).first()
+    pinboard = (if @props.parent_id then @getParentPinboard(id)) || @gatherPinboards(id).first()
 
     if pinboard then pinboard.get('uuid') else 'new'
 
+
   getContentMaxLength: ->
     if @isSelectedUserUnicorn() then 500 else 140
+
 
   getAttributesFromCursor: ->
     pin = @props.cursor.pins.cursor(@props.uuid)
@@ -209,6 +198,7 @@ module.exports = React.createClass
       KnownAttributes.forEach (name) =>
         attributes.set(name, @props[name] || '')
 
+
   isUserWithRole: (userId, roleValue) ->
     RoleStore.rolesFor(userId)
       .find (role) =>
@@ -216,103 +206,145 @@ module.exports = React.createClass
         role.get('owner_type',  null)   is null     and
         role.get('value')               is roleValue
 
+
   isCurrentUserSystemEditor: ->
     @isUserWithRole(UserStore.me().get('uuid'), 'editor')
 
   isSelectedUserUnicorn: ->
     @isUserWithRole(@state.attributes.get('user_id'), 'unicorn')
 
+  getParentPinboard: (id) ->
+    return null unless (parentPin = @props.cursor.pins
+      .filter (pin) => pin.get('uuid') == @props.parent_id
+      .first())
 
-  # Lifecycle
+    return null unless (parentPinboard = @props.cursor.pinboards
+      .filter (pinboard) -> pinboard.get('uuid') == parentPin.get('pinboard_id')
+      .first())
+
+    @gatherPinboards(id).filter((pinboard) -> pinboard.get('title') == parentPinboard.get('title')).first()
+
+  hasRepins: (id) ->
+    PinStore
+      .filter (pin) -> pin.get('parent_id') == id
+      .size
+
+
+  # Handlers
   #
+  handleFetchDone: ->
+    @setState
+      fetchDone:  true
+      attributes: @getAttributesFromCursor()
 
-  componentDidMount: ->
-    @fetch()
+  handleSubmit: (event) ->
+    event.preventDefault()
 
+    return unless @state.attributes.get('user_id', false)
 
-  getDefaultProps: ->
-    title:        ''
-    cursor:
-      pinboards:    PinboardStore.cursor.items
-      users:        UserStore.cursor.items
-      roles:        RoleStore.cursor.items
-      pins:         PinStore.cursor.items
-      me:           UserStore.me()
-
-
-  getInitialState: ->
-    loaders:    Immutable.Map()
-    attributes: @getAttributesFromProps()
+    unless @state.attributes.get('parent_id')
+      unless @state.attributes.get('content')
+        @highlightContent()
+        return false
 
 
-  # Render
+    system_pinboard_ids = PinboardStore.system().keySeq()
+    pinboard_id         = @state.attributes.get('pinboard_id')
+    user_id             = @state.attributes.get('user_id')
+
+    if (pinboard_id == 'new')
+      PinboardStore.create({ title: @state.attributes.get('pinboard_title'), description: @state.attributes.get('pinboard_description'), user_id: user_id })
+        .then(@handlePinboardSave, @handleSaveFail)
+
+    else if system_pinboard_ids.contains(pinboard_id)
+      PinboardStore.create({ title: @props.cursor.pinboards.getIn([pinboard_id, 'title']), user_id: user_id })
+        .then(@handlePinboardSave, @handleSaveFail)
+
+    else
+      attributes = @state.attributes.remove('pinboard_title').toJSON()
+      @savePin(attributes)
+
+
+  handleDelete: (event) ->
+    event.preventDefault()
+
+    if confirm('Are you really sure?')
+      PinStore.destroy(@props.uuid).then(@props.onDone, @handleSaveFail)
+
+
+  handlePinboardSave: (json) ->
+    attributes = @state.attributes
+      .remove('pinboard_title')
+      .set('pinboard_id', json.id)
+      .toJSON()
+
+    @savePin(attributes)
+
+  handleSaveFail: ->
+
+  handleChange: (name, event) ->
+    value       = event.target.value
+    attributes  = @state.attributes
+
+    if name == 'content' && value.length > (contentMaxLength = @getContentMaxLength())
+      value = value.substring(0, contentMaxLength)
+
+    if name == 'user_id' && !@props.pinboard_id
+      attributes = attributes.set('pinboard_id', @getDefaultPinboardId(value))
+
+    @setState
+      attributes: attributes.set(name, value)
+
+
+  handleUserIdChange: (user_id) ->
+    if user_id
+      @fetchUser(user_id).then =>
+        @handleChange('user_id', { target: { value: user_id } })
+    else
+      @setState
+        attributes: @state.attributes.set('user_id', null)
+
+
+  # Renderers
   #
-
-  renderHeader: ->
-    <header>
-      <div>Pin It</div>
-      <div className="title">{ unwrapTitle(@props.title) }</div>
-    </header>
-
-
-  renderUserSelectOptions: ->
-    me = UserStore.me()
-
-    UserStore
-      .unicorns()
-      .valueSeq()
-      .filterNot (user) -> user.get('uuid') is me.get('uuid') 
-      .concat([me.deref({})]) 
-      .sortBy (user) -> user.get('full_name')
-
-      .map (user) =>
-        uuid = user.get('uuid')
-        <option key={ uuid } value={ uuid }>{ user.get('full_name') }</option>
-
-
   renderUserSelect: ->
     return null unless  @isCurrentUserSystemEditor()
     return null if      @props.parent_id
 
-    disabled = !!@props.uuid and @props.cursor.me.get('uuid') isnt @state.attributes.get('user_id')
-
     <label className="user">
-      <span className="title">Choose an author</span>
-      <div className="select-wrapper">
-        <select
-          value     = { @state.attributes.get('user_id') }
-          onChange  = { @handleChange.bind(@, 'user_id') }
-          disabled  = { disabled }
-        >
-          { @renderUserSelectOptions().toArray() }
-        </select>
-        <i className="fa fa-angle-down select-icon" />
-      </div>
+      <span className="title">Author</span>
+      <UnicornChooser
+        value         = { @state.attributes.get('user_id') }
+        defaultValue  = { @props.cursor.me.get('uuid') }
+        onChange      = { @handleUserIdChange }
+      />
     </label>
 
-
   renderPinboardSelectOptions: ->
+    current_user_id = @props.cursor.me.get('uuid')
     pinboards = @gatherPinboards()
-
       .map (pinboard, uuid) ->
-
-        <option key={ uuid } value={ uuid }>{ pinboard.get('title') }</option>
-
+        pinboard_user = UserStore.get(pinboard.get('user_id'))
+        title         = pinboard.get('title')
+        title         = title + " by #{Constants.SITE_NAME}" unless pinboard_user
+        title         = title + " by #{pinboard_user.get('full_name')}" if pinboard_user and pinboard_user.get('uuid') != current_user_id
+        <option key={ uuid } value={ uuid }>{ title }</option>
       .valueSeq()
 
-    if @isCurrentUserSystemEditor()
-      pinboards = pinboards.concat [<option key="new" value="new">Create Category</option>]
+    pinboards = Immutable.Seq([<option key="new" value="new">Create collection</option>]).concat(pinboards)
 
     pinboards
 
 
   renderPinboardSelect: ->
+    return null if @props.pinboard_id
+
     <label className="pinboard">
-      <span className="title">Pick a Category</span>
+      <div className="title">Collection</div>
       <div className="select-wrapper">
         <select
-          value     ={ @state.attributes.get('pinboard_id') }
-          onChange  ={ @handleChange.bind(@, 'pinboard_id') }
+          value     = { @state.attributes.get('pinboard_id') }
+          onChange  = { @handleChange.bind(@, 'pinboard_id') }
         >
           { @renderPinboardSelectOptions().toArray() }
         </select>
@@ -325,62 +357,136 @@ module.exports = React.createClass
     return null unless @state.attributes.get('pinboard_id') == 'new'
 
     <label className="pinboard">
-      <span className="title" />
+      <div className="title" />
       <div className="input-wrapper">
         <input
           className   = "form-control"
           autoFocus   = "true"
           value       = { @state.attributes.get('pinboard_title') }
           onChange    = { @handleChange.bind(@, 'pinboard_title') }
-          placeholder = "Pick a name"
+          placeholder = "Enter collection name"
         />
       </div>
     </label>
 
 
-  renderPinComment: ->
-    <label className="comment">
-      <span className="title">Add Comments</span>
+  renderPinboardDescriptionInput: ->
+    return null unless @state.attributes.get('pinboard_id') == 'new'
+
+    <label className="pinboard">
+      <div className="title" />
+      <div className="input-wrapper">
+        <input
+          className   = "form-control"
+          value       = { @state.attributes.get('pinboard_description') }
+          onChange    = { @handleChange.bind(@, 'pinboard_description') }
+          placeholder = "What is this collection about?"
+        />
+      </div>
+    </label>
+
+
+  renderPinOrigin: ->
+    return null if @props.parent_id
+
+    title = if @isCurrentUserSystemEditor() then "Origin" else "Story link"
+    #return null if !@isCurrentUserSystemEditor() || @props.parent_id
+
+    <label className="origin">
+      <div className="title">{ title }</div>
+      <div className="input-wrapper">
+        <input
+          onChange  = { @handleChange.bind(@, 'origin') }
+          value     = { @state.attributes.get('origin', '') }
+        />
+      </div>
+    </label>
+
+  renderPinCommentCounter: ->
+    return null unless !@props.uuid || @isCurrentUserSystemEditor()
+
+    content = @state.attributes.get('content') || ''
+
+    <div className="counter">
+      { @getContentMaxLength() - content.length }
+    </div>
+
+  renderPinCommentInput: ->
+    content = @state.attributes.get('content') || ''
+
+    if !@props.uuid || @isCurrentUserSystemEditor()
       <textarea
         rows      = 5
         onChange  = { @handleChange.bind(@, 'content') }
-        value     = { @state.attributes.get('content', '') }
-      />
-      <span className="counter">{ @getContentMaxLength() - @state.attributes.get('content').length }</span>
-    </label>
+        value     = { content } />
+    else
+      <p>{ content }</p>
 
+  renderPinComment: ->
+    content = @state.attributes.get('content') || ''
+    return null if @props.uuid and content.length == 0 && !@isCurrentUserSystemEditor()
+
+    <label className="comment">
+      <div className="title">
+        { if @props.parent_id then "Note" else "Insight" }
+        { @renderPinCommentCounter() }
+      </div>
+      { @renderPinCommentInput() }
+    </label>
 
 
   renderDeleteButton: ->
     return null unless @props.uuid
-    return null unless @isCurrentUserSystemEditor()
-
     <button key="delete" type="button" className="cc alert" onClick={ @handleDelete }>Delete</button>
 
+  renderHeader: ->
+    if @props.uuid || @state.attributes.get('pinnable_id')
+      <InsightContent
+        withLinks   = { false }
+        pin_id      = { @state.attributes.get('parent_id') }
+        pinnable_id = { @state.attributes.get('pinnable_id') }
+      />
+    else
+      <ModalHeader text = { @props.title } />
+
+  renderCloseButton: ->
+    return null unless @props.uuid || @state.attributes.get('pinnable_id')
+
+    <StandardButton
+      className = "close transparent"
+      iconClass = "cc-icon cc-times"
+      type      = "button"
+      onClick   = { @props.onCancel }
+    />
 
   renderFooter: ->
-    submitButtonTitle = if @props.uuid then 'Update' else 'Pin It'
+    submitButtonTitle = if @props.uuid then 'Update' else 'Save It'
 
     <footer>
       <div>
         <button key="cancel" type="button" className="cc cancel" onClick={ @props.onCancel }>Cancel</button>
         { @renderDeleteButton() }
       </div>
-      <button key="submit" type="submit" className="cc">{ submitButtonTitle }</button>
+      <button key="submit" type="submit" disabled={ not @state.attributes.get('user_id', false) } className="cc">{ submitButtonTitle }</button>
     </footer>
 
 
+  # Main render
+  #
   render: ->
     return null unless @fetchDone()
 
     <form className="pin" onSubmit={ @handleSubmit }>
+      { @renderCloseButton() }
       { @renderHeader() }
 
       <fieldset>
         { @renderUserSelect() }
         { @renderPinboardSelect() }
         { @renderPinboardInput() }
+        { @renderPinboardDescriptionInput() }
         { @renderPinComment() }
+        { @renderPinOrigin() }
       </fieldset>
 
       { @renderFooter() }

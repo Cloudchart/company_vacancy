@@ -1,0 +1,31 @@
+<%= form_tag merge_path, multipart: true, class: 'form-horizontal denser', data: { title: @page_name } do |f| %>
+
+  <br />
+  <div class="alert alert-danger">You are about to merge <%= link_to "@#{@object.twitter}", "https://twitter.com/#{@object.twitter}" %><%= @object.email ? " (#{mail_to @object.email, @object.email})".html_safe : '' %> with one of these users. Be careful, this cannot be undone.</div>
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Full name</th>
+        <th>System roles</th>
+        <th>Companies</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= radio_button_tag :user_id, user.id %></td>
+          <td><%= link_to user.full_name, main_app.user_path(user) %></td>
+          <td><%= user.system_roles.map(&:value).join(', ') %></td>
+          <td><%= user.companies.map { |company| link_to company.name, main_app.company_path(company) }.join(', ').html_safe %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="form-actions">
+    <%= submit_tag 'Merge', class: 'btn btn-primary', data: { disable_with: "Please wait..." } %>
+  </div>
+
+<% end %>

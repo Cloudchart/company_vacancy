@@ -1,24 +1,33 @@
 // Pin Card Insight
 //
 @mixin pin-card-insight {
-  @include align-items(center);
   @include display(flex);
-  @include flex-wrap(wrap);
-  @include justify-content(space-between);
+  @include flex-direction(column);
 
-  border-bottom: $card-hr;
-  margin-bottom: $card-basic-space;
-  padding-bottom: $card-basic-space;
   position: relative;
 
   > p {
     margin-bottom: $inner-margin-size;
-    white-space: pre-wrap;
-    width: calc(100% - 40px);
   }
 
-  .round-buttons {
-    @include position(absolute, 0px 0px 0 0);
+  > footer {
+    @include align-items(flex-end);
+    @include display(flex);
+    @include flex-wrap(wrap);
+    @include justify-content(space-between);
+
+    width: 100%;
+
+    > .human {
+      @include flex-grow(1);
+    }
+
+    > ul.round-buttons {
+      margin-top: 12px;
+      text-align: right;
+      white-space: nowrap;
+      width: 100%;
+    }
   }
 
 }
@@ -28,43 +37,69 @@
 // Pin Card Footer
 //
 @mixin pin-card-footer {
-  @include align-items(center);
   @include display(flex);
-  @include flex-wrap(wrap);
+  @include justify-content(space-between);
 
-  background-color: hsl(0, 0%, 94%);
+  background-color: hsl(60, 11%, 96%);
   margin-right: - $card-basic-space;
   margin-bottom: - $card-basic-space;
   margin-left: - $card-basic-space;
   margin-top: 0;
-  padding: $card-basic-space 0;
-
-  > p {
-    margin-bottom: $inner-margin-size;
-    margin-left: 60px;
-    white-space: pre-wrap;
-    width: 100%;
-  }
+  padding: $card-basic-space;
 
   > i {
-    color: hsl(0, 0%, 100%);
+    color: hsl(60, 4%, 89%);
     font-size: 20px;
-    text-align: center;
-    width: 60px;
   }
 
+  > p {
+    @include flex(1);
 
+    margin: 0;
+    margin-left: $default-margin-size;
+    font-size: $basic-font-size;
+    font-weight: 300;
+    line-height: 1.43;
+    width: 100%;
+
+    > strong {
+      font-weight: 400;
+    }
+
+    > .human {
+      display: inline;
+
+      > .occupation {
+        color: $primary-grey-color;
+      }
+    }
+  }
 }
 
 
 // Pin Card
 //
 .pin.cloud-card {
+  &.placeholder {
+    background-image: image_url('placeholders/pin.png');
+    background-size: cover;
+
+    height: 199px;
+  }
+
+  &.clickable {
+    cursor: pointer;
+  }
+
   > .insight {
     @include pin-card-insight;
   }
 
   > footer {
     @include pin-card-footer;
+  }
+
+  .insight + footer {
+    margin-top: $default-margin-size;
   }
 }

@@ -7,8 +7,7 @@ Logo = React.createClass
 
   render: ->
     if @props.logoUrl
-      <img src={ @props.logoUrl }>
-      </img>
+      <figure style={ "background-image": "url(#{@props.logoUrl})" }  />
     else
       null
 

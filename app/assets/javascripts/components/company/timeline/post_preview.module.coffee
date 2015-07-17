@@ -15,7 +15,6 @@ PostsStoryStore     = require('stores/posts_story_store')
 PinStore            = require('stores/pin_store')
 UserStore           = require('stores/user_store.cursor')
 VisibilityStore     = require('stores/visibility_store')
-
 QuoteStore          = require('stores/quote_store')
 
 PostActions         = require('actions/post_actions')
@@ -25,35 +24,36 @@ ContentEditableArea = require('components/form/contenteditable_area')
 PersonAvatar        = require('components/shared/person_avatar')
 Avatar              = require('components/avatar')
 
-InsightListComponent = require('components/insight/list')
+InsightTimelineList = require('components/insight/timeline_list')
 
 PinButton           = require('components/pinnable/pin_button')
 
 FuzzyDate           = require('utils/fuzzy_date')
+
+trimDots            = require('utils/trim_string').trimDots
+trimBreak           = require('utils/trim_string').trimBreak
 
 
 # Main
 #
 Component = React.createClass
 
+  displayName: "TimelinePostPreview"
+
+  propTypes:
+    story:         React.PropTypes.object
+    readOnly:      React.PropTypes.bool.isRequired
+    uuid:          React.PropTypes.string.isRequired
+
   mixins: [GlobalState.mixin]
 
   # Component Specifications
   #
-  propTypes:
-    onStoryClick: React.PropTypes.func
-    story_id:     React.PropTypes.string
-    uuid:         React.PropTypes.string.isRequired
-
   getDefaultProps: ->
     cursor:
-      pins:   PinStore.cursor.items
+      pins: PinStore.cursor.items
       quotes: QuoteStore.cursor.items
     current_user_id: document.querySelector('meta[name="user-id"]').getAttribute('content')
-    onStoryClick: ->
-
-  refreshStateFromStores: ->
-    @setState(@getStateFromStores(@props))
 
   getStateFromStores: (props) ->
     blocks = _.chain BlockStore.all()
@@ -66,10 +66,11 @@ Component = React.createClass
     visibility: VisibilityStore.find (item) -> item.uuid && item.owner_id is props.uuid && item.owner_type is 'Post'
 
   getInitialState: ->
-    @getStateFromStores(@props)
+    _.extend @getStateFromStores(@props),
+      asPlaceholder: true
 
   onGlobalStateChange: ->
-    @setState @getStateFromStores(@props)
+    @setState refreshed_at: + new Date
 
 
   # Helpers
@@ -87,26 +88,50 @@ Component = React.createClass
     if story.get('company_id') then storyContent else <strong>{ storyContent }</strong>
 
   postStoryMapper: (story, key) ->
-    onStoryClick = (event) => 
-      event.preventDefault()
-      event.stopPropagation()
-      @props.onStoryClick(story)
+    isCurrentStory = if @props.story then story.get('uuid') is @props.story.get('uuid') else false
 
-    isCurrent = story.get('uuid') == @props.story_id
-
-    <li key={key} className={ cx(current: isCurrent) } onClick={ onStoryClick }>
+    <li key={key} className={ cx(current: isCurrentStory) } onClick={ @handleStoryClick.bind(@, story) }>
       { @getStoryView(story) }
     </li>
 
-  getParagraph: (block) ->
-    paragraph = ParagraphStore.find (paragraph) -> paragraph.owner_id is block.uuid
-    return null unless paragraph
+  isBlockTruncated: (block) ->
+    return false if block.identity_type != 'Paragraph'
+    return false unless (paragraph = @getParagraphByBlock(block))
+
+    paragraph.content.match(/<div>(.*?)<\/div>/ig).length > 1
+
+  isPostTruncated: ->
+    @state.blocks.length > 2 ||
+    @state.blocks.some (block) => @isBlockTruncated(block)
+
+  isPostPreviewWithParagraphs: ->
+    @state.blocks.slice(0, 2).some (block) => block.identity_type == 'Paragraph'
+
+  getParagraphByBlock: (block) ->
+    ParagraphStore.find (paragraph) -> paragraph.owner_id is block.uuid
+
+  getTruncatedParagraph: (block) ->
+    return null unless (paragraph = @getParagraphByBlock(block))
 
     parts = paragraph.content.match(/<div>(.*?)<\/div>/i)
-    content = "<div>#{_.str.truncate(parts[1], 600)}</div>"
+
+    "<span>#{parts[1].trim()}</span>"
+
+  trimDotsInParagraph: (content) ->
+    content = trimDots(trimBreak(content.match(/<span>(.*?)<\/span>/i)[1]))
+
+    "<span>#{content}</span>"
+
+  getParagraph: (block) ->
+    content = @getTruncatedParagraph(block)
+
     classes = cx
       'paragraph': true
-      'quote': block.kind is 'Quote'
+      'quote':     block.kind is 'Quote'
+      'truncated': @isPostTruncated()
+
+    if @isPostTruncated()
+      content = @trimDotsInParagraph(content)
 
     <div className={classes} dangerouslySetInnerHTML={__html: content}></div>
 
@@ -114,7 +139,7 @@ Component = React.createClass
     picture = PictureStore.find (picture) -> picture.owner_id is block.uuid
     return null unless picture
 
-    <img className="cover" src={picture.url}/>
+    <img className={ "cover #{picture.size_}" } src={picture.url}/>
 
   getBlockPerson: (block) ->
     person_id = block.identity_ids.toJS()[0]
@@ -146,7 +171,6 @@ Component = React.createClass
       </footer>
     </div>
 
-
   getQuote: (block) ->
     quote = QuoteStore.findByBlock(block.get("uuid"))
     return null unless quote
@@ -154,7 +178,7 @@ Component = React.createClass
     <div className="quote">
       <div className="quote-wrapper">
         { @getPerson(quote.get("person_id")) }
-        
+
         <div className="quote-text" dangerouslySetInnerHTML={__html: quote.get("text")}></div>
       </div>
     </div>
@@ -166,79 +190,138 @@ Component = React.createClass
     @state.visibility && @state.visibility.value == "only_me"
 
   isRelatedToStory: ->
-    return true unless @props.story_id
-    @getStoryIds().contains @props.story_id
+    return true unless @props.story
+    @getStoryIds().contains @props.story.get('uuid')
 
   isQuote: ->
     @state.blocks.length == 1 && @state.blocks[0].identity_type == "Quote"
 
   getStoryIds: ->
-    PostsStoryStore.cursor.items.deref(Immutable.Map())
-      .valueSeq()
-      .filter (posts_story) => posts_story.get('post_id') is @state.post.uuid
-      .map (posts_story) -> posts_story.get('story_id')
+    @state.post.story_ids
 
   getInsightsNumber: ->
     PinStore.filterInsightsForPost(@props.uuid).size
 
 
+  # temp and hacky solution to display updates
+  updateStoryIds: (action) ->
+    story_ids = switch action
+      when 'link'
+        @state.post.story_ids.concat(@props.story.get('uuid'))
+      when 'unlink'
+        @state.post.story_ids.filterNot((id) => id is @props.story.get('uuid'))
+
+    PostStore.update(@state.post.uuid, story_ids: story_ids.toArray())
+    PostStore.emitChange()
+
+
+  isLoaded: ->
+    @state.post
+
+  handleScroll: (event) ->
+    newScroll = $(window).scrollTop()
+    direction = if newScroll - @lastScroll > 0 then 'down' else 'up'
+    @lastScroll = newScroll
+
+    if @animation && direction == 'up'
+      @animation.stop()
+
+    if @timer || @stickyTimer
+      clearTimeout @timer
+      clearTimeout @stickyTimer
+
+    @timer       = setTimeout @changePlaceholder.bind(@, direction), 100
+    @stickyTimer = setTimeout @scrollSticky, 1000
+
+  changePlaceholder: (direction=null) ->
+    return unless @isMounted()
+
+    difference = $(@getDOMNode()).offset().top - $(window).scrollTop()
+    bottomBorder = if direction == 'down' then 3 * $(window).height() else $(window).height()
+
+    if difference > 0 && difference < bottomBorder
+      @setState asPlaceholder: false
+
+  scrollSticky: ->
+    return unless @isMounted()
+
+    headerHeight = $('body > header').height()
+    difference = $(window).scrollTop() - $(@getDOMNode()).offset().top
+
+    if difference < $(@getDOMNode()).height() && difference > 10 && @state.asPlaceholder
+      if $(window).scrollTop() + $(window).height() != $(document).height()
+        @animation = $('html,body').animate({ scrollTop: $(@getDOMNode()).next().offset().top - (10 + headerHeight) }, 'slow')
+      else
+        $('html,body').animate({ scrollTop: $(@getDOMNode()).offset().top - (10 + headerHeight) }, 'slow')
+
+
   # Handlers
   #
+
+  handlePostClick: (post, event) ->
+    history.replaceState({}, null, window.location.origin + window.location.pathname + '#' + post.uuid)
+
   handleLinkStoryClick: (event) ->
     if @isRelatedToStory()
-      id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id).get('uuid')
+      id = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story.get('uuid')).get('uuid')
       PostsStoryStore.destroy(id)
+      @updateStoryIds('unlink')
     else
-      PostsStoryStore.create(@props.uuid, { story_id: @props.story_id })
-
+      PostsStoryStore.create(@props.uuid, { story_id: @props.story.get('uuid') })
+      @updateStoryIds('link')
 
   handleStarClick: (posts_story, event) ->
     is_highlighted = if posts_story.get('is_highlighted') then false else true
     PostsStoryStore.update(posts_story.get('uuid'), { is_highlighted: is_highlighted }, { optimistic: false })
 
+  handleStoryClick: (story, event) ->
+    event.preventDefault()
+    event.stopPropagation()
+    $('html,body').animate({ scrollTop: $(".timeline").offset().top - 30 }, 'slow')
+
+    if @props.story is null or @props.story.get('uuid') != story.get('uuid')
+      location.hash = "story-#{story.get('name')}"
+
 
   # Lifecycle Methods
   #
   componentDidMount: ->
-    BlockStore.on('change', @refreshStateFromStores)
-    PersonStore.on('change', @refreshStateFromStores)
-    PictureStore.on('change', @refreshStateFromStores)
-    ParagraphStore.on('change', @refreshStateFromStores)
+    @lastScroll = $(window).scrollTop()
+    @timer = false
+    @stickyTimer = false
+
+    @timer = setTimeout @changePlaceholder, 1000
+    @stickyTimer = setTimeout @scrollSticky, 1000
+    window.addEventListener "scroll", @handleScroll
+    window.addEventListener "resize", @changePlaceholder
 
   componentWillReceiveProps: (nextProps) ->
     @setState(@getStateFromStores(nextProps))
 
   componentWillUnmount: ->
-    BlockStore.off('change', @refreshStateFromStores)
-    PersonStore.off('change', @refreshStateFromStores)
-    PictureStore.off('change', @refreshStateFromStores)
-    ParagraphStore.off('change', @refreshStateFromStores)
+    window.removeEventListener "scroll", @handleScroll
+    window.removeEventListener "resize", @changePlaceholder
 
 
   # Renderers
   #
-  renderPostLink: (insightsNumber) ->
-    return null unless insightsNumber > 0
-
-    <a className = "orgpad-button show-pins"
-       href      = { @state.post.post_url + "#expanded" }>
-      { "Show All #{@getInsightsNumber()}" }
-    </a>
-
   renderInsights: ->
-    return null if @isEpochType() || (@getInsightsNumber() == 0)
-    limit = 3
+    return null if @isEpochType() || !@isRelatedToStory() || (@getInsightsNumber() == 0)
 
-    <section className="post-pins">
-      <InsightListComponent pinnable_id={ @props.uuid } pinnable_type="Post" isCarousel={true} limit={ limit } />
-      { @renderPostLink(@getInsightsNumber() - limit) }
-    </section>
+    if !@state.asPlaceholder
+      <section className="post-pins">
+        <InsightTimelineList
+          pinnable_id={ @props.uuid }
+          pinnable_type="Post"
+          postUrl = { @state.post.post_url + "#expanded" } />
+      </section>
+    else
+      <div className="post-pins-placeholder"></div>
 
   renderPinPostItem: ->
     return null if @isEpochType()
 
-    <PinButton pinnable_type='Post' pinnable_id={ @state.post.uuid } title={ @state.post.title } />
-
+    <PinButton pinnable_type='Post' pinnable_id={ @state.post.uuid } title={ @state.post.title } label="Add Insight" />
 
   renderControls: ->
     <ul className="buttons round-buttons">
@@ -255,7 +338,7 @@ Component = React.createClass
     </div>
 
   renderLinkPostWithStoryItem: ->
-    return null unless @props.story_id
+    return null unless @props.story and !@props.readOnly
 
     classes = cx
       active: @isRelatedToStory()
@@ -266,8 +349,12 @@ Component = React.createClass
 
 
   renderStarPostForStoryItem: ->
-    return null unless @props.story_id
-    posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story_id)
+    # temporary disabled
+    return null
+    #
+
+    return null unless @props.story
+    posts_story = PostsStoryStore.findByPostAndStoryIds(@props.uuid, @props.story.get('uuid'))
     return null unless posts_story
 
     classes = cx
@@ -294,13 +381,16 @@ Component = React.createClass
       <h2>{formatted_date}</h2>
     else null
 
-    <header key="header">
+    header_classes = cx
+      compact: !@isEpochType() && !@isQuote()
+
+    <header key="header" className={ header_classes }>
       {title}
       {date}
     </header>
 
   renderStories: ->
-    story_ids = @getStoryIds()
+    story_ids = Immutable.Seq(@state.post.story_ids)
 
     stories = GlobalState.cursor(['stores', 'stories', 'items']).deref(Immutable.Map())
       .filter (item, key) -> story_ids.contains(key)
@@ -316,37 +406,38 @@ Component = React.createClass
     </div>
 
   renderPost: ->
-    unless @isQuote()
-      [@renderHeader(),
-      @renderContent()]
-    else
+    if @isQuote()
       [@renderContent(),
       @renderHeader()]
+    else
+      [@renderHeader(),
+      @renderContent()]
 
   renderContent: ->
-    first_block = @state.blocks[0]
-    return null unless first_block
+    return null unless @state.blocks.length > 0 and @isRelatedToStory()
 
-    first_content_item = @identityContentSwitcher(first_block)
-
-    second_block = @state.blocks[1]
-    second_content_item = if second_block and second_block.identity_type isnt first_block.identity_type
-      @identityContentSwitcher(second_block)
-    else
-      null
+    items = @state.blocks.slice(0, 2).map (block) =>
+      if block then @identityContentSwitcher(block) else null
 
     <div className="content" key="content">
-      { first_content_item }
-      { second_content_item }
+      { items[0] }
+      { items[1] }
     </div>
 
+  renderReadMore: ->
+    return null unless @isPostTruncated() && !@isPostPreviewWithParagraphs()
+
+    <span className="read-more">More</span>
+
   renderFooter: ->
+    return null unless @isRelatedToStory()
+
     <footer>
       { @renderStories() }
     </footer>
 
   render: ->
-    return null unless @state.post
+    return null unless @isLoaded()
 
     article_classes = cx
       'preview': true
@@ -356,17 +447,26 @@ Component = React.createClass
       'only-me': @isOnlyMeVisibility()
       'dimmed': not @isRelatedToStory()
 
-    <section className="post-preview-container">
-      <article id={@props.uuid} className={article_classes}>
-        { @renderControls() }
-        <a href={@state.post.post_url} className="for-group">
-          { @renderOnlyMeOverlay() }
-          { @renderPost() }
-          { @renderFooter() }
-        </a>
-      </article>
-      { @renderInsights() }
-    </section>
+    if !@state.asPlaceholder
+      <section id={@props.uuid} className="post-preview-container">
+        <article className={article_classes}>
+          { @renderControls() }
+          <a href={@state.post.post_url} onClick={ @handlePostClick.bind(@, @state.post) } className="for-group">
+            { @renderOnlyMeOverlay() }
+            { @renderPost() }
+            { @renderFooter() }
+            { @renderReadMore() }
+          </a>
+        </article>
+        { @renderInsights() }
+      </section>
+    else
+      <section id={@props.uuid} className="post-preview-container">
+        <article className="preview post">
+          <div className="post-placeholder"></div>
+        </article>
+        { @renderInsights() }
+      </section>
 
 
 # Exports

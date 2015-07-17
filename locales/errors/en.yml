@@ -8,8 +8,24 @@ en:
       title_is_not_unique: "title is not unique"
       company_can_not_become_published: "company can't become published"
       invite_not_found: "Sorry, your invite code is already used"
+      twitter_handle_invited: "This person has already been invited."
+      twitter_handle_invited_and_logged_in: "This person is already on board."
     roles:
       acceptance: "you can't accept this invitation, because you are already associated with this %{name}"
+      user_blank: "we can't create an invitation without a user"
     authentication:
-      email_doesnt_exist: "The email does not belong to any account" 
+      email_doesnt_exist: "The email does not belong to any account"
       password_doesnt_match: "The password is incorrect"
+    pages:
+      not_found:
+        title: "Sorry, this page isn't available"
+        description: "You may have mistyped the address or the page may have moved."
+      unprocessable_entity:
+        title: "The change you wanted was rejected"
+        description: "Maybe you tried to change something you didn't have access to."
+      internal_server_error:
+        title: "Something went wrong"
+        description: "We've been notified about the issue."
+      authentication_error:
+        title: "Authentication error"
+        description: "You're not authenticated."
