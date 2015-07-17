@@ -25,7 +25,7 @@ class Pin < ActiveRecord::Base
   has_many :features, inverse_of: :insight
 
   validates :content, presence: true, if: :should_validate_content_presence?
-  validates :parent_id, uniqueness: { scope: :pinboard_id, conditions: -> { where(deleted_at: nil) } }
+  validates :parent_id, uniqueness: { scope: :pinboard_id, conditions: -> { where(deleted_at: nil) } }, allow_blank: true
 
   scope :insights, -> { where(parent: nil).where.not(content: nil) }
 
