@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150714105708) do
+ActiveRecord::Schema.define(version: 20150717141340) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -376,13 +376,11 @@ ActiveRecord::Schema.define(version: 20150714105708) do
     t.string   "origin"
     t.integer  "pins_count",               default: 0
     t.boolean  "is_suggestion",            default: false
-    t.string   "author_id"
     t.integer  "weight"
     t.string   "preview_uid"
     t.datetime "deleted_at"
   end
 
-  add_index "pins", ["author_id"], name: "index_pins_on_author_id", using: :btree
   add_index "pins", ["deleted_at"], name: "index_pins_on_deleted_at", using: :btree
   add_index "pins", ["parent_id"], name: "index_pins_on_parent_id", using: :btree
   add_index "pins", ["pinboard_id"], name: "index_pins_on_pinboard_id", using: :btree

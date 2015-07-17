@@ -26,14 +26,6 @@ if can?(:manage, :invite)
   }
 end
 
-if can?(:access, :limbo)
-  links << {
-    title: 'Limbo',
-    icon: 'fa fa-leanpub',
-    url: current_page?(main_app.limbo_index_path) ? nil : main_app.limbo_index_path
-  }
-end
-
 if user_authenticated?
   user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) }
 end

@@ -12,9 +12,6 @@ class Pinboard < ActiveRecord::Base
 
   enum suggestion_rights: { anyone: 0, editors: 1 }
 
-  validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
-  validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }
-
   belongs_to :user
 
   has_many :pins
@@ -23,6 +20,9 @@ class Pinboard < ActiveRecord::Base
   has_many :users, through: :roles
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
+
+  validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
+  validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }
 
   scope :important, -> { where(is_important: true) }
 

@@ -19,7 +19,6 @@ class Pin < ActiveRecord::Base
   belongs_to :pinboard
   belongs_to :pinnable, polymorphic: true
   belongs_to :post, foreign_key: :pinnable_id
-  belongs_to :author, class_name: 'User'
 
   has_many :children, class_name: 'Pin', foreign_key: :parent_id
   has_many :features, inverse_of: :insight
@@ -27,7 +26,6 @@ class Pin < ActiveRecord::Base
   validates :content, presence: true, if: :should_validate_content_presence?
 
   scope :insights, -> { where(parent: nil).where.not(content: nil) }
-  scope :limbo, -> { where(parent: nil, pinnable: nil).where.not(content: nil, author: nil) }
 
   def insight?
     parent_id.blank? && content.present?
@@ -35,6 +33,10 @@ class Pin < ActiveRecord::Base
 
   def content
     is_suggestion? ? parent.content : read_attribute(:content)
+  end
+
+  def author_id
+    parent ? parent.user_id : user_id
   end
 
   def should_validate_content_presence?

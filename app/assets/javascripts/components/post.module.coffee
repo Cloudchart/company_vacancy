@@ -33,7 +33,7 @@ Toggle              = require('components/form/toggle')
 PinButton           = require('components/pinnable/pin_button')
 StandardButton      = require('components/form/buttons').StandardButton
 UserPreview         = require('components/user/preview')
-LimboApp            = require('components/limbo_app')
+SuggestionApp       = require('components/suggestion_app')
 
 # Main
 #
@@ -161,16 +161,6 @@ Post = React.createClass
 
   goToTimeline: ->
     location.href = @getTimelineUrl()
-
-  suggestPost: (uuid) ->
-    attributes = Immutable.Map(
-      is_suggestion: true
-      pinnable_id:   @props.id
-      pinnable_type: 'Post'
-      parent_id:     uuid
-    ).toJSON()
-
-    PinStore.create(attributes).then(ModalActions.hide, ModalActions.hide)
 
 
   # Handlers
@@ -366,13 +356,11 @@ Post = React.createClass
 
     <StandardButton
       className = "cc suggest"
-      text      = "Suggest Insight"
+      text      = "Suggest insight"
       onClick   = { @handleSuggestInsightClick } />
 
   renderSuggestChooser: ->
-    <LimboApp
-      showSearch  = { true }
-      onItemClick = { @suggestPost } />
+    <SuggestionApp uuid = { @props.id } type = { 'Post' } />
 
   renderPinInfo: ->
     return null if @state.isInEditMode

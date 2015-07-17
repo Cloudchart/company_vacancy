@@ -121,6 +121,10 @@ $pinboard-header-color: hsl(60, 10%, 96%);
           > .separator {
             @include flex(1);
           }
+
+          > button.suggest {
+            margin-left: 10px;
+          }
         }
 
       }
@@ -335,5 +339,4 @@ div.pinboard-security {
 
 
 @import 'pin';
-@import 'pins/limbo';
 @import 'pinboard/related_users'

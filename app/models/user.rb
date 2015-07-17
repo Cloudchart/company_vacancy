@@ -124,10 +124,6 @@ class User < ActiveRecord::Base
     activities.where(action: :click)
   end
 
-  def limbo_pins
-    Pin.limbo
-  end
-
   def published_companies
     Company.where(is_published: true).order('created_at DESC')
   end

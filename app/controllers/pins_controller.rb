@@ -17,8 +17,6 @@ class PinsController < ApplicationController
   def create
     @pin.update_by! current_user
     @pin.is_approved = true if autoapproval_granted?
-    @pin.author = current_user if should_assign_author?
-    @pin.user = @pin.parent.user if @pin.is_suggestion?
     @pin.should_allow_domain_name! if current_user.editor?
     @pin.save!
 
@@ -76,7 +74,7 @@ private
   end
 
   def pin_source
-    current_user.editor? ? Pin : current_user.pins
+    current_user.editor? && params_for_create[:user_id].present? ? Pin : current_user.pins
   end
 
   def set_pin
@@ -86,7 +84,7 @@ private
     when 'create'
       pin_source.new(params_for_create)
     else
-      pin_source.find(params[:id])
+      Pin.find(params[:id])
     end
   end
 
@@ -112,10 +110,6 @@ private
     params = default_fields << [:origin]
     params << [:user_id, :content] if current_user.editor?
     params
-  end
-
-  def should_assign_author?
-    current_user.editor? && (@pin.pinnable.blank? || @pin.is_suggestion)
   end
 
   def create_intercom_event

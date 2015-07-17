@@ -105,7 +105,6 @@ Cloudchart::Application.routes.draw do
   resources :visibilities, only: :update
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :tokens, only: :show
-  resources :limbo, only: :index
   resources :landings, only: [:show, :update, :destroy]
 
   # Custom
