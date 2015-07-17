@@ -83,7 +83,7 @@ private
   end
 
   def params_for_create
-    params.require(:pinboard).permit(:title, :user_id, :description, :access_rights)
+    params.require(:pinboard).permit(:title, :user_id, :description, :access_rights, :suggestion_rights)
   end
 
   def params_for_update

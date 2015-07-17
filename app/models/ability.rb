@@ -65,9 +65,11 @@ class Ability
       #
       can :create, Pin do |pin|
         if pin.pinboard
-          owner_or_editor?(current_user, pin.pinboard) || owner_or_editor?(pin.user, pin.pinboard)
+          owner_or_editor?(current_user, pin.pinboard) ||
+          (current_user.editor? && owner_or_editor?(pin.user, pin.pinboard)) ||
+          (pin.is_suggestion? && pin.pinboard.suggestion_rights == 'anyone')
         else
-          pin.is_suggestion?
+          current_user.editor? && pin.is_suggestion?
         end
       end
 
@@ -185,10 +187,6 @@ class Ability
       can :read, Post do |post|
         ((post.company.is_published? || public_reader?(current_user, post.company)) && (post.visibilities.blank? || post.visibility.value == 'public')) ||
         (post.visibility.try(:value) == 'trusted' && trusted_reader?(current_user, post.company))
-      end
-
-      can :access, :limbo do
-        current_user.editor?
       end
 
     end

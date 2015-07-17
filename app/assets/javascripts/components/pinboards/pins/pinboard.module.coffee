@@ -1,19 +1,14 @@
 # @cjsx React.DOM
 
 
-GlobalState     = require('global_state/state')
+GlobalState = require('global_state/state')
 
+PinStore = require('stores/pin_store')
+UserStore = require('stores/user_store.cursor')
+PinboardStore = require('stores/pinboard_store')
 
-# Stores
-#
-PinStore        = require('stores/pin_store')
-UserStore       = require('stores/user_store.cursor')
-
-
-# Components
-#
-PinsList         = require('components/pinboards/pins')
-PinComponent     = require('components/pinboards/pin')
+PinsList = require('components/pinboards/pins')
+PinComponent = require('components/pinboards/pin')
 
 
 # Exports
@@ -21,7 +16,6 @@ PinComponent     = require('components/pinboards/pin')
 module.exports = React.createClass
 
   displayName: 'PinboardPins'
-
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
@@ -39,7 +33,13 @@ module.exports = React.createClass
         """
 
   propTypes:
-    pinboard_id:     React.PropTypes.string.isRequired
+    pinboard_id: React.PropTypes.string.isRequired
+
+
+  # Component Specifications
+  #
+  getDefaultProps: ->
+    onItemClick: null
 
   getInitialState: ->
     isLoaded: false
@@ -53,11 +53,15 @@ module.exports = React.createClass
   isLoaded: ->
     @state.isLoaded
 
+  filterUnapprovedSuggestions: (pin) ->
+    pin.get('is_suggestion') && !@cursor.pinboard.get('is_editable') && !pin.get('is_approved') && @cursor.user.get('uuid') != pin.get('user_id')
+
   gatherPins: ->
     PinStore.filterByPinboardId(@props.pinboard_id)
-      .valueSeq()
+      .filterNot @filterUnapprovedSuggestions
       .sortBy (pin) -> pin.get('created_at')
       .reverse()
+      .valueSeq()
       .toArray()
 
 
@@ -66,6 +70,8 @@ module.exports = React.createClass
   componentWillMount: ->
     @cursor =
       pins: PinStore.cursor.items
+      pinboard: PinboardStore.cursor.items.get(@props.pinboard_id)
+      user: UserStore.me()
 
     @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
 
@@ -75,4 +81,4 @@ module.exports = React.createClass
   render: ->
     return null unless @isLoaded()
     
-    <PinsList pins = { @gatherPins() } />
+    <PinsList pins = { @gatherPins() } onItemClick = { @props.onItemClick } />

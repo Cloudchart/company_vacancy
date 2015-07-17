@@ -53,11 +53,12 @@ class User < ActiveRecord::Base
   has_many :roles, dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :people, dependent: :destroy
-  has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
   has_many :landings, dependent: :destroy
-  has_many :accessed_companies, through: :roles, source: :owner, source_type: 'Company'
   has_many :companies, dependent: :destroy
+  has_many :accessed_companies, through: :roles, source: :owner, source_type: 'Company'
+  has_many :pinboards, dependent: :destroy
+  has_many :accessed_pinboards, through: :roles, source: :owner, source_type: 'Pinboard'
 
   # Roles on Pinboards
   #
@@ -121,10 +122,6 @@ class User < ActiveRecord::Base
 
   def click_activities
     activities.where(action: :click)
-  end
-
-  def limbo_pins
-    Pin.limbo
   end
 
   def published_companies

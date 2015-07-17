@@ -1,9 +1,8 @@
 json.(pinboard, :uuid, :user_id)
 json.(pinboard, :title, :description, :position)
-json.(pinboard, :access_rights, :is_important)
+json.(pinboard, :access_rights, :suggestion_rights)
+json.(pinboard, :is_important)
 json.(pinboard, :created_at, :updated_at)
-
-#json.readers_count pinboard.readers.size + pinboard.writers.size + pinboard.followers.size
 
 json.readers_count begin
   preload_associations(siblings, cache, :readers, :writers, :followers)
@@ -44,20 +43,21 @@ json_edge! json, :pins_ids, edges do
   pinboard.pins.map(&:id)
 end
 
-
 json_edge! json, :pins_count, edges do
   preload_associations(siblings, cache, :pins)
   pinboard.pins.size
 end
-
 
 json_edge! json, :readers_count, edges do
   preload_associations(siblings, cache, :readers, :writers, :followers)
   pinboard.readers.size + pinboard.writers.size + pinboard.followers.size
 end
 
-
 json_edge! json, :is_followed, edges do
   preload_associations(siblings, cache, :followers)
   pinboard.followers.map(&:user_id).include?(current_user.id)
+end
+
+json_edge! json, :is_editable, edges do
+  can?(:update, pinboard)
 end

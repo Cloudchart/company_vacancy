@@ -20,26 +20,29 @@ class Pin < ActiveRecord::Base
   belongs_to :pinboard
   belongs_to :pinnable, polymorphic: true
   belongs_to :post, foreign_key: :pinnable_id
-  belongs_to :author, class_name: 'User'
 
   has_many :children, class_name: 'Pin', foreign_key: :parent_id
   has_many :features, inverse_of: :insight
 
   validates :content, presence: true, if: :should_validate_content_presence?
+  validates :parent_id, uniqueness: { scope: :pinboard_id, conditions: -> { where(deleted_at: nil) } }
 
   scope :insights, -> { where(parent: nil).where.not(content: nil) }
-  scope :limbo, -> { where(parent: nil, pinnable: nil).where.not(content: nil, author: nil) }
 
   def insight?
     parent_id.blank? && content.present?
   end
 
   def content
-    is_suggestion ? parent.content : read_attribute(:content)
+    is_suggestion? ? parent.content : read_attribute(:content)
+  end
+
+  def author_id
+    parent ? parent.user_id : user_id
   end
 
   def should_validate_content_presence?
-    parent.blank? || ( @update_by.present? && user_id != @update_by.uuid && !is_suggestion )
+    parent.blank? || (@update_by.present? && user_id != @update_by.uuid && !is_suggestion?)
   end
 
   def update_by!(update_by)

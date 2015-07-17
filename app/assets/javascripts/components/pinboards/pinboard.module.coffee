@@ -76,6 +76,7 @@ module.exports = React.createClass
     uuid:    React.PropTypes.string.isRequired
 
   getDefaultProps: ->
+    onClick: -> @handleLinkClick()
     cursor:
       roles: RoleStore.cursor.items
 
@@ -227,7 +228,7 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     <section className="pinboard cloud-card link">
-      <a className="for-group" href={ @cursor.pinboard.get('url') } onClick = { @handleLinkClick } >
+      <a className="for-group" href={ @cursor.pinboard.get('url') } onClick = { @props.onClick.bind(null, @props.uuid) } >
         { @renderHeader() }
         { @renderDescription() }
       </a>

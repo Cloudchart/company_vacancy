@@ -30,6 +30,10 @@ module.exports = GlobalState.createStore
     'post:fetch-all:done': @populate
 
 
+  approve: (uuid) ->
+    @syncAPI.approve(@cursor.items.get(uuid)).then (json) => @fetchOne(json.id)
+
+
   getParentFor: (id) ->
     @cursor.items.get(@cursor.items.getIn([id, 'parent_id']))
 

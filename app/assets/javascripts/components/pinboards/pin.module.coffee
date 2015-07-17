@@ -9,6 +9,7 @@ GlobalState = require('global_state/state')
 PinStore  = require('stores/pin_store')
 UserStore = require('stores/user_store.cursor')
 PostStore = require('stores/post_store.cursor')
+PinboardStore = require('stores/pinboard_store')
 
 
 # Components
@@ -21,6 +22,7 @@ EditPinButton = require('components/pinnable/edit_pin_button')
 InsightContent = require('components/pinnable/insight_content')
 ShareInsightButton = require('components/insight/share_button')
 InsightOrigin = require('components/insight/origin')
+InsightSuggestion = require('components/insight/suggestion')
 
 
 # Utils
@@ -88,8 +90,11 @@ module.exports = React.createClass
   # Lifecycle methods
   #
   componentWillMount: ->
+    pin = PinStore.cursor.items.cursor(@props.uuid)
+
     @cursor =
-      pin:  PinStore.cursor.items.cursor(@props.uuid)
+      pin: pin
+      pinboard: PinboardStore.cursor.items.get(pin.get('pinboard_id'))
       user: UserStore.me()
 
     @fetch() unless @isLoaded()
@@ -99,10 +104,9 @@ module.exports = React.createClass
   #
   getInsight: ->
     if @cursor.pin.get('parent_id')
-      PinStore.cursor.items.cursor(@cursor.pin.get('parent_id'))#getParentFor(@props.uuid)
+      PinStore.cursor.items.cursor(@cursor.pin.get('parent_id'))
     else if @cursor.pin.get('content')
       @cursor.pin
-
 
   isClickable: ->
     _.isFunction(@props.onClick)
@@ -112,8 +116,13 @@ module.exports = React.createClass
   #
   handleClick: (event) ->
     return unless @isClickable()
+    @props.onClick(@cursor.pin.get('uuid'), event)
 
-    @props.onClick(@cursor.pin)
+  handleDeleteSuggestionClick: (event) ->
+    PinStore.destroy(@props.uuid) if confirm('Are you sure?')
+
+  handleApproveSuggestionClick: (event) ->
+    PinStore.approve(@props.uuid) if confirm('Are you sure?')
 
 
   # Renderers
@@ -147,14 +156,17 @@ module.exports = React.createClass
     <article className="insight">
       <InsightContent
         pinnable_id = { @cursor.pin.get('pinnable_id') }
-        pin_id      = { insight.get('uuid') }  />
+        pin_id = { insight.get('uuid') }
+      />
 
       <footer>
         <Human
           showUnicornIcon = { true }
-          showLink        = { !@isClickable() }
-          type            = "user"
-          uuid            = { insight.get('user_id') } />
+          showLink = { !@isClickable() }
+          type = "user"
+          uuid = { insight.get('user_id') }
+        />
+
         { @renderInsightControls(insight) }
       </footer>
     </article>
@@ -168,7 +180,10 @@ module.exports = React.createClass
   renderCommentContent: ->
     return null unless content = @cursor.pin.get('content')
 
-    <span dangerouslySetInnerHTML={ __html: content } />
+    if @cursor.pin.get('is_suggestion')
+      <span>Suggested by</span>
+    else
+      <span dangerouslySetInnerHTML={ __html: content } />
 
   renderCommentAuthor: ->
     return null unless @props.showAuthor
@@ -181,18 +196,49 @@ module.exports = React.createClass
   renderComment: ->
     return null if @props.skipRenderComment
     return null if ((insight = @getInsight()) && insight.get('uuid') == @props.uuid) ||
-      (!@cursor.pin.get('content') && !@props.showAuthor)
+      (!@cursor.pin.get('content') && !@props.showAuthor) || (@cursor.pin.get('is_suggestion') && @cursor.pin.get('is_approved'))
 
     <footer>
-      <i className="fa fa-share" />
-      <p>
-        { @renderCommentContent() }
-        { " — " if @renderCommentContent() && @renderCommentAuthor() }
-        { @renderCommentAuthor() }
-      </p>
+      <div className="comment-container">
+        <i className="fa fa-share" />
+        <p>
+          { @renderCommentContent() }
+          { @renderSeparator() }
+          { @renderCommentAuthor() }
+        </p>
+      </div>
+      { @renderSuggestionControls() }
     </footer>
 
+  renderSeparator: ->
+    if @cursor.pin.get('is_suggestion')
+      <span> </span>
+    else if @cursor.pin.get('content') && @props.showAuthor
+      <span> – </span>
 
+  renderSuggestionControls: ->
+    return null unless @cursor.pin.get('is_suggestion') && !@cursor.pin.get('is_approved')
+
+    if @cursor.pinboard.get('is_editable')
+      approve_element = if @cursor.pin.get('is_approved')
+        null
+      else
+        <li className="approve">
+          <button className="cc" onClick={@handleApproveSuggestionClick}>Approve</button>
+        </li>
+
+      <ul className="suggestion-controls" >
+        <li className="delete">
+          <button className="cc alert" onClick={@handleDeleteSuggestionClick}>Decline</button>
+        </li>
+        { approve_element }
+      </ul>
+    else
+      null
+
+
+  # Main render
+  #
   render: ->
     return null unless @cursor.pin.deref(false) && @cursor.user.deref(false)
 

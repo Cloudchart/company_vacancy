@@ -38,6 +38,9 @@ module.exports = React.createClass
 
 
   handleClick: (event) ->
+    event.stopPropagation()
+    event.preventDefault()
+
     ModalStack.show(@renderPinForm())
 
 

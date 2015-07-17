@@ -1,25 +1,20 @@
 # @cjsx React.DOM
 
+# Imports
+#
 GlobalState = require('global_state/state')
-Constants = require('constants')
+# Constants = require('constants')
 
+PinStore = require('stores/pin_store')
+UserStore = require('stores/user_store.cursor')
 
-# Stores
-#
-PinStore    = require('stores/pin_store')
-UserStore   = require('stores/user_store.cursor')
-
-
-# Components
-#
 Human = require('components/human')
 InsightOrigin = require('components/insight/origin')
 PinButton = require('components/pinnable/pin_button')
 EditPinButton = require('components/pinnable/edit_pin_button')
 ApprovePinButton = require('components/pinnable/approve_pin_button')
-StandardButton = require('components/form/buttons').StandardButton
-
 ShareInsightButton = require('components/insight/share_button')
+InsightSuggestion = require('components/insight/suggestion')
 
 
 # Utils
@@ -42,53 +37,44 @@ module.exports = React.createClass
       users:  UserStore.cursor.items
 
 
+  # Component Specifications
+  #
   getDefaultProps: ->
     showHotzone: true
 
+  getInitialState: ->
+    @getStateFromStores()
+
+  onGlobalStateChange: ->
+    @setState @getStateFromStores()
+
+  getStateFromStores: ->
+    user: @props.cursor.users.cursor(@getInsight().get('user_id'))
+
+
+  # Helpers
+  #
   gatherAttributes: ->
     uuid:           @getInsight().get('uuid')
     parent_id:      @getInsight().get('parent_id')
     pinnable_id:    @props.cursor.pin.get('pinnable_id')
     pinnable_type:  @props.cursor.pin.get('pinnable_type')
 
-  getStateFromStores: ->
-    user: @props.cursor.users.cursor(@getInsight().get('user_id'))
-
-  onGlobalStateChange: ->
-    @setState @getStateFromStores()
-
-  getInitialState: ->
-    @getStateFromStores()
-
-  isSuggested: ->
+  isSuggestion: ->
     @props.cursor.pin.get('is_suggestion')
 
   getInsight: ->
-    if @isSuggested()
+    if @isSuggestion()
       PinStore.cursor.items.cursor(@props.cursor.pin.get('parent_id'))
     else
       @props.cursor.pin
-
-  destroySuggestion: ->
-    PinStore.destroy(@props.cursor.pin.get('uuid')) if confirm('Are you sure?')
 
   getOrigin: ->
     @getInsight().get('origin')
 
   getContent: ->
     content = @getInsight().get('content')
-
     if @getOrigin() then trimDots(content) else content
-
-
-  # Helpers
-  #
-  # getSomathing: ->
-
-
-  # Lifecycle methods
-  #
-  # componentWillMount: ->
 
 
   # Renderers
@@ -104,11 +90,11 @@ module.exports = React.createClass
     </section>
 
   renderApproveButton: ->
-    return null if @isSuggested()
+    return null if @isSuggestion()
     <ApprovePinButton uuid = { @props.uuid } />
 
   renderEditButton: ->
-    return null if @isSuggested()
+    return null if @isSuggestion()
     <EditPinButton uuid={ @props.uuid } />
 
   renderButtons: (insight) ->
@@ -119,25 +105,9 @@ module.exports = React.createClass
       <PinButton {...@gatherAttributes()} title={ insight.get('content') } showHotzone = { @props.showHotzone } />
     </ul>
 
-  renderSuggestionDeleteButton: ->
-    return null unless UserStore.isEditor()
 
-    <StandardButton
-      className = "transparent"
-      iconClass = "cc-icon cc-times"
-      onClick   = { @destroySuggestion }
-    />
-
-  renderSuggestion: ->
-    return null unless @isSuggested()
-
-    <section className="suggestion">
-      <i className="svg-icon svg-cloudchart-logo" />
-      Suggested by { Constants.SITE_NAME }
-      { @renderSuggestionDeleteButton() }
-    </section>
-
-
+  # Main render
+  #
   render: ->
     return null unless @props.cursor.pin.deref(false)
     return null unless @state.user.deref(false)
@@ -148,7 +118,6 @@ module.exports = React.createClass
       insight:    true
       item:       true
       unapproved: !insight.get('is_approved')
-      suggested:  @isSuggested()
 
     <article className = { insightClasses } >
       <Human
@@ -156,6 +125,8 @@ module.exports = React.createClass
         showUnicornIcon = { true }
         type            = "user" />
       { @renderContent() }
-      { @renderSuggestion() }
+
+      <InsightSuggestion pin = { @props.cursor.pin.deref().toJS() } />
+
       { @renderButtons(insight) }
     </article>
