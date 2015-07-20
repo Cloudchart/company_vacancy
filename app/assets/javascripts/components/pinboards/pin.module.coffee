@@ -1,19 +1,12 @@
 # @cjsx React.DOM
 
-
 GlobalState = require('global_state/state')
 
-
-# Stores
-#
 PinStore  = require('stores/pin_store')
 UserStore = require('stores/user_store.cursor')
 PostStore = require('stores/post_store.cursor')
 PinboardStore = require('stores/pinboard_store')
 
-
-# Components
-#
 Human = require('components/human')
 PinnablePreview = require('components/pinnable/preview')
 PinnablePost = require('components/pinnable/post')

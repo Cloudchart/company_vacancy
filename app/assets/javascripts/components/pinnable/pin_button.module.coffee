@@ -37,6 +37,7 @@ module.exports = React.createClass
     asTextButton: React.PropTypes.bool
     showHotzone: React.PropTypes.bool
     iconClass: React.PropTypes.string
+    shouldRenderSuggestion: React.PropTypes.bool
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
@@ -63,6 +64,7 @@ module.exports = React.createClass
     showHotzone: true
     label: 'Save'
     iconClass: 'fa fa-thumb-tack'
+    shouldRenderSuggestion: false
     cursor:
       pins: PinStore.cursor.items
       tokens: TokenStore.cursor.items
@@ -210,13 +212,14 @@ module.exports = React.createClass
   #
   renderPinForm: ->
     <PinForm
-      title         = { @props.title }
-      parent_id     = { @props.uuid }
-      pinboard_id   = { @props.pinboard_id }
-      pinnable_id   = { @props.pinnable_id }
+      title = { @props.title }
+      parent_id = { @props.uuid }
+      pinboard_id = { @props.pinboard_id }
+      pinnable_id = { @props.pinnable_id }
       pinnable_type = { @props.pinnable_type }
-      onDone        = { Modal.hide }
-      onCancel      = { Modal.hide }
+      onDone = { Modal.hide }
+      onCancel = { Modal.hide }
+      shouldRenderSuggestion = { @props.shouldRenderSuggestion }
     />
 
   renderEditPinForm: (uuid) ->

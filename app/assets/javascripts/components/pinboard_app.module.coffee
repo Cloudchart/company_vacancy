@@ -12,7 +12,6 @@ FavoriteStore = require('stores/favorite_store.cursor')
 
 # Components
 #
-SuggestionApp = require('components/suggestion_app')
 PinboardSettings = require('components/pinboards/settings')
 PinboardAccess = require('components/pinboards/access_rights')
 PinboardPins = require('components/pinboards/pins/pinboard')
@@ -21,6 +20,7 @@ ModalStack = require('components/modal_stack')
 InviteActions = require('components/roles/invite_actions')
 RelatedUsers = require('components/pinboards/related_users')
 
+SuggestButton = require('components/shared/suggest_button')
 PinButton = require('components/pinnable/pin_button')
 FollowButton = require('components/pinboards/follow_button')
 ShareButtons = require('components/shared/share_buttons')
@@ -32,6 +32,8 @@ SyncApi = require('sync/pinboard_sync_api')
 
 pluralize = require('utils/pluralize')
 
+Labels =
+  add_insight: 'Add an insight'
 
 # Exports
 #
@@ -112,6 +114,9 @@ module.exports = React.createClass
   # Lifecycle methods
   #
   componentWillMount: ->
+    @cursor =
+      pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
+
     @fetch() unless @isLoaded()
 
 
@@ -132,26 +137,11 @@ module.exports = React.createClass
   getFavorite: ->
     FavoriteStore.findByPinboardForUser(@props.uuid, @getViewerId())
 
-  isViewerOwner: ->
-    @getOwner().get('uuid') == @getViewerId()
-
-  getViewerRole: ->
-    RoleStore.rolesOnOwnerForUser(@props.uuid, 'Pinboard', @props.cursor.viewer).first()
-
-  isViewerEditor: ->
-    !!(role = @getViewerRole()) && role.get('value') == 'editor'
-
-  canViewerEdit: ->
-    @isViewerOwner() || @isViewerEditor()
-
   getEditors: ->
     result = @props.cursor.roles
       .filter (role) => role.get('owner_id') == @props.uuid && role.get('value') == 'editor'
       .map (role) -> UserStore.get(role.get('user_id'))
       .valueSeq()
-
-  canViewerCreateInsight: ->
-    @canViewerEdit() || (UserStore.isEditor() && UserStore.isUnicorn(@getOwner()))
 
 
   # Handlers
@@ -185,11 +175,6 @@ module.exports = React.createClass
       />
     )
 
-  handleSuggestionClick: (event) ->
-    ModalStack.show(
-      <SuggestionApp uuid = { @props.uuid } type = { 'Pinboard' } />
-    )
-
 
   # Renderers
   #
@@ -210,9 +195,8 @@ module.exports = React.createClass
       { link }
     ]
 
-
   renderFollowButton: ->
-    return null if @isViewerOwner() || @isViewerEditor()
+    return null if @cursor.pinboard.get('is_editable')
 
     text = if @getFavorite() then 'Unfollow' else 'Follow'
 
@@ -225,21 +209,12 @@ module.exports = React.createClass
       />
     </AuthButton>
 
-
-  renderSuggestionButton: (pinboard) ->
-    return null unless @props.cursor.viewer.get('is_authenticated') && (pinboard.suggestion_rights == 'anyone' || pinboard.is_editable)
-
-    <button className="cc suggest" onClick={@handleSuggestionClick}>
-      Suggest an insight
-    </button>
-
-
   renderHeader: ->
     pinboard = @getPinboard()
 
     <header>
       <h1>
-        { @getPinboard().get('title') }
+        { pinboard.get('title') }
         <span> by </span>
         <a href={ @getOwner().get('user_url') }>{ @getOwner().get('full_name') }</a>
         { @renderOthersLink() }
@@ -262,11 +237,25 @@ module.exports = React.createClass
 
         <div className="separator"/>
 
-        { @renderCreateInsightButton() }
-        { @renderSuggestionButton(pinboard.toJS()) }
+        { @renderAddInsightButton() }
       </div>
 
     </header>
+
+  renderAddInsightButton: ->
+    if @cursor.pinboard.get('is_editable') || (UserStore.isEditor() && UserStore.isUnicorn(@getOwner()))
+      <PinButton
+        asTextButton = true
+        title = { @cursor.pinboard.get('title') }
+        label = { Labels.add_insight }
+        iconClass = ''
+        pinboard_id = { @props.uuid }
+        shouldRenderSuggestion = true
+      />
+    else if @props.cursor.viewer.get('is_authenticated') && @cursor.pinboard.get('suggestion_rights') == 'anyone'
+      <SuggestButton uuid = { @props.uuid } type = { 'Pinboard' } label = { Labels.add_insight } />
+    else
+      null
 
   renderContent: ->
     switch @state.currentTab
@@ -285,17 +274,6 @@ module.exports = React.createClass
 
     <div className="description">{ description }</div>
 
-  renderCreateInsightButton: ->
-    return null unless @canViewerCreateInsight()
-
-    <PinButton
-      asTextButton = true
-      title = { @getPinboard().get('title') }
-      label = 'Add an insight'
-      iconClass = ''
-      pinboard_id = { @props.uuid }
-    />
-
 
   # Main render
   #
@@ -309,7 +287,7 @@ module.exports = React.createClass
           <InviteActions ownerId = { @props.uuid } ownerType = 'Pinboard' />
           <PinboardTabs
             insightsNumber = { @getPinboard().get('pins_count') }
-            canEdit = { @canViewerEdit() }
+            canEdit = { @cursor.pinboard.get('is_editable') }
             onChange = { @handleTabChange }
           />
         </div>
