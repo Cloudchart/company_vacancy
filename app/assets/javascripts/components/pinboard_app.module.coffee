@@ -232,8 +232,8 @@ module.exports = React.createClass
       </ul>
 
       <div className="buttons">
-        <FollowButton pinboard={ @props.uuid } canUnfollow={ true } />
-        <ShareButtons object = pinboard.toJS() />
+        <FollowButton pinboard = { @props.uuid } canUnfollow = { true } />
+        <ShareButtons object = pinboard.toJS() displayMode = { 'single_button' } />
 
         <div className="separator"/>
 

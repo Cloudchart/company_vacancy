@@ -197,7 +197,7 @@ Component = React.createClass
       
       <div className="buttons">
         { @getFollowButton() }
-        <ShareButtons object = @state.company.toJS() />
+        <ShareButtons object = @state.company.toJS() displayMode = { 'single_button' } />
       </div>
 
       <InviteActions ownerId = { @props.uuid } ownerType = 'Company' />
