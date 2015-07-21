@@ -43,6 +43,17 @@ json_edge! json, :pins_ids, edges do
   pinboard.pins.map(&:id)
 end
 
+json_edge! json, :pins, edges do
+  preload_associations(siblings, cache, :pins)
+  pinboard.pins.map do |p|
+    {
+      id:         p.id,
+      parent_id:  p.parent_id,
+      is_insight: p.insight?
+    }
+  end
+end
+
 json_edge! json, :pins_count, edges do
   preload_associations(siblings, cache, :pins)
   pinboard.pins.size
