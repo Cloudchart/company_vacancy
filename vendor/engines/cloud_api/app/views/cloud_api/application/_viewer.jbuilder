@@ -2,15 +2,14 @@ json.partial! 'user', user: viewer, siblings: siblings, edges: edges, cache: cac
 
 # Edges
 #
-json_edge! json, :important_companies_ids, edges do
-  viewer.important_companies.map(&:id)
-end
+json_edge! json, :featured_companies, edges do
+  preload_associations(viewer.featured_pinboards, [], :feature)
 
-json_edge! json, :important_companies, edges do
-  viewer.important_companies.map do |c|
+  viewer.featured_companies.map do |company|
     {
-      id:   c.id,
-      name: c.name
+      id: company.id,
+      name: company.name,
+      featured_position: company.feature.position
     }
   end
 end
@@ -24,11 +23,14 @@ json_edge! json, :published_companies, edges do
   end
 end
 
-json_edge! json, :important_pinboards, edges do
-  viewer.important_pinboards.map do |p|
+json_edge! json, :featured_pinboards, edges do
+  preload_associations(viewer.featured_pinboards, [], :feature)
+
+  viewer.featured_pinboards.map do |pinboard|
     {
-      id:     p.id,
-      title:  p.title
+      id: pinboard.id,
+      title: pinboard.title,
+      featured_position: pinboard.feature.position
     }
   end
 end

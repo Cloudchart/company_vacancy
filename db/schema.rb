@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150717141340) do
+ActiveRecord::Schema.define(version: 20150721095621) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -354,7 +354,6 @@ ActiveRecord::Schema.define(version: 20150717141340) do
     t.datetime "updated_at"
     t.string   "access_rights",                default: "public"
     t.text     "description"
-    t.boolean  "is_featured"
     t.boolean  "is_important",                 default: false
     t.string   "preview_uid"
     t.integer  "suggestion_rights",            default: 0

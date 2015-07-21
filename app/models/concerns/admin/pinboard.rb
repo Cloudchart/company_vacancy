@@ -5,26 +5,29 @@ module Admin::Pinboard
 
     rails_admin do
       list do
-        sort_by :is_important
+        sort_by :created_at
         field :title
 
         field :user do
           searchable [:first_name, :last_name]
         end
 
-        field :is_important do
-          sort_reverse true
-        end
-
+        field :is_featured, :boolean
         fields :created_at, :updated_at
       end
 
       edit do
         field :title do
+          visible do
+            bindings[:object].user_id.blank?
+          end
+
           html_attributes do
             { autofocus: true }
           end
         end
+
+        field :is_featured, :boolean
       end
     end
 

@@ -11,6 +11,7 @@ class AdminAbility
       can :index, Person
       can [:index, :update, :destroy, :export], GuestSubscription
       can [:index, :destroy, :invite, :accept_invite], Token
+      can [:index, :show_in_app, :edit], Company
       can :manage, [Interview, Page, Tag, Feature, Domain]
 
       cannot :export, Interview
@@ -40,12 +41,9 @@ class AdminAbility
       
       # Pinboard
       # 
-      can [:index, :create], Pinboard
-      can [:make_important], Pinboard, is_important: false
-      can [:make_unimportant], Pinboard, is_important: true
+      can [:index, :create, :update], Pinboard
 
-
-      can [:update, :destroy], Pinboard do |pinboard|
+      can :destroy, Pinboard do |pinboard|
         pinboard.user_id.blank?
       end
 
@@ -56,12 +54,6 @@ class AdminAbility
       can [:update, :destroy], Story do |story|
         story.company_id.blank?
       end
-
-      # Company
-      # 
-      can [:index, :show_in_app], Company
-      can [:make_important], Company, is_important: false
-      can [:make_unimportant], Company, is_important: true
 
     end
   end

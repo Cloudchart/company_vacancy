@@ -5,6 +5,7 @@ class Company < ActiveRecord::Base
   include Taggable
   include Preloadable
   include Previewable
+  include Featurable
   include Tire::Model::Search
   include Tire::Model::Callbacks
   include Admin::Company
@@ -39,7 +40,6 @@ class Company < ActiveRecord::Base
   validates :site_url, domain: true, allow_blank: true
   validate  :publish_check, if: 'is_published? && is_published_changed?'
 
-  scope :important, -> { where(is_important: true) }
   scope :published, -> { where(is_published: true) }
 
   settings ElasticSearchNGramSettings do

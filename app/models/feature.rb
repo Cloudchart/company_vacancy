@@ -10,10 +10,10 @@ class Feature < ActiveRecord::Base
 
   dragonfly_accessor :image
 
-  # belongs_to :featurable, polymorphic: true
-  belongs_to :insight, class_name: 'Pin', foreign_key: :featurable_id, inverse_of: :features
+  nilify_blanks only: [:title, :category, :url]
 
-  validates :insight, presence: true
+  belongs_to :featurable, polymorphic: true
+
   validates :url, url: true, allow_blank: true
 
   scope :insights, -> { where(featurable_type: 'Pin') }
@@ -28,16 +28,12 @@ class Feature < ActiveRecord::Base
     DISPLAY_TYPES.reject { |r| ((display_types_mask || 0) & 2**DISPLAY_TYPES.index(r)).zero? }
   end
 
-  def assigned_image
-    image_stored? ? image : insight.post.pictures.first.try(:image)
-  end
-
   def assigned_title
-    title.present? ? title : insight.post.title
+    title.present? ? title : featurable.try(:title) || featurable.try(:name) || featurable.try(:content)
   end
 
-  def formatted_url
-    url.match(/https?:\/\//) ? url : "http://#{url}"
+  def assigned_image
+    image_stored? ? image : featurable.try(:preview)
   end
 
 end

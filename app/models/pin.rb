@@ -22,7 +22,6 @@ class Pin < ActiveRecord::Base
   belongs_to :post, foreign_key: :pinnable_id
 
   has_many :children, class_name: 'Pin', foreign_key: :parent_id
-  has_many :features, inverse_of: :insight
 
   validates :content, presence: true, if: :should_validate_content_presence?
   validates :parent_id, uniqueness: { scope: :pinboard_id, conditions: -> { where(deleted_at: nil) } }, allow_blank: true, if: -> { is_suggestion? && pinboard }

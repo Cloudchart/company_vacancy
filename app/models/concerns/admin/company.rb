@@ -4,12 +4,13 @@ module Admin::Company
   included do
     rails_admin do
       list do
-        sort_by :is_important
         fields :name, :is_published
-        field :is_important do
-          sort_reverse true
-        end
+        field :is_featured, :boolean
         fields :created_at, :updated_at
+      end
+
+      edit do
+        field :is_featured, :boolean
       end
     end
   end

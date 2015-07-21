@@ -10,10 +10,7 @@ PinboardPreview     = require('components/cards/pinboard_card')
 FeaturedPinboard    = require('components/landing/featured_pinboard')
 ProductHuntMobile   = require('components/landing/product_hunt_mobile')
 
-
 FeaturedInsights    = require('components/insight/featured')
-ImportantCompanies  = require('components/company/lists/important')
-ImportantPinboards  = require('components/pinboards/lists/important')
 Greeting            = require('components/shared/greeting')
 GuestSubscription   = require('components/shared/guest_subscription')
 MainBanner          = require('components/welcome/main_banner')
@@ -38,15 +35,15 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
-            important_pinboards {
+            featured_pinboards {
               #{PinboardPreview.getQuery('pinboard')}
             },
-            important_companies {
+            featured_companies {
               #{CompanyPreview.getQuery('company')}
             },
             edges {
-              important_pinboards,
-              important_companies,
+              featured_pinboards,
+              featured_companies,
               is_authenticated
             }
           }
@@ -95,7 +92,11 @@ module.exports = React.createClass
 
   renderFeaturedPinboard: ->
     return null if device.is_iphone
-    <FeaturedPinboard pinboard={ @props.featured_pinboard } />
+    return null unless featured_pinboard = @props.cursor.me.get('featured_pinboards')
+      .filter (pinboard) -> pinboard.get('featured_position') == 0
+      .first()
+
+    <FeaturedPinboard pinboard={ featured_pinboard.get('id') } />
 
 
   renderPinboard: (pinboard) ->
@@ -113,8 +114,9 @@ module.exports = React.createClass
 
       <section className="flow">
         {
-          @props.cursor.me.get('important_pinboards', Immutable.Seq())
-            .sortBy (c) -> c.get('title')
+          @props.cursor.me.get('featured_pinboards', Immutable.Seq())
+            .filter (pinboard) -> pinboard.get('featured_position') > 0
+            .sortBy (pinboard) -> pinboard.get('featured_position')
             .map @renderPinboard
             .toArray()
         }
@@ -137,8 +139,8 @@ module.exports = React.createClass
 
       <section className="flow">
         {
-          @props.cursor.me.get('important_companies', Immutable.Seq())
-            .sortBy (c) -> c.get('name')
+          @props.cursor.me.get('featured_companies', Immutable.Seq())
+            .sortBy (company) -> company.get('featured_position')
             .map @renderCompany
             .toArray()
         }

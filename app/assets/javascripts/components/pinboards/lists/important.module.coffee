@@ -35,7 +35,7 @@ module.exports = React.createClass
       pinboards: ->
         """
           Viewer {
-            important_pinboards {
+            featured_pinboards {
               #{PinboardComponent.getQuery('pinboard')}
             }
           }
@@ -65,9 +65,7 @@ module.exports = React.createClass
     pinboardIds = PinboardStore.filterUserPinboards(@cursor.user.get('uuid')).map (pinboard) -> pinboard.get('uuid')
 
     PinboardStore
-      .filter (pinboard) =>
-        pinboard.get('is_important') &&
-        (!@props.filterSaved || !pinboardIds.contains(pinboard.get('uuid')))
+      .filter (pinboard) => !@props.filterSaved || !pinboardIds.contains(pinboard.get('uuid'))
       .sortBy (item) -> item.get('created_at')
       .reverse()
       .take(4)

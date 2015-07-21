@@ -60,11 +60,6 @@ json_edge! json, :favorite_companies, edges do
 end
 
 
-json_edge! json, :important_companies_ids, edges do
-  user.important_companies.map(&:id)
-end
-
-
 json_edge! json, :insights, edges do
   User.preload_insights(siblings, cache)
 

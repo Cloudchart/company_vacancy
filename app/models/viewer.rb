@@ -1,15 +1,15 @@
 class Viewer < User
 
-  def important_companies(scope = {})
-    Company.important.select { |c| ability(scope).can?(:read, c) }
+  def featured_companies(scope = {})
+    Company.featured.select { |c| ability(scope).can?(:read, c) }
   end
 
   def published_companies(scope = {})
     Company.published.select { |c| ability(scope).can?(:read, c) }
   end
 
-  def important_pinboards(scope = {})
-    Pinboard.important.select { |p| ability(scope).can?(:read, p) }
+  def featured_pinboards(scope = {})
+    Pinboard.featured.select { |p| ability(scope).can?(:read, p) }
   end
 
 private

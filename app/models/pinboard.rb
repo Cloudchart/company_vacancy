@@ -2,6 +2,7 @@ class Pinboard < ActiveRecord::Base
   include Uuidable
   include Previewable
   include Preloadable
+  include Featurable
   include Tire::Model::Search
   include Tire::Model::Callbacks
   include Admin::Pinboard
@@ -23,8 +24,6 @@ class Pinboard < ActiveRecord::Base
 
   validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
   validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }
-
-  scope :important, -> { where(is_important: true) }
 
   # Roles on Users
   #

@@ -28,11 +28,3 @@ en:
         breadcrumb: "Approve"
         title: "Approve"
         bulk_link: "Approve"
-      make_important:
-        menu: "Make important"
-        breadcrumb: "Make important"
-        title: "Make important"
-      make_unimportant:
-        menu: "Make unimportant"
-        breadcrumb: "Make unimportant"
-        title: "Make unimportant"
