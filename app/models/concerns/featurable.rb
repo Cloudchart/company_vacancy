@@ -9,7 +9,7 @@ module Featurable
 
   def is_featured=(is_featured)
     if is_featured == '1'
-      Feature.create(featurable: self)
+      Feature.create(featurable: self, is_active: true)
     else
       feature.try(:destroy)
     end
