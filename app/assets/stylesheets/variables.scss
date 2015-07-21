@@ -152,3 +152,15 @@ a {
     opacity: 0.25;
   }
 }
+
+.hoverable:hover {
+  cursor: pointer;
+}
+
+.hoverable:hover a.see-through.dependent {
+  color: $link-color;
+}
+
+.hoverable:hover a.see-through:not(.dependent) {
+  color: inherit;
+}
