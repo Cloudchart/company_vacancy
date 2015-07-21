@@ -1,0 +1,9 @@
+$pin-card-font-size: 20px;
+$pin-card-font-weight: 400;
+$pin-card-line-height: 26px;
+
+.cloud-card.pin-card {
+  font-size: $pin-card-font-size;
+  font-weight: $pin-card-font-weight;
+  line-height: $pin-card-line-height;
+}
