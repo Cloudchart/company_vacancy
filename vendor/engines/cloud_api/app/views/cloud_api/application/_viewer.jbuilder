@@ -44,14 +44,3 @@ end
 json_edge! json, :has_email_token, edges do
   !!viewer.tokens.find { |t| t.name == 'email_verification' }
 end
-
-json_edge! json, :related_pinboards, edges do
-  Viewer.preload_related_pinboards(siblings, cache)
-
-  viewer.related_pinboards.map do |pinboard|
-    {
-      uuid: pinboard.id,
-      pins_count: pinboard.pins.size
-    }
-  end
-end

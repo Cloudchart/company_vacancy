@@ -81,5 +81,18 @@ json_edge! json, :is_editor, edges do
   !!user.roles.find { |r| r.owner_id.blank? && r.owner_type.blank? && r.value == 'editor' }
 end
 
+json_edge! json, :related_pinboards, edges do
+  User.preload_related_pinboards(siblings, cache)
+
+  user.related_pinboards.map do |pinboard|
+    {
+      id:         pinboard.id,
+      uuid:       pinboard.id,
+      title:      pinboard.title,
+      pins_count: pinboard.pins.size
+    }
+  end
+end
+
 #
 # / Edges
