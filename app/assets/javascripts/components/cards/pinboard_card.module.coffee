@@ -24,9 +24,11 @@ module.exports = React.createClass
 
   propTypes:
     pinboard:                   React.PropTypes.string.isRequired
+    className:                  React.PropTypes.string
     shouldRenderFollowButton:   React.PropTypes.bool
     onClick:                    React.PropTypes.func
     onUserClick:                React.PropTypes.func
+    onUpdate:                   React.PropTypes.func
 
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
@@ -61,11 +63,19 @@ module.exports = React.createClass
     @cursor =
       pinboard: PinboardStore.cursor.items.cursor(@props.pinboard)
 
+
+  componentDidMount: ->
     @fetch()
 
 
+  componentDidUpdate: ->
+    @props.onUpdate()
+
+
   getDefaultProps: ->
+    className:                ''
     shouldRenderFollowButton: true
+    onUpdate:                 ->
 
 
   getInitialState: ->
@@ -95,14 +105,14 @@ module.exports = React.createClass
 
     <header>
       <h1>
-        <a href={ url } onClick={ @props.onClick } className="see-through">
+        <a href={ url } onClick={ @props.onClick } className="see-through dependent">
           { @cursor.pinboard.get('title') }
           { @renderAccessRightsIcon() }
         </a>
         { @renderFollowButton() }
       </h1>
       <h2>
-        <a href={ url } onClick={ @props.onClick } className="see-through">
+        <a href={ url } onClick={ @props.onClick } className="see-through dependent">
           { @cursor.pinboard.get('description') }
         </a>
       </h2>
@@ -132,7 +142,7 @@ module.exports = React.createClass
   render: ->
     return Placeholder unless @state.ready
 
-    <div className="pinboard-card">
+    <div className="pinboard-card #{@props.className}">
       { @renderHeader() }
       { @renderFooter() }
     </div>
