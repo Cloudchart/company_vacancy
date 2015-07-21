@@ -36,7 +36,7 @@ class Pin < ActiveRecord::Base
     is_suggestion? ? parent.content : read_attribute(:content)
   end
 
-  def author_id_
+  def author_id
     parent ? parent.user_id : user_id
   end
 
