@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150721095621) do
+ActiveRecord::Schema.define(version: 20150721114859) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -139,7 +139,6 @@ ActiveRecord::Schema.define(version: 20150721095621) do
     t.string   "slug"
     t.string   "site_url"
     t.boolean  "is_name_in_logo",            default: false
-    t.boolean  "is_important",               default: false
     t.string   "preview_uid"
     t.string   "user_id",         limit: 36
   end
@@ -199,7 +198,7 @@ ActiveRecord::Schema.define(version: 20150721095621) do
     t.string   "image_uid"
     t.boolean  "is_active",                     default: false
     t.string   "url"
-    t.integer  "display_types_mask"
+    t.integer  "display_types_mask",            default: 0
     t.integer  "position",                      default: 0
   end
 
@@ -354,7 +353,6 @@ ActiveRecord::Schema.define(version: 20150721095621) do
     t.datetime "updated_at"
     t.string   "access_rights",                default: "public"
     t.text     "description"
-    t.boolean  "is_important",                 default: false
     t.string   "preview_uid"
     t.integer  "suggestion_rights",            default: 0
   end
