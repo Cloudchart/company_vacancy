@@ -11,13 +11,18 @@ class MoveLimboToPinboard < ActiveRecord::Migration
       say 'created limbo pinboard', true
     end
 
-    Pin.where.not(author_id: nil).each do |pin|
+    Pin.where.not(author_id: nil).where('created_at < ?', '2015-07-16 11:00:00 UTC').each do |pin|
       if pin.is_suggestion?
         pin.update!(user_id: pin.author_id)
         say 'updated user for suggestion', true
       else
-        pin.update!(pinboard_id: pinboard.id)
-        say 'updated pinboard for limbo pin', true
+        Pin.create!(
+          user_id: pin.author_id,
+          parent: pin,
+          pinboard: pinboard,
+          pinnable: pin.pinnable
+        )
+        say 'repined insight to limbo', true
       end
     end
 
