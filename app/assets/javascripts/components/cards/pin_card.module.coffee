@@ -28,8 +28,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
-            user {
-            }
+            user
           }
         """
 

@@ -86,7 +86,7 @@ module.exports = React.createClass
   # Renderers
   #
   renderShareButton: ->
-    <button className="cc" onClick={@handleShareButtonClick}>Share</button>
+    <button className="cc share" onClick={@handleShareButtonClick}>Share</button>
 
   renderShareButtons: (object) ->
     <ul className="share-buttons">
