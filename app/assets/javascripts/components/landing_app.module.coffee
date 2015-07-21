@@ -93,7 +93,7 @@ module.exports = React.createClass
   renderFeaturedPinboard: ->
     return null if device.is_iphone
     return null unless featured_pinboard = @props.cursor.me.get('featured_pinboards')
-      .filter (pinboard) -> pinboard.get('featured_position') == 0
+      .filter (pinboard) -> pinboard.get('featured_position') == -1
       .first()
 
     <FeaturedPinboard pinboard={ featured_pinboard.get('id') } />
@@ -115,7 +115,7 @@ module.exports = React.createClass
       <section className="flow">
         {
           @props.cursor.me.get('featured_pinboards', Immutable.Seq())
-            .filter (pinboard) -> pinboard.get('featured_position') > 0
+            .filter (pinboard) -> pinboard.get('featured_position') >= 0
             .sortBy (pinboard) -> pinboard.get('featured_position')
             .map @renderPinboard
             .toArray()

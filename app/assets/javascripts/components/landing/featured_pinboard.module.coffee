@@ -8,6 +8,8 @@ PinStore        = require('stores/pin_store')
 FollowButton    = require('components/pinboards/follow_button')
 InsightPreview  = require('components/pinboards/pin')
 
+cx = React.addons.classSet
+
 StacksCount               = 3
 MaxInsightContentLength   = 200
 
@@ -32,7 +34,9 @@ module.exports = React.createClass
             },
 
             edges {
-              pins_ids
+              pins_ids,
+              assigned_image_url,
+              assigned_image_display_types
             }
           }
         """
@@ -109,9 +113,23 @@ module.exports = React.createClass
     ready:          false
 
 
-  # Renders
+  # Helpers
   #
+  getStyleForBgImage: ->
+    background: "url(#{@cursor.pinboard.get('assigned_image_url')}) no-repeat center center"
+    backgroundSize: 'cover'
 
+  getClassesForBgimage: ->
+    displayTypes = @cursor.pinboard.get('assigned_image_display_types')
+
+    cx
+      'bg-image': true
+      blurred: displayTypes.includes('blurred')
+      darkened: displayTypes.includes('darkened')
+
+
+  # Renderers
+  #
   renderHeader: ->
     return null unless @cursor.pinboard.deref(false)
 
@@ -161,7 +179,7 @@ module.exports = React.createClass
       .toArray()
 
 
-  # Main Render
+  # Main render
   #
   render: ->
     return null unless @state.ready
@@ -170,6 +188,8 @@ module.exports = React.createClass
       { @renderHeader() }
 
       <section className="full-width">
+        <div className = { @getClassesForBgimage() } style = { @getStyleForBgImage() } />
+
         <section className="content columns">
           { @renderStacks() }
         </section>

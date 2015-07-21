@@ -157,8 +157,27 @@
 }
 
 .cc-container-common.featured-pinboard  > section.full-width {
-  background: asset_url('featured-pinboard.jpg') no-repeat center center;
-  background-size: cover;
+  position: relative;
+  overflow: hidden;
+
+  > .bg-image {
+    @include position(absolute, -20px -20px -20px -20px);
+
+    z-index: -1;
+
+    &.blurred {
+      @include filter(blur(10px));
+    }
+
+    &.darkened::after {
+      @include position(absolute, 0px 0px 0px 0px);
+
+      background-color: $black-color;
+      opacity: 0.2;
+      content: '';
+      z-index: 1;
+    }
+  }
 
   .item {
     @include transition(opacity 1s ease-in-out);
