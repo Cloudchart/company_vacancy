@@ -1,13 +1,19 @@
 class UsersController < ApplicationController
   include FollowableController
 
-  before_action :set_user
+  before_action :set_user, only: [:show, :update, :subscribe, :unsubscribe]
 
   authorize_resource
 
   after_action :call_page_visit_to_slack_channel, only: :show
 
   def show
+    respond_to do |format|
+      format.html
+    end
+  end
+
+  def feed
     respond_to do |format|
       format.html
     end
@@ -25,12 +31,6 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.json { render json: { errors: @user.errors }, status: 422 }
-    end
-  end
-
-  def settings
-    respond_to do |format|
-      format.html
     end
   end
 

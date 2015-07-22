@@ -2,7 +2,6 @@ json.(user, :uuid)
 json.(user, :first_name, :last_name, :full_name, :company, :occupation, :twitter)
 json.(user, :created_at, :updated_at)
 
-
 json.email begin
   preload_associations(siblings, cache, :emails)
 
@@ -22,6 +21,15 @@ json.avatar_url   user.avatar.thumb('512x512>').url if user.avatar_stored?
 
 # Edges
 #
+json_edge! json, :pins_by_date, edges do
+  User.preload_pins_by_date(siblings, cache)
+
+  user.pins_by_date({ current_user: current_user }).map do |pin|
+    {
+      id: pin.id
+    }
+  end
+end
 
 json_edge! json, :related_companies, edges do
   User.preload_related_companies(siblings, cache)
@@ -34,7 +42,6 @@ json_edge! json, :related_companies, edges do
   end
 end
 
-
 json_edge! json, :companies_through_roles, edges do
   User.preload_companies_through_roles(siblings, cache)
 
@@ -45,7 +52,6 @@ json_edge! json, :companies_through_roles, edges do
     }
   end
 end
-
 
 json_edge! json, :favorite_companies, edges do
   User.preload_favorite_companies(siblings, cache)
@@ -59,7 +65,6 @@ json_edge! json, :favorite_companies, edges do
 
 end
 
-
 json_edge! json, :insights, edges do
   User.preload_insights(siblings, cache)
 
@@ -69,7 +74,6 @@ json_edge! json, :insights, edges do
     }
   end
 end
-
 
 json_edge! json, :is_editor, edges do
   preload_associations(siblings, cache, :roles)
@@ -88,6 +92,3 @@ json_edge! json, :related_pinboards, edges do
     }
   end
 end
-
-#
-# / Edges

@@ -66,7 +66,6 @@ Cloudchart::Application.routes.draw do
   end
 
   resources :pinboards, concerns: [:followable] do
-    get :settings, on: :member
     resources :roles, only: [:update, :destroy]
     resources :invites, only: [:create, :update, :destroy], controller: 'pinboards/invites'
   end
@@ -76,7 +75,6 @@ Cloudchart::Application.routes.draw do
   end
 
   resources :users, only: [:show, :update], concerns: [:followable] do
-    get :settings, on: :member
     patch :subscribe, on: :member
     delete :unsubscribe, on: :member
     resources :landings, only: :create
@@ -120,6 +118,8 @@ Cloudchart::Application.routes.draw do
   delete '/user_greeting/:id', to: 'tokens#destroy_greeting'
   delete '/user_welcome_tour/:id', to: 'tokens#destroy_welcome_tour'
   delete '/user_insight_tour/:id', to: 'tokens#destroy_insight_tour'
+
+  get '/feed', to: 'users#feed', as: :feed
 
   delete '/logout', to: 'cloud_profile/authentications#destroy', as: :logout
   get '/old', to: 'welcome#old_browsers', as: :old_browsers
