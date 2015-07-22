@@ -1,4 +1,4 @@
-json.(pin, :uuid, :user_id, :parent_id, :pinboard_id, :author_id)
+json.(pin, :uuid, :user_id, :parent_id, :pinboard_id, :source_user_id)
 json.(pin, :pinnable_id, :pinnable_type)
 json.(pin, :content, :origin)
 json.(pin, :pins_count, :weight)

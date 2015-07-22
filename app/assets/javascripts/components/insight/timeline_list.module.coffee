@@ -42,7 +42,7 @@ module.exports = React.createClass
 
   gatherInsighters: (insights) ->
     insights
-      .map (insight) -> insight.get('author_id')
+      .map (insight) -> insight.get('source_user_id')
       .map (user_id) -> UserStore.get(user_id)
 
   getMoreNumber: ->
