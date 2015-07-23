@@ -17,6 +17,10 @@ PinType = new GraphQLObjectType
       type: GraphQLString
     user:
       type: UserType
+    parent:
+      type: PinType
+    children:
+      type: new GraphQLList(PinType)
 
 
 # Exports

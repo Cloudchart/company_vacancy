@@ -25418,7 +25418,7 @@
 	  statics: {
 	    queries: {
 	      pin: function pin() {
-	        return "Pin {\n  id\n  content\n  user {\n    full_name\n    url\n    related_pinboards {\n      id\n      title\n      pins_count\n      user {\n        full_name\n      }\n    }\n  }\n}";
+	        return "Pin {\n  id\n  content\n  parent {\n    id\n    content\n  }\n  children {\n    id\n  }\n  user {\n    full_name\n    url\n    related_pinboards {\n      title\n      pins_count\n    }\n  }\n}";
 	      }
 	    }
 	  },
@@ -25428,7 +25428,7 @@
 	    ref = RE.exec(query), _ = ref[0], endpoint = ref[1], body = ref[2];
 	    query = "query get" + endpoint + "($id: String!) { " + endpoint + "(id: $id) " + body + " }";
 	    return GraphQL.graphql(Schema, query, null, {
-	      id: 'a0f26b5a-6e50-43d8-9bbc-3221f70c4206'
+	      id: 'a17873ad-9445-4e64-a414-4d94418636a8'
 	    }).then((function (_this) {
 	      return function (json) {
 	        console.log(JSON.stringify(json, null, 2));
@@ -34175,7 +34175,7 @@
 	        return memo;
 	      }, {});
 	      record.id = id;
-	      return storage.mergeDeepIn([type, id, 'data'], record);
+	      return storage.mergeIn([type, id, 'data'], record);
 	    });
 	  });
 	  return Object.keys(fields).forEach(function (field) {
@@ -34192,7 +34192,7 @@
 	  Object.keys(fields).forEach(function (field) {
 	    var ref;
 	    if (record[field] && (ref = record[field].ref)) {
-	      if (ref.id.forEach) {
+	      if (typeof ref.id.map === 'function') {
 	        return record[field] = ref.id.map(function (id) {
 	          return getRecord(ref.type, {
 	            id: id
@@ -34316,6 +34316,12 @@
 	      },
 	      user: {
 	        type: UserType
+	      },
+	      parent: {
+	        type: PinType
+	      },
+	      children: {
+	        type: new GraphQLList(PinType)
 	      }
 	    };
 	  }

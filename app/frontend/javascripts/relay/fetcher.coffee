@@ -61,7 +61,7 @@ storeData = (query, fields, data) ->
 
       record.id = id
 
-      storage.mergeDeepIn([type, id, 'data'], record)
+      storage.mergeIn([type, id, 'data'], record)
 
   Object.keys(fields).forEach (field) ->
     storeData(query[field], fields[field], data)
@@ -76,7 +76,7 @@ getRecord = (endpoint, params, fields) ->
 
   Object.keys(fields).forEach (field) ->
     if record[field] and ref = record[field].ref
-      if ref.id.forEach
+      if typeof ref.id.map is 'function'
         record[field] = ref.id.map (id) -> getRecord(ref.type, { id: id }, fields[field])
       else
         record[field] = getRecord(ref.type, { id: ref.id }, fields[field])
