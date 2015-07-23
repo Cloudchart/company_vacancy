@@ -14,6 +14,10 @@ PinStore = require('stores/pin_store')
 #
 # cx = React.addons.classSet
 
+ObjectsForMainList =
+  pins: 'Pin'
+  pinboards: 'Pinboard'
+
 
 # Main component
 #
@@ -73,7 +77,19 @@ module.exports = React.createClass
 
   # Helpers
   #
-  # getSomething: ->
+  getMainListCollection: ->
+    result = new Array
+
+    Object.keys(ObjectsForMainList).forEach (key) =>
+      @props.cursor.user.deref(Immutable.Seq()).get("related_#{key}_by_date")
+        .forEach (object) => result.push(
+          id: object.get('id')
+          type: ObjectsForMainList[key]
+          updated_at: object.get('updated_at')
+          data: @props.cursor[key].get(object.get('id')).toJS()
+        )
+
+    result
 
 
   # Handlers
@@ -86,12 +102,28 @@ module.exports = React.createClass
   renderPlaceholders: ->
     <div className="">placeholders</div>
 
+  renderMainList: ->
+    Immutable.List(@getMainListCollection())
+      .sortBy (object) -> object.updated_at
+      .reverse()
+      .map (object, index) ->
+        switch object.type
+          when 'Pin'
+            <div className="" key={index}>
+              <Pin pin = { object.id } />
+            </div>
+          when 'Pinboard'
+            <div className="" key={index}>
+              <Pinboard pinboard = { object.id } />
+            </div>
+      .toArray()
+
 
   # Main render
   #
   render: ->
     return @renderPlaceholders() unless @state.ready
-    # console.log @props.cursor.pins.deref(Immutable.Seq()).toJS()
-    # console.log @props.cursor.pinboards.deref(Immutable.Seq()).toJS()
-    console.log @props.cursor.user.deref(Immutable.Seq()).toJS()
-    <div className=""></div>
+
+    <div className="main-list">
+      { @renderMainList() }
+    </div>

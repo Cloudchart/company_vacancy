@@ -75,7 +75,8 @@ json_edge! json, :related_pins_by_date, edges do
 
   user.related_pins_by_date({ current_user: current_user }).map do |pin|
     {
-      id: pin.id
+      id: pin.id,
+      updated_at: pin.updated_at
     }
   end
 end
@@ -98,7 +99,8 @@ json_edge! json, :related_pinboards_by_date, edges do
 
   user.related_pinboards_by_date({ current_user: current_user }).map do |pinboard|
     {
-      id: pinboard.id
+      id: pinboard.id,
+      updated_at: pinboard.updated_at
     }
   end
 end
