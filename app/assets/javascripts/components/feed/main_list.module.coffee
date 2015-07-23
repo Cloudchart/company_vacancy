@@ -3,6 +3,7 @@
 GlobalState = require('global_state/state')
 
 Pin = require('components/cards/pin_card')
+Pinboard = require('components/cards/pinboard_card')
 
 UserStore = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
@@ -33,8 +34,12 @@ module.exports = React.createClass
             related_pins_by_date {
               #{Pin.getQuery('pin')}
             },
+            related_pinboards_by_date {
+              #{Pinboard.getQuery('pinboard')}
+            },
             edges {
-              related_pins_by_date
+              related_pins_by_date,
+              related_pinboards_by_date
             }
           }
         """
@@ -85,6 +90,8 @@ module.exports = React.createClass
   # Main render
   #
   render: ->
-    @renderPlaceholders() unless @state.ready
-    console.log @props.cursor.pins.deref(Immutable.Seq()).toJS()
+    return @renderPlaceholders() unless @state.ready
+    # console.log @props.cursor.pins.deref(Immutable.Seq()).toJS()
+    # console.log @props.cursor.pinboards.deref(Immutable.Seq()).toJS()
+    console.log @props.cursor.user.deref(Immutable.Seq()).toJS()
     <div className=""></div>

@@ -21,14 +21,9 @@ json.avatar_url   user.avatar.thumb('512x512>').url if user.avatar_stored?
 
 # Edges
 #
-json_edge! json, :pins_by_date, edges do
-  User.preload_pins_by_date(siblings, cache)
-
-  user.pins_by_date({ current_user: current_user }).map do |pin|
-    {
-      id: pin.id
-    }
-  end
+json_edge! json, :is_editor, edges do
+  preload_associations(siblings, cache, :roles)
+  !!user.roles.find { |r| r.owner_id.blank? && r.owner_type.blank? && r.value == 'editor' }
 end
 
 json_edge! json, :related_companies, edges do
@@ -75,9 +70,14 @@ json_edge! json, :insights, edges do
   end
 end
 
-json_edge! json, :is_editor, edges do
-  preload_associations(siblings, cache, :roles)
-  !!user.roles.find { |r| r.owner_id.blank? && r.owner_type.blank? && r.value == 'editor' }
+json_edge! json, :related_pins_by_date, edges do
+  User.preload_related_pins_by_date(siblings, cache)
+
+  user.related_pins_by_date({ current_user: current_user }).map do |pin|
+    {
+      id: pin.id
+    }
+  end
 end
 
 json_edge! json, :related_pinboards, edges do
@@ -89,6 +89,16 @@ json_edge! json, :related_pinboards, edges do
       uuid:       pinboard.id,
       title:      pinboard.title,
       pins_count: pinboard.pins.size
+    }
+  end
+end
+
+json_edge! json, :related_pinboards_by_date, edges do
+  User.preload_related_pinboards_by_date(siblings, cache)
+
+  user.related_pinboards_by_date({ current_user: current_user }).map do |pinboard|
+    {
+      id: pinboard.id
     }
   end
 end

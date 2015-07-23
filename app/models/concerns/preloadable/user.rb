@@ -16,8 +16,9 @@ module Preloadable::User
     acts_as_preloadable :pinboards_through_roles, pinboards_roles: :pinboard
     acts_as_preloadable :favorite_pinboards, pinboards_favorites: :pinboard
     acts_as_preloadable :related_pinboards, pinboards: :pins, pinboards_roles: { pinboard: :pins }, pinboards_favorites: { pinboard: :pins }
-    acts_as_preloadable :insights, :pins
+    acts_as_preloadable :related_pinboards_by_date, users_favorites: { favoritable_user: :pinboards }
     acts_as_preloadable :related_pins_by_date, pinboards_favorites: { pinboard: :pins }, users_favorites: { favoritable_user: :pins }
+    acts_as_preloadable :insights, :pins
 
     def companies_through_roles(scope = {})
       companies_roles.map(&:company).select { |c| ability(scope).can?(:read, c) }
@@ -49,10 +50,20 @@ module Preloadable::User
         .uniq
     end
 
-    def related_pins_by_date(scope = {})
+    def related_pinboards_by_date(scope = {})
       date = Date.today
-      pt1 = favorite_pinboards(scope).map { |pinboard| pinboard.pins }.flatten
-      pt2 = users_favorites.map { |favorite| favorite.favoritable_user.pins }.flatten
+
+      users_favorites
+        .flat_map { |favorite| favorite.favoritable_user.pinboards }
+        .select { |pinboard| ability(scope).can?(:read, pinboard) && pinboard.created_at.to_date == date }
+    end
+
+    def related_pins_by_date(scope = {})
+      # TODO: add pinboards_through_roles?
+      # TODO: add pins through companies?
+      date = Date.today # should be passed as a parameter
+      pt1 = favorite_pinboards(scope).flat_map { |pinboard| pinboard.pins }
+      pt2 = users_favorites.flat_map { |favorite| favorite.favoritable_user.pins }
       (pt1 + pt2).select { |pin| ability(scope).can?(:read, pin) && pin.created_at.to_date == date }
     end
 
