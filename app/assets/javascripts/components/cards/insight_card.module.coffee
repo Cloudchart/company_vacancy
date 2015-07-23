@@ -75,9 +75,10 @@ module.exports = React.createClass
     @fetch()
 
   componentDidMount: ->
-    setTimeout =>
-      history.pushState({}, '', @getPin().url)
-    , 250
+    if @props.renderedInsideModal
+      setTimeout =>
+        history.pushState({}, '', @getPin().url)
+      , 250
 
 
   # Helpers
@@ -100,11 +101,11 @@ module.exports = React.createClass
     Object.keys(pin).length is 0
 
   gatherPinAttributes: (pin, insight) ->
-    uuid:           insight.uuid
-    parent_id:      insight.parent_id
-    pinnable_id:    pin.pinnable_id
-    pinnable_type:  pin.pinnable_type
-    title:          insight.content
+    uuid: insight.uuid
+    title: insight.content
+    parent_id: insight.parent_id
+    pinnable_id: pin.pinnable_id
+    pinnable_type: pin.pinnable_type
 
 
   # Handlers
@@ -159,6 +160,6 @@ module.exports = React.createClass
         </article>
 
         <footer>
-          <ShareButtons object = { insight } renderedInsideModal = { @props.renderedInsideModal } />
+          <ShareButtons object = { insight } />
         </footer>
       </div>

@@ -48,6 +48,7 @@ module.exports = React.createClass
           }
         """
 
+
   # Component Specifications
   #
   getDefaultProps: ->
@@ -85,7 +86,7 @@ module.exports = React.createClass
         .forEach (object) => result.push(
           id: object.get('id')
           type: ObjectsForMainList[key]
-          updated_at: object.get('updated_at')
+          created_at: object.get('created_at')
           data: @props.cursor[key].get(object.get('id')).toJS()
         )
 
@@ -104,7 +105,7 @@ module.exports = React.createClass
 
   renderMainList: ->
     Immutable.List(@getMainListCollection())
-      .sortBy (object) -> object.updated_at
+      .sortBy (object) -> object.created_at
       .reverse()
       .map (object, index) ->
         switch object.type

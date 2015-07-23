@@ -18,7 +18,6 @@ module.exports = React.createClass
 
   propTypes:
     object: React.PropTypes.object.isRequired
-    renderedInsideModal: React.PropTypes.bool
 
   # mixins: []
   # statics: {}
@@ -27,7 +26,6 @@ module.exports = React.createClass
   # Component Specifications
   #
   getDefaultProps: ->
-    renderedInsideModal: false
     displayMode: null
 
   getInitialState: ->
