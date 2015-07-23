@@ -41,14 +41,22 @@ def __prepare(sources, query, data, json)
       end
 
       child_instances = instances.map do |instance|
-        result = instance.public_send(key, *args)
-        json.set! instance.id do
-          if result.respond_to?(:each)
-            json.set! key, result.map(&:id)
-          else
-            json.set! key, result.id if result.present?
+        result = instance.public_send(key, *args) rescue nil
+
+        if result.present?
+          json.set! instance.id do
+            if result.respond_to?(:each)
+              json.set! key, result.map(&:id)
+            else
+              if result.class < ActiveRecord::Base
+                json.set! key, result.id if result.present?
+              else
+                result = nil
+              end
+            end
           end
         end
+
         result
       end
 
