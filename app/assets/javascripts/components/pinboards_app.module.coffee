@@ -13,6 +13,7 @@ StandardButton = require('components/form/buttons').StandardButton
 NewPinboard = require('components/pinboards/new_pinboard')
 ModalStack = require('components/modal_stack')
 SuggestedPinboards = require('components/pinboards/lists/suggested')
+PopularPinboards = require('components/pinboards/lists/popular')
 
 
 # Exports
@@ -67,9 +68,13 @@ module.exports = React.createClass
   # Renderers
   #
   renderSuggestedInsights: ->
-    return null if @state.initialUserPinboardsCount and @state.initialUserPinboardsCount > 0
+    return null if @state.initialUserPinboardsCount and @state.initialUserPinboardsCount > 1000
 
     <SuggestedPinboards />
+
+
+  renderPopularPinboards: ->
+    <PopularPinboards />
 
   renderHeader: ->
     return null unless @cursor.user.get('twitter')
@@ -95,7 +100,7 @@ module.exports = React.createClass
       <section className="pinboards-wrapper">
         { @renderHeader() }
         <UserPinboards user_id = { @props.user_id } showPrivate = { true } />
-        { @renderSuggestedInsights() }
+        { @renderPopularPinboards() }
       </section>
     else
        <section className="pinboards-wrapper">
