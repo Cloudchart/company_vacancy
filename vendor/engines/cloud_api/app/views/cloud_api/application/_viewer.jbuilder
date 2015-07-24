@@ -35,6 +35,12 @@ json_edge! json, :featured_pinboards, edges do
   end
 end
 
+
+json_edge! json, :popular_pinboards_ids, edges do
+  viewer.popular_pinboards.map(&:id)
+end
+
+
 json_edge! json, :is_authenticated, edges do
   user_authenticated?
 end

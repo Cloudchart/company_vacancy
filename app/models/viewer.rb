@@ -12,6 +12,16 @@ class Viewer < User
     Pinboard.featured.select { |p| ability(scope).can?(:read, p) }
   end
 
+
+  def popular_pinboards(scope = {})
+    Favorite.includes(:pinboard).where(favoritable_type: Pinboard.name).group_by do |favorite|
+      favorite.pinboard
+    end.select do |pinboard, favorites|
+      favorites.size > 0 && pinboard.access_rights == 'public'
+    end.keys
+  end
+
+
 private
 
   def ability(scope = {})
