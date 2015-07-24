@@ -43,6 +43,8 @@ class BaseShape
 
       records.each { |record| (grouped_records[record.source.class] ||= []) << record }
 
+      return unless fields
+
       fields.each do |field, child_fields|
         wrapped_children = []
 
@@ -96,7 +98,7 @@ class BaseShape
       }
     end
 
-    result = if fields.empty?
+    result = if fields.blank? || fields.empty?
       source.as_json
     else
       fields.each do |field, child_fields|

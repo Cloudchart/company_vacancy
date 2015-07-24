@@ -25418,7 +25418,7 @@
 	  statics: {
 	    queries: {
 	      pin: function pin() {
-	        return "Pin {\n  id\n  content\n  parent {\n    id\n    content\n  }\n  children {\n    id\n  }\n  user {\n    full_name\n    url\n    related_pinboards {\n      title\n      pins_count\n    }\n  }\n}";
+	        return "Pin {\n  id\n  content\n}";
 	      }
 	    }
 	  },
@@ -25444,9 +25444,7 @@
 	    };
 	  },
 	  render: function render() {
-	    if (!this.state.pin) {
-	      return null;
-	    }
+	    return null;
 	    return React.createElement("section", {
 	      "className": "cloud-card pin-card"
 	    }, React.createElement("span", null, this.state.pin.content), React.createElement("span", null, ' — '), React.createElement("a", {
@@ -34144,43 +34142,8 @@
 
 	Storage = Immutable.Map();
 
-	storeData = function (query, fields, data) {
-	  if (!query) {
-	    return;
-	  }
-	  Storage = Storage.withMutations(function (storage) {
-	    var ids, type, typeData;
-	    type = query.type;
-	    ids = query.ids;
-	    typeData = data[TypeMaps[type]].reduce(function (memo, entry) {
-	      memo[entry.uuid] = Object.assign(memo[entry.uuid] || {}, entry);
-	      return memo;
-	    }, {});
-	    return ids.forEach(function (id) {
-	      var record;
-	      storage.mergeDeepIn([type, id, 'query'], fields);
-	      record = typeData[id];
-	      record = Object.keys(fields).reduce(function (memo, field) {
-	        var value;
-	        value = record[field];
-	        if (query[id] && query[id][field]) {
-	          value = {
-	            ref: {
-	              type: query[field].type,
-	              id: query[id][field]
-	            }
-	          };
-	        }
-	        memo[field] = value;
-	        return memo;
-	      }, {});
-	      record.id = id;
-	      return storage.mergeIn([type, id, 'data'], record);
-	    });
-	  });
-	  return Object.keys(fields).forEach(function (field) {
-	    return storeData(query[field], fields[field], data);
-	  });
+	storeData = function (endpoint, id_or_ids, fields, data) {
+	  return Storage = Storage.mergeDeepIn(['data'], data);
 	};
 
 	getRecord = function (endpoint, params, fields) {
@@ -34190,26 +34153,13 @@
 	  }
 	  record = record.toJS();
 	  Object.keys(fields).forEach(function (field) {
-	    var ref;
-	    if (record[field] && (ref = record[field].ref)) {
-	      if (typeof ref.id.map === 'function') {
-	        return record[field] = ref.id.map(function (id) {
-	          return getRecord(ref.type, {
-	            id: id
-	          }, fields[field]);
-	        });
-	      } else {
-	        return record[field] = getRecord(ref.type, {
-	          id: ref.id
-	        }, fields[field]);
-	      }
-	    }
+	    return console.log(field);
 	  });
 	  return record;
 	};
 
 	fetchDone = function (json, endpoint, params, fields, done) {
-	  storeData(json.query, fields, json);
+	  storeData(endpoint, params.id, fields, json);
 	  return done(getRecord(endpoint, params, fields));
 	};
 

@@ -3,20 +3,17 @@ require_dependency "cloud_api/application_controller"
 module CloudApi
   class RelayController < CloudApi::ApplicationController
 
+    include QueryHelper
+
     def fetch
-      @source   = params[:type].constantize
-      @starter  = [:find, params[:id]]
+      source    = params[:type].constantize.find(params[:id])
+      query     = parse_relations_query(params[:fields])
 
-
-      shape = BaseShape.shape(Viewer.find(current_user.id), { full_name: {}, url: {}, avatar: { url: {} } }, ability: Ability.new(current_user))
-
-
-      Rails.logger.info { "SHAPE: #{shape.to_json}" }
-
+      shape = BaseShape.shape(source, query, ability: Ability.new(current_user))
 
       respond_to do |format|
         format.json do
-          render_cached_main_json(expires_in: 10.minutes)
+          render json: shape
         end
       end
     end

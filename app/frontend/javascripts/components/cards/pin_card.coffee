@@ -18,21 +18,6 @@ Component = React.createClass
           Pin {
             id
             content
-            parent {
-              id
-              content
-            }
-            children {
-              id
-            }
-            user {
-              full_name
-              url
-              related_pinboards {
-                title
-                pins_count
-              }
-            }
           }
         """
 
@@ -52,7 +37,7 @@ Component = React.createClass
 
 
   render: ->
-    return null unless @state.pin
+    return null #unless @state.pin
     <section className="cloud-card pin-card">
       <span>{ @state.pin.content }</span>
       <span> &mdash; </span>
