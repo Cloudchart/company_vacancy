@@ -82,6 +82,12 @@ class Pinboard < ActiveRecord::Base
     joins { roles.outer }.where { roles.value.eq('editor') }
   end
 
+  acts_as_preloadable :pins_count, :pins
+
+  def pins_count
+    pins.size
+  end
+
   def invite_tokens
     tokens.select { |token| token.name == 'invite' }
   end

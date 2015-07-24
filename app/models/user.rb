@@ -168,6 +168,10 @@ class User < ActiveRecord::Base
     emails.first.try(:address)
   end
 
+  def test_email
+    emails.first
+  end
+
   def unverified_email
     tokens.find_by(name: :email_verification).try(:data).try(:[], :address)
   end
