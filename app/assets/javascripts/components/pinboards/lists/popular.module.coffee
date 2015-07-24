@@ -94,6 +94,7 @@ module.exports = React.createClass
   #
   render: ->
     return null unless @state.ready
+    return null unless @props.cursor.viewer.get('popular_pinboards_ids', Immutable.Seq()).size > 0
 
     <div className="pinboards-wrapper">
       { @renderHeader() }
