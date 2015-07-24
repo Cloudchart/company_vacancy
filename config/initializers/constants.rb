@@ -15,4 +15,9 @@ module Cloudchart
     OpenStruct.new(browser: 'Internet Explorer', version: '11.0')
   ]
 
+  POPULAR_PINBOARDS = {
+    followers_count: 4,
+    pinboards_count: 100
+  }
+
 end
