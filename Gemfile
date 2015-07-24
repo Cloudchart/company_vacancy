@@ -18,7 +18,7 @@ gem 'mini_magick'
 gem 'bcrypt', '~> 3.1.7'
 gem 'oauth2'
 gem 'active_attr'
-gem 'cancancan'
+gem 'cancancan', '~> 1.12.0'
 gem 'tire'
 gem 'rails_admin', '= 0.6.7'
 gem 'warden'
@@ -46,6 +46,10 @@ gem 'zeroclipboard-rails'
 gem 'yajl-ruby'
 gem 'sinatra', require: nil
 gem 'paranoia', '~> 2.0'
+
+
+gem 'graphql'
+
 
 # Engines
 #
