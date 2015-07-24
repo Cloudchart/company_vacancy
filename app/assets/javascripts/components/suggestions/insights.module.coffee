@@ -113,7 +113,6 @@ module.exports = React.createClass
 
   # Renders
   #
-
   renderFilter: ->
     <header className="filter">
       <input
@@ -132,7 +131,14 @@ module.exports = React.createClass
 
   renderInsight: (id) ->
     <section key={ id } className="cloud-column">
-      <Insight pin={ id } className="hoverable" onClick={ @handleClick.bind(@, id) } onUpdate={ @updatePackery } />
+      <Insight
+        pin = { id }
+        className = "hoverable"
+        onClick = { @handleClick.bind(@, id) }
+        onUpdate = { @updatePackery }
+        shouldRenderHeader = false
+        shouldRenderFooter = false
+      />
     </section>
 
 

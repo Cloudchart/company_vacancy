@@ -58,10 +58,10 @@ module Preloadable::User
     end
 
     def related_pins_by_date(scope = {})
-      # TODO: add pins through companies posts
       date = Date.today # should be passed as a parameter
       pt1 = favorite_pinboards(scope).flat_map { |pinboard| pinboard.pins }
-      pt2 = users_favorites.flat_map { |favorite| favorite.favoritable_user.pins }
+      pt2 = users_favorites.flat_map { |favorite| favorite.favoritable_user.pins } # TODO: check private pinboards
+      # pt3 = favorite_companies.flat_map(&:posts).flat_map(&:pins) # :(
       (pt1 + pt2).select { |pin| ability(scope).can?(:read, pin) && pin.created_at.to_date == date }
     end
 

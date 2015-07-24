@@ -2,26 +2,25 @@
 
 GlobalState = require('global_state/state')
 
+PinStore = require('stores/pin_store')
+UserStore = require('stores/user_store.cursor')
 
-PinStore    = require('stores/pin_store')
-UserStore   = require('stores/user_store.cursor')
+Header = require('components/cards/pin/header')
+Footer = require('components/cards/pin/footer')
 
 
-# Exports
+# Main component
 #
 module.exports = React.createClass
 
   displayName: "PinCard"
-
 
   propTypes:
     pin:        React.PropTypes.string.isRequired
     className:  React.PropTypes.string
     onUpdate:   React.PropTypes.func
 
-
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
-
 
   statics:
     queries:
@@ -33,6 +32,35 @@ module.exports = React.createClass
         """
 
 
+  # Component Specifications
+  #
+  getDefaultProps: ->
+    className:  ''
+    onUpdate:   ->
+    shouldRenderHeader: true
+    shouldRenderFooter: true
+
+  getInitialState: ->
+    pin: {}
+    user: {}
+    ready: false
+
+
+  # Lifecycle Methods
+  #
+  componentWillMount: ->
+    @cursor =
+      pin: PinStore.cursor.items.cursor(@props.pin)
+
+  componentDidMount: ->
+    @fetch()
+
+  componentDidUpdate: ->
+    @props.onUpdate()
+
+
+  # Fetchers
+  #
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
       pin   = PinStore.get(@props.pin).toJS()
@@ -43,42 +71,24 @@ module.exports = React.createClass
         user:   user
 
 
-  # Lifecycle
+  # Renderers
   #
-
-
-  componentWillMount: ->
-    @cursor =
-      pin: PinStore.cursor.items.cursor(@props.pin)
-
-
-  componentDidMount: ->
-    @fetch()
-
-
-  componentDidUpdate: ->
-    @props.onUpdate()
-
-
-  getDefaultProps: ->
-    className:  ''
-    onUpdate:   ->
-
-
-  getInitialState: ->
-    ready:  false
-    pin:    {}
-    user:   {}
-
-
-  # Main Render
-  #
+  renderHeader: ->
+    return null unless @props.shouldRenderHeader
+    <Header pin = { @state.pin.uuid } />
 
   renderContent: ->
-    <span className="content">
-      { @state.pin.content }
-    </span>
+    <section className="content">
+      <span className="content">
+        { @state.pin.content }
+      </span>
+      <span> &mdash; </span>
+      { @renderUser() }
+    </section>
 
+  renderFooter: ->
+    return null unless @props.shouldRenderFooter
+    <Footer/>
 
   renderUser: ->
     <a href={ @state.user.url }>
@@ -86,11 +96,13 @@ module.exports = React.createClass
     </a>
 
 
+  # Main Render
+  #
   render: ->
     return null unless @state.ready
 
     <div className="pin-card cloud-card #{@props.className}" onClick={ @props.onClick }>
+      { @renderHeader() }
       { @renderContent() }
-      <span> &mdash; </span>
-      { @renderUser() }
+      { @renderFooter() }
     </div>

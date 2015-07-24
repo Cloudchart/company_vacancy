@@ -2,16 +2,13 @@
 
 GlobalState = require('global_state/state')
 
-Pin = require('components/cards/pin_card')
-Pinboard = require('components/cards/pinboard_card')
-
 UserStore = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
 PinStore = require('stores/pin_store')
 
+Pin = require('components/cards/pin_card')
+Pinboard = require('components/cards/pinboard_card')
 
-# Utils
-#
 # cx = React.addons.classSet
 
 ObjectsForMainList =
@@ -36,7 +33,8 @@ module.exports = React.createClass
         """
           Viewer {
             related_pins_by_date {
-              #{Pin.getQuery('pin')}
+              #{Pin.getQuery('pin')},
+              pinboard
             },
             related_pinboards_by_date {
               #{Pinboard.getQuery('pinboard')}
@@ -87,7 +85,7 @@ module.exports = React.createClass
           id: object.get('id')
           type: ObjectsForMainList[key]
           created_at: object.get('created_at')
-          data: @props.cursor[key].get(object.get('id')).toJS()
+          # data: @props.cursor[key].get(object.get('id')).toJS() # do we need data here?
         )
 
     result
@@ -111,7 +109,7 @@ module.exports = React.createClass
         switch object.type
           when 'Pin'
             <div className="" key={index}>
-              <Pin pin = { object.id } />
+              <Pin pin = { object.id }/>
             </div>
           when 'Pinboard'
             <div className="" key={index}>
