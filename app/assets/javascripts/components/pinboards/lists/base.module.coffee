@@ -15,10 +15,11 @@ module.exports = React.createClass
 
 
   updatePackery: ->
-    cancelAnimationFrame @packeryTimeout
-    @packeryTimeout = requestAnimationFrame =>
+    clearTimeout @packeryTimeout
+    @packeryTimeout = setTimeout =>
       @packery.reloadItems()
       @packery.layout()
+    , 100
 
 
   stopPackery: ->
