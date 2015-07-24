@@ -15,6 +15,8 @@ PinType = new GraphQLObjectType
       type: GraphQLString
     created_at:
       type: GraphQLString
+    pinboard:
+      type: PinboardType
     user:
       type: UserType
     parent:
@@ -30,4 +32,5 @@ module.exports = PinType
 
 # Types
 #
-UserType = require('./user_type')
+UserType      = require('./user_type')
+PinboardType  = require('./pinboard_type')

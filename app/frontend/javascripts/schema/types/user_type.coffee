@@ -2,6 +2,18 @@ GraphQL = require('graphql')
 
 { GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } = GraphQL
 
+
+# Avatar type
+#
+AvatarType = new GraphQLObjectType
+
+  name: 'Avatar'
+
+  fields: ->
+    url:
+      type: GraphQLString
+
+
 # User type
 #
 UserType = new GraphQLObjectType
@@ -15,6 +27,8 @@ UserType = new GraphQLObjectType
       type: GraphQLString
     url:
       type: GraphQLString
+    avatar:
+      type: AvatarType
     insights:
       type: new GraphQLList(PinType)
     pinboards:

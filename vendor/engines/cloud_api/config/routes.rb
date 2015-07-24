@@ -10,6 +10,9 @@ CloudApi::Engine.routes.draw do
   get :relay, controller: :relay, action: :fetch
 
 
+  get :graphql, controller: :relay, actions: :fetch
+
+
   get :me, controller: :users, action: :me
 
   get '/users/:id', controller: :users, action: :show

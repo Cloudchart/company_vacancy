@@ -81,7 +81,7 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	(function (global, factory) {
-	  true ? module.exports = factory() :
+	   true ? module.exports = factory() :
 	  typeof define === 'function' && define.amd ? define(factory) :
 	  global.Immutable = factory()
 	}(this, function () { 'use strict';var SLICE$0 = Array.prototype.slice;
@@ -25401,15 +25401,13 @@
 /* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var Component, GraphQL, RE, React, Schema;
 
 	React = __webpack_require__(3);
 
 	GraphQL = __webpack_require__(161);
 
-	Schema = __webpack_require__(275);
+	Schema = __webpack_require__(276);
 
 	RE = /^([_a-zA-Z][_a-zA-Z0-9]+)\s(\{.+\})$/;
 
@@ -25417,20 +25415,20 @@
 	  displayName: "PinCard",
 	  statics: {
 	    queries: {
-	      pin: function pin() {
-	        return "Pin {\n  id\n  content\n}";
+	      pin: function() {
+	        return "Pin {\n  id\n  content\n  user {\n    full_name\n    avatar {\n      url\n    }\n    insights {\n      id\n      content\n      pinboard {\n        title\n      }\n    }\n  }\n}";
 	      }
 	    }
 	  },
-	  componentWillMount: function componentWillMount() {
+	  componentWillMount: function() {
 	    var _, body, endpoint, query, ref;
 	    query = this.constructor.queries.pin().replace(/\s+/g, ' ').trim();
 	    ref = RE.exec(query), _ = ref[0], endpoint = ref[1], body = ref[2];
 	    query = "query get" + endpoint + "($id: String!) { " + endpoint + "(id: $id) " + body + " }";
 	    return GraphQL.graphql(Schema, query, null, {
-	      id: 'a17873ad-9445-4e64-a414-4d94418636a8'
-	    }).then((function (_this) {
-	      return function (json) {
+	      id: '00243f1e-ee3c-4d8b-b681-3838f974f44d'
+	    }).then((function(_this) {
+	      return function(json) {
 	        console.log(JSON.stringify(json, null, 2));
 	        return _this.setState({
 	          pin: json.data.Pin
@@ -25438,22 +25436,23 @@
 	      };
 	    })(this));
 	  },
-	  getInitialState: function getInitialState() {
+	  getInitialState: function() {
 	    return {
 	      pin: null
 	    };
 	  },
-	  render: function render() {
+	  render: function() {
 	    return null;
 	    return React.createElement("section", {
 	      "className": "cloud-card pin-card"
-	    }, React.createElement("span", null, this.state.pin.content), React.createElement("span", null, ' — '), React.createElement("a", {
+	    }, React.createElement("span", null, this.state.pin.content), React.createElement("span", null, " \u2014 "), React.createElement("a", {
 	      "href": this.state.pin.user.url
 	    }, this.state.pin.user.full_name));
 	  }
 	});
 
 	module.exports = Component;
+
 
 /***/ },
 /* 161 */
@@ -25477,6 +25476,7 @@
 
 	var _graphql = __webpack_require__(162);
 
+	// Produce a GraphQL type schema.
 	Object.defineProperty(exports, 'graphql', {
 	  enumerable: true,
 	  get: function get() {
@@ -25484,10 +25484,9 @@
 	  }
 	});
 
-	// Produce a GraphQL type schema.
+	var _typeSchema = __webpack_require__(275);
 
-	var _typeSchema = __webpack_require__(274);
-
+	// Define Types.
 	Object.defineProperty(exports, 'GraphQLSchema', {
 	  enumerable: true,
 	  get: function get() {
@@ -25495,10 +25494,9 @@
 	  }
 	});
 
-	// Define Types.
+	var _typeDefinition = __webpack_require__(216);
 
-	var _typeDefinition = __webpack_require__(215);
-
+	// Use Pre-defined Scalar Types.
 	Object.defineProperty(exports, 'GraphQLScalarType', {
 	  enumerable: true,
 	  get: function get() {
@@ -25548,10 +25546,9 @@
 	  }
 	});
 
-	// Use Pre-defined Scalar Types.
+	var _typeScalars = __webpack_require__(233);
 
-	var _typeScalars = __webpack_require__(232);
-
+	// Produce and format errors.
 	Object.defineProperty(exports, 'GraphQLInt', {
 	  enumerable: true,
 	  get: function get() {
@@ -25583,8 +25580,6 @@
 	  }
 	});
 
-	// Produce and format errors.
-
 	var _error = __webpack_require__(164);
 
 	Object.defineProperty(exports, 'GraphQLError', {
@@ -25604,9 +25599,28 @@
 /* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
+	
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	/**
+	 * This is the primary entry point function for fulfilling GraphQL operations
+	 * by parsing, validating, and executing a GraphQL document along side a
+	 * GraphQL schema.
+	 *
+	 * More sophisticated GraphQL servers, such as those which persist queries,
+	 * may wish to separate the validation and execution phases to a static time
+	 * tooling step, and a server runtime step.
+	 */
 	'use strict';
 
-	var _Promise = __webpack_require__(262)['default'];
+	var _Promise = __webpack_require__(263)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -25626,31 +25640,21 @@
 
 	var _validator = __webpack_require__(163);
 
-	var _executorExecutor = __webpack_require__(271);
+	var _executorExecutor = __webpack_require__(272);
 
 	var _error = __webpack_require__(164);
 
-	/**
-	 * This is the primary entry point function for fulfilling GraphQL operations
-	 * by parsing, validating, and executing a GraphQL document along side a
-	 * GraphQL schema.
-	 *
-	 * More sophisticated GraphQL servers, such as those which persist queries,
-	 * may wish to separate the validation and execution phases to a static time
-	 * tooling step, and a server runtime step.
-	 */
-
-	function graphql(schema, requestString, rootObject, variableValues, operationName) {
+	function graphql(schema, requestString, rootValue, variableValues, operationName) {
 	  return new _Promise(function (resolve) {
 	    var source = new _languageSource.Source(requestString || '', 'GraphQL request');
-	    var ast = (0, _languageParser.parse)(source);
-	    var validationErrors = (0, _validator.validateDocument)(schema, ast);
+	    var documentAST = (0, _languageParser.parse)(source);
+	    var validationErrors = (0, _validator.validateDocument)(schema, documentAST);
 	    if (validationErrors.length > 0) {
 	      resolve({
 	        errors: validationErrors.map(_error.formatError)
 	      });
 	    } else {
-	      resolve((0, _executorExecutor.execute)(schema, rootObject, ast, operationName, variableValues).then(function (result) {
+	      resolve((0, _executorExecutor.execute)(schema, documentAST, rootValue, variableValues, operationName).then(function (result) {
 	        if (result.errors) {
 	          return {
 	            data: result.data,
@@ -25665,6 +25669,11 @@
 	  });
 	}
 
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -25674,42 +25683,38 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 163 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _createClass = __webpack_require__(211)['default'];
+	var _createClass = __webpack_require__(212)['default'];
 
 	var _classCallCheck = __webpack_require__(177)['default'];
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
-	var _interopRequireWildcard = __webpack_require__(183)['default'];
+	var _interopRequireWildcard = __webpack_require__(184)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	exports.validateDocument = validateDocument;
 
-	var _utilsInvariant = __webpack_require__(210);
+	var _utilsInvariant = __webpack_require__(211);
 
 	var _utilsInvariant2 = _interopRequireDefault(_utilsInvariant);
 
 	var _error = __webpack_require__(164);
 
-	var _languageVisitor = __webpack_require__(186);
+	var _languageVisitor = __webpack_require__(187);
 
 	var _languageKinds = __webpack_require__(182);
 
 	var Kind = _interopRequireWildcard(_languageKinds);
 
-	var _utilsTypeInfo = __webpack_require__(214);
+	var _utilsTypeInfo = __webpack_require__(215);
 
 	var _utilsTypeInfo2 = _interopRequireDefault(_utilsTypeInfo);
 
-	var _allRules = __webpack_require__(235);
+	var _allRules = __webpack_require__(236);
 
 	/**
 	 * Implements the "Validation" section of the spec.
@@ -25945,6 +25950,11 @@
 
 	exports.ValidationContext = ValidationContext;
 
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -25953,10 +25963,6 @@
 	 *  LICENSE file in the root directory of this source tree. An additional grant
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
-
-/***/ },
-/* 164 */
-/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -25973,7 +25979,7 @@
 	  }
 	});
 
-	var _syntaxError = __webpack_require__(206);
+	var _syntaxError = __webpack_require__(207);
 
 	Object.defineProperty(exports, 'syntaxError', {
 	  enumerable: true,
@@ -25982,7 +25988,7 @@
 	  }
 	});
 
-	var _locatedError = __webpack_require__(207);
+	var _locatedError = __webpack_require__(208);
 
 	Object.defineProperty(exports, 'locatedError', {
 	  enumerable: true,
@@ -25991,7 +25997,7 @@
 	  }
 	});
 
-	var _formatError = __webpack_require__(208);
+	var _formatError = __webpack_require__(209);
 
 	Object.defineProperty(exports, 'formatError', {
 	  enumerable: true,
@@ -26000,6 +26006,11 @@
 	  }
 	});
 
+/***/ },
+/* 165 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -26008,10 +26019,6 @@
 	 *  LICENSE file in the root directory of this source tree. An additional grant
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
-
-/***/ },
-/* 165 */
-/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -26030,9 +26037,7 @@
 	var GraphQLError = (function (_Error) {
 	  _inherits(GraphQLError, _Error);
 
-	  function GraphQLError(message,
-	  // A flow bug keeps us from declaring nodes as an array of Node
-	  nodes, stack) {
+	  function GraphQLError(message, nodes, stack) {
 	    _classCallCheck(this, GraphQLError);
 
 	    _get(Object.getPrototypeOf(GraphQLError.prototype), 'constructor', this).call(this, message);
@@ -26064,15 +26069,7 @@
 
 	exports.GraphQLError = GraphQLError;
 
-	/**
-	 *  Copyright (c) 2015, Facebook, Inc.
-	 *  All rights reserved.
-	 *
-	 *  This source code is licensed under the BSD-style license found in the
-	 *  LICENSE file in the root directory of this source tree. An additional grant
-	 *  of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
+	// A flow bug keeps us from declaring nodes as an array of Node
 	/*Node*/
 
 /***/ },
@@ -26440,7 +26437,7 @@
 
 	'use strict';
 
-	var _interopRequireWildcard = __webpack_require__(183)['default'];
+	var _interopRequireWildcard = __webpack_require__(184)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -26450,7 +26447,7 @@
 
 	var Kind = _interopRequireWildcard(_kinds);
 
-	var _location = __webpack_require__(184);
+	var _location = __webpack_require__(185);
 
 	Object.defineProperty(exports, 'getLocation', {
 	  enumerable: true,
@@ -26478,7 +26475,7 @@
 	  }
 	});
 
-	var _printer = __webpack_require__(185);
+	var _printer = __webpack_require__(186);
 
 	Object.defineProperty(exports, 'print', {
 	  enumerable: true,
@@ -26496,7 +26493,7 @@
 	  }
 	});
 
-	var _visitor = __webpack_require__(186);
+	var _visitor = __webpack_require__(187);
 
 	Object.defineProperty(exports, 'visit', {
 	  enumerable: true,
@@ -26526,13 +26523,14 @@
 
 	'use strict';
 
-	/**
-	 * Configuration options to control parser behavior
-	 */
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	exports.parse = parse;
+	exports.parseName = parseName;
+	exports.parseConstValue = parseConstValue;
+	exports.parseType = parseType;
+	exports.parseNamedType = parseNamedType;
 
 	var _source = __webpack_require__(180);
 
@@ -26542,6 +26540,8 @@
 
 	var _kinds = __webpack_require__(182);
 
+	var _parserCore = __webpack_require__(183);
+
 	/**
 	 * Given a GraphQL source, parses it into a Document.
 	 * Throws GraphQLError if a syntax error is encountered.
@@ -26549,149 +26549,20 @@
 
 	function parse(source, options) {
 	  var sourceObj = source instanceof _source.Source ? source : new _source.Source(source);
-	  var parser = makeParser(sourceObj, options || {});
+	  var parser = (0, _parserCore.makeParser)(sourceObj, options || {});
 	  return parseDocument(parser);
-	}
-
-	/**
-	 * Returns the parser object that is used to store state throughout the
-	 * process of parsing.
-	 */
-	function makeParser(source, options) {
-	  var _lexToken = (0, _lexer.lex)(source);
-	  return {
-	    _lexToken: _lexToken,
-	    source: source,
-	    options: options,
-	    prevEnd: 0,
-	    token: _lexToken()
-	  };
-	}
-
-	/**
-	 * Returns a location object, used to identify the place in
-	 * the source that created a given parsed object.
-	 */
-	function loc(parser, start) {
-	  if (parser.options.noLocation) {
-	    return null;
-	  }
-	  if (parser.options.noSource) {
-	    return {
-	      start: start,
-	      end: parser.prevEnd
-	    };
-	  }
-	  return {
-	    start: start,
-	    end: parser.prevEnd,
-	    source: parser.source
-	  };
-	}
-
-	/**
-	 * Moves the internal parser object to the next lexed token.
-	 */
-	function advance(parser) {
-	  var prevEnd = parser.token.end;
-	  parser.prevEnd = prevEnd;
-	  parser.token = parser._lexToken(prevEnd);
-	}
-
-	/**
-	 * Determines if the next token is of a given kind
-	 */
-	function peek(parser, kind) {
-	  return parser.token.kind === kind;
-	}
-
-	/**
-	 * If the next token is of the given kind, return true after advancing
-	 * the parser. Otherwise, do not change the parser state and return false.
-	 */
-	function skip(parser, kind) {
-	  var match = parser.token.kind === kind;
-	  if (match) {
-	    advance(parser);
-	  }
-	  return match;
-	}
-
-	/**
-	 * If the next token is of the given kind, return that token after advancing
-	 * the parser. Otherwise, do not change the parser state and return false.
-	 */
-	function expect(parser, kind) {
-	  var token = parser.token;
-	  if (token.kind === kind) {
-	    advance(parser);
-	    return token;
-	  }
-	  throw (0, _error.syntaxError)(parser.source, token.start, 'Expected ' + (0, _lexer.getTokenKindDesc)(kind) + ', found ' + (0, _lexer.getTokenDesc)(token));
-	}
-
-	/**
-	 * If the next token is a keyword with the given value, return that token after
-	 * advancing the parser. Otherwise, do not change the parser state and return
-	 * false.
-	 */
-	function expectKeyword(parser, value) {
-	  var token = parser.token;
-	  if (token.kind === _lexer.TokenKind.NAME && token.value === value) {
-	    advance(parser);
-	    return token;
-	  }
-	  throw (0, _error.syntaxError)(parser.source, token.start, 'Expected "' + value + '", found ' + (0, _lexer.getTokenDesc)(token));
-	}
-
-	/**
-	 * Helper function for creating an error when an unexpected lexed token
-	 * is encountered.
-	 */
-	function unexpected(parser, atToken) {
-	  var token = atToken || parser.token;
-	  return (0, _error.syntaxError)(parser.source, token.start, 'Unexpected ' + (0, _lexer.getTokenDesc)(token));
-	}
-
-	/**
-	 * Returns a possibly empty list of parse nodes, determined by
-	 * the parseFn. This list begins with a lex token of openKind
-	 * and ends with a lex token of closeKind. Advances the parser
-	 * to the next lex token after the closing token.
-	 */
-	function any(parser, openKind, parseFn, closeKind) {
-	  expect(parser, openKind);
-	  var nodes = [];
-	  while (!skip(parser, closeKind)) {
-	    nodes.push(parseFn(parser));
-	  }
-	  return nodes;
-	}
-
-	/**
-	 * Returns a non-empty list of parse nodes, determined by
-	 * the parseFn. This list begins with a lex token of openKind
-	 * and ends with a lex token of closeKind. Advances the parser
-	 * to the next lex token after the closing token.
-	 */
-	function many(parser, openKind, parseFn, closeKind) {
-	  expect(parser, openKind);
-	  var nodes = [parseFn(parser)];
-	  while (!skip(parser, closeKind)) {
-	    nodes.push(parseFn(parser));
-	  }
-	  return nodes;
 	}
 
 	/**
 	 * Converts a name lex token into a name parse node.
 	 */
+
 	function parseName(parser) {
-	  var token = expect(parser, _lexer.TokenKind.NAME);
+	  var token = (0, _parserCore.expect)(parser, _lexer.TokenKind.NAME);
 	  return {
 	    kind: _kinds.NAME,
 	    value: token.value,
-	    loc: loc(parser, token.start)
+	    loc: (0, _parserCore.loc)(parser, token.start)
 	  };
 	}
 
@@ -26701,24 +26572,24 @@
 	  var start = parser.token.start;
 	  var definitions = [];
 	  do {
-	    if (peek(parser, _lexer.TokenKind.BRACE_L)) {
+	    if ((0, _parserCore.peek)(parser, _lexer.TokenKind.BRACE_L)) {
 	      definitions.push(parseOperationDefinition(parser));
-	    } else if (peek(parser, _lexer.TokenKind.NAME)) {
+	    } else if ((0, _parserCore.peek)(parser, _lexer.TokenKind.NAME)) {
 	      if (parser.token.value === 'query' || parser.token.value === 'mutation') {
 	        definitions.push(parseOperationDefinition(parser));
 	      } else if (parser.token.value === 'fragment') {
 	        definitions.push(parseFragmentDefinition(parser));
 	      } else {
-	        throw unexpected(parser);
+	        throw (0, _parserCore.unexpected)(parser);
 	      }
 	    } else {
-	      throw unexpected(parser);
+	      throw (0, _parserCore.unexpected)(parser);
 	    }
-	  } while (!skip(parser, _lexer.TokenKind.EOF));
+	  } while (!(0, _parserCore.skip)(parser, _lexer.TokenKind.EOF));
 	  return {
 	    kind: _kinds.DOCUMENT,
 	    definitions: definitions,
-	    loc: loc(parser, start)
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
@@ -26726,7 +26597,7 @@
 
 	function parseOperationDefinition(parser) {
 	  var start = parser.token.start;
-	  if (peek(parser, _lexer.TokenKind.BRACE_L)) {
+	  if ((0, _parserCore.peek)(parser, _lexer.TokenKind.BRACE_L)) {
 	    return {
 	      kind: _kinds.OPERATION_DEFINITION,
 	      operation: 'query',
@@ -26734,10 +26605,10 @@
 	      variableDefinitions: null,
 	      directives: [],
 	      selectionSet: parseSelectionSet(parser),
-	      loc: loc(parser, start)
+	      loc: (0, _parserCore.loc)(parser, start)
 	    };
 	  }
-	  var operationToken = expect(parser, _lexer.TokenKind.NAME);
+	  var operationToken = (0, _parserCore.expect)(parser, _lexer.TokenKind.NAME);
 	  var operation = operationToken.value;
 	  return {
 	    kind: _kinds.OPERATION_DEFINITION,
@@ -26746,12 +26617,12 @@
 	    variableDefinitions: parseVariableDefinitions(parser),
 	    directives: parseDirectives(parser),
 	    selectionSet: parseSelectionSet(parser),
-	    loc: loc(parser, start)
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
 	function parseVariableDefinitions(parser) {
-	  return peek(parser, _lexer.TokenKind.PAREN_L) ? many(parser, _lexer.TokenKind.PAREN_L, parseVariableDefinition, _lexer.TokenKind.PAREN_R) : [];
+	  return (0, _parserCore.peek)(parser, _lexer.TokenKind.PAREN_L) ? (0, _parserCore.many)(parser, _lexer.TokenKind.PAREN_L, parseVariableDefinition, _lexer.TokenKind.PAREN_R) : [];
 	}
 
 	function parseVariableDefinition(parser) {
@@ -26759,19 +26630,19 @@
 	  return {
 	    kind: _kinds.VARIABLE_DEFINITION,
 	    variable: parseVariable(parser),
-	    type: (expect(parser, _lexer.TokenKind.COLON), parseType(parser)),
-	    defaultValue: skip(parser, _lexer.TokenKind.EQUALS) ? parseValue(parser, true) : null,
-	    loc: loc(parser, start)
+	    type: ((0, _parserCore.expect)(parser, _lexer.TokenKind.COLON), parseType(parser)),
+	    defaultValue: (0, _parserCore.skip)(parser, _lexer.TokenKind.EQUALS) ? parseValue(parser, true) : null,
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
 	function parseVariable(parser) {
 	  var start = parser.token.start;
-	  expect(parser, _lexer.TokenKind.DOLLAR);
+	  (0, _parserCore.expect)(parser, _lexer.TokenKind.DOLLAR);
 	  return {
 	    kind: _kinds.VARIABLE,
 	    name: parseName(parser),
-	    loc: loc(parser, start)
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
@@ -26779,13 +26650,13 @@
 	  var start = parser.token.start;
 	  return {
 	    kind: _kinds.SELECTION_SET,
-	    selections: many(parser, _lexer.TokenKind.BRACE_L, parseSelection, _lexer.TokenKind.BRACE_R),
-	    loc: loc(parser, start)
+	    selections: (0, _parserCore.many)(parser, _lexer.TokenKind.BRACE_L, parseSelection, _lexer.TokenKind.BRACE_R),
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
 	function parseSelection(parser) {
-	  return peek(parser, _lexer.TokenKind.SPREAD) ? parseFragment(parser) : parseField(parser);
+	  return (0, _parserCore.peek)(parser, _lexer.TokenKind.SPREAD) ? parseFragment(parser) : parseField(parser);
 	}
 
 	/**
@@ -26797,7 +26668,7 @@
 	  var nameOrAlias = parseName(parser);
 	  var alias;
 	  var name;
-	  if (skip(parser, _lexer.TokenKind.COLON)) {
+	  if ((0, _parserCore.skip)(parser, _lexer.TokenKind.COLON)) {
 	    alias = nameOrAlias;
 	    name = parseName(parser);
 	  } else {
@@ -26811,13 +26682,13 @@
 	    name: name,
 	    arguments: parseArguments(parser),
 	    directives: parseDirectives(parser),
-	    selectionSet: peek(parser, _lexer.TokenKind.BRACE_L) ? parseSelectionSet(parser) : null,
-	    loc: loc(parser, start)
+	    selectionSet: (0, _parserCore.peek)(parser, _lexer.TokenKind.BRACE_L) ? parseSelectionSet(parser) : null,
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
 	function parseArguments(parser) {
-	  return peek(parser, _lexer.TokenKind.PAREN_L) ? many(parser, _lexer.TokenKind.PAREN_L, parseArgument, _lexer.TokenKind.PAREN_R) : [];
+	  return (0, _parserCore.peek)(parser, _lexer.TokenKind.PAREN_L) ? (0, _parserCore.many)(parser, _lexer.TokenKind.PAREN_L, parseArgument, _lexer.TokenKind.PAREN_R) : [];
 	}
 
 	function parseArgument(parser) {
@@ -26825,8 +26696,8 @@
 	  return {
 	    kind: _kinds.ARGUMENT,
 	    name: parseName(parser),
-	    value: (expect(parser, _lexer.TokenKind.COLON), parseValue(parser, false)),
-	    loc: loc(parser, start)
+	    value: ((0, _parserCore.expect)(parser, _lexer.TokenKind.COLON), parseValue(parser, false)),
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
@@ -26837,42 +26708,42 @@
 	 */
 	function parseFragment(parser) {
 	  var start = parser.token.start;
-	  expect(parser, _lexer.TokenKind.SPREAD);
+	  (0, _parserCore.expect)(parser, _lexer.TokenKind.SPREAD);
 	  if (parser.token.value === 'on') {
-	    advance(parser);
+	    (0, _parserCore.advance)(parser);
 	    return {
 	      kind: _kinds.INLINE_FRAGMENT,
-	      typeCondition: parseName(parser),
+	      typeCondition: parseNamedType(parser),
 	      directives: parseDirectives(parser),
 	      selectionSet: parseSelectionSet(parser),
-	      loc: loc(parser, start)
+	      loc: (0, _parserCore.loc)(parser, start)
 	    };
 	  }
 	  return {
 	    kind: _kinds.FRAGMENT_SPREAD,
 	    name: parseFragmentName(parser),
 	    directives: parseDirectives(parser),
-	    loc: loc(parser, start)
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
 	function parseFragmentName(parser) {
 	  if (parser.token.value === 'on') {
-	    throw unexpected(parser);
+	    throw (0, _parserCore.unexpected)(parser);
 	  }
 	  return parseName(parser);
 	}
 
 	function parseFragmentDefinition(parser) {
 	  var start = parser.token.start;
-	  expectKeyword(parser, 'fragment');
+	  (0, _parserCore.expectKeyword)(parser, 'fragment');
 	  return {
 	    kind: _kinds.FRAGMENT_DEFINITION,
 	    name: parseFragmentName(parser),
-	    typeCondition: (expectKeyword(parser, 'on'), parseName(parser)),
+	    typeCondition: ((0, _parserCore.expectKeyword)(parser, 'on'), parseNamedType(parser)),
 	    directives: parseDirectives(parser),
 	    selectionSet: parseSelectionSet(parser),
-	    loc: loc(parser, start)
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
@@ -26894,40 +26765,40 @@
 	    case _lexer.TokenKind.BRACE_L:
 	      return parseObject(parser, isConst);
 	    case _lexer.TokenKind.INT:
-	      advance(parser);
+	      (0, _parserCore.advance)(parser);
 	      return {
 	        kind: _kinds.INT,
 	        value: token.value,
-	        loc: loc(parser, token.start)
+	        loc: (0, _parserCore.loc)(parser, token.start)
 	      };
 	    case _lexer.TokenKind.FLOAT:
-	      advance(parser);
+	      (0, _parserCore.advance)(parser);
 	      return {
 	        kind: _kinds.FLOAT,
 	        value: token.value,
-	        loc: loc(parser, token.start)
+	        loc: (0, _parserCore.loc)(parser, token.start)
 	      };
 	    case _lexer.TokenKind.STRING:
-	      advance(parser);
+	      (0, _parserCore.advance)(parser);
 	      return {
 	        kind: _kinds.STRING,
 	        value: token.value,
-	        loc: loc(parser, token.start)
+	        loc: (0, _parserCore.loc)(parser, token.start)
 	      };
 	    case _lexer.TokenKind.NAME:
 	      if (token.value === 'true' || token.value === 'false') {
-	        advance(parser);
+	        (0, _parserCore.advance)(parser);
 	        return {
 	          kind: _kinds.BOOLEAN,
 	          value: token.value === 'true',
-	          loc: loc(parser, token.start)
+	          loc: (0, _parserCore.loc)(parser, token.start)
 	        };
 	      } else if (token.value !== 'null') {
-	        advance(parser);
+	        (0, _parserCore.advance)(parser);
 	        return {
 	          kind: _kinds.ENUM,
 	          value: token.value,
-	          loc: loc(parser, token.start)
+	          loc: (0, _parserCore.loc)(parser, token.start)
 	        };
 	      }
 	      break;
@@ -26937,7 +26808,7 @@
 	      }
 	      break;
 	  }
-	  throw unexpected(parser);
+	  throw (0, _parserCore.unexpected)(parser);
 	}
 
 	function parseArray(parser, isConst) {
@@ -26945,23 +26816,23 @@
 	  var item = isConst ? parseConstValue : parseVariableValue;
 	  return {
 	    kind: _kinds.ARRAY,
-	    values: any(parser, _lexer.TokenKind.BRACKET_L, item, _lexer.TokenKind.BRACKET_R),
-	    loc: loc(parser, start)
+	    values: (0, _parserCore.any)(parser, _lexer.TokenKind.BRACKET_L, item, _lexer.TokenKind.BRACKET_R),
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
 	function parseObject(parser, isConst) {
 	  var start = parser.token.start;
-	  expect(parser, _lexer.TokenKind.BRACE_L);
+	  (0, _parserCore.expect)(parser, _lexer.TokenKind.BRACE_L);
 	  var fieldNames = {};
 	  var fields = [];
-	  while (!skip(parser, _lexer.TokenKind.BRACE_R)) {
+	  while (!(0, _parserCore.skip)(parser, _lexer.TokenKind.BRACE_R)) {
 	    fields.push(parseObjectField(parser, isConst, fieldNames));
 	  }
 	  return {
 	    kind: _kinds.OBJECT,
 	    fields: fields,
-	    loc: loc(parser, start)
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
@@ -26975,8 +26846,8 @@
 	  return {
 	    kind: _kinds.OBJECT_FIELD,
 	    name: name,
-	    value: (expect(parser, _lexer.TokenKind.COLON), parseValue(parser, isConst)),
-	    loc: loc(parser, start)
+	    value: ((0, _parserCore.expect)(parser, _lexer.TokenKind.COLON), parseValue(parser, isConst)),
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
@@ -26984,7 +26855,7 @@
 
 	function parseDirectives(parser) {
 	  var directives = [];
-	  while (peek(parser, _lexer.TokenKind.AT)) {
+	  while ((0, _parserCore.peek)(parser, _lexer.TokenKind.AT)) {
 	    directives.push(parseDirective(parser));
 	  }
 	  return directives;
@@ -26992,60 +26863,74 @@
 
 	function parseDirective(parser) {
 	  var start = parser.token.start;
-	  expect(parser, _lexer.TokenKind.AT);
+	  (0, _parserCore.expect)(parser, _lexer.TokenKind.AT);
 	  return {
 	    kind: _kinds.DIRECTIVE,
 	    name: parseName(parser),
 	    arguments: parseArguments(parser),
-	    loc: loc(parser, start)
+	    loc: (0, _parserCore.loc)(parser, start)
 	  };
 	}
 
 	// Implements the parsing rules in the Types section.
 
 	/**
-	 * Handles the Type: TypeName, ListType, and NonNullType parsing rules.
+	 * Handles the Type: NamedType, ListType, and NonNullType parsing rules.
 	 */
+
 	function parseType(parser) {
 	  var start = parser.token.start;
 	  var type;
-	  if (skip(parser, _lexer.TokenKind.BRACKET_L)) {
+	  if ((0, _parserCore.skip)(parser, _lexer.TokenKind.BRACKET_L)) {
 	    type = parseType(parser);
-	    expect(parser, _lexer.TokenKind.BRACKET_R);
+	    (0, _parserCore.expect)(parser, _lexer.TokenKind.BRACKET_R);
 	    type = {
 	      kind: _kinds.LIST_TYPE,
 	      type: type,
-	      loc: loc(parser, start)
+	      loc: (0, _parserCore.loc)(parser, start)
 	    };
 	  } else {
-	    type = parseName(parser);
+	    type = parseNamedType(parser);
 	  }
-	  if (skip(parser, _lexer.TokenKind.BANG)) {
+	  if ((0, _parserCore.skip)(parser, _lexer.TokenKind.BANG)) {
 	    return {
 	      kind: _kinds.NON_NULL_TYPE,
 	      type: type,
-	      loc: loc(parser, start)
+	      loc: (0, _parserCore.loc)(parser, start)
 	    };
 	  }
 	  return type;
 	}
 
-	/**
-	 * By default, the parser creates AST nodes that know the location
-	 * in the source that they correspond to. This configuration flag
-	 * disables that behavior for performance or testing.
-	 */
-
-	/**
-	 * By default, the parser creates AST nodes that contain a reference
-	 * to the source that they were created from. This configuration flag
-	 * disables that behavior for performance or testing.
-	 */
+	function parseNamedType(parser) {
+	  var start = parser.token.start;
+	  return {
+	    kind: _kinds.NAMED_TYPE,
+	    name: parseName(parser),
+	    loc: (0, _parserCore.loc)(parser, start)
+	  };
+	}
 
 /***/ },
 /* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
+	
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	/**
+	 * A representation of source input to GraphQL. The name is optional,
+	 * but is mostly useful for clients who store GraphQL documents in
+	 * source files; for example, if the GraphQL input is in a file Foo.graphql,
+	 * it might be useful for name to be "Foo.graphql".
+	 */
 	'use strict';
 
 	var _classCallCheck = __webpack_require__(177)['default'];
@@ -27063,6 +26948,11 @@
 
 	exports.Source = Source;
 
+/***/ },
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*  /
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -27071,17 +26961,6 @@
 	 *  LICENSE file in the root directory of this source tree. An additional grant
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
-
-	/**
-	 * A representation of source input to GraphQL. The name is optional,
-	 * but is mostly useful for clients who store GraphQL documents in
-	 * source files; for example, if the GraphQL input is in a file Foo.graphql,
-	 * it might be useful for name to be "Foo.graphql".
-	 */
-
-/***/ },
-/* 181 */
-/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -27144,10 +27023,10 @@
 	  STRING: 19
 	};
 
-	exports.TokenKind = TokenKind;
 	/**
 	 * A helper function to describe a token as a string for debugging
 	 */
+	exports.TokenKind = TokenKind;
 
 	function getTokenDesc(token) {
 	  return token.value ? getTokenKindDesc(token.kind) + ' "' + token.value + '"' : getTokenKindDesc(token.kind);
@@ -27299,17 +27178,17 @@
 	    code === 0x2029 || // paragraph separator
 	    code > 8 && code < 14 // whitespace
 	    ) {
-	      ++position;
-	      // Skip comments
-	    } else if (code === 35) {
-	      // #
-	      ++position;
-	      while (position < bodyLength && (code = charCodeAt.call(body, position)) && code !== 10 && code !== 13 && code !== 0x2028 && code !== 0x2029) {
 	        ++position;
+	        // Skip comments
+	      } else if (code === 35) {
+	        // #
+	        ++position;
+	        while (position < bodyLength && (code = charCodeAt.call(body, position)) && code !== 10 && code !== 13 && code !== 0x2028 && code !== 0x2029) {
+	          ++position;
+	        }
+	      } else {
+	        break;
 	      }
-	    } else {
-	      break;
-	    }
 	  }
 	  return position;
 	}
@@ -27341,8 +27220,8 @@
 	      code = charCodeAt.call(body, ++position);
 	    } while (code >= 48 && code <= 57); // 0 - 9
 	  } else {
-	    throw (0, _error.syntaxError)(source, position, 'Invalid number.');
-	  }
+	      throw (0, _error.syntaxError)(source, position, 'Invalid number.');
+	    }
 
 	  if (code === 46) {
 	    // .
@@ -27355,8 +27234,8 @@
 	        code = charCodeAt.call(body, ++position);
 	      } while (code >= 48 && code <= 57); // 0 - 9
 	    } else {
-	      throw (0, _error.syntaxError)(source, position, 'Invalid number.');
-	    }
+	        throw (0, _error.syntaxError)(source, position, 'Invalid number.');
+	      }
 	  }
 
 	  if (code === 69 || code === 101) {
@@ -27374,8 +27253,8 @@
 	        code = charCodeAt.call(body, ++position);
 	      } while (code >= 48 && code <= 57); // 0 - 9
 	    } else {
-	      throw (0, _error.syntaxError)(source, position, 'Invalid number.');
-	    }
+	        throw (0, _error.syntaxError)(source, position, 'Invalid number.');
+	      }
 	  }
 
 	  return makeToken(isFloat ? TokenKind.FLOAT : TokenKind.INT, start, position, slice.call(body, start, position));
@@ -27403,7 +27282,7 @@
 	        case 34:
 	          value += '"';break;
 	        case 47:
-	          value += '/';break;
+	          value += '\/';break;
 	        case 92:
 	          value += '\\';break;
 	        case 98:
@@ -27482,8 +27361,8 @@
 	  while (end !== bodyLength && (code = charCodeAt.call(body, end)) && (code === 95 || // _
 	  code >= 48 && code <= 57 || // 0-9
 	  code >= 65 && code <= 90 || // A-Z
-	  code >= 97 && code <= 122 // a-z
-	  )) {
+	  code >= 97 && code <= 122) // a-z
+	  ) {
 	    ++end;
 	  }
 	  return makeToken(TokenKind.NAME, position, end, slice.call(body, position, end));
@@ -27511,9 +27390,9 @@
 	});
 	var NAME = 'Name';
 
-	exports.NAME = NAME;
 	// Document
 
+	exports.NAME = NAME;
 	var DOCUMENT = 'Document';
 	exports.DOCUMENT = DOCUMENT;
 	var OPERATION_DEFINITION = 'OperationDefinition';
@@ -27528,18 +27407,18 @@
 	exports.FIELD = FIELD;
 	var ARGUMENT = 'Argument';
 
-	exports.ARGUMENT = ARGUMENT;
 	// Fragments
 
+	exports.ARGUMENT = ARGUMENT;
 	var FRAGMENT_SPREAD = 'FragmentSpread';
 	exports.FRAGMENT_SPREAD = FRAGMENT_SPREAD;
 	var INLINE_FRAGMENT = 'InlineFragment';
 	exports.INLINE_FRAGMENT = INLINE_FRAGMENT;
 	var FRAGMENT_DEFINITION = 'FragmentDefinition';
 
-	exports.FRAGMENT_DEFINITION = FRAGMENT_DEFINITION;
 	// Values
 
+	exports.FRAGMENT_DEFINITION = FRAGMENT_DEFINITION;
 	var INT = 'IntValue';
 	exports.INT = INT;
 	var FLOAT = 'FloatValue';
@@ -27556,16 +27435,16 @@
 	exports.OBJECT = OBJECT;
 	var OBJECT_FIELD = 'ObjectField';
 
-	exports.OBJECT_FIELD = OBJECT_FIELD;
 	// Directives
 
+	exports.OBJECT_FIELD = OBJECT_FIELD;
 	var DIRECTIVE = 'Directive';
 
-	exports.DIRECTIVE = DIRECTIVE;
 	// Types
 
-	var TYPE = 'Type';
-	exports.TYPE = TYPE;
+	exports.DIRECTIVE = DIRECTIVE;
+	var NAMED_TYPE = 'NamedType';
+	exports.NAMED_TYPE = NAMED_TYPE;
 	var LIST_TYPE = 'ListType';
 	exports.LIST_TYPE = LIST_TYPE;
 	var NON_NULL_TYPE = 'NonNullType';
@@ -27573,6 +27452,196 @@
 
 /***/ },
 /* 183 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	/**
+	 * Returns the parser object that is used to store state throughout the
+	 * process of parsing.
+	 */
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports.makeParser = makeParser;
+
+	/**
+	 * Configuration options to control parser behavior
+	 */
+	exports.loc = loc;
+	exports.advance = advance;
+	exports.peek = peek;
+	exports.skip = skip;
+	exports.expect = expect;
+	exports.expectKeyword = expectKeyword;
+	exports.unexpected = unexpected;
+	exports.any = any;
+	exports.many = many;
+
+	var _lexer = __webpack_require__(181);
+
+	var _source = __webpack_require__(180);
+
+	var _error = __webpack_require__(164);
+
+	function makeParser(source, options) {
+	  var _lexToken = (0, _lexer.lex)(source);
+	  return {
+	    _lexToken: _lexToken,
+	    source: source,
+	    options: options,
+	    prevEnd: 0,
+	    token: _lexToken()
+	  };
+	}
+
+	/**
+	 * Returns a location object, used to identify the place in
+	 * the source that created a given parsed object.
+	 */
+
+	function loc(parser, start) {
+	  if (parser.options.noLocation) {
+	    return null;
+	  }
+	  if (parser.options.noSource) {
+	    return {
+	      start: start,
+	      end: parser.prevEnd
+	    };
+	  }
+	  return {
+	    start: start,
+	    end: parser.prevEnd,
+	    source: parser.source
+	  };
+	}
+
+	/**
+	 * Moves the internal parser object to the next lexed token.
+	 */
+
+	function advance(parser) {
+	  var prevEnd = parser.token.end;
+	  parser.prevEnd = prevEnd;
+	  parser.token = parser._lexToken(prevEnd);
+	}
+
+	/**
+	 * Determines if the next token is of a given kind
+	 */
+
+	function peek(parser, kind) {
+	  return parser.token.kind === kind;
+	}
+
+	/**
+	 * If the next token is of the given kind, return true after advancing
+	 * the parser. Otherwise, do not change the parser state and return false.
+	 */
+
+	function skip(parser, kind) {
+	  var match = parser.token.kind === kind;
+	  if (match) {
+	    advance(parser);
+	  }
+	  return match;
+	}
+
+	/**
+	 * If the next token is of the given kind, return that token after advancing
+	 * the parser. Otherwise, do not change the parser state and return false.
+	 */
+
+	function expect(parser, kind) {
+	  var token = parser.token;
+	  if (token.kind === kind) {
+	    advance(parser);
+	    return token;
+	  }
+	  throw (0, _error.syntaxError)(parser.source, token.start, 'Expected ' + (0, _lexer.getTokenKindDesc)(kind) + ', found ' + (0, _lexer.getTokenDesc)(token));
+	}
+
+	/**
+	 * If the next token is a keyword with the given value, return that token after
+	 * advancing the parser. Otherwise, do not change the parser state and return
+	 * false.
+	 */
+
+	function expectKeyword(parser, value) {
+	  var token = parser.token;
+	  if (token.kind === _lexer.TokenKind.NAME && token.value === value) {
+	    advance(parser);
+	    return token;
+	  }
+	  throw (0, _error.syntaxError)(parser.source, token.start, 'Expected "' + value + '", found ' + (0, _lexer.getTokenDesc)(token));
+	}
+
+	/**
+	 * Helper export function for creating an error when an unexpected lexed token
+	 * is encountered.
+	 */
+
+	function unexpected(parser, atToken) {
+	  var token = atToken || parser.token;
+	  return (0, _error.syntaxError)(parser.source, token.start, 'Unexpected ' + (0, _lexer.getTokenDesc)(token));
+	}
+
+	/**
+	 * Returns a possibly empty list of parse nodes, determined by
+	 * the parseFn. This list begins with a lex token of openKind
+	 * and ends with a lex token of closeKind. Advances the parser
+	 * to the next lex token after the closing token.
+	 */
+
+	function any(parser, openKind, parseFn, closeKind) {
+	  expect(parser, openKind);
+	  var nodes = [];
+	  while (!skip(parser, closeKind)) {
+	    nodes.push(parseFn(parser));
+	  }
+	  return nodes;
+	}
+
+	/**
+	 * Returns a non-empty list of parse nodes, determined by
+	 * the parseFn. This list begins with a lex token of openKind
+	 * and ends with a lex token of closeKind. Advances the parser
+	 * to the next lex token after the closing token.
+	 */
+
+	function many(parser, openKind, parseFn, closeKind) {
+	  expect(parser, openKind);
+	  var nodes = [parseFn(parser)];
+	  while (!skip(parser, closeKind)) {
+	    nodes.push(parseFn(parser));
+	  }
+	  return nodes;
+	}
+
+	/**
+	 * By default, the parser creates AST nodes that know the location
+	 * in the source that they correspond to. This configuration flag
+	 * disables that behavior for performance or testing.
+	 */
+
+	/**
+	 * By default, the parser creates AST nodes that contain a reference
+	 * to the source that they were created from. This configuration flag
+	 * disables that behavior for performance or testing.
+	 */
+
+/***/ },
+/* 184 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -27597,14 +27666,24 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports) {
 
-	'use strict';
+	
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
 
 	/**
 	 * Represents a location in a Source.
 	 */
+	'use strict';
+
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
@@ -27627,17 +27706,8 @@
 	  return { line: line, column: column };
 	}
 
-	/**
-	 *  Copyright (c) 2015, Facebook, Inc.
-	 *  All rights reserved.
-	 *
-	 *  This source code is licensed under the BSD-style license found in the
-	 *  LICENSE file in the root directory of this source tree. An additional grant
-	 *  of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -27656,7 +27726,7 @@
 	});
 	exports.print = print;
 
-	var _visitor = __webpack_require__(186);
+	var _visitor = __webpack_require__(187);
 
 	/**
 	 * Converts an AST into a string, using one set of reasonable
@@ -27746,6 +27816,9 @@
 
 	      // Type
 
+	      NamedType: function NamedType(node) {
+	        return node.name;
+	      },
 	      ListType: function ListType(node) {
 	        return '[' + node.type + ']';
 	      },
@@ -27775,7 +27848,7 @@
 	}
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -27789,7 +27862,7 @@
 
 	'use strict';
 
-	var _slicedToArray = __webpack_require__(187)['default'];
+	var _slicedToArray = __webpack_require__(188)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -27822,6 +27895,7 @@
 
 	  Directive: ['name', 'arguments'],
 
+	  NamedType: ['name'],
 	  ListType: ['type'],
 	  NonNullType: ['type']
 	};
@@ -27829,7 +27903,6 @@
 	exports.VisitorKeys = VisitorKeys;
 	var BREAK = {};
 
-	exports.BREAK = BREAK;
 	/**
 	 * visit() will walk through an AST using a depth first traversal, calling
 	 * the visitor's enter function at each node in the traversal, and calling the
@@ -27916,6 +27989,7 @@
 	 *       }
 	 *     })
 	 */
+	exports.BREAK = BREAK;
 
 	function visit(root, visitor) {
 	  var visitorKeys = visitor.keys || VisitorKeys;
@@ -28075,14 +28149,14 @@
 	}
 
 /***/ },
-/* 187 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _getIterator = __webpack_require__(188)["default"];
+	var _getIterator = __webpack_require__(189)["default"];
 
-	var _isIterable = __webpack_require__(204)["default"];
+	var _isIterable = __webpack_require__(205)["default"];
 
 	exports["default"] = (function () {
 	  function sliceIterator(arr, i) {
@@ -28125,28 +28199,28 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 188 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(189), __esModule: true };
-
-/***/ },
 /* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(190);
-	__webpack_require__(201);
-	__webpack_require__(203);
-	module.exports = __webpack_require__(169).core.getIterator;
+	module.exports = { "default": __webpack_require__(190), __esModule: true };
 
 /***/ },
 /* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(191);
+	__webpack_require__(202);
+	__webpack_require__(204);
+	module.exports = __webpack_require__(169).core.getIterator;
+
+/***/ },
+/* 191 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(192);
 	var $           = __webpack_require__(169)
-	  , Iterators   = __webpack_require__(194).Iterators
-	  , ITERATOR    = __webpack_require__(196)('iterator')
+	  , Iterators   = __webpack_require__(195).Iterators
+	  , ITERATOR    = __webpack_require__(197)('iterator')
 	  , ArrayValues = Iterators.Array
 	  , NL          = $.g.NodeList
 	  , HTC         = $.g.HTMLCollection
@@ -28159,13 +28233,13 @@
 	Iterators.NodeList = Iterators.HTMLCollection = ArrayValues;
 
 /***/ },
-/* 191 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $          = __webpack_require__(169)
-	  , setUnscope = __webpack_require__(192)
-	  , ITER       = __webpack_require__(193).safe('iter')
-	  , $iter      = __webpack_require__(194)
+	  , setUnscope = __webpack_require__(193)
+	  , ITER       = __webpack_require__(194).safe('iter')
+	  , $iter      = __webpack_require__(195)
 	  , step       = $iter.step
 	  , Iterators  = $iter.Iterators;
 
@@ -28173,7 +28247,7 @@
 	// 22.1.3.13 Array.prototype.keys()
 	// 22.1.3.29 Array.prototype.values()
 	// 22.1.3.30 Array.prototype[@@iterator]()
-	__webpack_require__(199)(Array, 'Array', function(iterated, kind){
+	__webpack_require__(200)(Array, 'Array', function(iterated, kind){
 	  $.set(this, ITER, {o: $.toObject(iterated), i: 0, k: kind});
 	// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
 	}, function(){
@@ -28198,13 +28272,13 @@
 	setUnscope('entries');
 
 /***/ },
-/* 192 */
+/* 193 */
 /***/ function(module, exports) {
 
 	module.exports = function(){ /* empty */ };
 
 /***/ },
-/* 193 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var sid = 0;
@@ -28215,18 +28289,18 @@
 	module.exports = uid;
 
 /***/ },
-/* 194 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var $                 = __webpack_require__(169)
-	  , cof               = __webpack_require__(195)
+	  , cof               = __webpack_require__(196)
 	  , classof           = cof.classof
-	  , assert            = __webpack_require__(198)
+	  , assert            = __webpack_require__(199)
 	  , assertObject      = assert.obj
-	  , SYMBOL_ITERATOR   = __webpack_require__(196)('iterator')
+	  , SYMBOL_ITERATOR   = __webpack_require__(197)('iterator')
 	  , FF_ITERATOR       = '@@iterator'
-	  , Iterators         = __webpack_require__(197)('iterators')
+	  , Iterators         = __webpack_require__(198)('iterators')
 	  , IteratorPrototype = {};
 	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
 	setIterator(IteratorPrototype, $.that);
@@ -28269,11 +28343,11 @@
 	};
 
 /***/ },
-/* 195 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $        = __webpack_require__(169)
-	  , TAG      = __webpack_require__(196)('toStringTag')
+	  , TAG      = __webpack_require__(197)('toStringTag')
 	  , toString = {}.toString;
 	function cof(it){
 	  return toString.call(it).slice(8, -1);
@@ -28289,18 +28363,18 @@
 	module.exports = cof;
 
 /***/ },
-/* 196 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var global = __webpack_require__(169).g
-	  , store  = __webpack_require__(197)('wks');
+	  , store  = __webpack_require__(198)('wks');
 	module.exports = function(name){
 	  return store[name] || (store[name] =
-	    global.Symbol && global.Symbol[name] || __webpack_require__(193).safe('Symbol.' + name));
+	    global.Symbol && global.Symbol[name] || __webpack_require__(194).safe('Symbol.' + name));
 	};
 
 /***/ },
-/* 197 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $      = __webpack_require__(169)
@@ -28311,7 +28385,7 @@
 	};
 
 /***/ },
-/* 198 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(169);
@@ -28334,15 +28408,15 @@
 	module.exports = assert;
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $def            = __webpack_require__(172)
-	  , $redef          = __webpack_require__(200)
+	  , $redef          = __webpack_require__(201)
 	  , $               = __webpack_require__(169)
-	  , cof             = __webpack_require__(195)
-	  , $iter           = __webpack_require__(194)
-	  , SYMBOL_ITERATOR = __webpack_require__(196)('iterator')
+	  , cof             = __webpack_require__(196)
+	  , $iter           = __webpack_require__(195)
+	  , SYMBOL_ITERATOR = __webpack_require__(197)('iterator')
 	  , FF_ITERATOR     = '@@iterator'
 	  , KEYS            = 'keys'
 	  , VALUES          = 'values'
@@ -28389,23 +28463,23 @@
 	};
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(169).hide;
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var set   = __webpack_require__(169).set
-	  , $at   = __webpack_require__(202)(true)
-	  , ITER  = __webpack_require__(193).safe('iter')
-	  , $iter = __webpack_require__(194)
+	  , $at   = __webpack_require__(203)(true)
+	  , ITER  = __webpack_require__(194).safe('iter')
+	  , $iter = __webpack_require__(195)
 	  , step  = $iter.step;
 
 	// 21.1.3.27 String.prototype[@@iterator]()
-	__webpack_require__(199)(String, 'String', function(iterated){
+	__webpack_require__(200)(String, 'String', function(iterated){
 	  set(this, ITER, {o: String(iterated), i: 0});
 	// 21.1.5.2.1 %StringIteratorPrototype%.next()
 	}, function(){
@@ -28420,7 +28494,7 @@
 	});
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// true  -> String#at
@@ -28442,32 +28516,42 @@
 	};
 
 /***/ },
-/* 203 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var core  = __webpack_require__(169).core
-	  , $iter = __webpack_require__(194);
-	core.isIterable  = $iter.is;
-	core.getIterator = $iter.get;
-
-/***/ },
 /* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(205), __esModule: true };
+	var core  = __webpack_require__(169).core
+	  , $iter = __webpack_require__(195);
+	core.isIterable  = $iter.is;
+	core.getIterator = $iter.get;
 
 /***/ },
 /* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(190);
-	__webpack_require__(201);
-	__webpack_require__(203);
-	module.exports = __webpack_require__(169).core.isIterable;
+	module.exports = { "default": __webpack_require__(206), __esModule: true };
 
 /***/ },
 /* 206 */
 /***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(191);
+	__webpack_require__(202);
+	__webpack_require__(204);
+	module.exports = __webpack_require__(169).core.isIterable;
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
 
 	'use strict';
 
@@ -28476,7 +28560,7 @@
 	});
 	exports.syntaxError = syntaxError;
 
-	var _languageLocation = __webpack_require__(184);
+	var _languageLocation = __webpack_require__(185);
 
 	var _GraphQLError = __webpack_require__(165);
 
@@ -28513,6 +28597,11 @@
 	  return Array(len - str.length + 1).join(' ') + str;
 	}
 
+/***/ },
+/* 208 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -28521,10 +28610,6 @@
 	 *  LICENSE file in the root directory of this source tree. An additional grant
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
-
-/***/ },
-/* 207 */
-/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -28542,17 +28627,16 @@
 	 */
 
 	function locatedError(error, nodes) {
-	  // If the error is already a GraphQLError, do not overwrite it's existing
-	  // location information.
-	  if (error instanceof _GraphQLError.GraphQLError) {
-	    return error;
-	  }
-
-	  var message = error && error.message ? error.message : String(error);
+	  var message = error ? error.message || String(error) : 'An unknown error occurred.';
 	  var stack = error ? error.stack : null;
 	  return new _GraphQLError.GraphQLError(message, nodes, stack);
 	}
 
+/***/ },
+/* 209 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -28562,27 +28646,22 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 208 */
-/***/ function(module, exports, __webpack_require__) {
-
+	/**
+	 * Given a GraphQLError, format it according to the rules described by the
+	 * Response Format, Errors section of the GraphQL Specification.
+	 */
 	'use strict';
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	exports.formatError = formatError;
 
-	var _utilsInvariant = __webpack_require__(210);
+	var _utilsInvariant = __webpack_require__(211);
 
 	var _utilsInvariant2 = _interopRequireDefault(_utilsInvariant);
-
-	/**
-	 * Given a GraphQLError, format it according to the rules described by the
-	 * Response Format, Errors section of the GraphQL Specification.
-	 */
 
 	function formatError(error) {
 	  (0, _utilsInvariant2['default'])(error, 'Received null or undefined error.');
@@ -28592,17 +28671,8 @@
 	  };
 	}
 
-	/**
-	 *  Copyright (c) 2015, Facebook, Inc.
-	 *  All rights reserved.
-	 *
-	 *  This source code is licensed under the BSD-style license found in the
-	 *  LICENSE file in the root directory of this source tree. An additional grant
-	 *  of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -28616,8 +28686,18 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports) {
+
+	
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
 
 	"use strict";
 
@@ -28634,22 +28714,13 @@
 
 	module.exports = exports["default"];
 
-	/**
-	 *  Copyright (c) 2015, Facebook, Inc.
-	 *  All rights reserved.
-	 *
-	 *  This source code is licensed under the BSD-style license found in the
-	 *  LICENSE file in the root directory of this source tree. An additional grant
-	 *  of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$defineProperty = __webpack_require__(212)["default"];
+	var _Object$defineProperty = __webpack_require__(213)["default"];
 
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -28673,13 +28744,13 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(213), __esModule: true };
+	module.exports = { "default": __webpack_require__(214), __esModule: true };
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(169);
@@ -28688,16 +28759,26 @@
 	};
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
 
 	'use strict';
 
-	var _createClass = __webpack_require__(211)['default'];
+	var _createClass = __webpack_require__(212)['default'];
 
 	var _classCallCheck = __webpack_require__(177)['default'];
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -28705,23 +28786,23 @@
 
 	var _language = __webpack_require__(178);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _typeDefinition = __webpack_require__(216);
 
-	var _typeIntrospection = __webpack_require__(231);
+	var _typeIntrospection = __webpack_require__(232);
 
-	var _utilsTypeFromAST = __webpack_require__(233);
+	var _utilsTypeFromAST = __webpack_require__(234);
 
 	var _utilsTypeFromAST2 = _interopRequireDefault(_utilsTypeFromAST);
 
-	var _find = __webpack_require__(234);
-
-	var _find2 = _interopRequireDefault(_find);
+	var _find = __webpack_require__(235);
 
 	/**
 	 * TypeInfo is a utility class which, given a GraphQL schema, can keep track
 	 * of the current field and type definitions at any point in a GraphQL document
 	 * AST during a recursive descent by calling `enter(node)` and `leave(node)`.
 	 */
+
+	var _find2 = _interopRequireDefault(_find);
 
 	var TypeInfo = (function () {
 	  function TypeInfo(schema) {
@@ -28774,20 +28855,20 @@
 	    value: function getArgument() {
 	      return this._argument;
 	    }
-	  }, {
-	    key: 'enter',
 
 	    // Flow does not yet handle this case.
-	    value: function enter(node) {
+	  }, {
+	    key: 'enter',
+	    value: function enter(node /*Node*/) {
 	      var schema = this._schema;
 	      var type;
 	      switch (node.kind) {
 	        case _language.Kind.SELECTION_SET:
+	          var namedType = (0, _typeDefinition.getNamedType)(this.getType());
 	          var compositeType;
-	          var rawType = (0, _typeDefinition.getUnmodifiedType)(this.getType());
-	          if ((0, _typeDefinition.isCompositeType)(rawType)) {
+	          if ((0, _typeDefinition.isCompositeType)(namedType)) {
 	            // isCompositeType is a type refining predicate, so this is safe.
-	            compositeType = rawType;
+	            compositeType = namedType;
 	          }
 	          this._parentTypeStack.push(compositeType);
 	          break;
@@ -28813,7 +28894,7 @@
 	          break;
 	        case _language.Kind.INLINE_FRAGMENT:
 	        case _language.Kind.FRAGMENT_DEFINITION:
-	          type = schema.getType(node.typeCondition.value);
+	          type = (0, _utilsTypeFromAST2['default'])(schema, node.typeCondition);
 	          this._typeStack.push(type);
 	          break;
 	        case _language.Kind.VARIABLE_DEFINITION:
@@ -28839,7 +28920,7 @@
 	          this._inputTypeStack.push(arrayType instanceof _typeDefinition.GraphQLList ? arrayType.ofType : undefined);
 	          break;
 	        case _language.Kind.OBJECT_FIELD:
-	          var objectType = (0, _typeDefinition.getUnmodifiedType)(this.getInputType());
+	          var objectType = (0, _typeDefinition.getNamedType)(this.getInputType());
 	          var fieldType;
 	          if (objectType instanceof _typeDefinition.GraphQLInputObjectType) {
 	            var inputField = objectType.getFields()[node.name.value];
@@ -28884,15 +28965,16 @@
 	  }]);
 
 	  return TypeInfo;
-	})();
-
-	exports['default'] = TypeInfo;
+	})()
 
 	/**
 	 * Not exactly the same as the executor's definition of getFieldDef, in this
 	 * statically evaluated environment we do not always have an Object type,
 	 * and need to handle Interface and Union types.
 	 */
+	;
+
+	exports['default'] = TypeInfo;
 	function getFieldDef(schema, parentType, fieldAST) {
 	  var name = fieldAST.name.value;
 	  if (name === _typeIntrospection.SchemaMetaFieldDef.name && schema.getQueryType() === parentType) {
@@ -28910,6 +28992,11 @@
 	}
 	module.exports = exports['default'];
 
+/***/ },
+/* 216 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -28919,17 +29006,10 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	/*Node*/
-
-/***/ },
-/* 215 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
 	/**
 	 * These are all of the possible kinds of types.
 	 */
+	'use strict';
 
 	// Predicates
 
@@ -28937,15 +29017,15 @@
 	 * These types may be used as input types for arguments and directives.
 	 */
 
-	var _createClass = __webpack_require__(211)['default'];
+	var _createClass = __webpack_require__(212)['default'];
 
 	var _classCallCheck = __webpack_require__(177)['default'];
 
-	var _Object$keys = __webpack_require__(216)['default'];
+	var _Object$keys = __webpack_require__(217)['default'];
 
-	var _Map = __webpack_require__(218)['default'];
+	var _Map = __webpack_require__(219)['default'];
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -28978,29 +29058,29 @@
 	exports.getNullableType = getNullableType;
 
 	/**
-	 * These types have no modifiers like List or NonNull.
+	 * These named types do not include modifiers like List or NonNull.
 	 */
-	exports.getUnmodifiedType = getUnmodifiedType;
+	exports.getNamedType = getNamedType;
 
-	var _utilsInvariant = __webpack_require__(210);
+	var _utilsInvariant = __webpack_require__(211);
 
 	var _utilsInvariant2 = _interopRequireDefault(_utilsInvariant);
 
 	var _languageKinds = __webpack_require__(182);
 
 	function isInputType(type) {
-	  var nakedType = getUnmodifiedType(type);
-	  return nakedType instanceof GraphQLScalarType || nakedType instanceof GraphQLEnumType || nakedType instanceof GraphQLInputObjectType;
+	  var namedType = getNamedType(type);
+	  return namedType instanceof GraphQLScalarType || namedType instanceof GraphQLEnumType || namedType instanceof GraphQLInputObjectType;
 	}
 
 	function isOutputType(type) {
-	  var nakedType = getUnmodifiedType(type);
-	  return nakedType instanceof GraphQLScalarType || nakedType instanceof GraphQLObjectType || nakedType instanceof GraphQLInterfaceType || nakedType instanceof GraphQLUnionType || nakedType instanceof GraphQLEnumType;
+	  var namedType = getNamedType(type);
+	  return namedType instanceof GraphQLScalarType || namedType instanceof GraphQLObjectType || namedType instanceof GraphQLInterfaceType || namedType instanceof GraphQLUnionType || namedType instanceof GraphQLEnumType;
 	}
 
 	function isLeafType(type) {
-	  var nakedType = getUnmodifiedType(type);
-	  return nakedType instanceof GraphQLScalarType || nakedType instanceof GraphQLEnumType;
+	  var namedType = getNamedType(type);
+	  return namedType instanceof GraphQLScalarType || namedType instanceof GraphQLEnumType;
 	}
 
 	function isCompositeType(type) {
@@ -29015,7 +29095,7 @@
 	  return type instanceof GraphQLNonNull ? type.ofType : type;
 	}
 
-	function getUnmodifiedType(type) {
+	function getNamedType(type) {
 	  var unmodifiedType = type;
 	  while (unmodifiedType instanceof GraphQLList || unmodifiedType instanceof GraphQLNonNull) {
 	    unmodifiedType = unmodifiedType.ofType;
@@ -29041,8 +29121,9 @@
 	 *
 	 */
 
-	var GraphQLScalarType = (function () {
-	  function GraphQLScalarType(config) {
+	var GraphQLScalarType /*<T>*/ = (function () {
+	  /*<T>*/
+	  function GraphQLScalarType(config /*<T>*/) {
 	    _classCallCheck(this, GraphQLScalarType);
 
 	    (0, _utilsInvariant2['default'])(config.name, 'Type must be named.');
@@ -29074,6 +29155,7 @@
 	})();
 
 	exports.GraphQLScalarType = GraphQLScalarType;
+	/*T*/
 
 	/**
 	 * Object Type Definition
@@ -29132,7 +29214,7 @@
 	  }, {
 	    key: 'getInterfaces',
 	    value: function getInterfaces() {
-	      return this._typeConfig.interfaces || [];
+	      return this._interfaces || (this._interfaces = defineInterfaces(this._typeConfig.interfaces || []));
 	    }
 	  }, {
 	    key: 'isTypeOf',
@@ -29154,8 +29236,16 @@
 
 	exports.GraphQLObjectType = GraphQLObjectType;
 
+	function resolveMaybeThunk(thingOrThunk) {
+	  return typeof thingOrThunk === 'function' ? thingOrThunk() : thingOrThunk;
+	}
+
+	function defineInterfaces(interfacesOrThunk) {
+	  return resolveMaybeThunk(interfacesOrThunk);
+	}
+
 	function defineFieldMap(fields) {
-	  var fieldMap = typeof fields === 'function' ? fields() : fields;
+	  var fieldMap = resolveMaybeThunk(fields);
 	  _Object$keys(fieldMap).forEach(function (fieldName) {
 	    var field = fieldMap[fieldName];
 	    field.name = fieldName;
@@ -29374,8 +29464,8 @@
 	 * will be used as it's internal value.
 	 */
 
-	var GraphQLEnumType = (function () {
-	  function GraphQLEnumType(config) {
+	var GraphQLEnumType /*<T>*/ = (function () {
+	  function GraphQLEnumType(config /*<T>*/) {
 	    _classCallCheck(this, GraphQLEnumType);
 
 	    this.name = config.name;
@@ -29390,7 +29480,7 @@
 	    }
 	  }, {
 	    key: 'coerce',
-	    value: function coerce(value) {
+	    value: function coerce(value /*T*/) {
 	      var enumValue = this._getValueLookup().get(value);
 	      return enumValue ? enumValue.name : null;
 	    }
@@ -29456,6 +29546,7 @@
 	})();
 
 	exports.GraphQLEnumType = GraphQLEnumType;
+	/*<T>*/ /*<T>*/
 
 	/**
 	 * Input Object Type Definition
@@ -29550,9 +29641,7 @@
 	  }]);
 
 	  return GraphQLList;
-	})();
-
-	exports.GraphQLList = GraphQLList;
+	})()
 
 	/**
 	 * Non-Null Modifier
@@ -29574,6 +29663,9 @@
 	 *
 	 * Note: the enforcement of non-nullability occurs within the executor.
 	 */
+	;
+
+	exports.GraphQLList = GraphQLList;
 
 	var GraphQLNonNull = (function () {
 	  function GraphQLNonNull(type) {
@@ -29594,17 +29686,7 @@
 	})();
 
 	exports.GraphQLNonNull = GraphQLNonNull;
-
-	/**
-	 *  Copyright (c) 2015, Facebook, Inc.
-	 *  All rights reserved.
-	 *
-	 *  This source code is licensed under the BSD-style license found in the
-	 *  LICENSE file in the root directory of this source tree. An additional grant
-	 *  of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
-	/*<T>*/ /*<T>*/ /*<T>*/ /*<T>*/ /*T*/ /*T*/
+	/*<T>*/ /*T*/
 	/**
 	 * Optionally provide a custom type resolver function. If one is not provided,
 	 * the default implemenation will call `isTypeOf` on each implementing
@@ -29616,47 +29698,47 @@
 	 * the default implemenation will call `isTypeOf` on each implementing
 	 * Object type.
 	 */
-	/*<T>*/ /*<T>*/ /*<T>*/ /*T*/ /*<T>*/ /*T*/ /*T*/ /*<T>*/ /*<T>*/ /*<T>*/ /*<T>*/ /*<T>*/ /*T*/ /*<T>*/ /*<T>*/ /*<T>*/ /*T*/
-
-/***/ },
-/* 216 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(217), __esModule: true };
+	/*<T>*/ /*<T>*/ /*T*/ /*T*/ /*<T>*/ /*<T>*/ /*<T>*/ /*<T>*/ /*T*/ /*<T>*/ /*<T>*/ /*T*/
 
 /***/ },
 /* 217 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(218), __esModule: true };
+
+/***/ },
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(171);
 	module.exports = __webpack_require__(169).core.Object.keys;
 
 /***/ },
-/* 218 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(219), __esModule: true };
-
-/***/ },
 /* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(228);
-	__webpack_require__(201);
-	__webpack_require__(190);
-	__webpack_require__(220);
-	__webpack_require__(229);
-	module.exports = __webpack_require__(169).core.Map;
+	module.exports = { "default": __webpack_require__(220), __esModule: true };
 
 /***/ },
 /* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(229);
+	__webpack_require__(202);
+	__webpack_require__(191);
+	__webpack_require__(221);
+	__webpack_require__(230);
+	module.exports = __webpack_require__(169).core.Map;
+
+/***/ },
+/* 221 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
-	var strong = __webpack_require__(221);
+	var strong = __webpack_require__(222);
 
 	// 23.1 Map Objects
-	__webpack_require__(226)('Map', function(get){
+	__webpack_require__(227)('Map', function(get){
 	  return function Map(){ return get(this, arguments[0]); };
 	}, {
 	  // 23.1.3.6 Map.prototype.get(key)
@@ -29671,16 +29753,16 @@
 	}, strong, true);
 
 /***/ },
-/* 221 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var $        = __webpack_require__(169)
-	  , ctx      = __webpack_require__(223)
-	  , safe     = __webpack_require__(193).safe
-	  , assert   = __webpack_require__(198)
-	  , forOf    = __webpack_require__(222)
-	  , step     = __webpack_require__(194).step
+	  , ctx      = __webpack_require__(224)
+	  , safe     = __webpack_require__(194).safe
+	  , assert   = __webpack_require__(199)
+	  , forOf    = __webpack_require__(223)
+	  , step     = __webpack_require__(195).step
 	  , $has     = $.has
 	  , set      = $.set
 	  , isObject = $.isObject
@@ -29728,7 +29810,7 @@
 	      set(that, FIRST, undefined);
 	      if(iterable != undefined)forOf(iterable, IS_MAP, that[ADDER], that);
 	    });
-	    __webpack_require__(225)(C.prototype, {
+	    __webpack_require__(226)(C.prototype, {
 	      // 23.1.3.1 Map.prototype.clear()
 	      // 23.2.3.2 Set.prototype.clear()
 	      clear: function clear(){
@@ -29808,7 +29890,7 @@
 	  // add .keys, .values, .entries, [@@iterator]
 	  // 23.1.3.4, 23.1.3.8, 23.1.3.11, 23.1.3.12, 23.2.3.5, 23.2.3.8, 23.2.3.10, 23.2.3.11
 	  setIter: function(C, NAME, IS_MAP){
-	    __webpack_require__(199)(C, NAME, function(iterated, kind){
+	    __webpack_require__(200)(C, NAME, function(iterated, kind){
 	      set(this, ITER, {o: iterated, k: kind});
 	    }, function(){
 	      var iter  = this[ITER]
@@ -29831,12 +29913,12 @@
 	};
 
 /***/ },
-/* 222 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ctx  = __webpack_require__(223)
-	  , get  = __webpack_require__(194).get
-	  , call = __webpack_require__(224);
+	var ctx  = __webpack_require__(224)
+	  , get  = __webpack_require__(195).get
+	  , call = __webpack_require__(225);
 	module.exports = function(iterable, entries, fn, that){
 	  var iterator = get(iterable)
 	    , f        = ctx(fn, that, entries ? 2 : 1)
@@ -29849,11 +29931,11 @@
 	};
 
 /***/ },
-/* 223 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Optional / simple context binding
-	var assertFunction = __webpack_require__(198).fn;
+	var assertFunction = __webpack_require__(199).fn;
 	module.exports = function(fn, that, length){
 	  assertFunction(fn);
 	  if(~length && that === undefined)return fn;
@@ -29873,10 +29955,10 @@
 	};
 
 /***/ },
-/* 224 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assertObject = __webpack_require__(198).obj;
+	var assertObject = __webpack_require__(199).obj;
 	function close(iterator){
 	  var ret = iterator['return'];
 	  if(ret !== undefined)assertObject(ret.call(iterator));
@@ -29893,27 +29975,27 @@
 	module.exports = call;
 
 /***/ },
-/* 225 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $redef = __webpack_require__(200);
+	var $redef = __webpack_require__(201);
 	module.exports = function(target, src){
 	  for(var key in src)$redef(target, key, src[key]);
 	  return target;
 	};
 
 /***/ },
-/* 226 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var $     = __webpack_require__(169)
 	  , $def  = __webpack_require__(172)
-	  , $iter = __webpack_require__(194)
+	  , $iter = __webpack_require__(195)
 	  , BUGGY = $iter.BUGGY
-	  , forOf = __webpack_require__(222)
-	  , assertInstance = __webpack_require__(198).inst
-	  , INTERNAL = __webpack_require__(193).safe('internal');
+	  , forOf = __webpack_require__(223)
+	  , assertInstance = __webpack_require__(199).inst
+	  , INTERNAL = __webpack_require__(194).safe('internal');
 
 	module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
 	  var Base  = $.g[NAME]
@@ -29924,7 +30006,7 @@
 	  if(!$.DESC || !$.isFunction(C) || !(IS_WEAK || !BUGGY && proto.forEach && proto.entries)){
 	    // create collection constructor
 	    C = common.getConstructor(wrapper, NAME, IS_MAP, ADDER);
-	    __webpack_require__(225)(C.prototype, methods);
+	    __webpack_require__(226)(C.prototype, methods);
 	  } else {
 	    C = wrapper(function(target, iterable){
 	      assertInstance(target, C, NAME);
@@ -29945,11 +30027,11 @@
 	    });
 	  }
 
-	  __webpack_require__(195).set(C, NAME);
+	  __webpack_require__(196).set(C, NAME);
 
 	  O[NAME] = C;
 	  $def($def.G + $def.W + $def.F, O);
-	  __webpack_require__(227)(C);
+	  __webpack_require__(228)(C);
 
 	  if(!IS_WEAK)common.setIter(C, NAME, IS_MAP);
 
@@ -29957,11 +30039,11 @@
 	};
 
 /***/ },
-/* 227 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $       = __webpack_require__(169)
-	  , SPECIES = __webpack_require__(196)('species');
+	  , SPECIES = __webpack_require__(197)('species');
 	module.exports = function(C){
 	  if($.DESC && !(SPECIES in C))$.setDesc(C, SPECIES, {
 	    configurable: true,
@@ -29970,34 +30052,34 @@
 	};
 
 /***/ },
-/* 228 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	// 19.1.3.6 Object.prototype.toString()
-	var cof = __webpack_require__(195)
+	var cof = __webpack_require__(196)
 	  , tmp = {};
-	tmp[__webpack_require__(196)('toStringTag')] = 'z';
+	tmp[__webpack_require__(197)('toStringTag')] = 'z';
 	if(__webpack_require__(169).FW && cof(tmp) != 'z'){
-	  __webpack_require__(200)(Object.prototype, 'toString', function toString(){
+	  __webpack_require__(201)(Object.prototype, 'toString', function toString(){
 	    return '[object ' + cof.classof(this) + ']';
 	  }, true);
 	}
-
-/***/ },
-/* 229 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// https://github.com/DavidBruant/Map-Set.prototype.toJSON
-	__webpack_require__(230)('Map');
 
 /***/ },
 /* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://github.com/DavidBruant/Map-Set.prototype.toJSON
+	__webpack_require__(231)('Map');
+
+/***/ },
+/* 231 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// https://github.com/DavidBruant/Map-Set.prototype.toJSON
 	var $def  = __webpack_require__(172)
-	  , forOf = __webpack_require__(222);
+	  , forOf = __webpack_require__(223);
 	module.exports = function(NAME){
 	  $def($def.P, NAME, {
 	    toJSON: function toJSON(){
@@ -30009,20 +30091,30 @@
 	};
 
 /***/ },
-/* 231 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
+
+	/*  weak */
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
 
 	'use strict';
 
-	var _Object$keys = __webpack_require__(216)['default'];
+	var _Object$keys = __webpack_require__(217)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 
-	var _definition = __webpack_require__(215);
+	var _definition = __webpack_require__(216);
 
-	var _scalars = __webpack_require__(232);
+	var _scalars = __webpack_require__(233);
 
 	var __Schema = new _definition.GraphQLObjectType({
 	  name: '__Schema',
@@ -30077,9 +30169,9 @@
 	          return directive.args || [];
 	        }
 	      },
-	      onOperation: { type: _scalars.GraphQLBoolean },
-	      onFragment: { type: _scalars.GraphQLBoolean },
-	      onField: { type: _scalars.GraphQLBoolean }
+	      onOperation: { type: new _definition.GraphQLNonNull(_scalars.GraphQLBoolean) },
+	      onFragment: { type: new _definition.GraphQLNonNull(_scalars.GraphQLBoolean) },
+	      onField: { type: new _definition.GraphQLNonNull(_scalars.GraphQLBoolean) }
 	    };
 	  }
 	});
@@ -30340,6 +30432,11 @@
 	};
 	exports.TypeNameMetaFieldDef = TypeNameMetaFieldDef;
 
+/***/ },
+/* 233 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -30349,17 +30446,13 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 232 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 
-	var _definition = __webpack_require__(215);
+	var _definition = __webpack_require__(216);
 
 	var _language = __webpack_require__(178);
 
@@ -30435,6 +30528,11 @@
 	});
 	exports.GraphQLID = GraphQLID;
 
+/***/ },
+/* 234 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -30444,26 +30542,22 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 233 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	exports['default'] = typeFromAST;
 
-	var _invariant = __webpack_require__(210);
+	var _invariant = __webpack_require__(211);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
 	var _languageKinds = __webpack_require__(182);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _typeDefinition = __webpack_require__(216);
 
 	function typeFromAST(schema, inputTypeAST) {
 	  var innerType;
@@ -30475,12 +30569,17 @@
 	    innerType = typeFromAST(schema, inputTypeAST.type);
 	    return innerType && new _typeDefinition.GraphQLNonNull(innerType);
 	  }
-	  (0, _invariant2['default'])(inputTypeAST.kind === _languageKinds.NAME, 'Must be a type name.');
-	  return schema.getType(inputTypeAST.value);
+	  (0, _invariant2['default'])(inputTypeAST.kind === _languageKinds.NAMED_TYPE, 'Must be a named type.');
+	  return schema.getType(inputTypeAST.name.value);
 	}
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 235 */
+/***/ function(module, exports) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -30489,10 +30588,6 @@
 	 *  LICENSE file in the root directory of this source tree. An additional grant
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
-
-/***/ },
-/* 234 */
-/***/ function(module, exports) {
 
 	"use strict";
 
@@ -30511,141 +30606,11 @@
 
 	module.exports = exports["default"];
 
-	/**
-	 *  Copyright (c) 2015, Facebook, Inc.
-	 *  All rights reserved.
-	 *
-	 *  This source code is licensed under the BSD-style license found in the
-	 *  LICENSE file in the root directory of this source tree. An additional grant
-	 *  of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
 /***/ },
-/* 235 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	var _interopRequireDefault = __webpack_require__(209)['default'];
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var _rulesKnownTypeNames = __webpack_require__(236);
-
-	var _rulesKnownTypeNames2 = _interopRequireDefault(_rulesKnownTypeNames);
-
-	// Spec Section: Fragments on Composite Types
-
-	var _rulesFragmentsOnCompositeTypes = __webpack_require__(238);
-
-	var _rulesFragmentsOnCompositeTypes2 = _interopRequireDefault(_rulesFragmentsOnCompositeTypes);
-
-	// Spec Section: Variables are Input Types
-
-	var _rulesVariablesAreInputTypes = __webpack_require__(239);
-
-	var _rulesVariablesAreInputTypes2 = _interopRequireDefault(_rulesVariablesAreInputTypes);
-
-	// Spec Section: "Leaf Field Selections"
-
-	var _rulesScalarLeafs = __webpack_require__(240);
-
-	var _rulesScalarLeafs2 = _interopRequireDefault(_rulesScalarLeafs);
-
-	// Spec Section: "Field Selections on Objects, Interfaces, and Unions Types"
-
-	var _rulesFieldsOnCorrectType = __webpack_require__(241);
-
-	var _rulesFieldsOnCorrectType2 = _interopRequireDefault(_rulesFieldsOnCorrectType);
-
-	// Spec Section: "Fragment spread target defined"
-
-	var _rulesKnownFragmentNames = __webpack_require__(242);
-
-	var _rulesKnownFragmentNames2 = _interopRequireDefault(_rulesKnownFragmentNames);
-
-	// Spec Section: "Fragments must be used"
-
-	var _rulesNoUnusedFragments = __webpack_require__(243);
-
-	var _rulesNoUnusedFragments2 = _interopRequireDefault(_rulesNoUnusedFragments);
-
-	// Spec Section: "Fragment spread is possible"
-
-	var _rulesPossibleFragmentSpreads = __webpack_require__(244);
-
-	var _rulesPossibleFragmentSpreads2 = _interopRequireDefault(_rulesPossibleFragmentSpreads);
-
-	// Spec Section: "Fragments must not form cycles"
-
-	var _rulesNoFragmentCycles = __webpack_require__(246);
-
-	var _rulesNoFragmentCycles2 = _interopRequireDefault(_rulesNoFragmentCycles);
-
-	// Spec Section: "All Variable Used Defined"
-
-	var _rulesNoUndefinedVariables = __webpack_require__(251);
-
-	var _rulesNoUndefinedVariables2 = _interopRequireDefault(_rulesNoUndefinedVariables);
-
-	// Spec Section: "All Variables Used"
-
-	var _rulesNoUnusedVariables = __webpack_require__(252);
-
-	var _rulesNoUnusedVariables2 = _interopRequireDefault(_rulesNoUnusedVariables);
-
-	// Spec Section: "Directives Are Defined"
-
-	var _rulesKnownDirectives = __webpack_require__(253);
-
-	var _rulesKnownDirectives2 = _interopRequireDefault(_rulesKnownDirectives);
-
-	// Spec Section: "Argument Names"
-
-	var _rulesKnownArgumentNames = __webpack_require__(254);
-
-	var _rulesKnownArgumentNames2 = _interopRequireDefault(_rulesKnownArgumentNames);
-
-	// Spec Section: "Argument Values Type Correctness"
-
-	var _rulesArgumentsOfCorrectType = __webpack_require__(255);
-
-	var _rulesArgumentsOfCorrectType2 = _interopRequireDefault(_rulesArgumentsOfCorrectType);
-
-	// Spec Section: "Argument Optionality"
-
-	var _rulesProvidedNonNullArguments = __webpack_require__(258);
-
-	var _rulesProvidedNonNullArguments2 = _interopRequireDefault(_rulesProvidedNonNullArguments);
-
-	// Spec Section: "Variable Default Values Are Correctly Typed"
-
-	var _rulesDefaultValuesOfCorrectType = __webpack_require__(259);
-
-	var _rulesDefaultValuesOfCorrectType2 = _interopRequireDefault(_rulesDefaultValuesOfCorrectType);
-
-	// Spec Section: "All Variable Usages Are Allowed"
-
-	var _rulesVariablesInAllowedPosition = __webpack_require__(260);
-
-	var _rulesVariablesInAllowedPosition2 = _interopRequireDefault(_rulesVariablesInAllowedPosition);
-
-	// Spec Section: "Field Selection Merging"
-
-	var _rulesOverlappingFieldsCanBeMerged = __webpack_require__(261);
-
-	var _rulesOverlappingFieldsCanBeMerged2 = _interopRequireDefault(_rulesOverlappingFieldsCanBeMerged);
-
-	/**
-	 * This default set of rules includes all validation rules defined by the
-	 * GraphQL spec. The order of these rules is important as errors encountered in
-	 * earlier rules will skip later rules, leading to less noise in error output.
-	 */
-	var allRules = [_rulesKnownTypeNames2['default'], _rulesFragmentsOnCompositeTypes2['default'], _rulesVariablesAreInputTypes2['default'], _rulesScalarLeafs2['default'], _rulesFieldsOnCorrectType2['default'], _rulesKnownFragmentNames2['default'], _rulesNoUnusedFragments2['default'], _rulesPossibleFragmentSpreads2['default'], _rulesNoFragmentCycles2['default'], _rulesNoUndefinedVariables2['default'], _rulesNoUnusedVariables2['default'], _rulesKnownDirectives2['default'], _rulesKnownArgumentNames2['default'], _rulesArgumentsOfCorrectType2['default'], _rulesProvidedNonNullArguments2['default'], _rulesDefaultValuesOfCorrectType2['default'], _rulesVariablesInAllowedPosition2['default'], _rulesOverlappingFieldsCanBeMerged2['default']];
-	exports.allRules = allRules;
-
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -30656,10 +30621,142 @@
 	 */
 
 	// Spec Section: Fragment Spread Type Existence
+	'use strict';
+
+	var _interopRequireDefault = __webpack_require__(210)['default'];
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _rulesKnownTypeNames = __webpack_require__(237);
+
+	// Spec Section: Fragments on Composite Types
+
+	var _rulesKnownTypeNames2 = _interopRequireDefault(_rulesKnownTypeNames);
+
+	var _rulesFragmentsOnCompositeTypes = __webpack_require__(239);
+
+	// Spec Section: Variables are Input Types
+
+	var _rulesFragmentsOnCompositeTypes2 = _interopRequireDefault(_rulesFragmentsOnCompositeTypes);
+
+	var _rulesVariablesAreInputTypes = __webpack_require__(240);
+
+	// Spec Section: "Leaf Field Selections"
+
+	var _rulesVariablesAreInputTypes2 = _interopRequireDefault(_rulesVariablesAreInputTypes);
+
+	var _rulesScalarLeafs = __webpack_require__(241);
+
+	// Spec Section: "Field Selections on Objects, Interfaces, and Unions Types"
+
+	var _rulesScalarLeafs2 = _interopRequireDefault(_rulesScalarLeafs);
+
+	var _rulesFieldsOnCorrectType = __webpack_require__(242);
+
+	// Spec Section: "Fragment spread target defined"
+
+	var _rulesFieldsOnCorrectType2 = _interopRequireDefault(_rulesFieldsOnCorrectType);
+
+	var _rulesKnownFragmentNames = __webpack_require__(243);
+
+	// Spec Section: "Fragments must be used"
+
+	var _rulesKnownFragmentNames2 = _interopRequireDefault(_rulesKnownFragmentNames);
+
+	var _rulesNoUnusedFragments = __webpack_require__(244);
+
+	// Spec Section: "Fragment spread is possible"
+
+	var _rulesNoUnusedFragments2 = _interopRequireDefault(_rulesNoUnusedFragments);
+
+	var _rulesPossibleFragmentSpreads = __webpack_require__(245);
+
+	// Spec Section: "Fragments must not form cycles"
+
+	var _rulesPossibleFragmentSpreads2 = _interopRequireDefault(_rulesPossibleFragmentSpreads);
+
+	var _rulesNoFragmentCycles = __webpack_require__(247);
+
+	// Spec Section: "All Variable Used Defined"
+
+	var _rulesNoFragmentCycles2 = _interopRequireDefault(_rulesNoFragmentCycles);
+
+	var _rulesNoUndefinedVariables = __webpack_require__(252);
+
+	// Spec Section: "All Variables Used"
+
+	var _rulesNoUndefinedVariables2 = _interopRequireDefault(_rulesNoUndefinedVariables);
+
+	var _rulesNoUnusedVariables = __webpack_require__(253);
+
+	// Spec Section: "Directives Are Defined"
+
+	var _rulesNoUnusedVariables2 = _interopRequireDefault(_rulesNoUnusedVariables);
+
+	var _rulesKnownDirectives = __webpack_require__(254);
+
+	// Spec Section: "Argument Names"
+
+	var _rulesKnownDirectives2 = _interopRequireDefault(_rulesKnownDirectives);
+
+	var _rulesKnownArgumentNames = __webpack_require__(255);
+
+	// Spec Section: "Argument Values Type Correctness"
+
+	var _rulesKnownArgumentNames2 = _interopRequireDefault(_rulesKnownArgumentNames);
+
+	var _rulesArgumentsOfCorrectType = __webpack_require__(256);
+
+	// Spec Section: "Argument Optionality"
+
+	var _rulesArgumentsOfCorrectType2 = _interopRequireDefault(_rulesArgumentsOfCorrectType);
+
+	var _rulesProvidedNonNullArguments = __webpack_require__(259);
+
+	// Spec Section: "Variable Default Values Are Correctly Typed"
+
+	var _rulesProvidedNonNullArguments2 = _interopRequireDefault(_rulesProvidedNonNullArguments);
+
+	var _rulesDefaultValuesOfCorrectType = __webpack_require__(260);
+
+	// Spec Section: "All Variable Usages Are Allowed"
+
+	var _rulesDefaultValuesOfCorrectType2 = _interopRequireDefault(_rulesDefaultValuesOfCorrectType);
+
+	var _rulesVariablesInAllowedPosition = __webpack_require__(261);
+
+	// Spec Section: "Field Selection Merging"
+
+	var _rulesVariablesInAllowedPosition2 = _interopRequireDefault(_rulesVariablesInAllowedPosition);
+
+	var _rulesOverlappingFieldsCanBeMerged = __webpack_require__(262);
+
+	/**
+	 * This default set of rules includes all validation rules defined by the
+	 * GraphQL spec. The order of these rules is important as errors encountered in
+	 * earlier rules will skip later rules, leading to less noise in error output.
+	 */
+
+	var _rulesOverlappingFieldsCanBeMerged2 = _interopRequireDefault(_rulesOverlappingFieldsCanBeMerged);
+
+	var allRules = [_rulesKnownTypeNames2['default'], _rulesFragmentsOnCompositeTypes2['default'], _rulesVariablesAreInputTypes2['default'], _rulesScalarLeafs2['default'], _rulesFieldsOnCorrectType2['default'], _rulesKnownFragmentNames2['default'], _rulesNoUnusedFragments2['default'], _rulesPossibleFragmentSpreads2['default'], _rulesNoFragmentCycles2['default'], _rulesNoUndefinedVariables2['default'], _rulesNoUnusedVariables2['default'], _rulesKnownDirectives2['default'], _rulesKnownArgumentNames2['default'], _rulesArgumentsOfCorrectType2['default'], _rulesProvidedNonNullArguments2['default'], _rulesDefaultValuesOfCorrectType2['default'], _rulesVariablesInAllowedPosition2['default'], _rulesOverlappingFieldsCanBeMerged2['default']];
+	exports.allRules = allRules;
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
 
 	'use strict';
 
@@ -30670,7 +30767,7 @@
 
 	var _error = __webpack_require__(164);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * Known type names
@@ -30681,13 +30778,11 @@
 
 	function KnownTypeNames(context) {
 	  return {
-	    Name: function Name(node, key) {
-	      if (key === 'type' || key === 'typeCondition') {
-	        var typeName = node.value;
-	        var type = context.getSchema().getType(typeName);
-	        if (!type) {
-	          return new _error.GraphQLError((0, _errors.unknownTypeMessage)(typeName), [node]);
-	        }
+	    NamedType: function NamedType(node) {
+	      var typeName = node.name.value;
+	      var type = context.getSchema().getType(typeName);
+	      if (!type) {
+	        return new _error.GraphQLError((0, _errors.unknownTypeMessage)(typeName), [node]);
 	      }
 	    }
 	  };
@@ -30695,17 +30790,8 @@
 
 	module.exports = exports['default'];
 
-	/**
-	 *  Copyright (c) 2015, Facebook, Inc.
-	 *  All rights reserved.
-	 *
-	 *  This source code is licensed under the BSD-style license found in the
-	 *  LICENSE file in the root directory of this source tree. An additional grant
-	 *  of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -30719,7 +30805,7 @@
 
 	'use strict';
 
-	var _slicedToArray = __webpack_require__(187)['default'];
+	var _slicedToArray = __webpack_require__(188)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -30746,9 +30832,6 @@
 	exports.cycleErrorMessage = cycleErrorMessage;
 	exports.unknownDirectiveMessage = unknownDirectiveMessage;
 	exports.misplacedDirectiveMessage = misplacedDirectiveMessage;
-	exports.missingDirectiveValueMessage = missingDirectiveValueMessage;
-	exports.noDirectiveValueMessage = noDirectiveValueMessage;
-	exports.badDirectiveValueMessage = badDirectiveValueMessage;
 	exports.badVarPosMessage = badVarPosMessage;
 	exports.fieldsConflictMessage = fieldsConflictMessage;
 
@@ -30840,18 +30923,6 @@
 	  return 'Directive ' + directiveName + ' may not be used on ' + placement + '.';
 	}
 
-	function missingDirectiveValueMessage(directiveName, typeName) {
-	  return 'Directive ' + directiveName + ' expects a value of type ' + typeName + '.';
-	}
-
-	function noDirectiveValueMessage(directiveName) {
-	  return 'Directive ' + directiveName + ' expects no value.';
-	}
-
-	function badDirectiveValueMessage(directiveName, typeName, value) {
-	  return 'Directive ' + directiveName + ' expected type ' + typeName + ' but ' + ('got: ' + value + '.');
-	}
-
 	function badVarPosMessage(varName, varType, expectedType) {
 	  return 'Variable $' + varName + ' of type ' + varType + ' used in position expecting ' + ('type ' + expectedType + '.');
 	}
@@ -30874,8 +30945,18 @@
 	}
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
 
 	'use strict';
 
@@ -30886,9 +30967,11 @@
 
 	var _error = __webpack_require__(164);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _typeDefinition = __webpack_require__(216);
 
-	var _errors = __webpack_require__(237);
+	var _languagePrinter = __webpack_require__(186);
+
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * Fragments on composite type
@@ -30901,17 +30984,15 @@
 	function FragmentsOnCompositeType(context) {
 	  return {
 	    InlineFragment: function InlineFragment(node) {
-	      var typeName = node.typeCondition.value;
-	      var type = context.getSchema().getType(typeName);
-	      if (!(0, _typeDefinition.isCompositeType)(type)) {
-	        return new _error.GraphQLError('Fragment cannot condition on non composite type "' + typeName + '".', [node.typeCondition]);
+	      var type = context.getType();
+	      if (type && !(0, _typeDefinition.isCompositeType)(type)) {
+	        return new _error.GraphQLError((0, _errors.inlineFragmentOnNonCompositeErrorMessage)((0, _languagePrinter.print)(node.typeCondition)), [node.typeCondition]);
 	      }
 	    },
 	    FragmentDefinition: function FragmentDefinition(node) {
-	      var typeName = node.typeCondition.value;
-	      var type = context.getSchema().getType(typeName);
-	      if (!(0, _typeDefinition.isCompositeType)(type)) {
-	        return new _error.GraphQLError((0, _errors.fragmentOnNonCompositeErrorMessage)(node.name.value, typeName), [node.typeCondition]);
+	      var type = context.getType();
+	      if (type && !(0, _typeDefinition.isCompositeType)(type)) {
+	        return new _error.GraphQLError((0, _errors.fragmentOnNonCompositeErrorMessage)(node.name.value, (0, _languagePrinter.print)(node.typeCondition)), [node.typeCondition]);
 	      }
 	    }
 	  };
@@ -30919,6 +31000,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 240 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -30928,11 +31014,9 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 239 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
+
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -30941,13 +31025,15 @@
 
 	var _error = __webpack_require__(164);
 
-	var _languagePrinter = __webpack_require__(185);
+	var _languagePrinter = __webpack_require__(186);
 
-	var _languageKinds = __webpack_require__(182);
+	var _typeDefinition = __webpack_require__(216);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _utilsTypeFromAST = __webpack_require__(234);
 
-	var _errors = __webpack_require__(237);
+	var _utilsTypeFromAST2 = _interopRequireDefault(_utilsTypeFromAST);
+
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * Variables are input types
@@ -30959,18 +31045,10 @@
 	function VariablesAreInputTypes(context) {
 	  return {
 	    VariableDefinition: function VariableDefinition(node) {
-	      // Get the un-modified type from the variable definition, unwrapping
-	      // List and NonNull.
-	      var typeAST = node.type;
-	      while (typeAST.kind !== _languageKinds.NAME) {
-	        typeAST = typeAST.type;
-	      }
-
-	      // Get the type definition from the Schema.
-	      var typeDef = context.getSchema().getType(typeAST.value);
+	      var type = (0, _utilsTypeFromAST2['default'])(context.getSchema(), node.type);
 
 	      // If the variable type is not an input type, return an error.
-	      if (!(0, _typeDefinition.isInputType)(typeDef)) {
+	      if (type && !(0, _typeDefinition.isInputType)(type)) {
 	        var variableName = node.variable.name.value;
 	        return new _error.GraphQLError((0, _errors.nonInputTypeOnVarMessage)(variableName, (0, _languagePrinter.print)(node.type)), [node.type]);
 	      }
@@ -30980,6 +31058,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -30988,10 +31071,6 @@
 	 *  LICENSE file in the root directory of this source tree. An additional grant
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
-
-/***/ },
-/* 240 */
-/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -31002,9 +31081,9 @@
 
 	var _error = __webpack_require__(164);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _typeDefinition = __webpack_require__(216);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * Scalar leafs
@@ -31032,6 +31111,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 242 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31040,10 +31124,6 @@
 	 *  LICENSE file in the root directory of this source tree. An additional grant
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
-
-/***/ },
-/* 241 */
-/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -31054,7 +31134,7 @@
 
 	var _error = __webpack_require__(164);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * Fields on correct type
@@ -31079,6 +31159,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31087,10 +31172,6 @@
 	 *  LICENSE file in the root directory of this source tree. An additional grant
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
-
-/***/ },
-/* 242 */
-/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -31122,6 +31203,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31131,13 +31217,9 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _Object$keys = __webpack_require__(216)['default'];
+	var _Object$keys = __webpack_require__(217)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -31146,7 +31228,7 @@
 
 	var _error = __webpack_require__(164);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * No unused fragments
@@ -31202,6 +31284,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31211,13 +31298,9 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 244 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -31226,13 +31309,17 @@
 
 	var _error = __webpack_require__(164);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _typeDefinition = __webpack_require__(216);
 
-	var _utilsKeyMap = __webpack_require__(245);
+	var _utilsKeyMap = __webpack_require__(246);
 
 	var _utilsKeyMap2 = _interopRequireDefault(_utilsKeyMap);
 
-	var _errors = __webpack_require__(237);
+	var _utilsTypeFromAST = __webpack_require__(234);
+
+	var _utilsTypeFromAST2 = _interopRequireDefault(_utilsTypeFromAST);
+
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * Possible fragment spread
@@ -31245,7 +31332,7 @@
 	function PossibleFragmentSpreads(context) {
 	  return {
 	    InlineFragment: function InlineFragment(node) {
-	      var fragType = (0, _typeDefinition.getUnmodifiedType)(context.getType());
+	      var fragType = context.getType();
 	      var parentType = context.getParentType();
 	      if (fragType && parentType && !doTypesOverlap(fragType, parentType)) {
 	        return new _error.GraphQLError((0, _errors.typeIncompatibleAnonSpreadMessage)(parentType, fragType), [node]);
@@ -31253,7 +31340,7 @@
 	    },
 	    FragmentSpread: function FragmentSpread(node) {
 	      var fragName = node.name.value;
-	      var fragType = (0, _typeDefinition.getUnmodifiedType)(getFragmentType(context, fragName));
+	      var fragType = getFragmentType(context, fragName);
 	      var parentType = context.getParentType();
 	      if (fragType && parentType && !doTypesOverlap(fragType, parentType)) {
 	        return new _error.GraphQLError((0, _errors.typeIncompatibleSpreadMessage)(fragName, parentType, fragType), [node]);
@@ -31264,7 +31351,7 @@
 
 	function getFragmentType(context, name) {
 	  var frag = context.getFragment(name);
-	  return frag && context.getSchema().getType(frag.typeCondition.value);
+	  return frag && (0, _utilsTypeFromAST2['default'])(context.getSchema(), frag.typeCondition);
 	}
 
 	function doTypesOverlap(t1, t2) {
@@ -31291,6 +31378,11 @@
 	}
 	module.exports = exports['default'];
 
+/***/ },
+/* 246 */
+/***/ function(module, exports) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31299,10 +31391,6 @@
 	 *  LICENSE file in the root directory of this source tree. An additional grant
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
-
-/***/ },
-/* 245 */
-/***/ function(module, exports) {
 
 	"use strict";
 
@@ -31319,6 +31407,11 @@
 
 	module.exports = exports["default"];
 
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31328,13 +31421,9 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 246 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _Set = __webpack_require__(247)['default'];
+	var _Set = __webpack_require__(248)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -31345,9 +31434,9 @@
 
 	var _languageKinds = __webpack_require__(182);
 
-	var _languageVisitor = __webpack_require__(186);
+	var _languageVisitor = __webpack_require__(187);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	function NoFragmentCycles(context) {
 
@@ -31430,41 +31519,32 @@
 	}
 	module.exports = exports['default'];
 
-	/**
-	 *  Copyright (c) 2015, Facebook, Inc.
-	 *  All rights reserved.
-	 *
-	 *  This source code is licensed under the BSD-style license found in the
-	 *  LICENSE file in the root directory of this source tree. An additional grant
-	 *  of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
-/***/ },
-/* 247 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(248), __esModule: true };
-
 /***/ },
 /* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(228);
-	__webpack_require__(201);
-	__webpack_require__(190);
-	__webpack_require__(249);
-	__webpack_require__(250);
-	module.exports = __webpack_require__(169).core.Set;
+	module.exports = { "default": __webpack_require__(249), __esModule: true };
 
 /***/ },
 /* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(229);
+	__webpack_require__(202);
+	__webpack_require__(191);
+	__webpack_require__(250);
+	__webpack_require__(251);
+	module.exports = __webpack_require__(169).core.Set;
+
+/***/ },
+/* 250 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
-	var strong = __webpack_require__(221);
+	var strong = __webpack_require__(222);
 
 	// 23.2 Set Objects
-	__webpack_require__(226)('Set', function(get){
+	__webpack_require__(227)('Set', function(get){
 	  return function Set(){ return get(this, arguments[0]); };
 	}, {
 	  // 23.2.3.1 Set.prototype.add(value)
@@ -31474,15 +31554,25 @@
 	}, strong);
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://github.com/DavidBruant/Map-Set.prototype.toJSON
-	__webpack_require__(230)('Set');
+	__webpack_require__(231)('Set');
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
 
 	'use strict';
 
@@ -31495,7 +31585,7 @@
 
 	var _languageKinds = __webpack_require__(182);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * No undefined variables
@@ -31545,6 +31635,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31553,10 +31648,6 @@
 	 *  LICENSE file in the root directory of this source tree. An additional grant
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
-
-/***/ },
-/* 252 */
-/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -31567,7 +31658,7 @@
 
 	var _error = __webpack_require__(164);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * No unused variables
@@ -31622,6 +31713,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31631,13 +31727,9 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -31646,13 +31738,11 @@
 
 	var _error = __webpack_require__(164);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	var _languageKinds = __webpack_require__(182);
 
-	var _utilsFind = __webpack_require__(234);
-
-	var _utilsFind2 = _interopRequireDefault(_utilsFind);
+	var _utilsFind = __webpack_require__(235);
 
 	/**
 	 * Known directives
@@ -31660,6 +31750,8 @@
 	 * A GraphQL document is only valid if all `@directives` are known by the
 	 * schema and legally positioned.
 	 */
+
+	var _utilsFind2 = _interopRequireDefault(_utilsFind);
 
 	function KnownDirectives(context) {
 	  return {
@@ -31686,6 +31778,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 255 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31695,13 +31792,9 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 254 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -31710,15 +31803,13 @@
 
 	var _error = __webpack_require__(164);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
-	var _utilsInvariant = __webpack_require__(210);
+	var _utilsInvariant = __webpack_require__(211);
 
 	var _utilsInvariant2 = _interopRequireDefault(_utilsInvariant);
 
-	var _utilsFind = __webpack_require__(234);
-
-	var _utilsFind2 = _interopRequireDefault(_utilsFind);
+	var _utilsFind = __webpack_require__(235);
 
 	/**
 	 * Known argument names
@@ -31726,6 +31817,8 @@
 	 * A GraphQL field is only valid if all supplied arguments are defined by
 	 * that field.
 	 */
+
+	var _utilsFind2 = _interopRequireDefault(_utilsFind);
 
 	function KnownArgumentNames(context) {
 	  return {
@@ -31747,6 +31840,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 256 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31756,13 +31854,9 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 255 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -31771,13 +31865,13 @@
 
 	var _error = __webpack_require__(164);
 
-	var _languagePrinter = __webpack_require__(185);
+	var _languagePrinter = __webpack_require__(186);
 
-	var _utilsIsValidLiteralValue = __webpack_require__(256);
+	var _utilsIsValidLiteralValue = __webpack_require__(257);
 
 	var _utilsIsValidLiteralValue2 = _interopRequireDefault(_utilsIsValidLiteralValue);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * Argument values of correct type
@@ -31790,7 +31884,7 @@
 	  return {
 	    Argument: function Argument(argAST) {
 	      var argDef = context.getArgument();
-	      if (argDef && !(0, _utilsIsValidLiteralValue2['default'])(argAST.value, argDef.type)) {
+	      if (argDef && !(0, _utilsIsValidLiteralValue2['default'])(argDef.type, argAST.value)) {
 	        return new _error.GraphQLError((0, _errors.badValueMessage)(argAST.name.value, argDef.type, (0, _languagePrinter.print)(argAST.value)), [argAST.value]);
 	      }
 	    }
@@ -31799,6 +31893,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 257 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31808,15 +31907,11 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _Object$keys = __webpack_require__(216)['default'];
+	var _Object$keys = __webpack_require__(217)['default'];
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -31825,15 +31920,17 @@
 
 	var _languageKinds = __webpack_require__(182);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _typeDefinition = __webpack_require__(216);
 
-	var _keyMap = __webpack_require__(245);
+	var _invariant = __webpack_require__(211);
+
+	var _invariant2 = _interopRequireDefault(_invariant);
+
+	var _keyMap = __webpack_require__(246);
 
 	var _keyMap2 = _interopRequireDefault(_keyMap);
 
-	var _isNullish = __webpack_require__(257);
-
-	var _isNullish2 = _interopRequireDefault(_isNullish);
+	var _isNullish = __webpack_require__(258);
 
 	/**
 	 * Utility for validators which determines if a value literal AST is valid given
@@ -31843,26 +31940,31 @@
 	 * provide values of the correct type.
 	 */
 
+	var _isNullish2 = _interopRequireDefault(_isNullish);
+
 	function isValidLiteralValue(_x, _x2) {
 	  var _again = true;
 
 	  _function: while (_again) {
-	    var valueAST = _x,
-	        type = _x2;
-	    itemType = fields = fieldASTs = fieldASTMap = isMissingFields = undefined;
+	    var type = _x,
+	        valueAST = _x2;
+	    ofType = itemType = fields = fieldASTs = fieldASTMap = undefined;
 	    _again = false;
 
-	    // A value can only be not provided if the type is nullable.
-	    if (!valueAST) {
-	      return !(type instanceof _typeDefinition.GraphQLNonNull);
-	    }
-
-	    // Unwrap non-null.
+	    // A value must be provided if the type is non-null.
 	    if (type instanceof _typeDefinition.GraphQLNonNull) {
-	      _x = valueAST;
-	      _x2 = type.ofType;
+	      if (!valueAST) {
+	        return false;
+	      }
+	      var ofType = type.ofType;
+	      _x = ofType;
+	      _x2 = valueAST;
 	      _again = true;
 	      continue _function;
+	    }
+
+	    if (!valueAST) {
+	      return true;
 	    }
 
 	    // This function only tests literals, and assumes variables will provide
@@ -31876,51 +31978,55 @@
 	      var itemType = type.ofType;
 	      if (valueAST.kind === _languageKinds.ARRAY) {
 	        return valueAST.values.every(function (itemAST) {
-	          return isValidLiteralValue(itemAST, itemType);
+	          return isValidLiteralValue(itemType, itemAST);
 	        });
 	      } else {
-	        _x = valueAST;
-	        _x2 = itemType;
+	        _x = itemType;
+	        _x2 = valueAST;
 	        _again = true;
 	        continue _function;
 	      }
 	    }
 
-	    // Scalar/Enum input checks to ensure the type can coerce the value to
-	    // a non-null value.
-	    if (type instanceof _typeDefinition.GraphQLScalarType || type instanceof _typeDefinition.GraphQLEnumType) {
-	      return !(0, _isNullish2['default'])(type.coerceLiteral(valueAST));
-	    }
-
-	    // Input objects check each defined field, ensuring it is of the correct
-	    // type and provided if non-nullable.
+	    // Input objects check each defined field and look for undefined fields.
 	    if (type instanceof _typeDefinition.GraphQLInputObjectType) {
-	      var fields = type.getFields();
 	      if (valueAST.kind !== _languageKinds.OBJECT) {
 	        return false;
 	      }
+	      var fields = type.getFields();
+
+	      // Ensure every provided field is defined.
 	      var fieldASTs = valueAST.fields;
-	      var fieldASTMap = (0, _keyMap2['default'])(fieldASTs, function (field) {
-	        return field.name.value;
-	      });
-	      var isMissingFields = _Object$keys(fields).some(function (fieldName) {
-	        return !fieldASTMap[fieldName] && fields[fieldName].type instanceof _typeDefinition.GraphQLNonNull;
-	      });
-	      if (isMissingFields) {
+	      if (fieldASTs.some(function (fieldAST) {
+	        return !fields[fieldAST.name.value];
+	      })) {
 	        return false;
 	      }
-	      return fieldASTs.every(function (fieldAST) {
-	        return fields[fieldAST.name.value] && isValidLiteralValue(fieldAST.value, fields[fieldAST.name.value].type);
+
+	      // Ensure every defined field is valid.
+	      var fieldASTMap = (0, _keyMap2['default'])(fieldASTs, function (fieldAST) {
+	        return fieldAST.name.value;
+	      });
+	      return _Object$keys(fields).every(function (fieldName) {
+	        return isValidLiteralValue(fields[fieldName].type, fieldASTMap[fieldName] && fieldASTMap[fieldName].value);
 	      });
 	    }
 
-	    // Any other kind of type is not an input type, and a literal cannot be used.
-	    return false;
+	    (0, _invariant2['default'])(type instanceof _typeDefinition.GraphQLScalarType || type instanceof _typeDefinition.GraphQLEnumType, 'Must be input type');
+
+	    // Scalar/Enum input checks to ensure the type can coerce the value to
+	    // a non-null value.
+	    return !(0, _isNullish2['default'])(type.coerceLiteral(valueAST));
 	  }
 	}
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 258 */
+/***/ function(module, exports) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31930,10 +32036,9 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 257 */
-/***/ function(module, exports) {
-
+	/**
+	 * Returns true if a value is null, undefined, or NaN.
+	 */
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -31947,6 +32052,11 @@
 
 	module.exports = exports["default"];
 
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -31956,17 +32066,9 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	/**
-	 * Returns true if a value is null, undefined, or NaN.
-	 */
-
-/***/ },
-/* 258 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -31975,13 +32077,13 @@
 
 	var _error = __webpack_require__(164);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _typeDefinition = __webpack_require__(216);
 
-	var _utilsKeyMap = __webpack_require__(245);
+	var _utilsKeyMap = __webpack_require__(246);
 
 	var _utilsKeyMap2 = _interopRequireDefault(_utilsKeyMap);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * Provided required arguments
@@ -32048,6 +32150,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -32057,13 +32164,9 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 259 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -32072,15 +32175,15 @@
 
 	var _error = __webpack_require__(164);
 
-	var _languagePrinter = __webpack_require__(185);
+	var _languagePrinter = __webpack_require__(186);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _typeDefinition = __webpack_require__(216);
 
-	var _utilsIsValidLiteralValue = __webpack_require__(256);
+	var _utilsIsValidLiteralValue = __webpack_require__(257);
 
 	var _utilsIsValidLiteralValue2 = _interopRequireDefault(_utilsIsValidLiteralValue);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * Variable default values of correct type
@@ -32098,7 +32201,7 @@
 	      if (type instanceof _typeDefinition.GraphQLNonNull && defaultValue) {
 	        return new _error.GraphQLError((0, _errors.defaultForNonNullArgMessage)(name, type, type.ofType), [defaultValue]);
 	      }
-	      if (type && defaultValue && !(0, _utilsIsValidLiteralValue2['default'])(defaultValue, type)) {
+	      if (type && defaultValue && !(0, _utilsIsValidLiteralValue2['default'])(type, defaultValue)) {
 	        return new _error.GraphQLError((0, _errors.badValueForDefaultArgMessage)(name, type, (0, _languagePrinter.print)(defaultValue)), [defaultValue]);
 	      }
 	    }
@@ -32107,6 +32210,11 @@
 
 	module.exports = exports['default'];
 
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -32116,28 +32224,24 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 260 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	exports['default'] = VariablesInAllowedPosition;
 
-	var _utilsTypeFromAST = __webpack_require__(233);
+	var _utilsTypeFromAST = __webpack_require__(234);
 
 	var _utilsTypeFromAST2 = _interopRequireDefault(_utilsTypeFromAST);
 
 	var _error = __webpack_require__(164);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _typeDefinition = __webpack_require__(216);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
 	/**
 	 * Variables passed to field arguments conform to type
@@ -32220,17 +32324,8 @@
 	}
 	module.exports = exports['default'];
 
-	/**
-	 *  Copyright (c) 2015, Facebook, Inc.
-	 *  All rights reserved.
-	 *
-	 *  This source code is licensed under the BSD-style license found in the
-	 *  LICENSE file in the root directory of this source tree. An additional grant
-	 *  of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Flow currently disabled for this file.
@@ -32245,19 +32340,19 @@
 
 	'use strict';
 
-	var _createClass = __webpack_require__(211)['default'];
+	var _createClass = __webpack_require__(212)['default'];
 
 	var _classCallCheck = __webpack_require__(177)['default'];
 
-	var _slicedToArray = __webpack_require__(187)['default'];
+	var _slicedToArray = __webpack_require__(188)['default'];
 
-	var _Object$keys = __webpack_require__(216)['default'];
+	var _Object$keys = __webpack_require__(217)['default'];
 
-	var _Map = __webpack_require__(218)['default'];
+	var _Map = __webpack_require__(219)['default'];
 
-	var _Set = __webpack_require__(247)['default'];
+	var _Set = __webpack_require__(248)['default'];
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -32268,19 +32363,17 @@
 
 	var _error = __webpack_require__(164);
 
-	var _errors = __webpack_require__(237);
+	var _errors = __webpack_require__(238);
 
-	var _languagePrinter = __webpack_require__(185);
+	var _languagePrinter = __webpack_require__(186);
 
 	var _languageKinds = __webpack_require__(182);
 
-	var _utilsTypeFromAST = __webpack_require__(233);
+	var _utilsTypeFromAST = __webpack_require__(234);
 
 	var _utilsTypeFromAST2 = _interopRequireDefault(_utilsTypeFromAST);
 
-	var _utilsFind = __webpack_require__(234);
-
-	var _utilsFind2 = _interopRequireDefault(_utilsFind);
+	var _utilsFind = __webpack_require__(235);
 
 	/**
 	 * Overlapping fields can be merged
@@ -32289,6 +32382,8 @@
 	 * fragments) either correspond to distinct response names or can be merged
 	 * without ambiguity.
 	 */
+
+	var _utilsFind2 = _interopRequireDefault(_utilsFind);
 
 	function OverlappingFieldsCanBeMerged(context) {
 	  var comparedSet = new PairSet();
@@ -32522,42 +32617,42 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 262 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(263), __esModule: true };
-
-/***/ },
 /* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(228);
-	__webpack_require__(201);
-	__webpack_require__(190);
-	__webpack_require__(264);
-	module.exports = __webpack_require__(169).core.Promise;
+	module.exports = { "default": __webpack_require__(264), __esModule: true };
 
 /***/ },
 /* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(229);
+	__webpack_require__(202);
+	__webpack_require__(191);
+	__webpack_require__(265);
+	module.exports = __webpack_require__(169).core.Promise;
+
+/***/ },
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 	var $        = __webpack_require__(169)
-	  , ctx      = __webpack_require__(223)
-	  , cof      = __webpack_require__(195)
+	  , ctx      = __webpack_require__(224)
+	  , cof      = __webpack_require__(196)
 	  , $def     = __webpack_require__(172)
-	  , assert   = __webpack_require__(198)
-	  , forOf    = __webpack_require__(222)
-	  , setProto = __webpack_require__(266).set
-	  , same     = __webpack_require__(265)
-	  , species  = __webpack_require__(227)
-	  , SPECIES  = __webpack_require__(196)('species')
-	  , RECORD   = __webpack_require__(193).safe('record')
+	  , assert   = __webpack_require__(199)
+	  , forOf    = __webpack_require__(223)
+	  , setProto = __webpack_require__(267).set
+	  , same     = __webpack_require__(266)
+	  , species  = __webpack_require__(228)
+	  , SPECIES  = __webpack_require__(197)('species')
+	  , RECORD   = __webpack_require__(194).safe('record')
 	  , PROMISE  = 'Promise'
 	  , global   = $.g
 	  , process  = global.process
 	  , isNode   = cof(process) == 'process'
-	  , asap     = process && process.nextTick || __webpack_require__(267).set
+	  , asap     = process && process.nextTick || __webpack_require__(268).set
 	  , P        = global[PROMISE]
 	  , isFunction     = $.isFunction
 	  , isObject       = $.isObject
@@ -32727,7 +32822,7 @@
 	      $reject.call(record, err);
 	    }
 	  };
-	  __webpack_require__(225)(P.prototype, {
+	  __webpack_require__(226)(P.prototype, {
 	    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
 	    then: function then(onFulfilled, onRejected){
 	      var S = assertObject(assertObject(this).constructor)[SPECIES];
@@ -32772,7 +32867,7 @@
 	      ? x : new this(function(res){ res(x); });
 	  }
 	});
-	$def($def.S + $def.F * !(useNative && __webpack_require__(270)(function(iter){
+	$def($def.S + $def.F * !(useNative && __webpack_require__(271)(function(iter){
 	  P.all(iter)['catch'](function(){});
 	})), PROMISE, {
 	  // 25.4.4.1 Promise.all(iterable)
@@ -32804,7 +32899,7 @@
 	});
 
 /***/ },
-/* 265 */
+/* 266 */
 /***/ function(module, exports) {
 
 	module.exports = Object.is || function is(x, y){
@@ -32812,13 +32907,13 @@
 	};
 
 /***/ },
-/* 266 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Works with __proto__ only. Old v8 can't work with null proto objects.
 	/* eslint-disable no-proto */
 	var $      = __webpack_require__(169)
-	  , assert = __webpack_require__(198);
+	  , assert = __webpack_require__(199);
 	function check(O, proto){
 	  assert.obj(O);
 	  assert(proto === null || $.isObject(proto), proto, ": can't set as prototype!");
@@ -32827,7 +32922,7 @@
 	  set: Object.setPrototypeOf || ('__proto__' in {} // eslint-disable-line
 	    ? function(buggy, set){
 	        try {
-	          set = __webpack_require__(223)(Function.call, $.getDesc(Object.prototype, '__proto__').set, 2);
+	          set = __webpack_require__(224)(Function.call, $.getDesc(Object.prototype, '__proto__').set, 2);
 	          set({}, []);
 	        } catch(e){ buggy = true; }
 	        return function setPrototypeOf(O, proto){
@@ -32842,15 +32937,15 @@
 	};
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var $      = __webpack_require__(169)
-	  , ctx    = __webpack_require__(223)
-	  , cof    = __webpack_require__(195)
-	  , invoke = __webpack_require__(268)
-	  , cel    = __webpack_require__(269)
+	  , ctx    = __webpack_require__(224)
+	  , cof    = __webpack_require__(196)
+	  , invoke = __webpack_require__(269)
+	  , cel    = __webpack_require__(270)
 	  , global             = $.g
 	  , isFunction         = $.isFunction
 	  , html               = $.html
@@ -32926,7 +33021,7 @@
 	};
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports) {
 
 	// Fast apply
@@ -32950,7 +33045,7 @@
 	};
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $        = __webpack_require__(169)
@@ -32963,10 +33058,10 @@
 	};
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SYMBOL_ITERATOR = __webpack_require__(196)('iterator')
+	var SYMBOL_ITERATOR = __webpack_require__(197)('iterator')
 	  , SAFE_CLOSING    = false;
 	try {
 	  var riter = [7][SYMBOL_ITERATOR]();
@@ -32987,10 +33082,18 @@
 	};
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	
+	/**
+	 *  Copyright (c) 2015, Facebook, Inc.
+	 *  All rights reserved.
+	 *
+	 *  This source code is licensed under the BSD-style license found in the
+	 *  LICENSE file in the root directory of this source tree. An additional grant
+	 *  of patent rights can be found in the PATENTS file in the same directory.
+	 */
 
 	/**
 	 * Terminology
@@ -33018,6 +33121,7 @@
 	 * Namely, schema of the type system that is currently executing,
 	 * and the fragments defined in the query document
 	 */
+	'use strict';
 
 	/**
 	 * The result of execution. `data` is the result of executing the
@@ -33025,11 +33129,11 @@
 	 * non-empty array if an error occurred.
 	 */
 
-	var _Promise = __webpack_require__(262)['default'];
+	var _Promise = __webpack_require__(263)['default'];
 
-	var _Object$keys = __webpack_require__(216)['default'];
+	var _Object$keys = __webpack_require__(217)['default'];
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -33038,31 +33142,31 @@
 
 	var _error = __webpack_require__(164);
 
-	var _utilsFind = __webpack_require__(234);
+	var _utilsFind = __webpack_require__(235);
 
 	var _utilsFind2 = _interopRequireDefault(_utilsFind);
 
-	var _utilsInvariant = __webpack_require__(210);
+	var _utilsInvariant = __webpack_require__(211);
 
 	var _utilsInvariant2 = _interopRequireDefault(_utilsInvariant);
 
-	var _utilsIsNullish = __webpack_require__(257);
+	var _utilsIsNullish = __webpack_require__(258);
 
 	var _utilsIsNullish2 = _interopRequireDefault(_utilsIsNullish);
 
-	var _utilsTypeFromAST = __webpack_require__(233);
+	var _utilsTypeFromAST = __webpack_require__(234);
 
 	var _utilsTypeFromAST2 = _interopRequireDefault(_utilsTypeFromAST);
 
 	var _language = __webpack_require__(178);
 
-	var _values = __webpack_require__(272);
+	var _values = __webpack_require__(273);
 
-	var _typeDefinition = __webpack_require__(215);
+	var _typeDefinition = __webpack_require__(216);
 
-	var _typeIntrospection = __webpack_require__(231);
+	var _typeIntrospection = __webpack_require__(232);
 
-	var _typeDirectives = __webpack_require__(273);
+	var _typeDirectives = __webpack_require__(274);
 
 	/**
 	 * Implements the "Evaluating requests" section of the GraphQL specification.
@@ -33073,12 +33177,12 @@
 	 * a GraphQLError will be thrown immediately explaining the invalid input.
 	 */
 
-	function execute(schema, root, ast, operationName, args) {
+	function execute(schema, documentAST, rootValue, variableValues, operationName) {
 	  (0, _utilsInvariant2['default'])(schema, 'Must provide schema');
 
 	  // If a valid context cannot be created due to incorrect arguments,
 	  // this will throw an error.
-	  var context = buildExecutionContext(schema, root, ast, operationName, args);
+	  var context = buildExecutionContext(schema, documentAST, rootValue, variableValues, operationName);
 
 	  // Return a Promise that will eventually resolve to the data described by
 	  // The "Response" section of the GraphQL specification.
@@ -33088,7 +33192,7 @@
 	  // be executed. An execution which encounters errors will still result in a
 	  // resolved Promise.
 	  return new _Promise(function (resolve) {
-	    resolve(executeOperation(context, root, context.operation));
+	    resolve(executeOperation(context, context.operation, rootValue));
 	  })['catch'](function (error) {
 	    // Errors from sub-fields of a NonNull type may propagate to the top level,
 	    // at which point we still log the error and null the parent field, which
@@ -33109,11 +33213,11 @@
 	 *
 	 * Throws a GraphQLError if a valid execution context cannot be created.
 	 */
-	function buildExecutionContext(schema, root, ast, operationName, args) {
+	function buildExecutionContext(schema, documentAST, rootValue, variableValues, operationName) {
 	  var errors = [];
 	  var operations = {};
 	  var fragments = {};
-	  ast.definitions.forEach(function (statement) {
+	  documentAST.definitions.forEach(function (statement) {
 	    switch (statement.kind) {
 	      case _language.Kind.OPERATION_DEFINITION:
 	        operations[statement.name ? statement.name.value : ''] = statement;
@@ -33131,21 +33235,21 @@
 	  if (!operation) {
 	    throw new _error.GraphQLError('Unknown operation named "' + opName + '".');
 	  }
-	  var variables = (0, _values.getVariableValues)(schema, operation.variableDefinitions || [], args || {});
-	  var exeContext = { schema: schema, fragments: fragments, root: root, operation: operation, variables: variables, errors: errors };
+	  var variables = (0, _values.getVariableValues)(schema, operation.variableDefinitions || [], variableValues || {});
+	  var exeContext = { schema: schema, fragments: fragments, rootValue: rootValue, operation: operation, variables: variables, errors: errors };
 	  return exeContext;
 	}
 
 	/**
 	 * Implements the "Evaluating operations" section of the spec.
 	 */
-	function executeOperation(exeContext, root, operation) {
+	function executeOperation(exeContext, operation, rootValue) {
 	  var type = getOperationRootType(exeContext.schema, operation);
 	  var fields = collectFields(exeContext, type, operation.selectionSet, {}, {});
 	  if (operation.operation === 'mutation') {
-	    return executeFieldsSerially(exeContext, type, root, fields);
+	    return executeFieldsSerially(exeContext, type, rootValue, fields);
 	  }
-	  return executeFields(exeContext, type, root, fields);
+	  return executeFields(exeContext, type, rootValue, fields);
 	}
 
 	/**
@@ -33170,11 +33274,11 @@
 	 * Implements the "Evaluating selection sets" section of the spec
 	 * for "write" mode.
 	 */
-	function executeFieldsSerially(exeContext, parentType, source, fields) {
+	function executeFieldsSerially(exeContext, parentType, sourceValue, fields) {
 	  return _Object$keys(fields).reduce(function (prevPromise, responseName) {
 	    return prevPromise.then(function (results) {
 	      var fieldASTs = fields[responseName];
-	      var result = resolveField(exeContext, parentType, source, fieldASTs);
+	      var result = resolveField(exeContext, parentType, sourceValue, fieldASTs);
 	      if (result === undefined) {
 	        return results;
 	      }
@@ -33195,12 +33299,12 @@
 	 * Implements the "Evaluating selection sets" section of the spec
 	 * for "read" mode.
 	 */
-	function executeFields(exeContext, parentType, source, fields) {
+	function executeFields(exeContext, parentType, sourceValue, fields) {
 	  var containsPromise = false;
 
 	  var finalResults = _Object$keys(fields).reduce(function (results, responseName) {
 	    var fieldASTs = fields[responseName];
-	    var result = resolveField(exeContext, parentType, source, fieldASTs);
+	    var result = resolveField(exeContext, parentType, sourceValue, fieldASTs);
 	    if (result === undefined) {
 	      return results;
 	    }
@@ -33362,11 +33466,11 @@
 	  // null if allowed, otherwise throw the error so the parent field can handle
 	  // it.
 	  try {
-	    var result = resolveFn(source, args, exeContext.root,
+	    var result = resolveFn(source, args, exeContext.rootValue,
 	    // TODO: provide all fieldASTs, not just the first field
 	    fieldAST, fieldType, parentType, exeContext.schema);
 	  } catch (error) {
-	    var reportedError = new _error.GraphQLError(error.message, fieldASTs, error.stack);
+	    var reportedError = (0, _error.locatedError)(error, fieldASTs);
 	    if (fieldType instanceof _typeDefinition.GraphQLNonNull) {
 	      throw reportedError;
 	    }
@@ -33534,6 +33638,11 @@
 	  return parentType.getFields()[name];
 	}
 
+/***/ },
+/* 273 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -33543,47 +33652,47 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 272 */
-/***/ function(module, exports, __webpack_require__) {
-
+	/**
+	 * Prepares an object map of variables of the correct type based on the provided
+	 * variable definitions and arbitrary input. If the input cannot be coerced
+	 * to match the variable definitions, a GraphQLError will be thrown.
+	 */
 	'use strict';
 
-	var _Object$keys = __webpack_require__(216)['default'];
+	var _Object$keys = __webpack_require__(217)['default'];
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	exports.getVariableValues = getVariableValues;
 	exports.getArgumentValues = getArgumentValues;
+	exports.coerceValueAST = coerceValueAST;
 
 	var _error = __webpack_require__(164);
 
-	var _utilsKeyMap = __webpack_require__(245);
+	var _utilsKeyMap = __webpack_require__(246);
 
 	var _utilsKeyMap2 = _interopRequireDefault(_utilsKeyMap);
 
-	var _utilsTypeFromAST = __webpack_require__(233);
+	var _utilsInvariant = __webpack_require__(211);
+
+	var _utilsInvariant2 = _interopRequireDefault(_utilsInvariant);
+
+	var _utilsTypeFromAST = __webpack_require__(234);
 
 	var _utilsTypeFromAST2 = _interopRequireDefault(_utilsTypeFromAST);
 
-	var _utilsIsNullish = __webpack_require__(257);
+	var _utilsIsNullish = __webpack_require__(258);
 
 	var _utilsIsNullish2 = _interopRequireDefault(_utilsIsNullish);
 
 	var _language = __webpack_require__(178);
 
-	var _languagePrinter = __webpack_require__(185);
+	var _languagePrinter = __webpack_require__(186);
 
-	var _typeDefinition = __webpack_require__(215);
-
-	/**
-	 * Prepares an object map of variables of the correct type based on the provided
-	 * variable definitions and arbitrary input. If the input cannot be coerced
-	 * to match the variable definitions, a GraphQLError will be thrown.
-	 */
+	var _typeDefinition = __webpack_require__(216);
 
 	function getVariableValues(schema, definitionASTs, inputs) {
 	  return definitionASTs.reduce(function (values, defAST) {
@@ -33604,8 +33713,12 @@
 	  }) : {};
 	  return argDefs.reduce(function (result, argDef) {
 	    var name = argDef.name;
-	    var valueAST = argASTMap[name] && argASTMap[name].value;
-	    result[name] = coerceValueAST(argDef.type, valueAST, variables);
+	    var valueAST = argASTMap[name] ? argASTMap[name].value : null;
+	    var value = coerceValueAST(argDef.type, valueAST, variables);
+	    if ((0, _utilsIsNullish2['default'])(value) && !(0, _utilsIsNullish2['default'])(argDef.defaultValue)) {
+	      value = argDef.defaultValue;
+	    }
+	    result[name] = value;
 	    return result;
 	  }, {});
 	}
@@ -33616,8 +33729,8 @@
 	 */
 	function getVariableValue(schema, definitionAST, input) {
 	  var type = (0, _utilsTypeFromAST2['default'])(schema, definitionAST.type);
-	  if (!type) {
-	    return null;
+	  if (!type || !(0, _typeDefinition.isInputType)(type)) {
+	    throw new _error.GraphQLError('Variable $' + definitionAST.variable.name.value + ' expected value of type ' + ((0, _languagePrinter.print)(definitionAST.type) + ' which cannot be used as an input type.'), [definitionAST]);
 	  }
 	  if (isValidValue(type, input)) {
 	    if ((0, _utilsIsNullish2['default'])(input)) {
@@ -33643,6 +33756,7 @@
 	    itemType = fields = undefined;
 	    _again = false;
 
+	    // A value must be provided if the type is non-null.
 	    if (type instanceof _typeDefinition.GraphQLNonNull) {
 	      if ((0, _utilsIsNullish2['default'])(value)) {
 	        return false;
@@ -33657,6 +33771,7 @@
 	      return true;
 	    }
 
+	    // Lists accept a non-list value as a list of one.
 	    if (type instanceof _typeDefinition.GraphQLList) {
 	      var itemType = type.ofType;
 	      if (Array.isArray(value)) {
@@ -33671,18 +33786,31 @@
 	      }
 	    }
 
+	    // Input objects check each defined field.
 	    if (type instanceof _typeDefinition.GraphQLInputObjectType) {
+	      if (typeof value !== 'object') {
+	        return false;
+	      }
 	      var fields = type.getFields();
+
+	      // Ensure every provided field is defined.
+	      if (_Object$keys(value).some(function (fieldName) {
+	        return !fields[fieldName];
+	      })) {
+	        return false;
+	      }
+
+	      // Ensure every defined field is valid.
 	      return _Object$keys(fields).every(function (fieldName) {
 	        return isValidValue(fields[fieldName].type, value[fieldName]);
 	      });
 	    }
 
-	    if (type instanceof _typeDefinition.GraphQLScalarType || type instanceof _typeDefinition.GraphQLEnumType) {
-	      return !(0, _utilsIsNullish2['default'])(type.coerce(value));
-	    }
+	    (0, _utilsInvariant2['default'])(type instanceof _typeDefinition.GraphQLScalarType || type instanceof _typeDefinition.GraphQLEnumType, 'Must be input type');
 
-	    return false;
+	    // Scalar/Enum input checks to ensure the type can coerce the value to
+	    // a non-null value.
+	    return !(0, _utilsIsNullish2['default'])(type.coerce(value));
 	  }
 	}
 
@@ -33733,14 +33861,12 @@
 	      }, {});
 	    }
 
-	    if (type instanceof _typeDefinition.GraphQLScalarType || type instanceof _typeDefinition.GraphQLEnumType) {
-	      var coerced = type.coerce(value);
-	      if (!(0, _utilsIsNullish2['default'])(coerced)) {
-	        return coerced;
-	      }
-	    }
+	    (0, _utilsInvariant2['default'])(type instanceof _typeDefinition.GraphQLScalarType || type instanceof _typeDefinition.GraphQLEnumType, 'Must be input type');
 
-	    return null;
+	    var coerced = type.coerce(value);
+	    if (!(0, _utilsIsNullish2['default'])(coerced)) {
+	      return coerced;
+	    }
 	  }
 	}
 
@@ -33748,6 +33874,7 @@
 	 * Given a type and a value AST node known to match this type, build a
 	 * runtime value.
 	 */
+
 	function coerceValueAST(_x5, _x6, _x7) {
 	  var _again3 = true;
 
@@ -33812,17 +33939,20 @@
 	      }, {});
 	    }
 
-	    if (type instanceof _typeDefinition.GraphQLScalarType || type instanceof _typeDefinition.GraphQLEnumType) {
-	      var coerced = type.coerceLiteral(valueAST);
-	      if (!(0, _utilsIsNullish2['default'])(coerced)) {
-	        return coerced;
-	      }
-	    }
+	    (0, _utilsInvariant2['default'])(type instanceof _typeDefinition.GraphQLScalarType || type instanceof _typeDefinition.GraphQLEnumType, 'Must be input type');
 
-	    return null;
+	    var coerced = type.coerceLiteral(valueAST);
+	    if (!(0, _utilsIsNullish2['default'])(coerced)) {
+	      return coerced;
+	    }
 	  }
 	}
 
+/***/ },
+/* 274 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -33832,10 +33962,6 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 273 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
 	var _classCallCheck = __webpack_require__(177)['default'];
@@ -33844,9 +33970,9 @@
 	  value: true
 	});
 
-	var _definition = __webpack_require__(215);
+	var _definition = __webpack_require__(216);
 
-	var _scalars = __webpack_require__(232);
+	var _scalars = __webpack_require__(233);
 
 	/**
 	 * Directives are used by the GraphQL runtime as a way of modifying execution
@@ -33880,10 +34006,10 @@
 	  onField: true
 	});
 
-	exports.GraphQLIncludeDirective = GraphQLIncludeDirective;
 	/**
 	 * Used to conditionally skip (exclude) fields or fragments
 	 */
+	exports.GraphQLIncludeDirective = GraphQLIncludeDirective;
 	var GraphQLSkipDirective = new GraphQLDirective({
 	  name: 'skip',
 	  description: 'Directs the executor to skip this field or fragment when the `if` ' + 'argument is true.',
@@ -33896,6 +34022,11 @@
 	});
 	exports.GraphQLSkipDirective = GraphQLSkipDirective;
 
+/***/ },
+/* 275 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/**
 	 *  Copyright (c) 2015, Facebook, Inc.
 	 *  All rights reserved.
@@ -33905,34 +34036,28 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-/***/ },
-/* 274 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _createClass = __webpack_require__(211)['default'];
+	var _createClass = __webpack_require__(212)['default'];
 
 	var _classCallCheck = __webpack_require__(177)['default'];
 
-	var _Object$keys = __webpack_require__(216)['default'];
+	var _Object$keys = __webpack_require__(217)['default'];
 
-	var _interopRequireDefault = __webpack_require__(209)['default'];
+	var _interopRequireDefault = __webpack_require__(210)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	exports.typeMapReducer = typeMapReducer;
 
-	var _definition = __webpack_require__(215);
+	var _definition = __webpack_require__(216);
 
-	var _directives = __webpack_require__(273);
+	var _directives = __webpack_require__(274);
 
-	var _introspection = __webpack_require__(231);
+	var _introspection = __webpack_require__(232);
 
-	var _utilsFind = __webpack_require__(234);
-
-	var _utilsFind2 = _interopRequireDefault(_utilsFind);
+	var _utilsFind = __webpack_require__(235);
 
 	/**
 	 * Schema Definition
@@ -33949,6 +34074,8 @@
 	 *     });
 	 *
 	 */
+
+	var _utilsFind2 = _interopRequireDefault(_utilsFind);
 
 	var GraphQLSchema = (function () {
 	  function GraphQLSchema(config) {
@@ -34045,20 +34172,9 @@
 	  }
 	}
 
-	/**
-	 *  Copyright (c) 2015, Facebook, Inc.
-	 *  All rights reserved.
-	 *
-	 *  This source code is licensed under the BSD-style license found in the
-	 *  LICENSE file in the root directory of this source tree. An additional grant
-	 *  of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
 /***/ },
-/* 275 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var GraphQLObjectType, GraphQLSchema, ref;
 
@@ -34067,26 +34183,25 @@
 	module.exports = new GraphQLSchema({
 	  query: new GraphQLObjectType({
 	    name: 'Query',
-	    fields: function fields() {
+	    fields: function() {
 	      return {
-	        User: __webpack_require__(276),
-	        Pin: __webpack_require__(281)
+	        User: __webpack_require__(277),
+	        Pin: __webpack_require__(282)
 	      };
 	    }
 	  })
 	});
 
-/***/ },
-/* 276 */
-/***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
 
 	var GraphQLNonNull, GraphQLString, RelayFetcher, UserType, ref;
 
-	RelayFetcher = __webpack_require__(277);
+	RelayFetcher = __webpack_require__(278);
 
-	UserType = __webpack_require__(278);
+	UserType = __webpack_require__(279);
 
 	ref = __webpack_require__(161), GraphQLNonNull = ref.GraphQLNonNull, GraphQLString = ref.GraphQLString;
 
@@ -34097,7 +34212,7 @@
 	      type: new GraphQLNonNull(GraphQLString)
 	    }
 	  },
-	  resolve: function resolve(root, params, _, query) {
+	  resolve: function(root, params, _, query) {
 	    if (params == null) {
 	      params = {};
 	    }
@@ -34105,11 +34220,10 @@
 	  }
 	};
 
-/***/ },
-/* 277 */
-/***/ function(module, exports) {
 
-	'use strict';
+/***/ },
+/* 278 */
+/***/ function(module, exports) {
 
 	var Storage, TypeMaps, fetch, fetchDone, fetchFail, fieldsAsString, gatherFields, getRecord, storeData;
 
@@ -34119,22 +34233,22 @@
 	  Pinboard: 'pinboards'
 	};
 
-	gatherFields = function (selectionSet) {
+	gatherFields = function(selectionSet) {
 	  var result;
 	  if (!(selectionSet && selectionSet.selections)) {
 	    return {};
 	  }
-	  return result = selectionSet.selections.reduce(function (memo, item) {
+	  return result = selectionSet.selections.reduce(function(memo, item) {
 	    memo[item.name.value] = Object.assign(memo[item.name.value] || {}, gatherFields(item.selectionSet));
 	    return memo;
 	  }, {});
 	};
 
-	fieldsAsString = function (fields) {
+	fieldsAsString = function(fields) {
 	  if (!fields) {
 	    return null;
 	  }
-	  return Object.keys(fields).map(function (field) {
+	  return Object.keys(fields).map(function(field) {
 	    var children;
 	    return field + ((children = fieldsAsString(fields[field])) ? "{" + children + "}" : "");
 	  }).join(',');
@@ -34142,38 +34256,70 @@
 
 	Storage = Immutable.Map();
 
-	storeData = function (endpoint, id_or_ids, fields, data) {
-	  return Storage = Storage.mergeDeepIn(['data'], data);
+	storeData = function(root, data, fields, storage) {
+	  var id, record, type;
+	  if (Array.isArray(root)) {
+	    return root.forEach(function(record) {
+	      return storeData(record, data, fields, storage);
+	    });
+	  }
+	  if (!(record = root)) {
+	    return;
+	  }
+	  if (record.$ref) {
+	    type = root.$ref.type;
+	    id = root.$ref.id;
+	    record = data[type][id];
+	    storage.mergeDeepIn([type, id, 'query'], fields);
+	    storage.mergeDeepIn([type, id, 'data'], record);
+	  }
+	  return Object.keys(fields).forEach(function(field) {
+	    return storeData(record[field], data, fields[field], storage);
+	  });
 	};
 
-	getRecord = function (endpoint, params, fields) {
+	getRecord = function(endpoint, params, fields) {
 	  var record;
 	  if (!(record = Storage.getIn([endpoint, params.id, 'data'], false))) {
 	    return false;
 	  }
 	  record = record.toJS();
-	  Object.keys(fields).forEach(function (field) {
-	    return console.log(field);
+	  Object.keys(fields).forEach(function(field) {
+	    var records, records_as_array, result;
+	    records = record[field];
+	    records_as_array = [].concat(records);
+	    result = records_as_array.map(function(child) {
+	      if (child && child.$ref) {
+	        return getRecord(child.$ref.type, {
+	          id: child.$ref.id
+	        }, fields[field]);
+	      } else {
+	        return child;
+	      }
+	    });
+	    return record[field] = Array.isArray(records) ? result : result[0];
 	  });
 	  return record;
 	};
 
-	fetchDone = function (json, endpoint, params, fields, done) {
-	  storeData(endpoint, params.id, fields, json);
+	fetchDone = function(json, endpoint, params, fields, done) {
+	  Storage = Storage.withMutations(function(storage) {
+	    return storeData(json['root'], json['data'], fields, storage);
+	  });
 	  return done(getRecord(endpoint, params, fields));
 	};
 
-	fetchFail = function (data, endpoint, params, fields, fail) {
+	fetchFail = function(data, endpoint, params, fields, fail) {
 	  return fail();
 	};
 
-	fetch = function (endpoint, query, params) {
+	fetch = function(endpoint, query, params) {
 	  var fields, record;
 	  fields = gatherFields(query.selectionSet);
 	  if (record = getRecord(endpoint, params, fields)) {
 	    return record;
 	  }
-	  return new Promise(function (done, fail) {
+	  return new Promise(function(done, fail) {
 	    return $.ajax({
 	      url: '/api/relay',
 	      type: 'GET',
@@ -34181,11 +34327,11 @@
 	      data: {
 	        type: endpoint,
 	        id: params.id,
-	        relations: fieldsAsString(fields)
+	        fields: fieldsAsString(fields)
 	      }
-	    }).done(function (json) {
+	    }).done(function(json) {
 	      return fetchDone(json, endpoint, params, fields, done);
-	    }).fail(function (data) {
+	    }).fail(function(data) {
 	      return fetchFail(data, endpoint, params, fields, fail);
 	    });
 	  });
@@ -34195,21 +34341,31 @@
 	  fetch: fetch
 	};
 
+
 /***/ },
-/* 278 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	var GraphQL, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, PinType, PinboardType, UserType;
+	var AvatarType, GraphQL, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, PinType, PinboardType, UserType;
 
 	GraphQL = __webpack_require__(161);
 
 	GraphQLInt = GraphQL.GraphQLInt, GraphQLList = GraphQL.GraphQLList, GraphQLNonNull = GraphQL.GraphQLNonNull, GraphQLObjectType = GraphQL.GraphQLObjectType, GraphQLString = GraphQL.GraphQLString;
 
+	AvatarType = new GraphQLObjectType({
+	  name: 'Avatar',
+	  fields: function() {
+	    return {
+	      url: {
+	        type: GraphQLString
+	      }
+	    };
+	  }
+	});
+
 	UserType = new GraphQLObjectType({
 	  name: 'User',
-	  fields: function fields() {
+	  fields: function() {
 	    return {
 	      id: {
 	        type: GraphQLString
@@ -34219,6 +34375,9 @@
 	      },
 	      url: {
 	        type: GraphQLString
+	      },
+	      avatar: {
+	        type: AvatarType
 	      },
 	      insights: {
 	        type: new GraphQLList(PinType)
@@ -34235,17 +34394,16 @@
 
 	module.exports = UserType;
 
-	PinType = __webpack_require__(279);
+	PinType = __webpack_require__(280);
 
-	PinboardType = __webpack_require__(280);
+	PinboardType = __webpack_require__(281);
+
 
 /***/ },
-/* 279 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	var GraphQL, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, PinType, UserType;
+	var GraphQL, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, PinType, PinboardType, UserType;
 
 	GraphQL = __webpack_require__(161);
 
@@ -34253,7 +34411,7 @@
 
 	PinType = new GraphQLObjectType({
 	  name: 'Pin',
-	  fields: function fields() {
+	  fields: function() {
 	    return {
 	      id: {
 	        type: GraphQLString
@@ -34263,6 +34421,9 @@
 	      },
 	      created_at: {
 	        type: GraphQLString
+	      },
+	      pinboard: {
+	        type: PinboardType
 	      },
 	      user: {
 	        type: UserType
@@ -34279,13 +34440,14 @@
 
 	module.exports = PinType;
 
-	UserType = __webpack_require__(278);
+	UserType = __webpack_require__(279);
+
+	PinboardType = __webpack_require__(281);
+
 
 /***/ },
-/* 280 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var GraphQL, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, PinType, PinboardType, UserType;
 
@@ -34295,7 +34457,7 @@
 
 	PinboardType = new GraphQLObjectType({
 	  name: 'User',
-	  fields: function fields() {
+	  fields: function() {
 	    return {
 	      id: {
 	        type: GraphQLString
@@ -34321,21 +34483,20 @@
 
 	module.exports = PinboardType;
 
-	PinType = __webpack_require__(279);
+	PinType = __webpack_require__(280);
 
-	UserType = __webpack_require__(278);
+	UserType = __webpack_require__(279);
+
 
 /***/ },
-/* 281 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var GraphQLNonNull, GraphQLString, PinType, RelayFetcher, ref;
 
-	RelayFetcher = __webpack_require__(277);
+	RelayFetcher = __webpack_require__(278);
 
-	PinType = __webpack_require__(279);
+	PinType = __webpack_require__(280);
 
 	ref = __webpack_require__(161), GraphQLNonNull = ref.GraphQLNonNull, GraphQLString = ref.GraphQLString;
 
@@ -34346,13 +34507,14 @@
 	      type: new GraphQLNonNull(GraphQLString)
 	    }
 	  },
-	  resolve: function resolve(root, params, _, query) {
+	  resolve: function(root, params, _, query) {
 	    if (params == null) {
 	      params = {};
 	    }
 	    return RelayFetcher.fetch('Pin', query, params);
 	  }
 	};
+
 
 /***/ }
 /******/ ]);

@@ -10,9 +10,11 @@ class BaseShape
 
       preload(wrapped_records, fields, scope)
 
-      root = {}
+      root = { root: {}, data: {} }
 
-      wrapped_records.each { |record| record.render(root, fields) }
+      rendered_records = wrapped_records.map { |record| record.render(root[:data], fields) }
+
+      root[:root] = records.is_a?(Array) ? rendered_records : rendered_records.first
 
       root
     end
@@ -30,7 +32,7 @@ class BaseShape
 
     def filter_records(records, scope)
       Array.wrap(records).select do |record|
-        if record.class.respond_to?(:accessible_by)
+        if scope[:persmissions][:can][:read].include?(record.class.name)
           scope[:ability].can?(:read, record)
         else
           true

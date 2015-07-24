@@ -91,7 +91,7 @@ class Ability
       can :manage, Company, user_id: current_user.id
       can [:follow, :unfollow], Company
       can :read, Company, is_published: true
-      can [:index, :search], :companies 
+      can [:index, :search], :companies
 
       can :create, Company do
         current_user.editor?
@@ -159,7 +159,7 @@ class Ability
       can [:update, :destroy], Landing, author_id: current_user.id
 
       # Role
-      # 
+      #
       can [:read, :accept], Role
 
       can [:create, :update], Role do |role|

@@ -9,7 +9,10 @@ module CloudApi
       source    = params[:type].constantize.find(params[:id])
       query     = parse_relations_query(params[:fields])
 
-      shape = BaseShape.shape(source, query, ability: Ability.new(current_user))
+      ability       = Ability.new(current_user)
+      permissions   = ability.permissions
+
+      shape = BaseShape.shape(source, query, ability: ability, persmissions: permissions)
 
       respond_to do |format|
         format.json do
@@ -17,6 +20,12 @@ module CloudApi
         end
       end
     end
+
+
+    def graphql
+      render json: { yeah: true }
+    end
+
 
   end
 end

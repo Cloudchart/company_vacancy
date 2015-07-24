@@ -18,6 +18,19 @@ Component = React.createClass
           Pin {
             id
             content
+            user {
+              full_name
+              avatar {
+                url
+              }
+              insights {
+                id
+                content
+                pinboard {
+                  title
+                }
+              }
+            }
           }
         """
 
@@ -26,7 +39,7 @@ Component = React.createClass
     query = @constructor.queries.pin().replace(/\s+/g, ' ').trim()
     [_, endpoint, body] = RE.exec(query)
     query = "query get#{endpoint}($id: String!) { #{endpoint}(id: $id) #{body} }"
-    GraphQL.graphql(Schema, query, null, { id: 'a17873ad-9445-4e64-a414-4d94418636a8' }).then (json) =>
+    GraphQL.graphql(Schema, query, null, { id: '00243f1e-ee3c-4d8b-b681-3838f974f44d' }).then (json) =>
       console.log JSON.stringify json, null, 2
       @setState
         pin: json.data.Pin
