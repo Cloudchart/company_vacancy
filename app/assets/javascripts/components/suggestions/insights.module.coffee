@@ -1,12 +1,13 @@
 # @cjsx React.DOM
 
-GlobalState   = require('global_state/state')
+GlobalState = require('global_state/state')
 
-Insight       = require('components/cards/pin_card')
+InsightContent = require('components/cards/insight/content')
 
-UserStore     = require('stores/user_store.cursor')
+UserStore = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
-PinStore      = require('stores/pin_store')
+PinStore = require('stores/pin_store')
+
 
 # Exports
 #
@@ -24,9 +25,9 @@ module.exports = React.createClass
         """
           Pinboard {
             pins {
-              #{Insight.getQuery('pin')},
+              #{InsightContent.getQuery('pin')},
               parent {
-                #{Insight.getQuery('pin')}
+                #{InsightContent.getQuery('pin')}
               }
             },
             edges {
@@ -131,14 +132,13 @@ module.exports = React.createClass
 
   renderInsight: (id) ->
     <section key={ id } className="cloud-column">
-      <Insight
-        pin = { id }
-        className = "hoverable"
-        onClick = { @handleClick.bind(@, id) }
-        onUpdate = { @updatePackery }
-        shouldRenderHeader = false
-        shouldRenderFooter = false
-      />
+      <div className="pin-card cloud-card hoverable">
+        <InsightContent
+          pin = { id }
+          onClick = { @handleClick.bind(@, id) }
+          onUpdate = { @updatePackery }
+        />
+      </div>
     </section>
 
 

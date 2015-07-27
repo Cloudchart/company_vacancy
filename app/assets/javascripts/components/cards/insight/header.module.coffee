@@ -1,5 +1,7 @@
 # @cjsx React.DOM
 
+GlobalState = require('global_state/state')
+
 PinStore = require('stores/pin_store')
 UserStore = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
@@ -19,8 +21,17 @@ module.exports = React.createClass
   propTypes:
     pin: React.PropTypes.string.isRequired
 
-  # mixins: []
-  # statics: {}
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+  statics:
+    queries:
+      pin: ->
+        """
+          Pin {
+            pinboard,
+            user
+          }
+        """
 
 
   # Component Specifications
@@ -28,23 +39,33 @@ module.exports = React.createClass
   # getDefaultProps: ->
 
   getInitialState: ->
-    pin = PinStore.get(@props.pin).toJS()
-
-    pin: pin
-    user: UserStore.get(pin.user_id).toJS()
-    pinboard: PinboardStore.get(pin.pinboard_id).toJS() if pin.pinboard_id
+    ready: false
+    pin: {}
+    user: {}
+    pinboard: {}
 
 
   # Lifecycle Methods
   #
   # componentWillMount: ->
-  # componentDidMount: ->
+
+  componentDidMount: ->
+    @fetch()
+
   # componentWillUnmount: ->
 
 
   # Fetchers
   #
-  # fetch: ->
+  fetch: ->
+    GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
+      pin = PinStore.get(@props.pin).toJS()
+
+      @setState
+        ready: true
+        pin: pin
+        user: UserStore.get(pin.user_id).toJS()
+        pinboard: PinboardStore.get(pin.pinboard_id).toJS() if pin.pinboard_id
 
 
   # Helpers

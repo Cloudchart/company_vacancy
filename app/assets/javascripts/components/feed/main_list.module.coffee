@@ -6,7 +6,7 @@ UserStore = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
 PinStore = require('stores/pin_store')
 
-Pin = require('components/cards/pin_card')
+InsightCard = require('components/cards/insight_card_')
 Pinboard = require('components/cards/pinboard_card')
 
 # cx = React.addons.classSet
@@ -33,8 +33,7 @@ module.exports = React.createClass
         """
           Viewer {
             related_pins_by_date {
-              #{Pin.getQuery('pin')},
-              pinboard
+              #{InsightCard.getQuery('pin')}
             },
             related_pinboards_by_date {
               #{Pinboard.getQuery('pinboard')}
@@ -52,8 +51,8 @@ module.exports = React.createClass
   getDefaultProps: ->
     cursor:
       user: UserStore.me()
-      pins: PinStore.cursor.items
-      pinboards: PinboardStore.cursor.items
+      # pins: PinStore.cursor.items
+      # pinboards: PinboardStore.cursor.items
 
   getInitialState: ->
     ready: false
@@ -108,13 +107,13 @@ module.exports = React.createClass
       .map (object, index) ->
         switch object.type
           when 'Pin'
-            <div className="" key={index}>
-              <Pin pin = { object.id }/>
-            </div>
+            <section key={ index } className="cloud-column">
+              <InsightCard pin = { object.id }/>
+            </section>
           when 'Pinboard'
-            <div className="" key={index}>
+            <section key={ index } className="cloud-column">
               <Pinboard pinboard = { object.id } />
-            </div>
+            </section>
       .toArray()
 
 
@@ -123,6 +122,6 @@ module.exports = React.createClass
   render: ->
     return @renderPlaceholders() unless @state.ready
 
-    <div className="main-list">
+    <section className="cloud-columns cloud-columns-flex">
       { @renderMainList() }
-    </div>
+    </section>
