@@ -27,9 +27,11 @@ module.exports = React.createClass
           Pin {
             #{Header.getQuery('pin')},
             #{Content.getQuery('pin')},
+            #{Footer.getQuery('pin')},
             parent {
               #{Header.getQuery('pin')},
-              #{Content.getQuery('pin')}
+              #{Content.getQuery('pin')},
+              #{Footer.getQuery('pin')}
             }
           }
         """
@@ -74,7 +76,7 @@ module.exports = React.createClass
 
   renderFooter: ->
     return null unless @props.shouldRenderFooter
-    <Footer/>
+    <Footer pin = { @state.pin.uuid } />
 
   renderUser: ->
     <a href={ @state.user.url }>

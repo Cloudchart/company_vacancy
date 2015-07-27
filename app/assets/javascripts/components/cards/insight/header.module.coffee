@@ -16,7 +16,7 @@ PinboardStore = require('stores/pinboard_store')
 #
 module.exports = React.createClass
 
-  displayName: 'PinCardHeader'
+  displayName: 'InsightCardHeader'
 
   propTypes:
     pin: React.PropTypes.string.isRequired
