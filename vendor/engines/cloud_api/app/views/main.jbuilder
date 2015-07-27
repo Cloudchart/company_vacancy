@@ -10,7 +10,7 @@ end
 def __prepare(sources, query, data, json)
   grouped_sources = {}
 
-  scope = { current_user: current_user, current_user_ability: current_user_ability }
+  scope = { current_user: current_user, current_user_ability: current_user_ability, params: params }
 
   cache   = []
   edges   = (query || {}).delete('edges') { [] }.flatten.compact.uniq.map(&:to_sym)

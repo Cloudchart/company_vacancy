@@ -21,8 +21,16 @@ module.exports = React.createClass
 
   # Component Specifications
   #
+
+
   # getDefaultProps: ->
-  # getInitialState: ->
+  #   date: moment()
+
+
+  getInitialState: ->
+    date = moment(@props.date, 'YYYY-MM-DD')
+    date = moment() unless date.isValid()
+    date: date
 
 
   # Lifecycle Methods
@@ -56,8 +64,8 @@ module.exports = React.createClass
   #
   render: ->
     <div className="feed-container">
-      <h1>{ moment().format('DD MMMM YYYY') }</h1>
+      <h1>{ @state.date.format('LL') }</h1>
       <h2>{ "Hey, tell us what is the most inspirational insight you saw on the web. Suggest insight to our
 readers collection." }</h2>
-      <MainList/>
+      <MainList date={ @state.date.format('YYYY-MM-DD') } />
     </div>

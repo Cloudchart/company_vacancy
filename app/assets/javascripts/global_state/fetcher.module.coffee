@@ -231,11 +231,12 @@ fetch = (query, options = {}) ->
 
   cachedPromises[cacheKey] ||= new Promise (done, fail) ->
 
+    data = Object.assign({}, relations: effective_query, options.params)
+
     Promise.resolve $.ajax
       url:      url
       dataType: 'json'
-      data:
-        relations: effective_query if effective_query
+      data:     data
 
     .then(
       (json) ->

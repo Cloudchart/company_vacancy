@@ -73,7 +73,7 @@ end
 json_edge! json, :related_pins_by_date, edges do
   User.preload_related_pins_by_date(siblings, cache)
 
-  user.related_pins_by_date({ current_user: current_user }).map do |pin|
+  user.related_pins_by_date({ current_user: current_user, params: params }).map do |pin|
     {
       id: pin.id,
       created_at: pin.created_at
@@ -97,7 +97,7 @@ end
 json_edge! json, :related_pinboards_by_date, edges do
   User.preload_related_pinboards_by_date(siblings, cache)
 
-  user.related_pinboards_by_date({ current_user: current_user }).map do |pinboard|
+  user.related_pinboards_by_date({ current_user: current_user, params: params }).map do |pinboard|
     {
       id: pinboard.id,
       created_at: pinboard.created_at

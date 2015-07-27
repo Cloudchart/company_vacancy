@@ -65,12 +65,15 @@ module.exports = React.createClass
 
   # componentDidMount: ->
   # componentWillUnmount: ->
+  conponentWillReceiveProps: (nextProps) ->
+    fetch(nextProps.date) if nextProps.date and nextProps.date isnt @props.date
+
 
 
   # Fetchers
   #
-  fetch: ->
-    GlobalState.fetch(@getQuery('viewer')).then => @setState(ready: true)
+  fetch: (date = @props.date) ->
+    GlobalState.fetch(@getQuery('viewer'), { force: true, params: { date: @props.date } }).then => @setState(ready: true)
 
 
   # Helpers
