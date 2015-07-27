@@ -6,7 +6,7 @@ UserStore = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
 PinStore = require('stores/pin_store')
 
-InsightCard = require('components/cards/insight_card_')
+InsightCard = require('components/cards/insight_card')
 Pinboard = require('components/cards/pinboard_card')
 
 # cx = React.addons.classSet

@@ -1,59 +1,37 @@
 # @cjsx React.DOM
 
-# Imports
-#
 GlobalState = require('global_state/state')
 
 PinStore = require('stores/pin_store')
 
-InsightOrigin = require('components/insight/origin')
-InsightContent = require('components/pinnable/insight_content')
-Human = require('components/human')
-EditPinButton = require('components/pinnable/edit_pin_button')
-PinButton = require('components/pinnable/pin_button')
-CloseModalButton = require('components/form/buttons').CloseModalButton
-ShareButtons = require('components/shared/share_buttons')
-
-
-# Utils
-#
-cx = React.addons.classSet
+Header = require('components/cards/insight/header')
+Content = require('components/cards/insight/content')
+Footer = require('components/cards/insight/footer')
 
 
 # Main component
 #
 module.exports = React.createClass
 
-  displayName: 'InsightCard'
-
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+  displayName: "InsightCard"
 
   propTypes:
-    pin: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.object])
-    renderedInsideModal: React.PropTypes.bool
+    pin: React.PropTypes.string.isRequired
+
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics:
     queries:
       pin: ->
         """
           Pin {
-            #{InsightOrigin.getQuery('pin')},
-            user,
+            #{Header.getQuery('pin')},
+            #{Content.getQuery('pin')},
+            #{Footer.getQuery('pin')},
             parent {
-              edges {
-                url,
-                facebook_share_url,
-                twitter_share_url
-              }
-            },
-            post {
-              company
-            },
-            edges {
-              url,
-              facebook_share_url,
-              twitter_share_url,
-              context
+              #{Header.getQuery('pin')},
+              #{Content.getQuery('pin')},
+              #{Footer.getQuery('pin')}
             }
           }
         """
@@ -62,104 +40,57 @@ module.exports = React.createClass
   # Component Specifications
   #
   getDefaultProps: ->
-    renderedInsideModal: false
-    cursor:
-      pin: PinStore.cursor.items
+    shouldRenderHeader: true
+    shouldRenderFooter: true
 
-  # getInitialState: ->
+  getInitialState: ->
+    pin: {}
+    ready: false
 
 
   # Lifecycle Methods
   #
-  componentWillMount: ->
-    @fetch()
+  # componentWillMount: ->
 
   componentDidMount: ->
-    if @props.renderedInsideModal
-      setTimeout =>
-        history.pushState({}, '', @getPin().url)
-      , 250
+    @fetch()
 
 
-  # Helpers
+  # Fetchers
   #
-  getPin: ->
-    if typeof(@props.pin) is 'string'
-      PinStore.cursor.items.cursor(@props.pin).deref(Immutable.Map({})).toJS()
-    else if typeof(@props.pin) is 'object'
-      @props.pin
-
   fetch: ->
-    id = if typeof(@props.pin) is 'string'
-      @props.pin
-    else if typeof(@props.pin) is 'object'
-      @props.pin.uuid
-
-    GlobalState.fetch(@getQuery('pin'), id: id)
-
-  isInsightEmpty: (pin) ->
-    Object.keys(pin).length is 0
-
-  gatherPinAttributes: (pin, insight) ->
-    uuid: insight.uuid
-    title: insight.content
-    parent_id: insight.parent_id
-    pinnable_id: pin.pinnable_id
-    pinnable_type: pin.pinnable_type
-
-
-  # Handlers
-  #
-  # handleThingClick: (event) ->
+    GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
+      @setState
+        ready: true
+        pin: PinStore.get(@props.pin).toJS()
 
 
   # Renderers
   #
-  # renderSomething: ->
+  renderHeader: ->
+    return null unless @props.shouldRenderHeader
+    <Header pin = { @state.pin.uuid } />
+
+  renderContent: ->
+    <Content pin = { @state.pin.parent_id || @state.pin.uuid } />
+
+  renderFooter: ->
+    return null unless @props.shouldRenderFooter
+    <Footer pin = { @state.pin.uuid } />
+
+  renderUser: ->
+    <a href={ @state.user.url }>
+      { @state.user.full_name }
+    </a>
 
 
-  # Main render
+  # Main Render
   #
   render: ->
-    pin = @getPin()
+    return null unless @state.ready
 
-    if @isInsightEmpty(pin)
-      <article className="insight-card placeholder"/>
-    else
-      insight = if pin.parent_id then PinStore.get(pin.parent_id).toJS() else pin
-
-      articte_classes = cx
-        'insight-card': true
-        modal: @props.renderedInsideModal
-
-      attributes = @gatherPinAttributes(pin, insight)
-
-      <div className="insight-card wrapper">
-        <article className={articte_classes}>
-          { <CloseModalButton shouldDisplay = { @props.renderedInsideModal } /> }
-
-          <section className="content">
-            <InsightContent
-              pinnable_id = { pin.pinnable_id }
-              pin_id = { insight.uuid }
-            />
-
-            <Human
-              showUnicornIcon = { true }
-              showLink = { true }
-              type = "user"
-              uuid = { insight.user_id }
-            />
-
-            <ul className="round-buttons">
-              <EditPinButton uuid = { insight.uuid } />
-              <PinButton {...attributes} />
-            </ul>
-          </section>
-
-        </article>
-
-        <footer>
-          <ShareButtons object = { insight } />
-        </footer>
-      </div>
+    <div className="pin-card cloud-card">
+      { @renderHeader() }
+      { @renderContent() }
+      { @renderFooter() }
+    </div>

@@ -89,8 +89,8 @@ module.exports = React.createClass
     content = if @state.pin.parent_id && @state.pin.pinboard_id && !@state.pin.is_suggestion
       [
         <i key=1 className="fa fa-comment-o" />
-        <span key=2 >{ "#{@state.user.full_name}: " }</span>
-        <span key=3 >{ @state.pin.content }</span>
+        <span key=2 >{ "#{@state.user.full_name}:" }</span>
+        <span key=3 > { @state.pin.content } </span>
         <span key=4 >{ @state.pinboard.title }</span>
       ]
 

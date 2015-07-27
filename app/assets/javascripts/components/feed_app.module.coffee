@@ -21,11 +21,7 @@ module.exports = React.createClass
 
   # Component Specifications
   #
-
-
   # getDefaultProps: ->
-  #   date: moment()
-
 
   getInitialState: ->
     date = moment(@props.date, 'YYYY-MM-DD')
