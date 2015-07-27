@@ -4,65 +4,75 @@ GlobalState = require('global_state/state')
 
 PinStore = require('stores/pin_store')
 
-Header = require('components/cards/insight/header')
+Header  = require('components/cards/insight/header')
 Content = require('components/cards/insight/content')
-Footer = require('components/cards/insight/footer')
+Footer  = require('components/cards/insight/footer')
 
 
 # Main component
 #
-module.exports = React.createClass
+InsightCard = React.createClass
 
   displayName: "InsightCard"
 
-  propTypes:
-    pin: React.PropTypes.string.isRequired
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-  statics:
-    queries:
-      pin: ->
-        """
-          Pin {
-            #{Header.getQuery('pin')},
-            #{Content.getQuery('pin')},
-            #{Footer.getQuery('pin')},
-            parent {
-              #{Header.getQuery('pin')},
-              #{Content.getQuery('pin')},
-              #{Footer.getQuery('pin')}
-            }
-          }
-        """
+
+  propTypes:
+    pin:  React.PropTypes.string.isRequired
 
 
-  # Component Specifications
-  #
   getDefaultProps: ->
     shouldRenderHeader: true
     shouldRenderFooter: true
 
+
   getInitialState: ->
-    pin: {}
-    ready: false
+    pin:    {}
+    ready:  false
 
 
-  # Lifecycle Methods
-  #
-  # componentWillMount: ->
+  statics:
+    queries:
+      pin: (params = {}) ->
+        params    = Object.assign(InsightCard.getDefaultProps(), params)
 
-  componentDidMount: ->
-    @fetch()
+        pinQuery  = [Content.getQuery('pin')]
+        pinQuery.push(Header.getQuery('pin')) if params.shouldRenderHeader
+        pinQuery.push(Footer.getQuery('pin')) if params.shouldRenderFooter
 
+        pinQuery  = pinQuery.join(',')
 
-  # Fetchers
-  #
+        """
+          Pin {
+            #{pinQuery},
+            parent {
+              #{pinQuery}
+            }
+          }
+        """
+
   fetch: ->
-    GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
+    GlobalState.fetch(@getQuery('pin', @props), { id: @props.pin }).then =>
       @setState
         ready: true
         pin: PinStore.get(@props.pin).toJS()
+
+
+  # Helpers
+  #
+
+
+  # Events
+  #
+
+
+  # Lifecycle
+  #
+
+  componentDidMount: ->
+    @fetch()
 
 
   # Renderers
@@ -94,3 +104,8 @@ module.exports = React.createClass
       { @renderContent() }
       { @renderFooter() }
     </div>
+
+
+# Exports
+#
+module.exports = InsightCard
