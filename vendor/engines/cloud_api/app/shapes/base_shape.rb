@@ -14,7 +14,7 @@ class BaseShape
 
       rendered_records = wrapped_records.map { |record| record.render(root[:data], fields) }
 
-      root[:root] = records.is_a?(Array) ? rendered_records : rendered_records.first
+      root[:root] = records.respond_to?(:first) && !records.is_a?(Hash) ? rendered_records : rendered_records.first
 
       root
     end
@@ -63,7 +63,7 @@ class BaseShape
             filtered_values = filter_records(values, scope)
 
             wrapped_values  = wrap_records(filtered_values)
-            wrapped_value   = values.is_a?(Array) ? wrapped_values : wrapped_values.first
+            wrapped_value   = values.respond_to?(:first) && !values.is_a?(Hash) ? wrapped_values : wrapped_values.first
 
             group_record.define_singleton_method(field) { wrapped_value }
 
@@ -106,7 +106,7 @@ class BaseShape
       fields.each do |field, child_fields|
         values            = public_send(field)
         wrapped_values    = Array.wrap(values).map { |v| v.render(root, child_fields) }
-        context[field]    = values.is_a?(Array) ? wrapped_values : wrapped_values.first
+        context[field]    = values.respond_to?(:first) && !values.is_a?(Hash) ? wrapped_values : wrapped_values.first
       end
       context
     end

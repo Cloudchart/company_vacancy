@@ -16,6 +16,9 @@ PinboardType = new GraphQLObjectType
     description:
       type: GraphQLString
     pins:
+      args:
+        on:
+          type: GraphQLString
       type: new GraphQLList(PinType)
     pins_count:
       type: GraphQLInt

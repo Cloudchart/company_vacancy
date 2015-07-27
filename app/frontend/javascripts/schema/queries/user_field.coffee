@@ -12,4 +12,4 @@ module.exports =
       type: new GraphQLNonNull(GraphQLString)
 
   resolve: (root, params = {}, _, query) ->
-    RelayFetcher.fetch('User', query, params)
+    Storage.fetch(params, query)

@@ -1,5 +1,5 @@
-RelayFetcher  = require('../../relay/fetcher')
-PinType       = require('../types/pin_type')
+Storage = require('../../relay/storage')
+PinType = require('../types/pin_type')
 
 
 { GraphQLNonNull, GraphQLString } = require('graphql')
@@ -13,5 +13,5 @@ module.exports =
     id:
       type: new GraphQLNonNull(GraphQLString)
 
-  resolve: (root, params = {}, _, query) ->
-    RelayFetcher.fetch('Pin', query, params)
+  resolve: (root, params, _, query) ->
+    Storage.fetch(root, params, query)

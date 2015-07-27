@@ -1,6 +1,5 @@
 React     = require('react')
-GraphQL   = require('graphql')
-Schema    = require('../../schema/schema')
+Store     = require('../../relay/store')
 
 RE = /^([_a-zA-Z][_a-zA-Z0-9]+)\s(\{.+\})$/
 
@@ -23,11 +22,11 @@ Component = React.createClass
               avatar {
                 url
               }
-              insights {
-                id
-                content
-                pinboard {
-                  title
+              pinboards {
+                title
+                pins(on: "#{new Date}") {
+                  content
+                  created_at
                 }
               }
             }
@@ -36,13 +35,11 @@ Component = React.createClass
 
 
   componentWillMount: ->
-    query = @constructor.queries.pin().replace(/\s+/g, ' ').trim()
-    [_, endpoint, body] = RE.exec(query)
-    query = "query get#{endpoint}($id: String!) { #{endpoint}(id: $id) #{body} }"
-    GraphQL.graphql(Schema, query, null, { id: '00243f1e-ee3c-4d8b-b681-3838f974f44d' }).then (json) =>
-      console.log JSON.stringify json, null, 2
-      @setState
-        pin: json.data.Pin
+    @stream = Store.get(@constructor.queries.pin(), { id: '00243f1e-ee3c-4d8b-b681-3838f974f44d' })
+
+
+  componentWillUnmount: ->
+    @stream.end()
 
 
   getInitialState: ->
@@ -50,7 +47,7 @@ Component = React.createClass
 
 
   render: ->
-    return null #unless @state.pin
+    return null
     <section className="cloud-card pin-card">
       <span>{ @state.pin.content }</span>
       <span> &mdash; </span>
