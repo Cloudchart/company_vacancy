@@ -32,15 +32,16 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
-            related_pins_by_date {
+            feed_pins_by_date {
               #{InsightCard.getQuery('pin')}
             },
-            related_pinboards_by_date {
+            feed_pinboards_by_date {
               #{Pinboard.getQuery('pinboard')}
             },
             edges {
-              related_pins_by_date,
-              related_pinboards_by_date
+              feed_pins_by_date,
+              feed_pinboards_by_date,
+              next_feed_date
             }
           }
         """
