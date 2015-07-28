@@ -4,10 +4,6 @@ class Feature < ActiveRecord::Base
 
   DISPLAY_TYPES = [:blurred, :darkened]
 
-  before_create do
-    self.featurable_type ||= 'Pin'
-  end
-
   enum scope: [:pending, :main, :feed]
 
   dragonfly_accessor :image
@@ -18,7 +14,6 @@ class Feature < ActiveRecord::Base
 
   validates :url, url: true, allow_blank: true
 
-  scope :insights, -> { where(featurable_type: 'Pin') }
   scope :only_active, -> { where(is_active: true) }
   scope :with_display_type, -> type { where("display_types_mask & #{2**DISPLAY_TYPES.index(type)} > 0") }
 

@@ -10,7 +10,7 @@ class AdminAbility
 
       can [:index, :update, :destroy, :export], GuestSubscription
       can [:index, :destroy, :invite, :accept_invite], Token
-      can [:index, :update, :destroy], Feature
+      can [:index, :create, :update, :destroy], Feature
       can [:index, :show_in_app], Company
       can :manage, [Interview, Page, Tag, Domain]
 
