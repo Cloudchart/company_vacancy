@@ -18,7 +18,6 @@ module Admin::Pin
         end
 
         field :content
-        field :is_featured, :boolean
         field :is_approved
       end
 

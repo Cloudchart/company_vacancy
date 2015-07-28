@@ -12,7 +12,6 @@ module Admin::Pinboard
           searchable [:first_name, :last_name]
         end
 
-        field :is_featured, :boolean
         fields :created_at, :updated_at
       end
 

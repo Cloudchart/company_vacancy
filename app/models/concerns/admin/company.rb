@@ -4,13 +4,7 @@ module Admin::Company
   included do
     rails_admin do
       list do
-        fields :name, :is_published
-        field :is_featured, :boolean
-        fields :created_at, :updated_at
-      end
-
-      edit do
-        field :is_featured, :boolean
+        fields :name, :is_published, :created_at, :updated_at
       end
     end
   end

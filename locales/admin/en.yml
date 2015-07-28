@@ -28,3 +28,13 @@ en:
         breadcrumb: "Approve"
         title: "Approve"
         bulk_link: "Approve"
+      make_featured:
+        menu: "Make featured"
+        breadcrumb: "Make featured"
+        title: "Make featured"
+        bulk_link: "Make featured"
+      make_unfeatured:
+        menu: "Make unfeatured"
+        breadcrumb: "Make unfeatured"
+        title: "Make unfeatured"
+        bulk_link: "Make unfeatured"

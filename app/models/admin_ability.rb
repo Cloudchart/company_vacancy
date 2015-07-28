@@ -4,14 +4,14 @@ class AdminAbility
   def initialize(current_user)
     if current_user && current_user.admin?
       # Miscellaneous
-      # 
+      #
       can :access, :rails_admin
       can :dashboard
 
       can [:index, :update, :destroy, :export], GuestSubscription
       can [:index, :destroy, :invite, :accept_invite], Token
-      can [:index, :show_in_app, :update], Company
       can [:index, :update, :destroy], Feature
+      can [:index, :show_in_app], Company
       can :manage, [Interview, Page, Tag, Domain]
 
       cannot :export, Interview
@@ -19,7 +19,7 @@ class AdminAbility
       cannot :show, [Interview, Page, Tag, Domain]
 
       # Pin
-      # 
+      #
       can [:index, :update], Pin
 
       can :approve, Pin do |pin|
@@ -27,7 +27,7 @@ class AdminAbility
       end
 
       # User
-      # 
+      #
       can [:index, :create, :update, :export, :make_unicorns], User
       can [:authorize, :destroy], User, authorized_at: nil
 
@@ -40,19 +40,29 @@ class AdminAbility
       end
       
       # Pinboard
-      # 
-      can [:index, :create, :update], Pinboard
+      #
+      can [:index, :create], Pinboard
 
-      can :destroy, Pinboard do |pinboard|
+      can [:update, :destroy], Pinboard do |pinboard|
         pinboard.user_id.blank?
       end
 
       # Story
-      # 
+      #
       can [:index, :create], Story
 
       can [:update, :destroy], Story do |story|
         story.company_id.blank?
+      end
+
+      # Miscellaneous
+      #
+      can :make_unfeatured, [Company, Pin, Pinboard] do |object|
+        object.is_featured?
+      end
+
+      can :make_featured, [Company, Pin, Pinboard] do |object|
+        !object.is_featured?
       end
 
     end
