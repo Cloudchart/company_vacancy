@@ -10,9 +10,8 @@ References = Immutable.Map()
 
 # Fetch
 #
-fetch = (root, params, query) ->
-  console.log params
-  console.log query
+fetch = (root, params, context, query, objectType, queryType, schema) ->
+  console.log arguments
 
 
 # Exports

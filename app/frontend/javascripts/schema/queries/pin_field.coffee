@@ -13,5 +13,5 @@ module.exports =
     id:
       type: new GraphQLNonNull(GraphQLString)
 
-  resolve: (root, params, _, query) ->
-    Storage.fetch(root, params, query)
+  resolve: ->
+    Storage.fetch(arguments...)

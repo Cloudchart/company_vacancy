@@ -26073,7 +26073,9 @@
 	var GraphQLError = (function (_Error) {
 	  _inherits(GraphQLError, _Error);
 
-	  function GraphQLError(message, nodes, stack) {
+	  function GraphQLError(message,
+	  // A flow bug keeps us from declaring nodes as an array of Node
+	  nodes, /*Node*/stack) {
 	    _classCallCheck(this, GraphQLError);
 
 	    _get(Object.getPrototypeOf(GraphQLError.prototype), 'constructor', this).call(this, message);
@@ -26104,9 +26106,6 @@
 	})(Error);
 
 	exports.GraphQLError = GraphQLError;
-
-	// A flow bug keeps us from declaring nodes as an array of Node
-	/*Node*/
 
 /***/ },
 /* 167 */
@@ -26797,7 +26796,7 @@
 	  var token = parser.token;
 	  switch (token.kind) {
 	    case _lexer.TokenKind.BRACKET_L:
-	      return parseArray(parser, isConst);
+	      return parseList(parser, isConst);
 	    case _lexer.TokenKind.BRACE_L:
 	      return parseObject(parser, isConst);
 	    case _lexer.TokenKind.INT:
@@ -26847,11 +26846,11 @@
 	  throw (0, _parserCore.unexpected)(parser);
 	}
 
-	function parseArray(parser, isConst) {
+	function parseList(parser, isConst) {
 	  var start = parser.token.start;
 	  var item = isConst ? parseConstValue : parseVariableValue;
 	  return {
-	    kind: _kinds.ARRAY,
+	    kind: _kinds.LIST,
 	    values: (0, _parserCore.any)(parser, _lexer.TokenKind.BRACKET_L, item, _lexer.TokenKind.BRACKET_R),
 	    loc: (0, _parserCore.loc)(parser, start)
 	  };
@@ -27465,8 +27464,8 @@
 	exports.BOOLEAN = BOOLEAN;
 	var ENUM = 'EnumValue';
 	exports.ENUM = ENUM;
-	var ARRAY = 'ArrayValue';
-	exports.ARRAY = ARRAY;
+	var LIST = 'ListValue';
+	exports.LIST = LIST;
 	var OBJECT = 'ObjectValue';
 	exports.OBJECT = OBJECT;
 	var OBJECT_FIELD = 'ObjectField';
@@ -27834,7 +27833,7 @@
 	      EnumValue: function EnumValue(node) {
 	        return node.value;
 	      },
-	      ArrayValue: function ArrayValue(node) {
+	      ListValue: function ListValue(node) {
 	        return '[' + join(node.values, ', ') + ']';
 	      },
 	      ObjectValue: function ObjectValue(node) {
@@ -27925,7 +27924,7 @@
 	  StringValue: [],
 	  BooleanValue: [],
 	  EnumValue: [],
-	  ArrayValue: ['values'],
+	  ListValue: ['values'],
 	  ObjectValue: ['fields'],
 	  ObjectField: ['name', 'value'],
 
@@ -28951,9 +28950,9 @@
 	          this._argument = argDef;
 	          this._inputTypeStack.push(argType);
 	          break;
-	        case _language.Kind.ARRAY:
-	          var arrayType = (0, _typeDefinition.getNullableType)(this.getInputType());
-	          this._inputTypeStack.push(arrayType instanceof _typeDefinition.GraphQLList ? arrayType.ofType : undefined);
+	        case _language.Kind.LIST:
+	          var listType = (0, _typeDefinition.getNullableType)(this.getInputType());
+	          this._inputTypeStack.push(listType instanceof _typeDefinition.GraphQLList ? listType.ofType : undefined);
 	          break;
 	        case _language.Kind.OBJECT_FIELD:
 	          var objectType = (0, _typeDefinition.getNamedType)(this.getInputType());
@@ -28992,7 +28991,7 @@
 	          this._argument = null;
 	          this._inputTypeStack.pop();
 	          break;
-	        case _language.Kind.ARRAY:
+	        case _language.Kind.LIST:
 	        case _language.Kind.OBJECT_FIELD:
 	          this._inputTypeStack.pop();
 	          break;
@@ -32012,7 +32011,7 @@
 	    // Lists accept a non-list value as a list of one.
 	    if (type instanceof _typeDefinition.GraphQLList) {
 	      var itemType = type.ofType;
-	      if (valueAST.kind === _languageKinds.ARRAY) {
+	      if (valueAST.kind === _languageKinds.LIST) {
 	        return valueAST.values.every(function (itemAST) {
 	          return isValidLiteralValue(itemType, itemAST);
 	        });
@@ -33494,7 +33493,7 @@
 
 	  // Build a JS object of arguments from the field.arguments AST, using the
 	  // variables scope to fulfill any variable references.
-	  // TODO: find a way to memoize, in case this field is within a Array type.
+	  // TODO: find a way to memoize, in case this field is within a List type.
 	  var args = fieldDef.args ? (0, _values.getArgumentValues)(fieldDef.args, fieldAST.arguments, exeContext.variables) : null;
 
 	  // If an error occurs while calling the field `resolve` function, ensure that
@@ -33949,7 +33948,7 @@
 
 	    if (type instanceof _typeDefinition.GraphQLList) {
 	      var itemType = type.ofType;
-	      if (valueAST.kind === _language.Kind.ARRAY) {
+	      if (valueAST.kind === _language.Kind.LIST) {
 	        return valueAST.values.map(function (itemAST) {
 	          return coerceValueAST(itemType, itemAST, variables);
 	        });
@@ -34440,8 +34439,8 @@
 	      type: new GraphQLNonNull(GraphQLString)
 	    }
 	  },
-	  resolve: function(root, params, _, query) {
-	    return Storage.fetch(root, params, query);
+	  resolve: function() {
+	    return Storage.fetch.apply(Storage, arguments);
 	  }
 	};
 
@@ -34456,9 +34455,8 @@
 
 	References = Immutable.Map();
 
-	fetch = function(root, params, query) {
-	  console.log(params);
-	  return console.log(query);
+	fetch = function(root, params, context, query, objectType, queryType, schema) {
+	  return console.log(arguments);
 	};
 
 	module.exports = {
