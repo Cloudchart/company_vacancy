@@ -7,6 +7,8 @@ module Admin::Feature
       list do
         sort_by :featurable_type
 
+        field :scope
+
         field :assigned_title do
           label 'Title'
 
@@ -40,7 +42,7 @@ module Admin::Feature
 
         field :is_active
         field :position
-        field :category
+
 
         field :display_types do
           formatted_value do
@@ -52,7 +54,6 @@ module Admin::Feature
       edit do
         field :title
         field :image
-        field :category
         field :url
         field :is_active
 

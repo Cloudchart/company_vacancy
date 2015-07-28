@@ -8,15 +8,15 @@ class AdminAbility
       can :access, :rails_admin
       can :dashboard
 
-      can :index, Person
       can [:index, :update, :destroy, :export], GuestSubscription
       can [:index, :destroy, :invite, :accept_invite], Token
-      can [:index, :show_in_app, :edit], Company
-      can :manage, [Interview, Page, Tag, Feature, Domain]
+      can [:index, :show_in_app, :update], Company
+      can [:index, :update, :destroy], Feature
+      can :manage, [Interview, Page, Tag, Domain]
 
       cannot :export, Interview
-      cannot :history, [Feature, Domain]
-      cannot :show, [Interview, Page, Tag, Feature, Domain]
+      cannot :history, Domain
+      cannot :show, [Interview, Page, Tag, Domain]
 
       # Pin
       # 

@@ -12,10 +12,6 @@ Cloudchart::Application.routes.draw do
 
   # Concerns
   #
-  concern :statusable do
-    match 'change_status/:status', on: :member, action: :change_status, as: :change_status, via: [:put, :patch]
-  end
-
   concern :followable do
     post :follow, on: :member
     delete :unfollow, on: :member
