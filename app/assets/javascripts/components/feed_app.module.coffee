@@ -1,4 +1,5 @@
 # @cjsx React.DOM
+
 GlobalState = require('global_state/state')
 MainList = require('components/feed/main_list')
 
@@ -14,15 +15,14 @@ module.exports = React.createClass
 
   displayName: 'FeedApp'
 
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
   # propTypes:
     # some_object: React.PropTypes.object.isRequired
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
-
 
   getInitialState: ->
-    date:   null
-    ready:  false
+    date: null
 
 
   statics:
@@ -45,7 +45,7 @@ module.exports = React.createClass
 
     GlobalState.fetch(@getQuery('viewer'), { force: true, params: { date: date } }).then (json) =>
       @setState
-        ready:  true
+        date: date
 
 
   # Lifecycle Methods
@@ -75,18 +75,17 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderEmptyFeed: ->
-    <span>Fuck off</span>
+  # renderEmptyFeed: ->
 
 
   # Main render
   #
   render: ->
-    return null unless @state.ready
+    return null unless @state.date
 
     <div className="feed-container">
-      <h1>{ @state.date.format('LL') }</h1>
+      <h1>{ moment(@state.date).format('LL') }</h1>
       <h2>{ "Hey, tell us what is the most inspirational insight you saw on the web. Suggest insight to our
 readers collection." }</h2>
-      <MainList date={ @props.date.format('YYYY-MM-DD') } />
+      <MainList date = { moment(@state.date).format('YYYY-MM-DD') } />
     </div>

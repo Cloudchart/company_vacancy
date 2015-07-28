@@ -83,7 +83,7 @@ module.exports = React.createClass
     result = new Array
 
     Object.keys(ObjectsForMainList).forEach (key) =>
-      @props.cursor.user.deref(Immutable.Seq()).get("related_#{key}_by_date")
+      @props.cursor.user.deref(Immutable.Seq()).get("feed_#{key}_by_date")
         .forEach (object) => result.push(
           id: object.get('id')
           type: ObjectsForMainList[key]
