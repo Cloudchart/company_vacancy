@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150721114859) do
+ActiveRecord::Schema.define(version: 20150728130832) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -190,16 +190,17 @@ ActiveRecord::Schema.define(version: 20150721114859) do
   create_table "features", primary_key: "uuid", force: true do |t|
     t.string   "featurable_id",      limit: 36,                 null: false
     t.string   "featurable_type",                               null: false
-    t.string   "scope"
+    t.integer  "scope",                         default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "title"
-    t.string   "category"
     t.string   "image_uid"
     t.boolean  "is_active",                     default: false
     t.string   "url"
     t.integer  "display_types_mask",            default: 0
     t.integer  "position",                      default: 0
+    t.date     "effective_from"
+    t.date     "effective_till"
   end
 
   add_index "features", ["featurable_id", "featurable_type"], name: "index_features_on_featurable_id_and_featurable_type", using: :btree

@@ -8,6 +8,8 @@ module Admin::Feature
         sort_by :featurable_type
 
         field :scope
+        field :effective_from
+        field :effective_till
 
         field :assigned_title do
           label 'Title'
@@ -36,13 +38,12 @@ module Admin::Feature
           label 'Type'
         end
 
-        field :assigned_image, :dragonfly do
-          label 'Image'
-        end
-
         field :is_active
         field :position
 
+        field :assigned_image, :dragonfly do
+          label 'Image'
+        end
 
         field :display_types do
           formatted_value do
@@ -52,16 +53,18 @@ module Admin::Feature
       end
 
       edit do
-        field :title
-        field :image
-        field :url
+        field :scope
+        field :effective_from
+        field :effective_till
         field :is_active
+        field :position
+        field :title
+        field :url
+        field :image
 
         field :display_types do
           partial :display_types
         end
-
-        field :position
       end
 
     end

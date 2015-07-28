@@ -8,9 +8,11 @@ class Feature < ActiveRecord::Base
     self.featurable_type ||= 'Pin'
   end
 
+  enum scope: [:pending, :main, :feed]
+
   dragonfly_accessor :image
 
-  nilify_blanks only: [:title, :category, :url]
+  nilify_blanks only: [:title, :category, :url, :effective_from, :effective_till]
 
   belongs_to :featurable, polymorphic: true
 
