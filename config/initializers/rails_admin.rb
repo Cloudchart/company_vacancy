@@ -33,8 +33,8 @@ RailsAdmin.config do |config|
     # custom
     #
     member :make_featured do
-      only ['Company', 'Pin', 'Pinboard']
-      link_icon 'icon-star-empty'
+      only Feature::FEATURABLE_TYPES
+      link_icon 'icon-bookmark'
       http_methods { [:post, :get] }
       register_instance_option :bulkable? do
         true
@@ -43,30 +43,10 @@ RailsAdmin.config do |config|
         proc do
           if request.get?
             @object.update(is_featured: '1')
-            redirect_to index_path(params[:model_name])
+            redirect_to index_path(params[:model_name]), notice: 'Record has been featured'
           elsif request.post?
             params[:model_name].classify.constantize.find(params[:bulk_ids]).each { |object| object.update(is_featured: '1') }
-            redirect_to index_path(params[:model_name])
-          end
-        end
-      end
-    end
-
-    member :make_unfeatured do
-      only ['Company', 'Pin', 'Pinboard']
-      link_icon 'icon-star'
-      http_methods { [:post, :get] }
-      register_instance_option :bulkable? do
-        true
-      end
-      controller do
-        proc do
-          if request.get?
-            @object.update(is_featured: '0')
-            redirect_to index_path(params[:model_name])
-          elsif request.post?
-            params[:model_name].classify.constantize.find(params[:bulk_ids]).each { |object| object.update(is_featured: '0') }
-            redirect_to index_path(params[:model_name])
+            redirect_to index_path(params[:model_name]), notice: 'All records has been featured'
           end
         end
       end

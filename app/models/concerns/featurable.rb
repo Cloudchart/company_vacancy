@@ -9,11 +9,7 @@ module Featurable
 
   def is_featured=(is_featured)
     if is_featured == '1'
-      target_feature = Feature.find_or_initialize_by(featurable: self)
-      if target_feature.new_record?
-        target_feature.is_active = true
-        target_feature.save
-      end
+      Feature.create(featurable: self, is_active: true)
     else
       feature.try(:destroy)
     end

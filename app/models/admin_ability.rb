@@ -57,14 +57,7 @@ class AdminAbility
 
       # Miscellaneous
       #
-      can :make_unfeatured, [Company, Pin, Pinboard] do |object|
-        object.is_featured?
-      end
-
-      can :make_featured, [Company, Pin, Pinboard] do |object|
-        !object.is_featured?
-      end
-
+      can :make_featured, Feature::FEATURABLE_TYPES.map(&:constantize)
     end
   end
 end
