@@ -77,7 +77,7 @@ module.exports = React.createClass
   componentDidMount: ->
     if @props.renderedInsideModal
       setTimeout =>
-        history.pushState({}, '', @getInsight().url)
+        history.pushState({}, '', @getPin().url)
       , 250
 
 
@@ -164,6 +164,6 @@ module.exports = React.createClass
         </article>
 
         <footer>
-          <ShareButtons object = { insight } renderedInsideModal = { @props.renderedInsideModal } />
+          <ShareButtons object = { pin } />
         </footer>
       </div>
