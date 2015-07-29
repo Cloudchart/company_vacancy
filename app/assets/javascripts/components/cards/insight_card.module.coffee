@@ -75,9 +75,10 @@ module.exports = React.createClass
     @fetch()
 
   componentDidMount: ->
-    setTimeout =>
-      history.pushState({}, '', @getPin().url)
-    , 250
+    if @props.renderedInsideModal
+      setTimeout =>
+        history.pushState({}, '', @getInsight().url)
+      , 250
 
 
   # Helpers
@@ -87,6 +88,10 @@ module.exports = React.createClass
       PinStore.cursor.items.cursor(@props.pin).deref(Immutable.Map({})).toJS()
     else if typeof(@props.pin) is 'object'
       @props.pin
+
+  getInsight: ->
+    pin = @getPin()
+    if pin.parent_id then PinStore.get(pin.parent_id).toJS() else pin
 
   fetch: ->
     id = if typeof(@props.pin) is 'string'
@@ -125,7 +130,7 @@ module.exports = React.createClass
     if @isInsightEmpty(pin)
       <article className="insight-card placeholder"/>
     else
-      insight = if pin.parent_id then PinStore.get(pin.parent_id).toJS() else pin
+      insight = @getInsight()
 
       articte_classes = cx
         'insight-card': true
