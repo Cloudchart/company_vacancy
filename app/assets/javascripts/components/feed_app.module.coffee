@@ -2,6 +2,7 @@
 
 GlobalState = require('global_state/state')
 MainList = require('components/feed/main_list')
+UserStore = require('stores/user_store.cursor')
 
 
 # Utils
@@ -20,23 +21,20 @@ module.exports = React.createClass
   # propTypes:
     # some_object: React.PropTypes.object.isRequired
 
-
-  getInitialState: ->
-    date: null
-
-
   statics:
     queries:
       viewer: ->
         """
           Viewer {
             edges {
-              next_feed_date
+              feed_dates
             }
           }
         """
 
 
+  # Fetchers
+  #
   fetch: (date) ->
     if date
       date = moment(date)
@@ -44,8 +42,20 @@ module.exports = React.createClass
       date = date.format('YYYY-MM-DD')
 
     GlobalState.fetch(@getQuery('viewer'), { force: true, params: { date: date } }).then (json) =>
-      @setState
-        date: date
+      if closest_date = @getClosestDate(date)
+        @setState
+          dates: @state.dates.concat(closest_date)
+      else
+        @setState({})
+
+
+  # Component Specifications
+  #
+  getDefaultProps: ->
+    me: UserStore.me()
+
+  getInitialState: ->
+    dates: []
 
 
   # Lifecycle Methods
@@ -58,34 +68,57 @@ module.exports = React.createClass
   # componentWillUnmount: ->
 
 
-  # Fetchers
-  #
-  # fetch: ->
-
-
   # Helpers
   #
-  # getSomething: ->
+  getNextDate: ->
+    date = @state.dates[@state.dates.length - 1]
+
+    @props.me.get('feed_dates', [])
+      .filter (d) -> d < date
+      .sort()
+      .last()
+
+  getClosestDate: (date) ->
+    @props.me.get('feed_dates', [])
+      .filter (d) -> d <= date
+      .sort()
+      .last()
 
 
   # Handlers
   #
-  # handleThingClick: (event) ->
+  handleNextClick: (date, event) ->
+    event.preventDefault()
+
+    @setState
+      dates: @state.dates.concat(date)
 
 
   # Renderers
   #
-  # renderEmptyFeed: ->
+  renderDailyList: ->
+    @state.dates.map (date) ->
+      <div key={ date }>
+        <h1>{ moment(date).format('LL') }</h1>
+        <MainList date = { moment(date).format('YYYY-MM-DD') } />
+      </div>
+
+  renderNextDateLink: ->
+    return unless nextDate = @getNextDate()
+
+    <a href="#" onClick={ @handleNextClick.bind(null, nextDate) }>
+      Go west!
+    </a>
 
 
   # Main render
   #
   render: ->
-    return null unless @state.date
+    return null if @state.dates.length == 0
 
     <div className="feed-container">
-      <h1>{ moment(@state.date).format('LL') }</h1>
-      <h2>{ "Hey, tell us what is the most inspirational insight you saw on the web. Suggest insight to our
-readers collection." }</h2>
-      <MainList date = { moment(@state.date).format('YYYY-MM-DD') } />
+      { @renderDailyList() }
+      <footer>
+        { @renderNextDateLink() }
+      </footer>
     </div>

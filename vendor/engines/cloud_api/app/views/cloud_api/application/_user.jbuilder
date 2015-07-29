@@ -70,17 +70,6 @@ json_edge! json, :insights, edges do
   end
 end
 
-json_edge! json, :feed_pins_by_date, edges do
-  User.preload_feed_pins_by_date(siblings, cache)
-
-  user.feed_pins_by_date({ current_user: current_user, params: params }).map do |pin|
-    {
-      id: pin.id,
-      created_at: pin.created_at
-    }
-  end
-end
-
 json_edge! json, :related_pinboards, edges do
   User.preload_related_pinboards(siblings, cache)
 
@@ -94,31 +83,12 @@ json_edge! json, :related_pinboards, edges do
   end
 end
 
-json_edge! json, :feed_pinboards_by_date, edges do
-  User.preload_feed_pinboards_by_date(siblings, cache)
-
-  user.feed_pinboards_by_date({ current_user: current_user, params: params }).map do |pinboard|
-    {
-      id: pinboard.id,
-      created_at: pinboard.created_at
-    }
-  end
-end
-
-
-json_edge! json, :next_feed_date, edges do
+json_edge! json, :feed_dates, edges do
   User.preload_feed_pinboards(siblings, cache)
   User.preload_feed_pins(siblings, cache)
 
   dates = []
-
   dates.concat user.feed_pinboards.map { |p| p.created_at.to_date }
   dates.concat user.feed_pins.map { |p| p.created_at.to_date }
-  dates = dates.uniq.sort
-
-  if params[:date].present? && date = Date.parse(params[:date])
-    dates.select { |d| d < date }.last
-  else
-    dates.last
-  end
+  dates.uniq.sort
 end

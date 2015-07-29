@@ -9,11 +9,17 @@ PinStore = require('stores/pin_store')
 InsightCard = require('components/cards/insight_card')
 Pinboard = require('components/cards/pinboard_card')
 
+
+# Utils
+#
 # cx = React.addons.classSet
 
 ObjectsForMainList =
   pins: 'Pin'
   pinboards: 'Pinboard'
+
+getFeedData = (query) ->
+  query[query.ids[0]]
 
 
 # Main component
@@ -21,30 +27,35 @@ ObjectsForMainList =
 module.exports = React.createClass
 
   displayName: 'FeedMainList'
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   # propTypes:
     # some_object: React.PropTypes.object.isRequired
-
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics:
     queries:
       viewer: ->
         """
           Viewer {
-            feed_pins_by_date {
+            feed_pins {
               #{InsightCard.getQuery('pin')}
             },
-            feed_pinboards_by_date {
+            feed_pinboards {
               #{Pinboard.getQuery('pinboard')}
-            },
-            edges {
-              feed_pins_by_date,
-              feed_pinboards_by_date,
-              next_feed_date
             }
           }
         """
+
+  # Fetchers
+  #
+  fetch: (date = @props.date) ->
+    GlobalState.fetch(@getQuery('viewer'), { force: true, params: { date: @props.date } }).then (json) => 
+      { feed_pins, feed_pinboards } = getFeedData(json.query)
+
+      @setState
+        ready:          true
+        pins_ids:       feed_pins || []
+        pinboards_ids:  feed_pinboards || []
 
 
   # Component Specifications
@@ -52,8 +63,9 @@ module.exports = React.createClass
   getDefaultProps: ->
     cursor:
       user: UserStore.me()
-      # pins: PinStore.cursor.items
-      # pinboards: PinboardStore.cursor.items
+      pins: PinStore.cursor.items
+      pinboards: PinboardStore.cursor.items
+
 
   getInitialState: ->
     ready: false
@@ -66,15 +78,9 @@ module.exports = React.createClass
 
   # componentDidMount: ->
   # componentWillUnmount: ->
+
   conponentWillReceiveProps: (nextProps) ->
     fetch(nextProps.date) if nextProps.date and nextProps.date isnt @props.date
-
-
-
-  # Fetchers
-  #
-  fetch: (date = @props.date) ->
-    GlobalState.fetch(@getQuery('viewer'), { force: true, params: { date: @props.date } }).then => @setState(ready: true)
 
 
   # Helpers
@@ -83,13 +89,13 @@ module.exports = React.createClass
     result = new Array
 
     Object.keys(ObjectsForMainList).forEach (key) =>
-      @props.cursor.user.deref(Immutable.Seq()).get("feed_#{key}_by_date")
-        .forEach (object) => result.push(
-          id: object.get('id')
+      @state["#{key}_ids"].forEach (id) =>
+        record = @props.cursor[key].get(id)
+
+        result.push
+          id: record.get('id')
           type: ObjectsForMainList[key]
-          created_at: object.get('created_at')
-          # data: @props.cursor[key].get(object.get('id')).toJS() # do we need data here?
-        )
+          created_at: record.get('created_at')
 
     result
 
