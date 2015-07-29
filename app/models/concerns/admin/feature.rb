@@ -58,13 +58,14 @@ module Admin::Feature
         field :effective_till
         field :is_active
         field :position
-        field :title
-        field :url
         field :image
 
         field :display_types do
           partial :display_types
         end
+
+        field :title
+        field :url
       end
 
     end

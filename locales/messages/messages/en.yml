@@ -21,6 +21,7 @@ en:
       invalid_domain: "must be a valid domain"
       invalid_app_url: "must be a valid URL within %{host}"
       invalid_twitter_hanlde: "is not a valid Twitter handle"
+      invalid_date: "is not a valid date"
     invitation_completed: "Now you are a part of this company."
     company_invite: 
       token_not_found: "Sorry, we couldn't find this invitation."
