@@ -12,6 +12,7 @@ class AdminAbility
       can [:index, :destroy, :invite, :accept_invite], Token
       can [:index, :create, :update, :destroy], Feature
       can [:index, :show_in_app], Company
+      can [:index, :show_in_app], Post
       can :manage, [Interview, Page, Tag, Domain]
 
       cannot :export, Interview

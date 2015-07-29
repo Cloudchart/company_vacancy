@@ -3,7 +3,7 @@ class Feature < ActiveRecord::Base
   include Admin::Feature
 
   DISPLAY_TYPES = [:blurred, :darkened]
-  FEATURABLE_TYPES = %w(Company Pin Pinboard)
+  FEATURABLE_TYPES = %w(Company Pin Pinboard Post)
 
   before_save :assign_effective_till, if: -> { effective_from.present? && effective_till.blank? }
 

@@ -20,14 +20,7 @@ module Admin::Feature
             url = if feature.url.present?
               feature.url
             else
-              case feature.featurable_type
-              when 'Pin'
-                bindings[:view].main_app.insight_path(feature.featurable)
-              when 'Pinboard'
-                bindings[:view].main_app.collection_path(feature.featurable)
-              when 'Company'
-                bindings[:view].main_app.company_path(feature.featurable)
-              end
+              bindings[:view].main_app.send("#{feature.featurable_type.underscore}_path", feature.featurable)
             end
 
             bindings[:view].link_to feature.assigned_title, url
