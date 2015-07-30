@@ -31,14 +31,17 @@ def __prepare(sources, query, data, json)
 
     grouped_sources.each do |klass, instances|
 
-      args = []
+      args        = []
+      skip_scope  = false
 
       if klass.present? && klass.reflect_on_association(key)
         Preloadable::preload(instances, cache, key)
+        skip_scope = true
       elsif klass.present? && klass.respond_to?(:"preload_#{key}")
         klass.public_send(:"preload_#{key}", instances, cache)
-        args << scope if (method = klass.instance_method(key)) && method.parameters.size == 1
       end
+
+      args << scope if !skip_scope && (method = klass.instance_method(key)) && method.parameters.size == 1
 
       child_instances = instances.map do |instance|
         result = instance.public_send(key, *args)
