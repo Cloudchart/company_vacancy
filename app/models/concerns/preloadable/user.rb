@@ -62,8 +62,7 @@ module Preloadable::User
       pins = []
       pins.concat favorite_pinboards(scope).flat_map { |pinboard| pinboard.pins }
       pins.concat users_favorites.flat_map { |favorite| favorite.favoritable_user.pins }
-      pins = pins.select { |pin| pin.created_at.to_date == date } if date
-      pins
+      pins.select { |pin| ability(scope).can?(:read, pin) && (date ? pin.created_at.to_date == date : true) }
     end
 
     def insights
