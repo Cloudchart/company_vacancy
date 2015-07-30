@@ -8,6 +8,7 @@ PinStore = require('stores/pin_store')
 ParagraphStore = require('stores/paragraph_store.cursor')
 
 Insight = require('components/cards/insight_card')
+FeaturedPinboard = require('components/landing/featured_pinboard')
 Pinboard = require('components/cards/pinboard_card')
 Post = require('components/pinnable/post')
 Paragraph = require('components/pinnable/block/paragraph')
@@ -38,6 +39,10 @@ module.exports = React.createClass
   statics:
     queries:
       viewer: ->
+        featuredPostsQuery        = """feed_featured_posts{#{Post.getQuery('post')}}"""
+        featuredPinboardsQuery    = """feed_featured_pinboards{#{FeaturedPinboard.getQuery('pinboard')}}"""
+        featuredParagraphsQuery   = """feed_featured_paragraphs"""
+
         """
           Viewer {
             feed_pins {
@@ -46,20 +51,14 @@ module.exports = React.createClass
             feed_pinboards {
               #{Pinboard.getQuery('pinboard')}
             },
-            feed_featured_posts {
-              #{Post.getQuery('post')}
-            },
-            feed_featured_pinboards {
-              #{Pinboard.getQuery('pinboard')}
-            },
-            feed_featured_paragraphs
+            #{featuredPinboardsQuery}
           }
         """
 
   # Fetchers
   #
   fetch: (date = @props.date) ->
-    GlobalState.fetch(@getQuery('viewer'), { force: true, params: { date: @props.date } }).then (json) => 
+    GlobalState.fetch(@getQuery('viewer'), { force: true, params: { date: @props.date } }).then (json) =>
       {
         feed_pins
         feed_pinboards
@@ -69,21 +68,21 @@ module.exports = React.createClass
       } = getFeedData(json.query)
 
       @setState
-        ready: true
-        pins_ids: feed_pins || []
-        pinboards_ids: feed_pinboards || []
-        featured_posts_ids: feed_featured_posts || []
-        featured_pinboards_ids: feed_featured_pinboards || []
-        featured_paragraphs_ids: feed_featured_paragraphs || []
+        ready:                    true
+        pins_ids:                 feed_pins                 || []
+        pinboards_ids:            feed_pinboards            || []
+        featured_posts_ids:       feed_featured_posts       || []
+        featured_pinboards_ids:   feed_featured_pinboards   || []
+        featured_paragraphs_ids:  feed_featured_paragraphs  || []
 
 
   # Component Specifications
   #
   getDefaultProps: ->
     cursor:
-      user: UserStore.me()
-      pins: PinStore.cursor.items
-      pinboards: PinboardStore.cursor.items
+      user:       UserStore.me()
+      pins:       PinStore.cursor.items
+      pinboards:  PinboardStore.cursor.items
 
 
   getInitialState: ->
@@ -104,19 +103,16 @@ module.exports = React.createClass
 
   # Helpers
   #
-  getMainListCollection: ->
-    result = new Array
 
-    Object.keys(ObjectsForMainList).forEach (key) =>
-      @state["#{key}_ids"].forEach (id) =>
-        record = @props.cursor[key].get(id)
+  getFeedItems: ->
+    feed_pinboards  = @state.pinboards_ids.map (id) -> Object.assign(PinboardStore.get(id).toJS(), type: 'Pinboard')
+    feed_pins       = @state.pins_ids.map (id) -> Object.assign(PinStore.get(id).toJS(), type: 'Pin')
 
-        result.push
-          id: record.get('id')
-          type: ObjectsForMainList[key]
-          created_at: record.get('created_at')
+    Immutable.Seq(feed_pinboards.concat(feed_pins))
+      .sortBy (record) -> record.created_at
+      .reverse()
+      .toArray()
 
-    result
 
 
   # Handlers
@@ -126,63 +122,57 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderTempSeparator: ->
-    <div style = { width: '100%', borderBottom: '1px solid black' }></div>
+  renderFeedItem: (item) ->
 
-  renderPlaceholders: ->
-    <div className="">placeholders</div>
+    switch item.type
+      when 'Pin'
+        <section key={ item.id } className="item">
+          <Insight pin={ item.id } />
+        </section>
+      when 'Pinboard'
+        <section key={ item.id } className="item">
+          <Pinboard pinboard={ item.id } />
+        </section>
 
-  renderMainList: ->
-    Immutable.List(@getMainListCollection())
-      .sortBy (object) -> object.created_at
-      .reverse()
-      .map (object, index) ->
-        switch object.type
-          when 'Pin'
-            <section key={ index } className="cloud-column">
-              <Insight pin = { object.id }/>
-            </section>
-          when 'Pinboard'
-            <section key={ index } className="cloud-column">
-              <Pinboard pinboard = { object.id } />
-            </section>
-      .toArray()
 
-  renderFeaturedPosts: ->
-    @state.featured_posts_ids.map (id, index) ->
-      <section key={ index } className="cloud-column">
-        <Post uuid = { id }/>
+  renderFeed: ->
+    <section className="cc-container-common">
+      <section className="flow">
+        { @getFeedItems().map(@renderFeedItem) }
       </section>
+    </section>
+
+
+  renderFeaturedPinboard: (id) ->
+    <FeaturedPinboard pinboard={ id } />
+
 
   renderFeaturedPinboards: ->
-    @state.featured_pinboards_ids.map (id, index) ->
-      <section key={ index } className="cloud-column">
-        <Pinboard pinboard = { id }/>
-      </section>
+    @state.featured_pinboards_ids.map(@renderFeaturedPinboard)[0]
+
+
+  renderFeaturedPosts: ->
+    <section className="cc-container-common">
+      <header>
+        <h1>Featured Posts</h1>
+      </header>
+    </section>
+
 
   renderFeaturedParagraphs: ->
-    @state.featured_paragraphs_ids.map (id, index) ->
-      <section key={ index } className="cloud-column">
-        <Paragraph text = { ParagraphStore.get(id).get('content') }/>
-      </section>
+    <section className="cc-container-common">
+      <header>
+        <h1>Featured Paragraphs</h1>
+      </header>
+    </section>
 
 
   # Main render
   #
   render: ->
-    return @renderPlaceholders() unless @state.ready
+    return null unless @state.ready
 
-    <section className="cloud-columns cloud-columns-flex">
-      <h2>Featured paragraphs</h2>
-      { @renderTempSeparator() }
-      { @renderFeaturedParagraphs() }
-      <h2>Main list</h2>
-      { @renderTempSeparator() }
-      { @renderMainList() }
-      <h2>Featured posts</h2>
-      { @renderTempSeparator() }
-      { @renderFeaturedPosts() }
-      <h2>Featured pinboards</h2>
-      { @renderTempSeparator() }
+    <div>
+      { @renderFeed() }
       { @renderFeaturedPinboards() }
-    </section>
+    </div>

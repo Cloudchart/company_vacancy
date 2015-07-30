@@ -41,7 +41,7 @@ module.exports = React.createClass
       date = moment() unless date.isValid()
       date = date.format('YYYY-MM-DD')
 
-    GlobalState.fetch(@getQuery('viewer'), { force: true, params: { date: date } }).then (json) =>
+    GlobalState.fetch(@getQuery('viewer')).then (json) =>
       if closest_date = @getClosestDate(date)
         @setState
           dates: @state.dates.concat(closest_date)
@@ -98,10 +98,14 @@ module.exports = React.createClass
   #
   renderDailyList: ->
     @state.dates.map (date) ->
-      <div key={ date }>
-        <h1>{ moment(date).format('LL') }</h1>
-        <MainList date = { moment(date).format('YYYY-MM-DD') } />
-      </div>
+      [
+        <section className="cc-container-common" key={ date }>
+          <header>
+            <h1>{ moment(date).format('LL') }</h1>
+          </header>
+        </section>
+        <MainList date={ moment(date).format('YYYY-MM-DD') } />
+      ]
 
   renderNextDateLink: ->
     return unless nextDate = @getNextDate()

@@ -42,7 +42,7 @@ module.exports = React.createClass
         """
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.pinboard }).done =>
+    GlobalState.fetch(@getQuery('pinboard'), { id: @props.pinboard }).done (json) =>
       @setState
         ready: true
 

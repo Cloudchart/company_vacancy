@@ -74,7 +74,7 @@ end
 
 json_edge! json, :assigned_image_url, edges do
   preload_associations(siblings, cache, :feature)
-  pinboard.feature.assigned_image.url
+  pinboard.feature.assigned_image.try(:url)
 end
 
 json_edge! json, :assigned_image_display_types, edges do
