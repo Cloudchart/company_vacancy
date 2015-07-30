@@ -20,6 +20,10 @@ class Viewer < User
     get_features_for(Post, scope)
   end
 
+  def feed_featured_paragraphs(scope = {})
+    get_features_for(Paragraph, scope)
+  end
+
 private
 
   def ability(scope = {})

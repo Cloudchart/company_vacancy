@@ -33,6 +33,7 @@ class Ability
       can :update, :cloud_profile_user
       can [:read, :accept, :destroy], :company_invite
 
+      can :read, Paragraph
       can :create, Tag
       can :create, Activity
       can [:create, :verify, :resend_verification], Email
@@ -209,6 +210,7 @@ private
   end
 
   def owner_or_editor?(user, object)
+    return false unless object
     object.user_id == user.id || editor?(user, object)
   end
 

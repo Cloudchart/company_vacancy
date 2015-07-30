@@ -5,11 +5,12 @@ GlobalState = require('global_state/state')
 UserStore = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
 PinStore = require('stores/pin_store')
-PostStore = require('stores/post_store.cursor')
+ParagraphStore = require('stores/paragraph_store.cursor')
 
 Insight = require('components/cards/insight_card')
 Pinboard = require('components/cards/pinboard_card')
 Post = require('components/pinnable/post')
+Paragraph = require('components/pinnable/block/paragraph')
 
 
 # Utils
@@ -50,7 +51,8 @@ module.exports = React.createClass
             },
             feed_featured_pinboards {
               #{Pinboard.getQuery('pinboard')}
-            }
+            },
+            feed_featured_paragraphs
           }
         """
 
@@ -58,7 +60,13 @@ module.exports = React.createClass
   #
   fetch: (date = @props.date) ->
     GlobalState.fetch(@getQuery('viewer'), { force: true, params: { date: @props.date } }).then (json) => 
-      { feed_pins, feed_pinboards, feed_featured_posts, feed_featured_pinboards } = getFeedData(json.query)
+      {
+        feed_pins
+        feed_pinboards
+        feed_featured_posts
+        feed_featured_pinboards
+        feed_featured_paragraphs
+      } = getFeedData(json.query)
 
       @setState
         ready: true
@@ -66,6 +74,7 @@ module.exports = React.createClass
         pinboards_ids: feed_pinboards || []
         featured_posts_ids: feed_featured_posts || []
         featured_pinboards_ids: feed_featured_pinboards || []
+        featured_paragraphs_ids: feed_featured_paragraphs || []
 
 
   # Component Specifications
@@ -75,7 +84,6 @@ module.exports = React.createClass
       user: UserStore.me()
       pins: PinStore.cursor.items
       pinboards: PinboardStore.cursor.items
-      posts: PostStore.cursor.items
 
 
   getInitialState: ->
@@ -118,6 +126,9 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderTempSeparator: ->
+    <div style = { width: '100%', borderBottom: '1px solid black' }></div>
+
   renderPlaceholders: ->
     <div className="">placeholders</div>
 
@@ -149,16 +160,29 @@ module.exports = React.createClass
         <Pinboard pinboard = { id }/>
       </section>
 
+  renderFeaturedParagraphs: ->
+    @state.featured_paragraphs_ids.map (id, index) ->
+      <section key={ index } className="cloud-column">
+        <Paragraph text = { ParagraphStore.get(id).get('content') }/>
+      </section>
+
+
   # Main render
   #
   render: ->
     return @renderPlaceholders() unless @state.ready
 
     <section className="cloud-columns cloud-columns-flex">
+      <h2>Featured paragraphs</h2>
+      { @renderTempSeparator() }
+      { @renderFeaturedParagraphs() }
       <h2>Main list</h2>
+      { @renderTempSeparator() }
       { @renderMainList() }
       <h2>Featured posts</h2>
+      { @renderTempSeparator() }
       { @renderFeaturedPosts() }
       <h2>Featured pinboards</h2>
+      { @renderTempSeparator() }
       { @renderFeaturedPinboards() }
     </section>

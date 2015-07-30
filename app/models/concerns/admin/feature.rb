@@ -20,7 +20,7 @@ module Admin::Feature
             url = if feature.url.present?
               feature.url
             else
-              bindings[:view].main_app.send("#{feature.featurable_type.underscore}_path", feature.featurable)
+              bindings[:view].main_app.send("#{feature.featurable_type.underscore}_path", feature.featurable) rescue nil
             end
 
             bindings[:view].link_to feature.assigned_title, url

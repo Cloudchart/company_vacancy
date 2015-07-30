@@ -3,7 +3,7 @@ module Cloudchart
 
   RAILS_ADMIN_INCLUDED_MODELS = %w(
     Company Feature User Token Page Tag Interview Story Pinboard
-    Role Pin GuestSubscription Domain Post
+    Role Pin GuestSubscription Domain Post Paragraph
   )
 
   BROWSERS_WHITELIST = [

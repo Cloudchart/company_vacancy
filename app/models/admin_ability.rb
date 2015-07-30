@@ -13,6 +13,7 @@ class AdminAbility
       can [:index, :update, :destroy], Feature
       can [:index, :show_in_app], Company
       can [:index, :show_in_app], Post
+      can [:index, :create, :update, :destroy], Paragraph
       can :manage, [Interview, Page, Tag, Domain]
 
       cannot :export, Interview
