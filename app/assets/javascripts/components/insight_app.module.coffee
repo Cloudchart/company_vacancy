@@ -160,6 +160,6 @@ module.exports = React.createClass
         </article>
 
         <footer>
-          <ShareButtons object = { insight } />
+          <ShareButtons object = { pin } />
         </footer>
       </div>
