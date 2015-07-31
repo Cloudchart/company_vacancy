@@ -19,6 +19,13 @@ GIT
     sprockets-commonjs (0.0.5)
       sprockets (>= 2.1, < 4.0)
 
+GIT
+  remote: git@github.com:diffbot/diffbot-ruby-client.git
+  revision: b590239ead55bc2a0e45ccf89e6a9fc37a58b985
+  specs:
+    diffbot-ruby-client (0.1.1)
+      faraday
+
 PATH
   remote: vendor/engines/cloud_api
   specs:
@@ -439,6 +446,7 @@ DEPENDENCIES
   cloud_profile!
   coffee-rails (~> 4.0.1)
   database_cleaner (~> 1.4)
+  diffbot-ruby-client!
   dotenv-rails
   dragonfly (~> 1.0)
   factory_girl_rails (~> 4.0)
