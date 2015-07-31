@@ -18,33 +18,38 @@ $insight-card-footer-content-line-height: 20px;
 // Insight Card Header
 //
 @mixin insight-card-header {
+  @include display(flex);
+  
   background-color: $insight-card-header-background-color;
   font-size: inherit;
   font-weight: inherit;
+  overflow: hidden;
   padding: $insight-card-padding;
-  padding-left: $insight-card-padding + 30px;
-  position: relative;
+  padding-left: $insight-card-padding;
 
   > i {
-    @include position(absolute, $insight-card-padding null null $insight-card-padding);
     color: hsl(60, 4%, 89%);
+    display: block;
+    float: left;
     font-size: inherit;
     line-height: $insight-card-font-size;
+    width: 30px;
   }
 
-  > *::after {
-    display: inline;
-    content: ' ';
+  > section.title {
+    @include flex(1);
+
+    > *::after {
+      display: inline;
+      content: ' ';
+    }
+
+    .user,
+    .pinboard {
+      font-weight: 600;
+    }
   }
 
-  > .user,
-  > .pinboard {
-    font-weight: 600;
-  }
-
-  > .pinboard:first-child {
-    margin-left: -30px;
-  }
 }
 
 

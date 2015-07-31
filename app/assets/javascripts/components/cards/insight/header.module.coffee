@@ -68,12 +68,18 @@ module.exports = React.createClass
         pinboard: PinboardStore.get(pin.pinboard_id).toJS() if pin.pinboard_id
 
 
-  renderContentWithUserCommentAndPinboard: (comment) ->
+  renderIcon: ->
+    <i key='icon' className='fa fa-comment-o' />
+
+
+  renderContentWithUserCommentAndPinboard: (comment, options = {}) ->
     [
-      <i key='icon' className='fa fa-comment-o' />
-      <a key='user' className='user' href={ @state.user.url }>{ @state.user.full_name }</a>
-      <span key='comment' className='comment'>{ comment }</span>
-      @renderContentWithPinboard()
+      @renderIcon() if options.icon
+      <section className="title">
+        <a key='user' className='user' href={ @state.user.url }>{ @state.user.full_name }</a>
+        <span key='comment' className='comment'>{ comment }</span>
+        { @renderContentWithPinboard() }
+      </section>
     ]
 
   renderContentWithPinboard: ->
@@ -95,7 +101,7 @@ module.exports = React.createClass
       if @state.pin.is_suggestion
         @renderContentWithUserCommentAndPinboard('suggested insight to')
       else if @state.pin.content
-        @renderContentWithUserCommentAndPinboard('— ' + @state.pin.content + ' in')
+        @renderContentWithUserCommentAndPinboard('— ' + @state.pin.content + ' in', icon: true)
       else if @state.user.is_followed
         @renderContentWithUserCommentAndPinboard('added insight to')
       else
