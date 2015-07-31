@@ -38,17 +38,17 @@ InsightCard = React.createClass
       pin: (params = {}) ->
         params    = Object.assign(InsightCard.getDefaultProps(), params)
 
-        pinQuery  = [Content.getQuery('pin')]
-        pinQuery.push(Header.getQuery('pin')) if params.shouldRenderHeader
-        pinQuery.push(Footer.getQuery('pin')) if params.shouldRenderFooter
-
-        pinQuery  = pinQuery.join(',')
+        headerQuery   = Header.getQuery('pin') if params.shouldRenderHeader
+        contentQuery  = Content.getQuery('pin')
+        footerQuery   = Footer.getQuery('pin') if params.shouldRenderFooter
+        pinQuery      = [headerQuery, contentQuery, footerQuery].filter((part) -> !!part).join(',')
 
         """
           Pin {
+            id,
             #{pinQuery},
             parent {
-              #{pinQuery}
+              #{contentQuery}
             }
           }
         """
@@ -99,7 +99,7 @@ InsightCard = React.createClass
   render: ->
     return null unless @state.ready
 
-    <div className="pin-card cloud-card">
+    <div className="insight-card cloud-card">
       { @renderHeader() }
       { @renderContent() }
       { @renderFooter() }

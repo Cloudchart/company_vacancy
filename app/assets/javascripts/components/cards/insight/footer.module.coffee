@@ -1,13 +1,13 @@
 # @cjsx React.DOM
 
-GlobalState = require('global_state/state')
+GlobalState         = require('global_state/state')
 
-PinStore = require('stores/pin_store')
+PinStore            = require('stores/pin_store')
 
-EditPinButton = require('components/pinnable/edit_pin_button')
-ShareInsightButton = require('components/insight/share_button')
+EditPinButton       = require('components/pinnable/edit_pin_button')
+ShareInsightButton  = require('components/insight/share_button')
 
-# cx = React.addons.classSet
+cx = React.addons.classSet
 
 
 # Main component

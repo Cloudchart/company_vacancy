@@ -17,10 +17,12 @@ def __prepare(sources, query, data, json)
 
   sources.each do |source|
     (grouped_sources[source.class] ||= []) << source
-    (data[source.class.name.underscore.pluralize] ||= []) << { model: source, siblings: sources, cache: cache, edges: edges }
+    if source.respond_to?(:id)
+      (data[source.class.name.underscore.pluralize] ||= []) << { model: source, siblings: sources, cache: cache, edges: edges }
+    end
   end
 
-  unless sources.empty?
+  if sources.first.respond_to?(:id)
     json.type sources.first.class.name
     json.ids sources.map(&:id)
   end
@@ -49,7 +51,7 @@ def __prepare(sources, query, data, json)
           if result.respond_to?(:each)
             json.set! key, result.map(&:id)
           else
-            json.set! key, result.id if result.present?
+            json.set! key, result.id if result.respond_to?(:id)
           end
         end
         result

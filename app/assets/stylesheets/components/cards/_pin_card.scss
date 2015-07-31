@@ -1,9 +1,87 @@
-$pin-card-font-size: 20px;
-$pin-card-font-weight: 400;
-$pin-card-line-height: 26px;
+$insight-card-font-size: 20px;
+$insight-card-font-weight: 400;
+$insight-card-line-height: 26px;
+$insight-card-padding: 20px;
+$insight-card-background-color: white;
+$insight-card-header-background-color: hsl(60, 10%, 96%);
+$insight-card-footer-border-color: hsl(0, 0%, 94%);
+
 
 .cloud-card.pin-card {
-  font-size: $pin-card-font-size;
-  font-weight: $pin-card-font-weight;
-  line-height: $pin-card-line-height;
+  font-size: $insight-card-font-size;
+  font-weight: $insight-card-font-weight;
+  line-height: $insight-card-line-height;
+}
+
+
+// Insight Card Header
+//
+@mixin insight-card-header {
+  background-color: $insight-card-header-background-color;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: $insight-card-padding;
+  padding-left: $insight-card-padding + 30px;
+  position: relative;
+
+  > i {
+    @include position(absolute, $insight-card-padding null null $insight-card-padding);
+    color: hsl(60, 4%, 89%);
+    font-size: inherit;
+    line-height: $insight-card-font-size;
+  }
+
+  > *::after {
+    display: inline;
+    content: ' ';
+  }
+
+  > .user,
+  > .pinboard {
+    font-weight: 600;
+  }
+
+  > .pinboard:first-child {
+    margin-left: -30px;
+  }
+}
+
+
+// Insight Card Content
+//
+@mixin insight-card-content {
+  background-color: $insight-card-background-color;
+  padding: 0 $insight-card-padding;
+}
+
+
+// Insight Card Footer
+//
+@mixin insight-card-footer {
+  border-top: 1px solid $insight-card-footer-border-color;
+  margin-left: $insight-card-padding;
+  margin-right: $insight-card-padding;
+  padding-top: $insight-card-padding;
+}
+
+
+// Insight Card
+//
+.cloud-card.insight-card {
+  font-size: $insight-card-font-size;
+  font-weight: $insight-card-font-weight;
+  line-height: $insight-card-line-height;
+  padding: 0 0 $insight-card-padding;
+
+  > header {
+    @include insight-card-header;
+  }
+
+  > section.content {
+    @include insight-card-content;
+  }
+
+  > footer {
+    @include insight-card-footer;
+  }
 }

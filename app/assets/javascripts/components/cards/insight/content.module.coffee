@@ -13,7 +13,7 @@ module.exports = React.createClass
   displayName: "InsightContent"
 
   propTypes:
-    pin: React.PropTypes.string.isRequired
+    pin:      React.PropTypes.string.isRequired
     onUpdate: React.PropTypes.func
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
@@ -23,6 +23,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            user_id,
             user
           }
         """
@@ -32,6 +33,7 @@ module.exports = React.createClass
   #
   getDefaultProps: ->
     onUpdate: ->
+
 
   getInitialState: ->
     pin: {}

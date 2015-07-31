@@ -1,10 +1,10 @@
 # @cjsx React.DOM
 
-GlobalState = require('global_state/state')
+GlobalState     = require('global_state/state')
 
-PinStore = require('stores/pin_store')
-UserStore = require('stores/user_store.cursor')
-PinboardStore = require('stores/pinboard_store')
+PinStore        = require('stores/pin_store')
+UserStore       = require('stores/user_store.cursor')
+PinboardStore   = require('stores/pinboard_store')
 
 
 # Utils
@@ -29,30 +29,30 @@ module.exports = React.createClass
         """
           Pin {
             pinboard,
-            user
+            user {
+              edges {
+                is_followed
+              }
+            }
           }
         """
 
 
   # Component Specifications
   #
-  # getDefaultProps: ->
 
   getInitialState: ->
-    ready: false
-    pin: {}
-    user: {}
-    pinboard: {}
+    ready:      false
+    pin:        {}
+    user:       {}
+    pinboard:   {}
 
 
   # Lifecycle Methods
   #
-  # componentWillMount: ->
 
   componentDidMount: ->
     @fetch()
-
-  # componentWillUnmount: ->
 
 
   # Fetchers
@@ -62,47 +62,50 @@ module.exports = React.createClass
       pin = PinStore.get(@props.pin).toJS()
 
       @setState
-        ready: true
-        pin: pin
-        user: UserStore.get(pin.user_id).toJS()
+        ready:    true
+        pin:      pin
+        user:     UserStore.get(pin.user_id).toJS()
         pinboard: PinboardStore.get(pin.pinboard_id).toJS() if pin.pinboard_id
 
 
-  # Helpers
+  renderContentWithUserCommentAndPinboard: (comment) ->
+    [
+      <i key='icon' className='fa fa-comment-o' />
+      <a key='user' className='user' href={ @state.user.url }>{ @state.user.full_name }</a>
+      <span key='comment' className='comment'>{ comment }</span>
+      @renderContentWithPinboard()
+    ]
+
+  renderContentWithPinboard: ->
+    return null unless @state.pinboard
+    <span key='pinboard' className='pinboard'>{ @state.pinboard.title }</span>
+
+
+  # Render content
+  #   Cases:
+  #     1. User suggested insight [%User% suggested insight to %Pinboard%]
+  #     2. User pinned insight without comment
+  #     2.1 User is followed [%User% added insight to %Pinboard%]
+  #     2.2 User is not followed [%Pinboard%]
+  #     3. User pinned insight with comment [%User% %Comment% in %Pinboard%]
+  #     4. User created insight [%User% added insight to %Pinboard%]
   #
-  # getSomething: ->
+  renderContent: ->
+    if @state.pin.parent_id
+      if @state.pin.is_suggestion
+        @renderContentWithUserCommentAndPinboard('suggested insight to')
+      else if @state.pin.content
+        @renderContentWithUserCommentAndPinboard('— ' + @state.pin.content + ' in')
+      else if @state.user.is_followed
+        @renderContentWithUserCommentAndPinboard('added insight to')
+      else
+        @renderContentWithPinboard()
+    else
+      @renderContentWithUserCommentAndPinboard('added insight to')
 
-
-  # Handlers
-  #
-  # handleThingClick: (event) ->
-
-
-  # Renderers
-  #
-  # renderSomething: ->
 
 
   # Main render
   #
   render: ->
-    content = if @state.pin.parent_id && @state.pin.pinboard_id && !@state.pin.is_suggestion
-      [
-        <i key=1 className="fa fa-comment-o" />
-        <span key=2 >{ "#{@state.user.full_name}:" }</span>
-        <span key=3 > { @state.pin.content } </span>
-        <span key=4 >{ @state.pinboard.title }</span>
-      ]
-
-    else if @state.pin.pinboard_id && @state.pin.is_suggestion
-      [
-        <i key=1 className="fa fa-comment-o" />
-        <span key=2 >{ @state.user.full_name }</span>
-        <span key=3> suggested insight to </span>
-        <span key=4>{ @state.pinboard.title }</span>
-      ]
-
-    else if @state.pin.pinboard_id
-      <span>{ @state.pinboard.title }</span>
-
-    <header>{ content }</header>
+    <header>{ @renderContent() }</header>
