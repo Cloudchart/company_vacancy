@@ -77,6 +77,8 @@ class Ability
         (current_user.admin? || current_user.editor?)
       end
 
+      can [:follow, :unfollow], Pin
+
       can :approve, Pin do |pin|
         (current_user.admin? || current_user.editor?) && pin.content.present? && !pin.is_approved?
       end
@@ -90,7 +92,7 @@ class Ability
       can :manage, Company, user_id: current_user.id
       can [:follow, :unfollow], Company
       can :read, Company, is_published: true
-      can [:index, :search], :companies 
+      can [:index, :search], :companies
 
       can :create, Company do
         current_user.editor?
@@ -161,7 +163,7 @@ class Ability
       can [:update, :destroy], Landing, author_id: current_user.id
 
       # Role
-      # 
+      #
       can [:read, :accept], Role
 
       can [:create, :update], Role do |role|

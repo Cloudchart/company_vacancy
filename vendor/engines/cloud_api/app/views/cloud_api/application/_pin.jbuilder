@@ -47,3 +47,8 @@ end
 json_edge! json, :is_origin_domain_allowed, edges do
   pin.is_origin_domain_allowed
 end
+
+json_edge! json, :is_followed, edges do
+  preload_associations(siblings, cache, :followers)
+  !!pin.followers.find { |f| f.user_id == current_user.id }
+end

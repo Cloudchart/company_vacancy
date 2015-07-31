@@ -7,4 +7,5 @@ class Favorite < ActiveRecord::Base
   belongs_to :pinboard, foreign_key: :favoritable_id, foreign_type: 'Pinboard'
   belongs_to :company, foreign_key: :favoritable_id, foreign_type: 'Company'
   belongs_to :favoritable_user, class_name: 'User', foreign_key: :favoritable_id, foreign_type: 'User'
+  belongs_to :favoritable_pin, class_name: Pin.name, foreign_key: :favoritable_id, foreign_type: Pin.name
 end

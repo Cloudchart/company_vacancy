@@ -23,6 +23,8 @@ class Pin < ActiveRecord::Base
 
   has_many :children, class_name: 'Pin', foreign_key: :parent_id
 
+  has_many :followers, as: :favoritable, dependent: :destroy, class_name: Favorite.name
+
   validates :content, presence: true, if: :should_validate_content_presence?
   validates :parent_id, uniqueness: { scope: :pinboard_id, conditions: -> { where(deleted_at: nil) } }, allow_blank: true, if: -> { is_suggestion? && pinboard_id }
 

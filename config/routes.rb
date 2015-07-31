@@ -66,7 +66,7 @@ Cloudchart::Application.routes.draw do
     resources :invites, only: [:create, :update, :destroy], controller: 'pinboards/invites'
   end
 
-  resources :pins, except: [:index] do
+  resources :pins, except: [:index], concerns: [:followable] do
     match :approve, on: :member, via: [:put, :patch]
   end
 
@@ -142,7 +142,7 @@ Cloudchart::Application.routes.draw do
   post '/auth/developer/callback', to: 'auth#developer'
 
   # Should be at the end
-  # 
+  #
   get ':id', to: 'pages#show', as: :page
 
 end

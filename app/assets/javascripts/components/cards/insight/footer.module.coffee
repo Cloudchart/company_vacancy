@@ -37,7 +37,6 @@ module.exports = React.createClass
     ready:      false
     pin:        {}
     save_sync:  false
-    star_sync:  false
 
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
@@ -47,6 +46,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            #{InsightStarButton.getQuery('pin')},
             edges {
               is_origin_domain_allowed
             }
@@ -72,10 +72,6 @@ module.exports = React.createClass
     @thePinIsMine()
 
 
-  getStarButtonActiveState: ->
-    @state.star_is_active
-
-
   renderPinForm: ->
     pin = @state.insight || @state.pin
     pin =
@@ -93,19 +89,6 @@ module.exports = React.createClass
   handleSaveButtonClick: ->
     return false
     ModalStack.show(@renderPinForm())
-
-
-  handleStarButtonClick: ->
-    return if @state.star_sync
-
-    @setState
-      star_sync: true
-
-    setTimeout =>
-      @setState
-        star_sync: false
-        star_is_active: !@state.star_is_active
-    , 1000
 
 
   # Lifecycle
@@ -138,7 +121,7 @@ module.exports = React.createClass
     <footer>
       <ul className="round-buttons">
         <InsightSaveButton active={ @getSaveButtonActiveState() } sync={ @state.save_sync } onClick={ @handleSaveButtonClick } />
-        <InsightStarButton active={ @getStarButtonActiveState() } sync={ @state.star_sync } onClick={ @handleStarButtonClick } />
+        <InsightStarButton pin={ (@state.insight || @state.pin).uuid } />
       </ul>
       { @renderContent() }
     </footer>
