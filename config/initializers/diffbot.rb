@@ -1,4 +1,4 @@
- DIFFBOT_CLIENT = Diffbot::APIClient.new do |config|
+DIFFBOT_CLIENT = Diffbot::APIClient.new do |config|
   config.token = ENV['DIFFBOT_TOKEN']
 end
 

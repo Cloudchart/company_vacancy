@@ -21,6 +21,9 @@ class Pin < ActiveRecord::Base
   belongs_to :pinnable, polymorphic: true
   belongs_to :post, foreign_key: :pinnable_id
 
+  has_one :diffbot_response_owner, as: :owner, dependent: :destroy
+  has_one :diffbot_response, through: :diffbot_response_owner, source: :owner, source_type: self.name
+
   has_many :children, class_name: 'Pin', foreign_key: :parent_id
 
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: Favorite.name
