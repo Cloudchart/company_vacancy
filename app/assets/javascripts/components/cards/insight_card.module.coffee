@@ -2,11 +2,11 @@
 
 GlobalState = require('global_state/state')
 
-PinStore = require('stores/pin_store')
+PinStore    = require('stores/pin_store')
 
-Header  = require('components/cards/insight/header')
-Content = require('components/cards/insight/content')
-Footer  = require('components/cards/insight/footer')
+Header      = require('components/cards/insight/header')
+Content     = require('components/cards/insight/content')
+Footer      = require('components/cards/insight/footer')
 
 
 # Main component
@@ -87,11 +87,6 @@ InsightCard = React.createClass
   renderFooter: ->
     return null unless @props.shouldRenderFooter
     <Footer pin = { @state.pin.uuid } />
-
-  renderUser: ->
-    <a href={ @state.user.url }>
-      { @state.user.full_name }
-    </a>
 
 
   # Main Render

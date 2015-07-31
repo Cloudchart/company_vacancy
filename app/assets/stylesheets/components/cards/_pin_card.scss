@@ -1,11 +1,12 @@
 $insight-card-font-size: 20px;
 $insight-card-font-weight: 400;
-$insight-card-line-height: 26px;
+$insight-card-line-height: 25px;
 $insight-card-padding: 20px;
 $insight-card-background-color: white;
 $insight-card-header-background-color: hsl(60, 10%, 96%);
 $insight-card-footer-border-color: hsl(0, 0%, 94%);
-
+$insight-card-footer-content-font-size: 16px;
+$insight-card-footer-content-line-height: 20px;
 
 .cloud-card.pin-card {
   font-size: $insight-card-font-size;
@@ -58,10 +59,43 @@ $insight-card-footer-border-color: hsl(0, 0%, 94%);
 // Insight Card Footer
 //
 @mixin insight-card-footer {
+  @include align-items(center);
+  @include display(flex);
+
   border-top: 1px solid $insight-card-footer-border-color;
   margin-left: $insight-card-padding;
   margin-right: $insight-card-padding;
   padding-top: $insight-card-padding;
+
+  ul.round-buttons {
+    line-height: 0;
+
+    li {
+      background-color: hsl(60, 2%, 70%);
+      color: white;
+
+      i {
+        color: inherit;
+      }
+    }
+
+    li ~ li {
+      margin-left: $insight-card-padding / 2;
+    }
+
+    li.star,
+    li.save.active {
+      background-color: hsl(137, 54%, 50%);
+    }
+  }
+
+  section.content {
+    @include flex(1);
+
+    font-size: $insight-card-footer-content-font-size;
+    line-height: $insight-card-footer-content-line-height;
+    margin-left: $insight-card-padding / 2;
+  }
 }
 
 

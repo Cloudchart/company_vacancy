@@ -23,8 +23,10 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
-            user_id,
-            user
+            user,
+            edges {
+              url
+            }
           }
         """
 
@@ -36,9 +38,9 @@ module.exports = React.createClass
 
 
   getInitialState: ->
-    pin: {}
-    user: {}
-    ready: false
+    pin:    {}
+    user:   {}
+    ready:  false
 
 
   # Lifecycle Methods
@@ -56,16 +58,21 @@ module.exports = React.createClass
   #
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
-      pin = PinStore.get(@props.pin).toJS()
-      user = UserStore.get(pin.user_id).toJS()
+      pin   = PinStore.get(@props.pin).toJS()
+      user  = UserStore.get(pin.user_id).toJS()
       @setState
-        ready: true
-        pin: pin
-        user: user
+        ready:  true
+        pin:    pin
+        user:   user
 
 
   # Renderers
   #
+  renderContent: ->
+    <a href={ @state.pin.url } className="content see-through">
+      { @state.pin.content }
+    </a>
+
   renderUser: ->
     <a href={ @state.user.url }>
       { @state.user.full_name }
@@ -78,9 +85,7 @@ module.exports = React.createClass
     return null unless @state.ready
 
     <section className="content" onClick={ @props.onClick }>
-      <span className="content">
-        { @state.pin.content }
-      </span>
+      { @renderContent() }
       <span> &mdash; </span>
       { @renderUser() }
     </section>

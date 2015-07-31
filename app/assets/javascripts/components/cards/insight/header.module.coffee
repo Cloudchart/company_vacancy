@@ -78,7 +78,7 @@ module.exports = React.createClass
 
   renderContentWithPinboard: ->
     return null unless @state.pinboard
-    <span key='pinboard' className='pinboard'>{ @state.pinboard.title }</span>
+    <a href={ @state.pinboard.url } key='pinboard' className='pinboard see-through'>{ @state.pinboard.title }</a>
 
 
   # Render content
