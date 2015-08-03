@@ -13,6 +13,7 @@ class Pin < ActiveRecord::Base
 
   before_save :skip_generate_preview!, unless: :insight?
   before_save :squish_origin, if: -> { origin_changed? && origin.present? }
+  before_save :nullify_diffbot_response_owner, if: -> { origin_changed? && origin.blank? }
   before_save :crawl_origin
   after_save :check_domain_from_origin
 
@@ -65,6 +66,14 @@ class Pin < ActiveRecord::Base
 
 private
 
+  def squish_origin
+    self.origin = origin.squish
+  end
+
+  def nullify_diffbot_response_owner
+    self.diffbot_response_owner = nil
+  end
+
   def crawl_origin
     if Cloudchart::Utils.should_perform_sidekiq_worker? && origin_changed? && origin.present? && origin_uri
       DiffbotWorker.perform_async(id, self.class.name, :origin, origin)
@@ -79,10 +88,6 @@ private
         Domain.create(name: uri.host, status: status)
       end
     end
-  end
-
-  def squish_origin
-    self.origin = origin.squish
   end
 
 end

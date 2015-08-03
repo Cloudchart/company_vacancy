@@ -15,4 +15,6 @@ module Cloudchart
     OpenStruct.new(browser: 'Internet Explorer', version: '11.0')
   ]
 
+  WORDS_PER_MINUTE = 200
+
 end
