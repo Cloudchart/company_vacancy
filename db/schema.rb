@@ -157,11 +157,12 @@ ActiveRecord::Schema.define(version: 20150731141704) do
     t.string   "diffbot_response_id", limit: 36, null: false
     t.string   "owner_id",            limit: 36, null: false
     t.string   "owner_type",                     null: false
-    t.string   "attr"
+    t.string   "attribute_name",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "diffbot_response_owners", ["diffbot_response_id", "owner_id", "owner_type", "attribute_name"], name: "diffbot_response_owners_idx", unique: true, using: :btree
   add_index "diffbot_response_owners", ["diffbot_response_id"], name: "index_diffbot_response_owners_on_diffbot_response_id", using: :btree
   add_index "diffbot_response_owners", ["owner_id", "owner_type"], name: "index_diffbot_response_owners_on_owner_id_and_owner_type", using: :btree
 

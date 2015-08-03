@@ -3,4 +3,7 @@ class DiffbotResponseOwner < ActiveRecord::Base
 
   belongs_to :diffbot_response
   belongs_to :owner, polymorphic: true
+
+  validates :attribute_name, presence: true
+
 end

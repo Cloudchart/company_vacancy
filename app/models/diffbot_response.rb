@@ -8,4 +8,5 @@ class DiffbotResponse < ActiveRecord::Base
 
   validates :api, presence: true
   validates :resolved_url, url: true, uniqueness: { scope: :api }
+
 end
