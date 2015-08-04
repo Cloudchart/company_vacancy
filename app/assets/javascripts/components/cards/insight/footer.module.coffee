@@ -9,6 +9,8 @@ ModalStack          = require('components/modal_stack')
 PinForm             = require('components/form/pin_form')
 InsightStarButton   = require('components/cards/insight/star_button')
 InsightSaveButton   = require('components/cards/insight/save_button')
+InsightDropButton   = require('components/cards/insight/drop_button')
+
 
 cx = React.addons.classSet
 
@@ -22,7 +24,8 @@ module.exports = React.createClass
   displayName: 'InsightCardFooter'
 
   propTypes:
-    pin: React.PropTypes.string.isRequired
+    pin:    React.PropTypes.string.isRequired
+    scope:  React.PropTypes.string.isRequired
 
 
   # Specification
@@ -44,11 +47,21 @@ module.exports = React.createClass
   statics:
     queries:
       pin: ->
+
+        query = """
+          #{InsightStarButton.getQuery('pin')},
+          #{InsightDropButton.getQuery('pin')},
+          edges {
+            is_origin_domain_allowed,
+            is_mine
+          }
+        """
+
         """
           Pin {
-            #{InsightStarButton.getQuery('pin')},
-            edges {
-              is_origin_domain_allowed
+            #{query},
+            parent {
+              #{query}
             }
           }
         """
@@ -56,20 +69,21 @@ module.exports = React.createClass
 
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
+      pin       = PinStore.get(@props.pin).toJS()
+      insight   = PinStore.get(pin.parent_id).toJS() if pin.parent_id
+
       @setState
         ready:    true
-        pin:      PinStore.get(@props.pin).toJS()
-        insight:  PinStore.get(@props.pin.parent_id).toJS() if @props.pin.parent_id
+        pin:      pin if insight
+        insight:  insight || pin
 
 
 
   # Helpers
   #
-  thePinIsMine: ->
-    @state.pin.user_id == @props.cursor.viewer.get('id')
 
   getSaveButtonActiveState: ->
-    @thePinIsMine()
+    @state.insight.is_mine
 
 
   renderPinForm: ->
@@ -102,9 +116,9 @@ module.exports = React.createClass
   #
 
   renderOrigin: ->
-    return null unless @state.pin.origin && @state.pin.is_origin_domain_allowed
-    return null unless (parts = DOMAIN_RE.exec(@state.pin.origin)) and parts.length == 2
-    <a href={ @state.pin.origin } target="_blank">{ parts[1] }</a>
+    return null unless @state.insight.origin && @state.insight.is_origin_domain_allowed
+    return null unless (parts = DOMAIN_RE.exec(@state.insight.origin)) and parts.length == 2
+    <a href={ @state.insight.origin } target="_blank">{ parts[1] }</a>
 
 
   renderContent: ->
@@ -121,7 +135,8 @@ module.exports = React.createClass
     <footer>
       <ul className="round-buttons">
         <InsightSaveButton active={ @getSaveButtonActiveState() } sync={ @state.save_sync } onClick={ @handleSaveButtonClick } />
-        <InsightStarButton pin={ (@state.insight || @state.pin).uuid } />
+        <InsightDropButton pin={ (@state.pin || @state.insight).id } scope={ @props.scope } />
+        <InsightStarButton pin={ @state.insight.id } />
       </ul>
       { @renderContent() }
     </footer>

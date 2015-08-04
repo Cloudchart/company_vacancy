@@ -19,7 +19,8 @@ module.exports = React.createClass
   displayName: 'InsightCardHeader'
 
   propTypes:
-    pin: React.PropTypes.string.isRequired
+    pin:    React.PropTypes.string.isRequired
+    scope:  React.PropTypes.string.isRequired
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
@@ -28,7 +29,11 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
-            pinboard,
+            pinboard {
+              edges {
+                is_editable
+              }
+            },
             user {
               edges {
                 is_followed
@@ -40,6 +45,11 @@ module.exports = React.createClass
 
   # Component Specifications
   #
+
+  getDefaultProps: ->
+    scope:                'pinboard'
+    shouldRenderPinboard: true
+
 
   getInitialState: ->
     ready:      false
@@ -58,12 +68,13 @@ module.exports = React.createClass
   # Fetchers
   #
   fetch: ->
-    GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
+    GlobalState.fetch(@getQuery('pin', @props), { id: @props.pin }).then =>
       pin = PinStore.get(@props.pin).toJS()
 
       @setState
         ready:    true
         pin:      pin
+        viewer:   UserStore.me().deref().toJS()
         user:     UserStore.get(pin.user_id).toJS()
         pinboard: PinboardStore.get(pin.pinboard_id).toJS() if pin.pinboard_id
 
@@ -72,46 +83,70 @@ module.exports = React.createClass
     <i key='icon' className='fa fa-comment-o' />
 
 
-  renderContentWithUserCommentAndPinboard: (comment, options = {}) ->
+  renderUserComment: (comment, options = {}) ->
     [
       @renderIcon() if options.icon
-      <section className="title">
-        <a key='user' className='user' href={ @state.user.url }>{ @state.user.full_name }</a>
-        <span key='comment' className='comment'>{ comment }</span>
-        { @renderContentWithPinboard() }
+      <section key="title" className="title">
+        <a className='user' href={ @state.user.url }>{ @state.user.full_name }</a>
+        <span className='comment'>{ comment }</span>
+        { @renderPinboardTitle(options.prefix) }
       </section>
     ]
 
-  renderContentWithPinboard: ->
+
+  renderPinboardTitle: (prefix) ->
+    return null if @props.scope == 'pinboard'
     return null unless @state.pinboard
-    <a href={ @state.pinboard.url } key='pinboard' className='pinboard see-through'>{ @state.pinboard.title }</a>
+    [
+      <span key='prefix'>{ prefix }</span>
+      <a href={ @state.pinboard.url } key='pinboard' className='pinboard see-through'>{ @state.pinboard.title }</a>
+    ]
 
 
-  # Render content
-  #   Cases:
-  #     1. User suggested insight [%User% suggested insight to %Pinboard%]
-  #     2. User pinned insight without comment
-  #     2.1 User is followed [%User% added insight to %Pinboard%]
-  #     2.2 User is not followed [%Pinboard%]
-  #     3. User pinned insight with comment [%User% %Comment% in %Pinboard%]
-  #     4. User created insight [%User% added insight to %Pinboard%]
+
+  # Render feed header content
   #
-  renderContent: ->
+  renderFeedScopeContent: ->
     if @state.pin.parent_id
       if @state.pin.is_suggestion
-        @renderContentWithUserCommentAndPinboard('suggested insight to')
+        @renderUserComment('suggested insight', prefix: 'to')
       else if @state.pin.content
-        @renderContentWithUserCommentAndPinboard('— ' + @state.pin.content + ' in', icon: true)
+        @renderUserComment('— ' + @state.pin.content, icon: true, prefix: 'in')
       else if @state.user.is_followed
-        @renderContentWithUserCommentAndPinboard('added insight to')
+        @renderUserComment('added insight', prefix: 'to')
       else
-        @renderContentWithPinboard()
+        @renderPinboardTitle()
     else
-      @renderContentWithUserCommentAndPinboard('added insight to')
+      @renderUserComment('added insight', prefix: 'to')
 
+
+  # Render pinboard header content
+  #
+  renderPinboardScopeContent: ->
+    return null unless @state.pin.parent_id
+
+    if @state.pinboard.is_editable
+      if @state.pin.is_suggestion
+        @renderUserComment('suggested insight')
+      else if @state.pin.content
+        @renderUserComment('— ' + @state.pin.content)
+      else
+        @renderUserComment('added insight')
+    else
+      @renderUserComment('— ' + @state.pin.content) if @state.pin.content unless @state.pin.is_suggestion
+
+
+  renderContent: ->
+    switch @props.scope
+      when 'feed'       then @renderFeedScopeContent()
+      when 'pinboard'   then @renderPinboardScopeContent()
+      else nil
 
 
   # Main render
   #
   render: ->
-    <header>{ @renderContent() }</header>
+    return null unless @state.ready
+    return null unless content = @renderContent()
+
+    <header>{ content }</header>

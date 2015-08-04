@@ -19,7 +19,7 @@ $insight-card-footer-content-line-height: 20px;
 //
 @mixin insight-card-header {
   @include display(flex);
-  
+
   background-color: $insight-card-header-background-color;
   font-size: inherit;
   font-weight: inherit;
@@ -88,9 +88,12 @@ $insight-card-footer-content-line-height: 20px;
       margin-left: $insight-card-padding / 2;
     }
 
-    li.star,
-    li.save.active {
+    li.star {
       background-color: hsl(137, 54%, 50%);
+    }
+
+    li.drop:hover {
+      background-color: hsl(359, 73%, 55%);
     }
   }
 

@@ -20,7 +20,8 @@ InsightCard = React.createClass
 
 
   propTypes:
-    pin:  React.PropTypes.string.isRequired
+    pin:    React.PropTypes.string.isRequired
+    scope:  React.PropTypes.string.isRequired
 
 
   getDefaultProps: ->
@@ -36,19 +37,19 @@ InsightCard = React.createClass
   statics:
     queries:
       pin: (params = {}) ->
-        params    = Object.assign(InsightCard.getDefaultProps(), params)
-
-        headerQuery   = Header.getQuery('pin') if params.shouldRenderHeader
-        contentQuery  = Content.getQuery('pin')
-        footerQuery   = Footer.getQuery('pin') if params.shouldRenderFooter
-        pinQuery      = [headerQuery, contentQuery, footerQuery].filter((part) -> !!part).join(',')
+        params          = Object.assign(InsightCard.getDefaultProps(), params)
+        headerQuery     = Header.getQuery('pin') if params.shouldRenderHeader
+        contentQuery    = Content.getQuery('pin')
+        footerQuery     = Footer.getQuery('pin') if params.shouldRenderFooter
+        pinQuery        = [contentQuery, headerQuery, footerQuery].filter((part) -> !!part).join(',')
+        pinParentQuery  = [contentQuery, footerQuery].filter((part) -> !!part).join(',')
 
         """
           Pin {
             id,
             #{pinQuery},
             parent {
-              #{contentQuery}
+              #{pinParentQuery}
             }
           }
         """
@@ -75,18 +76,22 @@ InsightCard = React.createClass
     @fetch()
 
 
+  componentDidUpdate: ->
+    @props.onUpdate() if typeof @props.onUpdate is 'function'
+
+
   # Renderers
   #
   renderHeader: ->
     return null unless @props.shouldRenderHeader
-    <Header pin = { @state.pin.uuid } />
+    <Header pin={ @state.pin.uuid } scope={ @props.scope } />
 
   renderContent: ->
     <Content pin = { @state.pin.parent_id || @state.pin.uuid } />
 
   renderFooter: ->
     return null unless @props.shouldRenderFooter
-    <Footer pin = { @state.pin.uuid } />
+    <Footer pin={ @state.pin.id } scope={ @props.scope } />
 
 
   # Main Render

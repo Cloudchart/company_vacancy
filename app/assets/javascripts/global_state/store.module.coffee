@@ -84,7 +84,7 @@ class BaseStore
         @cursor.indices.setIn([name, foreign_key], @cursor.indices.getIn([name, foreign_key], EmptySet).add(item.uuid))
 
       currItem = @cursor.items.get(item.uuid, Immutable.Map({ id: item.uuid }))
-      @cursor.items.set(item.uuid, currItem.mergeDeep(item))
+      @cursor.items.set(item.uuid, currItem.merge(item))
 
 
   remove: (id) ->

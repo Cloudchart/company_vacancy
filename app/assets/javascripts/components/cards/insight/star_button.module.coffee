@@ -30,6 +30,7 @@ module.exports = React.createClass
         """
           Pin {
             edges {
+              is_mine,
               is_followed
             }
           }
@@ -37,10 +38,11 @@ module.exports = React.createClass
 
   fetch: (options = {}) ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.pin, force: options.force }).done (json) =>
-      PinStore.get(@props.pin)
+      pin = PinStore.get(@props.pin).toJS()
       @setState
+        pin:    pin
         sync:   false
-        active: PinStore.get(@props.pin).get('is_followed')
+        active: pin.is_followed
 
 
   # Events
@@ -66,6 +68,7 @@ module.exports = React.createClass
   #
 
   render: ->
+    return null if @state.pin and @state.pin.is_mine
 
     className = cx
       'fa':         true

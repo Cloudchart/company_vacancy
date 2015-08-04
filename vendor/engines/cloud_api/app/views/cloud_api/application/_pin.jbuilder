@@ -52,3 +52,7 @@ json_edge! json, :is_followed, edges do
   preload_associations(siblings, cache, :followers)
   !!pin.followers.find { |f| f.user_id == current_user.id }
 end
+
+json_edge! json, :is_mine, edges do
+  pin.user_id == current_user.id
+end

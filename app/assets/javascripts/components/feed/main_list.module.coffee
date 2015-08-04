@@ -127,7 +127,7 @@ module.exports = React.createClass
     switch item.type
       when 'Pin'
         <section key={ item.id } className="item">
-          <Insight pin={ item.id } />
+          <Insight pin={ item.id } scope="feed" />
         </section>
       when 'Pinboard'
         <section key={ item.id } className="item">
