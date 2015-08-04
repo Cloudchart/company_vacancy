@@ -105,7 +105,7 @@ json_edge! json, :pinboards_through_roles, edges do
   user.pinboards_through_roles({ current_user: current_user }).map do |c|
     {
       id:     c.id,
-      name:   c.name
+      name:   c.title
     }
   end
 end
