@@ -48,11 +48,24 @@ module.exports = React.createClass
       else
         @setState({})
 
+  loadNextDate: (date) ->
+    @setState
+      dates: @state.dates.concat(date)
+
+
+
+  loadPage: ->
+    return unless @refs['next-page-link'] && element = @refs['next-page-link'].getDOMNode()
+    if element.getBoundingClientRect().top < window.innerHeight
+      @loadNextDate(element.dataset.nextDate)
+
+
 
   # Component Specifications
   #
   getDefaultProps: ->
     me: UserStore.me()
+
 
   getInitialState: ->
     dates: []
@@ -64,8 +77,11 @@ module.exports = React.createClass
 
   componentDidMount: ->
     @fetch(@props.date)
+    window.addEventListener('scroll', @handleScroll)
 
-  # componentWillUnmount: ->
+
+  componentWillUnmount: ->
+    window.removeEventListener('scroll', @handleScroll)
 
 
   # Helpers
@@ -87,11 +103,18 @@ module.exports = React.createClass
 
   # Handlers
   #
+
+  handleScroll: ->
+    clearTimeout @scrollTimeout
+    @scrollTimeout = setTimeout =>
+      @loadPage()
+    , 250
+
+
   handleNextClick: (date, event) ->
     event.preventDefault()
 
-    @setState
-      dates: @state.dates.concat(date)
+    @loadNextDate(date)
 
 
   # Renderers
@@ -109,9 +132,8 @@ module.exports = React.createClass
 
   renderNextDateLink: ->
     return unless nextDate = @getNextDate()
-
-    <a href="#" onClick={ @handleNextClick.bind(null, nextDate) }>
-      Go west!
+    <a ref="next-page-link" href="#" data-next-date={ nextDate } onClick={ @handleNextClick.bind(null, nextDate) }>
+      <i className="fa fa-spin fa-refresh" />
     </a>
 
 
@@ -122,7 +144,7 @@ module.exports = React.createClass
 
     <div className="feed-container">
       { @renderDailyList() }
-      <footer>
+      <footer style={ fontSize: '40px', margin: '20px auto', width: '100px', textAlign: 'center' }>
         { @renderNextDateLink() }
       </footer>
     </div>
