@@ -12,6 +12,7 @@ FeaturedPinboard = require('components/landing/featured_pinboard')
 Pinboard = require('components/cards/pinboard_card')
 Post = require('components/pinnable/post')
 Paragraph = require('components/pinnable/block/paragraph')
+ListOfCards = require('components/cards/list_of_cards')
 
 
 # Utils
@@ -137,9 +138,9 @@ module.exports = React.createClass
 
   renderFeed: ->
     <section className="cc-container-common">
-      <section className="flow">
+      <ListOfCards>
         { @getFeedItems().map(@renderFeedItem) }
-      </section>
+      </ListOfCards>
     </section>
 
 
