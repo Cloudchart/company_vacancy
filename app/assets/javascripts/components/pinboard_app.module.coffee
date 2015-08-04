@@ -66,7 +66,8 @@ module.exports = React.createClass
               pinboard_url,
               facebook_share_url,
               twitter_share_url,
-              is_editable
+              is_editable,
+              pins_count
             }
           }
         """
@@ -87,7 +88,6 @@ module.exports = React.createClass
   #
   getDefaultProps: ->
     cursor:
-      pinboards: PinboardStore.cursor.items
       pins:      PinStore.cursor.items
       favorites: FavoriteStore.cursor.items
       roles:     RoleStore.cursor.items
@@ -118,6 +118,12 @@ module.exports = React.createClass
       pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
 
     @fetch() unless @isLoaded()
+
+
+  onGlobalStateChange: ->
+    console.log 'global state changed'
+    @setState({}) if @isMounted()
+    console.log 'after global state change'
 
 
   # Helpers
