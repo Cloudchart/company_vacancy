@@ -115,7 +115,9 @@ module.exports = React.createClass
       else if @state.user.is_followed
         @renderUserComment('added insight', prefix: 'to')
       else
-        @renderPinboardTitle()
+        <section className="title">
+          @renderPinboardTitle()
+        </section>
     else
       @renderUserComment('added insight', prefix: 'to')
 
