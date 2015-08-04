@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150731141704) do
+ActiveRecord::Schema.define(version: 20150804140916) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -169,7 +169,7 @@ ActiveRecord::Schema.define(version: 20150731141704) do
   create_table "diffbot_responses", primary_key: "uuid", force: true do |t|
     t.string   "api"
     t.string   "resolved_url"
-    t.text     "body"
+    t.text     "body",         limit: 16777215
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -177,9 +177,10 @@ ActiveRecord::Schema.define(version: 20150731141704) do
 
   create_table "domains", primary_key: "uuid", force: true do |t|
     t.string   "name"
-    t.integer  "status",     default: 0
+    t.integer  "status",      default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "diffbot_api", default: 0
   end
 
   create_table "events", primary_key: "uuid", force: true do |t|

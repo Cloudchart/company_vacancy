@@ -4,7 +4,7 @@ class CreateDiffbotResponses < ActiveRecord::Migration
       t.string :uuid, limit: 36
       t.string :api
       t.string :resolved_url
-      t.text :body
+      t.text :body, limit: 16777215
       t.text :data
 
       t.timestamps

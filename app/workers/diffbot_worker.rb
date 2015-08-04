@@ -4,8 +4,19 @@ class DiffbotWorker < ApplicationWorker
     # find object
     object = object_type.classify.constantize.find(object_id)
 
+    # get preferred api from domains
+    uri = URI.parse(url)
+    domain = Domain.find_by(name: uri.host)
+    return if domain && domain.diffbot_api == 'disabled'
+
+    api = if domain
+      "DIFFBOT_#{domain.diffbot_api}".upcase.constantize
+    else
+      DIFFBOT_ANALYZE
+    end
+
     # get response from diffbot
-    response = DIFFBOT_ANALYZE.get(url)
+    response = api.get(url)
     return if response[:error]
     request = response[:request]
 
@@ -32,18 +43,23 @@ class DiffbotWorker < ApplicationWorker
 private
 
   def calculate_data(response)
+    return nil unless object = response[:objects].first
     result = {}
-    return result unless object = response[:objects].first
 
-    result[:estimated_time] = case response[:type]
+    result[:title] = object[:title]
+
+    case response[:type]
     when 'article'
       words = object[:text].to_s.split.size
       wps = Cloudchart::WORDS_PER_MINUTE / 60
-      words / wps
+      result[:estimated_time] = words / wps
     when 'video'
-      object[:duration]
-    else
-      0
+      result[:estimated_time] = object[:duration]
+      result[:image_url] = object[:images].first.try(:[], :url)
+    when 'image'
+      result[:image_url] = object[:url]
+    when 'product'
+      result[:image_url] = object[:images].first.try(:[], :url)
     end
 
     result
