@@ -120,12 +120,6 @@ module.exports = React.createClass
     @fetch() unless @isLoaded()
 
 
-  onGlobalStateChange: ->
-    console.log 'global state changed'
-    @setState({}) if @isMounted()
-    console.log 'after global state change'
-
-
   # Helpers
   #
   isLoaded: ->

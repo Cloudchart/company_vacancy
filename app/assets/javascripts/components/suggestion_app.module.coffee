@@ -1,5 +1,7 @@
 # @cjsx React.DOM
 
+GlobalState         = require('global_state/state')
+
 # Imports
 #
 ModalStack          = require('components/modal_stack')
@@ -23,6 +25,21 @@ module.exports = React.createClass
   propTypes:
     uuid: React.PropTypes.string.isRequired
     type: React.PropTypes.string.isRequired
+
+
+  mixins: [GlobalState.query.mixin]
+
+
+  statics:
+    queries:
+      pinboard: ->
+        """
+          Pinboard {
+            edges {
+              pins_ids
+            }
+          }
+        """
 
 
   getInitialState: ->
@@ -49,7 +66,9 @@ module.exports = React.createClass
       pinnable_type:  if @props.type is 'Post'      then @props.type else insight.pinnable_type
       is_suggestion:  true
 
-    PinStore.create(attributes).then(ModalStack.hide, ModalStack.hide)
+    PinStore.create(attributes).then(ModalStack.hide, ModalStack.hide).then =>
+      GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid, force: true }) if @props.type == 'Pinboard'
+
 
 
   handleBack: ->

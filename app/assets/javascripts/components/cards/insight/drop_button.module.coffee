@@ -53,6 +53,15 @@ module.exports = React.createClass
           }
         """
 
+      pinboard: ->
+        """
+          Pinboard {
+            edges {
+              pins_ids
+            }
+          }
+        """
+
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
       pin       = PinStore.get(@props.pin).toJS()
@@ -67,7 +76,9 @@ module.exports = React.createClass
 
   handleClick: (event) ->
     return unless confirm "Are you sure?"
-    PinStore.destroy(@props.pin)
+
+    PinStore.destroy(@props.pin).then =>
+      GlobalState.fetch(@getQuery('pinboard'), { id: @state.pinboard.id, force: true }) if @state.pinboard
 
 
   # Lifecycle

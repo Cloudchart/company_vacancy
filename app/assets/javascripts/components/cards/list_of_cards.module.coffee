@@ -21,10 +21,8 @@ module.exports = React.createClass
   #
 
   startPackery: ->
-    setTimeout =>
-      @packery = new Packery @getDOMNode(),
-        transitionDuration: '0ms'
-    , 10
+    @packery = new Packery @getDOMNode(),
+      transitionDuration: '0ms'
 
 
   updatePackery: ->
@@ -32,7 +30,7 @@ module.exports = React.createClass
     @packery_timeout = setTimeout =>
       @packery.reloadItems()
       @packery.layout()
-    , 10
+    , 100
 
 
   stopPackery: ->
