@@ -14,7 +14,6 @@ module.exports = React.createClass
 
   propTypes:
     pin:      React.PropTypes.string.isRequired
-    onUpdate: React.PropTypes.func
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
@@ -49,9 +48,6 @@ module.exports = React.createClass
 
   componentDidMount: ->
     @fetch()
-
-  componentDidUpdate: ->
-    @props.onUpdate()
 
 
   # Fetchers

@@ -46,6 +46,15 @@ module.exports = React.createClass
 
   statics:
     queries:
+      pinboard: ->
+        """
+          Pinboard {
+            edges {
+              pins_ids
+            }
+          }
+        """
+
       pin: ->
 
         query = """
@@ -78,31 +87,17 @@ module.exports = React.createClass
         insight:  insight || pin
 
 
+  fetchPinboard: ->
+    return unless @state.pin.pinboard_id
+    GlobalState.fetch(@getQuery('pinboard'), { id: @state.pin.pinboard_id, force:true })
+
 
   # Helpers
   #
 
-  getSaveButtonActiveState: ->
-    @state.insight.is_mine
-
-
-  renderPinForm: ->
-    pin = @state.insight || @state.pin
-    pin =
-      parent_id:      pin.uuid
-      pinnable_id:    pin.pinnable_id
-      pinnable_type:  pin.pinnable_type
-      title:          pin.content
-
-    <PinForm {...pin} onDone={ ModalStack.hide } onCancel={ ModalStack.hide } />
-
 
   # Handlers
   #
-
-  handleSaveButtonClick: ->
-    return false
-    ModalStack.show(@renderPinForm())
 
 
   # Lifecycle
@@ -134,7 +129,7 @@ module.exports = React.createClass
 
     <footer>
       <ul className="round-buttons">
-        <InsightSaveButton active={ @getSaveButtonActiveState() } sync={ @state.save_sync } onClick={ @handleSaveButtonClick } />
+        <InsightSaveButton pin={ @state.insight.id } onDone={ @fetchPinboard } />
         <InsightDropButton pin={ (@state.pin || @state.insight).id } scope={ @props.scope } />
         <InsightStarButton pin={ @state.insight.id } />
       </ul>

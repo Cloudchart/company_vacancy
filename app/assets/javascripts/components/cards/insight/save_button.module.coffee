@@ -1,6 +1,10 @@
 # @cjsx React.DOM
 
 
+ModalStack        = require('components/modal_stack')
+SendInsightForm   = require('components/form/insight/send_insight')
+
+
 # Utils
 #
 cx = React.addons.classSet
@@ -19,9 +23,27 @@ module.exports = React.createClass
     sync:   false
 
 
+  # Show Form
+  #
+  showForm: ->
+    ModalStack.show(<SendInsightForm pin={ @props.pin } onCancel={ @hideForm } onDone={ @hideForm } />)
+
+
+  # Hide Form
+  #
+  hideForm: ->
+    ModalStack.hide()
+    @props.onDone() if typeof @props.onDone is 'function'
+
+
+  # Handle Click
+  #
+  handleClick: ->
+    @showForm()
+
+
   # Main Render
   #
-
   render: ->
 
     className = cx
@@ -32,6 +54,6 @@ module.exports = React.createClass
       'fa-share':   true
       'fa-spin':    @props.sync   == true
 
-    <li className={ className } style={ opacity: .25 }>
-      <i className={ iconClassName } onClick={ @props.onClick } />
+    <li className={ className }>
+      <i className={ iconClassName } onClick={ @handleClick } />
     </li>

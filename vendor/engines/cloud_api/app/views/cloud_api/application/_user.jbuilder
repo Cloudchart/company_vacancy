@@ -88,6 +88,29 @@ json_edge! json, :related_pinboards, edges do
   end
 end
 
+json_edge! json, :pinboards, edges do
+  preload_associations(siblings, cache, :pinboards)
+
+  user.pinboards.map do |p|
+    {
+      id:     p.id,
+      name:   p.title
+    }
+  end
+end
+
+json_edge! json, :pinboards_through_roles, edges do
+  User.preload_pinboards_through_roles(siblings, cache)
+
+  user.pinboards_through_roles({ current_user: current_user }).map do |c|
+    {
+      id:     c.id,
+      name:   c.name
+    }
+  end
+end
+
+
 json_edge! json, :feed_dates, edges do
   User.preload_feed_pinboards(siblings, cache)
   User.preload_feed_pins(siblings, cache)
