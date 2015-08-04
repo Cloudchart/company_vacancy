@@ -1,15 +1,16 @@
 # @cjsx React.DOM
 
-GlobalState         = require('global_state/state')
+GlobalState          = require('global_state/state')
 
-PinStore            = require('stores/pin_store')
-UserStore           = require('stores/user_store.cursor')
+PinStore             = require('stores/pin_store')
+UserStore            = require('stores/user_store.cursor')
+# DiffbotResponseStore = require('stores/diffbot_response_store')
 
-ModalStack          = require('components/modal_stack')
-PinForm             = require('components/form/pin_form')
-InsightStarButton   = require('components/cards/insight/star_button')
-InsightSaveButton   = require('components/cards/insight/save_button')
-InsightDropButton   = require('components/cards/insight/drop_button')
+ModalStack           = require('components/modal_stack')
+PinForm              = require('components/form/pin_form')
+InsightStarButton    = require('components/cards/insight/star_button')
+InsightSaveButton    = require('components/cards/insight/save_button')
+InsightDropButton    = require('components/cards/insight/drop_button')
 
 
 cx = React.addons.classSet
@@ -62,7 +63,8 @@ module.exports = React.createClass
           #{InsightDropButton.getQuery('pin')},
           edges {
             is_origin_domain_allowed,
-            is_mine
+            is_mine,
+            diffbot_response_data
           }
         """
 
@@ -77,7 +79,7 @@ module.exports = React.createClass
 
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
+    GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then (json) =>
       pin       = PinStore.get(@props.pin).toJS()
       insight   = PinStore.get(pin.parent_id).toJS() if pin.parent_id
 
@@ -113,7 +115,30 @@ module.exports = React.createClass
   renderOrigin: ->
     return null unless @state.insight.origin && @state.insight.is_origin_domain_allowed
     return null unless (parts = DOMAIN_RE.exec(@state.insight.origin)) and parts.length == 2
-    <a href={ @state.insight.origin } target="_blank">{ parts[1] }</a>
+
+    header = if @state.insight.diffbot_response_data && (title = @state.insight.diffbot_response_data.title)
+       title + ', '
+    else
+      null
+
+    host = <a href={ @state.insight.origin } target="_blank">{ parts[1] }</a>
+
+    estimation = if @state.insight.diffbot_response_data && (estimated_time = @state.insight.diffbot_response_data.estimated_time) 
+      [
+        <span key=1> &mdash; </span>
+        <span className="estimation" key=2>
+          <i className="fa fa-clock-o"></i>
+          { moment.duration(estimated_time, 'seconds').humanize(); }
+        </span>
+      ]
+    else
+      null
+
+    <div>
+      { header }
+      { host }
+      { estimation }
+    </div>
 
 
   renderContent: ->

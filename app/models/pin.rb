@@ -13,7 +13,7 @@ class Pin < ActiveRecord::Base
 
   before_save :skip_generate_preview!, unless: :insight?
   before_save :squish_origin, if: -> { origin_changed? && origin.present? }
-  before_save :nullify_diffbot_response_owner, if: -> { origin_changed? && origin.blank? }
+  before_save :nullify_diffbot_response_owner, if: -> { origin_changed? }
   before_save :crawl_origin
   after_save :check_domain_from_origin
 
@@ -24,7 +24,7 @@ class Pin < ActiveRecord::Base
   belongs_to :post, foreign_key: :pinnable_id
 
   has_one :diffbot_response_owner, as: :owner, dependent: :destroy
-  has_one :diffbot_response, through: :diffbot_response_owner, source: :owner, source_type: self.name
+  has_one :diffbot_response, through: :diffbot_response_owner
 
   has_many :children, class_name: self.name, foreign_key: :parent_id
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: Favorite.name

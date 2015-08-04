@@ -56,3 +56,8 @@ end
 json_edge! json, :is_mine, edges do
   pin.user_id == current_user.id
 end
+
+json_edge! json, :diffbot_response_data, edges do
+  preload_associations(siblings, cache, :diffbot_response)
+  pin.diffbot_response.try(:data)
+end
