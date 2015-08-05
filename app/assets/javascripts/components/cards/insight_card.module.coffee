@@ -97,13 +97,14 @@ InsightCard = React.createClass
   # Main Render
   #
   render: ->
-    return null unless @state.ready
-
-    <div className="insight-card cloud-card">
-      { @renderHeader() }
-      { @renderContent() }
-      { @renderFooter() }
-    </div>
+    if @state.ready
+      <div className="insight-card cloud-card">
+        { @renderHeader() }
+        { @renderContent() }
+        { @renderFooter() }
+      </div>
+    else
+      <div className="insight-card cloud-card placeholder" />
 
 
 # Exports

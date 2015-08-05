@@ -123,6 +123,12 @@ $insight-card-footer-content-line-height: 20px;
   line-height: $insight-card-line-height;
   padding: 0 0 $insight-card-padding;
 
+  &.placeholder {
+    background-image: image_url('placeholders/pin.png');
+    background-size: cover;
+    height: 199px;
+  }
+
   > header {
     @include insight-card-header;
   }
