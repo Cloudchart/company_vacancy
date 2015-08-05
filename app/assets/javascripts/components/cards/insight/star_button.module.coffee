@@ -79,11 +79,15 @@ module.exports = React.createClass
     return null if @state.pin and @state.pin.is_mine
 
     className = cx
+      'star':     true
+      'active':   @state.active
+
+    iconClassName = cx
       'fa':         true
       'fa-star':    @state.active == true
       'fa-star-o':  @state.active == false
       'fa-spin':    @state.sync   == true
 
-    <li className="star">
-      <i className={ className } onClick={ @handleClick } />
+    <li className={ className }>
+      <i className={ iconClassName } onClick={ @handleClick } />
     </li>

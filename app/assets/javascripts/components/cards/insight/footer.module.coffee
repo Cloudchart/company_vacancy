@@ -123,7 +123,7 @@ module.exports = React.createClass
 
     host = <a href={ @state.insight.origin } target="_blank">{ parts[1] }</a>
 
-    estimation = if @state.insight.diffbot_response_data && (estimated_time = @state.insight.diffbot_response_data.estimated_time) 
+    estimation = if @state.insight.diffbot_response_data && (estimated_time = @state.insight.diffbot_response_data.estimated_time)
       [
         <span key=1> &mdash; </span>
         <span className="estimation" key=2>
@@ -154,9 +154,9 @@ module.exports = React.createClass
 
     <footer>
       <ul className="round-buttons">
+        <InsightStarButton pin={ @state.insight.id } />
         <InsightSaveButton pin={ @state.insight.id } onDone={ @fetchPinboard } />
         <InsightDropButton pin={ (@state.pin || @state.insight).id } scope={ @props.scope } />
-        <InsightStarButton pin={ @state.insight.id } />
       </ul>
       { @renderContent() }
     </footer>

@@ -77,10 +77,12 @@ $insight-card-footer-content-line-height: 20px;
 
     li {
       background-color: hsl(60, 2%, 70%);
+      border: 1px solid hsl(60, 2%, 70%);
       color: white;
 
       i {
         color: inherit;
+        line-height: 22px;
       }
     }
 
@@ -89,11 +91,19 @@ $insight-card-footer-content-line-height: 20px;
     }
 
     li.star {
-      background-color: hsl(137, 54%, 50%);
+      background-color: white;
+      border: 1px solid hsl(137, 54%, 50%);
+      color: hsl(137, 54%, 50%);
+
+      &.active {
+        background-color: hsl(137, 54%, 50%);
+        color: white;
+      }
     }
 
     li.drop:hover {
       background-color: hsl(359, 73%, 55%);
+      border-color: hsl(359, 73%, 55%);
     }
   }
 
