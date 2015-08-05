@@ -226,7 +226,7 @@ fetch = (query, options = {}) ->
 
 
   url       = buildURL(endpoint, options)
-  cacheKey  = url + '?' + effective_query
+  cacheKey  = url + '?' + effective_query + JSON.stringify(options.params)
 
 
   cachedPromises[cacheKey] ||= new Promise (done, fail) ->
