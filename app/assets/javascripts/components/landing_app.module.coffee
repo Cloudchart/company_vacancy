@@ -113,7 +113,7 @@ module.exports = React.createClass
     return null if device.is_iphone
     return null unless featureForPinboard = @getFeatureForPinboard()
 
-    <FeaturedPinboard pinboard={ featureForPinboard.get('featurable_id') } feature={ featureForPinboard.toJS() } />
+    <FeaturedPinboard pinboard={ featureForPinboard.get('featurable_id') } scope='main' />
 
 
   renderPinboard: (pinboard) ->
