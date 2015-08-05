@@ -168,7 +168,7 @@ ActiveRecord::Schema.define(version: 20150804140916) do
 
   create_table "diffbot_responses", primary_key: "uuid", force: true do |t|
     t.string   "api"
-    t.string   "resolved_url"
+    t.string   "resolved_url", limit: 2000
     t.text     "body",         limit: 16777215
     t.text     "data"
     t.datetime "created_at"
