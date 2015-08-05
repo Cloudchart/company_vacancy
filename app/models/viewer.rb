@@ -1,15 +1,15 @@
 class Viewer < User
 
-  def featured_companies(scope = {})
-    Company.featured.where(features: { scope: Feature.scopes[:main] }).select { |c| ability(scope).can?(:read, c) }
-  end
-
   def published_companies(scope = {})
     Company.published.select { |c| ability(scope).can?(:read, c) }
   end
 
-  def featured_pinboards(scope = {})
-    Pinboard.featured.where(features: { scope: Feature.scopes[:main] }).select { |p| ability(scope).can?(:read, p) }
+  def main_features
+    Feature.main.active
+  end
+
+  def feed_features
+    Feature.feed.active
   end
 
   def feed_featured_pinboards(scope = {})

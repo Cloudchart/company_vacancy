@@ -116,16 +116,16 @@ module.exports = React.createClass
   # Helpers
   #
   getStyleForBgImage: ->
-    background: "url(#{@cursor.pinboard.get('assigned_image_url')}) no-repeat center center"
+    return {} unless @props.feature
+    background: "url(#{@props.feature.assigned_image_url}) no-repeat center center"
     backgroundSize: 'cover'
 
   getClassesForBgimage: ->
-    displayTypes = @cursor.pinboard.get('assigned_image_display_types')
-
+    return cx({}) unless @props.feature
     cx
       'bg-image': true
-      blurred: displayTypes.includes('blurred')
-      darkened: displayTypes.includes('darkened')
+      blurred: @props.feature.display_types.indexOf('blurred') >= 0
+      darkened: @props.feature.display_types.indexOf('darkened') >= 0
 
 
   # Renderers

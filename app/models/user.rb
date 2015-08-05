@@ -100,10 +100,6 @@ class User < ActiveRecord::Base
     save!
   end
 
-  def insight_features
-    Feature.insights.only_active
-  end
-
   def top_insights
     Pin.insights.includes(post: :company)
       .where('companies.is_published = ?', true)

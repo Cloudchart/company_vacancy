@@ -3,7 +3,7 @@ class CreateDiffbotResponses < ActiveRecord::Migration
     create_table :diffbot_responses, id: false do |t|
       t.string :uuid, limit: 36
       t.string :api
-      t.string :resolved_url
+      t.string :resolved_url, limit: 2000
       t.text :body, limit: 16777215
       t.text :data
 

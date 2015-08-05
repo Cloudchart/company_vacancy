@@ -43,7 +43,7 @@ class DiffbotWorker < ApplicationWorker
 private
 
   def calculate_data(response)
-    return nil unless object = response[:objects].first
+    return nil unless object = response[:objects].try(:first)
     result = {}
 
     result[:title] = object[:title]

@@ -15,12 +15,16 @@ class Feature < ActiveRecord::Base
 
   belongs_to :featurable, polymorphic: true
 
+  FEATURABLE_TYPES.each do |class_name|
+    belongs_to :"featurable_#{class_name.underscore}", class_name: class_name, foreign_key: :featurable_id, foreign_type: class_name
+  end
+
   validates :featurable, presence: true
   validates :featurable_type, inclusion: { in: FEATURABLE_TYPES }
   validates :url, url: true, allow_blank: true
   validates :effective_from, :effective_till, date: true, allow_blank: true
 
-  scope :only_active, -> { where(is_active: true) }
+  scope :active, -> { where(is_active: true) }
   scope :with_display_type, -> type { where("display_types_mask & #{2**DISPLAY_TYPES.index(type)} > 0") }
 
   def display_types=(display_types)

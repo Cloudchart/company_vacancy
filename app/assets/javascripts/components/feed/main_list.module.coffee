@@ -6,6 +6,7 @@ UserStore = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
 PinStore = require('stores/pin_store')
 ParagraphStore = require('stores/paragraph_store.cursor')
+FeatureStore = require('stores/feature_store')
 
 Insight = require('components/cards/insight_card')
 FeaturedPinboard = require('components/landing/featured_pinboard')
@@ -46,6 +47,7 @@ module.exports = React.createClass
 
         """
           Viewer {
+            feed_features,
             feed_pins {
               #{Insight.getQuery('pin')}
             },
@@ -104,6 +106,11 @@ module.exports = React.createClass
 
   # Helpers
   #
+  getFeatureForPinboard: (id) ->
+    FeatureStore
+      .filter (feature) -> feature.get('featurable_id') == id && feature.get('scope') == 'feed'
+      .first()
+      .toJS()
 
   getFeedItems: ->
     feed_pinboards  = @state.pinboards_ids.map (id) -> Object.assign(PinboardStore.get(id).toJS(), type: 'Pinboard')
@@ -145,7 +152,7 @@ module.exports = React.createClass
 
 
   renderFeaturedPinboard: (id) ->
-    <FeaturedPinboard pinboard={ id } />
+    <FeaturedPinboard pinboard={ id } feature={ @getFeatureForPinboard(id) } />
 
 
   renderFeaturedPinboards: ->
