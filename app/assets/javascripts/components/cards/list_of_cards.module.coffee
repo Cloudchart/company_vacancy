@@ -21,44 +21,54 @@ module.exports = React.createClass
   #
 
   observeMutation: ->
-    @updatePackery() if @props.dynamic
+    @handlePackery()
+
+
+  handlePackery: ->
+    return unless @props.dynamic
+
+    clearTimeout @packeryTimeout
+    @packeryTimeout = setTimeout =>
+      if @packery then @updatePackery() else @startPackery()
+    # , 250
 
 
   startPackery: ->
     @packery = new Packery @getDOMNode(),
       transitionDuration: '0ms'
-      isInitLayout: false
 
 
   updatePackery: ->
-    clearTimeout @packery_timeout
-    @packery_timeout = setTimeout =>
-      @packery.reloadItems()
-      @packery.layout()
+    @packery.reloadItems() if @shouldReloadPackeryItems
+    @packery.layout()
+    @shouldReloadPackeryItems = false
 
 
   stopPackery: ->
-    return unless @packery
-    @packery.destroy()
-    @packery = null
+    @packery.destroy() if @packery
 
 
   # Lifecycle
   #
 
   componentDidMount: ->
-    @startPackery() if @props.dynamic
+    @handlePackery()
     @mutationObserver = new MutationObserver(@observeMutation)
     @mutationObserver.observe(@getDOMNode(), { childList: true, subtree: true })
 
 
   componentDidUpdate: ->
-    @updatePackery() if @props.dynamic
+    @handlePackery() if @props.dynamic
 
 
   componentWillUnmount: ->
-    @stopPackery() if @props.dynamic
+    @stopPackery()
     @mutationObserver.disconnect()
+
+
+  componentWillReceiveProps: (nextProps) ->
+    if React.Children.count(nextProps.children) isnt React.Children.count(@props.children)
+      @shouldReloadPackeryItems = true
 
 
   # Render child
