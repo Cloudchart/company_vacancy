@@ -20,9 +20,14 @@ module.exports = React.createClass
   # Packery
   #
 
+  observeMutation: ->
+    @updatePackery() if @props.dynamic
+
+
   startPackery: ->
     @packery = new Packery @getDOMNode(),
       transitionDuration: '0ms'
+      isInitLayout: false
 
 
   updatePackery: ->
@@ -30,7 +35,6 @@ module.exports = React.createClass
     @packery_timeout = setTimeout =>
       @packery.reloadItems()
       @packery.layout()
-    , 100
 
 
   stopPackery: ->
@@ -44,6 +48,8 @@ module.exports = React.createClass
 
   componentDidMount: ->
     @startPackery() if @props.dynamic
+    @mutationObserver = new MutationObserver(@observeMutation)
+    @mutationObserver.observe(@getDOMNode(), { childList: true, subtree: true })
 
 
   componentDidUpdate: ->
@@ -52,13 +58,14 @@ module.exports = React.createClass
 
   componentWillUnmount: ->
     @stopPackery() if @props.dynamic
+    @mutationObserver.disconnect()
 
 
   # Render child
   #
   renderChild: (item) ->
     <div className="item">
-      { React.addons.cloneWithProps(item, { onUpdate: @updatePackery }) }
+      { item }
     </div>
 
 
