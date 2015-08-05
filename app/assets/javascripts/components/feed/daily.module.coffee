@@ -20,7 +20,8 @@ module.exports = React.createClass
   mixins: [GlobalState.query.mixin]
 
   propTypes:
-    date: React.PropTypes.instanceOf(Date).isRequired
+    date:     React.PropTypes.instanceOf(Date).isRequired
+    onDone:   React.PropTypes.func.isRequired
 
 
   getInitialState: ->
@@ -52,6 +53,8 @@ module.exports = React.createClass
         feed_pinboards_ids:   if feed_pinboards then feed_pinboards.ids else []
         feed_pins_ids:        if feed_pins then feed_pins.ids else []
         ready:                true
+
+      @props.onDone()
 
 
   # Lifecycle

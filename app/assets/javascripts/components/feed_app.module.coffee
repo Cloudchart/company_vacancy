@@ -16,7 +16,9 @@ module.exports = React.createClass
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   getInitialState: ->
-    dates: []
+    loaded_dates:         0
+    pending_dates:        0
+    dates:                []
 
   statics:
     queries:
@@ -36,6 +38,40 @@ module.exports = React.createClass
     GlobalState.fetch(@getQuery('viewer'))
 
 
+  # Helpers
+  #
+  shouldLoadNextDate: ->
+    @refs['loader'].getDOMNode().getBoundingClientRect().top < window.innerHeight
+
+
+  loadNextDate: ->
+    clearTimeout @load_next_date_timeout
+    @load_next_date_timeout = setTimeout =>
+      return unless @state.pending_dates == 0 and @shouldLoadNextDate()
+      @setState
+        pending_dates: @state.pending_dates + 1
+    , 250
+
+
+  # Handlers
+  #
+
+  handleResize: ->
+    @loadNextDate()
+
+
+  handleScroll: ->
+    @loadNextDate()
+
+
+  handleDayLoad: ->
+    @setState
+      pending_dates:  @state.pending_dates - 1
+      loaded_dates:   @state.loaded_dates + 1
+
+    @loadNextDate()
+
+
   # Lifecycle Methods
   #
 
@@ -43,16 +79,26 @@ module.exports = React.createClass
     @cursor =
       viewer: UserStore.me()
 
+    @setState
+      pending_dates: 1
+
 
   componentDidMount: ->
+    window.addEventListener('resize', @handleResize)
+    window.addEventListener('scroll', @handleScroll)
     @fetch()
+
+
+  componentWillUnmount: ->
+    window.removeEventListener('resize', @handleResize)
+    window.removeEventListener('scroll', @handleScroll)
 
 
   # Renderer Days
   #
 
   renderDay: (date) ->
-    <DailyFeed key={ date } date={ moment(date).toDate() } />
+    <DailyFeed key={ date } date={ moment(date).toDate() } onDone={ @handleDayLoad } />
 
 
   renderDays: ->
@@ -60,7 +106,7 @@ module.exports = React.createClass
 
     feed_dates
       .reverse()
-      .take(1)
+      .take(@state.loaded_dates + @state.pending_dates)
       .map @renderDay
       .toArray()
 
@@ -71,4 +117,5 @@ module.exports = React.createClass
   render: ->
     <section className="feed-days-wrapper">
       { @renderDays() }
+      <span ref='loader' />
     </section>
