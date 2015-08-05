@@ -7,11 +7,12 @@ PinStore        = require('stores/pin_store')
 FeatureStore    = require('stores/feature_store')
 
 FollowButton    = require('components/pinboards/follow_button')
-InsightPreview  = require('components/pinboards/pin')
+InsightCard     = require('components/cards/insight_card')
+device          = require('utils/device')
 
 cx = React.addons.classSet
 
-StacksCount               = 3
+StacksCount               = if device.is_iphone then 1 else 3
 MaxInsightContentLength   = 200
 
 
@@ -33,7 +34,7 @@ module.exports = React.createClass
           Pinboard {
             #{FollowButton.getQuery('pinboard')},
             pins {
-              #{InsightPreview.getQuery('pin')}
+              #{InsightCard.getQuery('pin')}
             },
             features,
             edges {
@@ -63,6 +64,11 @@ module.exports = React.createClass
 
     @setState
       opacityIndices: @state.opacityIndices.set(stackIndex, insightIndex)
+
+
+  observeMutation: ->
+    clearTimeout @mutationTimeout
+    @mutationTimeout = setTimeout @recalculateHeight, 250
 
 
   recalculateHeight: ->
@@ -100,16 +106,19 @@ module.exports = React.createClass
 
 
   componentDidMount: ->
-    @recalculateHeight()
     @switchInsightInterval = setInterval @switchInsight, 8 * 1000
 
 
   componentWillUnmount: ->
     clearInterval @switchInsightInterval
+    @mutationObserver.disconnect()
 
 
-  componentDidUpdate: ->
-    @recalculateHeight()
+  componentDidUpdate: (prevProps, prevState) ->
+    # @recalculateHeight()
+    if @state.ready || !@mutation_observer
+      @mutationObserver = new MutationObserver(@observeMutation)
+      @mutationObserver.observe(@getDOMNode(), { childList: true, subtree: true })
 
 
   getInitialState: ->
@@ -158,7 +167,7 @@ module.exports = React.createClass
     opacity   = if (@state.opacityIndices.get(stackIndex) || 0) == i then 1 else 0
 
     <div key={ id } className="item" style={ opacity: opacity, pointerEvents: if opacity == 1 then 'auto' else 'none' }>
-      <InsightPreview uuid={ id } skipRenderComment={ true } />
+      <InsightCard pin={ id } scope='pinboard' shouldRenderHeader={ true } />
     </div>
 
 
