@@ -24,6 +24,10 @@
     margin: auto;
     padding: 0 12px;
 
+    @include iphone {
+      padding: 0 24px;
+    }
+
     &.cc-container-common {
       padding: 0;
     }
@@ -50,6 +54,10 @@
 
           padding: 24px 12px 0;
 
+          @include iphone {
+            width: 100%;
+          }
+
           > .stack {
             @include position(relative);
 
@@ -73,6 +81,7 @@
       padding: 12px;
       width: 50%;
       @include iphone {
+        padding: 12px 24px;
         width: 100%;
       }
     }

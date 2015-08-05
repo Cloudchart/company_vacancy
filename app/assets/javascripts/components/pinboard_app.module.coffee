@@ -260,7 +260,9 @@ module.exports = React.createClass
   renderContent: ->
     switch @state.currentTab
       when 'insights'
-        <PinboardPins pinboard_id = { @props.uuid } />
+        <section className="cc-container-common" style={ width: '100%' }>
+          <PinboardPins pinboard_id = { @props.uuid } />
+        </section>
       when 'settings'
         <PinboardSettings uuid = { @props.uuid } />
       when 'users'
