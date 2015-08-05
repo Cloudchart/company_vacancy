@@ -4,7 +4,6 @@ GlobalState          = require('global_state/state')
 
 PinStore             = require('stores/pin_store')
 UserStore            = require('stores/user_store.cursor')
-# DiffbotResponseStore = require('stores/diffbot_response_store')
 
 ModalStack           = require('components/modal_stack')
 PinForm              = require('components/form/pin_form')
@@ -14,7 +13,6 @@ InsightDropButton    = require('components/cards/insight/drop_button')
 
 
 cx = React.addons.classSet
-
 DOMAIN_RE = /^http[s]{0,1}\:\/\/([^\/]+)/i
 
 
@@ -23,6 +21,7 @@ DOMAIN_RE = /^http[s]{0,1}\:\/\/([^\/]+)/i
 module.exports = React.createClass
 
   displayName: 'InsightCardFooter'
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   propTypes:
     pin:    React.PropTypes.string.isRequired
@@ -31,19 +30,15 @@ module.exports = React.createClass
 
   # Specification
   #
-
   getDefaultProps: ->
     cursor:
       viewer: UserStore.me()
-
 
   getInitialState: ->
     ready:      false
     pin:        {}
     save_sync:  false
 
-
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics:
     queries:
@@ -104,14 +99,12 @@ module.exports = React.createClass
 
   # Lifecycle
   #
-
   componentDidMount: ->
     @fetch()
 
 
   # Renderers
   #
-
   renderOrigin: ->
     return null unless @state.insight.origin && @state.insight.is_origin_domain_allowed
     return null unless (parts = DOMAIN_RE.exec(@state.insight.origin)) and parts.length == 2

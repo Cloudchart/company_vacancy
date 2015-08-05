@@ -4,32 +4,38 @@ class DiffbotWorker < ApplicationWorker
     # find object
     object = object_type.classify.constantize.find(object_id)
 
-    # get preferred api from domains
+    # do nothing if domain is disabled
     uri = URI.parse(url)
     domain = Domain.find_by(name: uri.host)
     return if domain && domain.diffbot_api == 'disabled'
 
-    api = if domain
-      "DIFFBOT_#{domain.diffbot_api}".upcase.constantize
-    else
-      DIFFBOT_ANALYZE
-    end
+    # try to find diffbot response
+    diffbot_response = DiffbotResponse.find_by(resolved_url: url)
 
-    # get response from diffbot
-    response = api.get(url)
-    return if response[:error]
-    request = response[:request]
+    unless diffbot_response # call diffbot
+      # get preferred api from domains
+      api = if domain
+        "DIFFBOT_#{domain.diffbot_api}".upcase.constantize
+      else
+        DIFFBOT_ANALYZE
+      end
 
-    # process response
-    diffbot_response = DiffbotResponse.find_or_initialize_by(
-      api: response[:type],
-      resolved_url: request[:resolvedPageUrl] || request[:pageUrl]
-    )
+      # get response from diffbot
+      response = api.get(url)
+      return if response[:error]
+      request = response[:request]
 
-    if diffbot_response.new_record?
-      diffbot_response.body = response
-      diffbot_response.data = calculate_data(response)
-      diffbot_response.save!
+      # process response
+      diffbot_response = DiffbotResponse.find_or_initialize_by(
+        api: response[:type],
+        resolved_url: request[:resolvedPageUrl] || request[:pageUrl]
+      )
+
+      if diffbot_response.new_record?
+        diffbot_response.body = response
+        diffbot_response.data = calculate_data(response)
+        diffbot_response.save!
+      end
     end
 
     # create or update association with passed object
