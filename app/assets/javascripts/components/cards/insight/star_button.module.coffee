@@ -14,7 +14,7 @@ module.exports = React.createClass
 
   displayName: 'StarInsightButton'
 
-  mixins: [GlobalState.query.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   # Specification
   #
@@ -55,13 +55,21 @@ module.exports = React.createClass
     PinSyncAPI[['follow', 'unfollow'][~~@state.active]](@props.pin).then => @fetch(force: true)
 
 
-
-
   # Lifecycle
   #
 
+  componentWillMount: ->
+    @cursor =
+      is_followed: PinStore.cursor.items.cursor([@props.pin, 'is_followed'])
+
+
   componentDidMount: ->
     @fetch()
+
+
+  onGlobalStateChange: ->
+    @setState
+      active: PinStore.get(@props.pin).get('is_followed')
 
 
   # Main Render
