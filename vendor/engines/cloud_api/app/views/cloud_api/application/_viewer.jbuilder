@@ -2,18 +2,6 @@ json.partial! 'user', user: viewer, siblings: siblings, edges: edges, cache: cac
 
 # Edges
 #
-json_edge! json, :featured_companies, edges do
-  preload_associations(viewer.featured_pinboards, [], :feature)
-
-  viewer.featured_companies.map do |company|
-    {
-      id: company.id,
-      name: company.name,
-      featured_position: company.feature.position
-    }
-  end
-end
-
 json_edge! json, :published_companies, edges do
   viewer.published_companies.map do |c|
     {
@@ -23,23 +11,9 @@ json_edge! json, :published_companies, edges do
   end
 end
 
-json_edge! json, :featured_pinboards, edges do
-  preload_associations(viewer.featured_pinboards, [], :feature)
-
-  viewer.featured_pinboards.map do |pinboard|
-    {
-      id: pinboard.id,
-      title: pinboard.title,
-      featured_position: pinboard.feature.position
-    }
-  end
-end
-
-
 json_edge! json, :popular_pinboards_ids, edges do
   viewer.popular_pinboards.map(&:id)
 end
-
 
 json_edge! json, :is_authenticated, edges do
   user_authenticated?

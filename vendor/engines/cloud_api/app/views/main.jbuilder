@@ -10,17 +10,19 @@ end
 def __prepare(sources, query, data, json)
   grouped_sources = {}
 
-  scope = { current_user: current_user, current_user_ability: current_user_ability }
+  scope = { current_user: current_user, current_user_ability: current_user_ability, params: params }
 
   cache   = []
   edges   = (query || {}).delete('edges') { [] }.flatten.compact.uniq.map(&:to_sym)
 
   sources.each do |source|
     (grouped_sources[source.class] ||= []) << source
-    (data[source.class.name.underscore.pluralize] ||= []) << { model: source, siblings: sources, cache: cache, edges: edges }
+    if source.respond_to?(:id)
+      (data[source.class.name.underscore.pluralize] ||= []) << { model: source, siblings: sources, cache: cache, edges: edges }
+    end
   end
 
-  unless sources.empty?
+  if sources.first.respond_to?(:id)
     json.type sources.first.class.name
     json.ids sources.map(&:id)
   end
@@ -31,14 +33,17 @@ def __prepare(sources, query, data, json)
 
     grouped_sources.each do |klass, instances|
 
-      args = []
+      args        = []
+      skip_scope  = false
 
       if klass.present? && klass.reflect_on_association(key)
         Preloadable::preload(instances, cache, key)
+        skip_scope = true
       elsif klass.present? && klass.respond_to?(:"preload_#{key}")
         klass.public_send(:"preload_#{key}", instances, cache)
-        args << scope if (method = klass.instance_method(key)) && method.parameters.size == 1
       end
+
+      args << scope if !skip_scope && (method = klass.instance_method(key)) && method.parameters.size == 1
 
       child_instances = instances.map do |instance|
         result = instance.public_send(key, *args)
@@ -46,7 +51,7 @@ def __prepare(sources, query, data, json)
           if result.respond_to?(:each)
             json.set! key, result.map(&:id)
           else
-            json.set! key, result.id if result.present?
+            json.set! key, result.id if result.respond_to?(:id)
           end
         end
         result

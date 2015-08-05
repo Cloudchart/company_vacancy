@@ -12,7 +12,6 @@ UserPinboards = require('components/pinboards/lists/user')
 StandardButton = require('components/form/buttons').StandardButton
 NewPinboard = require('components/pinboards/new_pinboard')
 ModalStack = require('components/modal_stack')
-SuggestedPinboards = require('components/pinboards/lists/suggested')
 PopularPinboards = require('components/pinboards/lists/popular')
 
 
@@ -67,12 +66,6 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderSuggestedInsights: ->
-    return null if @state.initialUserPinboardsCount and @state.initialUserPinboardsCount > 1000
-
-    <SuggestedPinboards />
-
-
   renderPopularPinboards: ->
     <PopularPinboards />
 

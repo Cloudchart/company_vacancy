@@ -3,21 +3,28 @@ class Feature < ActiveRecord::Base
   include Admin::Feature
 
   DISPLAY_TYPES = [:blurred, :darkened]
+  FEATURABLE_TYPES = %w(Company Pin Pinboard Post Paragraph)
 
-  before_create do
-    self.featurable_type ||= 'Pin'
-  end
+  before_save :assign_effective_till, if: -> { effective_from.present? && effective_till.blank? }
+
+  enum scope: [:pending, :main, :feed]
 
   dragonfly_accessor :image
 
-  nilify_blanks only: [:title, :category, :url]
+  nilify_blanks only: [:title, :category, :url, :effective_from, :effective_till]
 
   belongs_to :featurable, polymorphic: true
 
-  validates :url, url: true, allow_blank: true
+  FEATURABLE_TYPES.each do |class_name|
+    belongs_to :"featurable_#{class_name.underscore}", class_name: class_name, foreign_key: :featurable_id, foreign_type: class_name
+  end
 
-  scope :insights, -> { where(featurable_type: 'Pin') }
-  scope :only_active, -> { where(is_active: true) }
+  validates :featurable, presence: true
+  validates :featurable_type, inclusion: { in: FEATURABLE_TYPES }
+  validates :url, url: true, allow_blank: true
+  validates :effective_from, :effective_till, date: true, allow_blank: true
+
+  scope :active, -> { where(is_active: true) }
   scope :with_display_type, -> type { where("display_types_mask & #{2**DISPLAY_TYPES.index(type)} > 0") }
 
   def display_types=(display_types)
@@ -34,6 +41,12 @@ class Feature < ActiveRecord::Base
 
   def assigned_image
     image_stored? ? image : featurable.try(:preview)
+  end
+
+private
+
+  def assign_effective_till
+    self.effective_till = effective_from
   end
 
 end

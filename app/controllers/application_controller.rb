@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def should_perform_sidekiq_worker?
-    %(staging production).include?(Rails.env)
+    Cloudchart::Utils.should_perform_sidekiq_worker?
   end
 
   def post_page_visit_to_slack_channel(page_title, page_url)

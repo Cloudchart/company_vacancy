@@ -59,3 +59,17 @@ module.exports =
       url:      '/pins/' + item.get('uuid') + '/approve'
       type:     'PATCH'
       dataType: 'json'
+
+
+  follow: (id) ->
+    Promise.resolve $.ajax
+      url: "/pins/#{id}/follow"
+      type: 'POST'
+      dataType: 'json'
+
+
+  unfollow: (id) ->
+    Promise.resolve $.ajax
+      url: "/pins/#{id}/unfollow"
+      type: 'DELETE'
+      dataType: 'json'

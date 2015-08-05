@@ -8,10 +8,6 @@ module Admin::Company
         field :is_featured, :boolean
         fields :created_at, :updated_at
       end
-
-      edit do
-        field :is_featured, :boolean
-      end
     end
   end
   

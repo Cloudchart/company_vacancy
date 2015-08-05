@@ -3,12 +3,15 @@
 
 GlobalState = require('global_state/state')
 
-PinStore = require('stores/pin_store')
-UserStore = require('stores/user_store.cursor')
+PinStore      = require('stores/pin_store')
+UserStore     = require('stores/user_store.cursor')
 PinboardStore = require('stores/pinboard_store')
 
-PinsList = require('components/pinboards/pins')
-PinComponent = require('components/pinboards/pin')
+PinsList      = require('components/pinboards/pins')
+PinComponent  = require('components/pinboards/pin')
+Insight       = require('components/cards/insight_card')
+
+ListOfCards = require('components/cards/list_of_cards')
 
 
 # Exports
@@ -27,7 +30,11 @@ module.exports = React.createClass
         """
           Pinboard {
             pins {
-              #{PinComponent.getQuery('pin')}
+              #{Insight.getQuery('pin')}
+            },
+            edges {
+              pins_ids,
+              is_editable
             }
           }
         """
@@ -53,32 +60,51 @@ module.exports = React.createClass
   isLoaded: ->
     @state.isLoaded
 
-  filterUnapprovedSuggestions: (pin) ->
-    pin.get('is_suggestion') && !@cursor.pinboard.get('is_editable') && !pin.get('is_approved') && @cursor.user.get('uuid') != pin.get('user_id')
 
-  gatherPins: ->
-    PinStore.filterByPinboardId(@props.pinboard_id)
-      .filterNot @filterUnapprovedSuggestions
-      .sortBy (pin) -> pin.get('created_at')
+  isApproved: (pin) ->
+    return true if      pin.is_approved
+    return true unless  pin.is_suggestion
+    @cursor.pinboard.get('is_editable')
+
+
+  collectPins: ->
+    @cursor.pinboard.get('pins_ids')
+      .map (id) -> PinStore.get(id)?.toJS()
+      .filter (pin) -> !!pin
+      .filter @isApproved
+      .sortBy (pin) -> pin.created_at
       .reverse()
-      .valueSeq()
-      .toArray()
 
 
   # Lifecycle methods
   #
   componentWillMount: ->
     @cursor =
-      pins: PinStore.cursor.items
-      pinboard: PinboardStore.cursor.items.get(@props.pinboard_id)
-      user: UserStore.me()
+      user:       UserStore.me()
+      pins:       PinStore.cursor.items
+      pinboard:   PinboardStore.cursor.items.cursor(@props.pinboard_id)
 
     @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
 
 
   # Renderers
   #
+
+  renderPin: (pin) ->
+    <Insight key={ pin.uuid } pin={ pin.uuid } scope='pinboard' />
+
+
+  renderPins: ->
+    @collectPins().map @renderPin
+
+
+  # Main render
+  #
   render: ->
     return null unless @isLoaded()
-    
-    <PinsList pins = { @gatherPins() } onItemClick = { @props.onItemClick } />
+
+    <section className="cc-container-common">
+      <ListOfCards>
+        { @renderPins().toArray() }
+      </ListOfCards>
+    </section>

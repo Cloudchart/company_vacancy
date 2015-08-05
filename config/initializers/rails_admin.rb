@@ -32,6 +32,26 @@ RailsAdmin.config do |config|
 
     # custom
     #
+    member :make_featured do
+      only Feature::FEATURABLE_TYPES
+      link_icon 'icon-bookmark'
+      http_methods { [:post, :get] }
+      register_instance_option :bulkable? do
+        true
+      end
+      controller do
+        proc do
+          if request.get?
+            @object.update(is_featured: '1')
+            redirect_to index_path(params[:model_name]), notice: 'Record has been featured'
+          elsif request.post?
+            params[:model_name].classify.constantize.find(params[:bulk_ids]).each { |object| object.update(is_featured: '1') }
+            redirect_to index_path(params[:model_name]), notice: 'All records has been featured'
+          end
+        end
+      end
+    end
+
     member :make_acceptable do
       only ['Tag']
       http_methods { [:post] }

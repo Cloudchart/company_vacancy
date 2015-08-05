@@ -113,7 +113,7 @@ State =
       @shouldComponentUpdateWithoutGlobalStateCheck = @shouldComponentUpdate || => true
       @shouldComponentUpdate = @shouldComponentUpdateWithGlobalStateCheck
 
-      @onGlobalStateChangeWithoutGlobalStateCheck = @onGlobalStateChange || => @setState({})
+      @onGlobalStateChangeWithoutGlobalStateCheck = @onGlobalStateChange || => @setState({}) if @isMounted()
       @onGlobalStateChange = @onGlobalStateChangeWithGlobalStateCheck
 
 
@@ -131,7 +131,7 @@ State =
         if @cursor.__CURSOR_INSTANCE__
           addListener(@cursor.path, @onGlobalStateChange)
         else
-          Immutable.Seq(@cursor).forEach (cursor) =>
+          Immutable.Seq(@cursor).forEach (cursor, key) =>
             addListener(cursor.path, @onGlobalStateChange)
 
 

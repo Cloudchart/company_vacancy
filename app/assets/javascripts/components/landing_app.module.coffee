@@ -4,13 +4,14 @@ GlobalState         = require('global_state/state')
 
 UserStore           = require('stores/user_store.cursor')
 CompanyStore        = require('stores/company_store.cursor')
+FeatureStore        = require('stores/feature_store')
+PinboardStore       = require('stores/pinboard_store')
 
 CompanyPreview      = require('components/company/preview')
 PinboardPreview     = require('components/cards/pinboard_card')
 FeaturedPinboard    = require('components/landing/featured_pinboard')
 ProductHuntMobile   = require('components/landing/product_hunt_mobile')
 
-FeaturedInsights    = require('components/insight/featured')
 Greeting            = require('components/shared/greeting')
 GuestSubscription   = require('components/shared/guest_subscription')
 MainBanner          = require('components/welcome/main_banner')
@@ -35,15 +36,15 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
-            featured_pinboards {
-              #{PinboardPreview.getQuery('pinboard')}
-            },
-            featured_companies {
-              #{CompanyPreview.getQuery('company')}
+            main_features {
+              featurable_pinboard {
+                #{PinboardPreview.getQuery('pinboard')}
+              },
+              featurable_company {
+                #{CompanyPreview.getQuery('company')}
+              }
             },
             edges {
-              featured_pinboards,
-              featured_companies,
               is_authenticated
             }
           }
@@ -51,8 +52,9 @@ module.exports = React.createClass
 
 
   fetch: ->
-    GlobalState.fetch(@getQuery('viewer')).done =>
+    GlobalState.fetch(@getQuery('viewer')).done (json) =>
       @setState
+        main_features_ids: json.query.main_features.ids || []
         ready: true
 
 
@@ -72,9 +74,26 @@ module.exports = React.createClass
     @fetch()
 
 
+  # Helpers
+  #
+  getFeatureForPinboard: ->
+    @getFeaturesForPinboards()
+      .filter (feature) -> feature.get('position') == -1
+      .first()
+
+  getFeaturesForPinboards: ->
+    Immutable.Seq(@state.main_features_ids.map (id) -> FeatureStore.get(id))
+      .filter (feature) -> feature.get('featurable_type') == 'Pinboard'
+      .sortBy (feature) -> feature.get('position')
+
+  getFeaturesForCompanies: ->
+    Immutable.Seq(@state.main_features_ids.map (id) -> FeatureStore.get(id))
+      .filter (feature) -> feature.get('featurable_type') == 'Company'
+      .sortBy (feature) -> feature.get('position')
+
+
   # Renderers
   #
-
   renderWelcomeBanner: ->
     shouldDisplay = !(
       @props.cursor.me.get('is_authenticated', false) ||
@@ -92,11 +111,9 @@ module.exports = React.createClass
 
   renderFeaturedPinboard: ->
     return null if device.is_iphone
-    return null unless featured_pinboard = @props.cursor.me.get('featured_pinboards')
-      .filter (pinboard) -> pinboard.get('featured_position') == -1
-      .first()
+    return null unless featureForPinboard = @getFeatureForPinboard()
 
-    <FeaturedPinboard pinboard={ featured_pinboard.get('id') } />
+    <FeaturedPinboard pinboard={ featureForPinboard.get('featurable_id') } scope='main' />
 
 
   renderPinboard: (pinboard) ->
@@ -106,18 +123,20 @@ module.exports = React.createClass
 
 
   renderFeaturedPinboards: ->
+    featuresForPinboards = @getFeaturesForPinboards()
+    return null if featuresForPinboards.size == 0
+
     <section className="cc-container-common">
       <header>
-        <h1>Featured Collections</h1>
-        <h2>Collect insights. Add your own. Share with your team and the community.</h2>
+        <h1>{ "Featured Collections" }</h1>
+        <h2>{ "Collect insights. Add your own. Share with your team and the community." }</h2>
       </header>
 
       <section className="flow">
         {
-          @props.cursor.me.get('featured_pinboards', Immutable.Seq())
-            .filter (pinboard) -> pinboard.get('featured_position') >= 0
-            .sortBy (pinboard) -> pinboard.get('featured_position')
-            .map @renderPinboard
+          featuresForPinboards
+            .filter (feature) -> feature.get('position') >= 0
+            .map (feature) => @renderPinboard(PinboardStore.get(feature.get('featurable_id')))
             .toArray()
         }
       </section>
@@ -131,17 +150,19 @@ module.exports = React.createClass
 
 
   renderFeaturedCompanies: ->
+    featuresForCompanies = @getFeaturesForCompanies()
+    return null if featuresForCompanies.size == 0
+
     <section className="cc-container-common">
       <header>
-        <h1>Featured Companies</h1>
-        <h2>Follow unicorns and other startups and learn how they are growing.</h2>
+        <h1>{ "Featured Companies" }</h1>
+        <h2>{ "Follow unicorns and other startups and learn how they are growing." }</h2>
       </header>
 
       <section className="flow">
         {
-          @props.cursor.me.get('featured_companies', Immutable.Seq())
-            .sortBy (company) -> company.get('featured_position')
-            .map @renderCompany
+          featuresForCompanies
+            .map (feature) => @renderCompany(CompanyStore.get(feature.get('featurable_id')))
             .toArray()
         }
       </section>

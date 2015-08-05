@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
 # Imports
-# 
+#
 Timeline = require('components/company/timeline')
 Tabs     = require('components/shared/tabs')
 
@@ -12,7 +12,7 @@ cx = React.addons.classSet
 
 
 # Main component
-# 
+#
 MainComponent = React.createClass
 
   displayName: 'PinboardTabs'
@@ -28,7 +28,7 @@ MainComponent = React.createClass
 
 
   # Helpers
-  # 
+  #
   getVisibleTabs: ->
     Immutable.OrderedMap(
       insights:  true
@@ -45,18 +45,18 @@ MainComponent = React.createClass
 
     <strong>{ insightsCount }</strong>
 
-  renderTabName: (key) ->
+  renderTabName: (key, options = {}) ->
     switch key
       when 'insights'
-        <span>Insights { @renderInsightsNumber() }</span>
+        if options.plain then "Insights" else <span>Insights { @renderInsightsNumber() }</span>
       when 'users'
-        "Users"
+        if options.plain then "Users" else <span>Users</span>
       when 'settings'
-        "Settings"
+        if options.plain then "Settings" else <span>Settings</span>
 
 
   # Main render
-  # 
+  #
   render: ->
     <Tabs
       getCurrentTab  = { @getCurrentTab }
@@ -66,5 +66,5 @@ MainComponent = React.createClass
 
 
 # Exports
-# 
+#
 module.exports = MainComponent

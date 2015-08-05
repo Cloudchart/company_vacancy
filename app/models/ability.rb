@@ -33,6 +33,7 @@ class Ability
       can :update, :cloud_profile_user
       can [:read, :accept, :destroy], :company_invite
 
+      can :read, Paragraph
       can :create, Tag
       can :create, Activity
       can [:create, :verify, :resend_verification], Email
@@ -44,9 +45,7 @@ class Ability
 
       # User
       #
-      can :read, User do |user|
-        !user.guest?
-      end
+      can [:read, :feed], User
 
       can [:update, :settings], User do |user|
         user.id == current_user.id ||
@@ -78,6 +77,8 @@ class Ability
         (current_user.admin? || current_user.editor?)
       end
 
+      can [:follow, :unfollow], Pin
+
       can :approve, Pin do |pin|
         (current_user.admin? || current_user.editor?) && pin.content.present? && !pin.is_approved?
       end
@@ -91,7 +92,7 @@ class Ability
       can :manage, Company, user_id: current_user.id
       can [:follow, :unfollow], Company
       can :read, Company, is_published: true
-      can [:index, :search], :companies 
+      can [:index, :search], :companies
 
       can :create, Company do
         current_user.editor?
@@ -118,12 +119,15 @@ class Ability
       can :index, :pinboards
       can :create, Pinboard
       can [:destroy], Pinboard, user_id: current_user.id
+
       can [:read, :follow, :unfollow], Pinboard do |pinboard|
         pinboard.public? || current_user.id == pinboard.user_id || reader_or_editor?(current_user, pinboard)
       end
+
       can [:request_access], Pinboard do |pinboard|
-        !can?(:read, pinboard) && pinboard.protected?
+        cannot?(:read, pinboard) && pinboard.protected?
       end
+
       can [:update, :settings, :manage_pinboard_invites], Pinboard do |pinboard|
         current_user.id == pinboard.user_id || editor?(current_user, pinboard)
       end
@@ -159,7 +163,7 @@ class Ability
       can [:update, :destroy], Landing, author_id: current_user.id
 
       # Role
-      # 
+      #
       can [:read, :accept], Role
 
       can [:create, :update], Role do |role|
@@ -208,6 +212,7 @@ private
   end
 
   def owner_or_editor?(user, object)
+    return false unless object
     object.user_id == user.id || editor?(user, object)
   end
 

@@ -66,7 +66,8 @@ module.exports = React.createClass
               pinboard_url,
               facebook_share_url,
               twitter_share_url,
-              is_editable
+              is_editable,
+              pins_count
             }
           }
         """
@@ -87,7 +88,6 @@ module.exports = React.createClass
   #
   getDefaultProps: ->
     cursor:
-      pinboards: PinboardStore.cursor.items
       pins:      PinStore.cursor.items
       favorites: FavoriteStore.cursor.items
       roles:     RoleStore.cursor.items
@@ -260,7 +260,9 @@ module.exports = React.createClass
   renderContent: ->
     switch @state.currentTab
       when 'insights'
-        <PinboardPins pinboard_id = { @props.uuid } />
+        <section className="cc-container-common" style={ width: '100%' }>
+          <PinboardPins pinboard_id = { @props.uuid } />
+        </section>
       when 'settings'
         <PinboardSettings uuid = { @props.uuid } />
       when 'users'

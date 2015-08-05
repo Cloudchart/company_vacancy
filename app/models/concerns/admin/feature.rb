@@ -7,6 +7,10 @@ module Admin::Feature
       list do
         sort_by :featurable_type
 
+        field :scope
+        field :effective_from
+        field :effective_till
+
         field :assigned_title do
           label 'Title'
 
@@ -16,14 +20,7 @@ module Admin::Feature
             url = if feature.url.present?
               feature.url
             else
-              case feature.featurable_type
-              when 'Pin'
-                bindings[:view].main_app.insight_path(feature.featurable)
-              when 'Pinboard'
-                bindings[:view].main_app.collection_path(feature.featurable)
-              when 'Company'
-                bindings[:view].main_app.company_path(feature.featurable)
-              end
+              bindings[:view].main_app.send("#{feature.featurable_type.underscore}_path", feature.featurable) rescue nil
             end
 
             bindings[:view].link_to feature.assigned_title, url
@@ -34,13 +31,12 @@ module Admin::Feature
           label 'Type'
         end
 
+        field :is_active
+        field :position
+
         field :assigned_image, :dragonfly do
           label 'Image'
         end
-
-        field :is_active
-        field :position
-        field :category
 
         field :display_types do
           formatted_value do
@@ -50,17 +46,19 @@ module Admin::Feature
       end
 
       edit do
-        field :title
-        field :image
-        field :category
-        field :url
+        field :scope
+        field :effective_from
+        field :effective_till
         field :is_active
+        field :position
+        field :image
 
         field :display_types do
           partial :display_types
         end
 
-        field :position
+        field :title
+        field :url
       end
 
     end

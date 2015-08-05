@@ -130,6 +130,10 @@ a {
   color: $link-color;
   text-decoration: none;
 
+  &.underscore {
+    text-decoration: underline;
+  }
+
   &.for-group {
     color: inherit;
     display: block;

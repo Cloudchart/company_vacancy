@@ -11,7 +11,7 @@ cx = React.addons.classSet
 
 
 # Main component
-# 
+#
 MainComponent = React.createClass
 
   displayName: 'Tabs'
@@ -29,9 +29,9 @@ MainComponent = React.createClass
   getInitialState: ->
     currentTab: @getInitialTab()
 
-  
+
   # Lifecycle Methods
-  # 
+  #
   componentDidMount: ->
     window.addEventListener 'hashchange', @handleHashChange
     @props.onChange(@state.currentTab)
@@ -56,14 +56,13 @@ MainComponent = React.createClass
 
   getTabOptions: ->
     @props.tabs.reduce (memo, tabName) =>
-      memo[tabName] = @props.renderTabName(tabName)
-
+      memo[tabName] = @props.renderTabName(tabName, plain: true)
       memo
     , {}
 
 
   # Handlers
-  # 
+  #
   handleHashChange: ->
     if @props.tabs.contains(currentTab = @getCurrentTabName())
       @setState currentTab: currentTab
@@ -74,7 +73,7 @@ MainComponent = React.createClass
 
 
   # Renderers
-  # 
+  #
   renderTabs: ->
     return null if @props.tabs.size == 1
 
@@ -98,14 +97,14 @@ MainComponent = React.createClass
 
 
   # Main render
-  # 
+  #
   render: ->
     <nav className="tabs">
       { @renderTabs() }
-      { @renderDropdownTabs() } 
+      { @renderDropdownTabs() }
     </nav>
 
 
 # Exports
-# 
+#
 module.exports = MainComponent

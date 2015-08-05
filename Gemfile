@@ -46,6 +46,7 @@ gem 'zeroclipboard-rails'
 gem 'yajl-ruby'
 gem 'sinatra', require: nil
 gem 'paranoia', '~> 2.0'
+gem 'diffbot-ruby-client', :git => 'git@github.com:diffbot/diffbot-ruby-client.git'
 
 # Engines
 #

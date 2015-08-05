@@ -1,4 +1,5 @@
 class PinsController < ApplicationController
+  include FollowableController
 
   before_filter :set_pin
 

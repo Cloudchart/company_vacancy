@@ -5,11 +5,6 @@ json.(pin, :pins_count, :weight)
 json.(pin, :is_approved, :is_suggestion)
 json.(pin, :created_at, :updated_at)
 
-json.is_featured begin
-  preload_associations(siblings, cache, :feature)
-  pin.is_featured?
-end
-
 json_edge! json, :url, edges do
   main_app.insight_url(pin)
 end
@@ -46,4 +41,18 @@ end
 
 json_edge! json, :is_origin_domain_allowed, edges do
   pin.is_origin_domain_allowed
+end
+
+json_edge! json, :is_followed, edges do
+  preload_associations(siblings, cache, :followers)
+  !!pin.followers.find { |f| f.user_id == current_user.id }
+end
+
+json_edge! json, :is_mine, edges do
+  pin.user_id == current_user.id
+end
+
+json_edge! json, :diffbot_response_data, edges do
+  preload_associations(siblings, cache, :diffbot_response)
+  pin.diffbot_response.try(:data)
 end

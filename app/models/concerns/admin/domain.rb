@@ -5,11 +5,11 @@ module Admin::Domain
     rails_admin do
       list do
         sort_by :created_at
-        fields :name, :status, :created_at, :updated_at
+        fields :name, :status, :diffbot_api, :created_at, :updated_at
       end
 
       edit do
-        fields :name, :status
+        fields :name, :status, :diffbot_api
       end
     end
   end

@@ -4,13 +4,15 @@ GlobalState     = require('global_state/state')
 
 PinboardStore   = require('stores/pinboard_store')
 PinStore        = require('stores/pin_store')
+FeatureStore    = require('stores/feature_store')
 
 FollowButton    = require('components/pinboards/follow_button')
-InsightPreview  = require('components/pinboards/pin')
+InsightCard     = require('components/cards/insight_card')
+device          = require('utils/device')
 
 cx = React.addons.classSet
 
-StacksCount               = 3
+StacksCount               = if device.is_iphone then 1 else 3
 MaxInsightContentLength   = 200
 
 
@@ -22,27 +24,30 @@ module.exports = React.createClass
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
+  propTypes:
+    scope:  React.PropTypes.string.isRequired
+
   statics:
     queries:
       pinboard: -> # TODO: Rewrite Insight
         """
           Pinboard {
             #{FollowButton.getQuery('pinboard')},
-
             pins {
-              #{InsightPreview.getQuery('pin')}
+              #{InsightCard.getQuery('pin')}
             },
-
+            features,
             edges {
               pins_ids,
               assigned_image_url,
-              assigned_image_display_types
+              assigned_image_display_types,
+              features
             }
           }
         """
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.pinboard }).done =>
+    GlobalState.fetch(@getQuery('pinboard'), { id: @props.pinboard }).done (json) =>
       @setState
         ready: true
 
@@ -59,6 +64,11 @@ module.exports = React.createClass
 
     @setState
       opacityIndices: @state.opacityIndices.set(stackIndex, insightIndex)
+
+
+  observeMutation: ->
+    clearTimeout @mutationTimeout
+    @mutationTimeout = setTimeout @recalculateHeight, 250
 
 
   recalculateHeight: ->
@@ -96,16 +106,19 @@ module.exports = React.createClass
 
 
   componentDidMount: ->
-    @recalculateHeight()
     @switchInsightInterval = setInterval @switchInsight, 8 * 1000
 
 
   componentWillUnmount: ->
     clearInterval @switchInsightInterval
+    @mutationObserver.disconnect()
 
 
-  componentDidUpdate: ->
-    @recalculateHeight()
+  componentDidUpdate: (prevProps, prevState) ->
+    # @recalculateHeight()
+    if @state.ready || !@mutation_observer
+      @mutationObserver = new MutationObserver(@observeMutation)
+      @mutationObserver.observe(@getDOMNode(), { childList: true, subtree: true })
 
 
   getInitialState: ->
@@ -116,16 +129,22 @@ module.exports = React.createClass
   # Helpers
   #
   getStyleForBgImage: ->
-    background: "url(#{@cursor.pinboard.get('assigned_image_url')}) no-repeat center center"
+    feature = @cursor.pinboard.get('features').find (item) => item.get('scope') == @props.scope
+    return unless feature
+    feature = FeatureStore.get(feature.get('id')).toJS()
+    background: "url(#{feature.assigned_image_url}) no-repeat center center"
     backgroundSize: 'cover'
 
+
   getClassesForBgimage: ->
-    displayTypes = @cursor.pinboard.get('assigned_image_display_types')
+    feature = @cursor.pinboard.get('features').find (item) => item.get('scope') == @props.scope
+    return cx({}) unless feature
+    feature = FeatureStore.get(feature.get('id')).toJS()
 
     cx
-      'bg-image': true
-      blurred: displayTypes.includes('blurred')
-      darkened: displayTypes.includes('darkened')
+      'bg-image':   true
+      blurred:      feature.display_types.indexOf('blurred') >= 0
+      darkened:     feature.display_types.indexOf('darkened') >= 0
 
 
   # Renderers
@@ -148,7 +167,7 @@ module.exports = React.createClass
     opacity   = if (@state.opacityIndices.get(stackIndex) || 0) == i then 1 else 0
 
     <div key={ id } className="item" style={ opacity: opacity, pointerEvents: if opacity == 1 then 'auto' else 'none' }>
-      <InsightPreview uuid={ id } skipRenderComment={ true } />
+      <InsightCard pin={ id } scope='pinboard' shouldRenderHeader={ true } />
     </div>
 
 
@@ -184,7 +203,7 @@ module.exports = React.createClass
   render: ->
     return null unless @state.ready
 
-    <section className="cc-container-common featured-pinboard">
+    <section className="cc-container-common featured-pinboard full-width">
       { @renderHeader() }
 
       <section className="full-width">

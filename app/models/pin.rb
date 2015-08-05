@@ -12,19 +12,23 @@ class Pin < ActiveRecord::Base
   has_should_markers :should_allow_domain_name
 
   before_save :skip_generate_preview!, unless: :insight?
-  before_save :squish_origin, if: -> { origin_changed? && origin.present? }
+  before_save :squish_origin, :nullify_diffbot_response_owner, :crawl_origin
   after_save :check_domain_from_origin
 
   belongs_to :user
-  belongs_to :parent, -> { with_deleted }, class_name: 'Pin', counter_cache: true
+  belongs_to :parent, -> { with_deleted }, class_name: self.name, counter_cache: true
   belongs_to :pinboard
   belongs_to :pinnable, polymorphic: true
   belongs_to :post, foreign_key: :pinnable_id
 
-  has_many :children, class_name: 'Pin', foreign_key: :parent_id
+  has_one :diffbot_response_owner, as: :owner, dependent: :destroy
+  has_one :diffbot_response, through: :diffbot_response_owner
+
+  has_many :children, class_name: self.name, foreign_key: :parent_id
+  has_many :followers, as: :favoritable, dependent: :destroy, class_name: Favorite.name
 
   validates :content, presence: true, if: :should_validate_content_presence?
-  validates :parent_id, uniqueness: { scope: :pinboard_id, conditions: -> { where(deleted_at: nil) } }, allow_blank: true, if: -> { is_suggestion? && pinboard }
+  validates :parent_id, uniqueness: { scope: :pinboard_id, conditions: -> { where(deleted_at: nil) } }, allow_blank: true, if: -> { is_suggestion? && pinboard_id }
 
   scope :insights, -> { where(parent: nil).where.not(content: nil) }
 
@@ -60,6 +64,20 @@ class Pin < ActiveRecord::Base
 
 private
 
+  def squish_origin
+    self.origin = origin.squish if origin_changed? && origin.present?
+  end
+
+  def nullify_diffbot_response_owner
+    self.diffbot_response_owner = nil if origin_changed?
+  end
+
+  def crawl_origin
+    if Cloudchart::Utils.should_perform_sidekiq_worker? && origin_changed? && origin.present? && origin_uri
+      DiffbotWorker.perform_async(id, self.class.name, :origin, origin)
+    end
+  end
+
   def check_domain_from_origin
     if origin_changed? && origin.present? && (uri = origin_uri)
       domain = Domain.find_by(name: uri.host)
@@ -68,10 +86,6 @@ private
         Domain.create(name: uri.host, status: status)
       end
     end
-  end
-
-  def squish_origin
-    self.origin = origin.squish
   end
 
 end

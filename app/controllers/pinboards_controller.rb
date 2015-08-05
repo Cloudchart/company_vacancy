@@ -27,12 +27,6 @@ class PinboardsController < ApplicationController
     end
   end
 
-  def settings
-    respond_to do |format|
-      format.html
-    end
-  end
-
   def create
     @pinboard = pinboard_source.new(params_for_create)
     authorize! :create, @pinboard

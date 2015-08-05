@@ -4,10 +4,11 @@ module Preloadable::User
   included do
     include Preloadable
 
-    has_many :companies_roles, -> { where(owner_type: Company.name) }, class_name: Role.name
-    has_many :companies_favorites, -> { where(favoritable_type: Company.name) }, class_name: Favorite.name
-    has_many :pinboards_roles, -> { where(owner_type: Pinboard.name) }, class_name: Role.name
-    has_many :pinboards_favorites, -> { where(favoritable_type: Pinboard.name) }, class_name: Favorite.name
+    has_many :companies_roles, -> { where(owner_type: 'Company') }, class_name: 'Role'
+    has_many :companies_favorites, -> { where(favoritable_type: 'Company') }, class_name: 'Favorite'
+    has_many :pinboards_roles, -> { where(owner_type: 'Pinboard') }, class_name: 'Role'
+    has_many :pinboards_favorites, -> { where(favoritable_type: 'Pinboard') }, class_name: 'Favorite'
+    has_many :users_favorites, -> { where(favoritable_type: 'User') }, class_name: 'Favorite'
 
     acts_as_preloadable :companies_through_roles, companies_roles: :company
     acts_as_preloadable :favorite_companies, companies_favorites: :company
@@ -15,6 +16,8 @@ module Preloadable::User
     acts_as_preloadable :pinboards_through_roles, pinboards_roles: :pinboard
     acts_as_preloadable :favorite_pinboards, pinboards_favorites: :pinboard
     acts_as_preloadable :related_pinboards, pinboards: :pins, pinboards_roles: { pinboard: :pins }, pinboards_favorites: { pinboard: :pins }
+    acts_as_preloadable :feed_pinboards, { users_favorites: { favoritable_user: :pinboards } }
+    acts_as_preloadable :feed_pins, pinboards_favorites: { pinboard: :pins }, users_favorites: { favoritable_user: :pins }
     acts_as_preloadable :insights, :pins
 
     def companies_through_roles(scope = {})
@@ -45,6 +48,21 @@ module Preloadable::User
         .concat(pinboards_through_roles(scope))
         .concat(favorite_pinboards(scope))
         .uniq
+    end
+
+    def feed_pinboards(scope = {})
+      date = Date.parse(scope[:params][:date]) rescue nil
+      users_favorites
+        .flat_map { |favorite| favorite.favoritable_user.pinboards }
+        .select { |pinboard| ability(scope).can?(:read, pinboard) && (date ? pinboard.created_at.to_date == date : true) }
+    end
+
+    def feed_pins(scope = {})
+      date = Date.parse(scope[:params][:date]) rescue nil
+      pins = []
+      pins.concat favorite_pinboards(scope).flat_map { |pinboard| pinboard.pins }
+      pins.concat users_favorites.flat_map { |favorite| favorite.favoritable_user.pins }
+      pins.select { |pin| ability(scope).can?(:read, pin) && (date ? pin.created_at.to_date == date : true) }
     end
 
     def insights

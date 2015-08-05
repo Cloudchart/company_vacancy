@@ -27,6 +27,11 @@ if can?(:manage, :invite)
 end
 
 if user_authenticated?
+  links << {
+    title: 'Feed',
+    url: current_page?(main_app.feed_path) ? nil : main_app.feed_path
+  }
+
   user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) }
 end
 
