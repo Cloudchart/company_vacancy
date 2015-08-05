@@ -12,9 +12,7 @@ class Pin < ActiveRecord::Base
   has_should_markers :should_allow_domain_name
 
   before_save :skip_generate_preview!, unless: :insight?
-  before_save :squish_origin, if: -> { origin_changed? && origin.present? }
-  before_save :nullify_diffbot_response_owner, if: -> { origin_changed? }
-  before_save :crawl_origin
+  before_save :squish_origin, :nullify_diffbot_response_owner, :crawl_origin
   after_save :check_domain_from_origin
 
   belongs_to :user
@@ -67,11 +65,11 @@ class Pin < ActiveRecord::Base
 private
 
   def squish_origin
-    self.origin = origin.squish
+    self.origin = origin.squish if origin_changed? && origin.present?
   end
 
   def nullify_diffbot_response_owner
-    self.diffbot_response_owner = nil
+    self.diffbot_response_owner = nil if origin_changed?
   end
 
   def crawl_origin
