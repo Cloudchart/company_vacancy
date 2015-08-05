@@ -116,7 +116,7 @@ module.exports = React.createClass
 
   componentDidUpdate: (prevProps, prevState) ->
     # @recalculateHeight()
-    if @state.ready || !@mutation_observer
+    if @state.ready && !@mutation_observer
       @mutationObserver = new MutationObserver(@observeMutation)
       @mutationObserver.observe(@getDOMNode(), { childList: true, subtree: true })
 
