@@ -39,11 +39,7 @@ class DiffbotWorker < ApplicationWorker
     end
 
     # create or update association with passed object
-    if object.diffbot_response_owner.nil?
-      object.create_diffbot_response_owner(diffbot_response: diffbot_response, attribute_name: attribute_name)
-    else
-      object.diffbot_response_owner.update(diffbot_response: diffbot_response, attribute_name: attribute_name)
-    end
+    object.create_diffbot_response_owner(diffbot_response: diffbot_response, attribute_name: attribute_name) unless object.diffbot_response
   end
 
 private
