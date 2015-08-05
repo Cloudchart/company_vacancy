@@ -116,7 +116,7 @@ module.exports = React.createClass
         @renderUserComment('added insight', prefix: 'to')
       else
         <section className="title">
-          @renderPinboardTitle()
+          { @renderPinboardTitle() }
         </section>
     else
       @renderUserComment('added insight', prefix: 'to')
