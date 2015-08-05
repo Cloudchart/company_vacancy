@@ -154,7 +154,7 @@ module.exports = React.createClass
   renderPinboards: ->
     pinboards = @state.pinboards
       .map (pinboard) =>
-        user = if pinboard.user_id == @state.user.id then "" else " — #{user.full_name}"
+        user = if pinboard.user_id == @state.user.id then "" else " — #{@state.user.full_name}"
         <option key={ pinboard.id } value={ pinboard.id }>{ pinboard.title + user }</option>
 
     [<option key='new' value='new'>Create collection</option>].concat(pinboards.toArray())
