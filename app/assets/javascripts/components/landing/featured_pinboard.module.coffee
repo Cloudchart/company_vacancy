@@ -4,6 +4,7 @@ GlobalState     = require('global_state/state')
 
 PinboardStore   = require('stores/pinboard_store')
 PinStore        = require('stores/pin_store')
+FeatureStore    = require('stores/feature_store')
 
 FollowButton    = require('components/pinboards/follow_button')
 InsightPreview  = require('components/pinboards/pin')
@@ -22,21 +23,24 @@ module.exports = React.createClass
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
+  propTypes:
+    scope:  React.PropTypes.string.isRequired
+
   statics:
     queries:
       pinboard: -> # TODO: Rewrite Insight
         """
           Pinboard {
             #{FollowButton.getQuery('pinboard')},
-
             pins {
               #{InsightPreview.getQuery('pin')}
             },
-
+            features,
             edges {
               pins_ids,
               assigned_image_url,
-              assigned_image_display_types
+              assigned_image_display_types,
+              features
             }
           }
         """
@@ -116,16 +120,22 @@ module.exports = React.createClass
   # Helpers
   #
   getStyleForBgImage: ->
-    return {} unless @props.feature
-    background: "url(#{@props.feature.assigned_image_url}) no-repeat center center"
+    feature = @cursor.pinboard.get('features').find (item) => item.get('scope') == @props.scope
+    return unless feature
+    feature = FeatureStore.get(feature.get('id')).toJS()
+    background: "url(#{feature.assigned_image_url}) no-repeat center center"
     backgroundSize: 'cover'
 
+
   getClassesForBgimage: ->
-    return cx({}) unless @props.feature
+    feature = @cursor.pinboard.get('features').find (item) => item.get('scope') == @props.scope
+    return cx({}) unless feature
+    feature = FeatureStore.get(feature.get('id')).toJS()
+
     cx
-      'bg-image': true
-      blurred: @props.feature.display_types.indexOf('blurred') >= 0
-      darkened: @props.feature.display_types.indexOf('darkened') >= 0
+      'bg-image':   true
+      blurred:      feature.display_types.indexOf('blurred') >= 0
+      darkened:     feature.display_types.indexOf('darkened') >= 0
 
 
   # Renderers
@@ -184,7 +194,7 @@ module.exports = React.createClass
   render: ->
     return null unless @state.ready
 
-    <section className="cc-container-common featured-pinboard">
+    <section className="cc-container-common featured-pinboard full-width">
       { @renderHeader() }
 
       <section className="full-width">

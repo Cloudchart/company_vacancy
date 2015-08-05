@@ -71,3 +71,14 @@ end
 json_edge! json, :is_editable, edges do
   can?(:update, pinboard)
 end
+
+
+json_edge! json, :features, edges do
+  preload_associations(siblings, cache, :features)
+  pinboard.features.map do |f|
+    {
+      id:     f.id,
+      scope:  f.scope
+    }
+  end
+end

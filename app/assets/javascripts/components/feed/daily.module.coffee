@@ -3,9 +3,10 @@
 GlobalState = require('global_state/state')
 
 
-PinboardCard  = require('components/cards/pinboard_card')
-InsightCard   = require('components/cards/insight_card')
-ListOfCards   = require('components/cards/list_of_cards')
+PinboardCard      = require('components/cards/pinboard_card')
+InsightCard       = require('components/cards/insight_card')
+ListOfCards       = require('components/cards/list_of_cards')
+FeaturedPinboard  = require('components/landing/featured_pinboard')
 
 PinStore      = require('stores/pin_store')
 PinboardStore = require('stores/pinboard_store')
@@ -41,18 +42,22 @@ module.exports = React.createClass
             },
             feed_pinboards {
               #{PinboardCard.getQuery('pinboard')}
+            },
+            feed_featured_pinboards {
+              #{FeaturedPinboard.getQuery('pinboard')}
             }
           }
         """
 
   fetch: ->
     GlobalState.fetch(@getQuery('viewer'), { force: true, params: { date: @state.date.format('LL') } }).then (json) =>
-      { feed_pins, feed_pinboards } = json.query
+      { feed_pins, feed_pinboards, feed_featured_pinboards } = json.query
 
       @setState
-        feed_pinboards_ids:   if feed_pinboards then feed_pinboards.ids else []
-        feed_pins_ids:        if feed_pins then feed_pins.ids else []
-        ready:                true
+        feed_featured_pinboard_id:  if feed_featured_pinboards then feed_featured_pinboards.ids[0] else null
+        feed_pinboards_ids:         if feed_pinboards then feed_pinboards.ids else []
+        feed_pins_ids:              if feed_pins then feed_pins.ids else []
+        ready:                      true
 
       @props.onDone()
 
@@ -98,6 +103,7 @@ module.exports = React.createClass
       .reverse()
       .map @renderFeedItem
 
+    return null if renderedItems.size == 0
 
     <section className="cc-container-common glued">
       <ListOfCards>
@@ -105,6 +111,10 @@ module.exports = React.createClass
       </ListOfCards>
     </section>
 
+
+  renderFeaturedPinboard: ->
+    return null unless @state.feed_featured_pinboard_id
+    <FeaturedPinboard pinboard={ @state.feed_featured_pinboard_id } scope='feed' />
 
   # Render
   #
@@ -116,4 +126,5 @@ module.exports = React.createClass
         { @renderHeader() }
       </section>
       { @renderFeedItems() }
+      { @renderFeaturedPinboard() }
     </section>
