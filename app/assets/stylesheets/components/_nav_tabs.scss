@@ -2,12 +2,12 @@ $tab-color-hover: $link-color;
 $tab-font-size: $large-font-size;
 $tab-height: 75px;
 $tab-max-width: 245px;
-$active-tab-background-color: $tabs-active-color;
+$active-tab-background-color: $background-color;
 $tab-counter-color: $link-color;
 $tab-counter-font-size: 18px;
 $tab-counter-gutter: 10px;
 
-$tab-select-background-color: $background-color;
+$tab-select-background-color: $active-tab-background-color;
 
 
 @mixin tab-nav-ul {
