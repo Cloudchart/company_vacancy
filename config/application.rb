@@ -27,7 +27,6 @@ module Cloudchart
     I18n.config.enforce_available_locales = true
     # config.i18n.default_locale = :de
 
-    config.autoload_paths += %W(#{config.root}/app/workers)
     config.autoload_paths += %W(#{config.root}/lib/cloudchart)
     config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/serializers)
     config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/mutations)
