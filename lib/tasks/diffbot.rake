@@ -5,7 +5,7 @@ namespace :cc do
     DiffbotResponseOwner.delete_all
     Pin.insights.where.not(origin: nil).each do |pin|
       if pin.origin_uri
-        DiffbotResponseWorker.perform_async(pin.id, pin.class.name, :origin)
+        DiffbotWorker.perform_async(pin.id, pin.class.name, :origin)
         puts "started to process #{pin.origin}"
       end
     end
