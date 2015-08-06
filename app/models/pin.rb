@@ -76,9 +76,7 @@ private
   end
 
   def crawl_origin
-    if Cloudchart::Utils.should_perform_sidekiq_worker? && origin_uri
-      DiffbotWorker.perform_async(id, self.class.name, :origin, origin)
-    end
+    DiffbotWorker.perform_async(id, self.class.name, :origin, origin) if origin_uri
   end
 
   def check_domain_from_origin
