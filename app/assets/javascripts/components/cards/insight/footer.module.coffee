@@ -141,7 +141,7 @@ module.exports = React.createClass
       <ul className="round-buttons">
         <InsightStarButton pin={ @state.insight.id } />
         <InsightSaveButton pin={ @state.insight.id } onDone={ @fetchPinboard } />
-        <InsightDropButton pin={ (@state.pin || @state.insight).id } scope={ @props.scope } />
+        <InsightDropButton pin={ (@state.pin || @state.insight).id } onDone={ @fetchPinboard } scope={ @props.scope } />
       </ul>
       { @renderContent() }
     </footer>

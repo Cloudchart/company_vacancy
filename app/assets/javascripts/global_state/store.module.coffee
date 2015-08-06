@@ -219,7 +219,7 @@ class BaseStore
     currItem = @cursor.items.get(id)
 
     promise = @syncAPI.destroy(currItem, params, options)
-    promise.then(@destroyDone, @destroyFail)
+    promise.then((if options.remove_from_store then @destroyDone else null), @destroyFail)
     promise
 
 
