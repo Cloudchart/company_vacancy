@@ -195,6 +195,16 @@ buildURL = (endpoint, options = {}) ->
   endpoint.get('url') + if endpoint.get('handle_id') and options.id then '/' + options.id else ''
 
 
+# Fetched Edges
+#
+fetchEdges = (type, id) ->
+  path  = [type, id, 'children', 'edges', 'children'].filter((item) -> !!item)
+  edges = Storage.getIn(path, Immutable.Map()).keySeq()
+  return if edges.size == 0
+  query = new Query.Query("#{type}{edges{#{edges.join(',')}}}")
+  fetch(query, { id: id, force: true })
+
+
 # Fetch
 #
 fetch = (query, options = {}) ->
@@ -261,4 +271,5 @@ fetch = (query, options = {}) ->
 #
 module.exports =
 
-  fetch: fetch
+  fetch:        fetch
+  fetchEdges:   fetchEdges
