@@ -1,4 +1,4 @@
-class DiffbotResponseWorker < ApplicationWorker
+class DiffbotWorker < ApplicationWorker
 
   def perform(object_id, object_type, attribute_name, url)
     # find object
