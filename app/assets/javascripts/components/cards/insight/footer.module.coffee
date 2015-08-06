@@ -97,32 +97,33 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderTitle: ->
+    return null unless @state.insight.diffbot_response_data
+    return null unless title = @state.insight.diffbot_response_data.title
+
+    <span className="title">title + ', '</span>
+
+
+  renderEstimation: ->
+    return null unless @state.insight.diffbot_response_data
+    return null unless estimated_time = @state.insight.diffbot_response_data.estimated_time
+
+    <span className="estimation">
+      &mdash;
+      <i className="fa fa-clock-o" />
+      { moment.duration(estimated_time, 'seconds').humanize(); }
+    </span>
+
+
   renderOrigin: ->
     return null unless @state.insight.origin && @state.insight.is_origin_domain_allowed
     return null unless (parts = DOMAIN_RE.exec(@state.insight.origin)) and parts.length == 2
+    [_, domain] = parts
 
-    header = if @state.insight.diffbot_response_data && (title = @state.insight.diffbot_response_data.title)
-       title + ', '
-    else
-      null
-
-    host = <a href={ @state.insight.origin } target="_blank">{ parts[1] }</a>
-
-    estimation = if @state.insight.diffbot_response_data && (estimated_time = @state.insight.diffbot_response_data.estimated_time)
-      [
-        <span key=1> &mdash; </span>
-        <span className="estimation" key=2>
-          <i className="fa fa-clock-o"></i>
-          { moment.duration(estimated_time, 'seconds').humanize(); }
-        </span>
-      ]
-    else
-      null
-
-    <div>
-      { header }
-      { host }
-      { estimation }
+    <div className="origin">
+      { @renderTitle() }
+      <a href={ @state.insight.origin } target="_blank">{ domain }</a>
+      { @renderEstimation() }
     </div>
 
 
