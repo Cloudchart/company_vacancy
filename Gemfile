@@ -82,7 +82,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-rbenv'
   gem 'capistrano3-puma'
-  gem 'capistrano-sidekiq'
+  gem 'capistrano-sidekiq', '~> 0.5.0'
 end
 
 group :development, :test do
