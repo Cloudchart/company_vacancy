@@ -101,7 +101,7 @@ module.exports = React.createClass
     return null unless @state.insight.diffbot_response_data
     return null unless title = @state.insight.diffbot_response_data.title
 
-    <span className="title">title + ', '</span>
+    <span className="title">{ title + ', ' }</span>
 
 
   renderEstimation: ->
@@ -109,7 +109,7 @@ module.exports = React.createClass
     return null unless estimated_time = @state.insight.diffbot_response_data.estimated_time
 
     <span className="estimation">
-      &mdash;
+      <span> &mdash; </span>
       <i className="fa fa-clock-o" />
       { moment.duration(estimated_time, 'seconds').humanize(); }
     </span>

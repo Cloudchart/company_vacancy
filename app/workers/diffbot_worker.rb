@@ -38,8 +38,8 @@ class DiffbotWorker < ApplicationWorker
       end
     end
 
-    # create association with response and passed object
-    DiffbotResponseOwner.create!(diffbot_response: diffbot_response, owner: object, attribute_name: attribute_name)
+    # create association between response and passed object
+    object.create_diffbot_response_owner(diffbot_response: diffbot_response, attribute_name: attribute_name)
   end
 
 private
@@ -57,11 +57,11 @@ private
       result[:estimated_time] = words / wps
     when 'video'
       result[:estimated_time] = object[:duration]
-      result[:image_url] = object[:images].first.try(:[], :url)
+      result[:image_url] = object[:images].try(:first).try(:[], :url)
     when 'image'
       result[:image_url] = object[:url]
     when 'product'
-      result[:image_url] = object[:images].first.try(:[], :url)
+      result[:image_url] = object[:images].try(:first).try(:[], :url)
     end
 
     result
