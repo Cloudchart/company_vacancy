@@ -206,6 +206,7 @@ fetch = (query, options = {}) ->
   if endpoint.get('require_id') and not options.id
     throw new Error("GlobalState/Fetcher: no id provided for #{query.endpoint} endpoint")
 
+
   effective_query = query.toString()
 
   unless options.force == true
