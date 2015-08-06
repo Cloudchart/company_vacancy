@@ -1,0 +1,95 @@
+$tab-color-hover: $link-color;
+$tab-font-size: $large-font-size;
+$tab-height: 75px;
+$tab-max-width: 245px;
+$active-tab-background-color: $tabs-active-color;
+$tab-counter-color: $link-color;
+$tab-counter-font-size: 18px;
+$tab-counter-gutter: 10px;
+
+$tab-select-background-color: $background-color;
+
+
+@mixin tab-nav-ul {
+  @include display(flex);
+  @include justify-content(center);
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  > li {
+    @include flex(1);
+
+    cursor: pointer;
+    font-size: $tab-font-size;
+    font-weight: 300;
+    height: $tab-height;
+    line-height: $tab-height;
+    max-width: $tab-max-width;
+    overflow: hidden;
+
+    &:hover {
+      color: $tab-color-hover;
+    }
+
+    &.active {
+      background-color: $active-tab-background-color;
+      font-weight: 600;
+    }
+
+    > em {
+      color: $tab-counter-color;
+      font-size: $tab-counter-font-size;
+      font-style: normal;
+      font-weight: 300;
+      margin-left: $tab-counter-gutter;
+
+      &:empty {
+        display: none;
+      }
+    }
+  }
+}
+
+@mixin tab-nav-select {
+  @include appearance(none);
+
+  background-color: $tab-select-background-color;
+  border: none;
+  border-radius: 0;
+  font-size: $tab-font-size;
+  height: $tab-height / 1.5;
+  padding: 0 20px;
+  width: $tab-max-width;
+
+  > option {
+    text-align: center;
+  }
+}
+
+
+nav.tab-nav {
+
+  text-align: center;
+  width: 100%;
+
+  > ul {
+    @include tab-nav-ul;
+
+    @include iphone {
+      display: none;
+    }
+  }
+
+  > select {
+    @include tab-nav-select;
+
+    display: none;
+
+    @include iphone {
+      display: inline-block;
+    }
+  }
+
+}

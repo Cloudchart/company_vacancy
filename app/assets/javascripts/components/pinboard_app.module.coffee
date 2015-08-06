@@ -12,13 +12,13 @@ FavoriteStore = require('stores/favorite_store.cursor')
 
 # Components
 #
-PinboardSettings = require('components/pinboards/settings')
-PinboardAccess = require('components/pinboards/access_rights')
-PinboardPins = require('components/pinboards/pins/pinboard')
-PinboardTabs = require('components/pinboards/tabs')
-ModalStack = require('components/modal_stack')
-InviteActions = require('components/roles/invite_actions')
-RelatedUsers = require('components/pinboards/related_users')
+PinboardSettings  = require('components/pinboards/settings')
+PinboardAccess    = require('components/pinboards/access_rights')
+PinboardPins      = require('components/pinboards/pins/pinboard')
+ModalStack        = require('components/modal_stack')
+InviteActions     = require('components/roles/invite_actions')
+RelatedUsers      = require('components/pinboards/related_users')
+TabNav            = require('components/shared/tab_nav')
 
 SuggestButton = require('components/shared/suggest_button')
 PinButton = require('components/pinnable/pin_button')
@@ -277,6 +277,28 @@ module.exports = React.createClass
     <div className="description">{ description }</div>
 
 
+  gatherTabs: ->
+    tabs = []
+
+    pins_count = @cursor.pinboard.get('pins_count', 0)
+
+    tabs.push
+      id:       'insights'
+      title:    'Insights'
+      counter:  if pins_count > 0 then '' + pins_count else null
+
+    if @cursor.pinboard.get('is_editable')
+      tabs.push
+        id:     'users'
+        title:  'Users'
+
+      tabs.push
+        id:     'settings'
+        title:  'Settings'
+
+    tabs
+
+
   # Main render
   #
   render: ->
@@ -287,12 +309,8 @@ module.exports = React.createClass
         <div className="cloud-columns cloud-columns-flex">
           { @renderHeader() }
           <InviteActions ownerId = { @props.uuid } ownerType = 'Pinboard' />
-          <PinboardTabs
-            insightsNumber = { @getPinboard().get('pins_count') }
-            canEdit = { @cursor.pinboard.get('is_editable') }
-            onChange = { @handleTabChange }
-          />
         </div>
+        <TabNav tabs={ @gatherTabs() } currentTab={ @state.currentTab } onChange={ @handleTabChange } />
       </section>
       { @renderContent() }
     </section>
