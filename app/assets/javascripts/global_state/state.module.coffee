@@ -84,8 +84,8 @@ State =
     not Immutable.is(CurrRootData.getIn(path), PrevRootData.getIn(path))
 
 
-  fetch: Fetcher.fetch
-
+  fetch:        Fetcher.fetch
+  fetchEdges:   Fetcher.fetchEdges
 
 
   mixin:

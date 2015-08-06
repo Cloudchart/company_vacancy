@@ -42,15 +42,6 @@ module.exports = React.createClass
 
   statics:
     queries:
-      pinboard: ->
-        """
-          Pinboard {
-            edges {
-              pins_ids
-            }
-          }
-        """
-
       pin: ->
 
         query = """
@@ -85,8 +76,9 @@ module.exports = React.createClass
 
 
   fetchPinboard: ->
-    return unless @state.pin.pinboard_id
-    GlobalState.fetch(@getQuery('pinboard'), { id: @state.pin.pinboard_id, force:true })
+    pinboard_id = (@state.pin || @state.insight).pinboard_id
+    return unless pinboard_id
+    GlobalState.fetchEdges('Pinboard', pinboard_id)
 
 
   # Helpers
@@ -149,7 +141,7 @@ module.exports = React.createClass
       <ul className="round-buttons">
         <InsightStarButton pin={ @state.insight.id } />
         <InsightSaveButton pin={ @state.insight.id } onDone={ @fetchPinboard } />
-        <InsightDropButton pin={ (@state.pin || @state.insight).id } scope={ @props.scope } />
+        <InsightDropButton pin={ (@state.pin || @state.insight).id } onDone={ @fetchPinboard } scope={ @props.scope } />
       </ul>
       { @renderContent() }
     </footer>

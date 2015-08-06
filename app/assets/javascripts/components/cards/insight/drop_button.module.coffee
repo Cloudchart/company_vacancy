@@ -26,15 +26,14 @@ module.exports = React.createClass
   propTypes:
     pin:    React.PropTypes.string.isRequired
     scope:  React.PropTypes.string.isRequired
+    onDone: React.PropTypes.func
 
-  mixins: [GlobalState.mixin, GlobalState.query.mixin]
-
-  getDefaultProps: ->
-    sync:   false
+  mixins: [GlobalState.query.mixin]
 
 
   getInitialState: ->
     mine: false
+    sync: false
 
 
   statics:
@@ -53,14 +52,6 @@ module.exports = React.createClass
           }
         """
 
-      pinboard: ->
-        """
-          Pinboard {
-            edges {
-              pins_ids
-            }
-          }
-        """
 
   fetch: ->
     GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
@@ -75,10 +66,14 @@ module.exports = React.createClass
   #
 
   handleClick: (event) ->
+    return if @state.sync
+
     return unless confirm "Are you sure?"
 
-    PinStore.destroy(@props.pin).then =>
-      GlobalState.fetch(@getQuery('pinboard'), { id: @state.pinboard.id, force: true }) if @state.pinboard
+    @setState
+      sync: true
+
+    PinStore.destroy(@props.pin, null, { remove_from_store: !@props.onDone }).then @props.onDone
 
 
   # Lifecycle
@@ -108,7 +103,7 @@ module.exports = React.createClass
     iconClassName = cx
       'fa':         true
       'fa-remove':  true
-      'fa-spin':    @props.sync   == true
+      'fa-spin':    @state.sync == true
 
     <li className={ className }>
       <i className={ iconClassName } onClick={ @handleClick } />
