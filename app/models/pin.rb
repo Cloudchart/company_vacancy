@@ -12,10 +12,8 @@ class Pin < ActiveRecord::Base
   has_should_markers :should_allow_domain_name
 
   before_save :skip_generate_preview!, unless: :insight?
-  before_save :squish_origin
-  before_save :nullify_diffbot_response_owner
+  before_save :squish_origin, :nullify_diffbot_response_owner
 
-  after_save :crawl_origin
   after_save :check_domain_from_origin
 
   belongs_to :user
@@ -73,10 +71,6 @@ private
 
   def nullify_diffbot_response_owner
     self.diffbot_response_owner = nil if origin_changed?
-  end
-
-  def crawl_origin
-    DiffbotWorker.perform_async(id, self.class.name, :origin, origin) if origin_uri
   end
 
   def check_domain_from_origin

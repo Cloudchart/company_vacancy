@@ -7,6 +7,7 @@ class PinsController < ApplicationController
 
   after_action :call_page_visit_to_slack_channel, only: :show
   after_action :create_intercom_event, only: :create
+  after_action :crawl_pin_origin, only: [:create, :update]
 
   def show
     respond_to do |format|
@@ -111,6 +112,11 @@ private
     params = default_fields << [:origin]
     params << [:user_id, :content] if current_user.editor?
     params
+  end
+
+  def crawl_pin_origin
+    return unless should_perform_sidekiq_worker? && @pin.valid? && @pin.origin_uri
+    DiffbotWorker.perform_async(@pin.id, @pin.class.name, :origin)
   end
 
   def create_intercom_event

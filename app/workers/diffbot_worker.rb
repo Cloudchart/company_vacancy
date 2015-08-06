@@ -1,8 +1,9 @@
 class DiffbotWorker < ApplicationWorker
 
-  def perform(object_id, object_type, attribute_name, url)
+  def perform(id, class_name, attribute_name)
     # find object
-    object = object_type.classify.constantize.find(object_id)
+    object = class_name.constantize.find(id)
+    url = object.send(attribute_name)
 
     # do nothing if domain is disabled
     uri = URI.parse(url)
@@ -38,12 +39,8 @@ class DiffbotWorker < ApplicationWorker
       end
     end
 
-    # create or update association between response and passed object
-    if object.diffbot_response_owner.nil?
-      object.create_diffbot_response_owner(diffbot_response: diffbot_response, attribute_name: attribute_name)
-    else
-      object.diffbot_response_owner.update(diffbot_response: diffbot_response, attribute_name: attribute_name)
-    end
+    # create association between response and passed object
+    object.create_diffbot_response_owner(diffbot_response: diffbot_response, attribute_name: attribute_name)
   end
 
 private
