@@ -206,7 +206,8 @@ fetchEdges = (type, id, only...) ->
     edges = edges.filter (edge) ->
       only.some (c) -> edge.indexOf(c) > -1
 
-  return if edges.size == 0
+  return unless edges.size > 0
+
   query = new Query.Query("#{type}{edges{#{edges.join(',')}}}")
   fetch(query, { id: id, force: true })
 

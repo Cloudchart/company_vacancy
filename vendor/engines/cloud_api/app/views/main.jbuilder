@@ -13,7 +13,8 @@ def __prepare(sources, query, data, json)
   scope = { current_user: current_user, current_user_ability: current_user_ability, params: params }
 
   cache   = []
-  edges   = (query || {}).delete('edges') { [] }.flatten.compact.uniq.map(&:to_sym)
+  edges   = (query || {}).delete('edges') { [] }
+  edges   = edges.nil? ? [] : edges.flatten.compact.uniq.map(&:to_sym)
 
   sources.each do |source|
     (grouped_sources[source.class] ||= []) << source
