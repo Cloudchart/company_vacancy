@@ -21,7 +21,7 @@ module.exports = React.createClass
 
 
   getInitialState: ->
-    ready: false
+    user: null
 
 
   statics:
@@ -42,7 +42,7 @@ module.exports = React.createClass
   fetch: ->
     GlobalState.fetch(@getQuery('user'), id: @props.user).then =>
       @setState
-        ready: true
+        user: UserStore.get(@props.user).toJS()
 
 
   # Lifecycle
@@ -61,20 +61,23 @@ module.exports = React.createClass
   #
 
   renderInsight: (id) ->
-    <InsightCard key={ id } pin={ id } scope='pinboard' />
+    className = cx
+      transparent: !@cursor.user.get('favorite_insights_ids').contains(id)
+
+    <InsightCard key={ id } pin={ id } scope='pinboard' className={ className } />
 
 
   renderInsights: ->
-    @cursor.user.get('favorite_insights_ids').map @renderInsight
+    @state.user.favorite_insights_ids.map @renderInsight
 
 
   # Render
   #
   render: ->
-    return null unless @state.ready
+    return null unless @state.user
 
     <section className="cc-container-common">
       <ListOfCards>
-        { @renderInsights().toArray() }
+        { @renderInsights() }
       </ListOfCards>
     </section>

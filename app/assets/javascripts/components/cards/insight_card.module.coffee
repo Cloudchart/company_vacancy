@@ -98,7 +98,11 @@ InsightCard = React.createClass
   #
   render: ->
     if @state.ready
-      <div className="insight-card cloud-card">
+      className = cx @props.className, cx
+        'cloud-card':     true
+        'insight-card':   true
+
+      <div className={ className }>
         { @renderHeader() }
         { @renderContent() }
         { @renderFooter() }

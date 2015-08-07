@@ -1,117 +1,83 @@
 # @cjsx React.DOM
 
-GlobalState   = require('global_state/state')
-UserStore     = require('stores/user_store.cursor')
-PinStore      = require('stores/pin_store')
+GlobalState = require('global_state/state')
 
-Insight       = require('components/profile/insight')
+UserStore   = require('stores/user_store.cursor')
+
+InsightCard = require('components/cards/insight_card')
+ListOfCards = require('components/cards/list_of_cards')
+
 
 # Exports
 #
 module.exports = React.createClass
 
-  displayName: 'ProfileInsights'
+  displayName: 'UserInsights'
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
+  propTypes:
+    user: React.PropTypes.string.isRequired
+
+
+  getInitialState: ->
+    user: null
+
 
   statics:
-
-    insightsCount: (user_id) ->
-      UserStore.cursor.items.getIn([user_id, 'insights'], Immutable.Seq()).size
-
-
     queries:
-
       user: ->
         """
           User {
-            edges {
-              insights
-            }
-          }
-        """
-
-      list: ->
-        """
-          User {
             insights {
-              #{Insight.getQuery('insight')}
+              #{InsightCard.getQuery('pin')}
             },
             edges {
-              insights
+              insights_ids
             }
           }
         """
 
 
   fetch: ->
-    GlobalState.fetch(@getQuery('user'), { id: @props.user }).then @fetchList
-
-
-  fetchList: ->
-    GlobalState.fetch(@getQuery('list'), { id: @props.user }).then =>
+    GlobalState.fetch(@getQuery('user'), id: @props.user).then =>
       @setState
-        ready: true
+        user: UserStore.get(@props.user).toJS()
 
 
-  # Specs/Lifecycle
+  # Lifecycle
   #
 
   componentWillMount: ->
     @cursor =
-      user:       UserStore.cursor.items.cursor(@props.user)
-      insights:   PinStore.cursor.items
-
-    @fetch()
+      user: UserStore.cursor.items.cursor(@props.user)
 
 
   componentDidMount: ->
-    @packery = new Packery @getDOMNode(),
-      transitionDuration: '0s'
+    @fetch()
 
 
-  componentDidUpdate: ->
-    start   = window.requestAnimationFrame ? window.setTimeout
-    cancel  = window.cancelAnimationFrame ? window.clearTimeout
+  # Render insights
+  #
 
-    cancel @timeout_id
+  renderInsight: (id) ->
+    className = cx
+      transparent: !@cursor.user.get('insights_ids').contains(id)
 
-    @timeout_id = start => @packery.layout()
+    <InsightCard key={ id } pin={ id } scope='pinboard' className={ className } />
 
 
-  getInitialState: ->
-    ready: false
+  renderInsights: ->
+    @state.user.insights_ids.map @renderInsight
 
 
   # Render
   #
-
-  renderInsight: (item) ->
-    <section key={ item.get('id') } className="cloud-column">
-      <Insight insight={ item.get('id') } />
-    </section>
-
-
-  renderInsights: ->
-    @cursor.user.get('insights', Immutable.Seq())
-      .map @renderInsight
-
-
-  renderPlaceholder: (_, i) ->
-    <section key={ @cursor.user.getIn(['insights', i, 'id'], i) } className="cloud-column">
-      <section className="pin cloud-card placeholder" />
-    </section>
-
-
-  renderPlaceholders: ->
-    Immutable.Repeat('dummy', @constructor.insightsCount(@props.user) || 2)
-      .map @renderPlaceholder
-
-
   render: ->
-    components = if @state.ready then @renderInsights() else @renderPlaceholders()
+    return null unless @state.user
 
-    <section className="pins cloud-columns cloud-columns-flex">
-      { components.toArray() }
+    <section className="cc-container-common">
+      <ListOfCards>
+        { @renderInsights() }
+      </ListOfCards>
     </section>

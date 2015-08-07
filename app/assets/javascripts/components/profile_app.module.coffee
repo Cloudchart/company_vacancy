@@ -63,10 +63,10 @@ module.exports = React.createClass
       user: ->
         """
           User {
-            #{UserInsights.getQuery('user')},
             #{UserPinboards.getQuery('pinboards')},
             #{UserCompanies.getQuery('user')},
             edges {
+              insights_ids,
               favorite_insights_ids
             }
           }
@@ -82,8 +82,15 @@ module.exports = React.createClass
   fetchViewer: (options={}) ->
     GlobalState.fetch(@getQuery('viewer'), options)
 
+
   fetchUser: ->
-    GlobalState.fetch(@getQuery('user'), id: @props.uuid)
+    GlobalState.fetch(@getQuery('user'), id: @props.uuid).then =>
+      user = UserStore.get(@props.uuid)
+
+      @setState
+        insights_count:           user.get('insights_ids').size
+        favorite_insights_count:  user.get('favorite_insights_ids').size
+
 
   fetch: ->
     Promise.all([@fetchUser(), @fetchViewer()]).then =>
@@ -101,7 +108,7 @@ module.exports = React.createClass
 
 
   getInsightsNumber: ->
-    UserInsights.insightsCount(@props.uuid)
+    @cursor.user.get('insights_ids').size
 
 
   getCompaniesNumber: ->
@@ -156,11 +163,34 @@ module.exports = React.createClass
     else
       @renderEmptyTabText("companies")
 
+
+  renderFavoriteInsights: ->
+    return null if @state.favorite_insights_count == 0
+
+    <section key='favorite-insights' className='cc-container-common'>
+      <header>
+        <h1>Starred Insights</h1>
+      </header>
+      <FavoriteInsights user={ @props.uuid } />
+    </section>
+
+
+
   renderInsights: ->
-    if @getInsightsNumber() > 0
-      <UserInsights user={ @props.uuid } />
+    insights_count          = @getInsightsNumber()
+    favorite_insights_count = @getFavoriteInsightsCount()
+    counter                 = insights_count + favorite_insights_count
+
+    if counter > 0
+      [
+        <section key='user-insights' className="cc-container-common">
+          <UserInsights user={ @props.uuid } />
+        </section>
+        @renderFavoriteInsights()
+      ]
     else
       @renderEmptyTabText("insights")
+
 
   renderPinboards: ->
     unless UserPinboards.isEmpty(@props.uuid)
@@ -199,6 +229,8 @@ module.exports = React.createClass
     collections_count       = @getPinboardsNumber()
     favorite_insights_count = @getFavoriteInsightsCount()
 
+    insights_count          = insights_count + favorite_insights_count
+
     tabs.push
       id:       'collections'
       title:    'Collections'
@@ -214,10 +246,10 @@ module.exports = React.createClass
       title:    'Companies'
       counter:  ['', '' + companies_count][~~!!companies_count]
 
-    tabs.push
-      id:       'favorite_insights'
-      title:    'Starred'
-      counter:  ['', '' + favorite_insights_count][~~!!favorite_insights_count]
+    # tabs.push
+    #   id:       'favorite_insights'
+    #   title:    'Starred'
+    #   counter:  ['', '' + favorite_insights_count][~~!!favorite_insights_count]
 
     if @cursor.user.get('id') == @cursor.viewer.get('id')
       tabs.push

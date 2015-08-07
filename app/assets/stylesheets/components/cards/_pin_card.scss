@@ -139,6 +139,10 @@ $insight-card-footer-content-line-height: 20px;
     height: 199px;
   }
 
+  &.transparent {
+    opacity: .5;
+  }
+
   > header {
     @include insight-card-header;
   }

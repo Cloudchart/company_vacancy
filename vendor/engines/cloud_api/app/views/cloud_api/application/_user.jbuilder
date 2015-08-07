@@ -76,6 +76,12 @@ json_edge! json, :insights, edges do
 end
 
 
+json_edge! json, :insights_ids, edges do
+  User.preload_insights(siblings, cache)
+  user.insights.map(&:id)
+end
+
+
 json_edge! json, :favorite_insights_ids, edges do
   User.preload_favorite_insights(siblings, cache)
   user.favorite_insights.map(&:id)
