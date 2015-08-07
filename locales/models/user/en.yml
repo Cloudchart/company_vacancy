@@ -22,3 +22,4 @@ en:
       unfollowed_company: "%{name} <%{twitter_url}|@%{twitter}> unfollowed <%{company_url}|%{company_name}> company"
       followed_user: "%{name} <%{twitter_url}|@%{twitter}> followed <%{user_url}|%{user_name}> user"
       unfollowed_user: "%{name} <%{twitter_url}|@%{twitter}> unfollowed <%{user_url}|%{user_name}> user"
+      guest_visited_page: "Guest user <%{ip}> visited <%{page_url}|%{page_title}>"
