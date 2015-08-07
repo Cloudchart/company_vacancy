@@ -17,7 +17,7 @@ module.exports = React.createClass
   displayName: 'TabNav'
 
   propTypes:
-    tabs:         React.PropTypes.arrayOf(TabShape)
+    tabs:         React.PropTypes.arrayOf(TabShape).isRequired
     onChange:     React.PropTypes.func.isRequired
     currentTab:   React.PropTypes.string
 
@@ -40,10 +40,11 @@ module.exports = React.createClass
   componentDidMount: ->
     unless @props.currentTab
       tabFromHash = window.location.hash.split('#').pop()
-      if tab = @props.tabs.find((tab) -> tab.id == tabFromHash)
+      tabs = Immutable.Seq(@props.tabs)
+      if tab = tabs.find((tab) -> tab.id == tabFromHash)
         @handleChange(tab.id)
       else
-        @handleChange(@props.tabs[0].id)
+        @handleChange(tabs.first().id)
 
 
   # Render Tabs
