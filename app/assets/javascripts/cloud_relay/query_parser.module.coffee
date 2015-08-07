@@ -53,7 +53,7 @@ Rules = """
       return {
         operation_type:       operation_type,
         name:                 name,
-        variable_definition:  variable_definitions,
+        variable_definitions: variable_definitions,
         selection_set:        selection_set
       }
     }
@@ -168,28 +168,50 @@ Rules = """
     name ':' value
 
   variable =
-    '$' name
+    '$' name:name {
+      return name
+    }
 
   variable_definitions =
-    ignored* '(' ignored* variable_definition+ ignored* ')' ignored*
+    ignored* '(' ignored* variable_definitions:variable_definition+ ignored* ')' ignored* {
+      return variable_definitions
+    }
 
   variable_definition =
-    ignored* variable ignored* ':' ignored* type ignored* default_value? ignored*
+    ignored* variable:variable
+    ignored* ':'
+    ignored* type:type
+    ignored* default_value:default_value? ignored* {
+      return {
+        variable:       variable,
+        type:           type,
+        default_value:  default_value
+      }
+    }
 
   default_value =
     '=' value
 
   type =
-    named_type / list_type / non_null_type
+    non_null_type / list_type / named_type
 
   named_type =
-    name
+    ignored* name:name ignored* {
+      return name
+    }
 
   list_type =
-    '[' type ']'
+    ignored* '[' ignored* type:type ignored* ']' ignored* {
+      return '[' + type + ']'
+    }
 
   non_null_type =
-    named_type '!' / list_type '!'
+    type:named_type ignored* '!' {
+      return type + '!'
+    }
+    / type:list_type ignored* '!' {
+      return type + '!'
+    }
 
   directives =
     directive+
