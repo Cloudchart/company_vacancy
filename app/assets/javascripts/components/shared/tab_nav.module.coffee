@@ -31,6 +31,7 @@ module.exports = React.createClass
 
   handleChange: (id_or_event) ->
     id = if typeof id_or_event is 'string' then id_or_event else id_or_event.target.value
+    window.location.hash = id
     @props.onChange(id) unless @props.currentTab == id
 
 
@@ -38,7 +39,11 @@ module.exports = React.createClass
   #
   componentDidMount: ->
     unless @props.currentTab
-      @handleChange(@props.tabs[0].id)
+      tabFromHash = window.location.hash.split('#').pop()
+      if tab = @props.tabs.find((tab) -> tab.id == tabFromHash)
+        @handleChange(tab.id)
+      else
+        @handleChange(@props.tabs[0].id)
 
 
   # Render Tabs
