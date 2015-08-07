@@ -3,6 +3,8 @@
 GlobalState = require('global_state/state')
 
 PinStore    = require('stores/pin_store')
+UserStore   = require('stores/user_store.cursor')
+
 PinSyncAPI  = require('sync/pin_sync_api')
 
 cx = React.addons.classSet
@@ -52,7 +54,9 @@ module.exports = React.createClass
     @setState
       sync: true
 
-    PinSyncAPI[['follow', 'unfollow'][~~@state.active]](@props.pin).then => @fetch(force: true)
+    PinSyncAPI[['follow', 'unfollow'][~~@state.active]](@props.pin).then =>
+      @fetch(force: true)
+      GlobalState.fetchEdges('User', UserStore.me().get('id'), 'favorite_insight')
 
 
   # Lifecycle

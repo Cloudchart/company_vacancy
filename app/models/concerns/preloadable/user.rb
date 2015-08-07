@@ -9,6 +9,7 @@ module Preloadable::User
     has_many :pinboards_roles, -> { where(owner_type: 'Pinboard') }, class_name: 'Role'
     has_many :pinboards_favorites, -> { where(favoritable_type: 'Pinboard') }, class_name: 'Favorite'
     has_many :users_favorites, -> { where(favoritable_type: 'User') }, class_name: 'Favorite'
+    has_many :insights_favorites, -> { where(favoritable_type: 'Pin') }, class_name: 'Favorite'
 
     acts_as_preloadable :companies_through_roles, companies_roles: :company
     acts_as_preloadable :favorite_companies, companies_favorites: :company
@@ -19,6 +20,8 @@ module Preloadable::User
     acts_as_preloadable :feed_pinboards, { users_favorites: { favoritable_user: :pinboards } }
     acts_as_preloadable :feed_pins, pinboards_favorites: { pinboard: :pins }, users_favorites: { favoritable_user: :pins }
     acts_as_preloadable :insights, :pins
+    acts_as_preloadable :favorite_insights, insights_favorites: :favoritable_pin
+
 
     def companies_through_roles(scope = {})
       companies_roles.map(&:company).select { |c| ability(scope).can?(:read, c) }
@@ -67,6 +70,10 @@ module Preloadable::User
 
     def insights
       pins.select { |p| p.insight? }
+    end
+
+    def favorite_insights
+      insights_favorites.map(&:favoritable_pin)
     end
 
   private

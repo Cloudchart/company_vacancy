@@ -75,6 +75,13 @@ json_edge! json, :insights, edges do
   end
 end
 
+
+json_edge! json, :favorite_insights_ids, edges do
+  User.preload_favorite_insights(siblings, cache)
+  user.favorite_insights.map(&:id)
+end
+
+
 json_edge! json, :related_pinboards, edges do
   User.preload_related_pinboards(siblings, cache)
 

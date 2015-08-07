@@ -2,21 +2,22 @@
 
 GlobalState        = require('global_state/state')
 
-ProfileInfo        = require('components/profile/info')
-UserPins           = require('components/pinboards/pins/user')
-UserInsights       = require('components/profile/insights')
-UserCompanies      = require('components/company/lists/user')
-UserFeed           = require('components/user/feed')
-UserPinboards      = require('components/pinboards/lists/user')
-Settings           = require('components/profile/settings')
-Tabs               = require('components/profile/tabs')
+ProfileInfo         = require('components/profile/info')
+UserPins            = require('components/pinboards/pins/user')
+UserInsights        = require('components/profile/insights')
+UserCompanies       = require('components/company/lists/user')
+UserFeed            = require('components/user/feed')
+UserPinboards       = require('components/pinboards/lists/user')
+FavoriteInsights    = require('components/profile/favorite_insights')
+Settings            = require('components/profile/settings')
+TabNav              = require('components/shared/tab_nav')
 
-UserStore          = require('stores/user_store.cursor')
-PinStore           = require('stores/pin_store')
-PinboardStore      = require('stores/pinboard_store')
-CompanyStore       = require('stores/company_store.cursor')
+UserStore           = require('stores/user_store.cursor')
+PinStore            = require('stores/pin_store')
+PinboardStore       = require('stores/pinboard_store')
+CompanyStore        = require('stores/company_store.cursor')
 
-Constants          = require('constants')
+Constants           = require('constants')
 
 EmptyMap = Immutable.Map({})
 
@@ -64,7 +65,10 @@ module.exports = React.createClass
           User {
             #{UserInsights.getQuery('user')},
             #{UserPinboards.getQuery('pinboards')},
-            #{UserCompanies.getQuery('user')}
+            #{UserCompanies.getQuery('user')},
+            edges {
+              favorite_insights_ids
+            }
           }
         """
 
@@ -106,6 +110,10 @@ module.exports = React.createClass
 
   getPinboardsNumber: ->
     PinboardStore.filterUserPinboards(@props.uuid).size
+
+
+  getFavoriteInsightsCount: ->
+    @cursor.user.get('favorite_insights_ids').size
 
 
   # Handlers
@@ -176,8 +184,47 @@ module.exports = React.createClass
       when 'settings'
         <Settings uuid = { @props.uuid } />
 
+      when 'favorite_insights'
+        <FavoriteInsights user={ @props.uuid } />
+
       else
         null
+
+
+  gatherTabs: ->
+    tabs = []
+
+    companies_count         = @getCompaniesNumber()
+    insights_count          = @getInsightsNumber()
+    collections_count       = @getPinboardsNumber()
+    favorite_insights_count = @getFavoriteInsightsCount()
+
+    tabs.push
+      id:       'collections'
+      title:    'Collections'
+      counter:  ['', '' + collections_count][~~!!collections_count]
+
+    tabs.push
+      id:       'insights'
+      title:    'Insights'
+      counter:  ['', '' + insights_count][~~!!insights_count]
+
+    tabs.push
+      id:       'companies'
+      title:    'Companies'
+      counter:  ['', '' + companies_count][~~!!companies_count]
+
+    tabs.push
+      id:       'favorite_insights'
+      title:    'Starred'
+      counter:  ['', '' + favorite_insights_count][~~!!favorite_insights_count]
+
+    if @cursor.user.get('id') == @cursor.viewer.get('id')
+      tabs.push
+        id:       'settings'
+        title:    'Settings'
+
+    tabs
 
 
   render: ->
@@ -187,16 +234,8 @@ module.exports = React.createClass
       <header>
         <div className="cloud-columns cloud-columns-flex">
           <ProfileInfo uuid = { @props.uuid } />
-          <Tabs
-            companiesNumber = { @getCompaniesNumber() }
-            insightsNumber  = { @getInsightsNumber() }
-            pinboardsNumber = { @getPinboardsNumber() }
-            canEdit         = { @cursor.user.get('is_editable') }
-            onChange        = { @handleTabChange }
-            user            = { @cursor.user.deref(EmptyMap).toJS() }
-            viewer          = { @cursor.viewer.deref(EmptyMap).toJS() }
-          />
         </div>
+        <TabNav tabs={ @gatherTabs() } currentTab={ @state.currentTab } onChange={ @handleTabChange } />
       </header>
       { @renderContent() }
     </section>
