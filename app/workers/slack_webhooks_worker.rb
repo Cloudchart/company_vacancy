@@ -11,7 +11,7 @@ class SlackWebhooksWorker < ApplicationWorker
 
       if user.guest?
         result[:text] = I18n.t('user.activities.guest_visited_page',
-          ip: options[:request_env]['action_dispatch.remote_ip'],
+          ip: options[:request_env].try(:[], 'action_dispatch.remote_ip'),
           page_title: options[:page_title],
           page_url: options[:page_url]
         )
