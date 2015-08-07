@@ -122,10 +122,12 @@ private
   def create_intercom_event
     return unless should_perform_sidekiq_worker? && @pin.valid?
 
-    event_name = if @pin.pinnable_type == 'Post' && @pin.parent.blank?
-      'pinned-post'
-    elsif @pin.pinnable_type == 'Post' && @pin.parent.present?
-      'pinned-post-pin'
+    event_name = if @pin.is_suggestion?
+      'suggested-pin'
+    elsif @pin.insight?
+      'created-pin'
+    elsif @pin.parent_id.present?
+      'pinned-pin'
     end
 
     IntercomEventsWorker.perform_async(event_name, current_user.id, pin_id: @pin.id)

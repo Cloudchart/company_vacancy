@@ -100,7 +100,7 @@ private
       page_title = 'collections list'
       page_url = main_app.collections_url
     when 'show'
-      page_title = "#{@pinboard.title}'s page"
+      page_title = "#{@pinboard.title} collection"
       page_url = main_app.collection_url(@pinboard)
     end
 

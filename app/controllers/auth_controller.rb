@@ -48,8 +48,6 @@ class AuthController < ApplicationController
       token.update!(data: { address: email.address })
     end
 
-    SlackWebhooksWorker.perform_async('added_details_to_queue', user.id) if should_perform_sidekiq_worker? && user.valid?
-
     render json: { id: user.id }
 
   rescue ActiveRecord::RecordInvalid

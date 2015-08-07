@@ -91,7 +91,7 @@ private
   end
 
   def call_page_visit_to_slack_channel
-    post_page_visit_to_slack_channel("post: #{@post.title}", main_app.post_url(@post))
+    post_page_visit_to_slack_channel("#{@post.title} post", main_app.post_url(@post))
   end
 
 end

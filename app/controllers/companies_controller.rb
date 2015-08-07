@@ -194,7 +194,7 @@ private
       page_title = 'companies list'
       page_url = main_app.companies_url
     when 'show'
-      page_title = "#{@company.name}'s page"
+      page_title = "#{@company.name} company"
       page_url = main_app.company_url(@company)
     end
 
