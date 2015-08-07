@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 
   authorize_resource
 
-  after_action :call_page_visit_to_slack_channel, only: :show
+  after_action :call_page_visit_to_slack_channel, only: [:show, :feed]
 
   def show
     respond_to do |format|
@@ -95,8 +95,16 @@ private
   end
 
   def call_page_visit_to_slack_channel
-    page_title = current_user == @user ? 'his profile' : "#{@user.full_name_or_twitter}'s profile"
-    post_page_visit_to_slack_channel(page_title, main_app.user_url(current_user))
+    case action_name
+    when 'show'
+      page_title = current_user == @user ? 'his profile' : "#{@user.full_name_or_twitter}'s profile"
+      page_url = main_app.user_url(current_user)
+    when 'feed'
+      page_title = 'Feed'
+      page_url = main_app.feed_url
+    end
+
+    post_page_visit_to_slack_channel(page_title, page_url)
   end
 
 end
