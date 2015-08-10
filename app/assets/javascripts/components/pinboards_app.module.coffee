@@ -13,6 +13,7 @@ StandardButton = require('components/form/buttons').StandardButton
 NewPinboard = require('components/pinboards/new_pinboard')
 ModalStack = require('components/modal_stack')
 PopularPinboards = require('components/pinboards/lists/popular')
+FeaturedPinboard = require('components/landing/featured_pinboard')
 
 
 # Exports
@@ -34,12 +35,38 @@ module.exports = React.createClass
       favorites: FavoriteStore.cursor.items
       pinboards: PinboardStore.cursor.items
 
+  statics:
+    queries:
+      viewer: ->
+        """
+          Viewer {
+            main_feature {
+              featurable_pinboard {
+                #{FeaturedPinboard.getQuery('pinboard')}
+              }
+            }
+          }
+        """
+
+
+  # Fetchers
+  #
+  fetch: ->
+    Promise.all([
+      @fetchViewer(),
+      @fetchUserPinboards()
+    ])
+
+  fetchViewer: ->
+    GlobalState.fetch(@getQuery('viewer')).done (json) => @setState(featured_pinboard_id: json.query.main_feature.featurable_pinboard.ids[0])
+
+
+  fetchUserPinboards: ->
+    GlobalState.fetch(UserPinboards.getQuery('pinboards'), id: @props.user_id)
+
 
   # Helpers
   #
-  fetch: ->
-    GlobalState.fetch(UserPinboards.getQuery('pinboards'), id: @props.user_id)
-
   isLoaded: ->
     @state.isLoaded
 
@@ -66,6 +93,10 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderFeaturedPinboard: ->
+    return null unless featured_pinboard_id = @state.featured_pinboard_id
+    <FeaturedPinboard pinboard={ featured_pinboard_id } scope='main' />
+
   renderPopularPinboards: ->
     <PopularPinboards />
 
@@ -91,6 +122,7 @@ module.exports = React.createClass
   render: ->
     if @isLoaded()
       <section className="pinboards-wrapper">
+        { @renderFeaturedPinboard() }
         { @renderHeader() }
         <UserPinboards user_id = { @props.user_id } showPrivate = { true } />
         { @renderPopularPinboards() }

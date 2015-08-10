@@ -56,6 +56,11 @@
       }
     }
   }
+
+  > .invite-actions {
+    margin-top: 20px;
+    border-top: $card-hr;
+  }
 }
 
 .pinboard-card.placeholder {

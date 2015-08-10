@@ -8,6 +8,10 @@ class Viewer < User
     Feature.main.active
   end
 
+  def main_feature
+    Feature.main.active.where(position: -1).first
+  end
+
   def feed_features
     Feature.feed.active
   end
