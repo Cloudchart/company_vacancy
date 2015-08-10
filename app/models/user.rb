@@ -224,6 +224,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def has_any_followed_users_or_pinboards?
+    (favorites.map(&:favoritable_type).uniq & ['User', 'Pinboard']).any?
+  end
+
 private
 
   def mark_emails_for_destruction

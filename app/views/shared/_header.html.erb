@@ -3,6 +3,15 @@
 links = []
 user = {}
 
+if user_authenticated? && current_user.has_any_followed_users_or_pinboards?
+  links << {
+    title: 'Feed',
+    url: current_page?(main_app.feed_path) ? nil : main_app.feed_path
+  }
+
+  user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) }
+end
+
 if can?(:index, :pinboards)
   links << {
     title: 'Collections',
@@ -16,23 +25,6 @@ if can?(:index, :companies)
     is_beta: true,
     url: current_page?(main_app.companies_path) ? nil : main_app.companies_path
   }
-end
-
-if can?(:manage, :invite)
-  links << {
-    title: 'Invites',
-    icon: 'fa fa-user-plus',
-    url: current_page?(main_app.invites_path) ? nil : main_app.invites_path
-  }
-end
-
-if user_authenticated?
-  links << {
-    title: 'Feed',
-    url: current_page?(main_app.feed_path) ? nil : main_app.feed_path
-  }
-
-  user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) }
 end
 
 %>
