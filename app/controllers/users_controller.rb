@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   include FollowableController
 
+  before_action :redirect_to_twitter_auth, only: :feed
   before_action :set_user, only: [:show, :update, :subscribe, :unsubscribe]
 
   authorize_resource
@@ -15,9 +16,7 @@ class UsersController < ApplicationController
 
   def feed
     respond_to do |format|
-      format.html {
-        redirect_to main_app.twitter_auth_path unless user_authenticated?
-      }
+      format.html
     end
   end
 
@@ -107,6 +106,12 @@ private
     end
 
     post_page_visit_to_slack_channel(page_title, page_url)
+  end
+
+  def redirect_to_twitter_auth
+    if current_user.guest? && session[:previous_path] != '/logout'
+      redirect_to main_app.twitter_auth_path
+    end
   end
 
 end
