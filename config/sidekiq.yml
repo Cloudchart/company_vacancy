@@ -3,6 +3,7 @@
 # Place this file at config/sidekiq.yml and Sidekiq will
 # pick it up automatically.
 
+---
 # :verbose: false
 # :pidfile: /tmp/pids/sidekiq.pid
 :concurrency: 5
