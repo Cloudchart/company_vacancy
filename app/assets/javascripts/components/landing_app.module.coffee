@@ -16,8 +16,6 @@ Greeting            = require('components/shared/greeting')
 GuestSubscription   = require('components/shared/guest_subscription')
 MainBanner          = require('components/welcome/main_banner')
 
-device              = require('utils/device')
-
 TextForSubscription = "Subscribe to our weekly email to stay in the loop: get latest insights, most helpful collections and new Insights.VC features."
 
 # Exports
@@ -110,9 +108,7 @@ module.exports = React.createClass
 
 
   renderFeaturedPinboard: ->
-    return null if device.is_iphone
     return null unless featureForPinboard = @getFeatureForPinboard()
-
     <FeaturedPinboard pinboard={ featureForPinboard.get('featurable_id') } scope='main' />
 
 

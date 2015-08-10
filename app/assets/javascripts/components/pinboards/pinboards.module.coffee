@@ -1,9 +1,10 @@
 # @cjsx React.DOM
 
 
-PinboardComponent  = require('components/pinboards/pinboard')
+# PinboardComponent  = require('components/pinboards/pinboard')
+PinboardComponent  = require('components/cards/pinboard_card')
 
-NodeRepositioner   = require('utils/node_repositioner')
+# NodeRepositioner   = require('utils/node_repositioner')
 
 
 # Exports
@@ -13,7 +14,7 @@ module.exports = React.createClass
 
   displayName: 'Pinboards'
 
-  mixins: [NodeRepositioner.mixin]
+  # mixins: [NodeRepositioner.mixin]
 
   propTypes:
     pinboards: React.PropTypes.array.isRequired
@@ -25,7 +26,7 @@ module.exports = React.createClass
   renderPinboard: (pinboard) ->
     <section className="cloud-column" key={ pinboard.get('uuid') }>
       <PinboardComponent 
-        uuid    = { pinboard.get('uuid') }
+        pinboard = { pinboard.get('uuid') }
         user_id = { @props.user_id } />
     </section>
 

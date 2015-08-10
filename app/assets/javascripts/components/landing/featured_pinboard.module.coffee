@@ -202,6 +202,7 @@ module.exports = React.createClass
   #
   render: ->
     return null unless @state.ready
+    return null if device.is_iphone
 
     <section className="cc-container-common featured-pinboard full-width">
       { @renderHeader() }

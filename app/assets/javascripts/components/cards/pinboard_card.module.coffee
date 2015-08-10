@@ -8,6 +8,7 @@ PinboardStore   = require('stores/pinboard_store')
 
 UserCard        = require('components/cards/user_card')
 FollowButton    = require('components/pinboards/follow_button')
+InviteActions   = require('components/roles/invite_actions')
 
 pluralize       = require('utils/pluralize')
 
@@ -145,4 +146,5 @@ module.exports = React.createClass
     <div className="pinboard-card #{@props.className}">
       { @renderHeader() }
       { @renderFooter() }
+      <InviteActions ownerId = { @props.uuid } ownerType = { 'Pinboard' } />
     </div>

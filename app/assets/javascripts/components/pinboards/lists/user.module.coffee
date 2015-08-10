@@ -11,8 +11,8 @@ RoleStore         = require('stores/role_store.cursor')
 
 # Components
 #
-PinboardComponent  = require('components/pinboards/pinboard')
-PinboardsList      = require('components/pinboards/pinboards')
+PinboardComponent = require('components/cards/pinboard_card')
+PinboardList = require('components/pinboards/lists/base')
 
 
 # Exports
@@ -74,15 +74,11 @@ module.exports = React.createClass
   isLoaded: ->
     @state.isLoaded
 
-
-  # Helpers
-  #
   gatherPinboards: ->
     PinboardStore
       .filterUserPinboards(@props.user_id, showPrivate: @props.showPrivate)
       .sortBy (item) -> item.get('title')
       .valueSeq()
-      .toArray()
 
 
   # Lifecyle methods
@@ -91,9 +87,17 @@ module.exports = React.createClass
     @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
 
 
+  renderPinboard: (pinboard) ->
+    <PinboardComponent key={ pinboard.get('uuid') } pinboard={ pinboard.get('uuid') } />
+
   render: ->
     return null unless @isLoaded()
 
-    <PinboardsList 
-      pinboards = { @gatherPinboards() }
-      user_id   = { @props.user_id } />
+    renderPinboards = PinboardStore
+      .filterUserPinboards(@props.user_id, showPrivate: @props.showPrivate)
+      .sortBy (item) -> item.get('title')
+      .map @renderPinboard
+
+    <PinboardList>
+      { renderPinboards.toArray() }
+    </PinboardList>
