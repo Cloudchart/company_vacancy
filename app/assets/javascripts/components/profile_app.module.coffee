@@ -67,7 +67,8 @@ module.exports = React.createClass
             #{UserCompanies.getQuery('user')},
             edges {
               insights_ids,
-              favorite_insights_ids
+              favorite_insights_ids,
+              is_editable
             }
           }
         """
@@ -251,7 +252,7 @@ module.exports = React.createClass
     #   title:    'Starred'
     #   counter:  ['', '' + favorite_insights_count][~~!!favorite_insights_count]
 
-    if @cursor.user.get('id') == @cursor.viewer.get('id')
+    if @cursor.user.get('is_editable')
       tabs.push
         id:       'settings'
         title:    'Settings'
