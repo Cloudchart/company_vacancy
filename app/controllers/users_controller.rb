@@ -15,7 +15,9 @@ class UsersController < ApplicationController
 
   def feed
     respond_to do |format|
-      format.html
+      format.html {
+        redirect_to main_app.twitter_auth_path unless user_authenticated?
+      }
     end
   end
 

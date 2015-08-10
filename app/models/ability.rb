@@ -13,6 +13,7 @@ class Ability
       can [:index, :search], :companies
       can :index, :pinboards
       can [:create, :verify], GuestSubscription
+      can :feed, User
 
       can :read, Pinboard do |pinboard|
         pinboard.public?
