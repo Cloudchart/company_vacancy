@@ -22,4 +22,6 @@ module Cloudchart
 
   WORDS_PER_MINUTE = 200
 
+  SLACK_WEBHOOKS_IPS_MUTELIST = ['80.85.86.144']
+
 end
