@@ -5,6 +5,7 @@ GlobalState     = require('global_state/state')
 cx              = React.addons.classSet
 
 PinboardStore   = require('stores/pinboard_store')
+UserStore       = require('stores/user_store.cursor')
 
 UserCard        = require('components/cards/user_card')
 FollowButton    = require('components/pinboards/follow_button')
@@ -85,6 +86,11 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderUserCard: ->
+    user_id = @cursor.pinboard.get('user_id')
+    return <div></div> if user_id == UserStore.me().get('uuid')
+
+    <UserCard user={ @cursor.pinboard.get('user_id') } onClick={ @props.onUserClick } />
 
   renderAccessRightsIcon: ->
     className = cx
@@ -133,7 +139,7 @@ module.exports = React.createClass
 
   renderFooter: ->
     <footer>
-      <UserCard user={ @cursor.pinboard.get('user_id') } onClick={ @props.onUserClick } />
+      { @renderUserCard() }
       { @renderCounters() }
     </footer>
 
@@ -146,5 +152,5 @@ module.exports = React.createClass
     <div className="pinboard-card #{@props.className}">
       { @renderHeader() }
       { @renderFooter() }
-      <InviteActions ownerId = { @props.uuid } ownerType = { 'Pinboard' } />
+      <InviteActions ownerId = { @props.pinboard } ownerType = { 'Pinboard' } />
     </div>
