@@ -1,12 +1,11 @@
 en:
   user:
     activities:
-      created_company: "%{name} <%{twitter_url}|@%{twitter}> created company: <%{company_url}|%{company_name}>"
+      created_company: "%{name} <%{twitter_url}|@%{twitter}> created <%{company_url}|company>"
       published_company: "%{name} <%{twitter_url}|@%{twitter}> published company: <%{company_url}|%{company_name}>"
-      created_pinboard: "%{name} <%{twitter_url}|@%{twitter}> created pinboard: <%{pinboard_url}|%{pinboard_title}>"
+      created_pinboard: "%{name} <%{twitter_url}|@%{twitter}> created collection: <%{pinboard_url}|%{pinboard_title}>"
       created_post: "%{name} <%{twitter_url}|@%{twitter}> created <%{post_url}|post>"
       invited_user_to_app: "%{name} <%{twitter_url}|@%{twitter}> invited <%{invitee_twitter_url}|@%{invitee_twitter}> to join Insights.VC as %{roles}"
-      invited_person: "%{name} <%{twitter_url}|@%{twitter}> invited %{invitee} to join <%{company_url}|%{company_name}> as %{role}"
       first_time_logged_in: "%{name} <%{twitter_url}|@%{twitter}> logged in for the first time"
       visited_page: "%{name} <%{twitter_url}|@%{twitter}> visited <%{page_url}|%{page_title}>"
       reported_content: "%{name} <%{twitter_url}|@%{twitter}> reported content on <%{reported_url}|%{reported_url}> with the following reason: %{reason}"
