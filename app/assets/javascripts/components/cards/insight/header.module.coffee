@@ -119,7 +119,12 @@ module.exports = React.createClass
           { @renderPinboardTitle() }
         </section>
     else
-      @renderUserComment('added insight', prefix: 'to')
+      if @state.user.is_followed
+        @renderUserComment('added insight', prefix: 'to')
+      else
+        <section className="title">
+          { @renderPinboardTitle() }
+        </section>
 
 
   # Render pinboard header content

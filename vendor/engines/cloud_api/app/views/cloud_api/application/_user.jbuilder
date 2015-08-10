@@ -38,8 +38,7 @@ json_edge! json, :related_companies, edges do
 end
 
 json_edge! json, :is_followed, edges do
-  preload_associations(siblings, cache, :favorites)
-  user.favorites.select { |f| f.favoritable_type == 'User' }.map { |f| f.favoritable_id }.include?(current_user.id)
+  current_user.users_favorites.map(&:favoritable_id).include?(user.id)
 end
 
 json_edge! json, :companies_through_roles, edges do
