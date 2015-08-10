@@ -52,11 +52,10 @@ module.exports = React.createClass
   # Fetchers
   #
   fetch: ->
-    GlobalState.fetch(UserPinboards.getQuery('pinboards'), id: @props.user_id)
-    # Promise.all([
-    #   @fetchViewer(),
-    #   @fetchUserPinboards()
-    # ])
+    Promise.all([
+      @fetchViewer(),
+      @fetchUserPinboards()
+    ])
 
   fetchViewer: ->
     GlobalState.fetch(@getQuery('viewer')).done (json) => @setState(featured_pinboard_id: json.query.main_feature.featurable_pinboard.ids[0])
