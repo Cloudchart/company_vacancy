@@ -108,7 +108,7 @@ module.exports = React.createClass
     return null unless @shouldLimitPins()
     text =
       """
-        There are <strong>#{@cursor.pinboard.get('pins_count')} other valuable insights</strong> in this collection.
+        There are <strong>#{@cursor.pinboard.get('pins_count') - 6} other valuable insights</strong> in this collection.
         Sign up to get access to dozens of other insights and regular updates,
         follow the collection, save insights and suggest your own.
       """

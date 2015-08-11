@@ -135,6 +135,37 @@ $pinboard-header-color: hsl(60, 10%, 96%);
       }
     }
   }
+
+  > .cc-container-common {
+    > .see-more {
+      @include display(flex);
+      @include justify-content(space-between);
+      @include align-items(center);
+
+      @include iphone {
+        width: 100%;
+      }
+
+      background-color: hsl(60, 10%, 96%);
+      font-size: 24px;
+      line-height: 32px;
+      padding: 20px;
+      width: 1000px;
+      margin-top: 10px;
+
+      > p {
+        font-weight: 300;
+        margin: 0 20px 0 0;
+
+        > strong {
+          font-weight: 600;
+        }
+      }
+
+    }
+  }
+
+
 }
 
 article.pinboard,
