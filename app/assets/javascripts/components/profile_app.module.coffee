@@ -194,10 +194,12 @@ module.exports = React.createClass
 
 
   renderPinboards: ->
-    unless UserPinboards.isEmpty(@props.uuid)
-      <UserPinboards user_id = { @props.uuid } />
-    else
+    if UserPinboards.isEmpty(@props.uuid)
       @renderEmptyTabText("pinboards")
+    else
+      <section className="cc-container-common">
+        <UserPinboards user_id = { @props.uuid } />
+      </section>
 
 
   renderContent: ->
