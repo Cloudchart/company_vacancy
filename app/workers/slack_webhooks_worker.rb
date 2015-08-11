@@ -1,7 +1,7 @@
 class SlackWebhooksWorker < ApplicationWorker
   include Rails.application.routes.url_helpers
 
-  IPS_MUTELIST = ['80.85.86.144', '74.86.158.106']
+  IPS_MUTELIST = ['80.85.86.144', '74.86.158.106', '62.213.120.156']
 
   def perform(event_name, user_id, options={})
     # check event name
