@@ -184,9 +184,7 @@ module.exports = React.createClass
 
     if counter > 0
       [
-        <section key='user-insights' className="cc-container-common">
-          <UserInsights user={ @props.uuid } />
-        </section>
+        <UserInsights user={ @props.uuid } />
         @renderFavoriteInsights()
       ]
     else

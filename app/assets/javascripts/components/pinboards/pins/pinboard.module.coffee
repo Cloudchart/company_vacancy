@@ -1,7 +1,7 @@
 # @cjsx React.DOM
 
 
-GlobalState = require('global_state/state')
+GlobalState   = require('global_state/state')
 
 PinStore      = require('stores/pin_store')
 UserStore     = require('stores/user_store.cursor')
@@ -11,7 +11,9 @@ PinsList      = require('components/pinboards/pins')
 PinComponent  = require('components/pinboards/pin')
 Insight       = require('components/cards/insight_card')
 
-ListOfCards = require('components/cards/list_of_cards')
+ListOfCards   = require('components/cards/list_of_cards')
+
+constants = require('constants')
 
 
 # Exports
@@ -34,6 +36,7 @@ module.exports = React.createClass
             },
             edges {
               pins_ids,
+              pins_count,
               is_editable
             }
           }
@@ -60,18 +63,24 @@ module.exports = React.createClass
   isLoaded: ->
     @state.isLoaded
 
+  shouldLimitPins: (pins=@getPins()) ->
+    pins.size >= 12 && !@cursor.user.get('is_authenticated')
 
   isApproved: (pin) ->
     return true if      pin.is_approved
     return true unless  pin.is_suggestion
     @cursor.pinboard.get('is_editable')
 
-
-  collectPins: ->
-    @cursor.pinboard.get('pins_ids')
+  getPins: ->
+    pins = @cursor.pinboard.get('pins_ids')
       .map (id) -> PinStore.get(id)?.toJS()
       .filter (pin) -> !!pin
       .filter @isApproved
+
+  collectPins: ->
+    pins = @getPins()
+    pins = pins.take(6) if @shouldLimitPins(pins)
+    pins
       .sortBy (pin) -> pin.created_at
       .reverse()
 
@@ -87,12 +96,30 @@ module.exports = React.createClass
     @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
 
 
+  # Handlers
+  #
+  handleSignInClick: (event) ->
+    location.href = constants.TWITTER_AUTH_PATH
+
+
   # Renderers
   #
+  renderSeeMore: ->
+    return null unless @shouldLimitPins()
+    text =
+      """
+        There are <strong>#{@cursor.pinboard.get('pins_count')} other valuable insights</strong> in this collection.
+        Sign up to get access to dozens of other insights and regular updates,
+        follow the collection, save insights and suggest your own.
+      """
+
+    <section className="see-more">
+      <p dangerouslySetInnerHTML={ __html: text }></p>
+      <button className="cc" onClick={@handleSignInClick}>{ "Sign in with Twitter" }</button>
+    </section>
 
   renderPin: (pin) ->
     <Insight key={ pin.uuid } pin={ pin.uuid } scope='pinboard' />
-
 
   renderPins: ->
     @collectPins().map @renderPin
@@ -107,4 +134,5 @@ module.exports = React.createClass
       <ListOfCards>
         { @renderPins().toArray() }
       </ListOfCards>
+      { @renderSeeMore() }
     </section>
