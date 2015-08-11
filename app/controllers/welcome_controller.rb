@@ -1,15 +1,9 @@
 class WelcomeController < ApplicationController
 
+  before_action :handle_redirect, if: :user_authenticated?
   after_action :call_page_visit_to_slack_channel, only: [:index, :old_browsers]
 
   def index
-    unless current_user.guest?
-      if current_user.has_any_followed_users_or_pinboards?
-        redirect_to main_app.feed_path
-      else
-        redirect_to main_app.collections_path
-      end
-    end
   end
 
   def old_browsers
@@ -20,6 +14,14 @@ class WelcomeController < ApplicationController
   end
 
 private
+
+  def handle_redirect
+    if current_user.has_any_followed_users_or_pinboards?
+      redirect_to main_app.feed_path
+    else
+      redirect_to main_app.collections_path
+    end
+  end
 
   def call_page_visit_to_slack_channel
     case action_name
