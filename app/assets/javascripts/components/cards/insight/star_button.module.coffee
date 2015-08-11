@@ -7,6 +7,8 @@ UserStore   = require('stores/user_store.cursor')
 
 PinSyncAPI  = require('sync/pin_sync_api')
 
+AuthButton  = require('components/form/buttons').AuthButton
+
 cx = React.addons.classSet
 
 
@@ -93,5 +95,7 @@ module.exports = React.createClass
       'fa-spin':    @state.sync   == true
 
     <li className={ className }>
-      <i className={ iconClassName } onClick={ @handleClick } />
+      <AuthButton>
+        <i className={ iconClassName } onClick={ @handleClick } />
+      </AuthButton>
     </li>
