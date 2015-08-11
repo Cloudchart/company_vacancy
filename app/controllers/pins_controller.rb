@@ -134,7 +134,12 @@ private
   end
 
   def call_page_visit_to_slack_channel
-    post_page_visit_to_slack_channel('Insight page', main_app.insight_url(@pin))
+    post_page_visit_to_slack_channel('insight', main_app.insight_url(@pin),
+      attachment: {
+        title: @pin.source_user.full_name,
+        value: @pin.content
+      }
+    )
   end
 
 end

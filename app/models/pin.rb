@@ -45,6 +45,10 @@ class Pin < ActiveRecord::Base
     parent ? parent.user_id : user_id
   end
 
+  def source_user
+    parent ? parent.user : user
+  end
+
   def should_validate_content_presence?
     parent.blank? || (@update_by.present? && user_id != @update_by.uuid && !is_suggestion?)
   end

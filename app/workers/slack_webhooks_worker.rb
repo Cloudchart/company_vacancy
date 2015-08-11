@@ -55,6 +55,17 @@ private
       )
     end
 
+    if attachment = options[:attachment]
+      result[:attachments] = [
+        fallback: result[:text],
+        color: '#3dc669',
+        fields: [
+          title: attachment['title'],
+          value: attachment['value']
+        ]
+      ]
+    end
+
     result
   end
 
