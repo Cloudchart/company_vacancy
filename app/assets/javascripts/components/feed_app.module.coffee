@@ -3,6 +3,7 @@
 GlobalState   = require('global_state/state')
 
 DailyFeed     = require('components/feed/daily')
+StarInsights  = require('components/feed/star')
 
 UserStore     = require('stores/user_store.cursor')
 
@@ -26,7 +27,8 @@ module.exports = React.createClass
         """
           Viewer {
             edges {
-              feed_dates
+              feed_dates,
+              favorite_insights_count
             }
           }
         """
@@ -41,7 +43,7 @@ module.exports = React.createClass
   # Helpers
   #
   shouldLoadNextDate: ->
-    @refs['loader'].getDOMNode().getBoundingClientRect().top < window.innerHeight
+    @refs['loader'].getDOMNode().getBoundingClientRect().top < (window.innerHeight + 500)
 
 
   loadNextDate: ->
@@ -97,6 +99,10 @@ module.exports = React.createClass
   # Renderer Days
   #
 
+  renderStar: ->
+    <StarInsights />
+
+
   renderDay: (date) ->
     <DailyFeed key={ date } date={ moment(date).toDate() } onDone={ @handleDayLoad } />
 
@@ -104,11 +110,14 @@ module.exports = React.createClass
   renderDays: ->
     return unless feed_dates = @cursor.viewer.get('feed_dates', null)
 
-    feed_dates
+    days = feed_dates
       .reverse()
       .take(@state.loaded_dates + @state.pending_dates)
       .map @renderDay
-      .toArray()
+
+    days = days.splice(2, 0, @renderStar()) if @cursor.viewer.get('favorite_insights_count', 0) == 0 && days.size > 1
+
+    days.toArray()
 
 
 

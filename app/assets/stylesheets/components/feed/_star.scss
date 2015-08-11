@@ -1,0 +1,36 @@
+.star-insights {
+  @include align-items(center);
+  @include display(flex);
+
+  background-color: hsl(60, 10%, 96%);
+  font-size: 24px;
+  line-height: 32px;
+  padding: 20px;
+  width: 1000px;
+
+  @include iphone {
+    width: 100%;
+  }
+
+  > i {
+    border: 3px solid hsl(137, 54%, 50%);
+    border-radius: 50%;
+    color: hsl(137, 54%, 50%);
+    font-size: 34px;
+    height: 64px;
+    line-height: 58px;
+    margin-right: 20px;
+    text-align: center;
+    width: 64px;
+  }
+
+  > p {
+    font-weight: 300;
+    margin: 0;
+
+    > strong {
+      display: block;
+      font-weight: 600;
+    }
+  }
+}

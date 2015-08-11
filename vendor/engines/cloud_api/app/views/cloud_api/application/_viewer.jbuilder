@@ -26,3 +26,7 @@ end
 json_edge! json, :has_email_token, edges do
   !!viewer.tokens.find { |t| t.name == 'email_verification' }
 end
+
+json_edge! json, :favorite_insights_count, edges do
+  viewer.favorite_insights.count
+end
