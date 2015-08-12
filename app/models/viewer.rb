@@ -13,7 +13,7 @@ class Viewer < User
   end
 
   def feed_features
-    Feature.feed.active
+    Feature.feed.active.where.not(effective_from: nil).where('effective_from <= ?', Date.today)
   end
 
   def feed_featured_pinboards(scope = {})

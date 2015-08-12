@@ -5,7 +5,7 @@ class Feature < ActiveRecord::Base
   DISPLAY_TYPES = [:blurred, :darkened]
   FEATURABLE_TYPES = %w(Company Pin Pinboard Post Paragraph)
 
-  before_save :assign_effective_till, if: -> { effective_from.present? && effective_till.blank? }
+  before_save :assign_effective_till
 
   enum scope: [:pending, :main, :feed]
 
@@ -46,7 +46,9 @@ class Feature < ActiveRecord::Base
 private
 
   def assign_effective_till
-    self.effective_till = effective_from
+    if effective_from.blank? || effective_from.present? && (effective_till.blank? || effective_till < effective_from)
+      self.effective_till = effective_from
+    end
   end
 
 end

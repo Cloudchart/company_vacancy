@@ -100,7 +100,7 @@ LoginForm = React.createClass
           iconClass = "fa-check"
           sync      = { @props.isSyncing }
           onClick   = { @props.handleSubmit }
-          text      = "Sign in with Twitter"
+          text      = "Log in with Twitter"
           type      = "submit" />
       </footer>
     </form>

@@ -108,14 +108,13 @@ module.exports = React.createClass
     return null unless @shouldLimitPins()
     text =
       """
-        There are <strong>#{@cursor.pinboard.get('pins_count') - 6} other valuable insights</strong> in this collection.
-        Sign up to get access to dozens of other insights and regular updates,
-        follow the collection, save insights and suggest your own.
+        Want to see <strong>#{@cursor.pinboard.get('pins_count') - 6} more insights</strong> from this collection? 
+        Log in and get those and access to other features!
       """
 
     <section className="see-more">
       <p dangerouslySetInnerHTML={ __html: text }></p>
-      <button className="cc" onClick={@handleSignInClick}>{ "Sign in with Twitter" }</button>
+      <button className="cc" onClick={@handleSignInClick}>{ "Log in with Twitter" }</button>
     </section>
 
   renderPin: (pin) ->
