@@ -32,6 +32,30 @@ class Pinboard < ActiveRecord::Base
     has_many :"#{scope}", through: :"#{scope}_pinboards_roles", source: :user
   end
 
+  sifter :system do
+    access_rights.eq('public') & user_id.eq(nil)
+  end
+
+  sifter :available_through_roles do |user, values|
+    access_rights.not_eq('public') &
+    roles.user_id.eq(user.id) &
+    roles.value.in(values)
+  end
+
+  scope :available, -> { where(access_rights: :public) }
+
+  scope :system, -> do
+    where access_rights: :public, user_id: nil
+  end
+
+  scope :readable, -> do
+    joins { roles.outer }.where { roles.value.eq('reader') }
+  end
+
+  scope :writable, -> do
+    joins { roles.outer }.where { roles.value.eq('editor') }
+  end
+
   settings ElasticSearchNGramSettings do
     mapping do
       indexes :title, type: 'string', analyzer: 'ngram_analyzer'
@@ -57,29 +81,6 @@ class Pinboard < ActiveRecord::Base
     end
 
   end # of class methods
-
-  sifter :system do
-    access_rights.eq('public') & user_id.eq(nil)
-  end
-
-  sifter :available_through_roles do |user, values|
-    access_rights.not_eq('public') &
-    roles.user_id.eq(user.id) &
-    roles.value.in(values)
-  end
-
-  scope :system, -> do
-    where access_rights: :public, user_id: nil
-  end
-
-
-  scope :readable, -> do
-    joins { roles.outer }.where { roles.value.eq('reader') }
-  end
-
-  scope :writable, -> do
-    joins { roles.outer }.where { roles.value.eq('editor') }
-  end
 
   def invite_tokens
     tokens.select { |token| token.name == 'invite' }
