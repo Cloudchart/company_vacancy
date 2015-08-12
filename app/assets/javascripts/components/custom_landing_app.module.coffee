@@ -146,7 +146,7 @@ module.exports = React.createClass
   renderUserLoginControls: ->
     <section className="login-controls">
       <a className = { cx(cc: true, disabled: @isDisabled()) } href={ @getLoginLink() }>
-        Sign in with Twitter
+        Log in with Twitter
       </a>
       <a className = { cx(disabled: @isDisabled()) } href={ @getMainPageLink() }>
         Skip to the main page
