@@ -1,6 +1,6 @@
 class WelcomeController < ApplicationController
 
-  before_action :handle_redirect, if: :user_authenticated?
+  before_action :handle_redirect, only: :index, if: :user_authenticated?
   after_action :call_page_visit_to_slack_channel, only: [:index, :old_browsers]
 
   def index
