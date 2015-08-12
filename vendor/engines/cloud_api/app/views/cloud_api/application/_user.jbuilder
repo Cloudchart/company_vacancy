@@ -121,14 +121,3 @@ json_edge! json, :pinboards_through_roles, edges do
     }
   end
 end
-
-
-json_edge! json, :feed_dates, edges do
-  User.preload_feed_pinboards(siblings, cache)
-  User.preload_feed_pins(siblings, cache)
-
-  dates = []
-  dates.concat user.feed_pinboards.map { |p| p.created_at.to_date }
-  dates.concat user.feed_pins.map { |p| p.created_at.to_date }
-  dates.uniq.sort
-end
