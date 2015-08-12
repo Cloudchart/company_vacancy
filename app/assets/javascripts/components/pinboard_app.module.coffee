@@ -227,7 +227,7 @@ module.exports = React.createClass
           { pluralize(pinboard.get('readers_count'), "follower", "followers") }
         </li>
         <li>
-          { pluralize(pinboard.get('pins_count') || 0, "pin", "pins") }
+          { pluralize(pinboard.get('pins_count') || 0, "insight", "insights") }
         </li>
       </ul>
 
