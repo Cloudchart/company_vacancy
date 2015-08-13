@@ -19,8 +19,11 @@ class SlackWebhooksWorker < ApplicationWorker
 
     options.symbolize_keys!
 
+    # check ips mutelist
+    return if user.guest? && IPS_MUTELIST.include?(get_ip_from_request_env(options))
+
     # get payload based on event name
-    payload = self.send("get_#{event_name}_payload", user, options)
+    payload = self.send("get_#{event_name}_payload", user, options) rescue {}
 
     # post to slack channel
     if payload[:text].present?
@@ -33,27 +36,39 @@ private
 
   # payloads
   #
+  def get_clicked_on_external_url_payload(user, options)
+    result = {}
+    pin = options[:pin]
+    return result if pin.blank?
+
+    result[:text] = [
+      "#{get_name_for_user(user, options)} clicked on external url:",
+      "<#{options[:external_url]}|#{options[:external_url]}>",
+      "related to <#{insight_url(pin)}|insight>"
+    ].join(' ')
+
+    if pin.content.present?
+      result[:attachments] = [
+        fallback: result[:text],
+        color: '#3dc669',
+        fields: [
+          title: pin.user.full_name,
+          value: pin.content
+        ]
+      ]
+    end
+
+    result
+  end
+
   def get_visited_page_payload(user, options)
     result = {}
     return result if user.editor? || user.admin?
 
-    if user.guest?
-      ip = options[:request_env].try(:[], 'action_dispatch.remote_ip')
-      return result if IPS_MUTELIST.include?(ip)
-
-      result[:text] = I18n.t('user.activities.guest_visited_page',
-        ip: ip,
-        page_title: options[:page_title],
-        page_url: options[:page_url]
-      )
-    else
-      result[:text] = I18n.t('user.activities.visited_page',
-        user_params(user).merge(
-          page_title: options[:page_title],
-          page_url: options[:page_url]
-        )
-      )
-    end
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "visited <#{options[:page_url]}|#{options[:page_title]}>"
+    ].join(' ')
 
     if attachment = options[:attachment]
       result[:attachments] = [
@@ -289,6 +304,18 @@ private
     {
       pin_url: insight_url(pin)
     }
+  end
+
+  def get_name_for_user(user, options)
+    if user.guest?
+      "Guest user <#{get_ip_from_request_env(options)}>"
+    else
+      "#{user.full_name} <#{user.twitter_url}|@#{user.twitter}>"
+    end
+  end
+
+  def get_ip_from_request_env(options)
+    options[:request_env].try(:[], 'action_dispatch.remote_ip')
   end
 
 end

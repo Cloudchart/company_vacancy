@@ -11,6 +11,8 @@ InsightStarButton    = require('components/cards/insight/star_button')
 InsightSaveButton    = require('components/cards/insight/save_button')
 InsightDropButton    = require('components/cards/insight/drop_button')
 
+NotificationsPushApi = require('push_api/notifications_push_api')
+
 
 cx = React.addons.classSet
 DOMAIN_RE = /^http[s]{0,1}\:\/\/([^\/]+)/i
@@ -87,6 +89,11 @@ module.exports = React.createClass
 
   # Handlers
   #
+  handleOriginClick: (event) ->
+    NotificationsPushApi.post_to_slack('clicked_on_external_url',
+      pin_id: @state.insight.uuid
+      external_url: @state.insight.origin
+    )
 
 
   # Lifecycle
@@ -122,7 +129,9 @@ module.exports = React.createClass
 
     <div className="origin">
       { @renderTitle() }
-      <a href={ @state.insight.origin } target="_blank">{ domain }</a>
+      <a href={ @state.insight.origin } target="_blank" onClick={ @handleOriginClick.bind(@, @state.insight.origin) }>
+        { domain }
+      </a>
       { @renderEstimation() }
     </div>
 

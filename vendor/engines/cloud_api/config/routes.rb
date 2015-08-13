@@ -30,6 +30,9 @@ CloudApi::Engine.routes.draw do
 
   get '/search', controller: :search, action: :index
 
-  post :report_content, controller: :notifications, action: :report_content
+  # Notifications
+  #
+  post '/report_content', to: 'notifications#report_content', format: 'json'
+  post '/track', to: 'notifications#post_to_slack', format: 'json'
 
 end

@@ -11,14 +11,20 @@ module CloudApi
           SlackWebhooksWorker.perform_async('reported_content', current_user.id, report.attributes)
         end
 
-        respond_to do |format|
-          format.json { render json: :ok, status: 200 }
-        end
+        render json: :ok, status: 200
       else
-        respond_to do |format|
-          format.json { render json: { errors: report.errors }, status: 422 }
-        end
+        render json: { errors: report.errors }, status: 422
       end
+    end
+
+    def post_to_slack
+      if should_perform_sidekiq_worker?
+        SlackWebhooksWorker.perform_async(params[:event_name], current_user.id,
+          { request_env: request.env }.merge(params[:options])
+        )
+      end
+
+      render json: :ok, status: 200
     end
 
   private

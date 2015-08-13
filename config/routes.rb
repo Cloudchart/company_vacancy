@@ -116,7 +116,6 @@ Cloudchart::Application.routes.draw do
   delete '/user_insight_tour/:id', to: 'tokens#destroy_insight_tour'
 
   get '/feed', to: 'users#feed', as: :feed
-
   delete '/logout', to: 'cloud_profile/authentications#destroy', as: :logout
   get '/old', to: 'welcome#old_browsers', as: :old_browsers
   get '/subscribe', to: 'welcome#subscribe', as: :subscribe

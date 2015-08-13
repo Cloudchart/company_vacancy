@@ -43,6 +43,7 @@ class ApplicationController < ActionController::Base
 
   def should_perform_sidekiq_worker?
     %(staging production).include?(Rails.env)
+    true
   end
 
   def post_page_visit_to_slack_channel(page_title, page_url, options={})
