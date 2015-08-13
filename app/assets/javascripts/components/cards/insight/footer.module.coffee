@@ -129,9 +129,11 @@ module.exports = React.createClass
 
     <div className="origin">
       { @renderTitle() }
-      <a href={ @state.insight.origin } target="_blank" onClick={ @handleOriginClick.bind(@, @state.insight.origin) }>
+
+      <a href={ @state.insight.origin } target="_blank" onClick={ @handleOriginClick }>
         { domain }
       </a>
+
       { @renderEstimation() }
     </div>
 
