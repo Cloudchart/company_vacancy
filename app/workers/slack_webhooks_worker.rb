@@ -85,45 +85,45 @@ private
   end
 
   def get_guest_subscribed_payload(user, options)
-    result = {}
-    result[:text] = I18n.t('user.activities.guest_subscribed',
-      email: options[:email_address]
-    )
-    result
+    { text: "#{get_name_for_user(user, options)} #{options[:email_address]} subscribed" }
   end
 
   def get_first_time_logged_in_payload(user, options)
-    result = {}
-    result[:text] = I18n.t('user.activities.first_time_logged_in', user_params(user))
-    result
+    { text: "#{get_name_for_user(user, options)} logged in for the first time" }
   end
 
   def get_reported_content_payload(user, options)
     result = {}
-    result[:text] = I18n.t('user.activities.reported_content',
-      user_params(user).merge(
-        reported_url: options[:url],
-        reason: options[:reason]
-      )
-    )
+
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "reported content on <#{options[:url]}|#{options[:url]}>",
+      "with the following reason: #{options[:reason]}"
+    ].join(' ')
+
     result
   end
 
   def get_created_company_payload(user, options)
     result = {}
-    result[:text] = I18n.t('user.activities.created_company',
-      user_params(user).merge(
-        company_url: company_url(options[:company])
-      )
-    )
+
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "created <#{company_url(options[:company])}|company>"
+    ].join(' ')
+
     result
   end
 
   def get_published_company_payload(user, options)
     result = {}
-    result[:text] = I18n.t('user.activities.published_company',
-      user_params(user).merge(company_params(options[:company]))
-    )
+    company = options[:company]
+
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "published company: #{get_name_for_company(company)}"
+    ].join(' ')
+
     result
   end
 
@@ -132,9 +132,11 @@ private
     pin = options[:pin]
     return result if pin.pinboard_id.blank?
 
-    result[:text] = I18n.t('user.activities.pinned_pin',
-      user_params(user).merge(pin_params(pin)).merge(pinboard_params(pin.pinboard))
-    )
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "pinned <#{insight_url(pin)}|insight>",
+      "to #{get_title_for_pinboard(pin.pinboard)} collection"
+    ].join(' ')
 
     result[:attachments] = [
       fallback: result[:text],
@@ -164,30 +166,24 @@ private
     pin = options[:pin]
     return result if pin.pinboard_id.blank?
 
-    result[:text] = I18n.t('user.activities.suggested_pin',
-      user_params(user).merge(pin_params(pin)).merge(pinboard_params(pin.pinboard))
-    )
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "suggested <#{insight_url(pin)}|insight>",
+      "to #{get_title_for_pinboard(pin.pinboard)} collection"
+    ].join(' ')
 
-    result
-  end
-
-  def get_created_pinboard_payload(user, options)
-    result = {}
-    pinboard = options[:pinboard]
-    result[:text] = I18n.t('user.activities.created_pinboard',
-      user_params(user).merge(pinboard_params(pinboard))
-    )
     result
   end
 
   def get_created_post_payload(user, options)
     result = {}
     post = options[:post]
-    result[:text] = I18n.t('user.activities.created_post',
-      user_params(user).merge(
-        post_url: post_url(post)
-      )
-    )
+
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "created <#{post_url(post)}|post>"
+    ].join(' ')
+
     result
   end
 
@@ -196,66 +192,75 @@ private
     roles = options[:user].system_roles.map(&:value).to_sentence
     roles = 'regular user' if roles.blank?
 
-    result[:text] = I18n.t('user.activities.invited_user_to_app',
-      user_params(user).merge(
-        invitee_twitter: options[:user].twitter,
-        invitee_twitter_url: options[:user].twitter_url,
-        roles: roles
-      )
-    )
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "invited <#{options[:user].twitter_url}|@#{options[:user].twitter}>",
+      "to join #{ENV['SITE_NAME']} as #{roles}"
+    ].join(' ')
 
     result
   end
 
-  def get_followed_pinboard_payload(user, options, event_name='followed_pinboard')
+  def get_created_pinboard_payload(user, options, action='created')
     result = {}
     pinboard = options[:pinboard]
-    result[:text] = I18n.t("user.activities.#{event_name}",
-      user_params(user).merge(pinboard_params(pinboard))
-    )
+
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "#{action} #{get_title_for_pinboard(pinboard)} collection"
+    ].join(' ')
+
     result
+  end
+
+  def get_followed_pinboard_payload(user, options)
+    get_created_pinboard_payload(user, options, 'followed')
   end
 
   def get_unfollowed_pinboard_payload(user, options)
-    get_followed_pinboard_payload(user, options, 'unfollowed_pinboard')
+    get_created_pinboard_payload(user, options, 'unfollowed')
   end
 
-  def get_followed_company_payload(user, options, event_name='followed_company')
+  def get_followed_company_payload(user, options, action='followed')
     result = {}
     company = options[:company]
-    result[:text] = I18n.t("user.activities.#{event_name}",
-      user_params(user).merge(company_params(company))
-    )
+
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "#{action} #{get_name_for_company(company)} company"
+    ].join(' ')
+
     result
   end
 
   def get_unfollowed_company_payload(user, options)
-    get_followed_company_payload(user, options, 'unfollowed_company')
+    get_followed_company_payload(user, options, 'unfollowed')
   end
 
-  def get_followed_user_payload(user, options, event_name='followed_user')
+  def get_followed_user_payload(user, options, action='followed')
     result = {}
     followed_user = options[:user]
-    result[:text] = I18n.t("user.activities.#{event_name}",
-      user_params(user).merge(
-        user_name: followed_user.full_name,
-        user_url: user_url(followed_user)
-      )
-    )
+
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "#{action} <#{user_url(followed_user)}|#{followed_user.full_name}> user"
+    ].join(' ')
+
     result
   end
 
   def get_unfollowed_user_payload(user, options)
-    get_followed_user_payload(user, options, 'unfollowed_user')
+    get_followed_user_payload(user, options, 'unfollowed')
   end
 
-  def get_created_pin_payload(user, options, event_name='created_pin')
+  def get_created_pin_payload(user, options, action='created')
     result = {}
     pin = options[:pin]
 
-    result[:text] = I18n.t("user.activities.#{event_name}",
-      user_params(user).merge(pin_params(pin))
-    )
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "#{action} <#{insight_url(pin)}|insight>"
+    ].join(' ')
 
     result[:attachments] = [
       fallback: result[:text],
@@ -269,41 +274,21 @@ private
   end
 
   def get_followed_pin_payload(user, options)
-    get_created_pin_payload(user, options, 'followed_pin')
+    get_created_pin_payload(user, options, 'starred')
   end
 
   def get_unfollowed_pin_payload(user, options)
-    get_created_pin_payload(user, options, 'unfollowed_pin')
+    get_created_pin_payload(user, options, 'unstarred')
   end
 
-  # params
+  # helpers
   #
-  def user_params(user)
-    {
-      name: user.full_name,
-      twitter: user.twitter,
-      twitter_url: user.twitter_url
-    }
+  def get_name_for_company(company)
+    "<#{company_url(company)}|#{company.name}>"
   end
 
-  def company_params(company)
-    {
-      company_name: company.name,
-      company_url: company_url(company)
-    }
-  end
-
-  def pinboard_params(pinboard)
-    {
-      pinboard_title: pinboard.title,
-      pinboard_url: collection_url(pinboard)
-    }
-  end
-
-  def pin_params(pin)
-    {
-      pin_url: insight_url(pin)
-    }
+  def get_title_for_pinboard(pinboard)
+    "<#{collection_url(pinboard)}|#{pinboard.title}>"
   end
 
   def get_name_for_user(user, options)

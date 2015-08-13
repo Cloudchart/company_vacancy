@@ -9,7 +9,10 @@ class GuestSubscriptionsController < ApplicationController
       UserMailer.guest_subscription(@guest_subscription).deliver
 
       if should_perform_sidekiq_worker?
-        SlackWebhooksWorker.perform_async('guest_subscribed', current_user.id, email_address: @guest_subscription.email)
+        SlackWebhooksWorker.perform_async('guest_subscribed', current_user.id,
+          email_address: @guest_subscription.email,
+          request_env: request.env
+        )
       end
 
       respond_to do |format|
