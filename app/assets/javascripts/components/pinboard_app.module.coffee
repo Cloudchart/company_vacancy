@@ -54,6 +54,7 @@ module.exports = React.createClass
         """
           Pinboard {
             #{FollowButton.getQuery('pinboard')},
+            #{InviteActions.getQuery('owner', 'Pinboard')},
             user {
               roles
             },
@@ -306,7 +307,7 @@ module.exports = React.createClass
       <section className="tab-header">
         <div className="cloud-columns cloud-columns-flex">
           { @renderHeader() }
-          <InviteActions ownerId = { @props.uuid } ownerType = 'Pinboard' />
+          <InviteActions ownerId = { @props.uuid } ownerType = 'Pinboard' } />
         </div>
         <TabNav tabs={ @gatherTabs() } currentTab={ @state.currentTab } onChange={ @handleTabChange } />
       </section>

@@ -41,6 +41,7 @@ module.exports = React.createClass
       pinboard: ->
         """
           Pinboard {
+            #{InviteActions.getQuery('owner', 'Pinboard')},
             user {
               #{UserCard.getQuery('user')}
             },

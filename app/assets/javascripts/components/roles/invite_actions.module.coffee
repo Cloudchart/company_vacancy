@@ -17,26 +17,27 @@ SyncButton     = require('components/form/buttons').SyncButton
 InviteActions = React.createClass
 
   displayName: 'InviteActions'
-
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-  statics:
-
-    queries:
-
-      roles: ->
-        """
-          Viewer {
-            roles
-          }
-        """
-
-  # Component specifications
-  #
   propTypes:
     ownerId:    React.PropTypes.string.isRequired
     ownerType:  React.PropTypes.string.isRequired
 
+  statics:
+    queries:
+      owner: (type) ->
+        """
+          #{type} {
+            roles,
+            edges {
+              is_invited
+            }
+          }
+        """
+
+
+  # Component specifications
+  #
   getDefaultProps: ->
     cursor:
       roles:   RoleStore.cursor.items
@@ -44,6 +45,25 @@ InviteActions = React.createClass
 
   getInitialState: ->
     sync: Immutable.Map()
+    isInvited: false
+
+
+  # Fetchers
+  #
+  fetch: ->
+    GlobalState.fetch(@getQuery('owner', @props.ownerType), id: @props.ownerId).then (json) =>
+      isInvited = if json.companies
+        json.companies[0].is_invited
+      else
+        json.is_invited
+
+      @setState isInvited: isInvited
+
+
+  # Lifecycle methods
+  #
+  componentWillMount: ->
+    @fetch().then => @setState isLoaded: true
 
 
   # Helpers
@@ -51,17 +71,9 @@ InviteActions = React.createClass
   getOwner: ->
     getOwnerStore(@props.ownerType).cursor.items.get(@props.ownerId)
 
+  # TODO: get role from query
   getRole: ->
     RoleStore.rolesOnOwnerForUser(@props.ownerId, @props.ownerType, @props.cursor.viewer).first()
-
-  isInvited: ->
-    @getRole() && @getRole().get('pending_value')
-
-  fetch: ->
-    GlobalState.fetch(@getQuery('roles'))
-
-  isLoaded: ->
-    @state.isLoaded
 
 
   # Handlers
@@ -87,7 +99,10 @@ InviteActions = React.createClass
       .catch => @handleFail('accept')
 
   handleInviteDone: (syncKey) ->
-    @setState(sync: @state.sync.set(syncKey, false))
+    # needed for pinboards and companies cards rerender
+    GlobalState.fetchEdges(@props.ownerType, @props.ownerId, 'is_invited')
+
+    @setState(sync: @state.sync.set(syncKey, false), isInvited: false)
 
   handleFail: (syncKey) ->
     @setState(sync: @state.sync.set(syncKey, false))
@@ -95,30 +110,31 @@ InviteActions = React.createClass
     ModalStack.show(<ModalError />)
 
 
-  # Lifecycle methods
+  # Main render
   #
-  componentWillMount: ->
-    @fetch().then => @setState isLoaded: true
-
-
   render: ->
-    return null unless @isLoaded() && @isInvited()
+    return null unless @state.isInvited
 
     <section className="invite-actions">
-      <p>{ @props.cursor.viewer.get('first_name') }, you've been invited to this { getOwnerName(@props.ownerType) }</p>
+      <p>
+        { "#{@props.cursor.viewer.get('first_name')}, you've been invited to this #{getOwnerName(@props.ownerType)}" }
+      </p>
+
       <div className="buttons">
         <SyncButton
           className = "cc"
           onClick   = { @handleAcceptClick }
           sync      = { @state.sync.get('accept') }
-          text      = "Accept" />
+          text      = "Accept" 
+        />
+
         <SyncButton
           className = "cc alert"
           onClick   = { @handleDeclineClick }
           sync      = { @state.sync.get('decline') }
-          text      = "Decline" />
+          text      = "Decline"
+        />
       </div>
     </section>
-
 
 module.exports = InviteActions

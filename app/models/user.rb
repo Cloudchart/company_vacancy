@@ -13,8 +13,8 @@ class User < ActiveRecord::Base
   # before_validation :build_blank_emails, unless: -> { emails.any? }
   before_validation :generate_password, if: -> { password.blank? }
   before_validation :extract_twitter, if: -> { twitter_changed? && twitter.present? }
-  before_save :nillify_last_sign_in_at, if: :twitter_changed?
-  before_save :nillify_slug, if: -> { twitter_changed? && twitter.blank? }
+  before_save :nilify_last_sign_in_at, if: :twitter_changed?
+  before_save :nilify_slug, if: -> { twitter_changed? && twitter.blank? }
   before_destroy :mark_emails_for_destruction
   after_create :create_tour_tokens, if: :should_create_tour_tokens?
   after_create :create_unicorn_role, if: :should_create_unicorn_role?
@@ -238,11 +238,11 @@ private
     self.password = SecureRandom.uuid
   end
 
-  def nillify_last_sign_in_at
+  def nilify_last_sign_in_at
     self.last_sign_in_at = nil
   end
 
-  def nillify_slug
+  def nilify_slug
     self.slug = nil
   end
 

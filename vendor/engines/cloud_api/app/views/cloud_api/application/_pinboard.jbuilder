@@ -80,6 +80,10 @@ json_edge! json, :is_editable, edges do
   can?(:update, pinboard)
 end
 
+json_edge! json, :is_invited, edges do
+  preload_associations(siblings, cache, :roles)
+  !!pinboard.roles.find { |pinboard| pinboard.user_id == current_user.id && pinboard.pending_value.present? }
+end
 
 json_edge! json, :features, edges do
   preload_associations(siblings, cache, :features)

@@ -44,6 +44,7 @@ CompanyPreview = React.createClass
       company: ->
         """
           Company {
+            #{InviteActions.getQuery('owner', 'Company')},
             staff,
             edges {
               posts_count,
@@ -107,10 +108,6 @@ CompanyPreview = React.createClass
     description
 
 
-  isInvited: ->
-    RoleStore.isInvited(@props.uuid, 'Company', @cursor.viewer)
-
-
   getFavorite: ->
     @cursor.company.get('is_followed')
 
@@ -137,7 +134,7 @@ CompanyPreview = React.createClass
     #   .size
 
   isUnpublished: ->
-    !@cursor.company.get('is_published') && !@isViewerOwner() && !@isInvited()
+    !@cursor.company.get('is_published') && !@isViewerOwner() && !@cursor.company.get('is_invited')
 
   getPreviewLink: ->
     @cursor.company.get('company_url') unless @isUnpublished()
@@ -220,7 +217,7 @@ CompanyPreview = React.createClass
 
 
   renderInvitedLabel: ->
-    return null unless @isInvited()
+    return null unless @cursor.company.get('is_invited')
 
     <li className="label">Invited</li>
 
@@ -282,7 +279,7 @@ CompanyPreview = React.createClass
 
 
   renderButtonsOrPeople: ->
-    if @isInvited()
+    if @cursor.company.get('is_invited')
       <InviteActions ownerId = { @props.uuid } ownerType = 'Company' />
     else
       <People

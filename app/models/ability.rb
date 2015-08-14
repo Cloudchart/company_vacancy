@@ -45,7 +45,11 @@ class Ability
 
       # User
       #
-      can [:read, :feed], User
+      can :feed, User
+
+      can :read, User do |user|
+        !user.guest?
+      end
 
       can [:update, :settings], User do |user|
         user.id == current_user.id ||
