@@ -177,6 +177,11 @@ module.exports = React.createClass
     @showModal()
 
 
+  handlePinCreateDone: ->
+    GlobalState.fetchEdges('Pinboard', @props.pinboard_id) if @props.pinboard_id
+    Modal.hide()
+
+
   showModal: ->
     if @props.uuid
       if @state.currentUserPin
@@ -217,7 +222,7 @@ module.exports = React.createClass
       pinboard_id = { @props.pinboard_id }
       pinnable_id = { @props.pinnable_id }
       pinnable_type = { @props.pinnable_type }
-      onDone = { Modal.hide }
+      onDone = { @handlePinCreateDone }
       onCancel = { Modal.hide }
       shouldRenderSuggestion = { @props.shouldRenderSuggestion }
     />
