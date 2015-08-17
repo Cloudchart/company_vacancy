@@ -32,9 +32,6 @@ module.exports = React.createClass
 
   # Specification
   #
-  getDefaultProps: ->
-    cursor:
-      viewer: UserStore.me()
 
   getInitialState: ->
     ready:      false
@@ -52,7 +49,8 @@ module.exports = React.createClass
           edges {
             is_origin_domain_allowed,
             is_mine,
-            diffbot_response_data
+            diffbot_response_data,
+            is_followed
           }
         """
 
@@ -98,6 +96,10 @@ module.exports = React.createClass
 
   # Lifecycle
   #
+  componentWillMount: ->
+    @cursor =
+      insights: PinStore.cursor.items
+
   componentDidMount: ->
     @fetch()
 
@@ -149,10 +151,12 @@ module.exports = React.createClass
   render: ->
     return null unless @state.ready
 
+    is_followed = PinStore.get(@state.insight.id).get('is_followed', false)
+
     <footer>
       <ul className="round-buttons">
         <InsightStarButton pin={ @state.insight.id } />
-        <InsightSaveButton pin={ @state.insight.id } onDone={ @fetchPinboard } />
+        <InsightSaveButton pin={ @state.insight.id } is_followed={ is_followed } is_mine={ @state.insight.is_mine } onDone={ @fetchPinboard } />
         <InsightDropButton pin={ (@state.pin || @state.insight).id } onDone={ @fetchPinboard } scope={ @props.scope } />
       </ul>
       { @renderContent() }

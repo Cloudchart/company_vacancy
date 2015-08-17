@@ -19,6 +19,11 @@ module.exports = React.createClass
   # Specification
   #
 
+  propTypes:
+    pin:          React.PropTypes.string.isRequired
+    is_mine:      React.PropTypes.bool
+    is_followed:  React.PropTypes.bool
+
   getDefaultProps: ->
     sync:   false
 
@@ -45,6 +50,7 @@ module.exports = React.createClass
   # Main Render
   #
   render: ->
+    return null unless @props.is_followed || @props.is_mine
 
     className = cx
       'save':     true
