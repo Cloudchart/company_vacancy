@@ -1,23 +1,19 @@
 module CloudOAuth
   
-  
   autoload :Facebook, 'cloud_oauth/facebook'
   autoload :Linkedin, 'cloud_oauth/linkedin'
-
+  autoload :Twitter, 'cloud_oauth/twitter'
 
   mattr_reader :providers
   @@providers = {}
-  
   
   def self.configure
     yield self if block_given?
   end
   
-  
   def self.[](name)
     public_send(name)
   end
-  
   
   def self.method_missing(method)
     const_get(method.to_s.classify).tap do |provider|
@@ -31,6 +27,5 @@ module CloudOAuth
   rescue NameError
     super
   end
-  
-  
+
 end

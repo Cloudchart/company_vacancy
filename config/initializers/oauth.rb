@@ -1,13 +1,10 @@
 CloudOAuth.configure do |config|
-  
-  config.facebook do |fb|
-    fb.client_id      = ENV['FACEBOOK_KEY']
-    fb.client_secret  = ENV['FACEBOOK_SECRET']
+
+  %w(facebook linkedin twitter).each do |provider_name|
+    config.send(provider_name) do |provider|
+      provider.client_id = ENV["#{provider_name.upcase}_KEY"]
+      provider.client_secret = ENV["#{provider_name.upcase}_SECRET"]
+    end
   end
-  
-  config.linkedin do |ln|
-    ln.client_id      = ENV['LINKEDIN_KEY']
-    ln.client_secret  = ENV['LINKEDIN_SECRET']
-  end
-  
+
 end
