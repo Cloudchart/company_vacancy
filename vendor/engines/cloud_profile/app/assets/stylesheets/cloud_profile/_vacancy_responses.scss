@@ -54,10 +54,6 @@ main.cloud-profile > div.vacancy-responses-wrapper {
             color: black;
           }
 
-          &.proximity {
-            @include proximity;
-          }
-
           > a {
             &.accept { color: $north-texas-green; }
             &.decline { color: $alizarin-crimson; }

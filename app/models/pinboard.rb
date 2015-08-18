@@ -3,6 +3,7 @@ class Pinboard < ActiveRecord::Base
   include Previewable
   include Preloadable
   include Featurable
+  include Followable
   include Tire::Model::Search
   include Tire::Model::Callbacks
   include Admin::Pinboard
@@ -22,7 +23,6 @@ class Pinboard < ActiveRecord::Base
   has_many :posts, through: :pins, source: :pinnable, source_type: 'Post'
   has_many :users, through: :roles
   has_many :tokens, as: :owner, dependent: :destroy
-  has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
 
   validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
   validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }

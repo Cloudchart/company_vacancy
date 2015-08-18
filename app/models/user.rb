@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   include Fullnameable
   include FriendlyId
   include Previewable
+  include Followable
   include Admin::User
   include Preloadable::User
 
@@ -37,7 +38,7 @@ class User < ActiveRecord::Base
 
   has_one :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
   has_many :friends_users, dependent: :delete_all
-  has_many :friends, through: :friends_users
+  has_many :friends, through: :friends_users, class_name: self.name, foreign_key: :friend_id
   has_many :emails, -> { order(:address) }, dependent: :destroy
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :oauth_providers, dependent: :destroy
@@ -49,7 +50,6 @@ class User < ActiveRecord::Base
   has_many :vacancies, foreign_key: :author_id
   has_many :vacancy_responses
   has_many :favorites, dependent: :destroy
-  has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
   has_many :roles, dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :people, dependent: :destroy
@@ -106,6 +106,14 @@ class User < ActiveRecord::Base
       .references(:company)
       .order('pins.weight desc, pins.created_at desc')
       .limit(6)
+  end
+
+  def follow(object)
+    favorites.find_or_create_by(favoritable: object)
+  end
+
+  def unfollow(object)
+    favorites.find_by(favoritable: object).try(:delete)
   end
 
   def followed_activities

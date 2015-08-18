@@ -7,7 +7,7 @@ module FollowableController
 
   def follow
     @object = controller_name.classify.constantize.find(params[:id])
-    @object.followers.find_or_create_by(user: current_user)
+    current_user.follow(@object)
 
     respond_to do |format|
       format.json { render json: @object.active_model_serializer.new(@object, scope: current_user) }
@@ -16,7 +16,7 @@ module FollowableController
 
   def unfollow
     @object = controller_name.classify.constantize.find(params[:id])
-    current_user.favorites.find_by(favoritable: @object).try(:delete)
+    current_user.unfollow(@object)
 
     respond_to do |format|
       format.json { render json: @object.active_model_serializer.new(@object, scope: current_user) }

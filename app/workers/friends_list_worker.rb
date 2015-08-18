@@ -5,7 +5,7 @@ class FriendsListWorker < ApplicationWorker
     user = User.find(user_id)
 
     # set default options
-    options[:count] ||= 1
+    options[:count] ||= 200
 
     # get friends list from twitter
     client = CloudOAuth.twitter
@@ -14,11 +14,20 @@ class FriendsListWorker < ApplicationWorker
 
     # match response with app data
     friends['users'].each do |twitter_user|
-      friend = Friend.find_or_initialize_by(provider: :twitter, external_id: twitter_user['screen_name'])
-      friend.full_name = twitter_user['name']
-      friend.save
-      user.friends << friend unless user.friends.include?(friend)
+      # find or create friends user
+      if friend = User.find_by(twitter: twitter_user['screen_name'])
+        # update association or create and autofollow
+        if friends_user = user.friends_users.find_by(friend: friend)
+          friends_user.update(updated_at: user.last_sign_in_at)
+        else
+          user.friends_users.create(friend: friend)
+          user.follow(friend)
+        end
+      end
     end
+
+    # clear unused friends users associations
+    user.friends_users.where('updated_at < ?', user.last_sign_in_at).delete_all
 
     # repeat scenario if pagination present
     if (next_cursor = friends['next_cursor']) && next_cursor > 0

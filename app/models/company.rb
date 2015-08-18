@@ -6,6 +6,7 @@ class Company < ActiveRecord::Base
   include Preloadable
   include Previewable
   include Featurable
+  include Followable
   include Tire::Model::Search
   include Tire::Model::Callbacks
   include Admin::Company
@@ -30,7 +31,6 @@ class Company < ActiveRecord::Base
   has_many :activities, as: :trackable, dependent: :destroy
   has_many :nested_activities, class_name: 'Activity', as: :source, dependent: :destroy
   has_many :subscriptions, as: :subscribable, dependent: :destroy
-  has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :roles, as: :owner, dependent: :destroy
   has_many :users, through: :roles
