@@ -62,11 +62,20 @@ module.exports = React.createClass
         user:   user
 
 
+  # Helpers
+  #
+  getContent: ->
+    if @state.pin.parent_id
+      PinStore.get(@state.pin.parent_id).get('content')
+    else
+      @state.pin.content
+
+
   # Renderers
   #
   renderContent: ->
     <a href={ @state.pin.url } className="content see-through">
-      { @state.pin.content }
+      { @getContent() }
     </a>
 
   renderUser: ->
