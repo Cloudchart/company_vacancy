@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   authorize_resource
 
   after_action :call_page_visit_to_slack_channel, only: [:show, :feed]
+  after_action :mark_friends_user, only: [:follow, :unfollow]
 
   def show
     respond_to do |format|
@@ -111,6 +112,14 @@ private
   def redirect_to_twitter_auth
     if current_user.guest? && session[:previous_path] != '/logout'
       redirect_to main_app.twitter_auth_path
+    end
+  end
+
+  def mark_friends_user
+    if @object
+      friends_user = current_user.friends_users.find_or_create_by(friend: @object)
+      friends_user.data = { scope: :app }
+      friends_user.save
     end
   end
 

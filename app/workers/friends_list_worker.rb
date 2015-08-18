@@ -27,7 +27,10 @@ class FriendsListWorker < ApplicationWorker
     end
 
     # clear unused friends users associations
-    user.friends_users.where('updated_at < ?', user.last_sign_in_at).delete_all
+    user.friends_users.where('updated_at < ? AND data IS NULL', user.last_sign_in_at).each do |friends_user|
+      user.unfollow(friends_user.friend)
+      friends_user.delete
+    end
 
     # repeat scenario if pagination present
     if (next_cursor = friends['next_cursor']) && next_cursor > 0

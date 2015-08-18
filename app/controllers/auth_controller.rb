@@ -1,7 +1,7 @@
 class AuthController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: :developer, if: -> { Rails.env.development? }
-  after_action :parse_friends, only: :twitter, if: -> { user_authenticated? } # && should_perform_sidekiq_worker?
+  after_action :parse_friends, only: :twitter, if: -> { user_authenticated? && should_perform_sidekiq_worker? }
 
   layout 'guest'
 
