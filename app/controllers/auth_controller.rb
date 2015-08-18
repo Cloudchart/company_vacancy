@@ -1,6 +1,7 @@
 class AuthController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: :developer, if: -> { Rails.env.development? }
+  after_action :parse_friends, only: :twitter, if: -> { user_authenticated? } # && should_perform_sidekiq_worker?
 
   layout 'guest'
 
@@ -72,6 +73,10 @@ private
 
   def oauth_hash
     request.env['omniauth.auth']
+  end
+
+  def parse_friends
+    FriendsListWorker.perform_async(current_user.id)
   end
 
 end

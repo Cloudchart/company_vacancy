@@ -13,10 +13,10 @@ GuestSubscription = require('components/shared/guest_subscription')
 #
 # cx = React.addons.classSet
 SubscribeBenefits = [
-  "Get the latest insight collections",
-  "Never miss the top valuable insights you can use to grow your business",
-  "Be the first to know about #{Constants.SITE_NAME}'s new useful features",
-  "No spam, that's a promise"
+  "Be the first to know about our new features and how you can use them",
+  "Get our curated #insighthunt newsletter with top rated insights",
+  "Follow our exciting story of building and growing #{Constants.SITE_NAME}",
+  "No spam, that's a promise!"
 ]
 
 
@@ -92,7 +92,7 @@ module.exports = React.createClass
       <section className="cc-container-common">
         <section className="benefits">
           <section className="container">
-            <h1>Subscribe to our weekly email</h1>
+            <h1>Subscribe to our awesome email</h1>
             { @renderSubscribeBenefits() }
           </section>
         </section>

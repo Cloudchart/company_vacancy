@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804140916) do
+ActiveRecord::Schema.define(version: 20150817141152) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -236,12 +236,17 @@ ActiveRecord::Schema.define(version: 20150804140916) do
     t.datetime "updated_at"
   end
 
-  create_table "friends_users", id: false, force: true do |t|
-    t.string "friend_id", limit: 36, null: false
-    t.string "user_id",   limit: 36, null: false
+  create_table "friends_users", primary_key: "uuid", force: true do |t|
+    t.string   "friend_id",  limit: 36, null: false
+    t.string   "user_id",    limit: 36, null: false
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "friends_users", ["friend_id", "user_id"], name: "index_friends_users_on_friend_id_and_user_id", unique: true, using: :btree
+  add_index "friends_users", ["friend_id"], name: "index_friends_users_on_friend_id", using: :btree
+  add_index "friends_users", ["user_id"], name: "index_friends_users_on_user_id", using: :btree
 
   create_table "guest_subscriptions", primary_key: "uuid", force: true do |t|
     t.string   "email"

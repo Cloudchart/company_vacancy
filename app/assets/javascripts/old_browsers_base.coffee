@@ -1,2 +1,2 @@
 $('.button a').on 'click', ->
-  $.cookie('agree_to_browse', true, { expires: 1 });
+  Cookies.set('agree_to_browse', true, { expires: 1 });

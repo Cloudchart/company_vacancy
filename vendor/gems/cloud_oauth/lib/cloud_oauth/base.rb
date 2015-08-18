@@ -25,8 +25,8 @@ module CloudOAuth
 
   protected
 
-    def token(oauth_access_token, options = {})
-      OAuth2::AccessToken.from_hash(client, options.merge(access_token: oauth_access_token))
+    def token(access_token, options = {})
+      @token ||= OAuth2::AccessToken.from_hash(client, options.merge(access_token: access_token))
     end
 
     def strategy

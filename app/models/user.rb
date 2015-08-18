@@ -35,9 +35,9 @@ class User < ActiveRecord::Base
 
   has_secure_password
 
-  has_and_belongs_to_many :friends
-
   has_one :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
+  has_many :friends_users, dependent: :delete_all
+  has_many :friends, through: :friends_users
   has_many :emails, -> { order(:address) }, dependent: :destroy
   has_many :social_networks, inverse_of: :user, class_name: 'CloudProfile::SocialNetwork', dependent: :destroy
   has_many :oauth_providers, dependent: :destroy

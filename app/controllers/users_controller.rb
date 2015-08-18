@@ -99,7 +99,7 @@ private
     case action_name
     when 'show'
       page_title = current_user == @user ? 'his profile' : "#{@user.full_name_or_twitter}'s profile"
-      page_url = main_app.user_url(current_user)
+      page_url = main_app.user_url(@user)
     when 'feed'
       page_title = 'Feed'
       page_url = main_app.feed_url
