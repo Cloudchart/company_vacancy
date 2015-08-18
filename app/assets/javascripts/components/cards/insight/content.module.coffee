@@ -13,7 +13,8 @@ module.exports = React.createClass
   displayName: "InsightContent"
 
   propTypes:
-    pin:      React.PropTypes.string.isRequired
+    pin: React.PropTypes.string.isRequired
+    url: React.PropTypes.string
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
@@ -33,6 +34,7 @@ module.exports = React.createClass
   # Component Specifications
   #
   getDefaultProps: ->
+    url: null
     onUpdate: ->
 
 
@@ -62,20 +64,11 @@ module.exports = React.createClass
         user:   user
 
 
-  # Helpers
-  #
-  getContent: ->
-    if @state.pin.parent_id
-      PinStore.get(@state.pin.parent_id).get('content')
-    else
-      @state.pin.content
-
-
   # Renderers
   #
   renderContent: ->
-    <a href={ @state.pin.url } className="content see-through">
-      { @getContent() }
+    <a href={ @props.url || @state.pin.url } className="content see-through">
+      { @state.pin.content }
     </a>
 
   renderUser: ->

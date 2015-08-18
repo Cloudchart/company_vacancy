@@ -87,7 +87,7 @@ InsightCard = React.createClass
     <Header pin={ @state.pin.uuid } scope={ @props.scope } />
 
   renderContent: ->
-    <Content pin = { @state.pin.uuid } />
+    <Content pin = { @state.pin.parent_id || @state.pin.uuid } url = { @state.pin.url } />
 
   renderFooter: ->
     return null unless @props.shouldRenderFooter
