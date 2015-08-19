@@ -61,7 +61,7 @@ end
 
 json_edge! json, :connected_collections_ids, edges do
   Pin.preload_connected_collections(siblings, cache)
-  pin.connected_collections.map(&:id)
+  pin.connected_collections.compact.map(&:id)
 end
 
 json_edge! json, :is_editable, edges do

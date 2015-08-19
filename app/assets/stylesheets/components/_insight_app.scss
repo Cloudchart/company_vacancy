@@ -5,12 +5,9 @@
     width: 100%;
   }
 
-  > .content {
-    background-color: white;
+  > .insight-card > .content {
     font-size: 24px;
-    font-weight: 300;
     line-height: 29px;
-    padding: 20px;
     pointer-events: none;
   }
 

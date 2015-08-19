@@ -28,7 +28,7 @@ module.exports = React.createClass
 
 
   getInitialState: ->
-    currentTab: null
+    currentTab: 'collections'
     ready:      false
 
 
