@@ -147,7 +147,7 @@ module.exports = React.createClass
     switch @props.scope
       when 'feed'       then @renderFeedScopeContent()
       when 'pinboard'   then @renderPinboardScopeContent()
-      else nil
+      else null
 
 
   # Main render
