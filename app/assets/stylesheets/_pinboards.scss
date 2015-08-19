@@ -137,7 +137,7 @@ $pinboard-header-color: hsl(60, 10%, 96%);
   }
 
   > .cc-container-common {
-    > .see-more {
+    .see-more {
       @include display(flex);
       @include justify-content(space-between);
       @include align-items(center);
