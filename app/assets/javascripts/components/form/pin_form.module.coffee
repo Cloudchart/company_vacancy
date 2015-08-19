@@ -43,7 +43,10 @@ module.exports = React.createClass
             roles,
             tokens,
             pinboards,
-            writable_pinboards
+            writable_pinboards,
+            edges {
+              is_editor
+            }
           }
 
         """
@@ -105,20 +108,19 @@ module.exports = React.createClass
     GlobalState.fetch(@getQuery('system_pinboards'))
 
   fetchUser: (id) ->
-    if id
-      GlobalState.fetch(@getQuery('user'), id: id).then => @setState({})
-    else
-      GlobalState.fetch(@getQuery('viewer')).then => @setState({})
+    GlobalState.fetch(@getQuery('user'), id: id).then => @setState({}) if id
+    # else
+    #   GlobalState.fetch(@getQuery('viewer')).then => @setState({})
 
   fetchPin: ->
     if @props.uuid
       promise = GlobalState.fetch(@getQuery('pin'), id: @props.uuid).then =>
         @fetchUser(@props.cursor.pins.getIn([@props.uuid, 'user_id']))
-    else
-      @fetchUser()
+    # else
+    #   @fetchUser()
 
   fetch: ->
-    Promise.all([@fetchSystemPinboards(), @fetchPin()]).then =>
+    Promise.all([@fetchSystemPinboards(), @fetchViewer(), @fetchPin()]).then =>
       @handleFetchDone()
 
 
@@ -204,7 +206,9 @@ module.exports = React.createClass
 
 
   isCurrentUserSystemEditor: ->
-    @isUserWithRole(UserStore.me().get('uuid'), 'editor')
+    # console.log UserStore.me().get('uuid')
+    # @isUserWithRole(UserStore.me().get('uuid'), 'editor')
+    UserStore.me().get('is_editor')
 
   isSelectedUserUnicorn: ->
     @isUserWithRole(@state.attributes.get('user_id'), 'unicorn')
@@ -408,6 +412,8 @@ module.exports = React.createClass
 
   renderPinCommentInput: ->
     content = @state.attributes.get('content') || ''
+
+    console.log @props.uuid, @isCurrentUserSystemEditor()
 
     if !@props.uuid || @isCurrentUserSystemEditor()
       <textarea

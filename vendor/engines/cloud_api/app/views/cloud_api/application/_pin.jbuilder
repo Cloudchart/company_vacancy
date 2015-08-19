@@ -58,3 +58,13 @@ json_edge! json, :diffbot_response_data, edges do
   preload_associations(siblings, cache, :diffbot_response)
   pin.diffbot_response.try(:data)
 end
+
+json_edge! json, :connected_collections_ids, edges do
+  Pin.preload_connected_collections(siblings, cache)
+  pin.connected_collections.map(&:id)
+end
+
+json_edge! json, :is_editable, edges do
+  Rails.logger.debug "USER: #{current_user.editor?} : #{pin.user.unicorn?}"
+  current_user.editor? && pin.user.unicorn?
+end

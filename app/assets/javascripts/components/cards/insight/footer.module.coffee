@@ -9,6 +9,7 @@ ModalStack           = require('components/modal_stack')
 PinForm              = require('components/form/pin_form')
 InsightStarButton    = require('components/cards/insight/star_button')
 InsightSaveButton    = require('components/cards/insight/save_button')
+InsightEditButton    = require('components/cards/insight/edit_button')
 InsightDropButton    = require('components/cards/insight/drop_button')
 
 NotificationsPushApi = require('push_api/notifications_push_api')
@@ -49,6 +50,7 @@ module.exports = React.createClass
           edges {
             is_origin_domain_allowed,
             is_mine,
+            is_editable,
             diffbot_response_data,
             is_followed
           }
@@ -146,6 +148,11 @@ module.exports = React.createClass
     </section>
 
 
+  renderEditButton: ->
+    return null unless @props.scope == 'standalone'
+    <InsightEditButton pin={ @state.insight.id } is_editable={ @state.insight.is_editable } onDone={ @fetchPinboard } />
+
+
   # Main render
   #
   render: ->
@@ -157,6 +164,7 @@ module.exports = React.createClass
       <ul className="round-buttons">
         <InsightStarButton pin={ @state.insight.id } />
         <InsightSaveButton pin={ @state.insight.id } is_followed={ is_followed } is_mine={ @state.insight.is_mine } onDone={ @fetchPinboard } />
+        { @renderEditButton() }
         <InsightDropButton pin={ (@state.pin || @state.insight).id } onDone={ @fetchPinboard } scope={ @props.scope } />
       </ul>
       { @renderContent() }

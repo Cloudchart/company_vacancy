@@ -2,164 +2,122 @@
 
 # Imports
 #
+
 GlobalState = require('global_state/state')
 
-PinStore = require('stores/pin_store')
+PinStore    = require('stores/pin_store')
 
-InsightOrigin = require('components/insight/origin')
-InsightContent = require('components/pinnable/insight_content')
-Human = require('components/human')
-EditPinButton = require('components/pinnable/edit_pin_button')
-PinButton = require('components/pinnable/pin_button')
-CloseModalButton = require('components/form/buttons').CloseModalButton
-ShareButtons = require('components/shared/share_buttons')
+Insight               = require('components/cards/insight_card')
+TabNav                = require('components/shared/tab_nav')
+ConnectedCollections  = require('components/insight/collections')
 
-
-# Utils
-#
-cx = React.addons.classSet
-
-
-# Main component
+# Exports
 #
 module.exports = React.createClass
 
-  displayName: 'InsightCard'
+  displayName: 'InsightApp'
+
+  propTypes:
+    pin: React.PropTypes.string.isRequired
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-  propTypes:
-    pin: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.object])
-    renderedInsideModal: React.PropTypes.bool
+
+  getDefaultProps: ->
+    {}
+
+
+  getInitialState: ->
+    currentTab: null
+    ready:      false
+
 
   statics:
     queries:
       pin: ->
         """
           Pin {
-            #{InsightOrigin.getQuery('pin')},
-            user,
-            parent {
-              edges {
-                url,
-                facebook_share_url,
-                twitter_share_url
-              }
-            },
-            post {
-              company
-            },
+            #{Insight.getQuery('pin')},
             edges {
-              url,
-              facebook_share_url,
-              twitter_share_url,
-              context
+              connected_collections_ids
             }
           }
         """
 
-
-  # Component Specifications
-  #
-  getDefaultProps: ->
-    renderedInsideModal: false
-    cursor:
-      pin: PinStore.cursor.items
-
-  # getInitialState: ->
-
-
-  # Lifecycle Methods
-  #
-  componentWillMount: ->
-    @fetch()
-
-  componentDidMount: ->
-    if @props.renderedInsideModal
-      setTimeout =>
-        history.pushState({}, '', @getPin().url)
-      , 250
+  fetch: ->
+    GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
+      @setState
+        ready:  true
+        pin:    @cursor.pin.deref().toJS()
 
 
   # Helpers
   #
-  getPin: ->
-    if typeof(@props.pin) is 'string'
-      PinStore.cursor.items.cursor(@props.pin).deref(Immutable.Map({})).toJS()
-    else if typeof(@props.pin) is 'object'
-      @props.pin
 
-  fetch: ->
-    id = if typeof(@props.pin) is 'string'
-      @props.pin
-    else if typeof(@props.pin) is 'object'
-      @props.pin.uuid
+  gatherTabs: ->
+    tabs = []
 
-    GlobalState.fetch(@getQuery('pin'), id: id)
+    tabs.push
+      id:       'collections'
+      title:    'Collections'
+      counter:  '' + @state.pin.connected_collections_ids.length
 
-  isInsightEmpty: (pin) ->
-    Object.keys(pin).length is 0
-
-  gatherPinAttributes: (pin, insight) ->
-    uuid: insight.uuid
-    title: insight.content
-    parent_id: insight.parent_id
-    pinnable_id: pin.pinnable_id
-    pinnable_type: pin.pinnable_type
+    tabs
 
 
   # Handlers
   #
-  # handleThingClick: (event) ->
+
+  handleTabChange: (id) ->
+    @setState
+      currentTab: id
 
 
-  # Renderers
+  # Lifecycle
   #
-  # renderSomething: ->
+
+  onGlobalStateChange: ->
+    @setState
+      pin: @cursor.pin.deref().toJS()
 
 
-  # Main render
+  componentWillMount: ->
+    @cursor =
+      pin: PinStore.cursor.items.cursor(@props.pin)
+
+
+  componentDidMount: ->
+    @fetch()
+
+
+  # Render
   #
+
+  renderTabs: ->
+    <TabNav tabs={ @gatherTabs() } onChange={ @handleTabChange } currentTab={ @state.currentTab } />
+
+
+  renderConnections: ->
+    switch @state.currentTab
+      when 'collections'
+        <ConnectedCollections pin={ @props.pin } />
+      else
+        null
+
   render: ->
-    pin = @getPin()
+    return null unless @state.ready
 
-    if @isInsightEmpty(pin)
-      <article className="insight-card placeholder"/>
-    else
-      insight = if pin.parent_id then PinStore.get(pin.parent_id).toJS() else pin
+    <div className="cc-container-common glued">
+      <article className="insight-app standalone">
+        <Insight
+          pin   = { @props.pin }
+          scope = "standalone"
+        />
 
-      articte_classes = cx
-        'insight-card': true
-        modal: @props.renderedInsideModal
+        { @renderTabs() }
 
-      attributes = @gatherPinAttributes(pin, insight)
-
-      <div className="insight-card wrapper">
-        <article className={articte_classes}>
-          { <CloseModalButton shouldDisplay = { @props.renderedInsideModal } /> }
-
-          <section className="content">
-            <InsightContent
-              pinnable_id = { pin.pinnable_id }
-              pin_id = { insight.uuid }
-            />
-
-            <Human
-              showUnicornIcon = { true }
-              showLink = { true }
-              type = "user"
-              uuid = { insight.user_id }
-            />
-
-            <ul className="round-buttons">
-              <EditPinButton uuid = { insight.uuid } />
-              <PinButton {...attributes} />
-            </ul>
-          </section>
-
-        </article>
-
-        <footer>
-          <ShareButtons object = { pin } />
-        </footer>
-      </div>
+        <div className="connections">
+          { @renderConnections() }
+        </div>
+      </article>
+    </div>

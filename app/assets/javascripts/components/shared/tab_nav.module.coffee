@@ -85,7 +85,7 @@ module.exports = React.createClass
   # Render
   #
   render: ->
-    return null if @props.tabs.length < 2
+    return null if @props.tabs.length < 1
 
     <nav className="tab-nav">
       { @renderTabs() }
