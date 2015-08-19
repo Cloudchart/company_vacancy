@@ -32,7 +32,10 @@ module.exports = React.createClass
         """
           Pin {
             connected_collections {
-              #{Collection.getQuery('collection')}
+              #{Collection.getQuery('collection')},
+              edges {
+                readers_count
+              }
             },
             edges {
               connected_collections_ids
@@ -75,7 +78,7 @@ module.exports = React.createClass
   renderCollections: ->
     Immutable.Seq(@state.pin.connected_collections_ids)
       .map (id) -> PinboardStore.get(id).toJS()
-      .sortBy (collection) -> collection.title
+      .sortBy (collection) -> - collection.readers_count
       .map @renderCollection
       .toArray()
 

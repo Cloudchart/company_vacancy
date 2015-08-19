@@ -38,6 +38,12 @@ module.exports = React.createClass
         """
           Pin {
             #{Insight.getQuery('pin')},
+            parent {
+              #{Insight.getQuery('pin')},
+              edges {
+                connected_collections_ids
+              }
+            },
             edges {
               connected_collections_ids
             }
@@ -54,13 +60,16 @@ module.exports = React.createClass
   # Helpers
   #
 
+  effective_pin: ->
+    PinStore.get(@state.pin.parent_id || @state.pin.id).toJS()
+
   gatherTabs: ->
     tabs = []
 
     tabs.push
       id:       'collections'
       title:    'Collections'
-      counter:  '' + @state.pin.connected_collections_ids.length
+      counter:  '' + @effective_pin().connected_collections_ids.length
 
     tabs
 
@@ -100,7 +109,7 @@ module.exports = React.createClass
   renderConnections: ->
     switch @state.currentTab
       when 'collections'
-        <ConnectedCollections pin={ @props.pin } />
+        <ConnectedCollections pin={ @effective_pin().id } />
       else
         null
 
@@ -110,7 +119,7 @@ module.exports = React.createClass
     <div className="cc-container-common glued">
       <article className="insight-app standalone">
         <Insight
-          pin   = { @props.pin }
+          pin   = { @effective_pin().id }
           scope = "standalone"
         />
 

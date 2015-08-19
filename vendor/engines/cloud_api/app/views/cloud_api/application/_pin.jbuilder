@@ -61,7 +61,8 @@ end
 
 json_edge! json, :connected_collections_ids, edges do
   Pin.preload_connected_collections(siblings, cache)
-  pin.connected_collections.compact.map(&:id)
+  ability = scope[:current_user_ability]
+  pin.connected_collections.select { |c| ability.can?(:read, c) }.compact.map(&:id)
 end
 
 json_edge! json, :is_editable, edges do

@@ -19,7 +19,7 @@ def __prepare(sources, query, data, json)
   sources.each do |source|
     (grouped_sources[source.class] ||= []) << source
     if source.respond_to?(:id)
-      (data[source.class.name.underscore.pluralize] ||= []) << { model: source, siblings: sources, cache: cache, edges: edges }
+      (data[source.class.name.underscore.pluralize] ||= []) << { model: source, siblings: sources, cache: cache, edges: edges, scope: scope }
     end
   end
 
@@ -80,6 +80,11 @@ end
 data.each do |key, values|
   name = key.to_s.singularize
   json.set! key, values.flatten.compact.uniq do |value|
-    json.partial! name, :"#{name}" => value[:model], :siblings => value[:siblings], cache: value[:cache], edges: value[:edges]
+    json.partial! name,
+      :"#{name}" => value[:model],
+      siblings:   value[:siblings],
+      cache:      value[:cache],
+      edges:      value[:edges],
+      scope:      value[:scope]
   end
 end
