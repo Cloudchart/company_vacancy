@@ -12,9 +12,14 @@
   &.cloud-columns-flex {
     @for $i from 1 through 5 {
       $width: $block-width * $i + $gutter-size;
+      $assigned-width: $width;
+
+      @if $i > 2 {
+        $assigned-width: 1024px;
+      }
 
       @media (min-width: $width) {
-        width: $width;
+        width: $assigned-width;
       }
     }
   }
