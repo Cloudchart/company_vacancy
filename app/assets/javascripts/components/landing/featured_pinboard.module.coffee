@@ -115,6 +115,7 @@ module.exports = React.createClass
 
 
   componentDidUpdate: (prevProps, prevState) ->
+    return if device.is_iphone
     # @recalculateHeight()
     if @state.ready && !@mutation_observer
       @mutationObserver = new MutationObserver(@observeMutation)
