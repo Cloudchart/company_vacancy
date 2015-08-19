@@ -10,7 +10,12 @@ class FriendsListWorker < ApplicationWorker
     # get friends list from twitter
     client = CloudOAuth.twitter
     client.access_token = options.delete(:access_token)
-    friends = client.friends(user.twitter, options)
+
+    begin
+      friends = client.friends(user.twitter, options)
+    rescue OAuth2::Error
+      return
+    end
 
     # match response with app data
     friends['users'].each do |twitter_user|
