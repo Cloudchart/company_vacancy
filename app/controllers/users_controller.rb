@@ -1,13 +1,20 @@
 class UsersController < ApplicationController
   include FollowableController
 
-  before_action :set_user
+  before_action :redirect_to_twitter_auth, only: :feed
+  before_action :set_user, only: [:show, :update, :subscribe, :unsubscribe]
 
   authorize_resource
 
-  after_action :call_page_visit_to_slack_channel, only: :show
+  after_action :call_page_visit_to_slack_channel, only: [:show, :feed]
 
   def show
+    respond_to do |format|
+      format.html
+    end
+  end
+
+  def feed
     respond_to do |format|
       format.html
     end
@@ -25,12 +32,6 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.json { render json: { errors: @user.errors }, status: 422 }
-    end
-  end
-
-  def settings
-    respond_to do |format|
-      format.html
     end
   end
 
@@ -95,8 +96,22 @@ private
   end
 
   def call_page_visit_to_slack_channel
-    page_title = current_user == @user ? 'his profile' : "#{@user.full_name_or_twitter}'s profile"
-    post_page_visit_to_slack_channel(page_title, main_app.user_url(current_user))
+    case action_name
+    when 'show'
+      page_title = current_user == @user ? 'his profile' : "#{@user.full_name_or_twitter}'s profile"
+      page_url = main_app.user_url(current_user)
+    when 'feed'
+      page_title = 'Feed'
+      page_url = main_app.feed_url
+    end
+
+    post_page_visit_to_slack_channel(page_title, page_url)
+  end
+
+  def redirect_to_twitter_auth
+    if current_user.guest? && session[:previous_path] != '/logout'
+      redirect_to main_app.twitter_auth_path
+    end
   end
 
 end

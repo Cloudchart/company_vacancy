@@ -32,6 +32,26 @@ RailsAdmin.config do |config|
 
     # custom
     #
+    member :make_featured do
+      only Feature::FEATURABLE_TYPES
+      link_icon 'icon-bookmark'
+      http_methods { [:post, :get] }
+      register_instance_option :bulkable? do
+        true
+      end
+      controller do
+        proc do
+          if request.get?
+            @object.update(is_featured: '1')
+            redirect_to index_path(params[:model_name]), notice: 'Record has been featured'
+          elsif request.post?
+            params[:model_name].classify.constantize.find(params[:bulk_ids]).each { |object| object.update(is_featured: '1') }
+            redirect_to index_path(params[:model_name]), notice: 'All records has been featured'
+          end
+        end
+      end
+    end
+
     member :make_acceptable do
       only ['Tag']
       http_methods { [:post] }
@@ -142,30 +162,6 @@ RailsAdmin.config do |config|
           @object.update(authorized_at: Time.now)
           UserMailer.app_invite_(@object).deliver
           redirect_to index_path(:user), notice: 'User has been authorized'
-        end
-      end
-    end
-
-    member :make_important do
-      only ['Pinboard', 'Company']
-      link_icon 'icon-plus-sign'
-
-      controller do
-        proc do
-          @object.update(is_important: true)
-          redirect_to index_path(@object.class.name.downcase.to_sym), notice: "#{@object.class.name} has been featured"
-        end
-      end
-    end
-
-    member :make_unimportant do
-      only ['Pinboard', 'Company']
-      link_icon 'icon-remove-sign'
-
-      controller do
-        proc do
-          @object.update(is_important: false)
-          redirect_to index_path(@object.class.name.downcase.to_sym), notice: "#{@object.class.name} has been unfeatured"
         end
       end
     end

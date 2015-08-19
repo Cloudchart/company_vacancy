@@ -1,4 +1,5 @@
 class PinsController < ApplicationController
+  include FollowableController
 
   before_filter :set_pin
 
@@ -6,6 +7,7 @@ class PinsController < ApplicationController
 
   after_action :call_page_visit_to_slack_channel, only: :show
   after_action :create_intercom_event, only: :create
+  after_action :crawl_pin_origin, only: [:create, :update]
 
   def show
     respond_to do |format|
@@ -14,12 +16,9 @@ class PinsController < ApplicationController
     end
   end
 
-
   def create
     @pin.update_by! current_user
     @pin.is_approved = true if autoapproval_granted?
-    @pin.author = current_user if should_assign_author?
-    @pin.user = @pin.parent.user if @pin.is_suggestion
     @pin.should_allow_domain_name! if current_user.editor?
     @pin.save!
 
@@ -32,7 +31,7 @@ class PinsController < ApplicationController
   rescue ActiveRecord::RecordInvalid
 
     respond_to do |format|
-      format.json { render json: :nok, status: 412 }
+      format.json { render json: { errors: @pin.errors }, status: 422 }
     end
   end
 
@@ -72,11 +71,12 @@ private
 
   def autoapproval_granted?
     @pin.content.present? &&
-    (current_user.roles.reject(&:owner_id).map(&:value) & %w(admin editor unicorn trustee)).any?
+    ((current_user.roles.reject(&:owner_id).map(&:value) & %w(admin editor unicorn trustee)).any? ||
+    @pin.is_suggestion? && can?(:update, @pin.pinboard))
   end
 
   def pin_source
-    current_user.editor? ? Pin : current_user.pins
+    current_user.editor? && params_for_create[:user_id].present? ? Pin : current_user.pins
   end
 
   def set_pin
@@ -86,7 +86,7 @@ private
     when 'create'
       pin_source.new(params_for_create)
     else
-      pin_source.find(params[:id])
+      Pin.find(params[:id])
     end
   end
 
@@ -103,8 +103,8 @@ private
   end
 
   def fields_for_create
-    params = default_fields << [:content, :pinnable_id, :pinnable_type, :parent_id, :origin]
-    params << [:user_id, :is_suggestion] if current_user.editor?
+    params = default_fields << [:content, :pinnable_id, :pinnable_type, :parent_id, :origin, :is_suggestion]
+    params << [:user_id] if current_user.editor?
     params
   end
 
@@ -114,24 +114,32 @@ private
     params
   end
 
-  def should_assign_author?
-    current_user.editor? && (@pin.pinnable.blank? || @pin.is_suggestion)
+  def crawl_pin_origin
+    return unless should_perform_sidekiq_worker? && @pin.valid? && @pin.origin_uri
+    DiffbotWorker.perform_async(@pin.id, @pin.class.name, :origin)
   end
 
   def create_intercom_event
     return unless should_perform_sidekiq_worker? && @pin.valid?
 
-    event_name = if @pin.pinnable_type == 'Post' && @pin.parent.blank?
-      'pinned-post'
-    elsif @pin.pinnable_type == 'Post' && @pin.parent.present?
-      'pinned-post-pin'
+    event_name = if @pin.is_suggestion?
+      'suggested-pin'
+    elsif @pin.insight?
+      'created-pin'
+    elsif @pin.parent_id.present?
+      'pinned-pin'
     end
 
     IntercomEventsWorker.perform_async(event_name, current_user.id, pin_id: @pin.id)
   end
 
   def call_page_visit_to_slack_channel
-    post_page_visit_to_slack_channel('Insight page', main_app.insight_url(@pin))
+    post_page_visit_to_slack_channel('insight', main_app.insight_url(@pin),
+      attachment: {
+        title: @pin.source_user.full_name,
+        value: @pin.content
+      }
+    )
   end
 
 end

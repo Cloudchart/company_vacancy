@@ -33,6 +33,7 @@ class Ability
       can :update, :cloud_profile_user
       can [:read, :accept, :destroy], :company_invite
 
+      can :read, Paragraph
       can :create, Tag
       can :create, Activity
       can [:create, :verify, :resend_verification], Email
@@ -44,6 +45,8 @@ class Ability
 
       # User
       #
+      can :feed, User
+
       can :read, User do |user|
         !user.guest?
       end
@@ -65,9 +68,11 @@ class Ability
       #
       can :create, Pin do |pin|
         if pin.pinboard
-          owner_or_editor?(current_user, pin.pinboard) || owner_or_editor?(pin.user, pin.pinboard)
+          owner_or_editor?(current_user, pin.pinboard) ||
+          (current_user.editor? && owner_or_editor?(pin.user, pin.pinboard)) ||
+          (pin.is_suggestion? && pin.pinboard.suggestion_rights == 'anyone')
         else
-          pin.is_suggestion?
+          current_user.editor? && pin.is_suggestion?
         end
       end
 
@@ -75,6 +80,8 @@ class Ability
         pin.content.blank? || pin.is_approved? || pin.user_id == current_user.id ||
         (current_user.admin? || current_user.editor?)
       end
+
+      can [:follow, :unfollow], Pin
 
       can :approve, Pin do |pin|
         (current_user.admin? || current_user.editor?) && pin.content.present? && !pin.is_approved?
@@ -89,7 +96,7 @@ class Ability
       can :manage, Company, user_id: current_user.id
       can [:follow, :unfollow], Company
       can :read, Company, is_published: true
-      can [:index, :search], :companies 
+      can [:index, :search], :companies
 
       can :create, Company do
         current_user.editor?
@@ -116,12 +123,15 @@ class Ability
       can :index, :pinboards
       can :create, Pinboard
       can [:destroy], Pinboard, user_id: current_user.id
+
       can [:read, :follow, :unfollow], Pinboard do |pinboard|
         pinboard.public? || current_user.id == pinboard.user_id || reader_or_editor?(current_user, pinboard)
       end
+
       can [:request_access], Pinboard do |pinboard|
-        !can?(:read, pinboard) && pinboard.protected?
+        cannot?(:read, pinboard) && pinboard.protected?
       end
+
       can [:update, :settings, :manage_pinboard_invites], Pinboard do |pinboard|
         current_user.id == pinboard.user_id || editor?(current_user, pinboard)
       end
@@ -157,7 +167,7 @@ class Ability
       can [:update, :destroy], Landing, author_id: current_user.id
 
       # Role
-      # 
+      #
       can [:read, :accept], Role
 
       can [:create, :update], Role do |role|
@@ -187,10 +197,6 @@ class Ability
         (post.visibility.try(:value) == 'trusted' && trusted_reader?(current_user, post.company))
       end
 
-      can :access, :limbo do
-        current_user.editor?
-      end
-
     end
 
   end
@@ -210,6 +216,7 @@ private
   end
 
   def owner_or_editor?(user, object)
+    return false unless object
     object.user_id == user.id || editor?(user, object)
   end
 

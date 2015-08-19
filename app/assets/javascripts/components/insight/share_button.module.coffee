@@ -7,7 +7,7 @@ GlobalState = require('global_state/state')
 PinStore = require('stores/pin_store')
 
 ModalStack = require('components/modal_stack')
-InsightCard = require('components/cards/insight_card')
+InsightApp = require('components/insight_app')
 
 
 # Main component
@@ -56,7 +56,10 @@ module.exports = React.createClass
   # Handlers
   #
   handleShareButtonClick: (event) ->
-    ModalStack.show(<InsightCard pin = { @props.pin.uuid } renderedInsideModal = true />, shouldGetHistoryBack: true)
+    event.stopPropagation()
+    event.preventDefault()
+
+    ModalStack.show(<InsightApp pin = { @props.pin.uuid } renderedInsideModal = true />, shouldGetHistoryBack: true)
 
 
   # Main render

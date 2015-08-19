@@ -1,6 +1,6 @@
 json.(pinboard, :uuid, :user_id)
 json.(pinboard, :title, :description, :position)
-json.(pinboard, :access_rights, :is_important)
+json.(pinboard, :access_rights, :suggestion_rights)
 json.(pinboard, :created_at, :updated_at)
 json.url collection_url(pinboard)
 

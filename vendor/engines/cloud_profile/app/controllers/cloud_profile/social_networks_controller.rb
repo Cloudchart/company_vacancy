@@ -61,8 +61,6 @@ module CloudProfile
 
       session[:social_network_id] = social_network.to_param
 
-      FriendsListWorker.perform_async(current_user.id, social_network.id)
-
     ensure
       redirect_to_back_or_root
       guard_token.destroy if guard_token.present?

@@ -15,6 +15,10 @@
 
       font-size: 20px;
       font-weight: 600;
+
+      > a > i {
+        margin-left: 5px;
+      }
     }
 
     > h2 {
@@ -51,6 +55,11 @@
         margin-left: 10px;
       }
     }
+  }
+
+  > .invite-actions {
+    margin-top: 20px;
+    border-top: $card-hr;
   }
 }
 

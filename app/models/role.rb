@@ -22,6 +22,7 @@ class Role < ActiveRecord::Base
 
   def accept!
     update!(value: pending_value, pending_value: nil)
+    owner.followers.find_or_create_by(user: user) if owner.respond_to?(:followers)
   end
 
 private

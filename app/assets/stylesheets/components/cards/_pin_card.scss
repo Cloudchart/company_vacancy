@@ -1,0 +1,157 @@
+$insight-card-font-size: 20px;
+$insight-card-font-weight: 400;
+$insight-card-line-height: 25px;
+$insight-card-padding: 20px;
+$insight-card-background-color: white;
+$insight-card-header-background-color: hsl(60, 10%, 96%);
+$insight-card-footer-border-color: hsl(0, 0%, 94%);
+$insight-card-footer-content-font-size: 16px;
+$insight-card-footer-content-line-height: 20px;
+
+.cloud-card.pin-card {
+  font-size: $insight-card-font-size;
+  font-weight: $insight-card-font-weight;
+  line-height: $insight-card-line-height;
+}
+
+
+// Insight Card Header
+//
+@mixin insight-card-header {
+  @include display(flex);
+
+  background-color: $insight-card-header-background-color;
+  font-size: inherit;
+  font-weight: inherit;
+  overflow: hidden;
+  padding: $insight-card-padding;
+  padding-left: $insight-card-padding;
+
+  > i {
+    color: hsl(60, 4%, 89%);
+    display: block;
+    float: left;
+    font-size: inherit;
+    line-height: $insight-card-font-size;
+    width: 30px;
+  }
+
+  > section.title {
+    @include flex(1);
+
+    > *::after {
+      display: inline;
+      content: ' ';
+    }
+
+    .user,
+    .pinboard {
+      font-weight: 600;
+    }
+  }
+
+}
+
+
+// Insight Card Content
+//
+@mixin insight-card-content {
+  background-color: $insight-card-background-color;
+  padding: 0 $insight-card-padding;
+}
+
+
+// Insight Card Footer
+//
+@mixin insight-card-footer {
+  @include align-items(center);
+  @include display(flex);
+
+  border-top: 1px solid $insight-card-footer-border-color;
+  margin-left: $insight-card-padding;
+  margin-right: $insight-card-padding;
+  padding-top: $insight-card-padding;
+
+  ul.round-buttons {
+    line-height: 0;
+
+    li {
+      background-color: hsl(60, 2%, 70%);
+      border: 1px solid hsl(60, 2%, 70%);
+      color: white;
+
+      i {
+        color: inherit;
+        line-height: 22px;
+      }
+    }
+
+    li ~ li {
+      margin-left: $insight-card-padding / 3;
+    }
+
+    li.star {
+      background-color: white;
+      border: 1px solid hsl(137, 54%, 50%);
+      color: hsl(137, 54%, 50%);
+
+      &.active {
+        background-color: hsl(137, 54%, 50%);
+        color: white;
+      }
+    }
+
+    li.drop:hover {
+      background-color: hsl(359, 73%, 55%);
+      border-color: hsl(359, 73%, 55%);
+    }
+  }
+
+  section.content {
+    @include flex(1);
+
+    font-size: $insight-card-footer-content-font-size;
+    line-height: $insight-card-footer-content-line-height;
+    margin-left: $insight-card-padding / 2;
+
+    .estimation {
+      white-space: nowrap;
+
+      > i.fa {
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+
+// Insight Card
+//
+.cloud-card.insight-card {
+  font-size: $insight-card-font-size;
+  font-weight: $insight-card-font-weight;
+  line-height: $insight-card-line-height;
+  padding: 0 0 $insight-card-padding;
+
+  &.placeholder {
+    background-image: image_url('placeholders/pin.png');
+    background-size: cover;
+    height: 199px;
+  }
+
+  &.transparent {
+    opacity: .5;
+  }
+
+  > header {
+    @include insight-card-header;
+  }
+
+  > section.content {
+    @include insight-card-content;
+  }
+
+  > footer {
+    @include insight-card-footer;
+  }
+}

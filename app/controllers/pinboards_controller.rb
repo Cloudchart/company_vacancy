@@ -27,12 +27,6 @@ class PinboardsController < ApplicationController
     end
   end
 
-  def settings
-    respond_to do |format|
-      format.html
-    end
-  end
-
   def create
     @pinboard = pinboard_source.new(params_for_create)
     authorize! :create, @pinboard
@@ -83,7 +77,7 @@ private
   end
 
   def params_for_create
-    params.require(:pinboard).permit(:title, :user_id, :description, :access_rights)
+    params.require(:pinboard).permit(:title, :user_id, :description, :access_rights, :suggestion_rights)
   end
 
   def params_for_update
@@ -106,7 +100,7 @@ private
       page_title = 'collections list'
       page_url = main_app.collections_url
     when 'show'
-      page_title = "#{@pinboard.title}'s page"
+      page_title = "#{@pinboard.title} collection"
       page_url = main_app.collection_url(@pinboard)
     end
 

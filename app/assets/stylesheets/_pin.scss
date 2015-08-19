@@ -37,9 +37,6 @@
 // Pin Card Footer
 //
 @mixin pin-card-footer {
-  @include display(flex);
-  @include justify-content(space-between);
-
   background-color: hsl(60, 11%, 96%);
   margin-right: - $card-basic-space;
   margin-bottom: - $card-basic-space;
@@ -47,31 +44,55 @@
   margin-top: 0;
   padding: $card-basic-space;
 
-  > i {
-    color: hsl(60, 4%, 89%);
-    font-size: 20px;
-  }
+  > .comment-container {
+    @include display(flex);
+    @include justify-content(space-between);
 
-  > p {
-    @include flex(1);
-
-    margin: 0;
-    margin-left: $default-margin-size;
-    font-size: $basic-font-size;
-    font-weight: 300;
-    line-height: 1.43;
-    width: 100%;
-
-    > strong {
-      font-weight: 400;
+    > i {
+      color: hsl(60, 4%, 89%);
+      font-size: 20px;
     }
 
-    > .human {
-      display: inline;
+    > p {
+      @include flex(1);
 
-      > .occupation {
-        color: $primary-grey-color;
+      margin: 0;
+      margin-left: $default-margin-size;
+      font-size: $basic-font-size;
+      font-weight: 300;
+      line-height: 1.43;
+      width: 100%;
+
+      > strong {
+        font-weight: 400;
       }
+
+      > .human {
+        display: inline;
+
+        > .occupation {
+          color: $primary-grey-color;
+        }
+      }
+    }
+  }
+
+  > .suggestion-controls {
+    @include flex-ul;
+    @include justify-content(center);
+
+    margin-top: 20px;
+
+    > li {
+      cursor: pointer;
+    }
+
+    > .approve {
+      color: hsl(139, 54%, 51%);
+      margin-left: 10px;
+    }
+    > .delete {
+      color: $accented-red-color;
     }
   }
 }

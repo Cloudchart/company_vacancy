@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150709133306) do
+ActiveRecord::Schema.define(version: 20150804140916) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -139,7 +139,6 @@ ActiveRecord::Schema.define(version: 20150709133306) do
     t.string   "slug"
     t.string   "site_url"
     t.boolean  "is_name_in_logo",            default: false
-    t.boolean  "is_important",               default: false
     t.string   "preview_uid"
     t.string   "user_id",         limit: 36
   end
@@ -154,11 +153,34 @@ ActiveRecord::Schema.define(version: 20150709133306) do
 
   add_index "companies_banned_users", ["company_id", "user_id"], name: "index_companies_banned_users_on_company_id_and_user_id", unique: true, using: :btree
 
-  create_table "domains", primary_key: "uuid", force: true do |t|
-    t.string   "name"
-    t.integer  "status",     default: 0
+  create_table "diffbot_response_owners", primary_key: "uuid", force: true do |t|
+    t.string   "diffbot_response_id", limit: 36, null: false
+    t.string   "owner_id",            limit: 36, null: false
+    t.string   "owner_type",                     null: false
+    t.string   "attribute_name",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  add_index "diffbot_response_owners", ["diffbot_response_id", "owner_id", "owner_type", "attribute_name"], name: "diffbot_response_owners_idx", unique: true, using: :btree
+  add_index "diffbot_response_owners", ["diffbot_response_id"], name: "index_diffbot_response_owners_on_diffbot_response_id", using: :btree
+  add_index "diffbot_response_owners", ["owner_id", "owner_type"], name: "index_diffbot_response_owners_on_owner_id_and_owner_type", using: :btree
+
+  create_table "diffbot_responses", primary_key: "uuid", force: true do |t|
+    t.string   "api"
+    t.string   "resolved_url", limit: 2000
+    t.text     "body",         limit: 16777215
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "domains", primary_key: "uuid", force: true do |t|
+    t.string   "name"
+    t.integer  "status",      default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "diffbot_api", default: 0
   end
 
   create_table "events", primary_key: "uuid", force: true do |t|
@@ -191,16 +213,17 @@ ActiveRecord::Schema.define(version: 20150709133306) do
   create_table "features", primary_key: "uuid", force: true do |t|
     t.string   "featurable_id",      limit: 36,                 null: false
     t.string   "featurable_type",                               null: false
-    t.string   "scope"
+    t.integer  "scope",                         default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "title"
-    t.string   "category"
     t.string   "image_uid"
     t.boolean  "is_active",                     default: false
     t.string   "url"
-    t.integer  "display_types_mask"
+    t.integer  "display_types_mask",            default: 0
     t.integer  "position",                      default: 0
+    t.date     "effective_from"
+    t.date     "effective_till"
   end
 
   add_index "features", ["featurable_id", "featurable_type"], name: "index_features_on_featurable_id_and_featurable_type", using: :btree
@@ -347,17 +370,15 @@ ActiveRecord::Schema.define(version: 20150709133306) do
   add_index "pictures", ["owner_id", "owner_type"], name: "index_pictures_on_owner_id_and_owner_type", using: :btree
 
   create_table "pinboards", primary_key: "uuid", force: true do |t|
-    t.string   "title",                                       null: false
-    t.string   "user_id",       limit: 36
-    t.integer  "position",                 default: 0
+    t.string   "title",                                           null: false
+    t.string   "user_id",           limit: 36
+    t.integer  "position",                     default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "access_rights",            default: "public"
+    t.string   "access_rights",                default: "public"
     t.text     "description"
-    t.text     "welcome"
-    t.boolean  "is_featured"
-    t.boolean  "is_important",             default: false
     t.string   "preview_uid"
+    t.integer  "suggestion_rights",            default: 0
   end
 
   add_index "pinboards", ["access_rights"], name: "index_pinboards_on_access_rights", using: :btree
@@ -376,13 +397,11 @@ ActiveRecord::Schema.define(version: 20150709133306) do
     t.string   "origin"
     t.integer  "pins_count",               default: 0
     t.boolean  "is_suggestion",            default: false
-    t.string   "author_id"
     t.integer  "weight"
     t.string   "preview_uid"
     t.datetime "deleted_at"
   end
 
-  add_index "pins", ["author_id"], name: "index_pins_on_author_id", using: :btree
   add_index "pins", ["deleted_at"], name: "index_pins_on_deleted_at", using: :btree
   add_index "pins", ["parent_id"], name: "index_pins_on_parent_id", using: :btree
   add_index "pins", ["pinboard_id"], name: "index_pins_on_pinboard_id", using: :btree

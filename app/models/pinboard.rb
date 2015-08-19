@@ -2,16 +2,18 @@ class Pinboard < ActiveRecord::Base
   include Uuidable
   include Previewable
   include Preloadable
+  include Featurable
   include Tire::Model::Search
   include Tire::Model::Callbacks
   include Admin::Pinboard
 
-  ACCESS_RIGHTS     = [:public, :protected, :private].freeze
-  INVITABLE_ROLES   = [:editor, :reader].freeze
-  ACCESS_ROLE       = :reader
+  ACCESS_RIGHTS = [:public, :protected, :private].freeze
+  INVITABLE_ROLES = [:editor, :reader].freeze
+  ACCESS_ROLE = :reader
 
-  validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
-  validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }
+  enum suggestion_rights: { anyone: 0, editors: 1 }
+
+  nilify_blanks only: [:pending_value]
 
   belongs_to :user
 
@@ -22,13 +24,38 @@ class Pinboard < ActiveRecord::Base
   has_many :tokens, as: :owner, dependent: :destroy
   has_many :followers, as: :favoritable, dependent: :destroy, class_name: 'Favorite'
 
-  scope :important, -> { where(is_important: true) }
+  validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
+  validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }
 
   # Roles on Users
   #
   { readers: [:reader, :editor], writers: :editor }.each do |scope, role|
     has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, as: :owner, class_name: Role
     has_many :"#{scope}", through: :"#{scope}_pinboards_roles", source: :user
+  end
+
+  sifter :system do
+    access_rights.eq('public') & user_id.eq(nil)
+  end
+
+  sifter :available_through_roles do |user, values|
+    access_rights.not_eq('public') &
+    roles.user_id.eq(user.id) &
+    roles.value.in(values)
+  end
+
+  scope :available, -> { where(access_rights: :public) }
+
+  scope :system, -> do
+    where access_rights: :public, user_id: nil
+  end
+
+  scope :readable, -> do
+    joins { roles.outer }.where { roles.value.eq('reader') }
+  end
+
+  scope :writable, -> do
+    joins { roles.outer }.where { roles.value.eq('editor') }
   end
 
   settings ElasticSearchNGramSettings do
@@ -56,29 +83,6 @@ class Pinboard < ActiveRecord::Base
     end
 
   end # of class methods
-
-  sifter :system do
-    access_rights.eq('public') & user_id.eq(nil)
-  end
-
-  sifter :available_through_roles do |user, values|
-    access_rights.not_eq('public') &
-    roles.user_id.eq(user.id) &
-    roles.value.in(values)
-  end
-
-  scope :system, -> do
-    where access_rights: :public, user_id: nil
-  end
-
-
-  scope :readable, -> do
-    joins { roles.outer }.where { roles.value.eq('reader') }
-  end
-
-  scope :writable, -> do
-    joins { roles.outer }.where { roles.value.eq('editor') }
-  end
 
   def invite_tokens
     tokens.select { |token| token.name == 'invite' }

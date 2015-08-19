@@ -13,8 +13,8 @@ class User < ActiveRecord::Base
   # before_validation :build_blank_emails, unless: -> { emails.any? }
   before_validation :generate_password, if: -> { password.blank? }
   before_validation :extract_twitter, if: -> { twitter_changed? && twitter.present? }
-  before_save :nillify_last_sign_in_at, if: :twitter_changed?
-  before_save :nillify_slug, if: -> { twitter_changed? && twitter.blank? }
+  before_save :nilify_last_sign_in_at, if: :twitter_changed?
+  before_save :nilify_slug, if: -> { twitter_changed? && twitter.blank? }
   before_destroy :mark_emails_for_destruction
   after_create :create_tour_tokens, if: :should_create_tour_tokens?
   after_create :create_unicorn_role, if: :should_create_unicorn_role?
@@ -53,11 +53,12 @@ class User < ActiveRecord::Base
   has_many :roles, dependent: :destroy
   has_many :system_roles, -> { where(owner: nil) }, class_name: 'Role', dependent: :destroy
   has_many :people, dependent: :destroy
-  has_many :pinboards, dependent: :destroy
   has_many :pins, dependent: :destroy
   has_many :landings, dependent: :destroy
-  has_many :accessed_companies, through: :roles, source: :owner, source_type: 'Company'
   has_many :companies, dependent: :destroy
+  has_many :accessed_companies, through: :roles, source: :owner, source_type: 'Company'
+  has_many :pinboards, dependent: :destroy
+  has_many :accessed_pinboards, through: :roles, source: :owner, source_type: 'Pinboard'
 
   # Roles on Pinboards
   #
@@ -99,10 +100,6 @@ class User < ActiveRecord::Base
     save!
   end
 
-  def insight_features
-    Feature.insights.only_active
-  end
-
   def top_insights
     Pin.insights.includes(post: :company)
       .where('companies.is_published = ?', true)
@@ -111,20 +108,12 @@ class User < ActiveRecord::Base
       .limit(6)
   end
 
-  def important_pinboards
-    Pinboard.where(is_important: true, access_rights: :public)
-  end
-
   def followed_activities
     Activity.followed_by_user(id)
   end
 
   def click_activities
     activities.where(action: :click)
-  end
-
-  def limbo_pins
-    Pin.limbo
   end
 
   def published_companies
@@ -235,6 +224,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def has_any_followed_users_or_pinboards?
+    (favorites.map(&:favoritable_type).uniq & ['User', 'Pinboard']).any?
+  end
+
 private
 
   def mark_emails_for_destruction
@@ -245,11 +238,11 @@ private
     self.password = SecureRandom.uuid
   end
 
-  def nillify_last_sign_in_at
+  def nilify_last_sign_in_at
     self.last_sign_in_at = nil
   end
 
-  def nillify_slug
+  def nilify_slug
     self.slug = nil
   end
 

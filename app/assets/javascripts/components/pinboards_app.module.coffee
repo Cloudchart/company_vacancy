@@ -12,7 +12,8 @@ UserPinboards = require('components/pinboards/lists/user')
 StandardButton = require('components/form/buttons').StandardButton
 NewPinboard = require('components/pinboards/new_pinboard')
 ModalStack = require('components/modal_stack')
-SuggestedPinboards = require('components/pinboards/lists/suggested')
+PopularPinboards = require('components/pinboards/lists/popular')
+FeaturedPinboard = require('components/landing/featured_pinboard')
 
 
 # Exports
@@ -34,12 +35,38 @@ module.exports = React.createClass
       favorites: FavoriteStore.cursor.items
       pinboards: PinboardStore.cursor.items
 
+  statics:
+    queries:
+      viewer: ->
+        """
+          Viewer {
+            main_feature {
+              featurable_pinboard {
+                #{FeaturedPinboard.getQuery('pinboard')}
+              }
+            }
+          }
+        """
+
+
+  # Fetchers
+  #
+  fetch: ->
+    Promise.all([
+      @fetchViewer(),
+      @fetchUserPinboards()
+    ])
+
+  fetchViewer: ->
+    GlobalState.fetch(@getQuery('viewer')).done (json) => @setState(featured_pinboard_id: json.query.main_feature.featurable_pinboard.ids[0])
+
+
+  fetchUserPinboards: ->
+    GlobalState.fetch(UserPinboards.getQuery('pinboards'), id: @props.user_id)
+
 
   # Helpers
   #
-  fetch: ->
-    GlobalState.fetch(UserPinboards.getQuery('pinboards'), id: @props.user_id)
-
   isLoaded: ->
     @state.isLoaded
 
@@ -66,10 +93,12 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderSuggestedInsights: ->
-    return null if @state.initialUserPinboardsCount and @state.initialUserPinboardsCount > 0
+  renderFeaturedPinboard: ->
+    return null unless featured_pinboard_id = @state.featured_pinboard_id
+    <FeaturedPinboard pinboard={ featured_pinboard_id } scope='main' />
 
-    <SuggestedPinboards />
+  renderPopularPinboards: ->
+    <PopularPinboards />
 
   renderHeader: ->
     return null unless @cursor.user.get('twitter')
@@ -93,9 +122,10 @@ module.exports = React.createClass
   render: ->
     if @isLoaded()
       <section className="pinboards-wrapper">
+        { @renderFeaturedPinboard() }
         { @renderHeader() }
         <UserPinboards user_id = { @props.user_id } showPrivate = { true } />
-        { @renderSuggestedInsights() }
+        { @renderPopularPinboards() }
       </section>
     else
        <section className="pinboards-wrapper">

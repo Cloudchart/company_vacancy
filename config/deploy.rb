@@ -102,6 +102,21 @@ namespace :tire do
 
 end
 
+namespace :task do
+
+  desc 'Execute specific rake task'
+  task :invoke, :command do |task, args|
+    on roles :app do
+      within release_path do
+        with rails_env: fetch(:stage) do
+          execute :rake, args[:command]
+        end
+      end
+    end
+  end
+
+end
+
 namespace :cc do
 
   desc 'Calculate insights weights'

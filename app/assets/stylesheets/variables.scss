@@ -130,6 +130,10 @@ a {
   color: $link-color;
   text-decoration: none;
 
+  &.underscore {
+    text-decoration: underline;
+  }
+
   &.for-group {
     color: inherit;
     display: block;
@@ -151,4 +155,16 @@ a {
     color: $black-color;
     opacity: 0.25;
   }
+}
+
+.hoverable:hover {
+  cursor: pointer;
+}
+
+.hoverable:hover a.see-through.dependent {
+  color: $link-color;
+}
+
+.hoverable:hover a.see-through:not(.dependent) {
+  color: inherit;
 }

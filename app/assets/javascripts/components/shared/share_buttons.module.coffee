@@ -18,7 +18,6 @@ module.exports = React.createClass
 
   propTypes:
     object: React.PropTypes.object.isRequired
-    renderedInsideModal: React.PropTypes.bool
 
   # mixins: []
   # statics: {}
@@ -27,10 +26,10 @@ module.exports = React.createClass
   # Component Specifications
   #
   getDefaultProps: ->
-    renderedInsideModal: false
+    displayMode: null
 
   getInitialState: ->
-    display_mode: null
+    displayMode: @props.displayMode
 
 
   # Lifecycle Methods
@@ -58,24 +57,35 @@ module.exports = React.createClass
   openShareWindow: (url) ->
     window.open(url, '_blank', 'location=yes,width=640,height=480,scrollbars=yes,status=yes')
 
+  setDefaultDisplayMode: ->
+    @setState displayMode: @props.displayMode
+
 
   # Handlers
   #
   handleCopyLinkButtonClick: (event) ->
-    @setState display_mode: 'copy_link'
+    @setState displayMode: 'copy_link'
 
   handleCopyLinkClick: (event) ->
-    @setState display_mode: null
+    @setDefaultDisplayMode()
 
   handleFacebookLinkClick: (object, event) ->
     @openShareWindow(object.facebook_share_url)
+    @setDefaultDisplayMode()
 
   handleTwitterLinkClick: (object, event) ->
     @openShareWindow(object.twitter_share_url)
+    @setDefaultDisplayMode()
+
+  handleShareButtonClick: (event) ->
+    @setState displayMode: null
 
 
   # Renderers
   #
+  renderShareButton: ->
+    <button className="cc share" onClick={@handleShareButtonClick}>Share</button>
+
   renderShareButtons: (object) ->
     <ul className="share-buttons">
       <li>
@@ -112,7 +122,10 @@ module.exports = React.createClass
   # Main render
   #
   render: ->
-    if @state.display_mode is 'copy_link'
-      @renderCopyLinkSection(@props.object)
-    else
-      @renderShareButtons(@props.object)
+    switch @state.displayMode
+      when 'single_button'
+        @renderShareButton()
+      when 'copy_link'
+        @renderCopyLinkSection(@props.object)
+      else
+        @renderShareButtons(@props.object)

@@ -45,9 +45,15 @@ class ApplicationController < ActionController::Base
     %(staging production).include?(Rails.env)
   end
 
-  def post_page_visit_to_slack_channel(page_title, page_url)
+  def post_page_visit_to_slack_channel(page_title, page_url, options={})
     return unless should_perform_sidekiq_worker? && request.format.html?
-    SlackWebhooksWorker.perform_async('visited_page', current_user.id, page_title: page_title, page_url: page_url)
+    SlackWebhooksWorker.perform_async('visited_page', current_user.id,
+      options.merge(
+        page_title: page_title,
+        page_url: page_url,
+        request_env: request.env
+      )
+    )
   end
 
 private

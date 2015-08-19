@@ -5,9 +5,11 @@ GlobalState     = require('global_state/state')
 cx              = React.addons.classSet
 
 PinboardStore   = require('stores/pinboard_store')
+UserStore       = require('stores/user_store.cursor')
 
 UserCard        = require('components/cards/user_card')
 FollowButton    = require('components/pinboards/follow_button')
+InviteActions   = require('components/roles/invite_actions')
 
 pluralize       = require('utils/pluralize')
 
@@ -24,9 +26,11 @@ module.exports = React.createClass
 
   propTypes:
     pinboard:                   React.PropTypes.string.isRequired
+    className:                  React.PropTypes.string
     shouldRenderFollowButton:   React.PropTypes.bool
     onClick:                    React.PropTypes.func
     onUserClick:                React.PropTypes.func
+    onUpdate:                   React.PropTypes.func
 
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
@@ -37,6 +41,7 @@ module.exports = React.createClass
       pinboard: ->
         """
           Pinboard {
+            #{InviteActions.getQuery('owner', 'Pinboard')},
             user {
               #{UserCard.getQuery('user')}
             },
@@ -61,11 +66,19 @@ module.exports = React.createClass
     @cursor =
       pinboard: PinboardStore.cursor.items.cursor(@props.pinboard)
 
+
+  componentDidMount: ->
     @fetch()
 
 
+  componentDidUpdate: ->
+    @props.onUpdate()
+
+
   getDefaultProps: ->
+    className:                ''
     shouldRenderFollowButton: true
+    onUpdate:                 ->
 
 
   getInitialState: ->
@@ -74,6 +87,11 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderUserCard: ->
+    user_id = @cursor.pinboard.get('user_id')
+    return <div></div> if user_id == UserStore.me().get('uuid')
+
+    <UserCard user={ @cursor.pinboard.get('user_id') } onClick={ @props.onUserClick } />
 
   renderAccessRightsIcon: ->
     className = cx
@@ -95,14 +113,14 @@ module.exports = React.createClass
 
     <header>
       <h1>
-        <a href={ url } onClick={ @props.onClick } className="see-through">
+        <a href={ url } onClick={ @props.onClick } className="see-through dependent">
           { @cursor.pinboard.get('title') }
           { @renderAccessRightsIcon() }
         </a>
         { @renderFollowButton() }
       </h1>
       <h2>
-        <a href={ url } onClick={ @props.onClick } className="see-through">
+        <a href={ url } onClick={ @props.onClick } className="see-through dependent">
           { @cursor.pinboard.get('description') }
         </a>
       </h2>
@@ -122,7 +140,7 @@ module.exports = React.createClass
 
   renderFooter: ->
     <footer>
-      <UserCard user={ @cursor.pinboard.get('user_id') } onClick={ @props.onUserClick } />
+      { @renderUserCard() }
       { @renderCounters() }
     </footer>
 
@@ -132,7 +150,8 @@ module.exports = React.createClass
   render: ->
     return Placeholder unless @state.ready
 
-    <div className="pinboard-card">
+    <div className="pinboard-card #{@props.className}">
       { @renderHeader() }
       { @renderFooter() }
+      <InviteActions ownerId = { @props.pinboard } ownerType = { 'Pinboard' } />
     </div>

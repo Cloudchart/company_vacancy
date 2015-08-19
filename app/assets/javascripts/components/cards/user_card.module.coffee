@@ -52,7 +52,7 @@ module.exports = React.createClass
 
   componentWillMount: ->
     @cursor =
-      user: UserStore.cursor.items.get(@props.user)
+      user: UserStore.cursor.items.cursor(@props.user)
 
     @fetch()
 

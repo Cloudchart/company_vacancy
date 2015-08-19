@@ -2,8 +2,8 @@ module Cloudchart
   ROLES = [:admin, :editor, :unicorn, :trustee, :inviter].freeze
 
   RAILS_ADMIN_INCLUDED_MODELS = %w(
-    Company Feature User Token Page Person Tag Interview Story Pinboard Role Pin
-    GuestSubscription Domain
+    Company Feature User Token Page Tag Interview Story Pinboard
+    Role Pin GuestSubscription Domain Post Paragraph
   )
 
   BROWSERS_WHITELIST = [
@@ -14,5 +14,12 @@ module Cloudchart
     OpenStruct.new(browser: 'Opera', version: '12.1'),
     OpenStruct.new(browser: 'Internet Explorer', version: '11.0')
   ]
+
+  POPULAR_PINBOARDS = {
+    followers_count: 4,
+    pinboards_count: 100
+  }
+
+  WORDS_PER_MINUTE = 200
 
 end

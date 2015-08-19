@@ -1,8 +1,6 @@
 # @cjsx React.DOM
 
-
 GlobalState     = require('global_state/state')
-
 
 PinboardStore   = require('stores/pinboard_store')
 RoleStore       = require('stores/role_store.cursor')
@@ -10,12 +8,12 @@ PinStore        = require('stores/pin_store')
 UserStore       = require('stores/user_store.cursor')
 TokenStore      = require('stores/token_store.cursor')
 
-
 ModalHeader     = require('components/shared/modal_header')
 ModalStack      = require('components/modal_stack')
 InsightContent  = require('components/pinnable/insight_content')
 UnicornChooser  = require('components/unicorn_chooser')
 StandardButton  = require('components/form/buttons').StandardButton
+SuggestButton   = require('components/shared/suggest_button')
 
 Constants       = require('constants')
 
@@ -26,7 +24,6 @@ KnownAttributes = Immutable.Seq(['user_id', 'parent_id', 'pinboard_id', 'pinnabl
 #
 titleRE = /^(?:<div>)?([^<]+)(?:<\/div>)?$/
 
-
 unwrapTitle = (title) ->
   (titleRE.exec(title) || [title, ''])[1]
 
@@ -35,9 +32,7 @@ unwrapTitle = (title) ->
 #
 module.exports = React.createClass
 
-
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
-
 
   statics:
 
@@ -48,7 +43,10 @@ module.exports = React.createClass
             roles,
             tokens,
             pinboards,
-            writable_pinboards
+            writable_pinboards,
+            edges {
+              is_editor
+            }
           }
 
         """
@@ -82,6 +80,7 @@ module.exports = React.createClass
   #
   getDefaultProps: ->
     title: ''
+    shouldRenderSuggestion: false
     cursor:
       pinboards: PinboardStore.cursor.items
       users: UserStore.cursor.items
@@ -109,20 +108,19 @@ module.exports = React.createClass
     GlobalState.fetch(@getQuery('system_pinboards'))
 
   fetchUser: (id) ->
-    if id
-      GlobalState.fetch(@getQuery('user'), id: id).then => @setState({})
-    else
-      GlobalState.fetch(@getQuery('viewer')).then => @setState({})
+    GlobalState.fetch(@getQuery('user'), id: id).then => @setState({}) if id
+    # else
+    #   GlobalState.fetch(@getQuery('viewer')).then => @setState({})
 
   fetchPin: ->
     if @props.uuid
       promise = GlobalState.fetch(@getQuery('pin'), id: @props.uuid).then =>
         @fetchUser(@props.cursor.pins.getIn([@props.uuid, 'user_id']))
-    else
-      @fetchUser()
+    # else
+    #   @fetchUser()
 
   fetch: ->
-    Promise.all([@fetchSystemPinboards(), @fetchPin()]).then =>
+    Promise.all([@fetchSystemPinboards(), @fetchViewer(), @fetchPin()]).then =>
       @handleFetchDone()
 
 
@@ -208,7 +206,9 @@ module.exports = React.createClass
 
 
   isCurrentUserSystemEditor: ->
-    @isUserWithRole(UserStore.me().get('uuid'), 'editor')
+    # console.log UserStore.me().get('uuid')
+    # @isUserWithRole(UserStore.me().get('uuid'), 'editor')
+    UserStore.me().get('is_editor')
 
   isSelectedUserUnicorn: ->
     @isUserWithRole(@state.attributes.get('user_id'), 'unicorn')
@@ -390,7 +390,6 @@ module.exports = React.createClass
     return null if @props.parent_id
 
     title = if @isCurrentUserSystemEditor() then "Origin" else "Story link"
-    #return null if !@isCurrentUserSystemEditor() || @props.parent_id
 
     <label className="origin">
       <div className="title">{ title }</div>
@@ -413,6 +412,8 @@ module.exports = React.createClass
 
   renderPinCommentInput: ->
     content = @state.attributes.get('content') || ''
+
+    console.log @props.uuid, @isCurrentUserSystemEditor()
 
     if !@props.uuid || @isCurrentUserSystemEditor()
       <textarea
@@ -459,14 +460,18 @@ module.exports = React.createClass
       onClick   = { @props.onCancel }
     />
 
+  renderSuggestionButton: ->
+    return null unless @props.shouldRenderSuggestion
+    <SuggestButton uuid = { @props.pinboard_id } type = { 'Pinboard' } label = { 'Suggest another' } />
+
   renderFooter: ->
     submitButtonTitle = if @props.uuid then 'Update' else 'Save It'
 
     <footer>
-      <div>
-        <button key="cancel" type="button" className="cc cancel" onClick={ @props.onCancel }>Cancel</button>
-        { @renderDeleteButton() }
-      </div>
+      <button key="cancel" type="button" className="cc cancel" onClick={ @props.onCancel }>Cancel</button>
+      { @renderDeleteButton() }
+      <div className="separator"></div>
+      { @renderSuggestionButton() }
       <button key="submit" type="submit" disabled={ not @state.attributes.get('user_id', false) } className="cc">{ submitButtonTitle }</button>
     </footer>
 

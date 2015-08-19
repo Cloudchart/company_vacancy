@@ -1,19 +1,19 @@
 # @cjsx React.DOM
 
 
-GlobalState     = require('global_state/state')
+GlobalState   = require('global_state/state')
 
+PinStore      = require('stores/pin_store')
+UserStore     = require('stores/user_store.cursor')
+PinboardStore = require('stores/pinboard_store')
 
-# Stores
-#
-PinStore        = require('stores/pin_store')
-UserStore       = require('stores/user_store.cursor')
+PinsList      = require('components/pinboards/pins')
+PinComponent  = require('components/pinboards/pin')
+Insight       = require('components/cards/insight_card')
 
+ListOfCards   = require('components/cards/list_of_cards')
 
-# Components
-#
-PinsList         = require('components/pinboards/pins')
-PinComponent     = require('components/pinboards/pin')
+constants = require('constants')
 
 
 # Exports
@@ -21,7 +21,6 @@ PinComponent     = require('components/pinboards/pin')
 module.exports = React.createClass
 
   displayName: 'PinboardPins'
-
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
@@ -33,13 +32,24 @@ module.exports = React.createClass
         """
           Pinboard {
             pins {
-              #{PinComponent.getQuery('pin')}
+              #{Insight.getQuery('pin')}
+            },
+            edges {
+              pins_ids,
+              pins_count,
+              is_editable
             }
           }
         """
 
   propTypes:
-    pinboard_id:     React.PropTypes.string.isRequired
+    pinboard_id: React.PropTypes.string.isRequired
+
+
+  # Component Specifications
+  #
+  getDefaultProps: ->
+    onItemClick: null
 
   getInitialState: ->
     isLoaded: false
@@ -53,26 +63,75 @@ module.exports = React.createClass
   isLoaded: ->
     @state.isLoaded
 
-  gatherPins: ->
-    PinStore.filterByPinboardId(@props.pinboard_id)
-      .valueSeq()
-      .sortBy (pin) -> pin.get('created_at')
+  shouldLimitPins: (pins=@getPins()) ->
+    pins.size >= 12 && !@cursor.user.get('is_authenticated')
+
+  isApproved: (pin) ->
+    return true if      pin.is_approved
+    return true unless  pin.is_suggestion
+    @cursor.pinboard.get('is_editable')
+
+  getPins: ->
+    pins = @cursor.pinboard.get('pins_ids')
+      .map (id) -> PinStore.get(id)?.toJS()
+      .filter (pin) -> !!pin
+      .filter @isApproved
+
+  collectPins: ->
+    pins = @getPins()
+    pins = pins.take(6) if @shouldLimitPins(pins)
+    pins
+      .sortBy (pin) -> pin.created_at
       .reverse()
-      .toArray()
 
 
   # Lifecycle methods
   #
   componentWillMount: ->
     @cursor =
-      pins: PinStore.cursor.items
+      user:       UserStore.me()
+      pins:       PinStore.cursor.items
+      pinboard:   PinboardStore.cursor.items.cursor(@props.pinboard_id)
 
     @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
 
 
+  # Handlers
+  #
+  handleSignInClick: (event) ->
+    location.href = constants.TWITTER_AUTH_PATH
+
+
   # Renderers
+  #
+  renderSeeMore: ->
+    return null unless @shouldLimitPins()
+    text =
+      """
+        Want to see <strong>#{@cursor.pinboard.get('pins_count') - 6} more insights</strong> from this collection? 
+        Log in and get those and access to other features!
+      """
+
+    <section className="see-more">
+      <p dangerouslySetInnerHTML={ __html: text }></p>
+      <button className="cc" onClick={@handleSignInClick}>{ "Log in with Twitter" }</button>
+    </section>
+
+  renderPin: (pin) ->
+    <Insight key={ pin.uuid } pin={ pin.uuid } scope='pinboard' />
+
+  renderPins: ->
+    @collectPins().map @renderPin
+
+
+  # Main render
   #
   render: ->
     return null unless @isLoaded()
-    
-    <PinsList pins = { @gatherPins() } />
+
+    <section className="cc-container-common">
+      <ListOfCards>
+        { @renderPins().toArray() }
+      </ListOfCards>
+      { @renderSeeMore() }
+    </section>

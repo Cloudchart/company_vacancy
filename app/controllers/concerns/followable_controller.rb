@@ -30,5 +30,5 @@ private
     object_name = @object.class.name.underscore
     IntercomEventsWorker.perform_async("#{action_name}ed-#{object_name}", current_user.id, "#{object_name}_id" => @object.id)
   end
-  
+
 end

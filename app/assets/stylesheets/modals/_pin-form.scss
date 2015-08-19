@@ -151,13 +151,14 @@ body ul.modal-stack > li.modal-stack-item > form.pin {
   > footer {
     @include pin-form-footer;
 
-    button {
-      width: 85px;
+    > button:not(:last-child) {
+      margin-right: 10px;
     }
 
-    button ~ button {
-      margin-left: 20px;
+    > .separator {
+      @include flex(1);
     }
+
   }
 
 }

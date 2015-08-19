@@ -1,0 +1,58 @@
+.modal-stack .suggestions {
+  @include close-modal-button;
+
+  background-color: #ebebea;
+  min-height: 100%;
+  overflow: hidden;
+  padding: 12px;
+  position: relative;
+
+  .pins,
+  .pinboards {
+    position: relative;
+    margin: 0 auto;
+  }
+
+  > button.back {
+    @include position(absolute, 3px 0 0 10px);
+
+    font-size: 30px;
+    color: hsl(139, 54%, 51%);
+  }
+
+  header.filter {
+    border-bottom: 1px solid #ccc;
+    padding: 0 12px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+
+    > input {
+      background-color: $background-color;
+      border: none;
+      font-size: $basic-font-size;
+      height: 34px;
+      margin: 0;
+      outline: none;
+      padding: 0 10px;
+      width: 100%;
+    }
+  }
+}
+
+// .modal-stack section.pinboards, .modal-stack section.pins {
+//   @include close-modal-button;
+//
+//   > button.back {
+//     @include position(absolute, 3px 0 0 10px);
+//
+//     font-size: 30px;
+//     color: hsl(139, 54%, 51%);
+//   }
+//
+//   //position: relative;
+//   //padding: 20px;
+//   //width: 524px;
+// }
+
+.modal-stack section.pins {
+}

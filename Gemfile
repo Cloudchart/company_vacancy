@@ -26,7 +26,7 @@ gem 'kaminari'
 gem 'paper_trail' # tracks changes to model's data
 gem 'impressionist' # tracks page views
 gem 'dotenv-rails' # loads environment variables from .env
-gem 'sidekiq' # background processing using redis
+gem 'sidekiq', '~> 3.4.0' # background processing using redis
 gem 'active_model_serializers', '= 0.8.1'
 gem 'dragonfly', '~> 1.0'
 gem 'sprockets-commonjs', git: 'git@github.com:Cloudchart/sprockets-commonjs.git'
@@ -46,6 +46,8 @@ gem 'zeroclipboard-rails'
 gem 'yajl-ruby'
 gem 'sinatra', require: nil
 gem 'paranoia', '~> 2.0'
+gem 'diffbot-ruby-client', git: 'git@github.com:diffbot/diffbot-ruby-client.git'
+gem 'sitemap_generator', '~> 5.1.0'
 
 # Engines
 #
@@ -81,7 +83,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-rbenv'
   gem 'capistrano3-puma'
-  gem 'capistrano-sidekiq'
+  gem 'capistrano-sidekiq', '~> 0.5.0'
 end
 
 group :development, :test do

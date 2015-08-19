@@ -84,7 +84,7 @@ class BaseStore
         @cursor.indices.setIn([name, foreign_key], @cursor.indices.getIn([name, foreign_key], EmptySet).add(item.uuid))
 
       currItem = @cursor.items.get(item.uuid, Immutable.Map({ id: item.uuid }))
-      @cursor.items.set(item.uuid, currItem.mergeDeep(item))
+      @cursor.items.set(item.uuid, currItem.merge(item))
 
 
   remove: (id) ->
@@ -219,7 +219,7 @@ class BaseStore
     currItem = @cursor.items.get(id)
 
     promise = @syncAPI.destroy(currItem, params, options)
-    promise.then(@destroyDone, @destroyFail)
+    promise.then((if options.remove_from_store then @destroyDone else null), @destroyFail)
     promise
 
 

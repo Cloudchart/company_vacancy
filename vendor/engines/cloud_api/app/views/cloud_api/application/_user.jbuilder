@@ -2,7 +2,6 @@ json.(user, :uuid)
 json.(user, :first_name, :last_name, :full_name, :company, :occupation, :twitter)
 json.(user, :created_at, :updated_at)
 
-
 json.email begin
   preload_associations(siblings, cache, :emails)
 
@@ -22,6 +21,10 @@ json.avatar_url   user.avatar.thumb('512x512>').url if user.avatar_stored?
 
 # Edges
 #
+json_edge! json, :is_editor, edges do
+  preload_associations(siblings, cache, :roles)
+  !!user.roles.find { |r| r.owner_id.blank? && r.owner_type.blank? && r.value == 'editor' }
+end
 
 json_edge! json, :related_companies, edges do
   User.preload_related_companies(siblings, cache)
@@ -34,6 +37,9 @@ json_edge! json, :related_companies, edges do
   end
 end
 
+json_edge! json, :is_followed, edges do
+  current_user.users_favorites.map(&:favoritable_id).include?(user.id)
+end
 
 json_edge! json, :companies_through_roles, edges do
   User.preload_companies_through_roles(siblings, cache)
@@ -45,7 +51,6 @@ json_edge! json, :companies_through_roles, edges do
     }
   end
 end
-
 
 json_edge! json, :favorite_companies, edges do
   User.preload_favorite_companies(siblings, cache)
@@ -59,12 +64,6 @@ json_edge! json, :favorite_companies, edges do
 
 end
 
-
-json_edge! json, :important_companies_ids, edges do
-  user.important_companies.map(&:id)
-end
-
-
 json_edge! json, :insights, edges do
   User.preload_insights(siblings, cache)
 
@@ -76,10 +75,49 @@ json_edge! json, :insights, edges do
 end
 
 
-json_edge! json, :is_editor, edges do
-  preload_associations(siblings, cache, :roles)
-  !!user.roles.find { |r| r.owner_id.blank? && r.owner_type.blank? && r.value == 'editor' }
+json_edge! json, :insights_ids, edges do
+  User.preload_insights(siblings, cache)
+  user.insights.map(&:id)
 end
 
-#
-# / Edges
+
+json_edge! json, :favorite_insights_ids, edges do
+  User.preload_favorite_insights(siblings, cache)
+  user.favorite_insights.map(&:id)
+end
+
+
+json_edge! json, :related_pinboards, edges do
+  User.preload_related_pinboards(siblings, cache)
+
+  user.related_pinboards.map do |pinboard|
+    {
+      id:         pinboard.id,
+      uuid:       pinboard.id,
+      title:      pinboard.title,
+      pins_count: pinboard.pins.size
+    }
+  end
+end
+
+json_edge! json, :pinboards, edges do
+  preload_associations(siblings, cache, :pinboards)
+
+  user.pinboards.map do |p|
+    {
+      id:     p.id,
+      name:   p.title
+    }
+  end
+end
+
+json_edge! json, :pinboards_through_roles, edges do
+  User.preload_pinboards_through_roles(siblings, cache)
+
+  user.pinboards_through_roles({ current_user: current_user }).map do |c|
+    {
+      id:     c.id,
+      name:   c.title
+    }
+  end
+end

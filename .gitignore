@@ -25,6 +25,8 @@
 /public/404.html
 /public/422.html
 /public/500.html
+/public/sitemap.xml
+/public/sitemap.xml.gz
 .rbenv-gemsets
 .gemfiles
 .gems

@@ -195,6 +195,23 @@ buildURL = (endpoint, options = {}) ->
   endpoint.get('url') + if endpoint.get('handle_id') and options.id then '/' + options.id else ''
 
 
+# Fetched Edges
+#
+fetchEdges = (type, id, only...) ->
+  path  = [type, id, 'children', 'edges', 'children'].filter((item) -> !!item)
+  edges = Storage.getIn(path, Immutable.Map()).keySeq()
+  only  = Immutable.Seq(only)
+
+  if only.size > 0
+    edges = edges.filter (edge) ->
+      only.some (c) -> edge.indexOf(c) > -1
+
+  return if edges.count() == 0
+
+  query = new Query.Query("#{type}{edges{#{edges.join(',')}}}")
+  fetch(query, { id: id, force: true })
+
+
 # Fetch
 #
 fetch = (query, options = {}) ->
@@ -205,6 +222,7 @@ fetch = (query, options = {}) ->
 
   if endpoint.get('require_id') and not options.id
     throw new Error("GlobalState/Fetcher: no id provided for #{query.endpoint} endpoint")
+
 
   effective_query = query.toString()
 
@@ -226,16 +244,17 @@ fetch = (query, options = {}) ->
 
 
   url       = buildURL(endpoint, options)
-  cacheKey  = url + '?' + effective_query
+  cacheKey  = url + '?' + effective_query + JSON.stringify(options.params)
 
 
   cachedPromises[cacheKey] ||= new Promise (done, fail) ->
 
+    data = Object.assign({}, relations: effective_query, options.params)
+
     Promise.resolve $.ajax
       url:      url
       dataType: 'json'
-      data:
-        relations: effective_query if effective_query
+      data:     data
 
     .then(
       (json) ->
@@ -259,4 +278,5 @@ fetch = (query, options = {}) ->
 #
 module.exports =
 
-  fetch: fetch
+  fetch:        fetch
+  fetchEdges:   fetchEdges

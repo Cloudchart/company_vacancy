@@ -12,10 +12,6 @@ Cloudchart::Application.routes.draw do
 
   # Concerns
   #
-  concern :statusable do
-    match 'change_status/:status', on: :member, action: :change_status, as: :change_status, via: [:put, :patch]
-  end
-
   concern :followable do
     post :follow, on: :member
     delete :unfollow, on: :member
@@ -66,17 +62,15 @@ Cloudchart::Application.routes.draw do
   end
 
   resources :pinboards, concerns: [:followable] do
-    get :settings, on: :member
     resources :roles, only: [:update, :destroy]
     resources :invites, only: [:create, :update, :destroy], controller: 'pinboards/invites'
   end
 
-  resources :pins, except: [:index] do
+  resources :pins, except: [:index], concerns: [:followable] do
     match :approve, on: :member, via: [:put, :patch]
   end
 
   resources :users, only: [:show, :update], concerns: [:followable] do
-    get :settings, on: :member
     patch :subscribe, on: :member
     delete :unsubscribe, on: :member
     resources :landings, only: :create
@@ -105,7 +99,6 @@ Cloudchart::Application.routes.draw do
   resources :visibilities, only: :update
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :tokens, only: :show
-  resources :limbo, only: :index
   resources :landings, only: [:show, :update, :destroy]
 
   # Custom
@@ -122,6 +115,7 @@ Cloudchart::Application.routes.draw do
   delete '/user_welcome_tour/:id', to: 'tokens#destroy_welcome_tour'
   delete '/user_insight_tour/:id', to: 'tokens#destroy_insight_tour'
 
+  get '/feed', to: 'users#feed', as: :feed
   delete '/logout', to: 'cloud_profile/authentications#destroy', as: :logout
   get '/old', to: 'welcome#old_browsers', as: :old_browsers
   get '/subscribe', to: 'welcome#subscribe', as: :subscribe
@@ -147,7 +141,7 @@ Cloudchart::Application.routes.draw do
   post '/auth/developer/callback', to: 'auth#developer'
 
   # Should be at the end
-  # 
+  #
   get ':id', to: 'pages#show', as: :page
 
 end

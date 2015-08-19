@@ -104,14 +104,14 @@ module.exports =
 
     statics:
 
-      getQuery: (name) ->
+      getQuery: (name, params = {}) ->
         unless @queries[name]
           throw new Error("GlobalState/Query: #{@displayName} doesn't have #{name} query.")
 
         unless @queries[name] instanceof Function
           throw new Error("GlobalState/Query: #{@displayName} #{name} query should be a function.")
 
-        new Query(@queries[name]())
+        new Query(@queries[name](params))
 
 
     getQuery: ->

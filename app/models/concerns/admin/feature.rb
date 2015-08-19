@@ -5,55 +5,60 @@ module Admin::Feature
 
     rails_admin do
       list do
-        field :insight do
-          pretty_value do
-            feature = bindings[:object]
-            url = feature.url.present? ? feature.formatted_url : bindings[:view].main_app.post_path(feature.insight.post)
-            bindings[:view].link_to feature.insight.content, url
-          end
-        end
+        sort_by :featurable_type
+
+        field :scope
+        field :effective_from
+        field :effective_till
 
         field :assigned_title do
           label 'Title'
+
+          pretty_value do
+            feature = bindings[:object]
+
+            url = if feature.url.present?
+              feature.url
+            else
+              bindings[:view].main_app.send("#{feature.featurable_type.underscore}_path", feature.featurable) rescue nil
+            end
+
+            bindings[:view].link_to feature.assigned_title, url
+          end
         end
+
+        field :featurable_type do
+          label 'Type'
+        end
+
+        field :is_active
+        field :position
 
         field :assigned_image, :dragonfly do
           label 'Image'
         end
-
-        field :category
-        field :is_active
 
         field :display_types do
           formatted_value do
             bindings[:object].display_types.to_sentence
           end
         end
-
-        field :position
       end
 
       edit do
-        field :insight do
-          # associated_collection_cache_all false
-          associated_collection_scope do
-            Proc.new do |scope|
-              scope = scope.where.not(content: nil, post: nil)
-            end
-          end
-        end
-
-        field :title
-        field :image
-        field :category
-        field :url
+        field :scope
+        field :effective_from
+        field :effective_till
         field :is_active
+        field :position
+        field :image
 
         field :display_types do
           partial :display_types
         end
 
-        field :position
+        field :title
+        field :url
       end
 
     end
