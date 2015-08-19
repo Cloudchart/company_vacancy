@@ -35,7 +35,8 @@ module.exports = React.createClass
               full_name
             },
             edges {
-              pins_count
+              pins_count,
+              readers_count
             }
           }
         """
@@ -77,6 +78,10 @@ module.exports = React.createClass
         <a href={ @state.user.url } className="author">{ @state.user.full_name }</a>
       </section>
       <footer>
-        <div className="pins-count">{ pluralize(@state.collection.pins_count, 'insight', 'insights') }</div>
+        <div className="count">
+          { pluralize(@state.collection.pins_count, 'insight', 'insights') }
+          <span>, </span>
+          { pluralize(@state.collection.readers_count, 'follower', 'followers') }
+        </div>
       </footer>
     </div>
