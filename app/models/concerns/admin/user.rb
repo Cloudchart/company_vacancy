@@ -95,6 +95,8 @@ module Admin::User
             bindings[:object].authorized? ? true : false
           end
         end
+
+        field :tags
       end
 
       # Export

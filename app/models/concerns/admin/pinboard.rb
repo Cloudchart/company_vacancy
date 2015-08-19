@@ -28,6 +28,7 @@ module Admin::Pinboard
         end
 
         field :is_featured, :boolean
+        field :tags
       end
     end
 

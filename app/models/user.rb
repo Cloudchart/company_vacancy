@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   include FriendlyId
   include Previewable
   include Followable
+  include Taggable
   include Admin::User
   include Preloadable::User
 
