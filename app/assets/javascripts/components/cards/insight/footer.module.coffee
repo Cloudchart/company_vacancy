@@ -89,7 +89,7 @@ module.exports = React.createClass
   #
   handleOriginClick: (event) ->
     NotificationsPushApi.post_to_slack('clicked_on_external_url',
-      pin_id: @state.insight.uuid
+      pin_id: @state.pin.uuid
       external_url: @state.insight.origin
     )
 

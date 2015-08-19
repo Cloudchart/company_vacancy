@@ -136,8 +136,8 @@ private
   def call_page_visit_to_slack_channel
     post_page_visit_to_slack_channel('insight', main_app.insight_url(@pin),
       attachment: {
-        title: @pin.source_user.full_name,
-        value: @pin.content
+        title: @pin.source(:user).full_name,
+        value: @pin.source(:content)
       }
     )
   end

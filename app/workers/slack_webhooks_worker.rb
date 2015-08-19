@@ -14,7 +14,7 @@ class SlackWebhooksWorker < ApplicationWorker
     # instantiate ids inside options
     options.select { |key, value| key.match(/_id$/) }.each_key do |key|
       model_name = key.split(/_id$/).first
-      options[model_name] = model_name.classify.constantize.find(options[key]) if options[key].present?
+      options[model_name] = model_name.classify.constantize.find(options[key])
     end
 
     options.symbolize_keys!
@@ -38,8 +38,7 @@ private
   #
   def get_clicked_on_external_url_payload(user, options)
     result = {}
-    pin = options[:pin]
-    return result if pin.blank?
+    return result unless pin = options[:pin]
 
     result[:text] = [
       "#{get_name_for_user(user, options)} clicked on external url:",
@@ -52,8 +51,8 @@ private
         fallback: result[:text],
         color: '#3dc669',
         fields: [
-          title: pin.user.full_name,
-          value: pin.content
+          title: pin.source(:user).full_name,
+          value: pin.source(:content)
         ]
       ]
     end

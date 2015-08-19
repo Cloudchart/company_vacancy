@@ -41,12 +41,8 @@ class Pin < ActiveRecord::Base
     is_suggestion? ? parent.content : read_attribute(:content)
   end
 
-  def source_user_id
-    parent ? parent.user_id : user_id
-  end
-
-  def source_user
-    parent ? parent.user : user
+  def source(value)
+    parent ? parent.send(value) : self.send(value)
   end
 
   def should_validate_content_presence?
