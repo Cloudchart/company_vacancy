@@ -6,13 +6,12 @@ GlobalState       = require('global_state/state')
 # Stores
 #
 PinboardStore     = require('stores/pinboard_store')
-RoleStore         = require('stores/role_store.cursor')
-
+UserStore         = require('stores/user_store.cursor')
 
 # Components
 #
-PinboardComponent = require('components/cards/pinboard_card')
-PinboardList = require('components/pinboards/lists/base')
+PinboardCard  = require('components/cards/pinboard_card')
+ListOfCards   = require('components/cards/list_of_cards')
 
 
 # Exports
@@ -31,73 +30,57 @@ module.exports = React.createClass
       pinboards: ->
         """
           User {
-            pinboards {
-              #{PinboardComponent.getQuery('pinboard')}
+            related_pinboards {
+              #{PinboardCard.getQuery('pinboard')}
             },
-
-            favorites {
-              pinboard {
-                #{PinboardComponent.getQuery('pinboard')}
-              }
-            },
-
-            roles {
-              pinboard {
-                #{PinboardComponent.getQuery('pinboard')}
-              }
+            edges {
+              related_pinboards
             }
           }
         """
 
-    isEmpty: (user_id, options={}) ->
-      !PinboardStore.filterUserPinboards(user_id, showPrivate: options.showPrivate).size
-
   propTypes:
     user_id:     React.PropTypes.string
-    showPrivate: React.PropTypes.bool
 
-  getDefaultProps: ->
-    cursor:
-      pinboards: PinboardStore.cursor.items
-      roles:     RoleStore.cursor.items
-    showPrivate: false
 
   getInitialState: ->
-    loaders: Immutable.Map()
+    ready: true
+
 
   fetch: ->
-    GlobalState.fetch(@getQuery('pinboards'), id: @props.user_id)
-
-
-  # Helpers
-  #
-  isLoaded: ->
-    @state.isLoaded
-
-  gatherPinboards: ->
-    PinboardStore
-      .filterUserPinboards(@props.user_id, showPrivate: @props.showPrivate)
-      .sortBy (item) -> item.get('title')
-      .valueSeq()
+    GlobalState.fetch(@getQuery('pinboards'), id: @props.user_id).then =>
+      @setState
+        ready: true
 
 
   # Lifecyle methods
   #
   componentWillMount: ->
-    @fetch().then(=> @setState isLoaded: true) unless @isLoaded()
+    @cursor =
+      user: UserStore.cursor.items.cursor(@props.user_id)
+
+
+  componentDidMount: ->
+    @fetch()
 
 
   renderPinboard: (pinboard) ->
-    <PinboardComponent key={ pinboard.get('uuid') } pinboard={ pinboard.get('uuid') } />
+    <PinboardCard key={ pinboard.id } pinboard={ pinboard.id } />
+
+
+  renderPinboards: ->
+    @cursor.user.get('related_pinboards')
+      .map (pinboard) -> PinboardStore.get(pinboard.get('id')).toJS()
+      .sortBy (pinboard) -> pinboard.title
+      .map @renderPinboard
+      .toArray()
+
 
   render: ->
-    return null unless @isLoaded()
+    return null unless @state.ready
 
-    renderPinboards = PinboardStore
-      .filterUserPinboards(@props.user_id, showPrivate: @props.showPrivate)
-      .sortBy (item) -> item.get('title')
-      .map @renderPinboard
-
-    <PinboardList>
-      { renderPinboards.toArray() }
-    </PinboardList>
+    <section className="cc-container-common">
+      <ListOfCards>
+        { @renderPinboards() }
+      </ListOfCards>
+    </section>

@@ -117,7 +117,8 @@ module.exports = React.createClass
 
 
   getPinboardsNumber: ->
-    PinboardStore.filterUserPinboards(@props.uuid).size
+    #PinboardStore.filterUserPinboards(@props.uuid).size
+    @cursor.user.get('related_pinboards').size
 
 
   getFavoriteInsightsCount: ->
@@ -192,7 +193,7 @@ module.exports = React.createClass
 
 
   renderPinboards: ->
-    if UserPinboards.isEmpty(@props.uuid)
+    if @getPinboardsNumber() == 0 #UserPinboards.isEmpty(@props.uuid)
       @renderEmptyTabText("pinboards")
     else
       <section className="cc-container-common">
@@ -246,11 +247,6 @@ module.exports = React.createClass
       id:       'companies'
       title:    'Companies'
       counter:  ['', '' + companies_count][~~!!companies_count]
-
-    # tabs.push
-    #   id:       'favorite_insights'
-    #   title:    'Starred'
-    #   counter:  ['', '' + favorite_insights_count][~~!!favorite_insights_count]
 
     if @cursor.user.get('is_editable')
       tabs.push
