@@ -9,10 +9,10 @@
 
 <ul>
   <% @result.each do |key, result| %>
-    <p>
+    <li>
       <strong><%= result[:match_count] %>: </strong>
       <span><%= result[:pin].content %></span>
-    </p>
+    </li>
   <% end %>
 </ul>
 
