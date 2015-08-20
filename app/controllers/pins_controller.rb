@@ -13,10 +13,11 @@ class PinsController < ApplicationController
     query = params[:query].parameterize
 
     # TODO: use union
+    pins_through_tags = Pin.joins(:tags).where(tags: { name: query })
     pins_through_pinboard_tags = Pin.includes(:parent).joins(pinboard: :tags).where(tags: { name: query })
     pins_through_user_tags = Pin.includes(:parent).joins(user: :tags).where(tags: { name: query })
 
-    @result = (pins_through_pinboard_tags + pins_through_user_tags).inject({}) do |memo, pin|
+    @result = (pins_through_tags + pins_through_pinboard_tags + pins_through_user_tags).inject({}) do |memo, pin|
       insight = pin.insight? ? pin : pin.parent
       memo[insight.id] ||= {}
       memo[insight.id][:match_count] ||= 0

@@ -4,6 +4,7 @@ class Pin < ActiveRecord::Base
   include Featurable
   include Followable
   include Previewable
+  include Taggable
   include Admin::Pin
   include Preloadable::Pin
 
