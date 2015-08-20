@@ -1,13 +1,34 @@
 class PinsController < ApplicationController
   include FollowableController
 
-  before_filter :set_pin
+  before_filter :set_pin, except: :search
 
   authorize_resource
 
   after_action :call_page_visit_to_slack_channel, only: :show
   after_action :create_intercom_event, only: :create
   after_action :crawl_pin_origin, only: [:create, :update]
+
+  def search
+    query = params[:query].parameterize
+
+    # TODO: use union
+    pins_through_pinboard_tags = Pin.includes(:parent).joins(pinboard: :tags).where(tags: { name: query })
+    pins_through_user_tags = Pin.includes(:parent).joins(user: :tags).where(tags: { name: query })
+
+    @result = (pins_through_pinboard_tags + pins_through_user_tags).inject({}) do |memo, pin|
+      insight = pin.insight? ? pin : pin.parent
+      memo[insight.id] ||= {}
+      memo[insight.id][:match_count] ||= 0
+      memo[insight.id][:match_count] += 1
+      memo[insight.id][:pin] = insight
+      memo
+    end.sort_by do |key, result|
+      result[:match_count]
+    end.reverse
+
+    render 'sandbox/index'
+  end
 
   def show
     respond_to do |format|

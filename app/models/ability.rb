@@ -81,7 +81,7 @@ class Ability
         (current_user.admin? || current_user.editor?)
       end
 
-      can [:follow, :unfollow], Pin
+      can [:follow, :unfollow, :search], Pin
 
       can :approve, Pin do |pin|
         (current_user.admin? || current_user.editor?) && pin.content.present? && !pin.is_approved?

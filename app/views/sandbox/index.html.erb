@@ -1,2 +1,21 @@
-<div data-react-class="components/unicorn_chooser" data-react-props="<%= { value: current_user.id, defaultValue: current_user.id }.to_json %>">
-</div>
+<p>
+  <%= form_tag search_pins_path do %>
+    <fieldset>
+      <%= label_tag :query %>
+      <%= text_field_tag :query, params[:query], autofocus: true %>
+    </fieldset>
+  <% end %>
+</p>
+
+<ul>
+  <% @result.each do |key, result| %>
+    <p>
+      <strong><%= result[:match_count] %>: </strong>
+      <span><%= result[:pin].content %></span>
+    </p>
+  <% end %>
+</ul>
+
+<p>
+  Size: <%= @result.size %>
+</p>
