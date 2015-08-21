@@ -48,6 +48,7 @@ gem 'sinatra', require: nil
 gem 'paranoia', '~> 2.0'
 gem 'diffbot-ruby-client', git: 'git@github.com:diffbot/diffbot-ruby-client.git'
 gem 'sitemap_generator', '~> 5.1.0'
+gem 'algoliasearch-rails'
 
 # Engines
 #
