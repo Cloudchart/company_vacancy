@@ -6,6 +6,7 @@ class Pin < ActiveRecord::Base
   include Previewable
   include Taggable
   include Admin::Pin
+  include Search::Pin
   include Preloadable::Pin
 
   acts_as_paranoid

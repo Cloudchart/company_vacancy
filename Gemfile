@@ -49,6 +49,8 @@ gem 'paranoia', '~> 2.0'
 gem 'diffbot-ruby-client', git: 'git@github.com:diffbot/diffbot-ruby-client.git'
 gem 'sitemap_generator', '~> 5.1.0'
 gem 'algoliasearch-rails'
+gem 'algoliasearch', '~> 1.6.0'
+gem 'httpclient', '~> 2.6.0'
 
 # Engines
 #
