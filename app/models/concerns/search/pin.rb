@@ -4,7 +4,7 @@ module Search::Pin
   included do
     include AlgoliaSearch
 
-    algoliasearch id: :uuid, per_environment: true, if: :insight? do
+    algoliasearch id: :uuid, per_environment: true, if: :insight?, enqueue: :trigger_sidekiq_worker do
       attribute :content, :origin, :weight, :created_at
 
       attribute :tags do
@@ -37,6 +37,11 @@ module Search::Pin
         end
       end
 
+    end
+
+    def self.trigger_sidekiq_worker(record, remove)
+      return if Rails.env.development?
+      AlgoliaSearchWorker.perform_async(record.id, record.class.name, remove)
     end
 
   end
