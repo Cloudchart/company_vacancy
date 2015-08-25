@@ -39,6 +39,8 @@ module.exports = React.createClass
         ready: true
         sync: false
 
+      @changeHistory()
+
   # Component Specifications
   #
   # getDefaultProps: ->
@@ -67,6 +69,7 @@ module.exports = React.createClass
         ready: false
         sync: false
         search_pins_ids: []
+      @changeHistory()
     else
       @setState
         ready: false
@@ -76,6 +79,10 @@ module.exports = React.createClass
   getInsightCards: ->
     @state.search_pins_ids
       .map (id) -> <InsightCard key={ id } pin={ id } scope = 'pinboard' />
+
+  changeHistory: ->
+    keyword = if @state.query.length <= 1 then '' else "?keyword=#{@state.query}"
+    history.pushState({}, '', location.href.split('?')[0] + keyword)
 
 
   # Handlers
