@@ -107,7 +107,7 @@ Cloudchart::Application.routes.draw do
   get '/collections/:id', to: 'pinboards#show', as: :collection
   get '/collections/:id/invite', to: 'pinboards/invites#new', as: :new_collection_invite
 
-  get '/insights/search', to: 'pins#search', as: :search_insight
+  get '/insights/search', to: 'pins#search', as: :search_insights
   get '/insights/:id', to: 'pins#show', as: :insight
 
   post '/users/:user_id/greeting', to: 'tokens#create_greeting'
