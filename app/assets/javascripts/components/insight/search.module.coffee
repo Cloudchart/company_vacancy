@@ -15,8 +15,8 @@ module.exports = React.createClass
   displayName: 'InsightsSearch'
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-  # propTypes:
-    # some_object: React.PropTypes.object.isRequired
+  propTypes:
+    query: React.PropTypes.string
 
   statics:
     queries:
@@ -44,7 +44,7 @@ module.exports = React.createClass
   # getDefaultProps: ->
 
   getInitialState: ->
-    query: ''
+    query: @props.query || ''
     ready: false
     sync: false
 
@@ -52,7 +52,10 @@ module.exports = React.createClass
   # Lifecycle Methods
   #
   # componentWillMount: ->
-  # componentDidMount: ->
+
+  componentDidMount: ->
+    @search() if @state.query
+
   # componentWillUnmount: ->
 
 
