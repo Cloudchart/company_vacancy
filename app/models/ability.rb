@@ -8,6 +8,7 @@ class Ability
     #
     if current_user.guest?
       can :read, Landing
+      can :search, Pin
       can :read, Pin, is_approved: true
       can :read, Company, is_published: true
       can [:index, :search], :companies
@@ -66,8 +67,7 @@ class Ability
 
       # Pin
       #
-      can [:follow, :unfollow], Pin
-      can :search, Pin if current_user.admin? || current_user.editor?
+      can [:follow, :unfollow, :search], Pin
 
       can :create, Pin do |pin|
         if pin.pinboard

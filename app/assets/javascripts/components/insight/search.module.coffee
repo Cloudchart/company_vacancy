@@ -101,7 +101,7 @@ module.exports = React.createClass
     <input 
       className = "cc-input"
       value = { @state.query }
-      placeholder = "Search insights"
+      placeholder = "Find insights"
       autoFocus = true
       onChange = { @handleInputChange }
       onKeyDown = { @handleInputKeyDown }
@@ -119,11 +119,11 @@ module.exports = React.createClass
       @renderPins()
     else if @state.ready
       <p>
-        { "Nothing found" }
+        { "We found nothing on this" }
       </p>
     else
       <p>
-        { "Hello" }
+        { "We’ll search through insights, insight authors, their twitter @handles, and insight sources" }
       </p>
 
 

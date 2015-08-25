@@ -32,7 +32,6 @@ end
 if can?(:search, Pin)
   links << {
     title: 'Search',
-    is_beta: true,
     url: current_page?(main_app.search_insights_path) ? nil : main_app.search_insights_path
   }
 end
