@@ -2,8 +2,6 @@
 
 GlobalState = require('global_state/state')
 
-PinStore = require('stores/pin_store')
-
 InsightCard = require('components/cards/insight_card')
 ListOfCards = require('components/cards/list_of_cards')
 
@@ -37,8 +35,9 @@ module.exports = React.createClass
   fetch: ->
     GlobalState.fetch(@getQuery('viewer'), { force: true, params: { query: @state.query } }).then (json) =>
       @setState
-        search_pins_ids: json.query.search_pins.ids
+        search_pins_ids: if json.query.search_pins then json.query.search_pins.ids else []
         ready: true
+        sync: false
 
   # Component Specifications
   #
@@ -46,64 +45,98 @@ module.exports = React.createClass
 
   getInitialState: ->
     query: ''
+    ready: false
+    sync: false
 
 
   # Lifecycle Methods
   #
   # componentWillMount: ->
-
-  componentDidMount: ->
-    @fetch()
-
+  # componentDidMount: ->
   # componentWillUnmount: ->
 
 
   # Helpers
   #
-  # getSomething: ->
+  search: ->
+    if @state.query.length <= 1
+      @setState
+        ready: false
+        sync: false
+        search_pins_ids: []
+    else
+      @setState
+        ready: false
+        sync: true
+      @fetch()
+
+  getInsightCards: ->
+    @state.search_pins_ids
+      .map (id) -> <InsightCard key={ id } pin={ id } scope = 'pinboard' />
 
 
   # Handlers
   #
-  handleSearchChange: (event) ->
+  handleInputChange: (event) ->
     @setState query: event.target.value
 
-  handleSearchKeyDown: (event) ->
-    if event.key == 'Enter'
-      @setState ready: false
-      @fetch()
+  handleInputKeyDown: (event) ->
+    @search() if event.key == 'Enter'
+
+  handleButtonClick: (event) ->
+    @search()
 
 
   # Renderers
   #
-  renderLoader: ->
-    return null if @state.ready
-    <i className="fa fa-spin fa-spinner"></i>
+  renderButton: ->
+    loader = if @state.sync then <i className="fa fa-spin fa-spinner"/> else null
 
-  renderSearchInput: ->
+    <button className="cc" onClick={ @handleButtonClick } >
+      <span>Search</span>
+      { loader }
+    </button>
+
+  renderInput: ->
     <input 
       className = "cc-input"
       value = { @state.query }
       placeholder = "Search insights"
-      onChange = { @handleSearchChange } 
-      onKeyDown = { @handleSearchKeyDown }
+      autoFocus = true
+      onChange = { @handleInputChange }
+      onKeyDown = { @handleInputKeyDown }
     />
 
-  renderSearchItems: ->
-    return null unless @state.ready
-    @state.search_pins_ids.map (id) -> <InsightCard key={ id } pin={ id } scope = 'pinboard' />
+  renderPins: ->
+    <ListOfCards>
+      { @getInsightCards() }
+    </ListOfCards>
+
+  renderResult: ->
+    if @state.sync
+      null
+    else if @state.ready && @state.search_pins_ids.length > 0
+      @renderPins()
+    else if @state.ready
+      <p>
+        { "Nothing found" }
+      </p>
+    else
+      <p>
+        { "Hello" }
+      </p>
 
 
   # Main render
   #
   render: ->
-    <section className="cc-container-common">
-      <section className="search">
-        { @renderSearchInput() }
-        { @renderLoader() }
+    <section className="cc-container-common pins-search">
+      <section className="search-input">
+        { @renderInput() }
+        { @renderButton() }
       </section>
 
-      <ListOfCards>
-        { @renderSearchItems() }
-      </ListOfCards>
+      <section className="cc-container-common result">
+        { @renderResult() }
+      </section>
     </section>
