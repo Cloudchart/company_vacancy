@@ -1,0 +1,13 @@
+.pins-search {
+  > .search-input {
+    @include display(flex);
+  }
+
+  > .result {
+    > p {
+      font-size: 20px;
+      font-weight: 300;
+    }
+  }
+
+}

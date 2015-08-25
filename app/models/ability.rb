@@ -66,6 +66,9 @@ class Ability
 
       # Pin
       #
+      can [:follow, :unfollow], Pin
+      can :search, Pin if current_user.admin? || current_user.editor?
+
       can :create, Pin do |pin|
         if pin.pinboard
           owner_or_editor?(current_user, pin.pinboard) ||
@@ -78,12 +81,10 @@ class Ability
         end
       end
 
-      can :read, Pin do |pin|
+      can :show, Pin do |pin|
         pin.content.blank? || pin.is_approved? || pin.user_id == current_user.id ||
         (current_user.admin? || current_user.editor?)
       end
-
-      can [:follow, :unfollow], Pin
 
       can :approve, Pin do |pin|
         (current_user.admin? || current_user.editor?) && pin.content.present? && !pin.is_approved?

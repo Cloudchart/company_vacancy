@@ -107,6 +107,7 @@ Cloudchart::Application.routes.draw do
   get '/collections/:id', to: 'pinboards#show', as: :collection
   get '/collections/:id/invite', to: 'pinboards/invites#new', as: :new_collection_invite
 
+  get '/insights/search', to: 'pins#search', as: :search_insights
   get '/insights/:id', to: 'pins#show', as: :insight
 
   post '/users/:user_id/greeting', to: 'tokens#create_greeting'
@@ -119,7 +120,7 @@ Cloudchart::Application.routes.draw do
   delete '/logout', to: 'cloud_profile/authentications#destroy', as: :logout
   get '/old', to: 'welcome#old_browsers', as: :old_browsers
   get '/subscribe', to: 'welcome#subscribe', as: :subscribe
-  get '/sandbox', to: 'sandbox#index' if Rails.env.development?
+  get '/sandbox', to: 'sandbox#index' if %w(development staging).include?(Rails.env)
 
   # Preview
   #

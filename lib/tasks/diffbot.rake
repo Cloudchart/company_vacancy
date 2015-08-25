@@ -11,4 +11,21 @@ namespace :cc do
     end
   end
 
+  desc 'Get tags from diffbot responses'
+  task get_tags_from_diffbot_responses: :environment do
+    DiffbotResponse.includes(pins: :tags).where(api: :article).each do |response|
+      next unless tags = response.body[:objects].first[:tags]
+
+      tags.map { |tag| tag[:label].parameterize }.each do |tag_name|
+        next unless tag_name.present?
+
+        response.pins.each do |pin|
+          tag = Tag.find_or_create_by(name: tag_name)
+          pin.tags << tag unless pin.tags.include?(tag)
+          puts "processed #{tag_name}"
+        end
+      end
+    end
+  end
+
 end

@@ -80,6 +80,12 @@ GEM
     airbrake (4.1.0)
       builder
       multi_json
+    algoliasearch (1.6.1)
+      httpclient (~> 2.4)
+      json (>= 1.5.1)
+    algoliasearch-rails (1.14.1)
+      algoliasearch (>= 1.2.14)
+      json (>= 1.5.1)
     ansi (1.5.0)
     arel (5.0.1.20140414130214)
     awesome_print (1.2.0)
@@ -166,7 +172,7 @@ GEM
     hashie (3.4.0)
     hashr (0.0.22)
     hitimes (1.2.2)
-    httpclient (2.3.4.1)
+    httpclient (2.6.0.1)
     i18n (0.7.0)
     impressionist (1.5.1)
       httpclient (~> 2.2)
@@ -432,6 +438,8 @@ DEPENDENCIES
   active_attr
   active_model_serializers (= 0.8.1)
   airbrake
+  algoliasearch (~> 1.6.0)
+  algoliasearch-rails
   awesome_print
   bcrypt (~> 3.1.7)
   better_errors
@@ -457,6 +465,7 @@ DEPENDENCIES
   ffaker
   font-awesome-rails
   friendly_id (~> 5.1.0)
+  httpclient (~> 2.6.0)
   impressionist
   intercom (~> 2.4.4)
   intercom-rails (~> 0.2.24)
@@ -505,3 +514,6 @@ DEPENDENCIES
   warden
   yajl-ruby
   zeroclipboard-rails
+
+BUNDLED WITH
+   1.10.6

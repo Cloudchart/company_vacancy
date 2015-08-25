@@ -4,6 +4,7 @@ class Pinboard < ActiveRecord::Base
   include Preloadable
   include Featurable
   include Followable
+  include Taggable
   include Tire::Model::Search
   include Tire::Model::Callbacks
   include Admin::Pinboard

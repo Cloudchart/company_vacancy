@@ -25,6 +25,7 @@ module Admin::Pin
       edit do
         field :is_featured, :boolean
         field :is_approved
+        field :tags
       end
     end
 

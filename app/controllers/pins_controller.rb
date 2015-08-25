@@ -1,13 +1,19 @@
 class PinsController < ApplicationController
   include FollowableController
 
-  before_filter :set_pin
+  before_filter :set_pin, except: :search
 
   authorize_resource
 
   after_action :call_page_visit_to_slack_channel, only: :show
   after_action :create_intercom_event, only: :create
   after_action :crawl_pin_origin, only: [:create, :update]
+
+  def search
+    respond_to do |format|
+      format.html
+    end
+  end
 
   def show
     respond_to do |format|

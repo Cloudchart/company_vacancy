@@ -1,6 +1,5 @@
-module Preloadable::Pin
+module Preload::Pin
   extend ActiveSupport::Concern
-
 
   included do
     include Preloadable

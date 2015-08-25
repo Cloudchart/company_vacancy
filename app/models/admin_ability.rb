@@ -43,9 +43,9 @@ class AdminAbility
       
       # Pinboard
       #
-      can [:index, :create], Pinboard
+      can [:index, :create, :update], Pinboard
 
-      can [:update, :destroy], Pinboard do |pinboard|
+      can :destroy, Pinboard do |pinboard|
         pinboard.user_id.blank?
       end
 
