@@ -81,7 +81,7 @@ class Ability
         end
       end
 
-      can :show, Pin do |pin|
+      can :read, Pin do |pin|
         pin.content.blank? || pin.is_approved? || pin.user_id == current_user.id ||
         (current_user.admin? || current_user.editor?)
       end
