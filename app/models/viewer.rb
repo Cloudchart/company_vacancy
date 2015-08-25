@@ -1,5 +1,15 @@
 class Viewer < User
 
+  def search_pins(scope = {})
+    pin_ids = Pin.raw_search(
+      scope[:params][:query],
+      attributesToRetrieve: 'objectID',
+      attributesToHighlight: 'none'
+    )['hits'].map { |hit| hit['objectID'] }
+
+    Pin.find(pin_ids)
+  end
+
   def published_companies(scope = {})
     Company.published.select { |c| ability(scope).can?(:read, c) }
   end

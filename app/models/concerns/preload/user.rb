@@ -1,4 +1,4 @@
-module Preloadable::User
+module Preload::User
   extend ActiveSupport::Concern
 
   included do

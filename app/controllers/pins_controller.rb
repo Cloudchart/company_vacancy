@@ -10,25 +10,9 @@ class PinsController < ApplicationController
   after_action :crawl_pin_origin, only: [:create, :update]
 
   def search
-    query = params[:query].parameterize
-
-    # TODO: use union
-    pins_through_tags = Pin.joins(:tags).where(tags: { name: query })
-    pins_through_pinboard_tags = Pin.includes(:parent).joins(pinboard: :tags).where(tags: { name: query })
-    pins_through_user_tags = Pin.includes(:parent).joins(user: :tags).where(tags: { name: query })
-
-    @result = (pins_through_tags + pins_through_pinboard_tags + pins_through_user_tags).inject({}) do |memo, pin|
-      insight = pin.insight? ? pin : pin.parent
-      memo[insight.id] ||= {}
-      memo[insight.id][:match_count] ||= 0
-      memo[insight.id][:match_count] += 1
-      memo[insight.id][:pin] = insight
-      memo
-    end.sort_by do |key, result|
-      result[:match_count]
-    end.reverse
-
-    render 'sandbox/index'
+    respond_to do |format|
+      format.html
+    end
   end
 
   def show

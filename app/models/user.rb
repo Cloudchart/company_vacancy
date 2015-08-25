@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   include Followable
   include Taggable
   include Admin::User
-  include Preloadable::User
+  include Preload::User
 
   attr_accessor :current_password
   attr_reader :should_create_tour_tokens # needed for rails_admin
