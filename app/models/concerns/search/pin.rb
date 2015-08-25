@@ -23,7 +23,7 @@ module Search::Pin
 
       attribute :diffbot_response do
         if diffbot_response.try(:api) == 'article'
-          tags = if diffbot_tags = diffbot_response.body[:objects].first[:tags]
+          tags = if diffbot_tags = diffbot_response.body[:objects].first.try(:[], :tags)
             diffbot_tags.map do |tag|
               if tag.kind_of?(Hash)
                 tag[:label].try(:parameterize)
