@@ -90,7 +90,9 @@ end
 json_edge! json, :related_pinboards, edges do
   User.preload_related_pinboards(siblings, cache)
 
-  user.related_pinboards.map do |pinboard|
+  user.related_pinboards.select do |pinboard|
+    scope[:current_user_ability].can?(:read, pinboard)
+  end.map do |pinboard|
     {
       id:         pinboard.id,
       uuid:       pinboard.id,
