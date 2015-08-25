@@ -135,6 +135,22 @@ State =
             addListener(cursor.path, @onGlobalStateChange)
 
 
+    addCursor: (name, cursor) ->
+      @__cursors ||= {}
+
+      return unless cursor.__CURSOR_INSTANCE__
+
+      if @__cursors[name]
+        removeListener(@__cursors[name].path, @onGlobalStateChange)
+
+      @__cursors[name] = cursor
+      addListener(cursor.path, @onGlobalStateChange)
+
+
+    getCursor: (name) ->
+      @__cursors ||= {}
+      @__cursors[name]
+
 
     componentWillUnmount: ->
       if @props.cursor
@@ -152,6 +168,13 @@ State =
         else
           Immutable.Seq(@cursor).forEach (cursor) =>
             removeListener(cursor.path, @onGlobalStateChange)
+
+      # Same for @__cursors
+      #
+      if @__cursors
+        Immutable.Seq(@__cursors).forEach (cursor) =>
+          removeListener(cursor.path, @onGlobalStateChange)
+
 
 # Exports
 #

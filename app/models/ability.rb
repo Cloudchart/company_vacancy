@@ -71,6 +71,8 @@ class Ability
           owner_or_editor?(current_user, pin.pinboard) ||
           (current_user.editor? && owner_or_editor?(pin.user, pin.pinboard)) ||
           (pin.is_suggestion? && pin.pinboard.suggestion_rights == 'anyone')
+        elsif pin.kind == 'reflection'
+          true
         else
           current_user.editor? && pin.is_suggestion?
         end

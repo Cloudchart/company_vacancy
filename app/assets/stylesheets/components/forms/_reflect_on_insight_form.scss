@@ -1,0 +1,91 @@
+form.reflect-on-insight {
+  background-color: hsl(60, 10%, 96%);
+  padding: 20px;
+  width: 645px;
+
+  > fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+
+    > label {
+      @include display(flex);
+
+      > .title {
+        @include flex(3);
+
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 24px;
+        margin-right: 40px;
+      }
+
+      > label.part-1-of-2 {
+        @include flex(2.5);
+
+        font-size: 20px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      input[type="text"],
+      textarea {
+        @include flex(5);
+
+        border: none;
+        border-bottom: 2px solid hsl(137, 54%, 50%);
+        outline: none;
+        padding: 10px 10px 8px;
+        resize: none;
+        width: 100%;
+      }
+
+      &.error {
+        input[type="text"],
+        textarea {
+          border-color: red;
+        }
+      }
+
+      input[type="radio"] {
+        height: 0;
+        overflow: hidden;
+        position: absolute;
+        left: -100%;
+        width: 0;
+
+        & ~ span {
+          cursor: pointer;
+        }
+
+        &:checked ~ span {
+          color: hsl(137, 54%, 50%);
+        }
+      }
+
+      textarea {
+        font-size: 20px;
+        font-weight: 300;
+        line-height: 24px;
+      }
+
+      input {
+        color: hsl(137, 54%, 50%);
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 20px;
+      }
+    }
+
+    > label + label {
+      margin-top: 20px;
+    }
+  }
+
+  > footer {
+    @include display(flex);
+    @include justify-content(space-between);
+
+    margin-top: 25px;
+  }
+}

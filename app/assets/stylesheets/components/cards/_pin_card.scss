@@ -20,6 +20,16 @@ $insight-card-footer-content-line-height: 20px;
 @mixin insight-card-header {
   @include display(flex);
 
+  &.reflection {
+    > span {
+      @include flex(1);
+    }
+
+    > a {
+      margin-left: 10px;
+    }
+  }
+
   background-color: $insight-card-header-background-color;
   font-size: inherit;
   font-weight: inherit;

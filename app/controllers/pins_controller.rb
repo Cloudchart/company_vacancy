@@ -45,7 +45,6 @@ class PinsController < ApplicationController
     end
 
   rescue ActiveRecord::RecordInvalid
-
     respond_to do |format|
       format.json { render json: :nok, status: 412 }
     end
@@ -103,15 +102,16 @@ private
   end
 
   def fields_for_create
-    params = default_fields << [:content, :pinnable_id, :pinnable_type, :parent_id, :origin, :is_suggestion]
-    params << [:user_id] if current_user.editor?
-    params
+    fields = default_fields << [:content, :pinnable_id, :pinnable_type, :parent_id, :origin, :is_suggestion, :kind]
+    fields << [:is_approved]  if params[:pin][:kind] == 'reflection'
+    fields << [:user_id]      if current_user.editor?
+    fields
   end
 
   def fields_for_update
-    params = default_fields << [:origin]
-    params << [:user_id, :content] if current_user.editor?
-    params
+    fields = default_fields << [:origin]
+    fields << [:user_id, :content] if current_user.editor?
+    fields
   end
 
   def crawl_pin_origin

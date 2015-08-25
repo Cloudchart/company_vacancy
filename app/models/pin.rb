@@ -28,14 +28,32 @@ class Pin < ActiveRecord::Base
   has_one :diffbot_response, through: :diffbot_response_owner
 
   has_many :children, class_name: self.name, foreign_key: :parent_id
+  has_many :favorites, as: :favoritable
+  has_many :reflections, -> { where(kind: 'reflection') }, class_name: self.name, foreign_key: :parent_id
 
   validates :content, presence: true, if: :should_validate_content_presence?
   validates :parent_id, uniqueness: { scope: :pinboard_id, conditions: -> { where(deleted_at: nil) } }, allow_blank: true, if: -> { is_suggestion? && pinboard_id }
 
   scope :insights, -> { where(parent: nil).where.not(content: nil) }
+  scope :reflection,  -> { where(kind: 'reflection') }
+
+
+  # Favorites / Reflection
+  #
+  def should_show_reflection_for_user?(user)
+    user_id     = user.is_a?(User) ? user.id : user
+    favorite    = favorites.find { |f| f.user_id == user_id }
+    reflection  = reflections.find { |r| r.user_id == user_id }
+    reflection.nil? && favorite.present? && favorite.created_at < 7.days.ago
+  end
+
 
   def insight?
     parent_id.blank? && content.present?
+  end
+
+  def reflection?
+    kind == 'reflection'
   end
 
   def content
@@ -47,7 +65,7 @@ class Pin < ActiveRecord::Base
   end
 
   def should_validate_content_presence?
-    parent.blank? || (@update_by.present? && user_id != @update_by.uuid && !is_suggestion?)
+    parent.blank? || (kind == 'reflection' && is_approved) || (@update_by.present? && user_id != @update_by.uuid && !is_suggestion?)
   end
 
   def update_by!(update_by)
@@ -60,7 +78,14 @@ class Pin < ActiveRecord::Base
   end
 
   def is_origin_domain_allowed
-    insight = parent ? parent : self
+    insight = case
+    when kind == 'reflection'
+      self
+    when parent
+      parent
+    else
+      self
+    end
     (uri = insight.origin_uri) && Domain.find_by(name: uri.host).try(:allowed?)
   end
 
