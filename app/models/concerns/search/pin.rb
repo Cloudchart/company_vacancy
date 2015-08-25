@@ -37,7 +37,7 @@ module Search::Pin
 
           {
             title: diffbot_response.body[:title],
-            text: diffbot_response.body[:objects].first[:text],
+            text: diffbot_response.body[:objects].first.try(:[], :text),
             tags: tags
           }
         end
