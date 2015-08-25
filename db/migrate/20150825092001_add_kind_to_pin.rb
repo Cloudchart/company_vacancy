@@ -4,16 +4,18 @@ class AddKindToPin < ActiveRecord::Migration
     add_index :pins, :kind
 
     Pin.transaction do
-      Pin.where(parent_id: nil).where.not(content: nil).each do |pin|
-        pin.kind = 'insight'
-        pin.skip_generate_preview!
-        pin.save
-      end
+      Pin.without_auto_index do
+        Pin.where(parent_id: nil).where.not(content: nil).each do |pin|
+          pin.kind = 'insight'
+          pin.skip_generate_preview!
+          pin.save
+        end
 
-      Pin.where(is_suggestion: true).each do |pin|
-        pin.kind = 'suggestion'
-        pin.skip_generate_preview!
-        pin.save
+        Pin.where(is_suggestion: true).each do |pin|
+          pin.kind = 'suggestion'
+          pin.skip_generate_preview!
+          pin.save
+        end
       end
     end
   end
