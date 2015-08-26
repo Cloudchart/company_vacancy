@@ -73,3 +73,17 @@ module.exports =
       url: "/pins/#{id}/unfollow"
       type: 'DELETE'
       dataType: 'json'
+
+
+  add_vote: (id) ->
+    Promise.resolve $.ajax
+      url:      "/reflections/#{id}/vote"
+      type:     "POST"
+      dataType: 'json'
+
+
+  remove_vote: (id) ->
+    Promise.resolve $.ajax
+      url:      "/reflections/#{id}/vote"
+      type:     "DELETE"
+      dataType: 'json'

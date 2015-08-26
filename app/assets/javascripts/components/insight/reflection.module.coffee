@@ -7,6 +7,8 @@ GlobalState = require('global_state/state')
 PinStore    = require('stores/pin_store')
 UserStore   = require('stores/user_store.cursor')
 
+PinSyncAPI  = require('sync/pin_sync_api')
+
 # Exports
 #
 module.exports = React.createClass
@@ -49,11 +51,34 @@ module.exports = React.createClass
         ready: true
 
 
+  fetchEdges: ->
+    GlobalState.fetchEdges('Pin', @props.reflection)
+
+
+  addOrRemoveVote: ->
+    is_voted_by_viewer = @getCursor('reflection').get('is_voted_by_viewer')
+    [PinSyncAPI.add_vote, PinSyncAPI.remove_vote][~~is_voted_by_viewer](@props.reflection).then =>
+      @fetchEdges()
+      @setState
+        sync: false
+
+
+
+  addVote: ->
+    PinSyncAPI.add_vote(@props.reflection)
+
+
+  removeVote: ->
+    PinSyncAPI.remove_vote(@props.reflection)
+
+
   handleVoteClick: ->
     return if @state.sync
 
     @setState
       sync: true
+
+    @addOrRemoveVote()
 
 
   componentDidMount: ->

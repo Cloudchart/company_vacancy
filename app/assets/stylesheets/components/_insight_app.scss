@@ -1,8 +1,10 @@
 .insight-app.standalone {
   width: 645px;
+  padding: 0;
 
   @include iphone {
     width: 100%;
+    padding: 0 20px;
   }
 
   > .insight-card > .content {
@@ -51,6 +53,7 @@
 
       .reflection {
         @include display(flex);
+        @include justify-content(flex-end);
 
         aside.votes {
           background-color: hsl(137, 54%, 50%);
@@ -69,6 +72,11 @@
           i {
             margin-right: 5px;
           }
+        }
+
+        > .content {
+          @include flex(1);
+          max-width: 535px;
         }
 
         .content {

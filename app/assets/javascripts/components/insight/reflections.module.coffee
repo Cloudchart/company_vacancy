@@ -52,14 +52,16 @@ module.exports = React.createClass
     @fetch()
 
 
-  renderReflection: (id) ->
-    <li key={ id }>
-      <Reflection reflection={ id } />
+  renderReflection: (record) ->
+    <li key={ record.id }>
+      <Reflection reflection={ record.id } />
     </li>
 
 
   renderReflections: ->
     @getCursor('insight').get('reflections_ids')
+      .map (id) -> PinStore.get(id).toJS()
+      .sortBy (item) -> - item.users_votes_count
       .map @renderReflection
       .toArray()
 

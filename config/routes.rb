@@ -129,6 +129,11 @@ Cloudchart::Application.routes.draw do
   get '/collections/:id/preview', to: 'previews#pinboard', as: :pinboard_preview
   get '/users/:id/preview', to: 'previews#user', as: :user_preview
 
+  # Reflections votes
+  #
+  post    '/reflections/:id/vote', to: 'reflections#add_vote'
+  delete  '/reflections/:id/vote', to: 'reflections#remove_vote'
+
   # Twitter OAuth
   #
   get '/auth/failure', to: 'auth#failure'
