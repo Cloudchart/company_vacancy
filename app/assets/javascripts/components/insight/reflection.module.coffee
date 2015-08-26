@@ -57,10 +57,13 @@ module.exports = React.createClass
 
   addOrRemoveVote: ->
     is_voted_by_viewer = @getCursor('reflection').get('is_voted_by_viewer')
-    [PinSyncAPI.add_vote, PinSyncAPI.remove_vote][~~is_voted_by_viewer](@props.reflection).then =>
-      @fetchEdges()
-      @setState
-        sync: false
+    [PinSyncAPI.add_vote, PinSyncAPI.remove_vote][~~is_voted_by_viewer](@props.reflection).then (json) =>
+      if json.error == 401
+        window.location.href = '/auth/developer/'
+      else
+        @fetchEdges()
+        @setState
+          sync: false
 
 
 

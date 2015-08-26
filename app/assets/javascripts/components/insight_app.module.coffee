@@ -29,7 +29,7 @@ module.exports = React.createClass
 
 
   getInitialState: ->
-    currentTab: 'reflections'
+    currentTab: 'collections'
     ready:      false
 
 
@@ -66,18 +66,24 @@ module.exports = React.createClass
   effective_pin: ->
     PinStore.get(@state.pin.parent_id || @state.pin.id).toJS()
 
+
   gatherTabs: ->
     tabs = []
 
-    tabs.push
-      id:       'collections'
-      title:    'Collections'
-      counter:  '' + Immutable.Set(@effective_pin().connected_collections_ids).size
+    collections_count = Immutable.Set(@effective_pin().connected_collections_ids).size
+    if collections_count > 0
+      tabs.push
+        id:       'collections'
+        title:    'Collections'
+        counter:  '' + collections_count
 
-    tabs.push
-      id:       'reflections'
-      title:    'Reflections'
-      counter:  '' + @effective_pin().reflections_ids.length
+    reflections_count = @effective_pin().reflections_ids.length
+
+    if reflections_count > 0
+      tabs.push
+        id:       'reflections'
+        title:    'Reflections'
+        counter:  '' + reflections_count
 
     tabs
 
@@ -102,9 +108,21 @@ module.exports = React.createClass
     @cursor =
       pin: PinStore.cursor.items.cursor(@props.pin)
 
+    if tab = window.location.hash.split('#')[1]
+      @setState
+        currentTab: tab
+
 
   componentDidMount: ->
     @fetch()
+
+
+  componentDidUpdate: ->
+    tabs = @gatherTabs()
+    if tabs.length > 0
+      unless tabs.find((tab) => tab.id == @state.currentTab)
+        @setState
+          currentTab: tabs[0].id
 
 
   # Render
@@ -115,13 +133,20 @@ module.exports = React.createClass
 
 
   renderConnections: ->
-    switch @state.currentTab
+    return null if @gatherTabs().length == 0
+
+    content = switch @state.currentTab
       when 'collections'
         <ConnectedCollections pin={ @effective_pin().id } />
       when 'reflections'
         <Reflections insight={ @effective_pin().id } />
       else
         null
+
+    <div className="connections">
+      { content }
+    </div>
+
 
   render: ->
     return null unless @state.ready
@@ -135,8 +160,6 @@ module.exports = React.createClass
 
         { @renderTabs() }
 
-        <div className="connections">
-          { @renderConnections() }
-        </div>
+        { @renderConnections() }
       </article>
     </div>
