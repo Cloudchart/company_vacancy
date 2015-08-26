@@ -45,11 +45,15 @@ class Pin < ActiveRecord::Base
 
   # Favorites / Reflection
   #
+
+  def reflection_timeout_for(user)
+    user.editor? ? 1.second.ago : 7.days.ago
+  end
+
   def should_show_reflection_for_user?(user)
-    user_id     = user.is_a?(User) ? user.id : user
-    favorite    = favorites.find { |f| f.user_id == user_id }
-    reflection  = reflections.find { |r| r.user_id == user_id }
-    reflection.nil? && favorite.present? && favorite.created_at < 7.days.ago
+    favorite    = favorites.find { |f| f.user_id == user.id }
+    reflection  = reflections.find { |r| r.user_id == user.id }
+    reflection.nil? && favorite.present? && favorite.created_at < reflection_timeout_for(user)
   end
 
 
