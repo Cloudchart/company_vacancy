@@ -73,7 +73,6 @@ json_edge! json, :connected_collections_ids, edges do
 end
 
 json_edge! json, :is_editable, edges do
-  Rails.logger.debug "USER: #{current_user.editor?} : #{pin.user.unicorn?}"
   current_user.editor? && pin.user.unicorn?
 end
 
