@@ -4,6 +4,7 @@ GlobalState = require('global_state/state')
 
 InsightCard = require('components/cards/insight_card')
 ListOfCards = require('components/cards/list_of_cards')
+SeeMore = require('components/insight/see_more')
 
 # cx = React.addons.classSet
 
@@ -77,8 +78,12 @@ module.exports = React.createClass
       @fetch()
 
   getInsightCards: ->
-    @state.search_pins_ids
-      .map (id) -> <InsightCard key={ id } pin={ id } scope = 'pinboard' />
+    search_pins_ids = @state.search_pins_ids
+
+    if SeeMore.shouldDisplayComponent(@state.search_pins_ids.length)
+      search_pins_ids = search_pins_ids.slice(0, SeeMore.takeSize())
+
+    search_pins_ids.map (id) -> <InsightCard key={ id } pin={ id } scope = 'pinboard' />
 
   changeHistory: ->
     keyword = if @state.query.length <= 1 then '' else "?keyword=#{@state.query}"
@@ -99,6 +104,10 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderSeeMore: ->
+    return null unless @state.ready
+    <SeeMore pinsSize = { @state.search_pins_ids.length } type = "search result" />
+
   renderButton: ->
     loader = if @state.sync then <i className="fa fa-spin fa-spinner"/> else null
 
@@ -148,5 +157,6 @@ module.exports = React.createClass
 
       <section className="cc-container-common result">
         { @renderResult() }
+        { @renderSeeMore() }
       </section>
     </section>

@@ -12,8 +12,7 @@ PinComponent  = require('components/pinboards/pin')
 Insight       = require('components/cards/insight_card')
 
 ListOfCards   = require('components/cards/list_of_cards')
-
-constants = require('constants')
+SeeMore       = require('components/insight/see_more')
 
 
 # Exports
@@ -63,9 +62,6 @@ module.exports = React.createClass
   isLoaded: ->
     @state.isLoaded
 
-  shouldLimitPins: (pins=@getPins()) ->
-    pins.size >= 12 && !@cursor.user.get('is_authenticated')
-
   isApproved: (pin) ->
     return true if      pin.is_approved
     return true unless  pin.is_suggestion
@@ -79,7 +75,7 @@ module.exports = React.createClass
 
   collectPins: ->
     pins = @getPins()
-    pins = pins.take(6) if @shouldLimitPins(pins)
+    pins = pins.take(SeeMore.takeSize()) if SeeMore.shouldDisplayComponent(pins.size)
     pins
       .sortBy (pin) -> pin.created_at
       .reverse()
@@ -98,25 +94,10 @@ module.exports = React.createClass
 
   # Handlers
   #
-  handleSignInClick: (event) ->
-    location.href = constants.TWITTER_AUTH_PATH
 
 
   # Renderers
   #
-  renderSeeMore: ->
-    return null unless @shouldLimitPins()
-    text =
-      """
-        Want to see <strong>#{@cursor.pinboard.get('pins_count') - 6} more insights</strong> from this collection? 
-        Log in and get those and access to other features!
-      """
-
-    <section className="see-more">
-      <p dangerouslySetInnerHTML={ __html: text }></p>
-      <button className="cc" onClick={@handleSignInClick}>{ "Log in with Twitter" }</button>
-    </section>
-
   renderPin: (pin) ->
     <Insight key={ pin.uuid } pin={ pin.uuid } scope='pinboard' />
 
@@ -133,5 +114,6 @@ module.exports = React.createClass
       <ListOfCards>
         { @renderPins().toArray() }
       </ListOfCards>
-      { @renderSeeMore() }
+
+      <SeeMore pinsSize = { @getPins().size } type = "collection" />
     </section>
