@@ -27,6 +27,7 @@ class SlackWebhooksWorker < ApplicationWorker
 
     # post to slack channel
     if payload[:text].present?
+      payload[:channel] = '#webhooks_guests' if Rails.env.production? && user.guest?
       Net::HTTP.post_form(URI(ENV['SLACK_DEFAULT_WEBHOOK_URL']), payload: payload.to_json)
     end
 
@@ -36,6 +37,18 @@ private
 
   # payloads
   #
+  def get_searched_insights_payload(user, options)
+    result = {}
+
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      'searched insights with',
+      "<#{search_insights_url(keyword: options[:query])}|#{options[:query]}> query"
+    ].join(' ')
+
+    result
+  end
+
   def get_clicked_on_external_url_payload(user, options)
     result = {}
     return result unless pin = options[:pin]

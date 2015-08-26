@@ -6,6 +6,8 @@ InsightCard = require('components/cards/insight_card')
 ListOfCards = require('components/cards/list_of_cards')
 SeeMore = require('components/insight/see_more')
 
+NotificationsPushApi = require('push_api/notifications_push_api')
+
 # cx = React.addons.classSet
 
 
@@ -41,6 +43,7 @@ module.exports = React.createClass
         sync: false
 
       @changeHistory()
+      NotificationsPushApi.post_to_slack('searched_insights', query: @state.query)
 
   # Component Specifications
   #
