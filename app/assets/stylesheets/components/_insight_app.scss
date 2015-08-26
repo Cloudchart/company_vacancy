@@ -35,7 +35,7 @@
     padding: 20px;
 
 
-    > .collections {
+    > ul {
       list-style: none;
       margin: 0;
       padding: 0;
@@ -44,6 +44,51 @@
       > li + li {
         margin-top: 20px;
       }
+    }
+
+
+    > .reflections {
+
+      .reflection {
+        @include display(flex);
+
+        aside.votes {
+          background-color: hsl(137, 54%, 50%);
+          border-radius: 12px;
+          color: white;
+          cursor: pointer;
+          font-size: 15px;
+          font-weight: 600;
+          height: 24px;
+          line-height: 24px;
+          margin-right: 10px;
+          padding: 0 10px;
+          position: relative;
+          top: -2px;
+
+          i {
+            margin-right: 5px;
+          }
+        }
+
+        .content {
+          font-size: 16px;
+          font-weight: 300;
+
+          a {
+            font-weight: 400;
+          }
+        }
+
+        span.content::after {
+          content: ', ';
+        }
+      }
+
+    }
+
+
+    > .collections {
 
       .collection {
         font-size: 16px;

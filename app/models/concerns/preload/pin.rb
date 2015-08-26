@@ -9,6 +9,7 @@ module Preload::Pin
     def connected_collections
       children.map(&:pinboard).concat([pinboard])
     end
+
   end
 
 end

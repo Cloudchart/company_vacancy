@@ -61,6 +61,8 @@ class User < ActiveRecord::Base
   has_many :pinboards, dependent: :destroy
   has_many :accessed_pinboards, through: :roles, source: :owner, source_type: 'Pinboard'
 
+  has_many :votes, as: :source
+
   # Roles on Pinboards
   #
   { readable: [:reader, :editor], writable: :editor, followable: :follower }.each do |scope, role|

@@ -10,6 +10,7 @@ PinStore    = require('stores/pin_store')
 Insight               = require('components/cards/insight_card')
 TabNav                = require('components/shared/tab_nav')
 ConnectedCollections  = require('components/insight/collections')
+Reflections           = require('components/insight/reflections')
 
 # Exports
 #
@@ -28,7 +29,7 @@ module.exports = React.createClass
 
 
   getInitialState: ->
-    currentTab: 'collections'
+    currentTab: 'reflections'
     ready:      false
 
 
@@ -41,11 +42,13 @@ module.exports = React.createClass
             parent {
               #{Insight.getQuery('pin')},
               edges {
-                connected_collections_ids
+                connected_collections_ids,
+                reflections_ids
               }
             },
             edges {
-              connected_collections_ids
+              connected_collections_ids,
+              reflections_ids
             }
           }
         """
@@ -70,6 +73,11 @@ module.exports = React.createClass
       id:       'collections'
       title:    'Collections'
       counter:  '' + Immutable.Set(@effective_pin().connected_collections_ids).size
+
+    tabs.push
+      id:       'reflections'
+      title:    'Reflections'
+      counter:  '' + @effective_pin().reflections_ids.length
 
     tabs
 
@@ -110,6 +118,8 @@ module.exports = React.createClass
     switch @state.currentTab
       when 'collections'
         <ConnectedCollections pin={ @effective_pin().id } />
+      when 'reflections'
+        <Reflections insight={ @effective_pin().id } />
       else
         null
 

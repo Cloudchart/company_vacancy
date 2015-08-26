@@ -76,3 +76,18 @@ json_edge! json, :is_editable, edges do
   Rails.logger.debug "USER: #{current_user.editor?} : #{pin.user.unicorn?}"
   current_user.editor? && pin.user.unicorn?
 end
+
+json_edge! json, :reflections_ids, edges do
+  preload_associations(siblings, cache, :reflections)
+  pin.reflections.map(&:id).uniq
+end
+
+json_edge! json, :users_votes_count, edges do
+  preload_associations(siblings, cache, :users_votes)
+  pin.users_votes.size
+end
+
+json_edge! json, :is_voted_by_viewer, edges do
+  preload_associations(siblings, cache, :users_votes)
+  !!pin.users_votes.find { |v| v.source_id == current_user.id }
+end
