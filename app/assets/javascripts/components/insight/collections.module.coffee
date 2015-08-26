@@ -77,6 +77,7 @@ module.exports = React.createClass
 
   renderCollections: ->
     Immutable.Seq(@state.pin.connected_collections_ids)
+      .toSet()
       .map (id) -> PinboardStore.get(id).toJS()
       .sortBy (collection) -> - collection.readers_count
       .map @renderCollection

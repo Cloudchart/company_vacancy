@@ -69,7 +69,7 @@ module.exports = React.createClass
     tabs.push
       id:       'collections'
       title:    'Collections'
-      counter:  '' + @effective_pin().connected_collections_ids.length
+      counter:  '' + Immutable.Set(@effective_pin().connected_collections_ids).size
 
     tabs
 
