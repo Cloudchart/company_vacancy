@@ -1,4 +1,4 @@
-json.partial! 'user', user: viewer, siblings: siblings, edges: edges, cache: cache
+json.partial! 'user', user: viewer, siblings: siblings, edges: edges, cache: cache, scope: scope
 
 # Edges
 #
