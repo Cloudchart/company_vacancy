@@ -42,10 +42,8 @@ class Pin < ActiveRecord::Base
   scope :insights, -> { where(parent: nil).where.not(content: nil) }
   scope :reflection,  -> { where(kind: 'reflection') }
 
-
   # Favorites / Reflection
   #
-
   def reflection_timeout_for(user)
     user.editor? ? 1.second.ago : 7.days.ago
   end
@@ -55,7 +53,6 @@ class Pin < ActiveRecord::Base
     reflection  = reflections.find { |r| r.user_id == user.id }
     reflection.nil? && favorite.present? && favorite.created_at < reflection_timeout_for(user)
   end
-
 
   def insight?
     parent_id.blank? && content.present?

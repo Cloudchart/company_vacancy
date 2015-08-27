@@ -5,7 +5,7 @@ class PinsController < ApplicationController
 
   authorize_resource
 
-  after_action :call_page_visit_to_slack_channel, only: :show
+  after_action :call_page_visit_to_slack_channel, only: [:show, :search]
   after_action :create_intercom_event, only: :create
   after_action :crawl_pin_origin, only: [:create, :update]
 
@@ -140,12 +140,17 @@ private
   end
 
   def call_page_visit_to_slack_channel
-    post_page_visit_to_slack_channel('insight', main_app.insight_url(@pin),
-      attachment: {
-        title: @pin.source(:user).full_name,
-        value: @pin.source(:content)
-      }
-    )
+    case action_name
+    when 'show'
+      post_page_visit_to_slack_channel('insight', main_app.insight_url(@pin),
+        attachment: {
+          title: @pin.source(:user).full_name,
+          value: @pin.source(:content)
+        }
+      )
+    when 'search'
+      post_page_visit_to_slack_channel('insights search', main_app.search_insights_url)
+    end
   end
 
 end

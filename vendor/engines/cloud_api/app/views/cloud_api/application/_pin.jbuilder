@@ -41,12 +41,10 @@ json_edge! json, :context, edges do
   end
 end
 
-
 json_edge! json, :should_show_reflection, edges do
   preload_associations(siblings, cache, :favorites)
   pin.should_show_reflection_for_user?(current_user)
 end
-
 
 json_edge! json, :is_origin_domain_allowed, edges do
   pin.is_origin_domain_allowed
