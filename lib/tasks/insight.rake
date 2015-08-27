@@ -30,12 +30,10 @@ namespace :cc do
 
   desc 'Updates blank insight origin with post url'
   task update_blank_insight_origin_with_post_url: :environment do
-    Pin.transaction do
-      Pin.insights.where(origin: nil, pinnable_type: 'Post').each do |pin|
-        pin.update(origin: Rails.application.routes.url_helpers.post_url(pin.pinnable))
-        DiffbotWorker.perform_async(pin.id, pin.class.name, :origin)
-        puts "insight #{pin.id} updated"
-      end
+    Pin.insights.where(origin: nil, pinnable_type: 'Post').each do |pin|
+      pin.update(origin: Rails.application.routes.url_helpers.post_url(pin.pinnable))
+      DiffbotWorker.perform_async(pin.id, pin.class.name, :origin)
+      puts "insight #{pin.id} updated"
     end
   end
 
