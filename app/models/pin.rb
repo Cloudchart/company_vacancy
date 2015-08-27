@@ -16,7 +16,7 @@ class Pin < ActiveRecord::Base
   has_should_markers :should_allow_domain_name
 
   before_save :skip_generate_preview!, unless: :insight?
-  before_save :squish_origin, :nullify_diffbot_response_owner
+  before_save :use_post_url_for_origin, :squish_origin, :nullify_diffbot_response_owner
 
   after_save :check_domain_from_origin
 
@@ -96,6 +96,12 @@ class Pin < ActiveRecord::Base
   end
 
 private
+
+  def use_post_url_for_origin
+    if origin.blank? && pinnable_type == 'Post'
+      self.origin = Rails.application.routes.url_helpers.post_url(pinnable)
+    end
+  end
 
   def squish_origin
     self.origin = origin.squish if origin_changed? && origin.present?

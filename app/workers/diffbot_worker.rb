@@ -51,7 +51,7 @@ private
     return nil unless object = response[:objects].try(:first)
     result = {}
 
-    result[:title] = object[:title]
+    result[:title] = object[:title] || response[:title]
 
     case response[:type]
     when 'article'
