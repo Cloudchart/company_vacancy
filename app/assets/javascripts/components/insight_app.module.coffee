@@ -120,7 +120,7 @@ module.exports = React.createClass
   componentDidUpdate: ->
     tabs = @gatherTabs()
     if tabs.length > 0
-      unless tabs.find((tab) => tab.id == @state.currentTab)
+      unless Immutable.List(tabs).find((tab) => tab.id == @state.currentTab)
         @setState
           currentTab: tabs[0].id
 

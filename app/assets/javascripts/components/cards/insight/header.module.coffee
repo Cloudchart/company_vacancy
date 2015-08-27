@@ -74,7 +74,7 @@ module.exports = React.createClass
       @setState
         ready:    true
         pin:      pin
-        viewer:   UserStore.me().deref().toJS()
+        viewer:   UserStore.me().deref(Immutable.Seq()).toJS()
         user:     UserStore.get(pin.user_id).toJS()
         pinboard: PinboardStore.get(pin.pinboard_id).toJS() if pin.pinboard_id
 
