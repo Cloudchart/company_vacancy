@@ -413,8 +413,6 @@ module.exports = React.createClass
   renderPinCommentInput: ->
     content = @state.attributes.get('content') || ''
 
-    console.log @props.uuid, @isCurrentUserSystemEditor()
-
     if !@props.uuid || @isCurrentUserSystemEditor()
       <textarea
         rows      = 5
