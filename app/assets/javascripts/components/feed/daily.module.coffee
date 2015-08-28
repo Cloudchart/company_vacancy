@@ -77,7 +77,7 @@ module.exports = React.createClass
   #
   renderHeader: ->
     <header>
-      <h1><strong>{ @state.date.format('LL') }</strong></h1>
+      <h1>{ @state.date.format('LL') }</h1>
     </header>
 
 
