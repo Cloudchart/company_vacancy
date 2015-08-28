@@ -90,6 +90,8 @@ class PinsController < ApplicationController
 private
 
   def autoapproval_granted?
+    return false if @pin.reflection?
+
     @pin.content.present? &&
     ((current_user.roles.reject(&:owner_id).map(&:value) & %w(admin editor unicorn trustee)).any? ||
     @pin.is_suggestion? && can?(:update, @pin.pinboard))
