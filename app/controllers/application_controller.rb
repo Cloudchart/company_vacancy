@@ -56,6 +56,14 @@ class ApplicationController < ActionController::Base
     )
   end
 
+  def redirect_back_or_root
+    if request.referer.present?
+      redirect_to :back
+    else
+      redirect_to main_app.root_path
+    end
+  end
+
 private
 
   def check_browser

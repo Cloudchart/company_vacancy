@@ -72,6 +72,21 @@ class PinsController < ApplicationController
     end
   end
 
+  def share
+    case params[:share_action]
+    when 'tweet'
+      redirect_to CloudApi::ApplicationController.helpers.twitter_share_url(
+        '',
+        text: @pin.source(:content),
+        user_twitter: @pin.source(:user).twitter
+      )
+    when 'share'
+      redirect_to CloudApi::ApplicationController.helpers.facebook_share_url(main_app.insight_url(@pin))
+    else
+      redirect_back_or_root
+    end
+  end
+
 private
 
   def autoapproval_granted?
