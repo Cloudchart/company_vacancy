@@ -12,7 +12,7 @@ Modes =
   INVITE: 'invite'
 
 ownerType  = 'Pinboard'
-roleValues = ['editor', 'reader']
+roleValues = ['editor', 'contributor', 'reader']
 
 # Main
 #

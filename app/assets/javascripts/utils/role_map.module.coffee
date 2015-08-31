@@ -22,13 +22,18 @@ RoleMap =
       name: 'Owner'
     editor: 
       name: 'Editor'
-      description: 'Allow to edit pinboard'
-      hint: 'Someone you trust.'
-      header: "pinboard and allow to edit"
+      description: 'Editor'
+      hint: 'Can edit collection settings, add or remove insights, invite other users'
+      # header: "and allow to edit"
+    contributor:
+      name: 'Contributor'
+      description: 'Contributor'
+      hint: "Can add insights, can't remove them or invite other users"
+      # header:
     reader:
       name: 'Reader'
-      description: 'View to only read'
-      hint: 'Who you want to see your pinboard.'
-      header: "pinboard"
+      description: 'Reader'
+      hint: 'Read-only access'
+      # header: "collection"
 
 module.exports = RoleMap

@@ -156,7 +156,7 @@ Component = React.createClass
           className = "transparent"
           iconClass = "fa-angle-left"
           onClick   = { @props.onBackClick } />
-        Share <strong>{ @getOwnerName() }</strong> { @getRoleCopy(@state.attributes.get('value')).header }
+        Share <strong>{ @getOwnerName() }</strong> collection { @getRoleCopy(@state.attributes.get('value')).header }
       </header>
 
       <form onSubmit={ @handleSubmit } >

@@ -69,9 +69,10 @@ class Ability
       #
       can [:follow, :unfollow, :search, :share], Pin
 
+      # TODO: separate actions
       can :create, Pin do |pin|
         if pin.pinboard
-          owner_or_editor?(current_user, pin.pinboard) ||
+          (owner?(current_user, pin.pinboard) || editor_or_contributor?(current_user, pin.pinboard)) ||
           (current_user.editor? && owner_or_editor?(pin.user, pin.pinboard)) ||
           (pin.is_suggestion? && pin.pinboard.suggestion_rights == 'anyone')
         elsif pin.kind == 'reflection'
@@ -137,6 +138,11 @@ class Ability
 
       can [:update, :settings, :manage_pinboard_invites], Pinboard do |pinboard|
         current_user.id == pinboard.user_id || editor?(current_user, pinboard)
+      end
+
+      can :add_insight, Pinboard do |pinboard|
+        (owner?(current_user, pinboard) || editor_or_contributor?(current_user, pinboard)) ||
+        (current_user.editor? && pinboard.user.unicorn?)
       end
 
       # Token
@@ -206,21 +212,27 @@ class Ability
 
 private
 
-  def editor?(user, object)
-    role_value(user, object) == 'editor'
+  %w(editor reader contributor).each do |role|
+    define_method("#{role}?") do |user, object|
+      role_value(user, object) == role
+    end
   end
 
-  def reader?(user, object)
-    role_value(user, object) == 'reader'
+  def owner?(user, object)
+    object.user_id == user.id
   end
 
   def reader_or_editor?(user, object)
     role_value(user, object) =~ /reader|editor/
   end
 
+  def editor_or_contributor?(user, object)
+    role_value(user, object) =~ /editor|contributor/
+  end
+
   def owner_or_editor?(user, object)
     return false unless object
-    object.user_id == user.id || editor?(user, object)
+    owner?(user, object) || editor?(user, object)
   end
 
   def trusted_reader?(user, object)

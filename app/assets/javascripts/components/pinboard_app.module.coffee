@@ -68,6 +68,7 @@ module.exports = React.createClass
               facebook_share_url,
               twitter_share_url,
               is_editable,
+              can_add_insight,
               pins_count
             }
           }
@@ -244,7 +245,7 @@ module.exports = React.createClass
     </header>
 
   renderAddInsightButton: ->
-    if @cursor.pinboard.get('is_editable') || (UserStore.isEditor() && UserStore.isUnicorn(@getOwner()))
+    if @cursor.pinboard.get('can_add_insight')
       <PinButton
         asTextButton = true
         title = { @cursor.pinboard.get('title') }
