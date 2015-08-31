@@ -145,7 +145,9 @@ private
   def create_intercom_event
     return unless should_perform_sidekiq_worker? && @pin.valid?
 
-    event_name = if @pin.is_suggestion?
+    event_name = if @pin.reflection?
+      'added-reflection'
+    elsif @pin.is_suggestion?
       'suggested-pin'
     elsif @pin.insight?
       'created-pin'

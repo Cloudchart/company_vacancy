@@ -72,6 +72,13 @@ private
       result[:pin_content] = pin.parent.content
       result[:parent_id] = pin.parent_id
       result[:pinboard_id] = pin.pinboard_id if pin.pinboard_id.present?
+    when 'added-reflection'
+      pin = options[:pin]
+      result[:pin_url] = insight_url(pin)
+      result[:parent_id] = pin.parent_id
+      result[:pin_content] = pin.content
+      result[:is_positive] = pin.is_approved?
+      result[:origin] = pin.origin if pin.origin.present?
     end
 
     result

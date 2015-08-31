@@ -37,6 +37,39 @@ private
 
   # payloads
   #
+  def get_added_reflection_payload(user, options)
+    result = {}
+    pin = options[:pin]
+
+    result[:text] = [
+      "#{get_name_for_user(user, options)}",
+      "added #{pin.is_approved? ? 'positive' : 'negative'} reflection",
+      "to <#{insight_url(pin)}|insight>"
+    ].join(' ')
+
+    result[:text] << " and provided the <#{pin.origin}|link>" if pin.origin.present?
+
+    result[:attachments] = [
+      fallback: result[:text],
+      color: '#008d36',
+      fields: [
+        title: pin.parent.user.full_name,
+        value: pin.parent.content
+      ]
+    ]
+
+    result[:attachments] += [
+      fallback: result[:text],
+      color: '#3dc669',
+      fields: [
+        title: pin.user.full_name,
+        value: pin.content
+      ]
+    ]
+
+    result
+  end
+
   def get_searched_insights_payload(user, options)
     result = {}
 
