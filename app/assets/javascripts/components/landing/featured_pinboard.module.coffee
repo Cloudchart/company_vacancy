@@ -168,7 +168,7 @@ module.exports = React.createClass
     opacity   = if (@state.opacityIndices.get(stackIndex) || 0) == i then 1 else 0
 
     <div key={ id } className="item" style={ opacity: opacity, pointerEvents: if opacity == 1 then 'auto' else 'none' }>
-      <InsightCard pin={ id } scope='pinboard' shouldRenderHeader={ true } />
+      <InsightCard pin={ id } scope='pinboard' shouldRenderHeader=false />
     </div>
 
 
