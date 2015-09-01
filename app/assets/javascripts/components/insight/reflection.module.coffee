@@ -4,10 +4,12 @@
 #
 
 GlobalState = require('global_state/state')
-PinStore    = require('stores/pin_store')
-UserStore   = require('stores/user_store.cursor')
+PinStore = require('stores/pin_store')
+UserStore = require('stores/user_store.cursor')
 
-PinSyncAPI  = require('sync/pin_sync_api')
+InsightOrigin = require('components/cards/insight/origin')
+
+PinSyncAPI = require('sync/pin_sync_api')
 
 # Exports
 #
@@ -30,6 +32,7 @@ module.exports = React.createClass
       reflection: ->
         """
           Pin {
+            #{InsightOrigin.getQuery('pin')},
             user,
             edges {
               users_votes_count,
@@ -113,6 +116,7 @@ module.exports = React.createClass
         { @getCursor('reflection').get('content') }
       </span>
       { @renderUser() }
+      <InsightOrigin pin = { @props.reflection } />
     </div>
 
 

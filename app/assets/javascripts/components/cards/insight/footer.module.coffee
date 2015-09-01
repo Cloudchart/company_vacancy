@@ -11,12 +11,9 @@ InsightStarButton    = require('components/cards/insight/star_button')
 InsightSaveButton    = require('components/cards/insight/save_button')
 InsightEditButton    = require('components/cards/insight/edit_button')
 InsightDropButton    = require('components/cards/insight/drop_button')
-
-NotificationsPushApi = require('push_api/notifications_push_api')
-
+InsightOrigin        = require('components/cards/insight/origin')
 
 cx = React.addons.classSet
-DOMAIN_RE = /^http[s]{0,1}\:\/\/([^\/]+)/i
 
 
 # Main component
@@ -45,13 +42,12 @@ module.exports = React.createClass
       pin: ->
 
         query = """
+          #{InsightOrigin.getQuery('pin')},
           #{InsightStarButton.getQuery('pin')},
           #{InsightDropButton.getQuery('pin')},
           edges {
-            is_origin_domain_allowed,
             is_mine,
             is_editable,
-            diffbot_response_data,
             is_followed
           }
         """
@@ -89,11 +85,6 @@ module.exports = React.createClass
 
   # Handlers
   #
-  handleOriginClick: (event) ->
-    NotificationsPushApi.post_to_slack('clicked_on_external_url',
-      pin_id: @state.pin.uuid
-      external_url: @state.insight.origin
-    )
 
 
   # Lifecycle
@@ -108,43 +99,9 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderTitle: ->
-    return null unless @state.insight.diffbot_response_data
-    return null unless title = @state.insight.diffbot_response_data.title
-
-    <span className="title">{ title + ', ' }</span>
-
-
-  renderEstimation: ->
-    return null unless @state.insight.diffbot_response_data
-    return null unless estimated_time = @state.insight.diffbot_response_data.estimated_time
-
-    <span className="estimation">
-      <span> &mdash; </span>
-      <i className="fa fa-clock-o" />
-      { moment.duration(estimated_time, 'seconds').humanize(); }
-    </span>
-
-
-  renderOrigin: ->
-    return null unless @state.insight.origin && @state.insight.is_origin_domain_allowed
-    return null unless (parts = DOMAIN_RE.exec(@state.insight.origin)) and parts.length == 2
-    [_, domain] = parts
-
-    <div className="origin">
-      { @renderTitle() }
-
-      <a href={ @state.insight.origin } target="_blank" onClick={ @handleOriginClick }>
-        { domain }
-      </a>
-
-      { @renderEstimation() }
-    </div>
-
-
   renderContent: ->
     <section className="content">
-      { @renderOrigin() }
+      <InsightOrigin pin = { @state.insight.uuid } />
     </section>
 
 
