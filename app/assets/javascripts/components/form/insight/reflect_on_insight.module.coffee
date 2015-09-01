@@ -128,7 +128,7 @@ module.exports = React.createClass
   renderLink: ->
     <label className="link">
       <span className="title">
-        Is there a post about that? The link:
+        Is there a post about that? Add a link:
       </span>
       <input
         type      = 'text'
