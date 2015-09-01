@@ -112,7 +112,9 @@ module.exports = React.createClass
       if @state.pin.is_suggestion
         @renderUserComment('suggested insight', prefix: 'to')
       else if @state.pin.kind == 'reflection'
-        @renderUserComment('added reflection – ' + @state.pin.content, icon: if @state.pin.is_approved then 'thumbs-o-up' else 'thumbs-o-down')
+        text = if @state.pin.content then "added reflection – #{@state.pin.content}" else 'added reflection'
+        icon = if @state.pin.is_approved then 'thumbs-o-up' else 'thumbs-o-down'
+        @renderUserComment(text, icon: icon)
       else if @state.pin.content
         @renderUserComment('— ' + @state.pin.content, icon: 'comment-o', prefix: 'in')
       else if @state.user.is_followed

@@ -100,7 +100,7 @@ InsightCard = React.createClass
   # Renderers
   #
   renderHeader: ->
-    return <noscript/> unless @shouldRenderHeader()
+    return null unless @shouldRenderHeader()
     <Header pin={ @state.pin.uuid } scope={ @props.scope } />
 
   renderReflection: ->

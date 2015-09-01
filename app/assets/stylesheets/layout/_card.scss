@@ -111,7 +111,7 @@ $card-hr: 1px solid whitesmoke;
     margin-top: $card-basic-space;
   }
 
-  > :first-child,
+  > :first-child:not(.content),
   > a > :first-child {
     margin-top: 0;
   }
