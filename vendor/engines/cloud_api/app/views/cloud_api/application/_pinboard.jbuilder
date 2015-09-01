@@ -89,6 +89,11 @@ json_edge! json, :is_invited, edges do
   !!pinboard.roles.find { |pinboard| pinboard.user_id == current_user.id && pinboard.pending_value.present? }
 end
 
+json_edge! json, :role_ids, edges do
+  preload_associations(siblings, cache, :roles)
+  pinboard.roles.map(&:id)
+end
+
 json_edge! json, :features, edges do
   preload_associations(siblings, cache, :features)
   pinboard.features.map do |f|

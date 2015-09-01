@@ -2,16 +2,16 @@
 
 # Imports
 #
-RoleMap       = require('utils/role_map')
+GlobalState = require('global_state/state')
 
-RoleStore     = require('stores/role_store.cursor')
+RoleStore = require('stores/role_store.cursor')
 
-getOwnerName   = require('utils/owners').getName
-getOwnerStore  = require('utils/owners').getStore
+CancelButton = require('components/form/buttons').CancelButton
+Tooltip = require('components/shared/tooltip')
 
-CancelButton  = require('components/form/buttons').CancelButton
-
-Tooltip       = require('components/shared/tooltip')
+RoleMap = require('utils/role_map')
+getOwnerName = require('utils/owners').getName
+getOwnerStore = require('utils/owners').getStore
 
 
 # Main
@@ -21,7 +21,6 @@ Component = React.createClass
   propTypes:
     user:        React.PropTypes.any
     role:        React.PropTypes.instanceOf(Immutable.Map)
-    token:       React.PropTypes.instanceOf(Immutable.Map)
     owner:       React.PropTypes.instanceOf(Immutable.Map).isRequired
     ownerType:   React.PropTypes.string.isRequired
     isUserOwner: React.PropTypes.bool
@@ -39,12 +38,7 @@ Component = React.createClass
   isPending: ->
     @props.role && @props.role.get('pending_value')
 
-  hasRequestedAccess: ->
-    @props.token
-
   getRoleValue: (roleValue) ->
-    return null if @hasRequestedAccess()
-
     if @isPending() then @props.role.get('pending_value') else @props.role.get('value')
 
     
@@ -52,30 +46,15 @@ Component = React.createClass
   #
   handleDeleteButtonClick: ->
     @setState isSyncing: true
-
-    if @props.role
-      RoleStore.destroy(@props.role.get('uuid'))
-    else if @props.token
-      getOwnerStore(@props.ownerType).denyAccess(@props.owner, @props.token)
+    RoleStore.destroy(@props.role.get('uuid'))
+    GlobalState.fetchEdges('Pinboard', @props.owner.get('uuid'), 'role_ids')
 
   handleRoleChange: (event) ->
-    if @props.role
-      RoleStore.update(@props.role.get('uuid'), { value: event.target.value })
-    else if @props.token
-      getOwnerStore(@props.ownerType).grantAccess(@props.owner, @props.token, event.target.value)
+    RoleStore.update(@props.role.get('uuid'), { value: event.target.value })
 
 
   # Renderers
   #
-  renderInviteMessage: ->
-    return null unless @hasRequestedAccess() && @props.token.get('data').get('message')
-
-    <article className="message">
-      <p>
-        { @props.token.get('data').get('message') }
-      </p>
-    </article>
-
   renderDeleteButton: ->
     return null if @props.isUserOwner
 
@@ -117,7 +96,6 @@ Component = React.createClass
 
   render: ->
     <li className="role-item">
-      { @renderInviteMessage() }
       { @renderDeleteButton() }
       { @renderUser() }
       

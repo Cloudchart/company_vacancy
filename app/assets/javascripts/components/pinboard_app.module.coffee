@@ -12,13 +12,13 @@ FavoriteStore = require('stores/favorite_store.cursor')
 
 # Components
 #
-PinboardSettings  = require('components/pinboards/settings')
-PinboardAccess    = require('components/pinboards/access_rights')
-PinboardPins      = require('components/pinboards/pins/pinboard')
-ModalStack        = require('components/modal_stack')
-InviteActions     = require('components/roles/invite_actions')
-RelatedUsers      = require('components/pinboards/related_users')
-TabNav            = require('components/shared/tab_nav')
+PinboardSettings   = require('components/pinboards/settings')
+PinboardAccess     = require('components/pinboards/access_rights')
+PinboardPins       = require('components/pinboards/pins/pinboard')
+ModalStack         = require('components/modal_stack')
+InviteActions      = require('components/roles/invite_actions')
+RelatedUsers       = require('components/pinboards/related_users')
+TabNav             = require('components/shared/tab_nav')
 
 SuggestButton = require('components/shared/suggest_button')
 PinButton = require('components/pinnable/pin_button')

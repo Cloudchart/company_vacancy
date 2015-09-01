@@ -2,6 +2,8 @@
 
 # Imports
 #
+GlobalState       = require('global_state/state')
+
 RoleMap           = require('utils/role_map')
 
 Buttons           = require('components/form/buttons') 
@@ -77,6 +79,7 @@ Component = React.createClass
       errors:      Immutable.Map()
       isSyncing:   false
 
+    GlobalState.fetchEdges('Pinboard', @props.ownerId, 'role_ids')
     @props.onBackClick()
 
   handleSubmitFail: (reason) ->

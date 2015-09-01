@@ -4,9 +4,9 @@
 #
 GlobalState      = require('global_state/state')
 
+PinboardStore    = require('stores/pinboard_store')
 RoleStore        = require("stores/role_store.cursor")
 UserStore        = require("stores/user_store.cursor")
-TokenStore       = require("stores/token_store.cursor")
 
 getOwnerStore    = require('utils/owners').getStore
 
@@ -26,22 +26,53 @@ Component = React.createClass
     onInviteClick: React.PropTypes.func.isRequired
     roleValues:    React.PropTypes.array.isRequired
 
-  mixins: [GlobalState.mixin]
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
+
+  statics:
+    queries:
+      pinboard: ->
+        """
+          Pinboard {
+            roles {
+              user
+            },
+            edges {
+              role_ids
+            }
+          }
+        """
+
+
+  fetch: ->
+    GlobalState.fetch(@getQuery('pinboard'), { id: @props.ownerId }).then (json) =>
+      @setState
+        ready: true
+
+
+  # Specification
+  #
+  getInitialState: ->
+    ready: false
 
   getDefaultProps: ->
     cursor:
-      roles:  RoleStore.cursor.items
-      tokens: TokenStore.cursor.items
-      users:  UserStore.cursor.items
+      roles: RoleStore.cursor.items
+      users: UserStore.cursor.items
+
+
+  # Lifecycle
+  #
+  componentDidMount: ->
+    @fetch()
 
 
   # Helpers
   #
-  getRoles: ->
-    RoleStore.rolesOn(@props.ownerId, @props.ownerType)
+  getPinboard: ->
+    PinboardStore.get(@props.ownerId)
 
-  getTokens: ->
-    TokenStore.filterAccessRequestsByOwner(@props.ownerId, @props.ownerType)
+  getRoles: ->
+    @getPinboard().get('role_ids').map (id) -> RoleStore.get(id)
 
   getOwner: ->
     getOwnerStore(@props.ownerType).cursor.items.get(@props.ownerId)
@@ -78,24 +109,12 @@ Component = React.createClass
             owner      = { @getOwner() }
             ownerType  = { @props.ownerType } />
         .valueSeq()
-    ).concat(
-      @getTokens()
-        .sortBy (token) -> token.get('created_at')
-        .map (token, index) => 
-          user = UserStore.cursor.items.get(token.get('target_id'))
-
-          <AccessItem
-            user       = { user }
-            token      = { token }
-            key        = { token.get('uuid') }
-            roleValues = { @props.roleValues }
-            owner      = { @getOwner() }
-            ownerType  = { @props.ownerType } />
-        .valueSeq()
     )
     .toArray()
 
   render: ->
+    return null unless @state.ready
+
     <section className="user-list">
       <ul>
         { @renderRoles() }
