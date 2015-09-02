@@ -115,6 +115,7 @@ module.exports = React.createClass
       <span className="content">
         { @getCursor('reflection').get('content') }
       </span>
+      <span> &mdash; </span>
       { @renderUser() }
       <InsightOrigin pin = { @props.reflection } />
     </div>
