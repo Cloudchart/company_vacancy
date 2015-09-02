@@ -2,12 +2,11 @@
 
 GlobalState = require('global_state/state')
 
-PinStore    = require('stores/pin_store')
+PinStore = require('stores/pin_store')
 
-Header      = require('components/cards/insight/header')
-Reflection  = require('components/cards/insight/reflection')
-Content     = require('components/cards/insight/content')
-Footer      = require('components/cards/insight/footer')
+Header = require('components/cards/insight/header')
+Content = require('components/cards/insight/content')
+Footer = require('components/cards/insight/footer')
 
 
 # Main component
@@ -15,25 +14,13 @@ Footer      = require('components/cards/insight/footer')
 InsightCard = React.createClass
 
   displayName: "InsightCard"
-
-
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
-
   propTypes:
-    pin:    React.PropTypes.string.isRequired
-    scope:  React.PropTypes.string.isRequired
-
-
-  getDefaultProps: ->
-    shouldRenderHeader: true
-    shouldRenderFooter: true
-
-
-  getInitialState: ->
-    pin:    {}
-    ready:  false
-
+    pin: React.PropTypes.string.isRequired
+    scope: React.PropTypes.string.isRequired
+    shouldRenderHeader: React.PropTypes.bool
+    shouldRenderFooter: React.PropTypes.bool
 
   statics:
     queries:
@@ -49,14 +36,8 @@ InsightCard = React.createClass
           Pin {
             id,
             #{pinQuery},
-            edges {
-              should_show_reflection
-            },
             parent {
-              #{pinParentQuery},
-              edges {
-                should_show_reflection
-              }
+              #{pinParentQuery}
             }
           }
         """
@@ -74,17 +55,15 @@ InsightCard = React.createClass
         insight:  parent_pin || pin
 
 
-  # Helpers
+  # Specifications
   #
-  shouldShowReflection: ->
-    @getCursor('insight').get('should_show_reflection')
+  getDefaultProps: ->
+    shouldRenderHeader: true
+    shouldRenderFooter: true
 
-  shouldRenderHeader: ->
-    @props.shouldRenderHeader and !@shouldShowReflection()
-
-
-  # Events
-  #
+  getInitialState: ->
+    pin:    {}
+    ready:  false
 
 
   # Lifecycle
@@ -92,20 +71,23 @@ InsightCard = React.createClass
   componentDidMount: ->
     @fetch()
 
-
   componentDidUpdate: ->
     @props.onUpdate() if typeof @props.onUpdate is 'function'
+
+
+  # Helpers
+  #
+
+
+  # Events
+  #
 
 
   # Renderers
   #
   renderHeader: ->
-    return null unless @shouldRenderHeader()
+    return null unless @props.shouldRenderHeader
     <Header pin={ @state.pin.uuid } scope={ @props.scope } />
-
-  renderReflection: ->
-    return null unless @shouldShowReflection()
-    <Reflection insight={ @state.insight.id } />
 
   renderContent: ->
     <Content pin = { @state.pin.parent_id || @state.pin.uuid } url = { @state.pin.url } />
@@ -126,7 +108,6 @@ InsightCard = React.createClass
 
       <div className={ className }>
         { @renderHeader() }
-        { @renderReflection() }
         { @renderContent() }
         { @renderFooter() }
       </div>

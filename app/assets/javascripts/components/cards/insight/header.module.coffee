@@ -1,10 +1,14 @@
 # @cjsx React.DOM
 
-GlobalState     = require('global_state/state')
+GlobalState = require('global_state/state')
 
-PinStore        = require('stores/pin_store')
-UserStore       = require('stores/user_store.cursor')
-PinboardStore   = require('stores/pinboard_store')
+PinStore = require('stores/pin_store')
+UserStore = require('stores/user_store.cursor')
+PinboardStore = require('stores/pinboard_store')
+
+Reflection = require('components/cards/insight/header/reflection')
+Pinboard = require('components/cards/insight/header/pinboard')
+Feed = require('components/cards/insight/header/feed')
 
 
 # Utils
@@ -38,31 +42,17 @@ module.exports = React.createClass
               edges {
                 is_followed
               }
+            },
+            parent {
+              edges {
+                should_show_reflection
+              }
+            },
+            edges {
+              should_show_reflection
             }
           }
         """
-
-
-  # Component Specifications
-  #
-
-  getDefaultProps: ->
-    scope:                'pinboard'
-    shouldRenderPinboard: true
-
-
-  getInitialState: ->
-    ready:      false
-    pin:        {}
-    user:       {}
-    pinboard:   {}
-
-
-  # Lifecycle Methods
-  #
-
-  componentDidMount: ->
-    @fetch()
 
 
   # Fetchers
@@ -77,6 +67,24 @@ module.exports = React.createClass
         viewer:   UserStore.me().deref(Immutable.Seq()).toJS()
         user:     UserStore.get(pin.user_id).toJS()
         pinboard: PinboardStore.get(pin.pinboard_id).toJS() if pin.pinboard_id
+
+
+  # Component Specifications
+  #
+  getDefaultProps: ->
+    scope: 'pinboard'
+
+  getInitialState: ->
+    ready:      false
+    pin:        {}
+    user:       {}
+    pinboard:   {}
+
+
+  # Lifecycle Methods
+  #
+  componentDidMount: ->
+    @fetch()
 
 
   renderIcon: (icon) ->
@@ -132,33 +140,15 @@ module.exports = React.createClass
         </section>
 
 
-  # Render pinboard header content
-  #
-  renderPinboardScopeContent: ->
-    return null unless @state.pin.parent_id
-
-    if @state.pinboard.is_editable
-      if @state.pin.is_suggestion
-        @renderUserComment('suggested insight')
-      else if @state.pin.content
-        @renderUserComment('— ' + @state.pin.content)
-      else
-        @renderUserComment('added insight')
-    else
-      @renderUserComment('— ' + @state.pin.content) if @state.pin.content unless @state.pin.is_suggestion
-
-
-  renderContent: ->
-    switch @props.scope
-      when 'feed'       then @renderFeedScopeContent()
-      when 'pinboard'   then @renderPinboardScopeContent()
-      else null
-
-
   # Main render
   #
   render: ->
     return null unless @state.ready
-    return null unless content = @renderContent()
 
-    <header>{ content }</header>
+    if @state.pin.should_show_reflection
+      <Reflection insight={ @state.pin.id } />
+    else
+      switch @props.scope
+        when 'pinboard' then <Pinboard pin = { @state.pin } />
+        when 'feed' then <Feed />
+        else null
