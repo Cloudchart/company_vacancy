@@ -91,7 +91,7 @@ module.exports = React.createClass
     return null unless @state.ready && @state.pinboard.is_editable && @state.pin.parent_id
 
     <header>
-      <section key="title" className="title">
+      <section className="title">
         <a className='user' href={ @state.user.url }>{ @state.user.full_name }</a>
         <span className='comment'>{ @getComment() }</span>
       </section>
