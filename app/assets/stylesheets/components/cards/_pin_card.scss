@@ -12,6 +12,7 @@ $insight-card-footer-content-line-height: 20px;
   font-size: $insight-card-font-size;
   font-weight: $insight-card-font-weight;
   line-height: $insight-card-line-height;
+  padding: 0 20px 20px 20px;
 }
 
 
@@ -37,17 +38,17 @@ $insight-card-footer-content-line-height: 20px;
   padding: $insight-card-padding;
   padding-left: $insight-card-padding;
 
-  > i {
-    color: hsl(60, 4%, 89%);
-    display: block;
-    float: left;
-    font-size: inherit;
-    line-height: $insight-card-font-size;
-    width: 30px;
-  }
-
   > section.title {
     @include flex(1);
+
+    > i {
+      color: hsl(60, 4%, 89%);
+      display: block;
+      float: left;
+      font-size: inherit;
+      line-height: $insight-card-font-size;
+      width: 30px;
+    }
 
     > *::after {
       display: inline;
