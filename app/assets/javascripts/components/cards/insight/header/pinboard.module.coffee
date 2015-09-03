@@ -1,6 +1,10 @@
 # @cjsx React.DOM
 
+GlobalState = require('global_state/state')
+
 UserStore = require('stores/user_store.cursor')
+PinStore = require('stores/pin_store')
+PinboardStore = require('stores/pinboard_store')
 
 # cx = React.addons.classSet
 
@@ -10,47 +14,65 @@ UserStore = require('stores/user_store.cursor')
 module.exports = React.createClass
 
   displayName: 'InsightCardHeaderPinboard'
-  # mixins: []
+  mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   propTypes:
-    pin: React.PropTypes.object.isRequired
+    pin: React.PropTypes.string.isRequired
 
-  # statics: {}
+  statics:
+    queries:
+      pin: ->
+        """
+          Pin {
+            pinboard {
+              edges {
+                is_editable
+              }
+            }
+          }
+        """
 
 
   # Fetchers
   #
-  # fetch: ->
+  fetch: ->
+    GlobalState.fetch(@getQuery('pin'), { id: @props.pin }).then =>
+      pin = PinStore.get(@props.pin).toJS()
+
+      @setState
+        ready: true
+        pin: pin
+        user: UserStore.get(pin.user_id).toJS()
+        pinboard: PinboardStore.get(pin.pinboard_id).toJS()
 
 
   # Component Specifications
   #
   # getDefaultProps: ->
-  # getInitialState: ->
+
+  getInitialState: ->
+    ready: false
+    pin: {}
+    user: {}
+    pinboard: {}
 
 
   # Lifecycle Methods
   #
-  componentWillMount: ->
-    @cursor =
-      user: UserStore.get(@props.pin.user_id).toJS()
+  # componentWillMount: ->
 
-  # componentDidMount: ->
+  componentDidMount: ->
+    @fetch()
+
   # componentWillUnmount: ->
 
 
   # Helpers
   #
   getComment: ->
-    if @state.pinboard.is_editable
-      if @state.pin.is_suggestion
-        @renderUserComment('suggested insight')
-      else if @state.pin.content
-        @renderUserComment('— ' + @state.pin.content)
-      else
-        @renderUserComment('added insight')
-    else
-      @renderUserComment('— ' + @state.pin.content) if @state.pin.content unless @state.pin.is_suggestion
+    if @state.pin.is_suggestion then 'suggested insight'
+    else if @state.pin.content then "— #{@state.pin.content}"
+    else 'added insight'
 
 
   # Handlers
@@ -66,11 +88,11 @@ module.exports = React.createClass
   # Main render
   #
   render: ->
-    return null unless @props.pin.parent_id
+    return null unless @state.ready && @state.pinboard.is_editable && @state.pin.parent_id
 
     <header>
       <section key="title" className="title">
-        <a className='user' href={ @cursor.user.url }>{ @cursor.user.full_name }</a>
+        <a className='user' href={ @state.user.url }>{ @state.user.full_name }</a>
         <span className='comment'>{ @getComment() }</span>
       </section>
     </header>

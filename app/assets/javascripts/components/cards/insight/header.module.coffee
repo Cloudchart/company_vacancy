@@ -33,11 +33,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
-            pinboard {
-              edges {
-                is_editable
-              }
-            },
+            #{Pinboard.getQuery('pin')},
             user {
               edges {
                 is_followed
@@ -149,6 +145,6 @@ module.exports = React.createClass
       <Reflection insight={ @state.pin.id } />
     else
       switch @props.scope
-        when 'pinboard' then <Pinboard pin = { @state.pin } />
+        when 'pinboard' then <Pinboard pin = { @state.pin.id } />
         when 'feed' then <Feed />
         else null
