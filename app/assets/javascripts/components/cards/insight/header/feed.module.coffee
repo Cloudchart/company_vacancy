@@ -24,6 +24,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            pinboard,
             user {
               edges {
                 is_followed

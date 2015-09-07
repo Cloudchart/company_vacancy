@@ -24,6 +24,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            user,
             pinboard {
               edges {
                 is_editable
