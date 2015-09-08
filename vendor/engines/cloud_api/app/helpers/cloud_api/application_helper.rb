@@ -16,7 +16,7 @@ module CloudApi
 
     def twitter_share_url(url, options={})
       uri = URI.parse('https://twitter.com/intent/tweet')
-      text = truncate(options[:text].to_s, length: 90, separator: ' ')
+      text = truncate(options[:text].to_s, length: 90, separator: ' ', escape: false)
       text = "#{text} @#{options[:user_twitter]}" if options[:user_twitter]
 
       params = {
