@@ -58,14 +58,16 @@ private
       ]
     ]
 
-    result[:attachments] += [
-      fallback: result[:text],
-      color: '#3dc669',
-      fields: [
-        title: pin.user.full_name,
-        value: pin.content
+    if pin.content.present?
+      result[:attachments] += [
+        fallback: result[:text],
+        color: '#3dc669',
+        fields: [
+          title: pin.user.full_name,
+          value: pin.content
+        ]
       ]
-    ]
+    end
 
     result
   end

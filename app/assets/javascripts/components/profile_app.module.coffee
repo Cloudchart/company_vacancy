@@ -184,9 +184,8 @@ module.exports = React.createClass
       <header>
         <h1>Starred Insights</h1>
       </header>
-      <FavoriteInsights user={ @props.uuid } />
+      <FavoriteInsights key = { 'favirite-insights' } user={ @props.uuid } />
     </section>
-
 
 
   renderInsights: ->
@@ -196,7 +195,7 @@ module.exports = React.createClass
 
     if counter > 0
       [
-        <UserInsights user={ @props.uuid } />
+        <UserInsights key={ 'user-insights' } user={ @props.uuid } />
         @renderFavoriteInsights()
       ]
     else
@@ -221,7 +220,7 @@ module.exports = React.createClass
       when 'insights'
         @renderInsights()
 
-      when 'favorites'
+      when 'following'
         <UserFavorites user = { @props.uuid } />
 
       when 'companies'
@@ -263,7 +262,7 @@ module.exports = React.createClass
 
     if favorites_count > 0
       tabs.push
-        id: 'favorites'
+        id: 'following'
         title: 'Following'
         counter: ['', '' + favorites_count][~~!!favorites_count]
 
