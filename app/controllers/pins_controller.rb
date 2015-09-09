@@ -8,6 +8,7 @@ class PinsController < ApplicationController
   after_action :call_page_visit_to_slack_channel, only: [:show, :search]
   after_action :create_intercom_event, only: :create
   after_action :crawl_pin_origin, only: [:create, :update]
+  after_action :notify_followers, only: :create
 
   def search
     respond_to do |format|
@@ -135,6 +136,10 @@ private
     fields = default_fields << [:origin]
     fields << [:user_id, :content] if current_user.editor?
     fields
+  end
+
+  def notify_followers
+    # NotificationsWorker.perform_in(5.minutes, )
   end
 
   def crawl_pin_origin
