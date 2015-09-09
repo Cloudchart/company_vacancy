@@ -5,6 +5,7 @@ GlobalState        = require('global_state/state')
 ProfileInfo         = require('components/profile/info')
 UserPins            = require('components/pinboards/pins/user')
 UserInsights        = require('components/profile/insights')
+UserFavorites       = require('components/profile/favorites')
 UserCompanies       = require('components/company/lists/user')
 UserFeed            = require('components/user/feed')
 UserPinboards       = require('components/pinboards/lists/user')
@@ -69,6 +70,7 @@ module.exports = React.createClass
           User {
             #{UserPinboards.getQuery('pinboards')},
             #{UserCompanies.getQuery('user')},
+            #{UserFavorites.getQuery('user')},
             edges {
               insights_ids,
               favorite_insights_ids,
@@ -126,6 +128,12 @@ module.exports = React.createClass
 
   getFavoriteInsightsCount: ->
     @cursor.user.get('favorite_insights_ids').size
+
+  getFavoritePinboardsCount: ->
+    @cursor.user.get('favorite_pinboard_ids').size
+
+  getFavoriteUsersCount: ->
+    0
 
 
   # Handlers
@@ -213,6 +221,9 @@ module.exports = React.createClass
       when 'insights'
         @renderInsights()
 
+      when 'favorites'
+        <UserFavorites user = { @props.uuid } />
+
       when 'companies'
         @renderCompanies()
 
@@ -228,6 +239,10 @@ module.exports = React.createClass
 
   gatherTabs: ->
     tabs = []
+
+    favorite_pinboards_count = @getFavoritePinboardsCount()
+    favorite_users_count = @getFavoriteUsersCount()
+    favorites_count = favorite_pinboards_count + favorite_users_count
 
     companies_count         = @getCompaniesNumber()
     insights_count          = @getInsightsNumber()
@@ -245,6 +260,12 @@ module.exports = React.createClass
       id:       'insights'
       title:    'Insights'
       counter:  ['', '' + insights_count][~~!!insights_count]
+
+    if favorites_count > 0
+      tabs.push
+        id: 'favorites'
+        title: 'Following'
+        counter: ['', '' + favorites_count][~~!!favorites_count]
 
     if @cursor.viewer.get('is_admin') || @cursor.viewer.get('is_editor')
       tabs.push
