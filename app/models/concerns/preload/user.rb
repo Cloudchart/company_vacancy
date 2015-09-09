@@ -21,6 +21,7 @@ module Preload::User
     acts_as_preloadable :feed_pins, pinboards_favorites: { pinboard: :pins }, users_favorites: { favoritable_user: :pins }
     acts_as_preloadable :insights, :pins
     acts_as_preloadable :favorite_insights, insights_favorites: :favoritable_pin
+    acts_as_preloadable :favorite_users, users_favorites: :favoritable_user
 
 
     def companies_through_roles(scope = {})
@@ -74,6 +75,10 @@ module Preload::User
 
     def favorite_insights
       insights_favorites.map(&:favoritable_pin)
+    end
+
+    def favorite_users
+      users_favorites.map(&:favoritable_user)
     end
 
   private

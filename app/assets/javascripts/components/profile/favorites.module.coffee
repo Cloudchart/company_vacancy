@@ -6,6 +6,7 @@ UserStore = require('stores/user_store.cursor')
 
 ListOfCards = require('components/cards/list_of_cards')
 PinboardCard = require('components/cards/pinboard_card')
+UserCard = require('components/cards/user_card')
 
 # cx = React.addons.classSet
 
@@ -28,8 +29,10 @@ module.exports = React.createClass
             favorite_pinboards {
               #{PinboardCard.getQuery('pinboard')}
             },
+            favorite_users,
             edges {
-              favorite_pinboard_ids
+              pinboards_favorites,
+              users_favorites
             }
           }
         """
@@ -74,9 +77,19 @@ module.exports = React.createClass
 
   # Renderers
   #
+  renderFavorite: (favorite) ->
+    switch favorite.favoritable_type
+      when 'Pinboard'
+        <PinboardCard key = { favorite.favoritable_id } pinboard = { favorite.favoritable_id } />
+      when 'User'
+        <UserCard key = { favorite.favoritable_id } user = { favorite.favoritable_id } />
+
   renderFavorites: ->
-    @state.user.favorite_pinboard_ids.map (id) ->
-      <PinboardCard key = { id } pinboard = { id } />
+    Immutable.Seq(@state.user.pinboards_favorites.concat(@state.user.users_favorites))
+      .sortBy (favorite) -> favorite.created_at
+      .reverse()
+      .map @renderFavorite
+      .toArray()
 
 
   # Main render
@@ -84,7 +97,7 @@ module.exports = React.createClass
   render: ->
     return null unless @state.ready
 
-    <section className="cc-container-common">
+    <section className="cc-container-common favorites">
       <ListOfCards>
         { @renderFavorites() }
       </ListOfCards>

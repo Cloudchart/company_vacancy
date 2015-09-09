@@ -102,10 +102,29 @@ json_edge! json, :related_pinboards, edges do
   end
 end
 
-json_edge! json, :favorite_pinboard_ids, edges do
-  User.preload_favorite_pinboards(siblings, cache)
-  user.favorite_pinboards({ current_user: current_user }).map(&:id)
+
+json_edge! json, :pinboards_favorites, edges do
+  preload_associations(siblings, cache, :pinboards_favorites)
+  user.pinboards_favorites.map do |favorite|
+    {
+      favoritable_id: favorite.favoritable_id,
+      favoritable_type: favorite.favoritable_type,
+      created_at: favorite.created_at
+    }
+  end
 end
+
+json_edge! json, :users_favorites, edges do
+  preload_associations(siblings, cache, :users_favorites)
+  user.users_favorites.map do |favorite|
+    {
+      favoritable_id: favorite.favoritable_id,
+      favoritable_type: favorite.favoritable_type,
+      created_at: favorite.created_at
+    }
+  end
+end
+
 
 json_edge! json, :pinboards, edges do
   preload_associations(siblings, cache, :pinboards)
