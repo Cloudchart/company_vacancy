@@ -30,11 +30,11 @@ module.exports = React.createClass
       pinboards: ->
         """
           User {
-            related_pinboards {
+            pinboards {
               #{PinboardCard.getQuery('pinboard')}
             },
             edges {
-              related_pinboards
+              pinboard_ids
             }
           }
         """
@@ -69,8 +69,8 @@ module.exports = React.createClass
 
 
   renderPinboards: ->
-    @cursor.user.get('related_pinboards')
-      .map (pinboard) -> PinboardStore.get(pinboard.get('id')).toJS()
+    @cursor.user.get('pinboard_ids')
+      .map (id) -> PinboardStore.get(id).toJS()
       .sortBy (pinboard) -> +!pinboard.is_invited + pinboard.title
       .map @renderPinboard
       .toArray()

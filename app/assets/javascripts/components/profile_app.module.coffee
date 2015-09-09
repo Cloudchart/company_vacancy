@@ -121,8 +121,7 @@ module.exports = React.createClass
 
 
   getPinboardsNumber: ->
-    #PinboardStore.filterUserPinboards(@props.uuid).size
-    @cursor.user.get('related_pinboards').size
+    @cursor.user.get('pinboard_ids').size
 
 
   getFavoriteInsightsCount: ->

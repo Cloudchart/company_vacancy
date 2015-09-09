@@ -113,6 +113,11 @@ json_edge! json, :pinboards, edges do
   end
 end
 
+json_edge! json, :pinboard_ids, edges do
+  preload_associations(siblings, cache, :pinboards)
+  user.pinboards.map(&:id)
+end
+
 json_edge! json, :pinboards_through_roles, edges do
   User.preload_pinboards_through_roles(siblings, cache)
 
