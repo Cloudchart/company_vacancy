@@ -3,8 +3,7 @@ class PinboardsController < ApplicationController
 
   before_action :set_pinboard, only: [:show, :settings, :update, :destroy]
 
-  load_and_authorize_resource except: [:create, :show, :index]
-  authorize_resource only: :index, class: controller_name.to_sym
+  load_and_authorize_resource except: [:create, :show]
 
   after_action :create_intercom_event, only: :create
   after_action :call_page_visit_to_slack_channel, only: [:show, :index]

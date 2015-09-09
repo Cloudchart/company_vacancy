@@ -14,14 +14,14 @@ if user_authenticated?
   user = { id: current_user.id, name: current_user.full_name, url: user_path(current_user) }
 end
 
-if can?(:index, :pinboards)
+if can?(:index, Pinboard)
   links << {
     title: 'Collections',
     url: current_page?(main_app.collections_path) ? nil : main_app.collections_path
   }
 end
 
-if can?(:index, :companies)
+if can?(:index, Company)
   links << {
     title: 'Companies',
     is_beta: true,

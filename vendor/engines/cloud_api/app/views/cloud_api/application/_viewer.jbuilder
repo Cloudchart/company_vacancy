@@ -41,3 +41,11 @@ json_edge! json, :feed_dates, edges do
   dates.concat viewer.feed_features.map { |f| f.effective_from.to_date }
   dates.uniq.sort
 end
+
+json_edge! json, :is_admin, edges do
+  viewer.admin?
+end
+
+json_edge! json, :is_editor, edges do
+  viewer.editor?
+end

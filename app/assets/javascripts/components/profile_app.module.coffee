@@ -56,7 +56,11 @@ module.exports = React.createClass
           Viewer {
             favorites,
             system_roles,
-            roles
+            roles,
+            edges {
+              is_admin,
+              is_editor
+            }
           }
         """
 
@@ -243,10 +247,11 @@ module.exports = React.createClass
       title:    'Insights'
       counter:  ['', '' + insights_count][~~!!insights_count]
 
-    tabs.push
-      id:       'companies'
-      title:    'Companies'
-      counter:  ['', '' + companies_count][~~!!companies_count]
+    if @cursor.viewer.get('is_admin') || @cursor.viewer.get('is_editor')
+      tabs.push
+        id:       'companies'
+        title:    'Companies'
+        counter:  ['', '' + companies_count][~~!!companies_count]
 
     if @cursor.user.get('is_editable')
       tabs.push

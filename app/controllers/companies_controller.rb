@@ -11,8 +11,7 @@ class CompaniesController < ApplicationController
     :settings
   ]
 
-  load_and_authorize_resource except: [:index, :search]
-  authorize_resource only: [:index, :search], class: controller_name.to_sym
+  load_and_authorize_resource
 
   after_action :call_page_visit_to_slack_channel, only: [:index, :show]
   after_action :create_intercom_event, only: [:new, :update]
@@ -25,10 +24,6 @@ class CompaniesController < ApplicationController
   def search
     respond_to do |format|
       format.html { render :index }
-      format.json {
-        @companies = Company.search(params)
-        render :index
-      }
     end
   end
 

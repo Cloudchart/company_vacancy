@@ -1,1 +1,0 @@
-json.partial! 'companies/temp', companies: @companies

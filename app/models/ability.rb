@@ -10,9 +10,7 @@ class Ability
       can :read, Landing
       can [:search, :share], Pin
       can :read, Pin, is_approved: true
-      can :read, Company, is_published: true
-      can [:index, :search], :companies
-      can :index, :pinboards
+      can :index, Pinboard
       can [:create, :verify], GuestSubscription
 
       can :read, Pinboard do |pinboard|
@@ -23,19 +21,12 @@ class Ability
         !user.guest?
       end
 
-      can :read, Post do |post|
-        post.company.is_published? && post.public?
-      end
-
     # Regular user
     #
     else
       can :manage, :cloud_profile_main
       can :update, :cloud_profile_user
-      can [:read, :accept, :destroy], :company_invite
 
-      can :read, Paragraph
-      can :create, Tag
       can :create, Activity
       can [:create, :verify, :resend_verification], Email
       can :destroy, Email, user_id: current_user.id
@@ -95,37 +86,9 @@ class Ability
         pin.user_id == current_user.id || current_user.editor?
       end
 
-      # Company
-      #
-      can :manage, Company, user_id: current_user.id
-      can [:follow, :unfollow], Company
-      can :read, Company, is_published: true
-      can [:index, :search], :companies
-
-      can :create, Company do
-        current_user.editor?
-      end
-
-      can [:read, :update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file, :reposition_blocks], Company do |company|
-        editor?(current_user, company)
-      end
-
-      can [:read, :finance], Company do |company|
-        trusted_reader?(current_user, company)
-      end
-
-      can :read, Company do |company|
-        public_reader?(current_user, company)
-      end
-
-      can :manage_company_invites, Company do |company|
-        owner_or_editor?(current_user, company)
-      end
-
       # Pinboard
       #
-      can :index, :pinboards
-      can :create, Pinboard
+      can [:create, :index], Pinboard
       can [:destroy], Pinboard, user_id: current_user.id
 
       can [:read, :follow, :unfollow], Pinboard do |pinboard|
@@ -189,25 +152,58 @@ class Ability
 
       # Miscellaneous
       #
-      cannot [:create, :update], Quote do |quote|
-        quote.company && !quote.company.people.include?(quote.person)
-      end
-
-      can :manage, [Person, Block, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
-        owner_or_editor?(current_user, resource.company)
-      end
-
       can :manage, Visibility do |visibility|
         owner_or_editor?(current_user, visibility.owner.try(:owner))
       end
 
-      can :read, Post do |post|
-        ((post.company.is_published? || public_reader?(current_user, post.company)) && (post.visibilities.blank? || post.visibility.value == 'public')) ||
-        (post.visibility.try(:value) == 'trusted' && trusted_reader?(current_user, post.company))
+      # Admin or Editor
+      #
+      if current_user.admin? || current_user.editor?
+        # Company
+        #
+        can :manage, Company, user_id: current_user.id
+        can :read, Company, is_published: true
+        can [:index, :search, :follow, :unfollow, :create], Company
+
+        can [:read, :update, :finance, :settings, :access_rights, :verify_site_url, :download_verification_file, :reposition_blocks], Company do |company|
+          editor?(current_user, company)
+        end
+
+        can [:read, :finance], Company do |company|
+          trusted_reader?(current_user, company)
+        end
+
+        can :read, Company do |company|
+          public_reader?(current_user, company)
+        end
+
+        can :manage_company_invites, Company do |company|
+          owner_or_editor?(current_user, company)
+        end
+
+        # Company nested resources
+        #
+        can :manage, [Person, Block, Post, Story, Quote, PostsStory, Paragraph, Picture] do |resource|
+          owner_or_editor?(current_user, resource.company)
+        end
+
+        # Miscellaneous
+        #
+        can [:read, :accept, :destroy], :company_invite
+        can :create, Tag
+        can :read, Paragraph
+
+        can :read, Post do |post|
+          ((post.company.is_published? || public_reader?(current_user, post.company)) && (post.visibilities.blank? || post.visibility.value == 'public')) ||
+          (post.visibility.try(:value) == 'trusted' && trusted_reader?(current_user, post.company))
+        end
+
+        cannot [:create, :update], Quote do |quote|
+          quote.company && !quote.company.people.include?(quote.person)
+        end
       end
 
     end
-
   end
 
 private
