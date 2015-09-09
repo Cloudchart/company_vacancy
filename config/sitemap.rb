@@ -34,18 +34,6 @@ SitemapGenerator::Sitemap.create do
     add user_path(user), lastmod: user.updated_at, changefreq: 'daily'
   end
 
-  # Companies
-  #
-  Company.published.find_each do |company|
-    add company_path(company), lastmod: company.updated_at
-
-    # Posts
-    #
-    company.posts.only_public.find_each do |post|
-      add post_path(post), lastmod: post.updated_at
-    end
-  end
-
   # Pages
   #
   Page.find_each do |page|
