@@ -2,6 +2,7 @@
 
 GlobalState = require('global_state/state')
 
+PinboardStore = require('stores/pinboard_store')
 UserStore = require('stores/user_store.cursor')
 
 ListOfCards = require('components/cards/list_of_cards')
@@ -77,18 +78,46 @@ module.exports = React.createClass
 
   # Renderers
   #
-  renderFavorite: (favorite) ->
-    switch favorite.favoritable_type
-      when 'Pinboard'
-        <PinboardCard key = { favorite.favoritable_id } pinboard = { favorite.favoritable_id } />
-      when 'User'
-        <UserCard key = { favorite.favoritable_id } user = { favorite.favoritable_id } />
+  renderUsers: ->
+    return null unless @state.user.users_favorites.length > 0
 
-  renderFavorites: ->
-    Immutable.Seq(@state.user.pinboards_favorites.concat(@state.user.users_favorites))
-      .sortBy (favorite) -> favorite.created_at
-      .reverse()
-      .map @renderFavorite
+    <section className="cc-container-common favorites users">
+      <header>
+        <h1>People</h1>
+      </header>
+
+      <ListOfCards>
+        { @renderUserCards() }
+      </ListOfCards>
+    </section>
+
+  renderUserCards: ->
+    users = @state.user.users_favorites.map (favorite) -> UserStore.get(favorite.favoritable_id)
+
+    Immutable.Seq(users)
+      .sortBy (user) -> user.get('full_name')
+      .map (user) -> <UserCard key={ user.get('uuid') } user={ user.get('uuid') } />
+      .toArray()
+
+  renderPinboards: ->
+    return null unless @state.user.pinboards_favorites.length > 0
+
+    <section className="cc-container-common">
+      <header>
+        <h1>Collections</h1>
+      </header>
+
+      <ListOfCards>
+        { @renderPinboardCards() }
+      </ListOfCards>
+    </section>
+
+  renderPinboardCards: ->
+    pinboards = @state.user.pinboards_favorites.map (favorite) -> PinboardStore.get(favorite.favoritable_id)
+
+    Immutable.Seq(pinboards)
+      .sortBy (pinboard) -> pinboard.get('title')
+      .map (pinboard) -> <PinboardCard key={ pinboard.get('uuid') } pinboard={ pinboard.get('uuid') } />
       .toArray()
 
 
@@ -97,8 +126,7 @@ module.exports = React.createClass
   render: ->
     return null unless @state.ready
 
-    <section className="cc-container-common favorites">
-      <ListOfCards>
-        { @renderFavorites() }
-      </ListOfCards>
+    <section className="cc-container-common">
+      { @renderUsers() }
+      { @renderPinboards() }
     </section>
