@@ -139,7 +139,8 @@ private
   end
 
   def notify_followers
-    # NotificationsWorker.perform_in(5.minutes, )
+    return unless should_perform_sidekiq_worker? && @pin.valid?
+    NotificationsWorker.perform_in(5.minutes, @pin.id, 'Pin', 'create')
   end
 
   def crawl_pin_origin
