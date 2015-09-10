@@ -6,7 +6,6 @@ ProfileInfo         = require('components/profile/info')
 UserPins            = require('components/pinboards/pins/user')
 UserInsights        = require('components/profile/insights')
 UserFavorites       = require('components/profile/favorites')
-UserCompanies       = require('components/company/lists/user')
 UserFeed            = require('components/user/feed')
 UserPinboards       = require('components/pinboards/lists/user')
 FavoriteInsights    = require('components/profile/favorite_insights')
@@ -16,7 +15,6 @@ TabNav              = require('components/shared/tab_nav')
 UserStore           = require('stores/user_store.cursor')
 PinStore            = require('stores/pin_store')
 PinboardStore       = require('stores/pinboard_store')
-CompanyStore        = require('stores/company_store.cursor')
 
 Constants           = require('constants')
 
@@ -29,47 +27,26 @@ EmptyTabTexts =
   insightsOther:  "This person hasn't added any insights yet."
   pinboardsOwn:   "Follow our most popular collections to start, or, create your own."
   pinboardsOther: "This person has no collections yet."
-  companiesOwn:   ->
-    <span>
-      Want to see your company on { Constants.SITE_NAME }? <a href="mailto:#{Constants.REPLY_TO_EMAIL}?subject=I want to see my company on #{Constants.SITE_NAME}">Let us know</a>
-    </span>
-  companiesOther: ->
-    <span>
-      Does this person have a company you want to see on { Constants.SITE_NAME }? <a href="mailto:#{Constants.REPLY_TO_EMAIL}?subject=I want to see a company on #{Constants.SITE_NAME}">Let us know</a>
-    </span>
-
 
 cx = React.addons.classSet
 
+
+# Main component
+#
 module.exports = React.createClass
 
   displayName: 'ProfileApp'
-
-  # Component specifications
-  #
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
+  propTypes:
+    uuid:   React.PropTypes.string.isRequired
+
   statics:
-
     queries:
-      viewer: ->
-        """
-          Viewer {
-            favorites,
-            system_roles,
-            roles,
-            edges {
-              is_admin,
-              is_editor
-            }
-          }
-        """
-
       user: ->
         """
           User {
             #{UserPinboards.getQuery('pinboards')},
-            #{UserCompanies.getQuery('user')},
             #{UserFavorites.getQuery('user')},
             edges {
               insights_ids,
@@ -79,52 +56,33 @@ module.exports = React.createClass
           }
         """
 
-  propTypes:
-    uuid:   React.PropTypes.string.isRequired
-
-  getInitialState: ->
-    fetchDone:   false
-    currentTab:  null
-
-  fetchViewer: (options={}) ->
-    GlobalState.fetch(@getQuery('viewer'), options)
-
-
-  fetchUser: ->
+  fetch: ->
     GlobalState.fetch(@getQuery('user'), id: @props.uuid).then =>
       user = UserStore.get(@props.uuid)
 
       @setState
-        insights_count:           user.get('insights_ids').size
-        favorite_insights_count:  user.get('favorite_insights_ids').size
+        insights_count: user.get('insights_ids').size
+        favorite_insights_count: user.get('favorite_insights_ids').size
+        ready: true
 
 
-  fetch: ->
-    Promise.all([@fetchUser(), @fetchViewer()]).then =>
-      @setState
-        fetchDone:   true
+  # Component specifications
+  #
+  getInitialState: ->
+    ready:   false
+    currentTab:  null
 
 
   # Helpers
   #
-  isLoaded: ->
-    @state.fetchDone
-
   isViewerProfile: ->
     @props.uuid == @cursor.viewer.get('uuid')
-
 
   getInsightsNumber: ->
     @cursor.user.get('insights_ids').size
 
-
-  getCompaniesNumber: ->
-    UserCompanies.companiesCount(@props.uuid)
-
-
   getPinboardsNumber: ->
     @cursor.user.get('pinboard_ids').size
-
 
   getFavoriteInsightsCount: ->
     @cursor.user.get('favorite_insights_ids').size
@@ -146,12 +104,11 @@ module.exports = React.createClass
   #
   componentWillMount: ->
     @cursor =
-      companies:  CompanyStore.cursor.items
-      pins:       PinStore.cursor.items
-      viewer:     UserStore.me()
-      user:       UserStore.cursor.items.cursor(@props.uuid)
+      viewer: UserStore.me()
+      user: UserStore.cursor.items.cursor(@props.uuid)
 
-    @fetch() unless @isLoaded()
+  componentDidMount: ->
+    @fetch()
 
 
   # Renderers
@@ -170,13 +127,6 @@ module.exports = React.createClass
     else
       @renderEmptyTabText("feed")
 
-  renderCompanies: ->
-    unless @getCompaniesNumber() == 0
-      <UserCompanies user_id = { @props.uuid } />
-    else
-      @renderEmptyTabText("companies")
-
-
   renderFavoriteInsights: ->
     return null if @state.favorite_insights_count == 0
 
@@ -186,7 +136,6 @@ module.exports = React.createClass
       </header>
       <FavoriteInsights key = { 'favirite-insights' } user={ @props.uuid } />
     </section>
-
 
   renderInsights: ->
     insights_count          = @getInsightsNumber()
@@ -200,7 +149,6 @@ module.exports = React.createClass
       ]
     else
       @renderEmptyTabText("insights")
-
 
   renderPinboards: ->
     if @getPinboardsNumber() == 0 #UserPinboards.isEmpty(@props.uuid)
@@ -223,9 +171,6 @@ module.exports = React.createClass
       when 'following'
         <UserFavorites user = { @props.uuid } />
 
-      when 'companies'
-        @renderCompanies()
-
       when 'settings'
         <Settings uuid = { @props.uuid } />
 
@@ -243,7 +188,6 @@ module.exports = React.createClass
     favorite_users_count = @getFavoriteUsersCount()
     favorites_count = favorite_pinboards_count + favorite_users_count
 
-    companies_count         = @getCompaniesNumber()
     insights_count          = @getInsightsNumber()
     collections_count       = @getPinboardsNumber()
     favorite_insights_count = @getFavoriteInsightsCount()
@@ -266,12 +210,6 @@ module.exports = React.createClass
         title: 'Following'
         counter: ['', '' + favorites_count][~~!!favorites_count]
 
-    if @cursor.viewer.get('is_admin') || @cursor.viewer.get('is_editor')
-      tabs.push
-        id:       'companies'
-        title:    'Companies'
-        counter:  ['', '' + companies_count][~~!!companies_count]
-
     if @cursor.user.get('is_editable')
       tabs.push
         id:       'settings'
@@ -281,7 +219,7 @@ module.exports = React.createClass
 
 
   render: ->
-    return null unless @isLoaded()
+    return null unless @state.ready
 
     <section className="user-profile">
       <header>
