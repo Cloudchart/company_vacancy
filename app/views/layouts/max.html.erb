@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= favicon_link_tag "#{Rails.env}/favicon.ico" %>
+  </head>
+  <body>
+    <%= yield %>
+
+    <%= javascript_include_tag 'main.bundle' %>
+  </body>
+</html>

@@ -45,6 +45,9 @@ class Pinboard < ActiveRecord::Base
     roles.value.in(values)
   end
 
+  scope :_featured, -> (s) { joins(:features).where(features: { scope: Feature.scopes[s.to_sym] }) }
+  scope :_common_feature, -> (s) { _featured(s).where.not(features: { position: -1 }) }
+
   scope :available, -> { where(access_rights: :public) }
 
   scope :system, -> do

@@ -52,6 +52,16 @@ gem 'algoliasearch-rails'
 gem 'algoliasearch', '~> 1.6.0'
 gem 'httpclient', '~> 2.6.0'
 
+
+# GraphQL
+gem 'graphql-rb', require: 'graphql', git: 'https://github.com/seanchas/graphql-rb.git'
+
+# GraphQL Relay
+gem 'relay-rb', require: 'relay', git: 'https://github.com/seanchas/graphql-relay-rb.git'
+
+# Celluloid
+gem 'celluloid'
+
 # Engines
 #
 gem 'cloud_profile', path: 'vendor/engines/cloud_profile'
