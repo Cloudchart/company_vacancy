@@ -8,7 +8,7 @@ PinboardStore   = require('stores/pinboard_store')
 UserStore       = require('stores/user_store.cursor')
 
 UserCard        = require('components/cards/user_card')
-FollowButton    = require('components/pinboards/follow_button')
+FollowButton    = require('components/shared/follow_button')
 InviteActions   = require('components/roles/invite_actions')
 
 pluralize       = require('utils/pluralize')
@@ -91,7 +91,11 @@ module.exports = React.createClass
     user_id = @cursor.pinboard.get('user_id')
     return <div></div> if user_id == UserStore.me().get('uuid')
 
-    <UserCard user={ @cursor.pinboard.get('user_id') } onClick={ @props.onUserClick } />
+    <UserCard
+      user={ @cursor.pinboard.get('user_id') }
+      onClick={ @props.onUserClick }
+      shouldRenderFollowButton=false
+    />
 
   renderAccessRightsIcon: ->
     className = cx
@@ -101,12 +105,9 @@ module.exports = React.createClass
 
     <i className={ className } />
 
-
   renderFollowButton: ->
     return null unless @props.shouldRenderFollowButton
-
-    <FollowButton pinboard={ @props.pinboard } />
-
+    <FollowButton uuid={ @props.pinboard } type={ 'Pinboard' } />
 
   renderHeader: ->
     url = @cursor.pinboard.get('url')
@@ -126,7 +127,6 @@ module.exports = React.createClass
       </h2>
     </header>
 
-
   renderCounters: ->
     <ul className="statistics">
       <li>
@@ -136,7 +136,6 @@ module.exports = React.createClass
         { pluralize(@cursor.pinboard.get('pins_count', 0), ' Insight', ' Insights') }
       </li>
     </ul>
-
 
   renderFooter: ->
     <footer>

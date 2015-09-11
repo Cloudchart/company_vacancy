@@ -22,7 +22,7 @@ TabNav             = require('components/shared/tab_nav')
 
 SuggestButton = require('components/shared/suggest_button')
 PinButton = require('components/pinnable/pin_button')
-FollowButton = require('components/pinboards/follow_button')
+FollowButton = require('components/shared/follow_button')
 ShareButtons = require('components/shared/share_buttons')
 Buttons = require('components/form/buttons')
 SyncButton = Buttons.SyncButton
@@ -53,7 +53,7 @@ module.exports = React.createClass
       pinboard: ->
         """
           Pinboard {
-            #{FollowButton.getQuery('pinboard')},
+            #{FollowButton.getQuery('object', 'Pinboard')},
             #{InviteActions.getQuery('owner', 'Pinboard')},
             user {
               roles
@@ -234,7 +234,7 @@ module.exports = React.createClass
       </ul>
 
       <div className="buttons">
-        <FollowButton pinboard = { @props.uuid } canUnfollow = { true } />
+        <FollowButton uuid = { @props.uuid } type = 'Pinboard' canUnfollow = { true } />
         <ShareButtons object = pinboard.toJS() displayMode = { 'single_button' } />
 
         <div className="separator"/>

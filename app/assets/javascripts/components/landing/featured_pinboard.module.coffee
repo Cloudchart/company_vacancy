@@ -6,7 +6,7 @@ PinboardStore   = require('stores/pinboard_store')
 PinStore        = require('stores/pin_store')
 FeatureStore    = require('stores/feature_store')
 
-FollowButton    = require('components/pinboards/follow_button')
+FollowButton    = require('components/shared/follow_button')
 InsightCard     = require('components/cards/insight_card')
 device          = require('utils/device')
 
@@ -32,7 +32,7 @@ module.exports = React.createClass
       pinboard: -> # TODO: Rewrite Insight
         """
           Pinboard {
-            #{FollowButton.getQuery('pinboard')},
+            #{FollowButton.getQuery('object', 'Pinboard')},
             pins {
               #{InsightCard.getQuery('pin')}
             },
@@ -159,7 +159,7 @@ module.exports = React.createClass
           { @cursor.pinboard.get('title') } &mdash;
         </a>
       </h1>
-      <FollowButton pinboard={ @props.pinboard } />
+      <FollowButton uuid={ @props.pinboard } type={ 'Pinboard' } />
     </header>
 
 

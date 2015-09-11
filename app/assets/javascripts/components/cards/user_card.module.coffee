@@ -2,36 +2,30 @@
 
 GlobalState   = require('global_state/state')
 
-
 UserStore     = require('stores/user_store.cursor')
 
+FollowButton  = require('components/shared/follow_button')
 
 Letters       = require('utils/letters')
 
-
-# Exports
+# Main component
 #
 module.exports = React.createClass
 
   displayName: 'UserCard'
-
-
-  propTypes:
-    user:     React.PropTypes.string.isRequired
-    onClick:  React.PropTypes.func
-
-
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
+  propTypes:
+    user: React.PropTypes.string.isRequired
+    onClick: React.PropTypes.func
+    shouldRenderFollowButton: React.PropTypes.bool
 
   statics:
     queries:
       user: ->
         """
           User {
-            edges {
-              nothing
-            }
+            #{FollowButton.getQuery('object', 'User')}
           }
         """
 
@@ -41,28 +35,42 @@ module.exports = React.createClass
         ready: true
 
 
+  # Component specifications
+  #
+  getDefaultProps: ->
+    shouldRenderFollowButton: true
+
+  getInitialState: ->
+    ready: false
+
+
+  # Lifecycle
+  #
+  componentWillMount: ->
+    @cursor =
+      user: UserStore.cursor.items.cursor(@props.user)
+
+  componentDidMount: ->
+    @fetch()
+
+
+  # Helpers
+  #
   getOccupation: ->
     Immutable.Seq([@cursor.user.get('occupation'), @cursor.user.get('company')])
       .filter (value) -> value
       .join ', '
 
 
-  # Lifecycle
-  #
-
-  componentWillMount: ->
-    @cursor =
-      user: UserStore.cursor.items.cursor(@props.user)
-
-    @fetch()
-
-
-  getInitialState: ->
-    ready: false
-
-
   # Renderers
   #
+  renderFollowButton: ->
+    return null unless @props.shouldRenderFollowButton
+
+    [
+      <div key="spacer" className="spacer"></div>
+      <FollowButton key="follow_button" uuid={ @props.user } type={ 'User' } />
+    ]
 
   renderAvatar: ->
     avatar_url  = @cursor.user.get('avatar_url')
@@ -77,7 +85,6 @@ module.exports = React.createClass
         </figcaption>
       </figure>
     </a>
-
 
   renderCredentials: ->
     url = @cursor.user.get('url')
@@ -104,4 +111,5 @@ module.exports = React.createClass
     <div className="user-card">
       { @renderAvatar() }
       { @renderCredentials() }
+      { @renderFollowButton() }
     </div>

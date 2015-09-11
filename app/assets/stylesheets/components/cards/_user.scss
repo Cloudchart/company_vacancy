@@ -38,4 +38,8 @@
     }
   }
 
+  > div.spacer {
+    @include flex(1);
+  }
+
 }

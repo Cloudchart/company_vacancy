@@ -30,7 +30,9 @@ module.exports = React.createClass
             favorite_pinboards {
               #{PinboardCard.getQuery('pinboard')}
             },
-            favorite_users,
+            favorite_users {
+              #{UserCard.getQuery('user')}
+            },
             edges {
               pinboards_favorites,
               users_favorites
@@ -51,7 +53,6 @@ module.exports = React.createClass
   # Component Specifications
   #
   # getDefaultProps: ->
-
   getInitialState: ->
     ready: false
 
@@ -126,7 +127,7 @@ module.exports = React.createClass
   render: ->
     return null unless @state.ready
 
-    <section className="cc-container-common">
+    <div>
       { @renderUsers() }
       { @renderPinboards() }
-    </section>
+    </div>
