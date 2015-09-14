@@ -6,7 +6,8 @@ class NotificationsWorker < ApplicationWorker
 
   def perform(last_occurrence, current_occurrence)
     Notification.all.each do |notification|
-      notify_follower(notification.user_id) if should_notify_follower?(notification)
+      next unless should_notify_follower?(notification)
+      notify_follower(notification)
     end
   end
 
@@ -17,9 +18,11 @@ private
     notification.updated_at - notification.created_at > Cloudchart::INSTANT_NOTIFICATIONS_MAX_DELAY.minutes
   end
 
-  def notify_follower(id)
-    user = User.find(id)
-    puts user.full_name
+  def notify_follower(notification)
+    notification.destroy
+
+    # user notifications settings should be applied here
+    UserMailer.activities_digest(notification.user, notification.created_at, notification.updated_at).deliver
   end
 
 end

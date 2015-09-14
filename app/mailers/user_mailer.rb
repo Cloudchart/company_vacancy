@@ -101,6 +101,26 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def activities_digest(user, start_time, end_time)
+    return unless user.email
+    @user = user
+
+    favorite_user_ids = @user.users_favorites.map(&:favoritable_id)
+    favorite_pinboard_ids = @user.pinboards_favorites.map(&:favoritable_id)
+
+    @insights = Pin.insights.where{
+      created_at.gteq(start_time) &
+      created_at.lteq(end_time) & (
+        user_id.in(favorite_user_ids) |
+        pinboard_id.in(favorite_pinboard_ids)
+      )
+    }
+
+    mail(to: @user.email) do |format|
+      format.html { render layout: 'user_mailer_' }
+    end
+  end
+
 private
 
   def rfc1751(id)

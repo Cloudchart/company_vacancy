@@ -15,7 +15,11 @@ class NotificationsBreakdownWorker < ApplicationWorker
     end.map(&:user_id)
 
     # spread notifications
-    follower_ids.each { |id| Notification.touch_or_create_by!(user_id: id) }
+    follower_ids.each do |id|
+      Notification.find_or_create_by!(user_id: id) do |notification|
+        notification.created_at = object.created_at
+      end.touch
+    end
   end
 
 end
