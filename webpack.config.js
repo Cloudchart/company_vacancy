@@ -1,5 +1,5 @@
 module.exports = {
-  context:  __dirname + '/app/assets/frontend',
+  context:  __dirname + '/app/frontend',
   entry:    './index.js',
   output: {
     filename:   '[name].bundle.js',
@@ -17,7 +17,7 @@ module.exports = {
           stage: 0,
           optional: ['runtime'],
           plugins: [
-            __dirname + '/app/assets/frontend/babel_relay_plugin.js'
+            __dirname + '/app/frontend/babel_relay_plugin.js'
           ]
         }
       }
