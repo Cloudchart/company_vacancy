@@ -22,7 +22,6 @@ module Schema
       arg :scope, !GraphQL::GraphQLString
       resolve lambda { |root, params, context|
         Storage::Collection.featured_collections(params[:scope])
-        # []
       }
     end
 
@@ -30,15 +29,13 @@ module Schema
       arg :scope, !GraphQL::GraphQLString
       resolve lambda { |root, params, context|
         Storage::Collection.super_featured_collections(params[:scope])
-        # []
       }
     end
 
     field :featured_users, -> { + UserType } do
       arg :scope, !GraphQL::GraphQLString
       resolve lambda { |root, params, context|
-        # Storage::UserStorage.featured(params[:scope])
-        []
+        Storage::UserStorage.featured(params[:scope])
       }
     end
 
