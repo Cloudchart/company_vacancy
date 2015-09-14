@@ -17,7 +17,7 @@ Cloudchart::Application.routes.draw do
     delete :unfollow, on: :member
   end
 
-  post 'graphql', to: 'welcome#graphql'
+  match 'graphql', to: 'welcome#graphql', via: [:get, :post]
 
   # Resources
   #
