@@ -17,6 +17,8 @@ Cloudchart::Application.routes.draw do
     delete :unfollow, on: :member
   end
 
+  post 'graphql', to: 'welcome#graphql'
+
   # Resources
   #
   resources :companies, except: [:create, :edit], concerns: [:followable] do

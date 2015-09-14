@@ -26,6 +26,20 @@ GIT
     diffbot-ruby-client (0.1.1)
       faraday
 
+GIT
+  remote: https://github.com/seanchas/graphql-rb.git
+  revision: 1fdfaaae4913af1b18f3cfd215fd9341e9c2aaa2
+  specs:
+    graphql-rb (0.0.8)
+      celluloid
+      parslet
+
+GIT
+  remote: https://github.com/seanchas/graphql-relay-rb.git
+  revision: 56250e56dd92cbe08a52283f1b467ea805ff6228
+  specs:
+    relay-rb (0.0.4)
+
 PATH
   remote: vendor/engines/cloud_api
   specs:
@@ -129,8 +143,47 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    celluloid (0.16.0)
-      timers (~> 4.0.0)
+    celluloid (0.17.1.2)
+      bundler
+      celluloid-essentials
+      celluloid-extras
+      celluloid-fsm
+      celluloid-pool
+      celluloid-supervision
+      dotenv
+      nenv
+      rspec-logsplit (>= 0.1.2)
+      timers (>= 4.1.1)
+    celluloid-essentials (0.20.2.1)
+      bundler
+      dotenv
+      nenv
+      rspec-logsplit (>= 0.1.2)
+      timers (>= 4.1.1)
+    celluloid-extras (0.20.1)
+      bundler
+      dotenv
+      nenv
+      rspec-logsplit (>= 0.1.2)
+      timers (>= 4.1.1)
+    celluloid-fsm (0.20.1)
+      bundler
+      dotenv
+      nenv
+      rspec-logsplit (>= 0.1.2)
+      timers (>= 4.1.1)
+    celluloid-pool (0.20.1)
+      bundler
+      dotenv
+      nenv
+      rspec-logsplit (>= 0.1.2)
+      timers (>= 4.1.1)
+    celluloid-supervision (0.20.1.1)
+      bundler
+      dotenv
+      nenv
+      rspec-logsplit (>= 0.1.2)
+      timers (>= 4.1.1)
     coderay (1.1.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -215,6 +268,7 @@ GEM
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     mysql2 (0.3.15)
+    nenv (0.2.0)
     nested_form (0.3.2)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
@@ -335,6 +389,7 @@ GEM
     rspec-expectations (3.2.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.2.0)
+    rspec-logsplit (0.1.3)
     rspec-mocks (3.2.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.2.0)
@@ -358,12 +413,12 @@ GEM
     sdoc (0.4.0)
       json (~> 1.8)
       rdoc (~> 4.0, < 5.0)
-    sidekiq (3.4.2)
-      celluloid (~> 0.16.0)
-      connection_pool (~> 2.2, >= 2.2.0)
-      json (~> 1.0)
-      redis (~> 3.2, >= 3.2.1)
-      redis-namespace (~> 1.5, >= 1.5.2)
+    sidekiq (3.4.0)
+      celluloid (>= 0.16.0)
+      connection_pool (>= 2.1.1)
+      json
+      redis (>= 3.0.6)
+      redis-namespace (>= 1.3.1)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -403,7 +458,7 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (1.4.1)
-    timers (4.0.1)
+    timers (4.1.1)
       hitimes
     tire (0.6.2)
       activemodel (>= 3.0)
@@ -453,6 +508,7 @@ DEPENDENCIES
   capistrano-sidekiq (~> 0.5.0)
   capistrano3-puma
   capybara (~> 2.0)
+  celluloid
   cloud_api!
   cloud_oauth!
   cloud_profile!
@@ -465,6 +521,7 @@ DEPENDENCIES
   ffaker
   font-awesome-rails
   friendly_id (~> 5.1.0)
+  graphql-rb!
   httpclient (~> 2.6.0)
   impressionist
   intercom (~> 2.4.4)
@@ -493,6 +550,7 @@ DEPENDENCIES
   rails (~> 4.1.0)
   rails_admin (= 0.6.7)
   redis-rails
+  relay-rb!
   rspec-rails (~> 3.0)
   sass-rails (~> 5.0.0)
   sdoc

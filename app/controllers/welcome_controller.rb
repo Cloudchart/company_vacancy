@@ -3,7 +3,10 @@ class WelcomeController < ApplicationController
   before_action :handle_redirect, only: :index, if: :user_authenticated?
   after_action :call_page_visit_to_slack_channel, only: [:index, :old_browsers]
 
+  skip_before_action :verify_authenticity_token, only: :graphql
+
   def index
+    render layout: 'max'
   end
 
   def old_browsers
@@ -12,6 +15,13 @@ class WelcomeController < ApplicationController
 
   def subscribe
   end
+
+
+  def graphql
+    result = GraphQL::graphql(Schema::Schema, params[:query], { viewer: current_user }, params[:variables])
+    render json: result
+  end
+
 
 private
 

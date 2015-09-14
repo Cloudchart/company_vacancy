@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= favicon_link_tag "#{Rails.env}/favicon.ico" %>
+    <%= stylesheet_link_tag 'max' %>
+  </head>
+  <body>
+    <%= yield %>
+
+    <%= javascript_include_tag 'move' %>
+    <%= javascript_include_tag 'main.bundle' %>
+  </body>
+</html>

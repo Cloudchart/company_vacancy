@@ -27,10 +27,15 @@ module Cloudchart
     I18n.config.enforce_available_locales = true
     # config.i18n.default_locale = :de
 
+    config.autoload_paths += %W(#{config.root}/app/graphql)
     config.autoload_paths += %W(#{config.root}/lib/cloudchart)
     config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/serializers)
     config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/mutations)
     config.autoload_paths += %W(#{config.root}/vendor/engines/*/app/nodes)
+
+    # Assets
+    #
+    config.assets.paths << "#{Rails.root}/app/assets/max-javascripts"
 
     # Handle exceptions
     #
