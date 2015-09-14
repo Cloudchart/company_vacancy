@@ -47063,14 +47063,13 @@
 	// Super Featured Collections
 	//
 	var renderSuperFeaturedCollections = function renderSuperFeaturedCollections(collections) {
-	  return _react2['default'].createElement(
-	    'section',
-	    { className: 'super-feature' },
-	    _react2['default'].createElement('section', { className: 'background' }),
-	    _react2['default'].createElement(_sharedSuper_featured_collections2['default'], { collections: collections }),
-	    renderGetAccess()
-	  );
+	  return null;
 	};
+	// <section className="super-feature">
+	//   <section className="background" />
+	//   <SuperFeaturedCollections collections={ collections } />
+	//   { renderGetAccess() }
+	// </section>
 
 	// Featured Collection
 	//
@@ -47081,21 +47080,18 @@
 	// Featured Collections
 	//
 	var renderFeaturedCollections = function renderFeaturedCollections(collections) {
-	  return _react2['default'].createElement(
-	    'section',
-	    { className: 'content-block', key: 'featured-collections' },
-	    _react2['default'].createElement(
-	      'h2',
-	      null,
-	      'Find insights you need. Use them on meetings, brainstorms or discussions. Follow collections you\'re interested in.'
-	    ),
-	    _react2['default'].createElement(
-	      'section',
-	      { className: 'collections-slabs' },
-	      collections.map(renderFeaturedCollection)
-	    )
-	  );
+	  return null;
 	};
+	// <section className="content-block" key='featured-collections'>
+	//   <h2>
+	//     Find insights you need.
+	//     Use them on meetings, brainstorms or discussions.
+	//     Follow collections you're interested in.
+	//   </h2>
+	//   <section className="collections-slabs">
+	//     { collections.map(renderFeaturedCollection) }
+	//   </section>
+	// </section>
 
 	// Featured User
 	//
@@ -47106,21 +47102,18 @@
 	// Featured Users
 	//
 	var renderFeaturedUsers = function renderFeaturedUsers(users) {
-	  return _react2['default'].createElement(
-	    'section',
-	    { className: 'content-block', key: 'featured-users' },
-	    _react2['default'].createElement(
-	      'h2',
-	      null,
-	      'We research interviews, books and social media posts by successfull entrepreneurs, find the most important insights and collect them for you to use.'
-	    ),
-	    _react2['default'].createElement(
-	      'section',
-	      { className: 'users-slabs' },
-	      users.map(renderFeaturedUser)
-	    )
-	  );
+	  return null;
 	};
+	// <section className="content-block" key="featured-users">
+	//   <h2>
+	//     We research interviews, books and social media posts
+	//     by successfull entrepreneurs, find the most important
+	//     insights and collect them for you to use.
+	//   </h2>
+	//   <section className="users-slabs">
+	//     { users.map(renderFeaturedUser) }
+	//   </section>
+	// </section>
 
 	// Get Access button
 	//
@@ -47186,25 +47179,6 @@
 	        var GraphQL = _reactRelay2['default'].QL.__GraphQL;
 	        return new GraphQL.QueryFragment('Landing', 'User', [new GraphQL.Field('full_name', null, null, null, null, null, {
 	          'parentType': 'User'
-	        }), new GraphQL.Field('super_featured_collections', [new GraphQL.Field('id', null, null, null, null, null, {
-	          'parentType': 'Collection',
-	          'generated': true,
-	          'requisite': true
-	        })], [_reactRelay2['default'].QL.__frag(sub_0)], [new GraphQL.Callv('scope', 'main')], null, null, {
-	          'parentType': 'User',
-	          'plural': true
-	        }), new GraphQL.Field('featured_collections', [new GraphQL.Field('id', null, null, null, null, null, {
-	          'parentType': 'Collection',
-	          'requisite': true
-	        })], [_reactRelay2['default'].QL.__frag(sub_1)], [new GraphQL.Callv('scope', 'main')], null, null, {
-	          'parentType': 'User',
-	          'plural': true
-	        }), new GraphQL.Field('featured_users', [new GraphQL.Field('id', null, null, null, null, null, {
-	          'parentType': 'User',
-	          'requisite': true
-	        })], [_reactRelay2['default'].QL.__frag(sub_2)], [new GraphQL.Callv('scope', 'main')], null, null, {
-	          'parentType': 'User',
-	          'plural': true
 	        }), new GraphQL.Field('id', null, null, null, null, null, {
 	          'parentType': 'User',
 	          'generated': true,
