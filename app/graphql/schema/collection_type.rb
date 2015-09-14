@@ -22,7 +22,8 @@ module Schema
       args Relay::Connection::ConnectionArguments
 
       resolve lambda { |collection, params|
-        Relay::Connection.fromArray(Storage::Collection.insights(collection.id), params)
+        # Relay::Connection.fromArray(Storage::Collection.insights(collection.id), params)
+        Relay::Connection.fromArray([], params)
       }
     end
   end

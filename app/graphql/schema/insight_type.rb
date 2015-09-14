@@ -14,7 +14,8 @@ module Schema
 
     field :user, -> { !UserType } do
       resolve lambda { |root|
-        Storage::UserStorage.find(root.user_id)
+        # Storage::UserStorage.find(root.user_id)
+        nil
       }
     end
 
