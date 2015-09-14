@@ -60,8 +60,8 @@ class User < ActiveRecord::Base
   has_many :accessed_companies, through: :roles, source: :owner, source_type: 'Company'
   has_many :pinboards, dependent: :destroy
   has_many :accessed_pinboards, through: :roles, source: :owner, source_type: 'Pinboard'
-
   has_many :votes, as: :source
+  has_many :notifications, dependent: :destroy
 
   # Roles on Pinboards
   #
@@ -129,10 +129,6 @@ class User < ActiveRecord::Base
 
   def published_companies
     Company.where(is_published: true).order('created_at DESC')
-  end
-
-  def followed_companies
-    Company.joins(:followers).where(followers: { user_id: id, favoritable_type: 'Company' })
   end
 
   def company_invite_tokens

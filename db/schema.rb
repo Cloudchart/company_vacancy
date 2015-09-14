@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150825092001) do
+ActiveRecord::Schema.define(version: 20150914103808) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -298,6 +298,14 @@ ActiveRecord::Schema.define(version: 20150825092001) do
 
   add_index "landings", ["author_id"], name: "index_landings_on_author_id", using: :btree
   add_index "landings", ["user_id"], name: "index_landings_on_user_id", using: :btree
+
+  create_table "notifications", primary_key: "uuid", force: true do |t|
+    t.string   "user_id",    limit: 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "notifications", ["user_id"], name: "index_notifications_on_user_id", using: :btree
 
   create_table "oauth_providers", primary_key: "uuid", force: true do |t|
     t.string   "user_id",     limit: 36
