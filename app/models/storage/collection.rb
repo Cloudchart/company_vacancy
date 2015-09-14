@@ -10,6 +10,10 @@ module Storage
     end
 
 
+    def self.super_featured_collections(scope)
+      Pinboard._super_feature(scope).order([:position, :title]).uniq
+    end
+
     def self.featured_collections(scope)
       Pinboard._common_feature(scope).order([:position, :title]).uniq
     end

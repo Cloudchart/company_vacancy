@@ -1,18 +1,19 @@
 import React from 'react'
 import Relay from 'react-relay'
 
+
+let pluralize = (count, singular, plural) => `${count} ${count == 1 ? sulgular : plural}`
+
+
 class CollectionSlab extends React.Component {
 
-  render = () => {
-    return (
-      <div className="collection-slab">
-        <a href={ this.props.collection.url }>
-          <strong>{ this.props.collection.title }</strong>
-          <em>{ this.props.collection.insights.count } insights</em>
-        </a>
-      </div>
-    )
-  }
+  render = () =>
+    <div className="collection-slab">
+      <a href={ this.props.collection.url } className="through">
+        { this.props.collection.title }
+        <em className="caps">{ pluralize(this.props.collection.insights.count, 'insight', 'insights') }</em>
+      </a>
+    </div>
 
 }
 

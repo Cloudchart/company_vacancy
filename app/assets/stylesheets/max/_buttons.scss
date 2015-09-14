@@ -1,0 +1,40 @@
+button.opaque,
+button.transparent {
+  align-items: center;
+  -webkit-align-items: center;
+
+  background: none;
+  border: none;
+  border-radius: $base-border-radius;
+  color: inherit;
+
+  display: flex;
+  display: -webkit-flex;
+
+  height: $button-height;
+
+  > * {
+    line-height: 1em;
+  }
+}
+
+button.opaque {
+  background-color: #3bc462;
+  color: #ffffff;
+  font-size: $button-opaque-font-size;
+  font-weight: bold;
+  letter-spacing: .1em;
+  padding: 0 $button-opaque-padding;
+  text-transform: uppercase;
+}
+
+
+button.transparent {
+  border: 1px solid #dfe0e2;
+  font-size: $button-transparent-font-size;
+  padding: 0 $button-transparent-padding;
+
+  > i {
+    margin-left: 10px;
+  }
+}

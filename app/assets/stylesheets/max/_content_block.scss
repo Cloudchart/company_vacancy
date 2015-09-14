@@ -1,0 +1,15 @@
+.content-block {
+  margin: 90px auto;
+  width: $content-block-width;
+
+  > h2 {
+    margin: - $h2-font-size / 3 auto;
+    text-align: center;
+    width: 700px;
+  }
+
+  > h2 ~ * {
+    margin-top: 35px;
+  }
+
+}
