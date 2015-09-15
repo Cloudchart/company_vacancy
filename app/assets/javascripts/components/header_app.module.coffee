@@ -40,36 +40,26 @@ module.exports = React.createClass
     </a>
 
   renderLinks: ->
+    return null unless @props.user.id
+
     <nav>
       { @props.links.map @renderLink }
     </nav>
-    # links = Immutable.Seq(@props.links).map (link, index) =>
-    #   <li key={ index }>
-    #     { @renderLink(link) }
-    #   </li>
-    #
-    # <ul className="main-menu">
-    #   { links.toArray() }
-    # </ul>
 
 
   renderUser: ->
-    <nav className="user">
-      <a href={ @props.user.url } className="through">{ @props.user.name }</a>
-      <a href={ @props.logout_url }>
-        <i className="fa fa-sign-in" />
-      </a>
-    </nav>
-    # <button className="transparent" onClick={ @handleLoginButtonClick }>
-    #   Login with Twitter
-    #   <i className="fa fa-twitter" />
-    # </button>
-
-    # if @props.user.id
-    #   profile:  <a href={ @props.user.url } className="profile auth">{ @props.user.name }</a>
-    #   logout:   <a href={ @props.logout_url } className="sign-out header square auth"><i className="fa fa-sign-out" /></a>
-    # else
-    #   login:    <a href={ @props.login_url }>Log in with Twitter</a>
+    if @props.user.id
+      <nav className="user">
+        <a href={ @props.user.url } className="through">{ @props.user.name }</a>
+        <a href={ @props.logout_url }>
+          <i className="fa fa-sign-in" />
+        </a>
+      </nav>
+    else
+      <button className="transparent" onClick={ @handleLoginButtonClick }>
+        Login with Twitter
+        <i className="fa fa-twitter" />
+      </button>
 
 
   render: ->
