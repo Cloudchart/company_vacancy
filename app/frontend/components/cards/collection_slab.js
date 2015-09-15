@@ -2,7 +2,7 @@ import React from 'react'
 import Relay from 'react-relay'
 
 
-let pluralize = (count, singular, plural) => `${count} ${count == 1 ? sulgular : plural}`
+let pluralize = (count, singular, plural) => `${count} ${count == 1 ? singular : plural}`
 
 
 class CollectionSlab extends React.Component {
