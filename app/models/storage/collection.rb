@@ -5,7 +5,11 @@ module Storage
 
     def self.insights_lambda
       @insights_lambda ||= lambda { |ids|
-        Pin.insights.where(pinboard_id: ids).uniq.to_a.group_by { |item| item.pinboard_id }
+        Pin.includes(:parent).where(pinboard_id: ids).uniq.reduce({}) do |memo, pin|
+          (memo[pin.pinboard_id] ||= []) << (pin.parent.nil? ? pin : pin.parent)
+          memo[pin.pinboard_id] = memo[pin.pinboard_id].uniq
+          memo
+        end
       }
     end
 
