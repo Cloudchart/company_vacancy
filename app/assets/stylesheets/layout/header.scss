@@ -1,287 +1,366 @@
-$header-background-color: hsla(0, 100%, 100%, 0.9);
-$header-background-color-inverse: hsl(139, 72%, 35%);
-$header-color-inverse: hsl(0, 100%, 100%);
-$header-font-size: $basic-font-size;
-$header-font-weight: 400;
-$header-height: 60px;
-$header-padding: 10px;
+$site-header-color: #4c4c4c;
+$site-header-height: 70px;
+$site-header-width: 1000px;
 
+$site-header-font-size: 14px;
 
-$header-logo-height: 40px;
-$header-logo-margins: -3px 0 0;
-$header-logo-width: 60px;
+$button-transparent-font-size: 14px;
+$button-transparent-padding: 20px;
+$button-transparent-height: 50px;
 
-
-$header-title-font-size: 22px;
-$header-title-font-weight: 700;
-$header-title-font-weight-small: 300;
-
-$header-input-font-size: $header-title-font-size;
-$header-input-font-weight: 300;
-
-
-$header-button-font-size: 12pt;
-$header-button-height: 50px - $header-padding * 2;
-
-
-// Header logo
-//
-@mixin header-logo {
-  // background-color: #000;
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: contain;
-  height: $header-logo-height;
-  margin: $header-logo-margins;
-  margin-right: $header-padding;
-  width: $header-logo-width;
-}
-
-
-// Header title
-//
-@mixin header-title {
-  font-size: $header-title-font-size;
-  font-weight: 300;
-  margin-right: 5px;
-
-
-  @include respond-to(small) {
-    display: none;
-  }
-}
-
-
-// Header input
-//
-@mixin header-input {
-  background-color: inherit;
-  border: none;
-  font-size: $header-input-font-size;
-  font-weight: $header-input-font-weight;
-  margin: 0;
-  outline: none;
-  padding: 0;
-}
-
-
-// Main header style
-//
 body > header {
-  background-color: transparent;
-  height: $header-height;
-
-  > .header-content {
-    @include position(fixed, 0px 0px 0 0px);
-    @include display(flex);
-    @include align-items(center);
-    @include justify-content(space-between);
-
-    background-color: $header-background-color;
-    border-bottom: 1px solid hsl(0, 0%, 92%);
-    font-size: $header-font-size;
-    font-weight: $header-font-weight;
-    height: $header-height;
-    min-width: min-page-width;
-    padding: 0 25px;
-    z-index: $zindex-header;
-
-    a {
-      text-decoration: none;
-
-      &.base {
-        color: hsl(0, 0%, 0%);
-      }
-
-      &.strong, &.current {
-        font-weight: 700;
-      }
-    }
-
-    > .local-menu {
-      @include align-items(center);
-      @include display(flex);
-
-      > .breadcrumbs {
-        @include align-items(center);
-        @include display(flex);
-        @include flex(0 1 auto);
-
-        > .back-link {
-          @include display(flex);
-          @include flex(1 0 auto);
-
-          color: hsl(0, 100%, 100%);
-          font-size: $basic-font-size;
-          height: 33px;
-          text-align: center;
-          width: 39px;
-
-          > i {
-            margin: auto;
-          }
-        }
-
-        > .company-name {
-          font-size: $large-font-size;
-          font-weight: 300;
-          margin-left: $inner-margin-size;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-      }
-
-      > .router {
-        @include flex(1 0 auto);
-
-        margin: 0 $default-margin-size/2;
-
-        ul {
-          @include display(flex);
-          list-style: none;
-          margin: 0;
-          padding: 0;
-
-          > li {
-            margin: 0 $default-margin-size/2;
-          }
-        }
-      }
-    }
-
-    > .spacer {
-      @include flex(1);
-    }
-
-    > .main-menu {
-      @include align-items(center);
-      @include display(flex);
-      @include justify-content(center);
-      @include position(absolute, 0px 0px 0px 0px);
-
-      font-weight: 700;
-      list-style: none;
-      padding: 0;
-      z-index: -1;
-
-      > li {
-        color: $link-color;
-        font-size: $basic-font-size;
-        margin-right: $default-margin-size;
-
-        a {
-          color: $black-color;
-
-          &:hover {
-            color: $link-color;
-          }
-        }
-
-        > a, > span {
-          > i {
-            display: none;
-          }
-
-          @include respond-to(small) {
-            > i + span {
-              display: none;
-            }
-
-            > i {
-              display: inline-block;
-            }
-          }
-        }
-      }
-    }
-
-    input {
-      @include header-input;
-    }
-
-    .logo {
-      @include header-logo;
-    }
-
-    .title {
-      @include header-title;
-    }
-
-    i.beta {
-      padding-left: 5px;
-    }
-
-    button.cc {
-      height: $header-button-height;
-      font-size: $header-button-font-size;
-      margin-left: $header-padding;
-
-      &.square {
-        width: $header-button-height;
-      }
-    }
-
-    .auth {
-      margin-left: $header-padding;
-
-      &.profile {
-        @include iphone {
-          display: inline-block;
-          max-width: 150px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-      }
-    }
-
-    .sign-out {
-      font-size: 18px;
-    }
-  }
+  background-color: white;
+  color: $site-header-color;
+  font-size: $site-header-font-size;
+  height: $site-header-height;
 }
 
-// Inverse header style
-//
-body > header.inverse {
-  background-color: $header-background-color-inverse;
-  color: $header-color-inverse;
+.site-header {
+  align-items: center;
+  -webkit-align-items: center;
+  display: flex;
+  display: -webkit-flex;
+  height: 100%;
+  justify-content: space-between;
+  -webkit-justify-content: space-between;
+  margin: 0 auto;
+  width: $site-header-width;
 
-  a {
+  > a.site-logo {
+    background-image: image-url('max-logo.png');
+    background-size: contain;
+    display: block;
+    height: 25px;
+    width: 100px;
+  }
+
+  a.through {
     color: inherit;
   }
 
+  a ~ a {
+    margin-left: 10px;
+  }
+
+  a:not([href]) {
+    font-weight: 600;
+  }
+
 }
 
-// Env dependent
-//
-@each $env, $color, $dark-color in (development, $accented-green-color, $green-color),
-                                   (staging, hsl(356, 82%, 65%), hsl(359, 73%, 55%)),
-                                   (production, $accented-green-color, $green-color) {
-  body.#{$env} {
-    > header {
+button.transparent {
+  align-items: center;
+  -webkit-align-items: center;
 
-      &.inverse .logo {
-        background-image: image-url('#{$env}/insights-neg.svg');
-      }
+  background: none;
+  border: none;
+  border-radius: 5px;
+  color: inherit;
 
-      .logo {
-        background-image: image-url('#{$env}/insights.svg');
-      }
+  display: flex;
+  display: -webkit-flex;
 
-      .title, .auth, .company-name {
-        color: $dark-color;
-      }
+  height: $button-transparent-height;
 
-      .back-link, button.cc {
-        background-color: $color;
-      }
-
-      .sign-out {
-        color: $color;
-      }
-
-    }
+  > * {
+    line-height: 1em;
   }
 }
+
+button.transparent {
+  border: 1px solid #dfe0e2;
+  font-size: $button-transparent-font-size;
+  padding: 0 $button-transparent-padding;
+
+  > i {
+    margin-left: 10px;
+  }
+}
+
+// $header-background-color: hsla(0, 100%, 100%, 0.9);
+// $header-background-color-inverse: hsl(139, 72%, 35%);
+// $header-color-inverse: hsl(0, 100%, 100%);
+// $header-font-size: $basic-font-size;
+// $header-font-weight: 400;
+// $header-height: 60px;
+// $header-padding: 10px;
+//
+//
+// $header-logo-height: 40px;
+// $header-logo-margins: -3px 0 0;
+// $header-logo-width: 60px;
+//
+//
+// $header-title-font-size: 22px;
+// $header-title-font-weight: 700;
+// $header-title-font-weight-small: 300;
+//
+// $header-input-font-size: $header-title-font-size;
+// $header-input-font-weight: 300;
+//
+//
+// $header-button-font-size: 12pt;
+// $header-button-height: 50px - $header-padding * 2;
+//
+//
+// // Header logo
+// //
+// @mixin header-logo {
+//   // background-color: #000;
+//   background-repeat: no-repeat;
+//   background-position: center top;
+//   background-size: contain;
+//   height: $header-logo-height;
+//   margin: $header-logo-margins;
+//   margin-right: $header-padding;
+//   width: $header-logo-width;
+// }
+//
+//
+// // Header title
+// //
+// @mixin header-title {
+//   font-size: $header-title-font-size;
+//   font-weight: 300;
+//   margin-right: 5px;
+//
+//
+//   @include respond-to(small) {
+//     display: none;
+//   }
+// }
+//
+//
+// // Header input
+// //
+// @mixin header-input {
+//   background-color: inherit;
+//   border: none;
+//   font-size: $header-input-font-size;
+//   font-weight: $header-input-font-weight;
+//   margin: 0;
+//   outline: none;
+//   padding: 0;
+// }
+//
+//
+// // Main header style
+// //
+// body > header {
+//   background-color: transparent;
+//   height: $header-height;
+//
+//   > .header-content {
+//     @include position(fixed, 0px 0px 0 0px);
+//     @include display(flex);
+//     @include align-items(center);
+//     @include justify-content(space-between);
+//
+//     background-color: $header-background-color;
+//     border-bottom: 1px solid hsl(0, 0%, 92%);
+//     font-size: $header-font-size;
+//     font-weight: $header-font-weight;
+//     height: $header-height;
+//     min-width: min-page-width;
+//     padding: 0 25px;
+//     z-index: $zindex-header;
+//
+//     a {
+//       text-decoration: none;
+//
+//       &.base {
+//         color: hsl(0, 0%, 0%);
+//       }
+//
+//       &.strong, &.current {
+//         font-weight: 700;
+//       }
+//     }
+//
+//     > .local-menu {
+//       @include align-items(center);
+//       @include display(flex);
+//
+//       > .breadcrumbs {
+//         @include align-items(center);
+//         @include display(flex);
+//         @include flex(0 1 auto);
+//
+//         > .back-link {
+//           @include display(flex);
+//           @include flex(1 0 auto);
+//
+//           color: hsl(0, 100%, 100%);
+//           font-size: $basic-font-size;
+//           height: 33px;
+//           text-align: center;
+//           width: 39px;
+//
+//           > i {
+//             margin: auto;
+//           }
+//         }
+//
+//         > .company-name {
+//           font-size: $large-font-size;
+//           font-weight: 300;
+//           margin-left: $inner-margin-size;
+//           overflow: hidden;
+//           text-overflow: ellipsis;
+//           white-space: nowrap;
+//         }
+//       }
+//
+//       > .router {
+//         @include flex(1 0 auto);
+//
+//         margin: 0 $default-margin-size/2;
+//
+//         ul {
+//           @include display(flex);
+//           list-style: none;
+//           margin: 0;
+//           padding: 0;
+//
+//           > li {
+//             margin: 0 $default-margin-size/2;
+//           }
+//         }
+//       }
+//     }
+//
+//     > .spacer {
+//       @include flex(1);
+//     }
+//
+//     > .main-menu {
+//       @include align-items(center);
+//       @include display(flex);
+//       @include justify-content(center);
+//       @include position(absolute, 0px 0px 0px 0px);
+//
+//       font-weight: 700;
+//       list-style: none;
+//       padding: 0;
+//       z-index: -1;
+//
+//       > li {
+//         color: $link-color;
+//         font-size: $basic-font-size;
+//         margin-right: $default-margin-size;
+//
+//         a {
+//           color: $black-color;
+//
+//           &:hover {
+//             color: $link-color;
+//           }
+//         }
+//
+//         > a, > span {
+//           > i {
+//             display: none;
+//           }
+//
+//           @include respond-to(small) {
+//             > i + span {
+//               display: none;
+//             }
+//
+//             > i {
+//               display: inline-block;
+//             }
+//           }
+//         }
+//       }
+//     }
+//
+//     input {
+//       @include header-input;
+//     }
+//
+//     .logo {
+//       @include header-logo;
+//     }
+//
+//     .title {
+//       @include header-title;
+//     }
+//
+//     i.beta {
+//       padding-left: 5px;
+//     }
+//
+//     button.cc {
+//       height: $header-button-height;
+//       font-size: $header-button-font-size;
+//       margin-left: $header-padding;
+//
+//       &.square {
+//         width: $header-button-height;
+//       }
+//     }
+//
+//     .auth {
+//       margin-left: $header-padding;
+//
+//       &.profile {
+//         @include iphone {
+//           display: inline-block;
+//           max-width: 150px;
+//           overflow: hidden;
+//           text-overflow: ellipsis;
+//           white-space: nowrap;
+//         }
+//       }
+//     }
+//
+//     .sign-out {
+//       font-size: 18px;
+//     }
+//   }
+// }
+//
+// // Inverse header style
+// //
+// body > header.inverse {
+//   background-color: $header-background-color-inverse;
+//   color: $header-color-inverse;
+//
+//   a {
+//     color: inherit;
+//   }
+//
+// }
+//
+// // Env dependent
+// //
+// @each $env, $color, $dark-color in (development, $accented-green-color, $green-color),
+//                                    (staging, hsl(356, 82%, 65%), hsl(359, 73%, 55%)),
+//                                    (production, $accented-green-color, $green-color) {
+//   body.#{$env} {
+//     > header {
+//
+//       &.inverse .logo {
+//         background-image: image-url('#{$env}/insights-neg.svg');
+//       }
+//
+//       .logo {
+//         background-image: image-url('#{$env}/insights.svg');
+//       }
+//
+//       .title, .auth, .company-name {
+//         color: $dark-color;
+//       }
+//
+//       .back-link, button.cc {
+//         background-color: $color;
+//       }
+//
+//       .sign-out {
+//         color: $color;
+//       }
+//
+//     }
+//   }
+// }
