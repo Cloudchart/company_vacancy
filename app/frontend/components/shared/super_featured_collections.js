@@ -62,11 +62,13 @@ class SuperFeaturedCollections extends React.Component {
 
   renderHeader = () => {
     let nextIndex = (this.state.index + 1) % this.props.collections.length
+    let currCollection = this.props.collections[this.state.index]
+    let nextCollection = this.props.collections[nextIndex]
 
     return (
-      <h1 key={ this.props.collections[this.state.index].id } ref="header">
-        <span>{ this.props.collections[this.state.index].title }</span>
-        <span>{ this.props.collections[nextIndex].title }</span>
+      <h1 key={ currCollection.id } ref="header">
+        <a className="through" href={ currCollection.url }>{ currCollection.title }</a>
+        <span>{ nextCollection.title }</span>
       </h1>
     )
   }
@@ -97,6 +99,7 @@ export default Relay.createContainer(SuperFeaturedCollections, {
       fragment on Collection @relay(plural: true) {
         id
         title
+        url
         insights(first: 3) {
           edges {
             node {
