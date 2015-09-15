@@ -16,10 +16,17 @@ class NotificationsBreakdownWorker < ApplicationWorker
 
     # spread notifications
     follower_ids.each do |id|
-      Notification.find_or_create_by!(user_id: id) do |notification|
-        notification.created_at = object.created_at
-      end.touch
+      if notification = Notification.find_by(user_id: id)
+        notification.touch
+      else
+        begin
+          Notification.create(user_id: id, created_at: object.created_at)
+        rescue ActiveRecord::RecordNotUnique
+          Notification.find_by(user_id: id).try(:touch)
+        end
+      end
     end
+
   end
 
 end

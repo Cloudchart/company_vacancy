@@ -1,10 +1,7 @@
 class NotificationsWorker < ApplicationWorker
-  include Sidetiq::Schedulable
-
   sidekiq_options queue: :notifications
-  recurrence { minutely(Cloudchart::INSTANT_NOTIFICATIONS_TIQ) }
 
-  def perform(last_occurrence, current_occurrence)
+  def perform
     Notification.all.each do |notification|
       next unless should_notify_follower?(notification)
       notify_follower(notification)
@@ -14,7 +11,7 @@ class NotificationsWorker < ApplicationWorker
 private
 
   def should_notify_follower?(notification)
-    notification.updated_at < Cloudchart::INSTANT_NOTIFICATIONS_TIQ.minutes.ago ||
+    notification.updated_at < Cloudchart::INSTANT_NOTIFICATIONS_TIC.minutes.ago ||
     notification.updated_at - notification.created_at > Cloudchart::INSTANT_NOTIFICATIONS_MAX_DELAY.minutes
   end
 
@@ -22,7 +19,7 @@ private
     notification.destroy
 
     # user notifications settings should be applied here
-    UserMailer.activities_digest(notification.user, notification.created_at, notification.updated_at).deliver
+    UserMailer.delay.activities_digest(notification.user, notification.created_at, notification.updated_at)
   end
 
 end

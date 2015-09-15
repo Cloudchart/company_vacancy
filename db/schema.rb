@@ -305,7 +305,7 @@ ActiveRecord::Schema.define(version: 20150914103808) do
     t.datetime "updated_at"
   end
 
-  add_index "notifications", ["user_id"], name: "index_notifications_on_user_id", using: :btree
+  add_index "notifications", ["user_id"], name: "index_notifications_on_user_id", unique: true, using: :btree
 
   create_table "oauth_providers", primary_key: "uuid", force: true do |t|
     t.string   "user_id",     limit: 36

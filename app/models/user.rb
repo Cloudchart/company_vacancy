@@ -38,6 +38,8 @@ class User < ActiveRecord::Base
   has_secure_password
 
   has_one :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
+  has_one :notification, dependent: :destroy
+
   has_many :friends_users, dependent: :delete_all
   has_many :friends, through: :friends_users, class_name: self.name, foreign_key: :friend_id
   has_many :emails, -> { order(:address) }, dependent: :destroy
@@ -61,7 +63,6 @@ class User < ActiveRecord::Base
   has_many :pinboards, dependent: :destroy
   has_many :accessed_pinboards, through: :roles, source: :owner, source_type: 'Pinboard'
   has_many :votes, as: :source
-  has_many :notifications, dependent: :destroy
 
   # Roles on Pinboards
   #

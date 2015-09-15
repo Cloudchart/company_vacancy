@@ -27,7 +27,7 @@ module Cloudchart
 
   WORDS_PER_MINUTE = 200
 
-  INSTANT_NOTIFICATIONS_TIQ = 15 # minutes
+  INSTANT_NOTIFICATIONS_TIC = 15 # minutes
   INSTANT_NOTIFICATIONS_MAX_DELAY = 60 # minutes
 
 end

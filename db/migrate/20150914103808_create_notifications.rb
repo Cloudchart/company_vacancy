@@ -7,7 +7,7 @@ class CreateNotifications < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :notifications, :user_id
+    add_index :notifications, :user_id, unique: true
     execute 'ALTER TABLE notifications ADD PRIMARY KEY (uuid);'
   end
 
