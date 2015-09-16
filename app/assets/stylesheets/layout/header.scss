@@ -26,6 +26,11 @@ body > header {
   margin: 0 auto;
   width: $site-header-width;
 
+  @include iphone {
+    padding: 0 30px;
+    width: 100%;
+  }
+
   > a.site-logo {
     background-image: image-url('max-logo.png');
     background-size: contain;
