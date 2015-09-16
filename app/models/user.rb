@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
   # Roles on Pinboards
   #
   { readable: [:reader, :editor], writable: :editor, followable: :follower }.each do |scope, role|
-    has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, class_name: Role
+    has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, class_name: Role.name
     has_many :"#{scope}_pinboards", through: :"#{scope}_pinboards_roles", source: :owner, source_type: Pinboard
   end
 
