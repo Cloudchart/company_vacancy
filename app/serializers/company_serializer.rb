@@ -33,7 +33,7 @@ class CompanySerializer < ActiveModel::Serializer
     {
       people_size: company.people.size,
       vacancies_size: company.vacancies.size,
-      invitable_roles: Company::INVITABLE_ROLES,
+      invitable_roles: Cloudchart::COMPANY_INVITABLE_ROLES,
       company_url: company_path(company),
       settings_url: company_path(company),
       verify_site_url: verify_site_url_company_path(company),

@@ -10,7 +10,6 @@ class Pinboard < ActiveRecord::Base
   include Admin::Pinboard
 
   ACCESS_RIGHTS = [:public, :protected, :private].freeze
-  INVITABLE_ROLES = [:editor, :contributor, :reader].freeze
   ACCESS_ROLE = :reader
 
   enum suggestion_rights: { anyone: 0, editors: 1 }

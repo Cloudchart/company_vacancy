@@ -14,8 +14,8 @@ class Role < ActiveRecord::Base
 
   has_should_markers(:should_skip_pending_role)
 
-  validates :value, inclusion: { in: Company::INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Company' }
-  validates :value, inclusion: { in: Pinboard::INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Pinboard' }
+  validates :value, inclusion: { in: Cloudchart::COMPANY_INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Company' }
+  validates :value, inclusion: { in: Cloudchart::PINBOARD_INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Pinboard' }
   validates :value, inclusion: { in: Cloudchart::ROLES.map(&:to_s) }, on: :create, if: -> { owner_type.blank? }
 
   validate :acceptance_of_invite, on: :create

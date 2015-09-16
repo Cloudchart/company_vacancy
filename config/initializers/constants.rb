@@ -1,6 +1,16 @@
 module Cloudchart
   ROLES = [:admin, :editor, :unicorn, :trustee, :inviter].freeze
 
+  COMPANY_INVITABLE_ROLES = [:editor, :trusted_reader, :public_reader].freeze
+  COMPANY_ROLES = ([:owner] + COMPANY_INVITABLE_ROLES).freeze
+
+  PINBOARD_INVITABLE_ROLES = [:editor, :contributor, :reader].freeze
+
+  POPULAR_PINBOARDS = {
+    followers_count: 4,
+    pinboards_count: 100
+  }
+
   RAILS_ADMIN_INCLUDED_MODELS = %w(
     Company Feature User Token Page Tag Interview Story Pinboard
     Role Pin GuestSubscription Domain Post Paragraph
@@ -14,11 +24,6 @@ module Cloudchart
     OpenStruct.new(browser: 'Opera', version: '12.1'),
     OpenStruct.new(browser: 'Internet Explorer', version: '11.0')
   ]
-
-  POPULAR_PINBOARDS = {
-    followers_count: 4,
-    pinboards_count: 100
-  }
 
   WORDS_PER_MINUTE = 200
 

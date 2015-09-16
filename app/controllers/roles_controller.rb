@@ -81,7 +81,7 @@ class RolesController < ApplicationController
   end
 
   def destroy
-    if @role.value.to_s == Company::ROLES.first.to_s
+    if @role.value.to_s == Cloudchart::COMPANY_ROLES.first.to_s
       render json: { errors: { base: 'owner' } }, status: 422
     else
       @role.destroy
