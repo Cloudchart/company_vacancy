@@ -23,3 +23,9 @@ private
   end
 
 end
+
+Sidekiq::Cron::Job.create(
+  name: 'Notifications',
+  klass: 'NotificationsWorker',
+  cron: "*/#{Cloudchart::INSTANT_NOTIFICATIONS_TIC} * * * *"
+)
