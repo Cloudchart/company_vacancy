@@ -426,9 +426,6 @@ GEM
     sitemap_generator (5.1.0)
       builder
     slop (3.6.0)
-    spring (1.4.0)
-    spring-commands-rspec (1.0.4)
-      spring (>= 0.9.1)
     sprockets (3.2.0)
       rack (~> 1.0)
     sprockets-coffee-react (0.5.1)
@@ -557,8 +554,6 @@ DEPENDENCIES
   sidekiq (~> 3.4.0)
   sinatra
   sitemap_generator (~> 5.1.0)
-  spring
-  spring-commands-rspec
   sprockets (~> 3.0)
   sprockets-coffee-react
   sprockets-commonjs!
