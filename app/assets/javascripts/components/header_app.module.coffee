@@ -63,7 +63,6 @@ module.exports = React.createClass
 
 
   render: ->
-    console.log @props
     <div className="site-header">
       { @renderLogo() }
 

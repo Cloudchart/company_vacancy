@@ -88,10 +88,10 @@ module.exports = React.createClass
     @cursor.user.get('favorite_insights_ids').size
 
   getFavoritePinboardsCount: ->
-    @cursor.user.get('pinboards_favorites').size
+    @cursor.user.get('favorite_pinboards_ids').size
 
   getFavoriteUsersCount: ->
-    @cursor.user.get('users_favorites').size
+    @cursor.user.get('favorite_users_ids').size
 
 
   # Handlers

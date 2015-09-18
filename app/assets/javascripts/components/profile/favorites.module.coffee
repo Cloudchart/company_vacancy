@@ -34,8 +34,8 @@ module.exports = React.createClass
               #{UserCard.getQuery('user')}
             },
             edges {
-              pinboards_favorites,
-              users_favorites
+              favorite_pinboards_ids,
+              favorite_users_ids
             }
           }
         """
@@ -80,7 +80,7 @@ module.exports = React.createClass
   # Renderers
   #
   renderUsers: ->
-    return null unless @state.user.users_favorites.length > 0
+    return null unless @state.user.favorite_users_ids.length > 0
 
     <section className="cc-container-common favorites users">
       <header>
@@ -93,7 +93,7 @@ module.exports = React.createClass
     </section>
 
   renderUserCards: ->
-    users = @state.user.users_favorites.map (favorite) -> UserStore.get(favorite.favoritable_id)
+    users = @state.user.favorite_users_ids.map (id) -> UserStore.get(id)
 
     Immutable.Seq(users)
       .sortBy (user) -> user.get('full_name')
@@ -101,7 +101,7 @@ module.exports = React.createClass
       .toArray()
 
   renderPinboards: ->
-    return null unless @state.user.pinboards_favorites.length > 0
+    return null unless @state.user.favorite_pinboards_ids.length > 0
 
     <section className="cc-container-common">
       <header>
@@ -114,7 +114,7 @@ module.exports = React.createClass
     </section>
 
   renderPinboardCards: ->
-    pinboards = @state.user.pinboards_favorites.map (favorite) -> PinboardStore.get(favorite.favoritable_id)
+    pinboards = @state.user.favorite_pinboards_ids.map (id) -> PinboardStore.get(id)
 
     Immutable.Seq(pinboards)
       .sortBy (pinboard) -> pinboard.get('title')
