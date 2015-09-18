@@ -17,6 +17,7 @@ module Preload::User
     acts_as_preloadable :pinboards_through_roles, pinboards_roles: :pinboard
     acts_as_preloadable :favorite_pinboards, pinboards_favorites: :pinboard
     acts_as_preloadable :related_pinboards, pinboards: :pins, pinboards_roles: { pinboard: :pins }, pinboards_favorites: { pinboard: :pins }
+    acts_as_preloadable :available_pinboards, pinboards: :pins, pinboards_roles: { pinboard: :pins }
     acts_as_preloadable :feed_pinboards, { users_favorites: { favoritable_user: :pinboards } }
     acts_as_preloadable :feed_pins, pinboards_favorites: { pinboard: :pins }, users_favorites: { favoritable_user: :pins }
     acts_as_preloadable :insights, :pins
@@ -51,6 +52,12 @@ module Preload::User
       pinboards.select { |pinboard| ability(scope).can?(:read, pinboard) }
         .concat(pinboards_through_roles(scope))
         .concat(favorite_pinboards(scope))
+        .uniq
+    end
+
+    def available_pinboards(scope = {})
+      pinboards.select { |pinboard| ability(scope).can?(:read, pinboard) }
+        .concat(pinboards_through_roles(scope))
         .uniq
     end
 

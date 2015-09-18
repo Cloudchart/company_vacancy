@@ -30,21 +30,21 @@ module.exports = React.createClass
       pinboards: ->
         """
           User {
-            pinboards {
+            available_pinboards {
               #{PinboardCard.getQuery('pinboard')}
             },
             edges {
-              pinboard_ids
+              available_pinboards_ids
             }
           }
         """
 
   propTypes:
-    user_id:     React.PropTypes.string
+    user_id: React.PropTypes.string
 
 
   getInitialState: ->
-    ready: true
+    ready: false
 
 
   fetch: ->
@@ -69,7 +69,7 @@ module.exports = React.createClass
 
 
   renderPinboards: ->
-    @cursor.user.get('pinboard_ids')
+    @cursor.user.get('available_pinboards_ids')
       .map (id) -> PinboardStore.get(id).toJS()
       .sortBy (pinboard) -> +!pinboard.is_invited + pinboard.title
       .map @renderPinboard

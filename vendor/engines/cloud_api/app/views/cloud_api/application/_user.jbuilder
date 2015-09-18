@@ -102,6 +102,11 @@ json_edge! json, :related_pinboards, edges do
   end
 end
 
+json_edge! json, :available_pinboards_ids, edges do
+  User.preload_available_pinboards(siblings, cache)
+  user.available_pinboards(current_user: current_user).map(&:id)
+end
+
 
 json_edge! json, :favorite_pinboards_ids, edges do
   User.preload_favorite_pinboards(siblings, cache)
@@ -133,10 +138,10 @@ end
 json_edge! json, :pinboards_through_roles, edges do
   User.preload_pinboards_through_roles(siblings, cache)
 
-  user.pinboards_through_roles({ current_user: current_user }).map do |c|
+  user.pinboards_through_roles({ current_user: current_user }).map do |pinboard|
     {
-      id:     c.id,
-      name:   c.title
+      id:     pinboard.id,
+      name:   pinboard.title
     }
   end
 end

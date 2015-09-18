@@ -82,7 +82,7 @@ module.exports = React.createClass
     @cursor.user.get('insights_ids').size
 
   getPinboardsNumber: ->
-    @cursor.user.get('pinboard_ids').size
+    @cursor.user.get('available_pinboards_ids').size
 
   getFavoriteInsightsCount: ->
     @cursor.user.get('favorite_insights_ids').size
