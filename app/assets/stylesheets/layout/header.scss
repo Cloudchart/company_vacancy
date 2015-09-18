@@ -13,6 +13,10 @@ body > header {
   color: $site-header-color;
   font-size: $site-header-font-size;
   height: $site-header-height;
+
+  @include iphone {
+    height: 140px;
+  }
 }
 
 .site-header {
@@ -27,7 +31,7 @@ body > header {
   width: $site-header-width;
 
   @include iphone {
-    padding: 0 30px;
+    padding: 0 60px;
     width: 100%;
   }
 
@@ -37,6 +41,11 @@ body > header {
     display: block;
     height: 25px;
     width: 100px;
+
+    @include iphone {
+      height: 60px;
+      width: 240px;
+    }
   }
 
   a.through {
@@ -70,6 +79,7 @@ button.transparent {
   > * {
     line-height: 1em;
   }
+
 }
 
 button.transparent {
@@ -80,7 +90,47 @@ button.transparent {
   > i {
     margin-left: 10px;
   }
+
+  @include iphone {
+    border-radius: 10px;
+    height: 60px;
+    font-size: 18px;
+  }
 }
+
+
+ul.header-mobile-menu {
+  @include display(flex);
+  @include flex-direction(column);
+  @include position(fixed, 140px 0px 0px 0px);
+
+  background-color: white;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 1000;
+
+  > li {
+    border-top: 1px solid #e8e8e8;
+    color: #4c4c4c;
+    font-size: 54px;
+    line-height: 1em;
+    padding: 44px 60px;
+  }
+
+  > li.spacer {
+    @include flex(1);
+  }
+
+  > li.logout {
+    @include align-items(center);
+    @include display(flex);
+    @include justify-content(space-between);
+
+    background-color: #e8e8e8;
+  }
+}
+
 
 // $header-background-color: hsla(0, 100%, 100%, 0.9);
 // $header-background-color-inverse: hsl(139, 72%, 35%);

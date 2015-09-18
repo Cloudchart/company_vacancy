@@ -3,10 +3,12 @@
 GlobalState = require('global_state/state')
 
 PinStore = require('stores/pin_store')
+UserStore = require('stores/user_store.cursor')
 
 Header = require('components/cards/insight/header')
 Content = require('components/cards/insight/content')
-Footer = require('components/cards/insight/footer')
+Origin  = require('components/cards/insight/origin')
+StarButton = require('components/cards/insight/star_button')
 
 
 # Main component
@@ -28,9 +30,10 @@ InsightCard = React.createClass
         params          = Object.assign(InsightCard.getDefaultProps(), params)
         headerQuery     = Header.getQuery('pin') if params.shouldRenderHeader
         contentQuery    = Content.getQuery('pin')
-        footerQuery     = Footer.getQuery('pin') if params.shouldRenderFooter
-        pinQuery        = [contentQuery, headerQuery, footerQuery].filter((part) -> !!part).join(',')
-        pinParentQuery  = [contentQuery, footerQuery].filter((part) -> !!part).join(',')
+        originQuery     = Origin.getQuery('pin') if params.shouldRenderFooter
+        starQuery       = StarButton.getQuery('pin')
+        pinQuery        = [contentQuery, headerQuery, originQuery, starQuery].filter((part) -> !!part).join(',')
+        pinParentQuery  = [contentQuery, originQuery, starQuery].filter((part) -> !!part).join(',')
 
         """
           Pin {
@@ -71,9 +74,6 @@ InsightCard = React.createClass
   componentDidMount: ->
     @fetch()
 
-  componentDidUpdate: ->
-    @props.onUpdate() if typeof @props.onUpdate is 'function'
-
 
   # Helpers
   #
@@ -89,30 +89,56 @@ InsightCard = React.createClass
     return null unless @props.shouldRenderHeader
     <Header pin={ @state.pin.uuid } scope={ @props.scope } />
 
+
   renderContent: ->
-    <Content pin = { @state.pin.parent_id || @state.pin.uuid } url = { @state.pin.url } />
+    insight = @getCursor('insight')
+
+    <section className="content">
+      <a href={ insight.get('url') } className="through">
+        { insight.get('content') }
+      </a>
+    </section>
+
+
+  renderControls: ->
+    user = UserStore.get(@getCursor('insight').get('user_id')).toJS()
+    <ul className="controls">
+      <li className="user">
+        <a href={ user.url }>{ user.full_name }</a>
+      </li>
+      <StarButton pin={ @getCursor('insight').get('id') } />
+    </ul>
+
 
   renderFooter: ->
     return null unless @props.shouldRenderFooter
-    <Footer pin={ @state.pin.id } scope={ @props.scope } />
+    <footer>
+      <Origin pin={ @getCursor('insight').get('id') } />
+    </footer>
+    # <Footer pin={ @state.pin.id } scope={ @props.scope } />
 
 
   # Main Render
   #
   render: ->
-    if @state.ready
+    return <div className="insight-card cloud-card placeholder" /> unless @state.ready
 
-      className = cx @props.className, cx
-        'cloud-card':     true
-        'insight-card':   true
+    className = cx @props.className, cx
+      'cloud-card':     true
+      'insight-card':   true
 
-      <div className={ className }>
-        { @renderHeader() }
-        { @renderContent() }
-        { @renderFooter() }
-      </div>
-    else
-      <div className="insight-card cloud-card placeholder" />
+    <div className={ className }>
+      { @renderContent() }
+      { @renderControls() }
+      { @renderFooter() }
+    </div>
+
+    # <div className={ className }>
+    #   { @renderHeader() }
+    #   { @renderContent() }
+    #   { @renderFooter() }
+    # </div>
+
 
 
 # Exports

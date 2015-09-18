@@ -88,7 +88,7 @@ module.exports = React.createClass
     return null unless @state.pin.diffbot_response_data
     return null unless title = @state.pin.diffbot_response_data.title
 
-    <span className="title">{ title + ', ' }</span>
+    <span className="title">{ title }. </span>
 
   renderEstimation: ->
     return null unless @state.pin.diffbot_response_data
@@ -96,7 +96,6 @@ module.exports = React.createClass
 
     <span className="estimation" style={ 'white-space': 'nowrap' } >
       <span> &mdash; </span>
-      <i className="fa fa-clock-o" style = { 'margin-right': '5px' } />
       { moment.duration(estimated_time, 'seconds').humanize(); }
     </span>
 
@@ -109,12 +108,17 @@ module.exports = React.createClass
     return null unless (parts = DOMAIN_RE.exec(@state.pin.origin)) and parts.length == 2
     [_, domain] = parts
 
-    <div className="origin">
+    <a className="origin through" href={ @state.pin.origin } target="_blank" onClick={ @handleOriginClick }>
       { @renderTitle() }
-
-      <a href={ @state.pin.origin } target="_blank" onClick={ @handleOriginClick }>
-        { domain }
-      </a>
-
+      { domain }
       { @renderEstimation() }
-    </div>
+    </a>
+    # <div className="origin">
+    #   { @renderTitle() }
+    #
+    #   <a href={ @state.pin.origin } className="through" target="_blank" onClick={ @handleOriginClick }>
+    #     { domain }
+    #   </a>
+    #
+    #   { @renderEstimation() }
+    # </div>

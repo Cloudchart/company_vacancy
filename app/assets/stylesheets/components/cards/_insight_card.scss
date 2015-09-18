@@ -1,0 +1,72 @@
+.insight-card {
+  background-color: white;
+  border-bottom: 1px solid #d8d9da;
+  border-radius: 5px;
+  color: #4c4c4c;
+  font-size: 18px;
+  line-height: 26px;
+  padding: 30px;
+
+  @include iphone {
+    font-size: 30px;
+    line-height: 44px;
+    margin-left: 35px;
+    margin-right: 35px;
+    padding: 50px;
+  }
+
+  a.through {
+    color: inherit;
+  }
+
+  > header,
+  > section,
+  > .controls,
+  > footer {
+    margin: - (18px / 3) 0;
+
+    @include iphone {
+      margin: - (30px / 3) 0;
+    }
+  }
+
+  > ul.controls {
+    @include align-items(center);
+    @include display(flex);
+
+    list-style: none;
+    margin-top: 20px - 18px / 3;
+    padding: 0;
+
+    @include iphone {
+      margin-top: 35px - 30px / 3;
+    }
+
+    > li.user {
+      @include flex(1);
+    }
+
+    > li.star,
+    > li.edit {
+      color: #3bc462;
+      cursor: pointer;
+    }
+  }
+
+  > footer {
+    border-top: 1px solid #d8d9da;
+    color: #a6a6a6;
+    font-size: 14px;
+    line-height: 18px;
+    margin-top: 30px;
+    padding-top: 20px - (14px / 3);
+
+    @include iphone {
+      font-size: 24px;
+      line-height: 30px;
+      margin-top: 50px;
+      padding-top: 34px - (30px / 3);
+    }
+  }
+
+}

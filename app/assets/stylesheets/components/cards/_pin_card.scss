@@ -130,31 +130,31 @@ $insight-card-footer-content-line-height: 20px;
 
 // Insight Card
 //
-.cloud-card.insight-card {
-  font-size: $insight-card-font-size;
-  font-weight: $insight-card-font-weight;
-  line-height: $insight-card-line-height;
-  padding: 0 0 $insight-card-padding;
-
-  &.placeholder {
-    background-image: image_url('placeholders/pin.png');
-    background-size: cover;
-    height: 199px;
-  }
-
-  &.transparent {
-    opacity: .5;
-  }
-
-  > header {
-    @include insight-card-header;
-  }
-
-  > section.content {
-    @include insight-card-content;
-  }
-
-  > footer {
-    @include insight-card-footer;
-  }
-}
+// .cloud-card.insight-card {
+//   font-size: $insight-card-font-size;
+//   font-weight: $insight-card-font-weight;
+//   line-height: $insight-card-line-height;
+//   padding: 0 0 $insight-card-padding;
+//
+//   &.placeholder {
+//     background-image: image_url('placeholders/pin.png');
+//     background-size: cover;
+//     height: 199px;
+//   }
+//
+//   &.transparent {
+//     opacity: .5;
+//   }
+//
+//   > header {
+//     @include insight-card-header;
+//   }
+//
+//   > section.content {
+//     @include insight-card-content;
+//   }
+//
+//   > footer {
+//     @include insight-card-footer;
+//   }
+// }
