@@ -13,8 +13,7 @@
         <%=
           {
             collection: @user.pinboards.count + @user.pinboards_through_roles.size,
-            insight:    @user.pins.insights.count,
-            company:    @user.companies_through_roles.size
+            insight:    @user.pins.insights.count
           }.select { |k, v| v > 0 }.map { |k, v| pluralize(v, k.to_s) }.join(', ')
         %>
       </p>
