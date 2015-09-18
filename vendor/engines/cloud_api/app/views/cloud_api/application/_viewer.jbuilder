@@ -34,11 +34,13 @@ end
 json_edge! json, :feed_dates, edges do
   User.preload_feed_pinboards(siblings, cache)
   User.preload_feed_pins(siblings, cache)
+  preload_associations(siblings, cache, :pinboards_roles)
 
   dates = []
   dates.concat viewer.feed_pinboards.map { |p| p.created_at.to_date }
   dates.concat viewer.feed_pins.map { |p| p.created_at.to_date }
   dates.concat viewer.feed_features.map { |f| f.effective_from.to_date }
+  dates.concat viewer.pinboards_roles.select { |r| r.pending_value.present? }.map { |r| r.created_at.to_date }
   dates.uniq.sort
 end
 

@@ -18,7 +18,7 @@ module Preload::User
     acts_as_preloadable :favorite_pinboards, pinboards_favorites: :pinboard
     acts_as_preloadable :related_pinboards, pinboards: :pins, pinboards_roles: { pinboard: :pins }, pinboards_favorites: { pinboard: :pins }
     acts_as_preloadable :available_pinboards, pinboards: :pins, pinboards_roles: { pinboard: :pins }
-    acts_as_preloadable :feed_pinboards, { users_favorites: { favoritable_user: :pinboards } }
+    acts_as_preloadable :feed_pinboards, users_favorites: { favoritable_user: :pinboards }, pinboards_roles: :pinboard
     acts_as_preloadable :feed_pins, pinboards_favorites: { pinboard: :pins }, users_favorites: { favoritable_user: :pins }
     acts_as_preloadable :insights, :pins
     acts_as_preloadable :favorite_insights, insights_favorites: :favoritable_pin
@@ -63,9 +63,18 @@ module Preload::User
 
     def feed_pinboards(scope = {})
       date = Date.parse(scope[:params][:date]) rescue nil
-      users_favorites
+
+      pt1 = pinboards_roles.select do |role|
+        ability(scope).can?(:read, role.pinboard) &&
+        feed_date_predicate(date, role) &&
+        role.created_at != role.pinboard.created_at
+      end.map(&:pinboard)
+
+      pt2 = users_favorites
         .flat_map { |favorite| favorite.favoritable_user.pinboards }
-        .select { |pinboard| ability(scope).can?(:read, pinboard) && (date ? pinboard.created_at.to_date == date : true) }
+        .select { |pinboard| ability(scope).can?(:read, pinboard) && feed_date_predicate(date, pinboard) }
+
+      pt1 + pt2
     end
 
     def feed_pins(scope = {})
@@ -73,7 +82,7 @@ module Preload::User
       pins = []
       pins.concat favorite_pinboards(scope).flat_map { |pinboard| pinboard.pins }
       pins.concat users_favorites.flat_map { |favorite| favorite.favoritable_user.pins }
-      pins.select { |pin| ability(scope).can?(:read, pin) && (date ? pin.created_at.to_date == date : true) }
+      pins.select { |pin| ability(scope).can?(:read, pin) && feed_date_predicate(date, pin) }
     end
 
     def insights
@@ -92,6 +101,10 @@ module Preload::User
 
     def ability(scope = {})
       scope[:current_user_ability] ||= Ability.new(scope[:current_user] || self)
+    end
+
+    def feed_date_predicate(date, item)
+      date ? item.created_at.to_date == date : true
     end
 
   end
