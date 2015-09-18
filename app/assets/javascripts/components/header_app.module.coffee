@@ -1,5 +1,8 @@
 # @cjsx React.DOM
 
+device = require('utils/device')
+
+
 # Exports
 #
 module.exports = React.createClass
@@ -7,9 +10,21 @@ module.exports = React.createClass
 
   displayName: 'HeaderApp'
 
+
+  getInitialState: ->
+    is_menu_shown: false
+
+
   handleLoginButtonClick: (event) ->
     event.preventDefault()
     window.location = @props.login_url
+
+
+  handleBarsClick: (event) ->
+    event.preventDefault()
+    @setState({
+      is_menu_shown: !@state.is_menu_shown
+    })
 
 
   renderLogo: ->
@@ -40,6 +55,7 @@ module.exports = React.createClass
     </a>
 
   renderLinks: ->
+    return null if device.is_iphone
     return null unless @props.user.id
 
     <nav>
@@ -49,6 +65,7 @@ module.exports = React.createClass
 
   renderUser: ->
     if @props.user.id
+      return null if device.is_iphone
       <nav className="user">
         <a href={ @props.user.url } className="through">{ @props.user.name }</a>
         <a href={ @props.logout_url }>
@@ -62,6 +79,37 @@ module.exports = React.createClass
       </button>
 
 
+  renderSandwitch: ->
+    return null unless @props.user.id
+    return null unless device.is_iphone
+
+    <a href="" className="through" style={ fontSize: 60 } onClick={ @handleBarsClick }>
+      <i className="fa fa-bars" />
+    </a>
+
+
+  renderMobileMenu: ->
+    return null unless @state.is_menu_shown
+
+    links = @props.links.map (link, i) =>
+      <li key={ i }>
+        <a className="through" href={ link.url }>
+          { link.title }
+        </a>
+      </li>
+
+    <ul className="header-mobile-menu">
+      { links }
+      <li className="spacer" />
+      <li className="logout">
+        Logout
+        <a href={ @props.logout_url }>
+          <i className="fa fa-sign-in" />
+        </a>
+      </li>
+    </ul>
+
+
   render: ->
     console.log @props
     <div className="site-header">
@@ -70,4 +118,6 @@ module.exports = React.createClass
       { @renderLinks() }
 
       { @renderUser() }
+      { @renderSandwitch() }
+      { @renderMobileMenu() }
     </div>

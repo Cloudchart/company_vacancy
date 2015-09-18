@@ -7,12 +7,8 @@
     padding: 0 20px;
   }
 
-  > .insight-card > .content {
-    font-size: 24px;
-    line-height: 29px;
-    > .content {
-      pointer-events: none;
-    }
+  > .insight-card > section.content {
+    pointer-events: none;
   }
 
   > nav.tab-nav {
