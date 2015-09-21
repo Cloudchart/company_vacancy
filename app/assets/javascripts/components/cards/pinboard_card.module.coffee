@@ -6,6 +6,11 @@ GlobalState     = require('global_state/state')
 PinboardStore   = require('stores/pinboard_store')
 UserStore       = require('stores/user_store.cursor')
 
+AuthButton      = require('components/form/buttons').AuthButton
+
+SyncAPI         = require('sync/pinboard_sync_api')
+RoleSyncAPI     = require('sync/role_sync_api')
+
 cx              = React.addons.classSet
 pluralize       = require('utils/pluralize')
 
@@ -18,6 +23,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     pinboard: null
+    sync:     null
 
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
@@ -33,7 +39,7 @@ module.exports = React.createClass
               is_followed,
               readers_count,
               pins_count,
-              is_invited
+              invitation_id
             }
           }
         """
@@ -48,17 +54,39 @@ module.exports = React.createClass
         user:     @getCursor('user')
 
 
+  fetchEdges: ->
+    GlobalState.fetchEdges('Pinboard', @props.pinboard).done =>
+      @setState
+        sync: null
+
+
   # Events
   #
 
   handleFollowButtonClick: (event) ->
+    return if @state.sync
     return if @state.pinboard.get('is_followed', false)
+    @setState
+      sync: 'follow_collection'
+
+    SyncAPI.follow(@props.pinboard).done @fetchEdges
 
 
-  handleAcceptInvitationButtonClick: (event) ->
+  handleAcceptInvitationButtonClick: (invitation_id, event) ->
+    return if @state.sync
+    @setState
+      sync: 'accept_invitation'
+
+    RoleSyncAPI.acceptInvitation(@state.pinboard.get('invitation_id')).then @fetchEdges
 
 
-  handleDeclineInvitationButtonClick: (event) ->
+  handleDeclineInvitationButtonClick: (invitation_id, event) ->
+    return if @state.sync
+    @setState
+      sync: 'decline_invitation'
+
+    RoleSyncAPI.declineInvitation(@state.pinboard.get('invitation_id')).then @fetchEdges
+
 
 
   componentDidMount: ->
@@ -70,11 +98,17 @@ module.exports = React.createClass
 
   renderFollowButton: ->
     className = cx
-      'transparent': @state.pinboard.get('is_followed')
+      'transparent':  @state.pinboard.get('is_followed')
+      'sync':         @state.sync == 'follow_collection'
 
     label = if @state.pinboard.get('is_followed') then 'Following' else 'Follow'
+    label += '...' if @state.sync == 'follow_collection'
 
-    <button className={ className } onClick={ @handleFollowButtonClick }>{ label }</button>
+    <AuthButton>
+      <button className={ className } onClick={ @handleFollowButtonClick }>
+        { label }
+      </button>
+    </AuthButton>
 
 
   renderTitleAndFollowButton: ->
@@ -134,18 +168,27 @@ module.exports = React.createClass
 
 
   renderInvitationControls: ->
-    return null unless @state.pinboard.get('is_invited', false)
+    return null unless invitation_id = @state.pinboard.get('invitation_id', false)
+
+    accept_label    = 'Accept'
+    accept_label   += '...' if @state.sync == 'accept_invitation'
+    decline_label   = 'Decline'
+    decline_label  += '...' if @state.sync == 'decline_invitation'
 
     <section className="invitation">
       <p>
         You've been invited to this collection
       </p>
-      <button onClick={ @handleAcceptInvitationButtonClick }>
-        Accept
-      </button>
-      <button className="alert" onClick={ @handleDeclineInvitationButtonClick }>
-        Decline
-      </button>
+      <AuthButton>
+        <button onClick={ @handleAcceptInvitationButtonClick.bind(@, invitation_id) }>
+          { accept_label }
+        </button>
+      </AuthButton>
+      <AuthButton>
+        <button className="alert" onClick={ @handleDeclineInvitationButtonClick.bind(@, invitation_id) }>
+          { decline_label }
+        </button>
+      </AuthButton>
     </section>
 
 
