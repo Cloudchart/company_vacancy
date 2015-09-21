@@ -5,7 +5,7 @@ var checkRemotePermission = function (permissionData) {
     // This is a new web service URL and its validity is unknown.
     window.safari.pushNotification.requestPermission(
       "<%= ENV['ZERO_PUSH_URL'] %>",      // The web service URL.
-      'web.com.insightsvc.notification',  // The Website Push ID.
+      "<%= ENV['WEBSITE_PUSH_ID'] %>",    // The Website Push ID.
       {},                                 // Extra data is unused when using hosted push packages.
       checkRemotePermission               // The callback function.
     );
@@ -40,7 +40,7 @@ var checkRemotePermission = function (permissionData) {
 function requestSafariPush() {
   // Ensure that the user can receive Safari Push Notifications.
   if ('safari' in window && 'pushNotification' in window.safari) {
-  var permissionData = window.safari.pushNotification.permission('web.com.insightsvc.notification');
+  var permissionData = window.safari.pushNotification.permission("<%= ENV['WEBSITE_PUSH_ID'] %>");
     checkRemotePermission(permissionData);
   }
   else {
