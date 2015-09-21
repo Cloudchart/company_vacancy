@@ -1,0 +1,146 @@
+.collection-card {
+  background-color: white;
+  border-bottom: 1px solid #d2d3d4;
+  border-radius: 5px;
+  padding: 30px;
+
+  a {
+
+    &.through {
+      color: inherit;
+    }
+
+  }
+
+  button {
+    background-color: #3bc362;
+    border: 1px solid #3bc362;
+    border-radius: 5px;
+    color: white;
+    font-size: 18px;
+    font-weight: 300;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 40px;
+
+    &.alert {
+      background-color: #f42f36;
+      border-color: #f42f36;
+    }
+
+    &.transparent {
+      background-color: transparent;
+      border-color: #ebebeb;
+      color: #d8d8d8;
+    }
+  }
+
+
+  > header {
+    @include align-items(center);
+    @include display(flex);
+
+    > h1 {
+      @include flex(1);
+
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 26px;
+      margin: -6px 0;
+      padding: 0;
+    }
+
+    > button {
+      margin-left: 20px;
+    }
+  }
+
+
+  > section.description {
+    font-size: 18px;
+    margin-top: 20px;
+
+    > p {
+      margin: -6px 0;
+    }
+  }
+
+
+  > section.owner-and-counters {
+    border-top: 1px solid #eaebec;
+    font-size: 18px;
+    line-height: 26px;
+    margin-top: 30px;
+    padding-top: 20px;
+
+    > ul {
+      @include align-items(center);
+      @include display(flex);
+
+      list-style: none;
+      margin: -6px 0;
+      padding: 0;
+
+      > li.owner {
+        @include flex(1);
+
+        > figure {
+          @include align-items(center);
+          @include display(flex);
+        }
+
+        img {
+          border-radius: 50%;
+          height: 40px;
+          width: 40px;
+        }
+
+        figcaption {
+          @include flex(1);
+          margin-left: 10px;
+        }
+
+        a.name {
+          display: inline-block;
+          line-height: 1em;
+          margin: 0 0 -6px;
+        }
+
+        p.occupation {
+          color: #4c4c4c;
+          font-size: 12px;
+          line-height: 1em;
+          margin: -2px 0 0;
+        }
+      }
+
+      > li.counter {
+        color: #c8ae88;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 15px;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+
+  > section.invitation {
+
+    border-top: 1px solid #eaebec;
+    font-size: 18px;
+    line-height: 26px;
+    margin-top: 20px;
+    padding-top: 30px;
+
+    > p {
+      margin: -6px 0 14px;
+    }
+
+    button ~ button {
+      margin-left: 10px;
+    }
+  }
+
+
+}
