@@ -17,9 +17,23 @@ private
 
   def notify_follower(notification)
     notification.destroy
+    user = notification.user
 
-    # user notifications settings should be applied here
-    UserMailer.delay.activities_digest(notification.user, notification.created_at, notification.updated_at)
+    # TODO: user notifications settings should be applied here
+    if user.email
+      UserMailer.delay.activities_digest(user, notification.created_at, notification.updated_at)
+    end
+
+    if user.device_tokens.any?
+      ZeroPush.notify(
+        device_tokens: user.device_tokens.map(&:value),
+        title: 'Feed updated',
+        body: 'There are some changes in your feed.',
+        url_args: ['feed'],
+        label: 'Check'
+      )
+    end
+
   end
 
 end
