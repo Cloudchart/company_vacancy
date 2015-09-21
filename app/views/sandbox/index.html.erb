@@ -4,7 +4,7 @@ var checkRemotePermission = function (permissionData) {
   if (permissionData.permission === 'default') {
     // This is a new web service URL and its validity is unknown.
     window.safari.pushNotification.requestPermission(
-      'https://insightsvc-safari.zeropush.com', // The web service URL.
+      "<%= ENV['ZERO_PUSH_URL'] %>",      // The web service URL.
       'web.com.insightsvc.notification',  // The Website Push ID.
       {},                                 // Extra data is unused when using hosted push packages.
       checkRemotePermission               // The callback function.
