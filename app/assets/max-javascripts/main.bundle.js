@@ -5070,8 +5070,8 @@
 	var _reactRelay2 = _interopRequireDefault(_reactRelay);
 
 	Array.prototype.forEach.call(document.querySelectorAll('[data-react-component]'), function (node) {
-	  var Component = __webpack_require__(604)("./" + node.dataset.reactComponent);
-	  var Route = __webpack_require__(666)("./" + node.dataset.relayRoute);
+	  var Component = __webpack_require__(566)("./" + node.dataset.reactComponent);
+	  var Route = __webpack_require__(628)("./" + node.dataset.relayRoute);
 	  _reactDom2['default'].render(_react2['default'].createElement(_reactRelay2['default'].RootContainer, { Component: Component, route: new Route() }), node);
 	});
 
@@ -24387,6 +24387,7 @@
 	var RelayPublic = __webpack_require__(378);
 
 	// By default, assume that GraphQL is served at `/graphql` on the same domain.
+	// $FlowFixMe(>=0.16.0)
 	RelayPublic.injectNetworkLayer(new RelayDefaultNetworkLayer('/graphql'));
 
 	module.exports = _extends({}, RelayPublic, {
@@ -24797,7 +24798,9 @@
 
 	    var prefix = ii + 1 + '. ';
 	    var indent = ' '.repeat(prefix.length);
-	    return prefix + message + '\n' + locations.map(function (_ref2) {
+
+	    //custom errors thrown in graphql-server may not have locations
+	    var locationMessage = locations ? '\n' + locations.map(function (_ref2) {
 	      var column = _ref2.column;
 	      var line = _ref2.line;
 
@@ -24806,7 +24809,9 @@
 	      return [queryLine.substr(column - 1 - offset, CONTEXT_LENGTH), ' '.repeat(offset) + '^^^'].map(function (messageLine) {
 	        return indent + messageLine;
 	      }).join('\n');
-	    }).join('\n');
+	    }).join('\n') : '';
+
+	    return prefix + message + locationMessage;
 	  }).join('\n');
 	}
 
@@ -26274,18 +26279,18 @@
 	'use strict';
 
 	var RelayContainer = __webpack_require__(379);
-	var RelayMutation = __webpack_require__(597);
-	var RelayNetworkLayer = __webpack_require__(569);
-	var RelayPropTypes = __webpack_require__(580);
-	var RelayQL = __webpack_require__(556);
-	var RelayRootContainer = __webpack_require__(598);
-	var RelayRoute = __webpack_require__(602);
-	var RelayStore = __webpack_require__(582);
-	var RelayTaskScheduler = __webpack_require__(536);
-	var RelayInternals = __webpack_require__(603);
+	var RelayMutation = __webpack_require__(559);
+	var RelayNetworkLayer = __webpack_require__(531);
+	var RelayPropTypes = __webpack_require__(542);
+	var RelayQL = __webpack_require__(518);
+	var RelayRootContainer = __webpack_require__(560);
+	var RelayRoute = __webpack_require__(564);
+	var RelayStore = __webpack_require__(544);
+	var RelayTaskScheduler = __webpack_require__(498);
+	var RelayInternals = __webpack_require__(565);
 
-	var getRelayQueries = __webpack_require__(601);
-	var isRelayContainer = __webpack_require__(581);
+	var getRelayQueries = __webpack_require__(563);
+	var isRelayContainer = __webpack_require__(543);
 
 	if (typeof global.__REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined') {
 	  global.__REACT_DEVTOOLS_GLOBAL_HOOK__._relayInternals = RelayInternals;
@@ -26346,34 +26351,34 @@
 	var ErrorUtils = __webpack_require__(395);
 
 	var GraphQLDeferredQueryTracker = __webpack_require__(396);
-	var GraphQLFragmentPointer = __webpack_require__(546);
-	var GraphQLStoreChangeEmitter = __webpack_require__(446);
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var GraphQLStoreQueryResolver = __webpack_require__(547);
+	var GraphQLFragmentPointer = __webpack_require__(508);
+	var GraphQLStoreChangeEmitter = __webpack_require__(434);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var GraphQLStoreQueryResolver = __webpack_require__(509);
 	var React = __webpack_require__(187);
 	var ReactDOM = __webpack_require__(342);
-	var RelayContainerComparators = __webpack_require__(552);
-	var RelayContainerProxy = __webpack_require__(553);
-	var RelayDeprecated = __webpack_require__(555);
-	var RelayFragmentReference = __webpack_require__(502);
+	var RelayContainerComparators = __webpack_require__(514);
+	var RelayContainerProxy = __webpack_require__(515);
+	var RelayDeprecated = __webpack_require__(517);
+	var RelayFragmentReference = __webpack_require__(467);
 
-	var RelayMetaRoute = __webpack_require__(503);
-	var RelayMutationTransaction = __webpack_require__(558);
-	var RelayPendingQueryTracker = __webpack_require__(571);
-	var RelayPropTypes = __webpack_require__(580);
-	var RelayProfiler = __webpack_require__(493);
-	var RelayQuery = __webpack_require__(501);
+	var RelayMetaRoute = __webpack_require__(468);
+	var RelayMutationTransaction = __webpack_require__(520);
+	var RelayPendingQueryTracker = __webpack_require__(533);
+	var RelayPropTypes = __webpack_require__(542);
+	var RelayProfiler = __webpack_require__(458);
+	var RelayQuery = __webpack_require__(466);
 
-	var RelayStore = __webpack_require__(582);
-	var RelayStoreData = __webpack_require__(445);
+	var RelayStore = __webpack_require__(544);
+	var RelayStoreData = __webpack_require__(433);
 
-	var buildRQL = __webpack_require__(593);
+	var buildRQL = __webpack_require__(555);
 
-	var forEachObject = __webpack_require__(494);
-	var invariant = __webpack_require__(486);
-	var nullthrows = __webpack_require__(560);
-	var prepareRelayContainerProps = __webpack_require__(595);
-	var shallowEqual = __webpack_require__(509);
+	var forEachObject = __webpack_require__(459);
+	var invariant = __webpack_require__(451);
+	var nullthrows = __webpack_require__(522);
+	var prepareRelayContainerProps = __webpack_require__(557);
+	var shallowEqual = __webpack_require__(474);
 	var warning = __webpack_require__(376);
 
 	GraphQLStoreChangeEmitter.injectBatchingStrategy(ReactDOM.unstable_batchedUpdates);
@@ -26910,7 +26915,7 @@
 	        setVariables: this.setVariables,
 	        variables: this.state.variables
 	      };
-	      return React.createElement(Component, _extends({}, this.props, this.state.queryData, prepareRelayContainerProps(relayProps), {
+	      return React.createElement(Component, _extends({}, this.props, this.state.queryData, prepareRelayContainerProps(relayProps, this), {
 	        ref: 'component'
 	      }));
 	    };
@@ -27324,13 +27329,13 @@
 	var ErrorUtils = __webpack_require__(395);
 	var Map = __webpack_require__(397);
 
-	var RelayStoreData = __webpack_require__(445);
+	var RelayStoreData = __webpack_require__(433);
 
-	var forEachObject = __webpack_require__(494);
-	var forEachRootCallArg = __webpack_require__(485);
-	var invariant = __webpack_require__(486);
-	var isEmpty = __webpack_require__(545);
-	var resolveImmediate = __webpack_require__(496);
+	var forEachObject = __webpack_require__(459);
+	var forEachRootCallArg = __webpack_require__(450);
+	var invariant = __webpack_require__(451);
+	var isEmpty = __webpack_require__(507);
+	var resolveImmediate = __webpack_require__(461);
 
 	var recordStore = RelayStoreData.getDefaultInstance().getRecordStore();
 
@@ -27759,9 +27764,9 @@
 
 	__webpack_require__(399);
 	__webpack_require__(400);
-	__webpack_require__(422);
-	__webpack_require__(429);
-	module.exports = __webpack_require__(408).Map;
+	__webpack_require__(416);
+	__webpack_require__(421);
+	module.exports = __webpack_require__(350).Map;
 
 /***/ },
 /* 399 */
@@ -27777,7 +27782,7 @@
 	var $at  = __webpack_require__(401)(true);
 
 	// 21.1.3.27 String.prototype[@@iterator]()
-	__webpack_require__(404)(String, 'String', function(iterated){
+	__webpack_require__(403)(String, 'String', function(iterated){
 	  this._t = String(iterated); // target
 	  this._i = 0;                // next index
 	// 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -27798,7 +27803,7 @@
 	// true  -> String#at
 	// false -> String#codePointAt
 	var toInteger = __webpack_require__(402)
-	  , defined   = __webpack_require__(403);
+	  , defined   = __webpack_require__(353);
 	module.exports = function(TO_STRING){
 	  return function(that, pos){
 	    var s = String(defined(that))
@@ -27827,33 +27832,23 @@
 
 /***/ },
 /* 403 */
-/***/ function(module, exports) {
-
-	// 7.2.1 RequireObjectCoercible(argument)
-	module.exports = function(it){
-	  if(it == undefined)throw TypeError("Can't call method on  " + it);
-	  return it;
-	};
-
-/***/ },
-/* 404 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var LIBRARY         = __webpack_require__(405)
-	  , $def            = __webpack_require__(406)
-	  , $redef          = __webpack_require__(409)
-	  , hide            = __webpack_require__(410)
-	  , has             = __webpack_require__(415)
-	  , SYMBOL_ITERATOR = __webpack_require__(416)('iterator')
-	  , Iterators       = __webpack_require__(419)
+	var LIBRARY         = __webpack_require__(404)
+	  , $def            = __webpack_require__(348)
+	  , $redef          = __webpack_require__(405)
+	  , hide            = __webpack_require__(406)
+	  , has             = __webpack_require__(409)
+	  , SYMBOL_ITERATOR = __webpack_require__(410)('iterator')
+	  , Iterators       = __webpack_require__(413)
 	  , BUGGY           = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
 	  , FF_ITERATOR     = '@@iterator'
 	  , KEYS            = 'keys'
 	  , VALUES          = 'values';
 	var returnThis = function(){ return this; };
 	module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE){
-	  __webpack_require__(420)(Constructor, NAME, next);
+	  __webpack_require__(414)(Constructor, NAME, next);
 	  var createMethod = function(kind){
 	    switch(kind){
 	      case KEYS: return function keys(){ return new Constructor(this, kind); };
@@ -27867,9 +27862,9 @@
 	    , methods, key;
 	  // Fix native
 	  if(_native){
-	    var IteratorPrototype = __webpack_require__(411).getProto(_default.call(new Base));
+	    var IteratorPrototype = __webpack_require__(357).getProto(_default.call(new Base));
 	    // Set @@toStringTag to native iterators
-	    __webpack_require__(421)(IteratorPrototype, TAG, true);
+	    __webpack_require__(415)(IteratorPrototype, TAG, true);
 	    // FF fix
 	    if(!LIBRARY && has(proto, FF_ITERATOR))hide(IteratorPrototype, SYMBOL_ITERATOR, returnThis);
 	  }
@@ -27891,93 +27886,24 @@
 	};
 
 /***/ },
-/* 405 */
+/* 404 */
 /***/ function(module, exports) {
 
 	module.exports = true;
 
 /***/ },
+/* 405 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(406);
+
+/***/ },
 /* 406 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var global    = __webpack_require__(407)
-	  , core      = __webpack_require__(408)
-	  , PROTOTYPE = 'prototype';
-	var ctx = function(fn, that){
-	  return function(){
-	    return fn.apply(that, arguments);
-	  };
-	};
-	var $def = function(type, name, source){
-	  var key, own, out, exp
-	    , isGlobal = type & $def.G
-	    , isProto  = type & $def.P
-	    , target   = isGlobal ? global : type & $def.S
-	        ? global[name] : (global[name] || {})[PROTOTYPE]
-	    , exports  = isGlobal ? core : core[name] || (core[name] = {});
-	  if(isGlobal)source = name;
-	  for(key in source){
-	    // contains in native
-	    own = !(type & $def.F) && target && key in target;
-	    if(own && key in exports)continue;
-	    // export native or passed
-	    out = own ? target[key] : source[key];
-	    // prevent global pollution for namespaces
-	    if(isGlobal && typeof target[key] != 'function')exp = source[key];
-	    // bind timers to global for call from export context
-	    else if(type & $def.B && own)exp = ctx(out, global);
-	    // wrap global constructors for prevent change them in library
-	    else if(type & $def.W && target[key] == out)!function(C){
-	      exp = function(param){
-	        return this instanceof C ? new C(param) : C(param);
-	      };
-	      exp[PROTOTYPE] = C[PROTOTYPE];
-	    }(out);
-	    else exp = isProto && typeof out == 'function' ? ctx(Function.call, out) : out;
-	    // export
-	    exports[key] = exp;
-	    if(isProto)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
-	  }
-	};
-	// type bitmap
-	$def.F = 1;  // forced
-	$def.G = 2;  // global
-	$def.S = 4;  // static
-	$def.P = 8;  // proto
-	$def.B = 16; // bind
-	$def.W = 32; // wrap
-	module.exports = $def;
-
-/***/ },
-/* 407 */
-/***/ function(module, exports) {
-
-	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-	var UNDEFINED = 'undefined';
-	var global = module.exports = typeof window != UNDEFINED && window.Math == Math
-	  ? window : typeof self != UNDEFINED && self.Math == Math ? self : Function('return this')();
-	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
-
-/***/ },
-/* 408 */
-/***/ function(module, exports) {
-
-	var core = module.exports = {};
-	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-
-/***/ },
-/* 409 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(410);
-
-/***/ },
-/* 410 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $          = __webpack_require__(411)
-	  , createDesc = __webpack_require__(412);
-	module.exports = __webpack_require__(413) ? function(object, key, value){
+	var $          = __webpack_require__(357)
+	  , createDesc = __webpack_require__(407);
+	module.exports = __webpack_require__(408) ? function(object, key, value){
 	  return $.setDesc(object, key, createDesc(1, value));
 	} : function(object, key, value){
 	  object[key] = value;
@@ -27985,25 +27911,7 @@
 	};
 
 /***/ },
-/* 411 */
-/***/ function(module, exports) {
-
-	var $Object = Object;
-	module.exports = {
-	  create:     $Object.create,
-	  getProto:   $Object.getPrototypeOf,
-	  isEnum:     {}.propertyIsEnumerable,
-	  getDesc:    $Object.getOwnPropertyDescriptor,
-	  setDesc:    $Object.defineProperty,
-	  setDescs:   $Object.defineProperties,
-	  getKeys:    $Object.keys,
-	  getNames:   $Object.getOwnPropertyNames,
-	  getSymbols: $Object.getOwnPropertySymbols,
-	  each:       [].forEach
-	};
-
-/***/ },
-/* 412 */
+/* 407 */
 /***/ function(module, exports) {
 
 	module.exports = function(bitmap, value){
@@ -28016,28 +27924,16 @@
 	};
 
 /***/ },
-/* 413 */
+/* 408 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Thank's IE8 for his funny defineProperty
-	module.exports = !__webpack_require__(414)(function(){
+	module.exports = !__webpack_require__(358)(function(){
 	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
 	});
 
 /***/ },
-/* 414 */
-/***/ function(module, exports) {
-
-	module.exports = function(exec){
-	  try {
-	    return !!exec();
-	  } catch(e){
-	    return true;
-	  }
-	};
-
-/***/ },
-/* 415 */
+/* 409 */
 /***/ function(module, exports) {
 
 	var hasOwnProperty = {}.hasOwnProperty;
@@ -28046,21 +27942,21 @@
 	};
 
 /***/ },
-/* 416 */
+/* 410 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var store  = __webpack_require__(417)('wks')
-	  , Symbol = __webpack_require__(407).Symbol;
+	var store  = __webpack_require__(411)('wks')
+	  , Symbol = __webpack_require__(349).Symbol;
 	module.exports = function(name){
 	  return store[name] || (store[name] =
-	    Symbol && Symbol[name] || (Symbol || __webpack_require__(418))('Symbol.' + name));
+	    Symbol && Symbol[name] || (Symbol || __webpack_require__(412))('Symbol.' + name));
 	};
 
 /***/ },
-/* 417 */
+/* 411 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var global = __webpack_require__(407)
+	var global = __webpack_require__(349)
 	  , SHARED = '__core-js_shared__'
 	  , store  = global[SHARED] || (global[SHARED] = {});
 	module.exports = function(key){
@@ -28068,7 +27964,7 @@
 	};
 
 /***/ },
-/* 418 */
+/* 412 */
 /***/ function(module, exports) {
 
 	var id = 0
@@ -28078,62 +27974,62 @@
 	};
 
 /***/ },
-/* 419 */
+/* 413 */
 /***/ function(module, exports) {
 
 	module.exports = {};
 
 /***/ },
-/* 420 */
+/* 414 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $ = __webpack_require__(411)
+	var $ = __webpack_require__(357)
 	  , IteratorPrototype = {};
 
 	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	__webpack_require__(410)(IteratorPrototype, __webpack_require__(416)('iterator'), function(){ return this; });
+	__webpack_require__(406)(IteratorPrototype, __webpack_require__(410)('iterator'), function(){ return this; });
 
 	module.exports = function(Constructor, NAME, next){
-	  Constructor.prototype = $.create(IteratorPrototype, {next: __webpack_require__(412)(1,next)});
-	  __webpack_require__(421)(Constructor, NAME + ' Iterator');
+	  Constructor.prototype = $.create(IteratorPrototype, {next: __webpack_require__(407)(1,next)});
+	  __webpack_require__(415)(Constructor, NAME + ' Iterator');
 	};
 
 /***/ },
-/* 421 */
+/* 415 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var has  = __webpack_require__(415)
-	  , hide = __webpack_require__(410)
-	  , TAG  = __webpack_require__(416)('toStringTag');
+	var has  = __webpack_require__(409)
+	  , hide = __webpack_require__(406)
+	  , TAG  = __webpack_require__(410)('toStringTag');
 
 	module.exports = function(it, tag, stat){
 	  if(it && !has(it = stat ? it : it.prototype, TAG))hide(it, TAG, tag);
 	};
 
 /***/ },
-/* 422 */
+/* 416 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(423);
-	var Iterators = __webpack_require__(419);
+	__webpack_require__(417);
+	var Iterators = __webpack_require__(413);
 	Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
 
 /***/ },
-/* 423 */
+/* 417 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var setUnscope = __webpack_require__(424)
-	  , step       = __webpack_require__(425)
-	  , Iterators  = __webpack_require__(419)
-	  , toIObject  = __webpack_require__(426);
+	var setUnscope = __webpack_require__(418)
+	  , step       = __webpack_require__(419)
+	  , Iterators  = __webpack_require__(413)
+	  , toIObject  = __webpack_require__(420);
 
 	// 22.1.3.4 Array.prototype.entries()
 	// 22.1.3.13 Array.prototype.keys()
 	// 22.1.3.29 Array.prototype.values()
 	// 22.1.3.30 Array.prototype[@@iterator]()
-	__webpack_require__(404)(Array, 'Array', function(iterated, kind){
+	__webpack_require__(403)(Array, 'Array', function(iterated, kind){
 	  this._t = toIObject(iterated); // target
 	  this._i = 0;                   // next index
 	  this._k = kind;                // kind
@@ -28159,13 +28055,13 @@
 	setUnscope('entries');
 
 /***/ },
-/* 424 */
+/* 418 */
 /***/ function(module, exports) {
 
 	module.exports = function(){ /* empty */ };
 
 /***/ },
-/* 425 */
+/* 419 */
 /***/ function(module, exports) {
 
 	module.exports = function(done, value){
@@ -28173,45 +28069,25 @@
 	};
 
 /***/ },
-/* 426 */
+/* 420 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// to indexed object, toObject with fallback for non-array-like ES3 strings
-	var IObject = __webpack_require__(427)
-	  , defined = __webpack_require__(403);
+	var IObject = __webpack_require__(354)
+	  , defined = __webpack_require__(353);
 	module.exports = function(it){
 	  return IObject(defined(it));
 	};
 
 /***/ },
-/* 427 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// indexed object, fallback for non-array-like ES3 strings
-	var cof = __webpack_require__(428);
-	module.exports = 0 in Object('z') ? Object : function(it){
-	  return cof(it) == 'String' ? it.split('') : Object(it);
-	};
-
-/***/ },
-/* 428 */
-/***/ function(module, exports) {
-
-	var toString = {}.toString;
-
-	module.exports = function(it){
-	  return toString.call(it).slice(8, -1);
-	};
-
-/***/ },
-/* 429 */
+/* 421 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var strong = __webpack_require__(430);
+	var strong = __webpack_require__(422);
 
 	// 23.1 Map Objects
-	__webpack_require__(444)('Map', function(get){
+	__webpack_require__(432)('Map', function(get){
 	  return function Map(){ return get(this, arguments[0]); };
 	}, {
 	  // 23.1.3.6 Map.prototype.get(key)
@@ -28226,23 +28102,23 @@
 	}, strong, true);
 
 /***/ },
-/* 430 */
+/* 422 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $            = __webpack_require__(411)
-	  , hide         = __webpack_require__(410)
-	  , ctx          = __webpack_require__(431)
-	  , species      = __webpack_require__(433)
-	  , strictNew    = __webpack_require__(434)
-	  , defined      = __webpack_require__(403)
-	  , forOf        = __webpack_require__(435)
-	  , step         = __webpack_require__(425)
-	  , ID           = __webpack_require__(418)('id')
-	  , $has         = __webpack_require__(415)
-	  , isObject     = __webpack_require__(438)
+	var $            = __webpack_require__(357)
+	  , hide         = __webpack_require__(406)
+	  , ctx          = __webpack_require__(389)
+	  , species      = __webpack_require__(423)
+	  , strictNew    = __webpack_require__(424)
+	  , defined      = __webpack_require__(353)
+	  , forOf        = __webpack_require__(425)
+	  , step         = __webpack_require__(419)
+	  , ID           = __webpack_require__(412)('id')
+	  , $has         = __webpack_require__(409)
+	  , isObject     = __webpack_require__(387)
 	  , isExtensible = Object.isExtensible || isObject
-	  , SUPPORT_DESC = __webpack_require__(413)
+	  , SUPPORT_DESC = __webpack_require__(408)
 	  , SIZE         = SUPPORT_DESC ? '_s' : 'size'
 	  , id           = 0;
 
@@ -28280,7 +28156,7 @@
 	      that[SIZE] = 0;           // size
 	      if(iterable != undefined)forOf(iterable, IS_MAP, that[ADDER], that);
 	    });
-	    __webpack_require__(443)(C.prototype, {
+	    __webpack_require__(431)(C.prototype, {
 	      // 23.1.3.1 Map.prototype.clear()
 	      // 23.2.3.2 Set.prototype.clear()
 	      clear: function clear(){
@@ -28360,7 +28236,7 @@
 	  setStrong: function(C, NAME, IS_MAP){
 	    // add .keys, .values, .entries, [@@iterator]
 	    // 23.1.3.4, 23.1.3.8, 23.1.3.11, 23.1.3.12, 23.2.3.5, 23.2.3.8, 23.2.3.10, 23.2.3.11
-	    __webpack_require__(404)(C, NAME, function(iterated, kind){
+	    __webpack_require__(403)(C, NAME, function(iterated, kind){
 	      this._t = iterated;  // target
 	      this._k = kind;      // kind
 	      this._l = undefined; // previous
@@ -28384,59 +28260,26 @@
 
 	    // add [@@species], 23.1.2.2, 23.2.2.2
 	    species(C);
-	    species(__webpack_require__(408)[NAME]); // for wrapper
+	    species(__webpack_require__(350)[NAME]); // for wrapper
 	  }
 	};
 
 /***/ },
-/* 431 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// optional / simple context binding
-	var aFunction = __webpack_require__(432);
-	module.exports = function(fn, that, length){
-	  aFunction(fn);
-	  if(that === undefined)return fn;
-	  switch(length){
-	    case 1: return function(a){
-	      return fn.call(that, a);
-	    };
-	    case 2: return function(a, b){
-	      return fn.call(that, a, b);
-	    };
-	    case 3: return function(a, b, c){
-	      return fn.call(that, a, b, c);
-	    };
-	  } return function(/* ...args */){
-	      return fn.apply(that, arguments);
-	    };
-	};
-
-/***/ },
-/* 432 */
-/***/ function(module, exports) {
-
-	module.exports = function(it){
-	  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
-	  return it;
-	};
-
-/***/ },
-/* 433 */
+/* 423 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $       = __webpack_require__(411)
-	  , SPECIES = __webpack_require__(416)('species');
+	var $       = __webpack_require__(357)
+	  , SPECIES = __webpack_require__(410)('species');
 	module.exports = function(C){
-	  if(__webpack_require__(413) && !(SPECIES in C))$.setDesc(C, SPECIES, {
+	  if(__webpack_require__(408) && !(SPECIES in C))$.setDesc(C, SPECIES, {
 	    configurable: true,
 	    get: function(){ return this; }
 	  });
 	};
 
 /***/ },
-/* 434 */
+/* 424 */
 /***/ function(module, exports) {
 
 	module.exports = function(it, Constructor, name){
@@ -28445,15 +28288,15 @@
 	};
 
 /***/ },
-/* 435 */
+/* 425 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ctx         = __webpack_require__(431)
-	  , call        = __webpack_require__(436)
-	  , isArrayIter = __webpack_require__(439)
-	  , anObject    = __webpack_require__(437)
-	  , toLength    = __webpack_require__(440)
-	  , getIterFn   = __webpack_require__(441);
+	var ctx         = __webpack_require__(389)
+	  , call        = __webpack_require__(426)
+	  , isArrayIter = __webpack_require__(427)
+	  , anObject    = __webpack_require__(388)
+	  , toLength    = __webpack_require__(428)
+	  , getIterFn   = __webpack_require__(429);
 	module.exports = function(iterable, entries, fn, that){
 	  var iterFn = getIterFn(iterable)
 	    , f      = ctx(fn, that, entries ? 2 : 1)
@@ -28469,11 +28312,11 @@
 	};
 
 /***/ },
-/* 436 */
+/* 426 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// call something on iterator step with safe closing on error
-	var anObject = __webpack_require__(437);
+	var anObject = __webpack_require__(388);
 	module.exports = function(iterator, fn, value, entries){
 	  try {
 	    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
@@ -28486,37 +28329,18 @@
 	};
 
 /***/ },
-/* 437 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isObject = __webpack_require__(438);
-	module.exports = function(it){
-	  if(!isObject(it))throw TypeError(it + ' is not an object!');
-	  return it;
-	};
-
-/***/ },
-/* 438 */
-/***/ function(module, exports) {
-
-	// http://jsperf.com/core-js-isobject
-	module.exports = function(it){
-	  return it !== null && (typeof it == 'object' || typeof it == 'function');
-	};
-
-/***/ },
-/* 439 */
+/* 427 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// check on default Array iterator
-	var Iterators = __webpack_require__(419)
-	  , ITERATOR  = __webpack_require__(416)('iterator');
+	var Iterators = __webpack_require__(413)
+	  , ITERATOR  = __webpack_require__(410)('iterator');
 	module.exports = function(it){
 	  return (Iterators.Array || Array.prototype[ITERATOR]) === it;
 	};
 
 /***/ },
-/* 440 */
+/* 428 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 7.1.15 ToLength
@@ -28527,23 +28351,23 @@
 	};
 
 /***/ },
-/* 441 */
+/* 429 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(442)
-	  , ITERATOR  = __webpack_require__(416)('iterator')
-	  , Iterators = __webpack_require__(419);
-	module.exports = __webpack_require__(408).getIteratorMethod = function(it){
+	var classof   = __webpack_require__(430)
+	  , ITERATOR  = __webpack_require__(410)('iterator')
+	  , Iterators = __webpack_require__(413);
+	module.exports = __webpack_require__(350).getIteratorMethod = function(it){
 	  if(it != undefined)return it[ITERATOR] || it['@@iterator'] || Iterators[classof(it)];
 	};
 
 /***/ },
-/* 442 */
+/* 430 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// getting tag from 19.1.3.6 Object.prototype.toString()
-	var cof = __webpack_require__(428)
-	  , TAG = __webpack_require__(416)('toStringTag')
+	var cof = __webpack_require__(355)
+	  , TAG = __webpack_require__(410)('toStringTag')
 	  // ES3 wrong here
 	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
 
@@ -28559,38 +28383,38 @@
 	};
 
 /***/ },
-/* 443 */
+/* 431 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $redef = __webpack_require__(409);
+	var $redef = __webpack_require__(405);
 	module.exports = function(target, src){
 	  for(var key in src)$redef(target, key, src[key]);
 	  return target;
 	};
 
 /***/ },
-/* 444 */
+/* 432 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $          = __webpack_require__(411)
-	  , $def       = __webpack_require__(406)
-	  , hide       = __webpack_require__(410)
-	  , forOf      = __webpack_require__(435)
-	  , strictNew  = __webpack_require__(434);
+	var $          = __webpack_require__(357)
+	  , $def       = __webpack_require__(348)
+	  , hide       = __webpack_require__(406)
+	  , forOf      = __webpack_require__(425)
+	  , strictNew  = __webpack_require__(424);
 
 	module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
-	  var Base  = __webpack_require__(407)[NAME]
+	  var Base  = __webpack_require__(349)[NAME]
 	    , C     = Base
 	    , ADDER = IS_MAP ? 'set' : 'add'
 	    , proto = C && C.prototype
 	    , O     = {};
-	  if(!__webpack_require__(413) || typeof C != 'function'
-	    || !(IS_WEAK || proto.forEach && !__webpack_require__(414)(function(){ new C().entries().next(); }))
+	  if(!__webpack_require__(408) || typeof C != 'function'
+	    || !(IS_WEAK || proto.forEach && !__webpack_require__(358)(function(){ new C().entries().next(); }))
 	  ){
 	    // create collection constructor
 	    C = common.getConstructor(wrapper, NAME, IS_MAP, ADDER);
-	    __webpack_require__(443)(C.prototype, methods);
+	    __webpack_require__(431)(C.prototype, methods);
 	  } else {
 	    C = wrapper(function(target, iterable){
 	      strictNew(target, C, NAME);
@@ -28611,7 +28435,7 @@
 	    });
 	  }
 
-	  __webpack_require__(421)(C, NAME);
+	  __webpack_require__(415)(C, NAME);
 
 	  O[NAME] = C;
 	  $def($def.G + $def.W + $def.F, O);
@@ -28622,7 +28446,7 @@
 	};
 
 /***/ },
-/* 445 */
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -28644,28 +28468,28 @@
 
 	var _Object$keys = __webpack_require__(391)['default'];
 
-	var GraphQLStoreChangeEmitter = __webpack_require__(446);
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var RelayChangeTracker = __webpack_require__(498);
-	var RelayConnectionInterface = __webpack_require__(499);
+	var GraphQLStoreChangeEmitter = __webpack_require__(434);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var RelayChangeTracker = __webpack_require__(463);
+	var RelayConnectionInterface = __webpack_require__(464);
 
-	var RelayNodeInterface = __webpack_require__(483);
-	var RelayProfiler = __webpack_require__(493);
-	var RelayQuery = __webpack_require__(501);
-	var RelayQueryTracker = __webpack_require__(511);
-	var RelayQueryWriter = __webpack_require__(523);
-	var RelayRecordStore = __webpack_require__(526);
+	var RelayNodeInterface = __webpack_require__(448);
+	var RelayProfiler = __webpack_require__(458);
+	var RelayQuery = __webpack_require__(466);
+	var RelayQueryTracker = __webpack_require__(476);
+	var RelayQueryWriter = __webpack_require__(485);
+	var RelayRecordStore = __webpack_require__(488);
 
-	var RelayStoreGarbageCollector = __webpack_require__(533);
+	var RelayStoreGarbageCollector = __webpack_require__(495);
 
-	var forEachObject = __webpack_require__(494);
-	var invariant = __webpack_require__(486);
-	var generateForceIndex = __webpack_require__(537);
-	var refragmentRelayQuery = __webpack_require__(538);
-	var resolveImmediate = __webpack_require__(496);
+	var forEachObject = __webpack_require__(459);
+	var invariant = __webpack_require__(451);
+	var generateForceIndex = __webpack_require__(499);
+	var refragmentRelayQuery = __webpack_require__(500);
+	var resolveImmediate = __webpack_require__(461);
 	var warning = __webpack_require__(376);
-	var writeRelayQueryPayload = __webpack_require__(539);
-	var writeRelayUpdatePayload = __webpack_require__(542);
+	var writeRelayQueryPayload = __webpack_require__(501);
+	var writeRelayUpdatePayload = __webpack_require__(504);
 
 	var CLIENT_MUTATION_ID = RelayConnectionInterface.CLIENT_MUTATION_ID;
 
@@ -28820,7 +28644,7 @@
 	    }
 	    // Fragment fields cannot be spread directly into the root because they
 	    // may not exist on the `Node` type.
-	    return RelayQuery.Node.buildRoot(RelayNodeInterface.NODE, dataID, [fragment], { rootArg: RelayNodeInterface.ID }, fragment.getDebugName() || 'UnknownQuery');
+	    return RelayQuery.Root.build(RelayNodeInterface.NODE, dataID, [fragment], { rootArg: RelayNodeInterface.ID }, fragment.getDebugName() || 'UnknownQuery');
 	  };
 
 	  RelayStoreData.prototype.getNodeData = function getNodeData() {
@@ -28921,7 +28745,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 446 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -28943,10 +28767,10 @@
 	  value: true
 	});
 	var ErrorUtils = __webpack_require__(395);
-	var GraphQLStoreRangeUtils = __webpack_require__(447);
-	var RelayProfiler = __webpack_require__(493);
+	var GraphQLStoreRangeUtils = __webpack_require__(435);
+	var RelayProfiler = __webpack_require__(458);
 
-	var resolveImmediate = __webpack_require__(496);
+	var resolveImmediate = __webpack_require__(461);
 
 	var batchUpdate = function batchUpdate(callback) {
 	  return callback();
@@ -29058,7 +28882,7 @@
 	module.exports = GraphQLStoreChangeEmitter;
 
 /***/ },
-/* 447 */
+/* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -29075,8 +28899,8 @@
 
 	'use strict';
 
-	var callsFromGraphQL = __webpack_require__(448);
-	var printRelayQueryCall = __webpack_require__(491);
+	var callsFromGraphQL = __webpack_require__(436);
+	var printRelayQueryCall = __webpack_require__(456);
 
 	var rangeData = {};
 
@@ -29162,7 +28986,7 @@
 	module.exports = GraphQLStoreRangeUtils;
 
 /***/ },
-/* 448 */
+/* 436 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -29180,9 +29004,9 @@
 
 	'use strict';
 
-	var GraphQL = __webpack_require__(449);
+	var GraphQL = __webpack_require__(437);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * @internal
@@ -29227,7 +29051,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 449 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -29250,13 +29074,13 @@
 
 	var _extends = __webpack_require__(344)['default'];
 
-	var _slicedToArray = __webpack_require__(450)['default'];
+	var _slicedToArray = __webpack_require__(438)['default'];
 
-	var _Object$freeze = __webpack_require__(480)['default'];
+	var _Object$freeze = __webpack_require__(445)['default'];
 
-	var RelayNodeInterface = __webpack_require__(483);
+	var RelayNodeInterface = __webpack_require__(448);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	var EMPTY_OBJECT = {};
 	var EMPTY_ARRAY = [];
@@ -29513,9 +29337,10 @@
 	   * @param {?string} alias
 	   * @param {?string} condition
 	   * @param {?object} metadata
+	   * @param {?array} directives
 	   */
 
-	  function GraphQLFieldNode(fieldName, fields, fragments, calls, alias, condition, metadata) {
+	  function GraphQLFieldNode(fieldName, fields, fragments, calls, alias, condition, metadata, directives) {
 	    _classCallCheck(this, GraphQLFieldNode);
 
 	    _GraphQLNode.call(this, fields, fragments);
@@ -29540,6 +29365,7 @@
 	      isUnionOrInterface: !!metadata.dynamic,
 	      parentType: metadata.parentType
 	    };
+	    this.directives = directives || EMPTY_ARRAY;
 	  }
 
 	  /**
@@ -29554,7 +29380,7 @@
 	   */
 
 	  GraphQLFieldNode.fromJSON = function fromJSON(descriptor) {
-	    var _descriptor5 = _slicedToArray(descriptor, 8);
+	    var _descriptor5 = _slicedToArray(descriptor, 9);
 
 	    var type = _descriptor5[0];
 	    var fieldName = _descriptor5[1];
@@ -29564,13 +29390,14 @@
 	    var alias = _descriptor5[5];
 	    var condition = _descriptor5[6];
 	    var metadata = _descriptor5[7];
+	    var directives = _descriptor5[8];
 
 	    !(type === JSON_TYPES.FIELD) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Expected field descriptor') : invariant(false) : undefined;
-	    return new GraphQLFieldNode(fieldName, fields ? fields.map(GraphQLFieldNode.fromJSON) : null, fragments ? fragments.map(GraphQLQueryFragment.fromJSON) : null, calls ? calls.map(GraphQLCallvNode.fromJSON) : null, alias, condition, metadata);
+	    return new GraphQLFieldNode(fieldName, fields ? fields.map(GraphQLFieldNode.fromJSON) : null, fragments ? fragments.map(GraphQLQueryFragment.fromJSON) : null, calls ? calls.map(GraphQLCallvNode.fromJSON) : null, alias, condition, metadata, directives);
 	  };
 
 	  GraphQLFieldNode.prototype.toJSON = function toJSON() {
-	    return trimArray([JSON_TYPES.FIELD, this.fieldName, this.fields.length ? this.fields : null, this.fragments.length ? this.fragments : null, this.calls.length ? this._calls : null, this.alias, this.condition, this.__metadata__ === EMPTY_OBJECT ? null : this.__metadata__]);
+	    return trimArray([JSON_TYPES.FIELD, this.fieldName, this.fields.length ? this.fields : null, this.fragments.length ? this.fragments : null, this.calls.length ? this._calls : null, this.alias, this.condition, this.__metadata__ === EMPTY_OBJECT ? null : this.__metadata__, this.directives === EMPTY_ARRAY ? null : this.directives]);
 	  };
 
 	  return GraphQLFieldNode;
@@ -29586,7 +29413,7 @@
 	   * @param {?array<GraphQLQueryFragment|RelayRouteFragment|RelayFragmentReference>} fragments
 	   */
 
-	  function GraphQLQueryFragment(name, type, fields, fragments, metadata) {
+	  function GraphQLQueryFragment(name, type, fields, fragments, metadata, directives) {
 	    _classCallCheck(this, GraphQLQueryFragment);
 
 	    _GraphQLNode2.call(this, fields, fragments);
@@ -29594,6 +29421,7 @@
 	    this.name = name;
 	    this.type = type;
 	    this.metadata = this.__metadata__ = metadata || EMPTY_OBJECT;
+	    this.directives = directives || EMPTY_ARRAY;
 	    this.isPlural = !!this.metadata.isPlural;
 	  }
 
@@ -29609,7 +29437,7 @@
 	   */
 
 	  GraphQLQueryFragment.fromJSON = function fromJSON(descriptor) {
-	    var _descriptor6 = _slicedToArray(descriptor, 6);
+	    var _descriptor6 = _slicedToArray(descriptor, 7);
 
 	    var type = _descriptor6[0];
 	    var name = _descriptor6[1];
@@ -29617,14 +29445,15 @@
 	    var fields = _descriptor6[3];
 	    var fragments = _descriptor6[4];
 	    var metadata = _descriptor6[5];
+	    var directives = _descriptor6[6];
 
 	    !(type === JSON_TYPES.FRAGMENT) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Expected fragment descriptor') : invariant(false) : undefined;
-	    var frag = new GraphQLQueryFragment(name, fragmentType, fields ? fields.map(GraphQLFieldNode.fromJSON) : null, fragments ? fragments.map(GraphQLQueryFragment.fromJSON) : null, metadata);
+	    var frag = new GraphQLQueryFragment(name, fragmentType, fields ? fields.map(GraphQLFieldNode.fromJSON) : null, fragments ? fragments.map(GraphQLQueryFragment.fromJSON) : null, metadata, directives);
 	    return frag;
 	  };
 
 	  GraphQLQueryFragment.prototype.toJSON = function toJSON() {
-	    return trimArray([JSON_TYPES.FRAGMENT, this.name, this.type, this.fields.length ? this.fields : null, this.fragments.length ? this.fragments : null, this.metadata]);
+	    return trimArray([JSON_TYPES.FRAGMENT, this.name, this.type, this.fields.length ? this.fields : null, this.fragments.length ? this.fragments : null, this.metadata, this.directives === EMPTY_ARRAY ? null : this.directives]);
 	  };
 
 	  return GraphQLQueryFragment;
@@ -29640,9 +29469,10 @@
 	   * @param {?array<GraphQLQueryFragment|RelayRouteFragment|RelayFragmentReference>} fragments
 	   * @param {?object} metadata
 	   * @param {?string} queryName
+	   * @param {?array} directives
 	   */
 
-	  function GraphQLQuery(rootCall, value, fields, fragments, metadata, queryName) {
+	  function GraphQLQuery(rootCall, value, fields, fragments, metadata, queryName, directives) {
 	    _classCallCheck(this, GraphQLQuery);
 
 	    _GraphQLNode3.call(this, fields, fragments);
@@ -29655,6 +29485,7 @@
 	    this.metadata = _extends({}, this.__metadata__, {
 	      rootArg: rootArg
 	    });
+	    this.directives = directives || EMPTY_ARRAY;
 	    this.name = queryName;
 	    this.fieldName = rootCall;
 	    this.isDeferred = !!this.__metadata__.isDeferred;
@@ -29676,7 +29507,7 @@
 	   */
 
 	  GraphQLQuery.fromJSON = function fromJSON(descriptor) {
-	    var _descriptor7 = _slicedToArray(descriptor, 7);
+	    var _descriptor7 = _slicedToArray(descriptor, 8);
 
 	    var type = _descriptor7[0];
 	    var name = _descriptor7[1];
@@ -29685,13 +29516,14 @@
 	    var fragments = _descriptor7[4];
 	    var metadata = _descriptor7[5];
 	    var queryName = _descriptor7[6];
+	    var directives = _descriptor7[7];
 
 	    !(type === JSON_TYPES.QUERY) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Expected query descriptor') : invariant(false) : undefined;
-	    return new GraphQLQuery(name, callArgsFromJSON(value), fields ? fields.map(GraphQLFieldNode.fromJSON) : null, fragments ? fragments.map(GraphQLQueryFragment.fromJSON) : null, metadata, queryName);
+	    return new GraphQLQuery(name, callArgsFromJSON(value), fields ? fields.map(GraphQLFieldNode.fromJSON) : null, fragments ? fragments.map(GraphQLQueryFragment.fromJSON) : null, metadata, queryName, directives);
 	  };
 
 	  GraphQLQuery.prototype.toJSON = function toJSON() {
-	    return trimArray([JSON_TYPES.QUERY, this.fieldName, this.calls[0].value, this.fields.length ? this.fields : null, this.fragments.length ? this.fragments : null, this.__metadata__ !== EMPTY_OBJECT ? this.__metadata__ : null, this.name || null]);
+	    return trimArray([JSON_TYPES.QUERY, this.fieldName, this.calls[0].value, this.fields.length ? this.fields : null, this.fragments.length ? this.fragments : null, this.__metadata__ === EMPTY_OBJECT ? null : this.__metadata__, this.name || null, this.directives === EMPTY_ARRAY ? null : this.directives]);
 	  };
 
 	  return GraphQLQuery;
@@ -29890,6 +29722,8 @@
 
 	/**
 	 * @param {*} arg
+	 *
+	 * TODO: Stop casting args once internal plugin prints call values.
 	 */
 	function castArg(arg) {
 	  if (arg instanceof GraphQLCallValue || arg instanceof GraphQLCallVariable || arg instanceof GraphQLBatchCallVariable) {
@@ -30018,14 +29852,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 450 */
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _getIterator = __webpack_require__(451)["default"];
+	var _getIterator = __webpack_require__(439)["default"];
 
-	var _isIterable = __webpack_require__(477)["default"];
+	var _isIterable = __webpack_require__(442)["default"];
 
 	exports["default"] = (function () {
 	  function sliceIterator(arr, i) {
@@ -30068,330 +29902,25 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 451 */
+/* 439 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(452), __esModule: true };
+	module.exports = { "default": __webpack_require__(440), __esModule: true };
 
 /***/ },
-/* 452 */
+/* 440 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(453);
-	__webpack_require__(471);
-	module.exports = __webpack_require__(474);
+	__webpack_require__(416);
+	__webpack_require__(400);
+	module.exports = __webpack_require__(441);
 
 /***/ },
-/* 453 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(454);
-	var Iterators = __webpack_require__(457);
-	Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
-
-/***/ },
-/* 454 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var setUnscope = __webpack_require__(455)
-	  , step       = __webpack_require__(456)
-	  , Iterators  = __webpack_require__(457)
-	  , toIObject  = __webpack_require__(458);
-
-	// 22.1.3.4 Array.prototype.entries()
-	// 22.1.3.13 Array.prototype.keys()
-	// 22.1.3.29 Array.prototype.values()
-	// 22.1.3.30 Array.prototype[@@iterator]()
-	__webpack_require__(459)(Array, 'Array', function(iterated, kind){
-	  this._t = toIObject(iterated); // target
-	  this._i = 0;                   // next index
-	  this._k = kind;                // kind
-	// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
-	}, function(){
-	  var O     = this._t
-	    , kind  = this._k
-	    , index = this._i++;
-	  if(!O || index >= O.length){
-	    this._t = undefined;
-	    return step(1);
-	  }
-	  if(kind == 'keys'  )return step(0, index);
-	  if(kind == 'values')return step(0, O[index]);
-	  return step(0, [index, O[index]]);
-	}, 'values');
-
-	// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
-	Iterators.Arguments = Iterators.Array;
-
-	setUnscope('keys');
-	setUnscope('values');
-	setUnscope('entries');
-
-/***/ },
-/* 455 */
-/***/ function(module, exports) {
-
-	module.exports = function(){ /* empty */ };
-
-/***/ },
-/* 456 */
-/***/ function(module, exports) {
-
-	module.exports = function(done, value){
-	  return {value: value, done: !!done};
-	};
-
-/***/ },
-/* 457 */
-/***/ function(module, exports) {
-
-	module.exports = {};
-
-/***/ },
-/* 458 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// to indexed object, toObject with fallback for non-array-like ES3 strings
-	var IObject = __webpack_require__(354)
-	  , defined = __webpack_require__(353);
-	module.exports = function(it){
-	  return IObject(defined(it));
-	};
-
-/***/ },
-/* 459 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var LIBRARY         = __webpack_require__(460)
-	  , $def            = __webpack_require__(348)
-	  , $redef          = __webpack_require__(461)
-	  , hide            = __webpack_require__(462)
-	  , has             = __webpack_require__(465)
-	  , SYMBOL_ITERATOR = __webpack_require__(466)('iterator')
-	  , Iterators       = __webpack_require__(457)
-	  , BUGGY           = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
-	  , FF_ITERATOR     = '@@iterator'
-	  , KEYS            = 'keys'
-	  , VALUES          = 'values';
-	var returnThis = function(){ return this; };
-	module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE){
-	  __webpack_require__(469)(Constructor, NAME, next);
-	  var createMethod = function(kind){
-	    switch(kind){
-	      case KEYS: return function keys(){ return new Constructor(this, kind); };
-	      case VALUES: return function values(){ return new Constructor(this, kind); };
-	    } return function entries(){ return new Constructor(this, kind); };
-	  };
-	  var TAG      = NAME + ' Iterator'
-	    , proto    = Base.prototype
-	    , _native  = proto[SYMBOL_ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT]
-	    , _default = _native || createMethod(DEFAULT)
-	    , methods, key;
-	  // Fix native
-	  if(_native){
-	    var IteratorPrototype = __webpack_require__(357).getProto(_default.call(new Base));
-	    // Set @@toStringTag to native iterators
-	    __webpack_require__(470)(IteratorPrototype, TAG, true);
-	    // FF fix
-	    if(!LIBRARY && has(proto, FF_ITERATOR))hide(IteratorPrototype, SYMBOL_ITERATOR, returnThis);
-	  }
-	  // Define iterator
-	  if(!LIBRARY || FORCE)hide(proto, SYMBOL_ITERATOR, _default);
-	  // Plug for library
-	  Iterators[NAME] = _default;
-	  Iterators[TAG]  = returnThis;
-	  if(DEFAULT){
-	    methods = {
-	      keys:    IS_SET            ? _default : createMethod(KEYS),
-	      values:  DEFAULT == VALUES ? _default : createMethod(VALUES),
-	      entries: DEFAULT != VALUES ? _default : createMethod('entries')
-	    };
-	    if(FORCE)for(key in methods){
-	      if(!(key in proto))$redef(proto, key, methods[key]);
-	    } else $def($def.P + $def.F * BUGGY, NAME, methods);
-	  }
-	};
-
-/***/ },
-/* 460 */
-/***/ function(module, exports) {
-
-	module.exports = true;
-
-/***/ },
-/* 461 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(462);
-
-/***/ },
-/* 462 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $          = __webpack_require__(357)
-	  , createDesc = __webpack_require__(463);
-	module.exports = __webpack_require__(464) ? function(object, key, value){
-	  return $.setDesc(object, key, createDesc(1, value));
-	} : function(object, key, value){
-	  object[key] = value;
-	  return object;
-	};
-
-/***/ },
-/* 463 */
-/***/ function(module, exports) {
-
-	module.exports = function(bitmap, value){
-	  return {
-	    enumerable  : !(bitmap & 1),
-	    configurable: !(bitmap & 2),
-	    writable    : !(bitmap & 4),
-	    value       : value
-	  };
-	};
-
-/***/ },
-/* 464 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Thank's IE8 for his funny defineProperty
-	module.exports = !__webpack_require__(358)(function(){
-	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
-	});
-
-/***/ },
-/* 465 */
-/***/ function(module, exports) {
-
-	var hasOwnProperty = {}.hasOwnProperty;
-	module.exports = function(it, key){
-	  return hasOwnProperty.call(it, key);
-	};
-
-/***/ },
-/* 466 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var store  = __webpack_require__(467)('wks')
-	  , Symbol = __webpack_require__(349).Symbol;
-	module.exports = function(name){
-	  return store[name] || (store[name] =
-	    Symbol && Symbol[name] || (Symbol || __webpack_require__(468))('Symbol.' + name));
-	};
-
-/***/ },
-/* 467 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var global = __webpack_require__(349)
-	  , SHARED = '__core-js_shared__'
-	  , store  = global[SHARED] || (global[SHARED] = {});
-	module.exports = function(key){
-	  return store[key] || (store[key] = {});
-	};
-
-/***/ },
-/* 468 */
-/***/ function(module, exports) {
-
-	var id = 0
-	  , px = Math.random();
-	module.exports = function(key){
-	  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-	};
-
-/***/ },
-/* 469 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var $ = __webpack_require__(357)
-	  , IteratorPrototype = {};
-
-	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	__webpack_require__(462)(IteratorPrototype, __webpack_require__(466)('iterator'), function(){ return this; });
-
-	module.exports = function(Constructor, NAME, next){
-	  Constructor.prototype = $.create(IteratorPrototype, {next: __webpack_require__(463)(1,next)});
-	  __webpack_require__(470)(Constructor, NAME + ' Iterator');
-	};
-
-/***/ },
-/* 470 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var has  = __webpack_require__(465)
-	  , hide = __webpack_require__(462)
-	  , TAG  = __webpack_require__(466)('toStringTag');
-
-	module.exports = function(it, tag, stat){
-	  if(it && !has(it = stat ? it : it.prototype, TAG))hide(it, TAG, tag);
-	};
-
-/***/ },
-/* 471 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var $at  = __webpack_require__(472)(true);
-
-	// 21.1.3.27 String.prototype[@@iterator]()
-	__webpack_require__(459)(String, 'String', function(iterated){
-	  this._t = String(iterated); // target
-	  this._i = 0;                // next index
-	// 21.1.5.2.1 %StringIteratorPrototype%.next()
-	}, function(){
-	  var O     = this._t
-	    , index = this._i
-	    , point;
-	  if(index >= O.length)return {value: undefined, done: true};
-	  point = $at(O, index);
-	  this._i += point.length;
-	  return {value: point, done: false};
-	});
-
-/***/ },
-/* 472 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// true  -> String#at
-	// false -> String#codePointAt
-	var toInteger = __webpack_require__(473)
-	  , defined   = __webpack_require__(353);
-	module.exports = function(TO_STRING){
-	  return function(that, pos){
-	    var s = String(defined(that))
-	      , i = toInteger(pos)
-	      , l = s.length
-	      , a, b;
-	    if(i < 0 || i >= l)return TO_STRING ? '' : undefined;
-	    a = s.charCodeAt(i);
-	    return a < 0xd800 || a > 0xdbff || i + 1 === l
-	      || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
-	        ? TO_STRING ? s.charAt(i) : a
-	        : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
-	  };
-	};
-
-/***/ },
-/* 473 */
-/***/ function(module, exports) {
-
-	// 7.1.4 ToInteger
-	var ceil  = Math.ceil
-	  , floor = Math.floor;
-	module.exports = function(it){
-	  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
-	};
-
-/***/ },
-/* 474 */
+/* 441 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var anObject = __webpack_require__(388)
-	  , get      = __webpack_require__(475);
+	  , get      = __webpack_require__(429);
 	module.exports = __webpack_require__(350).getIterator = function(it){
 	  var iterFn = get(it);
 	  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
@@ -30399,78 +29928,46 @@
 	};
 
 /***/ },
-/* 475 */
+/* 442 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(476)
-	  , ITERATOR  = __webpack_require__(466)('iterator')
-	  , Iterators = __webpack_require__(457);
-	module.exports = __webpack_require__(350).getIteratorMethod = function(it){
-	  if(it != undefined)return it[ITERATOR] || it['@@iterator'] || Iterators[classof(it)];
-	};
+	module.exports = { "default": __webpack_require__(443), __esModule: true };
 
 /***/ },
-/* 476 */
+/* 443 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// getting tag from 19.1.3.6 Object.prototype.toString()
-	var cof = __webpack_require__(355)
-	  , TAG = __webpack_require__(466)('toStringTag')
-	  // ES3 wrong here
-	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
-
-	module.exports = function(it){
-	  var O, T, B;
-	  return it === undefined ? 'Undefined' : it === null ? 'Null'
-	    // @@toStringTag case
-	    : typeof (T = (O = Object(it))[TAG]) == 'string' ? T
-	    // builtinTag case
-	    : ARG ? cof(O)
-	    // ES3 arguments fallback
-	    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
-	};
+	__webpack_require__(416);
+	__webpack_require__(400);
+	module.exports = __webpack_require__(444);
 
 /***/ },
-/* 477 */
+/* 444 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(478), __esModule: true };
-
-/***/ },
-/* 478 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(453);
-	__webpack_require__(471);
-	module.exports = __webpack_require__(479);
-
-/***/ },
-/* 479 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var classof   = __webpack_require__(476)
-	  , ITERATOR  = __webpack_require__(466)('iterator')
-	  , Iterators = __webpack_require__(457);
+	var classof   = __webpack_require__(430)
+	  , ITERATOR  = __webpack_require__(410)('iterator')
+	  , Iterators = __webpack_require__(413);
 	module.exports = __webpack_require__(350).isIterable = function(it){
 	  var O = Object(it);
 	  return ITERATOR in O || '@@iterator' in O || Iterators.hasOwnProperty(classof(O));
 	};
 
 /***/ },
-/* 480 */
+/* 445 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(481), __esModule: true };
+	module.exports = { "default": __webpack_require__(446), __esModule: true };
 
 /***/ },
-/* 481 */
+/* 446 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(482);
+	__webpack_require__(447);
 	module.exports = __webpack_require__(350).Object.freeze;
 
 /***/ },
-/* 482 */
+/* 447 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.5 Object.freeze(O)
@@ -30483,7 +29980,7 @@
 	});
 
 /***/ },
-/* 483 */
+/* 448 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -30499,10 +29996,10 @@
 
 	'use strict';
 
-	module.exports = __webpack_require__(484);
+	module.exports = __webpack_require__(449);
 
 /***/ },
-/* 484 */
+/* 449 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -30520,9 +30017,9 @@
 
 	'use strict';
 
-	var forEachRootCallArg = __webpack_require__(485);
-	var generateClientID = __webpack_require__(487);
-	var invariant = __webpack_require__(486);
+	var forEachRootCallArg = __webpack_require__(450);
+	var generateClientID = __webpack_require__(452);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * @internal
@@ -30557,9 +30054,6 @@
 	      var ii = 0;
 	      forEachRootCallArg(query, function (rootCallArg, rootCallName) {
 	        var result = records[ii++];
-	        if (result == null) {
-	          return;
-	        }
 	        var dataID = store.getRootCallID(rootCallName, rootCallArg);
 	        if (dataID == null) {
 	          var payloadID = typeof result === 'object' && result ? result[RelayOSSNodeInterface.ID] : null;
@@ -30582,6 +30076,15 @@
 
 	function getPayloadRecords(query, payload) {
 	  var records = payload[query.getRootCall().name];
+	  if (!query.getBatchCall()) {
+	    var rootCall = query.getRootCall();
+	    if (Array.isArray(rootCall.value)) {
+	      !Array.isArray(records) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayOSSNodeInterface: Expected payload for root field `%s` to be ' + 'an array with %s results, instead received a single non-array result.', rootCall.name, rootCall.value.length) : invariant(false) : undefined;
+	      !(records.length === rootCall.value.length) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayOSSNodeInterface: Expected payload for root field `%s` to be ' + 'an array with %s results, instead received an array with %s results.', rootCall.name, rootCall.value.length, records.length) : invariant(false) : undefined;
+	    } else if (Array.isArray(records)) {
+	       true ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayOSSNodeInterface: Expected payload for root field `%s` to be ' + 'a single non-array result, instead received an array with %s results.', rootCall.name, records.length) : invariant(false) : undefined;
+	    }
+	  }
 	  return Array.isArray(records) ? records : [records];
 	}
 
@@ -30589,7 +30092,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 485 */
+/* 450 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -30607,7 +30110,7 @@
 
 	'use strict';
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * @internal
@@ -30642,7 +30145,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 486 */
+/* 451 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -30697,7 +30200,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 487 */
+/* 452 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -30714,8 +30217,8 @@
 
 	'use strict';
 
-	var crc32 = __webpack_require__(488);
-	var performanceNow = __webpack_require__(489);
+	var crc32 = __webpack_require__(453);
+	var performanceNow = __webpack_require__(454);
 
 	var _clientID = 1;
 	var _prefix = 'client:' + crc32('' + performanceNow());
@@ -30733,7 +30236,7 @@
 	module.exports = generateClientID;
 
 /***/ },
-/* 488 */
+/* 453 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -30769,7 +30272,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 489 */
+/* 454 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -30786,7 +30289,7 @@
 
 	'use strict';
 
-	var performance = __webpack_require__(490);
+	var performance = __webpack_require__(455);
 	var curPerformance = performance;
 
 	/**
@@ -30803,7 +30306,7 @@
 	module.exports = performanceNow;
 
 /***/ },
-/* 490 */
+/* 455 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -30831,7 +30334,7 @@
 	module.exports = performance || {};
 
 /***/ },
-/* 491 */
+/* 456 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -30849,7 +30352,7 @@
 
 	'use strict';
 
-	var flattenArray = __webpack_require__(492);
+	var flattenArray = __webpack_require__(457);
 
 	/**
 	 * @internal
@@ -30890,7 +30393,7 @@
 	module.exports = printRelayQueryCall;
 
 /***/ },
-/* 492 */
+/* 457 */
 /***/ function(module, exports) {
 
 	/**
@@ -30944,7 +30447,7 @@
 	module.exports = flattenArray;
 
 /***/ },
-/* 493 */
+/* 458 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -30963,8 +30466,8 @@
 	'use strict';
 
 	var emptyFunction = __webpack_require__(377);
-	var forEachObject = __webpack_require__(494);
-	var removeFromArray = __webpack_require__(495);
+	var forEachObject = __webpack_require__(459);
+	var removeFromArray = __webpack_require__(460);
 
 	var aggregateHandlersByName = {};
 	var profileHandlersByName = {};
@@ -31186,7 +30689,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 494 */
+/* 459 */
 /***/ function(module, exports) {
 
 	/**
@@ -31234,7 +30737,7 @@
 	module.exports = forEachObject;
 
 /***/ },
-/* 495 */
+/* 460 */
 /***/ function(module, exports) {
 
 	/**
@@ -31265,7 +30768,7 @@
 	module.exports = removeFromArray;
 
 /***/ },
-/* 496 */
+/* 461 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31302,7 +30805,7 @@
 	module.exports = resolveImmediate;
 
 /***/ },
-/* 497 */
+/* 462 */
 /***/ function(module, exports) {
 
 	/**
@@ -31367,7 +30870,7 @@
 	module.exports = GraphQLStoreDataHandler;
 
 /***/ },
-/* 498 */
+/* 463 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -31387,7 +30890,7 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var _Object$freeze = __webpack_require__(480)['default'];
+	var _Object$freeze = __webpack_require__(445)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -31466,7 +30969,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 499 */
+/* 464 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31482,10 +30985,10 @@
 
 	'use strict';
 
-	module.exports = __webpack_require__(500);
+	module.exports = __webpack_require__(465);
 
 /***/ },
-/* 500 */
+/* 465 */
 /***/ function(module, exports) {
 
 	/**
@@ -31573,7 +31076,7 @@
 	module.exports = RelayOSSConnectionInterface;
 
 /***/ },
-/* 501 */
+/* 466 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -31597,22 +31100,22 @@
 
 	var _extends = __webpack_require__(344)['default'];
 
-	var GraphQL = __webpack_require__(449);
-	var RelayConnectionInterface = __webpack_require__(499);
-	var RelayFragmentReference = __webpack_require__(502);
+	var GraphQL = __webpack_require__(437);
+	var RelayConnectionInterface = __webpack_require__(464);
+	var RelayFragmentReference = __webpack_require__(467);
 
-	var RelayMetaRoute = __webpack_require__(503);
-	var RelayRouteFragment = __webpack_require__(504);
+	var RelayMetaRoute = __webpack_require__(468);
+	var RelayRouteFragment = __webpack_require__(469);
 
-	var areEqual = __webpack_require__(505);
-	var callsFromGraphQL = __webpack_require__(448);
-	var callsToGraphQL = __webpack_require__(506);
-	var generateRQLFieldAlias = __webpack_require__(507);
-	var getWeakIdForObject = __webpack_require__(508);
-	var invariant = __webpack_require__(486);
-	var printRelayQueryCall = __webpack_require__(491);
-	var shallowEqual = __webpack_require__(509);
-	var stableStringify = __webpack_require__(510);
+	var areEqual = __webpack_require__(470);
+	var callsFromGraphQL = __webpack_require__(436);
+	var callsToGraphQL = __webpack_require__(471);
+	var generateRQLFieldAlias = __webpack_require__(472);
+	var getWeakIdForObject = __webpack_require__(473);
+	var invariant = __webpack_require__(451);
+	var printRelayQueryCall = __webpack_require__(456);
+	var shallowEqual = __webpack_require__(474);
+	var stableStringify = __webpack_require__(475);
 
 	// TODO: replace once #6525923 is resolved
 
@@ -31662,70 +31165,6 @@
 	    var node = createNode(concreteNode, route, variables);
 	    !(node instanceof RelayQueryNode) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayQueryNode.create(): Expected a node.') : invariant(false) : undefined;
 	    return node;
-	  };
-
-	  /**
-	   * Helper to construct a new root query with the given attributes and 'empty'
-	   * route/variables.
-	   */
-
-	  RelayQueryNode.buildRoot = function buildRoot(rootCall, rootCallValue, children, metadata, name) {
-	    var nextChildren = children ? children.filter(function (child) {
-	      return !!child;
-	    }) : [];
-	    var concreteRoot = new GraphQL.Query(rootCall, rootCallValue || null, null, null, metadata, name);
-	    var root = new RelayQueryRoot(concreteRoot, RelayMetaRoute.get('$RelayQuery'), {});
-	    root.__children__ = nextChildren;
-	    return root;
-	  };
-
-	  /**
-	   * Helper to construct a new fragment with the given attributes and 'empty'
-	   * route/variables.
-	   */
-
-	  RelayQueryNode.buildFragment = function buildFragment(name, type, children, metadata) {
-	    var nextChildren = children ? children.filter(function (child) {
-	      return !!child;
-	    }) : [];
-	    var concreteFragment = new GraphQL.QueryFragment(name, type, null, null, metadata);
-	    var fragment = new RelayQueryFragment(concreteFragment, RelayMetaRoute.get('$RelayQuery'), {}, {
-	      isDeferred: !!(metadata && metadata.isDeferred),
-	      isContainerFragment: !!(metadata && metadata.isContainerFragment),
-	      isTypeConditional: !!(metadata && metadata.isTypeConditional)
-	    });
-	    fragment.__children__ = nextChildren;
-	    return fragment;
-	  };
-
-	  /**
-	   * Helper to construct a new field with the given attributes and 'empty'
-	   * route/variables.
-	   */
-
-	  RelayQueryNode.buildField = function buildField(fieldName, calls, children, metadata, alias) {
-	    var nextChildren = children ? children.filter(function (child) {
-	      return !!child;
-	    }) : [];
-	    var concreteField = new GraphQL.Field(fieldName, null, null, calls ? callsToGraphQL(calls) : null, alias, null, metadata);
-	    var field = new RelayQueryField(concreteField, RelayMetaRoute.get('$RelayQuery'), {});
-	    field.__children__ = nextChildren;
-	    return field;
-	  };
-
-	  /**
-	   * Helper to construct a new mutation with the given attributes and 'empty'
-	   * route/variables.
-	   */
-
-	  RelayQueryNode.buildMutation = function buildMutation(mutationName, responseType, callName, callValue, children, metadata) {
-	    var nextChildren = children ? children.filter(function (child) {
-	      return !!child;
-	    }) : [];
-	    var concreteMutation = new GraphQL.Mutation(mutationName, responseType, new GraphQL.Callv(callName, new GraphQL.CallVariable('input')), null, null, metadata);
-	    var mutation = new RelayQueryMutation(concreteMutation, RelayMetaRoute.get('$RelayQuery'), { input: callValue || '' });
-	    mutation.__children__ = nextChildren;
-	    return mutation;
 	  };
 
 	  RelayQueryNode.createFragment = function createFragment(concreteNode, route, variables, metadata) {
@@ -31826,6 +31265,17 @@
 	    return children;
 	  };
 
+	  RelayQueryNode.prototype.getDirectives = function getDirectives() {
+	    var _this2 = this;
+
+	    return this.__concreteNode__.directives.map(function (directive) {
+	      return {
+	        name: directive.name,
+	        arguments: callsFromGraphQL(directive.arguments, _this2.__variables__)
+	      };
+	    });
+	  };
+
 	  RelayQueryNode.prototype.getField = function getField(field) {
 	    return this.getFieldByStorageKey(field.getStorageKey());
 	  };
@@ -31915,6 +31365,21 @@
 
 	var RelayQueryRoot = (function (_RelayQueryNode) {
 	  _inherits(RelayQueryRoot, _RelayQueryNode);
+
+	  /**
+	   * Helper to construct a new root query with the given attributes and 'empty'
+	   * route/variables.
+	   */
+
+	  RelayQueryRoot.build = function build(rootCall, rootCallValue, children, metadata, name) {
+	    var nextChildren = children ? children.filter(function (child) {
+	      return !!child;
+	    }) : [];
+	    var concreteRoot = new GraphQL.Query(rootCall, rootCallValue || null, null, null, metadata, name);
+	    var root = new RelayQueryRoot(concreteRoot, RelayMetaRoute.get('$RelayQuery'), {});
+	    root.__children__ = nextChildren;
+	    return root;
+	  };
 
 	  function RelayQueryRoot(concreteNode, route, variables) {
 	    _classCallCheck(this, RelayQueryRoot);
@@ -32099,6 +31564,21 @@
 	   * Represents a GraphQL subscription.
 	   */
 
+	  /**
+	   * Helper to construct a new mutation with the given attributes and 'empty'
+	   * route/variables.
+	   */
+
+	  RelayQueryMutation.build = function build(mutationName, responseType, callName, callValue, children, metadata) {
+	    var nextChildren = children ? children.filter(function (child) {
+	      return !!child;
+	    }) : [];
+	    var concreteMutation = new GraphQL.Mutation(mutationName, responseType, new GraphQL.Callv(callName, new GraphQL.CallVariable('input')), null, null, metadata);
+	    var mutation = new RelayQueryMutation(concreteMutation, RelayMetaRoute.get('$RelayQuery'), { input: callValue || '' });
+	    mutation.__children__ = nextChildren;
+	    return mutation;
+	  };
+
 	  RelayQueryMutation.prototype.equals = function equals(that) {
 	    if (this === that) {
 	      return true;
@@ -32160,6 +31640,25 @@
 
 	var RelayQueryFragment = (function (_RelayQueryNode3) {
 	  _inherits(RelayQueryFragment, _RelayQueryNode3);
+
+	  /**
+	   * Helper to construct a new fragment with the given attributes and 'empty'
+	   * route/variables.
+	   */
+
+	  RelayQueryFragment.build = function build(name, type, children, metadata) {
+	    var nextChildren = children ? children.filter(function (child) {
+	      return !!child;
+	    }) : [];
+	    var concreteFragment = new GraphQL.QueryFragment(name, type, null, null, metadata);
+	    var fragment = new RelayQueryFragment(concreteFragment, RelayMetaRoute.get('$RelayQuery'), {}, {
+	      isDeferred: !!(metadata && metadata.isDeferred),
+	      isContainerFragment: !!(metadata && metadata.isContainerFragment),
+	      isTypeConditional: !!(metadata && metadata.isTypeConditional)
+	    });
+	    fragment.__children__ = nextChildren;
+	    return fragment;
+	  };
 
 	  function RelayQueryFragment(concreteNode, route, variables, metadata) {
 	    _classCallCheck(this, RelayQueryFragment);
@@ -32258,6 +31757,21 @@
 
 	var RelayQueryField = (function (_RelayQueryNode4) {
 	  _inherits(RelayQueryField, _RelayQueryNode4);
+
+	  /**
+	   * Helper to construct a new field with the given attributes and 'empty'
+	   * route/variables.
+	   */
+
+	  RelayQueryField.build = function build(fieldName, calls, children, metadata, alias) {
+	    var nextChildren = children ? children.filter(function (child) {
+	      return !!child;
+	    }) : [];
+	    var concreteField = new GraphQL.Field(fieldName, null, null, calls ? callsToGraphQL(calls) : null, alias, null, metadata);
+	    var field = new RelayQueryField(concreteField, RelayMetaRoute.get('$RelayQuery'), {});
+	    field.__children__ = nextChildren;
+	    return field;
+	  };
 
 	  function RelayQueryField(concreteNode, route, variables) {
 	    _classCallCheck(this, RelayQueryField);
@@ -32368,6 +31882,9 @@
 	          // equivalent fields.
 	          continue;
 	        }
+	        /* $FlowFixMe(>=0.16.0) - This comment suppresses an error on the
+	         * following line that was uncovered when Flow 0.16 was deployed.
+	         */
 	        storageKey += printRelayQueryCall(call);
 	      }
 	      this.__storageKey__ = storageKey;
@@ -32581,11 +32098,15 @@
 	};
 	// for flow
 
+	/* $FlowFixMe(>=0.16.0) - This comment suppresses an error on the following
+	 * line that was uncovered when Flow 0.16 was deployed.
+	 */
+
 	// TODO(#7161070) Remove this once `toGraphQL` is no longer needed.
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 502 */
+/* 467 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -32607,10 +32128,10 @@
 
 	var _extends = __webpack_require__(344)['default'];
 
-	var GraphQL = __webpack_require__(449);
+	var GraphQL = __webpack_require__(437);
 
-	var forEachObject = __webpack_require__(494);
-	var invariant = __webpack_require__(486);
+	var forEachObject = __webpack_require__(459);
+	var invariant = __webpack_require__(451);
 	var warning = __webpack_require__(376);
 
 	/**
@@ -32824,7 +32345,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 503 */
+/* 468 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32872,7 +32393,7 @@
 	module.exports = RelayMetaRoute;
 
 /***/ },
-/* 504 */
+/* 469 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32926,7 +32447,7 @@
 	module.exports = RelayRouteFragment;
 
 /***/ },
-/* 505 */
+/* 470 */
 /***/ function(module, exports) {
 
 	/**
@@ -33040,7 +32561,7 @@
 	module.exports = areEqual;
 
 /***/ },
-/* 506 */
+/* 471 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33058,7 +32579,7 @@
 
 	'use strict';
 
-	var GraphQL = __webpack_require__(449);
+	var GraphQL = __webpack_require__(437);
 
 	/**
 	 * @internal
@@ -33076,7 +32597,7 @@
 	module.exports = callsToGraphQL;
 
 /***/ },
-/* 507 */
+/* 472 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33093,7 +32614,7 @@
 
 	'use strict';
 
-	var crc32 = __webpack_require__(488);
+	var crc32 = __webpack_require__(453);
 
 	var PREFIX = '_';
 
@@ -33125,7 +32646,7 @@
 	module.exports = generateRQLFieldAlias;
 
 /***/ },
-/* 508 */
+/* 473 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -33169,7 +32690,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 509 */
+/* 474 */
 /***/ function(module, exports) {
 
 	/**
@@ -33224,7 +32745,7 @@
 	module.exports = shallowEqual;
 
 /***/ },
-/* 510 */
+/* 475 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33309,7 +32830,7 @@
 	module.exports = stableStringify;
 
 /***/ },
-/* 511 */
+/* 476 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -33329,13 +32850,13 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var _toConsumableArray = __webpack_require__(512)['default'];
+	var _toConsumableArray = __webpack_require__(477)['default'];
 
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var RelayQuery = __webpack_require__(501);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var RelayQuery = __webpack_require__(466);
 
-	var flattenRelayQuery = __webpack_require__(520);
-	var invariant = __webpack_require__(486);
+	var flattenRelayQuery = __webpack_require__(482);
+	var invariant = __webpack_require__(451);
 
 	var TYPE = '__type__';
 
@@ -33387,7 +32908,7 @@
 	      });
 	      trackedNodes.length = 0;
 	      trackedNodesByID.isFlattened = true;
-	      var containerNode = RelayQuery.Node.buildFragment('RelayQueryTracker', 'Node', trackedChildren);
+	      var containerNode = RelayQuery.Fragment.build('RelayQueryTracker', 'Node', trackedChildren);
 	      if (containerNode) {
 	        var flattenedNode = flattenRelayQuery(containerNode);
 	        if (flattenedNode) {
@@ -33418,12 +32939,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 512 */
+/* 477 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Array$from = __webpack_require__(513)["default"];
+	var _Array$from = __webpack_require__(478)["default"];
 
 	exports["default"] = function (arr) {
 	  if (Array.isArray(arr)) {
@@ -33438,32 +32959,32 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 513 */
+/* 478 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(514), __esModule: true };
+	module.exports = { "default": __webpack_require__(479), __esModule: true };
 
 /***/ },
-/* 514 */
+/* 479 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(471);
-	__webpack_require__(515);
+	__webpack_require__(400);
+	__webpack_require__(480);
 	module.exports = __webpack_require__(350).Array.from;
 
 /***/ },
-/* 515 */
+/* 480 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var ctx         = __webpack_require__(389)
 	  , $def        = __webpack_require__(348)
 	  , toObject    = __webpack_require__(352)
-	  , call        = __webpack_require__(516)
-	  , isArrayIter = __webpack_require__(517)
-	  , toLength    = __webpack_require__(518)
-	  , getIterFn   = __webpack_require__(475);
-	$def($def.S + $def.F * !__webpack_require__(519)(function(iter){ Array.from(iter); }), 'Array', {
+	  , call        = __webpack_require__(426)
+	  , isArrayIter = __webpack_require__(427)
+	  , toLength    = __webpack_require__(428)
+	  , getIterFn   = __webpack_require__(429);
+	$def($def.S + $def.F * !__webpack_require__(481)(function(iter){ Array.from(iter); }), 'Array', {
 	  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
 	  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
 	    var O       = toObject(arrayLike)
@@ -33490,49 +33011,10 @@
 	});
 
 /***/ },
-/* 516 */
+/* 481 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// call something on iterator step with safe closing on error
-	var anObject = __webpack_require__(388);
-	module.exports = function(iterator, fn, value, entries){
-	  try {
-	    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
-	  // 7.4.6 IteratorClose(iterator, completion)
-	  } catch(e){
-	    var ret = iterator['return'];
-	    if(ret !== undefined)anObject(ret.call(iterator));
-	    throw e;
-	  }
-	};
-
-/***/ },
-/* 517 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// check on default Array iterator
-	var Iterators = __webpack_require__(457)
-	  , ITERATOR  = __webpack_require__(466)('iterator');
-	module.exports = function(it){
-	  return (Iterators.Array || Array.prototype[ITERATOR]) === it;
-	};
-
-/***/ },
-/* 518 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 7.1.15 ToLength
-	var toInteger = __webpack_require__(473)
-	  , min       = Math.min;
-	module.exports = function(it){
-	  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
-	};
-
-/***/ },
-/* 519 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var SYMBOL_ITERATOR = __webpack_require__(466)('iterator')
+	var SYMBOL_ITERATOR = __webpack_require__(410)('iterator')
 	  , SAFE_CLOSING    = false;
 	try {
 	  var riter = [7][SYMBOL_ITERATOR]();
@@ -33553,7 +33035,7 @@
 	};
 
 /***/ },
-/* 520 */
+/* 482 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33577,11 +33059,11 @@
 
 	var _Object$keys = __webpack_require__(391)['default'];
 
-	var RelayProfiler = __webpack_require__(493);
+	var RelayProfiler = __webpack_require__(458);
 
-	var RelayQueryVisitor = __webpack_require__(521);
+	var RelayQueryVisitor = __webpack_require__(483);
 
-	var sortTypeFirst = __webpack_require__(522);
+	var sortTypeFirst = __webpack_require__(484);
 
 	/**
 	 * @internal
@@ -33637,7 +33119,7 @@
 	module.exports = RelayProfiler.instrument('flattenRelayQuery', flattenRelayQuery);
 
 /***/ },
-/* 521 */
+/* 483 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33657,7 +33139,7 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var RelayQuery = __webpack_require__(501);
+	var RelayQuery = __webpack_require__(466);
 
 	/**
 	 * @internal
@@ -33735,7 +33217,7 @@
 	module.exports = RelayQueryVisitor;
 
 /***/ },
-/* 522 */
+/* 484 */
 /***/ function(module, exports) {
 
 	/**
@@ -33775,7 +33257,7 @@
 	module.exports = sortTypeFirst;
 
 /***/ },
-/* 523 */
+/* 485 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -33797,16 +33279,16 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var RelayQuery = __webpack_require__(501);
+	var RelayQuery = __webpack_require__(466);
 
-	var RelayConnectionInterface = __webpack_require__(499);
+	var RelayConnectionInterface = __webpack_require__(464);
 
-	var RelayQueryVisitor = __webpack_require__(521);
-	var RelayRecordState = __webpack_require__(524);
+	var RelayQueryVisitor = __webpack_require__(483);
+	var RelayRecordState = __webpack_require__(486);
 
-	var generateClientEdgeID = __webpack_require__(525);
-	var generateClientID = __webpack_require__(487);
-	var invariant = __webpack_require__(486);
+	var generateClientEdgeID = __webpack_require__(487);
+	var generateClientID = __webpack_require__(452);
+	var invariant = __webpack_require__(451);
 	var warning = __webpack_require__(376);
 
 	var EDGES = RelayConnectionInterface.EDGES;
@@ -34243,7 +33725,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 524 */
+/* 486 */
 /***/ function(module, exports) {
 
 	/**
@@ -34288,7 +33770,7 @@
 	module.exports = RelayRecordState;
 
 /***/ },
-/* 525 */
+/* 487 */
 /***/ function(module, exports) {
 
 	/**
@@ -34319,7 +33801,7 @@
 	module.exports = generateClientEdgeID;
 
 /***/ },
-/* 526 */
+/* 488 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -34345,16 +33827,16 @@
 	  value: true
 	});
 
-	var GraphQLMutatorConstants = __webpack_require__(527);
-	var GraphQLRange = __webpack_require__(528);
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var GraphQLStoreRangeUtils = __webpack_require__(447);
-	var RelayConnectionInterface = __webpack_require__(499);
+	var GraphQLMutatorConstants = __webpack_require__(489);
+	var GraphQLRange = __webpack_require__(490);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var GraphQLStoreRangeUtils = __webpack_require__(435);
+	var RelayConnectionInterface = __webpack_require__(464);
 
-	var RelayNodeInterface = __webpack_require__(483);
+	var RelayNodeInterface = __webpack_require__(448);
 
-	var forEachObject = __webpack_require__(494);
-	var invariant = __webpack_require__(486);
+	var forEachObject = __webpack_require__(459);
+	var invariant = __webpack_require__(451);
 	var warning = __webpack_require__(376);
 
 	var CURSOR = RelayConnectionInterface.CURSOR;
@@ -35075,7 +34557,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 527 */
+/* 489 */
 /***/ function(module, exports) {
 
 	/**
@@ -35127,7 +34609,7 @@
 	module.exports = GraphQLMutatorConstants;
 
 /***/ },
-/* 528 */
+/* 490 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -35146,22 +34628,22 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var _defineProperty = __webpack_require__(529)['default'];
+	var _defineProperty = __webpack_require__(491)['default'];
 
 	var _extends = __webpack_require__(344)['default'];
 
-	var _slicedToArray = __webpack_require__(450)['default'];
+	var _slicedToArray = __webpack_require__(438)['default'];
 
-	var _toConsumableArray = __webpack_require__(512)['default'];
+	var _toConsumableArray = __webpack_require__(477)['default'];
 
-	var GraphQLMutatorConstants = __webpack_require__(527);
-	var GraphQLSegment = __webpack_require__(532);
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var RelayConnectionInterface = __webpack_require__(499);
+	var GraphQLMutatorConstants = __webpack_require__(489);
+	var GraphQLSegment = __webpack_require__(494);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var RelayConnectionInterface = __webpack_require__(464);
 
-	var forEachObject = __webpack_require__(494);
-	var invariant = __webpack_require__(486);
-	var printRelayQueryCall = __webpack_require__(491);
+	var forEachObject = __webpack_require__(459);
+	var invariant = __webpack_require__(451);
+	var printRelayQueryCall = __webpack_require__(456);
 	var warning = __webpack_require__(376);
 
 	var END_CURSOR = RelayConnectionInterface.END_CURSOR;
@@ -36118,12 +35600,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 529 */
+/* 491 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$defineProperty = __webpack_require__(530)["default"];
+	var _Object$defineProperty = __webpack_require__(492)["default"];
 
 	exports["default"] = function (obj, key, value) {
 	  if (key in obj) {
@@ -36143,13 +35625,13 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 530 */
+/* 492 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(531), __esModule: true };
+	module.exports = { "default": __webpack_require__(493), __esModule: true };
 
 /***/ },
-/* 531 */
+/* 493 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(357);
@@ -36158,7 +35640,7 @@
 	};
 
 /***/ },
-/* 532 */
+/* 494 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -36177,13 +35659,13 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var _slicedToArray = __webpack_require__(450)['default'];
+	var _slicedToArray = __webpack_require__(438)['default'];
 
 	var _Object$assign = __webpack_require__(345)['default'];
 
 	var _Object$keys = __webpack_require__(391)['default'];
 
-	var GraphQLStoreDataHandler = __webpack_require__(497);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
 
 	/**
 	 * Represents one contiguous segment of edges within a `GraphQLRange`. Has
@@ -36789,7 +36271,7 @@
 	module.exports = GraphQLSegment;
 
 /***/ },
-/* 533 */
+/* 495 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -36809,17 +36291,17 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var RelayBufferedNeglectionStateMap = __webpack_require__(534);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var RelayBufferedNeglectionStateMap = __webpack_require__(496);
 
-	var RelayNeglectionStateMap = __webpack_require__(535);
+	var RelayNeglectionStateMap = __webpack_require__(497);
 
-	var RelayProfiler = __webpack_require__(493);
+	var RelayProfiler = __webpack_require__(458);
 
-	var RelayTaskScheduler = __webpack_require__(536);
+	var RelayTaskScheduler = __webpack_require__(498);
 
-	var forEachObject = __webpack_require__(494);
-	var resolveImmediate = __webpack_require__(496);
+	var forEachObject = __webpack_require__(459);
+	var resolveImmediate = __webpack_require__(461);
 
 	var RANGE = '__range__';
 
@@ -37086,7 +36568,7 @@
 	module.exports = RelayStoreGarbageCollector;
 
 /***/ },
-/* 534 */
+/* 496 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -37106,7 +36588,7 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * @internal
@@ -37223,7 +36705,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 535 */
+/* 497 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -37248,7 +36730,7 @@
 	});
 	var Map = __webpack_require__(397);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * @internal
@@ -37365,7 +36847,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 536 */
+/* 498 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -37385,7 +36867,7 @@
 
 	var Promise = __webpack_require__(361);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	var queue = [];
 	var schedule;
@@ -37537,7 +37019,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 537 */
+/* 499 */
 /***/ function(module, exports) {
 
 	/**
@@ -37570,7 +37052,7 @@
 	module.exports = generateForceIndex;
 
 /***/ },
-/* 538 */
+/* 500 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -37590,9 +37072,9 @@
 
 	var _Object$keys = __webpack_require__(391)['default'];
 
-	var RelayQuery = __webpack_require__(501);
+	var RelayQuery = __webpack_require__(466);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * @internal
@@ -37651,7 +37133,7 @@
 	    }
 	  });
 	  _Object$keys(fieldsByType).forEach(function (type) {
-	    children.push(RelayQuery.Node.buildFragment('refragmentRelayQuery', type, fieldsByType[type]));
+	    children.push(RelayQuery.Fragment.build('refragmentRelayQuery', type, fieldsByType[type]));
 	  });
 	  return node.clone(children);
 	}
@@ -37660,7 +37142,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 539 */
+/* 501 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -37684,10 +37166,10 @@
 	 */
 	'use strict';
 
-	var RelayNodeInterface = __webpack_require__(483);
-	var RelayProfiler = __webpack_require__(493);
+	var RelayNodeInterface = __webpack_require__(448);
+	var RelayProfiler = __webpack_require__(458);
 
-	var RelayQueryPath = __webpack_require__(540);
+	var RelayQueryPath = __webpack_require__(502);
 	function writeRelayQueryPayload(writer, query, payload) {
 	  var store = writer.getRecordStore();
 	  var path = new RelayQueryPath(query);
@@ -37703,7 +37185,7 @@
 	module.exports = RelayProfiler.instrument('writeRelayQueryPayload', writeRelayQueryPayload);
 
 /***/ },
-/* 540 */
+/* 502 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -37726,14 +37208,14 @@
 
 	var _extends = __webpack_require__(344)['default'];
 
-	var RelayNodeInterface = __webpack_require__(483);
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var RelayQuery = __webpack_require__(501);
-	var RelayQuerySerializer = __webpack_require__(541);
+	var RelayNodeInterface = __webpack_require__(448);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var RelayQuery = __webpack_require__(466);
+	var RelayQuerySerializer = __webpack_require__(503);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
-	var EMPTY_FRAGMENT = RelayQuery.Node.buildFragment('$RelayQueryPath', 'Node');
+	var EMPTY_FRAGMENT = RelayQuery.Fragment.build('$RelayQueryPath', 'Node');
 
 	/**
 	 * @internal
@@ -37801,10 +37283,10 @@
 	    if (GraphQLStoreDataHandler.isClientID(dataID)) {
 	      return new RelayQueryPath(node, this);
 	    } else {
-	      var idField = RelayQuery.Node.buildField('id', null, null, {
+	      var idField = RelayQuery.Field.build('id', null, null, {
 	        parentType: RelayNodeInterface.NODE_TYPE
 	      });
-	      var root = RelayQuery.Node.buildRoot(RelayNodeInterface.NODE, dataID, [idField], { rootArg: RelayNodeInterface.ID }, this.getName());
+	      var root = RelayQuery.Root.build(RelayNodeInterface.NODE, dataID, [idField], { rootArg: RelayNodeInterface.ID }, this.getName());
 	      return new RelayQueryPath(root);
 	    }
 	  };
@@ -37834,7 +37316,7 @@
 	    !child ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayQueryPath: Expected a leaf node.') : invariant(false) : undefined;
 	    !(node instanceof RelayQuery.Root) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayQueryPath: Expected a root node.') : invariant(false) : undefined;
 	    var rootCall = node.getRootCall();
-	    return RelayQuery.Node.buildRoot(rootCall.name, rootCall.value, [child, node.getFieldByStorageKey('id')], _extends({}, node.__concreteNode__.metatada, {
+	    return RelayQuery.Root.build(rootCall.name, rootCall.value, [child, node.getFieldByStorageKey('id')], _extends({}, node.__concreteNode__.metatada, {
 	      rootArg: node.getRootCallArgument()
 	    }), this.getName());
 	  };
@@ -37880,7 +37362,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 541 */
+/* 503 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -37900,9 +37382,9 @@
 
 	var _extends = __webpack_require__(344)['default'];
 
-	var RelayQuery = __webpack_require__(501);
+	var RelayQuery = __webpack_require__(466);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	var FIELD = 'Field';
 	var FRAGMENT_DEFINITION = 'FragmentDefinition';
@@ -37934,23 +37416,23 @@
 	    children = children.map(RelayQuerySerializer.fromJSON);
 
 	    if (kind === FIELD) {
-	      var field = RelayQuery.Node.buildField(name, calls, children, metadata, alias);
+	      var field = RelayQuery.Field.build(name, calls, children, metadata, alias);
 	      !(field != null) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayQuerySerializer.fromJSON(): expected a `Field`.') : invariant(false) : undefined;
 	      return field;
 	    } else if (kind === FRAGMENT_DEFINITION) {
 	      !(typeof type === 'string') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayQuerySerializer.fromJSON(): expected `type` to be a string.') : invariant(false) : undefined;
-	      var fragment = RelayQuery.Node.buildFragment(name, type, children, metadata);
+	      var fragment = RelayQuery.Fragment.build(name, type, children, metadata);
 	      !(fragment != null) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayQuerySerializer.fromJSON(): expected a `Fragment`.') : invariant(false) : undefined;
 	      return fragment;
 	    } else if (kind === QUERY) {
 	      var rootCall = calls[0];
-	      var root = RelayQuery.Node.buildRoot(rootCall.name, rootCall.value, children, metadata, name);
+	      var root = RelayQuery.Root.build(rootCall.name, rootCall.value, children, metadata, name);
 	      !(root != null) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayQuerySerializer.fromJSON(): expected a `Root`.') : invariant(false) : undefined;
 	      return root;
 	    } else if (kind === MUTATION) {
 	      !(typeof type === 'string') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayQuerySerializer.fromJSON(): expected `type` to be a string.') : invariant(false) : undefined;
 	      var mutationCall = calls[0];
-	      var mutation = RelayQuery.Node.buildMutation(name, type, mutationCall.name, mutationCall.value, children);
+	      var mutation = RelayQuery.Mutation.build(name, type, mutationCall.name, mutationCall.value, children);
 	      !(mutation != null) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayQuerySerializer.fromJSON(): expected a `Mutation`.') : invariant(false) : undefined;
 	      return mutation;
 	    } else {
@@ -38010,7 +37492,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 542 */
+/* 504 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -38028,26 +37510,26 @@
 
 	'use strict';
 
-	var _defineProperty = __webpack_require__(529)['default'];
+	var _defineProperty = __webpack_require__(491)['default'];
 
 	var _extends = __webpack_require__(344)['default'];
 
-	var GraphQLMutatorConstants = __webpack_require__(527);
-	var RelayConnectionInterface = __webpack_require__(499);
+	var GraphQLMutatorConstants = __webpack_require__(489);
+	var RelayConnectionInterface = __webpack_require__(464);
 
-	var RelayMutationTracker = __webpack_require__(543);
-	var RelayMutationType = __webpack_require__(544);
-	var RelayNodeInterface = __webpack_require__(483);
-	var RelayQuery = __webpack_require__(501);
-	var RelayQueryPath = __webpack_require__(540);
+	var RelayMutationTracker = __webpack_require__(505);
+	var RelayMutationType = __webpack_require__(506);
+	var RelayNodeInterface = __webpack_require__(448);
+	var RelayQuery = __webpack_require__(466);
+	var RelayQueryPath = __webpack_require__(502);
 
-	var RelayProfiler = __webpack_require__(493);
-	var RelayRecordState = __webpack_require__(524);
+	var RelayProfiler = __webpack_require__(458);
+	var RelayRecordState = __webpack_require__(486);
 
-	var generateClientEdgeID = __webpack_require__(525);
-	var generateClientID = __webpack_require__(487);
-	var invariant = __webpack_require__(486);
-	var printRelayQueryCall = __webpack_require__(491);
+	var generateClientEdgeID = __webpack_require__(487);
+	var generateClientID = __webpack_require__(452);
+	var invariant = __webpack_require__(451);
+	var printRelayQueryCall = __webpack_require__(456);
 	var warning = __webpack_require__(376);
 
 	// TODO: Replace with enumeration for possible config types.
@@ -38061,7 +37543,7 @@
 	var PREPEND = GraphQLMutatorConstants.PREPEND;
 	var REMOVE = GraphQLMutatorConstants.REMOVE;
 
-	var EDGES_FIELD = RelayQuery.Node.buildField(EDGES, null, null, { plural: true });
+	var EDGES_FIELD = RelayQuery.Field.build(EDGES, null, null, { plural: true });
 	var EMPTY = '';
 	var ID = 'id';
 	var IGNORED_KEYS = _defineProperty({
@@ -38207,11 +37689,11 @@
 	  var path;
 
 	  if (recordID) {
-	    path = new RelayQueryPath(RelayQuery.Node.buildRoot(RelayNodeInterface.NODE, recordID, null, { rootArg: RelayNodeInterface.ID }));
+	    path = new RelayQueryPath(RelayQuery.Root.build(RelayNodeInterface.NODE, recordID, null, { rootArg: RelayNodeInterface.ID }));
 	  } else {
 	    recordID = store.getRootCallID(fieldName, EMPTY);
 	    // Root fields that do not accept arguments
-	    path = new RelayQueryPath(RelayQuery.Node.buildRoot(fieldName));
+	    path = new RelayQueryPath(RelayQuery.Root.build(fieldName));
 	  }
 	  !recordID ? process.env.NODE_ENV !== 'production' ? invariant(false, 'writeRelayUpdatePayload(): Expected a record ID in the response payload ' + 'supplied to update the store.') : invariant(false) : undefined;
 
@@ -38435,7 +37917,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 543 */
+/* 505 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -38455,7 +37937,7 @@
 	// optimistically added nodes
 	'use strict';
 
-	var GraphQLStoreDataHandler = __webpack_require__(497);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
 
 	var clientIDToServerIDMap = {};
 
@@ -38565,7 +38047,7 @@
 	module.exports = RelayMutationTracker;
 
 /***/ },
-/* 544 */
+/* 506 */
 /***/ function(module, exports) {
 
 	/**
@@ -38594,7 +38076,7 @@
 	module.exports = RelayMutationType;
 
 /***/ },
-/* 545 */
+/* 507 */
 /***/ function(module, exports) {
 
 	/**
@@ -38631,7 +38113,7 @@
 	module.exports = isEmpty;
 
 /***/ },
-/* 546 */
+/* 508 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -38651,11 +38133,11 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var RelayQuery = __webpack_require__(501);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var RelayQuery = __webpack_require__(466);
 
-	var invariant = __webpack_require__(486);
-	var shallowEqual = __webpack_require__(509);
+	var invariant = __webpack_require__(451);
+	var shallowEqual = __webpack_require__(474);
 
 	/**
 	 * Fragment pointers encapsulate the fetched data for a fragment reference. They
@@ -38774,7 +38256,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 547 */
+/* 509 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -38794,20 +38276,20 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var _slicedToArray = __webpack_require__(450)['default'];
+	var _slicedToArray = __webpack_require__(438)['default'];
 
 	var _Object$keys = __webpack_require__(391)['default'];
 
-	var GraphQLStoreChangeEmitter = __webpack_require__(446);
-	var GraphQLStoreRangeUtils = __webpack_require__(447);
+	var GraphQLStoreChangeEmitter = __webpack_require__(434);
+	var GraphQLStoreRangeUtils = __webpack_require__(435);
 
-	var RelayProfiler = __webpack_require__(493);
+	var RelayProfiler = __webpack_require__(458);
 
-	var RelayStoreData = __webpack_require__(445);
+	var RelayStoreData = __webpack_require__(433);
 
-	var filterExclusiveKeys = __webpack_require__(548);
-	var readRelayQueryData = __webpack_require__(549);
-	var recycleNodesInto = __webpack_require__(551);
+	var filterExclusiveKeys = __webpack_require__(510);
+	var readRelayQueryData = __webpack_require__(511);
+	var recycleNodesInto = __webpack_require__(513);
 
 	/**
 	 * @internal
@@ -39074,7 +38556,7 @@
 	module.exports = GraphQLStoreQueryResolver;
 
 /***/ },
-/* 548 */
+/* 510 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -39116,7 +38598,7 @@
 	module.exports = filterExclusiveKeys;
 
 /***/ },
-/* 549 */
+/* 511 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -39141,20 +38623,20 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var GraphQLFragmentPointer = __webpack_require__(546);
-	var GraphQLStoreRangeUtils = __webpack_require__(447);
-	var RelayConnectionInterface = __webpack_require__(499);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var GraphQLFragmentPointer = __webpack_require__(508);
+	var GraphQLStoreRangeUtils = __webpack_require__(435);
+	var RelayConnectionInterface = __webpack_require__(464);
 
-	var RelayProfiler = __webpack_require__(493);
-	var RelayQuery = __webpack_require__(501);
-	var RelayQueryVisitor = __webpack_require__(521);
-	var RelayRecordState = __webpack_require__(524);
+	var RelayProfiler = __webpack_require__(458);
+	var RelayQuery = __webpack_require__(466);
+	var RelayQueryVisitor = __webpack_require__(483);
+	var RelayRecordState = __webpack_require__(486);
 
-	var callsFromGraphQL = __webpack_require__(448);
-	var callsToGraphQL = __webpack_require__(506);
-	var invariant = __webpack_require__(486);
-	var validateRelayReadQuery = __webpack_require__(550);
+	var callsFromGraphQL = __webpack_require__(436);
+	var callsToGraphQL = __webpack_require__(471);
+	var invariant = __webpack_require__(451);
+	var validateRelayReadQuery = __webpack_require__(512);
 
 	var EDGES = RelayConnectionInterface.EDGES;
 	var PAGE_INFO = RelayConnectionInterface.PAGE_INFO;
@@ -39538,7 +39020,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 550 */
+/* 512 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -39560,7 +39042,7 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var RelayQueryVisitor = __webpack_require__(521);
+	var RelayQueryVisitor = __webpack_require__(483);
 
 	var emptyFunction = __webpack_require__(377);
 
@@ -39663,7 +39145,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 551 */
+/* 513 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -39683,7 +39165,7 @@
 
 	var _Object$keys = __webpack_require__(391)['default'];
 
-	var GraphQLFragmentPointer = __webpack_require__(546);
+	var GraphQLFragmentPointer = __webpack_require__(508);
 
 	/**
 	 * Recycles subtrees from `prevData` by replacing equal subtrees in `nextData`.
@@ -39725,7 +39207,7 @@
 	module.exports = recycleNodesInto;
 
 /***/ },
-/* 552 */
+/* 514 */
 /***/ function(module, exports) {
 
 	/**
@@ -39818,7 +39300,7 @@
 	module.exports = RelayContainerComparators;
 
 /***/ },
-/* 553 */
+/* 515 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -39834,10 +39316,10 @@
 
 	'use strict';
 
-	module.exports = __webpack_require__(554);
+	module.exports = __webpack_require__(516);
 
 /***/ },
-/* 554 */
+/* 516 */
 /***/ function(module, exports) {
 
 	/**
@@ -39865,7 +39347,7 @@
 	module.exports = RelayOSSContainerProxy;
 
 /***/ },
-/* 555 */
+/* 517 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -39883,11 +39365,11 @@
 
 	'use strict';
 
-	var RelayQL = __webpack_require__(556);
+	var RelayQL = __webpack_require__(518);
 
-	var forEachObject = __webpack_require__(494);
-	var invariant = __webpack_require__(486);
-	var mapObject = __webpack_require__(557);
+	var forEachObject = __webpack_require__(459);
+	var invariant = __webpack_require__(451);
+	var mapObject = __webpack_require__(519);
 	var warning = __webpack_require__(376);
 
 	/**
@@ -39991,7 +39473,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 556 */
+/* 518 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -40014,11 +39496,11 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var GraphQL = __webpack_require__(449);
-	var RelayFragmentReference = __webpack_require__(502);
-	var RelayRouteFragment = __webpack_require__(504);
+	var GraphQL = __webpack_require__(437);
+	var RelayFragmentReference = __webpack_require__(467);
+	var RelayRouteFragment = __webpack_require__(469);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 	var warning = __webpack_require__(376);
 
 	/**
@@ -40067,7 +39549,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 557 */
+/* 519 */
 /***/ function(module, exports) {
 
 	/**
@@ -40123,7 +39605,7 @@
 	module.exports = mapObject;
 
 /***/ },
-/* 558 */
+/* 520 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -40145,24 +39627,24 @@
 
 	var _extends = __webpack_require__(344)['default'];
 
-	var _defineProperty = __webpack_require__(529)['default'];
+	var _defineProperty = __webpack_require__(491)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	var ErrorUtils = __webpack_require__(395);
 
-	var RelayConnectionInterface = __webpack_require__(499);
-	var RelayMutationQuery = __webpack_require__(559);
-	var RelayMutationRequest = __webpack_require__(564);
-	var RelayMutationTransactionStatus = __webpack_require__(568);
-	var RelayNetworkLayer = __webpack_require__(569);
-	var RelayStoreData = __webpack_require__(445);
+	var RelayConnectionInterface = __webpack_require__(464);
+	var RelayMutationQuery = __webpack_require__(521);
+	var RelayMutationRequest = __webpack_require__(526);
+	var RelayMutationTransactionStatus = __webpack_require__(530);
+	var RelayNetworkLayer = __webpack_require__(531);
+	var RelayStoreData = __webpack_require__(433);
 
-	var fromGraphQL = __webpack_require__(570);
-	var invariant = __webpack_require__(486);
-	var nullthrows = __webpack_require__(560);
-	var resolveImmediate = __webpack_require__(496);
+	var fromGraphQL = __webpack_require__(532);
+	var invariant = __webpack_require__(451);
+	var nullthrows = __webpack_require__(522);
+	var resolveImmediate = __webpack_require__(461);
 
 	var CLIENT_MUTATION_ID = RelayConnectionInterface.CLIENT_MUTATION_ID;
 
@@ -40486,7 +39968,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 559 */
+/* 521 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -40504,24 +39986,24 @@
 
 	'use strict';
 
-	var _toConsumableArray = __webpack_require__(512)['default'];
+	var _toConsumableArray = __webpack_require__(477)['default'];
 
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var RelayConnectionInterface = __webpack_require__(499);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var RelayConnectionInterface = __webpack_require__(464);
 
-	var RelayMetaRoute = __webpack_require__(503);
-	var RelayMutationType = __webpack_require__(544);
-	var RelayQuery = __webpack_require__(501);
+	var RelayMetaRoute = __webpack_require__(468);
+	var RelayMutationType = __webpack_require__(506);
+	var RelayQuery = __webpack_require__(466);
 
-	var RelayStoreData = __webpack_require__(445);
+	var RelayStoreData = __webpack_require__(433);
 
-	var flattenRelayQuery = __webpack_require__(520);
-	var forEachObject = __webpack_require__(494);
-	var nullthrows = __webpack_require__(560);
-	var inferRelayFieldsFromData = __webpack_require__(561);
-	var intersectRelayQuery = __webpack_require__(562);
-	var invariant = __webpack_require__(486);
-	var refragmentRelayQuery = __webpack_require__(538);
+	var flattenRelayQuery = __webpack_require__(482);
+	var forEachObject = __webpack_require__(459);
+	var nullthrows = __webpack_require__(522);
+	var inferRelayFieldsFromData = __webpack_require__(523);
+	var intersectRelayQuery = __webpack_require__(524);
+	var invariant = __webpack_require__(451);
+	var refragmentRelayQuery = __webpack_require__(500);
 
 	var CLIENT_MUTATION_ID = RelayConnectionInterface.CLIENT_MUTATION_ID;
 
@@ -40710,7 +40192,7 @@
 	      response: response,
 	      fatQuery: fatQuery
 	    }))];
-	    return RelayQuery.Node.buildMutation('OptimisticQuery', fatQuery.getType(), mutation.calls[0].name, null, children, mutation.metadata);
+	    return RelayQuery.Mutation.build('OptimisticQuery', fatQuery.getType(), mutation.calls[0].name, null, children, mutation.metadata);
 	  },
 
 	  /**
@@ -40728,7 +40210,7 @@
 	    return (function () {
 	      tracker = tracker || RelayStoreData.getDefaultInstance().getQueryTracker();
 
-	      var children = [RelayQuery.Node.buildField(CLIENT_MUTATION_ID, null, null, { 'requisite': true })];
+	      var children = [RelayQuery.Field.build(CLIENT_MUTATION_ID, null, null, { 'requisite': true })];
 
 	      configs.forEach(function (config) {
 	        switch (config.type) {
@@ -40759,7 +40241,7 @@
 	              parentName: config.parentName,
 	              tracker: tracker
 	            }));
-	            children.push(RelayQuery.Node.buildField(config.deletedIDFieldName));
+	            children.push(RelayQuery.Field.build(config.deletedIDFieldName));
 	            break;
 
 	          case RelayMutationType.FIELDS_CHANGE:
@@ -40773,9 +40255,9 @@
 	      });
 
 	      // create a dummy field to re-fragment the input `fields`
-	      var fragmentedFields = children.length ? refragmentRelayQuery(RelayQuery.Node.buildField('build_mutation_field', null, children)) : null;
+	      var fragmentedFields = children.length ? refragmentRelayQuery(RelayQuery.Field.build('build_mutation_field', null, children)) : null;
 
-	      return RelayQuery.Node.buildMutation(mutationName, fatQuery.getType(), mutation.calls[0].name, null, fragmentedFields ? fragmentedFields.getChildren() : null, mutation.metadata);
+	      return RelayQuery.Mutation.build(mutationName, fatQuery.getType(), mutation.calls[0].name, null, fragmentedFields ? fragmentedFields.getChildren() : null, mutation.metadata);
 	    })();
 	  }
 	};
@@ -40787,7 +40269,7 @@
 	}
 
 	function buildMutationFragment(fatQuery, fields) {
-	  var fragment = RelayQuery.Node.buildFragment('MutationQuery', fatQuery.getType(), fields);
+	  var fragment = RelayQuery.Fragment.build('MutationQuery', fatQuery.getType(), fields);
 	  if (fragment) {
 	    !(fragment instanceof RelayQuery.Fragment) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayMutationQuery: Expected a fragment.') : invariant(false) : undefined;
 	    return fragment;
@@ -40796,12 +40278,12 @@
 	}
 
 	function buildEdgeField(parentID, edgeName, edgeFields) {
-	  var fields = [RelayQuery.Node.buildField('cursor')];
+	  var fields = [RelayQuery.Field.build('cursor')];
 	  if (RelayConnectionInterface.EDGES_HAVE_SOURCE_FIELD && !GraphQLStoreDataHandler.isClientID(parentID)) {
-	    fields.push(RelayQuery.Node.buildField('source', null, [RelayQuery.Node.buildField('id')]));
+	    fields.push(RelayQuery.Field.build('source', null, [RelayQuery.Field.build('id')]));
 	  }
 	  fields.push.apply(fields, edgeFields);
-	  var edgeField = flattenRelayQuery(RelayQuery.Node.buildField(edgeName, null, fields));
+	  var edgeField = flattenRelayQuery(RelayQuery.Field.build(edgeName, null, fields));
 	  !(edgeField instanceof RelayQuery.Field) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'RelayMutationQuery: Expected a field.') : invariant(false) : undefined;
 	  return edgeField;
 	}
@@ -40821,7 +40303,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 560 */
+/* 522 */
 /***/ function(module, exports) {
 
 	/**
@@ -40848,7 +40330,7 @@
 	module.exports = nullthrows;
 
 /***/ },
-/* 561 */
+/* 523 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -40866,12 +40348,12 @@
 
 	'use strict';
 
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var RelayConnectionInterface = __webpack_require__(499);
-	var RelayQuery = __webpack_require__(501);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var RelayConnectionInterface = __webpack_require__(464);
+	var RelayQuery = __webpack_require__(466);
 
-	var forEachObject = __webpack_require__(494);
-	var invariant = __webpack_require__(486);
+	var forEachObject = __webpack_require__(459);
+	var invariant = __webpack_require__(451);
 
 	var FIELD_ARGUMENT_ENCODING = /^(\w+)\((.*?)\)$/;
 	var NODE = RelayConnectionInterface.NODE;
@@ -40911,9 +40393,9 @@
 	    children = [];
 	  }
 	  if (key === NODE) {
-	    children.push(RelayQuery.Node.buildField('id'));
+	    children.push(RelayQuery.Field.build('id'));
 	  } else if (key === EDGES) {
-	    children.push(RelayQuery.Node.buildField('cursor'));
+	    children.push(RelayQuery.Field.build('cursor'));
 	  }
 	  return buildField(key, children, metadata);
 	}
@@ -40934,14 +40416,14 @@
 	      };
 	    });
 	  }
-	  return RelayQuery.Node.buildField(fieldName, calls, children, metadata);
+	  return RelayQuery.Field.build(fieldName, calls, children, metadata);
 	}
 
 	module.exports = inferRelayFieldsFromData;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 562 */
+/* 524 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -40963,11 +40445,11 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var RelayConnectionInterface = __webpack_require__(499);
-	var RelayQuery = __webpack_require__(501);
-	var RelayQueryTransform = __webpack_require__(563);
+	var RelayConnectionInterface = __webpack_require__(464);
+	var RelayQuery = __webpack_require__(466);
+	var RelayQueryTransform = __webpack_require__(525);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * @internal
@@ -41087,7 +40569,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 563 */
+/* 525 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -41109,7 +40591,7 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var RelayQueryVisitor = __webpack_require__(521);
+	var RelayQueryVisitor = __webpack_require__(483);
 
 	/**
 	 * @internal
@@ -41186,7 +40668,7 @@
 	module.exports = RelayQueryTransform;
 
 /***/ },
-/* 564 */
+/* 526 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -41208,11 +40690,11 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var Deferred = __webpack_require__(565);
+	var Deferred = __webpack_require__(527);
 
-	var invariant = __webpack_require__(486);
-	var isEmpty = __webpack_require__(545);
-	var printRelayQuery = __webpack_require__(566);
+	var invariant = __webpack_require__(451);
+	var isEmpty = __webpack_require__(507);
+	var printRelayQuery = __webpack_require__(528);
 
 	/**
 	 * @internal
@@ -41291,7 +40773,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 565 */
+/* 527 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -41368,7 +40850,7 @@
 	module.exports = Deferred;
 
 /***/ },
-/* 566 */
+/* 528 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -41384,10 +40866,10 @@
 
 	'use strict';
 
-	module.exports = __webpack_require__(567);
+	module.exports = __webpack_require__(529);
 
 /***/ },
-/* 567 */
+/* 529 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -41405,12 +40887,12 @@
 
 	'use strict';
 
-	var RelayProfiler = __webpack_require__(493);
-	var RelayQuery = __webpack_require__(501);
+	var RelayProfiler = __webpack_require__(458);
+	var RelayQuery = __webpack_require__(466);
 
-	var forEachObject = __webpack_require__(494);
-	var invariant = __webpack_require__(486);
-	var mapObject = __webpack_require__(557);
+	var forEachObject = __webpack_require__(459);
+	var invariant = __webpack_require__(451);
+	var mapObject = __webpack_require__(519);
 
 	/**
 	 * @internal
@@ -41465,6 +40947,7 @@
 	      rootFieldString += '(' + rootArgString + ')';
 	    }
 	  }
+	  rootFieldString += printDirectives(node);
 	  var children = printChildren(node, printerState);
 
 	  var argStrings = null;
@@ -41486,7 +40969,8 @@
 	}
 
 	function printFragment(node, printerState) {
-	  return 'fragment ' + node.getDebugName() + ' on ' + node.getType() + printChildren(node, printerState);
+	  var directives = printDirectives(node);
+	  return 'fragment ' + node.getDebugName() + ' on ' + node.getType() + directives + printChildren(node, printerState);
 	}
 
 	function printInlineFragment(node, printerState) {
@@ -41494,7 +40978,8 @@
 	  var fragmentMap = printerState.fragmentMap;
 
 	  if (!(fragmentID in fragmentMap)) {
-	    fragmentMap[fragmentID] = 'fragment ' + fragmentID + ' on ' + node.getType() + printChildren(node, printerState);
+	    var directives = printDirectives(node);
+	    fragmentMap[fragmentID] = 'fragment ' + node.getFragmentID() + ' on ' + node.getType() + directives + printChildren(node, printerState);
 	  }
 	  return '...' + fragmentID;
 	}
@@ -41521,7 +41006,8 @@
 	      fieldString += '(' + argStrings.join(',') + ')';
 	    }
 	  }
-	  return (serializationKey !== schemaName ? serializationKey + ':' : '') + fieldString + printChildren(node, printerState);
+	  var directives = printDirectives(node);
+	  return (serializationKey !== schemaName ? serializationKey + ':' : '') + fieldString + directives + printChildren(node, printerState);
 	}
 
 	function printChildren(node, printerState) {
@@ -41537,6 +41023,30 @@
 	    return '';
 	  }
 	  return '{' + children.join(',') + '}';
+	}
+
+	function printDirectives(node) {
+	  var directiveStrings;
+	  node.getDirectives().forEach(function (directive) {
+	    var dirString = '@' + directive.name;
+	    if (directive.arguments.length) {
+	      dirString += '(' + directive.arguments.map(printDirective).join(',') + ')';
+	    }
+	    directiveStrings = directiveStrings || [];
+	    directiveStrings.push(dirString);
+	  });
+	  if (!directiveStrings) {
+	    return '';
+	  }
+	  return ' ' + directiveStrings.join(' ');
+	}
+
+	function printDirective(_ref2) {
+	  var name = _ref2.name;
+	  var value = _ref2.value;
+
+	  !(typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'printRelayOSSQuery(): Relay only supports directives with scalar values ' + '(boolean, number, or string), got `%s: %s`.', name, value) : invariant(false) : undefined;
+	  return name + ':' + JSON.stringify(value);
 	}
 
 	function printArgument(name, value, type, printerState) {
@@ -41567,7 +41077,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 568 */
+/* 530 */
 /***/ function(module, exports) {
 
 	/**
@@ -41621,7 +41131,7 @@
 	module.exports = RelayMutationTransactionStatus;
 
 /***/ },
-/* 569 */
+/* 531 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -41641,7 +41151,7 @@
 
 	var Promise = __webpack_require__(361);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	var injectedNetworkLayer;
 
@@ -41686,7 +41196,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 570 */
+/* 532 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -41703,11 +41213,11 @@
 
 	'use strict';
 
-	var RelayQuery = __webpack_require__(501);
-	var RelayMetaRoute = __webpack_require__(503);
-	var RelayProfiler = __webpack_require__(493);
+	var RelayQuery = __webpack_require__(466);
+	var RelayMetaRoute = __webpack_require__(468);
+	var RelayProfiler = __webpack_require__(458);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * @internal
@@ -41793,7 +41303,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 571 */
+/* 533 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -41815,19 +41325,19 @@
 
 	var _Object$keys = __webpack_require__(391)['default'];
 
-	var Deferred = __webpack_require__(565);
-	var DliteFetchModeConstants = __webpack_require__(572);
+	var Deferred = __webpack_require__(527);
+	var DliteFetchModeConstants = __webpack_require__(534);
 	var GraphQLDeferredQueryTracker = __webpack_require__(396);
 	var Promise = __webpack_require__(361);
-	var PromiseMap = __webpack_require__(574);
+	var PromiseMap = __webpack_require__(536);
 
-	var RelayTaskScheduler = __webpack_require__(536);
+	var RelayTaskScheduler = __webpack_require__(498);
 
-	var containsRelayQueryRootCall = __webpack_require__(575);
-	var everyObject = __webpack_require__(576);
-	var fetchRelayQuery = __webpack_require__(577);
-	var invariant = __webpack_require__(486);
-	var subtractRelayQuery = __webpack_require__(579);
+	var containsRelayQueryRootCall = __webpack_require__(537);
+	var everyObject = __webpack_require__(538);
+	var fetchRelayQuery = __webpack_require__(539);
+	var invariant = __webpack_require__(451);
+	var subtractRelayQuery = __webpack_require__(541);
 
 	var pendingFetchMap = {};
 
@@ -42082,7 +41592,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 572 */
+/* 534 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -42099,7 +41609,7 @@
 
 	'use strict';
 
-	var keyMirror = __webpack_require__(573);
+	var keyMirror = __webpack_require__(535);
 
 	var DliteFetchModeConstants = keyMirror({
 	  FETCH_MODE_CLIENT: null,
@@ -42110,7 +41620,7 @@
 	module.exports = DliteFetchModeConstants;
 
 /***/ },
-/* 573 */
+/* 535 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -42127,7 +41637,7 @@
 
 	'use strict';
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * Constructs an enumeration with keys equal to their value.
@@ -42164,7 +41674,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 574 */
+/* 536 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -42188,9 +41698,9 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var Deferred = __webpack_require__(565);
+	var Deferred = __webpack_require__(527);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	var PromiseMap = (function () {
 	  function PromiseMap() {
@@ -42229,7 +41739,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 575 */
+/* 537 */
 /***/ function(module, exports) {
 
 	/**
@@ -42310,7 +41820,7 @@
 	module.exports = containsRelayQueryRootCall;
 
 /***/ },
-/* 576 */
+/* 538 */
 /***/ function(module, exports) {
 
 	/**
@@ -42362,7 +41872,7 @@
 	module.exports = everyObject;
 
 /***/ },
-/* 577 */
+/* 539 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -42381,11 +41891,11 @@
 	'use strict';
 
 	var Promise = __webpack_require__(361);
-	var RelayNetworkLayer = __webpack_require__(569);
-	var RelayProfiler = __webpack_require__(493);
-	var RelayQueryRequest = __webpack_require__(578);
+	var RelayNetworkLayer = __webpack_require__(531);
+	var RelayProfiler = __webpack_require__(458);
+	var RelayQueryRequest = __webpack_require__(540);
 
-	var resolveImmediate = __webpack_require__(496);
+	var resolveImmediate = __webpack_require__(461);
 
 	var queue = null;
 
@@ -42431,7 +41941,7 @@
 	module.exports = fetchRelayQuery;
 
 /***/ },
-/* 578 */
+/* 540 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -42453,9 +41963,9 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var Deferred = __webpack_require__(565);
+	var Deferred = __webpack_require__(527);
 
-	var printRelayQuery = __webpack_require__(566);
+	var printRelayQuery = __webpack_require__(528);
 
 	/**
 	 * @internal
@@ -42542,7 +42052,7 @@
 	module.exports = RelayQueryRequest;
 
 /***/ },
-/* 579 */
+/* 541 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -42564,12 +42074,12 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var RelayProfiler = __webpack_require__(493);
-	var RelayQuery = __webpack_require__(501);
-	var RelayQueryTransform = __webpack_require__(563);
+	var RelayProfiler = __webpack_require__(458);
+	var RelayQuery = __webpack_require__(466);
+	var RelayQueryTransform = __webpack_require__(525);
 
-	var areEqual = __webpack_require__(505);
-	var invariant = __webpack_require__(486);
+	var areEqual = __webpack_require__(470);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * @internal
@@ -42780,7 +42290,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 580 */
+/* 542 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -42802,7 +42312,7 @@
 
 	var PropTypes = _require.PropTypes;
 
-	var isRelayContainer = __webpack_require__(581);
+	var isRelayContainer = __webpack_require__(543);
 
 	var RelayPropTypes = {
 	  Container: function Container(props, propName) {
@@ -42826,7 +42336,7 @@
 	module.exports = RelayPropTypes;
 
 /***/ },
-/* 581 */
+/* 543 */
 /***/ function(module, exports) {
 
 	/**
@@ -42851,7 +42361,7 @@
 	module.exports = isRelayContainer;
 
 /***/ },
-/* 582 */
+/* 544 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -42869,16 +42379,16 @@
 
 	'use strict';
 
-	var GraphQLQueryRunner = __webpack_require__(583);
+	var GraphQLQueryRunner = __webpack_require__(545);
 
-	var RelayMutationTransaction = __webpack_require__(558);
+	var RelayMutationTransaction = __webpack_require__(520);
 
-	var RelayStoreData = __webpack_require__(445);
+	var RelayStoreData = __webpack_require__(433);
 
-	var forEachRootCallArg = __webpack_require__(485);
-	var observeAllRelayQueryData = __webpack_require__(590);
-	var observeRelayQueryData = __webpack_require__(591);
-	var readRelayQueryData = __webpack_require__(549);
+	var forEachRootCallArg = __webpack_require__(450);
+	var observeAllRelayQueryData = __webpack_require__(552);
+	var observeRelayQueryData = __webpack_require__(553);
+	var readRelayQueryData = __webpack_require__(511);
 
 	var queuedStore = RelayStoreData.getDefaultInstance().getQueuedStore();
 
@@ -42994,7 +42504,7 @@
 	module.exports = RelayStore;
 
 /***/ },
-/* 583 */
+/* 545 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -43012,29 +42522,29 @@
 
 	'use strict';
 
-	var _toConsumableArray = __webpack_require__(512)['default'];
+	var _toConsumableArray = __webpack_require__(477)['default'];
 
 	var _Object$keys = __webpack_require__(391)['default'];
 
-	var DliteFetchModeConstants = __webpack_require__(572);
+	var DliteFetchModeConstants = __webpack_require__(534);
 
-	var RelayNetworkLayer = __webpack_require__(569);
-	var RelayPendingQueryTracker = __webpack_require__(571);
-	var RelayProfiler = __webpack_require__(493);
+	var RelayNetworkLayer = __webpack_require__(531);
+	var RelayPendingQueryTracker = __webpack_require__(533);
+	var RelayProfiler = __webpack_require__(458);
 
-	var RelayStoreData = __webpack_require__(445);
-	var RelayTaskScheduler = __webpack_require__(536);
+	var RelayStoreData = __webpack_require__(433);
+	var RelayTaskScheduler = __webpack_require__(498);
 
-	var checkRelayQueryData = __webpack_require__(584);
-	var diffRelayQuery = __webpack_require__(585);
-	var everyObject = __webpack_require__(576);
-	var flattenSplitRelayQueries = __webpack_require__(586);
-	var forEachObject = __webpack_require__(494);
-	var generateForceIndex = __webpack_require__(537);
-	var invariant = __webpack_require__(486);
-	var resolveImmediate = __webpack_require__(496);
-	var someObject = __webpack_require__(587);
-	var splitDeferredRelayQueries = __webpack_require__(588);
+	var checkRelayQueryData = __webpack_require__(546);
+	var diffRelayQuery = __webpack_require__(547);
+	var everyObject = __webpack_require__(538);
+	var flattenSplitRelayQueries = __webpack_require__(548);
+	var forEachObject = __webpack_require__(459);
+	var generateForceIndex = __webpack_require__(499);
+	var invariant = __webpack_require__(451);
+	var resolveImmediate = __webpack_require__(461);
+	var someObject = __webpack_require__(549);
+	var splitDeferredRelayQueries = __webpack_require__(550);
 	var warning = __webpack_require__(376);
 
 	// The source of truth for application data.
@@ -43249,7 +42759,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 584 */
+/* 546 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43271,14 +42781,14 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var RelayConnectionInterface = __webpack_require__(499);
+	var RelayConnectionInterface = __webpack_require__(464);
 
-	var RelayProfiler = __webpack_require__(493);
+	var RelayProfiler = __webpack_require__(458);
 
-	var RelayQueryVisitor = __webpack_require__(521);
-	var RelayRecordState = __webpack_require__(524);
+	var RelayQueryVisitor = __webpack_require__(483);
+	var RelayRecordState = __webpack_require__(486);
 
-	var forEachRootCallArg = __webpack_require__(485);
+	var forEachRootCallArg = __webpack_require__(450);
 
 	var EDGES = RelayConnectionInterface.EDGES;
 	var PAGE_INFO = RelayConnectionInterface.PAGE_INFO;
@@ -43478,7 +42988,7 @@
 	module.exports = RelayProfiler.instrument('checkRelayQueryData', checkRelayQueryData);
 
 /***/ },
-/* 585 */
+/* 547 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -43498,26 +43008,28 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var GraphQLStoreDataHandler = __webpack_require__(497);
-	var RelayConnectionInterface = __webpack_require__(499);
-	var RelayNodeInterface = __webpack_require__(483);
-	var RelayProfiler = __webpack_require__(493);
-	var RelayQuery = __webpack_require__(501);
-	var RelayQueryPath = __webpack_require__(540);
+	var _Object$keys = __webpack_require__(391)['default'];
 
-	var forEachRootCallArg = __webpack_require__(485);
-	var invariant = __webpack_require__(486);
+	var GraphQLStoreDataHandler = __webpack_require__(462);
+	var RelayConnectionInterface = __webpack_require__(464);
+	var RelayNodeInterface = __webpack_require__(448);
+	var RelayProfiler = __webpack_require__(458);
+	var RelayQuery = __webpack_require__(466);
+	var RelayQueryPath = __webpack_require__(502);
+
+	var forEachRootCallArg = __webpack_require__(450);
+	var invariant = __webpack_require__(451);
 	var warning = __webpack_require__(376);
 
 	var EDGES = RelayConnectionInterface.EDGES;
 	var NODE = RelayConnectionInterface.NODE;
 	var PAGE_INFO = RelayConnectionInterface.PAGE_INFO;
 
-	var idField = RelayQuery.Node.buildField('id', null, null, {
+	var idField = RelayQuery.Field.build('id', null, null, {
 	  parentType: RelayNodeInterface.NODE_TYPE,
 	  requisite: true
 	});
-	var nodeWithID = RelayQuery.Node.buildField(RelayNodeInterface.NODE, null, [idField]);
+	var nodeWithID = RelayQuery.Field.build(RelayNodeInterface.NODE, null, [idField]);
 
 	/**
 	 * @internal
@@ -43538,7 +43050,10 @@
 	    var nodeRoot;
 	    if (isPluralCall) {
 	      !(rootCallArg != null) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'diffRelayQuery(): Unexpected null or undefined value in root call ' + 'argument array for query, `%s(...).', rootCallName) : invariant(false) : undefined;
-	      nodeRoot = RelayQuery.Node.buildRoot(rootCallName, rootCallArg, root.getChildren(), { rootArg: root.getRootCallArgument() }, root.getName());
+	      nodeRoot = RelayQuery.Root.build(rootCallName, rootCallArg, root.getChildren(), {
+	        rootArg: root.getRootCallArgument(),
+	        rootCallType: root.getCallType()
+	      }, root.getName());
 	    } else {
 	      // Reuse `root` if it only maps to one result.
 	      nodeRoot = root;
@@ -43803,7 +43318,7 @@
 	          hasSplitQueries = hasSplitQueries || !!itemState.trackedNode || !!itemState.diffNode;
 	          // split diff nodes into root queries
 	          if (itemState.diffNode) {
-	            _this2.splitQuery(RelayQuery.Node.buildRoot(NODE, itemID, itemState.diffNode.getChildren(), { rootArg: RelayNodeInterface.ID }, path.getName()));
+	            _this2.splitQuery(buildRoot(itemID, itemState.diffNode.getChildren(), path.getName()));
 	          }
 	        }
 	      });
@@ -43942,7 +43457,7 @@
 	      // split missing `node` fields into a `node(id)` root query
 	      if (diffNodeField) {
 	        hasSplitQueries = true;
-	        this.splitQuery(RelayQuery.Node.buildRoot(NODE, nodeID, diffNodeField.getChildren(), { rootArg: RelayNodeInterface.ID }, path.getName()));
+	        this.splitQuery(buildRoot(nodeID, diffNodeField.getChildren(), path.getName()));
 	      }
 
 	      // split missing `edges` fields into a `connection.find(id)` query
@@ -44074,11 +43589,31 @@
 	  };
 	}
 
+	function buildRoot(rootID, children, name) {
+	  // Child fields are always collapsed into fragments so a root `id` field
+	  // must be added.
+	  var fragments = [idField];
+	  var childTypes = {};
+	  children.forEach(function (child) {
+	    if (child instanceof RelayQuery.Field) {
+	      var parentType = child.getParentType();
+	      childTypes[parentType] = childTypes[parentType] || [];
+	      childTypes[parentType].push(child);
+	    } else {
+	      fragments.push(child);
+	    }
+	  });
+	  _Object$keys(childTypes).map(function (type) {
+	    fragments.push(RelayQuery.Fragment.build('diffRelayQuery', type, childTypes[type]));
+	  });
+	  return RelayQuery.Root.build(NODE, rootID, fragments, { rootArg: RelayNodeInterface.ID }, name);
+	}
+
 	module.exports = RelayProfiler.instrument('diffRelayQuery', diffRelayQuery);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 586 */
+/* 548 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44104,7 +43639,7 @@
 	 */
 	'use strict';
 
-	var _toConsumableArray = __webpack_require__(512)['default'];
+	var _toConsumableArray = __webpack_require__(477)['default'];
 
 	function flattenSplitRelayQueries(splitQueries) {
 	  var flattenedQueries = [];
@@ -44128,7 +43663,7 @@
 	module.exports = flattenSplitRelayQueries;
 
 /***/ },
-/* 587 */
+/* 549 */
 /***/ function(module, exports) {
 
 	/**
@@ -44180,7 +43715,7 @@
 	module.exports = someObject;
 
 /***/ },
-/* 588 */
+/* 550 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -44205,14 +43740,14 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var GraphQL = __webpack_require__(449);
-	var RelayNodeInterface = __webpack_require__(483);
-	var RelayProfiler = __webpack_require__(493);
-	var RelayQuery = __webpack_require__(501);
-	var RelayQueryTransform = __webpack_require__(563);
-	var RelayRefQueryDescriptor = __webpack_require__(589);
+	var GraphQL = __webpack_require__(437);
+	var RelayNodeInterface = __webpack_require__(448);
+	var RelayProfiler = __webpack_require__(458);
+	var RelayQuery = __webpack_require__(466);
+	var RelayQueryTransform = __webpack_require__(525);
+	var RelayRefQueryDescriptor = __webpack_require__(551);
 
-	var invariant = __webpack_require__(486);
+	var invariant = __webpack_require__(451);
 
 	/**
 	 * Traverse `node` splitting off deferred query fragments into separate queries.
@@ -44282,7 +43817,7 @@
 	  }
 	  !(node instanceof RelayQuery.Root) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'splitDeferredRelayQueries(): Cannot build query without a root node.') : invariant(false) : undefined;
 	  var rootCall = node.getRootCall();
-	  return RelayQuery.Node.buildRoot(rootCall.name, rootCall.value, node.getChildren(), {
+	  return RelayQuery.Root.build(rootCall.name, rootCall.value, node.getChildren(), {
 	    isDeferred: true,
 	    rootArg: node.getRootCallArgument()
 	  }, node.getName());
@@ -44360,7 +43895,7 @@
 	  path.push(primaryKey);
 
 	  // Create the wrapper root query.
-	  var root = RelayQuery.Node.buildRoot(RelayNodeInterface.NODES, new GraphQL.BatchCallVariable(context.getID(), path.join('.')), [node], {
+	  var root = RelayQuery.Root.build(RelayNodeInterface.NODES, new GraphQL.BatchCallVariable(context.getID(), path.join('.')), [node], {
 	    isDeferred: true,
 	    rootArg: RelayNodeInterface.ID
 	  }, context.getName());
@@ -44469,7 +44004,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 589 */
+/* 551 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44514,7 +44049,7 @@
 	module.exports = RelayRefQueryDescriptor;
 
 /***/ },
-/* 590 */
+/* 552 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -44534,15 +44069,15 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var _slicedToArray = __webpack_require__(450)['default'];
+	var _slicedToArray = __webpack_require__(438)['default'];
 
 	var _Object$keys = __webpack_require__(391)['default'];
 
 	var emptyFunction = __webpack_require__(377);
-	var filterExclusiveKeys = __webpack_require__(548);
-	var forEachObject = __webpack_require__(494);
-	var invariant = __webpack_require__(486);
-	var observeRelayQueryData = __webpack_require__(591);
+	var filterExclusiveKeys = __webpack_require__(510);
+	var forEachObject = __webpack_require__(459);
+	var invariant = __webpack_require__(451);
+	var observeRelayQueryData = __webpack_require__(553);
 
 	var DATAID_REMOVED = {};
 
@@ -44828,7 +44363,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 591 */
+/* 553 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -44848,19 +44383,19 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var _slicedToArray = __webpack_require__(450)['default'];
+	var _slicedToArray = __webpack_require__(438)['default'];
 
 	var _Object$keys = __webpack_require__(391)['default'];
 
-	var GraphQLStoreChangeEmitter = __webpack_require__(446);
-	var RelayError = __webpack_require__(592);
+	var GraphQLStoreChangeEmitter = __webpack_require__(434);
+	var RelayError = __webpack_require__(554);
 
-	var RelayStoreData = __webpack_require__(445);
+	var RelayStoreData = __webpack_require__(433);
 
 	var emptyFunction = __webpack_require__(377);
-	var filterExclusiveKeys = __webpack_require__(548);
-	var invariant = __webpack_require__(486);
-	var readRelayQueryData = __webpack_require__(549);
+	var filterExclusiveKeys = __webpack_require__(510);
+	var invariant = __webpack_require__(451);
+	var readRelayQueryData = __webpack_require__(511);
 
 	/**
 	 * @internal
@@ -45057,7 +44592,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 592 */
+/* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -45120,7 +44655,7 @@
 	module.exports = RelayError;
 
 /***/ },
-/* 593 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -45141,13 +44676,13 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var GraphQL = __webpack_require__(449);
+	var GraphQL = __webpack_require__(437);
 	var Map = __webpack_require__(397);
-	var RelayQL = __webpack_require__(556);
+	var RelayQL = __webpack_require__(518);
 
-	var filterObject = __webpack_require__(594);
-	var invariant = __webpack_require__(486);
-	var mapObject = __webpack_require__(557);
+	var filterObject = __webpack_require__(556);
+	var invariant = __webpack_require__(451);
+	var mapObject = __webpack_require__(519);
 
 	// Cache results of executing fragment query builders.
 	var fragmentCache = new Map();
@@ -45255,7 +44790,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 594 */
+/* 556 */
 /***/ function(module, exports) {
 
 	/**
@@ -45312,7 +44847,7 @@
 	module.exports = filterObject;
 
 /***/ },
-/* 595 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -45328,10 +44863,10 @@
 
 	'use strict';
 
-	module.exports = __webpack_require__(596);
+	module.exports = __webpack_require__(558);
 
 /***/ },
-/* 596 */
+/* 558 */
 /***/ function(module, exports) {
 
 	/**
@@ -45362,7 +44897,7 @@
 	module.exports = prepareRelayOSSContainerProps;
 
 /***/ },
-/* 597 */
+/* 559 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -45390,16 +44925,16 @@
 	  value: true
 	});
 
-	var RelayDeprecated = __webpack_require__(555);
-	var RelayFragmentReference = __webpack_require__(502);
+	var RelayDeprecated = __webpack_require__(517);
+	var RelayFragmentReference = __webpack_require__(467);
 
-	var RelayStore = __webpack_require__(582);
+	var RelayStore = __webpack_require__(544);
 
-	var buildRQL = __webpack_require__(593);
+	var buildRQL = __webpack_require__(555);
 
-	var forEachObject = __webpack_require__(494);
-	var fromGraphQL = __webpack_require__(570);
-	var invariant = __webpack_require__(486);
+	var forEachObject = __webpack_require__(459);
+	var fromGraphQL = __webpack_require__(532);
+	var invariant = __webpack_require__(451);
 	var warning = __webpack_require__(376);
 
 	/**
@@ -45686,7 +45221,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 598 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -45710,19 +45245,19 @@
 
 	var _extends = __webpack_require__(344)['default'];
 
-	var GraphQLFragmentPointer = __webpack_require__(546);
+	var GraphQLFragmentPointer = __webpack_require__(508);
 	var React = __webpack_require__(187);
-	var RelayDeprecated = __webpack_require__(555);
+	var RelayDeprecated = __webpack_require__(517);
 
-	var RelayStore = __webpack_require__(582);
-	var RelayStoreData = __webpack_require__(445);
-	var RelayPropTypes = __webpack_require__(580);
+	var RelayStore = __webpack_require__(544);
+	var RelayStoreData = __webpack_require__(433);
+	var RelayPropTypes = __webpack_require__(542);
 
-	var StaticContainer = __webpack_require__(599);
+	var StaticContainer = __webpack_require__(561);
 
-	var getRelayQueries = __webpack_require__(601);
-	var invariant = __webpack_require__(486);
-	var mapObject = __webpack_require__(557);
+	var getRelayQueries = __webpack_require__(563);
+	var invariant = __webpack_require__(451);
+	var mapObject = __webpack_require__(519);
 
 	var PropTypes = React.PropTypes;
 
@@ -45991,7 +45526,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 599 */
+/* 561 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -46003,11 +45538,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports = __webpack_require__(600);
+	module.exports = __webpack_require__(562);
 
 
 /***/ },
-/* 600 */
+/* 562 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -46082,7 +45617,7 @@
 	module.exports = StaticContainer;
 
 /***/ },
-/* 601 */
+/* 563 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -46103,13 +45638,13 @@
 
 	var Map = __webpack_require__(397);
 
-	var RelayMetaRoute = __webpack_require__(503);
-	var RelayProfiler = __webpack_require__(493);
-	var RelayQuery = __webpack_require__(501);
+	var RelayMetaRoute = __webpack_require__(468);
+	var RelayProfiler = __webpack_require__(458);
+	var RelayQuery = __webpack_require__(466);
 
-	var buildRQL = __webpack_require__(593);
-	var invariant = __webpack_require__(486);
-	var stableStringify = __webpack_require__(510);
+	var buildRQL = __webpack_require__(555);
+	var invariant = __webpack_require__(451);
+	var stableStringify = __webpack_require__(475);
 	var warning = __webpack_require__(376);
 
 	var queryCache = new Map();
@@ -46160,7 +45695,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 602 */
+/* 564 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -46180,16 +45715,16 @@
 
 	var _classCallCheck = __webpack_require__(360)['default'];
 
-	var _Object$freeze = __webpack_require__(480)['default'];
+	var _Object$freeze = __webpack_require__(445)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 
-	var RelayDeprecated = __webpack_require__(555);
+	var RelayDeprecated = __webpack_require__(517);
 
-	var forEachObject = __webpack_require__(494);
-	var invariant = __webpack_require__(486);
+	var forEachObject = __webpack_require__(459);
+	var invariant = __webpack_require__(451);
 
 	var createURI = function createURI() {
 	  return null;
@@ -46279,7 +45814,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184)))
 
 /***/ },
-/* 603 */
+/* 565 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -46296,11 +45831,11 @@
 
 	'use strict';
 
-	var RelayNetworkLayer = __webpack_require__(569);
-	var RelayStoreData = __webpack_require__(445);
+	var RelayNetworkLayer = __webpack_require__(531);
+	var RelayStoreData = __webpack_require__(433);
 
-	var flattenRelayQuery = __webpack_require__(520);
-	var printRelayQuery = __webpack_require__(566);
+	var flattenRelayQuery = __webpack_require__(482);
+	var printRelayQuery = __webpack_require__(528);
 
 	/**
 	 * This module contains internal Relay modules that we expose for development
@@ -46318,22 +45853,22 @@
 	module.exports = RelayInternals;
 
 /***/ },
-/* 604 */
+/* 566 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./cards/collection_slab": 605,
-		"./cards/collection_slab.js": 605,
-		"./cards/insight_card": 632,
-		"./cards/insight_card.js": 632,
-		"./cards/user_slab": 633,
-		"./cards/user_slab.js": 633,
-		"./landing-app": 634,
-		"./landing-app.js": 634,
-		"./shared/header": 635,
-		"./shared/header.js": 635,
-		"./shared/super_featured_collections": 636,
-		"./shared/super_featured_collections.js": 636
+		"./cards/collection_slab": 567,
+		"./cards/collection_slab.js": 567,
+		"./cards/insight_card": 594,
+		"./cards/insight_card.js": 594,
+		"./cards/user_slab": 595,
+		"./cards/user_slab.js": 595,
+		"./landing-app": 596,
+		"./landing-app.js": 596,
+		"./shared/header": 597,
+		"./shared/header.js": 597,
+		"./shared/super_featured_collections": 598,
+		"./shared/super_featured_collections.js": 598
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -46346,20 +45881,20 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 604;
+	webpackContext.id = 566;
 
 
 /***/ },
-/* 605 */
+/* 567 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _get = __webpack_require__(606)['default'];
+	var _get = __webpack_require__(568)['default'];
 
-	var _inherits = __webpack_require__(620)['default'];
+	var _inherits = __webpack_require__(582)['default'];
 
-	var _classCallCheck = __webpack_require__(631)['default'];
+	var _classCallCheck = __webpack_require__(593)['default'];
 
 	var _interopRequireDefault = __webpack_require__(186)['default'];
 
@@ -46439,12 +45974,12 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 606 */
+/* 568 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$getOwnPropertyDescriptor = __webpack_require__(607)["default"];
+	var _Object$getOwnPropertyDescriptor = __webpack_require__(569)["default"];
 
 	exports["default"] = function get(_x, _x2, _x3) {
 	  var _again = true;
@@ -46488,23 +46023,23 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 607 */
+/* 569 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(608), __esModule: true };
+	module.exports = { "default": __webpack_require__(570), __esModule: true };
 
 /***/ },
-/* 608 */
+/* 570 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(609);
-	__webpack_require__(610);
+	var $ = __webpack_require__(571);
+	__webpack_require__(572);
 	module.exports = function getOwnPropertyDescriptor(it, key){
 	  return $.getDesc(it, key);
 	};
 
 /***/ },
-/* 609 */
+/* 571 */
 /***/ function(module, exports) {
 
 	var $Object = Object;
@@ -46522,41 +46057,41 @@
 	};
 
 /***/ },
-/* 610 */
+/* 572 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
-	var toIObject = __webpack_require__(611);
+	var toIObject = __webpack_require__(573);
 
-	__webpack_require__(615)('getOwnPropertyDescriptor', function($getOwnPropertyDescriptor){
+	__webpack_require__(577)('getOwnPropertyDescriptor', function($getOwnPropertyDescriptor){
 	  return function getOwnPropertyDescriptor(it, key){
 	    return $getOwnPropertyDescriptor(toIObject(it), key);
 	  };
 	});
 
 /***/ },
-/* 611 */
+/* 573 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// to indexed object, toObject with fallback for non-array-like ES3 strings
-	var IObject = __webpack_require__(612)
-	  , defined = __webpack_require__(614);
+	var IObject = __webpack_require__(574)
+	  , defined = __webpack_require__(576);
 	module.exports = function(it){
 	  return IObject(defined(it));
 	};
 
 /***/ },
-/* 612 */
+/* 574 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// indexed object, fallback for non-array-like ES3 strings
-	var cof = __webpack_require__(613);
+	var cof = __webpack_require__(575);
 	module.exports = 0 in Object('z') ? Object : function(it){
 	  return cof(it) == 'String' ? it.split('') : Object(it);
 	};
 
 /***/ },
-/* 613 */
+/* 575 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -46566,7 +46101,7 @@
 	};
 
 /***/ },
-/* 614 */
+/* 576 */
 /***/ function(module, exports) {
 
 	// 7.2.1 RequireObjectCoercible(argument)
@@ -46576,24 +46111,24 @@
 	};
 
 /***/ },
-/* 615 */
+/* 577 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// most Object methods by ES6 should accept primitives
 	module.exports = function(KEY, exec){
-	  var $def = __webpack_require__(616)
-	    , fn   = (__webpack_require__(618).Object || {})[KEY] || Object[KEY]
+	  var $def = __webpack_require__(578)
+	    , fn   = (__webpack_require__(580).Object || {})[KEY] || Object[KEY]
 	    , exp  = {};
 	  exp[KEY] = exec(fn);
-	  $def($def.S + $def.F * __webpack_require__(619)(function(){ fn(1); }), 'Object', exp);
+	  $def($def.S + $def.F * __webpack_require__(581)(function(){ fn(1); }), 'Object', exp);
 	};
 
 /***/ },
-/* 616 */
+/* 578 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var global    = __webpack_require__(617)
-	  , core      = __webpack_require__(618)
+	var global    = __webpack_require__(579)
+	  , core      = __webpack_require__(580)
 	  , PROTOTYPE = 'prototype';
 	var ctx = function(fn, that){
 	  return function(){
@@ -46641,7 +46176,7 @@
 	module.exports = $def;
 
 /***/ },
-/* 617 */
+/* 579 */
 /***/ function(module, exports) {
 
 	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
@@ -46651,14 +46186,14 @@
 	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
 
 /***/ },
-/* 618 */
+/* 580 */
 /***/ function(module, exports) {
 
 	var core = module.exports = {};
 	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
 
 /***/ },
-/* 619 */
+/* 581 */
 /***/ function(module, exports) {
 
 	module.exports = function(exec){
@@ -46670,14 +46205,14 @@
 	};
 
 /***/ },
-/* 620 */
+/* 582 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$create = __webpack_require__(621)["default"];
+	var _Object$create = __webpack_require__(583)["default"];
 
-	var _Object$setPrototypeOf = __webpack_require__(623)["default"];
+	var _Object$setPrototypeOf = __webpack_require__(585)["default"];
 
 	exports["default"] = function (subClass, superClass) {
 	  if (typeof superClass !== "function" && superClass !== null) {
@@ -46698,50 +46233,50 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 621 */
+/* 583 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(622), __esModule: true };
+	module.exports = { "default": __webpack_require__(584), __esModule: true };
 
 /***/ },
-/* 622 */
+/* 584 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(609);
+	var $ = __webpack_require__(571);
 	module.exports = function create(P, D){
 	  return $.create(P, D);
 	};
 
 /***/ },
-/* 623 */
+/* 585 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(624), __esModule: true };
+	module.exports = { "default": __webpack_require__(586), __esModule: true };
 
 /***/ },
-/* 624 */
+/* 586 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(625);
-	module.exports = __webpack_require__(618).Object.setPrototypeOf;
+	__webpack_require__(587);
+	module.exports = __webpack_require__(580).Object.setPrototypeOf;
 
 /***/ },
-/* 625 */
+/* 587 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.3.19 Object.setPrototypeOf(O, proto)
-	var $def = __webpack_require__(616);
-	$def($def.S, 'Object', {setPrototypeOf: __webpack_require__(626).set});
+	var $def = __webpack_require__(578);
+	$def($def.S, 'Object', {setPrototypeOf: __webpack_require__(588).set});
 
 /***/ },
-/* 626 */
+/* 588 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Works with __proto__ only. Old v8 can't work with null proto objects.
 	/* eslint-disable no-proto */
-	var getDesc  = __webpack_require__(609).getDesc
-	  , isObject = __webpack_require__(627)
-	  , anObject = __webpack_require__(628);
+	var getDesc  = __webpack_require__(571).getDesc
+	  , isObject = __webpack_require__(589)
+	  , anObject = __webpack_require__(590);
 	var check = function(O, proto){
 	  anObject(O);
 	  if(!isObject(proto) && proto !== null)throw TypeError(proto + ": can't set as prototype!");
@@ -46750,7 +46285,7 @@
 	  set: Object.setPrototypeOf || ('__proto__' in {} // eslint-disable-line
 	    ? function(buggy, set){
 	        try {
-	          set = __webpack_require__(629)(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
+	          set = __webpack_require__(591)(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
 	          set({}, []);
 	        } catch(e){ buggy = true; }
 	        return function setPrototypeOf(O, proto){
@@ -46765,7 +46300,7 @@
 	};
 
 /***/ },
-/* 627 */
+/* 589 */
 /***/ function(module, exports) {
 
 	// http://jsperf.com/core-js-isobject
@@ -46774,21 +46309,21 @@
 	};
 
 /***/ },
-/* 628 */
+/* 590 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(627);
+	var isObject = __webpack_require__(589);
 	module.exports = function(it){
 	  if(!isObject(it))throw TypeError(it + ' is not an object!');
 	  return it;
 	};
 
 /***/ },
-/* 629 */
+/* 591 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// optional / simple context binding
-	var aFunction = __webpack_require__(630);
+	var aFunction = __webpack_require__(592);
 	module.exports = function(fn, that, length){
 	  aFunction(fn);
 	  if(that === undefined)return fn;
@@ -46808,7 +46343,7 @@
 	};
 
 /***/ },
-/* 630 */
+/* 592 */
 /***/ function(module, exports) {
 
 	module.exports = function(it){
@@ -46817,7 +46352,7 @@
 	};
 
 /***/ },
-/* 631 */
+/* 593 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -46831,16 +46366,16 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 632 */
+/* 594 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _get = __webpack_require__(606)['default'];
+	var _get = __webpack_require__(568)['default'];
 
-	var _inherits = __webpack_require__(620)['default'];
+	var _inherits = __webpack_require__(582)['default'];
 
-	var _classCallCheck = __webpack_require__(631)['default'];
+	var _classCallCheck = __webpack_require__(593)['default'];
 
 	var _interopRequireDefault = __webpack_require__(186)['default'];
 
@@ -46938,16 +46473,16 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 633 */
+/* 595 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _get = __webpack_require__(606)['default'];
+	var _get = __webpack_require__(568)['default'];
 
-	var _inherits = __webpack_require__(620)['default'];
+	var _inherits = __webpack_require__(582)['default'];
 
-	var _classCallCheck = __webpack_require__(631)['default'];
+	var _classCallCheck = __webpack_require__(593)['default'];
 
 	var _interopRequireDefault = __webpack_require__(186)['default'];
 
@@ -47019,16 +46554,16 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 634 */
+/* 596 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _get = __webpack_require__(606)['default'];
+	var _get = __webpack_require__(568)['default'];
 
-	var _inherits = __webpack_require__(620)['default'];
+	var _inherits = __webpack_require__(582)['default'];
 
-	var _classCallCheck = __webpack_require__(631)['default'];
+	var _classCallCheck = __webpack_require__(593)['default'];
 
 	var _interopRequireDefault = __webpack_require__(186)['default'];
 
@@ -47044,19 +46579,19 @@
 
 	var _reactRelay2 = _interopRequireDefault(_reactRelay);
 
-	var _sharedHeader = __webpack_require__(635);
+	var _sharedHeader = __webpack_require__(597);
 
 	var _sharedHeader2 = _interopRequireDefault(_sharedHeader);
 
-	var _sharedSuper_featured_collections = __webpack_require__(636);
+	var _sharedSuper_featured_collections = __webpack_require__(598);
 
 	var _sharedSuper_featured_collections2 = _interopRequireDefault(_sharedSuper_featured_collections);
 
-	var _cardsCollection_slab = __webpack_require__(605);
+	var _cardsCollection_slab = __webpack_require__(567);
 
 	var _cardsCollection_slab2 = _interopRequireDefault(_cardsCollection_slab);
 
-	var _cardsUser_slab = __webpack_require__(633);
+	var _cardsUser_slab = __webpack_require__(595);
 
 	var _cardsUser_slab2 = _interopRequireDefault(_cardsUser_slab);
 
@@ -47218,16 +46753,16 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 635 */
+/* 597 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _get = __webpack_require__(606)['default'];
+	var _get = __webpack_require__(568)['default'];
 
-	var _inherits = __webpack_require__(620)['default'];
+	var _inherits = __webpack_require__(582)['default'];
 
-	var _classCallCheck = __webpack_require__(631)['default'];
+	var _classCallCheck = __webpack_require__(593)['default'];
 
 	var _interopRequireDefault = __webpack_require__(186)['default'];
 
@@ -47279,18 +46814,18 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 636 */
+/* 598 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _get = __webpack_require__(606)['default'];
+	var _get = __webpack_require__(568)['default'];
 
-	var _inherits = __webpack_require__(620)['default'];
+	var _inherits = __webpack_require__(582)['default'];
 
-	var _classCallCheck = __webpack_require__(631)['default'];
+	var _classCallCheck = __webpack_require__(593)['default'];
 
-	var _slicedToArray = __webpack_require__(637)['default'];
+	var _slicedToArray = __webpack_require__(599)['default'];
 
 	var _interopRequireDefault = __webpack_require__(186)['default'];
 
@@ -47306,7 +46841,7 @@
 
 	var _reactRelay2 = _interopRequireDefault(_reactRelay);
 
-	var _cardsInsight_card = __webpack_require__(632);
+	var _cardsInsight_card = __webpack_require__(594);
 
 	var _cardsInsight_card2 = _interopRequireDefault(_cardsInsight_card);
 
@@ -47480,14 +47015,14 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 637 */
+/* 599 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _getIterator = __webpack_require__(638)["default"];
+	var _getIterator = __webpack_require__(600)["default"];
 
-	var _isIterable = __webpack_require__(663)["default"];
+	var _isIterable = __webpack_require__(625)["default"];
 
 	exports["default"] = (function () {
 	  function sliceIterator(arr, i) {
@@ -47530,42 +47065,42 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 638 */
+/* 600 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(639), __esModule: true };
+	module.exports = { "default": __webpack_require__(601), __esModule: true };
 
 /***/ },
-/* 639 */
+/* 601 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(640);
-	__webpack_require__(657);
-	module.exports = __webpack_require__(660);
+	__webpack_require__(602);
+	__webpack_require__(619);
+	module.exports = __webpack_require__(622);
 
 /***/ },
-/* 640 */
+/* 602 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(641);
-	var Iterators = __webpack_require__(644);
+	__webpack_require__(603);
+	var Iterators = __webpack_require__(606);
 	Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
 
 /***/ },
-/* 641 */
+/* 603 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var setUnscope = __webpack_require__(642)
-	  , step       = __webpack_require__(643)
-	  , Iterators  = __webpack_require__(644)
-	  , toIObject  = __webpack_require__(611);
+	var setUnscope = __webpack_require__(604)
+	  , step       = __webpack_require__(605)
+	  , Iterators  = __webpack_require__(606)
+	  , toIObject  = __webpack_require__(573);
 
 	// 22.1.3.4 Array.prototype.entries()
 	// 22.1.3.13 Array.prototype.keys()
 	// 22.1.3.29 Array.prototype.values()
 	// 22.1.3.30 Array.prototype[@@iterator]()
-	__webpack_require__(645)(Array, 'Array', function(iterated, kind){
+	__webpack_require__(607)(Array, 'Array', function(iterated, kind){
 	  this._t = toIObject(iterated); // target
 	  this._i = 0;                   // next index
 	  this._k = kind;                // kind
@@ -47591,13 +47126,13 @@
 	setUnscope('entries');
 
 /***/ },
-/* 642 */
+/* 604 */
 /***/ function(module, exports) {
 
 	module.exports = function(){ /* empty */ };
 
 /***/ },
-/* 643 */
+/* 605 */
 /***/ function(module, exports) {
 
 	module.exports = function(done, value){
@@ -47605,30 +47140,30 @@
 	};
 
 /***/ },
-/* 644 */
+/* 606 */
 /***/ function(module, exports) {
 
 	module.exports = {};
 
 /***/ },
-/* 645 */
+/* 607 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var LIBRARY         = __webpack_require__(646)
-	  , $def            = __webpack_require__(616)
-	  , $redef          = __webpack_require__(647)
-	  , hide            = __webpack_require__(648)
-	  , has             = __webpack_require__(651)
-	  , SYMBOL_ITERATOR = __webpack_require__(652)('iterator')
-	  , Iterators       = __webpack_require__(644)
+	var LIBRARY         = __webpack_require__(608)
+	  , $def            = __webpack_require__(578)
+	  , $redef          = __webpack_require__(609)
+	  , hide            = __webpack_require__(610)
+	  , has             = __webpack_require__(613)
+	  , SYMBOL_ITERATOR = __webpack_require__(614)('iterator')
+	  , Iterators       = __webpack_require__(606)
 	  , BUGGY           = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
 	  , FF_ITERATOR     = '@@iterator'
 	  , KEYS            = 'keys'
 	  , VALUES          = 'values';
 	var returnThis = function(){ return this; };
 	module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE){
-	  __webpack_require__(655)(Constructor, NAME, next);
+	  __webpack_require__(617)(Constructor, NAME, next);
 	  var createMethod = function(kind){
 	    switch(kind){
 	      case KEYS: return function keys(){ return new Constructor(this, kind); };
@@ -47642,9 +47177,9 @@
 	    , methods, key;
 	  // Fix native
 	  if(_native){
-	    var IteratorPrototype = __webpack_require__(609).getProto(_default.call(new Base));
+	    var IteratorPrototype = __webpack_require__(571).getProto(_default.call(new Base));
 	    // Set @@toStringTag to native iterators
-	    __webpack_require__(656)(IteratorPrototype, TAG, true);
+	    __webpack_require__(618)(IteratorPrototype, TAG, true);
 	    // FF fix
 	    if(!LIBRARY && has(proto, FF_ITERATOR))hide(IteratorPrototype, SYMBOL_ITERATOR, returnThis);
 	  }
@@ -47666,24 +47201,24 @@
 	};
 
 /***/ },
-/* 646 */
+/* 608 */
 /***/ function(module, exports) {
 
 	module.exports = true;
 
 /***/ },
-/* 647 */
+/* 609 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(648);
+	module.exports = __webpack_require__(610);
 
 /***/ },
-/* 648 */
+/* 610 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $          = __webpack_require__(609)
-	  , createDesc = __webpack_require__(649);
-	module.exports = __webpack_require__(650) ? function(object, key, value){
+	var $          = __webpack_require__(571)
+	  , createDesc = __webpack_require__(611);
+	module.exports = __webpack_require__(612) ? function(object, key, value){
 	  return $.setDesc(object, key, createDesc(1, value));
 	} : function(object, key, value){
 	  object[key] = value;
@@ -47691,7 +47226,7 @@
 	};
 
 /***/ },
-/* 649 */
+/* 611 */
 /***/ function(module, exports) {
 
 	module.exports = function(bitmap, value){
@@ -47704,16 +47239,16 @@
 	};
 
 /***/ },
-/* 650 */
+/* 612 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Thank's IE8 for his funny defineProperty
-	module.exports = !__webpack_require__(619)(function(){
+	module.exports = !__webpack_require__(581)(function(){
 	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
 	});
 
 /***/ },
-/* 651 */
+/* 613 */
 /***/ function(module, exports) {
 
 	var hasOwnProperty = {}.hasOwnProperty;
@@ -47722,21 +47257,21 @@
 	};
 
 /***/ },
-/* 652 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var store  = __webpack_require__(653)('wks')
-	  , Symbol = __webpack_require__(617).Symbol;
+	var store  = __webpack_require__(615)('wks')
+	  , Symbol = __webpack_require__(579).Symbol;
 	module.exports = function(name){
 	  return store[name] || (store[name] =
-	    Symbol && Symbol[name] || (Symbol || __webpack_require__(654))('Symbol.' + name));
+	    Symbol && Symbol[name] || (Symbol || __webpack_require__(616))('Symbol.' + name));
 	};
 
 /***/ },
-/* 653 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var global = __webpack_require__(617)
+	var global = __webpack_require__(579)
 	  , SHARED = '__core-js_shared__'
 	  , store  = global[SHARED] || (global[SHARED] = {});
 	module.exports = function(key){
@@ -47744,7 +47279,7 @@
 	};
 
 /***/ },
-/* 654 */
+/* 616 */
 /***/ function(module, exports) {
 
 	var id = 0
@@ -47754,42 +47289,42 @@
 	};
 
 /***/ },
-/* 655 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $ = __webpack_require__(609)
+	var $ = __webpack_require__(571)
 	  , IteratorPrototype = {};
 
 	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	__webpack_require__(648)(IteratorPrototype, __webpack_require__(652)('iterator'), function(){ return this; });
+	__webpack_require__(610)(IteratorPrototype, __webpack_require__(614)('iterator'), function(){ return this; });
 
 	module.exports = function(Constructor, NAME, next){
-	  Constructor.prototype = $.create(IteratorPrototype, {next: __webpack_require__(649)(1,next)});
-	  __webpack_require__(656)(Constructor, NAME + ' Iterator');
+	  Constructor.prototype = $.create(IteratorPrototype, {next: __webpack_require__(611)(1,next)});
+	  __webpack_require__(618)(Constructor, NAME + ' Iterator');
 	};
 
 /***/ },
-/* 656 */
+/* 618 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var has  = __webpack_require__(651)
-	  , hide = __webpack_require__(648)
-	  , TAG  = __webpack_require__(652)('toStringTag');
+	var has  = __webpack_require__(613)
+	  , hide = __webpack_require__(610)
+	  , TAG  = __webpack_require__(614)('toStringTag');
 
 	module.exports = function(it, tag, stat){
 	  if(it && !has(it = stat ? it : it.prototype, TAG))hide(it, TAG, tag);
 	};
 
 /***/ },
-/* 657 */
+/* 619 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $at  = __webpack_require__(658)(true);
+	var $at  = __webpack_require__(620)(true);
 
 	// 21.1.3.27 String.prototype[@@iterator]()
-	__webpack_require__(645)(String, 'String', function(iterated){
+	__webpack_require__(607)(String, 'String', function(iterated){
 	  this._t = String(iterated); // target
 	  this._i = 0;                // next index
 	// 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -47804,13 +47339,13 @@
 	});
 
 /***/ },
-/* 658 */
+/* 620 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// true  -> String#at
 	// false -> String#codePointAt
-	var toInteger = __webpack_require__(659)
-	  , defined   = __webpack_require__(614);
+	var toInteger = __webpack_require__(621)
+	  , defined   = __webpack_require__(576);
 	module.exports = function(TO_STRING){
 	  return function(that, pos){
 	    var s = String(defined(that))
@@ -47827,7 +47362,7 @@
 	};
 
 /***/ },
-/* 659 */
+/* 621 */
 /***/ function(module, exports) {
 
 	// 7.1.4 ToInteger
@@ -47838,35 +47373,35 @@
 	};
 
 /***/ },
-/* 660 */
+/* 622 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var anObject = __webpack_require__(628)
-	  , get      = __webpack_require__(661);
-	module.exports = __webpack_require__(618).getIterator = function(it){
+	var anObject = __webpack_require__(590)
+	  , get      = __webpack_require__(623);
+	module.exports = __webpack_require__(580).getIterator = function(it){
 	  var iterFn = get(it);
 	  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
 	  return anObject(iterFn.call(it));
 	};
 
 /***/ },
-/* 661 */
+/* 623 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(662)
-	  , ITERATOR  = __webpack_require__(652)('iterator')
-	  , Iterators = __webpack_require__(644);
-	module.exports = __webpack_require__(618).getIteratorMethod = function(it){
+	var classof   = __webpack_require__(624)
+	  , ITERATOR  = __webpack_require__(614)('iterator')
+	  , Iterators = __webpack_require__(606);
+	module.exports = __webpack_require__(580).getIteratorMethod = function(it){
 	  if(it != undefined)return it[ITERATOR] || it['@@iterator'] || Iterators[classof(it)];
 	};
 
 /***/ },
-/* 662 */
+/* 624 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// getting tag from 19.1.3.6 Object.prototype.toString()
-	var cof = __webpack_require__(613)
-	  , TAG = __webpack_require__(652)('toStringTag')
+	var cof = __webpack_require__(575)
+	  , TAG = __webpack_require__(614)('toStringTag')
 	  // ES3 wrong here
 	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
 
@@ -47882,38 +47417,38 @@
 	};
 
 /***/ },
-/* 663 */
+/* 625 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(664), __esModule: true };
+	module.exports = { "default": __webpack_require__(626), __esModule: true };
 
 /***/ },
-/* 664 */
+/* 626 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(640);
-	__webpack_require__(657);
-	module.exports = __webpack_require__(665);
+	__webpack_require__(602);
+	__webpack_require__(619);
+	module.exports = __webpack_require__(627);
 
 /***/ },
-/* 665 */
+/* 627 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(662)
-	  , ITERATOR  = __webpack_require__(652)('iterator')
-	  , Iterators = __webpack_require__(644);
-	module.exports = __webpack_require__(618).isIterable = function(it){
+	var classof   = __webpack_require__(624)
+	  , ITERATOR  = __webpack_require__(614)('iterator')
+	  , Iterators = __webpack_require__(606);
+	module.exports = __webpack_require__(580).isIterable = function(it){
 	  var O = Object(it);
 	  return ITERATOR in O || '@@iterator' in O || Iterators.hasOwnProperty(classof(O));
 	};
 
 /***/ },
-/* 666 */
+/* 628 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./viewer.route": 667,
-		"./viewer.route.js": 667
+		"./viewer.route": 629,
+		"./viewer.route.js": 629
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -47926,22 +47461,22 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 666;
+	webpackContext.id = 628;
 
 
 /***/ },
-/* 667 */
+/* 629 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _get = __webpack_require__(606)['default'];
+	var _get = __webpack_require__(568)['default'];
 
-	var _inherits = __webpack_require__(620)['default'];
+	var _inherits = __webpack_require__(582)['default'];
 
-	var _createClass = __webpack_require__(668)['default'];
+	var _createClass = __webpack_require__(630)['default'];
 
-	var _classCallCheck = __webpack_require__(631)['default'];
+	var _classCallCheck = __webpack_require__(593)['default'];
 
 	var _interopRequireDefault = __webpack_require__(186)['default'];
 
@@ -47988,12 +47523,12 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 668 */
+/* 630 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$defineProperty = __webpack_require__(669)["default"];
+	var _Object$defineProperty = __webpack_require__(631)["default"];
 
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -48017,16 +47552,16 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 669 */
+/* 631 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(670), __esModule: true };
+	module.exports = { "default": __webpack_require__(632), __esModule: true };
 
 /***/ },
-/* 670 */
+/* 632 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(609);
+	var $ = __webpack_require__(571);
 	module.exports = function defineProperty(it, key, desc){
 	  return $.setDesc(it, key, desc);
 	};
