@@ -19,6 +19,21 @@ var checkRemotePermission = function (permissionData) {
     // The web service URL is a valid push provider, and the user said yes.
     // permissionData.deviceToken is now available to use.
     console.log(permissionData.deviceToken);
+
+    var request = $.ajax({
+      url: "/device_tokens",
+      method: "POST",
+      data: { device_token: { value: permissionData.deviceToken } },
+      dataType: "json"
+    });
+
+    request.done(function( msg ) {
+      console.log(msg);
+    });
+
+    request.fail(function( jqXHR, textStatus ) {
+      console.warn("Request failed: " + textStatus);
+    });
   }
 };
 
@@ -33,6 +48,8 @@ function requestSafariPush() {
   }
 };
 
-document.body.onload = requestSafariPush();
+document.body.onload = function() {
+  requestSafariPush();
+};
 
 </script>

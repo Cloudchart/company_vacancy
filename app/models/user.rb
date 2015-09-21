@@ -63,6 +63,7 @@ class User < ActiveRecord::Base
   has_many :pinboards, dependent: :destroy
   has_many :accessed_pinboards, through: :roles, source: :owner, source_type: 'Pinboard'
   has_many :votes, as: :source
+  has_many :device_tokens, dependent: :destroy
 
   # Roles on Pinboards
   #

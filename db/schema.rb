@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150914103808) do
+ActiveRecord::Schema.define(version: 20150921083805) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -152,6 +152,15 @@ ActiveRecord::Schema.define(version: 20150914103808) do
   end
 
   add_index "companies_banned_users", ["company_id", "user_id"], name: "index_companies_banned_users_on_company_id_and_user_id", unique: true, using: :btree
+
+  create_table "device_tokens", primary_key: "uuid", force: true do |t|
+    t.string   "user_id",    limit: 36, null: false
+    t.string   "value",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "device_tokens", ["user_id"], name: "index_device_tokens_on_user_id", using: :btree
 
   create_table "diffbot_response_owners", primary_key: "uuid", force: true do |t|
     t.string   "diffbot_response_id", limit: 36, null: false
