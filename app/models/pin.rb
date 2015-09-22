@@ -42,6 +42,23 @@ class Pin < ActiveRecord::Base
   scope :insights, -> { where(parent: nil).where.not(content: nil) }
   scope :reflection,  -> { where(kind: 'reflection') }
 
+  class << self
+
+    def ready_for_broadcast(user, start_time, end_time)
+      favorite_user_ids = user.users_favorites.map(&:favoritable_id)
+      favorite_pinboard_ids = user.pinboards_favorites.map(&:favoritable_id)
+
+      insights.where {
+        created_at.gteq(start_time) &
+        created_at.lteq(end_time) & (
+          user_id.in(favorite_user_ids) |
+          pinboard_id.in(favorite_pinboard_ids)
+        )
+      }
+    end
+
+  end
+
   # Favorites / Reflection
   #
   def reflection_timeout_for(user)

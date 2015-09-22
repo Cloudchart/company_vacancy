@@ -20,20 +20,8 @@ private
     user = notification.user
 
     # TODO: user notifications settings should be applied here
-    if user.email
-      UserMailer.delay.activities_digest(user, notification.created_at, notification.updated_at)
-    end
-
-    if user.device_tokens.any?
-      ZeroPush.notify(
-        device_tokens: user.device_tokens.map(&:value),
-        title: 'Feed updated',
-        body: 'There are some changes in your feed.',
-        url_args: ['feed'],
-        label: 'Check'
-      )
-    end
-
+    UserMailer.delay.activities_digest(user, notification.created_at, notification.updated_at)
+    ZeroPushWorker.perform_async(user.id, notification.created_at, notification.updated_at)
   end
 
 end
