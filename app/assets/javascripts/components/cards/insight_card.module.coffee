@@ -9,6 +9,8 @@ Header = require('components/cards/insight/header')
 Content = require('components/cards/insight/content')
 Origin  = require('components/cards/insight/origin')
 StarButton = require('components/cards/insight/star_button')
+EditButton = require('components/cards/insight/edit_button')
+DropButton = require('components/cards/insight/drop_button')
 
 
 # Main component
@@ -40,12 +42,14 @@ InsightCard = React.createClass
             id,
             #{pinQuery},
             edges {
-              diffbot_response_data
+              diffbot_response_data,
+              is_editable
             },
             parent {
               #{pinParentQuery},
               edges {
-                diffbot_response_data
+                diffbot_response_data,
+                is_editable
               }
             }
           }
@@ -112,6 +116,8 @@ InsightCard = React.createClass
       <li className="user">
         <a href={ user.url }>{ user.full_name }</a>
       </li>
+      <DropButton pin={ @state.pin.id } scope={ @props.scope } />
+      <EditButton pin={ @getCursor('insight').get('id') } is_editable={ @getCursor('insight').get('is_editable', false) } />
       <StarButton pin={ @getCursor('insight').get('id') } />
     </ul>
 

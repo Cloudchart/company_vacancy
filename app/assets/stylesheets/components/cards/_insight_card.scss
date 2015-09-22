@@ -110,10 +110,13 @@
     }
 
     > li.star,
-    > li.edit {
+    > li.edit,
+    > li.drop {
       color: #3bc462;
       cursor: pointer;
+      margin-left: 10px;
     }
+
   }
 
   > footer {
