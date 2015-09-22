@@ -11,7 +11,7 @@ UserStore         = require('stores/user_store.cursor')
 # Components
 #
 PinboardCard  = require('components/cards/pinboard_card')
-ListOfCards   = require('components/cards/list_of_cards')
+PinboardList  = require('components/pinboards/lists/base')
 
 
 # Exports
@@ -80,7 +80,7 @@ module.exports = React.createClass
     return null unless @state.ready
 
     <section className="cc-container-common">
-      <ListOfCards>
+      <PinboardList>
         { @renderPinboards() }
-      </ListOfCards>
+      </PinboardList>
     </section>

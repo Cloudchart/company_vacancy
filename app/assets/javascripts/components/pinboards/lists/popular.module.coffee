@@ -65,9 +65,9 @@ module.exports = React.createClass
 
   renderHeader: ->
     <header className="cloud-columns cloud-columns-flex">
-      <span>
+      <h1>
         Browse Collections
-      </span>
+      </h1>
     </header>
 
 
@@ -96,7 +96,7 @@ module.exports = React.createClass
     return null unless @state.ready
     return null unless @props.cursor.viewer.get('popular_pinboards_ids', Immutable.Seq()).size > 0
 
-    <div className="pinboards-wrapper">
+    <section className="cc-container-common">
       { @renderHeader() }
       { @renderPinboards() }
-    </div>
+    </section>
