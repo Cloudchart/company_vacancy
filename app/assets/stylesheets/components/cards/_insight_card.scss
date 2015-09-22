@@ -30,6 +30,69 @@
     }
   }
 
+  > header {
+    border-bottom: 1px solid #d8d9da;
+    color: #c8ae88;
+    margin-top: -10px;
+    margin-left: -30px;
+    margin-right: -30px;
+    margin-bottom: 24px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 20px;
+
+    @include iphone {
+      margin-left: -50px;
+      margin-right: -50px;
+      margin-bottom: 44px;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-bottom: 40px;
+    }
+
+    > section {
+      font-size: 14px;
+      line-height: 18px;
+      margin: - (14px / 3) 0;
+
+      @include iphone {
+        font-size: 24px;
+        line-height: 30px;
+      }
+
+      > .user {
+        font-weight: 600;
+
+        &::after {
+          content: ' ';
+        }
+      }
+
+      > .pinboard {
+        font-weight: 600;
+      }
+
+      > * ~ .pinboard::before {
+        content: ' ';
+      }
+    }
+
+    &.reflection > section {
+      @include align-items(center);
+      @include display(flex);
+
+      > span {
+        @include flex(1);
+      }
+
+      > a ~ a {
+        border-left: 1px solid #e8e9ea;
+        margin-left: 15px;
+        padding-left: 15px;
+      }
+    }
+  }
+
   > ul.controls {
     @include align-items(center);
     @include display(flex);

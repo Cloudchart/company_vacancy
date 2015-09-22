@@ -39,8 +39,14 @@ InsightCard = React.createClass
           Pin {
             id,
             #{pinQuery},
+            edges {
+              diffbot_response_data
+            },
             parent {
-              #{pinParentQuery}
+              #{pinParentQuery},
+              edges {
+                diffbot_response_data
+              }
             }
           }
         """
@@ -111,11 +117,11 @@ InsightCard = React.createClass
 
 
   renderFooter: ->
+    return null unless @getCursor('insight').get('diffbot_response_data', null)
     return null unless @props.shouldRenderFooter
     <footer>
       <Origin pin={ @getCursor('insight').get('id') } />
     </footer>
-    # <Footer pin={ @state.pin.id } scope={ @props.scope } />
 
 
   # Main Render
@@ -124,20 +130,14 @@ InsightCard = React.createClass
     return <div className="insight-card cloud-card placeholder" /> unless @state.ready
 
     className = cx @props.className, cx
-      'cloud-card':     true
       'insight-card':   true
 
     <div className={ className }>
+      { @renderHeader() }
       { @renderContent() }
       { @renderControls() }
       { @renderFooter() }
     </div>
-
-    # <div className={ className }>
-    #   { @renderHeader() }
-    #   { @renderContent() }
-    #   { @renderFooter() }
-    # </div>
 
 
 

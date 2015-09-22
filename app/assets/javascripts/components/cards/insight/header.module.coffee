@@ -4,9 +4,9 @@ GlobalState = require('global_state/state')
 
 PinStore = require('stores/pin_store')
 
-Reflection = require('components/cards/insight/header/reflection')
-Pinboard = require('components/cards/insight/header/pinboard')
-Feed = require('components/cards/insight/header/feed')
+Reflection  = require('components/cards/insight/header/reflection')
+Pinboard    = require('components/cards/insight/header/pinboard')
+Feed        = require('components/cards/insight/header/feed')
 
 
 # Utils
