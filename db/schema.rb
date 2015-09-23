@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150921083805) do
+ActiveRecord::Schema.define(version: 20150923143648) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -549,6 +549,7 @@ ActiveRecord::Schema.define(version: 20150921083805) do
     t.string   "slug"
     t.datetime "last_sign_in_at"
     t.string   "preview_uid"
+    t.integer  "notification_types_mask", default: 0
   end
 
   add_index "users", ["slug"], name: "index_users_on_slug", unique: true, using: :btree

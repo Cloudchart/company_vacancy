@@ -33,7 +33,14 @@ module ActiveRecordExtensions
             end
 
             def #{name}?(*types)
-              (types & #{name}).any?
+              if types.empty?
+                #{name}.any?
+              else
+                types.each do |type|
+                  return false unless #{name}.include?(type)
+                end
+                true
+              end
             end
           )
         end

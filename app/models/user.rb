@@ -35,6 +35,8 @@ class User < ActiveRecord::Base
     :should_create_unicorn_role
   )
 
+  has_bitmask_attributes notification_types: [ :email, :safari ]
+
   has_secure_password
 
   has_one :unicorn_role, -> { where(value: 'unicorn') }, class_name: 'Role', dependent: :destroy
