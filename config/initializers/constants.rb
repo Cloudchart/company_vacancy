@@ -27,7 +27,9 @@ module Cloudchart
 
   WORDS_PER_MINUTE = 200
 
-  INSTANT_NOTIFICATIONS_TIC = 10 # minutes
+  INSTANT_NOTIFICATIONS_TIC = 5 # minutes
   INSTANT_NOTIFICATIONS_MAX_DELAY = 60 # minutes
+
+  SHOULD_PERFORM_SIDEKIQ_WORKER = %(staging production).include?(Rails.env)
 
 end

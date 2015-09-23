@@ -104,7 +104,8 @@ class UserMailer < ActionMailer::Base
   def activities_digest(user, start_time, end_time)
     return unless user.email
     @user = user
-    @insights = Pin.ready_for_broadcast(user, start_time, end_time)
+    @insights = Pin.includes(:user).ready_for_broadcast(user, start_time, end_time)
+    @pinboards = Pinboard.ready_for_broadcast(user, start_time, end_time)
 
     mail(to: @user.email) do |format|
       format.html { render layout: 'user_mailer_' }

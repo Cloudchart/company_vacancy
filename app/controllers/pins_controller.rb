@@ -143,8 +143,7 @@ private
   end
 
   def spread_notifications
-    return unless should_perform_sidekiq_worker? && @pin.valid?
-    NotificationsBreakdownWorker.perform_async(@pin.id, 'Pin')
+    ActiveSupport::Notifications.instrument("#{controller_name}##{action_name}", id: @pin.id)
   end
 
   def crawl_pin_origin

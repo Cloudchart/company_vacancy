@@ -1,5 +1,7 @@
 class NotificationsBreakdownWorker < ApplicationWorker
 
+  sidekiq_options queue: :notifications
+
   def perform(id, class_name)
     # find object
     object = class_name.constantize.find(id)

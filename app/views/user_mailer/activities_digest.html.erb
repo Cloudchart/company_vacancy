@@ -2,14 +2,30 @@
   Hi, <%= @user.full_name %>!
 </p>
 
-<p>
-  Here are recently created insights:
-</p>
+<% if @insights.any? %>
+  <p>
+    Here are recently created insights:
+  </p>
 
-<ul>
-  <% @insights.each do |insight| %>
-    <li>
-      <%= insight.content %>
-    </li>
-  <% end %>
-</ul>
+  <ul>
+    <% @insights.each do |insight| %>
+      <li>
+        <%= link_to "#{insight.content} – #{insight.user.full_name}", insight_url(insight) %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if @pinboards.any? %>
+  <p>
+    Here are recently created collections:
+  </p>
+
+  <ul>
+    <% @pinboards.each do |pinboard| %>
+      <li>
+        <%= link_to pinboard.title, collection_url(pinboard) %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

@@ -16,8 +16,8 @@ class Pinboard < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :pins
-  has_many :roles, as: :owner
+  has_many :pins, dependent: :destroy
+  has_many :roles, as: :owner, dependent: :destroy
   has_many :posts, through: :pins, source: :pinnable, source_type: 'Post'
   has_many :users, through: :roles
   has_many :tokens, as: :owner, dependent: :destroy

@@ -1,4 +1,5 @@
 class NotificationsWorker < ApplicationWorker
+
   sidekiq_options queue: :notifications
 
   def perform
