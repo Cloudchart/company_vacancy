@@ -86,7 +86,7 @@ private
   end
 
   def fields_for_update
-    fields = [:full_name, :avatar, :remove_avatar, :occupation, :company]
+    fields = [:full_name, :avatar, :remove_avatar, :occupation, :company, notification_types: []]
     fields << :twitter if @user.try(:unicorn?) && current_user.try(:editor?)
     fields
   end

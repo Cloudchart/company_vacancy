@@ -16,7 +16,7 @@ SyncButton = require('components/form/buttons').SyncButton
 Checkbox = require('components/form/checkbox')
 ContentEditableArea = require('components/form/contenteditable_area')
 
-KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company', 'twitter'])
+KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company', 'twitter', 'notification_types'])
 
 NotificationTypes =
   email: 'Email'
@@ -134,7 +134,7 @@ module.exports  = React.createClass
       landing.get('author_id') == @cursor.me.get('uuid')
 
   isNotificationTypeChecked: (type) ->
-    @cursor.me.get('notification_types').includes(type)
+    @state.attributes.get('notification_types').includes(type)
 
 
   # Handlers
@@ -207,8 +207,14 @@ module.exports  = React.createClass
     @setState sync: @state.sync.set('landing', false)
 
 
-  handleNotificationTypeChange: ->
-    console.log 'handleNotificationTypeChange'
+  handleNotificationTypeChange: (type, checked) ->
+    notification_types = if checked
+      @state.attributes.get('notification_types').concat(type)
+    else
+      @state.attributes.get('notification_types').filterNot (t) -> t == type
+
+    @setState attributes: @state.attributes.set('notification_types', notification_types)
+    UserSyncApi.update(@cursor.me, notification_types: notification_types.toJS()).then @handleSubmitDone, @handleSubmitFail
 
 
   # Lifecycle methods
@@ -300,7 +306,7 @@ module.exports  = React.createClass
         <Checkbox
           key={ index }
           checked={ @isNotificationTypeChecked(type) }
-          onChange={ @handleNotificationTypeChange }
+          onChange={ @handleNotificationTypeChange.bind(@, type) }
         >
 
           { NotificationTypes[type] }
