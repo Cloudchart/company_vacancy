@@ -2,35 +2,28 @@
 
 
 GlobalState     = require('global_state/state')
-cx              = React.addons.classSet
 
 PinboardStore   = require('stores/pinboard_store')
 UserStore       = require('stores/user_store.cursor')
 
-UserCard        = require('components/cards/user_card')
-FollowButton    = require('components/shared/follow_button')
-InviteActions   = require('components/roles/invite_actions')
+AuthButton      = require('components/form/buttons').AuthButton
 
+SyncAPI         = require('sync/pinboard_sync_api')
+RoleSyncAPI     = require('sync/role_sync_api')
+
+cx              = React.addons.classSet
 pluralize       = require('utils/pluralize')
 
-Placeholder     =
-  <div className="pinboard-card placeholder" />
-
-# Exports
-#
 module.exports = React.createClass
 
 
-  displayName: 'PinboardCard'
-
-
   propTypes:
-    pinboard:                   React.PropTypes.string.isRequired
-    className:                  React.PropTypes.string
-    shouldRenderFollowButton:   React.PropTypes.bool
-    onClick:                    React.PropTypes.func
-    onUserClick:                React.PropTypes.func
-    onUpdate:                   React.PropTypes.func
+    pinboard: React.PropTypes.string.isRequired
+
+
+  getInitialState: ->
+    pinboard: null
+    sync:     null
 
 
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
@@ -41,116 +34,178 @@ module.exports = React.createClass
       pinboard: ->
         """
           Pinboard {
-            #{InviteActions.getQuery('owner', 'Pinboard')},
-            user {
-              #{UserCard.getQuery('user')}
-            },
+            user,
             edges {
+              is_followed,
               readers_count,
               pins_count,
-              is_followed
+              invitation_id
             }
           }
         """
 
+
   fetch: ->
-    GlobalState.fetch(@getQuery('pinboard'), { id: @props.pinboard }).done =>
+    GlobalState.fetch(@getQuery('pinboard'), id: @props.pinboard).done =>
+      @addCursor('pinboard', PinboardStore.cursor.items.cursor(@props.pinboard))
+      @addCursor('user', UserStore.cursor.items.cursor(@getCursor('pinboard').get('user_id')))
       @setState
-        ready: true
+        pinboard: @getCursor('pinboard')
+        user:     @getCursor('user')
 
 
-  # Lifecycle
+  fetchEdges: ->
+    GlobalState.fetchEdges('Pinboard', @props.pinboard).done =>
+      @setState
+        sync: null
+
+
+  # Events
   #
 
-  componentWillMount: ->
-    @cursor =
-      pinboard: PinboardStore.cursor.items.cursor(@props.pinboard)
+  handleFollowButtonClick: (event) ->
+    return if @state.sync
+    return if @state.pinboard.get('is_followed', false)
+    @setState
+      sync: 'follow_collection'
+
+    SyncAPI.follow(@props.pinboard).done @fetchEdges
+
+
+  handleAcceptInvitationButtonClick: (invitation_id, event) ->
+    return if @state.sync
+    @setState
+      sync: 'accept_invitation'
+
+    RoleSyncAPI.acceptInvitation(@state.pinboard.get('invitation_id')).then @fetchEdges
+
+
+  handleDeclineInvitationButtonClick: (invitation_id, event) ->
+    return if @state.sync
+    @setState
+      sync: 'decline_invitation'
+
+    RoleSyncAPI.declineInvitation(@state.pinboard.get('invitation_id')).then @fetchEdges
+
 
 
   componentDidMount: ->
     @fetch()
 
 
-  componentDidUpdate: ->
-    @props.onUpdate()
-
-
-  getDefaultProps: ->
-    className:                ''
-    shouldRenderFollowButton: true
-    onUpdate:                 ->
-
-
-  getInitialState: ->
-    ready: false
-
-
-  # Renderers
+  # Renders
   #
-  renderUserCard: ->
-    user_id = @cursor.pinboard.get('user_id')
-    return <div></div> if user_id == UserStore.me().get('uuid')
-
-    <UserCard
-      user={ @cursor.pinboard.get('user_id') }
-      onClick={ @props.onUserClick }
-      shouldRenderFollowButton=false
-    />
-
-  renderAccessRightsIcon: ->
-    className = cx
-      'fa':             true
-      'fa-lock':        @cursor.pinboard.get('access_rights') is 'private'
-      'fa-eye-slash':   @cursor.pinboard.get('access_rights') is 'protected'
-
-    <i className={ className } />
 
   renderFollowButton: ->
-    return null unless @props.shouldRenderFollowButton
-    <FollowButton uuid={ @props.pinboard } type={ 'Pinboard' } />
+    className = cx
+      'transparent':  @state.pinboard.get('is_followed')
+      'sync':         @state.sync == 'follow_collection'
 
-  renderHeader: ->
-    url = @cursor.pinboard.get('url')
+    iconClassName = cx
+      'fa':         true
+      'fa-check':   @state.pinboard.get('is_followed')
+      'fa-plus':   !@state.pinboard.get('is_followed')
 
+    label = if @state.pinboard.get('is_followed') then 'Following' else 'Follow'
+    label += '...' if @state.sync == 'follow_collection'
+
+    <AuthButton>
+      <button className={ className } onClick={ @handleFollowButtonClick }>
+        <span>{ label }</span>
+        <i className={ iconClassName } />
+      </button>
+    </AuthButton>
+
+
+  renderTitleAndFollowButton: ->
     <header>
       <h1>
-        <a href={ url } onClick={ @props.onClick } className="see-through dependent">
-          { @cursor.pinboard.get('title') }
-          { @renderAccessRightsIcon() }
+        <a href={ @state.pinboard.get('url') } className="through">
+          { @state.pinboard.get('title') }
         </a>
-        { @renderFollowButton() }
       </h1>
-      <h2>
-        <a href={ url } onClick={ @props.onClick } className="see-through dependent">
-          { @cursor.pinboard.get('description') }
-        </a>
-      </h2>
+      { @renderFollowButton() }
     </header>
 
-  renderCounters: ->
-    <ul className="statistics">
-      <li>
-        { pluralize(@cursor.pinboard.get('readers_count', 0), ' Follower', ' Followers') }
-      </li>
-      <li>
-        { pluralize(@cursor.pinboard.get('pins_count', 0), ' Insight', ' Insights') }
-      </li>
-    </ul>
 
-  renderFooter: ->
-    <footer>
-      { @renderUserCard() }
-      { @renderCounters() }
-    </footer>
+  renderDescription: ->
+    return null unless description = @state.pinboard.get('description', null)
+    <section className="description">
+      <p>
+        { description }
+      </p>
+    </section>
 
 
-  # Main render
-  #
+  renderOwnerOccupation: ->
+    occupation = [@state.user.get('occupation'), @state.user.get('company')].filter((part) -> !!part).join(', ')
+    return null unless occupation
+    <p className="occupation">
+      { occupation }
+    </p>
+
+
+  renderOwner: ->
+    <figure className="user">
+      <img src={ @state.user.get('avatar_url') } />
+      <figcaption>
+        <a href={ @state.user.get('url') } className="name">
+          { @state.user.get('full_name') }
+        </a>
+        { @renderOwnerOccupation() }
+      </figcaption>
+    </figure>
+
+
+  renderOwnerAndCounters: ->
+    <section className="owner-and-counters">
+      <ul>
+        <li className="owner">
+          { @renderOwner() }
+        </li>
+        <li className="counter followers">
+          { pluralize @state.pinboard.get('readers_count'), 'follower', 'followers' }
+        </li>
+        <li className="counter insights">
+          { pluralize @state.pinboard.get('pins_count'), 'insight', 'insights' }
+        </li>
+      </ul>
+    </section>
+
+
+  renderInvitationControls: ->
+    return null unless invitation_id = @state.pinboard.get('invitation_id', false)
+
+    accept_label    = 'Accept'
+    accept_label   += '...' if @state.sync == 'accept_invitation'
+    decline_label   = 'Decline'
+    decline_label  += '...' if @state.sync == 'decline_invitation'
+
+    <section className="invitation">
+      <p>
+        You've been invited to this collection
+      </p>
+      <AuthButton>
+        <button onClick={ @handleAcceptInvitationButtonClick.bind(@, invitation_id) }>
+          { accept_label }
+        </button>
+      </AuthButton>
+      <AuthButton>
+        <button className="alert" onClick={ @handleDeclineInvitationButtonClick.bind(@, invitation_id) }>
+          { decline_label }
+        </button>
+      </AuthButton>
+    </section>
+
+
   render: ->
-    return Placeholder unless @state.ready
+    return null unless @state.pinboard
 
-    <div className="pinboard-card #{@props.className}">
-      { @renderHeader() }
-      { @renderFooter() }
-      <InviteActions ownerId = { @props.pinboard } ownerType = { 'Pinboard' } />
+    className = cx @props.className, 'collection-card'
+
+    <div className={ className }>
+      { @renderTitleAndFollowButton() }
+      { @renderDescription() }
+      { @renderOwnerAndCounters() }
+      { @renderInvitationControls() }
     </div>

@@ -1,0 +1,212 @@
+$margin-compensation: - 1em / 3;
+
+.collection-card {
+  background-color: white;
+  border-bottom: 1px solid #d2d3d4;
+  border-radius: 5px;
+
+  font-size: 18px;
+  line-height: 26px;
+  padding: 30px;
+
+  @include iphone {
+    border-radius: 10px;
+    font-size: 30px;
+    line-height: 44px;
+    margin-left: 34px;
+    margin-right: 34px;
+    padding: 50px;
+  }
+
+  a {
+
+    &.through {
+      color: inherit;
+    }
+
+  }
+
+  button {
+    background-color: #3bc362;
+    border: 1px solid #3bc362;
+    border-radius: 5px;
+    color: white;
+    font-size: inherit;
+    font-weight: 300;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 40px;
+
+    @include iphone {
+      border-radius: 10px;
+    }
+
+    &.alert {
+      background-color: #f42f36;
+      border-color: #f42f36;
+    }
+
+    &.transparent {
+      background-color: transparent;
+      border-color: #ebebeb;
+      color: #d8d8d8;
+    }
+  }
+
+
+  > header {
+    @include align-items(center);
+    @include display(flex);
+
+    > h1 {
+      @include flex(1);
+
+      font-size: inherit;
+      font-weight: 600;
+      line-height: inherit;
+      margin: $margin-compensation 0;
+      padding: 0;
+    }
+
+    > button {
+      margin-left: 20px;
+
+      @include iphone {
+        background-color: #3bc362 !important;
+        border: 1px solid #3bc362 !important;
+        color: white !important;
+        height: 75px;
+        margin-left: 30px;
+        padding: 0;
+        text-align: center;
+        width: 80px;
+      }
+
+      > i {
+        display: none;
+      }
+
+      @include iphone {
+        > span {
+          display: none;
+        }
+
+        > i {
+          display: inline;
+          line-height: 75px;
+          margin: 0;
+          text-align: center;
+          width: 100%;
+        }
+      }
+    }
+  }
+
+
+  > section.description {
+    margin-top: 20px;
+
+    @include iphone {
+      margin-top: 35px;
+    }
+
+    > p {
+      margin: $margin-compensation 0;
+    }
+  }
+
+
+  > section.owner-and-counters {
+    border-top: 1px solid #eaebec;
+    margin-top: 30px;
+    padding-top: 20px;
+
+    @include iphone {
+      margin-top: 50px;
+      padding-top: 45px;
+    }
+
+    > ul {
+      @include align-items(center);
+      @include display(flex);
+
+      list-style: none;
+      margin: $margin-compensation 0;
+      padding: 0;
+
+      > li.owner {
+        @include flex(1);
+
+        > figure {
+          @include align-items(center);
+          @include display(flex);
+        }
+
+        img {
+          border-radius: 50%;
+          height: 40px;
+          width: 40px;
+
+          @include iphone {
+            height: 75px;
+            width: 75px;
+          }
+        }
+
+        figcaption {
+          @include flex(1);
+          margin-left: 10px;
+        }
+
+        a.name {
+          display: inline-block;
+          line-height: 1em;
+          margin: 0 0 $margin-compensation;
+        }
+
+        p.occupation {
+          color: #4c4c4c;
+          font-size: 12px;
+          line-height: 1em;
+          margin: $margin-compensation 0 0;
+
+          @include iphone {
+            font-size: 20px;
+            padding-top: 5px;
+          }
+        }
+      }
+
+      > li.counter {
+        color: #c8ae88;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 15px;
+        text-transform: uppercase;
+
+        @include iphone {
+          display: none;
+        }
+      }
+    }
+  }
+
+
+  > section.invitation {
+
+    border-top: 1px solid #eaebec;
+    margin-top: 20px;
+    padding-top: 30px;
+
+    > p {
+      margin: $margin-compensation 0;
+      padding-bottom: 20px;
+    }
+
+    button ~ button {
+      margin-left: 10px;
+    }
+  }
+
+
+}

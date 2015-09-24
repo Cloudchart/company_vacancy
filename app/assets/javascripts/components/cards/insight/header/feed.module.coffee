@@ -84,14 +84,14 @@ module.exports = React.createClass
     <i key='icon' className="fa fa-#{iconClass}" />
 
   renderUser: ->
-    <a key='user' className='user' href={ @state.user.url }>{ @state.user.full_name }</a>
+    <a key='user' className='user through' href={ @state.user.url }>{ @state.user.full_name }</a>
 
   renderComment: (comment) ->
     <span key='comment' className='comment'>{ comment }</span>
 
   renderPinboard: ->
     return null unless @state.pinboard
-    <a href={ @state.pinboard.url } key='pinboard' className='pinboard see-through'>{ @state.pinboard.title }</a>
+    <a href={ @state.pinboard.url } key='pinboard' className='pinboard through'>{ @state.pinboard.title }</a>
 
   renderContent: ->
     if @state.pin.is_suggestion
@@ -102,13 +102,13 @@ module.exports = React.createClass
       ]
     else if @state.pin.kind == 'reflection'
       [
-        @renderIcon(if @state.pin.is_approved then 'thumbs-o-up' else 'thumbs-o-down')
+        # @renderIcon(if @state.pin.is_approved then 'thumbs-o-up' else 'thumbs-o-down')
         @renderUser()
         @renderComment(if @state.pin.content then "added reflection – #{@state.pin.content}" else 'added reflection')
       ]
     else if @state.pin.parent_id && @state.pin.content
       [
-        @renderIcon('comment-o')
+        # @renderIcon('comment-o')
         @renderUser()
         @renderComment("— #{@state.pin.content}")
         @renderPinboard()

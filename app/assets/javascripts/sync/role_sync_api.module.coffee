@@ -37,3 +37,15 @@ module.exports =
       url:      '/roles/' + item.get('uuid') + '/accept'
       type:     'PATCH'
       dataType: 'json'
+
+  declineInvitation: (id) ->
+    Promise.resolve $.ajax
+      url:      '/roles/' + id
+      type:     'DELETE'
+      dataType: 'json'
+
+  acceptInvitation: (id) ->
+    Promise.resolve $.ajax
+      url:      '/roles/' + id + '/accept'
+      type:     'PATCH'
+      dataType: 'json'

@@ -2,7 +2,7 @@ import React from 'react'
 import Relay from 'react-relay'
 
 
-const MaxContentLength = 150
+const MaxContentLength = 230
 
 let stripContent = (content) =>
   content.length > MaxContentLength + 3 ? content.substring(0, MaxContentLength) + '...' : content

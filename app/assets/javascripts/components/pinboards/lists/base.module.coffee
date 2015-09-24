@@ -53,7 +53,7 @@ module.exports = React.createClass
 
   renderChildren: ->
     React.Children.map @props.children, (child) =>
-      <section className="cloud-column packery-item" key={ child.props.key }>
+      <section className="item packery-item" key={ child.props.key }>
         { React.addons.cloneWithProps(child, { onUpdate: @onUpdate }) }
       </section>
 
@@ -62,6 +62,6 @@ module.exports = React.createClass
   #
 
   render: ->
-    <section className="cloud-columns cloud-columns-flex">
+    <section className="flow">
       { @renderChildren() }
     </section>

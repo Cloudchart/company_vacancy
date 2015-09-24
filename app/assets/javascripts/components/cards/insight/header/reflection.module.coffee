@@ -30,7 +30,9 @@ module.exports = React.createClass
 
   render: ->
     <header className="reflection">
-      <span>Did it work?</span>
-      <a href="#" onClick={ @handleClick.bind(@, true) }>Yes</a>
-      <a href="#" onClick={ @handleClick.bind(@, false) }>No</a>
+      <section>
+        <span>Did it work?</span>
+        <a href="#" onClick={ @handleClick.bind(@, true) }>Yes</a>
+        <a href="#" onClick={ @handleClick.bind(@, false) }>No</a>
+      </section>
     </header>
