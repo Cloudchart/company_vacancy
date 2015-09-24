@@ -1,2 +1,2 @@
-import 'babel/polyfill'
-import './loader.js'
+import 'babel/polyfill';
+import './loader.js';

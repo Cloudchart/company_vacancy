@@ -1,5 +1,5 @@
-import React from 'react'
-import Relay from 'react-relay'
+import React from 'react';
+import Relay from 'react-relay';
 
 
 export default class extends React.Component {
@@ -13,7 +13,5 @@ export default class extends React.Component {
       </button>
     </header>
 
-
-  handleLoginButtonClick = (event) => window.location = '/login'
-
+  handleLoginButtonClick = (event) => window.location = '/login';
 }

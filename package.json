@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git+https://github.com/Cloudchart/company_vacancy.git"
   },
+  "scripts": {
+    "webpack:watch": "node_modules/.bin/webpack --color --progress --watch --devtool source-map"
+  },
   "author": "Eugene Kovalev",
   "license": "ISC",
   "bugs": {

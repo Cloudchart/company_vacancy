@@ -1,9 +1,12 @@
+var path = require('path');
+
 module.exports = {
-  context:  __dirname + '/app/frontend',
-  entry:    './index.js',
+  context: path.resolve(__dirname, './app/frontend'),
+  entry: './index.js',
   output: {
-    filename:   '[name].bundle.js',
-    path:       __dirname + '/app/assets/max-javascripts'
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname,  './app/assets/max-javascripts'),
+    sourceMapFilename: '[name].js.map'
   },
 
   module: {
@@ -17,15 +20,13 @@ module.exports = {
           stage: 0,
           optional: ['runtime'],
           plugins: [
-            __dirname + '/app/frontend/babel_relay_plugin.js'
+            path.resolve(__dirname, './app/frontend/babel_relay_plugin.js')
           ]
         }
       }
     ]
-
   },
-
   resolve: {
     extensions: ['', '.js']
   }
-}
+};
