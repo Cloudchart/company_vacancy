@@ -101,12 +101,18 @@ module.exports = React.createClass
       'transparent':  @state.pinboard.get('is_followed')
       'sync':         @state.sync == 'follow_collection'
 
+    iconClassName = cx
+      'fa':         true
+      'fa-check':   @state.pinboard.get('is_followed')
+      'fa-plus':   !@state.pinboard.get('is_followed')
+
     label = if @state.pinboard.get('is_followed') then 'Following' else 'Follow'
     label += '...' if @state.sync == 'follow_collection'
 
     <AuthButton>
       <button className={ className } onClick={ @handleFollowButtonClick }>
-        { label }
+        <span>{ label }</span>
+        <i className={ iconClassName } />
       </button>
     </AuthButton>
 
