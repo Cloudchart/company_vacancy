@@ -18,11 +18,11 @@ class SuperFeaturedCollections extends React.Component {
   }
 
   componentDidMount () {
-    setTimeout(this.switchInsights, animationDelay);
+    setTimeout(this.switchInsights.bind(this), animationDelay);
   }
 
   componentDidUpdate () {
-    setTimeout(this.switchInsights, animationDelay);
+    setTimeout(this.switchInsights.bind(this), animationDelay);
   }
 
   switchInsights () {
@@ -42,7 +42,7 @@ class SuperFeaturedCollections extends React.Component {
       move(nextInsightNode).y(currTop - nextTop).set('opacity', 1).duration(animationDuration).end();
     });
 
-    setTimeout(this.incrementIndex, animationDuration);
+    setTimeout(this.incrementIndex.bind(this), animationDuration);
   }
 
   incrementIndex () {

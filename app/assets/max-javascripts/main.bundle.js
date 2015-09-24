@@ -47477,12 +47477,12 @@
 	  _createClass(SuperFeaturedCollections, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      setTimeout(this.switchInsights, animationDelay);
+	      setTimeout(this.switchInsights.bind(this), animationDelay);
 	    }
 	  }, {
 	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate() {
-	      setTimeout(this.switchInsights, animationDelay);
+	      setTimeout(this.switchInsights.bind(this), animationDelay);
 	    }
 	  }, {
 	    key: 'switchInsights',
@@ -47512,7 +47512,7 @@
 	        move(nextInsightNode).y(currTop - nextTop).set('opacity', 1).duration(animationDuration).end();
 	      });
 	
-	      setTimeout(this.incrementIndex, animationDuration);
+	      setTimeout(this.incrementIndex.bind(this), animationDuration);
 	    }
 	  }, {
 	    key: 'incrementIndex',
