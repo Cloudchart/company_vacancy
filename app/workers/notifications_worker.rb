@@ -20,9 +20,13 @@ private
     notification.destroy
     user = notification.user
 
-    # TODO: user notifications settings should be applied here
-    UserMailer.delay.activities_digest(user, notification.created_at, notification.updated_at)
-    ZeroPushWorker.perform_async(user.id, notification.created_at, notification.updated_at)
+    if user.notification_types?(:email)
+      UserMailer.delay.activities_digest(user, notification.created_at, notification.updated_at)
+    end
+
+    if user.notification_types?(:safari)
+      ZeroPushWorker.perform_async(user.id, notification.created_at, notification.updated_at)
+    end
   end
 
 end
