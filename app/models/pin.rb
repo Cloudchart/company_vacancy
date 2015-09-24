@@ -31,7 +31,7 @@ class Pin < ActiveRecord::Base
 
   has_many :children, class_name: self.name, foreign_key: :parent_id
   has_many :favorites, as: :favoritable
-  has_many :reflections, -> { where(kind: 'reflection', is_approved: true) }, class_name: self.name, foreign_key: :parent_id
+  has_many :reflections, -> { where(kind: 'reflection') }, class_name: self.name, foreign_key: :parent_id
 
   has_many  :votes, as: :destination
   has_many  :users_votes, -> { where(source_type: User.name) }, as: :destination, class_name: Vote.name

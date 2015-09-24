@@ -4,9 +4,9 @@ GlobalState = require('global_state/state')
 
 PinStore = require('stores/pin_store')
 
-Reflection = require('components/cards/insight/header/reflection')
-Pinboard = require('components/cards/insight/header/pinboard')
-Feed = require('components/cards/insight/header/feed')
+Reflection  = require('components/cards/insight/header/reflection')
+Pinboard    = require('components/cards/insight/header/pinboard')
+Feed        = require('components/cards/insight/header/feed')
 
 
 # Utils
@@ -49,9 +49,16 @@ module.exports = React.createClass
   #
   fetch: ->
     GlobalState.fetch(@getQuery('pin', @props), { id: @props.pin }).then =>
+      pin       = PinStore.get(@props.pin).toJS()
+      insight   = PinStore.get(@props.pin.parent_id).toJS() if pin.parent_id
+
+      @addCursor('pin', PinStore.cursor.items.cursor(pin.id))
+      @addCursor('insight', PinStore.cursor.items.cursor((insight || pin).id))
+
       @setState
         ready: true
         pin: PinStore.get(@props.pin).toJS()
+        insight: insight
 
 
   # Component Specifications
@@ -75,8 +82,8 @@ module.exports = React.createClass
   render: ->
     return null unless @state.ready
 
-    if @state.pin.should_show_reflection
-      <Reflection insight={ @state.pin.id } />
+    if @getCursor('insight').get('should_show_reflection', false)
+      <Reflection insight={ @getCursor('insight').get('id') } />
     else
       switch @props.scope
         when 'pinboard' then <Pinboard pin = { @state.pin.id } />

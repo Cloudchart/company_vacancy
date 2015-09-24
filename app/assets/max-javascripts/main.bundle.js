@@ -46995,7 +46995,7 @@
 	
 	var _reactRelay2 = _interopRequireDefault(_reactRelay);
 	
-	var MaxContentLength = 150;
+	var MaxContentLength = 230;
 	
 	var stripContent = function stripContent(content) {
 	  return content.length > MaxContentLength + 3 ? content.substring(0, MaxContentLength) + '...' : content;
