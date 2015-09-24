@@ -18,6 +18,10 @@ ContentEditableArea = require('components/form/contenteditable_area')
 
 KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company', 'twitter'])
 
+NotificationTypes =
+  email: 'Email'
+  safari: 'Safari'
+
 
 module.exports  = React.createClass
 
@@ -35,7 +39,10 @@ module.exports  = React.createClass
               author
             },
             emails,
-            tokens
+            tokens,
+            edges{
+              values_for_notification_types
+            }
           }
         """
 
@@ -126,6 +133,9 @@ module.exports  = React.createClass
       landing.get('user_id') == @cursor.user.get('uuid') &&
       landing.get('author_id') == @cursor.me.get('uuid')
 
+  isNotificationTypeChecked: (type) ->
+    @cursor.me.get('notification_types').includes(type)
+
 
   # Handlers
   #
@@ -195,6 +205,10 @@ module.exports  = React.createClass
 
   handleCreateLandingFail: ->
     @setState sync: @state.sync.set('landing', false)
+
+
+  handleNotificationTypeChange: ->
+    console.log 'handleNotificationTypeChange'
 
 
   # Lifecycle methods
@@ -272,6 +286,27 @@ module.exports  = React.createClass
       </Checkbox>
     </section>
 
+  renderNotificationTypes: ->
+    # console.log @cursor.me.deref().toJS()
+
+    <section className="notification-types">
+      <h2>Notifications</h2>
+      { @renderNotificationTypesCheckboxes() }
+    </section>
+
+  renderNotificationTypesCheckboxes: ->
+    @cursor.me.get('values_for_notification_types')
+      .map (type, index) =>
+        <Checkbox
+          key={ index }
+          checked={ @isNotificationTypeChecked(type) }
+          onChange={ @handleNotificationTypeChange }
+        >
+
+          { NotificationTypes[type] }
+        </Checkbox>
+      .toArray()
+
   renderLandingPages: ->
     return null unless (landings = @getLandings()).size
 
@@ -347,4 +382,5 @@ module.exports  = React.createClass
       </form>
       { @renderEmails() }
       { @renderSubscription() }
+      { @renderNotificationTypes() }
     </section>
