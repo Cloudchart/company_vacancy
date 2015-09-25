@@ -33,6 +33,7 @@ npm-debug.log
 /public/sitemap.xml.gz
 
 /app/assets/**/*.js.map
+/app/assets/bundles/
 
 .rbenv-gemsets
 .gemfiles

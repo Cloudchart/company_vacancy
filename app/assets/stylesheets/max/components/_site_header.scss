@@ -14,7 +14,8 @@ header.site-header {
   width: $content-block-width;
 
   > a.logo {
-    background-image: image-url('max-logo.png');
+    // background-image: image-url('max-logo.png');
+    background-image: url('../images/max-logo.png');
     background-size: contain;
     display: block;
     height: 25px;

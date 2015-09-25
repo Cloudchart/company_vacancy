@@ -18,10 +18,13 @@
     z-index: -1;
 
     &::before {
-      background-image: asset-url('super-feature-background.jpg');
-      background-position: center center;
-      background-repeat: no-repeat;
-      background-size: cover;
+      // background-image: asset-url('super-feature-background.jpg');
+      background: {
+        image: url('../images/super-feature-background.jpg');
+        position: center center;
+        repeat: no-repeat;
+        size: cover;
+      };
       content: '';
       filter: blur(10px);
       -webkit-filter: blur(10px);

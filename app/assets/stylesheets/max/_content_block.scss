@@ -1,6 +1,7 @@
 .content-block {
   margin: 90px auto;
   width: $content-block-width;
+  outline: 1px solid #f0f;
 
   > h2 {
     margin: - $h2-font-size / 3 auto;
@@ -14,7 +15,6 @@
 
   @media #{$media-phone} {
     width: $content-block-width-phone;
-    outline: 1px solid #f00;
   }
 
 }
