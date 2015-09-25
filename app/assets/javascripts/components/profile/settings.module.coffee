@@ -217,7 +217,8 @@ module.exports  = React.createClass
       @state.attributes.get('notification_types').filterNot (t) -> t == type
 
     @setState attributes: @state.attributes.set('notification_types', notification_types)
-    UserSyncApi.update(@cursor.user, notification_types: notification_types.toJS()).then @handleSubmitDone, @handleSubmitFail
+    UserSyncApi.update(@cursor.user, notification_types: notification_types.toJS()).then =>
+      @fetch(force: true)
 
 
   # Lifecycle methods
