@@ -1,27 +1,27 @@
 <p>
-  Hi, <%= @user.full_name %>!
+  Hi, <%= @user.full_name %>,
+</p>
+
+<p>
+  Take a look at recently created resources.
 </p>
 
 <% if @insights.any? %>
-  <p>
-    Here are recently created insights:
-  </p>
+  <h2>Insights</h2>
 
-  <ul>
+  <ul style="list-style: none;">
     <% @insights.each do |insight| %>
       <li>
-        <%= link_to "#{insight.content} – #{insight.user.full_name}", insight_url(insight) %>
+        <%= link_to insight.content, insight_url(insight) %>
       </li>
     <% end %>
   </ul>
 <% end %>
 
 <% if @pinboards.any? %>
-  <p>
-    Here are recently created collections:
-  </p>
+  <h2>Collections</h2>
 
-  <ul>
+  <ul style="list-style: none;">
     <% @pinboards.each do |pinboard| %>
       <li>
         <%= link_to pinboard.title, collection_url(pinboard) %>
