@@ -12,4 +12,9 @@
     margin-top: 35px;
   }
 
+  @media #{$media-phone} {
+    width: $content-block-width-phone;
+    outline: 1px solid #f00;
+  }
+
 }

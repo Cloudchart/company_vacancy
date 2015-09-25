@@ -36,6 +36,7 @@ module Cloudchart
     # Assets
     #
     config.assets.paths << "#{Rails.root}/app/assets/max-javascripts"
+    config.assets.paths << "#{Rails.root}/app/assets/max-stylesheets"
 
     # Handle exceptions
     #
