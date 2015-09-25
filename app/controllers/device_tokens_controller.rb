@@ -13,11 +13,6 @@ class DeviceTokensController < ApplicationController
     end
   end
 
-  def destroy
-    @device_token.destroy
-    render json: :ok, status: 200
-  end
-
 private
 
   def device_token_params
@@ -28,8 +23,6 @@ private
     @device_token = case action_name
     when 'create'
       current_user.device_tokens.find_or_initialize_by(device_token_params)
-    when 'destroy'
-      DeviceToken.find(params[:id])
     end
   end
 

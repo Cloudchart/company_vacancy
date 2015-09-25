@@ -103,7 +103,7 @@ Cloudchart::Application.routes.draw do
   resources :subscriptions, only: [:create, :update, :destroy]
   resources :tokens, only: :show
   resources :landings, only: [:show, :update, :destroy]
-  resources :device_tokens, only: [:create, :destroy], format: 'json'
+  resources :device_tokens, only: :create, format: 'json'
 
   # Custom
   #
