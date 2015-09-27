@@ -24,22 +24,25 @@ let renderFeaturedCollection = (collection) =>
 
 // Featured Collections
 //
-let renderFeaturedCollections = (collections) =>
-  <section className="content-block" key='featured-collections'>
-    <h2>
-      Find insights you need.
-      Use them on meetings, brainstorms or discussions.
-      Follow collections you're interested in.
-    </h2>
-    <section className="collections-slabs">
-      { collections.map(renderFeaturedCollection) }
+let renderFeaturedCollections = (collections) => {
+  return (
+    <section className="content-block" key='featured-collections'>
+      <h2>
+        Find insights you need.
+        Use them on meetings, brainstorms or discussions.
+        Follow collections you're interested in.
+      </h2>
+      <section className="collections-slabs">
+        { collections.map(renderFeaturedCollection) }
+      </section>
     </section>
-  </section>
+  );
+};
 
 
 // Featured User
 //
-let renderFeaturedUser = user =>
+let renderFeaturedUser = (user) =>
   <UserSlab user={ user } key={ user.id } />
 
 // Featured Users
@@ -73,7 +76,6 @@ let handleGetAccessClick = (event) => window.location = '/login'
 // Landing App Component
 //
 class LandingApp extends React.Component {
-
   render () {
     return (
       <article className="landing-app">

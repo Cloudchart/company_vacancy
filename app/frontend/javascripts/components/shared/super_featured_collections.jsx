@@ -6,7 +6,6 @@ import InsightCard from '../cards/insight_card';
 const animationDuration = 750;
 const animationDelay = 1000 * 3;
 
-
 class SuperFeaturedCollections extends React.Component {
 
   constructor (props) {
@@ -54,7 +53,7 @@ class SuperFeaturedCollections extends React.Component {
   render () {
     return (
       <section className="content-block">
-        <h2>learn how to</h2>
+        <h2 className="content-block__head content-block__head_small">learn how to</h2>
         { this.renderHeader() }
         <ul className="insights" ref="insights">
           { this.renderInsights() }
@@ -63,20 +62,18 @@ class SuperFeaturedCollections extends React.Component {
     );
   }
 
-
   renderHeader () {
     let nextIndex = (this.state.index + 1) % this.props.collections.length;
     let currCollection = this.props.collections[this.state.index];
     let nextCollection = this.props.collections[nextIndex];
 
     return (
-      <h1 key={ currCollection.id } ref="header">
+      <h1 className="content-block__head content-block__head_big" key={ currCollection.id } ref="header">
         <a className="through" href={ currCollection.url }>{ currCollection.title }</a>
         <span>{ nextCollection.title }</span>
       </h1>
     );
   }
-
 
   renderInsights () {
     let nextIndex = (this.state.index + 1) % this.props.collections.length;
@@ -88,8 +85,8 @@ class SuperFeaturedCollections extends React.Component {
           <InsightCard insight={ insight.node } />
           <InsightCard insight={ nextInsight.node } />
         </li>
-      )
-    })
+      );
+    });
   }
 };
 

@@ -1,4 +1,4 @@
-header.site-header {
+.site-header {
   align-items: center;
   -webkit-align-items: center;
 
@@ -13,12 +13,18 @@ header.site-header {
   margin: 0 auto;
   width: $content-block-width;
 
-  > a.logo {
-    // background-image: image-url('max-logo.png');
+  &__logo {
     background-image: url('../images/max-logo.png');
     background-size: contain;
     display: block;
     height: 25px;
     width: 100px;
+  }
+
+  @media #{$media-phone} {
+    box-sizing: border-box;
+    outline: 1px solid #f0f;
+    padding: 0 30px;
+    width: 100%;
   }
 }

@@ -2,18 +2,46 @@
   margin: 90px auto;
   width: $content-block-width;
 
-  > h2 {
-    margin: - $h2-font-size / 3 auto;
-    text-align: center;
-    width: 700px;
-  }
 
-  > h2 ~ * {
-    margin-top: 35px;
+  &__head {
+    text-align: center;
+
+    &_big {
+      height: $h1-line-height;
+      margin-top: 14px - $h1-font-size / 3;
+      margin-bottom: 0;
+      overflow: hidden;
+
+      > span, a {
+        display: block;
+        -webkit-font-smoothing: subpixel-antialiased;
+      }
+
+      > span ~ span {
+        opacity: 0;
+      }
+
+      @media #{$media-phone} {
+        height: auto;
+        overflow: visible;
+      }
+    }
+
+    &_small {
+      margin: - $h2-font-size / 3 auto;
+      width: 700px;
+
+      ~ * {
+       margin-top: 35px;
+      }
+
+      @media #{$media-phone} {
+        width: 100%;
+      }
+    }
   }
 
   @media #{$media-phone} {
-    outline: 1px solid #f0f;
     width: 100%;
     box-sizing: border-box;
     padding: 0 30px;

@@ -4,12 +4,13 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   context: path.resolve(__dirname, './app/frontend/javascripts'),
   entry: {
-    main: path.resolve(__dirname, './app/frontend/javascripts/index.js')
+    main: path.resolve(__dirname, './app/frontend/javascripts/index.js'),
+    style: path.resolve(__dirname, './app/frontend/javascripts/style.js')
   },
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname,  './app/assets/bundles'),
-    sourceMapFilename: '[name].js.map'
+    sourceMapFilename: '[name].bundle.js.map'
   },
   resolve: {
     extensions: ['', '.js', '.jsx', '.scss'],
@@ -32,7 +33,7 @@ module.exports = {
         loader: 'file-loader'
       },
       {
-        test: /\.js$/,
+        test: /\.js|jsx$/,
         exclude: /node_modules/,
         loader: 'babel',
         query: {
@@ -63,6 +64,10 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin("[name].css", {'omit': 1, 'extract': true, 'remove': true})
+    new ExtractTextPlugin("[name].css", {
+      omit: 1,
+      extract: true,
+      remove: true
+    })
   ]
 };

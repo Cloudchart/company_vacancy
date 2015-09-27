@@ -18,7 +18,6 @@
     z-index: -1;
 
     &::before {
-      // background-image: asset-url('super-feature-background.jpg');
       background: {
         image: url('../images/super-feature-background.jpg');
         position: center center;
@@ -42,23 +41,6 @@
     margin-top: 0;
     margin-bottom: 0;
     overflow: hidden;
-
-    > h1 {
-      height: $h1-line-height;
-      margin-top: 14px - $h1-font-size / 3;
-      margin-bottom: 0;
-      overflow: hidden;
-      text-align: center;
-
-      > span, a {
-        display: block;
-        -webkit-font-smoothing: subpixel-antialiased;
-      }
-
-      > span ~ span {
-        opacity: 0;
-      }
-    }
 
     > ul {
       display: flex;

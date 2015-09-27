@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="apple-mobile-web-app-title" content="insights.VC">
     <%= favicon_link_tag "#{Rails.env}/favicon.ico" %>
-    <%= stylesheet_link_tag 'main' %>
+    <%= stylesheet_link_tag 'style' %>
   </head>
   <body>
     <%= yield %>
-
-    <%= javascript_include_tag 'move' %>
     <%= javascript_include_tag 'main.bundle' %>
   </body>
 </html>
