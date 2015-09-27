@@ -1,2 +1,2 @@
-import 'font-awesome-webpack';
-import '../stylesheets/max.scss';
+import 'font-awesome/scss/font-awesome';
+import '../stylesheets/max';

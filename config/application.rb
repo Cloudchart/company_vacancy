@@ -35,7 +35,7 @@ module Cloudchart
 
     # Assets
     #
-    config.assets.paths << "#{Rails.root}/app/assets/bundles"
+    config.assets.paths << "#{Rails.root}/app/frontend/bundles"
 
     # Handle exceptions
     #

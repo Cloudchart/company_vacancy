@@ -32,13 +32,13 @@ npm-debug.log
 /public/sitemap.xml
 /public/sitemap.xml.gz
 
-/app/assets/**/*.js.map
-/app/assets/bundles/
+/app/frontend/bundles/
 
 .rbenv-gemsets
 .gemfiles
 .gems
 .jshintrc
+.jscsrc
 *.sock
 /config/database.yml
 /config/secrets.yml
