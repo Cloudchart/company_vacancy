@@ -1,12 +1,14 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import InsightCard from '../cards/insight_card';
+import InsightCard from './InsightCard';
+// style
+import './InsightCardList.style';
 
-const animationDuration = 750;
-const animationDelay = 1000 * 3;
+const ANIMATION_DURATION = 750;
+const ANIMATION_DELAY = 1000 * 3;
 
-class SuperFeaturedCollections extends React.Component {
+class InsightCardList extends React.Component {
 
   constructor (props) {
     super(props);
@@ -17,49 +19,37 @@ class SuperFeaturedCollections extends React.Component {
   }
 
   componentDidMount () {
-    setTimeout(this.switchInsights.bind(this), animationDelay);
+    setTimeout(this.switchInsights.bind(this), ANIMATION_DELAY);
   }
 
   componentDidUpdate () {
-    setTimeout(this.switchInsights.bind(this), animationDelay);
+    setTimeout(this.switchInsights.bind(this), ANIMATION_DELAY);
   }
 
   switchInsights () {
-    let headerNode = this.refs['header'];
+    let headerNode = this.refs.header;
     let [currHeaderNode, nextHeaderNode] = headerNode.childNodes;
     let currTop = currHeaderNode.getBoundingClientRect().top;
     let nextTop = nextHeaderNode.getBoundingClientRect().top;
-    move(currHeaderNode).y(currTop - nextTop).set('opacity', 0).duration(animationDuration).end();
-    move(nextHeaderNode).y(currTop - nextTop).set('opacity', 1).duration(animationDuration).end();
+    move(currHeaderNode).y(currTop - nextTop).set('opacity', 0).duration(ANIMATION_DURATION).end();
+    move(nextHeaderNode).y(currTop - nextTop).set('opacity', 1).duration(ANIMATION_DURATION).end();
 
-    let insightsNode = this.refs['insights'];
+    let insightsNode = this.refs.insights;
     Array.prototype.forEach.call(insightsNode.childNodes, (node) => {
       let [currInsightNode, nextInsightNode] = node.childNodes;
       let currTop = currInsightNode.getBoundingClientRect().top;
       let nextTop = nextInsightNode.getBoundingClientRect().top;
-      move(currInsightNode).y(currTop - nextTop).set('opacity', 0).duration(animationDuration).end();
-      move(nextInsightNode).y(currTop - nextTop).set('opacity', 1).duration(animationDuration).end();
+      move(currInsightNode).y(currTop - nextTop).set('opacity', 0).duration(ANIMATION_DURATION).end();
+      move(nextInsightNode).y(currTop - nextTop).set('opacity', 1).duration(ANIMATION_DURATION).end();
     });
 
-    setTimeout(this.incrementIndex.bind(this), animationDuration);
+    setTimeout(this.incrementIndex.bind(this), ANIMATION_DURATION);
   }
 
   incrementIndex () {
     this.setState({
       index: (this.state.index + 1) % this.props.collections.length
     });
-  }
-
-  render () {
-    return (
-      <section className="content-block">
-        <h2 className="content-block__head content-block__head_small">learn how to</h2>
-        { this.renderHeader() }
-        <ul className="insights" ref="insights">
-          { this.renderInsights() }
-        </ul>
-      </section>
-    );
   }
 
   renderHeader () {
@@ -77,20 +67,33 @@ class SuperFeaturedCollections extends React.Component {
 
   renderInsights () {
     let nextIndex = (this.state.index + 1) % this.props.collections.length;
+    let insightsCurr = this.props.collections[this.state.index].insights.edges;
+    let insightsNext = this.props.collections[nextIndex].insights.edges;
 
-    return this.props.collections[this.state.index].insights.edges.map((insight, i) => {
-      let nextInsight = this.props.collections[nextIndex].insights.edges[i]
+    return insightsCurr.map((insight, i) => {
+      let nextInsight = insightsNext[i];
       return (
-        <li key={ insight.node.id }>
+        <li className="insights__list-el" key={ insight.node.id }>
           <InsightCard insight={ insight.node } />
           <InsightCard insight={ nextInsight.node } />
         </li>
       );
     });
   }
+
+  render () {
+    return (
+      <div className="insights">
+        { this.renderHeader() }
+        <ul className="insights__list" ref="insights">
+          { this.renderInsights() }
+        </ul>
+      </div>
+    );
+  }
 };
 
-export default Relay.createContainer(SuperFeaturedCollections, {
+export default Relay.createContainer(InsightCardList, {
   fragments: {
     collections: () => Relay.QL`
       fragment on Collection @relay(plural: true) {

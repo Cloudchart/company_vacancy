@@ -15,8 +15,8 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx', '.scss'],
     alias: {
-      move: path.resolve(__dirname, './app/frontend/javascripts/move.js')
-    },
+      vars: path.resolve(__dirname, './app/frontend/stylesheets/_vars.scss')
+    }
   },
   module: {
     loaders: [
@@ -54,11 +54,6 @@ module.exports = {
             `includePaths[]=${path.resolve(__dirname, './node_modules')}`
           ].join('&')}`
         ].join('!')),
-      },
-      {
-        // move.js
-        test: /move\.js$/,
-        loader: 'exports?window.move',
       }
     ]
   },

@@ -1,0 +1,16 @@
+@import "vars";
+
+.content-button {
+  text-align: center;
+
+  > a, button {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+  }
+
+  > p {
+    margin-top: - $base-font-size / 3;
+    margin-bottom: - $base-font-size / 3;
+  }
+}

@@ -2,42 +2,14 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import Header from './shared/header';
-import SuperFeaturedCollections from './shared/super_featured_collections';
-import CollectionSlab from './cards/collection_slab';
+
+import InsightCardList from './insights/InsightCardList';
+
+import CollectionSlab from './cards/CollectionSlab';
+import CollectionSlabList from './cards/CollectionSlabList';
+
 import UserSlab from './cards/user_slab';
-
-
-// Super Featured Collections
-//
-let renderSuperFeaturedCollections = (collections) =>
-  <section className="super-feature">
-    <section className="background" />
-    <SuperFeaturedCollections collections={ collections } />
-    { renderGetAccess() }
-  </section>
-
-
-// Featured Collection
-//
-let renderFeaturedCollection = (collection) =>
-  <CollectionSlab collection={ collection } key={ collection.id} />
-
-// Featured Collections
-//
-let renderFeaturedCollections = (collections) => {
-  return (
-    <section className="content-block" key='featured-collections'>
-      <h2>
-        Find insights you need.
-        Use them on meetings, brainstorms or discussions.
-        Follow collections you're interested in.
-      </h2>
-      <section className="collections-slabs">
-        { collections.map(renderFeaturedCollection) }
-      </section>
-    </section>
-  );
-};
+import ContentButton from './shared/ContentButton';
 
 
 // Featured User
@@ -48,7 +20,7 @@ let renderFeaturedUser = (user) =>
 // Featured Users
 //
 let renderFeaturedUsers = (users) =>
-  <section className="content-block" key="featured-users">
+  <section className="content-block content-block_margin" key="featured-users">
     <h2>
       We research interviews, books and social media posts
       by successfull entrepreneurs, find the most important
@@ -59,20 +31,6 @@ let renderFeaturedUsers = (users) =>
     </section>
   </section>
 
-
-// Get Access button
-//
-let renderGetAccess = () =>
-  <section className="content-block get-access" key="get-access">
-    <button className="opaque" onClick={ handleGetAccessClick }>Get Access</button>
-    <p>Requires Twitter account. Free while in beta.</p>
-  </section>
-
-// Handle Get Access button click
-//
-let handleGetAccessClick = (event) => window.location = '/login'
-
-
 // Landing App Component
 //
 class LandingApp extends React.Component {
@@ -80,10 +38,28 @@ class LandingApp extends React.Component {
     return (
       <article className="landing-app">
         <Header />
-        { renderSuperFeaturedCollections(this.props.viewer.super_featured_collections) }
-        { renderFeaturedCollections(this.props.viewer.featured_collections) }
+        <section className="super-feature">
+          <section className="background" />
+          <section className="content-block content-block_overflow">
+            <h2 className="content-block__head content-block__head_small">learn how to</h2>
+            <InsightCardList collections={ this.props.viewer.super_featured_collections } />
+          </section>
+          <section className="content-block content-block_margin">
+            <ContentButton />
+          </section>
+        </section>
+        <section className="content-block content-block_margin">
+  	      <h2 className="content-block__head_small">
+  	        Find insights you need.
+  	        Use them on meetings, brainstorms or discussions.
+  	        Follow collections you're interested in.
+  	      </h2>
+          <CollectionSlabList items={ this.props.viewer.featured_collections } />
+	      </section>
         { renderFeaturedUsers(this.props.viewer.featured_users) }
-        { renderGetAccess() }
+        <section className="content-block content-block_margin">
+          <ContentButton />
+        </section>
       </article>
     );
   }
@@ -97,7 +73,7 @@ export default Relay.createContainer(LandingApp, {
       fragment on User {
         full_name
         super_featured_collections(scope: "main") {
-          ${SuperFeaturedCollections.getFragment("collections")}
+          ${InsightCardList.getFragment("collections")}
         }
         featured_collections(scope: "main") {
           id

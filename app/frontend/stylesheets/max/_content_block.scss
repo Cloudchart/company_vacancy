@@ -1,7 +1,24 @@
-.content-block {
-  margin: 90px auto;
-  width: $content-block-width;
 
+.content-block {
+  width: $content-block-width;
+  margin: 0 auto;
+
+  &_margin {
+    margin: {
+      bottom: 90px;
+      top: 90px;
+    }
+  }
+
+  &_overflow {
+    flex: 1;
+    -webkit-flex: 1;
+    margin: {
+      bottom: 0;
+      top: 0;
+    }
+    overflow: hidden;
+  }
 
   &__head {
     text-align: center;
@@ -19,11 +36,6 @@
 
       > span ~ span {
         opacity: 0;
-      }
-
-      @media #{$media-phone} {
-        height: auto;
-        overflow: visible;
       }
     }
 
