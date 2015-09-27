@@ -1,17 +1,17 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-
 export default class extends React.Component {
 
-  render = () =>
-    <header className="site-header">
-      <a href="/" className="site-header__logo" />
-      <button className="transparent" onClick={ this.handleLoginButtonClick }>
-        Login with Twitter
-        <i className="fa fa-twitter" />
-      </button>
-    </header>
-
-  handleLoginButtonClick = (event) => window.location = '/login';
+  render () {
+    return (
+      <header className="site-header">
+        <a href="/" className="site-header__logo" />
+        <a className="button button_transparent" href="/login">
+          <span>Login with Twitter</span>
+          <i className="fa fa-twitter" />
+        </a>
+      </header>
+    );
+  }
 }
