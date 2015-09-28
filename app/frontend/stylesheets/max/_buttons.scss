@@ -35,8 +35,14 @@
     }
   }
 
+  &_login {}
+
   @media #{$media-phone} {
     box-sizing: border-box;
     width: 100%;
+
+    &_login {
+      width: auto;
+    }
   }
 }

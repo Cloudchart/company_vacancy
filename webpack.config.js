@@ -54,7 +54,7 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin("[name].css", {
+    new ExtractTextPlugin('[name].css', {
       omit: 1,
       extract: true,
       remove: true

@@ -4,7 +4,7 @@ import Relay from 'react-relay';
 import InsightCard from './InsightCard';
 
 const ANIMATION_DURATION = 750;
-const ANIMATION_DELAY = 1000 * 3;
+const ANIMATION_DELAY = 1e3 * 3;
 
 class InsightCardList extends React.Component {
 
@@ -63,6 +63,15 @@ class InsightCardList extends React.Component {
     );
   }
 
+  renderInsightItem (currInsight, nextInsight) {
+    return (
+      <li className="insights__list-el" key={ currInsight.node.id }>
+        <InsightCard insight={ currInsight.node } />
+        <InsightCard insight={ nextInsight.node } />
+      </li>
+    );
+  }
+
   renderInsights () {
     let nextIndex = (this.state.index + 1) % this.props.collections.length;
     let insightsCurr = this.props.collections[this.state.index].insights.edges;
@@ -70,12 +79,7 @@ class InsightCardList extends React.Component {
 
     return insightsCurr.map((insight, i) => {
       let nextInsight = insightsNext[i];
-      return (
-        <li className="insights__list-el" key={ insight.node.id }>
-          <InsightCard insight={ insight.node } />
-          <InsightCard insight={ nextInsight.node } />
-        </li>
-      );
+      return this.renderInsightItem(insight, nextInsight);
     });
   }
 

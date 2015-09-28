@@ -1,10 +1,9 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-const MaxContentLength = 230;
+import {truncate} from '../../utils/string';
 
-let stripContent = (content) =>
-  content.length > MaxContentLength + 3 ? content.substring(0, MaxContentLength) + '...' : content;
+const MAX_CONTENT_LENGTH = 230;
 
 class InsightCard extends React.Component {
   render () {
@@ -12,7 +11,7 @@ class InsightCard extends React.Component {
       <div className="insight-card">
         <p className="content">
           <a href={ this.props.insight.url } className="through">
-            { stripContent(this.props.insight.content) }
+            { truncate(this.props.insight.content, MAX_CONTENT_LENGTH) }
           </a>
         </p>
         <ul className="controls">

@@ -7,7 +7,7 @@ export default class Header extends React.Component {
     return (
       <header className="site-header">
         <a href="/" className="site-header__logo" />
-        <a className="button button_transparent" href="/login">
+        <a className="button button_transparent button_login" href="/login">
           <span>Login with Twitter</span>
           <i className="fa fa-twitter" />
         </a>

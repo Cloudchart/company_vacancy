@@ -21,12 +21,23 @@
     display: block;
     height: 25px;
     width: 100px;
+
+    @media #{$media-phone} {
+      height: 30px;
+      width: 120px;
+    }
   }
 
   @media #{$media-phone} {
     box-sizing: border-box;
-    outline: 1px solid #f0f;
     padding: 0 30px;
     width: 100%;
+
+    .button_login {
+      height: 30px;
+      font-size: 12px;
+      padding: 0 10px;
+      line-height: 30px;
+    }
   }
 }

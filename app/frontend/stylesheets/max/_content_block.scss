@@ -1,4 +1,3 @@
-
 .content-block {
   width: $content-block-width;
   margin: 0 auto;
@@ -7,6 +6,12 @@
     margin: {
       bottom: 90px;
       top: 90px;
+    }
+    @media #{$media-phone} {
+      margin: {
+        bottom: 10px;
+        top: 10px;
+      }
     }
   }
 

@@ -1,0 +1,27 @@
+@import "vars";
+
+.collection-slab {
+
+  span {
+    @media #{$media-phone} {
+      display: block;
+      white-space: nowrap;
+      width: 100%;
+    }
+  }
+
+  em {
+    color: $caps-color;
+    font-size: $caps-font-size;
+    font-style: normal;
+    font-weight: 600;
+    line-height: $caps-line-height;
+    margin-left: 17px;
+    text-transform: uppercase;
+
+    @media #{$media-phone} {
+      display: block;
+      margin-left: 0px;
+    }
+  }
+}
