@@ -34,4 +34,9 @@
       margin-left: 10px;
     }
   }
+
+  @media #{$media-phone} {
+    box-sizing: border-box;
+    width: 100%;
+  }
 }

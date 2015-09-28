@@ -1,0 +1,23 @@
+@import "vars";
+
+.users-slabs {
+  &__list {
+    display: flex;
+    display: -webkit-flex;
+
+    @media #{$media-phone} {
+      display: block;
+    }
+
+    &-el {
+      flex: 1;
+      -webkit-flex: 1;
+
+      @media #{$media-phone} {
+        display: inline-block;
+        vertical-align: middle;
+        width: 50%;
+      }
+    }
+  }
+}

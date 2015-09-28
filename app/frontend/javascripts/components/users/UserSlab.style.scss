@@ -1,12 +1,6 @@
-.users-slabs {
-  display: flex;
-  display: -webkit-flex;
-}
+@import "vars";
 
 .user-slab {
-  flex: 1;
-  -webkit-flex: 1;
-
   img {
     border-radius: 50%;
     height: 80px;

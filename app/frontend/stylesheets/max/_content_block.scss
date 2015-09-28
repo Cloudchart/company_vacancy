@@ -46,6 +46,10 @@
         content: " ";
         display: block;
         height: 35px;
+
+        @media #{$media-phone} {
+          height: 10px;
+        }
       }
     }
 
