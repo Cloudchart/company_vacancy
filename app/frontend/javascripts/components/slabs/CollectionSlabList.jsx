@@ -9,13 +9,19 @@ export default class CollectionSlabList extends React.Component {
   };
 
   renderItem (item) {
-    <CollectionSlab collection={ item } key={ item.id } />
+    return (
+      <li className="collections-slabs__list-el" key={ item.id }>
+        <CollectionSlab collection={ item } />
+      </li>
+    )
   }
 
   render () {
     return (
       <div className="collections-slabs">
-        { this.props.items.map(this.renderItem) }
+        <ul className="collections-slabs__list">
+          { this.props.items.map(this.renderItem) }
+        </ul>
       </div>
     );
   }

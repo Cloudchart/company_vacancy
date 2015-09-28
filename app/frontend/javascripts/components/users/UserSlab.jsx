@@ -1,8 +1,6 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import './UserSlab.style';
-
 class UserSlab extends React.Component {
 
   render () {

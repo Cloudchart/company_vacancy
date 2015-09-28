@@ -1,12 +1,12 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import Header from './shared/header';
+import Header from './shared/Header';
 
 import InsightCardList from './insights/InsightCardList';
 
-import CollectionSlab from './cards/CollectionSlab';
-import CollectionSlabList from './cards/CollectionSlabList';
+import CollectionSlab from './slabs/CollectionSlab';
+import CollectionSlabList from './slabs/CollectionSlabList';
 
 import UserSlab from './users/UserSlab';
 import UserSlabList from './users/UserSlabList';
@@ -18,7 +18,6 @@ import ContentButton from './shared/ContentButton';
 //
 class LandingApp extends React.Component {
   render () {
-
     return (
       <article className="landing-app">
         <Header />
@@ -33,7 +32,6 @@ class LandingApp extends React.Component {
             <ContentButton />
           </section>
         </section>
-
 
         <section className="content-block content-block_margin">
   	      <h2 className="content-block__head_margin content-block__head_small content-block__head">

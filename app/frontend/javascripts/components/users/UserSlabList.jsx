@@ -2,8 +2,6 @@ import React from 'react';
 
 import UserSlab from './UserSlab';
 
-import './UserSlabList.style';
-
 
 export default class UserSlabList extends React.Component {
 

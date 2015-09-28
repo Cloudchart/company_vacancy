@@ -1,7 +1,5 @@
 import React from 'react';
 
-import './ContentButton.style';
-
 export default class ContentButton extends React.Component {
 
   static defaultProps = {

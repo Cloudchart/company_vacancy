@@ -1,7 +1,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-export default class extends React.Component {
+export default class Header extends React.Component {
 
   render () {
     return (

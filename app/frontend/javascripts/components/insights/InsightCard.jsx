@@ -3,9 +3,6 @@ import Relay from 'react-relay';
 
 const MaxContentLength = 230;
 
-import './InsightCard.style';
-
-
 let stripContent = (content) =>
   content.length > MaxContentLength + 3 ? content.substring(0, MaxContentLength) + '...' : content;
 

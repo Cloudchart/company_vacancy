@@ -2,8 +2,6 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import InsightCard from './InsightCard';
-// style
-import './InsightCardList.style';
 
 const ANIMATION_DURATION = 750;
 const ANIMATION_DELAY = 1000 * 3;

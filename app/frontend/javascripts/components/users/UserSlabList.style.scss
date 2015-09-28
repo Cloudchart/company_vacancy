@@ -12,6 +12,7 @@
     &-el {
       flex: 1;
       -webkit-flex: 1;
+      margin-bottom: 30px;
 
       @media #{$media-phone} {
         display: inline-block;

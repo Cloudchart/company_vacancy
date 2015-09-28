@@ -1,3 +1,5 @@
+@import "vars";
+
 .site-header {
   align-items: center;
   -webkit-align-items: center;
@@ -14,7 +16,7 @@
   width: $content-block-width;
 
   &__logo {
-    background-image: url('../images/max-logo.png');
+    background-image: url('../../../images/max-logo.png');
     background-size: contain;
     display: block;
     height: 25px;
