@@ -12,8 +12,6 @@ class Pinboard < ActiveRecord::Base
 
   enum suggestion_rights: { anyone: 0, editors: 1 }
 
-  nilify_blanks only: [:pending_value]
-
   belongs_to :user
 
   has_many :pins, dependent: :destroy

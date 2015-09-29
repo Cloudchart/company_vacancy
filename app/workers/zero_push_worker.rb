@@ -10,8 +10,11 @@ class ZeroPushWorker < ApplicationWorker
 
     insights = Pin.includes(:user).ready_for_broadcast(user, start_time, end_time)
     pinboards = Pinboard.includes(:user).ready_for_broadcast(user, start_time, end_time)
+    pinboard_invites = Role.includes(:author, :pinboard).ready_for_broadcast(user.id, :pinboard, start_time, end_time)
 
-    if insights.size == 1 && pinboards.empty?
+    return if insights.empty? && pinboards.empty? && pinboard_invites.empty?
+
+    if insights.size == 1 && pinboards.empty? && pinboard_invites.empty?
       insight = insights.first
 
       ZeroPush.notify(
@@ -20,7 +23,7 @@ class ZeroPushWorker < ApplicationWorker
         body: "#{insight.user.full_name} added new insight: #{insight.content}",
         url_args: [ sliced_path(insight_path(insight)) ]
       )
-    elsif pinboards.size == 1 && insights.empty?
+    elsif insights.empty? && pinboards.size == 1 && pinboard_invites.empty?
       pinboard = pinboards.first
 
       ZeroPush.notify(
@@ -29,11 +32,21 @@ class ZeroPushWorker < ApplicationWorker
         body: "#{pinboard.user.full_name} created collection: #{pinboard.title}.",
         url_args: [ sliced_path(collection_path(pinboard)) ]
       )
-    elsif insights.size > 1 || pinboards.size > 1 || (insights.any? && pinboards.any?)
+    elsif insights.empty? && pinboards.empty? && pinboard_invites.size == 1
+      invite = pinboard_invites.first
+
+      ZeroPush.notify(
+        device_tokens: device_tokens,
+        title: "You've been invited",
+        body: "#{invite.author.full_name} invited you to join collection: #{invite.pinboard.title}.",
+        url_args: [ sliced_path(collection_path(invite.pinboard)) ],
+        label: 'Check'
+      )
+    else
       ZeroPush.notify(
         device_tokens: device_tokens,
         title: 'Feed updated',
-        body: 'There are some changes in your feed.',
+        body: 'Check new insights, collections or events.',
         url_args: [ sliced_path(feed_path) ],
         label: 'Check'
       )
