@@ -1,4 +1,43 @@
+@import "vars";
+
 .insights {
+
+  &__head {
+    overflow-y: hidden;
+    height: $h1-line-height;
+
+    > span {
+      display: flex;
+      display: -webkit-flex;
+
+      -webkit-flex-direction: column-reverse;
+              flex-direction: column-reverse;
+    }
+
+    &-label {
+      display: block;
+      height: $h1-line-height;
+      margin-top: 0px;
+      opacity: 1;
+      width: 100%;
+      -webkit-font-smoothing: subpixel-antialiased;
+
+      &-enter-active {
+        -webkit-transition-duration: 750ms;
+                transition-duration: 750ms;
+        -webkit-transform: translateY(-$h1-line-height);
+                transform: translateY(-$h1-line-height);
+      }
+
+      &-leave-active {
+        opacity: 0;
+        -webkit-transition-duration: 750ms;
+                transition-duration: 750ms;
+        -webkit-transform: translateY(-$h1-line-height);
+                transform: translateY(-$h1-line-height);
+      }
+    }
+  }
 
   &__list {
     display: flex;

@@ -29,20 +29,9 @@
     text-align: center;
 
     &_big {
-      height: $h1-line-height;
       margin: {
         top: 14px - $h1-font-size / 3;
         bottom: 35px;
-      }
-      overflow: hidden;
-
-      > span, a {
-        display: block;
-        -webkit-font-smoothing: subpixel-antialiased;
-      }
-
-      > span ~ span {
-        opacity: 0;
       }
     }
 
