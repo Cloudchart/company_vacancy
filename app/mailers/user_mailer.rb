@@ -106,6 +106,7 @@ class UserMailer < ActionMailer::Base
     @user = user
     @insights = Pin.includes(:user).ready_for_broadcast(user, start_time, end_time)
     @pinboards = Pinboard.ready_for_broadcast(user, start_time, end_time)
+    @pinboard_invites = Role.includes(:author, :pinboard).ready_for_broadcast(user.id, :pinboard, start_time, end_time)
 
     mail(to: @user.email) do |format|
       format.html { render layout: 'user_mailer_' }

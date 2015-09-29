@@ -1,9 +1,9 @@
 <p>
-  Hi, <%= @user.full_name %>,
+  Hey <%= @user.full_name %>,
 </p>
 
 <p>
-  Take a look at recently created resources.
+  Check what's new on <%= link_to ENV['SITE_NAME'], root_url %> for you:
 </p>
 
 <% if @insights.any? %>
@@ -29,3 +29,19 @@
     <% end %>
   </ul>
 <% end %>
+
+<% if @pinboard_invites.any? %>
+  <h2>Invites</h2>
+
+  <ul style="list-style: none;">
+    <% @pinboard_invites.each do |invite| %>
+      <li>
+        <%= link_to invite.pinboard.title, collection_url(invite.pinboard) %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<p>
+  You may disable email notifications in <%= link_to 'profile settings', "#{user_url(@user)}#settings" %>.
+</p>
