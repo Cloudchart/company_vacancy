@@ -20,7 +20,7 @@ class ZeroPushWorker < ApplicationWorker
       ZeroPush.notify(
         device_tokens: device_tokens,
         title: 'Insight added',
-        body: "#{insight.user.full_name} added new insight: #{insight.content}",
+        body: "#{insight.user.full_name} added: #{insight.content}",
         url_args: [ sliced_path(insight_path(insight)) ]
       )
     elsif insights.empty? && pinboards.size == 1 && pinboard_invites.empty?
@@ -29,7 +29,7 @@ class ZeroPushWorker < ApplicationWorker
       ZeroPush.notify(
         device_tokens: device_tokens,
         title: 'Collection created',
-        body: "#{pinboard.user.full_name} created collection: #{pinboard.title}.",
+        body: "#{pinboard.title} by #{pinboard.user.full_name}.",
         url_args: [ sliced_path(collection_path(pinboard)) ]
       )
     elsif insights.empty? && pinboards.empty? && pinboard_invites.size == 1
@@ -37,8 +37,8 @@ class ZeroPushWorker < ApplicationWorker
 
       ZeroPush.notify(
         device_tokens: device_tokens,
-        title: "You've been invited",
-        body: "#{invite.author.full_name} invited you to join collection: #{invite.pinboard.title}.",
+        title: "Join collection",
+        body: "#{invite.pinboard.title} by #{invite.author.full_name}.",
         url_args: [ sliced_path(collection_path(invite.pinboard)) ],
         label: 'Check'
       )
@@ -46,7 +46,7 @@ class ZeroPushWorker < ApplicationWorker
       ZeroPush.notify(
         device_tokens: device_tokens,
         title: 'Feed updated',
-        body: 'Check new insights, collections or events.',
+        body: 'Check new insights and events.',
         url_args: [ sliced_path(feed_path) ],
         label: 'Check'
       )
