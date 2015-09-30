@@ -24,3 +24,5 @@ en:
       third_item: "follow companies you're interested in to get their updates and learn from their successes and failures."
     guest_subscription:
       subject: "Confirm your subscription on Insights.VC"
+    activities_digest:
+      subject: "The latest on Insights.VC"
