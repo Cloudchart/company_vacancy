@@ -60,44 +60,42 @@ body > header {
     font-weight: 600;
   }
 
-}
+  button.transparent {
+    align-items: center;
+    -webkit-align-items: center;
 
-button.transparent {
-  align-items: center;
-  -webkit-align-items: center;
+    background: none;
+    border: none;
+    border-radius: 5px;
+    color: inherit;
 
-  background: none;
-  border: none;
-  border-radius: 5px;
-  color: inherit;
+    display: flex;
+    display: -webkit-flex;
 
-  display: flex;
-  display: -webkit-flex;
+    height: $button-transparent-height;
 
-  height: $button-transparent-height;
+    > * {
+      line-height: 1em;
+    }
 
-  > * {
-    line-height: 1em;
   }
 
-}
+  button.transparent {
+    border: 1px solid #dfe0e2;
+    font-size: $button-transparent-font-size;
+    padding: 0 $button-transparent-padding;
 
-button.transparent {
-  border: 1px solid #dfe0e2;
-  font-size: $button-transparent-font-size;
-  padding: 0 $button-transparent-padding;
+    > i {
+      margin-left: 10px;
+    }
 
-  > i {
-    margin-left: 10px;
+    @include iphone {
+      border-radius: 10px;
+      height: 60px;
+      font-size: 18px;
+    }
   }
-
-  @include iphone {
-    border-radius: 10px;
-    height: 60px;
-    font-size: 18px;
-  }
 }
-
 
 ul.header-mobile-menu {
   @include display(flex);
