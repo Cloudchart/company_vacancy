@@ -1,6 +1,7 @@
 json.(user, :uuid)
 json.(user, :first_name, :last_name, :full_name, :company, :occupation, :twitter)
 json.(user, :created_at, :updated_at)
+json.(user, :notification_types)
 
 json.email begin
   preload_associations(siblings, cache, :emails)
@@ -21,6 +22,10 @@ json.avatar_url   user.avatar.thumb('512x512>').url if user.avatar_stored?
 
 # Edges
 #
+json_edge! json, :values_for_notification_types, edges do
+  User.values_for_notification_types
+end
+
 json_edge! json, :is_editor, edges do
   preload_associations(siblings, cache, :roles)
   !!user.roles.find { |r| r.owner_id.blank? && r.owner_type.blank? && r.value == 'editor' }

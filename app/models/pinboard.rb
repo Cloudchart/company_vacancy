@@ -5,8 +5,6 @@ class Pinboard < ActiveRecord::Base
   include Featurable
   include Followable
   include Taggable
-  include Tire::Model::Search
-  include Tire::Model::Callbacks
   include Admin::Pinboard
 
   ACCESS_RIGHTS = [:public, :protected, :private].freeze
@@ -14,12 +12,10 @@ class Pinboard < ActiveRecord::Base
 
   enum suggestion_rights: { anyone: 0, editors: 1 }
 
-  nilify_blanks only: [:pending_value]
-
   belongs_to :user
 
-  has_many :pins
-  has_many :roles, as: :owner
+  has_many :pins, dependent: :destroy
+  has_many :roles, as: :owner, dependent: :destroy
   has_many :posts, through: :pins, source: :pinnable, source_type: 'Post'
   has_many :users, through: :roles
   has_many :tokens, as: :owner, dependent: :destroy
@@ -62,31 +58,13 @@ class Pinboard < ActiveRecord::Base
     joins { roles.outer }.where { roles.value.eq('editor') }
   end
 
-  settings ElasticSearchNGramSettings do
-    mapping do
-      indexes :title, type: 'string', analyzer: 'ngram_analyzer'
-      indexes :description, type: 'string', analyzer: 'ngram_analyzer'
-    end
+  scope :ready_for_broadcast, -> (user, start_time, end_time) do
+    where {
+      created_at.gteq(start_time) &
+      created_at.lteq(end_time) &
+      user_id.in(user.users_favorites.map(&:favoritable_id))
+    }
   end
-
-  class << self
-    def search(params)
-      # TODO: get rid of load option (store everything in elascitsearch)
-      tire.search(load: true) do
-        if params[:query].present?
-          query do
-            boolean do
-              should { string Cloudchart::Utils.tokenized_query_string(params[:query], [:title, :description]) }
-            end
-          end
-        end
-
-        sort { by :title } if params[:query].blank?
-        size 50
-      end
-    end
-
-  end # of class methods
 
   def invite_tokens
     tokens.select { |token| token.name == 'invite' }

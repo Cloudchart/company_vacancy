@@ -5,20 +5,32 @@ class Role < ActiveRecord::Base
   before_save :check_value
   after_create :clean_user_owner_associations, if: -> { owner_type == 'Company' }
 
+  has_should_markers :should_skip_pending_role
+  nilify_blanks only: :pending_value
+
   belongs_to :user
-  belongs_to :author, class_name: User.name
+  belongs_to :author, class_name: 'User'
   belongs_to :owner, polymorphic: true
 
-  belongs_to :pinboard, foreign_key: :owner_id, foreign_type: Pinboard
-  belongs_to :company,  foreign_key: :owner_id, foreign_type: Company
-
-  has_should_markers(:should_skip_pending_role)
+  belongs_to :pinboard, foreign_key: :owner_id, foreign_type: 'Pinboard'
+  belongs_to :company,  foreign_key: :owner_id, foreign_type: 'Company'
 
   validates :value, inclusion: { in: Cloudchart::COMPANY_INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Company' }
   validates :value, inclusion: { in: Cloudchart::PINBOARD_INVITABLE_ROLES.map(&:to_s) }, on: :update, if: -> { owner_type == 'Pinboard' }
   validates :value, inclusion: { in: Cloudchart::ROLES.map(&:to_s) }, on: :create, if: -> { owner_type.blank? }
 
   validate :acceptance_of_invite, on: :create
+
+  scope :invites, -> { where.not(pending_value: nil) }
+  scope :pinboard_invites, -> { invites.where(owner_type: 'Pinboard') }
+
+  scope :ready_for_broadcast, -> id, type, start_time, end_time do
+    send(:"#{type}_invites").where {
+      created_at.gteq(start_time) &
+      created_at.lteq(end_time) &
+      user_id.eq(id)
+    }
+  end
 
   def accept!
     update!(value: pending_value, pending_value: nil)

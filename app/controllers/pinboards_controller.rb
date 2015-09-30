@@ -7,6 +7,7 @@ class PinboardsController < ApplicationController
 
   after_action :create_intercom_event, only: :create
   after_action :call_page_visit_to_slack_channel, only: [:show, :index]
+  after_action :spread_notifications, only: :create
 
   def index
     respond_to do |format|
@@ -91,6 +92,10 @@ private
     return unless should_perform_sidekiq_worker? && @pinboard.valid?
 
     IntercomEventsWorker.perform_async('created-pinboard', current_user.id, pinboard_id: @pinboard.id)
+  end
+
+  def spread_notifications
+    ActiveSupport::Notifications.instrument('pinboards#create', id: @pinboard.id)
   end
 
   def call_page_visit_to_slack_channel

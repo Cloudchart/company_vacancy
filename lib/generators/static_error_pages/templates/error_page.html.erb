@@ -8,11 +8,8 @@
 
   <body class="<%= Rails.env %>">
     <header>
-      <div class="header-content">
-        <div class="local-menu">
-          <%= link_to '', root_path, class: 'logo' %>
-          <a class="title" href="<%= root_path %>"><%= app_name_for_header %></a>
-        </div>
+      <div class="site-header">
+        <%= link_to '', root_path, class: 'site-logo' %>
       </div>
     </header>
 

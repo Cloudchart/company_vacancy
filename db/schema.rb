@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150825092001) do
+ActiveRecord::Schema.define(version: 20150923143648) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -152,6 +152,15 @@ ActiveRecord::Schema.define(version: 20150825092001) do
   end
 
   add_index "companies_banned_users", ["company_id", "user_id"], name: "index_companies_banned_users_on_company_id_and_user_id", unique: true, using: :btree
+
+  create_table "device_tokens", primary_key: "uuid", force: true do |t|
+    t.string   "user_id",    limit: 36, null: false
+    t.string   "value",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "device_tokens", ["user_id"], name: "index_device_tokens_on_user_id", using: :btree
 
   create_table "diffbot_response_owners", primary_key: "uuid", force: true do |t|
     t.string   "diffbot_response_id", limit: 36, null: false
@@ -298,6 +307,14 @@ ActiveRecord::Schema.define(version: 20150825092001) do
 
   add_index "landings", ["author_id"], name: "index_landings_on_author_id", using: :btree
   add_index "landings", ["user_id"], name: "index_landings_on_user_id", using: :btree
+
+  create_table "notifications", primary_key: "uuid", force: true do |t|
+    t.string   "user_id",    limit: 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "notifications", ["user_id"], name: "index_notifications_on_user_id", unique: true, using: :btree
 
   create_table "oauth_providers", primary_key: "uuid", force: true do |t|
     t.string   "user_id",     limit: 36
@@ -532,6 +549,7 @@ ActiveRecord::Schema.define(version: 20150825092001) do
     t.string   "slug"
     t.datetime "last_sign_in_at"
     t.string   "preview_uid"
+    t.integer  "notification_types_mask", default: 0
   end
 
   add_index "users", ["slug"], name: "index_users_on_slug", unique: true, using: :btree

@@ -26,7 +26,8 @@ gem 'kaminari'
 gem 'paper_trail' # tracks changes to model's data
 gem 'impressionist' # tracks page views
 gem 'dotenv-rails' # loads environment variables from .env
-gem 'sidekiq', '~> 3.4.0' # background processing using redis
+gem 'sidekiq', '~> 3.5.0' # background processing using redis
+gem 'sidekiq-cron', '~> 0.3.0'
 gem 'active_model_serializers', '= 0.8.1'
 gem 'dragonfly', '~> 1.0'
 gem 'sprockets-commonjs', git: 'git@github.com:Cloudchart/sprockets-commonjs.git'
@@ -51,6 +52,7 @@ gem 'sitemap_generator', '~> 5.1.0'
 gem 'algoliasearch-rails'
 gem 'algoliasearch', '~> 1.6.0'
 gem 'httpclient', '~> 2.6.0'
+gem 'zero_push'
 
 
 # GraphQL

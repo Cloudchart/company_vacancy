@@ -7,6 +7,8 @@ module.exports =
   TWITTER_APP_NAME: "<%= ENV['TWITTER_APP_NAME'] %>"
   TWITTER_AUTH_PATH: "<%= ENV['TWITTER_AUTH_PATH'] %>"
   REPLY_TO_EMAIL: "<%= ENV['REPLY_TO_EMAIL'] %>"
+  WEBSITE_PUSH_ID: "<%= ENV['WEBSITE_PUSH_ID'] %>"
+  ZERO_PUSH_URL: "<%= ENV['ZERO_PUSH_URL'] %>"
 
 
   # Regular expressions
@@ -17,19 +19,19 @@ module.exports =
   Company:
     COMPANY_FETCH_DONE:   'company:fetch:done'
     COMPANY_FETCH_FAIL:   'company:fetch:fail'
-    
+
     UPDATE:       'company:update'
     UPDATE_DONE:  'company:update:done'
     UPDATE_FAIL:  'company:update:fail'
-    
+
     FETCH_INVITE_TOKENS:        'company:invite_tokens:fetch'
     FETCH_INVITE_TOKENS_DONE:   'company:invite_tokens:fetch:done'
     FETCH_INVITE_TOKENS_FAIL:   'company:invite_tokens:fetch:fail'
-  
+
     FOLLOW:        'company:follow'
     FOLLOW_DONE:   'company:follow:done'
     FOLLOW_FAIL:   'company:follow:fail'
-  
+
     UNFOLLOW:        'company:unfollow'
     UNFOLLOW_DONE:   'company:unfollow:done'
     UNFOLLOW_FAIL:   'company:unfollow:fail'
@@ -37,12 +39,12 @@ module.exports =
     VERIFY_SITE_URL:       'company:verify_site_url'
     VERIFY_SITE_URL_DONE:  'company:verify_site_url:done'
     VERIFY_SITE_URL_FAIL:  'company:verify_site_url:fail'
-    
+
 
   Token:
     FETCH_DONE:   'token:fetch:done'
     FETCH_FAIL:   'token:fetch:fail'
-    
+
     CREATE:       'token:create'
     CREATE_DONE:  'token:create:done'
     CREATE_FAIL:  'token:create:fail'
@@ -54,13 +56,13 @@ module.exports =
     DELETE:       'token:delete'
     DELETE_DONE:  'token:delete:done'
     DELETE_FAIL:  'token:delete:fail'
-  
-  
+
+
   Tag:
     FETCH:        'tag:fetch'
     FETCH_DONE:   'tag:fetch:done'
     FETCH_FAIL:   'tag:fetch:fail'
-    
+
     CREATE:       'tag:create'
     CREATE_DONE:  'tag:create:done'
     CREATE_FAIL:  'tag:create:fail'

@@ -40,7 +40,20 @@ class Pin < ActiveRecord::Base
   validates :parent_id, uniqueness: { scope: :pinboard_id, conditions: -> { where(deleted_at: nil) } }, allow_blank: true, if: -> { is_suggestion? && pinboard_id }
 
   scope :insights, -> { where(parent: nil).where.not(content: nil) }
-  scope :reflection,  -> { where(kind: 'reflection') }
+  scope :reflection, -> { where(kind: 'reflection') }
+
+  scope :ready_for_broadcast, -> (user, start_time, end_time) do
+    favorite_user_ids = user.users_favorites.map(&:favoritable_id)
+    favorite_pinboard_ids = user.pinboards_favorites.map(&:favoritable_id)
+
+    insights.where {
+      created_at.gteq(start_time) &
+      created_at.lteq(end_time) & (
+        user_id.in(favorite_user_ids) |
+        pinboard_id.in(favorite_pinboard_ids)
+      )
+    }
+  end
 
   # Favorites / Reflection
   #

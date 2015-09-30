@@ -16,7 +16,13 @@ SyncButton = require('components/form/buttons').SyncButton
 Checkbox = require('components/form/checkbox')
 ContentEditableArea = require('components/form/contenteditable_area')
 
-KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company', 'twitter'])
+SafariPushNotifications = require('utils/safari_push_notifications')
+
+KnownAttributes = Immutable.Seq(['full_name', 'occupation', 'company', 'twitter', 'notification_types'])
+
+NotificationTypes =
+  email: 'Email'
+  safari: 'Safari'
 
 
 module.exports  = React.createClass
@@ -35,7 +41,10 @@ module.exports  = React.createClass
               author
             },
             emails,
-            tokens
+            tokens,
+            edges{
+              values_for_notification_types
+            }
           }
         """
 
@@ -126,6 +135,9 @@ module.exports  = React.createClass
       landing.get('user_id') == @cursor.user.get('uuid') &&
       landing.get('author_id') == @cursor.me.get('uuid')
 
+  isNotificationTypeChecked: (type) ->
+    @state.attributes.get('notification_types').includes(type)
+
 
   # Handlers
   #
@@ -196,6 +208,18 @@ module.exports  = React.createClass
   handleCreateLandingFail: ->
     @setState sync: @state.sync.set('landing', false)
 
+  handleNotificationTypeChange: (type, checked) ->
+    SafariPushNotifications.requestSafariPush() if checked && type == 'safari'
+
+    notification_types = if checked
+      @state.attributes.get('notification_types').concat(type)
+    else
+      @state.attributes.get('notification_types').filterNot (t) -> t == type
+
+    @setState attributes: @state.attributes.set('notification_types', notification_types)
+    UserSyncApi.update(@cursor.user, notification_types: notification_types.toJS()).then =>
+      @fetch(force: true)
+
 
   # Lifecycle methods
   #
@@ -206,6 +230,7 @@ module.exports  = React.createClass
       emails: EmailStore.cursor.items
       tokens: TokenStore.cursor.items
 
+  componentDidMount: ->
     @fetch()
 
 
@@ -271,6 +296,25 @@ module.exports  = React.createClass
         Our weekly newsletter
       </Checkbox>
     </section>
+
+  renderNotificationTypes: ->
+    <section className="notification-types">
+      <h2>Notifications</h2>
+      { @renderNotificationTypesCheckboxes() }
+    </section>
+
+  renderNotificationTypesCheckboxes: ->
+    @cursor.user.get('values_for_notification_types')
+      .map (type, index) =>
+        <Checkbox
+          key={ index }
+          checked={ @isNotificationTypeChecked(type) }
+          onChange={ @handleNotificationTypeChange.bind(@, type) }
+        >
+
+          { NotificationTypes[type] }
+        </Checkbox>
+      .toArray()
 
   renderLandingPages: ->
     return null unless (landings = @getLandings()).size
@@ -347,4 +391,5 @@ module.exports  = React.createClass
       </form>
       { @renderEmails() }
       { @renderSubscription() }
+      { @renderNotificationTypes() }
     </section>

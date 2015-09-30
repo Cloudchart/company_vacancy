@@ -30,6 +30,7 @@ class Ability
       can :create, Activity
       can [:create, :verify, :resend_verification], Email
       can :destroy, Email, user_id: current_user.id
+      can :create, DeviceToken, user_id: current_user.id
 
       can :manage, :invite do
         current_user.inviter?

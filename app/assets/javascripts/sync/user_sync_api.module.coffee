@@ -23,7 +23,17 @@ module.exports =
 
   update: (item, attributes = {}, options = {}) ->
     data = _.reduce attributes, (memo, value, name) ->
-      memo.append("user[#{name}]", value) ; memo
+      if name == 'notification_types'
+        # ¯\_(ツ)_/¯
+        if value.length == 0
+          memo.append("user[#{name}][]", '')
+        else
+          value.forEach (type) ->
+            memo.append("user[#{name}][]", type)
+      else
+        memo.append("user[#{name}]", value)
+
+      memo
     , new FormData
 
     Promise.resolve $.ajax

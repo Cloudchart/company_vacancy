@@ -1,0 +1,54 @@
+<p style="margin:0;padding:50px 50px 10px 50px;width:85%;">
+  Hey <%= @user.full_name %>,
+</p>
+
+<p style="margin:0;padding:0 50px 10px 50px;width:85%;">
+  Check what's new on <%= link_to ENV['SITE_NAME'], root_url, style: 'color:#3bc462;font-weight:400;text-decoration:none;', target: '_blank' %> for you:
+</p>
+
+<% if @pinboard_invites.any? %>
+  <h2 style="margin:0;padding:20px 50px;font-size:32px;font-weight:300;">Collection invites</h2>
+
+  <ul style="list-style: none;margin:0;padding:0 25px 0 75px;width:85%;">
+    <% @pinboard_invites.each do |invite| %>
+      <li style="padding-bottom:10px;">
+        <%= link_to invite.pinboard.title, collection_url(invite.pinboard), style: 'color:#3bc462;font-weight:400;text-decoration:none;', target: '_blank' %>
+        by <%= invite.author.full_name %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if @insights.any? %>
+  <h2 style="margin:0;padding:20px 50px;font-size:32px;font-weight:300;">Latest insights</h2>
+
+  <ul style="list-style: none;margin:0;padding:0 25px 0 75px;width:85%;">
+    <% @insights.each do |insight| %>
+      <li style="padding-bottom:10px;">
+        <%= link_to insight.content, insight_url(insight), style: 'color:#3bc462;font-weight:400;text-decoration:none;', target: '_blank' %>
+        – <%= insight.user.full_name %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if @pinboards.any? %>
+  <h2 style="margin:0;padding:20px 50px;font-size:32px;font-weight:300;">New collections by people you follow</h2>
+
+  <ul style="list-style: none;margin:0;padding:0 25px 0 75px;width:85%;">
+    <% @pinboards.each do |pinboard| %>
+      <li style="padding-bottom:10px;">
+        <%= link_to pinboard.title, collection_url(pinboard), style: 'color:#3bc462;font-weight:400;text-decoration:none;', target: '_blank' %>
+        by <%= pinboard.user.full_name %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<p style="margin:0;padding:20px 50px 10px 50px;width:85%;">
+  🚀
+</p>
+
+<p style="margin:0;padding:0 50px 50px 50px;width:85%;">
+  If you want to unsubscribe from this digest, <%= link_to 'click here', "#{user_url(@user)}#settings", style: 'color:#3bc462;font-weight:400;text-decoration:none;', target: '_blank' %>.
+</p>

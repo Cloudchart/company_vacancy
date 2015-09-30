@@ -6,8 +6,10 @@ class PinsController < ApplicationController
   authorize_resource
 
   after_action :call_page_visit_to_slack_channel, only: [:show, :search]
-  after_action :create_intercom_event, only: :create
   after_action :crawl_pin_origin, only: [:create, :update]
+  after_action :create_intercom_event, only: :create
+  after_action :spread_notifications, only: :create
+  after_action :track_activity, only: :create
 
   def search
     respond_to do |format|
@@ -27,8 +29,6 @@ class PinsController < ApplicationController
     @pin.is_approved = true if autoapproval_granted?
     @pin.should_allow_domain_name! if current_user.editor?
     @pin.save!
-
-    Activity.track(current_user, params[:action], @pin, { source: @pin.user })
 
     respond_to do |format|
       format.json { render json: { id: @pin.uuid } }
@@ -135,6 +135,15 @@ private
     fields = default_fields << [:origin]
     fields << [:user_id, :content] if current_user.editor?
     fields
+  end
+
+  def track_activity
+    return unless @pin.valid?
+    Activity.track(current_user, params[:action], @pin, { source: @pin.user })
+  end
+
+  def spread_notifications
+    ActiveSupport::Notifications.instrument("#{controller_name}##{action_name}", id: @pin.id)
   end
 
   def crawl_pin_origin

@@ -36,18 +36,6 @@
     }
   }
 
-  @mixin settings-subscription {
-    > label {
-      font-size: $basic-font-size;
-      font-weight: 400;
-
-      > input {
-        font-weight: 300;
-        margin-right: $inner-margin-size;
-      }
-    }
-  }
-
   > form {
     @include settings-form;
   }
@@ -82,7 +70,19 @@
     }
   }
 
-  > .subscription {
-    @include settings-subscription;
+  > .subscription, .notification-types {
+    > label {
+      font-size: $basic-font-size;
+      font-weight: 400;
+
+      &:not(:last-child) {
+        margin-right: 20px;
+      }
+
+      > input {
+        font-weight: 300;
+        margin-right: $inner-margin-size;
+      }
+    }
   }
 }
