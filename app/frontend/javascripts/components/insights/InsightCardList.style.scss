@@ -6,14 +6,6 @@
     overflow-y: hidden;
     height: $h1-line-height;
 
-    > span {
-      display: flex;
-      display: -webkit-flex;
-
-      -webkit-flex-direction: column-reverse;
-              flex-direction: column-reverse;
-    }
-
     &-label {
       display: block;
       height: $h1-line-height;
@@ -21,6 +13,14 @@
       opacity: 1;
       width: 100%;
       -webkit-font-smoothing: subpixel-antialiased;
+
+      &__animation {
+        display: flex;
+        display: -webkit-flex;
+
+        -webkit-flex-direction: column-reverse;
+                flex-direction: column-reverse;
+      }
 
       &-enter-active {
         -webkit-transition-duration: 750ms;
@@ -47,6 +47,7 @@
     overflow: hidden;
 
     &-el {
+      position: relative;
       flex: 1;
       -webkit-flex: 1;
       margin: 0 5px;
