@@ -5,7 +5,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import InsightCard from './InsightCard';
 
 const ANIMATION_DURATION = 750;
-const ANIMATION_DELAY = 3000;
+const ANIMATION_DELAY = 1e3 * 3;
 
 
 export default class InsightCardListTouch extends React.Component {
@@ -48,51 +48,25 @@ export default class InsightCardListTouch extends React.Component {
   }
 
   render () {
-    let collections = this.props.collections.map((coll) => {
-      let items = coll.insights.edges.map((insight) => {
-        return (
-          <li className="insights__list-el" key={ insight.node.id }>
-            <InsightCard insight={ insight.node } />
-          </li>
-        );
-      });
-      return (
-        <li className="insights__collection-el" key={ coll.id }>
-          <h1 className="content-block__head content-block__head_big insights__head">
-            <a className="through insights__head-label" href={ coll.url }>{ coll.title }</a>
-          </h1>
-          <ul className="insights__list">{ items }</ul>
-        </li>
-      );
-    });
+    let collection = this.props.collections[this.state.collectionIndex];
+    let insight = collection.insights.edges[this.state.collectionItemIndex];
 
     return (
       <div className="insights">
-        <ul className="insights__collection">
-          { collections }
-        </ul>
+        <h1 className="content-block__head content-block__head_big insights__head">
+          <a className="through insights__head-label"
+             href={ collection.url }>{ collection.title }</a>
+        </h1>
+        <ReactCSSTransitionGroup component="ul"
+                                 className="insights__list"
+                                 transitionName="insights__list-el"
+                                 transitionEnterTimeout={ ANIMATION_DURATION }
+                                 transitionLeaveTimeout={ ANIMATION_DURATION }>
+          <li className="insights__list-el" key={ insight.node.id }>
+            <InsightCard insight={ insight.node } />
+          </li>
+        </ReactCSSTransitionGroup>
       </div>
     );
-
-    // let collection = this.props.collections[this.state.collectionIndex];
-    // let insight = collection.insights.edges[this.state.collectionItemIndex];
-    //
-    // return (
-    //   <div className="insights">
-    //     <h1 className="content-block__head content-block__head_big insights__head">
-    //       <a className="through insights__head-label"
-    //          href={ collection.url }>{ collection.title }</a>
-    //     </h1>
-    //     <ReactCSSTransitionGroup component="ul"
-    //                              className="insights__list"
-    //                              transitionName="insights__list-el"
-    //                              transitionEnterTimeout={ ANIMATION_DURATION }
-    //                              transitionLeaveTimeout={ ANIMATION_DURATION }>
-    //       <li className="insights__list-el" key={ insight.node.id }>
-    //         <InsightCard insight={ insight.node } />
-    //       </li>
-    //     </ReactCSSTransitionGroup>
-    //   </div>
-    // );
   }
 };

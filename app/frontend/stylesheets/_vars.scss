@@ -1,9 +1,12 @@
+$media-phone: "only screen and (min-device-width: 320px) and (max-device-width: 736px)";
+
 $h1-color: #000000;
 $h1-font-size: 48px;
 $h1-line-height: 50px;
 
 $h1-font-size-touch: 30px;
 $h1-line-height-touch: 32px;
+
 
 $h2-color: #000000;
 $h2-font-size: 26px;
@@ -40,5 +43,3 @@ $button-transparent-font-size: 14px;
 $button-transparent-padding: 20px;
 
 $content-block-width: 944px;
-
-$media-phone: "only screen and (min-device-width: 320px) and (max-device-width: 736px)";

@@ -22,6 +22,12 @@
     letter-spacing: .1em;
     padding: 0 $button-opaque-padding;
     text-transform: uppercase;
+
+    @media #{$media-phone} {
+      text-transform: none;
+      font-weight: 100;
+      letter-spacing: 0.1ex;
+    }
   }
 
 

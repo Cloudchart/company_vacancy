@@ -12,5 +12,9 @@
   > p {
     margin-top: - $base-font-size / 3;
     margin-bottom: - $base-font-size / 3;
+
+    @media #{$media-phone} {
+      font-size: $small-font-size;
+    }
   }
 }

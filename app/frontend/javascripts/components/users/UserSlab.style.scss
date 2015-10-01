@@ -6,6 +6,11 @@
     height: 80px;
     margin: 0 auto 20px;
     width: 80px;
+
+    @media #{$media-phone} {
+      width: 60%;
+      height: auto;
+    }
   }
 
   figcaption {

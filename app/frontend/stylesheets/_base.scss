@@ -1,0 +1,66 @@
+html {
+  background-color: $base-background-color;
+  color: $base-color;
+  box-sizing: border-box;
+  font-family: proxima-nova;
+  font-size: $base-font-size;
+  line-height: $base-line-height;
+
+  * {
+    box-sizing: inherit;
+  }
+}
+
+h1 {
+  color: $h1-color;
+  font-size: $h1-font-size;
+  line-height: $h1-line-height;
+  margin: 0;
+
+  @media #{$media-phone} {
+    font-size: $h1-font-size-touch;
+    line-height: $h1-line-height-touch;
+  }
+}
+
+h2 {
+  color: $h2-color;
+  font-size: $h2-font-size;
+  line-height: $h2-line-height;
+  margin: 0;
+
+  @media #{$media-phone} {
+    font-size: $h2-font-size-touch;
+    line-height: $h2-line-height-touch;
+  }
+}
+
+a {
+  color: $link-color;
+  text-decoration: none;
+
+  &.through {
+    color: inherit;
+  }
+}
+
+p {
+  margin: 0;
+}
+
+figure {
+  img {
+    display: block;
+  }
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.landing-app {
+  &__block {}
+}
