@@ -10,27 +10,28 @@
     }
 
     &-el {
-      align-items: center;
       -webkit-align-items: center;
+              align-items: center;
       box-sizing: border-box;
 
       background-color: #FFF;
       border-bottom: 1px solid #e1e1e1;
       border-radius: $base-border-radius;
 
-      display: inline-flex;
       display: -webkit-inline-flex;
+      display: inline-flex;
 
       min-height: 50px;
       padding: 0 20px;
       margin: 5px;
 
       @media #{$media-phone} {
+        display: block;
         height: auto;
-        min-height: 64px;
         margin: 0 0 20px 0;
+        min-height: inherit;
+        padding: 15px 20px 20px 20px;
         width: 100%;
-        overflow: hidden;
 
         &:last-child {
           margin-bottom: 0px;

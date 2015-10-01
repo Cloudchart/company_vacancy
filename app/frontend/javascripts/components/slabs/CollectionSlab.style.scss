@@ -1,11 +1,13 @@
 @import "vars";
 
 .collection-slab {
+  @media #{$media-phone} {}
 
   span {
     @media #{$media-phone} {
       display: block;
-      white-space: nowrap;
+      line-height: 1.2em;
+      margin-bottom: 10px;
       width: 100%;
     }
   }

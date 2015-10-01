@@ -22,37 +22,39 @@ class LandingApp extends React.Component {
       <article className="landing-app">
         <Header />
 
-        <section className="super-feature">
+        <section className="landing-app__block landing-app__block_full landing-app__block_back">
           <section className="background" />
           <section className="content-block content-block_overflow">
             <h2 className="content-block__head content-block__head_small">learn how to</h2>
             <InsightsContainer collections={ this.props.viewer.super_featured_collections } />
           </section>
-          <section className="content-block content-block_margin">
+          <section className="content-block content-block_margin content-block_padding">
             <ContentButton />
           </section>
         </section>
 
-        <section className="content-block content-block_margin">
-  	      <h2 className="content-block__head_margin content-block__head_small content-block__head">
-  	        Find insights you need.
-  	        Use them on meetings, brainstorms or discussions.
-  	        Follow collections you're interested in.
-  	      </h2>
-          <CollectionSlabList items={ this.props.viewer.featured_collections } />
-	      </section>
+        <section className="landing-app__block landing-app__block_padding">
+          <section className="content-block content-block_margin">
+    	      <h2 className="content-block__head_margin content-block__head_small content-block__head">
+    	        Find insights you need.
+    	        Use them on meetings, brainstorms or discussions.
+    	        Follow collections you're interested in.
+    	      </h2>
+            <CollectionSlabList items={ this.props.viewer.featured_collections } />
+  	      </section>
 
-        <section className="content-block content-block_margin" key="featured-users">
-          <h2 className="content-block__head content-block__head_small content-block__head_margin">
-            We research interviews, books and social media posts
-            by successfull entrepreneurs, find the most important
-            insights and collect them for you to use.
-          </h2>
-          <UserSlabList items={ this.props.viewer.featured_users }/>
-        </section>
+          <section className="content-block content-block_margin" key="featured-users">
+            <h2 className="content-block__head content-block__head_small content-block__head_margin">
+              We research interviews, books and social media posts
+              by successfull entrepreneurs, find the most important
+              insights and collect them for you to use.
+            </h2>
+            <UserSlabList items={ this.props.viewer.featured_users }/>
+          </section>
 
-        <section className="content-block content-block_margin">
-          <ContentButton />
+          <section className="content-block content-block_margin">
+            <ContentButton />
+          </section>
         </section>
       </article>
     );

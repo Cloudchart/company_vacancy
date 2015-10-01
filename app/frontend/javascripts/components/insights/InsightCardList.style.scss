@@ -60,8 +60,10 @@ $head-height-touch: 75px;
       white-space: nowrap;
 
       &-el {
+        box-sizing: border-box;
         display: inline-block;
         vertical-align: top;
+        padding: 0 30px;
         width: 100%;
       }
     }

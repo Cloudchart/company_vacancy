@@ -7,11 +7,20 @@
       bottom: 90px;
       top: 90px;
     }
+
     @media #{$media-phone} {
       margin: {
         bottom: 10px;
         top: 10px;
       }
+    }
+  }
+
+  &_padding {
+    padding: 0 30px;
+    box-sizing: border-box;
+    @media #{$media-phone} {
+      padding: 10px 30px;
     }
   }
 
@@ -61,7 +70,5 @@
   @media #{$media-phone} {
     width: 100%;
     box-sizing: border-box;
-    padding: 0 30px;
   }
-
 }
