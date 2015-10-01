@@ -1,19 +1,30 @@
 @import "vars";
 
 .site-header {
-  align-items: center;
   -webkit-align-items: center;
+          align-items: center;
 
   display: flex;
   display: -webkit-flex;
 
   height: $site-header-height;
 
-  justify-content: space-between;
   -webkit-justify-content: space-between;
+          justify-content: space-between;
 
-  margin: 0 auto;
   width: $content-block-width;
+  position: absolute;
+  left: 50%;
+  top: 0px;
+  margin-left: - ($content-block-width / 2);
+  z-index: 1000;
+
+  @media #{$media-phone} {
+    // position: absolute;
+    width: 100%;
+    left: 0px;
+    margin-left: 0;
+  }
 
   &__logo {
     background-image: url('../../../images/max-logo.png');

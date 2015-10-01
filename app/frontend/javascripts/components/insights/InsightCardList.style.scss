@@ -1,16 +1,24 @@
-@import "vars";
+@import 'vars';
 
 $transition-duration: 750ms;
+$head-height: 50px;
+$head-height-touch: 75px;
 
 .insights {
 
+
   &__head {
     overflow-y: hidden;
-    height: $h1-line-height;
+    height: $head-height;
+
+    @media #{$media-phone} {
+      height: $head-height-touch;
+      overflow: auto;
+    }
 
     &-label {
       display: block;
-      height: $h1-line-height;
+      height: $head-height;
       opacity: 1;
       width: 100%;
       -webkit-font-smoothing: subpixel-antialiased;
@@ -27,8 +35,8 @@ $transition-duration: 750ms;
         &-active {
           -webkit-transition-duration: $transition-duration;
                   transition-duration: $transition-duration;
-          -webkit-transform: translateY(-$h1-line-height);
-                  transform: translateY(-$h1-line-height);
+          -webkit-transform: translateY(-$head-height);
+                  transform: translateY(-$head-height);
         }
       }
 
@@ -37,9 +45,24 @@ $transition-duration: 750ms;
           opacity: 0;
           -webkit-transition-duration: $transition-duration;
                   transition-duration: $transition-duration;
-          -webkit-transform: translateY(-$h1-line-height);
-                  transform: translateY(-$h1-line-height);
+          -webkit-transform: translateY(-$head-height);
+                  transform: translateY(-$head-height);
         }
+      }
+    }
+  }
+
+
+  @media #{$media-phone} {
+    &__collection {
+      display: block;
+      overflow-x: hidden;
+      white-space: nowrap;
+
+      &-el {
+        display: inline-block;
+        vertical-align: top;
+        width: 100%;
       }
     }
   }
@@ -48,12 +71,29 @@ $transition-duration: 750ms;
     display: flex;
     display: -webkit-flex;
     overflow: hidden;
+    margin: 0 -5px;
+
+    @media #{$media-phone} {
+      display: block;
+      overflow: visible;
+      overflow-x: hidden;
+      white-space: nowrap;
+    }
 
     &-el {
       position: relative;
       flex: 1;
       -webkit-flex: 1;
       margin: 0 5px;
+      white-space: normal;
+
+      @media #{$media-phone} {
+        display: inline-block;
+        vertical-align: top;
+
+        -webkit-flex: none;
+                flex: none;
+      }
 
       > * ~ * {
         opacity: 0;

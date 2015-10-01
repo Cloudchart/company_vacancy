@@ -1,8 +1,5 @@
 import React from 'react';
 import Relay from 'react-relay';
-import ReactDOM from 'react-dom';
-
-import ReactTransitionGroup from 'react-addons-transition-group';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import InsightCard from './InsightCard';
@@ -11,7 +8,10 @@ const ANIMATION_DURATION = 750;
 const ANIMATION_DELAY = 3000;
 
 
-class InsightCardList extends React.Component {
+export default class InsightCardList extends React.Component {
+  static defaultProps = {
+    collections: []
+  };
 
   constructor (props) {
     super(props);
@@ -40,19 +40,23 @@ class InsightCardList extends React.Component {
   }
 
   componentDidMount () {
-    setTimeout(this._incrementIndex.bind(this), ANIMATION_DELAY);
+    setTimeout(this._incrementIndex.bind(this), ANIMATION_DELAY + ANIMATION_DURATION);
   }
 
   componentDidUpdate () {
     this._switchInsights();
   }
 
-  renderInsights () {
+  render () {
     let nextIndex = (this.state.index + 1) % this.props.collections.length;
-    let insightsCurr = this.props.collections[this.state.index].insights.edges;
-    let insightsNext = this.props.collections[nextIndex].insights.edges;
 
-    return insightsCurr.map((curr, i) => {
+    let currCollection = this.props.collections[this.state.index];
+    let nextCollection = this.props.collections[nextIndex];
+
+    let insightsCurr = currCollection.insights.edges;
+    let insightsNext = nextCollection.insights.edges;
+
+    let items = insightsCurr.map((curr, i) => {
       let next = insightsNext[i];
       return (
         <li className="insights__list-el" key={ curr.node.id }>
@@ -61,11 +65,6 @@ class InsightCardList extends React.Component {
         </li>
       )
     });
-  }
-
-  render () {
-    let currCollection = this.props.collections[this.state.index];
-    let currInsights = this.props.collections[this.state.index].insights.edges;
 
     return (
       <div className="insights">
@@ -79,30 +78,8 @@ class InsightCardList extends React.Component {
                key={ currCollection.id }>{ currCollection.title }</a>
           </ReactCSSTransitionGroup>
         </h1>
-        <ul className="insights__list" ref="insights">
-          { this.renderInsights() }
-        </ul>
+        <ul className="insights__list" ref="insights">{ items }</ul>
       </div>
     );
   }
 };
-
-export default Relay.createContainer(InsightCardList, {
-  fragments: {
-    collections: () => Relay.QL`
-      fragment on Collection @relay(plural: true) {
-        id
-        title
-        url
-        insights(first: 3) {
-          edges {
-            node {
-              id
-              ${InsightCard.getFragment('insight')}
-            }
-          }
-        }
-      }
-    `
-  }
-});

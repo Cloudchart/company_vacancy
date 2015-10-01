@@ -3,7 +3,7 @@ import Relay from 'react-relay';
 
 import Header from './shared/Header';
 
-import InsightCardList from './insights/InsightCardList';
+import InsightsContainer from './insights/InsightsContainer';
 
 import CollectionSlab from './slabs/CollectionSlab';
 import CollectionSlabList from './slabs/CollectionSlabList';
@@ -26,7 +26,7 @@ class LandingApp extends React.Component {
           <section className="background" />
           <section className="content-block content-block_overflow">
             <h2 className="content-block__head content-block__head_small">learn how to</h2>
-            <InsightCardList collections={ this.props.viewer.super_featured_collections } />
+            <InsightsContainer collections={ this.props.viewer.super_featured_collections } />
           </section>
           <section className="content-block content-block_margin">
             <ContentButton />
@@ -67,7 +67,7 @@ export default Relay.createContainer(LandingApp, {
       fragment on User {
         full_name
         super_featured_collections(scope: "main") {
-          ${InsightCardList.getFragment("collections")}
+          ${InsightsContainer.getFragment("collections")}
         }
         featured_collections(scope: "main") {
           id

@@ -21,6 +21,11 @@ h1 {
   font-size: $h1-font-size;
   line-height: $h1-line-height;
   margin: 0;
+
+  @media #{$media-phone} {
+    font-size: $h1-font-size-touch;
+    line-height: $h1-line-height-touch;
+  }
 }
 
 h2 {
@@ -28,6 +33,11 @@ h2 {
   font-size: $h2-font-size;
   line-height: $h2-line-height;
   margin: 0;
+
+  @media #{$media-phone} {
+    font-size: $h2-font-size-touch;
+    line-height: $h2-line-height-touch;
+  }
 }
 
 a {
