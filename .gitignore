@@ -32,7 +32,8 @@ npm-debug.log
 /public/sitemap.xml
 /public/sitemap.xml.gz
 
-/app/frontend/bundles/
+/app/frontend/bundles/*.map
+/app/frontend/bundles/style.bundle.js
 
 .rbenv-gemsets
 .gemfiles

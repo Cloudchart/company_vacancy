@@ -1,10 +1,16 @@
 html {
-  background-color: $base-background-color;
-  color: $base-color;
+  background-color: $background-color_base;
+  color: $color_base;
   box-sizing: border-box;
   font-family: proxima-nova;
-  font-size: $base-font-size;
-  line-height: $base-line-height;
+  font-size: $font-size_base;
+  line-height: $line-height_base;
+
+
+  @media #{$media-phone} {
+    font-size: $font-size_medium;
+    line-height: $line-height_medium;
+  }
 
   * {
     box-sizing: inherit;
@@ -12,31 +18,31 @@ html {
 }
 
 h1 {
-  color: $h1-color;
-  font-size: $h1-font-size;
-  line-height: $h1-line-height;
+  color: $color_h1;
+  font-size: $font-size_h1;
+  line-height: $line-height_h1;
   margin: 0;
 
   @media #{$media-phone} {
-    font-size: $h1-font-size-touch;
-    line-height: $h1-line-height-touch;
+    font-size: $font-size_h1-touch;
+    line-height: $line-height_h1-touch;
   }
 }
 
 h2 {
-  color: $h2-color;
-  font-size: $h2-font-size;
-  line-height: $h2-line-height;
+  color: $color_h2;
+  font-size: $font-size_h2;
+  line-height: $line-height_h2;
   margin: 0;
 
   @media #{$media-phone} {
-    font-size: $h2-font-size-touch;
-    line-height: $h2-line-height-touch;
+    font-size: $font-size_h2-touch;
+    line-height: $line-height_h2-touch;
   }
 }
 
 a {
-  color: $link-color;
+  color: $color_link;
   text-decoration: none;
 
   &.through {

@@ -1,11 +1,10 @@
 @import 'vars';
 
-$transition-duration: 750ms;
+$transition-duration: 2500ms;
 $head-height: 50px;
 $head-height-touch: 75px;
 
 .insights {
-
 
   &__head {
     overflow-y: hidden;
@@ -21,7 +20,16 @@ $head-height-touch: 75px;
       height: $head-height;
       opacity: 1;
       width: 100%;
+      white-space: normal;
       -webkit-font-smoothing: subpixel-antialiased;
+
+      @media #{$media-phone} {
+        display: block;
+        left: 0%;
+        position: absolute;
+        top: 0px;
+        width: 100%;
+      }
 
       &__animation {
         display: flex;
@@ -29,24 +37,51 @@ $head-height-touch: 75px;
 
         -webkit-flex-direction: column-reverse;
                 flex-direction: column-reverse;
+
+        @media #{$media-phone} {
+          -webkit-flex-direction: row-reverse;
+                  flex-direction: row-reverse;
+          position: relative;
+          white-space: nowrap;
+        }
       }
 
       &-enter {
+        opacity: 0;
+        @media #{$media-phone} {
+          left: 100%;
+        }
+
         &-active {
+          opacity: 1;
           -webkit-transition-duration: $transition-duration;
                   transition-duration: $transition-duration;
           -webkit-transform: translateY(-$head-height);
                   transform: translateY(-$head-height);
+
+          @media #{$media-phone} {
+            left: 0%;
+            -webkit-transform: none;
+                    transform: none;
+          }
         }
       }
 
       &-leave {
+        opacity: 1;
+
         &-active {
           opacity: 0;
           -webkit-transition-duration: $transition-duration;
                   transition-duration: $transition-duration;
           -webkit-transform: translateY(-$head-height);
                   transform: translateY(-$head-height);
+
+          @media #{$media-phone} {
+            left: -100%;
+            -webkit-transform: none;
+                    transform: none;
+          }
         }
       }
     }

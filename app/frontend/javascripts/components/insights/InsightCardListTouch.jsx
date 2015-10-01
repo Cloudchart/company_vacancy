@@ -4,8 +4,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import InsightCard from './InsightCard';
 
-const ANIMATION_DURATION = 750;
-const ANIMATION_DELAY = 1e3 * 3;
+const ANIMATION_DURATION = 2500;
+const ANIMATION_DELAY = 5000;
 
 
 export default class InsightCardListTouch extends React.Component {
@@ -24,12 +24,19 @@ export default class InsightCardListTouch extends React.Component {
 
   _incrementIndex () {
     let collection = this.props.collections[this.state.collectionIndex];
+    //
+    // let nextCollectionIndex = this.state.collectionIndex;
+    // let nextCollectionItemIndex = this.state.collectionItemIndex + 1;
+    //
+    // if (nextCollectionItemIndex >= collection.insights.edges.length) {
+    //   nextCollectionIndex = (this.state.collectionIndex + 1) % this.props.collections.length;
+    //   nextCollectionItemIndex = 0;
+    // }
+    //
 
-    let nextCollectionIndex = this.state.collectionIndex;
+    let nextCollectionIndex = (this.state.collectionIndex + 1) % this.props.collections.length;
     let nextCollectionItemIndex = this.state.collectionItemIndex + 1;
-
     if (nextCollectionItemIndex >= collection.insights.edges.length) {
-      nextCollectionIndex = (this.state.collectionIndex + 1) % this.props.collections.length;
       nextCollectionItemIndex = 0;
     }
 
@@ -54,8 +61,14 @@ export default class InsightCardListTouch extends React.Component {
     return (
       <div className="insights">
         <h1 className="content-block__head content-block__head_big insights__head">
-          <a className="through insights__head-label"
-             href={ collection.url }>{ collection.title }</a>
+          <ReactCSSTransitionGroup className="insights__head-label__animation"
+                                   transitionName="insights__head-label"
+                                   transitionEnterTimeout={ ANIMATION_DURATION }
+                                   transitionLeaveTimeout={ ANIMATION_DURATION }>
+            <a className="through insights__head-label"
+               href={ collection.url }
+               key={ collection.id }>{ collection.title }</a>
+          </ReactCSSTransitionGroup>
         </h1>
         <ReactCSSTransitionGroup component="ul"
                                  className="insights__list"

@@ -10,11 +10,11 @@
   }
 
   > p {
-    margin-top: - $base-font-size / 3;
-    margin-bottom: - $base-font-size / 3;
+    margin-top: - $font-size_base / 3;
+    margin-bottom: - $font-size_base / 3;
 
     @media #{$media-phone} {
-      font-size: $small-font-size;
+      font-size: $font-size_small;
     }
   }
 }

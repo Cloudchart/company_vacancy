@@ -2,16 +2,18 @@
 
 .insight-card {
   background-color: white;
-  border-radius: $base-border-radius;
+  border-radius: $border-radius_base;
   border-bottom: 1px solid rgba(0, 0, 0, .25);
   opacity: 1;
   padding: 30px;
 
+  @media #{$media-phone} {}
+
   > p.content {
-    margin: - $base-font-size / 3 0;
+    margin: - $font-size_base / 3 0;
   }
 
   > ul.controls {
-    margin: (20px - $base-font-size / 3) 0 (- $base-font-size / 3);
+    margin: (20px - $font-size_base / 3) 0 (- $font-size_base / 3);
   }
 }

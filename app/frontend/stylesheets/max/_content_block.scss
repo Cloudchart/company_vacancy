@@ -39,7 +39,7 @@
 
     &_big {
       margin: {
-        top: 14px - $h1-font-size / 3;
+        top: 14px - $font-size_h1 / 3;
         bottom: 35px;
       }
 
@@ -61,7 +61,7 @@
     }
 
     &_small {
-      margin: - $h2-font-size / 3 auto;
+      margin: - $font-size_h2 / 3 auto;
       max-width: 700px;
 
       @media #{$media-phone} {
