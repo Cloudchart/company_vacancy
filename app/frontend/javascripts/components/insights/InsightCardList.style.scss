@@ -1,8 +1,9 @@
 @import 'vars';
 
-$transition-duration: 2500ms;
+$transition-duration: 750ms;
 $head-height: 50px;
 $head-height-touch: 75px;
+$padding: 30px;
 
 .insights {
 
@@ -13,6 +14,7 @@ $head-height-touch: 75px;
     @media #{$media-phone} {
       height: $head-height-touch;
       overflow: auto;
+      padding: 10px 30px;
     }
 
     &-label {
@@ -39,8 +41,8 @@ $head-height-touch: 75px;
                 flex-direction: column-reverse;
 
         @media #{$media-phone} {
-          -webkit-flex-direction: row-reverse;
-                  flex-direction: row-reverse;
+          -webkit-flex-direction: none;
+                  flex-direction: none;
           position: relative;
           white-space: nowrap;
         }
@@ -48,8 +50,12 @@ $head-height-touch: 75px;
 
       &-enter {
         opacity: 0;
+        -webkit-transition-duration: 0;
+                transition-duration: 0;
+
         @media #{$media-phone} {
-          left: 100%;
+          -webkit-transform: translateX(100%);
+                  transform: translateX(100%);
         }
 
         &-active {
@@ -60,15 +66,21 @@ $head-height-touch: 75px;
                   transform: translateY(-$head-height);
 
           @media #{$media-phone} {
-            left: 0%;
-            -webkit-transform: none;
-                    transform: none;
+            -webkit-transform: translateX(0%);
+                    transform: translateX(0%);
           }
         }
       }
 
       &-leave {
         opacity: 1;
+        -webkit-transition-duration: 0;
+                transition-duration: 0;
+
+        @media #{$media-phone} {
+          -webkit-transform: translateX(0);
+                  transform: translateX(0);
+        }
 
         &-active {
           opacity: 0;
@@ -78,9 +90,8 @@ $head-height-touch: 75px;
                   transform: translateY(-$head-height);
 
           @media #{$media-phone} {
-            left: -100%;
-            -webkit-transform: none;
-                    transform: none;
+            -webkit-transform: translateX(-100%);
+                    transform: translateX(-100%);
           }
         }
       }
@@ -94,11 +105,14 @@ $head-height-touch: 75px;
     margin: 0 -5px;
 
     @media #{$media-phone} {
+      box-sizing: border-box;
       display: block;
       overflow: visible;
       overflow-x: hidden;
+      position: relative;
       white-space: nowrap;
       margin: 0;
+      padding: 10px 30px;
     }
 
     &-el {
@@ -107,6 +121,7 @@ $head-height-touch: 75px;
       -webkit-flex: 1;
       margin: 0 5px;
       white-space: normal;
+      opacity: 1;
 
       @media #{$media-phone} {
         margin: 0;
@@ -115,6 +130,38 @@ $head-height-touch: 75px;
 
         -webkit-flex: none;
                 flex: none;
+
+        &-enter {
+          opacity: 0;
+          -webkit-transform: translateX(150%);
+                  transform: translateX(150%);
+          -webkit-transition-duration: 0;
+                  transition-duration: 0;
+
+          &-active {
+            opacity: 1;
+            -webkit-transform: translateX(0%);
+                    transform: translateX(0%);
+            -webkit-transition-duration: $transition-duration;
+                    transition-duration: $transition-duration;
+          }
+        }
+
+        &-leave {
+          opacity: 1;
+          -webkit-transform: translateX(-100%);
+                  transform: translateX(-100%);
+          -webkit-transition-duration: 0;
+                  transition-duration: 0;
+
+          &-active {
+            opacity: 0;
+            -webkit-transform: translateX(-250%);
+                    transform: translateX(-250%);
+            -webkit-transition-duration: $transition-duration;
+                    transition-duration: $transition-duration;
+          }
+        }
       }
 
       > * ~ * {

@@ -4,8 +4,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import InsightCard from './InsightCard';
 
-const ANIMATION_DURATION = 2500;
-const ANIMATION_DELAY = 5000;
+const ANIMATION_DURATION = 750;
+const ANIMATION_DELAY = 3000;
 
 
 export default class InsightCardListTouch extends React.Component {
@@ -24,21 +24,14 @@ export default class InsightCardListTouch extends React.Component {
 
   _incrementIndex () {
     let collection = this.props.collections[this.state.collectionIndex];
-    //
-    // let nextCollectionIndex = this.state.collectionIndex;
-    // let nextCollectionItemIndex = this.state.collectionItemIndex + 1;
-    //
-    // if (nextCollectionItemIndex >= collection.insights.edges.length) {
-    //   nextCollectionIndex = (this.state.collectionIndex + 1) % this.props.collections.length;
-    //   nextCollectionItemIndex = 0;
-    // }
-    //
-
-    let nextCollectionIndex = (this.state.collectionIndex + 1) % this.props.collections.length;
+    let nextCollectionIndex = this.state.collectionIndex;
     let nextCollectionItemIndex = this.state.collectionItemIndex + 1;
+
     if (nextCollectionItemIndex >= collection.insights.edges.length) {
+      nextCollectionIndex = (this.state.collectionIndex + 1) % this.props.collections.length;
       nextCollectionItemIndex = 0;
     }
+
 
     this.setState({
       collectionIndex: nextCollectionIndex,

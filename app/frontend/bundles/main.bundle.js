@@ -48456,8 +48456,8 @@
 	
 	var _InsightCard2 = _interopRequireDefault(_InsightCard);
 	
-	var ANIMATION_DURATION = 2500;
-	var ANIMATION_DELAY = 5000;
+	var ANIMATION_DURATION = 750;
+	var ANIMATION_DELAY = 3000;
 	
 	var InsightCardListTouch = (function (_React$Component) {
 	  _inherits(InsightCardListTouch, _React$Component);
@@ -48485,19 +48485,11 @@
 	    key: '_incrementIndex',
 	    value: function _incrementIndex() {
 	      var collection = this.props.collections[this.state.collectionIndex];
-	      //
-	      // let nextCollectionIndex = this.state.collectionIndex;
-	      // let nextCollectionItemIndex = this.state.collectionItemIndex + 1;
-	      //
-	      // if (nextCollectionItemIndex >= collection.insights.edges.length) {
-	      //   nextCollectionIndex = (this.state.collectionIndex + 1) % this.props.collections.length;
-	      //   nextCollectionItemIndex = 0;
-	      // }
-	      //
-	
-	      var nextCollectionIndex = (this.state.collectionIndex + 1) % this.props.collections.length;
+	      var nextCollectionIndex = this.state.collectionIndex;
 	      var nextCollectionItemIndex = this.state.collectionItemIndex + 1;
+	
 	      if (nextCollectionItemIndex >= collection.insights.edges.length) {
+	        nextCollectionIndex = (this.state.collectionIndex + 1) % this.props.collections.length;
 	        nextCollectionItemIndex = 0;
 	      }
 	
@@ -48807,7 +48799,7 @@
 	          _react2['default'].createElement('section', { className: 'background' }),
 	          _react2['default'].createElement(
 	            'section',
-	            { className: 'content-block content-block_overflow content-block_padding' },
+	            { className: 'content-block content-block_overflow' },
 	            _react2['default'].createElement(
 	              'h2',
 	              { className: 'content-block__head content-block__head_small' },
