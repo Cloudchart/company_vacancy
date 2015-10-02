@@ -9,6 +9,7 @@
 
 # Ignore node modules
 /node_modules
+npm-debug.log
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
@@ -30,9 +31,15 @@
 /public/500.html
 /public/sitemap.xml
 /public/sitemap.xml.gz
+
+/app/frontend/bundles/*.map
+/app/frontend/bundles/style.bundle.js
+
 .rbenv-gemsets
 .gemfiles
 .gems
+.jshintrc
+.jscsrc
 *.sock
 /config/database.yml
 /config/secrets.yml

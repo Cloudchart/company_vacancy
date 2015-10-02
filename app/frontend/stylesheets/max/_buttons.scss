@@ -1,0 +1,54 @@
+.button {
+  background: none;
+  border: none;
+  border-radius: $border-radius_base;
+  color: inherit;
+
+  display: inline-block;
+  line-height: $button-height;
+
+  height: $button-height;
+  vertical-align: middle;
+
+  > * {
+    line-height: 1em;
+  }
+
+  &_opaque {
+    background-color: #3bc462;
+    color: #ffffff;
+    font-size: $button-opaque-font-size;
+    font-weight: bold;
+    letter-spacing: .1em;
+    padding: 0 $button-opaque-padding;
+    text-transform: uppercase;
+
+    @include respond-to(iphone) {
+      text-transform: none;
+      font-weight: 100;
+      letter-spacing: 0.1ex;
+    }
+  }
+
+
+  &_transparent {
+    border: 1px solid #dfe0e2;
+    font-size: $button-transparent-font-size;
+    padding: 0 $button-transparent-padding;
+
+    > i {
+      margin-left: 10px;
+    }
+  }
+
+  &_login {}
+
+  @include respond-to(iphone) {
+    box-sizing: border-box;
+    width: 100%;
+
+    &_login {
+      width: auto;
+    }
+  }
+}

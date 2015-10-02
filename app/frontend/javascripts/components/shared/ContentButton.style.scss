@@ -1,0 +1,33 @@
+@import "vars";
+
+.content-button {
+  text-align: center;
+
+  > a, button {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+
+    @include respond-to(iphone) {
+      margin-bottom: 10px;
+    }
+  }
+
+  > p {
+    margin-top: - $font-size_base / 3;
+    margin-bottom: - $font-size_base / 3;
+
+    @include respond-to(iphone) {
+      font-size: $font-size_small;
+    }
+    @include respond-to(iphone5) {
+      font-size: $font-size_caps;
+    }
+    @include respond-to(iphone6) {
+      font-size: $font-size_small;
+    }
+    @include respond-to(iphone6plus) {
+      font-size: $font-size_small;
+    }
+  }
+}

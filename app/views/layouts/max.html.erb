@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="insights.VC">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <%= favicon_link_tag "#{Rails.env}/favicon.ico" %>
-    <%= stylesheet_link_tag 'max' %>
+    <%= stylesheet_link_tag 'style' %>
+    <%= stylesheet_link_tag 'main' %>
   </head>
   <body>
     <%= yield %>
-
     <%= javascript_include_tag 'move' %>
     <%= javascript_include_tag 'main.bundle' %>
   </body>

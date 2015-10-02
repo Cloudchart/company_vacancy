@@ -1,0 +1,38 @@
+@import "vars";
+
+.collections-slabs {
+
+  &__list {
+    display: block;
+
+    @include respond-to(iphone) {
+      padding: 0;
+    }
+
+    &-el {
+      -webkit-align-items: center;
+              align-items: center;
+      box-sizing: border-box;
+
+      background-color: #FFF;
+      border-bottom: 1px solid #e1e1e1;
+      border-radius: $border-radius_base;
+
+      display: -webkit-inline-flex;
+      display: inline-flex;
+
+      min-height: 50px;
+      padding: 0 20px;
+      margin: 5px;
+
+      @include respond-to(iphone) {
+        display: block;
+        height: auto;
+        margin: 0 0 20px 0;
+        min-height: inherit;
+        padding: 15px 20px 20px 20px;
+        width: 100%;
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+$background-color_base: #fafafa;
+
+$border-radius_base: 5px;
+
+$color_base: #4c4c4c;
+$color_link: #3bc462;
+$color_h1: #000000;
+$color_h2: #000000;
+$color_caps: #c8ae88;
+
+$font-size_base: 18px;
+$font-size_h1: 48px;
+$font-size_h1-touch: 30px;
+$font-size_h2: 26px;
+$font-size_h2-touch: 18px;
+$font-size_medium: 16px;
+$font-size_small: 14px;
+$font-size_caps: 12px;
+
+$line-height_base: 26px;
+$line-height_medium: 24px;
+$line-height_h1: 50px;
+$line-height_h1-touch: 32px;
+$line-height_h2: 36px;
+$line-height_h2-touch: 20px;
+$line-height_caps: 12px;
+
+
+$site-header-height: 80px;
+
+$button-height: 50px;
+
+$button-opaque-font-size: 16px;
+$button-opaque-padding: 40px;
+
+$button-transparent-font-size: 14px;
+$button-transparent-padding: 20px;
+
+$content-block-width: 944px;
+
+
+$media_iphone:       "only screen and (min-device-width: 320px) and (max-device-width: 736px)";
+$media_iphone-5:     "only screen and (min-device-width: 320px) and (max-device-width: 568px)";
+$media_iphone-6:     "only screen and (min-device-width: 375px) and (max-device-width: 667px)";
+$media_iphone-6plus: "only screen and (min-device-width: 414px) and (max-device-width: 736px)";
+
+@mixin respond-to($media, $orientation: "") {
+  @if $media == iphone {
+    @media #{$media_iphone} { @content; }
+  }
+
+  @if $media == iphone5 {
+    @media #{$media_iphone-5} { @content; }
+  }
+
+  @if $media == iphone6 {
+    @media #{$media_iphone-6} { @content; }
+  }
+
+  @if $media == iphone6plus {
+    @media #{$media_iphone-6plus} { @content; }
+  }
+}

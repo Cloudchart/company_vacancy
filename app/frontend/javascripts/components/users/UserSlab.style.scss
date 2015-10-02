@@ -1,0 +1,21 @@
+@import "vars";
+
+.user-slab {
+  img {
+    border-radius: 50%;
+    height: 80px;
+    margin: 0 auto 20px;
+    width: 80px;
+
+    @include respond-to(iphone) {
+      width: 60%;
+      height: auto;
+    }
+  }
+
+  figcaption {
+    line-height: 20px;
+    margin-top: - $font-size_base / 3;
+    text-align: center;
+  }
+}

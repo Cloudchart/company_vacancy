@@ -1,0 +1,74 @@
+html {
+  background-color: $background-color_base;
+  color: $color_base;
+  box-sizing: border-box;
+  font-family: proxima-nova;
+  font-size: $font-size_base;
+  line-height: $line-height_base;
+
+  @include respond-to(iphone) {
+    font-size: $font-size_medium;
+    line-height: $line-height_medium;
+  }
+
+  * {
+    box-sizing: inherit;
+  }
+}
+
+body {
+}
+
+h1 {
+  color: $color_h1;
+  font-size: $font-size_h1;
+  line-height: $line-height_h1;
+  margin: 0;
+
+  @include respond-to(iphone) {
+    font-size: $font-size_h1-touch;
+    line-height: $line-height_h1-touch;
+  }
+}
+
+h2 {
+  color: $color_h2;
+  font-size: $font-size_h2;
+  line-height: $line-height_h2;
+  margin: 0;
+
+  @include respond-to(iphone) {
+    font-size: $font-size_h2-touch;
+    line-height: $line-height_h2-touch;
+  }
+}
+
+a {
+  color: $color_link;
+  text-decoration: none;
+
+  &.through {
+    color: inherit;
+  }
+}
+
+p {
+  margin: 0;
+}
+
+figure {
+  img {
+    display: block;
+  }
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.landing-app {
+  &__block {}
+}

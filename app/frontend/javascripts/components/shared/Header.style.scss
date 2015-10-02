@@ -1,0 +1,68 @@
+@import "vars";
+
+.site-header {
+  -webkit-align-items: center;
+          align-items: center;
+
+  display: flex;
+  display: -webkit-flex;
+
+  height: $site-header-height;
+
+  -webkit-justify-content: space-between;
+          justify-content: space-between;
+
+  width: $content-block-width;
+  position: absolute;
+  left: 50%;
+  top: 0px;
+  margin-left: - ($content-block-width / 2);
+  z-index: 1000;
+
+  @include respond-to(iphone) {
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    top: 0px;
+    margin-left: 0;
+  }
+
+  &__logo {
+    background-image: url('../../../images/max-logo.png');
+    background-size: contain;
+    display: block;
+    height: 25px;
+    width: 100px;
+
+
+    @include respond-to(iphone) {
+      height: 30px;
+      width: 120px;
+    }
+    @include respond-to(iphone5) {
+      height: 25px;
+      width: 100px;
+    }
+    @include respond-to(iphone6) {
+      height: 30px;
+      width: 120px;;
+    }
+    @include respond-to(iphone6plus) {
+      height: 30px;
+      width: 120px;
+    }
+  }
+
+  @include respond-to(iphone) {
+    box-sizing: border-box;
+    padding: 0 30px;
+    width: 100%;
+
+    .button_login {
+      height: 30px;
+      font-size: 12px;
+      padding: 0 10px;
+      line-height: 30px;
+    }
+  }
+}

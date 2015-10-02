@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git+https://github.com/Cloudchart/company_vacancy.git"
   },
+  "scripts": {
+    "webpack:watch": "node_modules/.bin/webpack --color --progress --watch --devtool source-map"
+  },
   "author": "Eugene Kovalev",
   "license": "ISC",
   "bugs": {
@@ -14,16 +17,30 @@
   },
   "homepage": "https://github.com/Cloudchart/company_vacancy#readme",
   "devDependencies": {
+    "anybar-webpack": "^1.0.8",
     "babel": "^5.8.23",
     "babel-core": "^5.8.23",
     "babel-loader": "^5.3.2",
     "babel-relay-plugin": "^0.1.3",
     "babel-runtime": "^5.8.20",
+    "css-loader": "^0.19.0",
+    "exports-loader": "^0.6.2",
+    "extract-text-webpack-plugin": "^0.8.2",
+    "file-loader": "^0.8.4",
+    "font-awesome": "^4.4.0",
+    "font-awesome-webpack": "0.0.3",
     "graphql": "^0.4.3",
     "moment": "^2.10.6",
+    "node-sass": "^3.3.3",
     "react": "^0.14.0-beta3",
+    "react-addons-css-transition-group": "^0.14.0-rc1",
+    "react-addons-transition-group": "^0.14.0-rc1",
     "react-dom": "^0.14.0-beta3",
     "react-relay": "^0.3.1",
+    "sass-loader": "^2.0.1",
+    "script-loader": "^0.6.1",
+    "style-loader": "^0.12.4",
+    "url-loader": "^0.5.6",
     "webpack": "^1.12.1"
   }
 }

@@ -1,0 +1,78 @@
+.content-block {
+  width: $content-block-width;
+  margin: 0 auto;
+
+  &_margin {
+    margin: {
+      bottom: 90px;
+      top: 90px;
+    }
+
+    @include respond-to(iphone) {
+      margin: {
+        bottom: 10px;
+        top: 10px;
+      }
+    }
+  }
+
+  &_padding {
+    padding: 0 30px;
+    box-sizing: border-box;
+    @include respond-to(iphone) {
+      padding: 10px 30px;
+    }
+  }
+
+  &_overflow {
+    flex: 1;
+    -webkit-flex: 1;
+    margin: {
+      bottom: 0;
+      top: 0;
+    }
+    overflow: hidden;
+  }
+
+  &__head {
+    text-align: center;
+
+    &_big {
+      margin: {
+        top: 14px - $font-size_h1 / 3;
+        bottom: 35px;
+      }
+
+      @include respond-to(iphone) {
+        margin-bottom: 5px;
+      }
+    }
+
+    &_margin {
+      &::after {
+        content: " ";
+        display: block;
+        height: 35px;
+
+        @include respond-to(iphone) {
+          height: 10px;
+        }
+      }
+    }
+
+    &_small {
+      margin: - $font-size_h2 / 3 auto;
+      max-width: 700px;
+
+      @include respond-to(iphone) {
+        width: 100%;
+        margin: 0 auto 10px 0;
+      }
+    }
+  }
+
+  @include respond-to(iphone) {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
