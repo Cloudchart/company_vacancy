@@ -3194,6 +3194,10 @@ ul {
   }
 }
 
+.landing-app__block {
+  position: relative;
+}
+
 .landing-app__block_full {
   box-sizing: border-box;
   display: flex;
@@ -3211,6 +3215,26 @@ ul {
 @media only screen and (min-device-width: 320px) and (max-device-width: 736px) {
   .landing-app__block_full {
     min-height: 480px;
+    height: 100vh;
+  }
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
+  .landing-app__block_full {
+    min-height: 500px;
+    height: auto;
+  }
+}
+
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px) {
+  .landing-app__block_full {
+    height: 100vh;
+  }
+}
+
+@media only screen and (min-device-width: 414px) and (max-device-width: 736px) {
+  .landing-app__block_full {
+    height: 100vh;
   }
 }
 

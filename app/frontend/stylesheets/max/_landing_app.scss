@@ -1,7 +1,7 @@
 .landing-app {
 
   &__block {
-
+    position: relative;
     &_full {
       box-sizing: border-box;
       display: flex;
@@ -16,8 +16,19 @@
       padding-top: $site-header-height;
       width: 100vw;
 
-      @media #{$media-phone} {
+      @include respond-to(iphone) {
         min-height: 480px;
+        height: 100vh;
+      }
+      @include respond-to(iphone5) {
+        min-height: 500px;
+        height: auto;
+      }
+      @include respond-to(iphone6) {
+        height: 100vh;
+      }
+      @include respond-to(iphone6plus) {
+        height: 100vh;
       }
     }
 
@@ -42,7 +53,7 @@
     }
 
     &_padding {
-      @media #{$media-phone} {
+      @include respond-to(iphone) {
         box-sizing: border-box;
         padding: 30px;
         width: 100%;

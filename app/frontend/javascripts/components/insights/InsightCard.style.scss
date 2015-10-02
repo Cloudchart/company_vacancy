@@ -7,7 +7,7 @@
   opacity: 1;
   padding: 30px;
 
-  @media #{$media-phone} {}
+  @include respond-to(iphone) {}
 
   > p.content {
     margin: - $font-size_base / 3 0;

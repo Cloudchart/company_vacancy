@@ -8,43 +8,56 @@ $padding: 30px;
 .insights {
 
   &__head {
-    overflow-y: hidden;
     height: $head-height;
+    overflow-y: hidden;
+    position: relative;
 
-    @media #{$media-phone} {
+    @include respond-to(iphone) {
       height: $head-height-touch;
       overflow: auto;
-      padding: 10px 30px;
     }
 
     &-label {
       display: block;
+      -webkit-font-smoothing: subpixel-antialiased;
+              font-smoothing: subpixel-antialiased;
       height: $head-height;
       opacity: 1;
       width: 100%;
       white-space: normal;
-      -webkit-font-smoothing: subpixel-antialiased;
 
-      @media #{$media-phone} {
-        display: block;
-        left: 0%;
+      @include respond-to(iphone) {
+        box-sizing: border-box;
+        left: 0px;
+        top: 10px;
+        padding: 0 30px;
         position: absolute;
-        top: 0px;
         width: 100%;
       }
 
-      &__animation {
-        display: flex;
-        display: -webkit-flex;
+      &-leave {
+        opacity: 1;
+        -webkit-transition-duration: 0;
+                transition-duration: 0;
+        -webkit-transform: translate3d(0, -100%, 0);
+                transform: translate3d(0, -100%, 0);
 
-        -webkit-flex-direction: column-reverse;
-                flex-direction: column-reverse;
+        @include respond-to(iphone) {
+          -webkit-transform: translate3d(0%, 0, 0);
+                  transform: translate3d(0%, 0, 0);
+        }
 
-        @media #{$media-phone} {
-          -webkit-flex-direction: none;
-                  flex-direction: none;
-          position: relative;
-          white-space: nowrap;
+        &-active {
+          opacity: 0;
+          -webkit-transition-duration: $transition-duration;
+                  transition-duration: $transition-duration;
+          -webkit-transform: translate3d(0, -200%, 0);
+                  transform: translate3d(0, -200%, 0);
+
+          @include respond-to(iphone) {
+            -webkit-transform: translate3d(-100%, 0, 0);
+                    transform: translate3d(-100%, 0, 0);
+          }
         }
       }
 
@@ -52,46 +65,24 @@ $padding: 30px;
         opacity: 0;
         -webkit-transition-duration: 0;
                 transition-duration: 0;
+        -webkit-transform: translate3d(0, 100%, 0);
+                transform: translate3d(0, 100%, 0);
 
-        @media #{$media-phone} {
-          -webkit-transform: translateX(100%);
-                  transform: translateX(100%);
+        @include respond-to(iphone) {
+          -webkit-transform: translate3d(100%, 0, 0);
+                  transform: translate3d(100%, 0, 0);
         }
 
         &-active {
           opacity: 1;
           -webkit-transition-duration: $transition-duration;
                   transition-duration: $transition-duration;
-          -webkit-transform: translateY(-$head-height);
-                  transform: translateY(-$head-height);
+          -webkit-transform: translate3d(0, 0%, 0);
+                  transform: translate3d(0, 0%, 0);
 
-          @media #{$media-phone} {
-            -webkit-transform: translateX(0%);
-                    transform: translateX(0%);
-          }
-        }
-      }
-
-      &-leave {
-        opacity: 1;
-        -webkit-transition-duration: 0;
-                transition-duration: 0;
-
-        @media #{$media-phone} {
-          -webkit-transform: translateX(0);
-                  transform: translateX(0);
-        }
-
-        &-active {
-          opacity: 0;
-          -webkit-transition-duration: $transition-duration;
-                  transition-duration: $transition-duration;
-          -webkit-transform: translateY(-$head-height);
-                  transform: translateY(-$head-height);
-
-          @media #{$media-phone} {
-            -webkit-transform: translateX(-100%);
-                    transform: translateX(-100%);
+          @include respond-to(iphone) {
+            -webkit-transform: translate3d(0%, 0, 0);
+                    transform: translate3d(0%, 0, 0);
           }
         }
       }
@@ -104,7 +95,7 @@ $padding: 30px;
     overflow: hidden;
     margin: 0 -5px;
 
-    @media #{$media-phone} {
+    @include respond-to(iphone) {
       box-sizing: border-box;
       display: block;
       overflow: visible;
@@ -113,6 +104,15 @@ $padding: 30px;
       white-space: nowrap;
       margin: 0;
       padding: 10px 30px;
+    }
+    @include respond-to(iphone5) {
+      min-height: 350px;
+    }
+    @include respond-to(iphone6) {
+      min-height: auto;
+    }
+    @include respond-to(iphone6plus) {
+      min-height: auto;
     }
 
     &-el {
@@ -123,25 +123,29 @@ $padding: 30px;
       white-space: normal;
       opacity: 1;
 
-      @media #{$media-phone} {
+      @include respond-to(iphone) {
         margin: 0;
         display: inline-block;
         vertical-align: top;
 
         -webkit-flex: none;
                 flex: none;
+        -webkit-backface-visibility: hidden;
+      	-webkit-perspective: 1000;
+        -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
 
         &-enter {
-          opacity: 0;
-          -webkit-transform: translateX(150%);
-                  transform: translateX(150%);
+          opacity: 0.5;
+          -webkit-transform: translate3d(150%, 0, 0);
+                  transform: translate3d(150%, 0, 0);
           -webkit-transition-duration: 0;
                   transition-duration: 0;
 
           &-active {
             opacity: 1;
-            -webkit-transform: translateX(0%);
-                    transform: translateX(0%);
+            -webkit-transform: translate3d(0%, 0, 0);
+                    transform: translate3d(0%, 0, 0);
             -webkit-transition-duration: $transition-duration;
                     transition-duration: $transition-duration;
           }
@@ -149,15 +153,15 @@ $padding: 30px;
 
         &-leave {
           opacity: 1;
-          -webkit-transform: translateX(-100%);
-                  transform: translateX(-100%);
+          -webkit-transform: translate3d(-100%, 0, 0);
+                  transform: translate3d(-100%, 0, 0);
           -webkit-transition-duration: 0;
                   transition-duration: 0;
 
           &-active {
-            opacity: 0;
-            -webkit-transform: translateX(-250%);
-                    transform: translateX(-250%);
+            opacity: 0.5;
+            -webkit-transform: translate3d(-250%, 0, 0);
+                    transform: translate3d(-250%, 0, 0);
             -webkit-transition-duration: $transition-duration;
                     transition-duration: $transition-duration;
           }

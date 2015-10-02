@@ -68,16 +68,15 @@ export default class InsightCardList extends React.Component {
 
     return (
       <div className="insights">
-        <h1 className="content-block__head content-block__head_big insights__head">
-          <ReactCSSTransitionGroup className="insights__head-label__animation"
-                                   transitionName="insights__head-label"
-                                   transitionEnterTimeout={ ANIMATION_DURATION }
-                                   transitionLeaveTimeout={ ANIMATION_DURATION }>
-            <a className="through insights__head-label"
-               href={ currCollection.url }
-               key={ currCollection.id }>{ currCollection.title }</a>
-          </ReactCSSTransitionGroup>
-        </h1>
+        <ReactCSSTransitionGroup component="h1"
+                                 className="content-block__head content-block__head_big insights__head"
+                                 transitionName="insights__head-label"
+                                 transitionEnterTimeout={ ANIMATION_DURATION }
+                                 transitionLeaveTimeout={ ANIMATION_DURATION }>
+          <a className="through insights__head-label"
+             href={ currCollection.url }
+             key={ currCollection.id }>{ currCollection.title }</a>
+        </ReactCSSTransitionGroup>
         <ul className="insights__list" ref="insights">{ items }</ul>
       </div>
     );

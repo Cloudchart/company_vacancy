@@ -47015,22 +47015,28 @@
 /* 635 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	exports.pluralize = pluralize;
 	exports.truncate = truncate;
 	
 	function pluralize(count, singular, plural) {
-	  return count + " " + (count == 1 ? singular : plural);
+	  return count + ' ' + (count == 1 ? singular : plural);
 	}
 	
 	function truncate(content) {
-	  var size = arguments.length <= 1 || arguments[1] === undefined ? 230 : arguments[1];
+	  var size = arguments.length <= 1 || arguments[1] === undefined ? 200 : arguments[1];
 	
-	  return content.length > size + 3 ? content.substring(0, size) + "..." : content;
+	  if (content.length < size + 3) {
+	    return content;
+	  }
+	
+	  var raw = content.substring(0, size).split(' ').slice(0, -1).join(' ');
+	
+	  return raw + '...';
 	}
 
 /***/ },
@@ -47163,21 +47169,18 @@
 	        'div',
 	        { className: 'insights' },
 	        _react2['default'].createElement(
-	          'h1',
-	          { className: 'content-block__head content-block__head_big insights__head' },
+	          _reactAddonsCssTransitionGroup2['default'],
+	          { component: 'h1',
+	            className: 'content-block__head content-block__head_big insights__head',
+	            transitionName: 'insights__head-label',
+	            transitionEnterTimeout: ANIMATION_DURATION,
+	            transitionLeaveTimeout: ANIMATION_DURATION },
 	          _react2['default'].createElement(
-	            _reactAddonsCssTransitionGroup2['default'],
-	            { className: 'insights__head-label__animation',
-	              transitionName: 'insights__head-label',
-	              transitionEnterTimeout: ANIMATION_DURATION,
-	              transitionLeaveTimeout: ANIMATION_DURATION },
-	            _react2['default'].createElement(
-	              'a',
-	              { className: 'through insights__head-label',
-	                href: currCollection.url,
-	                key: currCollection.id },
-	              currCollection.title
-	            )
+	            'a',
+	            { className: 'through insights__head-label',
+	              href: currCollection.url,
+	              key: currCollection.id },
+	            currCollection.title
 	          )
 	        ),
 	        _react2['default'].createElement(
@@ -48518,21 +48521,18 @@
 	        'div',
 	        { className: 'insights' },
 	        _react2['default'].createElement(
-	          'h1',
-	          { className: 'content-block__head content-block__head_big insights__head' },
+	          _reactAddonsCssTransitionGroup2['default'],
+	          { component: 'h1',
+	            className: 'content-block__head content-block__head_big insights__head',
+	            transitionName: 'insights__head-label',
+	            transitionEnterTimeout: ANIMATION_DURATION,
+	            transitionLeaveTimeout: ANIMATION_DURATION },
 	          _react2['default'].createElement(
-	            _reactAddonsCssTransitionGroup2['default'],
-	            { className: 'insights__head-label__animation',
-	              transitionName: 'insights__head-label',
-	              transitionEnterTimeout: ANIMATION_DURATION,
-	              transitionLeaveTimeout: ANIMATION_DURATION },
-	            _react2['default'].createElement(
-	              'a',
-	              { className: 'through insights__head-label',
-	                href: collection.url,
-	                key: collection.id },
-	              collection.title
-	            )
+	            'a',
+	            { className: 'through insights__head-label',
+	              href: collection.url,
+	              key: collection.id },
+	            collection.title
 	          )
 	        ),
 	        _react2['default'].createElement(
@@ -48796,14 +48796,13 @@
 	        _react2['default'].createElement(
 	          'section',
 	          { className: 'landing-app__block landing-app__block_full landing-app__block_back' },
-	          _react2['default'].createElement('section', { className: 'background' }),
 	          _react2['default'].createElement(
 	            'section',
 	            { className: 'content-block content-block_overflow' },
 	            _react2['default'].createElement(
 	              'h2',
 	              { className: 'content-block__head content-block__head_small' },
-	              'learn how to'
+	              'Learn how to'
 	            ),
 	            _react2['default'].createElement(_insightsInsightsContainer2['default'], { collections: this.props.viewer.super_featured_collections })
 	          ),
@@ -49163,14 +49162,18 @@
 	      return _react2['default'].createElement(
 	        'figure',
 	        { className: 'user-slab' },
-	        _react2['default'].createElement('img', { src: this.props.user.avatar }),
 	        _react2['default'].createElement(
-	          'figcaption',
-	          null,
+	          'a',
+	          { className: 'user-slab__url', href: this.props.user.url },
+	          _react2['default'].createElement('img', { src: this.props.user.avatar }),
 	          _react2['default'].createElement(
-	            'a',
-	            { href: this.props.user.url },
-	            this.props.user.full_name
+	            'figcaption',
+	            null,
+	            _react2['default'].createElement(
+	              'span',
+	              { className: 'user-slab__name' },
+	              this.props.user.full_name
+	            )
 	          )
 	        )
 	      );

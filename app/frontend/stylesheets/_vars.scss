@@ -1,5 +1,3 @@
-$media-phone: "only screen and (min-device-width: 320px) and (max-device-width: 736px)";
-
 $background-color_base: #fafafa;
 
 $border-radius_base: 5px;
@@ -28,7 +26,6 @@ $line-height_h2-touch: 20px;
 $line-height_caps: 12px;
 
 
-
 $site-header-height: 80px;
 
 $button-height: 50px;
@@ -40,3 +37,27 @@ $button-transparent-font-size: 14px;
 $button-transparent-padding: 20px;
 
 $content-block-width: 944px;
+
+
+$media_iphone:       "only screen and (min-device-width: 320px) and (max-device-width: 736px)";
+$media_iphone-5:     "only screen and (min-device-width: 320px) and (max-device-width: 568px)";
+$media_iphone-6:     "only screen and (min-device-width: 375px) and (max-device-width: 667px)";
+$media_iphone-6plus: "only screen and (min-device-width: 414px) and (max-device-width: 736px)";
+
+@mixin respond-to($media, $orientation: "") {
+  @if $media == iphone {
+    @media #{$media_iphone} { @content; }
+  }
+
+  @if $media == iphone5 {
+    @media #{$media_iphone-5} { @content; }
+  }
+
+  @if $media == iphone6 {
+    @media #{$media_iphone-6} { @content; }
+  }
+
+  @if $media == iphone6plus {
+    @media #{$media_iphone-6plus} { @content; }
+  }
+}

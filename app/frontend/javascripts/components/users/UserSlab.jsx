@@ -6,12 +6,12 @@ class UserSlab extends React.Component {
   render () {
     return (
       <figure className="user-slab">
-        <img src={ this.props.user.avatar } />
-        <figcaption>
-          <a href={ this.props.user.url }>
-            { this.props.user.full_name }
-          </a>
-        </figcaption>
+        <a className="user-slab__url" href={ this.props.user.url }>
+          <img src={ this.props.user.avatar } />
+          <figcaption>
+            <span className="user-slab__name">{ this.props.user.full_name }</span>
+          </figcaption>
+        </a>
       </figure>
     );
   }

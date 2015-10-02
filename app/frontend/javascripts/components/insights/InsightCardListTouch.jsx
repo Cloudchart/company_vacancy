@@ -53,16 +53,15 @@ export default class InsightCardListTouch extends React.Component {
 
     return (
       <div className="insights">
-        <h1 className="content-block__head content-block__head_big insights__head">
-          <ReactCSSTransitionGroup className="insights__head-label__animation"
-                                   transitionName="insights__head-label"
-                                   transitionEnterTimeout={ ANIMATION_DURATION }
-                                   transitionLeaveTimeout={ ANIMATION_DURATION }>
-            <a className="through insights__head-label"
-               href={ collection.url }
-               key={ collection.id }>{ collection.title }</a>
-          </ReactCSSTransitionGroup>
-        </h1>
+        <ReactCSSTransitionGroup component="h1"
+                                 className="content-block__head content-block__head_big insights__head"
+                                 transitionName="insights__head-label"
+                                 transitionEnterTimeout={ ANIMATION_DURATION }
+                                 transitionLeaveTimeout={ ANIMATION_DURATION }>
+          <a className="through insights__head-label"
+             href={ collection.url }
+             key={ collection.id }>{ collection.title }</a>
+        </ReactCSSTransitionGroup>
         <ReactCSSTransitionGroup component="ul"
                                  className="insights__list"
                                  transitionName="insights__list-el"

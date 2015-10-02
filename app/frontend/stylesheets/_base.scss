@@ -6,8 +6,7 @@ html {
   font-size: $font-size_base;
   line-height: $line-height_base;
 
-
-  @media #{$media-phone} {
+  @include respond-to(iphone) {
     font-size: $font-size_medium;
     line-height: $line-height_medium;
   }
@@ -23,7 +22,7 @@ h1 {
   line-height: $line-height_h1;
   margin: 0;
 
-  @media #{$media-phone} {
+  @include respond-to(iphone) {
     font-size: $font-size_h1-touch;
     line-height: $line-height_h1-touch;
   }
@@ -35,7 +34,7 @@ h2 {
   line-height: $line-height_h2;
   margin: 0;
 
-  @media #{$media-phone} {
+  @include respond-to(iphone) {
     font-size: $font-size_h2-touch;
     line-height: $line-height_h2-touch;
   }

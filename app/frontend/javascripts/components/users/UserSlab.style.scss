@@ -7,7 +7,7 @@
     margin: 0 auto 20px;
     width: 80px;
 
-    @media #{$media-phone} {
+    @include respond-to(iphone) {
       width: 60%;
       height: auto;
     }

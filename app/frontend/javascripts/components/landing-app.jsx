@@ -23,9 +23,8 @@ class LandingApp extends React.Component {
         <Header />
 
         <section className="landing-app__block landing-app__block_full landing-app__block_back">
-          <section className="background" />
           <section className="content-block content-block_overflow">
-            <h2 className="content-block__head content-block__head_small">learn how to</h2>
+            <h2 className="content-block__head content-block__head_small">Learn how to</h2>
             <InsightsContainer collections={ this.props.viewer.super_featured_collections } />
           </section>
           <section className="content-block content-block_margin content-block_padding">

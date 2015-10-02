@@ -5,7 +5,7 @@
     display: flex;
     display: -webkit-flex;
 
-    @media #{$media-phone} {
+    @include respond-to(iphone) {
       display: block;
     }
 
@@ -14,7 +14,7 @@
       -webkit-flex: 1;
       margin-bottom: 30px;
 
-      @media #{$media-phone} {
+      @include respond-to(iphone) {
         display: inline-block;
         vertical-align: middle;
         width: 50%;

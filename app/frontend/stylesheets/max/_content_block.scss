@@ -8,7 +8,7 @@
       top: 90px;
     }
 
-    @media #{$media-phone} {
+    @include respond-to(iphone) {
       margin: {
         bottom: 10px;
         top: 10px;
@@ -19,7 +19,7 @@
   &_padding {
     padding: 0 30px;
     box-sizing: border-box;
-    @media #{$media-phone} {
+    @include respond-to(iphone) {
       padding: 10px 30px;
     }
   }
@@ -43,7 +43,7 @@
         bottom: 35px;
       }
 
-      @media #{$media-phone} {
+      @include respond-to(iphone) {
         margin-bottom: 5px;
       }
     }
@@ -54,7 +54,7 @@
         display: block;
         height: 35px;
 
-        @media #{$media-phone} {
+        @include respond-to(iphone) {
           height: 10px;
         }
       }
@@ -64,14 +64,14 @@
       margin: - $font-size_h2 / 3 auto;
       max-width: 700px;
 
-      @media #{$media-phone} {
+      @include respond-to(iphone) {
         width: 100%;
         margin: 0 auto 10px 0;
       }
     }
   }
 
-  @media #{$media-phone} {
+  @include respond-to(iphone) {
     width: 100%;
     box-sizing: border-box;
   }

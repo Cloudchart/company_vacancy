@@ -1,5 +1,6 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const AnyBarWebpackPlugin = require('anybar-webpack');
 
 module.exports = {
   context: path.resolve(__dirname, './app/frontend/javascripts'),
@@ -58,6 +59,7 @@ module.exports = {
       omit: 1,
       extract: true,
       remove: true
-    })
+    }),
+    new AnyBarWebpackPlugin()
   ]
 };
