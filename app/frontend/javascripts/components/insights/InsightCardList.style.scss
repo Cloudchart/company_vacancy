@@ -14,7 +14,6 @@ $padding: 30px;
 
     @include respond-to(iphone) {
       height: $head-height-touch;
-      overflow: auto;
     }
 
     &-label {
@@ -145,8 +144,8 @@ $padding: 30px;
 
         &-enter {
           opacity: 0.5;
-          -webkit-transform: translate3d(150%, 0, 0);
-                  transform: translate3d(150%, 0, 0);
+          -webkit-transform: translate3d(99%, 0, 0);
+                  transform: translate3d(99%, 0, 0);
           -webkit-transition-duration: 0;
                   transition-duration: 0;
 
