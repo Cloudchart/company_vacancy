@@ -94,6 +94,11 @@ $padding: 30px;
     display: -webkit-flex;
     overflow: hidden;
     margin: 0 -5px;
+    -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+    -webkit-perspective: 1000;
 
     @include respond-to(iphone) {
       box-sizing: border-box;
@@ -122,6 +127,11 @@ $padding: 30px;
       margin: 0 5px;
       white-space: normal;
       opacity: 1;
+      -webkit-transform-style: preserve-3d;
+              transform-style: preserve-3d;
+      -webkit-backface-visibility: hidden;
+              backface-visibility: hidden;
+      -webkit-perspective: 1000;
 
       @include respond-to(iphone) {
         margin: 0;
@@ -130,8 +140,6 @@ $padding: 30px;
 
         -webkit-flex: none;
                 flex: none;
-        -webkit-backface-visibility: hidden;
-      	-webkit-perspective: 1000;
         -webkit-transform: translate3d(0, 0, 0);
                 transform: translate3d(0, 0, 0);
 

@@ -1,6 +1,7 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const AnyBarWebpackPlugin = require('anybar-webpack');
+const webpack = require('webpack');
 
 module.exports = {
   context: path.resolve(__dirname, './app/frontend/javascripts'),
@@ -60,6 +61,7 @@ module.exports = {
       extract: true,
       remove: true
     }),
+    new webpack.optimize.UglifyJsPlugin({}),
     new AnyBarWebpackPlugin()
   ]
 };
