@@ -61,7 +61,7 @@ module.exports = {
       extract: true,
       remove: true
     }),
-    // new webpack.optimize.UglifyJsPlugin({}),
+    new webpack.optimize.UglifyJsPlugin({}),
     new AnyBarWebpackPlugin()
   ]
 };
