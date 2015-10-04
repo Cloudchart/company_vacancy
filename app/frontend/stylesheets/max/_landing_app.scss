@@ -2,6 +2,7 @@
 
   &__block {
     position: relative;
+
     &_full {
       box-sizing: border-box;
       display: flex;
@@ -17,20 +18,10 @@
       width: 100vw;
 
       @include respond-to(iphone) {
-        min-height: 480px;
-        height: 100vh;
-      }
-      @include respond-to(iphone5) {
-        min-height: 500px;
-        height: auto;
-      }
-      @include respond-to(iphone6) {
-        height: 100vh;
-      }
-      @include respond-to(iphone6plus) {
-        height: 100vh;
+        min-height: inherit;
       }
     }
+
 
     &_back {
       &::before {

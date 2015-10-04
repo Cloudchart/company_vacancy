@@ -16,6 +16,17 @@
     }
   }
 
+  &_bottom {
+    bottom: 30px;
+    left: 0px;
+    position: absolute;
+    right: 0px;
+
+    @include respond-to(iphone) {
+      bottom: 0px;
+    }
+  }
+
   &_padding {
     padding: 0 30px;
     box-sizing: border-box;

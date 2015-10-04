@@ -3,8 +3,9 @@ source 'https://rubygems.org'
 # ruby '2.1.1'
 
 gem 'rails', '~> 4.1.0'
-gem 'mysql2'
+gem 'mysql2', '~> 0.3.0'
 gem 'puma'
+gem 'unicorn'
 
 gem 'sprockets', '~> 3.0'
 gem 'sprockets-es6'
@@ -84,7 +85,6 @@ group :doc do
 end
 
 group :development do
-  gem 'unicorn'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'pry' # An IRB alternative and runtime developer console

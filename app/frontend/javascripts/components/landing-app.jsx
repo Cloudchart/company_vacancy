@@ -27,7 +27,7 @@ class LandingApp extends React.Component {
             <h2 className="content-block__head content-block__head_small">Learn how to</h2>
             <InsightsContainer collections={ this.props.viewer.super_featured_collections } />
           </section>
-          <section className="content-block content-block_margin content-block_padding">
+          <section className="content-block content-block_padding content-block_bottom">
             <ContentButton />
           </section>
         </section>

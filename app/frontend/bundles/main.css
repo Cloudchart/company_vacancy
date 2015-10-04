@@ -122,30 +122,13 @@
   .insights__list {
     box-sizing: border-box;
     display: block;
+    min-height: auto;
     overflow: visible;
     overflow-x: hidden;
     position: relative;
     white-space: nowrap;
     margin: 0;
     padding: 10px 30px;
-  }
-}
-
-@media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
-  .insights__list {
-    min-height: 350px;
-  }
-}
-
-@media only screen and (min-device-width: 375px) and (max-device-width: 667px) {
-  .insights__list {
-    min-height: auto;
-  }
-}
-
-@media only screen and (min-device-width: 414px) and (max-device-width: 736px) {
-  .insights__list {
-    min-height: auto;
   }
 }
 
