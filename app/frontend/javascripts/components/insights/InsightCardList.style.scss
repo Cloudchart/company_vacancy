@@ -14,7 +14,6 @@ $padding: 30px;
 
     @include respond-to(iphone) {
       height: $head-height-touch;
-      overflow: auto;
     }
 
     &-label {
@@ -103,21 +102,13 @@ $padding: 30px;
     @include respond-to(iphone) {
       box-sizing: border-box;
       display: block;
+      min-height: auto;
       overflow: visible;
       overflow-x: hidden;
       position: relative;
       white-space: nowrap;
       margin: 0;
       padding: 10px 30px;
-    }
-    @include respond-to(iphone5) {
-      min-height: 350px;
-    }
-    @include respond-to(iphone6) {
-      min-height: auto;
-    }
-    @include respond-to(iphone6plus) {
-      min-height: auto;
     }
 
     &-el {
@@ -145,8 +136,8 @@ $padding: 30px;
 
         &-enter {
           opacity: 0.5;
-          -webkit-transform: translate3d(150%, 0, 0);
-                  transform: translate3d(150%, 0, 0);
+          -webkit-transform: translate3d(99%, 0, 0);
+                  transform: translate3d(99%, 0, 0);
           -webkit-transition-duration: 0;
                   transition-duration: 0;
 
