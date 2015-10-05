@@ -23,7 +23,7 @@
     right: 0px;
 
     @include respond-to(iphone) {
-      bottom: 0px;
+      bottom: 50px;
     }
   }
 
