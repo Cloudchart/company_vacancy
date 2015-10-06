@@ -69,10 +69,13 @@ private
   def check_browser
     user_agent = UserAgent.parse(request.user_agent)
 
-    if request.path != main_app.old_browsers_path && cookies[:agree_to_browse].nil? &&
-        Cloudchart::BROWSERS_WHITELIST.detect { |browser| user_agent < browser }
-      redirect_to main_app.old_browsers_path
-    end
+    return if !request.get? || request.xhr?
+    return if request.user_agent.match(/PhantomJS/)
+    return if Cloudchart::BROWSERS_WHITELIST.detect { |browser| user_agent >= browser }
+    return if cookies[:agree_to_browse].present?
+    return if request.path == main_app.old_browsers_path
+
+    redirect_to main_app.old_browsers_path
   end
 
   def store_location

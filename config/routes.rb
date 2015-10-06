@@ -113,7 +113,7 @@ Cloudchart::Application.routes.draw do
 
   get '/insights/search', to: 'pins#search', as: :search_insights
   get '/insights/:id', to: 'pins#show', as: :insight
-  get '/insights/:id/:share_action', to: 'pins#share', as: :share_insight, format: 'html'
+  get '/insights/:id/:share_action', to: 'pins#share', as: :share_insight, format: 'html', share_action: /tweet|share/
 
   post '/users/:user_id/greeting', to: 'tokens#create_greeting'
   match '/user_greeting/:id', to: 'tokens#update_greeting', via: [:put, :patch]
