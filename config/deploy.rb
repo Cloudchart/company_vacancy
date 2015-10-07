@@ -72,6 +72,7 @@ namespace :deploy do
 end
 
 namespace :rails do
+
   desc 'Tails rails log'
   task :log do
     on roles(:app) do
@@ -89,6 +90,7 @@ namespace :rails do
 end
 
 namespace :tire do
+
   desc 'Reindex elasticsaerch'
   task :import do
     on roles :app do
