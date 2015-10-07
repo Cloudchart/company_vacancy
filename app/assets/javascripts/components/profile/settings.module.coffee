@@ -305,6 +305,7 @@ module.exports  = React.createClass
 
   renderNotificationTypesCheckboxes: ->
     @cursor.user.get('values_for_notification_types')
+      .filterNot (type) -> type == 'safari' && !('safari' of window)
       .map (type, index) =>
         <Checkbox
           key={ index }
