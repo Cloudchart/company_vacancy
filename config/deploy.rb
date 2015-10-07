@@ -117,36 +117,6 @@ namespace :task do
 
 end
 
-namespace :cc do
-
-  desc 'Calculate insights weights'
-  task :calculate_insight_weight do
-    on roles :app do
-      within release_path do
-        with rails_env: fetch(:stage) do
-          execute :rake, 'cc:calculate_insight_weight'
-        end
-      end
-    end
-  end
-
-  [:pin, :company, :user, :pinboard].each do |name|
-
-    desc "Generate #{name} preview"
-    task :"generate_#{name}_preview" do
-      on roles :app do
-        within release_path do
-          with rails_env: fetch(:stage) do
-            execute :rake, "cc:generate_#{name}_preview"
-          end
-        end
-      end
-    end
-
-  end
-
-end
-
 def post_to_slack_channel(action_name)
   return unless webhook_url = ENV['SLACK_DEFAULT_WEBHOOK_URL']
 
