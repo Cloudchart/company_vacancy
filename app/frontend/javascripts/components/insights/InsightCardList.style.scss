@@ -108,7 +108,7 @@ $padding: 30px;
       position: relative;
       white-space: nowrap;
       margin: 0;
-      padding: 10px 30px;
+      padding: 10px 0;
     }
 
     &-el {
@@ -128,8 +128,8 @@ $padding: 30px;
       @include respond-to(iphone) {
         margin: 0;
         display: inline-block;
+        padding: 0 30px;
         vertical-align: top;
-
         -webkit-flex: none;
                 flex: none;
         -webkit-transform: translate3d(0, 0, 0);
@@ -160,8 +160,8 @@ $padding: 30px;
 
           &-active {
             opacity: 0.5;
-            -webkit-transform: translate3d(-250%, 0, 0);
-                    transform: translate3d(-250%, 0, 0);
+            -webkit-transform: translate3d(-200%, 0, 0);
+                    transform: translate3d(-200%, 0, 0);
             -webkit-transition-duration: $transition-duration;
                     transition-duration: $transition-duration;
           }
