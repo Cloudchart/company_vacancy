@@ -70,7 +70,7 @@ private
     user_agent = UserAgent.parse(request.user_agent)
 
     return if !request.get? || request.xhr?
-    return if request.user_agent.match(/PhantomJS/)
+    return if request.user_agent.try(:match, /PhantomJS/)
     return if Cloudchart::BROWSERS_WHITELIST.detect { |browser| user_agent >= browser }
     return if cookies[:agree_to_browse].present?
     return if request.path == main_app.old_browsers_path
