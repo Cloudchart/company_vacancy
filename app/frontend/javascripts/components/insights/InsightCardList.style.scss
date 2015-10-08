@@ -118,6 +118,7 @@ $padding: 30px;
       margin: 0 5px;
       white-space: normal;
       opacity: 1;
+      -webkit-font-smoothing: antialiased;
       -webkit-transform-style: preserve-3d;
               transform-style: preserve-3d;
       -webkit-backface-visibility: hidden;
