@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_action :check_browser
   after_action :store_location
 
   skip_after_filter :intercom_rails_auto_include, if: -> { current_user.try(:guest?) }
@@ -66,6 +65,7 @@ class ApplicationController < ActionController::Base
 
 private
 
+  # disabled
   def check_browser
     user_agent = UserAgent.parse(request.user_agent)
 
