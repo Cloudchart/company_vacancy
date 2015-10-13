@@ -33,7 +33,7 @@ $pinboard-header-color: hsl(60, 10%, 96%);
     padding: 0;
 
     > * {
-      margin: 0 auto;  
+      margin: 0 auto;
     }
 
     > header {
@@ -168,7 +168,7 @@ article.pinboards {
     padding: 0 10px;
     height: 40px;
     line-height: 40px;
-  } 
+  }
 }
 
 
@@ -297,7 +297,8 @@ form.pinboard-settings {
   fieldset.settings {
 
     .name,
-    .description {
+    .description,
+    .tags {
       input {
         @include pinboard-settings-bordered-input;
       }

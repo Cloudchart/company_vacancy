@@ -6,3 +6,4 @@ json.url collection_url(pinboard)
 
 json.readers_count pinboard.readers.size + pinboard.writers.size + pinboard.followers.size
 json.pins_count pinboard.pins.size
+json.tag_names pinboard.tag_names.sort.join(', ')

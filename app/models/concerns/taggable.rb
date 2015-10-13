@@ -11,7 +11,7 @@ module Taggable
   end
 
   def tag_names=(names)
-    self.tags = names.split(',').reject(&:blank?).map do |name|
+    self.tags = names.split(',').reject(&:blank?).uniq.map do |name|
       Tag.where(name: name.parameterize).first_or_create!
     end
   end

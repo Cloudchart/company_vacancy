@@ -9,7 +9,7 @@ RoleStore     = require('stores/role_store.cursor')
 ModalStack = require('components/modal_stack')
 InviteForm = require('components/pinboards/invite_form')
 
-Fields = Immutable.Seq(['title', 'description', 'access_rights', 'suggestion_rights'])
+Fields = Immutable.Seq(['title', 'description', 'access_rights', 'suggestion_rights', 'tag_names'])
 
 AccessRights = Immutable.Seq
   public:     'Open to everyone'
@@ -26,7 +26,6 @@ SuggestionRights = Immutable.Seq
 module.exports = React.createClass
 
   displayName: 'PinboardSettings'
-
   mixins: [GlobalState.mixin, GlobalState.query.mixin]
 
   statics:
@@ -39,7 +38,19 @@ module.exports = React.createClass
             writers,
             readers,
             followers,
-            roles
+            roles,
+            edges {
+              tag_names
+            }
+          }
+        """
+
+      viewer: ->
+        """
+          Viewer {
+            edges {
+              is_editor
+            }
           }
         """
 
@@ -66,15 +77,26 @@ module.exports = React.createClass
   componentWillMount: ->
     @cursor =
       pinboard: PinboardStore.cursor.items.cursor(@props.uuid)
+      viewer: UserStore.me()
 
-    @fetch()
+  componentDidMount: ->
+    @fetch().then => @setState(ready: true)
 
 
   # Fetchers
   #
   fetch: ->
+    Promise.all([
+      @fetchPinboard(),
+      @fetchViewer()
+    ])
+
+  fetchPinboard: ->
     GlobalState.fetch(@getQuery('pinboard'), { id: @props.uuid }).then =>
       @setState @getStateFromStores()
+
+  fetchViewer: ->
+    GlobalState.fetch(@getQuery('viewer'))
 
 
   # Helpers
@@ -92,9 +114,6 @@ module.exports = React.createClass
         memo
       , Immutable.Map().asMutable()
       .asImmutable()
-
-  saveWithTimeout: ->
-
 
 
   # Handlers
@@ -151,6 +170,21 @@ module.exports = React.createClass
       onBlur      = { @handleBlur }
       onKeyDown   = { @handleKeyDown } />
 
+  renderTagNames: ->
+    return null unless @cursor.viewer.get('is_editor')
+
+    <li className="tags">
+      <input
+        className = 'cc-input'
+        type = 'text'
+        value = { @state.attributes.get('tag_names', '') }
+        placeholder = 'Assign few keywords'
+        onChange = { @handleChange.bind(null, 'tag_names') }
+        onBlur = { @handleBlur }
+        onKeyDown = { @handleKeyDown }
+      />
+    </li>
+
   renderInputs: ->
     <fieldset className="settings">
 
@@ -161,6 +195,9 @@ module.exports = React.createClass
         <li className="description">
           { @renderDescription() }
         </li>
+
+        { @renderTagNames() }
+
         <li className="access-rights">
           { AccessRights.map(@renderAccessRightsItem).toArray() }
         </li>
@@ -201,7 +238,7 @@ module.exports = React.createClass
   # Main render
   #
   render: ->
-    return null unless @cursor.pinboard.deref(false)
+    return null unless @cursor.pinboard.deref(false) && @state.ready
 
     <section className="cloud-columns">
       <section className="cloud-column">

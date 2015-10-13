@@ -55,6 +55,7 @@ module.exports = React.createClass
           Pinboard {
             #{FollowButton.getQuery('object', 'Pinboard')},
             #{InviteActions.getQuery('owner', 'Pinboard')},
+            #{PinboardSettings.getQuery('pinboard')},
             user {
               roles
             },
@@ -77,6 +78,7 @@ module.exports = React.createClass
       viewer: ->
         """
           Viewer {
+            #{PinboardSettings.getQuery('viewer')},
             roles,
             favorites,
             edges {

@@ -29,6 +29,11 @@ json.tokens begin
   pinboard.invite_tokens
 end
 
+json_edge! json, :tag_names, edges do
+  preload_associations(siblings, cache, :tags)
+  pinboard.tag_names.sort.join(', ')
+end
+
 json_edge! json, :facebook_share_url, edges do
   facebook_share_url(main_app.collection_url(pinboard))
 end

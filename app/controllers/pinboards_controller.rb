@@ -28,7 +28,7 @@ class PinboardsController < ApplicationController
   end
 
   def create
-    @pinboard = pinboard_source.new(params_for_create)
+    @pinboard = pinboard_source.new(pinboard_params)
     authorize! :create, @pinboard
 
     @pinboard.save!
@@ -45,7 +45,7 @@ class PinboardsController < ApplicationController
   end
 
   def update
-    @pinboard.update!(params_for_update)
+    @pinboard.update!(pinboard_params)
 
     respond_to do |format|
       format.json { render json: { id: @pinboard.id }}
@@ -76,12 +76,8 @@ private
     end
   end
 
-  def params_for_create
-    params.require(:pinboard).permit(:title, :user_id, :description, :access_rights, :suggestion_rights)
-  end
-
-  def params_for_update
-    params_for_create
+  def pinboard_params
+    params.require(:pinboard).permit(:title, :user_id, :description, :access_rights, :suggestion_rights, :tag_names)
   end
 
   def set_pinboard
