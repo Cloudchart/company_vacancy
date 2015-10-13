@@ -17,6 +17,12 @@ module Search::Pin
         { name: user.full_name, twitter: user.twitter, tags: user.tags.map(&:name) }
       end
 
+      attribute :children do
+        children.joins(:pinboard).map do |child|
+          { pinboard: { title: child.pinboard.title, tags: child.pinboard.tags.map(&:name) } }
+        end
+      end
+
       attribute :pinboard do
         { title: pinboard.title, tags: pinboard.tags.map(&:name) } if pinboard
       end
