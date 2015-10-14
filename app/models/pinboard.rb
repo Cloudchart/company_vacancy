@@ -10,6 +10,8 @@ class Pinboard < ActiveRecord::Base
   ACCESS_RIGHTS = [:public, :protected, :private].freeze
   ACCESS_ROLE = :reader
 
+  after_validation :update_algolia_search_index, if: -> { persisted? && title_changed? }
+
   enum suggestion_rights: { anyone: 0, editors: 1 }
 
   belongs_to :user
@@ -19,6 +21,7 @@ class Pinboard < ActiveRecord::Base
   has_many :posts, through: :pins, source: :pinnable, source_type: 'Post'
   has_many :users, through: :roles
   has_many :tokens, as: :owner, dependent: :destroy
+  has_many :tags, through: :taggings, after_add: :update_algolia_search_index, after_remove: :update_algolia_search_index
 
   validates :title, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
   validates :access_rights, presence: true, inclusion: { in: ACCESS_RIGHTS.map(&:to_s) }
@@ -26,7 +29,7 @@ class Pinboard < ActiveRecord::Base
   # Roles on Users
   #
   { readers: [:reader, :editor], writers: :editor }.each do |scope, role|
-    has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, as: :owner, class_name: Role
+    has_many :"#{scope}_pinboards_roles", -> { where(value: role) }, as: :owner, class_name: 'Role'
     has_many :"#{scope}", through: :"#{scope}_pinboards_roles", source: :user
   end
 
@@ -76,6 +79,11 @@ class Pinboard < ActiveRecord::Base
 
   def protected?
     access_rights == 'protected'
+  end
+
+  def update_algolia_search_index(tag=nil)
+    return if Rails.env.development?
+    AlgoliaSearchWorker.perform_async(id, 'Pinboard', false, only_dependencies: true)
   end
 
 end
