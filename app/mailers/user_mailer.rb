@@ -107,6 +107,7 @@ class UserMailer < ActionMailer::Base
     @insights = Pin.includes(:user).ready_for_broadcast(user, start_time, end_time).order('users.first_name')
     @pinboards = Pinboard.includes(:user).ready_for_broadcast(user, start_time, end_time).order('users.first_name')
     @pinboard_invites = Role.includes(:author, :pinboard).ready_for_broadcast(user.id, :pinboard, start_time, end_time).order('users.first_name')
+    return if @insights.empty? && @pinboards.empty? && @pinboard_invites.empty?
 
     mail(to: @user.email) do |format|
       format.html { render layout: 'user_mailer_' }
