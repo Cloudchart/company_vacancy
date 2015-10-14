@@ -20,7 +20,7 @@ module Search::Pin
       attribute :children do
         children.joins(:pinboard).map do |child|
           { pinboard: { title: child.pinboard.title, tags: child.pinboard.tags.map(&:name) } }
-        end
+        end.uniq
       end
 
       attribute :pinboard do
