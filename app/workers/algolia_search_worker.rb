@@ -8,7 +8,7 @@ class AlgoliaSearchWorker < ApplicationWorker
 
     if class_name == 'Pinboard' && options[:only_dependencies]
       object.pins.map { |pin| pin.insight? ? pin : pin.parent }.each do |insight|
-        insight.index!
+        insight.try(:index!)
       end
     end and return
 
