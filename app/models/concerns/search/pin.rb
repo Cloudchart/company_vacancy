@@ -18,7 +18,7 @@ module Search::Pin
       end
 
       attribute :children do
-        children.joins(:pinboard).map do |child|
+        children.where(deleted_at: nil).joins(:pinboard).map do |child|
           { pinboard: { title: child.pinboard.title, tags: child.pinboard.tags.map(&:name) } }
         end.uniq
       end
