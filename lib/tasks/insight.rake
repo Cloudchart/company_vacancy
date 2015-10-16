@@ -1,7 +1,7 @@
 namespace :cc do
 
   desc 'Rebuilds weight for all insights'
-  task rebuild_insight_weight: :environment do
+  task rebuild_insights_weight: :environment do
     Pin.insights.includes(:children, followers: { user: :roles }).find_each do |insight|
       insight.rebuild_weight!
       puts "#{insight.id} – updated weight: #{insight.weight}"
