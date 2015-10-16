@@ -30,7 +30,6 @@ class Pin < ActiveRecord::Base
   has_one :diffbot_response, through: :diffbot_response_owner
 
   has_many :children, class_name: self.name, foreign_key: :parent_id
-  has_many :favorites, as: :favoritable
   has_many :reflections, -> { where(kind: 'reflection') }, class_name: self.name, foreign_key: :parent_id
 
   has_many  :votes, as: :destination
@@ -62,13 +61,17 @@ class Pin < ActiveRecord::Base
   end
 
   def should_show_reflection_for_user?(user)
-    favorite    = favorites.find { |f| f.user_id == user.id }
-    reflection  = reflections.find { |r| r.user_id == user.id }
+    favorite = followers.find { |f| f.user_id == user.id }
+    reflection = reflections.find { |r| r.user_id == user.id }
     reflection.nil? && favorite.present? && favorite.created_at < reflection_timeout_for(user)
   end
 
   def insight?
     parent_id.blank? && content.present?
+  end
+
+  def repin?
+    parent_id.present?
   end
 
   def reflection?
@@ -106,6 +109,17 @@ class Pin < ActiveRecord::Base
       self
     end
     (uri = insight.origin_uri) && Domain.find_by(name: uri.host).try(:allowed?)
+  end
+
+  def rebuild_weight!
+    weight = children.size
+
+    followers.each do |favorite|
+      weight += (favorite.user.admin? || favorite.user.editor?) ? 100 : 10
+    end
+
+    update_column(:weight, weight)
+    self.class.trigger_sidekiq_worker(self, false)
   end
 
 private

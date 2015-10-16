@@ -116,11 +116,21 @@ class User < ActiveRecord::Base
   end
 
   def follow(object)
-    favorites.find_or_create_by(favoritable: object)
+    favorite = favorites.find_by(favoritable: object)
+
+    if favorite.nil?
+      favorites.create(favoritable: object)
+      InsightWeightWorker.perform_async(object.id) if object.instance_of?(Pin)
+    end
   end
 
   def unfollow(object)
-    favorites.find_by(favoritable: object).try(:delete)
+    favorite = favorites.find_by(favoritable: object)
+
+    if favorite.respond_to?(:delete)
+      favorite.delete
+      InsightWeightWorker.perform_async(object.id) if object.instance_of?(Pin)
+    end
   end
 
   def followed_activities

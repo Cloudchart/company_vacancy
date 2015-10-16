@@ -10,6 +10,7 @@ class PinsController < ApplicationController
   after_action :create_intercom_event, only: :create
   after_action :spread_notifications, only: :create
   after_action :track_activity, only: :create
+  after_action :rebuild_weight, only: [:create, :destroy]
 
   def search
     respond_to do |format|
@@ -179,6 +180,11 @@ private
     when 'search'
       post_page_visit_to_slack_channel('insights search', main_app.search_insights_url)
     end
+  end
+
+  def rebuild_weight
+    return unless @pin.repin?
+    InsightWeightWorker.perform_async(@pin.parent_id)
   end
 
 end

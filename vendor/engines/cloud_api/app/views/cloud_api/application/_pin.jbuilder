@@ -42,7 +42,7 @@ json_edge! json, :context, edges do
 end
 
 json_edge! json, :should_show_reflection, edges do
-  preload_associations(siblings, cache, :favorites)
+  preload_associations(siblings, cache, :followers)
   pin.should_show_reflection_for_user?(current_user)
 end
 
