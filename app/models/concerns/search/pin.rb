@@ -4,7 +4,7 @@ module Search::Pin
   included do
     include AlgoliaSearch
 
-    algoliasearch id: :uuid, per_environment: true, if: :insight?, enqueue: :trigger_sidekiq_worker do
+    algoliasearch id: :uuid, per_environment: true, if: :should_be_indexed?, enqueue: :trigger_sidekiq_worker do
       attribute :content, :origin, :weight, :created_at
 
       attribute :tags do
@@ -56,5 +56,9 @@ module Search::Pin
       AlgoliaSearchWorker.perform_async(record.id, record.class.name, remove)
     end
 
+    def should_be_indexed?
+      insight? && pinboard.try(:editorial?)
+    end
   end
+
 end

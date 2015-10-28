@@ -81,6 +81,10 @@ class Pinboard < ActiveRecord::Base
     access_rights == 'protected'
   end
 
+  def editorial?
+    user.try(:editor?)
+  end
+
   def update_algolia_search_index(tag=nil)
     return if Rails.env.development?
     AlgoliaSearchWorker.perform_async(id, 'Pinboard', false, only_dependencies: true)
