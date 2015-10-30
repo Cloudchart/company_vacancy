@@ -3,6 +3,7 @@ json.(pin, :pinnable_id, :pinnable_type)
 json.(pin, :content, :origin, :kind)
 json.(pin, :pins_count, :weight)
 json.(pin, :is_approved, :is_suggestion)
+json.(pin, :positive_reaction, :negative_reaction)
 json.(pin, :created_at, :updated_at)
 
 json.source_user_id pin.source(:user_id)

@@ -11,6 +11,7 @@ Insight               = require('components/cards/insight_card')
 TabNav                = require('components/shared/tab_nav')
 ConnectedCollections  = require('components/insight/collections')
 Reflections           = require('components/insight/reflections')
+Reactions             = require('components/insight/reactions')
 
 # Exports
 #
@@ -38,6 +39,7 @@ module.exports = React.createClass
       pin: ->
         """
           Pin {
+            #{Reactions.getQuery('pin')},
             #{Insight.getQuery('pin')},
             parent {
               #{Insight.getQuery('pin')},
@@ -161,5 +163,7 @@ module.exports = React.createClass
         { @renderTabs() }
 
         { @renderConnections() }
+
+        <Reactions pin={ @effective_pin().id } />
       </article>
     </div>

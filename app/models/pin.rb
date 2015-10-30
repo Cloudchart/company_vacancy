@@ -11,7 +11,7 @@ class Pin < ActiveRecord::Base
 
   acts_as_paranoid
 
-  nilify_blanks only: [:content, :origin]
+  nilify_blanks only: [:content, :origin, :positive_reaction, :negative_reaction]
 
   has_should_markers :should_allow_domain_name
 

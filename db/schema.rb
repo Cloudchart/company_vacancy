@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150923143648) do
+ActiveRecord::Schema.define(version: 20151030091347) do
 
   create_table "activities", primary_key: "uuid", force: true do |t|
     t.string   "action",                                null: false
@@ -399,22 +399,24 @@ ActiveRecord::Schema.define(version: 20150923143648) do
   add_index "pinboards", ["user_id"], name: "index_pinboards_on_user_id", using: :btree
 
   create_table "pins", primary_key: "uuid", force: true do |t|
-    t.string   "user_id",       limit: 36,                 null: false
-    t.string   "parent_id",     limit: 36
-    t.string   "pinboard_id",   limit: 36
-    t.string   "pinnable_id",   limit: 36
+    t.string   "user_id",           limit: 36,                 null: false
+    t.string   "parent_id",         limit: 36
+    t.string   "pinboard_id",       limit: 36
+    t.string   "pinnable_id",       limit: 36
     t.string   "pinnable_type"
     t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_approved",              default: false
+    t.boolean  "is_approved",                  default: false
     t.string   "origin"
-    t.integer  "pins_count",               default: 0
-    t.boolean  "is_suggestion",            default: false
+    t.integer  "pins_count",                   default: 0
+    t.boolean  "is_suggestion",                default: false
     t.integer  "weight"
     t.string   "preview_uid"
     t.datetime "deleted_at"
     t.string   "kind"
+    t.text     "positive_reaction"
+    t.text     "negative_reaction"
   end
 
   add_index "pins", ["deleted_at"], name: "index_pins_on_deleted_at", using: :btree

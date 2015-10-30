@@ -5,7 +5,7 @@ module Search::Pin
     include AlgoliaSearch
 
     algoliasearch id: :uuid, per_environment: true, if: :should_be_indexed?, enqueue: :trigger_sidekiq_worker do
-      attribute :content, :origin, :weight, :created_at
+      attribute :content, :origin, :weight, :positive_reaction, :negative_reaction, :created_at
 
       attribute :tags do
         tags.map do |tag|

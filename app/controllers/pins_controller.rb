@@ -134,7 +134,7 @@ private
 
   def fields_for_update
     fields = default_fields << [:origin]
-    fields << [:user_id, :content] if current_user.editor?
+    fields << [:user_id, :content, :positive_reaction, :negative_reaction] if current_user.editor?
     fields
   end
 
