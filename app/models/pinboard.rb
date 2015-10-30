@@ -82,7 +82,7 @@ class Pinboard < ActiveRecord::Base
   end
 
   def editorial?
-    user.try(:editor?)
+    user.try(:editor?) || users.map(&:editor?).include?(true)
   end
 
   def update_algolia_search_index(tag=nil)
