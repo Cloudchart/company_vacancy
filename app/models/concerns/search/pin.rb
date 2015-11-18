@@ -27,6 +27,16 @@ module Search::Pin
         { title: pinboard.title, tags: pinboard.tags.map(&:name) } if pinboard
       end
 
+      attribute :pinboard_tags do
+        child_pinboard_tags = children.where(deleted_at: nil).joins(:pinboard).map do |child|
+          child.pinboard.tags.map { |tag| tag.name.gsub(/-/, ' ') }
+        end
+
+        pinboard_tags = pinboard ? pinboard.tags.map { |tag| tag.name.gsub(/-/, ' ') } : []
+
+        (child_pinboard_tags + pinboard_tags).flatten.uniq
+      end
+
       attribute :diffbot_response do
         if diffbot_response.try(:api) == 'article'
           tags = if diffbot_tags = diffbot_response.body[:objects].first.try(:[], :tags)
