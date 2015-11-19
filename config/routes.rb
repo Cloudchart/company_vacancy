@@ -67,6 +67,7 @@ Cloudchart::Application.routes.draw do
   resources :pinboards, concerns: [:followable] do
     resources :roles, only: [:update, :destroy]
     resources :invites, only: [:create, :update, :destroy], controller: 'pinboards/invites'
+    post :import_insights, on: :member
   end
 
   resources :pins, except: [:index], concerns: [:followable] do

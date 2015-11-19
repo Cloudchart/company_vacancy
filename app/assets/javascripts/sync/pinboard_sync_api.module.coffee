@@ -53,6 +53,15 @@ module.exports =
       dataType: 'json'
 
 
+  import_insights: (id, pinboard_id) ->
+    Promise.resolve $.ajax
+      url:        "/pinboards/#{id}/import_insights"
+      type:       "POST"
+      dataType:   "json"
+      data:
+        pinboard_id: pinboard_id
+
+
   request_access: (item, message) ->
     Promise.resolve $.ajax
       url:        "/pinboards/#{item.get('uuid')}/invites"

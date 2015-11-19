@@ -104,6 +104,10 @@ class Ability
         current_user.id == pinboard.user_id || editor?(current_user, pinboard)
       end
 
+      can :import_insights, Pinboard do |pinboard|
+        current_user.editor? && (current_user.id == pinboard.user_id || editor?(current_user, pinboard))
+      end
+
       can :add_insight, Pinboard do |pinboard|
         (owner?(current_user, pinboard) || editor_or_contributor?(current_user, pinboard)) ||
         (current_user.editor? && pinboard.user.unicorn?)

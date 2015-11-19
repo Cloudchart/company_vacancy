@@ -8,6 +8,7 @@ RoleStore     = require('stores/role_store.cursor')
 
 ModalStack = require('components/modal_stack')
 InviteForm = require('components/pinboards/invite_form')
+InsightsImporter = require('components/pinboards/insights_importer')
 
 Fields = Immutable.Seq(['title', 'description', 'access_rights', 'suggestion_rights', 'tag_names'])
 
@@ -140,6 +141,9 @@ module.exports = React.createClass
     clearTimeout @__rightsSyncTimeout
     @__rightsSyncTimeout = setTimeout @save, 250
 
+  handleImportInsightsButtonClick: (event) ->
+    ModalStack.show(<InsightsImporter pinboard = { @props.uuid } />)
+
 
   # Renderers
   #
@@ -234,6 +238,13 @@ module.exports = React.createClass
       </span>
     </label>
 
+  renderImportInsightsButton: ->
+    return null unless @cursor.viewer.get('is_editor')
+
+    <button className="cc" onClick={ @handleImportInsightsButtonClick }>
+      Import insights from another collection
+    </button>
+
 
   # Main render
   #
@@ -245,5 +256,6 @@ module.exports = React.createClass
         <form onSubmit={ @handleSubmit } className="pinboard-settings">
           { @renderInputs() }
         </form>
+        { @renderImportInsightsButton() }
       </section>
     </section>

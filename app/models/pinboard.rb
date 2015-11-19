@@ -90,4 +90,8 @@ class Pinboard < ActiveRecord::Base
     AlgoliaSearchWorker.perform_async(id, 'Pinboard', false, only_dependencies: true)
   end
 
+  def insight_ids
+    pins.map { |pin| pin.repin? ? pin.parent_id : pin.id }
+  end
+
 end

@@ -1,7 +1,7 @@
 class PinboardsController < ApplicationController
   include FollowableController
 
-  before_action :set_pinboard, only: [:show, :settings, :update, :destroy]
+  before_action :set_pinboard, only: [:show, :settings, :update, :destroy, :import_insights]
 
   load_and_authorize_resource except: [:create, :show]
 
@@ -63,6 +63,19 @@ class PinboardsController < ApplicationController
 
     respond_to do |format|
       format.json { render json: { id: @pinboard.id } }
+    end
+  end
+
+  def import_insights
+    dst_insight_ids = @pinboard.insight_ids
+    src_insight_ids = Pinboard.find(params[:pinboard_id]).insight_ids
+
+    (src_insight_ids - dst_insight_ids).each do |insight_id|
+      @pinboard.pins.create(user: current_user, parent_id: insight_id, is_suggestion: true)
+    end
+
+    respond_to do |format|
+      format.json { render json: { message: :ok }, status: 201 }
     end
   end
 
