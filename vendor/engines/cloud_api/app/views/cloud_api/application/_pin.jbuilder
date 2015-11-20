@@ -8,6 +8,10 @@ json.(pin, :created_at, :updated_at)
 
 json.source_user_id pin.source(:user_id)
 
+json_edge! json, :source_content, edges do
+  pin.source(:content)
+end
+
 json_edge! json, :url, edges do
   main_app.insight_url(pin)
 end

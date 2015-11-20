@@ -82,7 +82,8 @@ module.exports = React.createClass
             roles,
             favorites,
             edges {
-              is_authenticated
+              is_authenticated,
+              is_editor
             }
           }
         """

@@ -67,8 +67,8 @@ module.exports = React.createClass
 
 
   componentWillReceiveProps: (nextProps) ->
-    if React.Children.count(nextProps.children) isnt React.Children.count(@props.children)
-      @shouldReloadPackeryItems = true
+    # if React.Children.count(nextProps.children) isnt React.Children.count(@props.children)
+    @shouldReloadPackeryItems = true
 
 
   # Render child

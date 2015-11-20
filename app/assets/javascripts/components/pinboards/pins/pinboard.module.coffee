@@ -14,6 +14,10 @@ Insight       = require('components/cards/insight_card')
 ListOfCards   = require('components/cards/list_of_cards')
 SeeMore       = require('components/insight/see_more')
 
+SortAttrsMap =
+  created_at: 'date created'
+  source_content: 'content'
+
 
 # Exports
 #
@@ -52,6 +56,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     isLoaded: false
+    sortAttr: 'created_at'
 
 
   # Helpers
@@ -74,12 +79,9 @@ module.exports = React.createClass
       .filter @isApproved
 
   sortPins: (pins) ->
-    if @cursor.user.get('is_editor', false)
-      pins.sortBy (pin) -> pin.content
-    else
-      pins
-        .sortBy (pin) -> pin.created_at
-        .reverse()
+    sortedPins = pins.sortBy (pin) => pin[@state.sortAttr]
+    sortedPins.reverse() if @state.sortAttr == 'created_at'
+    sortedPins
 
   collectPins: ->
     pins = @getPins()
@@ -100,6 +102,10 @@ module.exports = React.createClass
 
   # Handlers
   #
+  handleSortClick: (event) ->
+    event.preventDefault()
+    sortAttr = if @state.sortAttr == 'created_at' then 'source_content' else 'created_at'
+    @setState sortAttr: sortAttr
 
 
   # Renderers
@@ -110,6 +116,14 @@ module.exports = React.createClass
   renderPins: ->
     @collectPins().map @renderPin
 
+  renderSortInsightsBlock: ->
+    return null unless @cursor.user.get('is_editor', false)
+
+    <div className="insights-sort">
+      <span>Sorted by: </span>
+      <a href="" onClick={ @handleSortClick }>{ SortAttrsMap[@state.sortAttr] }</a>
+    </div>
+
 
   # Main render
   #
@@ -117,6 +131,8 @@ module.exports = React.createClass
     return null unless @isLoaded()
 
     <section className="cc-container-common">
+      { @renderSortInsightsBlock() }
+
       <ListOfCards>
         { @renderPins().toArray() }
       </ListOfCards>

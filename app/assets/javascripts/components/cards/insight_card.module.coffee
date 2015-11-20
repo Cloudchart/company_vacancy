@@ -43,7 +43,8 @@ InsightCard = React.createClass
             #{pinQuery},
             edges {
               diffbot_response_data,
-              is_editable
+              is_editable,
+              source_content
             },
             parent {
               #{pinParentQuery},
