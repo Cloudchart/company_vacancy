@@ -49,16 +49,12 @@ module.exports = React.createClass
   #
   fetch: ->
     GlobalState.fetch(@getQuery('pin', @props), { id: @props.pin }).then =>
-      pin       = PinStore.get(@props.pin).toJS()
-      insight   = PinStore.get(@props.pin.parent_id).toJS() if pin.parent_id
-
-      @addCursor('pin', PinStore.cursor.items.cursor(pin.id))
-      @addCursor('insight', PinStore.cursor.items.cursor((insight || pin).id))
+      pin = PinStore.get(@props.pin).toJS()
+      @addCursor('insight', PinStore.cursor.items.cursor(pin.parent_id || pin.id))
 
       @setState
         ready: true
         pin: PinStore.get(@props.pin).toJS()
-        insight: insight
 
 
   # Component Specifications
