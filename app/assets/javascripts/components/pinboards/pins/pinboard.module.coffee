@@ -73,12 +73,18 @@ module.exports = React.createClass
       .filter (pin) -> !!pin
       .filter @isApproved
 
+  sortPins: (pins) ->
+    if @cursor.user.get('is_editor', false)
+      pins.sortBy (pin) -> pin.content
+    else
+      pins
+        .sortBy (pin) -> pin.created_at
+        .reverse()
+
   collectPins: ->
     pins = @getPins()
     pins = pins.take(SeeMore.takeSize()) if SeeMore.shouldDisplayComponent(pins.size)
-    pins
-      .sortBy (pin) -> pin.created_at
-      .reverse()
+    @sortPins(pins)
 
 
   # Lifecycle methods
