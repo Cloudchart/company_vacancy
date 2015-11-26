@@ -60,7 +60,9 @@ module.exports = React.createClass
 
   # Lifecycle Methods
   #
-  # componentWillMount: ->
+  componentWillMount: ->
+    @cursor =
+      viewer: UserStore.me()
 
   componentDidMount: ->
     @fetch()
@@ -83,7 +85,9 @@ module.exports = React.createClass
 
   # Renderers
   #
-  # renderSomething: ->
+  renderUser: ->
+    name = if @state.user.id == @cursor.viewer.get('id') then 'You' else @state.user.full_name
+    <a className='user' href={ @state.user.url }>{ name }</a>
 
 
   # Main render
@@ -93,7 +97,7 @@ module.exports = React.createClass
 
     <header>
       <section className="title">
-        <a className='user' href={ @state.user.url }>{ @state.user.full_name }</a>
+        { @renderUser() }
         <span className='comment'>{ @getComment() }</span>
       </section>
     </header>

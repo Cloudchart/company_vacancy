@@ -60,7 +60,9 @@ module.exports = React.createClass
 
   # Lifecycle Methods
   #
-  # componentWillMount: ->
+  componentWillMount: ->
+    @cursor =
+      viewer: UserStore.me()
 
   componentDidMount: ->
     @fetch()
@@ -84,7 +86,8 @@ module.exports = React.createClass
     <i key='icon' className="fa fa-#{iconClass}" />
 
   renderUser: ->
-    <a key='user' className='user through' href={ @state.user.url }>{ @state.user.full_name }</a>
+    name = if @state.user.id == @cursor.viewer.get('id') then 'You' else @state.user.full_name
+    <a key='user' className='user through' href={ @state.user.url }>{ name }</a>
 
   renderComment: (comment) ->
     <span key='comment' className='comment'>{ comment }</span>
