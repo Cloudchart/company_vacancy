@@ -5,7 +5,17 @@ module Search::Pin
     include AlgoliaSearch
 
     algoliasearch id: :uuid, per_environment: true, if: :should_be_indexed?, enqueue: :trigger_sidekiq_worker do
-      attribute :content, :origin, :weight, :positive_reaction, :negative_reaction, :created_at
+      attribute :content, :weight, :positive_reaction, :negative_reaction, :created_at
+
+      attribute :origin do
+        if origin.present?
+          {
+            title: diffbot_response.try(:data).try(:[], :title),
+            url: origin,
+            duration: diffbot_response.try(:data).try(:[], :estimated_time)
+          }
+        end
+      end
 
       attribute :tags do
         tags.map do |tag|
