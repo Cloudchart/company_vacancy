@@ -77,7 +77,7 @@ module Search::Pin
     end
 
     def should_be_indexed?
-      insight? && pinboard.try(:editorial?)
+      insight? && (pinboard.try(:editorial?) || children.map { |pin| pin.pinboard.try(:editorial?) }.include?(true))
     end
   end
 
