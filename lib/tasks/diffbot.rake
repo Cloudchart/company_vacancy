@@ -1,8 +1,14 @@
 namespace :cc do
 
   desc 'Crawl pins origins with diffbot'
-  task crawl_pins_origins: :environment do
-    DiffbotResponseOwner.delete_all
+  task :crawl_pins_origins, [:force] => [:environment] do |t, options|
+    if options[:force]
+      DiffbotResponse.destroy_all
+      puts 'forcibly destroyed all diffbot responses'
+    else
+      DiffbotResponseOwner.delete_all
+    end
+
     Pin.insights.where.not(origin: nil).each do |pin|
       if pin.origin_uri
         DiffbotWorker.perform_async(pin.id, pin.class.name, :origin)

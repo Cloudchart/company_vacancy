@@ -65,6 +65,8 @@ private
       result[:image_url] = object[:url]
     when 'product'
       result[:image_url] = object[:images].try(:first).try(:[], :url)
+    when 'profile'
+      result[:image_url] = object[:images].try(:first).try(:[], :link)
     end
 
     result
