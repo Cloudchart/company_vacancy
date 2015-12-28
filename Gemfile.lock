@@ -6,6 +6,13 @@ GIT
       railties (>= 3.0)
 
 GIT
+  remote: git@github.com:Cloudchart/diffbot-ruby-client.git
+  revision: 1b5bc5c73716af4e8c72c604fe4322d404aa93df
+  specs:
+    diffbot-ruby-client (0.1.1)
+      faraday
+
+GIT
   remote: git@github.com:Cloudchart/pagescript.git
   revision: a6c78b18a589dc93e7ad5857ab361ad09d57e454
   specs:
@@ -18,13 +25,6 @@ GIT
   specs:
     sprockets-commonjs (0.0.5)
       sprockets (>= 2.1, < 4.0)
-
-GIT
-  remote: git@github.com:diffbot/diffbot-ruby-client.git
-  revision: b590239ead55bc2a0e45ccf89e6a9fc37a58b985
-  specs:
-    diffbot-ruby-client (0.1.1)
-      faraday
 
 GIT
   remote: https://github.com/seanchas/graphql-rb.git

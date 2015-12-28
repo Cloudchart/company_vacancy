@@ -31,7 +31,6 @@ gem 'sidekiq', '~> 3.5.0' # background processing using redis
 gem 'sidekiq-cron', '~> 0.3.0'
 gem 'active_model_serializers', '= 0.8.1'
 gem 'dragonfly', '~> 1.0'
-gem 'sprockets-commonjs', git: 'git@github.com:Cloudchart/sprockets-commonjs.git'
 gem 'coffee-react', '~> 0.5.0'
 gem 'sprockets-coffee-react', '~> 0.5.0'
 gem 'redis-rails'
@@ -49,7 +48,6 @@ gem 'zeroclipboard-rails'
 gem 'yajl-ruby'
 gem 'sinatra', require: nil
 gem 'paranoia', '~> 2.0'
-gem 'diffbot-ruby-client', git: 'git@github.com:diffbot/diffbot-ruby-client.git'
 gem 'sitemap_generator', '~> 5.1.0'
 gem 'algoliasearch-rails'
 gem 'algoliasearch', '~> 1.6.0'
@@ -75,6 +73,8 @@ gem 'cloud_api', path: 'vendor/engines/cloud_api'
 #
 gem 'pagescript', git: 'git@github.com:Cloudchart/pagescript.git'
 gem 'bootstrap-wysihtml5-rails', git: 'git@github.com:Cloudchart/bootstrap-wysihtml5-rails.git'
+gem 'sprockets-commonjs', git: 'git@github.com:Cloudchart/sprockets-commonjs.git'
+gem 'diffbot-ruby-client', git: 'git@github.com:Cloudchart/diffbot-ruby-client.git'
 
 # Internal Gems
 #
